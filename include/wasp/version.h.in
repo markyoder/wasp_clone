@@ -1,0 +1,8 @@
+#ifndef WASP_VERSION_H
+#define WASP_VERSION_H
+namespace wasp{
+    static int VERSION_MAJOR = @WASP_VERSION_MAJOR@;
+    static int VERSION_MINOR = @WASP_VERSION_MINOR@;
+    static int VERSION_MICRO = @WASP_VERSION_MICRO@;
+}
+#endif
