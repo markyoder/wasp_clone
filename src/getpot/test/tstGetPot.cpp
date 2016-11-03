@@ -317,4 +317,75 @@ TEST(GetPotInterpreter, object_empty_subobject)
     }
 }
 TEST_END(GetPotInterpreter,object_empty_subobject)
+TEST(GetPotInterpreter, object_subobject)
+{
+    std::stringstream input;
+    // Simple parse
+    // document
+    //  |_object
+    //    |_ object_decl 'ted'
+    //      |_ [ '['
+    //      |_ string 'ted'
+    //      |_ ] ']'
+    //      |_ sub_object 'fred'
+    //        |_ sub_object_decl 'fred'
+    //          |_ [ '['
+    //          |_ ./ './'
+    //          |_ string 'fred'
+    //          |_ ] ']'
+    //          |_key
+    //            |_ decl 'key'
+    //            |_ = '='
+    //            |_ value '3.421'
+    //              |_ sub_object_term '[../]'
+    //    |_ object_term '[]'
+
+    input << "[ted][./fred]key=3.4321[../][]";
+    GetPotInterpreter interpreter;
+    W_ASSERT_EQ( true, interpreter.parse(input) );
+    W_ASSERT_EQ(18, interpreter.node_count() );
+
+    std::vector<wasp::NODE> node_types = {wasp::LBRACKET
+                                          ,wasp::STRING
+                                           ,wasp::RBRACKET
+                                          ,wasp::OBJECT_DECL
+                                           // sub object
+                                           ,wasp::LBRACKET
+                                          ,wasp::DOT_SLASH
+                                          ,wasp::STRING
+                                          ,wasp::RBRACKET
+                                          ,wasp::SUB_OBJECT_DECL
+                                          // keyed value key
+                                          ,wasp::DECL,wasp::ASSIGN
+                                          ,wasp::VALUE,wasp::KEYED_VALUE
+                                           ,wasp::SUB_OBJECT_TERM
+                                          ,wasp::SUB_OBJECT
+                                           ,wasp::OBJECT_TERM
+                                           ,wasp::OBJECT
+                                          ,wasp::DOCUMENT_ROOT};
+    std::vector<std::string> node_names = {"["
+                                           ,"string"
+                                           ,"]"
+                                           ,"ted"
+                                           ,"["
+                                           ,"./"
+                                           ,"string"
+                                           ,"]"
+                                           ,"fred"
+                                           ,"decl","=","value" // key
+                                           ,"key"
+                                           ,"[../]"
+                                           ,"fred"
+                                           ,"[]"
+                                           ,"ted","document"};
+    W_ASSERT_EQ( node_types.size(), node_names.size() );
+    for( size_t i = 0; i < interpreter.node_count(); ++i )
+    {
+        W_ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
+        W_ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i))
+    }
+}
+TEST_END(GetPotInterpreter,object_subobject)
+
+
 WASP_TESTS_END

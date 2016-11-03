@@ -208,6 +208,17 @@ sub_object : sub_object_decl sub_object_term
                                         ,interpreter.m_tree_nodes.name(object_decl_i)
                                         ,child_indices);
 
+    }| sub_object_decl object_members sub_object_term
+    {   std::vector<unsigned int> children; children.reserve(2+$object_members->size());
+        unsigned int object_decl_i = static_cast<unsigned int>($sub_object_decl);
+        children.push_back(object_decl_i);
+        for( unsigned int child_i: *$object_members ) children.push_back(child_i);
+        children.push_back(static_cast<unsigned int>($sub_object_term));
+        delete $object_members;
+
+        $$ = interpreter.push_parent(wasp::SUB_OBJECT
+                                    ,interpreter.m_tree_nodes.name(object_decl_i)
+                                    ,children);
     }
 object_decl : lbracket string rbracket {
         unsigned int lbracket_index = static_cast<unsigned int>($lbracket);
