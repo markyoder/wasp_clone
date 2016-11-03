@@ -1,5 +1,5 @@
-#ifndef WASP_GETPOTDRIVER_H
-#define WASP_GETPOTDRIVER_H
+#ifndef WASP_GETPOTINTERPRETER_H
+#define WASP_GETPOTINTERPRETER_H
 #include <vector>
 #include <string>
 #include "wasp/core/TreeNodePool.h"
