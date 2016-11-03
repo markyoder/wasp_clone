@@ -35,6 +35,7 @@ TEST(GetPotInterpreter,simple)
                                           ,wasp::DOCUMENT_ROOT};
     std::vector<std::string> node_names = {"decl","=","value"
                                            ,"key","document"};
+    W_ASSERT_EQ( node_types.size(), node_names.size() );
     for( size_t i = 0; i < interpreter.node_count(); ++i )
     {
         W_ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
@@ -78,6 +79,7 @@ TEST(GetPotInterpreter,empty_object)
     std::vector<std::string> node_names = {"[","string","]","ted"
                                            ,"[]"
                                            ,"ted","document"};
+    W_ASSERT_EQ( node_types.size(), node_names.size() );
     for( size_t i = 0; i < interpreter.node_count(); ++i )
     {
         W_ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
@@ -123,6 +125,7 @@ TEST(GetPotInterpreter,simple_object)
                                            ,"key"
                                            ,"[]"
                                            ,"ted","document"};
+    W_ASSERT_EQ( node_types.size(), node_names.size() );
     for( size_t i = 0; i < interpreter.node_count(); ++i )
     {
         W_ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
@@ -195,6 +198,7 @@ TEST(GetPotInterpreter,less_simple_object)
                                            ,"key"
                                            ,"[]"
                                            ,"ted","document"};
+    W_ASSERT_EQ( node_types.size(), node_names.size() );
     for( size_t i = 0; i < interpreter.node_count(); ++i )
     {
         W_ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
@@ -250,6 +254,7 @@ TEST(GetPotInterpreter, object_array)
                                            ,"data"
                                            ,"[]"
                                            ,"ted","document"};
+    W_ASSERT_EQ( node_types.size(), node_names.size() );
     for( size_t i = 0; i < interpreter.node_count(); ++i )
     {
         W_ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
