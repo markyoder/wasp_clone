@@ -54,12 +54,16 @@
                          ,RBRACKET
                          ,LBRACKET
                          ,OBJECT_DECL
+                         ,SUB_OBJECT_DECL
                          ,OBJECT_TERM
+                         ,SUB_OBJECT_TERM
                          ,OBJECT
+                         ,SUB_OBJECT
+                         ,DOT_SLASH
                          };
     }
 
-#line 63 "GetPotParser.hpp" // lalr1.cc:377
+#line 67 "GetPotParser.hpp" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -131,7 +135,7 @@
 
 
 namespace wasp {
-#line 135 "GetPotParser.hpp" // lalr1.cc:377
+#line 139 "GetPotParser.hpp" // lalr1.cc:377
 
 
 
@@ -145,13 +149,13 @@ namespace wasp {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 72 "GetPot.bison" // lalr1.cc:377
+    #line 76 "GetPot.bison" // lalr1.cc:377
 
     size_t token_index;
     size_t node_index;
     std::vector<unsigned int>* node_indices;
 
-#line 155 "GetPotParser.hpp" // lalr1.cc:377
+#line 159 "GetPotParser.hpp" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -182,15 +186,17 @@ namespace wasp {
         EQ = 265,
         AND = 266,
         OR = 267,
-        QUOTE = 268,
-        INTEGER = 269,
-        REAL = 270,
-        STRING = 271,
-        QSTRING = 272,
-        COMMENT = 273,
-        EXECUTION_UNIT_START = 274,
-        EXECUTION_UNIT_END = 275,
-        OBJECT_TERM = 276
+        DOT_SLASH = 268,
+        QUOTE = 269,
+        INTEGER = 270,
+        REAL = 271,
+        STRING = 272,
+        QSTRING = 273,
+        COMMENT = 274,
+        EXECUTION_UNIT_START = 275,
+        EXECUTION_UNIT_END = 276,
+        OBJECT_TERM = 277,
+        SUB_OBJECT_TERM = 278
       };
     };
 
@@ -498,12 +504,12 @@ namespace wasp {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 27,     ///< Last index in yytable_.
-      yynnts_ = 25,  ///< Number of nonterminal symbols.
+      yylast_ = 33,     ///< Last index in yytable_.
+      yynnts_ = 29,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 32  ///< Number of tokens.
+      yyntokens_ = 34  ///< Number of tokens.
     };
 
 
@@ -514,7 +520,7 @@ namespace wasp {
 
 
 } // wasp
-#line 518 "GetPotParser.hpp" // lalr1.cc:377
+#line 524 "GetPotParser.hpp" // lalr1.cc:377
 
 
 

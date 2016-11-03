@@ -76,6 +76,8 @@ OR \|\|
 LBRACKET \[
 RBRACKET \]
 OBJECT_TERM \[" "*\]
+SUB_OBJECT_TERM \[" "*\.\.\/" "*\]
+DOT_SLASH \.\/
 
 
  /* The following paragraph suffices to track locations accurately. Each time
@@ -103,6 +105,14 @@ OBJECT_TERM \[" "*\]
     capture_token(yylval,token::EXECUTION_UNIT_END);
 //    yylval->stringVal = new std::string(yytext, yyleng);
     return token::EXECUTION_UNIT_END;
+}
+{DOT_SLASH} {
+    capture_token(yylval,token::DOT_SLASH);
+    return token::DOT_SLASH;
+}
+{SUB_OBJECT_TERM} {
+    capture_token(yylval,token::SUB_OBJECT_TERM);
+    return token::SUB_OBJECT_TERM;
 }
 {OBJECT_TERM} {
     capture_token(yylval,token::OBJECT_TERM);

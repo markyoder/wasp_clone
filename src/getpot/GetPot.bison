@@ -20,8 +20,12 @@
                          ,RBRACKET
                          ,LBRACKET
                          ,OBJECT_DECL
+                         ,SUB_OBJECT_DECL
                          ,OBJECT_TERM
+                         ,SUB_OBJECT_TERM
                          ,OBJECT
+                         ,SUB_OBJECT
+                         ,DOT_SLASH
                          };
     }
 }
@@ -95,6 +99,7 @@
 %token                 '+'
 %token                 '^'
 %token                 '&'
+%token <token_index>   DOT_SLASH
 %token <token_index>   QUOTE
 %token <token_index>   INTEGER         "integer"
 %token <token_index>   REAL          "real"
@@ -104,15 +109,17 @@
 %token <token_index>   EXECUTION_UNIT_START  "start of unit of execution"
 %token <token_index>   EXECUTION_UNIT_END  "end of unit of execution"
 %token <token_index>   OBJECT_TERM  "block terminator"
+%token <token_index>   SUB_OBJECT_TERM  "subblock terminator"
 
 %type <token_index>   DECL "declarator"
 %type <token_index>   VALUE "value"
 %type <node_index>  integer real string lbracket rbracket  quote assign
 %type <node_index>  object_decl object_term
-%type <node_index>  object
+%type <node_index>  sub_object_decl sub_object_term
+%type <node_index>  object sub_object
 %type <node_index>  unquoted_string
 %type <node_index>  primitive
-%type <node_index>  keyedvalue
+%type <node_index>  keyedvalue dot_slash
 %type <node_index>  comment value decl
 %type <node_index> object_member array_member
 %type <node_indices> object_members array_members array
@@ -149,6 +156,12 @@ object_term : OBJECT_TERM
         $$ = interpreter.push_leaf(wasp::OBJECT_TERM,"[]"
                          ,token_index);
     }
+sub_object_term : SUB_OBJECT_TERM
+    {
+        unsigned int token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::SUB_OBJECT_TERM,"[../]"
+                         ,token_index);
+    }
 lbracket : LBRACKET
     {
         unsigned int token_index = static_cast<unsigned int>($1);
@@ -161,6 +174,40 @@ rbracket : RBRACKET
         unsigned int token_index = static_cast<unsigned int>($1);
         $$ = interpreter.push_leaf(wasp::RBRACKET,"]"
                          ,token_index);
+    }
+dot_slash : DOT_SLASH
+    {
+
+        unsigned int token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::DOT_SLASH,"./"
+                         ,token_index);
+    }
+sub_object_decl : lbracket  dot_slash string rbracket
+    {
+        unsigned int lbracket_index = static_cast<unsigned int>($lbracket);
+        unsigned int dot_slash_index = static_cast<unsigned int>($dot_slash);
+        unsigned int string_index = static_cast<unsigned int>($string);
+        unsigned int rbracket_index = static_cast<unsigned int>($rbracket);
+        std::vector<unsigned int> child_indices = {lbracket_index
+                                                   ,dot_slash_index
+                                                   ,string_index
+                                                   ,rbracket_index};
+
+        $$ = interpreter.push_parent(wasp::SUB_OBJECT_DECL
+                                        ,interpreter.m_tree_nodes.data($string).c_str()
+                                        ,child_indices);
+    }
+sub_object : sub_object_decl sub_object_term
+    {// empty object
+        unsigned int object_decl_i = static_cast<unsigned int>($sub_object_decl);
+        unsigned int object_term_i = static_cast<unsigned int>($sub_object_term);
+        std::vector<unsigned int> child_indices = {object_decl_i
+                                                   ,object_term_i};
+
+        $$ = interpreter.push_parent(wasp::SUB_OBJECT
+                                        ,interpreter.m_tree_nodes.name(object_decl_i)
+                                        ,child_indices);
+
     }
 object_decl : lbracket string rbracket {
         unsigned int lbracket_index = static_cast<unsigned int>($lbracket);
@@ -175,7 +222,7 @@ object_decl : lbracket string rbracket {
                                         ,child_indices);
     }
 object_member : primitive | keyedvalue | comment
-     // TODO add subobject
+                | sub_object
 
 object_members : object_member
     {
@@ -186,6 +233,7 @@ object_members : object_member
     {
         $1->push_back(static_cast<unsigned int>($object_member));
     }
+
 object : object_decl object_term
         { // empty object
         unsigned int object_decl_i = static_cast<unsigned int>($object_decl);
