@@ -174,16 +174,6 @@ object_decl : lbracket string rbracket {
                                         ,interpreter.m_tree_nodes.data($string).c_str()
                                         ,child_indices);
     }
-object_term : lbracket  rbracket {
-        unsigned int lbracket_index = static_cast<unsigned int>($lbracket);
-        unsigned int rbracket_index = static_cast<unsigned int>($rbracket);
-        std::vector<unsigned int> child_indices = {lbracket_index
-                                                   ,rbracket_index};
-
-        $$ = interpreter.push_parent(wasp::OBJECT_TERM
-                                        ,"term"
-                                        ,child_indices);
-    }
 object_member : primitive | keyedvalue | comment
      // TODO add subobject
 

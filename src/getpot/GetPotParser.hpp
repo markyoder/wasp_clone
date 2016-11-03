@@ -57,7 +57,7 @@
                          ,OBJECT_TERM
                          ,OBJECT
                          };
-    };
+    }
 
 #line 63 "GetPotParser.hpp" // lalr1.cc:377
 
@@ -498,7 +498,7 @@ namespace wasp {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 30,     ///< Last index in yytable_.
+      yylast_ = 27,     ///< Last index in yytable_.
       yynnts_ = 25,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,

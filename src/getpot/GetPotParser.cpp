@@ -699,41 +699,26 @@ namespace wasp {
 #line 700 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 7:
-#line 177 "GetPot.bison" // lalr1.cc:859
-    {
-        unsigned int lbracket_index = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int rbracket_index = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {lbracket_index
-                                                   ,rbracket_index};
-
-        (yylhs.value.node_index) = interpreter.push_parent(wasp::OBJECT_TERM
-                                        ,"term"
-                                        ,child_indices);
-    }
-#line 715 "GetPotParser.cpp" // lalr1.cc:859
-    break;
-
-  case 11:
-#line 191 "GetPot.bison" // lalr1.cc:859
+  case 10:
+#line 181 "GetPot.bison" // lalr1.cc:859
     {
         unsigned int offset = static_cast<unsigned int>((yystack_[0].value.node_index));
         (yylhs.value.node_indices) = new std::vector<unsigned int>();
         (yylhs.value.node_indices)->push_back(offset);
     }
-#line 725 "GetPotParser.cpp" // lalr1.cc:859
+#line 710 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 12:
-#line 196 "GetPot.bison" // lalr1.cc:859
+  case 11:
+#line 186 "GetPot.bison" // lalr1.cc:859
     {
         (yystack_[1].value.node_indices)->push_back(static_cast<unsigned int>((yystack_[0].value.node_index)));
     }
-#line 733 "GetPotParser.cpp" // lalr1.cc:859
+#line 718 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 13:
-#line 200 "GetPot.bison" // lalr1.cc:859
+  case 12:
+#line 190 "GetPot.bison" // lalr1.cc:859
     { // empty object
         unsigned int object_decl_i = static_cast<unsigned int>((yystack_[1].value.node_index));
         unsigned int object_term_i = static_cast<unsigned int>((yystack_[0].value.node_index));
@@ -744,11 +729,11 @@ namespace wasp {
                                         ,interpreter.m_tree_nodes.name(object_decl_i)
                                         ,child_indices);
         }
-#line 748 "GetPotParser.cpp" // lalr1.cc:859
+#line 733 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 14:
-#line 211 "GetPot.bison" // lalr1.cc:859
+  case 13:
+#line 201 "GetPot.bison" // lalr1.cc:859
     {
         std::vector<unsigned int> children; children.reserve(2+(yystack_[1].value.node_indices)->size());
         unsigned int object_decl_i = static_cast<unsigned int>((yystack_[2].value.node_index));
@@ -761,99 +746,99 @@ namespace wasp {
                                         ,interpreter.m_tree_nodes.name(object_decl_i)
                                         ,children);
         }
-#line 765 "GetPotParser.cpp" // lalr1.cc:859
+#line 750 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 15:
-#line 224 "GetPot.bison" // lalr1.cc:859
+  case 14:
+#line 214 "GetPot.bison" // lalr1.cc:859
     {
         unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::INT,"int"
                          ,token_index);
     }
-#line 775 "GetPotParser.cpp" // lalr1.cc:859
+#line 760 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 16:
-#line 230 "GetPot.bison" // lalr1.cc:859
+  case 15:
+#line 220 "GetPot.bison" // lalr1.cc:859
     {        
         unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::REAL,"real"
                          ,token_index);
     }
-#line 785 "GetPotParser.cpp" // lalr1.cc:859
+#line 770 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 17:
-#line 236 "GetPot.bison" // lalr1.cc:859
+  case 16:
+#line 226 "GetPot.bison" // lalr1.cc:859
     {        
         unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::STRING,"string"
                          ,token_index);
     }
-#line 795 "GetPotParser.cpp" // lalr1.cc:859
+#line 780 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 21:
-#line 243 "GetPot.bison" // lalr1.cc:859
+  case 20:
+#line 233 "GetPot.bison" // lalr1.cc:859
     {
         unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                          ,token_index);
     }
-#line 805 "GetPotParser.cpp" // lalr1.cc:859
+#line 790 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 23:
-#line 250 "GetPot.bison" // lalr1.cc:859
+  case 22:
+#line 240 "GetPot.bison" // lalr1.cc:859
     {
         unsigned int decl_token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DECL,"decl"
                          ,decl_token_index);
     }
-#line 815 "GetPotParser.cpp" // lalr1.cc:859
+#line 800 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 24:
-#line 256 "GetPot.bison" // lalr1.cc:859
+  case 23:
+#line 246 "GetPot.bison" // lalr1.cc:859
     {
         unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::QUOTE,"'"
                          ,token_index);
     }
-#line 825 "GetPotParser.cpp" // lalr1.cc:859
+#line 810 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 30:
-#line 270 "GetPot.bison" // lalr1.cc:859
+  case 29:
+#line 260 "GetPot.bison" // lalr1.cc:859
     {
         unsigned int offset = static_cast<unsigned int>((yystack_[0].value.node_index));
         (yylhs.value.node_indices) = new std::vector<unsigned int>();
         (yylhs.value.node_indices)->push_back(offset);
     }
-#line 835 "GetPotParser.cpp" // lalr1.cc:859
+#line 820 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 31:
-#line 275 "GetPot.bison" // lalr1.cc:859
+  case 30:
+#line 265 "GetPot.bison" // lalr1.cc:859
     {
         (yystack_[1].value.node_indices)->push_back(static_cast<unsigned int>((yystack_[0].value.node_index)));
     }
-#line 843 "GetPotParser.cpp" // lalr1.cc:859
+#line 828 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 32:
-#line 280 "GetPot.bison" // lalr1.cc:859
+  case 31:
+#line 270 "GetPot.bison" // lalr1.cc:859
     {
         (yystack_[1].value.node_indices)->insert((yystack_[1].value.node_indices)->begin(),(yystack_[2].value.node_index));
         (yystack_[1].value.node_indices)->push_back(static_cast<unsigned int>((yystack_[0].value.node_index)));
         (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
     }
-#line 853 "GetPotParser.cpp" // lalr1.cc:859
+#line 838 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 33:
-#line 288 "GetPot.bison" // lalr1.cc:859
+  case 32:
+#line 278 "GetPot.bison" // lalr1.cc:859
     {        
 
         unsigned int key_index = static_cast<unsigned int>((yystack_[2].value.node_index));
@@ -866,11 +851,11 @@ namespace wasp {
                                         ,interpreter.m_tree_nodes.data(key_index).c_str()
                                         ,child_indices);
     }
-#line 870 "GetPotParser.cpp" // lalr1.cc:859
+#line 855 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 34:
-#line 301 "GetPot.bison" // lalr1.cc:859
+  case 33:
+#line 291 "GetPot.bison" // lalr1.cc:859
     {
 
         unsigned int key_index = static_cast<unsigned int>((yystack_[2].value.node_index));
@@ -883,45 +868,45 @@ namespace wasp {
                                         ,interpreter.m_tree_nodes.data(key_index).c_str()
                                         ,child_indices);
     }
-#line 887 "GetPotParser.cpp" // lalr1.cc:859
+#line 872 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 35:
-#line 316 "GetPot.bison" // lalr1.cc:859
+  case 34:
+#line 306 "GetPot.bison" // lalr1.cc:859
     {
         unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment"
                          ,token_index);
     }
-#line 897 "GetPotParser.cpp" // lalr1.cc:859
+#line 882 "GetPotParser.cpp" // lalr1.cc:859
+    break;
+
+  case 36:
+#line 313 "GetPot.bison" // lalr1.cc:859
+    {
+            interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index)));
+        }
+#line 890 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
   case 37:
-#line 323 "GetPot.bison" // lalr1.cc:859
+#line 316 "GetPot.bison" // lalr1.cc:859
     {
             interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index)));
         }
-#line 905 "GetPotParser.cpp" // lalr1.cc:859
+#line 898 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
   case 38:
-#line 326 "GetPot.bison" // lalr1.cc:859
+#line 319 "GetPot.bison" // lalr1.cc:859
     {
             interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index)));
         }
-#line 913 "GetPotParser.cpp" // lalr1.cc:859
-    break;
-
-  case 39:
-#line 329 "GetPot.bison" // lalr1.cc:859
-    {
-            interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index)));
-        }
-#line 921 "GetPotParser.cpp" // lalr1.cc:859
+#line 906 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
 
-#line 925 "GetPotParser.cpp" // lalr1.cc:859
+#line 910 "GetPotParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1176,62 +1161,60 @@ namespace wasp {
   }
 
 
-  const signed char GetPotParser::yypact_ninf_ = -30;
+  const signed char GetPotParser::yypact_ninf_ = -25;
 
-  const signed char GetPotParser::yytable_ninf_ = -23;
+  const signed char GetPotParser::yytable_ninf_ = -22;
 
   const signed char
   GetPotParser::yypact_[] =
   {
-     -30,     0,   -30,   -30,   -30,   -30,   -23,    -1,   -30,   -30,
-      -6,   -30,   -30,   -30,   -30,     7,   -30,   -30,     5,   -30,
-     -30,     7,   -30,    -1,   -30,   -30,   -30,   -30,   -30,   -30,
-     -30,   -16,   -30,   -30,   -30,   -30,   -30,   -30,   -30,   -30,
-     -30,   -30,   -30,   -13,   -30,   -30,   -30,   -16,   -30,   -30
+     -25,     0,   -25,   -25,   -25,   -25,   -18,   -21,   -25,   -25,
+      -1,   -25,   -25,   -25,   -25,    11,   -25,   -25,     9,   -25,
+     -25,   -25,   -21,   -25,   -25,   -25,   -25,   -25,   -25,   -25,
+     -12,   -25,   -25,   -25,   -25,   -25,   -25,   -25,   -25,   -25,
+     -25,    -9,   -25,   -25,   -25,   -12,   -25,   -25
   };
 
   const unsigned char
   GetPotParser::yydefact_[] =
   {
-      36,     0,     1,     4,    22,    35,     0,     0,    39,    23,
-       0,    38,    37,    17,    25,     0,    15,    16,    17,     3,
-      13,     0,    11,     0,    26,    27,    28,     8,     9,    10,
-       2,     0,     5,     6,     7,    14,    12,    24,    18,    19,
-      20,    21,    33,     0,    34,    29,    30,     0,    32,    31
+      35,     0,     1,     4,    21,    34,     0,     0,    38,    22,
+       0,    37,    36,    16,    24,     0,    14,    15,    16,     3,
+      12,    10,     0,    25,    26,    27,     7,     8,     9,     2,
+       0,     5,     6,    13,    11,    23,    17,    18,    19,    20,
+      32,     0,    33,    28,    29,     0,    31,    30
   };
 
   const signed char
   GetPotParser::yypgoto_[] =
   {
-     -30,   -30,    -9,    14,    -5,   -30,    -4,   -30,   -30,   -30,
-     -30,   -30,   -30,   -14,   -30,   -30,   -29,    21,   -30,   -27,
-     -30,   -30,    28,    29,   -30
+     -25,   -25,    -4,   -25,   -25,   -25,    -3,   -25,   -25,   -25,
+     -25,   -25,   -25,   -10,   -25,   -25,   -24,    16,   -25,   -22,
+     -25,   -25,    24,    26,   -25
   };
 
   const signed char
   GetPotParser::yydefgoto_[] =
   {
-      -1,    31,    20,    21,    33,     7,    22,    23,     8,    24,
-      25,    14,    41,    45,     9,    10,    43,    26,    27,    46,
-      47,    44,    28,    29,     1
+      -1,    30,    20,     6,    32,     7,    21,    22,     8,    23,
+      24,    14,    39,    43,     9,    10,    41,    25,    26,    44,
+      45,    42,    27,    28,     1
   };
 
   const signed char
   GetPotParser::yytable_[] =
   {
-       2,    13,    30,     3,     3,    37,    38,    39,    40,    38,
-      39,    40,    32,   -22,    35,     6,    34,    42,    48,    36,
-      49,    16,    17,    18,     4,     5,     5,    15,    19,    11,
-      12
+       2,    16,    17,    18,     3,     5,    13,    29,    19,    35,
+      36,    37,    38,    36,    37,    38,    31,   -21,    33,    34,
+      40,    46,    15,    47,     4,    11,     5,    12
   };
 
   const unsigned char
   GetPotParser::yycheck_[] =
   {
-       0,    24,     8,     4,     4,    21,    22,    23,    24,    22,
-      23,    24,     5,     8,    23,     1,    21,    31,    47,    23,
-      47,    22,    23,    24,    24,    26,    26,     6,    29,     1,
-       1
+       0,    22,    23,    24,     4,    26,    24,     8,    29,    21,
+      22,    23,    24,    22,    23,    24,     5,     8,    22,    22,
+      30,    45,     6,    45,    24,     1,    26,     1
   };
 
   const unsigned char
@@ -1239,27 +1222,27 @@ namespace wasp {
   {
        0,    56,     0,     4,    24,    26,    35,    37,    40,    46,
       47,    54,    55,    24,    43,    49,    22,    23,    24,    29,
-      34,    35,    38,    39,    41,    42,    49,    50,    54,    55,
-       8,    33,     5,    36,    36,    34,    38,    21,    22,    23,
-      24,    44,    45,    48,    53,    45,    51,    52,    48,    51
+      34,    38,    39,    41,    42,    49,    50,    54,    55,     8,
+      33,     5,    36,    34,    38,    21,    22,    23,    24,    44,
+      45,    48,    53,    45,    51,    52,    48,    51
   };
 
   const unsigned char
   GetPotParser::yyr1_[] =
   {
-       0,    32,    33,    34,    35,    36,    37,    34,    38,    38,
-      38,    39,    39,    40,    40,    41,    42,    43,    44,    44,
-      44,    45,    46,    47,    48,    49,    50,    50,    50,    51,
-      52,    52,    53,    54,    54,    55,    56,    56,    56,    56
+       0,    32,    33,    34,    35,    36,    37,    38,    38,    38,
+      39,    39,    40,    40,    41,    42,    43,    44,    44,    44,
+      45,    46,    47,    48,    49,    50,    50,    50,    51,    52,
+      52,    53,    54,    54,    55,    56,    56,    56,    56
   };
 
   const unsigned char
   GetPotParser::yyr2_[] =
   {
-       0,     2,     1,     1,     1,     1,     3,     2,     1,     1,
-       1,     1,     2,     2,     3,     1,     1,     1,     1,     1,
+       0,     2,     1,     1,     1,     1,     3,     1,     1,     1,
+       1,     2,     2,     3,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     2,     3,     3,     3,     1,     0,     2,     2,     2
+       2,     3,     3,     3,     1,     0,     2,     2,     2
   };
 
 
@@ -1286,10 +1269,10 @@ namespace wasp {
   const unsigned short int
   GetPotParser::yyrline_[] =
   {
-       0,   139,   139,   146,   152,   158,   165,   177,   187,   187,
-     187,   190,   195,   199,   210,   223,   229,   235,   241,   241,
-     241,   242,   248,   249,   255,   261,   263,   264,   265,   267,
-     269,   274,   279,   287,   300,   315,   322,   323,   326,   329
+       0,   139,   139,   146,   152,   158,   165,   177,   177,   177,
+     180,   185,   189,   200,   213,   219,   225,   231,   231,   231,
+     232,   238,   239,   245,   251,   253,   254,   255,   257,   259,
+     264,   269,   277,   290,   305,   312,   313,   316,   319
   };
 
   // Print the state stack on the debug stream.
@@ -1372,8 +1355,8 @@ namespace wasp {
 
 
 } // wasp
-#line 1376 "GetPotParser.cpp" // lalr1.cc:1167
-#line 337 "GetPot.bison" // lalr1.cc:1168
+#line 1359 "GetPotParser.cpp" // lalr1.cc:1167
+#line 327 "GetPot.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 namespace wasp{
 void GetPotParser::error(const GetPotParser::location_type& l,
