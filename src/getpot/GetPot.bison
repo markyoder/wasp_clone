@@ -82,8 +82,8 @@
 
 %token                  END          0  "end of file"
 %token                  EOL             "end of line"
-%token <token_index>   LBRACKET
-%token <token_index>   RBRACKET
+%token <token_index>   LBRACKET         "["
+%token <token_index>   RBRACKET         "]"
 %token                 '{'
 %token                 '}'
 %token <token_index>   ASSIGN

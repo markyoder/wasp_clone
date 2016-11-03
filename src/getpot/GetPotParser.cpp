@@ -1315,8 +1315,8 @@ namespace wasp {
   const char*
   const GetPotParser::yytname_[] =
   {
-  "\"end of file\"", "error", "$undefined", "\"end of line\"", "LBRACKET",
-  "RBRACKET", "'{'", "'}'", "ASSIGN", "','", "\">=\"", "\"<=\"", "\"!=\"",
+  "\"end of file\"", "error", "$undefined", "\"end of line\"", "\"[\"",
+  "\"]\"", "'{'", "'}'", "ASSIGN", "','", "\">=\"", "\"<=\"", "\"!=\"",
   "\"==\"", "\"&&\"", "\"||\"", "'*'", "'/'", "'+'", "'^'", "'&'",
   "DOT_SLASH", "QUOTE", "\"integer\"", "\"real\"", "\"string\"",
   "\"quoted string\"", "\"comment\"", "\"start of unit of execution\"",

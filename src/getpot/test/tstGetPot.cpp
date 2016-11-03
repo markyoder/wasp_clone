@@ -257,4 +257,64 @@ TEST(GetPotInterpreter, object_array)
     }
 }
 TEST_END(GetPotInterpreter,object_array)
+TEST(GetPotInterpreter, object_empty_subobject)
+{
+    std::stringstream input;
+    // Simple parse
+    // document
+    //  |_object
+    //    |_ object_decl 'ted'
+    //      |_ [ '['
+    //      |_ string 'ted'
+    //      |_ ] ']'
+    //      |_ sub_object 'fred'
+    //        |_ sub_object_decl 'fred'
+    //          |_ [ '['
+    //          |_ ./ './'
+    //          |_ string 'fred'
+    //          |_ ] ']'
+    //        |_ sub_object_term '[../]'
+    //    |_ object_term '[]'
+
+    input << "[ted][./fred][../][]";
+    GetPotInterpreter interpreter;
+    W_ASSERT_EQ( true, interpreter.parse(input) );
+    W_ASSERT_EQ(14, interpreter.node_count() );
+
+    std::vector<wasp::NODE> node_types = {wasp::LBRACKET
+                                          ,wasp::STRING
+                                           ,wasp::RBRACKET
+                                          ,wasp::OBJECT_DECL
+                                           // sub object
+                                           ,wasp::LBRACKET
+                                          ,wasp::DOT_SLASH
+                                          ,wasp::STRING
+                                          ,wasp::RBRACKET
+                                          ,wasp::SUB_OBJECT_DECL
+                                           ,wasp::SUB_OBJECT_TERM
+                                          ,wasp::SUB_OBJECT
+                                           ,wasp::OBJECT_TERM
+                                           ,wasp::OBJECT
+                                          ,wasp::DOCUMENT_ROOT};
+    std::vector<std::string> node_names = {"["
+                                           ,"string"
+                                           ,"]"
+                                           ,"ted"
+                                           ,"["
+                                           ,"./"
+                                           ,"string"
+                                           ,"]"
+                                           ,"fred"
+                                           ,"[../]"
+                                           ,"fred"
+                                           ,"[]"
+                                           ,"ted","document"};
+    W_ASSERT_EQ( node_types.size(), node_names.size() );
+    for( size_t i = 0; i < interpreter.node_count(); ++i )
+    {
+        W_ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
+        W_ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i))
+    }
+}
+TEST_END(GetPotInterpreter,object_empty_subobject)
 WASP_TESTS_END
