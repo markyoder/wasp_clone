@@ -516,7 +516,7 @@ typedef wasp::GetPotParser::token_type token_type;
 /* The following paragraph suffices to track locations accurately. Each time
 * yylex is invoked, the begin position is moved onto the end position. */
 #line 86 "GetPot.lex"
-#define YY_USER_ACTION  yylloc->columns(yyleng);
+#define YY_USER_ACTION  yylloc->columns(yyleng); file_offset+=yyleng;
 #line 521 "GetPotLexer.cpp"
 
 #define INITIAL 0
@@ -1821,6 +1821,7 @@ GetPotLexerImpl::GetPotLexerImpl(
                 std::ostream* out)
     : GetPotFlexLexer(in, out)
     , m_token_data(token_data)
+    , file_offset(0)
 {
 }
 
@@ -1841,8 +1842,7 @@ void GetPotLexerImpl::capture_token(
         wasp::GetPotParser::semantic_type* yylval
         ,token_type type)
 {
-    size_t offset = yyin->tellg();
-    offset-=yyleng;
+    size_t offset = file_offset - yyleng;
     yylval->node_index = m_token_data.size();
     m_token_data.push(yytext,type,offset);
 }
