@@ -109,7 +109,7 @@ void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::push_leaf(
     // make the leaf node to token index association
     m_leaf_token_lookup[basic_data_index] = token_data_index;
 }
-// Create a leaf node for a given token
+// Acquire the given token's parent meta data (child indices, count) index
 template<typename NTS, typename NIS
          ,typename TTS, typename TITS,typename FOTS>
 size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::parent_data_index(
