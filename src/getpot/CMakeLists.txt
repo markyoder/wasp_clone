@@ -1,3 +1,4 @@
+include_directories ("${PROJECT_SOURCE_DIR}/src")
 include_directories ("${PROJECT_SOURCE_DIR}/include")
 include_directories ("${PROJECT_BINARY_DIR}/include") # Configured files, e.g. VERSION
 SET( SOURCES
@@ -9,6 +10,13 @@ ADD_LIBRARY(wasp_getpot SHARED
     ${SOURCES}
     )
 target_link_libraries (wasp_getpot wasp_core)
+
+
+# add the GetPot list executable
+add_executable(ListGetPot ListGetPot.cpp)
+
+# link the executable
+target_link_libraries (ListGetPot wasp_getpot wasp_core)
 
 # todo install
 
