@@ -3,7 +3,6 @@ configure_file (
   "${CMAKE_CURRENT_BINARY_DIR}/wasp/version.h"
   )
 SET( INCLUDE_FILES 
-    ${CMAKE_CURRENT_SOURCE_DIR}/wasp/hello.h
     ${CMAKE_CURRENT_SOURCE_DIR}/wasp/core/StringPool.h
     ${CMAKE_CURRENT_SOURCE_DIR}/wasp/core/StringPool.i.h
     ${CMAKE_CURRENT_SOURCE_DIR}/wasp/core/TokenPool.h
