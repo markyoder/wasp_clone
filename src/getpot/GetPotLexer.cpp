@@ -389,7 +389,7 @@ static yyconst flex_int32_t yy_ec[256] =
 static yyconst flex_int32_t yy_meta[25] =
     {   0,
         1,    1,    2,    1,    1,    1,    1,    1,    1,    1,
-        3,    1,    3,    3,    1,    1,    1,    3,    3,    3,
+        3,    3,    3,    3,    1,    1,    1,    3,    3,    3,
         3,    1,    1,    1
     } ;
 
