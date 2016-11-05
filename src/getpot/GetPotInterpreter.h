@@ -13,6 +13,18 @@ public:
     ~GetPotInterpreter();
 
     /**
+     * @brief root acquire the root of the document
+     * @return TreeNodeView view into the document parse tree
+     */
+    TreeNodeView root()const;
+
+    /**
+     * @brief child_count acquire the number of child nodes for the current node
+     * @return child node count
+     */
+    size_t child_count()const;
+
+    /**
      * @brief parse parser the given input stream
      * @param input the stream of the input data
      * @param startLine the first line of the input stream

@@ -78,6 +78,13 @@ public:
      * Parent nodes reference leaf and other parent nodes
      */
     size_t parent_node_count()const{return m_node_parent_data.size();}
+
+    /**
+     * @brief parent_node_index acquires the given node's parent node index
+     * @param node_index the child node's index for which to retrieve the parent node
+     * @return the parent node's index
+     */
+    size_t parent_node_index(node_index_size node_index)const;
     /**
      * @brief leaf_node_count acquire the number of leaf nodes
      * @return leaf node count
@@ -85,6 +92,12 @@ public:
      */
     size_t leaf_node_count()const{return m_leaf_token_lookup.size();}
 
+    /**
+     * @brief child_count acquire the number of child nodes for the given node index
+     * @param node_index the index of the node from which to determine child count
+     * @return child count, or zero if no children exist
+     */
+    size_t child_count(node_index_size node_index)const;
     /**
      * @brief name acquire the name of the node
      * @param node_index the index of the node to acquire the name
@@ -209,6 +222,39 @@ private:
      */
     std::unordered_map<node_index_size,token_index_type_size> m_leaf_token_lookup;
 
+};
+
+/**
+ * @brief The TreeNodeView class provies light weight interface to TreeNodes
+ * Allows traversing child nodes and parent as well as acquire node information
+ */
+class TreeNodeView{
+public:
+
+    TreeNodeView(size_t node_index, const TreeNodePool<> & nodes);
+    TreeNodeView(const TreeNodeView& orig);
+    ~TreeNodeView();
+
+    /**
+     * @brief parent acquire the parent view of the current node
+     * @return
+     */
+    TreeNodeView parent()const;
+
+    /**
+     * @brief child_count acquire the number of nodes for which this node is a parent
+     * @return child count
+     */
+    size_t child_count()const;
+
+    /**
+     * @brief tree_node_index acquire the index into the tree node data pool
+     * @return the index into the data pool
+     */
+    size_t tree_node_index()const{return m_tree_node_index;}
+private:
+    size_t m_tree_node_index;
+    const TreeNodePool<> & m_tree_data;
 };
 #include "wasp/core/TreeNodePool.i.h"
 } // end of namespace

@@ -51,7 +51,7 @@ void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::push_parent(
     // update the children's parent index
     // TODO check children range for valid indices
     // TODO check children for lack of parent
-    size_t last_child_index = first_child_index+child_count;
+    size_t last_child_index = first_child_index+child_count;    
     for( size_t c = 0, i = first_child_index; i < last_child_index; ++i, ++c)
     {
         // assign parent
@@ -107,6 +107,35 @@ void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::push_leaf(
     // make the leaf node to token index association
     m_leaf_token_lookup[basic_data_index] = token_data_index;
 }
+// Create a leaf node for a given token
+template<typename NTS, typename NIS
+         ,typename TTS, typename TITS,typename FOTS>
+size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::parent_node_index(
+        NIS node_index) const
+{
+    auto itr = m_basic_parent_data_lookup.find(node_index);
+    if( itr == m_basic_parent_data_lookup.end() )
+    {
+        return size(); // when root, return size of nodes
+    }
+
+    // TODO - could check parent children for consistency
+
+    // return the index of the
+    return itr->second;
+}
+
+template<typename NTS, typename NIS
+         ,typename TTS, typename TITS,typename FOTS>
+size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::child_count(
+        NIS node_index) const
+{
+    // acquire the index into the parent meta data
+    size_t parent_index = parent_node_index(node_index);
+    if( parent_index == size() ) return 0;
+    return m_node_parent_data[parent_index].m_child_count;
+}
+
 // Obtain a nodes starting line
 template<typename NTS, typename NIS
          ,typename TTS, typename TITS,typename FOTS>

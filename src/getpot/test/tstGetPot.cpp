@@ -392,5 +392,29 @@ TEST(GetPotInterpreter, object_subobject)
 }
 TEST_END(GetPotInterpreter,object_subobject)
 
+TEST(GetPotInterpreter,simple_view)
+{
+    std::stringstream input;
+    // Simple parse
+    // document
+    //  |_key
+    //    |_ decl 'key'
+    //    |_ = '='
+    //    |_ value '3.421'
+    input << "key =  3.421";
+    GetPotInterpreter interpreter;
+    W_ASSERT_EQ( true, interpreter.parse(input) );
+    W_ASSERT_EQ(5, interpreter.node_count() );
+
+    std::vector<wasp::NODE> node_types = {wasp::DECL,wasp::ASSIGN
+                                           ,wasp::VALUE,wasp::KEYED_VALUE
+                                          ,wasp::DOCUMENT_ROOT};
+    std::vector<std::string> node_names = {"decl","=","value"
+                                           ,"key","document"};
+    TreeNodeView view = interpreter.root();
+    W_ASSERT_EQ( 1, view.child_count() );
+    // TODO add test on data
+}
+TEST_END(GetPotInterpreter,simple_view)
 
 WASP_TESTS_END
