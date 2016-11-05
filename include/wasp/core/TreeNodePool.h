@@ -261,7 +261,11 @@ public:
      * @return
      */
     TreeNodeView parent()const;
-
+    /**
+     * @brief has_parent determine if this node has a parent
+     * @return true, iff this node has a parent
+     */
+    bool has_parent()const;
     /**
      * @brief child_count acquire the number of nodes for which this node is a parent
      * @return child count

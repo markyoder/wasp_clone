@@ -29,6 +29,12 @@ TreeNodeView TreeNodeView::parent()const
                        ,m_tree_data);
     return view;
 }
+bool TreeNodeView::has_parent()const
+{
+    size_t parent_node_index
+            = m_tree_data.parent_node_index(m_tree_node_index);
+    return parent_node_index != m_tree_data.size();
+}
 size_t TreeNodeView::child_count()const
 {
     return m_tree_data.child_count(m_tree_node_index);

@@ -433,9 +433,11 @@ TEST(GetPotInterpreter,simple_view)
     W_ASSERT_EQ( 1, document.line() );
     W_ASSERT_EQ( 1, document.column() );
     W_ASSERT_EQ( true, document.equal(document) );
-
+    W_ASSERT_EQ( false, document.has_parent() );
     TreeNodeView key = document.child_at(0);
     W_ASSERT_EQ(3, key.child_count() );
+    W_ASSERT_EQ( true, key.has_parent() );
+    W_ASSERT_EQ( true, document.equal(key.parent()) );
     W_ASSERT_EQ(wasp::KEYED_VALUE,key.type());
     W_ASSERT_EQ( node_names[3], key.name() );
     W_ASSERT_EQ( 1, key.line() );
@@ -451,6 +453,7 @@ TEST(GetPotInterpreter,simple_view)
         W_ASSERT_EQ( node_names[i], child.name() );
         W_ASSERT_EQ( 1, child.line() );
         W_ASSERT_EQ( node_columns[i], child.column() );
+        W_ASSERT_EQ( true, child.has_parent() );
         W_ASSERT_EQ( true, key.equal(child.parent()));
     }
 }
