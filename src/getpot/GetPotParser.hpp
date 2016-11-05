@@ -43,27 +43,9 @@
 #line 10 "GetPot.bison" // lalr1.cc:377
 
 #include "wasp/core/TreeNodePool.h"
-    namespace wasp{
-        enum NODE : char { DOCUMENT_ROOT
-                           ,DECL, TERM
-                           ,INT, REAL, KEY, ASSIGN, QUOTE
-                         ,STRING
-                         ,VALUE
-                         ,COMMENT
-                         ,KEYED_VALUE
-                         ,RBRACKET
-                         ,LBRACKET
-                         ,OBJECT_DECL
-                         ,SUB_OBJECT_DECL
-                         ,OBJECT_TERM
-                         ,SUB_OBJECT_TERM
-                         ,OBJECT
-                         ,SUB_OBJECT
-                         ,DOT_SLASH
-                         };
-    }
+#include "wasp/core/wasp_node.h"
 
-#line 67 "GetPotParser.hpp" // lalr1.cc:377
+#line 49 "GetPotParser.hpp" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -135,7 +117,7 @@
 
 
 namespace wasp {
-#line 139 "GetPotParser.hpp" // lalr1.cc:377
+#line 121 "GetPotParser.hpp" // lalr1.cc:377
 
 
 
@@ -149,13 +131,13 @@ namespace wasp {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 76 "GetPot.bison" // lalr1.cc:377
+    #line 58 "GetPot.bison" // lalr1.cc:377
 
     size_t token_index;
     size_t node_index;
     std::vector<unsigned int>* node_indices;
 
-#line 159 "GetPotParser.hpp" // lalr1.cc:377
+#line 141 "GetPotParser.hpp" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -520,7 +502,7 @@ namespace wasp {
 
 
 } // wasp
-#line 524 "GetPotParser.hpp" // lalr1.cc:377
+#line 506 "GetPotParser.hpp" // lalr1.cc:377
 
 
 

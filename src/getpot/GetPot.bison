@@ -9,25 +9,7 @@
 
 %code requires{
 #include "wasp/core/TreeNodePool.h"
-    namespace wasp{
-        enum NODE : char { DOCUMENT_ROOT
-                           ,DECL, TERM
-                           ,INT, REAL, KEY, ASSIGN, QUOTE
-                         ,STRING
-                         ,VALUE
-                         ,COMMENT
-                         ,KEYED_VALUE
-                         ,RBRACKET
-                         ,LBRACKET
-                         ,OBJECT_DECL
-                         ,SUB_OBJECT_DECL
-                         ,OBJECT_TERM
-                         ,SUB_OBJECT_TERM
-                         ,OBJECT
-                         ,SUB_OBJECT
-                         ,DOT_SLASH
-                         };
-    }
+#include "wasp/core/wasp_node.h"
 }
 
 /* Require biGetPot 3 or later */

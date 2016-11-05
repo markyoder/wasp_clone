@@ -9,6 +9,7 @@ SET( INCLUDE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/wasp/core/TokenPool.i.h
     ${CMAKE_CURRENT_SOURCE_DIR}/wasp/core/TreeNodePool.h
     ${CMAKE_CURRENT_SOURCE_DIR}/wasp/core/TreeNodePool.i.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/wasp/core/wasp_node.h
     ${CMAKE_CURRENT_SOURCE_DIR}/wasp/flex/FlexLexer.h
     ${CMAKE_CURRENT_BINARY_DIR}/wasp/version.h
 )
