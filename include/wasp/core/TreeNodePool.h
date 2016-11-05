@@ -80,9 +80,15 @@ public:
     size_t parent_node_count()const{return m_node_parent_data.size();}
 
     /**
-     * @brief parent_node_index acquires the given node's parent node index
-     * @param node_index the child node's index for which to retrieve the parent node
-     * @return the parent node's index
+     * @brief parent_data_index acquires the given node's parent data index
+     * @param node_index the child node's index for which to retrieve the parent node data index
+     * @return the parent node's data index
+     */
+    size_t parent_data_index(node_index_size node_index)const;
+    /**
+     * @brief parent_node_index acquires the index of the given node's parent node
+     * @param node_index the node's index for which the parent's index is requested
+     * @return the parent node's index into the TreeNodePool, or size() if no parent exists
      */
     size_t parent_node_index(node_index_size node_index)const;
     /**
@@ -261,6 +267,16 @@ public:
      */
     TreeNodeView child_at(size_t index)const;
 
+    /**
+     * @brief type acquire the type of the node
+     * @return the node's type
+     */
+    size_t type()const;
+    /**
+     * @brief name acquire the name of the node
+     * @return the node's name
+     */
+    const char * name()const;
     /**
      * @brief tree_node_index acquire the index into the tree node data pool
      * @return the index into the data pool

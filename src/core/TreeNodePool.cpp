@@ -34,4 +34,12 @@ TreeNodeView TreeNodeView::child_at(size_t index)const
                                 ,index);
     return TreeNodeView(child_node_pool_index,m_tree_data);
 }
+size_t TreeNodeView::type()const
+{
+    return m_tree_data.type(m_tree_node_index);
+}
+const char* TreeNodeView::name()const
+{
+    return m_tree_data.name(m_tree_node_index);
+}
 } // end of namespace

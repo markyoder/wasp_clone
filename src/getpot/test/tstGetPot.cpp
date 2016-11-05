@@ -30,6 +30,8 @@ TEST(GetPotInterpreter,simple)
         W_ASSERT_EQ(leaf_node_types[i], interpreter.m_tree_nodes.type(i));
         W_ASSERT_EQ(leaf_node_names[i], interpreter.m_tree_nodes.name(i))
     }
+    std::vector<size_t> parent_indices = {3,3,3,4,5};
+    std::vector<size_t> child_count = {0,0,0,3,1};
     std::vector<wasp::NODE> node_types = {wasp::DECL,wasp::ASSIGN
                                            ,wasp::VALUE,wasp::KEYED_VALUE
                                           ,wasp::DOCUMENT_ROOT};
@@ -39,7 +41,9 @@ TEST(GetPotInterpreter,simple)
     for( size_t i = 0; i < interpreter.node_count(); ++i )
     {
         W_ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
-        W_ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i))
+        W_ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
+        W_ASSERT_EQ(parent_indices[i],interpreter.m_tree_nodes.parent_node_index(i));
+        W_ASSERT_EQ(child_count[i], interpreter.m_tree_nodes.child_count(i));
     }
 }
 TEST_END(GetPotInterpreter,simple)
@@ -414,14 +418,18 @@ TEST(GetPotInterpreter,simple_view)
     TreeNodeView view = interpreter.root();
     // the root of the document
     W_ASSERT_EQ( 1, view.child_count() );
-    // TODO add test on data (type, line, col, etc).
-//    W_ASSERT_EQ(wasp::DOCUMENT_ROOT, view.type());
+    W_ASSERT_EQ( node_names.back(), view.name() );
+    W_ASSERT_EQ(wasp::DOCUMENT_ROOT, view.type());
     TreeNodeView key = view.child_at(0);
-//    W_ASSERT_EQ(wasp::KEYED_VALUE,key.type());
     W_ASSERT_EQ(3, key.child_count() );
+    W_ASSERT_EQ(wasp::KEYED_VALUE,key.type());
+//    W_ASSERT_EQ( node_names[3], view.name() );
+    // TODO add test on data (type, line, col, etc).
     for( size_t i = 0, child_count = view.child_count(); i < child_count; ++i)
     {
         TreeNodeView child_view = view.child_at(i);
+
+//        W_ASSERT_EQ(node_types[i],child_view.type())
     }
 }
 TEST_END(GetPotInterpreter,simple_view)

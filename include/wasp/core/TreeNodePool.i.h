@@ -46,6 +46,8 @@ void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::push_parent(
     m_node_parent_data.push_back(ParentNodeData(first_child_index,child_count));
 
     // capture index association between basic and parent data
+    // basic data is type, and parent index
+    // parent data is only present when the node has children
     m_basic_parent_data_lookup[basic_data_index] = parent_data_index;
 
     // update the children's parent index
@@ -110,7 +112,7 @@ void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::push_leaf(
 // Create a leaf node for a given token
 template<typename NTS, typename NIS
          ,typename TTS, typename TITS,typename FOTS>
-size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::parent_node_index(
+size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::parent_data_index(
         NIS node_index) const
 {
     auto itr = m_basic_parent_data_lookup.find(node_index);
@@ -127,11 +129,25 @@ size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::parent_node_index(
 
 template<typename NTS, typename NIS
          ,typename TTS, typename TITS,typename FOTS>
+size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::parent_node_index(
+        NIS node_index) const
+{
+    // TODO check range
+    auto parent_index = m_node_basic_data[node_index].m_parent_node_index;
+    if( parent_index == -1 )
+    {
+        return size();
+    }
+    return parent_index;
+}
+
+template<typename NTS, typename NIS
+         ,typename TTS, typename TITS,typename FOTS>
 size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::child_count(
         NIS node_index) const
 {
     // acquire the index into the parent meta data
-    size_t parent_index = parent_node_index(node_index);
+    size_t parent_index = parent_data_index(node_index);
     if( parent_index == size() ) return 0;
     return m_node_parent_data[parent_index].m_child_count;
 }
@@ -144,7 +160,7 @@ size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::child_at(
     // TODO conduct range check on relative index to child count
 
     // acquire the index into the parent meta data
-    size_t parent_index = parent_node_index(node_index);
+    size_t parent_index = parent_data_index(node_index);
     auto child_indices_index
             = m_node_parent_data[parent_index].m_first_child_index
             + child_relative_index;
