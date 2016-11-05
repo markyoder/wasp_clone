@@ -136,6 +136,22 @@ size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::child_count(
     return m_node_parent_data[parent_index].m_child_count;
 }
 
+template<typename NTS, typename NIS
+         ,typename TTS, typename TITS,typename FOTS>
+size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::child_at(
+        NIS node_index, NIS child_relative_index) const
+{
+    // TODO conduct range check on relative index to child count
+
+    // acquire the index into the parent meta data
+    size_t parent_index = parent_node_index(node_index);
+    auto child_indices_index
+            = m_node_parent_data[parent_index].m_first_child_index
+            + child_relative_index;
+    auto child_basic_data_index = m_node_child_indices[child_indices_index];
+    return child_basic_data_index;
+}
+
 // Obtain a nodes starting line
 template<typename NTS, typename NIS
          ,typename TTS, typename TITS,typename FOTS>

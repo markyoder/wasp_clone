@@ -27,4 +27,11 @@ size_t TreeNodeView::child_count()const
 {
     return m_tree_data.child_count(m_tree_node_index);
 }
+TreeNodeView TreeNodeView::child_at(size_t index)const
+{
+
+    auto child_node_pool_index = m_tree_data.child_at(m_tree_node_index
+                                ,index);
+    return TreeNodeView(child_node_pool_index,m_tree_data);
+}
 } // end of namespace

@@ -86,6 +86,13 @@ public:
      */
     size_t parent_node_index(node_index_size node_index)const;
     /**
+    * @brief child_at acquire the child node index at the given relative index
+    * @param index the index of the child [0-child_count())
+    * @return the absolute node index of the parent relative child index
+    */
+    size_t child_at(node_index_size node_index
+                    , node_index_size child_index)const;
+    /**
      * @brief leaf_node_count acquire the number of leaf nodes
      * @return leaf node count
      * Leaf nodes reference a token
@@ -226,7 +233,7 @@ private:
 
 /**
  * @brief The TreeNodeView class provies light weight interface to TreeNodes
- * Allows traversing child nodes and parent as well as acquire node information
+ * Allows traversing child nodes and parent as well as acquire node information *
  */
 class TreeNodeView{
 public:
@@ -246,6 +253,13 @@ public:
      * @return child count
      */
     size_t child_count()const;
+
+    /**
+     * @brief child_at acquire the child node view at the given index
+     * @param index the index of the child [0-child_count())
+     * @return TreeNodeView describing the child node
+     */
+    TreeNodeView child_at(size_t index)const;
 
     /**
      * @brief tree_node_index acquire the index into the tree node data pool

@@ -412,8 +412,17 @@ TEST(GetPotInterpreter,simple_view)
     std::vector<std::string> node_names = {"decl","=","value"
                                            ,"key","document"};
     TreeNodeView view = interpreter.root();
+    // the root of the document
     W_ASSERT_EQ( 1, view.child_count() );
-    // TODO add test on data
+    // TODO add test on data (type, line, col, etc).
+//    W_ASSERT_EQ(wasp::DOCUMENT_ROOT, view.type());
+    TreeNodeView key = view.child_at(0);
+//    W_ASSERT_EQ(wasp::KEYED_VALUE,key.type());
+    W_ASSERT_EQ(3, key.child_count() );
+    for( size_t i = 0, child_count = view.child_count(); i < child_count; ++i)
+    {
+        TreeNodeView child_view = view.child_at(i);
+    }
 }
 TEST_END(GetPotInterpreter,simple_view)
 
