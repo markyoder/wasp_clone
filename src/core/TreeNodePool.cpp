@@ -31,9 +31,12 @@ TreeNodeView TreeNodeView::parent()const
 }
 bool TreeNodeView::has_parent()const
 {
-    size_t parent_node_index
-            = m_tree_data.parent_node_index(m_tree_node_index);
-    return parent_node_index != m_tree_data.size();
+    return m_tree_data.has_parent(m_tree_node_index);
+}
+std::string TreeNodeView::path()const{
+    std::stringstream str;
+    m_tree_data.node_path(m_tree_node_index,str);
+    return str.str();
 }
 size_t TreeNodeView::child_count()const
 {

@@ -167,6 +167,43 @@ size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::child_at(
     auto child_basic_data_index = m_node_child_indices[child_indices_index];
     return child_basic_data_index;
 }
+template<typename NTS, typename NIS
+         ,typename TTS, typename TITS,typename FOTS>
+void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::node_path(
+                    NIS node_index
+                    ,std::ostream & out)const
+{
+    // TODO range check node index
+    std::vector<NIS> lineage(1,node_index);
+
+    // while there are parents available
+    // accrue the lineage
+    while( has_parent(node_index) )
+    {
+        node_index = parent_node_index(node_index);
+        lineage.push_back(node_index);
+    }
+    // remove the root 'document'
+    if( lineage.size() > 1 ) lineage.pop_back();
+    // with the lineage accrued
+    // walk in reverse order parent->child
+    while( !lineage.empty() )
+    {
+        node_index = lineage.back();
+        out<< "/" << name(node_index);
+        lineage.pop_back();
+    }
+}
+// determine if the given node has a parent
+template<typename NTS, typename NIS
+         ,typename TTS, typename TITS,typename FOTS>
+bool TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::has_parent(
+                    NIS node_index )const
+{
+    size_t nodes_parent_index
+            = parent_node_index(node_index);
+    return nodes_parent_index != size();
+}
 
 // Obtain a nodes starting line
 template<typename NTS, typename NIS

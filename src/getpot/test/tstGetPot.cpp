@@ -422,9 +422,12 @@ TEST(GetPotInterpreter,simple_view)
                                           ,wasp::DOCUMENT_ROOT};
     std::vector<std::string> node_names = {"decl","=","value"
                                            ,"key","document"};
+    std::vector<std::string> node_paths = {"/key/decl","/key/=","/key/value"
+                                           ,"/key","/"};
     std::vector<size_t> node_columns = {1,5,8,1,1};
     W_ASSERT_EQ(node_types.size(), node_names.size());
     W_ASSERT_EQ(node_types.size(), node_columns.size());
+    W_ASSERT_EQ(node_types.size(), node_paths.size());
     TreeNodeView document = interpreter.root();
     // the root of the document
     W_ASSERT_EQ( 1, document.child_count() );
@@ -455,7 +458,9 @@ TEST(GetPotInterpreter,simple_view)
         W_ASSERT_EQ( node_columns[i], child.column() );
         W_ASSERT_EQ( true, child.has_parent() );
         W_ASSERT_EQ( true, key.equal(child.parent()));
+        W_ASSERT_EQ( node_paths[i],child.path() );
     }
+
 }
 TEST_END(GetPotInterpreter,simple_view)
 

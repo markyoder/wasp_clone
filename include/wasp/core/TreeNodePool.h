@@ -92,6 +92,11 @@ public:
      */
     size_t parent_node_index(node_index_size node_index)const;
     /**
+     * @brief has_parent determine if the given node has a parent
+     * @return true, iff the node at the given index has a parent
+     */
+    bool has_parent(node_index_size node_index)const;
+    /**
     * @brief child_at acquire the child node index at the given relative index
     * @param index the index of the child [0-child_count())
     * @return the absolute node index of the parent relative child index
@@ -111,6 +116,12 @@ public:
      * @return child count, or zero if no children exist
      */
     size_t child_count(node_index_size node_index)const;
+    /**
+     * @brief node_path acquires the path of the node at the given index
+     * @param node_index the index of the node for which the path is requested
+     * @param out the output stream in which to capture the path
+     */
+    void node_path(node_index_size node_index, std::ostream & out)const;
     /**
      * @brief name acquire the name of the node
      * @param node_index the index of the node to acquire the name
@@ -266,6 +277,12 @@ public:
      * @return true, iff this node has a parent
      */
     bool has_parent()const;
+
+    /**
+     * @brief path acquire the path of this node from the document root
+     * @return path to node, e.g., '/object/key/value'
+     */
+    std::string path()const;
     /**
      * @brief child_count acquire the number of nodes for which this node is a parent
      * @return child count
