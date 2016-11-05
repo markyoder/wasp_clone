@@ -433,12 +433,14 @@ TEST(GetPotInterpreter,simple_view)
     W_ASSERT_EQ( 1, document.line() );
     W_ASSERT_EQ( 1, document.column() );
     W_ASSERT_EQ( true, document.equal(document) );
+
     TreeNodeView key = document.child_at(0);
     W_ASSERT_EQ(3, key.child_count() );
     W_ASSERT_EQ(wasp::KEYED_VALUE,key.type());
     W_ASSERT_EQ( node_names[3], key.name() );
     W_ASSERT_EQ( 1, key.line() );
     W_ASSERT_EQ( 1, key.column() );
+    W_ASSERT_EQ( false, document.equal(key) )
     // TODO add test on data (type, line, col, etc).
     for( size_t i = 0, child_count = key.child_count(); i < child_count; ++i)
     {
@@ -449,6 +451,7 @@ TEST(GetPotInterpreter,simple_view)
         W_ASSERT_EQ( node_names[i], child.name() );
         W_ASSERT_EQ( 1, child.line() );
         W_ASSERT_EQ( node_columns[i], child.column() );
+        W_ASSERT_EQ( true, key.equal(child.parent()));
     }
 }
 TEST_END(GetPotInterpreter,simple_view)
