@@ -42,4 +42,12 @@ const char* TreeNodeView::name()const
 {
     return m_tree_data.name(m_tree_node_index);
 }
+size_t TreeNodeView::line()const
+{
+    return m_tree_data.line(m_tree_node_index);
+}
+size_t TreeNodeView::column()const
+{
+    return m_tree_data.column(m_tree_node_index);
+}
 } // end of namespace

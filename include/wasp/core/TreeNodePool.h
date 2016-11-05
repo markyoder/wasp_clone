@@ -277,6 +277,17 @@ public:
      * @return the node's name
      */
     const char * name()const;
+
+    /**
+     * @brief line acquire the node's starting line
+     * @return the starting line of the node
+     */
+    size_t line()const;
+    /**
+     * @brief column acquire the node's starting column
+     * @return the starting column of the node
+     */
+    size_t column()const;
     /**
      * @brief tree_node_index acquire the index into the tree node data pool
      * @return the index into the data pool
