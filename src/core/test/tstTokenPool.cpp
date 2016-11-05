@@ -10,7 +10,7 @@ WASP_TESTS
 char word = 0;
 char integer = 1;
 char real = 2;
-
+char assign = 3;
 TEST(TokenPool,push_test)
 {
     //'ted 234\n'
@@ -229,4 +229,39 @@ TEST(TokenPool,copy_test)
 }
 TEST_END(TokenPool,copy_test)
 
+
+TEST(TokenPool,single_line_column)
+{
+    //'key =  3.142'
+    std::vector<std::string> data = {"key","=","3.142"};
+    std::vector<size_t> column={1,5,8};
+    std::vector<size_t> offset={0,4,7};
+    std::vector<char> type={word,assign,real};
+    W_ASSERT_EQ( data.size(), column.size() );
+    W_ASSERT_EQ( data.size(), offset.size() );
+    W_ASSERT_EQ( data.size(), type.size() );
+
+    TokenPool<char> tp;
+    for(size_t i = 0; i < data.size(); ++i)
+    {
+        tp.push(data[i].c_str(),type[i],offset[i]); // line 1 column 1
+        W_ASSERT_EQ(i+1,tp.size());
+        auto str = tp.str(i);
+        W_ASSERT_EQ(data[i],str);
+        W_ASSERT_EQ(1,tp.line(i));
+        W_ASSERT_EQ(offset[i],tp.offset(i));
+        W_ASSERT_EQ(column[i],tp.column(i));
+        W_ASSERT_EQ(type[i],tp.type(i));
+
+        // test the first token attributes to ensure additional
+        // token inserts do not change the compute logic for line/column
+        auto key = tp.str(0);
+        W_ASSERT_EQ(data[0],key);
+        W_ASSERT_EQ(1,tp.line(0));
+        W_ASSERT_EQ(offset[0],tp.offset(0));
+        W_ASSERT_EQ(column[0],tp.column(0));
+        W_ASSERT_EQ(type[0],tp.type(0));
+    }
+}
+TEST_END(TokenPool,single_line_column)
 WASP_TESTS_END
