@@ -17,6 +17,12 @@ TreeNodeView::~TreeNodeView()
 {
 }
 
+bool TreeNodeView::operator ==(const TreeNodeView& b)const
+{
+    return &m_tree_data == &b.m_tree_data
+            && m_tree_node_index == b.m_tree_node_index;
+}
+
 TreeNodeView TreeNodeView::parent()const
 {
     TreeNodeView view (m_tree_data.parent_node_index(m_tree_node_index)

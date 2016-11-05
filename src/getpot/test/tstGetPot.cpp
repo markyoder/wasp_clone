@@ -432,7 +432,7 @@ TEST(GetPotInterpreter,simple_view)
     W_ASSERT_EQ(wasp::DOCUMENT_ROOT, document.type());
     W_ASSERT_EQ( 1, document.line() );
     W_ASSERT_EQ( 1, document.column() );
-
+    W_ASSERT_EQ( true, document.equal(document) );
     TreeNodeView key = document.child_at(0);
     W_ASSERT_EQ(3, key.child_count() );
     W_ASSERT_EQ(wasp::KEYED_VALUE,key.type());

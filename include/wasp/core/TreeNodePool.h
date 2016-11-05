@@ -248,6 +248,14 @@ public:
     TreeNodeView(const TreeNodeView& orig);
     ~TreeNodeView();
 
+
+    bool operator==(const TreeNodeView& b)const;
+    /**
+     * @brief equal determines if this is equal to the provides TreeNodeView
+     * @return true, iff and only if the nodes are the same
+     */
+    bool equal(const TreeNodeView& b)const{return *this==b;}
+
     /**
      * @brief parent acquire the parent view of the current node
      * @return
