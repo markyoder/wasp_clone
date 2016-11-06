@@ -40,9 +40,9 @@ typedef wasp::GetPotParser::token_type token_type;
 %option stack
 %s execution_unit
 
-INT \-?[0-9]+([eE]\+?[0-9]+)?
+INT [0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INT}
-REAL \-?{INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
+REAL {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
 
 STRING [A-Za-z_]((\-)?[A-Za-z0-9\._/])*
 

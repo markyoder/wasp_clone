@@ -477,9 +477,6 @@ TEST(GetPotInterpreter,paths)
   coord_type = RZ
   [./child][../]
 [])INPUT";
-    GetPotInterpreter interpreter;
-    W_ASSERT_EQ( true, interpreter.parse(input) );
-    W_ASSERT_EQ(18, interpreter.node_count() );
 
     std::string expected_paths=
 R"INPUT(/
@@ -502,6 +499,9 @@ R"INPUT(/
 /Problem/[] ([])
 )INPUT";
 
+    GetPotInterpreter interpreter;
+    W_ASSERT_EQ( true, interpreter.parse(input) );
+    W_ASSERT_EQ(18, interpreter.node_count() );
     TreeNodeView document = interpreter.root();
     W_ASSERT_EQ(1, document.child_count() );
     std::stringstream paths;
@@ -509,5 +509,19 @@ R"INPUT(/
     W_ASSERT_EQ( expected_paths, paths.str() );
 }
 TEST_END(GetPotInterpreter,paths)
-
+TEST(GetPotInterpreter,expression)
+{
+    std::stringstream input;
+    input <<R"INPUT(
+function = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)
+             -4*(2-c)*(gr0^3+gr1^3+gr2^3+gr3^3)
+             +3*(gr0^2+gr1^2+gr2^2+gr3^2)^2)'
+)INPUT";
+    GetPotInterpreter interpreter;
+    W_ASSERT_EQ( true, interpreter.parse(input) );
+    W_ASSERT_EQ(148, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    W_ASSERT_EQ(1, document.child_count() );
+}
+TEST_END(GetPotInterpreter,expression)
 WASP_TESTS_END
