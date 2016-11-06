@@ -21,6 +21,26 @@ namespace wasp{
         , OBJECT_TERM
         , OBJECT
         , COMMA
+        , PLUS
+        , MINUS
+        , MULTIPLY
+        , DIVIDE
+        , GTE
+        , GT
+        , LTE
+        , LT
+        , NEQ
+        , EQ
+        , AND
+        , OR
+        , BANG // !
+        , UNARY_MINUS
+        , UNARY_NOT
+        , EXPONENT
+        , LPAREN
+        , RPAREN
+        , PARENTHESIS
+        , FUNCTION
         , SUB_OBJECT_DECL
         , LBRACKET
         , RBRACKET

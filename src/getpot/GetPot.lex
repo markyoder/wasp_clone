@@ -44,7 +44,7 @@ INT \-?[0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INT}
 REAL \-?{INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
 
-STRING [A-Za-z_\-]((\-)?[A-Za-z0-9\._/])*
+STRING [A-Za-z_]((\-)?[A-Za-z0-9\._/])*
 
 
 
@@ -68,7 +68,11 @@ EXECUTION_UNIT_START ^=
 EXECUTION_UNIT_END ^[Ee][Nn][Dd]
 LTE <=
 GTE >=
+LT <
+GT >
+BANG !
 EQ ==
+EXPONENT_OP \^
 ASSIGN =
 NEQ \!=
 AND &&
@@ -135,9 +139,21 @@ DOT_SLASH \.\/
     capture_token(yylval,token::GTE);
     return token::GTE;
 }
+{LT} {
+    capture_token(yylval,token::LT);
+    return token::LT;
+}
+{GT}  {
+    capture_token(yylval,token::GT);
+    return token::GT;
+}
 {EQ} {
     capture_token(yylval,token::EQ);
     return token::EQ;
+}
+{BANG} {
+    capture_token(yylval,token::BANG);
+    return token::BANG;
 }
 {ASSIGN} {
     capture_token(yylval,token::ASSIGN);
@@ -162,6 +178,34 @@ DOT_SLASH \.\/
 {RBRACKET} {
     capture_token(yylval,token::RBRACKET);
     return token::RBRACKET;
+}
+{EXPONENT_OP} {
+    capture_token(yylval,token::EXPONENT);
+    return token::EXPONENT;
+}
+\* {
+    capture_token(yylval,token::MULTIPLY);
+    return token::MULTIPLY;
+}
+\/ {
+  capture_token(yylval,token::DIVIDE);
+  return token::DIVIDE;
+}
+\+ {
+  capture_token(yylval,token::PLUS);
+  return token::PLUS;
+}
+- {
+    capture_token(yylval,token::MINUS);
+    return token::MINUS;
+}
+\( {
+  capture_token(yylval,token::LPAREN);
+  return token::LPAREN;
+}
+\) {
+ capture_token(yylval,token::RPAREN);
+ return token::RPAREN;
 }
 <INITIAL,execution_unit>{INT} {
 //    yylval->stringVal = new std::string(yytext, yyleng);
