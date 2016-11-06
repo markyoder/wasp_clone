@@ -69,7 +69,7 @@
 %token                 '{'
 %token                 '}'
 %token <token_index>   ASSIGN
-%token                 ','
+%token <token_index>   COMMA
 %token                  GTE             ">="
 %token                  LTE             "<="
 %token                  NEQ             "!="
@@ -95,7 +95,7 @@
 
 %type <token_index>   DECL "declarator"
 %type <token_index>   VALUE "value"
-%type <node_index>  integer real string lbracket rbracket  quote assign
+%type <node_index>  integer real string lbracket rbracket quote assign comma
 %type <node_index>  object_decl object_term
 %type <node_index>  sub_object_decl sub_object_term
 %type <node_index>  object sub_object
@@ -125,6 +125,12 @@
 
  /*** BEGIN - Change the GetPot grammar rules below ***/
 
+comma : COMMA
+    {
+        unsigned int comma_token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::COMMA,","
+                         ,comma_token_index);
+    }
 assign : ASSIGN
     {
         unsigned int assign_token_index = static_cast<unsigned int>($1);
@@ -295,7 +301,7 @@ primitive : integer
            | real
            | string
 
-array_member : value
+array_member : value | comma
 
 array_members : array_member
     {

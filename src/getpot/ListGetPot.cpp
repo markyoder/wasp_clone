@@ -37,6 +37,7 @@ int main (int argc, char *argv[])
         {
             return -1;
         }
+        interpreter.root().paths(std::cout);
     }
     return 0;
 }

@@ -162,23 +162,24 @@ namespace wasp {
         LBRACKET = 259,
         RBRACKET = 260,
         ASSIGN = 261,
-        GTE = 262,
-        LTE = 263,
-        NEQ = 264,
-        EQ = 265,
-        AND = 266,
-        OR = 267,
-        DOT_SLASH = 268,
-        QUOTE = 269,
-        INTEGER = 270,
-        REAL = 271,
-        STRING = 272,
-        QSTRING = 273,
-        COMMENT = 274,
-        EXECUTION_UNIT_START = 275,
-        EXECUTION_UNIT_END = 276,
-        OBJECT_TERM = 277,
-        SUB_OBJECT_TERM = 278
+        COMMA = 262,
+        GTE = 263,
+        LTE = 264,
+        NEQ = 265,
+        EQ = 266,
+        AND = 267,
+        OR = 268,
+        DOT_SLASH = 269,
+        QUOTE = 270,
+        INTEGER = 271,
+        REAL = 272,
+        STRING = 273,
+        QSTRING = 274,
+        COMMENT = 275,
+        EXECUTION_UNIT_START = 276,
+        EXECUTION_UNIT_END = 277,
+        OBJECT_TERM = 278,
+        SUB_OBJECT_TERM = 279
       };
     };
 
@@ -486,8 +487,8 @@ namespace wasp {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 41,     ///< Last index in yytable_.
-      yynnts_ = 29,  ///< Number of nonterminal symbols.
+      yylast_ = 47,     ///< Last index in yytable_.
+      yynnts_ = 30,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
@@ -502,7 +503,7 @@ namespace wasp {
 
 
 } // wasp
-#line 506 "GetPotParser.hpp" // lalr1.cc:377
+#line 507 "GetPotParser.hpp" // lalr1.cc:377
 
 
 

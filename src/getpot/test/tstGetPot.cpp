@@ -437,6 +437,7 @@ TEST(GetPotInterpreter,simple_view)
     W_ASSERT_EQ( 1, document.column() );
     W_ASSERT_EQ( true, document.equal(document) );
     W_ASSERT_EQ( false, document.has_parent() );
+    W_ASSERT_EQ( node_paths.back(), document.path() );
     TreeNodeView key = document.child_at(0);
     W_ASSERT_EQ(3, key.child_count() );
     W_ASSERT_EQ( true, key.has_parent() );
@@ -446,6 +447,7 @@ TEST(GetPotInterpreter,simple_view)
     W_ASSERT_EQ( 1, key.line() );
     W_ASSERT_EQ( 1, key.column() );
     W_ASSERT_EQ( false, document.equal(key) )
+    W_ASSERT_EQ( node_paths[3], key.path() );
     // TODO add test on data (type, line, col, etc).
     for( size_t i = 0, child_count = key.child_count(); i < child_count; ++i)
     {
@@ -460,8 +462,52 @@ TEST(GetPotInterpreter,simple_view)
         W_ASSERT_EQ( true, key.equal(child.parent()));
         W_ASSERT_EQ( node_paths[i],child.path() );
     }
-
+    std::string expected_paths
+            = "/\n/key\n/key/decl (key)\n/key/= (=)\n/key/value (3.421)\n";
+    std::stringstream paths; document.paths(paths);
+    W_ASSERT_EQ(expected_paths, paths.str() );
 }
 TEST_END(GetPotInterpreter,simple_view)
+
+TEST(GetPotInterpreter,paths)
+{
+    std::stringstream input;
+    input <<R"INPUT(
+[Problem]
+  coord_type = RZ
+  [./child][../]
+[])INPUT";
+    GetPotInterpreter interpreter;
+    W_ASSERT_EQ( true, interpreter.parse(input) );
+    W_ASSERT_EQ(18, interpreter.node_count() );
+
+    std::string expected_paths=
+R"INPUT(/
+/Problem
+/Problem/Problem
+/Problem/Problem/[ ([)
+/Problem/Problem/string (Problem)
+/Problem/Problem/] (])
+/Problem/coord_type
+/Problem/coord_type/decl (coord_type)
+/Problem/coord_type/= (=)
+/Problem/coord_type/value (RZ)
+/Problem/child
+/Problem/child/child
+/Problem/child/child/[ ([)
+/Problem/child/child/./ (./)
+/Problem/child/child/string (child)
+/Problem/child/child/] (])
+/Problem/child/[../] ([../])
+/Problem/[] ([])
+)INPUT";
+
+    TreeNodeView document = interpreter.root();
+    W_ASSERT_EQ(1, document.child_count() );
+    std::stringstream paths;
+    document.paths(paths);
+    W_ASSERT_EQ( expected_paths, paths.str() );
+}
+TEST_END(GetPotInterpreter,paths)
 
 WASP_TESTS_END

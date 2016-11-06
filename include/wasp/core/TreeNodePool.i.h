@@ -57,11 +57,12 @@ void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::push_parent(
     for( size_t c = 0, i = first_child_index; i < last_child_index; ++i, ++c)
     {
         // assign parent
-        m_node_basic_data[i].m_parent_node_index = basic_data_index;
+        size_t child_index = child_indices[c];
+        m_node_basic_data[child_index].m_parent_node_index = basic_data_index;
         // assign lookup index mapping parent to list
         // of arbitrary indices into basic node data
         // describing the children of this parent node
-        m_node_child_indices.push_back(child_indices[c]);
+        m_node_child_indices.push_back(child_index);
     }
 }
 
@@ -175,7 +176,6 @@ void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::node_path(
 {
     // TODO range check node index
     std::vector<NIS> lineage(1,node_index);
-
     // while there are parents available
     // accrue the lineage
     while( has_parent(node_index) )
@@ -183,8 +183,14 @@ void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::node_path(
         node_index = parent_node_index(node_index);
         lineage.push_back(node_index);
     }
+    // describe the root
+    if( lineage.size() == 1)
+    {
+        out<<"/";
+        lineage.pop_back();
+    }
     // remove the root 'document'
-    if( lineage.size() > 1 ) lineage.pop_back();
+    else if( lineage.size() > 1 ) lineage.pop_back();
     // with the lineage accrued
     // walk in reverse order parent->child
     while( !lineage.empty() )
@@ -194,6 +200,28 @@ void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::node_path(
         lineage.pop_back();
     }
 }
+template<typename NTS, typename NIS
+         ,typename TTS, typename TITS,typename FOTS>
+void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::node_paths(
+                    NIS node_index
+                    ,std::ostream & out)const
+{
+    // TODO conduct node index range check
+    size_t node_child_count = child_count(node_index);
+    node_path(node_index,out);
+    if( node_child_count == 0 ){
+        out<<" ("<<data(node_index)<<")"<<std::endl;
+    }
+    else{
+        out<<std::endl;
+    }
+
+    for( size_t i = 0; i < node_child_count; ++i){
+        node_paths( child_at( node_index, i ), out );
+    }
+}
+
+
 // determine if the given node has a parent
 template<typename NTS, typename NIS
          ,typename TTS, typename TITS,typename FOTS>

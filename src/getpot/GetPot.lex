@@ -43,8 +43,8 @@ typedef wasp::GetPotParser::token_type token_type;
 INT \-?[0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INT}
 REAL \-?{INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
- /* !!! The string allows hyphens (not trailing hyphens)!!! */
-STRING [A-Za-z_]((\-)?[A-Za-z0-9\._/])*
+
+STRING [A-Za-z_\-]((\-)?[A-Za-z0-9\._/])*
 
 
 
@@ -75,8 +75,9 @@ AND &&
 OR \|\|
 LBRACKET \[
 RBRACKET \]
+COMMA ,
 OBJECT_TERM \[" "*\]
-SUB_OBJECT_TERM \[" "*\.\.\/" "*\]
+SUB_OBJECT_TERM \[" "*\.?\.\/" "*\]
 DOT_SLASH \.\/
 
 
@@ -105,6 +106,10 @@ DOT_SLASH \.\/
     capture_token(yylval,token::EXECUTION_UNIT_END);
 //    yylval->stringVal = new std::string(yytext, yyleng);
     return token::EXECUTION_UNIT_END;
+}
+{COMMA} {
+    capture_token(yylval,token::COMMA);
+    return token::COMMA;
 }
 {DOT_SLASH} {
     capture_token(yylval,token::DOT_SLASH);

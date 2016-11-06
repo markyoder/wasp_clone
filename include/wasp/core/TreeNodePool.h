@@ -123,6 +123,12 @@ public:
      */
     void node_path(node_index_size node_index, std::ostream & out)const;
     /**
+     * @brief node_paths acquires the paths of the given node and its children
+     * @param node_index the node for which it and its descendents' paths are desired
+     * @param out the output stream in which to capture the paths
+     */
+    void node_paths(node_index_size node_index, std::ostream & out)const;
+    /**
      * @brief name acquire the name of the node
      * @param node_index the index of the node to acquire the name
      * @return the node's name
@@ -283,6 +289,12 @@ public:
      * @return path to node, e.g., '/object/key/value'
      */
     std::string path()const;
+    /**
+     * @brief paths acquire the paths of this node and its children
+     * @param out the output stream to capture the node paths
+     * The node paths are written, new line delimited
+     */
+    void paths(std::ostream & out)const;
     /**
      * @brief child_count acquire the number of nodes for which this node is a parent
      * @return child count

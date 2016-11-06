@@ -20,6 +20,7 @@ namespace wasp{
         , OBJECT_DECL
         , OBJECT_TERM
         , OBJECT
+        , COMMA
         , SUB_OBJECT_DECL
         , LBRACKET
         , RBRACKET

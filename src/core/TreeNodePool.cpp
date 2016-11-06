@@ -38,6 +38,9 @@ std::string TreeNodeView::path()const{
     m_tree_data.node_path(m_tree_node_index,str);
     return str.str();
 }
+void TreeNodeView::paths(std::ostream& out)const{
+    m_tree_data.node_paths(m_tree_node_index,out);
+}
 size_t TreeNodeView::child_count()const
 {
     return m_tree_data.child_count(m_tree_node_index);
