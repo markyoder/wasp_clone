@@ -4,7 +4,7 @@
 * CMake. 2.8.12.2 tested.
 
 # Getting Started
-* You will need to save your ssh-key in [code.ornl.gov](https://code.ornl.gov/profile/keys).
+* You will need to save your ssh-key in [code-int.ornl.gov](https://code-int.ornl.gov/profile/keys).
 * Clone wasp
 `git clone git clone https://code-int.ornl.gov/lefebvre/wasp.git ~/wasp`
 * Change directory into wasp `cd ~/wasp`
@@ -15,7 +15,7 @@
 * Create a build directory
 `mkdir -p ~/build/wasp`
 * Change into the build `cd ~/build/wasp`
-* Create a configuration script in ~/build/. Lets call is ../configure.sh(linux), ..\configure.bat(windows)
+* Create a configuration script in ~/build/. Lets call is ../configure.sh(linux)
 
 ```
 #!/bin/bash
