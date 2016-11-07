@@ -5,7 +5,7 @@
 ##---------------------------------------------------------------------------##
 ## Copyright (C) 2016 Oak Ridge National Laboratory, UT-Battelle, LLC.
 ##---------------------------------------------------------------------------##
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12.2)
 
 PROJECT(WASP)
 # The version number.

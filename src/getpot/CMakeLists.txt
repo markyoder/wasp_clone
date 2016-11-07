@@ -11,6 +11,9 @@ ADD_LIBRARY(wasp_getpot SHARED
     )
 target_link_libraries (wasp_getpot wasp_core)
 
+INSTALL( TARGETS wasp_getpot
+     RUNTIME DESTINATION bin
+     LIBRARY DESTINATION lib)
 
 # add the GetPot list executable
 add_executable(ListGetPot ListGetPot.cpp)
@@ -19,6 +22,7 @@ add_executable(ListGetPot ListGetPot.cpp)
 target_link_libraries (ListGetPot wasp_getpot wasp_core)
 
 # todo install
+INSTALL( TARGETS ListGetPot DESTINATION bin )
 
 IF(WASP_ENABLE_TESTS)
     ADD_SUBDIRECTORY(test)

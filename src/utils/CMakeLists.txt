@@ -6,4 +6,4 @@ add_executable(Test test.cpp)
 # link the executable
 target_link_libraries (Test wasp_core)
 # install the executable
-#INSTALL( TARGETS Test DESTINATION bin )
+INSTALL( TARGETS Test DESTINATION bin )
