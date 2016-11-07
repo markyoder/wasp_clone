@@ -1,0 +1,1 @@
+#include "waspcore/StringPool.h"

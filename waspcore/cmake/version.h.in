@@ -1,0 +1,7 @@
+#ifndef WASP_VERSION_H
+#define WASP_VERSION_H
+namespace wasp{
+    // TODO
+
+}
+#endif
