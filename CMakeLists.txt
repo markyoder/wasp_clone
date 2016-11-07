@@ -1,33 +1,40 @@
-##---------------------------------------------------------------------------##
-## WASP/CMakeLists.txt
-## Robert Alexander Lefebvre
-## Saturday Oct 29 17:22:0 2016
-##---------------------------------------------------------------------------##
-## Copyright (C) 2016 Oak Ridge National Laboratory, UT-Battelle, LLC.
-##---------------------------------------------------------------------------##
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12.2)
+################################################################################
+#                                                                              #
+#             WASP   TriBITS Project and Package CMakeLists.txt File           #
+#             Workbench Analysis Sequence Processor                            #
+################################################################################
 
-PROJECT(WASP)
-# The version number.
-set (WASP_VERSION_MAJOR 0)
-set (WASP_VERSION_MINOR 0)
-set (WASP_VERSION_MICRO 1)
+IF (NOT TRIBITS_PROCESSING_PACKAGE)
+  # This CMakeLists.txt file is being processed as the wasp TriBITS projects's base
+  # CMakeLists.txt file!  (See comments at bottom of this file.)
+  CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12.2 FATAL_ERROR)
+  INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/ProjectName.cmake")
+  PROJECT(${PROJECT_NAME} NONE)
+  # enable C++11 by default
+  SET(wasp_ENABLE_CXX11 ON CACHE BOOL "Compile using the C++11 standard" FORCE)
+  # disable generating HTML dependencies webpage and xml files
+  SET(${PROJECT_NAME}_DEPS_XML_OUTPUT_FILE OFF CACHE BOOL "")
+  # disable TriBITS export system to save time configuring
+  SET(${PROJECT_NAME}_ENABLE_INSTALL_CMAKE_CONFIG_FILES OFF CACHE BOOL "")
+  SET(${PROJECT_NAME}_ENABLE_EXPORT_MAKEFILES OFF CACHE BOOL "")
+  SET(${PROJECT_NAME}_TRIBITS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/TriBITS/tribits" CACHE PATH "")
+  INCLUDE("${${PROJECT_NAME}_TRIBITS_DIR}/TriBITS.cmake")
+  SET(${PROJECT_NAME}_ENABLE_TESTS ON CACHE BOOL "Enable tests by default.")
+  TRIBITS_PROJECT_ENABLE_ALL()
+ELSE()
+  # This CMakeLists.txt file is being processed as the TriBITS package file.
+  INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+  # include binary directory for configured includes
+  INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+  TRIBITS_PACKAGE_DECL(wasp)
+  #
+  # Process subpackages
+  #
+  TRIBITS_PROCESS_SUBPACKAGES()
+  TRIBITS_PACKAGE_POSTPROCESS()
+ENDIF()
 
-
-ENABLE_TESTING()
-
-OPTION(WASP_ENABLE_TESTS "Enable tests" ON)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wshadow")
-
-##---------------------------------------------------------------------------##
-## ADDITIONAL SUBDIRECTORIES AND INSTALLS
-##---------------------------------------------------------------------------##
-# Build the different applications
-ADD_SUBDIRECTORY( src )
-
-#install the includes
-ADD_SUBDIRECTORY( include )
-##---------------------------------------------------------------------------##
-## end of WASP/CMakelists.txt
-##---------------------------------------------------------------------------##
+# NOTE: In order to allow the `wasp/` directory to be both a TriBITS
+# package (for inclusion in other TriBITS projects) and to be a TriBITS
+# project itself, you only have to put in a simple if statement in this
+# top-level CMakeLists.txt file.  That is all!

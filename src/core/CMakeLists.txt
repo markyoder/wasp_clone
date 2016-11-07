@@ -1,26 +1,33 @@
-include_directories ("${PROJECT_SOURCE_DIR}/include")
-include_directories ("${PROJECT_BINARY_DIR}/include") # Configured files, e.g. VERSION
-SET( SOURCES
-    "${CMAKE_CURRENT_SOURCE_DIR}/StringPool.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/TokenPool.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/TreeNodePool.cpp"
+TRIBITS_SUBPACKAGE(core)
+
+
+SET(SOURCE
+StringPool.cpp
+TokenPool.cpp
+TreeNodePool.cpp
 )
-ADD_LIBRARY(wasp_core SHARED  
-    ${SOURCES}
-    )
 
+SET(HEADERS
+FlexLexer.h
+wasp_node.h
+StringPool.h
+StringPool.i.h
+TokenPool.h
+TokenPool.i.h
+TreeNodePool.h
+TreeNodePool.i.h
+)
 
-# Set library's runtime search path on OSX
-IF(APPLE)
-    SET_TARGET_PROPERTIES( wasp_core PROPERTIES INSTALL_RPATH "@loader_path/." )
-ENDIF()
-# todo install
+#
+# Add library
+TRIBITS_ADD_LIBRARY(core
+  SOURCES ${SOURCE}
+  NOINSTALLHEADERS ${HEADERS}
+)
 
-INSTALL( TARGETS wasp_core
-     RUNTIME DESTINATION bin
-     LIBRARY DESTINATION lib)
+#
+# Add test directory
+TRIBITS_ADD_TEST_DIRECTORIES(test)
 
-IF(WASP_ENABLE_TESTS)
-    ADD_SUBDIRECTORY(test)
-ENDIF()
-
+INSTALL(FILES ${HEADERS} DESTINATION "include/wasp/core/")
+TRIBITS_SUBPACKAGE_POSTPROCESS()

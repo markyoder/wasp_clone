@@ -1,29 +1,33 @@
-include_directories ("${PROJECT_SOURCE_DIR}/src")
-include_directories ("${PROJECT_SOURCE_DIR}/include")
-include_directories ("${PROJECT_BINARY_DIR}/include") # Configured files, e.g. VERSION
-SET( SOURCES
-    "${CMAKE_CURRENT_SOURCE_DIR}/GetPotLexer.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/GetPotParser.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/GetPotInterpreter.cpp"
+TRIBITS_SUBPACKAGE(getpot)
+
+
+SET(SOURCE
+GetPotLexer.cpp
+GetPotParser.cpp
+GetPotInterpreter.cpp
 )
-ADD_LIBRARY(wasp_getpot SHARED
-    ${SOURCES}
-    )
-target_link_libraries (wasp_getpot wasp_core)
 
-INSTALL( TARGETS wasp_getpot
-     RUNTIME DESTINATION bin
-     LIBRARY DESTINATION lib)
+SET(HEADERS
+GetPotLexer.h
+GetPotParser.hpp
+GetPotInterpreter.h
+location.hh
+position.hh
+stack.hh
+GetPot.lex
+GetPot.bison
+)
 
-# add the GetPot list executable
-add_executable(ListGetPot ListGetPot.cpp)
+#
+# Add library
+TRIBITS_ADD_LIBRARY(getpot
+  SOURCES ${SOURCE}
+  NOINSTALLHEADERS ${HEADERS}
+)
 
-# link the executable
-target_link_libraries (ListGetPot wasp_getpot wasp_core)
+#
+# Add test directory
+TRIBITS_ADD_TEST_DIRECTORIES(test)
 
-# todo install
-INSTALL( TARGETS ListGetPot DESTINATION bin )
-
-IF(WASP_ENABLE_TESTS)
-    ADD_SUBDIRECTORY(test)
-ENDIF()
+INSTALL(FILES ${HEADERS} DESTINATION "include/getpot/")
+TRIBITS_SUBPACKAGE_POSTPROCESS()

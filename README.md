@@ -1,7 +1,35 @@
+# Requirements
+* C compiler. gcc 4.8 tested
+* Git
+* CMake. 2.8.12.2 tested.
 
-WASP
-====
+# Getting Started
+* You will need to save your ssh-key in [code.ornl.gov](https://code.ornl.gov/profile/keys).
+* Clone wasp
+`git clone git clone https://code-int.ornl.gov/lefebvre/wasp.git ~/wasp`
+* Change directory into wasp `cd ~/wasp`
+* Clone TriBITS
+`git clone https://github.com/lefebvre/TriBITS.git TriBITS` [TriBITS documentation](https://tribits.org/doc/TribitsDevelopersGuide.html)
+* Clone extra repos
+`./TriBITS/tribits/ci_support/clone_extra_repos.py`
+* Create a build directory
+`mkdir -p ~/build/wasp`
+* Change into the build `cd ~/build/wasp`
+* Create a configuration script in ~/build/. Lets call is ../configure.sh(linux), ..\configure.bat(windows)
 
-The Workbench Analysis Sequence Processor (WASP) is a project intended to facilitate a consistence interface for processing analysis sequence ascii data. It is intended to preserve the entire ascii data format supported by the implemented processors. This preservation is important for programmatically accessing the data and tracking the data's textual location for interactive communication to the user.
+```
+#!/bin/bash
+# Linux bash file example
+rm -rf CMake*
+cmake \
+ -D CMAKE_BUILD_TYPE:STRING=RELEASE \
+ -D wasp_ENABLE_ALL_PACKAGES:BOOL=ON \
+ -D wasp_ENABLE_TESTS:BOOL=ON \
+ -G "Unix Makefiles" \
+ ~/wasp
+```
 
-This a Nuclear Energy Advanced Modeling and Simulation (NEAMS) Workbench collaboration project.
+* Invoke configure script in the build directory.
+`../configure.sh or ..\configure.bat`
+  * I place the configure script in the build directory as opposed to the build/wasp directory because it allows me to delete the build/wasp
+directory without removing my script.
