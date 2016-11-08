@@ -161,37 +161,19 @@ namespace wasp {
         EOL = 258,
         LBRACKET = 259,
         RBRACKET = 260,
-        BANG = 261,
-        ASSIGN = 262,
-        COMMA = 263,
-        GTE = 264,
-        LTE = 265,
-        LT = 266,
-        GT = 267,
-        NEQ = 268,
-        EQ = 269,
-        AND = 270,
-        OR = 271,
-        MULTIPLY = 272,
-        DIVIDE = 273,
-        PLUS = 274,
-        MINUS = 275,
-        EXPONENT = 276,
-        LPAREN = 277,
-        RPAREN = 278,
-        DOT_SLASH = 279,
-        QUOTE = 280,
-        INTEGER = 281,
-        REAL = 282,
-        STRING = 283,
-        QSTRING = 284,
-        COMMENT = 285,
-        EXECUTION_UNIT_START = 286,
-        EXECUTION_UNIT_END = 287,
-        OBJECT_TERM = 288,
-        SUB_OBJECT_TERM = 289,
-        UMINUS = 292,
-        UNOT = 293
+        ASSIGN = 261,
+        COMMA = 262,
+        DOT_SLASH = 263,
+        QUOTE = 264,
+        INTEGER = 265,
+        REAL = 266,
+        STRING = 267,
+        QSTRING = 268,
+        COMMENT = 269,
+        EXECUTION_UNIT_START = 270,
+        EXECUTION_UNIT_END = 271,
+        OBJECT_TERM = 272,
+        SUB_OBJECT_TERM = 273
       };
     };
 
@@ -361,7 +343,7 @@ namespace wasp {
     // Tables.
   // YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
   // STATE-NUM.
-  static const short int yypact_[];
+  static const signed char yypact_[];
 
   // YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
   // Performed when YYTABLE does not specify something else to do.  Zero
@@ -379,7 +361,7 @@ namespace wasp {
   // number is the opposite.  If YYTABLE_NINF, syntax error.
   static const signed char yytable_[];
 
-  static const signed char yycheck_[];
+  static const unsigned char yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -499,12 +481,12 @@ namespace wasp {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 181,     ///< Last index in yytable_.
-      yynnts_ = 50,  ///< Number of nonterminal symbols.
+      yylast_ = 44,     ///< Last index in yytable_.
+      yynnts_ = 30,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 43  ///< Number of tokens.
+      yyntokens_ = 23  ///< Number of tokens.
     };
 
 
@@ -515,7 +497,7 @@ namespace wasp {
 
 
 } // wasp
-#line 519 "GetPotParser.hpp" // lalr1.cc:377
+#line 501 "GetPotParser.hpp" // lalr1.cc:377
 
 
 

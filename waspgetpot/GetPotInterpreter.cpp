@@ -23,7 +23,7 @@ bool GetPotInterpreter::parse(std::istream& in
     m_start_line = startLine;
     m_start_column = startColumn;
     GetPotParser parser(*this);
-//    parser.set_debug_level(m_trace_parsing);
+//    parser.set_debug_level(true);
 
 
     bool parsed = parser.parse() == 0;

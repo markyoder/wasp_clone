@@ -33,6 +33,11 @@ bool TreeNodeView::has_parent()const
 {
     return m_tree_data.has_parent(m_tree_node_index);
 }
+std::string TreeNodeView::data()const{
+    std::stringstream str;
+    m_tree_data.data(m_tree_node_index,str);
+    return str.str();
+}
 std::string TreeNodeView::path()const{
     std::stringstream str;
     m_tree_data.node_path(m_tree_node_index,str);

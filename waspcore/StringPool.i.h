@@ -39,6 +39,8 @@
         : m_data(orig.m_data)
         , m_token_data_indices(orig.m_token_data_indices)
     {
+        m_data.reserve(1000000);
+        m_token_data_indices.reserve(333333);
     }
     // default destructor
     template<typename T>

@@ -31,7 +31,7 @@ typedef wasp::GetPotParser::token_type token_type;
 
  /* enable scanner to generate debug output. disable this for release
  * versions. */
- /*%option debug*/
+ // %option debug
 
  /* no support for include files is planned */
 %option yywrap nounput
@@ -39,12 +39,26 @@ typedef wasp::GetPotParser::token_type token_type;
  /* enables the use of start condition stacks */
 %option stack
 %s execution_unit
+ /* want to capture everthing except whitespace as the object's name
+  * [ object_name ]
+  */
+%x object_decl
+%s object
+  /* want to capture everthing except whitespace and './' as the object's name
+   * [ ./ object_name ]
+   */
+%x subobject_decl
+ /*
+  * When a declarator is pushed the following token must be a './'
+  * This exclusive state should ensure this is present
+  */
+%x subobject_dot_slash
 
 INT [0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INT}
 REAL {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
 
-STRING [A-Za-z_]((\-)?[A-Za-z0-9\._/])*
+STRING [^" "\'\"\=\n\[\]\#]+
 
 
 
@@ -78,6 +92,7 @@ NEQ \!=
 AND &&
 OR \|\|
 LBRACKET \[
+OBJECT_NAME [^" "\n\[\]]+
 RBRACKET \]
 COMMA ,
 OBJECT_TERM \[" "*\]
@@ -111,11 +126,16 @@ DOT_SLASH \.\/
 //    yylval->stringVal = new std::string(yytext, yyleng);
     return token::EXECUTION_UNIT_END;
 }
+{ASSIGN} {
+    capture_token(yylval,token::ASSIGN);
+    return token::ASSIGN;
+}
 {COMMA} {
     capture_token(yylval,token::COMMA);
     return token::COMMA;
 }
-{DOT_SLASH} {
+<subobject_dot_slash>{DOT_SLASH} {
+    yy_pop_state();
     capture_token(yylval,token::DOT_SLASH);
     return token::DOT_SLASH;
 }
@@ -123,7 +143,8 @@ DOT_SLASH \.\/
     capture_token(yylval,token::SUB_OBJECT_TERM);
     return token::SUB_OBJECT_TERM;
 }
-{OBJECT_TERM} {
+<object>{OBJECT_TERM} {
+    yy_pop_state();
     capture_token(yylval,token::OBJECT_TERM);
     return token::OBJECT_TERM;
 }
@@ -131,93 +152,47 @@ DOT_SLASH \.\/
     capture_token(yylval,token::QUOTE);
     return token::QUOTE;
 }
-{LTE} {
-    capture_token(yylval,token::LTE);
-    return token::LTE;
-}
-{GTE}  {
-    capture_token(yylval,token::GTE);
-    return token::GTE;
-}
-{LT} {
-    capture_token(yylval,token::LT);
-    return token::LT;
-}
-{GT}  {
-    capture_token(yylval,token::GT);
-    return token::GT;
-}
-{EQ} {
-    capture_token(yylval,token::EQ);
-    return token::EQ;
-}
-{BANG} {
-    capture_token(yylval,token::BANG);
-    return token::BANG;
-}
-{ASSIGN} {
-    capture_token(yylval,token::ASSIGN);
-    return token::ASSIGN;
-}
-{NEQ} {
-    capture_token(yylval,token::NEQ);
-    return token::NEQ;
-}
-{AND} {
-    capture_token(yylval,token::AND);
-    return token::AND;
-}
-{OR} {
-    capture_token(yylval,token::OR);
-    return token::OR;
-}
-{LBRACKET} {
+
+<object>{LBRACKET} {
+    yy_push_state(subobject_dot_slash);
     capture_token(yylval,token::LBRACKET);
     return token::LBRACKET;
+}
+<INITIAL>{LBRACKET} {
+    yy_push_state(object_decl);
+    capture_token(yylval,token::LBRACKET);
+    return token::LBRACKET;
+}
+<object_decl,subobject_decl>{OBJECT_NAME} {
+    capture_token(yylval,token::STRING);
+    return token::STRING;
+}
+<object_decl>{RBRACKET} {
+    yy_pop_state();
+    yy_push_state(object);
+    capture_token(yylval,token::RBRACKET);
+    return token::RBRACKET;
+}
+<subobject_decl>{RBRACKET} {
+    yy_pop_state();
+    capture_token(yylval,token::RBRACKET);
+    return token::RBRACKET;
 }
 {RBRACKET} {
     capture_token(yylval,token::RBRACKET);
     return token::RBRACKET;
 }
-{EXPONENT_OP} {
-    capture_token(yylval,token::EXPONENT);
-    return token::EXPONENT;
-}
-\* {
-    capture_token(yylval,token::MULTIPLY);
-    return token::MULTIPLY;
-}
-\/ {
-  capture_token(yylval,token::DIVIDE);
-  return token::DIVIDE;
-}
-\+ {
-  capture_token(yylval,token::PLUS);
-  return token::PLUS;
-}
-- {
-    capture_token(yylval,token::MINUS);
-    return token::MINUS;
-}
-\( {
-  capture_token(yylval,token::LPAREN);
-  return token::LPAREN;
-}
-\) {
- capture_token(yylval,token::RPAREN);
- return token::RPAREN;
-}
-<INITIAL,execution_unit>{INT} {
+<INITIAL,execution_unit,object>{INT} {
     capture_token(yylval,token::INTEGER);
     return token::INTEGER;
 }
 
-<INITIAL,execution_unit>{REAL} {
+<INITIAL,execution_unit,object>{REAL} {
     capture_token(yylval,token::REAL);
     return token::REAL;
 }
  /* gobble up white-spaces */
-[ \t\r]+ {
+<*>[ \t\r]+ {
     yylloc->step();
 }
 

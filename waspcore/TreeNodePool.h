@@ -274,6 +274,11 @@ public:
     bool equal(const TreeNodeView& b)const{return *this==b;}
 
     /**
+     * @brief data acquire the node's data
+     * @return the node's data
+     */
+    std::string data()const;
+    /**
      * @brief parent acquire the parent view of the current node
      * @return
      */

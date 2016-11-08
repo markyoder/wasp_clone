@@ -73,8 +73,8 @@ TEST(GetPotInterpreter,empty_object)
     ASSERT_EQ(7, interpreter.node_count() );
 
     std::vector<std::string> token_data = {"[","ted","]"};
-    std::vector<std::string> leaf_node_names = {"[","string","]"};
-    std::vector<wasp::NODE> leaf_node_types = {wasp::LBRACKET,wasp::STRING
+    std::vector<std::string> leaf_node_names = {"[","decl","]"};
+    std::vector<wasp::NODE> leaf_node_types = {wasp::LBRACKET,wasp::DECL
                                            ,wasp::RBRACKET};
     for( size_t i = 0; i < 3; ++i)
     {
@@ -82,12 +82,12 @@ TEST(GetPotInterpreter,empty_object)
         ASSERT_EQ(leaf_node_types[i], interpreter.m_tree_nodes.type(i));
         ASSERT_EQ(leaf_node_names[i], interpreter.m_tree_nodes.name(i));
     }
-    std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::STRING
+    std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::DECL
                                            ,wasp::RBRACKET,wasp::OBJECT_DECL
                                            ,wasp::OBJECT_TERM
                                            ,wasp::OBJECT
                                           ,wasp::DOCUMENT_ROOT};
-    std::vector<std::string> node_names = {"[","string","]","ted"
+    std::vector<std::string> node_names = {"[","decl","]","ted"
                                            ,"[]"
                                            ,"ted","document"};
     ASSERT_EQ( node_types.size(), node_names.size() );
@@ -120,7 +120,7 @@ TEST(GetPotInterpreter,simple_object)
     ASSERT_EQ(11, interpreter.node_count() );
 
                                            // object decl
-    std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::STRING
+    std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::DECL
                                            ,wasp::RBRACKET,wasp::OBJECT_DECL
                                            // keyed value
                                            ,wasp::DECL,wasp::ASSIGN
@@ -131,7 +131,7 @@ TEST(GetPotInterpreter,simple_object)
                                            ,wasp::OBJECT
                                            // document root
                                           ,wasp::DOCUMENT_ROOT};
-    std::vector<std::string> node_names = {"[","string","]","ted"
+    std::vector<std::string> node_names = {"[","decl","]","ted"
                                            ,"decl","=","value"
                                            ,"key"
                                            ,"[]"
@@ -170,17 +170,17 @@ TEST(GetPotInterpreter,less_simple_object)
     //      |_ value '3.421'
     //    |_ object_term '[]'
 
-    input << "[ted]"<<std::endl;
-    input << "    boo = foo # halloween "<<std::endl;
-    input << "    fred = 1"<<std::endl;
-    input << "    key = 3.421"<<std::endl;
-    input << "[]";
+    input <<R"INPUT([ted]
+     boo = foo # halloween
+     fred = 1
+     key = 3.421
+ [])INPUT";
     GetPotInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(20, interpreter.node_count() );
 
                                            // object decl
-    std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::STRING
+    std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::DECL
                                            ,wasp::RBRACKET,wasp::OBJECT_DECL
                                            // keyed value boo
                                            ,wasp::DECL,wasp::ASSIGN
@@ -199,7 +199,7 @@ TEST(GetPotInterpreter,less_simple_object)
                                            ,wasp::OBJECT
                                            // document root
                                           ,wasp::DOCUMENT_ROOT};
-    std::vector<std::string> node_names = {"[","string","]","ted"
+    std::vector<std::string> node_names = {"[","decl","]","ted"
                                            ,"decl","=","value" // boo
                                            ,"boo"
                                            ,"comment" // halloween
@@ -242,7 +242,7 @@ TEST(GetPotInterpreter, object_array)
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(15, interpreter.node_count() );
 
-    std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::STRING
+    std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::DECL
                                            ,wasp::RBRACKET,wasp::OBJECT_DECL
                                            // keyed value array data
                                            ,wasp::DECL,wasp::ASSIGN
@@ -255,7 +255,7 @@ TEST(GetPotInterpreter, object_array)
                                            ,wasp::OBJECT_TERM
                                            ,wasp::OBJECT
                                           ,wasp::DOCUMENT_ROOT};
-    std::vector<std::string> node_names = {"[","string","]","ted"
+    std::vector<std::string> node_names = {"[","decl","]","ted"
                                            ,"decl","="// data array
                                            ,"'" // start
                                            ,"value" // basic
@@ -298,13 +298,13 @@ TEST(GetPotInterpreter, object_empty_subobject)
     ASSERT_EQ(14, interpreter.node_count() );
 
     std::vector<wasp::NODE> node_types = {wasp::LBRACKET
-                                          ,wasp::STRING
+                                          ,wasp::DECL
                                            ,wasp::RBRACKET
                                           ,wasp::OBJECT_DECL
                                            // sub object
                                            ,wasp::LBRACKET
                                           ,wasp::DOT_SLASH
-                                          ,wasp::STRING
+                                          ,wasp::DECL
                                           ,wasp::RBRACKET
                                           ,wasp::SUB_OBJECT_DECL
                                            ,wasp::SUB_OBJECT_TERM
@@ -313,12 +313,12 @@ TEST(GetPotInterpreter, object_empty_subobject)
                                            ,wasp::OBJECT
                                           ,wasp::DOCUMENT_ROOT};
     std::vector<std::string> node_names = {"["
-                                           ,"string"
+                                           ,"decl"
                                            ,"]"
                                            ,"ted"
                                            ,"["
                                            ,"./"
-                                           ,"string"
+                                           ,"decl"
                                            ,"]"
                                            ,"fred"
                                            ,"[../]"
@@ -362,13 +362,13 @@ TEST(GetPotInterpreter, object_subobject)
     ASSERT_EQ(18, interpreter.node_count() );
 
     std::vector<wasp::NODE> node_types = {wasp::LBRACKET
-                                          ,wasp::STRING
+                                          ,wasp::DECL
                                            ,wasp::RBRACKET
                                           ,wasp::OBJECT_DECL
                                            // sub object
                                            ,wasp::LBRACKET
                                           ,wasp::DOT_SLASH
-                                          ,wasp::STRING
+                                          ,wasp::DECL
                                           ,wasp::RBRACKET
                                           ,wasp::SUB_OBJECT_DECL
                                           // keyed value key
@@ -380,12 +380,12 @@ TEST(GetPotInterpreter, object_subobject)
                                            ,wasp::OBJECT
                                           ,wasp::DOCUMENT_ROOT};
     std::vector<std::string> node_names = {"["
-                                           ,"string"
+                                           ,"decl"
                                            ,"]"
                                            ,"ted"
                                            ,"["
                                            ,"./"
-                                           ,"string"
+                                           ,"decl"
                                            ,"]"
                                            ,"fred"
                                            ,"decl","=","value" // key
@@ -472,8 +472,7 @@ TEST(GetPotInterpreter,simple_view)
 TEST(GetPotInterpreter,paths)
 {
     std::stringstream input;
-    input <<R"INPUT(
-[Problem]
+    input <<R"INPUT([Problem]
   coord_type = RZ
   [./child][../]
 [])INPUT";
@@ -483,7 +482,7 @@ R"INPUT(/
 /Problem
 /Problem/Problem
 /Problem/Problem/[ ([)
-/Problem/Problem/string (Problem)
+/Problem/Problem/decl (Problem)
 /Problem/Problem/] (])
 /Problem/coord_type
 /Problem/coord_type/decl (coord_type)
@@ -493,7 +492,7 @@ R"INPUT(/
 /Problem/child/child
 /Problem/child/child/[ ([)
 /Problem/child/child/./ (./)
-/Problem/child/child/string (child)
+/Problem/child/child/decl (child)
 /Problem/child/child/] (])
 /Problem/child/[../] ([../])
 /Problem/[] ([])
@@ -509,6 +508,10 @@ R"INPUT(/
     ASSERT_EQ( expected_paths, paths.str() );
 }
 
+/**
+ * @brief TEST getpot doesn't support expressions natively
+ * It just grabs them as strings
+ */
 TEST(GetPotInterpreter,expression)
 {
     std::stringstream input;
@@ -517,10 +520,112 @@ function = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)
              -4*(2-c)*(gr0^3+gr1^3+gr2^3+gr3^3)
              +3*(gr0^2+gr1^2+gr2^2+gr3^2)^2)'
 )INPUT";
+    std::vector<std::string> data=
+    {
+        "function"
+        ,"="
+        ,"'"
+        ,"A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)"
+        ,"-4*(2-c)*(gr0^3+gr1^3+gr2^3+gr3^3)"
+        ,"+3*(gr0^2+gr1^2+gr2^2+gr3^2)^2)"
+        ,"'"
+    };
+
     GetPotInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(148, interpreter.node_count() );
+    ASSERT_EQ(9, interpreter.node_count() );
     TreeNodeView document = interpreter.root();
     ASSERT_EQ(1, document.child_count() );
+    TreeNodeView fnode = document.child_at(0);
+    ASSERT_EQ(data.size(), fnode.child_count());
+    for( size_t i = 0; i < fnode.child_count(); ++i)
+    {
+        ASSERT_EQ(data[i], fnode.child_at(i).data());
+    }
+}
+/**
+ *  @brief TEST comments that are empty and with content
+ */
+TEST(GetPotInterpreter, comments )
+{
+    std::stringstream input;
+    input<<R"INPUT(#
+# comment with content
+#)INPUT";
+   GetPotInterpreter interpreter;
+   ASSERT_EQ( true, interpreter.parse(input) );
+   ASSERT_EQ(4, interpreter.node_count() );
+   TreeNodeView document = interpreter.root();
+   ASSERT_EQ(3, document.child_count() );
+   std::vector<std::string> data = {"#"
+                                    ,"# comment with content"
+                                    ,"#"
+                                   };
+   ASSERT_EQ( data.size(), document.child_count() );
+   for( size_t i = 0; i < document.child_count(); ++i)
+   {
+       ASSERT_EQ( data[i],document.child_at(i).data() );
+   }
+}
+
+TEST(GetPotInterpreter,multiple_objects)
+{
+    std::stringstream input;
+    input <<R"INPUT([Problem]
+    # Specify coordinate system type
+    coord_type = RZ
+[]
+
+[Mesh]
+    file = pelletcladmergedfine10_rz.e
+    displacements = 'disp_x disp_y'
+    patch_size = 1000 # For contact algorithm
+[])INPUT";
+
+
+    GetPotInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(34, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ(2, document.child_count() ); // problem and mesh
+
+    std::string expected_paths=R"INPUT(/
+/Problem
+/Problem/Problem
+/Problem/Problem/[ ([)
+/Problem/Problem/decl (Problem)
+/Problem/Problem/] (])
+/Problem/comment (# Specify coordinate system type)
+/Problem/coord_type
+/Problem/coord_type/decl (coord_type)
+/Problem/coord_type/= (=)
+/Problem/coord_type/value (RZ)
+/Problem/[] ([])
+/Mesh
+/Mesh/Mesh
+/Mesh/Mesh/[ ([)
+/Mesh/Mesh/decl (Mesh)
+/Mesh/Mesh/] (])
+/Mesh/file
+/Mesh/file/decl (file)
+/Mesh/file/= (=)
+/Mesh/file/value (pelletcladmergedfine10_rz.e)
+/Mesh/displacements
+/Mesh/displacements/decl (displacements)
+/Mesh/displacements/= (=)
+/Mesh/displacements/' (')
+/Mesh/displacements/value (disp_x)
+/Mesh/displacements/value (disp_y)
+/Mesh/displacements/' (')
+/Mesh/patch_size
+/Mesh/patch_size/decl (patch_size)
+/Mesh/patch_size/= (=)
+/Mesh/patch_size/value (1000)
+/Mesh/comment (# For contact algorithm)
+/Mesh/[] ([])
+)INPUT";
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ( expected_paths, paths.str() );
 }
 

@@ -6,6 +6,8 @@
 template<typename TTS, typename TITS,typename FOTS>
 TokenPool<TTS,TITS,FOTS>::TokenPool()
 {
+    m_tokens.reserve(1000000);
+    m_line_offsets.reserve(25000);
 }
 // copy constructor
 template<typename TTS, typename TITS,typename FOTS>

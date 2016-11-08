@@ -22,7 +22,7 @@ template<
 class Interpreter{
 public:
     Interpreter(std::ostream & error_stream=std::cerr);
-    ~Interpreter();
+    virtual ~Interpreter();
 
     /**
      * @brief root acquire the root of the document
@@ -30,6 +30,12 @@ public:
      */
     TreeNodeView root()const;
 
+    /**
+     * @brief node_at acquire the node at the given index in the pool
+     * @param node_pool_index the index at which to acquire the node
+     * @return the TreeNodeView from which data (name, type, data, children) can be conventienty acquired
+     */
+    TreeNodeView node_at(node_index_size node_pool_index)const;
     /**
      * @brief child_count acquire the number of child nodes for the current node
      * @return child node count
