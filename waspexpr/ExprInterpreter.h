@@ -1,17 +1,17 @@
-#ifndef WASP_GETPOTINTERPRETER_H
-#define WASP_GETPOTINTERPRETER_H
+#ifndef WASP_EXPRINTERPRETER_H
+#define WASP_EXPRINTERPRETER_H
 #include "waspcore/Interpreter.h"
-#include "waspgetpot/GetPotParser.hpp"
-#include "waspgetpot/GetPotLexer.h"
+#include "waspexpr/ExprParser.hpp"
+#include "waspexpr/ExprLexer.h"
 namespace wasp{
 
-class GetPotInterpreter : public Interpreter<default_node_type_size,default_node_index_size
+class ExprInterpreter : public Interpreter<default_node_type_size,default_node_index_size
                                             ,default_token_type_size,default_token_index_type_size
                                             ,default_file_offset_type_size>
 {
 public:
-    GetPotInterpreter(std::ostream & error_stream=std::cerr);
-    ~GetPotInterpreter();
+    ExprInterpreter(std::ostream & error_stream=std::cerr);
+    ~ExprInterpreter();
 
     /**
      * @brief parse parser the given input stream
@@ -28,7 +28,8 @@ public: // variables
     /**
      * @brief lexer - current lexer instance
      */
-    class GetPotLexerImpl* m_lexer;
+    class ExprLexerImpl* m_lexer;
 };
 } // end of namespace
+
 #endif

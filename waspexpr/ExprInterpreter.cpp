@@ -1,28 +1,25 @@
-#include "GetPotInterpreter.h"
+#include "ExprInterpreter.h"
 
 namespace wasp{
-
-GetPotInterpreter::GetPotInterpreter(std::ostream & err)
-    :
-    m_lexer(nullptr)
+ExprInterpreter::ExprInterpreter(std::ostream & err)
+    : m_lexer(nullptr)
 {
 }
-GetPotInterpreter::~GetPotInterpreter()
+ExprInterpreter::~ExprInterpreter()
 {
 }
-
-bool GetPotInterpreter::parse(std::istream& in
+bool ExprInterpreter::parse(std::istream& in
                                         , size_t startLine
                                         , size_t startColumn)
 {
-    GetPotLexerImpl lexer(m_tree_nodes.token_data(),&in);
+    ExprLexerImpl lexer(m_tree_nodes.token_data(),&in);
 //    lexer.set_debug(m_trace_lexing);
 
 //    lexer.set_debug(true);
     m_lexer = &lexer;
     m_start_line = startLine;
     m_start_column = startColumn;
-    GetPotParser parser(*this);
+    ExprParser parser(*this);
 //    parser.set_debug_level(m_trace_parsing);
 
 

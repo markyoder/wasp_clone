@@ -3,6 +3,7 @@ TRIBITS_SUBPACKAGE(core)
 TRIBITS_CONFIGURE_FILE(version.h)
 
 SET(SOURCE
+Interpreter.cpp
 StringPool.cpp
 TokenPool.cpp
 TreeNodePool.cpp
@@ -10,13 +11,15 @@ TreeNodePool.cpp
 
 SET(HEADERS
 FlexLexer.h
-wasp_node.h
+Interpreter.h
+Interpreter.i.h
 StringPool.h
 StringPool.i.h
 TokenPool.h
 TokenPool.i.h
 TreeNodePool.h
 TreeNodePool.i.h
+wasp_node.h
 )
 
 #

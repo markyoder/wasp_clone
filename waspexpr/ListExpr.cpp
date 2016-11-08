@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include "waspcore/version.h"
-#include "waspgetpot/GetPotInterpreter.h"
+#include "waspexpr/ExprInterpreter.h"
 
 using namespace wasp;
 
@@ -12,10 +12,10 @@ int main (int argc, char *argv[])
 {
     if( argc == 1 )
     {
-        std::cout<<"Workbench Analysis Sequence Processor (GetPot)"
+        std::cout<<"Workbench Analysis Sequence Processor (Expr)"
                 <<std::endl
-                <<argv[0]<<" : An application for listing GetPot formatted input."<<std::endl;
-        std::cout<<" Usage : "<<argv[0]<<" path/to/GetPot/formatted/input"
+                <<argv[0]<<" : An application for listing Expr formatted input."<<std::endl;
+        std::cout<<" Usage : "<<argv[0]<<" path/to/Expr/formatted/input"
                 <<std::endl;
         return 1;
     }
@@ -27,7 +27,7 @@ int main (int argc, char *argv[])
             input.close();
             return 1;
         }
-        GetPotInterpreter interpreter;
+        ExprInterpreter interpreter;
         bool parsed = interpreter.parse(input);
         if( !parsed )
         {
