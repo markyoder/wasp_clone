@@ -72,8 +72,8 @@
 %token <token_index>   COMMA            ","
 
 
-%token <token_index>   DOT_SLASH
-%token <token_index>   QUOTE
+%token <token_index>   DOT_SLASH        "subblock indicator ./"
+%token <token_index>   QUOTE            "'"
 %token <token_index>   INTEGER         "integer"
 %token <token_index>   REAL          "real"
 %token <token_index>   STRING          "string"
@@ -93,8 +93,9 @@
 %type <node_index>  unquoted_string
 %type <node_index>  keyedvalue dot_slash
 %type <node_index>  comment value decl primitive
-%type <node_index> object_member array_member
-%type <node_indices> object_members array_members array
+%type <node_index> object_member array_member sub_object_member
+%type <node_indices> object_members array_members array sub_object_members
+ //%type <node_indices> last_object
 
 %{
 
@@ -156,6 +157,18 @@ dot_slash : DOT_SLASH
         $$ = interpreter.push_leaf(wasp::DOT_SLASH,"./"
                          ,token_index);
     }
+sub_object_member : primitive | keyedvalue | comment
+
+
+sub_object_members : sub_object_member
+    {
+        unsigned int node_index = static_cast<unsigned int>($1);
+        $$ = new std::vector<unsigned int>();
+        $$->push_back(node_index);
+    }| sub_object_members sub_object_member
+    {
+        $1->push_back(static_cast<unsigned int>($sub_object_member));
+    }
 sub_object_decl : lbracket  dot_slash decl rbracket
     {
         unsigned int lbracket_index = static_cast<unsigned int>($lbracket);
@@ -182,13 +195,24 @@ sub_object : sub_object_decl sub_object_term
                                         ,interpreter.m_tree_nodes.name(object_decl_i)
                                         ,child_indices);
 
-    }| sub_object_decl object_members sub_object_term
-    {   std::vector<unsigned int> children; children.reserve(2+$object_members->size());
+    }| sub_object_decl sub_object_members sub_object_term
+    {   std::vector<unsigned int> children; children.reserve(2+$2->size());
         unsigned int object_decl_i = static_cast<unsigned int>($sub_object_decl);
         children.push_back(object_decl_i);
-        for( unsigned int child_i: *$object_members ) children.push_back(child_i);
+        for( unsigned int child_i: *$2 ) children.push_back(child_i);
         children.push_back(static_cast<unsigned int>($sub_object_term));
-        delete $object_members;
+        delete $2;
+
+        $$ = interpreter.push_parent(wasp::SUB_OBJECT
+                                    ,interpreter.m_tree_nodes.name(object_decl_i)
+                                    ,children);
+    }
+    | sub_object_decl sub_object_members
+    {   std::vector<unsigned int> children; children.reserve(1+$2->size());
+        unsigned int object_decl_i = static_cast<unsigned int>($sub_object_decl);
+        children.push_back(object_decl_i);
+        for( unsigned int child_i: *$2 ) children.push_back(child_i);
+        delete $2;
 
         $$ = interpreter.push_parent(wasp::SUB_OBJECT
                                     ,interpreter.m_tree_nodes.name(object_decl_i)
@@ -218,6 +242,7 @@ object_members : object_member
     {
         $1->push_back(static_cast<unsigned int>($object_member));
     }
+
 
 object : object_decl object_term
         { // empty object
@@ -358,7 +383,20 @@ start   : /** empty **/
         | start object{
             interpreter.add_root_child_index(static_cast<unsigned int>($2));
         }
+        | start object_decl object_members object
+        {
+            std::vector<unsigned int> children; children.reserve(1+$object_members->size());
+            unsigned int object_decl_i = static_cast<unsigned int>($object_decl);
+            children.push_back(object_decl_i);
+            for( unsigned int child_i: *$object_members ) children.push_back(child_i);
+            delete $object_members;
 
+            unsigned int object_i = interpreter.push_parent(wasp::OBJECT
+                                            ,interpreter.m_tree_nodes.name(object_decl_i)
+                                            ,children);
+            interpreter.add_root_child_index(object_i);
+            interpreter.add_root_child_index(static_cast<unsigned int>($object));
+        }
 
 
  /*** END RULES - Change the GetPot grammar rules above ***/

@@ -31,7 +31,7 @@ typedef wasp::GetPotParser::token_type token_type;
 
  /* enable scanner to generate debug output. disable this for release
  * versions. */
- // %option debug
+ /*%option debug*/
 
  /* no support for include files is planned */
 %option yywrap nounput
@@ -44,6 +44,7 @@ typedef wasp::GetPotParser::token_type token_type;
   */
 %x object_decl
 %s object
+%s subobject
   /* want to capture everthing except whitespace and './' as the object's name
    * [ ./ object_name ]
    */
@@ -58,7 +59,6 @@ INT [0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INT}
 REAL {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
 
-STRING [^" "\'\"\=\n\[\]\#]+
 
 
 
@@ -75,7 +75,7 @@ COMMENT #[^\n]*|%[^\n]*
  * The 'execution unit' is a rebranded SCALE sequence construct
  * where the sequence started with the unit_start rule below
  * and terminated with unit_end rule below.
- * We reproduce it here to account for the input construct
+ * We reproduce it here to account for the input construct                                                                                                                        
  * while in transition...
  */
 EXECUTION_UNIT_START ^=
@@ -93,6 +93,8 @@ AND &&
 OR \|\|
 LBRACKET \[
 OBJECT_NAME [^" "\n\[\]]+
+SUBOBJECT_NAME [^" ""./"\n\[\]]+
+STRING [^" "\'\"\=\n\[\]\#]+
 RBRACKET \]
 COMMA ,
 OBJECT_TERM \[" "*\]
@@ -123,7 +125,6 @@ DOT_SLASH \.\/
 <execution_unit>{EXECUTION_UNIT_END} {
     yy_pop_state(); // pop the execution state
     capture_token(yylval,token::EXECUTION_UNIT_END);
-//    yylval->stringVal = new std::string(yytext, yyleng);
     return token::EXECUTION_UNIT_END;
 }
 {ASSIGN} {
@@ -175,6 +176,7 @@ DOT_SLASH \.\/
 }
 <subobject_decl>{RBRACKET} {
     yy_pop_state();
+    yy_push_state(subobject);
     capture_token(yylval,token::RBRACKET);
     return token::RBRACKET;
 }
@@ -182,12 +184,12 @@ DOT_SLASH \.\/
     capture_token(yylval,token::RBRACKET);
     return token::RBRACKET;
 }
-<INITIAL,execution_unit,object>{INT} {
+<INITIAL,execution_unit,object,subobject>{INT} {
     capture_token(yylval,token::INTEGER);
     return token::INTEGER;
 }
 
-<INITIAL,execution_unit,object>{REAL} {
+<INITIAL,execution_unit,object,subobject>{REAL} {
     capture_token(yylval,token::REAL);
     return token::REAL;
 }
@@ -203,16 +205,22 @@ DOT_SLASH \.\/
     offset-=yyleng;
     m_token_data.push_line(offset);
 }
-{STRING} {
-    capture_token(yylval,token::STRING);
-//    yylval->stringVal = new std::string(yytext, yyleng);
-    return token::STRING;
-}
-
 {COMMENT} {
-//    yylval->stringVal = new std::string(yytext,yyleng);
     capture_token(yylval,token::COMMENT);
     return token::COMMENT;
+}
+ /* if we are expecting a './' and find a string
+  * This is actually an early terminating object declaration*/
+<subobject_dot_slash>{SUBOBJECT_NAME} {
+  // pop subobject state and push object_decl
+  yy_pop_state();
+  yy_push_state(object_decl);
+  capture_token(yylval,token::STRING);
+  return token::STRING;
+}
+{STRING} {
+    capture_token(yylval,token::STRING);
+    return token::STRING;
 }
 
  /* pass all other characters up to GetPot*/

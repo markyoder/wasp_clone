@@ -567,6 +567,87 @@ TEST(GetPotInterpreter, comments )
        ASSERT_EQ( data[i],document.child_at(i).data() );
    }
 }
+/**
+ * @brief TEST GetPot has the unfortunate ability to terminate blocks via a new block
+ * Test to ensure this functions as expected.
+ */
+TEST(GetPotInterpreter,early_terminated_object)
+{
+    std::stringstream input;
+    input <<R"INPUT([first_block]
+  [./subblock]
+    foo=bar
+  [../]
+ # block terminates others
+[new_block]
+    # comment in new block
+    [./subblock1]
+        bar=foo
+    [./subblock2]
+        f=b
+[])INPUT";
+
+    GetPotInterpreter interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    ASSERT_EQ(45, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ( 2, document.child_count() );
+    {
+        TreeNodeView first_block = document.child_at(0);
+        ASSERT_EQ(3, first_block.child_count() );
+        std::string name = first_block.name();
+        ASSERT_EQ("first_block", name);
+        std::vector<std::string> names={"first_block"
+                                        ,"subblock"
+                                        ,"comment"};
+        std::vector<wasp::NODE> types={wasp::OBJECT_DECL
+                                       ,wasp::SUB_OBJECT
+                                       ,wasp::COMMENT};
+        std::vector<size_t> line = {1,2,5};
+        std::vector<size_t> column = {1,3,2};
+        ASSERT_EQ(names.size(), types.size());
+        ASSERT_EQ(names.size(), line.size());
+        ASSERT_EQ(names.size(), column.size());
+        for( size_t i = 0; i < first_block.child_count(); ++i )
+        {
+            auto child = first_block.child_at(i);
+            ASSERT_EQ(names[i],child.name());
+            ASSERT_EQ(types[i],child.type());
+            ASSERT_EQ(line[i],child.line());
+            ASSERT_EQ(column[i],child.column());
+        }
+    }
+    {
+        TreeNodeView new_block = document.child_at(1);
+        ASSERT_EQ(5, new_block.child_count() );
+        std::string name = new_block.name();
+        ASSERT_EQ("new_block", name);
+        std::vector<std::string> names={"new_block"
+                                        ,"comment"
+                                        ,"subblock1"
+                                        ,"subblock2"
+                                        ,"[]"
+                                        };
+        std::vector<wasp::NODE> types={wasp::OBJECT_DECL
+                                       ,wasp::COMMENT
+                                       ,wasp::SUB_OBJECT
+                                       ,wasp::SUB_OBJECT
+                                      ,wasp::OBJECT_TERM};
+        std::vector<size_t> line =   {6,7,8,10,12};
+        std::vector<size_t> column = {1,5,5, 5, 1};
+        ASSERT_EQ(names.size(), types.size());
+        ASSERT_EQ(names.size(), line.size());
+        ASSERT_EQ(names.size(), column.size());
+        for( size_t i = 0; i < new_block.child_count(); ++i )
+        {
+            auto child = new_block.child_at(i);
+            ASSERT_EQ(names[i],child.name());
+            ASSERT_EQ(types[i],child.type());
+            ASSERT_EQ(line[i],child.line());
+            ASSERT_EQ(column[i],child.column());
+        }
+    }
+}
 
 TEST(GetPotInterpreter,multiple_objects)
 {
