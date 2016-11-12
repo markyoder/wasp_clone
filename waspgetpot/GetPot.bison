@@ -312,7 +312,7 @@ primitive : integer
            | real
            | string
 
-array_member : comma | value
+array_member : comma | value | assign
 
 array_members : array_member
     {
