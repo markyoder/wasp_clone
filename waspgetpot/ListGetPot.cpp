@@ -27,13 +27,16 @@ int main (int argc, char *argv[])
             input.close();
             return 1;
         }
-        GetPotInterpreter interpreter;
+        std::stringstream errors;
+        GetPotInterpreter interpreter(errors);
         bool parsed = interpreter.parse(input);
+        std::cout<<"Listing for '"<<argv[j]<<"'"<<std::endl;
+        interpreter.root().paths(std::cout);
         if( !parsed )
         {
+            std::cout<<errors.str()<<std::endl;
             return -1;
         }
-        interpreter.root().paths(std::cout);
     }
     return 0;
 }

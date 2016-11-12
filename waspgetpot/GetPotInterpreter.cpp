@@ -3,8 +3,8 @@
 namespace wasp{
 
 GetPotInterpreter::GetPotInterpreter(std::ostream & err)
-    :
-    m_lexer(nullptr)
+    : Interpreter(err)
+    ,m_lexer(nullptr)
 {
 }
 GetPotInterpreter::~GetPotInterpreter()
