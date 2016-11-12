@@ -69,7 +69,7 @@ LESSER_STRING [A-Za-z_][A-Za-z0-9_]*
 
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
 SINGLE_QUOTE '
-COMMENT #[^\n]*|%[^\n]*
+COMMENT #[^\n]*
 
  /*
  * The 'execution unit' is a rebranded SCALE sequence construct
@@ -201,9 +201,7 @@ DOT_SLASH \.\/
  /* gobble up end-of-lines */
 \n {
     yylloc->lines(yyleng); yylloc->step();
-    size_t offset = yyin->tellg();
-    offset-=yyleng;
-    m_token_data.push_line(offset);
+    m_token_data.push_line(file_offset-yyleng);
 }
 {COMMENT} {
     capture_token(yylval,token::COMMENT);
