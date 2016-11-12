@@ -157,7 +157,7 @@ dot_slash : DOT_SLASH
         $$ = interpreter.push_leaf(wasp::DOT_SLASH,"./"
                          ,token_index);
     }
-sub_object_member : primitive | keyedvalue | comment
+sub_object_member : primitive | keyedvalue | comment | sub_object
 
 
 sub_object_members : sub_object_member

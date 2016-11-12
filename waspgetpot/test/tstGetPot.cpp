@@ -574,6 +574,11 @@ TEST(GetPotInterpreter, comments )
 TEST(GetPotInterpreter,early_terminated_object)
 {
     std::stringstream input;
+    // The following file has the first_block
+    // with a missing terminator, explicitly terminated by
+    // the [new_block].
+    // The new_block has a subblock2 with a missing terminator,
+    // explicitly terminated by the new_block terminator
     input <<R"INPUT([first_block]
   [./subblock]
     foo=bar
@@ -582,14 +587,14 @@ TEST(GetPotInterpreter,early_terminated_object)
 [new_block]
     # comment in new block
     [./subblock1]
-        bar=foo
+        bar=foo    [../]
     [./subblock2]
         f=b
 [])INPUT";
 
     GetPotInterpreter interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(45, interpreter.node_count() );
+    ASSERT_EQ(46, interpreter.node_count() );
     TreeNodeView document = interpreter.root();
     ASSERT_EQ( 2, document.child_count() );
     {
@@ -647,6 +652,38 @@ TEST(GetPotInterpreter,early_terminated_object)
             ASSERT_EQ(column[i],child.column());
         }
     }
+}
+
+/**
+ * @brief TEST nested subblocks (subblocks within subblocks)
+ */
+TEST(GetPotInterpreter,nested_subblocks)
+{
+    std::stringstream input;
+    input<< R"INPUT([block]
+  [./subblock]
+    [./nested_subblock]
+    [../]
+  [../]
+[])INPUT";
+    GetPotInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(21, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ( 1, document.child_count() );
+    auto block = document.child_at(0);
+    ASSERT_EQ( "block", std::string(block.name()) );
+    ASSERT_EQ( wasp::OBJECT, block.type() );
+    ASSERT_EQ( 3, block.child_count() );
+    auto subblock = block.child_at(1);
+    ASSERT_EQ( "subblock", std::string(subblock.name()) );
+    ASSERT_EQ( wasp::SUB_OBJECT, subblock.type() );
+    ASSERT_EQ( 3, subblock.child_count() );
+    auto nestedsubblock = subblock.child_at(1);
+    ASSERT_EQ( "nested_subblock", std::string(nestedsubblock.name()));
+    ASSERT_EQ( wasp::SUB_OBJECT, nestedsubblock.type() );
+    ASSERT_EQ( 3, nestedsubblock.line() );
+    ASSERT_EQ( 5, nestedsubblock.column() );
 }
 
 TEST(GetPotInterpreter,multiple_objects)
