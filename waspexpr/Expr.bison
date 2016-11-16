@@ -134,8 +134,8 @@ gte      : GTE      {unsigned int token_index = static_cast<unsigned int>($1);$$
 lte      : LTE      {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::LTE      ,"<=",token_index);}
 neq      : NEQ      {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::NEQ      ,"!=",token_index);}
 eq       : EQ       {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::EQ       ,"==",token_index);}
-and      : AND      {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::AND      ,"&&",token_index);}
-or       : OR       {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::OR       ,"||",token_index);}
+and      : AND      {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::WASP_AND      ,"&&",token_index);}
+or       : OR       {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::WASP_OR       ,"||",token_index);}
 multiply : MULTIPLY {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::MULTIPLY , "*",token_index);}
 divide   : DIVIDE   {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::DIVIDE   ,"/" ,token_index);}
 plus     : PLUS     {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::PLUS     ,"+" ,token_index);}
@@ -323,7 +323,7 @@ math_exp : value // constant value or function( cos(), sin())
       std::vector<unsigned int> child_indices = {left_index
                                                  ,op_index
                                                  ,right_index};
-      $$ = interpreter.push_parent(wasp::AND
+      $$ = interpreter.push_parent(wasp::WASP_AND
                                       ,"exp"
                                       ,child_indices);
    }
@@ -335,7 +335,7 @@ math_exp : value // constant value or function( cos(), sin())
       std::vector<unsigned int> child_indices = {left_index
                                                  ,op_index
                                                  ,right_index};
-      $$ = interpreter.push_parent(wasp::OR
+      $$ = interpreter.push_parent(wasp::WASP_OR
                                       ,"exp"
                                       ,child_indices);
    }

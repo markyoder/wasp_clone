@@ -685,13 +685,13 @@ namespace wasp {
 
   case 9:
 #line 137 "Expr.bison" // lalr1.cc:859
-    {unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::AND      ,"&&",token_index);}
+    {unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_AND      ,"&&",token_index);}
 #line 690 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 10:
 #line 138 "Expr.bison" // lalr1.cc:859
-    {unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::OR       ,"||",token_index);}
+    {unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_OR       ,"||",token_index);}
 #line 696 "ExprParser.cpp" // lalr1.cc:859
     break;
 
@@ -902,7 +902,7 @@ namespace wasp {
       std::vector<unsigned int> child_indices = {left_index
                                                  ,op_index
                                                  ,right_index};
-      (yylhs.value.node_index) = interpreter.push_parent(wasp::AND
+      (yylhs.value.node_index) = interpreter.push_parent(wasp::WASP_AND
                                       ,"exp"
                                       ,child_indices);
    }
@@ -918,7 +918,7 @@ namespace wasp {
       std::vector<unsigned int> child_indices = {left_index
                                                  ,op_index
                                                  ,right_index};
-      (yylhs.value.node_index) = interpreter.push_parent(wasp::OR
+      (yylhs.value.node_index) = interpreter.push_parent(wasp::WASP_OR
                                       ,"exp"
                                       ,child_indices);
    }

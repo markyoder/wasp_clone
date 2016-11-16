@@ -644,7 +644,7 @@ namespace wasp {
   case 2:
 #line 118 "GetPot.bison" // lalr1.cc:859
     {
-        unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMA,",",token_index);
+        unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
     }
 #line 650 "GetPotParser.cpp" // lalr1.cc:859
     break;

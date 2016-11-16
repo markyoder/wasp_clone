@@ -116,7 +116,7 @@
 
 comma : COMMA
     {
-        unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::COMMA,",",token_index);
+        unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
     }
 assign : ASSIGN
     {

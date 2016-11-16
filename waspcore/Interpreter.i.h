@@ -100,3 +100,19 @@ size_t Interpreter<node_type_size,node_index_size
                      ,child_indices);
     return node_index;
 }
+template<typename node_type_size
+         ,typename node_index_size
+         ,typename token_type_size
+         ,typename token_index_type_size
+         ,typename file_offset_type_size>
+node_type_size Interpreter<node_type_size,node_index_size
+        ,token_type_size,token_index_type_size
+        ,file_offset_type_size>::type(node_index_size index )const
+{
+    // have any nodes?
+    if( m_tree_nodes.size() == 0 )
+    {
+        return wasp::UNKNOWN;
+    }
+    return this->m_tree_nodes.type( index );
+}

@@ -21,6 +21,7 @@
 
 #include "GetPotParser.hpp"
 #include "waspcore/TokenPool.h"
+#include "waspcore/wasp_node.h"
 namespace wasp {
 
 /** GetPotLexerImpl is a derived class to add some extra function to the scanner
@@ -57,10 +58,9 @@ public:
      * @brief rewind - rewind the last token (yyless(0))
      */
     void rewind();    
-    /* import the parser's token type into a local typedef */
-    typedef wasp::GetPotParser::token_type token_type;
+
     void capture_token(wasp::GetPotParser::semantic_type* yylval,
-                       token_type type);
+                       wasp::NODE type);
 
     TokenPool<> & m_token_data;
 private:

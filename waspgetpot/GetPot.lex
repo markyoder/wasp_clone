@@ -119,78 +119,78 @@ DOT_SLASH \.\/
 
 {EXECUTION_UNIT_START} {
     yy_push_state(execution_unit); // enter the 'unit' of execution
-    capture_token(yylval,token::EXECUTION_UNIT_START);
+    capture_token(yylval,wasp::EXECUTION_UNIT_START);
     return token::EXECUTION_UNIT_START;
 }
 <execution_unit>{EXECUTION_UNIT_END} {
     yy_pop_state(); // pop the execution state
-    capture_token(yylval,token::EXECUTION_UNIT_END);
+    capture_token(yylval,wasp::EXECUTION_UNIT_END);
     return token::EXECUTION_UNIT_END;
 }
 {ASSIGN} {
-    capture_token(yylval,token::ASSIGN);
+    capture_token(yylval,wasp::ASSIGN);
     return token::ASSIGN;
 }
 {COMMA} {
-    capture_token(yylval,token::COMMA);
+    capture_token(yylval,wasp::WASP_COMMA);
     return token::COMMA;
 }
 <subobject_dot_slash>{DOT_SLASH} {
     yy_pop_state();
-    capture_token(yylval,token::DOT_SLASH);
+    capture_token(yylval,wasp::DOT_SLASH);
     return token::DOT_SLASH;
 }
 {SUB_OBJECT_TERM} {
-    capture_token(yylval,token::SUB_OBJECT_TERM);
+    capture_token(yylval,wasp::SUB_OBJECT_TERM);
     return token::SUB_OBJECT_TERM;
 }
 <object>{OBJECT_TERM} {
     yy_pop_state();
-    capture_token(yylval,token::OBJECT_TERM);
+    capture_token(yylval,wasp::OBJECT_TERM);
     return token::OBJECT_TERM;
 }
 {SINGLE_QUOTE} {
-    capture_token(yylval,token::QUOTE);
+    capture_token(yylval,wasp::QUOTE);
     return token::QUOTE;
 }
 
 <object>{LBRACKET} {
     yy_push_state(subobject_dot_slash);
-    capture_token(yylval,token::LBRACKET);
+    capture_token(yylval,wasp::LBRACKET);
     return token::LBRACKET;
 }
 <INITIAL>{LBRACKET} {
     yy_push_state(object_decl);
-    capture_token(yylval,token::LBRACKET);
+    capture_token(yylval,wasp::LBRACKET);
     return token::LBRACKET;
 }
 <object_decl,subobject_decl>{OBJECT_NAME} {
-    capture_token(yylval,token::STRING);
+    capture_token(yylval,wasp::STRING);
     return token::STRING;
 }
 <object_decl>{RBRACKET} {
     yy_pop_state();
     yy_push_state(object);
-    capture_token(yylval,token::RBRACKET);
+    capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
 }
 <subobject_decl>{RBRACKET} {
     yy_pop_state();
     yy_push_state(subobject);
-    capture_token(yylval,token::RBRACKET);
+    capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
 }
 {RBRACKET} {
-    capture_token(yylval,token::RBRACKET);
+    capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
 }
 <INITIAL,execution_unit,object,subobject>{INT} {
-    capture_token(yylval,token::INTEGER);
+    capture_token(yylval,wasp::INT);
     return token::INTEGER;
 }
 
 <INITIAL,execution_unit,object,subobject>{REAL} {
-    capture_token(yylval,token::REAL);
+    capture_token(yylval,wasp::REAL);
     return token::REAL;
 }
  /* gobble up white-spaces */
@@ -204,7 +204,7 @@ DOT_SLASH \.\/
     m_token_data.push_line(file_offset-yyleng);
 }
 {COMMENT} {
-    capture_token(yylval,token::COMMENT);
+    capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
 }
  /* if we are expecting a './' and find a string
@@ -213,11 +213,11 @@ DOT_SLASH \.\/
   // pop subobject state and push object_decl
   yy_pop_state();
   yy_push_state(object_decl);
-  capture_token(yylval,token::STRING);
+  capture_token(yylval,wasp::STRING);
   return token::STRING;
 }
 {STRING} {
-    capture_token(yylval,token::STRING);
+    capture_token(yylval,wasp::STRING);
     return token::STRING;
 }
 
@@ -257,7 +257,7 @@ void GetPotLexerImpl::rewind()
 }
 void GetPotLexerImpl::capture_token(
         wasp::GetPotParser::semantic_type* yylval
-        ,token_type type)
+        ,wasp::NODE type)
 {
     size_t offset = file_offset - yyleng;
     yylval->node_index = m_token_data.size();

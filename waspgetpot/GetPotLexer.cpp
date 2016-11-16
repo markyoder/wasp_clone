@@ -1329,7 +1329,7 @@ YY_RULE_SETUP
 #line 120 "GetPot.lex"
 {
     yy_push_state(execution_unit); // enter the 'unit' of execution
-    capture_token(yylval,token::EXECUTION_UNIT_START);
+    capture_token(yylval,wasp::EXECUTION_UNIT_START);
     return token::EXECUTION_UNIT_START;
 }
 	YY_BREAK
@@ -1338,7 +1338,7 @@ YY_RULE_SETUP
 #line 125 "GetPot.lex"
 {
     yy_pop_state(); // pop the execution state
-    capture_token(yylval,token::EXECUTION_UNIT_END);
+    capture_token(yylval,wasp::EXECUTION_UNIT_END);
     return token::EXECUTION_UNIT_END;
 }
 	YY_BREAK
@@ -1346,7 +1346,7 @@ case 3:
 YY_RULE_SETUP
 #line 130 "GetPot.lex"
 {
-    capture_token(yylval,token::ASSIGN);
+    capture_token(yylval,wasp::ASSIGN);
     return token::ASSIGN;
 }
 	YY_BREAK
@@ -1354,7 +1354,7 @@ case 4:
 YY_RULE_SETUP
 #line 134 "GetPot.lex"
 {
-    capture_token(yylval,token::COMMA);
+    capture_token(yylval,wasp::WASP_COMMA);
     return token::COMMA;
 }
 	YY_BREAK
@@ -1363,7 +1363,7 @@ YY_RULE_SETUP
 #line 138 "GetPot.lex"
 {
     yy_pop_state();
-    capture_token(yylval,token::DOT_SLASH);
+    capture_token(yylval,wasp::DOT_SLASH);
     return token::DOT_SLASH;
 }
 	YY_BREAK
@@ -1371,7 +1371,7 @@ case 6:
 YY_RULE_SETUP
 #line 143 "GetPot.lex"
 {
-    capture_token(yylval,token::SUB_OBJECT_TERM);
+    capture_token(yylval,wasp::SUB_OBJECT_TERM);
     return token::SUB_OBJECT_TERM;
 }
 	YY_BREAK
@@ -1380,7 +1380,7 @@ YY_RULE_SETUP
 #line 147 "GetPot.lex"
 {
     yy_pop_state();
-    capture_token(yylval,token::OBJECT_TERM);
+    capture_token(yylval,wasp::OBJECT_TERM);
     return token::OBJECT_TERM;
 }
 	YY_BREAK
@@ -1388,7 +1388,7 @@ case 8:
 YY_RULE_SETUP
 #line 152 "GetPot.lex"
 {
-    capture_token(yylval,token::QUOTE);
+    capture_token(yylval,wasp::QUOTE);
     return token::QUOTE;
 }
 	YY_BREAK
@@ -1397,7 +1397,7 @@ YY_RULE_SETUP
 #line 157 "GetPot.lex"
 {
     yy_push_state(subobject_dot_slash);
-    capture_token(yylval,token::LBRACKET);
+    capture_token(yylval,wasp::LBRACKET);
     return token::LBRACKET;
 }
 	YY_BREAK
@@ -1406,7 +1406,7 @@ YY_RULE_SETUP
 #line 162 "GetPot.lex"
 {
     yy_push_state(object_decl);
-    capture_token(yylval,token::LBRACKET);
+    capture_token(yylval,wasp::LBRACKET);
     return token::LBRACKET;
 }
 	YY_BREAK
@@ -1414,7 +1414,7 @@ case 11:
 YY_RULE_SETUP
 #line 167 "GetPot.lex"
 {
-    capture_token(yylval,token::STRING);
+    capture_token(yylval,wasp::STRING);
     return token::STRING;
 }
 	YY_BREAK
@@ -1424,7 +1424,7 @@ YY_RULE_SETUP
 {
     yy_pop_state();
     yy_push_state(object);
-    capture_token(yylval,token::RBRACKET);
+    capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
 }
 	YY_BREAK
@@ -1434,7 +1434,7 @@ YY_RULE_SETUP
 {
     yy_pop_state();
     yy_push_state(subobject);
-    capture_token(yylval,token::RBRACKET);
+    capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
 }
 	YY_BREAK
@@ -1442,7 +1442,7 @@ case 14:
 YY_RULE_SETUP
 #line 183 "GetPot.lex"
 {
-    capture_token(yylval,token::RBRACKET);
+    capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
 }
 	YY_BREAK
@@ -1450,7 +1450,7 @@ case 15:
 YY_RULE_SETUP
 #line 187 "GetPot.lex"
 {
-    capture_token(yylval,token::INTEGER);
+    capture_token(yylval,wasp::INT);
     return token::INTEGER;
 }
 	YY_BREAK
@@ -1458,7 +1458,7 @@ case 16:
 YY_RULE_SETUP
 #line 192 "GetPot.lex"
 {
-    capture_token(yylval,token::REAL);
+    capture_token(yylval,wasp::REAL);
     return token::REAL;
 }
 	YY_BREAK
@@ -1484,7 +1484,7 @@ case 19:
 YY_RULE_SETUP
 #line 206 "GetPot.lex"
 {
-    capture_token(yylval,token::COMMENT);
+    capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
 }
 	YY_BREAK
@@ -1497,7 +1497,7 @@ YY_RULE_SETUP
   // pop subobject state and push object_decl
   yy_pop_state();
   yy_push_state(object_decl);
-  capture_token(yylval,token::STRING);
+  capture_token(yylval,wasp::STRING);
   return token::STRING;
 }
 	YY_BREAK
@@ -1505,7 +1505,7 @@ case 21:
 YY_RULE_SETUP
 #line 219 "GetPot.lex"
 {
-    capture_token(yylval,token::STRING);
+    capture_token(yylval,wasp::STRING);
     return token::STRING;
 }
 	YY_BREAK
@@ -2456,7 +2456,7 @@ void GetPotLexerImpl::rewind()
 }
 void GetPotLexerImpl::capture_token(
         wasp::GetPotParser::semantic_type* yylval
-        ,token_type type)
+        ,wasp::NODE type)
 {
     size_t offset = file_offset - yyleng;
     yylval->node_index = m_token_data.size();

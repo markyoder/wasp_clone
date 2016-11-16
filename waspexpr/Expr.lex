@@ -85,87 +85,87 @@ COMMA ,
 %}
  /*** BEGIN EXAMPLE - Change the Expr lexer rules below ***/
 {INT} {
-    capture_token(yylval,token::INTEGER);
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 {REAL} {
-    capture_token(yylval,token::REAL);
+    capture_token(yylval,wasp::REAL);
     return token::REAL;
 }
 {LTE} {
-    capture_token(yylval,token::LTE);
+    capture_token(yylval,wasp::LTE);
     return token::LTE;
 }
 {GTE}  {
-    capture_token(yylval,token::GTE);
+    capture_token(yylval,wasp::GTE);
     return token::GTE;
 }
 {LT} {
-    capture_token(yylval,token::LT);
+    capture_token(yylval,wasp::LT);
     return token::LT;
 }
 {GT}  {
-    capture_token(yylval,token::GT);
+    capture_token(yylval,wasp::GT);
     return token::GT;
 }
 {EQ} {
-    capture_token(yylval,token::EQ);
+    capture_token(yylval,wasp::EQ);
     return token::EQ;
 }
 {BANG} {
-    capture_token(yylval,token::BANG);
+    capture_token(yylval,wasp::BANG);
     return token::BANG;
 }
 {ASSIGN} {
-    capture_token(yylval,token::ASSIGN);
+    capture_token(yylval,wasp::ASSIGN);
     return token::ASSIGN;
 }
 {NEQ} {
-    capture_token(yylval,token::NEQ);
+    capture_token(yylval,wasp::NEQ);
     return token::NEQ;
 }
 {AND} {
-    capture_token(yylval,token::AND);
+    capture_token(yylval,wasp::AND);
     return token::AND;
 }
 {OR} {
-    capture_token(yylval,token::OR);
+    capture_token(yylval,wasp::OR);
     return token::OR;
 }
 {LBRACKET} {
-    capture_token(yylval,token::LBRACKET);
+    capture_token(yylval,wasp::LBRACKET);
     return token::LBRACKET;
 }
 {RBRACKET} {
-    capture_token(yylval,token::RBRACKET);
+    capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
 }
 {EXPONENT_OP} {
-    capture_token(yylval,token::EXPONENT);
+    capture_token(yylval,wasp::EXPONENT);
     return token::EXPONENT;
 }
 \* {
-    capture_token(yylval,token::MULTIPLY);
+    capture_token(yylval,wasp::MULTIPLY);
     return token::MULTIPLY;
 }
 \/ {
-  capture_token(yylval,token::DIVIDE);
+  capture_token(yylval,wasp::DIVIDE);
   return token::DIVIDE;
 }
 \+ {
-  capture_token(yylval,token::PLUS);
+  capture_token(yylval,wasp::PLUS);
   return token::PLUS;
 }
 - {
-    capture_token(yylval,token::MINUS);
+    capture_token(yylval,wasp::MINUS);
     return token::MINUS;
 }
 \( {
-  capture_token(yylval,token::LPAREN);
+  capture_token(yylval,wasp::LPAREN);
   return token::LPAREN;
 }
 \) {
- capture_token(yylval,token::RPAREN);
+ capture_token(yylval,wasp::RPAREN);
  return token::RPAREN;
 }
  /* gobble up white-spaces */
@@ -181,14 +181,14 @@ COMMA ,
     m_token_data.push_line(offset);
 }
 {STRING} {
-    capture_token(yylval,token::STRING);
+    capture_token(yylval,wasp::STRING);
 //    yylval->stringVal = new std::string(yytext, yyleng);
     return token::STRING;
 }
 
 {COMMENT} {
 //    yylval->stringVal = new std::string(yytext,yyleng);
-    capture_token(yylval,token::COMMENT);
+    capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
 }
 
@@ -228,7 +228,7 @@ void ExprLexerImpl::rewind()
 }
 void ExprLexerImpl::capture_token(
         wasp::ExprParser::semantic_type* yylval
-        ,token_type type)
+        ,wasp::NODE type)
 {
     size_t offset = file_offset - yyleng;
     yylval->node_index = m_token_data.size();

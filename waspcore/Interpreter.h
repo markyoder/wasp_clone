@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include "waspcore/TreeNodePool.h"
+#include "waspcore/wasp_node.h" // for UNKNOWN type
 
 namespace wasp{
 
@@ -73,6 +74,12 @@ public:
     size_t push_parent(node_type_size node_type
                        , const char * node_name
                        , const std::vector<node_index_size>&child_indices );
+    /**
+     * @brief type acquire the type of the node at the given index
+     * @param node_index the node index
+     * @return the type of the node from the wasp_node.h collection
+     */
+    node_type_size type(node_index_size node_index)const;
 
     size_t node_count()const{return m_tree_nodes.size();}
     size_t leaf_node_count()const{return m_tree_nodes.leaf_node_count();}
