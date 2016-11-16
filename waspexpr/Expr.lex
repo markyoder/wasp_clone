@@ -85,7 +85,7 @@ COMMA ,
 %}
  /*** BEGIN EXAMPLE - Change the Expr lexer rules below ***/
 {INT} {
-    capture_token(yylval,wasp::INTEGER);
+    capture_token(yylval,wasp::INT);
     return token::INTEGER;
 }
 {REAL} {
@@ -125,11 +125,11 @@ COMMA ,
     return token::NEQ;
 }
 {AND} {
-    capture_token(yylval,wasp::AND);
+    capture_token(yylval,wasp::WASP_AND);
     return token::AND;
 }
 {OR} {
-    capture_token(yylval,wasp::OR);
+    capture_token(yylval,wasp::WASP_OR);
     return token::OR;
 }
 {LBRACKET} {

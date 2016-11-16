@@ -1036,7 +1036,7 @@ case 1:
 YY_RULE_SETUP
 #line 87 "Expr.lex"
 {
-    capture_token(yylval,wasp::INTEGER);
+    capture_token(yylval,wasp::INT);
     return token::INTEGER;
 }
 	YY_BREAK
@@ -1116,7 +1116,7 @@ case 11:
 YY_RULE_SETUP
 #line 127 "Expr.lex"
 {
-    capture_token(yylval,wasp::AND);
+    capture_token(yylval,wasp::WASP_AND);
     return token::AND;
 }
 	YY_BREAK
@@ -1124,7 +1124,7 @@ case 12:
 YY_RULE_SETUP
 #line 131 "Expr.lex"
 {
-    capture_token(yylval,wasp::OR);
+    capture_token(yylval,wasp::WASP_OR);
     return token::OR;
 }
 	YY_BREAK
