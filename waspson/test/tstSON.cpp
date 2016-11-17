@@ -560,9 +560,37 @@ TEST( SON, int_array)
             ,wasp::ARRAY
             ,wasp::DOCUMENT_ROOT
         };
+        std::vector<wasp::NODE> token = {
+            wasp::STRING
+            ,wasp::ASSIGN
+            ,wasp::LBRACKET
+            ,wasp::INT
+            ,wasp::RBRACKET
+            ,wasp::UNKNOWN
+            ,wasp::STRING
+            ,wasp::ASSIGN
+            ,wasp::LBRACKET
+            ,wasp::INT
+            ,wasp::INT
+            ,wasp::INT
+            ,wasp::INT
+            ,wasp::RBRACKET
+            ,wasp::UNKNOWN
+            ,wasp::QUOTED_STRING
+            ,wasp::LBRACKET
+            ,wasp::INT
+            ,wasp::INT
+            ,wasp::INT
+            ,wasp::INT
+            ,wasp::RBRACKET
+            ,wasp::UNKNOWN
+            ,wasp::UNKNOWN
+        };
     ASSERT_EQ( types.size(), interpreter.node_count() );
+    ASSERT_EQ( token.size(), interpreter.node_count() );
     for( size_t i = 0; i < types.size(); ++i )
     {
         ASSERT_EQ( types[i], interpreter.type(i) );
+        ASSERT_EQ( token[i], interpreter.node_token_type(i) );
     }
 }
