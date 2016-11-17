@@ -493,7 +493,10 @@ TEST( SON, int_array)
     std::stringstream input;
     input<< R"INPUT(
             ints=[1]
-            integers=[4 5 6 7]
+            integers =
+                    [
+                        4 5 6 7
+                    ]
             "2darray"
                      [ 4 5
                        6 7 ]
