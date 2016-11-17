@@ -130,7 +130,10 @@ TEST( SON, keyed_value)
     ASSERT_EQ( types.size(), interpreter.node_count() );
     for( size_t i = 0; i < types.size(); ++i )
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ( types[i], interpreter.type(i) );
+        }
     }
 }
 TEST( SON, empty_object)
@@ -228,7 +231,10 @@ TEST( SON, empty_object)
     ASSERT_EQ( types.size(), interpreter.node_count() );
     for( size_t i = 0; i < types.size(); ++i )
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ( types[i], interpreter.type(i) );
+        }
     }
 }
 
@@ -360,7 +366,10 @@ end)INPUT";
     ASSERT_EQ( types.size(), interpreter.node_count() );
     for( size_t i = 0; i < types.size(); ++i )
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ( types[i], interpreter.type(i) );
+        }
     }
 }
 TEST( SON, execution_unit)
@@ -484,7 +493,10 @@ end)INPUT";
     ASSERT_EQ( types.size(), interpreter.node_count() );
     for( size_t i = 0; i < types.size(); ++i )
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ( types[i], interpreter.type(i) );
+        }
     }
 }
 
@@ -590,8 +602,11 @@ TEST( SON, int_array)
     ASSERT_EQ( token.size(), interpreter.node_count() );
     for( size_t i = 0; i < types.size(); ++i )
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ( types[i], interpreter.type(i) );
         ASSERT_EQ( token[i], interpreter.node_token_type(i) );
+        }
     }
 }
 TEST( SON, real_array)
@@ -696,8 +711,11 @@ TEST( SON, real_array)
     ASSERT_EQ( token.size(), interpreter.node_count() );
     for( size_t i = 0; i < types.size(); ++i )
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ( types[i], interpreter.type(i) );
         ASSERT_EQ( token[i], interpreter.node_token_type(i) );
+        }
     }
 }
 
@@ -736,6 +754,9 @@ TEST( SON, comments )
     ASSERT_EQ( types.size(), interpreter.node_count() );
     for( size_t i = 0; i < types.size(); ++i )
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ( types[i], interpreter.type(i) );
+        }
     }
 }
