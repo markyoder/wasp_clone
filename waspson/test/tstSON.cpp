@@ -331,6 +331,38 @@ TEST( SON, empty_array )
     }
 }
 
+TEST( SON, empty_execution_unit)
+{
+    std::stringstream input;
+    input<< R"INPUT(=code
+end)INPUT";
+    SONInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(5, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ( 1, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/code
+/code/uoe_start (=)
+/code/name (code)
+/code/uoe_end (end)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ( expected_paths, paths.str() );
+        std::vector<wasp::NODE> types = {
+            wasp::EXECUTION_UNIT_START
+            ,wasp::DECL
+            ,EXECUTION_UNIT_END
+            ,EXECUTION_UNIT
+            ,wasp::DOCUMENT_ROOT
+        };
+    ASSERT_EQ( types.size(), interpreter.node_count() );
+    for( size_t i = 0; i < types.size(); ++i )
+    {
+        ASSERT_EQ( types[i], interpreter.type(i) );
+    }
+}
 TEST( SON, execution_unit)
 {
     std::stringstream input;
