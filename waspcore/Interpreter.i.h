@@ -174,7 +174,7 @@ const char * Interpreter<node_type_size,node_index_size
         ,file_offset_type_size>::token_data(token_index_type_size index )const
 {
     // have any tokens?
-    auto token_pool = m_tree_nodes.token_data();
+    const auto& token_pool = m_tree_nodes.token_data();
     if( token_pool.size() == 0 )
     {
         return nullptr;
