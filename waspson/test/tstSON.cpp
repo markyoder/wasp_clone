@@ -700,3 +700,42 @@ TEST( SON, real_array)
         ASSERT_EQ( token[i], interpreter.node_token_type(i) );
     }
 }
+
+TEST( SON, comments )
+{
+    std::stringstream input;
+    input<< R"INPUT(
+% start of line
+   k=1 % trailing line
+            )INPUT";
+    SONInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(7, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ( 3, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/comment (% start of line)
+/k
+/k/decl (k)
+/k/= (=)
+/k/value (1)
+/comment (% trailing line)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ( expected_paths, paths.str() );
+        std::vector<wasp::NODE> types = {
+            wasp::COMMENT
+            ,wasp::DECL
+            ,wasp::ASSIGN
+            ,wasp::VALUE
+            ,wasp::KEYED_VALUE
+            ,wasp::COMMENT
+            ,wasp::DOCUMENT_ROOT
+        };
+    ASSERT_EQ( types.size(), interpreter.node_count() );
+    for( size_t i = 0; i < types.size(); ++i )
+    {
+        ASSERT_EQ( types[i], interpreter.type(i) );
+    }
+}
