@@ -760,3 +760,207 @@ TEST( SON, comments )
         }
     }
 }
+
+/**
+ * @brief TEST the following permutations
+ * Objects with comments, keys (w/expression), arrays, and objects
+ * Arrays with comments, scalars, keys, arrays, and objects
+ * Execution units with comments, keys, arrays and objects
+ */
+TEST( SON, SON )
+{
+    std::stringstream input;
+    input<< R"INPUT( var = 3.14 % global variable
+ g_obj { k=v a[ 1 ] g{x=y} }
+=eu
+    obj { e=-5  % unary minus of 5
+            r[ 1.0 ] n { g=d } }
+    arr [ r=5.3
+            % A array has a 2 elements, 1) subtraction expression followed by
+            % and 2) an unary minus expression
+            A[ 1.0-5 -4 ] O { g=d } ]
+end % conclusion of unit of execution
+)INPUT";
+    SONInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(81, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    // var, comment, global_obj, execution unit, comment
+    ASSERT_EQ( 5, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/var
+/var/decl (var)
+/var/= (=)
+/var/value (3.14)
+/comment (% global variable)
+/g_obj
+/g_obj/decl (g_obj)
+/g_obj/{ ({)
+/g_obj/k
+/g_obj/k/decl (k)
+/g_obj/k/= (=)
+/g_obj/k/value (v)
+/g_obj/a
+/g_obj/a/decl (a)
+/g_obj/a/[ ([)
+/g_obj/a/value (1)
+/g_obj/a/] (])
+/g_obj/g
+/g_obj/g/decl (g)
+/g_obj/g/{ ({)
+/g_obj/g/x
+/g_obj/g/x/decl (x)
+/g_obj/g/x/= (=)
+/g_obj/g/x/value (y)
+/g_obj/g/} (})
+/g_obj/} (})
+/eu
+/eu/uoe_start (=)
+/eu/name (eu)
+/eu/obj
+/eu/obj/decl (obj)
+/eu/obj/{ ({)
+/eu/obj/e
+/eu/obj/e/decl (e)
+/eu/obj/e/= (=)
+/eu/obj/e/value (-5)
+/eu/obj/comment (% unary minus of 5)
+/eu/obj/r
+/eu/obj/r/decl (r)
+/eu/obj/r/[ ([)
+/eu/obj/r/value (1.0)
+/eu/obj/r/] (])
+/eu/obj/n
+/eu/obj/n/decl (n)
+/eu/obj/n/{ ({)
+/eu/obj/n/g
+/eu/obj/n/g/decl (g)
+/eu/obj/n/g/= (=)
+/eu/obj/n/g/value (d)
+/eu/obj/n/} (})
+/eu/obj/} (})
+/eu/arr
+/eu/arr/decl (arr)
+/eu/arr/[ ([)
+/eu/arr/r
+/eu/arr/r/decl (r)
+/eu/arr/r/= (=)
+/eu/arr/r/value (5.3)
+/eu/arr/comment (% A array has a 2 elements, 1) subtraction expression followed by)
+/eu/arr/comment (% and 2) an unary minus expression)
+/eu/arr/A
+/eu/arr/A/decl (A)
+/eu/arr/A/[ ([)
+/eu/arr/A/value
+/eu/arr/A/value/value (1.0)
+/eu/arr/A/value/- (-)
+/eu/arr/A/value/value (5)
+/eu/arr/A/value (-4)
+/eu/arr/A/] (])
+/eu/arr/O
+/eu/arr/O/decl (O)
+/eu/arr/O/{ ({)
+/eu/arr/O/g
+/eu/arr/O/g/decl (g)
+/eu/arr/O/g/= (=)
+/eu/arr/O/g/value (d)
+/eu/arr/O/} (})
+/eu/arr/] (])
+/eu/uoe_end (end)
+/comment (% conclusion of unit of execution)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ( expected_paths, paths.str() );
+        std::vector<wasp::NODE> types = {
+             wasp::DECL           // /var/decl (var)
+            ,wasp::ASSIGN         // /var/= (=)
+            ,wasp::VALUE          // /var/value (3.14)
+            ,wasp::KEYED_VALUE    // /var
+            ,wasp::COMMENT        // /comment (% global variable)
+            ,wasp::DECL           // /g_obj/decl (g_obj)
+            ,wasp::LBRACE         // /g_obj/{ ({)
+            ,wasp::DECL           // /g_obj/k/decl (k)
+            ,wasp::ASSIGN         // /g_obj/k/= (=)
+            ,wasp::VALUE          // /g_obj/k/value (v)
+            ,wasp::KEYED_VALUE    // /g_obj/k
+            ,wasp::DECL           // /g_obj/a/decl (a)
+            ,wasp::LBRACKET       // /g_obj/a/[ ([)
+            ,wasp::VALUE          // /g_obj/a/value (1)
+            ,wasp::RBRACKET       // /g_obj/a/] (])
+            ,wasp::ARRAY          // /g_obj/a
+            ,wasp::DECL           // /g_obj/g/decl (g)
+            ,wasp::LBRACE         // /g_obj/g/{ ({)
+            ,wasp::DECL           // /g_obj/g/x/decl (x)
+            ,wasp::ASSIGN         // /g_obj/g/x/= (=)
+            ,wasp::VALUE          // /g_obj/g/x/value (y)
+            ,wasp::KEYED_VALUE    // /g_obj/g/x
+            ,wasp::RBRACE         // /g_obj/g/} (})
+            ,wasp::OBJECT         // /g_obj/g
+            ,wasp::RBRACE         // /g_obj/} (})
+            ,wasp::OBJECT         // /g_obj
+            ,wasp::EXECUTION_UNIT_START   // /eu/uoe_start (=)
+            ,wasp::DECL           // /eu/name (eu)
+            ,wasp::DECL           // /eu/obj/decl (obj)
+            ,wasp::LBRACE         // /eu/obj/{ ({)
+            ,wasp::DECL           // /eu/obj/e/decl (e)
+            ,wasp::ASSIGN         // /eu/obj/e/= (=)
+            ,wasp::VALUE          // /eu/obj/e/value (-5)
+            ,wasp::KEYED_VALUE    // /eu/obj/e
+            ,wasp::COMMENT        // /eu/obj/comment (% unary minus of 5)
+            ,wasp::DECL           // /eu/obj/r/decl (r)
+            ,wasp::LBRACKET       // /eu/obj/r/[ ([)
+            ,wasp::VALUE          // /eu/obj/r/value (1.0)
+            ,wasp::RBRACKET       // /eu/obj/r/] (])
+            ,wasp::ARRAY          // /eu/obj/r
+            ,wasp::DECL           // /eu/obj/n/decl (n)
+            ,wasp::LBRACE         // /eu/obj/n/{ ({)
+            ,wasp::DECL           // /eu/obj/n/g/decl (g)
+            ,wasp::ASSIGN         // /eu/obj/n/g/= (=)
+            ,wasp::VALUE          // /eu/obj/n/g/value (d)
+            ,wasp::KEYED_VALUE    // /eu/obj/n/g
+            ,wasp::RBRACE         // /eu/obj/n/} (})
+            ,wasp::OBJECT         // /eu/obj/n
+            ,wasp::RBRACE         // /eu/obj/} (})
+            ,wasp::OBJECT         // /eu/obj
+            ,wasp::DECL           // /eu/arr/decl (arr)
+            ,wasp::LBRACKET       // /eu/arr/[ ([)
+            ,wasp::DECL           // /eu/arr/r/decl (r)
+            ,wasp::ASSIGN         // /eu/arr/r/= (=)
+            ,wasp::VALUE          // /eu/arr/r/value (5.3)
+            ,wasp::KEYED_VALUE    // /eu/arr/r
+            ,wasp::COMMENT        // /eu/arr/comment (% A array has a 2 elements, 1) subtraction expression followed by)
+            ,wasp::COMMENT        // /eu/arr/comment (% and 2) an unary minus expression)
+            ,wasp::DECL           // /eu/arr/A/decl (A)
+            ,wasp::LBRACKET       // /eu/arr/A/[ ([)
+            ,wasp::VALUE          // /eu/arr/A/value/value (1.0)
+            ,wasp::MINUS          // /eu/arr/A/value/- (-)
+            ,wasp::VALUE          // /eu/arr/A/value/value (5)
+            ,wasp::MINUS          // /eu/arr/A/value
+            ,wasp::VALUE          // /eu/arr/A/value (-4)
+            ,wasp::RBRACKET       // /eu/arr/A/] (])
+            ,wasp::ARRAY          // /eu/arr/A
+            ,wasp::DECL           // /eu/arr/O/decl (O)
+            ,wasp::LBRACE         // /eu/arr/O/{ ({)
+            ,wasp::DECL           // /eu/arr/O/g/decl (g)
+            ,wasp::ASSIGN         // /eu/arr/O/g/= (=)
+            ,wasp::VALUE          // /eu/arr/O/g/value (d)
+            ,wasp::KEYED_VALUE    // /eu/arr/O/g
+            ,wasp::RBRACE         // /eu/arr/O/} (})
+            ,wasp::OBJECT         // /eu/arr/O
+            ,wasp::RBRACKET       // /eu/arr/] (])
+            ,wasp::ARRAY          // /eu/arr
+            ,wasp::EXECUTION_UNIT_END    // /eu/uoe_end (end)
+            ,wasp::EXECUTION_UNIT // /eu
+            ,wasp::COMMENT         // /comment (% conclusion of unit of execution)
+            ,wasp::DOCUMENT_ROOT   // /
+        };
+    ASSERT_EQ( types.size(), interpreter.node_count() );
+    for( size_t i = 0; i < types.size(); ++i )
+    {
+        {
+        SCOPED_TRACE(i);
+        ASSERT_EQ( types[i], interpreter.type(i) );
+        }
+    }
+}
