@@ -60,6 +60,8 @@ TEST(TreeNodePool,push_test)
         std::vector<char> child_indices;
         for(size_t i = 0; i < token_data.size(); ++i)
         {
+            {
+            SCOPED_TRACE(i);
             // capture index of new leaf node
             child_indices.push_back(static_cast<char>(i));
             tp.push_leaf(node_type[i],node_name[i].c_str()
@@ -72,6 +74,7 @@ TEST(TreeNodePool,push_test)
             ASSERT_EQ(token_offset[i]+1, tp.column(i));
             ASSERT_EQ(i+1, tp.size());
             ASSERT_EQ( token_type[i], tp.node_token_type(i) );
+            }
         }
         // add parent node
         std::string parent_name = "data";
@@ -109,6 +112,8 @@ TEST(TreeNodePool,push_test)
         std::vector<char> child_indices;
         for(size_t i = 0; i < token_data.size(); ++i)
         {
+            {
+            SCOPED_TRACE(i);
             size_t node_index = tp.size();
             // capture index of new leaf node
             child_indices.push_back(static_cast<char>(node_index));
@@ -121,6 +126,7 @@ TEST(TreeNodePool,push_test)
                         , tp.column(node_index));
             ASSERT_EQ(node_index+1, tp.size());
             ASSERT_EQ( token_type[i], tp.node_token_type(node_index) );
+            }
         }
         // add parent node
         std::string parent_name = "data";

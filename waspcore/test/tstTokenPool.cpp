@@ -178,14 +178,19 @@ TEST(TokenPool,copy_test)
     }
     std::vector<default_file_offset_type_size> line_offset={7,8};
     for( default_token_index_type_size i = 0; i < line_offset.size(); ++i){
+        {
+        SCOPED_TRACE(i);
         tp.push_line(line_offset[i]);
         ASSERT_EQ(i+1,tp.line_count());
         ASSERT_EQ(line_offset[i],tp.line_offset(i));
         ASSERT_EQ(4,tp.size()); // still only 4 tokens
+        }
     }
 
     for( default_token_index_type_size token_index = 0;
          token_index < data.size(); ++token_index ){
+        {
+        SCOPED_TRACE(token_index);
         ASSERT_EQ(4,tp.size());
         std::string str = tp.str(token_index);
         ASSERT_EQ(data[token_index],str);
@@ -193,20 +198,26 @@ TEST(TokenPool,copy_test)
         ASSERT_EQ(token_column[token_index],tp.column(token_index));
         ASSERT_EQ(token_offsets[token_index],tp.offset(token_index));
         ASSERT_EQ(token_type[token_index],tp.type(token_index));
+        }
     }
     ASSERT_EQ(2,tp.line_count());
     ASSERT_EQ(4,tp.size());
 
     TokenPool<char> copy(tp);
     for( default_token_index_type_size i = 0; i < line_offset.size(); ++i){
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ(2,copy.line_count());
         ASSERT_EQ(line_offset[i],copy.line_offset(i));
         ASSERT_EQ(4,copy.size()); // still only 4 tokens
+        }
     }
 
 
     for( default_token_index_type_size token_index = 0;
          token_index < data.size(); ++token_index ){
+        {
+        SCOPED_TRACE(token_index);
         ASSERT_EQ(4,copy.size());
         std::string str = copy.str(token_index);
         ASSERT_EQ(data[token_index],str);
@@ -214,6 +225,7 @@ TEST(TokenPool,copy_test)
         ASSERT_EQ(token_column[token_index],copy.column(token_index));
         ASSERT_EQ(token_offsets[token_index],copy.offset(token_index));
         ASSERT_EQ(token_type[token_index],copy.type(token_index));
+        }
     }
     { // pop line
         tp.pop_line();
@@ -243,6 +255,8 @@ TEST(TokenPool,single_line_column)
     TokenPool<char> tp;
     for(size_t i = 0; i < data.size(); ++i)
     {
+        {
+        SCOPED_TRACE(i);
         tp.push(data[i].c_str(),type[i],offset[i]); // line 1 column 1
         ASSERT_EQ(i+1,tp.size());
         auto str = tp.str(i);
@@ -260,6 +274,7 @@ TEST(TokenPool,single_line_column)
         ASSERT_EQ(offset[0],tp.offset(0));
         ASSERT_EQ(column[0],tp.column(0));
         ASSERT_EQ(type[0],tp.type(0));
+        }
     }
 }
 
