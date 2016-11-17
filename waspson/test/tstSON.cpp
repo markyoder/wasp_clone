@@ -140,9 +140,9 @@ TEST( SON, empty_object)
             e2{
             }
             e3 = { }
-            e4 : {}
+            'e4' : {}
             e5(id1) = { }
-            e6("id 2") : {}
+            'e6'("id 2") : {}
             )INPUT";
     SONInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
@@ -164,7 +164,7 @@ TEST( SON, empty_object)
 /e3/{ ({)
 /e3/} (})
 /e4
-/e4/decl (e4)
+/e4/decl ('e4')
 /e4/= (:)
 /e4/{ ({)
 /e4/} (})
@@ -177,7 +177,7 @@ TEST( SON, empty_object)
 /e5/{ ({)
 /e5/} (})
 /e6
-/e6/decl (e6)
+/e6/decl ('e6')
 /e6/( (()
 /e6/id ("id 2")
 /e6/) ())
