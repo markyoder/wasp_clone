@@ -232,3 +232,101 @@ TEST( SON, empty_object)
     }
 }
 
+TEST( SON, empty_array )
+{
+    std::stringstream input;
+    input<< R"INPUT(e1 []
+            e2[
+            ]
+            e3 = [ ]
+            'e4' : []
+            e5(id1) = [ ]
+            'e6'("id 2") : []
+            )INPUT";
+    SONInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(35, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ( 6, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/e1
+/e1/decl (e1)
+/e1/[ ([)
+/e1/] (])
+/e2
+/e2/decl (e2)
+/e2/[ ([)
+/e2/] (])
+/e3
+/e3/decl (e3)
+/e3/= (=)
+/e3/[ ([)
+/e3/] (])
+/e4
+/e4/decl ('e4')
+/e4/= (:)
+/e4/[ ([)
+/e4/] (])
+/e5
+/e5/decl (e5)
+/e5/( (()
+/e5/id (id1)
+/e5/) ())
+/e5/= (=)
+/e5/[ ([)
+/e5/] (])
+/e6
+/e6/decl ('e6')
+/e6/( (()
+/e6/id ("id 2")
+/e6/) ())
+/e6/= (:)
+/e6/[ ([)
+/e6/] (])
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ( expected_paths, paths.str() );
+        std::vector<wasp::NODE> types = {
+            wasp::DECL
+            ,wasp::LBRACKET
+            ,wasp::RBRACKET
+            ,wasp::ARRAY
+            ,wasp::DECL
+            ,wasp::LBRACKET
+            ,wasp::RBRACKET
+            ,wasp::ARRAY
+            ,wasp::DECL
+            ,wasp::ASSIGN
+            ,wasp::LBRACKET
+            ,wasp::RBRACKET
+            ,wasp::ARRAY
+            ,wasp::DECL
+            ,wasp::ASSIGN
+            ,wasp::LBRACKET
+            ,wasp::RBRACKET
+            ,wasp::ARRAY
+            ,wasp::DECL
+            ,wasp::LPAREN
+            ,wasp::IDENTIFIER
+            ,wasp::RPAREN
+            ,wasp::ASSIGN
+            ,wasp::LBRACKET
+            ,wasp::RBRACKET
+            ,wasp::ARRAY
+            ,wasp::DECL
+            ,wasp::LPAREN
+            ,wasp::IDENTIFIER
+            ,wasp::RPAREN
+            ,wasp::ASSIGN
+            ,wasp::LBRACKET
+            ,wasp::RBRACKET
+            ,wasp::ARRAY
+            ,wasp::DOCUMENT_ROOT
+        };
+    ASSERT_EQ( types.size(), interpreter.node_count() );
+    for( size_t i = 0; i < types.size(); ++i )
+    {
+        ASSERT_EQ( types[i], interpreter.type(i) );
+    }
+}

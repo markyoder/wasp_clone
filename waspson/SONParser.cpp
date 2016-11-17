@@ -866,7 +866,7 @@ namespace wasp {
 #line 285 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
-        (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACKET,"]",token_index);
+        (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACKET,"[",token_index);
     }
 #line 872 "SONParser.cpp" // lalr1.cc:859
     break;
@@ -1134,8 +1134,8 @@ namespace wasp {
         (yystack_[2].value.node_indices)->push_back((yystack_[1].value.node_index));
         (yystack_[2].value.node_indices)->push_back((yystack_[0].value.node_index));
         (yylhs.value.node_index) = interpreter.push_parent(wasp::ARRAY
-                                    ,interpreter.name((yystack_[2].value.node_indices)->front())
-                                        ,*(yystack_[2].value.node_indices));
+                ,wasp::strip_quotes(interpreter.data((yystack_[2].value.node_indices)->front())).c_str()
+                ,*(yystack_[2].value.node_indices));
         delete (yystack_[2].value.node_indices);
     }
 #line 1142 "SONParser.cpp" // lalr1.cc:859
@@ -1212,8 +1212,8 @@ namespace wasp {
         }
         (yystack_[3].value.node_indices)->push_back((yystack_[0].value.node_index));
         (yylhs.value.node_index) = interpreter.push_parent(wasp::ARRAY
-                                    ,interpreter.name((yystack_[3].value.node_indices)->front())
-                                        ,*(yystack_[3].value.node_indices));
+            ,wasp::strip_quotes(interpreter.data((yystack_[3].value.node_indices)->front())).c_str()
+            ,*(yystack_[3].value.node_indices));
         delete (yystack_[3].value.node_indices);
         delete (yystack_[1].value.node_indices);
 

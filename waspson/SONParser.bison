@@ -284,7 +284,7 @@ rbrace  : RBRACE
 lbracket  : LBRACKET
     {
         auto token_index = static_cast<unsigned int>($1);
-        $$ = interpreter.push_leaf(wasp::LBRACKET,"]",token_index);
+        $$ = interpreter.push_leaf(wasp::LBRACKET,"[",token_index);
     }
 rbracket  : RBRACKET
     {
@@ -506,8 +506,8 @@ array :
         $1->push_back($2);
         $1->push_back($3);
         $$ = interpreter.push_parent(wasp::ARRAY
-                                    ,interpreter.name($1->front())
-                                        ,*$1);
+                ,wasp::strip_quotes(interpreter.data($1->front())).c_str()
+                ,*$1);
         delete $1;
     }
     | declaration lbracket END
@@ -564,8 +564,8 @@ array :
         }
         $1->push_back($4);
         $$ = interpreter.push_parent(wasp::ARRAY
-                                    ,interpreter.name($1->front())
-                                        ,*$1);
+            ,wasp::strip_quotes(interpreter.data($1->front())).c_str()
+            ,*$1);
         delete $1;
         delete $3;
 
