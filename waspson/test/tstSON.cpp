@@ -487,3 +487,79 @@ end)INPUT";
         ASSERT_EQ( types[i], interpreter.type(i) );
     }
 }
+
+TEST( SON, int_array)
+{
+    std::stringstream input;
+    input<< R"INPUT(
+            ints=[1]
+            integers=[4 5 6 7]
+            "2darray"
+                     [ 4 5
+                       6 7 ]
+            )INPUT";
+    SONInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(24, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ( 3, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/ints
+/ints/decl (ints)
+/ints/= (=)
+/ints/[ ([)
+/ints/value (1)
+/ints/] (])
+/integers
+/integers/decl (integers)
+/integers/= (=)
+/integers/[ ([)
+/integers/value (4)
+/integers/value (5)
+/integers/value (6)
+/integers/value (7)
+/integers/] (])
+/2darray
+/2darray/decl ("2darray")
+/2darray/[ ([)
+/2darray/value (4)
+/2darray/value (5)
+/2darray/value (6)
+/2darray/value (7)
+/2darray/] (])
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ( expected_paths, paths.str() );
+        std::vector<wasp::NODE> types = {
+            wasp::DECL
+            ,wasp::ASSIGN
+            ,wasp::LBRACKET
+            ,wasp::VALUE
+            ,wasp::RBRACKET
+            ,wasp::ARRAY
+            ,wasp::DECL
+            ,wasp::ASSIGN
+            ,wasp::LBRACKET
+            ,wasp::VALUE
+            ,wasp::VALUE
+            ,wasp::VALUE
+            ,wasp::VALUE
+            ,wasp::RBRACKET
+            ,wasp::ARRAY
+            ,wasp::DECL
+            ,wasp::LBRACKET
+            ,wasp::VALUE
+            ,wasp::VALUE
+            ,wasp::VALUE
+            ,wasp::VALUE
+            ,wasp::RBRACKET
+            ,wasp::ARRAY
+            ,wasp::DOCUMENT_ROOT
+        };
+    ASSERT_EQ( types.size(), interpreter.node_count() );
+    for( size_t i = 0; i < types.size(); ++i )
+    {
+        ASSERT_EQ( types[i], interpreter.type(i) );
+    }
+}
