@@ -111,13 +111,7 @@
 %type <node_index>  lbrace rbrace
 %type <node_index>  filler
 %type <node_index>  decl
-%type <node_index>  integer
-%type <node_index>  double
-%type <node_index>  string  // tick
 %type <node_index>  comma
-%type <node_index>  quoted_string
-%type <node_index>  unquoted_string
-%type <node_index>  boolean
 %type <node_index>  exp value
 %type <node_index>  identifier
 %type <node_index>  array
@@ -158,16 +152,6 @@ comma : COMMA
         auto token_index = static_cast<unsigned int>($1);
         $$ = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
     }
-integer : INTEGER
-    {
-        auto token_index = static_cast<unsigned int>($1);
-        $$ = interpreter.push_leaf(wasp::INT,"int",token_index);
-    }
-double :  DOUBLE
-    {
-        auto token_index = static_cast<unsigned int>($1);
-        $$ = interpreter.push_leaf(wasp::REAL,"real",token_index);
-    }
 //tick :  TICK
 //    {
 //        auto token_index = static_cast<unsigned int>($1);
@@ -201,16 +185,7 @@ exponent :  EXPONENT
         $$ = interpreter.push_leaf(wasp::EXPONENT,"^",token_index);
     }
 BOOLEAN : TOKEN_TRUE | TOKEN_FALSE
-boolean : TOKEN_TRUE
-    {
-        auto token_index = static_cast<unsigned int>($1);
-        $$ = interpreter.push_leaf(wasp::WASP_TRUE,"bool",token_index);
-     }
-    | TOKEN_FALSE
-     {
-        auto token_index = static_cast<unsigned int>($1);
-        $$ = interpreter.push_leaf(wasp::WASP_FALSE,"bool",token_index);
-    }
+
 boolean_numeric_op : eq | neq | gt | lt | gte | lte
 
 eq : EQ
@@ -291,17 +266,6 @@ rbracket  : RBRACKET
         auto token_index = static_cast<unsigned int>($1);
         $$ = interpreter.push_leaf(wasp::RBRACKET,"]",token_index);
     }
-unquoted_string : STRING
-    {
-        auto token_index = static_cast<unsigned int>($1);
-        $$ = interpreter.push_leaf(wasp::STRING,"string",token_index);
-    }
-quoted_string : QSTRING
-    {
-        auto token_index = static_cast<unsigned int>($1);
-        $$ = interpreter.push_leaf(wasp::QUOTED_STRING,"qstring",token_index);
-    }
-string : unquoted_string | quoted_string
 
 ANY_STRING : STRING | QSTRING
 PRIMITIVE : STRING | QSTRING | INTEGER | DOUBLE | BOOLEAN
