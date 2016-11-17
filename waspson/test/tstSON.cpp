@@ -594,3 +594,109 @@ TEST( SON, int_array)
         ASSERT_EQ( token[i], interpreter.node_token_type(i) );
     }
 }
+TEST( SON, real_array)
+{
+    std::stringstream input;
+    input<< R"INPUT(
+            1=[1.0]
+            real =
+                    [
+                        4.0 5.2 1.0e6 1e-7
+                    ]
+            3.14
+                     [ 4.3 5.4
+                       6.1 7.0 ]
+            )INPUT";
+    SONInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(24, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ( 3, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/1
+/1/decl (1)
+/1/= (=)
+/1/[ ([)
+/1/value (1.0)
+/1/] (])
+/real
+/real/decl (real)
+/real/= (=)
+/real/[ ([)
+/real/value (4.0)
+/real/value (5.2)
+/real/value (1.0e6)
+/real/value (1e-7)
+/real/] (])
+/3.14
+/3.14/decl (3.14)
+/3.14/[ ([)
+/3.14/value (4.3)
+/3.14/value (5.4)
+/3.14/value (6.1)
+/3.14/value (7.0)
+/3.14/] (])
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ( expected_paths, paths.str() );
+        std::vector<wasp::NODE> types = {
+            wasp::DECL
+            ,wasp::ASSIGN
+            ,wasp::LBRACKET
+            ,wasp::VALUE
+            ,wasp::RBRACKET
+            ,wasp::ARRAY
+            ,wasp::DECL
+            ,wasp::ASSIGN
+            ,wasp::LBRACKET
+            ,wasp::VALUE
+            ,wasp::VALUE
+            ,wasp::VALUE
+            ,wasp::VALUE
+            ,wasp::RBRACKET
+            ,wasp::ARRAY
+            ,wasp::DECL
+            ,wasp::LBRACKET
+            ,wasp::VALUE
+            ,wasp::VALUE
+            ,wasp::VALUE
+            ,wasp::VALUE
+            ,wasp::RBRACKET
+            ,wasp::ARRAY
+            ,wasp::DOCUMENT_ROOT
+        };
+        std::vector<wasp::NODE> token = {
+            wasp::INT // decl
+            ,wasp::ASSIGN
+            ,wasp::LBRACKET
+            ,wasp::REAL
+            ,wasp::RBRACKET
+            ,wasp::UNKNOWN
+            ,wasp::STRING
+            ,wasp::ASSIGN
+            ,wasp::LBRACKET
+            ,wasp::REAL
+            ,wasp::REAL
+            ,wasp::REAL
+            ,wasp::REAL
+            ,wasp::RBRACKET
+            ,wasp::UNKNOWN
+            ,wasp::REAL // decl
+            ,wasp::LBRACKET
+            ,wasp::REAL
+            ,wasp::REAL
+            ,wasp::REAL
+            ,wasp::REAL
+            ,wasp::RBRACKET
+            ,wasp::UNKNOWN
+            ,wasp::UNKNOWN
+        };
+    ASSERT_EQ( types.size(), interpreter.node_count() );
+    ASSERT_EQ( token.size(), interpreter.node_count() );
+    for( size_t i = 0; i < types.size(); ++i )
+    {
+        ASSERT_EQ( types[i], interpreter.type(i) );
+        ASSERT_EQ( token[i], interpreter.node_token_type(i) );
+    }
+}
