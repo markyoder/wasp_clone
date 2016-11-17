@@ -121,6 +121,22 @@ template<typename node_type_size
          ,typename token_type_size
          ,typename token_index_type_size
          ,typename file_offset_type_size>
+token_type_size Interpreter<node_type_size,node_index_size
+        ,token_type_size,token_index_type_size
+        ,file_offset_type_size>::node_token_type(node_index_size index )const
+{
+    // have any nodes?
+    if( m_tree_nodes.size() == 0 )
+    {
+        return wasp::UNKNOWN;
+    }
+    return this->m_tree_nodes.node_token_type( index );
+}
+template<typename node_type_size
+         ,typename node_index_size
+         ,typename token_type_size
+         ,typename token_index_type_size
+         ,typename file_offset_type_size>
 const char * Interpreter<node_type_size,node_index_size
         ,token_type_size,token_index_type_size
         ,file_offset_type_size>::name(node_index_size index )const

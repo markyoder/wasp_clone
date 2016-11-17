@@ -76,6 +76,15 @@ public:
      * @return the type of the node from the wasp_node.h collection
      */
     node_type_size type(node_index_size node_index)const;
+
+    /**
+     * @brief node_token_type acquire the type of the toke backing the node at the given index
+     * @param node_index the node for which the token type is requested.
+     * @return the token type of the leaf node at the given index.
+     * If the node index is out of range, wasp::UNKNOWN is returned.
+     * If the node at the given index is not a leaf node, wasp::UNKNOWN is returned
+     */
+    token_type_size node_token_type( node_index_size node_index)const;
     /**
      * @brief name acquire the name of the node at the given index
      * @param node_index the node index
