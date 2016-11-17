@@ -1,0 +1,843 @@
+%{ /*** C/C++ Declarations ***/
+
+#include <stdio.h>
+#include <string>
+#include <vector>
+
+%}
+
+/*** yacc/bison Declarations ***/
+
+%code requires{
+#include "waspcore/utils.h"
+}
+
+/* Require bison 3 or later */
+%require "3"
+%output "SONParser.cpp"
+/* add debug output code to generated parser. disable this for release
+ * versions. */
+ /*%debug*/
+
+/* start symbol is named "start" */
+%start start
+
+/* write out a header file containing the token defines */
+%defines
+
+/* use newer C++ skeleton file */
+%skeleton "lalr1.cc"
+
+/* namespace to enclose parser in */
+%name-prefix "wasp"
+
+/* set the parser's class identifier */
+%define parser_class_name {SONParser}
+
+/* keep track of the current position within the input */
+%locations
+%initial-action
+{
+    // initialize the initial location object
+    @$.begin.filename = @$.end.filename = &interpreter.m_stream_name;
+    @$.begin.line = @$.end.line = interpreter.m_start_line;
+    @$.begin.column = @$.end.column = interpreter.m_start_column;
+};
+
+/* The interpreter is passed by reference to the parser and to the SONLexer. This
+ * provides a simple but effective pure interface, not relying on global
+ * variables. */
+%parse-param { class SONInterpreter& interpreter }
+
+/* verbose error messages */
+%error-verbose
+
+ /*** BEGIN EXAMPLE - Change the wasp grammar's tokens below ***/
+
+%union {
+        size_t token_index;
+        size_t node_index;
+        std::vector<unsigned int>* node_indices;
+}
+
+%token                  END          0  "end of file"
+%token                  EOL             "end of line"
+//%token <token_index>   TICK             '`'
+%token <token_index>   MINUS             '-'
+%token <token_index>   LPAREN           '('
+%token <token_index>   RPAREN           ')'
+%token <token_index>   LBRACKET         '['
+%token <token_index>   RBRACKET         ']'
+%token <token_index>   LBRACE           '{'
+%token <token_index>   RBRACE           '}'
+%token <token_index>   ASSIGN           '='
+%token <token_index>   COMMA            ','
+%token <token_index>   COLON            ':'
+%token <token_index>    GTE             ">="
+%token <token_index>    LT             '<'
+%token <token_index>    GT             '>'
+%token <token_index>    LTE             "<="
+%token <token_index>    NEQ             "!="
+%token <token_index>    EQ              "=="
+%token <token_index>    AND             "&&"
+%token <token_index>    OR              "||"
+%token <token_index>    BANG            '!'
+%token <token_index>    FILLER          "filler"
+%token <token_index>    MULTIPLY '*'
+%token <token_index>    DIVIDE '/'
+%token <token_index>    PLUS '+'
+%token <token_index>    EXPONENT '^'
+%token <token_index>    AMPERSAND '&'
+%token <token_index>    INTEGER         "integer"
+%token <token_index>    TOKEN_TRUE            "true"
+%token <token_index>    TOKEN_FALSE            "false"
+%token <token_index>    DOUBLE          "double"
+%token <token_index>    STRING          "string"
+%token <token_index>    QSTRING          "quoted string"
+%token <token_index>    COMMENT           "comment"
+%token <token_index>    EXECUTION_UNIT_START  "start of unit of execution"
+%token <token_index>    EXECUTION_UNIT_END  "end of unit of execution"
+
+
+
+%type <token_index> PRIMITIVE ASSIGNMENT ANY_STRING
+%type <token_index> BOOLEAN
+
+%type <node_index>  assignment
+%type <node_index>  eq neq gt lt gte lte and or unary_not
+%type <node_index>  multiply_divide boolean_numeric_op boolean_logic_op
+%type <node_index>  lparen rparen plus minus multiply divide exponent
+%type <node_index>  lbracket rbracket
+%type <node_index>  lbrace rbrace
+%type <node_index>  filler
+%type <node_index>  decl
+%type <node_index>  integer
+%type <node_index>  double
+%type <node_index>  string  // tick
+%type <node_index>  comma
+%type <node_index>  quoted_string
+%type <node_index>  unquoted_string
+%type <node_index>  boolean
+%type <node_index>  exp value
+%type <node_index>  identifier
+%type <node_index>  array
+%type <node_index>  object
+%type <node_index>  keyedvalue
+%type <node_index>  comment
+%type <node_index>  component execution_unit_end execution_unit_start execution_unit_name
+
+%type <node_index> execution_unit
+
+%type <node_indices>  members declaration
+%type <node_indices>  array_members tag
+%destructor { delete $$; } tag array_members members declaration
+%{
+
+#include "SONInterpreter.h"
+#include "SONLexer.h"
+
+/* this "connects" the bison parser in the interpreter to the flex SONLexer class
+ * object. it defines the yylex() function call to pull the next token from the
+ * current lexer object of the interpreter context. */
+#undef yylex
+#define yylex interpreter.m_lexer->lex
+
+%}
+
+%% /*** Grammar Rules ***/
+
+ /*** BEGIN - Change the wasp grammar rules below ***/
+filler : FILLER
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::FILL_EXPR,"filler",token_index);
+    }
+comma : COMMA
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
+    }
+integer : INTEGER
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::INT,"int",token_index);
+    }
+double :  DOUBLE
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::REAL,"real",token_index);
+    }
+//tick :  TICK
+//    {
+//        auto token_index = static_cast<unsigned int>($1);
+//        $$ = interpreter.push_leaf(wasp::WASP_TICK,"`",token_index);
+//    }
+multiply :  MULTIPLY
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::MULTIPLY,"*",token_index);
+    }
+divide :  DIVIDE
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::DIVIDE,"/",token_index);
+    }
+multiply_divide : multiply | divide
+plus :  PLUS
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::PLUS,"+",token_index);
+    }
+minus :  MINUS
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::MINUS,"-",token_index);
+    }
+
+exponent :  EXPONENT
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::EXPONENT,"^",token_index);
+    }
+BOOLEAN : TOKEN_TRUE | TOKEN_FALSE
+boolean : TOKEN_TRUE
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::WASP_TRUE,"bool",token_index);
+     }
+    | TOKEN_FALSE
+     {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::WASP_FALSE,"bool",token_index);
+    }
+boolean_numeric_op : eq neq gt lt gte lte
+
+eq : EQ
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::EQ,"=",token_index);
+    }
+neq : NEQ
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::NEQ,"!=",token_index);
+    }
+gte: GTE
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::GTE,">=",token_index);
+    }
+gt: GT
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::GT,">",token_index);
+    }
+lte: LTE
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::LTE,"<=",token_index);
+    }
+lt: LT
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::LT,"<",token_index);
+    }
+boolean_logic_op : and or
+and: AND
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::WASP_AND,"&&",token_index);
+    }
+or: OR
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::WASP_OR,"||",token_index);
+    }
+
+unary_not : BANG
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::UNARY_NOT,"!",token_index);
+    }
+
+lparen  : LPAREN
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::LPAREN,"(",token_index);
+    }
+rparen  : RPAREN
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::RPAREN,")",token_index);
+    }
+lbrace  : LBRACE
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::LBRACE,"{",token_index);
+    }
+rbrace  : RBRACE
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::RBRACE,"}",token_index);
+    }
+lbracket  : LBRACKET
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::LBRACKET,"]",token_index);
+    }
+rbracket  : RBRACKET
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::RBRACKET,"]",token_index);
+    }
+unquoted_string : STRING
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::STRING,"string",token_index);
+    }
+quoted_string : QSTRING
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::QUOTED_STRING,"qstring",token_index);
+    }
+string : unquoted_string | quoted_string
+
+ANY_STRING : STRING | QSTRING
+PRIMITIVE : STRING | QSTRING | INTEGER | DOUBLE | BOOLEAN
+
+value : PRIMITIVE
+{
+    unsigned int token_index = static_cast<unsigned int>($1);
+    $$ = interpreter.push_leaf(wasp::VALUE,"value"
+                     ,token_index);
+}
+%right OBJECT ARRAY;
+%right ASSIGN;
+%left  COMMA;
+%left AND OR ;
+%left LT GT LTE GTE EQ NEQ ;
+%left PLUS MINUS;
+%left MULTIPLY DIVIDE;
+%left UMINUS UNOT ;
+
+%right EXPONENT;
+
+
+component : value
+
+exp : component
+    |exp multiply_divide exp %prec MULTIPLY
+    {
+          unsigned int left_i = static_cast<unsigned int>($1);
+          unsigned int op_i = static_cast<unsigned int>($2);
+          unsigned int right_i = static_cast<unsigned int>($3);
+          std::vector<unsigned int> child_indices = {left_i
+                                                     ,op_i
+                                                     ,right_i
+                                                     };
+
+          $$ = interpreter.push_parent(interpreter.type(op_i)
+                                          ,"expr"
+                                          ,child_indices);
+    }
+    | exp plus exp %prec PLUS
+    {
+        unsigned int left_i = static_cast<unsigned int>($1);
+        unsigned int op_i = static_cast<unsigned int>($2);
+        unsigned int right_i = static_cast<unsigned int>($3);
+        std::vector<unsigned int> child_indices = {left_i
+                                                   ,op_i
+                                                   ,right_i
+                                                   };
+
+        $$ = interpreter.push_parent(interpreter.type(op_i)
+                                        ,"expr"
+                                        ,child_indices);
+    }
+    | exp minus exp %prec MINUS
+    {
+        unsigned int left_i = static_cast<unsigned int>($1);
+        unsigned int op_i = static_cast<unsigned int>($2);
+        unsigned int right_i = static_cast<unsigned int>($3);
+        std::vector<unsigned int> child_indices = {left_i
+                                                   ,op_i
+                                                   ,right_i
+                                                   };
+
+        $$ = interpreter.push_parent(interpreter.type(op_i)
+                                        ,"expr"
+                                        ,child_indices);
+    }
+    | exp exponent exp %prec EXPONENT
+    {
+        unsigned int left_i = static_cast<unsigned int>($1);
+        unsigned int op_i = static_cast<unsigned int>($2);
+        unsigned int right_i = static_cast<unsigned int>($3);
+        std::vector<unsigned int> child_indices = {left_i
+                                                   ,op_i
+                                                   ,right_i
+                                                   };
+
+        $$ = interpreter.push_parent(interpreter.type(op_i)
+                                        ,"expr"
+                                        ,child_indices);
+    }
+    | exp boolean_numeric_op exp %prec EQ
+    {
+        unsigned int left_i = static_cast<unsigned int>($1);
+        unsigned int op_i = static_cast<unsigned int>($2);
+        unsigned int right_i = static_cast<unsigned int>($3);
+        std::vector<unsigned int> child_indices = {left_i
+                                                   ,op_i
+                                                   ,right_i
+                                                   };
+
+        $$ = interpreter.push_parent(interpreter.type(op_i)
+                                        ,"expr"
+                                        ,child_indices);
+    }
+
+    | exp boolean_logic_op exp %prec AND
+    {
+        unsigned int left_i = static_cast<unsigned int>($1);
+        unsigned int op_i = static_cast<unsigned int>($2);
+        unsigned int right_i = static_cast<unsigned int>($3);
+        std::vector<unsigned int> child_indices = {left_i
+                                                   ,op_i
+                                                   ,right_i
+                                                   };
+
+        $$ = interpreter.push_parent(interpreter.type(op_i)
+                                        ,"expr"
+                                        ,child_indices);
+    }    
+    | lparen exp rparen %prec "exp"
+    {
+        unsigned int left_i = static_cast<unsigned int>($1);
+        unsigned int center_i = static_cast<unsigned int>($2);
+        unsigned int right_i = static_cast<unsigned int>($3);
+        std::vector<unsigned int> child_indices = {left_i
+                                                   ,center_i
+                                                   ,right_i
+                                                   };
+
+        $$ = interpreter.push_parent(wasp::PARENTHESIS
+                                        ,"expr"
+                                        ,child_indices);
+    }
+    | minus exp %prec UMINUS
+    {
+        unsigned int op_i = static_cast<unsigned int>($1);
+        unsigned int right_i = static_cast<unsigned int>($2);
+        std::vector<unsigned int> child_indices = {op_i
+                                                   ,right_i
+                                                   };
+
+        $$ = interpreter.push_parent(interpreter.type(op_i)
+                                        ,"expr"
+                                        ,child_indices);
+    }
+    | unary_not exp %prec UNOT
+    {
+        unsigned int op_i = static_cast<unsigned int>($1);
+        unsigned int right_i = static_cast<unsigned int>($2);
+        std::vector<unsigned int> child_indices = {op_i
+                                                   ,right_i
+                                                   };
+
+        $$ = interpreter.push_parent(interpreter.type(op_i)
+                                        ,"expr"
+                                        ,child_indices);
+    }
+
+execution_unit_end : EXECUTION_UNIT_END
+{
+    auto token_index = static_cast<unsigned int>($1);
+    $$ = interpreter.push_leaf(wasp::EXECUTION_UNIT_END,"uoe_end",token_index);
+}
+execution_unit_start : EXECUTION_UNIT_START
+{
+    auto token_index = static_cast<unsigned int>($1);
+    $$ = interpreter.push_leaf(wasp::EXECUTION_UNIT_START,"uoe_start",token_index);
+}
+identifier : PRIMITIVE
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::IDENTIFIER,"id",token_index);
+    }
+decl : PRIMITIVE
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        std::string quote_less_data = interpreter.token_data(token_index);
+        quote_less_data = wasp::strip_quotes(quote_less_data);
+        $$ = interpreter.push_leaf(wasp::DECL
+                                   ,"decl"
+                                   ,token_index);
+    }
+ASSIGNMENT : ASSIGN | COLON
+assignment : ASSIGNMENT {
+             auto token_index = static_cast<unsigned int>($1);
+             $$ = interpreter.push_leaf(wasp::ASSIGN,"=",token_index);
+            }
+declaration : tag assignment
+        {
+             $$ = $1;
+             $$->push_back($2);
+
+        }        
+tag :   decl
+        {
+             $$ = new std::vector<unsigned int>();
+             $$->push_back($decl);
+        }
+        | decl lparen identifier rparen
+        {
+            $$ = new std::vector<unsigned int>();
+            $$->push_back($1);
+            $$->push_back($2);
+            $$->push_back($3);
+            $$->push_back($4);
+        }
+array :
+    declaration lbracket rbracket
+    {
+        $1->push_back($2);
+        $1->push_back($3);
+        $$ = interpreter.push_parent(wasp::ARRAY
+                                    ,interpreter.name($1->front())
+                                        ,*$1);
+        delete $1;
+    }
+    | declaration lbracket END
+    {
+        $1->push_back($2);
+        std::string name = interpreter.name($1->front());
+        $$ = interpreter.push_parent(wasp::ARRAY
+                                    , name.c_str()
+                                        ,*$1);
+        delete $1;
+        error(@2, name+" has unmatched left bracket!");
+        delete $1;
+        YYERROR;
+    }
+    | declaration lbracket array_members END
+    {
+        std::string name = interpreter.name($1->front());
+        auto last_component_type = interpreter.type($1->back());
+        // TODO capture partial definition
+        if( $3->size() ==0 ) error(@2, name+" has unmatched left bracket!");
+        else if( last_component_type == wasp::ARRAY ) error(@2, name+" or one of its components has unmatched left bracket!");
+        else error(@2, name+" has unmatched left bracket!");
+
+        delete $1;
+        YYERROR;
+    }
+    | declaration lbracket execution_unit_end
+    {
+        // TODO capture partial definition
+        std::string name = interpreter.name($1->front());
+        error(@2, name+" has unmatched left bracket!");
+        delete $1;
+        YYERROR;
+    }
+    | declaration lbracket array_members execution_unit_end
+    {
+        std::string name = interpreter.name($1->front());
+        auto last_component_type = interpreter.type($1->back());
+        // TODO capture partial definition
+        if( $3->size() ==0 ) error(@2, name+" has unmatched left bracket!");
+        else if( last_component_type == wasp::ARRAY ) error(@2, name+" or one of its components has unmatched left bracket!");
+        else error(@2, name+" has unmatched left bracket!");
+
+        delete $3;
+        delete $1;
+        YYERROR;
+    }
+    |declaration lbracket array_members rbracket
+    {
+        $1->push_back($2);
+        for( size_t i = 0; i < $3->size(); ++i )
+        {
+            $1->push_back( $3->at( i ) );
+        }
+        $1->push_back($4);
+        $$ = interpreter.push_parent(wasp::ARRAY
+                                    ,interpreter.name($1->front())
+                                        ,*$1);
+        delete $1;
+        delete $3;
+
+    }
+object : declaration lbrace rbrace
+    {
+        $1->push_back($2);
+        $1->push_back($3);
+        const char * name = interpreter.name($1->front());
+        $$ = interpreter.push_parent(wasp::OBJECT
+                                    ,name
+                                    ,*$1);
+        delete $1;
+    }    
+    | declaration lbrace END
+    {
+        $1->push_back($2);
+        std::string name = interpreter.name($1->front());
+        $$ = interpreter.push_parent(wasp::OBJECT
+                                     , name.c_str()
+                                     , *$1);
+        delete $1;
+        error(@2, name+" has unmatched left brace!");
+        YYERROR;
+    }
+    | declaration lbrace members END
+    {
+        // TODO capture partial definition
+        std::string name = interpreter.name($1->front());
+        auto last_component_type = interpreter.type($1->back());
+        if( $3->size() ==0 ) error(@2, name+" has unmatched left brace!");
+        else if( last_component_type == wasp::OBJECT ) error(@2, name+" or one of its components has unmatched left brace!");
+        else error(@2, name+" has unmatched left brace!");
+        delete $3;
+        delete $1;
+        YYERROR;
+    }
+    | declaration lbrace execution_unit_end
+    {
+        $1->push_back($2);
+        std::string name = interpreter.name($1->front());
+        $$ = interpreter.push_parent( wasp::OBJECT
+                                     , name.c_str()
+                                     , *$1);
+        error(@2, name+" has unmatched left brace!");
+        delete $1;
+        YYERROR;
+    }
+    | declaration lbrace members execution_unit_end
+    {
+        // TODO capture partial definition
+        std::string name = interpreter.name($1->front());
+        auto last_component_type = interpreter.type($1->back());
+        if( $3->size() ==0 ) error(@2, name+" has unmatched left brace!");
+        else if( last_component_type == wasp::OBJECT ) error(@2, name+" or one of its components has unmatched left brace!");
+        else error(@2, name+" has unmatched left brace!");
+
+        delete $3;
+        delete $1;
+        YYERROR;
+    }
+    | declaration lbrace members rbrace
+    {
+        $1->push_back($2);
+        for( size_t i = 0; i < $3->size(); ++i )
+        {
+            $1->push_back( $3->at( i ) );
+        }
+        $1->push_back($4);
+        $$ = interpreter.push_parent(wasp::OBJECT
+                                    ,interpreter.name($1->front())
+                                        ,*$1);
+        delete $1;
+        delete $3;
+    }
+
+
+keyedvalue : declaration exp
+    {
+        $1->push_back($2);
+        std::string quote_less_data = interpreter.data($1->front());
+        quote_less_data = wasp::strip_quotes(quote_less_data);
+        $$ = interpreter.push_parent(wasp::KEYED_VALUE
+                                     // use the data instead of the name
+                                     // this provides the following tree
+                                     // data
+                                     //  |_ decl (data)
+                                     //  |_ = (=)
+                                     //  |_ value (1.2..blah)
+                                    ,quote_less_data.c_str()
+                                    ,*$1);
+        delete $1;
+    }
+
+members :
+        filler
+        {
+            $$ = new std::vector<unsigned int>();
+            $$->push_back($1);
+        }
+        | members filler
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
+        |object
+        {
+            $$ = new std::vector<unsigned int>();
+            $$->push_back($1);
+        }
+        | members object
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
+        | array
+        {
+            $$ = new std::vector<unsigned int>();
+            $$->push_back($1);
+        }
+        | members array
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
+        | keyedvalue
+        {
+            $$ = new std::vector<unsigned int>();
+            $$->push_back($1);
+        }
+        | members keyedvalue
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
+        | comment
+        {
+            $$ = new std::vector<unsigned int>();
+            $$->push_back($1);
+        }
+        | members comment
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
+        | members comma
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
+     
+array_members : 
+        exp
+        {
+            $$ = new std::vector<unsigned int>();
+            $$->push_back($1);
+        }
+        | array_members exp
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
+        |
+        filler
+        {
+            $$ = new std::vector<unsigned int>();
+            $$->push_back($1);
+        }
+        | array_members filler
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
+        |object
+        {
+            $$ = new std::vector<unsigned int>();
+            $$->push_back($1);
+        }
+        | array_members object
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
+        | array
+        {
+            $$ = new std::vector<unsigned int>();
+            $$->push_back($1);
+        }
+        | array_members array
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
+        | keyedvalue
+        {
+            $$ = new std::vector<unsigned int>();
+            $$->push_back($1);
+        }
+        | array_members keyedvalue
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
+        | comment
+        {
+            $$ = new std::vector<unsigned int>();
+            $$->push_back($1);
+        }
+        | array_members comment
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
+        | array_members comma
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
+
+comment : COMMENT
+        {
+            auto token_index = static_cast<unsigned int>($1);
+            $$ = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
+        }
+execution_unit_name : ANY_STRING
+        {
+            auto token_index = static_cast<unsigned int>($1);
+            $$ = interpreter.push_leaf(wasp::DECL,"name",token_index);
+        }
+execution_unit : execution_unit_start execution_unit_name execution_unit_end
+       { // account for an empty execution unit
+            unsigned int start_i = static_cast<unsigned int>($1);
+            unsigned int name_i = static_cast<unsigned int>($2);
+            unsigned int end_i = static_cast<unsigned int>($3);
+            std::vector<unsigned int> child_indices = {start_i
+                                                       ,name_i
+                                                       ,end_i
+                                                       };
+
+            $$ = interpreter.push_parent(wasp::EXECUTION_UNIT
+                                            ,interpreter.name(name_i)
+                                            ,child_indices);
+       }
+      | execution_unit_start execution_unit_name members execution_unit_end
+      { // execution unit with members
+            unsigned int start_i = static_cast<unsigned int>($1);
+            unsigned int name_i = static_cast<unsigned int>($2);
+            unsigned int end_i = static_cast<unsigned int>($4);
+            std::vector<unsigned int> child_indices = {start_i
+                                                       ,name_i
+                                                       };
+            for( size_t i = 0; i < $members->size(); ++ i )
+            {
+                child_indices.push_back( $members->at(i) );
+            }
+            child_indices.push_back(end_i);
+            delete $members;
+            $$ = interpreter.push_parent(wasp::EXECUTION_UNIT
+                                            ,interpreter.name(name_i)
+                                            ,child_indices);
+       }
+start   : /** empty **/
+        | start comment{interpreter.add_root_child_index(static_cast<unsigned int>($2)); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
+        | start array{interpreter.add_root_child_index(static_cast<unsigned int>($2)); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
+        | start keyedvalue{interpreter.add_root_child_index(static_cast<unsigned int>($2)); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
+        | start object{interpreter.add_root_child_index(static_cast<unsigned int>($2)); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
+        | start execution_unit{interpreter.add_root_child_index(static_cast<unsigned int>($2));if(interpreter.isSingleParse() ) {YYACCEPT;}}
+
+ /*** END RULES - Change the wasp grammar rules above ***/
+
+%% /*** Additional Code ***/
+
+void wasp::SONParser::error(const SONParser::location_type& l,
+                           const std::string& m)
+{
+    interpreter.error(l, m);
+}

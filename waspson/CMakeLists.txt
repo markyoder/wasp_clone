@@ -1,0 +1,63 @@
+##---------------------------------------------------------------------------##
+## Standard Object Notation (SON)/CMakeLists.txt
+## Robert A. Lefebvre
+## Wednesday September 25 12:41 2013
+##---------------------------------------------------------------------------##
+## Copyright (C) 2011 Oak Ridge National Laboratory, UT-Battelle, LLC.
+##---------------------------------------------------------------------------##
+## CMAKE for SON
+##---------------------------------------------------------------------------##
+
+
+TRIBITS_SUBPACKAGE(son)
+SET_DEFAULT(DBC 0)
+SET_DEFAULT(TIMING 0)
+SET_DEFAULT(DEBUG_OUTPUT 0)
+TRIBITS_CONFIGURE_FILE(son_config.h)
+##---------------------------------------------------------------------------##
+## INCLUDES
+
+##---------------------------------------------------------------------------##
+## HEADER AND SOURCE FILES
+##---------------------------------------------------------------------------##
+
+# C/C++ headers
+FILE(GLOB HEADERS *.h *.hh *.hpp *.lex *.bison
+    "${CMAKE_CURRENT_BINARY_DIR}/*.h"
+    )
+
+# c++ files
+SET(SOURCES
+SONInterpreter.cpp
+SONLexer.cpp
+SONParser.cpp
+)
+##---------------------------------------------------------------------------##
+## PACKAGE TARGETS AND INSTALL
+##---------------------------------------------------------------------------##
+
+TRIBITS_ADD_LIBRARY(
+  waspson
+  SOURCES ${SOURCES}
+  NOINSTALLHEADERS ${HEADERS})
+
+INSTALL(FILES
+  ${HEADERS}
+  DESTINATION
+  include/waspson)
+
+TRIBITS_ADD_EXECUTABLE(sonls
+  NOEXEPREFIX
+  NOEXESUFFIX
+  SOURCES ListSON.cpp
+  INSTALLABLE
+)
+#
+# Add test directory for this package
+#
+TRIBITS_ADD_TEST_DIRECTORIES(test)
+
+##---------------------------------------------------------------------------##
+##                   end of SON/CMakeLists.txt
+##---------------------------------------------------------------------------##
+TRIBITS_SUBPACKAGE_POSTPROCESS()

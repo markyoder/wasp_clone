@@ -116,3 +116,93 @@ node_type_size Interpreter<node_type_size,node_index_size
     }
     return this->m_tree_nodes.type( index );
 }
+template<typename node_type_size
+         ,typename node_index_size
+         ,typename token_type_size
+         ,typename token_index_type_size
+         ,typename file_offset_type_size>
+const char * Interpreter<node_type_size,node_index_size
+        ,token_type_size,token_index_type_size
+        ,file_offset_type_size>::name(node_index_size index )const
+{
+    // have any nodes?
+    if( m_tree_nodes.size() == 0 )
+    {
+        return nullptr;
+    }
+    return this->m_tree_nodes.name( index );
+}
+template<typename node_type_size
+         ,typename node_index_size
+         ,typename token_type_size
+         ,typename token_index_type_size
+         ,typename file_offset_type_size>
+std::string Interpreter<node_type_size,node_index_size
+        ,token_type_size,token_index_type_size
+        ,file_offset_type_size>::data(node_index_size index )const
+{
+    // have any nodes?
+    if( m_tree_nodes.size() == 0 )
+    {
+        return "";
+    }
+    return this->m_tree_nodes.data( index );
+}
+template<typename node_type_size
+         ,typename node_index_size
+         ,typename token_type_size
+         ,typename token_index_type_size
+         ,typename file_offset_type_size>
+const char * Interpreter<node_type_size,node_index_size
+        ,token_type_size,token_index_type_size
+        ,file_offset_type_size>::token_data(token_index_type_size index )const
+{
+    // have any tokens?
+    auto token_pool = m_tree_nodes.token_data();
+    if( token_pool.size() == 0 )
+    {
+        return nullptr;
+    }
+    return token_pool.str( index );
+}
+
+template<typename node_type_size
+          ,typename node_index_size
+          ,typename token_type_size
+          ,typename token_index_type_size
+          ,typename file_offset_type_size>
+template<class LEXER_IMPL
+         ,class PARSER_IMPL
+         ,class INTERPRETER_IMPL>
+bool Interpreter<node_type_size,node_index_size
+,token_type_size,token_index_type_size
+,file_offset_type_size>::parse_impl( LEXER_IMPL *& m_lexer
+        , std::istream &in
+        , const std::string& stream_name
+        , size_t start_line
+        , size_t start_column)
+{
+    m_stream_name = stream_name;
+    LEXER_IMPL lexer(m_tree_nodes.token_data(),&in);
+//    lexer.set_debug(m_trace_lexing);
+
+//    lexer.set_debug(true);
+    m_lexer = &lexer;
+    m_start_line = start_line;
+    m_start_column = start_column;
+    PARSER_IMPL parser(dynamic_cast<INTERPRETER_IMPL&>(*this));
+//    parser.set_debug_level(true);
+
+
+    bool parsed = parser.parse() == 0;
+
+    if( !m_root_child_indices.empty() )
+    {
+        m_root_index = push_parent(wasp::DOCUMENT_ROOT
+                                   ,"document"
+                                   ,m_root_child_indices);
+        m_root_child_indices.clear();
+    }
+    m_lexer = nullptr;
+    return parsed;
+}

@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 #include "waspcore/TreeNodePool.h"
-#include "waspcore/wasp_node.h" // for UNKNOWN type
+#include "waspcore/wasp_node.h" // for UNKNOWN, DOCUMENT_ROOT NODE types
 
 namespace wasp{
 
@@ -37,11 +37,7 @@ public:
      * @return the TreeNodeView from which data (name, type, data, children) can be conventienty acquired
      */
     TreeNodeView node_at(node_index_size node_pool_index)const;
-    /**
-     * @brief child_count acquire the number of child nodes for the current node
-     * @return child node count
-     */
-    size_t child_count()const;
+
 
     /**
      * @brief parse parser the given input stream
@@ -80,6 +76,24 @@ public:
      * @return the type of the node from the wasp_node.h collection
      */
     node_type_size type(node_index_size node_index)const;
+    /**
+     * @brief name acquire the name of the node at the given index
+     * @param node_index the node index
+     * @return the name of the node
+     */
+    const char * name(node_index_size node_index)const;
+    /**
+     * @brief data acquire the data of the node at the given index
+     * @param node_index
+     * @return
+     */
+    std::string data(node_index_size node_index)const;
+    /**
+     * @brief token_data acquires the data for the token at the given index
+     * @param token_index the index of the token for which the data is requested
+     * @return the data of the token
+     */
+    const char * token_data( token_index_type_size token_index )const;
 
     size_t node_count()const{return m_tree_nodes.size();}
     size_t leaf_node_count()const{return m_tree_nodes.leaf_node_count();}
@@ -92,7 +106,19 @@ public:
      */
     void add_root_child_index(token_index_type_size node_index)
                 {m_root_child_indices.push_back(node_index);}
+protected:
+    template<class LEXER_IMPL
+             ,class PARSER_IMPL
+             ,class INTERPRETER_IMPL>
+    bool parse_impl( LEXER_IMPL *& lexer
+            , std::istream &input
+            , const std::string& stream_name
+            , size_t m_start_line
+            , size_t m_start_column);
+
 public: // variables
+
+
     /**
      * @brief m_start_column - the starting colum to start parsing at (default 1)
      */
@@ -111,6 +137,8 @@ public: // variables
      * @param m - the error message
      */
     void error(const class location& l, const std::string& m);
+
+    std::ostream & error_stream(){return m_error_stream;}
 private:
     /**
      * @brief err - the error stream to report on

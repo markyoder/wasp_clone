@@ -7,6 +7,7 @@ Interpreter.cpp
 StringPool.cpp
 TokenPool.cpp
 TreeNodePool.cpp
+utils.cpp
 )
 
 SET(HEADERS
@@ -19,6 +20,7 @@ TokenPool.h
 TokenPool.i.h
 TreeNodePool.h
 TreeNodePool.i.h
+utils.h
 wasp_node.h
 )
 
