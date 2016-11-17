@@ -1581,8 +1581,8 @@ namespace wasp {
                                                        };
 
             (yylhs.value.node_index) = interpreter.push_parent(wasp::EXECUTION_UNIT
-                                            ,interpreter.name(name_i)
-                                            ,child_indices);
+                        ,wasp::strip_quotes(interpreter.data(name_i)).c_str()
+                        ,child_indices);
        }
 #line 1588 "SONParser.cpp" // lalr1.cc:859
     break;
@@ -1603,8 +1603,8 @@ namespace wasp {
             child_indices.push_back(end_i);
             delete (yystack_[1].value.node_indices);
             (yylhs.value.node_index) = interpreter.push_parent(wasp::EXECUTION_UNIT
-                                            ,interpreter.name(name_i)
-                                            ,child_indices);
+                        ,wasp::strip_quotes(interpreter.data(name_i)).c_str()
+                        ,child_indices);
        }
 #line 1610 "SONParser.cpp" // lalr1.cc:859
     break;

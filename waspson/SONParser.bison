@@ -805,8 +805,8 @@ execution_unit : execution_unit_start execution_unit_name execution_unit_end
                                                        };
 
             $$ = interpreter.push_parent(wasp::EXECUTION_UNIT
-                                            ,interpreter.name(name_i)
-                                            ,child_indices);
+                        ,wasp::strip_quotes(interpreter.data(name_i)).c_str()
+                        ,child_indices);
        }
       | execution_unit_start execution_unit_name members execution_unit_end
       { // execution unit with members
@@ -823,8 +823,8 @@ execution_unit : execution_unit_start execution_unit_name execution_unit_end
             child_indices.push_back(end_i);
             delete $members;
             $$ = interpreter.push_parent(wasp::EXECUTION_UNIT
-                                            ,interpreter.name(name_i)
-                                            ,child_indices);
+                        ,wasp::strip_quotes(interpreter.data(name_i)).c_str()
+                        ,child_indices);
        }
 start   : /** empty **/
         | start comment{interpreter.add_root_child_index(static_cast<unsigned int>($2)); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
