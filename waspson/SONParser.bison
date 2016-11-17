@@ -211,7 +211,7 @@ boolean : TOKEN_TRUE
         auto token_index = static_cast<unsigned int>($1);
         $$ = interpreter.push_leaf(wasp::WASP_FALSE,"bool",token_index);
     }
-boolean_numeric_op : eq neq gt lt gte lte
+boolean_numeric_op : eq | neq | gt | lt | gte | lte
 
 eq : EQ
     {
@@ -243,7 +243,7 @@ lt: LT
         auto token_index = static_cast<unsigned int>($1);
         $$ = interpreter.push_leaf(wasp::LT,"<",token_index);
     }
-boolean_logic_op : and or
+boolean_logic_op : and | or
 and: AND
     {
         auto token_index = static_cast<unsigned int>($1);
