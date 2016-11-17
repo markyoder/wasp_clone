@@ -26,9 +26,12 @@ TEST(GetPotInterpreter,simple)
                                                 ,wasp::VALUE};
     for( size_t i = 0; i < 3; ++i)
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ(token_data[i], interpreter.m_tree_nodes.data(i));
         ASSERT_EQ(leaf_node_types[i], interpreter.m_tree_nodes.type(i));
         ASSERT_EQ(leaf_node_names[i], interpreter.m_tree_nodes.name(i));
+        }
     }
     std::vector<size_t> parent_indices = {3,3,3,4,5};
     std::vector<size_t> child_count = {0,0,0,3,1};
@@ -44,6 +47,8 @@ TEST(GetPotInterpreter,simple)
     ASSERT_EQ( node_types.size(), column.size() );
     for( size_t i = 0; i < interpreter.node_count(); ++i )
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
         ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
         ASSERT_EQ(parent_indices[i],interpreter.m_tree_nodes.parent_node_index(i));
@@ -51,6 +56,7 @@ TEST(GetPotInterpreter,simple)
         ASSERT_EQ(child_count[i], interpreter.m_tree_nodes.child_count(i));
         ASSERT_EQ( column[i], interpreter.m_tree_nodes.column(i));
         ASSERT_EQ( 1, interpreter.m_tree_nodes.line(i));
+        }
     }
 }
 
@@ -78,9 +84,12 @@ TEST(GetPotInterpreter,empty_object)
                                            ,wasp::RBRACKET};
     for( size_t i = 0; i < 3; ++i)
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ(token_data[i], interpreter.m_tree_nodes.data(i));
         ASSERT_EQ(leaf_node_types[i], interpreter.m_tree_nodes.type(i));
         ASSERT_EQ(leaf_node_names[i], interpreter.m_tree_nodes.name(i));
+        }
     }
     std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::DECL
                                            ,wasp::RBRACKET,wasp::OBJECT_DECL
@@ -93,8 +102,11 @@ TEST(GetPotInterpreter,empty_object)
     ASSERT_EQ( node_types.size(), node_names.size() );
     for( size_t i = 0; i < interpreter.node_count(); ++i )
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
         ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
+        }
     }
 }
 
@@ -139,8 +151,11 @@ TEST(GetPotInterpreter,simple_object)
     ASSERT_EQ( node_types.size(), node_names.size() );
     for( size_t i = 0; i < interpreter.node_count(); ++i )
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
         ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
+        }
     }
 }
 
@@ -212,8 +227,11 @@ TEST(GetPotInterpreter,less_simple_object)
     ASSERT_EQ( node_types.size(), node_names.size() );
     for( size_t i = 0; i < interpreter.node_count(); ++i )
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
         ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
+        }
     }
 }
 
@@ -268,8 +286,11 @@ TEST(GetPotInterpreter, object_array)
     ASSERT_EQ( node_types.size(), node_names.size() );
     for( size_t i = 0; i < interpreter.node_count(); ++i )
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
         ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
+        }
     }
 }
 
@@ -328,8 +349,11 @@ TEST(GetPotInterpreter, object_empty_subobject)
     ASSERT_EQ( node_types.size(), node_names.size() );
     for( size_t i = 0; i < interpreter.node_count(); ++i )
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
         ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
+        }
     }
 }
 
@@ -397,8 +421,11 @@ TEST(GetPotInterpreter, object_subobject)
     ASSERT_EQ( node_types.size(), node_names.size() );
     for( size_t i = 0; i < interpreter.node_count(); ++i )
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
         ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
+        }
     }
 }
 
@@ -451,6 +478,8 @@ TEST(GetPotInterpreter,simple_view)
     // TODO add test on data (type, line, col, etc).
     for( size_t i = 0, child_count = key.child_count(); i < child_count; ++i)
     {
+        {
+        SCOPED_TRACE(i);
         TreeNodeView child = key.child_at(i);
         ASSERT_EQ( node_types[i],child.type() );
         ASSERT_EQ( 0, child.child_count() );
@@ -461,6 +490,7 @@ TEST(GetPotInterpreter,simple_view)
         ASSERT_EQ( true, child.has_parent() );
         ASSERT_EQ( true, key.equal(child.parent()));
         ASSERT_EQ( node_paths[i],child.path() );
+        }
     }
     std::string expected_paths
             = "/\n/key\n/key/decl (key)\n/key/= (=)\n/key/value (3.421)\n";
@@ -540,7 +570,10 @@ function = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)
     ASSERT_EQ(data.size(), fnode.child_count());
     for( size_t i = 0; i < fnode.child_count(); ++i)
     {
+        {
+        SCOPED_TRACE(i);
         ASSERT_EQ(data[i], fnode.child_at(i).data());
+        }
     }
 }
 /**
@@ -564,7 +597,10 @@ TEST(GetPotInterpreter, comments )
    ASSERT_EQ( data.size(), document.child_count() );
    for( size_t i = 0; i < document.child_count(); ++i)
    {
+       {
+       SCOPED_TRACE(i);
        ASSERT_EQ( data[i],document.child_at(i).data() );
+       }
    }
 }
 /**
@@ -615,11 +651,14 @@ TEST(GetPotInterpreter,early_terminated_object)
         ASSERT_EQ(names.size(), column.size());
         for( size_t i = 0; i < first_block.child_count(); ++i )
         {
+            {
+            SCOPED_TRACE(i);
             auto child = first_block.child_at(i);
             ASSERT_EQ(names[i],child.name());
             ASSERT_EQ(types[i],child.type());
             ASSERT_EQ(line[i],child.line());
             ASSERT_EQ(column[i],child.column());
+            }
         }
     }
     {
@@ -645,11 +684,14 @@ TEST(GetPotInterpreter,early_terminated_object)
         ASSERT_EQ(names.size(), column.size());
         for( size_t i = 0; i < new_block.child_count(); ++i )
         {
+            {
+            SCOPED_TRACE(i);
             auto child = new_block.child_at(i);
             ASSERT_EQ(names[i],child.name());
             ASSERT_EQ(types[i],child.type());
             ASSERT_EQ(line[i],child.line());
             ASSERT_EQ(column[i],child.column());
+            }
         }
     }
 }
