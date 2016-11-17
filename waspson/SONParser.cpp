@@ -55,7 +55,7 @@
 #include "SONParser.hpp"
 
 // User implementation prologue.
-#line 134 "SONParser.bison" // lalr1.cc:412
+#line 135 "SONParser.bison" // lalr1.cc:412
 
 
 #include "SONInterpreter.h"
@@ -403,32 +403,39 @@ namespace wasp {
     // User destructor.
     switch (yysym.type_get ())
     {
-            case 99: // declaration
+            case 81: // key_declaration
 
-#line 133 "SONParser.bison" // lalr1.cc:614
+#line 134 "SONParser.bison" // lalr1.cc:614
         { delete (yysym.value.node_indices); }
 #line 411 "SONParser.cpp" // lalr1.cc:614
         break;
 
-      case 100: // tag
+      case 82: // declaration
 
-#line 133 "SONParser.bison" // lalr1.cc:614
+#line 134 "SONParser.bison" // lalr1.cc:614
         { delete (yysym.value.node_indices); }
 #line 418 "SONParser.cpp" // lalr1.cc:614
         break;
 
-      case 104: // members
+      case 83: // tag
 
 #line 133 "SONParser.bison" // lalr1.cc:614
         { delete (yysym.value.node_indices); }
 #line 425 "SONParser.cpp" // lalr1.cc:614
         break;
 
-      case 105: // array_members
+      case 87: // members
 
 #line 133 "SONParser.bison" // lalr1.cc:614
         { delete (yysym.value.node_indices); }
 #line 432 "SONParser.cpp" // lalr1.cc:614
+        break;
+
+      case 88: // array_members
+
+#line 133 "SONParser.bison" // lalr1.cc:614
+        { delete (yysym.value.node_indices); }
+#line 439 "SONParser.cpp" // lalr1.cc:614
         break;
 
 
@@ -568,7 +575,7 @@ namespace wasp {
     yyla.location.begin.column = yyla.location.end.column = interpreter.m_start_column;
 }
 
-#line 572 "SONParser.cpp" // lalr1.cc:741
+#line 579 "SONParser.cpp" // lalr1.cc:741
 
     /* Initialize the stack.  The initial state will be set in
        yynewstate, since the latter expects the semantical and the
@@ -676,215 +683,215 @@ namespace wasp {
           switch (yyn)
             {
   case 2:
-#line 151 "SONParser.bison" // lalr1.cc:859
+#line 152 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::FILL_EXPR,"filler",token_index);
     }
-#line 685 "SONParser.cpp" // lalr1.cc:859
+#line 692 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 3:
-#line 156 "SONParser.bison" // lalr1.cc:859
+#line 157 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
     }
-#line 694 "SONParser.cpp" // lalr1.cc:859
+#line 701 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 4:
-#line 176 "SONParser.bison" // lalr1.cc:859
+#line 177 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::MULTIPLY,"*",token_index);
     }
-#line 703 "SONParser.cpp" // lalr1.cc:859
+#line 710 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 5:
-#line 181 "SONParser.bison" // lalr1.cc:859
+#line 182 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DIVIDE,"/",token_index);
     }
-#line 712 "SONParser.cpp" // lalr1.cc:859
+#line 719 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 8:
-#line 187 "SONParser.bison" // lalr1.cc:859
+#line 188 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::PLUS,"+",token_index);
     }
-#line 721 "SONParser.cpp" // lalr1.cc:859
+#line 728 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 9:
-#line 192 "SONParser.bison" // lalr1.cc:859
+#line 193 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::MINUS,"-",token_index);
     }
-#line 730 "SONParser.cpp" // lalr1.cc:859
+#line 737 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 10:
-#line 198 "SONParser.bison" // lalr1.cc:859
+#line 199 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::EXPONENT,"^",token_index);
     }
-#line 739 "SONParser.cpp" // lalr1.cc:859
+#line 746 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 14:
-#line 216 "SONParser.bison" // lalr1.cc:859
+#line 217 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::EQ,"=",token_index);
     }
-#line 748 "SONParser.cpp" // lalr1.cc:859
+#line 755 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 15:
-#line 221 "SONParser.bison" // lalr1.cc:859
+#line 222 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::NEQ,"!=",token_index);
     }
-#line 757 "SONParser.cpp" // lalr1.cc:859
+#line 764 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 16:
-#line 226 "SONParser.bison" // lalr1.cc:859
+#line 227 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::GTE,">=",token_index);
     }
-#line 766 "SONParser.cpp" // lalr1.cc:859
+#line 773 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 17:
-#line 231 "SONParser.bison" // lalr1.cc:859
+#line 232 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::GT,">",token_index);
     }
-#line 775 "SONParser.cpp" // lalr1.cc:859
+#line 782 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 18:
-#line 236 "SONParser.bison" // lalr1.cc:859
+#line 237 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LTE,"<=",token_index);
     }
-#line 784 "SONParser.cpp" // lalr1.cc:859
+#line 791 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 19:
-#line 241 "SONParser.bison" // lalr1.cc:859
+#line 242 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LT,"<",token_index);
     }
-#line 793 "SONParser.cpp" // lalr1.cc:859
+#line 800 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 21:
-#line 247 "SONParser.bison" // lalr1.cc:859
+#line 248 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_AND,"&&",token_index);
     }
-#line 802 "SONParser.cpp" // lalr1.cc:859
+#line 809 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 22:
-#line 252 "SONParser.bison" // lalr1.cc:859
+#line 253 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_OR,"||",token_index);
     }
-#line 811 "SONParser.cpp" // lalr1.cc:859
+#line 818 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 23:
-#line 258 "SONParser.bison" // lalr1.cc:859
+#line 259 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::UNARY_NOT,"!",token_index);
     }
-#line 820 "SONParser.cpp" // lalr1.cc:859
+#line 827 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 24:
-#line 264 "SONParser.bison" // lalr1.cc:859
+#line 265 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LPAREN,"(",token_index);
     }
-#line 829 "SONParser.cpp" // lalr1.cc:859
+#line 836 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 25:
-#line 269 "SONParser.bison" // lalr1.cc:859
+#line 270 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RPAREN,")",token_index);
     }
-#line 838 "SONParser.cpp" // lalr1.cc:859
+#line 845 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 26:
-#line 274 "SONParser.bison" // lalr1.cc:859
+#line 275 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACE,"{",token_index);
     }
-#line 847 "SONParser.cpp" // lalr1.cc:859
+#line 854 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 27:
-#line 279 "SONParser.bison" // lalr1.cc:859
+#line 280 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RBRACE,"}",token_index);
     }
-#line 856 "SONParser.cpp" // lalr1.cc:859
+#line 863 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 28:
-#line 284 "SONParser.bison" // lalr1.cc:859
+#line 285 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACKET,"]",token_index);
     }
-#line 865 "SONParser.cpp" // lalr1.cc:859
+#line 872 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 29:
-#line 289 "SONParser.bison" // lalr1.cc:859
+#line 290 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RBRACKET,"]",token_index);
     }
-#line 874 "SONParser.cpp" // lalr1.cc:859
+#line 881 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 37:
-#line 309 "SONParser.bison" // lalr1.cc:859
+#line 310 "SONParser.bison" // lalr1.cc:859
     {
     unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                      ,token_index);
 }
-#line 884 "SONParser.cpp" // lalr1.cc:859
+#line 891 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 40:
-#line 330 "SONParser.bison" // lalr1.cc:859
+#line 331 "SONParser.bison" // lalr1.cc:859
     {
           unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
           unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
@@ -898,11 +905,11 @@ namespace wasp {
                                           ,"expr"
                                           ,child_indices);
     }
-#line 902 "SONParser.cpp" // lalr1.cc:859
+#line 909 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 41:
-#line 344 "SONParser.bison" // lalr1.cc:859
+#line 345 "SONParser.bison" // lalr1.cc:859
     {
         unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
         unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
@@ -916,11 +923,11 @@ namespace wasp {
                                         ,"expr"
                                         ,child_indices);
     }
-#line 920 "SONParser.cpp" // lalr1.cc:859
+#line 927 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 42:
-#line 358 "SONParser.bison" // lalr1.cc:859
+#line 359 "SONParser.bison" // lalr1.cc:859
     {
         unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
         unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
@@ -934,11 +941,11 @@ namespace wasp {
                                         ,"expr"
                                         ,child_indices);
     }
-#line 938 "SONParser.cpp" // lalr1.cc:859
+#line 945 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 43:
-#line 372 "SONParser.bison" // lalr1.cc:859
+#line 373 "SONParser.bison" // lalr1.cc:859
     {
         unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
         unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
@@ -952,11 +959,11 @@ namespace wasp {
                                         ,"expr"
                                         ,child_indices);
     }
-#line 956 "SONParser.cpp" // lalr1.cc:859
+#line 963 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 44:
-#line 386 "SONParser.bison" // lalr1.cc:859
+#line 387 "SONParser.bison" // lalr1.cc:859
     {
         unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
         unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
@@ -970,11 +977,11 @@ namespace wasp {
                                         ,"expr"
                                         ,child_indices);
     }
-#line 974 "SONParser.cpp" // lalr1.cc:859
+#line 981 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 45:
-#line 401 "SONParser.bison" // lalr1.cc:859
+#line 402 "SONParser.bison" // lalr1.cc:859
     {
         unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
         unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
@@ -988,11 +995,11 @@ namespace wasp {
                                         ,"expr"
                                         ,child_indices);
     }
-#line 992 "SONParser.cpp" // lalr1.cc:859
+#line 999 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 46:
-#line 415 "SONParser.bison" // lalr1.cc:859
+#line 416 "SONParser.bison" // lalr1.cc:859
     {
         unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
         unsigned int center_i = static_cast<unsigned int>((yystack_[1].value.node_index));
@@ -1006,11 +1013,11 @@ namespace wasp {
                                         ,"expr"
                                         ,child_indices);
     }
-#line 1010 "SONParser.cpp" // lalr1.cc:859
+#line 1017 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 47:
-#line 429 "SONParser.bison" // lalr1.cc:859
+#line 430 "SONParser.bison" // lalr1.cc:859
     {
         unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
         unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
@@ -1022,11 +1029,11 @@ namespace wasp {
                                         ,"expr"
                                         ,child_indices);
     }
-#line 1026 "SONParser.cpp" // lalr1.cc:859
+#line 1033 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 48:
-#line 441 "SONParser.bison" // lalr1.cc:859
+#line 442 "SONParser.bison" // lalr1.cc:859
     {
         unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
         unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
@@ -1038,38 +1045,38 @@ namespace wasp {
                                         ,"expr"
                                         ,child_indices);
     }
-#line 1042 "SONParser.cpp" // lalr1.cc:859
+#line 1049 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 49:
-#line 454 "SONParser.bison" // lalr1.cc:859
+#line 455 "SONParser.bison" // lalr1.cc:859
     {
     auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::EXECUTION_UNIT_END,"uoe_end",token_index);
 }
-#line 1051 "SONParser.cpp" // lalr1.cc:859
+#line 1058 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 50:
-#line 459 "SONParser.bison" // lalr1.cc:859
+#line 460 "SONParser.bison" // lalr1.cc:859
     {
     auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::EXECUTION_UNIT_START,"uoe_start",token_index);
 }
-#line 1060 "SONParser.cpp" // lalr1.cc:859
+#line 1067 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 51:
-#line 464 "SONParser.bison" // lalr1.cc:859
+#line 465 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::IDENTIFIER,"id",token_index);
     }
-#line 1069 "SONParser.cpp" // lalr1.cc:859
+#line 1076 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 52:
-#line 469 "SONParser.bison" // lalr1.cc:859
+#line 470 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
         std::string quote_less_data = interpreter.token_data(token_index);
@@ -1078,39 +1085,39 @@ namespace wasp {
                                    ,"decl"
                                    ,token_index);
     }
-#line 1082 "SONParser.cpp" // lalr1.cc:859
+#line 1089 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 55:
-#line 478 "SONParser.bison" // lalr1.cc:859
+#line 479 "SONParser.bison" // lalr1.cc:859
     {
              auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
              (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,"=",token_index);
             }
-#line 1091 "SONParser.cpp" // lalr1.cc:859
+#line 1098 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 56:
-#line 483 "SONParser.bison" // lalr1.cc:859
+#line 484 "SONParser.bison" // lalr1.cc:859
     {
              (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
              (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
 
         }
-#line 1101 "SONParser.cpp" // lalr1.cc:859
+#line 1108 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 57:
-#line 489 "SONParser.bison" // lalr1.cc:859
+  case 59:
+#line 491 "SONParser.bison" // lalr1.cc:859
     {
              (yylhs.value.node_indices) = new std::vector<unsigned int>();
              (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1110 "SONParser.cpp" // lalr1.cc:859
+#line 1117 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 58:
-#line 494 "SONParser.bison" // lalr1.cc:859
+  case 60:
+#line 496 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = new std::vector<unsigned int>();
             (yylhs.value.node_indices)->push_back((yystack_[3].value.node_index));
@@ -1118,11 +1125,11 @@ namespace wasp {
             (yylhs.value.node_indices)->push_back((yystack_[1].value.node_index));
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1122 "SONParser.cpp" // lalr1.cc:859
+#line 1129 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 59:
-#line 503 "SONParser.bison" // lalr1.cc:859
+  case 61:
+#line 505 "SONParser.bison" // lalr1.cc:859
     {
         (yystack_[2].value.node_indices)->push_back((yystack_[1].value.node_index));
         (yystack_[2].value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1131,11 +1138,11 @@ namespace wasp {
                                         ,*(yystack_[2].value.node_indices));
         delete (yystack_[2].value.node_indices);
     }
-#line 1135 "SONParser.cpp" // lalr1.cc:859
+#line 1142 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 60:
-#line 512 "SONParser.bison" // lalr1.cc:859
+  case 62:
+#line 514 "SONParser.bison" // lalr1.cc:859
     {
         (yystack_[2].value.node_indices)->push_back((yystack_[1].value.node_index));
         std::string name = interpreter.name((yystack_[2].value.node_indices)->front());
@@ -1147,11 +1154,11 @@ namespace wasp {
         delete (yystack_[2].value.node_indices);
         YYERROR;
     }
-#line 1151 "SONParser.cpp" // lalr1.cc:859
+#line 1158 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 61:
-#line 524 "SONParser.bison" // lalr1.cc:859
+  case 63:
+#line 526 "SONParser.bison" // lalr1.cc:859
     {
         std::string name = interpreter.name((yystack_[3].value.node_indices)->front());
         auto last_component_type = interpreter.type((yystack_[3].value.node_indices)->back());
@@ -1163,11 +1170,11 @@ namespace wasp {
         delete (yystack_[3].value.node_indices);
         YYERROR;
     }
-#line 1167 "SONParser.cpp" // lalr1.cc:859
+#line 1174 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 62:
-#line 536 "SONParser.bison" // lalr1.cc:859
+  case 64:
+#line 538 "SONParser.bison" // lalr1.cc:859
     {
         // TODO capture partial definition
         std::string name = interpreter.name((yystack_[2].value.node_indices)->front());
@@ -1175,11 +1182,11 @@ namespace wasp {
         delete (yystack_[2].value.node_indices);
         YYERROR;
     }
-#line 1179 "SONParser.cpp" // lalr1.cc:859
+#line 1186 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 63:
-#line 544 "SONParser.bison" // lalr1.cc:859
+  case 65:
+#line 546 "SONParser.bison" // lalr1.cc:859
     {
         std::string name = interpreter.name((yystack_[3].value.node_indices)->front());
         auto last_component_type = interpreter.type((yystack_[3].value.node_indices)->back());
@@ -1192,11 +1199,11 @@ namespace wasp {
         delete (yystack_[3].value.node_indices);
         YYERROR;
     }
-#line 1196 "SONParser.cpp" // lalr1.cc:859
+#line 1203 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 64:
-#line 557 "SONParser.bison" // lalr1.cc:859
+  case 66:
+#line 559 "SONParser.bison" // lalr1.cc:859
     {
         (yystack_[3].value.node_indices)->push_back((yystack_[2].value.node_index));
         for( size_t i = 0; i < (yystack_[1].value.node_indices)->size(); ++i )
@@ -1211,28 +1218,27 @@ namespace wasp {
         delete (yystack_[1].value.node_indices);
 
     }
-#line 1215 "SONParser.cpp" // lalr1.cc:859
+#line 1222 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 65:
-#line 572 "SONParser.bison" // lalr1.cc:859
+  case 67:
+#line 574 "SONParser.bison" // lalr1.cc:859
     {
         (yystack_[2].value.node_indices)->push_back((yystack_[1].value.node_index));
         (yystack_[2].value.node_indices)->push_back((yystack_[0].value.node_index));
-        const char * name = interpreter.name((yystack_[2].value.node_indices)->front());
         (yylhs.value.node_index) = interpreter.push_parent(wasp::OBJECT
-                                    ,name
-                                    ,*(yystack_[2].value.node_indices));
+            ,wasp::strip_quotes(interpreter.data((yystack_[2].value.node_indices)->front())).c_str()
+            ,*(yystack_[2].value.node_indices));
         delete (yystack_[2].value.node_indices);
     }
-#line 1229 "SONParser.cpp" // lalr1.cc:859
+#line 1235 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 66:
-#line 582 "SONParser.bison" // lalr1.cc:859
+  case 68:
+#line 583 "SONParser.bison" // lalr1.cc:859
     {
         (yystack_[2].value.node_indices)->push_back((yystack_[1].value.node_index));
-        std::string name = interpreter.name((yystack_[2].value.node_indices)->front());
+        std::string name = interpreter.data((yystack_[2].value.node_indices)->front());
         (yylhs.value.node_index) = interpreter.push_parent(wasp::OBJECT
                                      , name.c_str()
                                      , *(yystack_[2].value.node_indices));
@@ -1240,14 +1246,14 @@ namespace wasp {
         error(yystack_[1].location, name+" has unmatched left brace!");
         YYERROR;
     }
-#line 1244 "SONParser.cpp" // lalr1.cc:859
+#line 1250 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 67:
-#line 593 "SONParser.bison" // lalr1.cc:859
+  case 69:
+#line 594 "SONParser.bison" // lalr1.cc:859
     {
         // TODO capture partial definition
-        std::string name = interpreter.name((yystack_[3].value.node_indices)->front());
+        std::string name = interpreter.data((yystack_[3].value.node_indices)->front());
         auto last_component_type = interpreter.type((yystack_[3].value.node_indices)->back());
         if( (yystack_[1].value.node_indices)->size() ==0 ) error(yystack_[2].location, name+" has unmatched left brace!");
         else if( last_component_type == wasp::OBJECT ) error(yystack_[2].location, name+" or one of its components has unmatched left brace!");
@@ -1256,14 +1262,14 @@ namespace wasp {
         delete (yystack_[3].value.node_indices);
         YYERROR;
     }
-#line 1260 "SONParser.cpp" // lalr1.cc:859
+#line 1266 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 68:
-#line 605 "SONParser.bison" // lalr1.cc:859
+  case 70:
+#line 606 "SONParser.bison" // lalr1.cc:859
     {
         (yystack_[2].value.node_indices)->push_back((yystack_[1].value.node_index));
-        std::string name = interpreter.name((yystack_[2].value.node_indices)->front());
+        std::string name = interpreter.data((yystack_[2].value.node_indices)->front());
         (yylhs.value.node_index) = interpreter.push_parent( wasp::OBJECT
                                      , name.c_str()
                                      , *(yystack_[2].value.node_indices));
@@ -1271,14 +1277,14 @@ namespace wasp {
         delete (yystack_[2].value.node_indices);
         YYERROR;
     }
-#line 1275 "SONParser.cpp" // lalr1.cc:859
+#line 1281 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 69:
-#line 616 "SONParser.bison" // lalr1.cc:859
+  case 71:
+#line 617 "SONParser.bison" // lalr1.cc:859
     {
         // TODO capture partial definition
-        std::string name = interpreter.name((yystack_[3].value.node_indices)->front());
+        std::string name = interpreter.data((yystack_[3].value.node_indices)->front());
         auto last_component_type = interpreter.type((yystack_[3].value.node_indices)->back());
         if( (yystack_[1].value.node_indices)->size() ==0 ) error(yystack_[2].location, name+" has unmatched left brace!");
         else if( last_component_type == wasp::OBJECT ) error(yystack_[2].location, name+" or one of its components has unmatched left brace!");
@@ -1288,11 +1294,11 @@ namespace wasp {
         delete (yystack_[3].value.node_indices);
         YYERROR;
     }
-#line 1292 "SONParser.cpp" // lalr1.cc:859
+#line 1298 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 70:
-#line 629 "SONParser.bison" // lalr1.cc:859
+  case 72:
+#line 630 "SONParser.bison" // lalr1.cc:859
     {
         (yystack_[3].value.node_indices)->push_back((yystack_[2].value.node_index));
         for( size_t i = 0; i < (yystack_[1].value.node_indices)->size(); ++i )
@@ -1301,16 +1307,16 @@ namespace wasp {
         }
         (yystack_[3].value.node_indices)->push_back((yystack_[0].value.node_index));
         (yylhs.value.node_index) = interpreter.push_parent(wasp::OBJECT
-                                    ,interpreter.name((yystack_[3].value.node_indices)->front())
+                                    ,wasp::strip_quotes(interpreter.data((yystack_[3].value.node_indices)->front())).c_str()
                                         ,*(yystack_[3].value.node_indices));
         delete (yystack_[3].value.node_indices);
         delete (yystack_[1].value.node_indices);
     }
-#line 1310 "SONParser.cpp" // lalr1.cc:859
+#line 1316 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 71:
-#line 645 "SONParser.bison" // lalr1.cc:859
+  case 73:
+#line 646 "SONParser.bison" // lalr1.cc:859
     {
         (yystack_[1].value.node_indices)->push_back((yystack_[0].value.node_index));
         std::string quote_less_data = interpreter.data((yystack_[1].value.node_indices)->front());
@@ -1326,245 +1332,245 @@ namespace wasp {
                                     ,*(yystack_[1].value.node_indices));
         delete (yystack_[1].value.node_indices);
     }
-#line 1330 "SONParser.cpp" // lalr1.cc:859
-    break;
-
-  case 72:
-#line 663 "SONParser.bison" // lalr1.cc:859
-    {
-            (yylhs.value.node_indices) = new std::vector<unsigned int>();
-            (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
-        }
-#line 1339 "SONParser.cpp" // lalr1.cc:859
-    break;
-
-  case 73:
-#line 668 "SONParser.bison" // lalr1.cc:859
-    {
-            (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
-            (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
-        }
-#line 1348 "SONParser.cpp" // lalr1.cc:859
+#line 1336 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 74:
-#line 673 "SONParser.bison" // lalr1.cc:859
+#line 664 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = new std::vector<unsigned int>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1357 "SONParser.cpp" // lalr1.cc:859
+#line 1345 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 75:
-#line 678 "SONParser.bison" // lalr1.cc:859
+#line 669 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1366 "SONParser.cpp" // lalr1.cc:859
+#line 1354 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 76:
-#line 683 "SONParser.bison" // lalr1.cc:859
+#line 674 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = new std::vector<unsigned int>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1375 "SONParser.cpp" // lalr1.cc:859
+#line 1363 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 77:
-#line 688 "SONParser.bison" // lalr1.cc:859
+#line 679 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1384 "SONParser.cpp" // lalr1.cc:859
+#line 1372 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 78:
-#line 693 "SONParser.bison" // lalr1.cc:859
+#line 684 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = new std::vector<unsigned int>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1393 "SONParser.cpp" // lalr1.cc:859
+#line 1381 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 79:
-#line 698 "SONParser.bison" // lalr1.cc:859
+#line 689 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1402 "SONParser.cpp" // lalr1.cc:859
+#line 1390 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 80:
-#line 703 "SONParser.bison" // lalr1.cc:859
+#line 694 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = new std::vector<unsigned int>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1411 "SONParser.cpp" // lalr1.cc:859
+#line 1399 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 81:
-#line 708 "SONParser.bison" // lalr1.cc:859
+#line 699 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1420 "SONParser.cpp" // lalr1.cc:859
+#line 1408 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 82:
-#line 713 "SONParser.bison" // lalr1.cc:859
+#line 704 "SONParser.bison" // lalr1.cc:859
     {
-            (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
+            (yylhs.value.node_indices) = new std::vector<unsigned int>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1429 "SONParser.cpp" // lalr1.cc:859
+#line 1417 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 83:
-#line 720 "SONParser.bison" // lalr1.cc:859
+#line 709 "SONParser.bison" // lalr1.cc:859
     {
-            (yylhs.value.node_indices) = new std::vector<unsigned int>();
+            (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1438 "SONParser.cpp" // lalr1.cc:859
+#line 1426 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 84:
-#line 725 "SONParser.bison" // lalr1.cc:859
+#line 714 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1447 "SONParser.cpp" // lalr1.cc:859
+#line 1435 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 85:
-#line 731 "SONParser.bison" // lalr1.cc:859
+#line 721 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = new std::vector<unsigned int>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1456 "SONParser.cpp" // lalr1.cc:859
+#line 1444 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 86:
-#line 736 "SONParser.bison" // lalr1.cc:859
+#line 726 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1465 "SONParser.cpp" // lalr1.cc:859
+#line 1453 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 87:
-#line 741 "SONParser.bison" // lalr1.cc:859
+#line 732 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = new std::vector<unsigned int>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1474 "SONParser.cpp" // lalr1.cc:859
+#line 1462 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 88:
-#line 746 "SONParser.bison" // lalr1.cc:859
+#line 737 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1483 "SONParser.cpp" // lalr1.cc:859
+#line 1471 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 89:
-#line 751 "SONParser.bison" // lalr1.cc:859
+#line 742 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = new std::vector<unsigned int>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1492 "SONParser.cpp" // lalr1.cc:859
+#line 1480 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 90:
-#line 756 "SONParser.bison" // lalr1.cc:859
+#line 747 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1501 "SONParser.cpp" // lalr1.cc:859
+#line 1489 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 91:
-#line 761 "SONParser.bison" // lalr1.cc:859
+#line 752 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = new std::vector<unsigned int>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1510 "SONParser.cpp" // lalr1.cc:859
+#line 1498 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 92:
-#line 766 "SONParser.bison" // lalr1.cc:859
+#line 757 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1519 "SONParser.cpp" // lalr1.cc:859
+#line 1507 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 93:
-#line 771 "SONParser.bison" // lalr1.cc:859
+#line 762 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = new std::vector<unsigned int>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1528 "SONParser.cpp" // lalr1.cc:859
+#line 1516 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 94:
-#line 776 "SONParser.bison" // lalr1.cc:859
+#line 767 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1537 "SONParser.cpp" // lalr1.cc:859
+#line 1525 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 95:
-#line 781 "SONParser.bison" // lalr1.cc:859
+#line 772 "SONParser.bison" // lalr1.cc:859
+    {
+            (yylhs.value.node_indices) = new std::vector<unsigned int>();
+            (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
+        }
+#line 1534 "SONParser.cpp" // lalr1.cc:859
+    break;
+
+  case 96:
+#line 777 "SONParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1546 "SONParser.cpp" // lalr1.cc:859
+#line 1543 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 96:
-#line 787 "SONParser.bison" // lalr1.cc:859
+  case 97:
+#line 782 "SONParser.bison" // lalr1.cc:859
+    {
+            (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
+            (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
+        }
+#line 1552 "SONParser.cpp" // lalr1.cc:859
+    break;
+
+  case 98:
+#line 788 "SONParser.bison" // lalr1.cc:859
     {
             auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
-#line 1555 "SONParser.cpp" // lalr1.cc:859
+#line 1561 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 97:
-#line 792 "SONParser.bison" // lalr1.cc:859
+  case 99:
+#line 793 "SONParser.bison" // lalr1.cc:859
     {
             auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::DECL,"name",token_index);
         }
-#line 1564 "SONParser.cpp" // lalr1.cc:859
+#line 1570 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 98:
-#line 797 "SONParser.bison" // lalr1.cc:859
+  case 100:
+#line 798 "SONParser.bison" // lalr1.cc:859
     { // account for an empty execution unit
             unsigned int start_i = static_cast<unsigned int>((yystack_[2].value.node_index));
             unsigned int name_i = static_cast<unsigned int>((yystack_[1].value.node_index));
@@ -1578,11 +1584,11 @@ namespace wasp {
                                             ,interpreter.name(name_i)
                                             ,child_indices);
        }
-#line 1582 "SONParser.cpp" // lalr1.cc:859
+#line 1588 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 99:
-#line 811 "SONParser.bison" // lalr1.cc:859
+  case 101:
+#line 812 "SONParser.bison" // lalr1.cc:859
     { // execution unit with members
             unsigned int start_i = static_cast<unsigned int>((yystack_[3].value.node_index));
             unsigned int name_i = static_cast<unsigned int>((yystack_[2].value.node_index));
@@ -1600,41 +1606,41 @@ namespace wasp {
                                             ,interpreter.name(name_i)
                                             ,child_indices);
        }
-#line 1604 "SONParser.cpp" // lalr1.cc:859
-    break;
-
-  case 101:
-#line 829 "SONParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
 #line 1610 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 102:
+  case 103:
 #line 830 "SONParser.bison" // lalr1.cc:859
     {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
 #line 1616 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 103:
+  case 104:
 #line 831 "SONParser.bison" // lalr1.cc:859
     {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
 #line 1622 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 104:
+  case 105:
 #line 832 "SONParser.bison" // lalr1.cc:859
     {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
 #line 1628 "SONParser.cpp" // lalr1.cc:859
     break;
 
-  case 105:
+  case 106:
 #line 833 "SONParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index)));if(interpreter.isSingleParse() ) {YYACCEPT;}}
+    {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
 #line 1634 "SONParser.cpp" // lalr1.cc:859
     break;
 
+  case 107:
+#line 834 "SONParser.bison" // lalr1.cc:859
+    {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index)));if(interpreter.isSingleParse() ) {YYACCEPT;}}
+#line 1640 "SONParser.cpp" // lalr1.cc:859
+    break;
 
-#line 1638 "SONParser.cpp" // lalr1.cc:859
+
+#line 1644 "SONParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1889,169 +1895,165 @@ namespace wasp {
   }
 
 
-  const signed char SONParser::yypact_ninf_ = -41;
+  const signed char SONParser::yypact_ninf_ = -35;
 
   const signed char SONParser::yytable_ninf_ = -53;
 
   const short int
   SONParser::yypact_[] =
   {
-     -41,   129,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,
-     -41,   -41,   -41,   -38,     2,   189,   -12,   -41,   -41,   -41,
-     -41,   -41,   -41,   -41,   -41,   227,   -41,   183,   -41,   -41,
-     -41,   -41,    62,    62,    62,   115,    94,   -41,   -41,   -41,
-     181,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,
-     -41,   -41,   209,   -41,   -41,    13,   -20,   -20,   165,   -41,
-     -41,   -41,   -41,   139,   -41,   -41,   -41,   -41,    -3,   181,
-     -41,   -41,   -41,   -41,    85,   -41,   -41,   -41,   -41,   -41,
-     -41,   -41,   -41,   -41,    62,    62,    62,    62,    62,    -6,
-      62,    -2,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,
-     -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,
-     181,   -41,   -41,   -41,   -41,   -41,   -20,   -17,   -17,   -20,
-      83,   -41,     5,   211,   -41,   -41,   -41,     9,   -41,    14,
-     -41,     4,   -41,   -41
+     -35,   155,   -35,   -35,   -35,   -35,   -35,   -35,   -35,   -35,
+     -35,   -35,   -35,    -2,    13,   188,    14,    11,   -35,   -35,
+     -35,   -35,   -35,   -35,   -35,   -35,   229,   -35,    30,   -35,
+     -35,   188,   188,   188,   -35,   -35,   -35,   220,   -35,   -35,
+     172,   130,   -35,   -35,   -35,   -35,   -35,   -35,   -35,   -35,
+     -35,   -35,   -35,   200,   -35,   -35,    20,   -22,   -22,    10,
+     -35,   -35,   -35,   -35,   -35,   -35,   -35,   -35,   188,   188,
+     188,   188,   188,    15,   188,    17,   -35,   -35,   -35,   -35,
+     146,   -35,   -35,   -35,   -35,     4,   220,   -35,   -35,   -35,
+     -35,   110,   -35,   -35,   -35,   -35,   -35,   -35,   -35,   -35,
+     -35,   -35,   -35,   -35,   -22,   -15,   -15,   -22,    47,   -35,
+      29,   224,   -35,   -35,   -35,   -35,   -35,   -35,   -35,   -35,
+     -35,   220,   -35,   -35,   -35,   -35,   -35,   -35,    50,   -35,
+      55,   -35,    53,   -35,   -35
   };
 
   const unsigned char
   SONParser::yydefact_[] =
   {
-     100,     0,     1,    34,    11,    12,    35,    32,    33,    96,
-      50,    36,    52,     0,    57,     0,     0,   102,   104,   103,
-     101,   105,    30,    31,    97,     0,    24,     0,     9,    28,
-      26,    23,     0,     0,     0,     0,     0,    37,    38,    39,
-      71,    53,    54,    55,    56,     2,    49,    72,    98,    76,
-      74,    78,     0,    80,    51,     0,    47,    48,     0,    66,
-      27,    65,    68,     0,    60,    29,    85,    59,    37,    83,
-      62,    89,    87,    91,     0,    93,    14,    21,     4,     5,
-       8,    10,     6,     7,     0,     0,     0,     0,     0,     0,
-       0,     0,     3,    73,    82,    99,    77,    75,    79,    81,
-      25,    58,    46,    67,    70,    69,    61,    86,    95,    64,
-      84,    63,    90,    88,    92,    94,    40,    41,    42,    43,
-      44,    15,     0,    45,    22,    20,    17,     0,    19,     0,
-      16,     0,    18,    13
+     102,     0,     1,    34,    11,    12,    35,    32,    33,    98,
+      50,    36,    52,     0,    59,    57,     0,    58,   104,   106,
+     105,   103,   107,    30,    31,    99,     0,    24,     0,     9,
+      23,     0,     0,     0,    37,    38,    39,    73,    28,    26,
+       0,     0,    53,    54,    55,    56,     2,    49,    74,   100,
+      78,    76,    80,     0,    82,    51,     0,    47,    48,     0,
+      14,    21,     4,     5,     8,    10,     6,     7,     0,     0,
+       0,     0,     0,     0,     0,     0,    68,    27,    67,    70,
+       0,    62,    29,    87,    61,    37,    85,    64,    91,    89,
+      93,     0,    95,     3,    75,    84,   101,    79,    77,    81,
+      83,    25,    60,    46,    40,    41,    42,    43,    44,    15,
+       0,    45,    22,    20,    69,    72,    71,    63,    88,    97,
+      66,    86,    65,    92,    90,    94,    96,    17,     0,    19,
+       0,    16,     0,    18,    13
   };
 
-  const short int
+  const signed char
   SONParser::yypgoto_[] =
   {
-     -41,   -24,   -34,   -41,   -41,   -41,   -41,   -40,   -41,   -41,
-     -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,
-     -41,    27,   -16,   -41,   -15,   -41,   -31,   -41,     0,   -41,
-     -41,   -29,   192,   -41,   -41,   -41,   -41,   -41,   -41,   -41,
-       1,     8,    10,    12,   -41,    29,   -41,   -41,   -41
+     -35,   -33,   -16,   -35,   -35,   -35,   -35,    -9,   -35,   -35,
+     -35,   -35,   -35,   -35,   -35,   -35,   -35,   -35,   -35,   -35,
+     -35,    64,    25,   -35,     5,   -35,    -5,   -35,    -1,   -35,
+     -35,    35,   -34,   -35,   -35,   -35,   -35,   -35,   -35,   -35,
+     -35,     0,     1,     2,    48,   -35,     3,   -35,   -35,   -35
   };
 
   const short int
   SONParser::yydefgoto_[] =
   {
-      -1,    47,    94,    82,    83,    84,    85,    32,    87,    11,
-      88,    89,   122,   131,   127,   133,   129,    90,    91,   125,
-      33,    34,   101,    35,    61,    36,    67,    24,    37,    38,
-      39,    40,    48,    13,    55,    14,    43,    44,    15,    16,
-      49,    50,    51,    52,    74,    53,    25,    21,     1
+      -1,    48,    95,    66,    67,    68,    69,    31,    71,    11,
+      72,    73,   110,   132,   128,   134,   130,    74,    75,   113,
+      32,    33,   102,    40,    78,    41,    84,    25,    34,    35,
+      36,    37,    49,    13,    56,    14,    44,    45,    15,    16,
+      17,    50,    51,    52,    53,    91,    54,    26,    22,     1
   };
 
   const short int
   SONParser::yytable_[] =
   {
-      86,    12,    17,    56,    57,    58,    41,    69,    26,    18,
-      42,    19,    66,    22,    23,   -52,    86,    86,    86,   -52,
-      78,   100,    79,    81,   121,    12,    81,    54,    93,    86,
-      20,   124,   126,   132,   128,    12,    68,    71,   130,    93,
-     108,    27,   102,   109,    72,   110,    73,    63,   104,     0,
-     107,     0,    12,    96,     0,   116,   117,   118,   119,   120,
-      97,   123,    98,    12,    96,    75,    28,     0,    26,     0,
-      86,    97,     0,    98,    68,   112,    86,    86,    86,    86,
-      86,    99,   113,    86,   114,   106,     0,    28,     0,    28,
-       0,    26,    99,     0,    64,     0,    31,    65,    28,     0,
-      26,     0,     0,   115,     0,    92,    65,     0,     0,     3,
-       4,     5,     6,     7,     8,    59,     0,     0,     0,    31,
-      78,    45,    79,     0,    80,     0,    81,     0,    31,     2,
-      45,    60,     3,     4,     5,     6,     7,     8,     9,   103,
-      46,     3,     4,     5,     6,     7,     8,     9,     0,    46,
-       0,    45,     0,     0,     0,    60,     0,     0,     0,    92,
-       0,     0,     3,     4,     5,     6,     7,     8,     9,    28,
-      46,     0,     0,   100,     0,    45,     3,     4,     5,     6,
-       7,     8,     9,    10,     0,    28,     3,     4,     5,     6,
-       7,     8,     9,    28,    46,    26,    76,    77,     0,    29,
-       0,     0,    78,    30,    79,     0,    80,     0,    81,     0,
-       0,     0,    76,    77,     0,    28,     0,     0,    78,     0,
-      79,     0,    80,    31,    81,     0,     0,    62,    70,    92,
-       3,     4,     5,     6,     7,     8,     3,     4,     5,     6,
-       7,     8,    76,     0,    95,    45,     0,     0,    78,     0,
-      79,     0,    80,     0,    81,   105,     3,     4,     5,     6,
-       7,     8,     9,    45,    46,     0,   111,     0,     0,     0,
-       0,     0,     0,     0,     3,     4,     5,     6,     7,     8,
-       9,     0,    46
+      12,    18,    19,    20,    21,    65,    79,    87,    83,    62,
+      63,   -52,    65,   -52,    29,   -52,   101,   -52,    27,    96,
+      94,    38,    42,    39,    43,    12,   101,    55,    70,    60,
+      61,    23,    24,   109,    62,    63,    64,    65,   112,    12,
+      85,    88,    89,    90,    92,   127,   116,    94,    70,    70,
+      70,    29,    12,    97,    98,    99,   100,   122,   118,     3,
+       4,     5,     6,     7,     8,   129,    57,    58,    59,   131,
+     133,    62,    63,    64,    65,   119,    86,    70,    28,    12,
+      97,    98,    99,   100,   103,   115,   120,     0,    80,     0,
+      85,   123,   124,   125,   126,    70,    70,    70,    70,    70,
+       0,     0,    70,   104,   105,   106,   107,   108,     0,   111,
+     117,     0,    70,     0,    29,    27,     0,     0,    82,     0,
+       0,     0,    93,     0,     0,     0,   121,     0,     0,     0,
+      81,     0,    30,    46,    29,    27,     0,     0,    82,     3,
+       4,     5,     6,     7,     8,     9,   114,    47,     0,     0,
+       0,     0,    30,    46,     0,     2,    77,     0,    93,     3,
+       4,     5,     6,     7,     8,     9,     0,    47,     0,    46,
+       0,     0,    76,     0,     0,     3,     4,     5,     6,     7,
+       8,     9,    77,    47,     3,     4,     5,     6,     7,     8,
+       9,    10,    29,    27,     0,    46,     0,     0,     0,     0,
+       0,     3,     4,     5,     6,     7,     8,     9,     0,    47,
+      30,     0,    93,     0,     0,     0,     0,     3,     4,     5,
+       6,     7,     8,    46,    29,     0,     0,     0,    29,     3,
+       4,     5,     6,     7,     8,     9,     0,    47,     0,    60,
+      61,     0,     0,    60,    62,    63,    64,    65,    62,    63,
+      64,    65,    46,     0,     0,     0,     0,     0,     3,     4,
+       5,     6,     7,     8,     9,     0,    47
   };
 
   const signed char
   SONParser::yycheck_[] =
   {
-      40,     1,     1,    32,    33,    34,    18,    36,     6,     1,
-      22,     1,    36,    51,    52,    18,    56,    57,    58,    22,
-      37,     8,    39,    43,    30,    25,    43,    27,    52,    69,
-       1,    33,    27,    29,    25,    35,    36,    36,    24,    63,
-      74,    14,    58,    74,    36,    74,    36,    35,    63,    -1,
-      74,    -1,    52,    52,    -1,    84,    85,    86,    87,    88,
-      52,    90,    52,    63,    63,    36,     4,    -1,     6,    -1,
-     110,    63,    -1,    63,    74,    74,   116,   117,   118,   119,
-     120,    52,    74,   123,    74,     0,    -1,     4,    -1,     4,
-      -1,     6,    63,    -1,     0,    -1,    34,    12,     4,    -1,
-       6,    -1,    -1,    74,    -1,    20,    12,    -1,    -1,    47,
-      48,    49,    50,    51,    52,     0,    -1,    -1,    -1,    34,
-      37,    36,    39,    -1,    41,    -1,    43,    -1,    34,     0,
-      36,    16,    47,    48,    49,    50,    51,    52,    53,     0,
-      55,    47,    48,    49,    50,    51,    52,    53,    -1,    55,
-      -1,    36,    -1,    -1,    -1,    16,    -1,    -1,    -1,    20,
-      -1,    -1,    47,    48,    49,    50,    51,    52,    53,     4,
-      55,    -1,    -1,     8,    -1,    36,    47,    48,    49,    50,
-      51,    52,    53,    54,    -1,     4,    47,    48,    49,    50,
-      51,    52,    53,     4,    55,     6,    31,    32,    -1,    10,
-      -1,    -1,    37,    14,    39,    -1,    41,    -1,    43,    -1,
-      -1,    -1,    31,    32,    -1,     4,    -1,    -1,    37,    -1,
-      39,    -1,    41,    34,    43,    -1,    -1,    35,    36,    20,
-      47,    48,    49,    50,    51,    52,    47,    48,    49,    50,
-      51,    52,    31,    -1,    52,    36,    -1,    -1,    37,    -1,
-      39,    -1,    41,    -1,    43,    63,    47,    48,    49,    50,
-      51,    52,    53,    36,    55,    -1,    74,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    47,    48,    49,    50,    51,    52,
-      53,    -1,    55
+       1,     1,     1,     1,     1,    27,    40,    41,    41,    24,
+      25,     7,    27,     9,     4,    11,     6,    13,     5,    53,
+      53,     7,    11,     9,    13,    26,     6,    28,    37,    19,
+      20,    33,    34,    18,    24,    25,    26,    27,    21,    40,
+      41,    41,    41,    41,    41,    16,    80,    80,    57,    58,
+      59,     4,    53,    53,    53,    53,    53,    91,    91,    29,
+      30,    31,    32,    33,    34,    15,    31,    32,    33,    14,
+      17,    24,    25,    26,    27,    91,    41,    86,    14,    80,
+      80,    80,    80,    80,    59,    80,    91,    -1,    40,    -1,
+      91,    91,    91,    91,    91,   104,   105,   106,   107,   108,
+      -1,    -1,   111,    68,    69,    70,    71,    72,    -1,    74,
+       0,    -1,   121,    -1,     4,     5,    -1,    -1,     8,    -1,
+      -1,    -1,    12,    -1,    -1,    -1,    91,    -1,    -1,    -1,
+       0,    -1,    22,    23,     4,     5,    -1,    -1,     8,    29,
+      30,    31,    32,    33,    34,    35,     0,    37,    -1,    -1,
+      -1,    -1,    22,    23,    -1,     0,    10,    -1,    12,    29,
+      30,    31,    32,    33,    34,    35,    -1,    37,    -1,    23,
+      -1,    -1,     0,    -1,    -1,    29,    30,    31,    32,    33,
+      34,    35,    10,    37,    29,    30,    31,    32,    33,    34,
+      35,    36,     4,     5,    -1,    23,    -1,    -1,    -1,    -1,
+      -1,    29,    30,    31,    32,    33,    34,    35,    -1,    37,
+      22,    -1,    12,    -1,    -1,    -1,    -1,    29,    30,    31,
+      32,    33,    34,    23,     4,    -1,    -1,    -1,     4,    29,
+      30,    31,    32,    33,    34,    35,    -1,    37,    -1,    19,
+      20,    -1,    -1,    19,    24,    25,    26,    27,    24,    25,
+      26,    27,    23,    -1,    -1,    -1,    -1,    -1,    29,    30,
+      31,    32,    33,    34,    35,    -1,    37
   };
 
   const unsigned char
   SONParser::yystos_[] =
   {
-       0,   109,     0,    47,    48,    49,    50,    51,    52,    53,
-      54,    70,    89,    94,    96,    99,   100,   101,   102,   103,
-     106,   108,    51,    52,    88,   107,     6,    82,     4,    10,
-      14,    34,    68,    81,    82,    84,    86,    89,    90,    91,
-      92,    18,    22,    97,    98,    36,    55,    62,    93,   101,
-     102,   103,   104,   106,    89,    95,    92,    92,    92,     0,
-      16,    85,    93,   104,     0,    12,    62,    87,    89,    92,
-      93,   101,   102,   103,   105,   106,    31,    32,    37,    39,
-      41,    43,    64,    65,    66,    67,    68,    69,    71,    72,
-      78,    79,    20,    62,    63,    93,   101,   102,   103,   106,
-       8,    83,    83,     0,    85,    93,     0,    62,    63,    87,
-      92,    93,   101,   102,   103,   106,    92,    92,    92,    92,
-      92,    30,    73,    92,    33,    80,    27,    75,    25,    77,
-      24,    74,    29,    76
+       0,    92,     0,    29,    30,    31,    32,    33,    34,    35,
+      36,    52,    71,    76,    78,    81,    82,    83,    84,    85,
+      86,    89,    91,    33,    34,    70,    90,     5,    64,     4,
+      22,    50,    63,    64,    71,    72,    73,    74,     7,     9,
+      66,    68,    11,    13,    79,    80,    23,    37,    44,    75,
+      84,    85,    86,    87,    89,    71,    77,    74,    74,    74,
+      19,    20,    24,    25,    26,    27,    46,    47,    48,    49,
+      50,    51,    53,    54,    60,    61,     0,    10,    67,    75,
+      87,     0,     8,    44,    69,    71,    74,    75,    84,    85,
+      86,    88,    89,    12,    44,    45,    75,    84,    85,    86,
+      89,     6,    65,    65,    74,    74,    74,    74,    74,    18,
+      55,    74,    21,    62,     0,    67,    75,     0,    44,    45,
+      69,    74,    75,    84,    85,    86,    89,    16,    57,    15,
+      59,    14,    56,    17,    58
   };
 
   const unsigned char
   SONParser::yyr1_[] =
   {
-       0,    61,    62,    63,    64,    65,    66,    66,    67,    68,
-      69,    70,    70,    71,    72,    73,    74,    75,    76,    77,
-      78,    79,    80,    81,    82,    83,    84,    85,    86,    87,
-      88,    88,    89,    89,    89,    89,    89,    90,    91,    92,
-      92,    92,    92,    92,    92,    92,    92,    92,    92,    93,
-      94,    95,    96,    97,    97,    98,    99,   100,   100,   101,
-     101,   101,   101,   101,   101,   102,   102,   102,   102,   102,
-     102,   103,   104,   104,   104,   104,   104,   104,   104,   104,
-     104,   104,   104,   105,   105,   105,   105,   105,   105,   105,
-     105,   105,   105,   105,   105,   105,   106,   107,   108,   108,
-     109,   109,   109,   109,   109,   109
+       0,    43,    44,    45,    46,    47,    48,    48,    49,    50,
+      51,    52,    52,    53,    54,    55,    56,    57,    58,    59,
+      60,    61,    62,    63,    64,    65,    66,    67,    68,    69,
+      70,    70,    71,    71,    71,    71,    71,    72,    73,    74,
+      74,    74,    74,    74,    74,    74,    74,    74,    74,    75,
+      76,    77,    78,    79,    79,    80,    81,    82,    82,    83,
+      83,    84,    84,    84,    84,    84,    84,    85,    85,    85,
+      85,    85,    85,    86,    87,    87,    87,    87,    87,    87,
+      87,    87,    87,    87,    87,    88,    88,    88,    88,    88,
+      88,    88,    88,    88,    88,    88,    88,    88,    89,    90,
+      91,    91,    92,    92,    92,    92,    92,    92
   };
 
   const unsigned char
@@ -2062,12 +2064,12 @@ namespace wasp {
        2,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        3,     3,     3,     3,     3,     3,     3,     2,     2,     1,
-       1,     1,     1,     1,     1,     1,     2,     1,     4,     3,
-       3,     4,     3,     4,     4,     3,     3,     4,     3,     4,
-       4,     2,     1,     2,     1,     2,     1,     2,     1,     2,
-       1,     2,     2,     1,     2,     1,     2,     1,     2,     1,
-       2,     1,     2,     1,     2,     2,     1,     1,     3,     4,
-       0,     2,     2,     2,     2,     2
+       1,     1,     1,     1,     1,     1,     2,     1,     1,     1,
+       4,     3,     3,     4,     3,     4,     4,     3,     3,     4,
+       3,     4,     4,     2,     1,     2,     1,     2,     1,     2,
+       1,     2,     1,     2,     2,     1,     2,     1,     2,     1,
+       2,     1,     2,     1,     2,     1,     2,     2,     1,     1,
+       3,     4,     0,     2,     2,     2,     2,     2
   };
 
 
@@ -2077,13 +2079,11 @@ namespace wasp {
   const char*
   const SONParser::yytname_[] =
   {
-  "\"end of file\"", "error", "$undefined", "\"end of line\"", "MINUS",
-  "'-'", "LPAREN", "'('", "RPAREN", "')'", "LBRACKET", "'['", "RBRACKET",
-  "']'", "LBRACE", "'{'", "RBRACE", "'}'", "ASSIGN", "'='", "COMMA", "','",
-  "COLON", "':'", "\">=\"", "LT", "'<'", "GT", "'>'", "\"<=\"", "\"!=\"",
-  "\"==\"", "\"&&\"", "\"||\"", "BANG", "'!'", "\"filler\"", "MULTIPLY",
-  "'*'", "DIVIDE", "'/'", "PLUS", "'+'", "EXPONENT", "'^'", "AMPERSAND",
-  "'&'", "\"integer\"", "\"true\"", "\"false\"", "\"double\"",
+  "\"end of file\"", "error", "$undefined", "\"end of line\"", "\"-\"",
+  "\"(\"", "\")\"", "\"[\"", "\"]\"", "\"{\"", "\"}\"", "\"=\"", "\",\"",
+  "\":\"", "\">=\"", "\"<\"", "\">\"", "\"<=\"", "\"!=\"", "\"==\"",
+  "\"&&\"", "\"||\"", "\"!\"", "\"filler\"", "\"*\"", "\"/\"", "\"+\"",
+  "\"^\"", "\"&\"", "\"integer\"", "\"true\"", "\"false\"", "\"double\"",
   "\"string\"", "\"quoted string\"", "\"comment\"",
   "\"start of unit of execution\"", "\"end of unit of execution\"",
   "OBJECT", "ARRAY", "UMINUS", "UNOT", "\"exp\"", "$accept", "filler",
@@ -2093,26 +2093,26 @@ namespace wasp {
   "rparen", "lbrace", "rbrace", "lbracket", "rbracket", "ANY_STRING",
   "PRIMITIVE", "value", "component", "exp", "execution_unit_end",
   "execution_unit_start", "identifier", "decl", "ASSIGNMENT", "assignment",
-  "declaration", "tag", "array", "object", "keyedvalue", "members",
-  "array_members", "comment", "execution_unit_name", "execution_unit",
-  "start", YY_NULLPTR
+  "key_declaration", "declaration", "tag", "array", "object", "keyedvalue",
+  "members", "array_members", "comment", "execution_unit_name",
+  "execution_unit", "start", YY_NULLPTR
   };
 
 #if YYDEBUG
   const unsigned short int
   SONParser::yyrline_[] =
   {
-       0,   150,   150,   155,   175,   180,   185,   185,   186,   191,
-     197,   202,   202,   213,   215,   220,   225,   230,   235,   240,
-     245,   246,   251,   257,   263,   268,   273,   278,   283,   288,
-     305,   305,   306,   306,   306,   306,   306,   308,   326,   328,
-     329,   343,   357,   371,   385,   400,   414,   428,   440,   453,
-     458,   463,   468,   477,   477,   478,   482,   488,   493,   502,
-     511,   523,   535,   543,   556,   571,   581,   592,   604,   615,
-     628,   644,   662,   667,   672,   677,   682,   687,   692,   697,
-     702,   707,   712,   719,   724,   730,   735,   740,   745,   750,
-     755,   760,   765,   770,   775,   780,   786,   791,   796,   810,
-     828,   829,   830,   831,   832,   833
+       0,   151,   151,   156,   176,   181,   186,   186,   187,   192,
+     198,   203,   203,   214,   216,   221,   226,   231,   236,   241,
+     246,   247,   252,   258,   264,   269,   274,   279,   284,   289,
+     306,   306,   307,   307,   307,   307,   307,   309,   327,   329,
+     330,   344,   358,   372,   386,   401,   415,   429,   441,   454,
+     459,   464,   469,   478,   478,   479,   483,   489,   489,   490,
+     495,   504,   513,   525,   537,   545,   558,   573,   582,   593,
+     605,   616,   629,   645,   663,   668,   673,   678,   683,   688,
+     693,   698,   703,   708,   713,   720,   725,   731,   736,   741,
+     746,   751,   756,   761,   766,   771,   776,   781,   787,   792,
+     797,   811,   829,   830,   831,   832,   833,   834
   };
 
   // Print the state stack on the debug stream.
@@ -2156,16 +2156,16 @@ namespace wasp {
      0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    35,     2,     2,     2,     2,    46,     2,
-       7,     9,    38,    42,    21,     5,     2,    40,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,    23,     2,
-      26,    19,    28,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,    11,     2,    13,    44,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    15,     2,    17,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -2179,10 +2179,10 @@ namespace wasp {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       6,     8,    10,    12,    14,    16,    18,    20,    22,    24,
-      25,    27,    29,    30,    31,    32,    33,    34,    36,    37,
-      39,    41,    43,    45,    47,    48,    49,    50,    51,    52,
-      53,    54,    55,    56,    57,    58,    59,    60
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    37,    38,    39,    40,    41,    42
     };
     const unsigned int user_token_number_max_ = 297;
     const token_number_type undef_token_ = 2;
@@ -2198,7 +2198,7 @@ namespace wasp {
 
 } // wasp
 #line 2201 "SONParser.cpp" // lalr1.cc:1167
-#line 837 "SONParser.bison" // lalr1.cc:1168
+#line 838 "SONParser.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 
 void wasp::SONParser::error(const SONParser::location_type& l,

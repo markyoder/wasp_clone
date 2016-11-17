@@ -63,31 +63,31 @@
 %token                  END          0  "end of file"
 %token                  EOL             "end of line"
 //%token <token_index>   TICK             '`'
-%token <token_index>   MINUS             '-'
-%token <token_index>   LPAREN           '('
-%token <token_index>   RPAREN           ')'
-%token <token_index>   LBRACKET         '['
-%token <token_index>   RBRACKET         ']'
-%token <token_index>   LBRACE           '{'
-%token <token_index>   RBRACE           '}'
-%token <token_index>   ASSIGN           '='
-%token <token_index>   COMMA            ','
-%token <token_index>   COLON            ':'
+%token <token_index>   MINUS            "-"
+%token <token_index>   LPAREN           "("
+%token <token_index>   RPAREN           ")"
+%token <token_index>   LBRACKET         "["
+%token <token_index>   RBRACKET         "]"
+%token <token_index>   LBRACE           "{"
+%token <token_index>   RBRACE           "}"
+%token <token_index>   ASSIGN           "="
+%token <token_index>   COMMA            ","
+%token <token_index>   COLON            ":"
 %token <token_index>    GTE             ">="
-%token <token_index>    LT             '<'
-%token <token_index>    GT             '>'
+%token <token_index>    LT             "<"
+%token <token_index>    GT             ">"
 %token <token_index>    LTE             "<="
 %token <token_index>    NEQ             "!="
 %token <token_index>    EQ              "=="
 %token <token_index>    AND             "&&"
 %token <token_index>    OR              "||"
-%token <token_index>    BANG            '!'
+%token <token_index>    BANG            "!"
 %token <token_index>    FILLER          "filler"
-%token <token_index>    MULTIPLY '*'
-%token <token_index>    DIVIDE '/'
-%token <token_index>    PLUS '+'
-%token <token_index>    EXPONENT '^'
-%token <token_index>    AMPERSAND '&'
+%token <token_index>    MULTIPLY        "*"
+%token <token_index>    DIVIDE          "/"
+%token <token_index>    PLUS            "+"
+%token <token_index>    EXPONENT        "^"
+%token <token_index>    AMPERSAND       "&"
 %token <token_index>    INTEGER         "integer"
 %token <token_index>    TOKEN_TRUE            "true"
 %token <token_index>    TOKEN_FALSE            "false"
@@ -129,8 +129,9 @@
 %type <node_index> execution_unit
 
 %type <node_indices>  members declaration
-%type <node_indices>  array_members tag
-%destructor { delete $$; } tag array_members members declaration
+%type <node_indices>  array_members tag key_declaration
+%destructor { delete $$; } tag array_members members
+%destructor { delete $$; } declaration key_declaration
 %{
 
 #include "SONInterpreter.h"
@@ -479,12 +480,13 @@ assignment : ASSIGNMENT {
              auto token_index = static_cast<unsigned int>($1);
              $$ = interpreter.push_leaf(wasp::ASSIGN,"=",token_index);
             }
-declaration : tag assignment
+key_declaration : tag assignment
         {
              $$ = $1;
              $$->push_back($2);
 
-        }        
+        }
+declaration : key_declaration | tag
 tag :   decl
         {
              $$ = new std::vector<unsigned int>();
@@ -572,16 +574,15 @@ object : declaration lbrace rbrace
     {
         $1->push_back($2);
         $1->push_back($3);
-        const char * name = interpreter.name($1->front());
         $$ = interpreter.push_parent(wasp::OBJECT
-                                    ,name
-                                    ,*$1);
+            ,wasp::strip_quotes(interpreter.data($1->front())).c_str()
+            ,*$1);
         delete $1;
     }    
     | declaration lbrace END
     {
         $1->push_back($2);
-        std::string name = interpreter.name($1->front());
+        std::string name = interpreter.data($1->front());
         $$ = interpreter.push_parent(wasp::OBJECT
                                      , name.c_str()
                                      , *$1);
@@ -592,7 +593,7 @@ object : declaration lbrace rbrace
     | declaration lbrace members END
     {
         // TODO capture partial definition
-        std::string name = interpreter.name($1->front());
+        std::string name = interpreter.data($1->front());
         auto last_component_type = interpreter.type($1->back());
         if( $3->size() ==0 ) error(@2, name+" has unmatched left brace!");
         else if( last_component_type == wasp::OBJECT ) error(@2, name+" or one of its components has unmatched left brace!");
@@ -604,7 +605,7 @@ object : declaration lbrace rbrace
     | declaration lbrace execution_unit_end
     {
         $1->push_back($2);
-        std::string name = interpreter.name($1->front());
+        std::string name = interpreter.data($1->front());
         $$ = interpreter.push_parent( wasp::OBJECT
                                      , name.c_str()
                                      , *$1);
@@ -615,7 +616,7 @@ object : declaration lbrace rbrace
     | declaration lbrace members execution_unit_end
     {
         // TODO capture partial definition
-        std::string name = interpreter.name($1->front());
+        std::string name = interpreter.data($1->front());
         auto last_component_type = interpreter.type($1->back());
         if( $3->size() ==0 ) error(@2, name+" has unmatched left brace!");
         else if( last_component_type == wasp::OBJECT ) error(@2, name+" or one of its components has unmatched left brace!");
@@ -634,14 +635,14 @@ object : declaration lbrace rbrace
         }
         $1->push_back($4);
         $$ = interpreter.push_parent(wasp::OBJECT
-                                    ,interpreter.name($1->front())
+                                    ,wasp::strip_quotes(interpreter.data($1->front())).c_str()
                                         ,*$1);
         delete $1;
         delete $3;
     }
 
 
-keyedvalue : declaration exp
+keyedvalue : key_declaration exp
     {
         $1->push_back($2);
         std::string quote_less_data = interpreter.data($1->front());

@@ -90,7 +90,10 @@ AND &&
 OR \|\|
 LBRACKET \[
 RBRACKET \]
+LBRACE \{
+RBRACE \}
 COMMA ,
+COLON :
 
  /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
@@ -129,6 +132,10 @@ COMMA ,
 {COMMA}  {
     capture_token(yylval,wasp::WASP_COMMA);
     return token::COMMA;
+}
+{COLON}  {
+    capture_token(yylval,wasp::COLON);
+    return token::COLON;
 }
 {LTE} {
     capture_token(yylval,wasp::LTE);
@@ -177,6 +184,14 @@ COMMA ,
 {RBRACKET} {
     capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
+}
+{LBRACE} {
+    capture_token(yylval,wasp::LBRACE);
+    return token::LBRACE;
+}
+{RBRACE} {
+    capture_token(yylval,wasp::RBRACE);
+    return token::RBRACE;
 }
 {EXPONENT_OP} {
     capture_token(yylval,wasp::EXPONENT);

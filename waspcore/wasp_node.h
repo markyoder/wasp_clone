@@ -23,6 +23,7 @@ namespace wasp{
         , OBJECT_TERM
         , OBJECT
         , WASP_COMMA // ,
+        , COLON
         , PLUS  // +
         , MINUS // -
         , MULTIPLY // *
