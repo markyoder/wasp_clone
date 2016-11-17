@@ -71,6 +71,7 @@ TEST(TreeNodePool,push_test)
             ASSERT_EQ(node_name[i],tp.name(i));
             ASSERT_EQ(token_offset[i]+1, tp.column(i));
             ASSERT_EQ(i+1, tp.size());
+            ASSERT_EQ( token_type[i], tp.node_token_type(i) );
         }
         // add parent node
         std::string parent_name = "data";

@@ -296,6 +296,20 @@ size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::leaf_index(
     // TODO - catch error condition
     return -1;
 }
+// Obtain a leaf node's token type
+template<typename NTS, typename NIS
+         ,typename TTS, typename TITS,typename FOTS>
+TTS TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::node_token_type(
+                    NIS node_index )const
+{
+    auto leaf_itr = m_leaf_token_lookup.find(node_index);
+    // obtain the token's column
+    if( leaf_itr != m_leaf_token_lookup.end() )
+    {
+        return m_token_data.type(leaf_itr->second);
+    }
+    return wasp::UNKNOWN;
+}
 // Obtain the node's data (string contents)
 template<typename NTS, typename NIS
          ,typename TTS, typename TITS,typename FOTS>

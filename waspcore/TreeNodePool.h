@@ -6,6 +6,7 @@
 #include <ostream>
 #include "waspcore/StringPool.h"
 #include "waspcore/TokenPool.h"
+#include "waspcore/wasp_node.h" // for UNKNOWN node/token types
 namespace wasp{
 typedef unsigned short default_node_type_size;
 typedef unsigned int default_node_index_size;
@@ -137,6 +138,14 @@ public:
                             {return m_node_names.data(node_index);}
     node_type_size type(node_index_size node_index)const
                             {return m_node_basic_data[node_index].m_node_type;}
+    /**
+     * @brief node_token_type acquire the type of the toke backing the node at the given index
+     * @param node_index the node for which the token type is requested.
+     * @return the token type of the leaf node at the given index.
+     * If the node index is out of range, wasp::UNKNOWN is returned.
+     * If the node at the given index is not a leaf node, wasp::UNKNOWN is returned
+     */
+    token_type_size node_token_type( node_index_size node_index)const;
     /**
      * @brief data acquire the string data of the node
      * @param node_index the index of the node to acquire the data
