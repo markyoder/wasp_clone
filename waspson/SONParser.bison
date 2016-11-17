@@ -302,7 +302,7 @@ exp : component
                                                      };
 
           $$ = interpreter.push_parent(interpreter.type(op_i)
-                                          ,"expr"
+                                          ,"value"
                                           ,child_indices);
     }
     | exp plus exp %prec PLUS
@@ -316,7 +316,7 @@ exp : component
                                                    };
 
         $$ = interpreter.push_parent(interpreter.type(op_i)
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }
     | exp minus exp %prec MINUS
@@ -330,7 +330,7 @@ exp : component
                                                    };
 
         $$ = interpreter.push_parent(interpreter.type(op_i)
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }
     | exp exponent exp %prec EXPONENT
@@ -344,7 +344,7 @@ exp : component
                                                    };
 
         $$ = interpreter.push_parent(interpreter.type(op_i)
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }
     | exp boolean_numeric_op exp %prec EQ
@@ -358,7 +358,7 @@ exp : component
                                                    };
 
         $$ = interpreter.push_parent(interpreter.type(op_i)
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }
 
@@ -373,7 +373,7 @@ exp : component
                                                    };
 
         $$ = interpreter.push_parent(interpreter.type(op_i)
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }    
     | lparen exp rparen %prec "exp"
@@ -387,7 +387,7 @@ exp : component
                                                    };
 
         $$ = interpreter.push_parent(wasp::PARENTHESIS
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }
     | minus exp %prec UMINUS
@@ -399,7 +399,7 @@ exp : component
                                                    };
 
         $$ = interpreter.push_parent(interpreter.type(op_i)
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }
     | unary_not exp %prec UNOT
@@ -411,7 +411,7 @@ exp : component
                                                    };
 
         $$ = interpreter.push_parent(interpreter.type(op_i)
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }
 

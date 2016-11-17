@@ -902,7 +902,7 @@ namespace wasp {
                                                      };
 
           (yylhs.value.node_index) = interpreter.push_parent(interpreter.type(op_i)
-                                          ,"expr"
+                                          ,"value"
                                           ,child_indices);
     }
 #line 909 "SONParser.cpp" // lalr1.cc:859
@@ -920,7 +920,7 @@ namespace wasp {
                                                    };
 
         (yylhs.value.node_index) = interpreter.push_parent(interpreter.type(op_i)
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }
 #line 927 "SONParser.cpp" // lalr1.cc:859
@@ -938,7 +938,7 @@ namespace wasp {
                                                    };
 
         (yylhs.value.node_index) = interpreter.push_parent(interpreter.type(op_i)
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }
 #line 945 "SONParser.cpp" // lalr1.cc:859
@@ -956,7 +956,7 @@ namespace wasp {
                                                    };
 
         (yylhs.value.node_index) = interpreter.push_parent(interpreter.type(op_i)
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }
 #line 963 "SONParser.cpp" // lalr1.cc:859
@@ -974,7 +974,7 @@ namespace wasp {
                                                    };
 
         (yylhs.value.node_index) = interpreter.push_parent(interpreter.type(op_i)
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }
 #line 981 "SONParser.cpp" // lalr1.cc:859
@@ -992,7 +992,7 @@ namespace wasp {
                                                    };
 
         (yylhs.value.node_index) = interpreter.push_parent(interpreter.type(op_i)
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }
 #line 999 "SONParser.cpp" // lalr1.cc:859
@@ -1010,7 +1010,7 @@ namespace wasp {
                                                    };
 
         (yylhs.value.node_index) = interpreter.push_parent(wasp::PARENTHESIS
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }
 #line 1017 "SONParser.cpp" // lalr1.cc:859
@@ -1026,7 +1026,7 @@ namespace wasp {
                                                    };
 
         (yylhs.value.node_index) = interpreter.push_parent(interpreter.type(op_i)
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }
 #line 1033 "SONParser.cpp" // lalr1.cc:859
@@ -1042,7 +1042,7 @@ namespace wasp {
                                                    };
 
         (yylhs.value.node_index) = interpreter.push_parent(interpreter.type(op_i)
-                                        ,"expr"
+                                        ,"value"
                                         ,child_indices);
     }
 #line 1049 "SONParser.cpp" // lalr1.cc:859
