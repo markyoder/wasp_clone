@@ -749,7 +749,7 @@ namespace wasp {
 #line 192 "SONParser.bison" // lalr1.cc:859
     {
         auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
-        (yylhs.value.node_index) = interpreter.push_leaf(wasp::EQ,"=",token_index);
+        (yylhs.value.node_index) = interpreter.push_leaf(wasp::EQ,"==",token_index);
     }
 #line 755 "SONParser.cpp" // lalr1.cc:859
     break;

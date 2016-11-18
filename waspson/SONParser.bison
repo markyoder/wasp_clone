@@ -191,7 +191,7 @@ boolean_numeric_op : eq | neq | gt | lt | gte | lte
 eq : EQ
     {
         auto token_index = static_cast<unsigned int>($1);
-        $$ = interpreter.push_leaf(wasp::EQ,"=",token_index);
+        $$ = interpreter.push_leaf(wasp::EQ,"==",token_index);
     }
 neq : NEQ
     {

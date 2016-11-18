@@ -42,11 +42,11 @@ typedef wasp::SONParser::token_type token_type;
 %x subtraction
 %s execution_unit
 
-INT \-?[0-9]+([eE]\+?[0-9]+)?
+INT [0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INT}
-DOUBLE \-?{INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
- /* !!! The string allows hyphens (not trailing hyphens)!!! */
-STRING [A-Za-z_]((\-)?[A-Za-z0-9_/])*
+DOUBLE {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
+
+STRING [A-Za-z_]([A-Za-z0-9_])*
 FILLER_REPEAT [0-9]+[rR][' ']*({INT}|{DOUBLE})
 FILLER_ALTERNATE [0-9]+[pP][' ']*({INT}|{DOUBLE})
 FILLER_FILL [fF]({INT}|{DOUBLE})
@@ -62,8 +62,6 @@ LESSER_STRING [A-Za-z_][A-Za-z0-9_]*
 
 TOKEN_TRUE true|TRUE|True|yes|YES|Yes
 TOKEN_FALSE false|FALSE|False|no|NO|No
-TOKEN_READ read|READ|Read
-TOKEN_END  end|END|End
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
 SINGLE_QUOTED_STRING \'([^\\\'\n])*\'
 QSTRING {DOUBLE_QUOTED_STRING}|{SINGLE_QUOTED_STRING}

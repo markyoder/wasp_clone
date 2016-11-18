@@ -783,7 +783,7 @@ end % conclusion of unit of execution
 )INPUT";
     SONInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(81, interpreter.node_count() );
+    ASSERT_EQ(85, interpreter.node_count() );
     TreeNodeView document = interpreter.root();
     // var, comment, global_obj, execution unit, comment
     ASSERT_EQ( 5, document.child_count() );
@@ -823,7 +823,9 @@ end % conclusion of unit of execution
 /eu/obj/e
 /eu/obj/e/decl (e)
 /eu/obj/e/= (=)
-/eu/obj/e/value (-5)
+/eu/obj/e/value
+/eu/obj/e/value/- (-)
+/eu/obj/e/value/value (5)
 /eu/obj/comment (% unary minus of 5)
 /eu/obj/r
 /eu/obj/r/decl (r)
@@ -852,10 +854,12 @@ end % conclusion of unit of execution
 /eu/arr/A/decl (A)
 /eu/arr/A/[ ([)
 /eu/arr/A/value
-/eu/arr/A/value/value (1.0)
+/eu/arr/A/value/value
+/eu/arr/A/value/value/value (1.0)
+/eu/arr/A/value/value/- (-)
+/eu/arr/A/value/value/value (5)
 /eu/arr/A/value/- (-)
-/eu/arr/A/value/value (5)
-/eu/arr/A/value (-4)
+/eu/arr/A/value/value (4)
 /eu/arr/A/] (])
 /eu/arr/O
 /eu/arr/O/decl (O)
@@ -905,7 +909,9 @@ end % conclusion of unit of execution
             ,wasp::LBRACE         // /eu/obj/{ ({)
             ,wasp::DECL           // /eu/obj/e/decl (e)
             ,wasp::ASSIGN         // /eu/obj/e/= (=)
-            ,wasp::VALUE          // /eu/obj/e/value (-5)
+            ,wasp::MINUS          // /eu/obj/e/value/- (-)
+            ,wasp::VALUE          // /eu/obj/e/value/value (5)
+            ,wasp::MINUS          // /eu/obj/e/value
             ,wasp::KEYED_VALUE    // /eu/obj/e
             ,wasp::COMMENT        // /eu/obj/comment (% unary minus of 5)
             ,wasp::DECL           // /eu/obj/r/decl (r)
@@ -937,7 +943,9 @@ end % conclusion of unit of execution
             ,wasp::MINUS          // /eu/arr/A/value/- (-)
             ,wasp::VALUE          // /eu/arr/A/value/value (5)
             ,wasp::MINUS          // /eu/arr/A/value
-            ,wasp::VALUE          // /eu/arr/A/value (-4)
+            ,wasp::MINUS          // /eu/arr/A/value/- (-)
+            ,wasp::VALUE          // /eu/arr/A/value/value (4)
+            ,wasp::MINUS          // /eu/arr/A/value
             ,wasp::RBRACKET       // /eu/arr/A/] (])
             ,wasp::ARRAY          // /eu/arr/A
             ,wasp::DECL           // /eu/arr/O/decl (O)
@@ -955,6 +963,141 @@ end % conclusion of unit of execution
             ,wasp::COMMENT         // /comment (% conclusion of unit of execution)
             ,wasp::DOCUMENT_ROOT   // /
         };
+    ASSERT_EQ( types.size(), interpreter.node_count() );
+    for( size_t i = 0; i < types.size(); ++i )
+    {
+        {
+        SCOPED_TRACE(i);
+        ASSERT_EQ( types[i], interpreter.type(i) );
+        }
+    }
+}
+
+/**
+ * @brief TEST the supported expressions
+ */
+TEST( SON, expressions )
+{
+    std::stringstream input;
+    input<< R"INPUT( e[
+            a+b  a+2  a+1.2  b+a  2+a  1.2+a
+            a-b  a-2  a-1.2  b-a  2-a  1.2-a
+            a*b  a*2  a*1.2  b*a  2*a  1.2*a
+            a/b  a/2  a/1.2  b/a  2/a  1.2/a
+            a^b  a^2  a^1.2  b^a  2^a  1.2^a
+            a<b  a<2  a<1.2  b<a  2<a  1.2<a
+            a>b  a>2  a>1.2  b>a  2>a  1.2>a
+            a<=b a<=2 a<=1.2 b<=a 2<=a 1.2<=a
+            a>=b a>=2 a>=1.2 b>=a 2>=a 1.2>=a
+            a==b a==2 a==1.2 b==a 2==a 1.2==a
+            a!=b a!=2 a!=1.2 b!=a 2!=a 1.2!=a
+            a&&b a&&2 a&&1.2 b&&a 2&&a 1.2&&a
+            a||b a||2 a||1.2 b||a 2||a 1.2||a
+            ]
+)INPUT";
+    SONInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(312+5, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    // var, comment, global_obj, execution unit, comment
+    ASSERT_EQ( 1, document.child_count() );
+
+    std::vector<wasp::NODE> types = {
+        DECL,LBRACKET
+        ,VALUE,PLUS,VALUE,PLUS
+        ,VALUE,PLUS,VALUE,PLUS
+        ,VALUE,PLUS,VALUE,PLUS
+        ,VALUE,PLUS,VALUE,PLUS
+        ,VALUE,PLUS,VALUE,PLUS
+        ,VALUE,PLUS,VALUE,PLUS
+
+        ,VALUE,MINUS,VALUE,MINUS
+        ,VALUE,MINUS,VALUE,MINUS
+        ,VALUE,MINUS,VALUE,MINUS
+        ,VALUE,MINUS,VALUE,MINUS
+        ,VALUE,MINUS,VALUE,MINUS
+        ,VALUE,MINUS,VALUE,MINUS
+
+        ,VALUE,MULTIPLY,VALUE,MULTIPLY
+        ,VALUE,MULTIPLY,VALUE,MULTIPLY
+        ,VALUE,MULTIPLY,VALUE,MULTIPLY
+        ,VALUE,MULTIPLY,VALUE,MULTIPLY
+        ,VALUE,MULTIPLY,VALUE,MULTIPLY
+        ,VALUE,MULTIPLY,VALUE,MULTIPLY
+
+        ,VALUE,DIVIDE,VALUE,DIVIDE
+        ,VALUE,DIVIDE,VALUE,DIVIDE
+        ,VALUE,DIVIDE,VALUE,DIVIDE
+        ,VALUE,DIVIDE,VALUE,DIVIDE
+        ,VALUE,DIVIDE,VALUE,DIVIDE
+        ,VALUE,DIVIDE,VALUE,DIVIDE
+
+        ,VALUE,EXPONENT,VALUE,EXPONENT
+        ,VALUE,EXPONENT,VALUE,EXPONENT
+        ,VALUE,EXPONENT,VALUE,EXPONENT
+        ,VALUE,EXPONENT,VALUE,EXPONENT
+        ,VALUE,EXPONENT,VALUE,EXPONENT
+        ,VALUE,EXPONENT,VALUE,EXPONENT
+
+        ,VALUE,LT,VALUE,LT
+        ,VALUE,LT,VALUE,LT
+        ,VALUE,LT,VALUE,LT
+        ,VALUE,LT,VALUE,LT
+        ,VALUE,LT,VALUE,LT
+        ,VALUE,LT,VALUE,LT
+
+        ,VALUE,GT,VALUE,GT
+        ,VALUE,GT,VALUE,GT
+        ,VALUE,GT,VALUE,GT
+        ,VALUE,GT,VALUE,GT
+        ,VALUE,GT,VALUE,GT
+        ,VALUE,GT,VALUE,GT
+
+        ,VALUE,LTE,VALUE,LTE
+        ,VALUE,LTE,VALUE,LTE
+        ,VALUE,LTE,VALUE,LTE
+        ,VALUE,LTE,VALUE,LTE
+        ,VALUE,LTE,VALUE,LTE
+        ,VALUE,LTE,VALUE,LTE
+
+        ,VALUE,GTE,VALUE,GTE
+        ,VALUE,GTE,VALUE,GTE
+        ,VALUE,GTE,VALUE,GTE
+        ,VALUE,GTE,VALUE,GTE
+        ,VALUE,GTE,VALUE,GTE
+        ,VALUE,GTE,VALUE,GTE
+
+        ,VALUE,EQ,VALUE,EQ
+        ,VALUE,EQ,VALUE,EQ
+        ,VALUE,EQ,VALUE,EQ
+        ,VALUE,EQ,VALUE,EQ
+        ,VALUE,EQ,VALUE,EQ
+        ,VALUE,EQ,VALUE,EQ
+
+        ,VALUE,NEQ,VALUE,NEQ
+        ,VALUE,NEQ,VALUE,NEQ
+        ,VALUE,NEQ,VALUE,NEQ
+        ,VALUE,NEQ,VALUE,NEQ
+        ,VALUE,NEQ,VALUE,NEQ
+        ,VALUE,NEQ,VALUE,NEQ
+
+        ,VALUE,WASP_AND,VALUE,WASP_AND
+        ,VALUE,WASP_AND,VALUE,WASP_AND
+        ,VALUE,WASP_AND,VALUE,WASP_AND
+        ,VALUE,WASP_AND,VALUE,WASP_AND
+        ,VALUE,WASP_AND,VALUE,WASP_AND
+        ,VALUE,WASP_AND,VALUE,WASP_AND
+
+        ,VALUE,WASP_OR,VALUE,WASP_OR
+        ,VALUE,WASP_OR,VALUE,WASP_OR
+        ,VALUE,WASP_OR,VALUE,WASP_OR
+        ,VALUE,WASP_OR,VALUE,WASP_OR
+        ,VALUE,WASP_OR,VALUE,WASP_OR
+        ,VALUE,WASP_OR,VALUE,WASP_OR
+        ,RBRACKET
+        ,ARRAY
+        ,wasp::DOCUMENT_ROOT   // /
+    };
     ASSERT_EQ( types.size(), interpreter.node_count() );
     for( size_t i = 0; i < types.size(); ++i )
     {
