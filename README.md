@@ -6,7 +6,7 @@
 # Getting Started
 * You will need to save your ssh-key in [code-int.ornl.gov](https://code-int.ornl.gov/profile/keys).
 * Clone wasp
-`git clone git clone https://code-int.ornl.gov/lefebvre/wasp.git ~/wasp`
+`git clone https://code-int.ornl.gov/lefebvre/wasp.git ~/wasp`
 * Change directory into wasp `cd ~/wasp`
 * Clone TriBITS
 `git clone https://github.com/lefebvre/TriBITS.git TriBITS` [TriBITS documentation](https://tribits.org/doc/TribitsDevelopersGuide.html)
@@ -25,6 +25,21 @@ cmake \
  -D CMAKE_BUILD_TYPE:STRING=RELEASE \
  -D wasp_ENABLE_ALL_PACKAGES:BOOL=ON \
  -D wasp_ENABLE_TESTS:BOOL=ON \
+ -D CMAKE_INSTALL_PREFIX=`pwd`/install \
+ -G "Unix Makefiles" \
+ ~/wasp
+```
+E.g., to a script that will enable getpot
+```
+#!/bin/bash
+# Linux bash file example
+rm -rf CMake*
+cmake \
+ -D CMAKE_BUILD_TYPE:STRING=RELEASE \
+ -D wasp_ENABLE_ALL_PACKAGES:BOOL=ON \
+ -D wasp_ENABLE_TESTS:BOOL=ON \
+ -D wasp_ENABLE_waspgetpot=ON \
+ -D CMAKE_INSTALL_PREFIX=`pwd`/install \
  -G "Unix Makefiles" \
  ~/wasp
 ```
