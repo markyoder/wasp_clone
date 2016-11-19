@@ -1083,7 +1083,7 @@ namespace wasp {
   case 56:
 #line 452 "SIRENParser.bison" // lalr1.cc:859
     {
-                // todo capture integer index
+                // capture integer index
                 unsigned int i_i = static_cast<unsigned int>((yystack_[0].value.node_index));
                 std::vector<unsigned int> child_indices = {i_i
                                                            };
@@ -1098,21 +1098,32 @@ namespace wasp {
   case 57:
 #line 463 "SIRENParser.bison" // lalr1.cc:859
     {
-                // todo capture index range
+                // capture index range
+                unsigned int si_i = static_cast<unsigned int>((yystack_[2].value.node_index));
+                unsigned int c_i = static_cast<unsigned int>((yystack_[1].value.node_index));
+                unsigned int ei_i = static_cast<unsigned int>((yystack_[0].value.node_index));
+                std::vector<unsigned int> child_indices = {si_i
+                                                           ,c_i
+                                                           ,ei_i
+                                                           };
+
+                (yylhs.value.node_index) = interpreter.push_parent(wasp::INDEX
+                            ,"I" // condition predicated child selection
+                            ,child_indices);
             }
-#line 1104 "SIRENParser.cpp" // lalr1.cc:859
+#line 1115 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
   case 58:
-#line 467 "SIRENParser.bison" // lalr1.cc:859
+#line 478 "SIRENParser.bison" // lalr1.cc:859
     {
                 // todo capture strided index range
             }
-#line 1112 "SIRENParser.cpp" // lalr1.cc:859
+#line 1123 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
   case 60:
-#line 472 "SIRENParser.bison" // lalr1.cc:859
+#line 483 "SIRENParser.bison" // lalr1.cc:859
     {
                  // capture condition predicated child selection
                  // obj[name = 'ted']
@@ -1131,11 +1142,11 @@ namespace wasp {
                              ,"cpcs" // condition predicated child selection
                              ,child_indices);
              }
-#line 1135 "SIRENParser.cpp" // lalr1.cc:859
+#line 1146 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
   case 61:
-#line 491 "SIRENParser.bison" // lalr1.cc:859
+#line 502 "SIRENParser.bison" // lalr1.cc:859
     {
                  // capture index predicated child selection
                  // obj[1]
@@ -1155,21 +1166,21 @@ namespace wasp {
                              ,"ipcs" // index predicated child selection
                              ,child_indices);
              }
-#line 1159 "SIRENParser.cpp" // lalr1.cc:859
+#line 1170 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
   case 62:
-#line 511 "SIRENParser.bison" // lalr1.cc:859
+#line 522 "SIRENParser.bison" // lalr1.cc:859
     {
                  // capture parent selection
                  // obj/..
                  (yylhs.value.node_index) = (yystack_[0].value.node_index);
              }
-#line 1169 "SIRENParser.cpp" // lalr1.cc:859
+#line 1180 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
   case 63:
-#line 517 "SIRENParser.bison" // lalr1.cc:859
+#line 528 "SIRENParser.bison" // lalr1.cc:859
     {
                 // capture consecutive selections
                 // obj/child
@@ -1187,20 +1198,20 @@ namespace wasp {
                              ,"O" // O - object
                              ,child_indices);
              }
-#line 1191 "SIRENParser.cpp" // lalr1.cc:859
+#line 1202 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
   case 64:
-#line 536 "SIRENParser.bison" // lalr1.cc:859
+#line 547 "SIRENParser.bison" // lalr1.cc:859
     {
                  // capture root only selection
                  (yylhs.value.node_index) = (yystack_[0].value.node_index);
              }
-#line 1200 "SIRENParser.cpp" // lalr1.cc:859
+#line 1211 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
   case 65:
-#line 541 "SIRENParser.bison" // lalr1.cc:859
+#line 552 "SIRENParser.bison" // lalr1.cc:859
     {
                  // capture root based child selection
                  unsigned int root_i = static_cast<unsigned int>((yystack_[1].value.node_index));
@@ -1213,23 +1224,23 @@ namespace wasp {
                                                  ,"R" // R - root
                                                  ,child_indices);
              }
-#line 1217 "SIRENParser.cpp" // lalr1.cc:859
+#line 1228 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
   case 66:
-#line 553 "SIRENParser.bison" // lalr1.cc:859
+#line 564 "SIRENParser.bison" // lalr1.cc:859
     {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); }
-#line 1223 "SIRENParser.cpp" // lalr1.cc:859
+#line 1234 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
   case 67:
-#line 554 "SIRENParser.bison" // lalr1.cc:859
+#line 565 "SIRENParser.bison" // lalr1.cc:859
     {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); }
-#line 1229 "SIRENParser.cpp" // lalr1.cc:859
+#line 1240 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
 
-#line 1233 "SIRENParser.cpp" // lalr1.cc:859
+#line 1244 "SIRENParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1638,8 +1649,8 @@ namespace wasp {
      192,   197,   202,   207,   212,   212,   213,   218,   224,   230,
      235,   250,   255,   261,   261,   262,   262,   262,   262,   263,
      268,   285,   287,   288,   302,   316,   330,   344,   359,   373,
-     387,   399,   411,   421,   428,   435,   451,   462,   466,   470,
-     471,   490,   510,   516,   535,   540,   553,   554
+     387,   399,   411,   421,   428,   435,   451,   462,   477,   481,
+     482,   501,   521,   527,   546,   551,   564,   565
   };
 
   // Print the state stack on the debug stream.
@@ -1724,8 +1735,8 @@ namespace wasp {
 
 
 } // wasp
-#line 1728 "SIRENParser.cpp" // lalr1.cc:1167
-#line 558 "SIRENParser.bison" // lalr1.cc:1168
+#line 1739 "SIRENParser.cpp" // lalr1.cc:1167
+#line 569 "SIRENParser.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 
 void wasp::SIRENParser::error(const SIRENParser::location_type& l,

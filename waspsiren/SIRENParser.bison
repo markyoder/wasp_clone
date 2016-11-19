@@ -450,7 +450,7 @@ keyedvalue : key_declaration exp
     }
 indices_selection : integer
             {
-                // todo capture integer index
+                // capture integer index
                 unsigned int i_i = static_cast<unsigned int>($1);
                 std::vector<unsigned int> child_indices = {i_i
                                                            };
@@ -461,7 +461,18 @@ indices_selection : integer
             }
             | integer colon integer
             {
-                // todo capture index range
+                // capture index range
+                unsigned int si_i = static_cast<unsigned int>($1);
+                unsigned int c_i = static_cast<unsigned int>($2);
+                unsigned int ei_i = static_cast<unsigned int>($3);
+                std::vector<unsigned int> child_indices = {si_i
+                                                           ,c_i
+                                                           ,ei_i
+                                                           };
+
+                $$ = interpreter.push_parent(wasp::INDEX
+                            ,"I" // condition predicated child selection
+                            ,child_indices);
             }
             | integer colon integer colon integer
             {
