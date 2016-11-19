@@ -451,6 +451,13 @@ keyedvalue : key_declaration exp
 indices_selection : integer
             {
                 // todo capture integer index
+                unsigned int i_i = static_cast<unsigned int>($1);
+                std::vector<unsigned int> child_indices = {i_i
+                                                           };
+
+                $$ = interpreter.push_parent(wasp::INDEX
+                             ,"I" // I - index
+                             ,child_indices);
             }
             | integer colon integer
             {
