@@ -62,6 +62,10 @@ namespace wasp{
         , EXECUTION_UNIT_END
         , EXECUTION_UNIT_START
         , EXECUTION_UNIT
+        , SEPARATOR
+        , PARENT
+        , PREDICATED_CHILD
+        , INDEX
      };
 }
 #endif
