@@ -175,3 +175,50 @@ TEST( SIREN, parse_simple_root_w_indices_predicated_child )
         }
     }
 }
+TEST( SIREN, parse_simple_root_w_strided_indices_predicated_child )
+{
+    std::stringstream input;
+    input<< R"INPUT(/child/gchild[1:10:2]/ggchild)INPUT";
+    SIRENInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(19, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ( DOCUMENT_ROOT, document.type() );
+    ASSERT_EQ( 1, document.child_count() );
+//    document.paths(std::cout);
+    std::vector<std::pair<std::string,NODE>> expected={
+        {"/",SEPARATOR}
+        ,{"child",DECL}
+
+        ,{"/",SEPARATOR}
+        ,{"gchild",DECL}
+        ,{"[",LBRACKET}
+
+        ,{"int",INT} // start
+        ,{":",COLON}
+        ,{"int",INT} // end
+        ,{":",COLON}
+        ,{"int",INT} // stride
+        ,{"I",INDEX}
+
+        ,{"]",RBRACKET}
+        ,{"ipcs",PREDICATED_CHILD}
+
+        ,{"/",SEPARATOR}
+        ,{"ggchild",DECL}
+        ,{"O",OBJECT}
+
+        ,{"O",OBJECT}
+        ,{"R",DECL}
+        ,{"document", DOCUMENT_ROOT}
+    };
+    ASSERT_EQ( expected.size(), interpreter.node_count() );
+    for( size_t i = 0; i < expected.size(); ++i)
+    {
+        {
+        SCOPED_TRACE(i);
+        ASSERT_EQ( expected[i].first, interpreter.name(i) );
+        ASSERT_EQ( expected[i].second, interpreter.type(i) );
+        }
+    }
+}

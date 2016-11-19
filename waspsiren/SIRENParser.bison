@@ -471,12 +471,27 @@ indices_selection : integer
                                                            };
 
                 $$ = interpreter.push_parent(wasp::INDEX
-                            ,"I" // condition predicated child selection
+                            ,"I" // I - index
                             ,child_indices);
             }
             | integer colon integer colon integer
             {
-                // todo capture strided index range
+                // capture strided index range
+                unsigned int si_i = static_cast<unsigned int>($1);
+                unsigned int c1_i = static_cast<unsigned int>($2);
+                unsigned int ei_i = static_cast<unsigned int>($3);
+                unsigned int c2_i = static_cast<unsigned int>($4);
+                unsigned int stride_i = static_cast<unsigned int>($3);
+                std::vector<unsigned int> child_indices = {si_i
+                                                           ,c1_i
+                                                           ,ei_i
+                                                           ,c2_i
+                                                           ,stride_i
+                                                           };
+
+                $$ = interpreter.push_parent(wasp::INDEX
+                            ,"I" // I - index
+                            ,child_indices);
             }
 relative_selection : decl  // simple child
              | decl lbracket keyedvalue rbracket
