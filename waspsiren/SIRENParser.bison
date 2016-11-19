@@ -100,7 +100,7 @@
 %type <node_index>  lparen rparen plus minus multiply divide exponent
 %type <node_index>  lbracket rbracket
 %type <node_index>  lbrace rbrace
-%type <node_index>  decl parent
+%type <node_index>  decl
 %type <node_index>  comma colon
 %type <node_index>  exp value integer
 
@@ -414,7 +414,7 @@ decl : ANY_STRING
         std::string quote_less_data = interpreter.token_data(token_index);
         quote_less_data = wasp::strip_quotes(quote_less_data);
         $$ = interpreter.push_leaf(wasp::DECL
-                                   ,"decl"
+                                   ,quote_less_data.c_str()
                                    ,token_index);
     }
 
@@ -461,29 +461,68 @@ indices_selection : integer
                 // todo capture strided index range
             }
 relative_selection : decl  // simple child
-             | decl lparen keyedvalue rparen
+             | decl lbracket keyedvalue rbracket
              {
-                 // todo capture condition predicated child selection
+                 // capture condition predicated child selection
                  // obj[name = 'ted']
                  // obj[value <= 5]
+                 unsigned int decl_i = static_cast<unsigned int>($1);
+                 unsigned int lb_i = static_cast<unsigned int>($2);
+                 unsigned int exp_i = static_cast<unsigned int>($3);
+                 unsigned int rb_i = static_cast<unsigned int>($4);
+                 std::vector<unsigned int> child_indices = {decl_i
+                                                            ,lb_i
+                                                            ,exp_i
+                                                            ,rb_i
+                                                            };
+
+                 $$ = interpreter.push_parent(wasp::PREDICATED_CHILD
+                             ,"cpcs" // condition predicated child selection
+                             ,child_indices);
              }
-             | decl lparen indices_selection rparen
+             | decl lbracket indices_selection rbracket
              {
-                 // todo capture index predicated child selection
+                 // capture index predicated child selection
                  // obj[1]
                  // obj[1:3]
                  // obj[1:10:2]
+                 unsigned int decl_i = static_cast<unsigned int>($1);
+                 unsigned int lb_i = static_cast<unsigned int>($2);
+                 unsigned int indices_i = static_cast<unsigned int>($3);
+                 unsigned int rb_i = static_cast<unsigned int>($4);
+                 std::vector<unsigned int> child_indices = {decl_i
+                                                            ,lb_i
+                                                            ,indices_i
+                                                            ,rb_i
+                                                            };
+
+                 $$ = interpreter.push_parent(wasp::PREDICATED_CHILD
+                             ,"ipcs" // index predicated child selection
+                             ,child_indices);
              }
              | parent_selection
              {
-                 // todo capture parent selection
+                 // capture parent selection
                  // obj/..
-             } relative_selection separator relative_selection
+                 $$ = $1;
+             }
+             | relative_selection separator relative_selection
              {
-                // todo capture consecutive selections
+                // capture consecutive selections
                 // obj/child
                 // obj[name='ted']/child
                 // obj[name='ted']/.[1]
+                 unsigned int left_i = static_cast<unsigned int>($1);
+                 unsigned int sep_i = static_cast<unsigned int>($2);
+                 unsigned int right_i = static_cast<unsigned int>($3);
+                 std::vector<unsigned int> child_indices = {left_i
+                                                            ,sep_i
+                                                            ,right_i
+                                                            };
+
+                 $$ = interpreter.push_parent(wasp::OBJECT
+                             ,"O" // O - object
+                             ,child_indices);
              }
 
 root_based_selection : separator
@@ -501,7 +540,7 @@ root_based_selection : separator
                                                             };
 
                  $$ = interpreter.push_parent(wasp::DECL
-                                                 ,"root"
+                                                 ,"R" // R - root
                                                  ,child_indices);
              }
 start   : root_based_selection {interpreter.add_root_child_index(static_cast<unsigned int>($1)); }
