@@ -222,3 +222,40 @@ TEST( SIREN, parse_simple_root_w_strided_indices_predicated_child )
         }
     }
 }
+TEST( SIREN, parse_eq_pred )
+{
+    std::stringstream input;
+    input<< R"INPUT(/ child [id = 'x'] )INPUT";
+    SIRENInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ( 11, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ( DOCUMENT_ROOT, document.type() );
+    ASSERT_EQ( 1, document.child_count() );
+//    document.paths(std::cout);
+    std::vector<std::pair<std::string,NODE>> expected={
+        {"/",SEPARATOR}
+        ,{"child",DECL}
+        ,{"[",LBRACKET}
+
+        ,{"id",DECL}
+        ,{"==",EQ}
+        ,{"value",VALUE}
+        ,{"id",KEYED_VALUE}
+
+        ,{"]",RBRACKET}
+        ,{"cpcs",PREDICATED_CHILD}
+
+        ,{"R",DECL}
+        ,{"document", DOCUMENT_ROOT}
+    };
+    ASSERT_EQ( expected.size(), interpreter.node_count() );
+    for( size_t i = 0; i < expected.size(); ++i)
+    {
+        {
+        SCOPED_TRACE(i);
+        ASSERT_EQ( expected[i].first, interpreter.name(i) );
+        ASSERT_EQ( expected[i].second, interpreter.type(i) );
+        }
+    }
+}
