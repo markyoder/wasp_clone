@@ -130,7 +130,8 @@
 parent_selection : PARENT
     {
         auto token_index = static_cast<unsigned int>($1);
-        $$ = interpreter.push_leaf(wasp::PARENT,"..",token_index);
+        // P - parent
+        $$ = interpreter.push_leaf(wasp::PARENT,"P",token_index);
     }
 comma : COMMA
     {
