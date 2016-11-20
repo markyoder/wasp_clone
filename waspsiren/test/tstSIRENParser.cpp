@@ -444,3 +444,57 @@ TEST( SIREN, parse_gt_pred )
         }
     }
 }
+
+TEST( SIREN, parse_single_relative )
+{
+    std::stringstream input;
+    input<< R"INPUT( child )INPUT";
+    SIRENInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ( 2, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ( DOCUMENT_ROOT, document.type() );
+    ASSERT_EQ( 1, document.child_count() );
+//    document.paths(std::cout);
+    std::vector<std::pair<std::string,NODE>> expected={
+        {"child",DECL}
+        ,{"document", DOCUMENT_ROOT}
+    };
+    ASSERT_EQ( expected.size(), interpreter.node_count() );
+    for( size_t i = 0; i < expected.size(); ++i)
+    {
+        {
+        SCOPED_TRACE(i);
+        ASSERT_EQ( expected[i].first, interpreter.name(i) );
+        ASSERT_EQ( expected[i].second, interpreter.type(i) );
+        }
+    }
+}
+TEST( SIREN, parse_relative )
+{
+    std::stringstream input;
+    input<< R"INPUT( child/grandchild )INPUT";
+    SIRENInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ( 5, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ( DOCUMENT_ROOT, document.type() );
+    ASSERT_EQ( 1, document.child_count() );
+//    document.paths(std::cout);
+    std::vector<std::pair<std::string,NODE>> expected={
+        {"child",DECL}
+        ,{"/",SEPARATOR}
+        ,{"grandchild",DECL}
+        ,{"O",OBJECT}
+        ,{"document", DOCUMENT_ROOT}
+    };
+    ASSERT_EQ( expected.size(), interpreter.node_count() );
+    for( size_t i = 0; i < expected.size(); ++i)
+    {
+        {
+        SCOPED_TRACE(i);
+        ASSERT_EQ( expected[i].first, interpreter.name(i) );
+        ASSERT_EQ( expected[i].second, interpreter.type(i) );
+        }
+    }
+}
