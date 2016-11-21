@@ -37,6 +37,7 @@ public:
     const TAdapter& adapted(size_t index)const{return adapted_results[results[index].second];}
     const ScalarResult& scalar(size_t index)const {return scalar_results[results[index].second];}
 
+
     void push( const TAdapter & node );
     void push( const std::string& name, const std::string & data );
 private:
@@ -44,13 +45,12 @@ private:
     // a result could be an adapted result from a parse tree (TreeNodeView)
     // or a calculated, named result (count,10)
     std::vector<TAdapter> adapted_results;
-    std::vector<std::pair<std::string,std::string>> scalar_results;
+    std::vector<ScalarResult> scalar_results;
     enum type{
         ADAPTED,
         SCALAR
     };
     std::vector<std::pair<type,unsigned int>> results;
-//    std::vector<std::pair<type,Result>> results;
 };
 #include "waspsiren/SIRENResultSet.i.h"
 } // end of namespace

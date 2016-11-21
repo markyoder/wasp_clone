@@ -26,7 +26,26 @@ TEST( SIREN, result )
     set.push(FakeAdapter("fake","adapter"));
     ASSERT_EQ( 1, set.result_count() );
     ASSERT_TRUE( set.is_adapted(0) );
+    ASSERT_FALSE( set.is_scalar(0) );
     ASSERT_EQ("fake", set.adapted(0).name);
     ASSERT_EQ("adapter", set.adapted(0).data);
+    set.push("count","3");
+    ASSERT_EQ( 2, set.result_count() );
+    ASSERT_FALSE( set.is_adapted( 1 ) );
+    ASSERT_TRUE ( set.is_scalar( 1 ) );
 
+    for( size_t i = 0, index = 2; i < 10; ++i, ++index )
+    {
+        set.push(FakeAdapter("fake"+std::to_string(i),"adapter"+std::to_string(i)));
+        ASSERT_EQ( index+1, set.result_count() );
+        ASSERT_TRUE( set.is_adapted(index) );
+        ASSERT_FALSE( set.is_scalar(index) );
+        ASSERT_EQ("fake"+std::to_string(i), set.adapted(index).name );
+        ASSERT_EQ("adapter"+std::to_string(i), set.adapted(index).data );
+    }
+    // check initial pushs to ensure no mischief has occurred
+    ASSERT_TRUE( set.is_adapted(0) );
+    ASSERT_FALSE( set.is_scalar(0) );
+    ASSERT_EQ("fake", set.adapted(0).name );
+    ASSERT_EQ("adapter", set.adapted(0).data );
 }
