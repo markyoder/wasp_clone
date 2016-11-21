@@ -12,6 +12,7 @@
 #include <memory>
 
 #include "waspcore/Interpreter.h"
+#include "waspsiren/SIRENResultSet.h"
 
 /** The wasp namespace is used to encapsulate the three parser classes
  * wasp::SIRENParser, wasp::SIRENLexerImpl and wasp::SIRENInterpreter */
@@ -60,12 +61,28 @@ namespace wasp {
         bool traceLexing;
         /**
          * @brief traceParsing - variable available for verbosely debugging parsing logic
-         * @note '%debug' must be specified in the '.biSIREN' grammar file
+         * @note '%debug' must be specified in the '.bison' grammar file
          */
         bool traceParsing;       
 
 
-    }; // end of SIRENInterpreter class
+        /**
+         * @brief evaluate the processed expression againsted the adapted node
+         * @param node the adapted node that fulfills the required interface
+         * @param result the result to be populated
+         * @return the number of results stored in \result
+         * The TAdapter class must fulfill the following interface requirements:
+         * const char * TAdapter::name()const - returns the name of the node.
+         * size_t TAdapter::child_count()const - returns the number of children.
+         * TAdapter TAdapter::parent()const - returns the parent of the node.
+         * TAdapter TAdapter::child_at(size_t index)const - returns the child of the node.
+         * bool TAdapter::has_parent()const - indicate the node has a parent.
+         * std::string TAdapter::data()const - acquires the data of the node.
+         */
+        template<typename TAdapter>
+        size_t evaluate(TAdapter & node, SIRENResultSet<TAdapter> & result)const;
 
+    }; // end of SIRENInterpreter class
+#include "waspsiren/SIRENInterpreter.i.h"
 } // namespace wasp
 #endif // WASPSIRENINTERPRETER_H
