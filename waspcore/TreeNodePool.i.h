@@ -228,6 +228,8 @@ template<typename NTS, typename NIS
 bool TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::has_parent(
                     NIS node_index )const
 {
+    if( node_index >= size() ) return false;
+
     size_t nodes_parent_index
             = parent_node_index(node_index);
     return nodes_parent_index != size();
