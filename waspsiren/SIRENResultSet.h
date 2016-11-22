@@ -34,7 +34,17 @@ public:
      */
     bool is_scalar(size_t index)const{return results[index].first == SCALAR;}
 
+    /**
+     * @brief adapted acquires the adapted result
+     * @param index the index of the adapted result
+     * @return TAdapter the adapter to the node type
+     */
     const TAdapter& adapted(size_t index)const{return adapted_results[results[index].second];}
+    /**
+     * @brief scalar acquires the ScalarResult consisting of a name and value.
+     * @param index the index of the scalar result.
+     * @return ScalarResult is the named
+     */
     const ScalarResult& scalar(size_t index)const {return scalar_results[results[index].second];}
 
 

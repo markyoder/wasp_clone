@@ -274,6 +274,7 @@ public:
     TreeNodeView(const TreeNodeView& orig);
     ~TreeNodeView();
 
+    TreeNodeView& operator=(const TreeNodeView& b);
 
     bool operator==(const TreeNodeView& b)const;
     /**
@@ -350,7 +351,7 @@ public:
     size_t tree_node_index()const{return m_tree_node_index;}
 private:
     size_t m_tree_node_index;
-    const TreeNodePool<> & m_tree_data;
+    const TreeNodePool<> * m_tree_data;
 };
 #include "waspcore/TreeNodePool.i.h"
 } // end of namespace
