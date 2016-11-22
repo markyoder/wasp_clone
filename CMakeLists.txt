@@ -20,6 +20,14 @@ IF (NOT TRIBITS_PROCESSING_PACKAGE)
   SET(${PROJECT_NAME}_TRIBITS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/TriBITS/tribits" CACHE PATH "")
   INCLUDE("${${PROJECT_NAME}_TRIBITS_DIR}/TriBITS.cmake")
   SET(${PROJECT_NAME}_ENABLE_TESTS ON CACHE BOOL "Enable tests by default.")
+  # default fortran support off
+  IF(NOT ${PROJECT_NAME}_ENABLE_Fortran)
+     SET(${PROJECT_NAME}_ENABLE_Fortran OFF CACHE BOOL "Enable fortran support")
+  ENDIF()
+  # default MPI support off
+  IF(NOT TPL_ENABLE_MPI)
+    SET(TPL_ENABLE_MPI OFF CACHE BOOL "Enable MPI support")
+  ENDIF()
   TRIBITS_PROJECT_ENABLE_ALL()
 ELSE()
   # This CMakeLists.txt file is being processed as the TriBITS package file.
