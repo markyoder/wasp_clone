@@ -558,7 +558,7 @@ TEST( SIREN, parse_parent )
     }
 }
 
-TEST( SIREN, parse_any_selection )
+TEST( SIREN, parse_root_based_any_selection )
 {
     std::stringstream input;
     input<< R"INPUT( // )INPUT";
@@ -583,7 +583,7 @@ TEST( SIREN, parse_any_selection )
         }
     }
 }
-TEST( SIREN, parse_any_selection_w_child )
+TEST( SIREN, parse_root_based_any_selection_w_child )
 {
     std::stringstream input;
     input<< R"INPUT( //child_name )INPUT";
@@ -610,3 +610,4 @@ TEST( SIREN, parse_any_selection_w_child )
         }
     }
 }
+
