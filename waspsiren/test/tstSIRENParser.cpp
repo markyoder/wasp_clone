@@ -557,3 +557,56 @@ TEST( SIREN, parse_parent )
         }
     }
 }
+
+TEST( SIREN, parse_any_selection )
+{
+    std::stringstream input;
+    input<< R"INPUT( // )INPUT";
+    SIRENInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ( 2, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ( DOCUMENT_ROOT, document.type() );
+    ASSERT_EQ( 1, document.child_count() );
+//    document.paths(std::cout);
+    std::vector<std::pair<std::string,NODE>> expected={
+        {"A", ANY}
+        ,{"document", DOCUMENT_ROOT}
+    };
+    ASSERT_EQ( expected.size(), interpreter.node_count() );
+    for( size_t i = 0; i < expected.size(); ++i)
+    {
+        {
+        SCOPED_TRACE(i);
+        ASSERT_EQ( expected[i].first, interpreter.name(i) );
+        ASSERT_EQ( expected[i].second, interpreter.type(i) );
+        }
+    }
+}
+TEST( SIREN, parse_any_selection_w_child )
+{
+    std::stringstream input;
+    input<< R"INPUT( //child_name )INPUT";
+    SIRENInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ( 4, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ( DOCUMENT_ROOT, document.type() );
+    ASSERT_EQ( 1, document.child_count() );
+//    document.paths(std::cout);
+    std::vector<std::pair<std::string,NODE>> expected={
+        {"A", ANY}
+        ,{"child_name",DECL}
+        ,{"A", ANY}
+        ,{"document", DOCUMENT_ROOT}
+    };
+    ASSERT_EQ( expected.size(), interpreter.node_count() );
+    for( size_t i = 0; i < expected.size(); ++i)
+    {
+        {
+        SCOPED_TRACE(i);
+        ASSERT_EQ( expected[i].first, interpreter.name(i) );
+        ASSERT_EQ( expected[i].second, interpreter.type(i) );
+        }
+    }
+}

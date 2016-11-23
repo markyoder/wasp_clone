@@ -131,7 +131,7 @@
 any_selection : ANY
     {
         auto token_index = static_cast<unsigned int>($1);
-        $$ = interpreter.push_leaf(wasp::ANY,"//",token_index);
+        $$ = interpreter.push_leaf(wasp::ANY,"A",token_index);
     }
 parent_selection : PARENT
     {
@@ -546,12 +546,6 @@ relative_selection : decl  // simple child
                  // obj/..
                  $$ = $1;
              }
-             | any_selection
-             {
-                 // capture any selection
-                 // obj//
-                 $$ = $1;
-             }
              | relative_selection separator relative_selection
              {
                 // capture consecutive selections
@@ -568,6 +562,24 @@ relative_selection : decl  // simple child
 
                  $$ = interpreter.push_parent(wasp::OBJECT
                              ,"O" // O - object
+                             ,child_indices);
+             }
+             |  relative_selection any_selection relative_selection
+             {
+                // capture named child selection
+                // parent//child
+                // obj[name='ted']//child
+                // obj[name='ted']//.[1]
+                 unsigned int left_i = static_cast<unsigned int>($1);
+                 unsigned int any_i = static_cast<unsigned int>($2);
+                 unsigned int right_i = static_cast<unsigned int>($3);
+                 std::vector<unsigned int> child_indices = {left_i
+                                                            ,any_i
+                                                            ,right_i
+                                                            };
+
+                 $$ = interpreter.push_parent(wasp::ANY
+                             ,"A" // A - any child
                              ,child_indices);
              }
 document_root :  SEPARATOR
@@ -593,9 +605,23 @@ root_based_selection : document_root
                                          ,"R" // R - root
                                          ,child_indices);
      }
+     | any_selection
+     | any_selection relative_selection
+     {
+         // capture any child of the root
+         unsigned int any_i = static_cast<unsigned int>($1);
+         unsigned int child_i = static_cast<unsigned int>($2);
+         std::vector<unsigned int> child_indices = {any_i
+                                                    ,child_i
+                                                    };
+
+         $$ = interpreter.push_parent(wasp::ANY
+                                         ,"A" // A - any
+                                         ,child_indices);
+     }
 start   : root_based_selection {interpreter.add_root_child_index(static_cast<unsigned int>($1)); }
         | relative_selection {interpreter.add_root_child_index(static_cast<unsigned int>($1)); }
-        | any_selection {interpreter.add_root_child_index(static_cast<unsigned int>($1)); }
+
 
  /*** END RULES - Change the wasp grammar rules above ***/
 
