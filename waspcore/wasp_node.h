@@ -4,7 +4,7 @@ namespace wasp{
     /**
      * @brief The NODE enum core node types used by wasp support processors
      */
-    enum NODE : char {
+    enum NODE : unsigned char {
           UNKNOWN
         , DOCUMENT_ROOT
         , DECL
