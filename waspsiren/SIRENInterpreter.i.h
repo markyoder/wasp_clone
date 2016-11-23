@@ -26,7 +26,7 @@ size_t SIRENInterpreter::evaluate(
         {
             anode = anode.parent();
         }
-        // the root of the documet
+        // the root of the document
         result.push(anode);
         return result.result_count();
     }

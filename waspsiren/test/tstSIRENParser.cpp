@@ -18,7 +18,7 @@ TEST( SIREN, parse_only_root )
     TreeNodeView root_selection = document.child_at(0);
     // when there exists only the root selection
     // the node type is a separator
-    ASSERT_EQ( SEPARATOR, root_selection.type() );
+    ASSERT_EQ( DOCUMENT_ROOT, root_selection.type() );
 }
 TEST( SIREN, parse_simple_root )
 {
@@ -33,10 +33,10 @@ TEST( SIREN, parse_simple_root )
     TreeNodeView root_selection = document.child_at(0);
     // when there exists a root selection
     // with a child selection the node type is a declaration
-    ASSERT_EQ( DECL, root_selection.type() );
+    ASSERT_EQ( DOCUMENT_ROOT, root_selection.type() );
     // '/' 'child'
     ASSERT_EQ( 2, root_selection.child_count() );
-    ASSERT_EQ( SEPARATOR, root_selection.child_at(0).type() );
+    ASSERT_EQ( DOCUMENT_ROOT, root_selection.child_at(0).type() );
     ASSERT_EQ( DECL, root_selection.child_at(1).type() );
     std::string decl = "child";
     ASSERT_EQ( decl, root_selection.child_at(1).name() );
@@ -54,7 +54,7 @@ TEST( SIREN, parse_simple_root_w_conditionally_predicated_child )
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
     std::vector<std::pair<std::string,NODE>> expected={
-        {"/",SEPARATOR}
+        {"R",DOCUMENT_ROOT}
         ,{"child",DECL}
 
         ,{"/",SEPARATOR}
@@ -74,7 +74,7 @@ TEST( SIREN, parse_simple_root_w_conditionally_predicated_child )
         ,{"O",OBJECT}
 
         ,{"O",OBJECT}
-        ,{"R",DECL}
+        ,{"R",DOCUMENT_ROOT}
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
@@ -99,7 +99,7 @@ TEST( SIREN, parse_simple_root_w_index_predicated_child )
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
     std::vector<std::pair<std::string,NODE>> expected={
-        {"/",SEPARATOR}
+        {"R",DOCUMENT_ROOT}
         ,{"child",DECL}
 
         ,{"/",SEPARATOR}
@@ -117,7 +117,7 @@ TEST( SIREN, parse_simple_root_w_index_predicated_child )
         ,{"O",OBJECT}
 
         ,{"O",OBJECT}
-        ,{"R",DECL}
+        ,{"R",DOCUMENT_ROOT}
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
@@ -142,7 +142,7 @@ TEST( SIREN, parse_simple_root_w_indices_predicated_child )
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
     std::vector<std::pair<std::string,NODE>> expected={
-        {"/",SEPARATOR}
+        {"R",DOCUMENT_ROOT}
         ,{"child",DECL}
 
         ,{"/",SEPARATOR}
@@ -162,7 +162,7 @@ TEST( SIREN, parse_simple_root_w_indices_predicated_child )
         ,{"O",OBJECT}
 
         ,{"O",OBJECT}
-        ,{"R",DECL}
+        ,{"R",DOCUMENT_ROOT}
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
@@ -187,7 +187,7 @@ TEST( SIREN, parse_simple_root_w_strided_indices_predicated_child )
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
     std::vector<std::pair<std::string,NODE>> expected={
-        {"/",SEPARATOR}
+        {"R",DOCUMENT_ROOT}
         ,{"child",DECL}
 
         ,{"/",SEPARATOR}
@@ -209,7 +209,7 @@ TEST( SIREN, parse_simple_root_w_strided_indices_predicated_child )
         ,{"O",OBJECT}
 
         ,{"O",OBJECT}
-        ,{"R",DECL}
+        ,{"R",DOCUMENT_ROOT}
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
@@ -234,7 +234,7 @@ TEST( SIREN, parse_eq_pred )
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
     std::vector<std::pair<std::string,NODE>> expected={
-        {"/",SEPARATOR}
+        {"R",DOCUMENT_ROOT}
         ,{"child",DECL}
         ,{"[",LBRACKET}
 
@@ -246,7 +246,7 @@ TEST( SIREN, parse_eq_pred )
         ,{"]",RBRACKET}
         ,{"cpcs",PREDICATED_CHILD}
 
-        ,{"R",DECL}
+        ,{"R",DOCUMENT_ROOT}
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
@@ -271,7 +271,7 @@ TEST( SIREN, parse_gte_pred )
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
     std::vector<std::pair<std::string,NODE>> expected={
-        {"/",SEPARATOR}
+        {"R",DOCUMENT_ROOT }
         ,{"child",DECL}
         ,{"[",LBRACKET}
 
@@ -283,7 +283,7 @@ TEST( SIREN, parse_gte_pred )
         ,{"]",RBRACKET}
         ,{"cpcs",PREDICATED_CHILD}
 
-        ,{"R",DECL}
+        ,{"R",DOCUMENT_ROOT}
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
@@ -308,7 +308,7 @@ TEST( SIREN, parse_lte_pred )
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
     std::vector<std::pair<std::string,NODE>> expected={
-        {"/",SEPARATOR}
+        {"R",DOCUMENT_ROOT}
         ,{"child",DECL}
         ,{"[",LBRACKET}
 
@@ -320,7 +320,7 @@ TEST( SIREN, parse_lte_pred )
         ,{"]",RBRACKET}
         ,{"cpcs",PREDICATED_CHILD}
 
-        ,{"R",DECL}
+        ,{"R",DOCUMENT_ROOT}
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
@@ -345,7 +345,7 @@ TEST( SIREN, parse_neq_pred )
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
     std::vector<std::pair<std::string,NODE>> expected={
-        {"/",SEPARATOR}
+        {"R",DOCUMENT_ROOT}
         ,{"child",DECL}
         ,{"[",LBRACKET}
 
@@ -357,7 +357,7 @@ TEST( SIREN, parse_neq_pred )
         ,{"]",RBRACKET}
         ,{"cpcs",PREDICATED_CHILD}
 
-        ,{"R",DECL}
+        ,{"R",DOCUMENT_ROOT}
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
@@ -382,7 +382,7 @@ TEST( SIREN, parse_lt_pred )
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
     std::vector<std::pair<std::string,NODE>> expected={
-        {"/",SEPARATOR}
+        {"R",DOCUMENT_ROOT}
         ,{"child",DECL}
         ,{"[",LBRACKET}
 
@@ -394,7 +394,7 @@ TEST( SIREN, parse_lt_pred )
         ,{"]",RBRACKET}
         ,{"cpcs",PREDICATED_CHILD}
 
-        ,{"R",DECL}
+        ,{"R",DOCUMENT_ROOT}
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
@@ -419,7 +419,7 @@ TEST( SIREN, parse_gt_pred )
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
     std::vector<std::pair<std::string,NODE>> expected={
-        {"/",SEPARATOR}
+        {"R",DOCUMENT_ROOT}
         ,{"child",DECL}
         ,{"[",LBRACKET}
 
@@ -431,7 +431,7 @@ TEST( SIREN, parse_gt_pred )
         ,{"]",RBRACKET}
         ,{"cpcs",PREDICATED_CHILD}
 
-        ,{"R",DECL}
+        ,{"R",DOCUMENT_ROOT}
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );

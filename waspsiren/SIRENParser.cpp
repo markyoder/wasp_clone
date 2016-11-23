@@ -1218,45 +1218,54 @@ namespace wasp {
     break;
 
   case 64:
-#line 563 "SIRENParser.bison" // lalr1.cc:859
+#line 562 "SIRENParser.bison" // lalr1.cc:859
     {
-                 // capture root only selection
-                 (yylhs.value.node_index) = (yystack_[0].value.node_index);
-             }
+     auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+     (yylhs.value.node_index) = interpreter.push_leaf(wasp::DOCUMENT_ROOT,"R",token_index);
+    }
 #line 1227 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
   case 65:
-#line 568 "SIRENParser.bison" // lalr1.cc:859
+#line 567 "SIRENParser.bison" // lalr1.cc:859
     {
-                 // capture root based child selection
-                 unsigned int root_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-                 unsigned int child_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-                 std::vector<unsigned int> child_indices = {root_i
-                                                            ,child_i
-                                                            };
-
-                 (yylhs.value.node_index) = interpreter.push_parent(wasp::DECL
-                                                 ,"R" // R - root
-                                                 ,child_indices);
-             }
-#line 1244 "SIRENParser.cpp" // lalr1.cc:859
+         // capture root only selection
+         (yylhs.value.node_index) = (yystack_[0].value.node_index);
+     }
+#line 1236 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
   case 66:
-#line 580 "SIRENParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); }
-#line 1250 "SIRENParser.cpp" // lalr1.cc:859
+#line 572 "SIRENParser.bison" // lalr1.cc:859
+    {
+         // capture root based child selection
+         unsigned int root_i = static_cast<unsigned int>((yystack_[1].value.node_index));
+         unsigned int child_i = static_cast<unsigned int>((yystack_[0].value.node_index));
+         std::vector<unsigned int> child_indices = {root_i
+                                                    ,child_i
+                                                    };
+
+         (yylhs.value.node_index) = interpreter.push_parent(wasp::DOCUMENT_ROOT
+                                         ,"R" // R - root
+                                         ,child_indices);
+     }
+#line 1253 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
   case 67:
-#line 581 "SIRENParser.bison" // lalr1.cc:859
+#line 584 "SIRENParser.bison" // lalr1.cc:859
     {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); }
-#line 1256 "SIRENParser.cpp" // lalr1.cc:859
+#line 1259 "SIRENParser.cpp" // lalr1.cc:859
+    break;
+
+  case 68:
+#line 585 "SIRENParser.bison" // lalr1.cc:859
+    {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); }
+#line 1265 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
 
-#line 1260 "SIRENParser.cpp" // lalr1.cc:859
+#line 1269 "SIRENParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1511,83 +1520,83 @@ namespace wasp {
   }
 
 
-  const signed char SIRENParser::yypact_ninf_ = -40;
+  const signed char SIRENParser::yypact_ninf_ = -41;
 
   const signed char SIRENParser::yytable_ninf_ = -1;
 
   const signed char
   SIRENParser::yypact_[] =
   {
-     -16,   -40,   -40,   -40,   -40,   -40,   -18,   -40,     4,   -15,
-     -40,    18,   -15,   -40,   -25,   -18,   -40,   -40,    15,   -40,
-       3,    97,    20,    20,   -15,   -40,     1,   -40,   -40,   -40,
-     -40,   -40,   -40,   -40,     3,     3,     3,   -40,   -40,   -40,
-      66,   -40,   -40,   -40,   -40,   -40,   -40,   -40,   -40,   -40,
-     -40,   -40,   -40,   -40,   -40,   -40,   -40,    15,    10,    10,
-      50,   -40,   -40,   -40,   -40,   -40,   -40,   -40,   -40,     3,
-       3,     3,     3,     3,     3,   -40,   -40,     1,   -40,   -40,
-      10,    25,    25,    10,    12,    82,   -40
+     -16,   -41,   -41,   -41,   -41,   -41,   -41,    -1,   -22,   -18,
+     -41,    10,   -41,    -2,   -41,   -18,   -22,   -41,   -41,     5,
+     -41,     3,    97,    19,    19,   -22,   -41,   -10,   -41,   -41,
+     -41,   -41,   -41,   -41,   -41,     3,     3,     3,   -41,   -41,
+     -41,    66,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,
+     -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,     5,    13,
+      13,    50,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,
+       3,     3,     3,     3,     3,     3,   -41,   -41,   -10,   -41,
+     -41,    13,    25,    25,    13,    12,    82,   -41
   };
 
   const unsigned char
   SIRENParser::yydefact_[] =
   {
-       0,     2,     6,    33,    34,    62,    64,    52,    59,    67,
-      66,     0,    65,    31,     0,     0,     1,    39,    56,    54,
-       0,     0,     0,     0,    63,     3,     0,    10,    29,    28,
-      37,    38,    35,    36,     0,     0,     0,    40,    41,    42,
-      55,    20,    23,    21,    22,    19,    18,    53,    12,    13,
-      16,    14,    17,    15,    32,    60,    61,    57,    50,    51,
-       0,    26,    27,     4,     5,     9,    11,     7,     8,     0,
-       0,     0,     0,     0,     0,    24,    25,     0,    30,    49,
-      43,    44,    45,    46,    47,    48,    58
+       0,     2,    64,    33,    34,    62,    52,    59,    68,    65,
+      67,     0,    31,     0,     6,     0,    66,     1,    39,    56,
+      54,     0,     0,     0,     0,    63,     3,     0,    10,    29,
+      28,    37,    38,    35,    36,     0,     0,     0,    40,    41,
+      42,    55,    20,    23,    21,    22,    19,    18,    53,    12,
+      13,    16,    14,    17,    15,    32,    60,    61,    57,    50,
+      51,     0,    26,    27,     4,     5,     9,    11,     7,     8,
+       0,     0,     0,     0,     0,     0,    24,    25,     0,    30,
+      49,    43,    44,    45,    46,    47,    48,    58
   };
 
   const signed char
   SIRENParser::yypgoto_[] =
   {
-     -40,   -40,   -27,   -40,   -40,    40,   -40,   -40,   -39,   -40,
-      26,   -40,   -40,   -40,   -40,   -40,   -40,   -40,   -40,   -40,
-     -40,   -40,   -40,   -40,    27,   -40,   -40,   -26,   -40,   -40,
-     -12,    39,   -40,   -40,   -40,   -40,    11,   -40,   -40
+     -41,   -41,   -28,   -41,   -41,   -41,   -41,   -41,   -40,   -41,
+      15,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,
+     -41,   -41,   -41,   -41,    23,   -41,   -41,   -27,   -41,   -41,
+     -13,    37,   -41,   -41,   -41,   -41,    -4,   -41,   -41,   -41
   };
 
   const signed char
   SIRENParser::yydefgoto_[] =
   {
-      -1,     5,    26,    67,    68,    15,    69,    70,    34,    72,
-      73,    48,    49,    50,    51,    52,    53,    74,    75,    76,
-      35,    36,    79,    14,    55,     7,    37,    18,    38,    39,
-      40,     8,    20,    21,    22,    23,     9,    10,    11
+      -1,     5,    27,    68,    69,    15,    70,    71,    35,    73,
+      74,    49,    50,    51,    52,    53,    54,    75,    76,    77,
+      36,    37,    80,    13,    56,     6,    38,    19,    39,    40,
+      41,     7,    21,    22,    23,    24,     8,     9,    10,    11
   };
 
   const unsigned char
   SIRENParser::yytable_[] =
   {
-      57,    71,     1,    17,     1,     3,     4,    27,    28,     2,
-       2,    13,     3,     4,     3,     4,    27,    12,    16,    71,
-      71,    71,    58,    59,    60,    29,    24,    25,    54,    17,
-      77,    30,    31,    32,    33,    63,    64,    66,    65,    66,
-       6,    71,    71,    71,    71,    71,    71,    47,    63,    64,
-      56,    86,    66,    19,    27,     0,    78,    80,    81,    82,
-      83,    84,    85,    41,    42,    43,    44,    45,    46,    61,
-      27,    62,     0,    63,    64,     0,    65,    66,     0,    41,
-      42,    43,    44,    45,    46,    61,    27,    62,     0,    63,
-      64,     0,    65,    66,     0,    41,    42,    43,    44,    45,
-      46,     0,     0,     0,     0,    63,    64,     0,    65,    66,
-      41,    42,    43,    44,    45,    46
+      58,    72,     1,    14,     1,    16,    12,    28,    29,     2,
+      17,    25,     3,     4,     3,     4,    28,    26,    18,    72,
+      72,    72,    59,    60,    61,    30,    18,    55,     3,     4,
+      78,    31,    32,    33,    34,    64,    65,    48,    66,    67,
+      67,    72,    72,    72,    72,    72,    72,    57,    64,    65,
+      20,    87,    67,     0,    28,     0,    79,    81,    82,    83,
+      84,    85,    86,    42,    43,    44,    45,    46,    47,    62,
+      28,    63,     0,    64,    65,     0,    66,    67,     0,    42,
+      43,    44,    45,    46,    47,    62,    28,    63,     0,    64,
+      65,     0,    66,    67,     0,    42,    43,    44,    45,    46,
+      47,     0,     0,     0,     0,    64,    65,     0,    66,    67,
+      42,    43,    44,    45,    46,    47
   };
 
   const signed char
   SIRENParser::yycheck_[] =
   {
-      26,    40,    20,    28,    20,    30,    31,     4,     5,    25,
-      25,     7,    30,    31,    30,    31,     4,     6,     0,    58,
-      59,    60,    34,    35,    36,    22,    15,    12,     8,    28,
-      57,    28,    29,    30,    31,    23,    24,    27,    26,    27,
-       0,    80,    81,    82,    83,    84,    85,    21,    23,    24,
-      23,    77,    27,    14,     4,    -1,     6,    69,    70,    71,
-      72,    73,    74,    13,    14,    15,    16,    17,    18,    19,
+      27,    41,    20,    25,    20,     9,     7,     4,     5,    25,
+       0,    15,    30,    31,    30,    31,     4,    12,    28,    59,
+      60,    61,    35,    36,    37,    22,    28,     8,    30,    31,
+      58,    28,    29,    30,    31,    23,    24,    22,    26,    27,
+      27,    81,    82,    83,    84,    85,    86,    24,    23,    24,
+      13,    78,    27,    -1,     4,    -1,     6,    70,    71,    72,
+      73,    74,    75,    13,    14,    15,    16,    17,    18,    19,
        4,    21,    -1,    23,    24,    -1,    26,    27,    -1,    13,
       14,    15,    16,    17,    18,    19,     4,    21,    -1,    23,
       24,    -1,    26,    27,    -1,    13,    14,    15,    16,    17,
@@ -1598,15 +1607,15 @@ namespace wasp {
   const unsigned char
   SIRENParser::yystos_[] =
   {
-       0,    20,    25,    30,    31,    37,    41,    61,    67,    72,
-      73,    74,    72,     7,    59,    41,     0,    28,    63,    67,
-      68,    69,    70,    71,    72,    12,    38,     4,     5,    22,
-      28,    29,    30,    31,    44,    56,    57,    62,    64,    65,
-      66,    13,    14,    15,    16,    17,    18,    46,    47,    48,
-      49,    50,    51,    52,     8,    60,    60,    63,    66,    66,
-      66,    19,    21,    23,    24,    26,    27,    39,    40,    42,
-      43,    44,    45,    46,    53,    54,    55,    38,     6,    58,
-      66,    66,    66,    66,    66,    66,    63
+       0,    20,    25,    30,    31,    37,    61,    67,    72,    73,
+      74,    75,     7,    59,    25,    41,    72,     0,    28,    63,
+      67,    68,    69,    70,    71,    72,    12,    38,     4,     5,
+      22,    28,    29,    30,    31,    44,    56,    57,    62,    64,
+      65,    66,    13,    14,    15,    16,    17,    18,    46,    47,
+      48,    49,    50,    51,    52,     8,    60,    60,    63,    66,
+      66,    66,    19,    21,    23,    24,    26,    27,    39,    40,
+      42,    43,    44,    45,    46,    53,    54,    55,    38,     6,
+      58,    66,    66,    66,    66,    66,    66,    63
   };
 
   const unsigned char
@@ -1618,7 +1627,7 @@ namespace wasp {
       58,    59,    60,    61,    61,    62,    62,    62,    62,    63,
       64,    65,    66,    66,    66,    66,    66,    66,    66,    66,
       66,    66,    67,    68,    69,    70,    71,    71,    71,    72,
-      72,    72,    72,    72,    73,    73,    74,    74
+      72,    72,    72,    72,    73,    74,    74,    75,    75
   };
 
   const unsigned char
@@ -1630,7 +1639,7 @@ namespace wasp {
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     3,     3,     3,     3,     3,     3,     3,
        2,     2,     1,     2,     1,     2,     1,     3,     5,     1,
-       4,     4,     1,     3,     1,     2,     1,     1
+       4,     4,     1,     3,     1,     1,     2,     1,     1
   };
 
 
@@ -1652,8 +1661,8 @@ namespace wasp {
   "boolean_logic_op", "and", "or", "unary_not", "lparen", "rparen",
   "lbracket", "rbracket", "ANY_STRING", "PRIMITIVE", "integer", "value",
   "component", "exp", "decl", "key_declaration", "tag", "keyedvalue",
-  "indices_selection", "relative_selection", "root_based_selection",
-  "start", YY_NULLPTR
+  "indices_selection", "relative_selection", "document_root",
+  "root_based_selection", "start", YY_NULLPTR
   };
 
 #if YYDEBUG
@@ -1666,7 +1675,7 @@ namespace wasp {
      236,   251,   256,   262,   262,   263,   263,   263,   263,   264,
      269,   286,   288,   289,   303,   317,   331,   345,   360,   374,
      388,   400,   412,   422,   429,   436,   452,   463,   478,   497,
-     498,   517,   537,   543,   562,   567,   580,   581
+     498,   517,   537,   543,   561,   566,   571,   584,   585
   };
 
   // Print the state stack on the debug stream.
@@ -1751,8 +1760,8 @@ namespace wasp {
 
 
 } // wasp
-#line 1755 "SIRENParser.cpp" // lalr1.cc:1167
-#line 585 "SIRENParser.bison" // lalr1.cc:1168
+#line 1764 "SIRENParser.cpp" // lalr1.cc:1167
+#line 589 "SIRENParser.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 
 void wasp::SIRENParser::error(const SIRENParser::location_type& l,

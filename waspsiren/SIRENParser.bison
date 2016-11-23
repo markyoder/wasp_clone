@@ -106,7 +106,7 @@
 
 %type <node_index>  keyedvalue
 %type <node_index>  component
-%type <node_index>  separator
+%type <node_index>  separator document_root
 %type <node_index>  root_based_selection relative_selection
 %type <node_index>  indices_selection parent_selection
 %type <node_indices> tag key_declaration
@@ -558,25 +558,29 @@ relative_selection : decl  // simple child
                              ,"O" // O - object
                              ,child_indices);
              }
+document_root :  SEPARATOR
+    {
+     auto token_index = static_cast<unsigned int>($1);
+     $$ = interpreter.push_leaf(wasp::DOCUMENT_ROOT,"R",token_index);
+    }
+root_based_selection : document_root
+     {
+         // capture root only selection
+         $$ = $1;
+     }
+     | document_root relative_selection
+     {
+         // capture root based child selection
+         unsigned int root_i = static_cast<unsigned int>($1);
+         unsigned int child_i = static_cast<unsigned int>($2);
+         std::vector<unsigned int> child_indices = {root_i
+                                                    ,child_i
+                                                    };
 
-root_based_selection : separator
-             {
-                 // capture root only selection
-                 $$ = $1;
-             }
-             | separator relative_selection
-             {
-                 // capture root based child selection
-                 unsigned int root_i = static_cast<unsigned int>($1);
-                 unsigned int child_i = static_cast<unsigned int>($2);
-                 std::vector<unsigned int> child_indices = {root_i
-                                                            ,child_i
-                                                            };
-
-                 $$ = interpreter.push_parent(wasp::DECL
-                                                 ,"R" // R - root
-                                                 ,child_indices);
-             }
+         $$ = interpreter.push_parent(wasp::DOCUMENT_ROOT
+                                         ,"R" // R - root
+                                         ,child_indices);
+     }
 start   : root_based_selection {interpreter.add_root_child_index(static_cast<unsigned int>($1)); }
         | relative_selection {interpreter.add_root_child_index(static_cast<unsigned int>($1)); }
 
