@@ -62,6 +62,7 @@
 
 %token                  END          0  "end of file"
 %token                  EOL             "end of line"
+%token <token_index>   ANY            "//"
 %token <token_index>   MINUS            "-"
 %token <token_index>   LPAREN           "("
 %token <token_index>   RPAREN           ")"
@@ -107,7 +108,7 @@
 %type <node_index>  keyedvalue
 %type <node_index>  component
 %type <node_index>  separator document_root
-%type <node_index>  root_based_selection relative_selection
+%type <node_index>  root_based_selection relative_selection any_selection
 %type <node_index>  indices_selection parent_selection
 %type <node_indices> tag key_declaration
 %destructor { delete $$; } tag key_declaration
@@ -127,6 +128,11 @@
 %% /*** Grammar Rules ***/
 
  /*** BEGIN - Change the wasp grammar rules below ***/
+any_selection : ANY
+    {
+        auto token_index = static_cast<unsigned int>($1);
+        $$ = interpreter.push_leaf(wasp::ANY,"//",token_index);
+    }
 parent_selection : PARENT
     {
         auto token_index = static_cast<unsigned int>($1);
@@ -540,6 +546,12 @@ relative_selection : decl  // simple child
                  // obj/..
                  $$ = $1;
              }
+             | any_selection
+             {
+                 // capture any selection
+                 // obj//
+                 $$ = $1;
+             }
              | relative_selection separator relative_selection
              {
                 // capture consecutive selections
@@ -583,6 +595,7 @@ root_based_selection : document_root
      }
 start   : root_based_selection {interpreter.add_root_child_index(static_cast<unsigned int>($1)); }
         | relative_selection {interpreter.add_root_child_index(static_cast<unsigned int>($1)); }
+        | any_selection {interpreter.add_root_child_index(static_cast<unsigned int>($1)); }
 
  /*** END RULES - Change the wasp grammar rules above ***/
 

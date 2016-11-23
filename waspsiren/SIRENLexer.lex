@@ -59,6 +59,7 @@ QSTRING {DOUBLE_QUOTED_STRING}|{SINGLE_QUOTED_STRING}
  // declarators that are multi word
 DECL [A-Za-z]((\\.|[^\n/<>\[=])*[A-Za-z0-9])?
 PARENT \.\.
+ANY \/\/
 LTE <=
 GTE >=
 LT <
@@ -96,6 +97,10 @@ COLON :
 {PARENT}  {
     capture_token(yylval,wasp::PARENT);
     return token::PARENT;
+}
+{ANY}  {
+    capture_token(yylval,wasp::ANY);
+    return token::ANY;
 }
 {COMMA}  {
     capture_token(yylval,wasp::WASP_COMMA);

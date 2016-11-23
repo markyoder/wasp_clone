@@ -158,37 +158,38 @@ namespace wasp {
       {
         END = 0,
         EOL = 258,
-        MINUS = 259,
-        LPAREN = 260,
-        RPAREN = 261,
-        LBRACKET = 262,
-        RBRACKET = 263,
-        LBRACE = 264,
-        RBRACE = 265,
-        COMMA = 266,
-        COLON = 267,
-        GTE = 268,
-        LT = 269,
-        GT = 270,
-        LTE = 271,
-        NEQ = 272,
-        EQ = 273,
-        AND = 274,
-        PARENT = 275,
-        OR = 276,
-        BANG = 277,
-        MULTIPLY = 278,
-        DIVIDE = 279,
-        SEPARATOR = 280,
-        PLUS = 281,
-        EXPONENT = 282,
-        INTEGER = 283,
-        DOUBLE = 284,
-        DECL = 285,
-        QSTRING = 286,
-        ASSIGN = 287,
-        UMINUS = 288,
-        UNOT = 289
+        ANY = 259,
+        MINUS = 260,
+        LPAREN = 261,
+        RPAREN = 262,
+        LBRACKET = 263,
+        RBRACKET = 264,
+        LBRACE = 265,
+        RBRACE = 266,
+        COMMA = 267,
+        COLON = 268,
+        GTE = 269,
+        LT = 270,
+        GT = 271,
+        LTE = 272,
+        NEQ = 273,
+        EQ = 274,
+        AND = 275,
+        PARENT = 276,
+        OR = 277,
+        BANG = 278,
+        MULTIPLY = 279,
+        DIVIDE = 280,
+        SEPARATOR = 281,
+        PLUS = 282,
+        EXPONENT = 283,
+        INTEGER = 284,
+        DOUBLE = 285,
+        DECL = 286,
+        QSTRING = 287,
+        ASSIGN = 288,
+        UMINUS = 289,
+        UNOT = 290
       };
     };
 
@@ -496,12 +497,12 @@ namespace wasp {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 115,     ///< Last index in yytable_.
-      yynnts_ = 40,  ///< Number of nonterminal symbols.
-      yyfinal_ = 17, ///< Termination state number.
+      yylast_ = 121,     ///< Last index in yytable_.
+      yynnts_ = 41,  ///< Number of nonterminal symbols.
+      yyfinal_ = 20, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 36  ///< Number of tokens.
+      yyntokens_ = 37  ///< Number of tokens.
     };
 
 
@@ -512,7 +513,7 @@ namespace wasp {
 
 
 } // wasp
-#line 516 "SIRENParser.hpp" // lalr1.cc:377
+#line 517 "SIRENParser.hpp" // lalr1.cc:377
 
 
 

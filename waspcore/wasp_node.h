@@ -66,6 +66,7 @@ namespace wasp{
         , PARENT
         , PREDICATED_CHILD
         , INDEX
+        , ANY
      };
 }
 #endif
