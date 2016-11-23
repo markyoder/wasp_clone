@@ -582,6 +582,22 @@ relative_selection : decl  // simple child
                              ,"A" // A - any child
                              ,child_indices);
              }
+             |  relative_selection any_selection
+             {
+                // capture named node's descendants
+                // parent//
+                // obj[name='ted']//
+                // obj[1]//
+                 unsigned int left_i = static_cast<unsigned int>($1);
+                 unsigned int any_i = static_cast<unsigned int>($2);
+                 std::vector<unsigned int> child_indices = {left_i
+                                                            ,any_i
+                                                            };
+
+                 $$ = interpreter.push_parent(wasp::ANY
+                             ,"A" // A - any child
+                             ,child_indices);
+             }
 document_root :  SEPARATOR
     {
      auto token_index = static_cast<unsigned int>($1);

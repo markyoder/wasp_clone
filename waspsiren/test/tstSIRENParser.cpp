@@ -611,3 +611,61 @@ TEST( SIREN, parse_root_based_any_selection_w_child )
     }
 }
 
+TEST( SIREN, parse_relative_based_any_selection )
+{
+    std::stringstream input;
+    // selection from the current context
+    input<< R"INPUT( something*// )INPUT";
+    SIRENInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ( 4, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ( DOCUMENT_ROOT, document.type() );
+    ASSERT_EQ( 1, document.child_count() );
+//    document.paths(std::cout);
+    std::vector<std::pair<std::string,NODE>> expected={
+        {"something*",DECL} // current node
+        ,{"A", ANY} // any child
+        ,{"A", ANY} // ANY selection context
+        ,{"document", DOCUMENT_ROOT} // selection expression root
+    };
+    ASSERT_EQ( expected.size(), interpreter.node_count() );
+    for( size_t i = 0; i < expected.size(); ++i)
+    {
+        {
+        SCOPED_TRACE(i);
+        ASSERT_EQ( expected[i].first, interpreter.name(i) );
+        ASSERT_EQ( expected[i].second, interpreter.type(i) );
+        }
+    }
+}
+
+TEST( SIREN, parse_relative_based_any_selection_w_child )
+{
+    std::stringstream input;
+    // selection from the current context
+    input<< R"INPUT( .//child_name )INPUT";
+    SIRENInterpreter interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ( 5, interpreter.node_count() );
+    TreeNodeView document = interpreter.root();
+    ASSERT_EQ( DOCUMENT_ROOT, document.type() );
+    ASSERT_EQ( 1, document.child_count() );
+//    document.paths(std::cout);
+    std::vector<std::pair<std::string,NODE>> expected={
+        {".",DECL} // current node
+        ,{"A", ANY} // any child
+        ,{"child_name",DECL} // named 'child_name'
+        ,{"A", ANY} // ANY selection context
+        ,{"document", DOCUMENT_ROOT} // selection expression root
+    };
+    ASSERT_EQ( expected.size(), interpreter.node_count() );
+    for( size_t i = 0; i < expected.size(); ++i)
+    {
+        {
+        SCOPED_TRACE(i);
+        ASSERT_EQ( expected[i].first, interpreter.name(i) );
+        ASSERT_EQ( expected[i].second, interpreter.type(i) );
+        }
+    }
+}
