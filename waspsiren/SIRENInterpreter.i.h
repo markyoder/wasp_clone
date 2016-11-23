@@ -17,9 +17,10 @@ size_t SIRENInterpreter::evaluate(
     // if root-based, need to select the root of the document
     // relative to the node given
     // When first selection is '/', the user wants to only select the root
-    bool is_root_oriented = first_selection.type() == wasp::SEPARATOR;
+    bool is_only_root_oriented = first_selection.type() == wasp::DOCUMENT_ROOT
+            && first_selection.child_count() == 0 ; // is it only '/', or '/', 'child'
 
-    if( is_root_oriented )
+    if( is_only_root_oriented )
     {
         TAdapter anode( node );
         while( anode.has_parent() )
