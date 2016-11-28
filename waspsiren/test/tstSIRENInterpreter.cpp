@@ -103,5 +103,17 @@ TEST( SIREN, root_based_select_on_keyed_value )
             ASSERT_EQ( DECL, set.adapted(0).type() );
         }
     }
-
+    {// select the key's decl child relative from key
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" decl ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 1, siren.evaluate<TreeNodeView>(key, set));
+            ASSERT_EQ( 1, set.result_count() );
+            ASSERT_TRUE( set.is_adapted(0) );
+            std::string decl = "decl";
+            ASSERT_EQ( decl, set.adapted(0).name() );
+            ASSERT_EQ( DECL, set.adapted(0).type() );
+        }
+    }
 }

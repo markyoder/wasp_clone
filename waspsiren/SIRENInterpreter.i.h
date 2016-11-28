@@ -20,7 +20,7 @@ size_t SIRENInterpreter::evaluate(
     // When first selection is '/', the user wants to only select the root
     bool is_root_oriented = first_selection.type() == wasp::DOCUMENT_ROOT
             // first selection of 'any' is a root oriented selection
-                                || wasp::ANY ;
+                                || first_selection.type() ==  wasp::ANY ;
     bool is_only_root_oriented = is_root_oriented
             && first_selection.child_count() <= 1 ; // is it only '/', not '/' and 'child'
 
