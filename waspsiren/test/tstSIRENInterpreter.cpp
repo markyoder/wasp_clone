@@ -116,4 +116,23 @@ TEST( SIREN, root_based_select_on_keyed_value )
             ASSERT_EQ( DECL, set.adapted(0).type() );
         }
     }
+    {// test root-based selection with expected no results
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" /nothing/decl ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 0, siren.evaluate<TreeNodeView>(key, set));
+            ASSERT_EQ( 0, set.result_count() );
+        }
+    }
+    {// test relative-based selection with expected no results
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" nothing/decl ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 0, siren.evaluate<TreeNodeView>(key, set));
+            ASSERT_EQ( 0, set.result_count() );
+        }
+    }
 }
+
