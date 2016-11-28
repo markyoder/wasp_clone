@@ -1,5 +1,4 @@
 #include "waspcore/TreeNodePool.h"
-
 namespace wasp{
 TreeNodeView::TreeNodeView(size_t node_index
                         , const TreeNodePool<> & nodes)
@@ -59,7 +58,7 @@ TreeNodeView TreeNodeView::child_at(size_t index)const
 {
 
     auto child_node_pool_index = m_tree_data->child_at(m_tree_node_index
-                                ,index);
+                                ,index);    
     return TreeNodeView(child_node_pool_index,*m_tree_data);
 }
 size_t TreeNodeView::type()const
@@ -79,3 +78,7 @@ size_t TreeNodeView::column()const
     return m_tree_data->column(m_tree_node_index);
 }
 } // end of namespace
+
+std::ostream & operator <<(std::ostream & str , const wasp::TreeNodeView& view){
+
+}

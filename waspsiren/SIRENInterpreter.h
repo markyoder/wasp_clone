@@ -82,6 +82,34 @@ namespace wasp {
         template<typename TAdapter>
         size_t evaluate(TAdapter & node, SIRENResultSet<TAdapter> & result)const;
 
+    private:
+
+        /**
+         * @brief evaluate a node in a given context
+         * @param context the context of the evaluation (any, child, predicated child, etc.)
+         * @param node the adapter input node to evaluate
+         * @param result the result set to store evaluated results on
+         * @param stage the stage for on which matches will be conducted
+         * @return the number of evaluations captured in the result set for the given context
+         */
+        template<typename TAdapter>
+        size_t evaluate(const TreeNodeView & context
+                        , SIRENResultSet<TAdapter> & result
+                        , std::vector<TAdapter> & stage)const;
+//        template<typename TAdapter>
+//        size_t select_any(TreeNodeView & context
+//                        , TAdapter & node
+//                        , SIRENResultSet<TAdapter> & result)const;
+
+        template<typename TAdapter>
+        /**
+         * @brief search_child_name searches the staged node's children for specifically named children
+         * @param context the context to search for ( the child's name pattern )
+         * @param stage the stage on which to search
+         * Loops through each staged node searching its children for specifically named child nodes
+         */
+        void search_child_name(const TreeNodeView & context, std::vector<TAdapter> & stage)const;
+
     }; // end of SIRENInterpreter class
 #include "waspsiren/SIRENInterpreter.i.h"
 } // namespace wasp

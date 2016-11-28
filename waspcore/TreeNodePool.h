@@ -349,10 +349,17 @@ public:
      * @return the index into the data pool
      */
     size_t tree_node_index()const{return m_tree_node_index;}
+
+    friend std::ostream& operator<< (std::ostream& str, const wasp::TreeNodeView & view){
+        str<<"TreeNodeView(tree_node_index="<<view.m_tree_node_index<<", &pool="<<view.m_tree_data<<")";
+        return str;
+    }
+
 private:
     size_t m_tree_node_index;
     const TreeNodePool<> * m_tree_data;
 };
 #include "waspcore/TreeNodePool.i.h"
 } // end of namespace
+
 #endif

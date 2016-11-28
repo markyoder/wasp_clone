@@ -603,12 +603,16 @@ document_root :  SEPARATOR
      auto token_index = static_cast<unsigned int>($1);
      $$ = interpreter.push_leaf(wasp::DOCUMENT_ROOT,"R",token_index);
     }
-root_based_selection : document_root
+root_based_selection : separator
      {
          // capture root only selection
-         $$ = $1;
+         unsigned int s_i = static_cast<unsigned int>($1);
+         std::vector<unsigned int> child_indices = {s_i};
+         $$ = interpreter.push_parent(wasp::DOCUMENT_ROOT
+                                         ,"R" // R - root
+                                         ,child_indices);
      }
-     | document_root relative_selection
+     | separator relative_selection
      {
          // capture root based child selection
          unsigned int root_i = static_cast<unsigned int>($1);

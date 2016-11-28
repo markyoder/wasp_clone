@@ -47,7 +47,6 @@ public:
      */
     const ScalarResult& scalar(size_t index)const {return scalar_results[results[index].second];}
 
-
     void push( const TAdapter & node );
     void push( const std::string& name, const std::string & data );
 private:
@@ -61,6 +60,7 @@ private:
         SCALAR
     };
     std::vector<std::pair<type,unsigned int>> results;
+
 };
 #include "waspsiren/SIRENResultSet.i.h"
 } // end of namespace

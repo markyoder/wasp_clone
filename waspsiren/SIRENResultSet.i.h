@@ -8,6 +8,9 @@ SIRENResultSet<TAdapter>::SIRENResultSet()
 template<typename TAdapter>
 SIRENResultSet<TAdapter>::SIRENResultSet(
         const SIRENResultSet<TAdapter>& orig)
+    :adapted_results( orig.adapted_results )
+    ,scalar_results( orig.scalar_results )
+    ,results( orig.results )
 {
 }
 template<typename TAdapter>
