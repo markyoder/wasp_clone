@@ -134,5 +134,27 @@ TEST( SIREN, root_based_select_on_keyed_value )
             ASSERT_EQ( 0, set.result_count() );
         }
     }
+    {// test relative-based selection of parent
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" .. ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 1, siren.evaluate<TreeNodeView>(key, set));
+            ASSERT_EQ( 1, set.result_count() );
+            ASSERT_TRUE( set.is_adapted(0) );
+            std::string document = "document";
+            ASSERT_EQ( document, set.adapted(0).name() );
+            ASSERT_EQ( DOCUMENT_ROOT, set.adapted(0).type() );
+        }
+    }
+    {// test relative-based selection of parent with expected no results
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" ../.. ") ); // document has no parent
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 0, siren.evaluate<TreeNodeView>(key, set));
+            ASSERT_EQ( 0, set.result_count() );
+        }
+    }
 }
 

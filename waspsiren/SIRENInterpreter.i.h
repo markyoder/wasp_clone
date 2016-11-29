@@ -68,11 +68,19 @@ size_t SIRENInterpreter::evaluate(
             break;
         case SEPARATOR:
         break;
-
-//        case ANY:
-//        select_any( context, node, result );
         case DECL: // named child search
             search_child_name(context, stage);
+        break;
+        case PARENT : // select parent of current nodes '..'
+            {
+            size_t count = stage.size();
+            for( size_t i = 0; i < count; ++i)
+            {
+                const TAdapter& node = stage[i];
+                if( node.has_parent() ) stage.push_back( node.parent() );
+            }
+            stage.erase(stage.begin(),stage.begin()+count);
+            }
         break;
         case OBJECT : // selection / selection
             TreeNodeView left_selection = context.child_at(0);
