@@ -209,5 +209,14 @@ TEST( SIREN, selection_on_keyed_value )
             ASSERT_EQ( DECL, set.adapted(0).type() );
         }
     }
+    {// select the key's second decl (no second - empty selection)
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key / decl[2]") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 0, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 0, set.result_count() );
+        }
+    }
 }
 

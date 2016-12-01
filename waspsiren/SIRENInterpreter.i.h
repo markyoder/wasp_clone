@@ -243,13 +243,17 @@ void SIRENInterpreter::search_index_predicated_child(
             // if child is a match, push back onto stage
             if( strcmp( name, child_node.name() ) == 0 )
             {
-                ++incident_count;
+                ++incident_count; // increment prior to comparison - 1 based indices
                 if( incident_count >= start_i  //
                         && incident_count <= end_i
                         && incident_count % stride == 0)
                 {
                     stage.push_back(child_node);
                 }
+            }
+            // early terminate when our range has been exhausted
+            else if( incident_count > end_i ) {
+                break;
             }
         }
     }
