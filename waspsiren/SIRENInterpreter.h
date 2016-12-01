@@ -101,14 +101,26 @@ namespace wasp {
 //                        , TAdapter & node
 //                        , SIRENResultSet<TAdapter> & result)const;
 
-        template<typename TAdapter>
+
         /**
          * @brief search_child_name searches the staged node's children for specifically named children
          * @param context the context to search for ( the child's name pattern )
          * @param stage the stage on which to search
          * Loops through each staged node searching its children for specifically named child nodes
          */
+        template<typename TAdapter>
         void search_child_name(const TreeNodeView & context, std::vector<TAdapter> & stage)const;
+        /**
+         * @brief search_conditional_predicated_child searches the staged node's children for specifically named children with grandchild attributes
+         * @param context the context to search for ( the child's name pattern )
+         * @param stage the stage on which to search
+         * Loops through each staged node searching its children for specifically named child nodes
+         * that contain some predicated selection criteria. E.g., 'obj[name=fred]' reads select nodes named 'obj'
+         * only where the obj node has a child node 'name' with value 'fred'.
+         */
+        template<typename TAdapter>
+        void search_conditional_predicated_child(const TreeNodeView & context
+                                                 , std::vector<TAdapter> & stage)const;
 
     }; // end of SIRENInterpreter class
 #include "waspsiren/SIRENInterpreter.i.h"

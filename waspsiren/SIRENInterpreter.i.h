@@ -72,7 +72,7 @@ size_t SIRENInterpreter::evaluate(
             search_child_name(context, stage);
         break;
         case PARENT : // select parent of current nodes '..'
-            {
+        {
             size_t count = stage.size();
             for( size_t i = 0; i < count; ++i)
             {
@@ -80,16 +80,27 @@ size_t SIRENInterpreter::evaluate(
                 if( node.has_parent() ) stage.push_back( node.parent() );
             }
             stage.erase(stage.begin(),stage.begin()+count);
-            }
-        break;
+        }break;
         case OBJECT : // selection / selection
+        {
             TreeNodeView left_selection = context.child_at(0);
             // TODO - ensure selections are legit
             if( evaluate(left_selection,result,stage) > 0 ){
                 TreeNodeView right_selection = context.child_at(2);
                 evaluate(right_selection,result,stage);
             }
-        break;
+        }break;
+        case PREDICATED_CHILD: // obj[id=value] or obj[1:3:2]
+        {
+            // 'obj' = [0]
+            // '['   = [1]
+            // 'id=value' | '1:3:2' = [2]
+            TreeNodeView predicate_node = context.child_at(2);
+            if( predicate_node.type() == KEYED_VALUE )
+            {
+                search_conditional_predicated_child(context,stage);
+            }
+        }break;
     } // end of switch on context type
 
     return stage.size();
@@ -113,6 +124,73 @@ void SIRENInterpreter::search_child_name(
             if( strcmp( name, child_node.name() ) == 0 )
             {
                 stage.push_back( child_node );
+            }
+        }
+    }
+    stage.erase(stage.begin(),stage.begin()+stage_size);
+}
+template<typename TAdapter>
+void SIRENInterpreter::search_conditional_predicated_child(
+        const TreeNodeView & context,
+        std::vector<TAdapter> & stage)const
+{
+    // context should be something like
+    // obj [ id=value ]
+    // obj = [0]
+    // '[' = [1]
+    // 'id=value' = [2]
+    // ']' = [3]
+    // TODO - ensure context fulfills expectations
+    TreeNodeView child_name_context = context.child_at(0);
+    // predicate context should be something like
+    // id = value
+    // id = [0]
+    // '=' = [1]
+    // value = [2]
+    TreeNodeView predicate_context = context.child_at(2);
+    // TODO - ensure predicate context fulfills expectations
+    TreeNodeView predicate_name_context = predicate_context.child_at(0);
+    TreeNodeView predicate_value_context = predicate_context.child_at(2);
+
+    // the names for which to search
+    const char * name = child_name_context.name();
+    const char * predicate_name = predicate_name_context.name();
+    const std::string& predicate_value = predicate_value_context.data();
+    size_t stage_size = stage.size();
+    for( size_t i = stage.size(); i > 0; --i )
+    {
+        size_t index = i-1;
+        const TAdapter & node = stage[index];
+        for( size_t c = 0; c < node.child_count(); ++c )
+        {
+            const TAdapter & child_node = node.child_at(c);
+            // if child is a match, push back onto stage
+            if( strcmp( name, child_node.name() ) == 0 )
+            {
+                // prior to pushing, must determine if the
+                // predicate passes
+                // TODO - added expression evaluator
+                // for proper robustness.
+                // string compare fails quickly '1' == '1.0' fails, but should
+                // not considering user is expecting it is a numeric comparison.
+                bool predicate_accepted = false; // assume predicate fails
+                for( size_t gc = 0, gc_count = child_node.child_count();
+                     gc < gc_count; ++gc)
+                {
+                    const TAdapter & g_child_node = child_node.child_at(gc);
+                    // if grand child name is a match, need to determine
+                    // if value matches
+                    if( strcmp( predicate_name, g_child_node.name() ) == 0 )
+                    {
+                        const std::string & g_child_node_value = g_child_node.data();
+                        predicate_accepted = predicate_value == g_child_node_value;
+                        if( predicate_accepted )
+                        {
+                            break; // break from grandchild loop
+                        }
+                    }
+                }
+                if( predicate_accepted ) stage.push_back( child_node );
             }
         }
     }

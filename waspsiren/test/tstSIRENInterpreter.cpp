@@ -7,7 +7,7 @@
 using namespace wasp;
 
 
-TEST( SIREN, root_based_select_on_keyed_value )
+TEST( SIREN, selection_on_keyed_value )
 {    
     TreeNodePool<> tree;
     // decl = value
@@ -153,6 +153,46 @@ TEST( SIREN, root_based_select_on_keyed_value )
         {
             SIRENResultSet<TreeNodeView> set;
             ASSERT_EQ( 0, siren.evaluate<TreeNodeView>(key, set));
+            ASSERT_EQ( 0, set.result_count() );
+        }
+    }
+    {// select the key's decl where key's value=3.14
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key [ value = 3.14 ]/ decl ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 1, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 1, set.result_count() );
+            ASSERT_TRUE( set.is_adapted(0) );
+            std::string decl = "decl";
+            ASSERT_EQ( decl, set.adapted(0).name() );
+            ASSERT_EQ( DECL, set.adapted(0).type() );
+        }
+    }
+    {// select the key's dec where key's value=3.14 (no results)
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key [ value = 3.14 ]/ dec ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 0, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 0, set.result_count() );
+        }
+    }
+    {// select the key's dec where key's val=3.14 (no results)
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key [ val = 3.14 ]/ dec ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 0, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 0, set.result_count() );
+        }
+    }
+    {// select the key's decl where key's value=3.1 (no results)
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key [ value = 3.1 ]/ decl ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 0, siren.evaluate<TreeNodeView>(document, set));
             ASSERT_EQ( 0, set.result_count() );
         }
     }
