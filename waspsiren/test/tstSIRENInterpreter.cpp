@@ -196,5 +196,18 @@ TEST( SIREN, selection_on_keyed_value )
             ASSERT_EQ( 0, set.result_count() );
         }
     }
+    {// select the key's first decl
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key / decl[1]") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 1, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 1, set.result_count() );
+            ASSERT_TRUE( set.is_adapted(0) );
+            std::string decl = "decl";
+            ASSERT_EQ( decl, set.adapted(0).name() );
+            ASSERT_EQ( DECL, set.adapted(0).type() );
+        }
+    }
 }
 

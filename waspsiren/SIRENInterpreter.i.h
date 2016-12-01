@@ -100,6 +100,10 @@ size_t SIRENInterpreter::evaluate(
             {
                 search_conditional_predicated_child(context,stage);
             }
+            else if( predicate_node.type() == INDEX )
+            {
+                search_index_predicated_child(context,stage);
+            }
         }break;
     } // end of switch on context type
 
@@ -191,6 +195,61 @@ void SIRENInterpreter::search_conditional_predicated_child(
                     }
                 }
                 if( predicate_accepted ) stage.push_back( child_node );
+            }
+        }
+    }
+    stage.erase(stage.begin(),stage.begin()+stage_size);
+}
+template<typename TAdapter>
+void SIRENInterpreter::search_index_predicated_child(
+        const TreeNodeView & context,
+        std::vector<TAdapter> & stage)const
+{
+    // context should be something like
+    // obj [ 1 ] | obj [ 1:10 ] | obj [ 1:10:2 ]
+    // obj = [0]
+    // '[' = [1]
+    // index '1' | '1:10' | '1:10:2' = [2]
+    // ']' = [3]
+    // TODO - ensure context fulfills expectations
+    TreeNodeView child_name_context = context.child_at(0);
+    // predicate context should be something like
+    // index  - 1 child
+    // start : end - 3 children
+    // start : end : stride - 5 children
+    TreeNodeView predicate_context = context.child_at(2);
+    // TODO - ensure predicate context fulfills expectations
+    size_t start_i = 0, end_i = 0, stride = 1;
+    size_t incident_count = 0;
+
+    // the names for which to search
+    const char * name = child_name_context.name();
+
+    // single index selection - start = end, stride =1
+    if( predicate_context.child_count() == 1 )
+    {   // TODO check type
+        TreeNodeView index = predicate_context.child_at(0);
+        end_i = start_i = index.to_int();
+    }
+
+    size_t stage_size = stage.size();
+    for( size_t i = stage.size(); i > 0; --i )
+    {
+        size_t index = i-1;
+        const TAdapter & node = stage[index];
+        for( size_t c = 0; c < node.child_count(); ++c )
+        {
+            const TAdapter & child_node = node.child_at(c);
+            // if child is a match, push back onto stage
+            if( strcmp( name, child_node.name() ) == 0 )
+            {
+                ++incident_count;
+                if( incident_count >= start_i  //
+                        && incident_count <= end_i
+                        && incident_count % stride == 0)
+                {
+                    stage.push_back(child_node);
+                }
             }
         }
     }

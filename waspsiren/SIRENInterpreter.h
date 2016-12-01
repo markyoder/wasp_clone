@@ -122,6 +122,17 @@ namespace wasp {
         void search_conditional_predicated_child(const TreeNodeView & context
                                                  , std::vector<TAdapter> & stage)const;
 
+        /**
+         * @brief search_index_predicated_child searches the staged node's children for specifically named children at given indices
+         * @param context the context to search for ( the child's name pattern )
+         * @param stage the stage on which to search
+         * Loops through each staged node searching its children for specifically named child nodes
+         * that contain some predicated selection criteria. E.g., 'obj[1:10:3]' reads select nodes named 'obj'
+         * only where the obj node is at the 1-10 index and every 3rd
+         */
+        template<typename TAdapter>
+        void search_index_predicated_child(const TreeNodeView & context
+                                                 , std::vector<TAdapter> & stage)const;
     }; // end of SIRENInterpreter class
 #include "waspsiren/SIRENInterpreter.i.h"
 } // namespace wasp

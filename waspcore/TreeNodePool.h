@@ -350,6 +350,14 @@ public:
      */
     size_t tree_node_index()const{return m_tree_node_index;}
 
+
+    // !> Type operators
+    /**
+     * @brief to_int converts the data to an integer
+     * @return the data as an integer
+     */
+    int to_int() const;
+
     friend std::ostream& operator<< (std::ostream& str, const wasp::TreeNodeView & view){
         str<<"TreeNodeView(tree_node_index="<<view.m_tree_node_index<<", &pool="<<view.m_tree_data<<")";
         return str;
