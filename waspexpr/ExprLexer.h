@@ -64,7 +64,7 @@ public:
 
     TokenPool<> & m_token_data;
 private:
-    size_t file_offset;
+    std::size_t file_offset;
 
 };
 

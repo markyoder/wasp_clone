@@ -1,4 +1,4 @@
-#include "waspSIREN/SIRENInterpreter.h"
+#include "waspsiren/SIRENInterpreter.h"
 #include <fstream>
 #include <sstream>
 #include <ostream>
@@ -22,15 +22,15 @@ SIRENInterpreter::~SIRENInterpreter()
 {
 }
 
-bool SIRENInterpreter::parse(std::istream& in, size_t startLine, size_t startColumn)
+bool SIRENInterpreter::parse(std::istream& in, std::size_t startLine, std::size_t startColumn)
 {
     return parseStream(in, "selection statement" , startLine,startColumn);
 }
 
 bool SIRENInterpreter::parseStream(std::istream& in
                                  , const std::string& sname
-                                 , size_t start_line
-                                 , size_t start_column)
+                                 , std::size_t start_line
+                                 , std::size_t start_column)
 {
     return parse_impl<SIRENLexerImpl
             ,SIRENParser
@@ -41,7 +41,7 @@ bool SIRENInterpreter::parseStream(std::istream& in
                 ,start_column);
 }
 
-bool SIRENInterpreter::parseString(const std::string &input, const std::string& sname, size_t startLine, size_t startColumn)
+bool SIRENInterpreter::parseString(const std::string &input, const std::string& sname, std::size_t startLine, std::size_t startColumn)
 {
     std::istringstream iss(input);
     return parseStream(iss, sname,startLine,startColumn);

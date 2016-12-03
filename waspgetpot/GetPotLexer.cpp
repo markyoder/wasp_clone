@@ -2458,7 +2458,7 @@ void GetPotLexerImpl::capture_token(
         wasp::GetPotParser::semantic_type* yylval
         ,wasp::NODE type)
 {
-    size_t offset = file_offset - yyleng;
+    std::size_t offset = file_offset - yyleng;
     yylval->node_index = m_token_data.size();
     m_token_data.push(yytext,type,offset);
 }

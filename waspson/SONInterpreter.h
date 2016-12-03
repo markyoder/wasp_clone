@@ -51,21 +51,21 @@ namespace wasp {
          * @return          true if successfully parsed
          */
         bool parseStream(std::istream& in,
-                const std::string& sname = "stream input", size_t startLine=1u, size_t startColumn=1u);
-        bool parse(std::istream &input, size_t startLine=1u, size_t startColumn=1u);
+                const std::string& sname = "stream input", std::size_t startLine=1u, std::size_t startColumn=1u);
+        bool parse(std::istream &input, std::size_t startLine=1u, std::size_t startColumn=1u);
         /** Invoke the lexer and parser on an input string.
          * @param input     input string
          * @param sname     stream name for error messages
          * @return          true if successfully parsed
          */
         bool parseString(const std::string& input,
-                const std::string& sname = "string stream", size_t startLine=1u, size_t startColumn=1u);
+                const std::string& sname = "string stream", std::size_t startLine=1u, std::size_t startColumn=1u);
         /** Invoke the lexer and parser on a file. Use parse_stream with a
          * std::ifstream if detection of file reading errors is required.
          * @param filename  input file name
          * @return          true if successfully parsed
          */
-        bool parseFile(const std::string& filename, size_t startLine=1u);
+        bool parseFile(const std::string& filename, std::size_t startLine=1u);
 
         void setSingleParse(bool s){singleParse = s;}
         bool isSingleParse()const{return singleParse;}

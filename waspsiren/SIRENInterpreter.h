@@ -3,6 +3,7 @@
 #define WASP_SIRENINTERPRETER_H
 
 #include <string>
+#include <cstring> // strcmp
 #include <fstream>
 #include <istream>
 #include <ostream>
@@ -83,7 +84,6 @@ namespace wasp {
         size_t evaluate(TAdapter & node, SIRENResultSet<TAdapter> & result)const;
 
     private:
-
         /**
          * @brief evaluate a node in a given context
          * @param context the context of the evaluation (any, child, predicated child, etc.)

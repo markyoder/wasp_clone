@@ -21,8 +21,8 @@ public:
      * @return true, iff no input processing errors were encountered
      */
      bool parse(std::istream &input
-                       , size_t m_start_line=1u
-                       , size_t m_start_column=1u);
+                       , std::size_t m_start_line=1u
+                       , std::size_t m_start_column=1u);
 
 public: // variables
     /**

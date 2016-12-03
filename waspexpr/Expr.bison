@@ -56,8 +56,8 @@
 
 //%define api.value.type {struct YYSTYPE}
 %union{
-    size_t token_index;
-    size_t node_index;
+    std::size_t token_index;
+    std::size_t node_index;
     std::vector<unsigned int>* node_indices;
 }
 
@@ -187,7 +187,7 @@ function : value %prec "constant"
         if( $function_args != nullptr )
         {
             child_indices.reserve(child_indices.size()+$function_args->size());
-            for( size_t i = 0; i < $function_args->size(); ++i)
+            for( std::size_t i = 0; i < $function_args->size(); ++i)
             {
                 child_indices.push_back($function_args->at(i));
             }
@@ -484,6 +484,6 @@ namespace wasp{
 void ExprParser::error(const ExprParser::location_type& l,
                            const std::string& m)
 {
-    interpreter.error(l, m);
+    interpreter.error_stream()<<l<<": "<<m;
 }
 }; // end of namespace

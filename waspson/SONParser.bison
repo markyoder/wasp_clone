@@ -55,8 +55,8 @@
  /*** BEGIN EXAMPLE - Change the wasp grammar's tokens below ***/
 
 %union {
-        size_t token_index;
-        size_t node_index;
+        std::size_t token_index;
+        std::size_t node_index;
         std::vector<unsigned int>* node_indices;
 }
 
@@ -522,7 +522,7 @@ array :
     |declaration lbracket array_members rbracket
     {
         $1->push_back($2);
-        for( size_t i = 0; i < $3->size(); ++i )
+        for( std::size_t i = 0; i < $3->size(); ++i )
         {
             $1->push_back( $3->at( i ) );
         }
@@ -593,7 +593,7 @@ object : declaration lbrace rbrace
     | declaration lbrace members rbrace
     {
         $1->push_back($2);
-        for( size_t i = 0; i < $3->size(); ++i )
+        for( std::size_t i = 0; i < $3->size(); ++i )
         {
             $1->push_back( $3->at( i ) );
         }
@@ -780,7 +780,7 @@ execution_unit : execution_unit_start execution_unit_name execution_unit_end
             std::vector<unsigned int> child_indices = {start_i
                                                        ,name_i
                                                        };
-            for( size_t i = 0; i < $members->size(); ++ i )
+            for( std::size_t i = 0; i < $members->size(); ++ i )
             {
                 child_indices.push_back( $members->at(i) );
             }
@@ -804,5 +804,5 @@ start   : /** empty **/
 void wasp::SONParser::error(const SONParser::location_type& l,
                            const std::string& m)
 {
-    interpreter.error(l, m);
+    interpreter.error_stream()<<l<<": "<<m;
 }

@@ -19,7 +19,7 @@ int main (int argc, char *argv[])
                 <<std::endl;
         return 1;
     }
-    for( size_t j = 1; j < argc; ++j)
+    for( std::size_t j = 1; j < argc; ++j)
     {
         std::ifstream input(argv[j]);
         if (input.fail() || input.bad()) {

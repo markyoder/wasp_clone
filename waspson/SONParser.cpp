@@ -1206,7 +1206,7 @@ namespace wasp {
 #line 523 "SONParser.bison" // lalr1.cc:859
     {
         (yystack_[3].value.node_indices)->push_back((yystack_[2].value.node_index));
-        for( size_t i = 0; i < (yystack_[1].value.node_indices)->size(); ++i )
+        for( std::size_t i = 0; i < (yystack_[1].value.node_indices)->size(); ++i )
         {
             (yystack_[3].value.node_indices)->push_back( (yystack_[1].value.node_indices)->at( i ) );
         }
@@ -1301,7 +1301,7 @@ namespace wasp {
 #line 594 "SONParser.bison" // lalr1.cc:859
     {
         (yystack_[3].value.node_indices)->push_back((yystack_[2].value.node_index));
-        for( size_t i = 0; i < (yystack_[1].value.node_indices)->size(); ++i )
+        for( std::size_t i = 0; i < (yystack_[1].value.node_indices)->size(); ++i )
         {
             (yystack_[3].value.node_indices)->push_back( (yystack_[1].value.node_indices)->at( i ) );
         }
@@ -1596,7 +1596,7 @@ namespace wasp {
             std::vector<unsigned int> child_indices = {start_i
                                                        ,name_i
                                                        };
-            for( size_t i = 0; i < (yystack_[1].value.node_indices)->size(); ++ i )
+            for( std::size_t i = 0; i < (yystack_[1].value.node_indices)->size(); ++ i )
             {
                 child_indices.push_back( (yystack_[1].value.node_indices)->at(i) );
             }
@@ -2213,5 +2213,5 @@ namespace wasp {
 void wasp::SONParser::error(const SONParser::location_type& l,
                            const std::string& m)
 {
-    interpreter.error(l, m);
+    interpreter.error_stream()<<l<<": "<<m;
 }

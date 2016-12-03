@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <ostream>
+#include <iostream>
 #include "waspcore/StringPool.h"
 #include "waspcore/TokenPool.h"
 #include "waspcore/wasp_node.h" // for UNKNOWN node/token types
@@ -72,26 +73,26 @@ public:
      * @brief size acquire the number of nodes (leaf and parent)
      * @return node count
      */
-    size_t size()const{return m_node_basic_data.size();}
+    std::size_t size()const{return m_node_basic_data.size();}
     /**
      * @brief parent_node_count acquire the number of parent nodes
      * @return parent node count
      * Parent nodes reference leaf and other parent nodes
      */
-    size_t parent_node_count()const{return m_node_parent_data.size();}
+    std::size_t parent_node_count()const{return m_node_parent_data.size();}
 
     /**
      * @brief parent_data_index acquires the given node's parent data index
      * @param node_index the child node's index for which to retrieve the parent node data index
      * @return the parent node's data index
      */
-    size_t parent_data_index(node_index_size node_index)const;
+    std::size_t parent_data_index(node_index_size node_index)const;
     /**
      * @brief parent_node_index acquires the index of the given node's parent node
      * @param node_index the node's index for which the parent's index is requested
      * @return the parent node's index into the TreeNodePool, or size() if no parent exists
      */
-    size_t parent_node_index(node_index_size node_index)const;
+    std::size_t parent_node_index(node_index_size node_index)const;
     /**
      * @brief has_parent determine if the given node has a parent
      * @return true, iff the node at the given index has a parent
@@ -102,21 +103,21 @@ public:
     * @param index the index of the child [0-child_count())
     * @return the absolute node index of the parent relative child index
     */
-    size_t child_at(node_index_size node_index
+    std::size_t child_at(node_index_size node_index
                     , node_index_size child_index)const;
     /**
      * @brief leaf_node_count acquire the number of leaf nodes
      * @return leaf node count
      * Leaf nodes reference a token
      */
-    size_t leaf_node_count()const{return m_leaf_token_lookup.size();}
+    std::size_t leaf_node_count()const{return m_leaf_token_lookup.size();}
 
     /**
      * @brief child_count acquire the number of child nodes for the given node index
      * @param node_index the index of the node from which to determine child count
      * @return child count, or zero if no children exist
      */
-    size_t child_count(node_index_size node_index)const;
+    std::size_t child_count(node_index_size node_index)const;
     /**
      * @brief node_path acquires the path of the node at the given index
      * @param node_index the index of the node for which the path is requested
@@ -159,13 +160,13 @@ public:
      * @param node_index the index of the node to acquire the line
      * @return the node's starting line
      */
-    size_t line(node_index_size node_index)const;
+    std::size_t line(node_index_size node_index)const;
     /**
      * @brief column acquire the column the node starts on
      * @param node_index the index of the node to acquire the column
      * @return the node's starting column
      */
-    size_t column(node_index_size node_index)const;
+    std::size_t column(node_index_size node_index)const;
 
     /**
      * @brief leaf acquire the node index of the first leaf node at/under node_index
@@ -175,7 +176,7 @@ public:
      * If the node at node_index is a parent node, the depth-first
      * leaf node index will be returned
      */
-    size_t leaf_index( node_index_size node_index)const;
+    std::size_t leaf_index( node_index_size node_index)const;
     /**
      * @brief push_line add a new line into the underlying token pool
      * @param line_offset the byte offset of the line
@@ -270,7 +271,7 @@ private:
 class TreeNodeView{
 public:
 
-    TreeNodeView(size_t node_index, const TreeNodePool<> & nodes);
+    TreeNodeView(std::size_t node_index, const TreeNodePool<> & nodes);
     TreeNodeView(const TreeNodeView& orig);
     ~TreeNodeView();
 
@@ -314,20 +315,20 @@ public:
      * @brief child_count acquire the number of nodes for which this node is a parent
      * @return child count
      */
-    size_t child_count()const;
+    std::size_t child_count()const;
 
     /**
      * @brief child_at acquire the child node view at the given index
      * @param index the index of the child [0-child_count())
      * @return TreeNodeView describing the child node
      */
-    TreeNodeView child_at(size_t index)const;
+    TreeNodeView child_at(std::size_t index)const;
 
     /**
      * @brief type acquire the type of the node
      * @return the node's type
      */
-    size_t type()const;
+    std::size_t type()const;
     /**
      * @brief name acquire the name of the node
      * @return the node's name
@@ -338,17 +339,17 @@ public:
      * @brief line acquire the node's starting line
      * @return the starting line of the node
      */
-    size_t line()const;
+    std::size_t line()const;
     /**
      * @brief column acquire the node's starting column
      * @return the starting column of the node
      */
-    size_t column()const;
+    std::size_t column()const;
     /**
      * @brief tree_node_index acquire the index into the tree node data pool
      * @return the index into the data pool
      */
-    size_t tree_node_index()const{return m_tree_node_index;}
+    std::size_t tree_node_index()const{return m_tree_node_index;}
 
 
     // !> Type operators
@@ -364,7 +365,7 @@ public:
     }
 
 private:
-    size_t m_tree_node_index;
+    std::size_t m_tree_node_index;
     const TreeNodePool<> * m_tree_data;
 };
 #include "waspcore/TreeNodePool.i.h"

@@ -20,32 +20,32 @@ public:
      * @brief result_count indicates the number of results contain in the set
      * @return set count
      */
-    size_t result_count()const{return results.size();}
+    std::size_t result_count()const{return results.size();}
     /**
      * @brief is_adapted determines if the result at the given index is of type \TAdapter
      * @param index
      * @return true, iff the type at the given index is \TAdapter
      */
-    bool is_adapted(size_t index)const{return results[index].first == ADAPTED;}
+    bool is_adapted(std::size_t index)const{return results[index].first == ADAPTED;}
     /**
      * @brief is_scalar determine if the result at the given index is a named result (count,"3")
      * @param index
      * @return true, iff the type at the given index is a computed result
      */
-    bool is_scalar(size_t index)const{return results[index].first == SCALAR;}
+    bool is_scalar(std::size_t index)const{return results[index].first == SCALAR;}
 
     /**
      * @brief adapted acquires the adapted result
      * @param index the index of the adapted result
      * @return TAdapter the adapter to the node type
      */
-    const TAdapter& adapted(size_t index)const{return adapted_results[results[index].second];}
+    const TAdapter& adapted(std::size_t index)const{return adapted_results[results[index].second];}
     /**
      * @brief scalar acquires the ScalarResult consisting of a name and value.
      * @param index the index of the scalar result.
      * @return ScalarResult is the named
      */
-    const ScalarResult& scalar(size_t index)const {return scalar_results[results[index].second];}
+    const ScalarResult& scalar(std::size_t index)const {return scalar_results[results[index].second];}
 
     void push( const TAdapter & node );
     void push( const std::string& name, const std::string & data );

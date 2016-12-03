@@ -31,14 +31,14 @@ class StringPool{
 
     /**
      * @brief size acquire the number characters in the pool
-     * @return size_t the number of chars
+     * @return std::size_t the number of chars
      */
-    size_t size()const{ return m_data.size();}
+    std::size_t size()const{ return m_data.size();}
     /**
      * @brief string_count acquire the number of strings in the pool
-     * @return size_t the number of strings in the pool
+     * @return std::size_t the number of strings in the pool
      */
-    size_t string_count()const{ return m_token_data_indices.size();}
+    std::size_t string_count()const{ return m_token_data_indices.size();}
 private:
     /**
      * @brief m_data null terminated character array

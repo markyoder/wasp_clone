@@ -9,8 +9,8 @@ ExprInterpreter::~ExprInterpreter()
 {
 }
 bool ExprInterpreter::parse(std::istream& in
-                                        , size_t startLine
-                                        , size_t startColumn)
+                                        , std::size_t startLine
+                                        , std::size_t startColumn)
 {
     return parse_impl<ExprLexerImpl
             ,ExprParser

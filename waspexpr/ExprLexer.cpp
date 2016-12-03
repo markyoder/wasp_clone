@@ -1215,7 +1215,7 @@ YY_RULE_SETUP
 #line 177 "Expr.lex"
 {
     yylloc->lines(yyleng); yylloc->step();
-    size_t offset = yyin->tellg();
+    std::size_t offset = yyin->tellg();
     offset-=yyleng;
     m_token_data.push_line(offset);
 }
@@ -2178,7 +2178,7 @@ void ExprLexerImpl::capture_token(
         wasp::ExprParser::semantic_type* yylval
         ,wasp::NODE type)
 {
-    size_t offset = file_offset - yyleng;
+    std::size_t offset = file_offset - yyleng;
     yylval->node_index = m_token_data.size();
     m_token_data.push(yytext,type,offset);
 }

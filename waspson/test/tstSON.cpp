@@ -128,7 +128,7 @@ TEST( SON, keyed_value)
             ,wasp::DOCUMENT_ROOT
         };
     ASSERT_EQ( types.size(), interpreter.node_count() );
-    for( size_t i = 0; i < types.size(); ++i )
+    for( std::size_t i = 0; i < types.size(); ++i )
     {
         {
         SCOPED_TRACE(i);
@@ -229,7 +229,7 @@ TEST( SON, empty_object)
             ,wasp::DOCUMENT_ROOT
         };
     ASSERT_EQ( types.size(), interpreter.node_count() );
-    for( size_t i = 0; i < types.size(); ++i )
+    for( std::size_t i = 0; i < types.size(); ++i )
     {
         {
         SCOPED_TRACE(i);
@@ -331,7 +331,7 @@ TEST( SON, empty_array )
             ,wasp::DOCUMENT_ROOT
         };
     ASSERT_EQ( types.size(), interpreter.node_count() );
-    for( size_t i = 0; i < types.size(); ++i )
+    for( std::size_t i = 0; i < types.size(); ++i )
     {
         ASSERT_EQ( types[i], interpreter.type(i) );
     }
@@ -364,7 +364,7 @@ end)INPUT";
             ,wasp::DOCUMENT_ROOT
         };
     ASSERT_EQ( types.size(), interpreter.node_count() );
-    for( size_t i = 0; i < types.size(); ++i )
+    for( std::size_t i = 0; i < types.size(); ++i )
     {
         {
         SCOPED_TRACE(i);
@@ -491,7 +491,7 @@ end)INPUT";
             ,wasp::DOCUMENT_ROOT
         };
     ASSERT_EQ( types.size(), interpreter.node_count() );
-    for( size_t i = 0; i < types.size(); ++i )
+    for( std::size_t i = 0; i < types.size(); ++i )
     {
         {
         SCOPED_TRACE(i);
@@ -600,7 +600,7 @@ TEST( SON, int_array)
         };
     ASSERT_EQ( types.size(), interpreter.node_count() );
     ASSERT_EQ( token.size(), interpreter.node_count() );
-    for( size_t i = 0; i < types.size(); ++i )
+    for( std::size_t i = 0; i < types.size(); ++i )
     {
         {
         SCOPED_TRACE(i);
@@ -709,7 +709,7 @@ TEST( SON, real_array)
         };
     ASSERT_EQ( types.size(), interpreter.node_count() );
     ASSERT_EQ( token.size(), interpreter.node_count() );
-    for( size_t i = 0; i < types.size(); ++i )
+    for( std::size_t i = 0; i < types.size(); ++i )
     {
         {
         SCOPED_TRACE(i);
@@ -752,7 +752,7 @@ TEST( SON, comments )
             ,wasp::DOCUMENT_ROOT
         };
     ASSERT_EQ( types.size(), interpreter.node_count() );
-    for( size_t i = 0; i < types.size(); ++i )
+    for( std::size_t i = 0; i < types.size(); ++i )
     {
         {
         SCOPED_TRACE(i);
@@ -964,7 +964,7 @@ end % conclusion of unit of execution
             ,wasp::DOCUMENT_ROOT   // /
         };
     ASSERT_EQ( types.size(), interpreter.node_count() );
-    for( size_t i = 0; i < types.size(); ++i )
+    for( std::size_t i = 0; i < types.size(); ++i )
     {
         {
         SCOPED_TRACE(i);
@@ -1099,7 +1099,7 @@ TEST( SON, expressions )
         ,wasp::DOCUMENT_ROOT   // /
     };
     ASSERT_EQ( types.size(), interpreter.node_count() );
-    for( size_t i = 0; i < types.size(); ++i )
+    for( std::size_t i = 0; i < types.size(); ++i )
     {
         {
         SCOPED_TRACE(i);

@@ -78,7 +78,7 @@ TEST( SIREN, parse_simple_root_w_conditionally_predicated_child )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -121,7 +121,7 @@ TEST( SIREN, parse_simple_root_w_index_predicated_child )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -166,7 +166,7 @@ TEST( SIREN, parse_simple_root_w_indices_predicated_child )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -213,7 +213,7 @@ TEST( SIREN, parse_simple_root_w_strided_indices_predicated_child )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -250,7 +250,7 @@ TEST( SIREN, parse_eq_pred )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -287,7 +287,7 @@ TEST( SIREN, parse_gte_pred )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -324,7 +324,7 @@ TEST( SIREN, parse_lte_pred )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -361,7 +361,7 @@ TEST( SIREN, parse_neq_pred )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -398,7 +398,7 @@ TEST( SIREN, parse_lt_pred )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -435,7 +435,7 @@ TEST( SIREN, parse_gt_pred )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -461,7 +461,7 @@ TEST( SIREN, parse_single_relative )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -489,7 +489,7 @@ TEST( SIREN, parse_relative )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -520,7 +520,7 @@ TEST( SIREN, parse_relative_w_parent )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -548,7 +548,7 @@ TEST( SIREN, parse_parent )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -574,7 +574,7 @@ TEST( SIREN, parse_root_based_any_selection )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -601,7 +601,7 @@ TEST( SIREN, parse_root_based_any_selection_w_child )
         ,{"document", DOCUMENT_ROOT}
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -630,7 +630,7 @@ TEST( SIREN, parse_relative_based_any_selection )
         ,{"document", DOCUMENT_ROOT} // selection expression root
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -660,7 +660,7 @@ TEST( SIREN, parse_relative_based_any_selection_w_child )
         ,{"document", DOCUMENT_ROOT} // selection expression root
     };
     ASSERT_EQ( expected.size(), interpreter.node_count() );
-    for( size_t i = 0; i < expected.size(); ++i)
+    for( std::size_t i = 0; i < expected.size(); ++i)
     {
         {
         SCOPED_TRACE(i);

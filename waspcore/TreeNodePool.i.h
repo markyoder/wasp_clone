@@ -53,11 +53,11 @@ void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::push_parent(
     // update the children's parent index
     // TODO check children range for valid indices
     // TODO check children for lack of parent
-    size_t last_child_index = first_child_index+child_count;    
-    for( size_t c = 0, i = first_child_index; i < last_child_index; ++i, ++c)
+    std::size_t last_child_index = first_child_index+child_count;
+    for( std::size_t c = 0, i = first_child_index; i < last_child_index; ++i, ++c)
     {
         // assign parent
-        size_t child_index = child_indices[c];
+        std::size_t child_index = child_indices[c];
         m_node_basic_data[child_index].m_parent_node_index = basic_data_index;
         // assign lookup index mapping parent to list
         // of arbitrary indices into basic node data
@@ -113,9 +113,9 @@ void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::push_leaf(
 // Acquire the given token's parent meta data (child indices, count) index
 template<typename NTS, typename NIS
          ,typename TTS, typename TITS,typename FOTS>
-size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::parent_data_index(
+std::size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::parent_data_index(
         NIS node_index) const
-{
+{    
     auto itr = m_basic_parent_data_lookup.find(node_index);
     if( itr == m_basic_parent_data_lookup.end() )
     {
@@ -130,10 +130,10 @@ size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::parent_data_index(
 
 template<typename NTS, typename NIS
          ,typename TTS, typename TITS,typename FOTS>
-size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::parent_node_index(
+std::size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::parent_node_index(
         NIS node_index) const
 {
-    // TODO check range
+    // TODO check range    
     auto parent_index = m_node_basic_data[node_index].m_parent_node_index;
     if( parent_index == -1 )
     {
@@ -144,24 +144,24 @@ size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::parent_node_index(
 
 template<typename NTS, typename NIS
          ,typename TTS, typename TITS,typename FOTS>
-size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::child_count(
+std::size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::child_count(
         NIS node_index) const
 {
     // acquire the index into the parent meta data
-    size_t parent_index = parent_data_index(node_index);
+    std::size_t parent_index = parent_data_index(node_index);
     if( parent_index == size() ) return 0;
     return m_node_parent_data[parent_index].m_child_count;
 }
 
 template<typename NTS, typename NIS
          ,typename TTS, typename TITS,typename FOTS>
-size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::child_at(
+std::size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::child_at(
         NIS node_index, NIS child_relative_index) const
 {
     // TODO conduct range check on relative index to child count
 
     // acquire the index into the parent meta data
-    size_t parent_index = parent_data_index(node_index);
+    std::size_t parent_index = parent_data_index(node_index);
     auto child_indices_index
             = m_node_parent_data[parent_index].m_first_child_index
             + child_relative_index;
@@ -207,7 +207,7 @@ void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::node_paths(
                     ,std::ostream & out)const
 {
     // TODO conduct node index range check
-    size_t node_child_count = child_count(node_index);
+    std::size_t node_child_count = child_count(node_index);
     node_path(node_index,out);
     if( node_child_count == 0 ){
         out<<" ("<<data(node_index)<<")"<<std::endl;
@@ -216,7 +216,7 @@ void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::node_paths(
         out<<std::endl;
     }
 
-    for( size_t i = 0; i < node_child_count; ++i){
+    for( std::size_t i = 0; i < node_child_count; ++i){
         node_paths( child_at( node_index, i ), out );
     }
 }
@@ -230,7 +230,7 @@ bool TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::has_parent(
 {
     if( node_index >= size() ) return false;
 
-    size_t nodes_parent_index
+    std::size_t nodes_parent_index
             = parent_node_index(node_index);
     return nodes_parent_index != size();
 }
@@ -238,7 +238,7 @@ bool TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::has_parent(
 // Obtain a nodes starting line
 template<typename NTS, typename NIS
          ,typename TTS, typename TITS,typename FOTS>
-size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::line(
+std::size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::line(
                     NIS node_index )const
 {
     auto leaf_node_index = leaf_index(node_index);
@@ -256,7 +256,7 @@ size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::line(
 // Obtain a nodes starting column
 template<typename NTS, typename NIS
          ,typename TTS, typename TITS,typename FOTS>
-size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::column(
+std::size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::column(
                     NIS node_index )const
 {
     auto leaf_node_index = leaf_index(node_index);
@@ -274,7 +274,7 @@ size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::column(
 // Obtain a node's first leaf node index
 template<typename NTS, typename NIS
          ,typename TTS, typename TITS,typename FOTS>
-size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::leaf_index(
+std::size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::leaf_index(
                     NIS node_index )const
 {
     auto leaf_itr = m_leaf_token_lookup.find(node_index);

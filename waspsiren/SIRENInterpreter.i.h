@@ -1,8 +1,8 @@
 #ifndef SIREN_SIRENINTERPRETER_I_H
 #define SIREN_SIRENINTERPRETER_I_H
-#include <cstring> // strcmp
+
 template<typename TAdapter>
-size_t SIRENInterpreter::evaluate(
+std::size_t SIRENInterpreter::evaluate(
         TAdapter & node, SIRENResultSet<TAdapter> & result)const
 {
 
@@ -43,14 +43,14 @@ size_t SIRENInterpreter::evaluate(
     }
 
     evaluate(first_selection, result, stage);
-    for( size_t i = 0; i < stage.size(); ++i )
+    for( std::size_t i = 0; i < stage.size(); ++i )
     {
         result.push(stage[i]);
     }
     return result.result_count();
 }
 template<typename TAdapter>
-size_t SIRENInterpreter::evaluate(
+std::size_t SIRENInterpreter::evaluate(
         const TreeNodeView & context
         ,SIRENResultSet<TAdapter> & result
         ,std::vector<TAdapter> & stage )const
@@ -73,8 +73,8 @@ size_t SIRENInterpreter::evaluate(
         break;
         case PARENT : // select parent of current nodes '..'
         {
-            size_t count = stage.size();
-            for( size_t i = 0; i < count; ++i)
+            std::size_t count = stage.size();
+            for( std::size_t i = 0; i < count; ++i)
             {
                 const TAdapter& node = stage[i];
                 if( node.has_parent() ) stage.push_back( node.parent() );
@@ -114,14 +114,15 @@ void SIRENInterpreter::search_child_name(
         const TreeNodeView & context,
         std::vector<TAdapter> & stage)const
 {
+    if( stage.empty() ) return;
     // the name for which to search
     const char * name = context.name();
-    size_t stage_size = stage.size();
-    for( size_t i = stage.size(); i > 0; --i )
+    std::size_t stage_size = stage.size();
+    for( std::size_t i = stage_size; i > 0; --i )
     {
-        size_t index = i-1;
-        const TAdapter & node = stage[index];
-        for( size_t c = 0; c < node.child_count(); ++c )
+        std::size_t index = i-1;
+        TAdapter node = stage[index];
+        for( std::size_t c = 0; c < node.child_count(); ++c )
         {
             const TAdapter & child_node = node.child_at(c);
             // if child is a match, push back onto stage
@@ -160,12 +161,12 @@ void SIRENInterpreter::search_conditional_predicated_child(
     const char * name = child_name_context.name();
     const char * predicate_name = predicate_name_context.name();
     const std::string& predicate_value = predicate_value_context.data();
-    size_t stage_size = stage.size();
-    for( size_t i = stage.size(); i > 0; --i )
+    std::size_t stage_size = stage.size();
+    for( std::size_t i = stage_size; i > 0; --i )
     {
-        size_t index = i-1;
-        const TAdapter & node = stage[index];
-        for( size_t c = 0; c < node.child_count(); ++c )
+        std::size_t index = i-1;
+        TAdapter node = stage[index];
+        for( std::size_t c = 0; c < node.child_count(); ++c )
         {
             const TAdapter & child_node = node.child_at(c);
             // if child is a match, push back onto stage
@@ -178,7 +179,7 @@ void SIRENInterpreter::search_conditional_predicated_child(
                 // string compare fails quickly '1' == '1.0' fails, but should
                 // not considering user is expecting it is a numeric comparison.
                 bool predicate_accepted = false; // assume predicate fails
-                for( size_t gc = 0, gc_count = child_node.child_count();
+                for( std::size_t gc = 0, gc_count = child_node.child_count();
                      gc < gc_count; ++gc)
                 {
                     const TAdapter & g_child_node = child_node.child_at(gc);
@@ -194,7 +195,9 @@ void SIRENInterpreter::search_conditional_predicated_child(
                         }
                     }
                 }
-                if( predicate_accepted ) stage.push_back( child_node );
+                if( predicate_accepted ){
+                    stage.push_back( child_node );
+                }
             }
         }
     }
@@ -219,8 +222,8 @@ void SIRENInterpreter::search_index_predicated_child(
     // start : end : stride - 5 children
     TreeNodeView predicate_context = context.child_at(2);
     // TODO - ensure predicate context fulfills expectations
-    size_t start_i = 0, end_i = 0, stride = 1;
-    size_t incident_count = 0;
+    std::size_t start_i = 0, end_i = 0, stride = 1;
+    std::size_t incident_count = 0;
 
     // the names for which to search
     const char * name = child_name_context.name();
@@ -232,12 +235,12 @@ void SIRENInterpreter::search_index_predicated_child(
         end_i = start_i = index.to_int();
     }
 
-    size_t stage_size = stage.size();
-    for( size_t i = stage.size(); i > 0; --i )
+    std::size_t stage_size = stage.size();
+    for( std::size_t i = stage_size; i > 0; --i )
     {
-        size_t index = i-1;
-        const TAdapter & node = stage[index];
-        for( size_t c = 0; c < node.child_count(); ++c )
+        std::size_t index = i-1;
+        TAdapter node = stage[index];
+        for( std::size_t c = 0; c < node.child_count(); ++c )
         {
             const TAdapter & child_node = node.child_at(c);
             // if child is a match, push back onto stage
@@ -249,6 +252,7 @@ void SIRENInterpreter::search_index_predicated_child(
                         && incident_count % stride == 0)
                 {
                     stage.push_back(child_node);
+                    node = stage[index];// update reference
                 }
             }
             // early terminate when our range has been exhausted

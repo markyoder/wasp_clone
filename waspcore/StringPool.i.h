@@ -3,15 +3,15 @@
     template<typename T>
     const char * StringPool<T>::data(T index)const
     {
-        size_t data_index = m_token_data_indices[index];
+        std::size_t data_index = m_token_data_indices[index];
         return &m_data[data_index];
     }
     template<typename T>
     void StringPool<T>::push(const char * str)
     {
-        size_t string_index = m_data.size();
+        std::size_t string_index = m_data.size();
         // capture str data
-        for( size_t i = 0; str[i] != '\0'; ++i)
+        for( std::size_t i = 0; str[i] != '\0'; ++i)
         {
             m_data.push_back(str[i]);
         }
@@ -39,8 +39,6 @@
         : m_data(orig.m_data)
         , m_token_data_indices(orig.m_token_data_indices)
     {
-        m_data.reserve(1000000);
-        m_token_data_indices.reserve(333333);
     }
     // default destructor
     template<typename T>

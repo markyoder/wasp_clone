@@ -55,8 +55,8 @@
  /*** BEGIN EXAMPLE - Change the wasp grammar's tokens below ***/
 
 %union {
-        size_t token_index;
-        size_t node_index;
+        std::size_t token_index;
+        std::size_t node_index;
         std::vector<unsigned int>* node_indices;
 }
 
@@ -650,5 +650,5 @@ start   : root_based_selection {interpreter.add_root_child_index(static_cast<uns
 void wasp::SIRENParser::error(const SIRENParser::location_type& l,
                            const std::string& m)
 {
-    interpreter.error(l, m);
+    interpreter.error_stream()<<l<<": "<<m;
 }

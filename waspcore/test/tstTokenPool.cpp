@@ -166,8 +166,8 @@ TEST(TokenPool,copy_test)
                                   ,"word"};
     std::vector<char> token_type={word,integer,real,word};
     std::vector<default_file_offset_type_size> token_offsets ={0,4,9,17};
-    std::vector<size_t> token_line={1,1,3,3};
-    std::vector<size_t> token_column={1,5,1,9};
+    std::vector<std::size_t> token_line={1,1,3,3};
+    std::vector<std::size_t> token_column={1,5,1,9};
     ASSERT_EQ(data.size(),token_type.size());
     ASSERT_EQ(data.size(),token_line.size());
     ASSERT_EQ(data.size(),token_column.size());
@@ -245,15 +245,15 @@ TEST(TokenPool,single_line_column)
 {
     //'key =  3.142'
     std::vector<std::string> data = {"key","=","3.142"};
-    std::vector<size_t> column={1,5,8};
-    std::vector<size_t> offset={0,4,7};
+    std::vector<std::size_t> column={1,5,8};
+    std::vector<std::size_t> offset={0,4,7};
     std::vector<char> type={word,assign,real};
     ASSERT_EQ( data.size(), column.size() );
     ASSERT_EQ( data.size(), offset.size() );
     ASSERT_EQ( data.size(), type.size() );
 
     TokenPool<char> tp;
-    for(size_t i = 0; i < data.size(); ++i)
+    for(std::size_t i = 0; i < data.size(); ++i)
     {
         {
         SCOPED_TRACE(i);

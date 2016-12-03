@@ -132,8 +132,8 @@ namespace wasp {
     {
     #line 57 "SIRENParser.bison" // lalr1.cc:377
 
-        size_t token_index;
-        size_t node_index;
+        std::size_t token_index;
+        std::size_t node_index;
         std::vector<unsigned int>* node_indices;
 
 #line 140 "SIRENParser.hpp" // lalr1.cc:377

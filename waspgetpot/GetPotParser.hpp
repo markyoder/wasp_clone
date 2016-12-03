@@ -133,8 +133,8 @@ namespace wasp {
     {
     #line 58 "GetPot.bison" // lalr1.cc:377
 
-    size_t token_index;
-    size_t node_index;
+    std::size_t token_index;
+    std::size_t node_index;
     std::vector<unsigned int>* node_indices;
 
 #line 141 "GetPotParser.hpp" // lalr1.cc:377

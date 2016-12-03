@@ -1,5 +1,6 @@
 #ifndef WASP_TOKENPOOL_H
 #define WASP_TOKENPOOL_H
+#include <algorithm>
 #include <vector>
 #include "waspcore/StringPool.h"
 namespace wasp{
@@ -42,14 +43,14 @@ public:
     const char * str(token_index_type_size index)const;
     /**
      * @brief line acquires the line for the token at the given index
-     * @return size_t the line number for which the token exists
+     * @return std::size_t the line number for which the token exists
      */
-    size_t line(token_index_type_size token_index)const;
+    std::size_t line(token_index_type_size token_index)const;
     /**
      * @brief column acquires the column for the token at the given index
-     * @return size_t the column number for which the token exists
+     * @return std::size_t the column number for which the token exists
      */
-    size_t column(token_index_type_size token_index)const;
+    std::size_t column(token_index_type_size token_index)const;
     /**
      * @brief offset acquires byte offset for the token at the given index
      * @return file_offset_type_size the byte offset of the token
@@ -82,9 +83,9 @@ public:
 
     /**
      * @brief size the number of tokens in this token pool
-     * @return size_t the token count
+     * @return std::size_t the token count
      */
-    size_t size()const{return m_tokens.size();}
+    std::size_t size()const{return m_tokens.size();}
 
     /**
      * @brief type acquire the type of the token at the given index
@@ -96,7 +97,7 @@ public:
      * @brief line_count the number of new lines stored in this pool
      * @return the new line count
      */
-    size_t line_count()const{return m_line_offsets.size();}
+    std::size_t line_count()const{return m_line_offsets.size();}
     /**
      * @brief line_offset acquire the byte offset of the line at the given index
      * @param line_index the index of the line for which the offset is desired

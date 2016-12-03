@@ -1,6 +1,5 @@
 #ifndef WASP_TOKENPOOL_I_H
 #define WASP_TOKENPOOL_I_H
-#include <algorithm>
 
 // default constructor
 template<typename TTS, typename TITS,typename FOTS>
@@ -29,7 +28,7 @@ const char *TokenPool<TTS,TITS,FOTS>::str(TITS index)const
 }
 // GET THE TOKEN'S LINE
 template<typename TTS, typename TITS,typename FOTS>
-size_t TokenPool<TTS,TITS,FOTS>::line(TITS index)const
+std::size_t TokenPool<TTS,TITS,FOTS>::line(TITS index)const
 {
     FOTS token_file_offset = m_tokens[index].m_token_file_offset;
     typename std::vector<FOTS>::const_iterator ub
@@ -38,18 +37,18 @@ size_t TokenPool<TTS,TITS,FOTS>::line(TITS index)const
                                ,token_file_offset);
 
     auto line = std::distance(m_line_offsets.begin(),ub)+1;
-    return static_cast<size_t>(line);
+    return static_cast<std::size_t>(line);
 }
 // GET THE TOKEN'S COLUMN
 template<typename TTS, typename TITS,typename FOTS>
-size_t TokenPool<TTS,TITS,FOTS>::column(TITS index)const
+std::size_t TokenPool<TTS,TITS,FOTS>::column(TITS index)const
 {
     FOTS token_file_offset = m_tokens[index].m_token_file_offset;
     typename std::vector<FOTS>::const_iterator ub
             = std::upper_bound(m_line_offsets.begin()
                                ,m_line_offsets.end()
                                ,token_file_offset);
-    size_t column = 0;
+    std::size_t column = 0;
     // check if token is on first line
     if( ub == m_line_offsets.begin() )
     {

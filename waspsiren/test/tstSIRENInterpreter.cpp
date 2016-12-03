@@ -220,3 +220,111 @@ TEST( SIREN, selection_on_keyed_value )
     }
 }
 
+/**
+ * @brief TEST with multiple children under root
+ */
+TEST( SIREN, selection_on_keyed_values )
+{
+    TreeNodePool<> tree;
+    // decl = value
+    // 'key = 3.14 key = 3.149 key = 20'
+    // document
+    // |_keyedvalue
+    //   |_ decl (key)
+    //   |_ =  (=)
+    //   |_ value (3.14)
+    //
+    // |_keyedvalue
+    //   |_ decl (key)
+    //   |_ =  (=)
+    //   |_ value (3.149)
+    //
+    // |_keyedvalue
+    //   |_ decl (key)
+    //   |_ =  (=)
+    //   |_ value (20)
+    //
+    auto token_i = tree.token_data().size();
+    tree.token_data().push("key",wasp::STRING,0);
+    tree.push_leaf(wasp::DECL,"decl"
+                   , token_i ); // node 0
+    token_i = tree.token_data().size();
+    tree.token_data().push("=",wasp::ASSIGN,5);
+    tree.push_leaf(wasp::ASSIGN,"="
+                   , token_i ); // node 1
+    token_i = tree.token_data().size();
+    tree.token_data().push("3.14",wasp::REAL,7);
+    tree.push_leaf(wasp::VALUE,"value"
+                   , token_i ); // node 2
+    tree.push_parent(wasp::KEYED_VALUE,"key",{0,1,2}); // node 3
+    // second keyedvalue
+    token_i = tree.token_data().size();
+    tree.token_data().push("key",wasp::STRING,11);
+    tree.push_leaf(wasp::DECL,"decl"
+                   , token_i ); // node 4
+    token_i = tree.token_data().size();
+    tree.token_data().push("=",wasp::ASSIGN,16);
+    tree.push_leaf(wasp::ASSIGN,"="
+                   , token_i ); // node 5
+    token_i = tree.token_data().size();
+    tree.token_data().push("3.149",wasp::REAL,18);
+    tree.push_leaf(wasp::VALUE,"value"
+                   , token_i ); // node 6
+    tree.push_parent(wasp::KEYED_VALUE,"key",{4,5,6}); // node 7
+    // third keyedvalue
+    token_i = tree.token_data().size();
+    tree.token_data().push("key",wasp::STRING,22);
+    tree.push_leaf(wasp::DECL,"decl"
+                   , token_i ); // node 8
+    token_i = tree.token_data().size();
+    tree.token_data().push("=",wasp::ASSIGN,27);
+    tree.push_leaf(wasp::ASSIGN,"="
+                   , token_i ); // node 9
+    token_i = tree.token_data().size();
+    tree.token_data().push("20",wasp::REAL,29);
+    tree.push_leaf(wasp::VALUE,"value"
+                   , token_i ); // node 10
+    ASSERT_EQ( 11, tree.size() );
+    tree.push_parent(wasp::KEYED_VALUE,"key",{8,9,10}); // node 11
+    tree.push_parent(wasp::DOCUMENT_ROOT, "document", {3,7,11} ); // node 12
+    TreeNodeView document(12, tree);
+    ASSERT_EQ( 13, tree.size() );
+    ASSERT_EQ( 3, document.child_count());
+    TreeNodeView key = document.child_at(2);
+    ASSERT_TRUE( key.has_parent() );
+    ASSERT_EQ( 3, key.child_count() );
+    ASSERT_EQ( 0, strcmp("key",key.name()) );
+    {// select only the root
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString("/") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 1, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 1, set.result_count() );
+            ASSERT_TRUE( set.is_adapted(0) );
+            std::string document = "document";
+            ASSERT_EQ( document, set.adapted(0).name() );
+            ASSERT_EQ( DOCUMENT_ROOT, set.adapted(0).type() );
+        }
+    }
+    {// select the key child
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString("/key") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+
+            ASSERT_EQ( 3, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 3, set.result_count() );
+            for( size_t i = 0; i < set.result_count(); ++i)
+            {
+                ASSERT_TRUE( set.is_adapted(i) );
+                std::string key = "key";
+                ASSERT_EQ( key, set.adapted(i).name() );
+                ASSERT_EQ( KEYED_VALUE, set.adapted(i).type() );
+            }
+        }
+    }
+
+}
+
+

@@ -24,7 +24,7 @@ TEST(GetPotInterpreter,simple)
     std::vector<std::string> leaf_node_names = {"decl","=","value"};
     std::vector<wasp::NODE> leaf_node_types = {wasp::DECL,wasp::ASSIGN
                                                 ,wasp::VALUE};
-    for( size_t i = 0; i < 3; ++i)
+    for( std::size_t i = 0; i < 3; ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -33,9 +33,9 @@ TEST(GetPotInterpreter,simple)
         ASSERT_EQ(leaf_node_names[i], interpreter.m_tree_nodes.name(i));
         }
     }
-    std::vector<size_t> parent_indices = {3,3,3,4,5};
-    std::vector<size_t> child_count = {0,0,0,3,1};
-    std::vector<size_t> column = {1,5,8,1,1};
+    std::vector<std::size_t> parent_indices = {3,3,3,4,5};
+    std::vector<std::size_t> child_count = {0,0,0,3,1};
+    std::vector<std::size_t> column = {1,5,8,1,1};
     std::vector<wasp::NODE> node_types = {wasp::DECL,wasp::ASSIGN
                                            ,wasp::VALUE,wasp::KEYED_VALUE
                                           ,wasp::DOCUMENT_ROOT};
@@ -45,7 +45,7 @@ TEST(GetPotInterpreter,simple)
     ASSERT_EQ( node_types.size(), parent_indices.size() );
     ASSERT_EQ( node_types.size(), child_count.size() );
     ASSERT_EQ( node_types.size(), column.size() );
-    for( size_t i = 0; i < interpreter.node_count(); ++i )
+    for( std::size_t i = 0; i < interpreter.node_count(); ++i )
     {
         {
         SCOPED_TRACE(i);
@@ -82,7 +82,7 @@ TEST(GetPotInterpreter,empty_object)
     std::vector<std::string> leaf_node_names = {"[","decl","]"};
     std::vector<wasp::NODE> leaf_node_types = {wasp::LBRACKET,wasp::DECL
                                            ,wasp::RBRACKET};
-    for( size_t i = 0; i < 3; ++i)
+    for( std::size_t i = 0; i < 3; ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -100,7 +100,7 @@ TEST(GetPotInterpreter,empty_object)
                                            ,"[]"
                                            ,"ted","document"};
     ASSERT_EQ( node_types.size(), node_names.size() );
-    for( size_t i = 0; i < interpreter.node_count(); ++i )
+    for( std::size_t i = 0; i < interpreter.node_count(); ++i )
     {
         {
         SCOPED_TRACE(i);
@@ -149,7 +149,7 @@ TEST(GetPotInterpreter,simple_object)
                                            ,"[]"
                                            ,"ted","document"};
     ASSERT_EQ( node_types.size(), node_names.size() );
-    for( size_t i = 0; i < interpreter.node_count(); ++i )
+    for( std::size_t i = 0; i < interpreter.node_count(); ++i )
     {
         {
         SCOPED_TRACE(i);
@@ -225,7 +225,7 @@ TEST(GetPotInterpreter,less_simple_object)
                                            ,"[]"
                                            ,"ted","document"};
     ASSERT_EQ( node_types.size(), node_names.size() );
-    for( size_t i = 0; i < interpreter.node_count(); ++i )
+    for( std::size_t i = 0; i < interpreter.node_count(); ++i )
     {
         {
         SCOPED_TRACE(i);
@@ -284,7 +284,7 @@ TEST(GetPotInterpreter, object_array)
                                            ,"[]"
                                            ,"ted","document"};
     ASSERT_EQ( node_types.size(), node_names.size() );
-    for( size_t i = 0; i < interpreter.node_count(); ++i )
+    for( std::size_t i = 0; i < interpreter.node_count(); ++i )
     {
         {
         SCOPED_TRACE(i);
@@ -347,7 +347,7 @@ TEST(GetPotInterpreter, object_empty_subobject)
                                            ,"[]"
                                            ,"ted","document"};
     ASSERT_EQ( node_types.size(), node_names.size() );
-    for( size_t i = 0; i < interpreter.node_count(); ++i )
+    for( std::size_t i = 0; i < interpreter.node_count(); ++i )
     {
         {
         SCOPED_TRACE(i);
@@ -419,7 +419,7 @@ TEST(GetPotInterpreter, object_subobject)
                                            ,"[]"
                                            ,"ted","document"};
     ASSERT_EQ( node_types.size(), node_names.size() );
-    for( size_t i = 0; i < interpreter.node_count(); ++i )
+    for( std::size_t i = 0; i < interpreter.node_count(); ++i )
     {
         {
         SCOPED_TRACE(i);
@@ -451,7 +451,7 @@ TEST(GetPotInterpreter,simple_view)
                                            ,"key","document"};
     std::vector<std::string> node_paths = {"/key/decl","/key/=","/key/value"
                                            ,"/key","/"};
-    std::vector<size_t> node_columns = {1,5,8,1,1};
+    std::vector<std::size_t> node_columns = {1,5,8,1,1};
     ASSERT_EQ(node_types.size(), node_names.size());
     ASSERT_EQ(node_types.size(), node_columns.size());
     ASSERT_EQ(node_types.size(), node_paths.size());
@@ -476,7 +476,7 @@ TEST(GetPotInterpreter,simple_view)
     ASSERT_EQ( false, document.equal(key) );
     ASSERT_EQ( node_paths[3], key.path() );
     // TODO add test on data (type, line, col, etc).
-    for( size_t i = 0, child_count = key.child_count(); i < child_count; ++i)
+    for( std::size_t i = 0, child_count = key.child_count(); i < child_count; ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -568,7 +568,7 @@ function = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)
     ASSERT_EQ(1, document.child_count() );
     TreeNodeView fnode = document.child_at(0);
     ASSERT_EQ(data.size(), fnode.child_count());
-    for( size_t i = 0; i < fnode.child_count(); ++i)
+    for( std::size_t i = 0; i < fnode.child_count(); ++i)
     {
         {
         SCOPED_TRACE(i);
@@ -595,7 +595,7 @@ TEST(GetPotInterpreter, comments )
                                     ,"#"
                                    };
    ASSERT_EQ( data.size(), document.child_count() );
-   for( size_t i = 0; i < document.child_count(); ++i)
+   for( std::size_t i = 0; i < document.child_count(); ++i)
    {
        {
        SCOPED_TRACE(i);
@@ -644,12 +644,12 @@ TEST(GetPotInterpreter,early_terminated_object)
         std::vector<wasp::NODE> types={wasp::OBJECT_DECL
                                        ,wasp::SUB_OBJECT
                                        ,wasp::COMMENT};
-        std::vector<size_t> line = {1,2,5};
-        std::vector<size_t> column = {1,3,2};
+        std::vector<std::size_t> line = {1,2,5};
+        std::vector<std::size_t> column = {1,3,2};
         ASSERT_EQ(names.size(), types.size());
         ASSERT_EQ(names.size(), line.size());
         ASSERT_EQ(names.size(), column.size());
-        for( size_t i = 0; i < first_block.child_count(); ++i )
+        for( std::size_t i = 0; i < first_block.child_count(); ++i )
         {
             {
             SCOPED_TRACE(i);
@@ -677,12 +677,12 @@ TEST(GetPotInterpreter,early_terminated_object)
                                        ,wasp::SUB_OBJECT
                                        ,wasp::SUB_OBJECT
                                       ,wasp::OBJECT_TERM};
-        std::vector<size_t> line =   {6,7,8,10,12};
-        std::vector<size_t> column = {1,5,5, 5, 1};
+        std::vector<std::size_t> line =   {6,7,8,10,12};
+        std::vector<std::size_t> column = {1,5,5, 5, 1};
         ASSERT_EQ(names.size(), types.size());
         ASSERT_EQ(names.size(), line.size());
         ASSERT_EQ(names.size(), column.size());
-        for( size_t i = 0; i < new_block.child_count(); ++i )
+        for( std::size_t i = 0; i < new_block.child_count(); ++i )
         {
             {
             SCOPED_TRACE(i);

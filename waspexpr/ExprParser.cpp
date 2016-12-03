@@ -1556,6 +1556,6 @@ namespace wasp{
 void ExprParser::error(const ExprParser::location_type& l,
                            const std::string& m)
 {
-    interpreter.error(l, m);
+    interpreter.error_stream()<<l<<": "<<m;
 }
 }; // end of namespace

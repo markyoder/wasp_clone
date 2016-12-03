@@ -34,7 +34,7 @@ TEST( SIREN, result )
     ASSERT_FALSE( set.is_adapted( 1 ) );
     ASSERT_TRUE ( set.is_scalar( 1 ) );
 
-    for( size_t i = 0, index = 2; i < 10; ++i, ++index )
+    for( std::size_t i = 0, index = 2; i < 10; ++i, ++index )
     {
         set.push(FakeAdapter("fake"+std::to_string(i),"adapter"+std::to_string(i)));
         ASSERT_EQ( index+1, set.result_count() );

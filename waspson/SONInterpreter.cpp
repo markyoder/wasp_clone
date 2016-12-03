@@ -27,15 +27,15 @@ SONInterpreter::~SONInterpreter()
 {
 }
 
-bool SONInterpreter::parse(std::istream& in, size_t startLine, size_t startColumn)
+bool SONInterpreter::parse(std::istream& in, std::size_t startLine, std::size_t startColumn)
 {
     return parseStream(in, hasFile() ? streamName : "stream input" , startLine,startColumn);
 }
 
 bool SONInterpreter::parseStream(std::istream& in
                                  , const std::string& sname
-                                 , size_t start_line
-                                 , size_t start_column)
+                                 , std::size_t start_line
+                                 , std::size_t start_column)
 {
     return parse_impl<SONLexerImpl
             ,SONParser
@@ -46,7 +46,7 @@ bool SONInterpreter::parseStream(std::istream& in
                 ,start_column);
 }
 
-bool SONInterpreter::parseFile(const std::string &filename, size_t line)
+bool SONInterpreter::parseFile(const std::string &filename, std::size_t line)
 {
     std::ifstream in(filename.c_str());
     if (!in.good()){
@@ -57,7 +57,7 @@ bool SONInterpreter::parseFile(const std::string &filename, size_t line)
     return parseStream(in, filename, line);
 }
 
-bool SONInterpreter::parseString(const std::string &input, const std::string& sname, size_t startLine, size_t startColumn)
+bool SONInterpreter::parseString(const std::string &input, const std::string& sname, std::size_t startLine, std::size_t startColumn)
 {
     std::istringstream iss(input);
     return parseStream(iss, sname,startLine,startColumn);
