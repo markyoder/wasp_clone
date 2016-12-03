@@ -316,7 +316,7 @@ TEST( SIREN, selection_on_keyed_values )
             ASSERT_EQ( 3, siren.evaluate<TreeNodeView>(document, set));
             ASSERT_EQ( 3, set.result_count() );
             for( size_t i = 0; i < set.result_count(); ++i)
-            {
+            {   SCOPED_TRACE(i);
                 ASSERT_TRUE( set.is_adapted(i) );
                 std::string key = "key";
                 ASSERT_EQ( key, set.adapted(i).name() );
@@ -324,7 +324,189 @@ TEST( SIREN, selection_on_keyed_values )
             }
         }
     }
-
+    {// select the key's value child
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString("/key/value") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 3, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 3, set.result_count() );
+            for( size_t i = 0; i < set.result_count(); ++i)
+            {   SCOPED_TRACE(i);
+                ASSERT_TRUE( set.is_adapted(i) );
+                std::string value = "value";
+                ASSERT_EQ( value, set.adapted(i).name() );
+                ASSERT_EQ( VALUE, set.adapted(i).type() );
+            }
+        }
+    }
+    {// select the key's decl child
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key / decl ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 3, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 3, set.result_count() );
+            for( size_t i = 0; i < set.result_count(); ++i)
+            {   SCOPED_TRACE(i);
+                ASSERT_TRUE( set.is_adapted(i) );
+                std::string decl = "decl";
+                ASSERT_EQ( decl, set.adapted(i).name() );
+                ASSERT_EQ( DECL, set.adapted(i).type() );
+            }
+        }
+    }
+    {// select the key's decl child relative from document
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString("  key / decl ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 3, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 3, set.result_count() );
+            for( size_t i = 0; i < set.result_count(); ++i)
+            {   SCOPED_TRACE(i);
+                ASSERT_TRUE( set.is_adapted(i) );
+                std::string decl = "decl";
+                ASSERT_EQ( decl, set.adapted(i).name() );
+                ASSERT_EQ( DECL, set.adapted(i).type() );
+            }
+        }
+    }
+    {// select the key's decl child relative from key
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" decl ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 1, siren.evaluate<TreeNodeView>(key, set));
+            ASSERT_EQ( 1, set.result_count() );
+            ASSERT_TRUE( set.is_adapted(0) );
+            std::string decl = "decl";
+            ASSERT_EQ( decl, set.adapted(0).name() );
+            ASSERT_EQ( DECL, set.adapted(0).type() );
+        }
+    }
+    {// test root-based selection with expected no results
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" /nothing/decl ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 0, siren.evaluate<TreeNodeView>(key, set));
+            ASSERT_EQ( 0, set.result_count() );
+        }
+    }
+    {// test relative-based selection with expected no results
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" nothing/decl ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 0, siren.evaluate<TreeNodeView>(key, set));
+            ASSERT_EQ( 0, set.result_count() );
+        }
+    }
+    {// test relative-based selection of parent
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" .. ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 1, siren.evaluate<TreeNodeView>(key, set));
+            ASSERT_EQ( 1, set.result_count() );
+            ASSERT_TRUE( set.is_adapted(0) );
+            std::string document = "document";
+            ASSERT_EQ( document, set.adapted(0).name() );
+            ASSERT_EQ( DOCUMENT_ROOT, set.adapted(0).type() );
+        }
+    }
+    {// test relative-based selection of parent with expected no results
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" ../.. ") ); // document has no parent
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 0, siren.evaluate<TreeNodeView>(key, set));
+            ASSERT_EQ( 0, set.result_count() );
+        }
+    }
+    {// select the key's decl where key's value=3.149
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key [ value = 3.149 ]/ decl ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 1, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 1, set.result_count() );
+            ASSERT_TRUE( set.is_adapted(0) );
+            std::string decl = "decl";
+            ASSERT_EQ( decl, set.adapted(0).name() );
+            ASSERT_EQ( DECL, set.adapted(0).type() );
+        }
+    }
+    {// select the key's dec where key's value=3.14 (no results)
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key [ value = 3.14 ]/ dec ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 0, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 0, set.result_count() );
+        }
+    }
+    {// select the key's dec where key's val=3.14 (no results)
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key [ val = 3.14 ]/ dec ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 0, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 0, set.result_count() );
+        }
+    }
+    {// select the key's decl where key's value=3.1 (no results)
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key [ value = 3.1 ]/ decl ") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 0, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 0, set.result_count() );
+        }
+    }
+    {// select the key's first decl
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key / decl[1]") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 1, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 1, set.result_count() );
+            ASSERT_TRUE( set.is_adapted(0) );
+            std::string decl = "decl";
+            ASSERT_EQ( decl, set.adapted(0).name() );
+            ASSERT_EQ( DECL, set.adapted(0).type() );
+            ASSERT_EQ( 0, set.adapted(0).tree_node_index() );
+        }
+    }
+    {// select the key's second decl
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key / decl[2]") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 1, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 1, set.result_count() );
+            ASSERT_TRUE( set.is_adapted(0) );
+            std::string decl = "decl";
+            ASSERT_EQ( decl, set.adapted(0).name() );
+            ASSERT_EQ( DECL, set.adapted(0).type() );
+            ASSERT_EQ( 4, set.adapted(0).tree_node_index() );
+        }
+    }
+    {// select the key's third decl
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key / decl[3]") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 1, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 1, set.result_count() );
+            ASSERT_TRUE( set.is_adapted(0) );
+            std::string decl = "decl";
+            ASSERT_EQ( decl, set.adapted(0).name() );
+            ASSERT_EQ( DECL, set.adapted(0).type() );
+            ASSERT_EQ( 8, set.adapted(0).tree_node_index() );
+        }
+    }
 }
 
 

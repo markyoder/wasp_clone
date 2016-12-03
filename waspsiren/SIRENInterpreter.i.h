@@ -162,9 +162,8 @@ void SIRENInterpreter::search_conditional_predicated_child(
     const char * predicate_name = predicate_name_context.name();
     const std::string& predicate_value = predicate_value_context.data();
     std::size_t stage_size = stage.size();
-    for( std::size_t i = stage_size; i > 0; --i )
+    for( std::size_t index = 0; index < stage_size; ++index )
     {
-        std::size_t index = i-1;
         TAdapter node = stage[index];
         for( std::size_t c = 0; c < node.child_count(); ++c )
         {
@@ -236,9 +235,8 @@ void SIRENInterpreter::search_index_predicated_child(
     }
 
     std::size_t stage_size = stage.size();
-    for( std::size_t i = stage_size; i > 0; --i )
+    for( std::size_t index = 0; index < stage_size; ++index )
     {
-        std::size_t index = i-1;
         TAdapter node = stage[index];
         for( std::size_t c = 0; c < node.child_count(); ++c )
         {
