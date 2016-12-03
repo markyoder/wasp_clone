@@ -507,6 +507,101 @@ TEST( SIREN, selection_on_keyed_values )
             ASSERT_EQ( 8, set.adapted(0).tree_node_index() );
         }
     }
+    {// select the first and second key's decl
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key[1:2] / decl") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 2, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 2, set.result_count() );
+            std::vector<int> tree_node = {0,4};
+            ASSERT_EQ( tree_node.size(), set.result_count() );
+            for( size_t i = 0; i < set.result_count(); ++i )
+            {   SCOPED_TRACE(i);
+                ASSERT_TRUE( set.is_adapted(i) );
+                std::string decl = "decl";
+                ASSERT_EQ( decl, set.adapted(i).name() );
+                ASSERT_EQ( DECL, set.adapted(i).type() );
+                EXPECT_EQ( tree_node[i], set.adapted(i).tree_node_index() );
+            }
+        }
+    }
+    {// select the second and third key's decl
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key[2:3] / decl") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 2, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 2, set.result_count() );
+            std::vector<int> tree_node = {4,8};
+            ASSERT_EQ( tree_node.size(), set.result_count() );
+            for( size_t i = 0; i < set.result_count(); ++i )
+            {   SCOPED_TRACE(i);
+                ASSERT_TRUE( set.is_adapted(i) );
+                std::string decl = "decl";
+                ASSERT_EQ( decl, set.adapted(i).name() );
+                ASSERT_EQ( DECL, set.adapted(i).type() );
+                EXPECT_EQ( tree_node[i], set.adapted(i).tree_node_index() );
+            }
+        }
+    }
+    {// select the all 3 key's decl
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key[0:5] / decl") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 3, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 3, set.result_count() );
+            std::vector<int> tree_node = {0,4,8};
+            ASSERT_EQ( tree_node.size(), set.result_count() );
+            for( size_t i = 0; i < set.result_count(); ++i )
+            {   SCOPED_TRACE(i);
+                ASSERT_TRUE( set.is_adapted(i) );
+                std::string decl = "decl";
+                ASSERT_EQ( decl, set.adapted(i).name() );
+                ASSERT_EQ( DECL, set.adapted(i).type() );
+                EXPECT_EQ( tree_node[i], set.adapted(i).tree_node_index() );
+            }
+        }
+    }
+    {// select the first and third key's decl
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key[1:3:2] / decl") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 2, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 2, set.result_count() );
+            std::vector<int> tree_node = {0,8};
+            ASSERT_EQ( tree_node.size(), set.result_count() );
+            for( size_t i = 0; i < set.result_count(); ++i )
+            {   SCOPED_TRACE(i);
+                ASSERT_TRUE( set.is_adapted(i) );
+                std::string decl = "decl";
+                ASSERT_EQ( decl, set.adapted(i).name() );
+                ASSERT_EQ( DECL, set.adapted(i).type() );
+                EXPECT_EQ( tree_node[i], set.adapted(i).tree_node_index() );
+            }
+        }
+    }
+    {// select the first and third key's decl
+        SIRENInterpreter siren;
+        ASSERT_TRUE( siren.parseString(" / key[3:6:3] / decl") );
+        {
+            SIRENResultSet<TreeNodeView> set;
+            ASSERT_EQ( 1, siren.evaluate<TreeNodeView>(document, set));
+            ASSERT_EQ( 1, set.result_count() );
+            std::vector<int> tree_node = {8};
+            ASSERT_EQ( tree_node.size(), set.result_count() );
+            for( size_t i = 0; i < set.result_count(); ++i )
+            {   SCOPED_TRACE(i);
+                ASSERT_TRUE( set.is_adapted(i) );
+                std::string decl = "decl";
+                ASSERT_EQ( decl, set.adapted(i).name() );
+                ASSERT_EQ( DECL, set.adapted(i).type() );
+                EXPECT_EQ( tree_node[i], set.adapted(i).tree_node_index() );
+            }
+        }
+    }
 }
 
 

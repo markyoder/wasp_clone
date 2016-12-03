@@ -118,9 +118,8 @@ void SIRENInterpreter::search_child_name(
     // the name for which to search
     const char * name = context.name();
     std::size_t stage_size = stage.size();
-    for( std::size_t i = stage_size; i > 0; --i )
+    for( std::size_t index = 0; index < stage_size; ++index )
     {
-        std::size_t index = i-1;
         TAdapter node = stage[index];
         for( std::size_t c = 0; c < node.child_count(); ++c )
         {
@@ -232,8 +231,23 @@ void SIRENInterpreter::search_index_predicated_child(
     {   // TODO check type
         TreeNodeView index = predicate_context.child_at(0);
         end_i = start_i = index.to_int();
+    }else if( predicate_context.child_count() == 3 )
+    {   // TODO check type
+        TreeNodeView sindex = predicate_context.child_at(0);
+        start_i = sindex.to_int();
+        TreeNodeView eindex = predicate_context.child_at(2);
+        end_i = eindex.to_int();
+    }else if ( predicate_context.child_count() == 5 )
+    {
+        // TODO check type
+        TreeNodeView sindex = predicate_context.child_at(0);
+        start_i = sindex.to_int();
+        TreeNodeView eindex = predicate_context.child_at(2);
+        end_i = eindex.to_int();
+        TreeNodeView stride_node = predicate_context.child_at(4);
+        stride = stride_node.to_int()-1; // remove 1 because 1-based
     }
-
+    int stride_remainder = 1; //always start at 1 to capture first node
     std::size_t stage_size = stage.size();
     for( std::size_t index = 0; index < stage_size; ++index )
     {
@@ -245,13 +259,16 @@ void SIRENInterpreter::search_index_predicated_child(
             if( strcmp( name, child_node.name() ) == 0 )
             {
                 ++incident_count; // increment prior to comparison - 1 based indices
-                if( incident_count >= start_i  //
-                        && incident_count <= end_i
-                        && incident_count % stride == 0)
+                bool within_range = incident_count >= start_i
+                        && incident_count <= end_i;
+                if( within_range ) --stride_remainder;
+                if( within_range
+                        && stride_remainder == 0)
                 {
                     stage.push_back(child_node);
-                    node = stage[index];// update reference
+                    stride_remainder = stride; // reset stride
                 }
+
             }
             // early terminate when our range has been exhausted
             else if( incident_count > end_i ) {
