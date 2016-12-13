@@ -133,6 +133,9 @@ namespace wasp {
         template<typename TAdapter>
         void search_index_predicated_child(const TreeNodeView & context
                                                  , std::vector<TAdapter> & stage)const;
+        template<typename TAdapter>
+        void recursive_child_select(const TreeNodeView & context
+                                                 , std::vector<TAdapter> & stage)const;
     }; // end of SIRENInterpreter class
 #include "waspsiren/SIRENInterpreter.i.h"
 } // namespace wasp

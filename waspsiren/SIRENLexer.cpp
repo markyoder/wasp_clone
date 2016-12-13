@@ -981,6 +981,7 @@ static yyconst yy_state_type yy_NUL_trans[84] =
 #include <string>
 #include <sstream>
 #include "SIRENLexer.h"
+#include "SIRENInterpreter.h"
 
 /* import the parser's token type into a local typedef */
 typedef wasp::SIRENParser::token token;
@@ -1009,9 +1010,9 @@ typedef wasp::SIRENParser::token_type token_type;
 // declarators that are multi word
 /* The following paragraph suffices to track locations accurately. Each time
 * yylex is invoked, the begin position is moved onto the end position. */
-#line 85 "SIRENLexer.lex"
+#line 86 "SIRENLexer.lex"
 #define YY_USER_ACTION  yylloc->columns(yyleng); file_offset+=yyleng;
-#line 1015 "SIRENLexer.cpp"
+#line 1016 "SIRENLexer.cpp"
 
 #define INITIAL 0
 
@@ -1111,7 +1112,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 88 "SIRENLexer.lex"
+#line 89 "SIRENLexer.lex"
 
 
  /* code to place at the beginning of yylex() */
@@ -1121,7 +1122,7 @@ YY_DECL
 
  /*** BEGIN EXAMPLE - Change the wasp lexer rules below ***/
 
-#line 1125 "SIRENLexer.cpp"
+#line 1126 "SIRENLexer.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -1204,7 +1205,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 97 "SIRENLexer.lex"
+#line 98 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::PARENT);
     return token::PARENT;
@@ -1212,7 +1213,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 101 "SIRENLexer.lex"
+#line 102 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::ANY);
     return token::ANY;
@@ -1220,7 +1221,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 105 "SIRENLexer.lex"
+#line 106 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::WASP_COMMA);
     return token::COMMA;
@@ -1228,7 +1229,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 109 "SIRENLexer.lex"
+#line 110 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::COLON);
     return token::COLON;
@@ -1236,7 +1237,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 113 "SIRENLexer.lex"
+#line 114 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::LTE);
     return token::LTE;
@@ -1244,7 +1245,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 117 "SIRENLexer.lex"
+#line 118 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::GTE);
     return token::GTE;
@@ -1252,7 +1253,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 121 "SIRENLexer.lex"
+#line 122 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::LT);
     return token::LT;
@@ -1260,7 +1261,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 125 "SIRENLexer.lex"
+#line 126 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::GT);
     return token::GT;
@@ -1268,7 +1269,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 129 "SIRENLexer.lex"
+#line 130 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::EQ);
     return token::EQ;
@@ -1276,7 +1277,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 133 "SIRENLexer.lex"
+#line 134 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::BANG);
     return token::BANG;
@@ -1284,7 +1285,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 138 "SIRENLexer.lex"
+#line 139 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::NEQ);
     return token::NEQ;
@@ -1292,7 +1293,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 142 "SIRENLexer.lex"
+#line 143 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::WASP_AND);
     return token::AND;
@@ -1300,7 +1301,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 146 "SIRENLexer.lex"
+#line 147 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::WASP_OR);
     return token::OR;
@@ -1308,7 +1309,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 150 "SIRENLexer.lex"
+#line 151 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::LBRACKET);
     return token::LBRACKET;
@@ -1316,7 +1317,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 154 "SIRENLexer.lex"
+#line 155 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
@@ -1324,7 +1325,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 158 "SIRENLexer.lex"
+#line 159 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::LBRACE);
     return token::LBRACE;
@@ -1332,7 +1333,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 162 "SIRENLexer.lex"
+#line 163 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::RBRACE);
     return token::RBRACE;
@@ -1340,7 +1341,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 166 "SIRENLexer.lex"
+#line 167 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::LPAREN);
     return token::LPAREN;
@@ -1348,7 +1349,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 170 "SIRENLexer.lex"
+#line 171 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::RPAREN);
     return token::RPAREN;
@@ -1356,7 +1357,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 174 "SIRENLexer.lex"
+#line 175 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::EXPONENT);
     return token::EXPONENT;
@@ -1364,7 +1365,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 178 "SIRENLexer.lex"
+#line 179 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::MULTIPLY);
     return token::MULTIPLY;
@@ -1373,7 +1374,7 @@ YY_RULE_SETUP
 /* TODO add division operator*/
 case 22:
 YY_RULE_SETUP
-#line 183 "SIRENLexer.lex"
+#line 184 "SIRENLexer.lex"
 {
   capture_token(yylval,wasp::SEPARATOR);
   return token::SEPARATOR;
@@ -1381,7 +1382,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 187 "SIRENLexer.lex"
+#line 188 "SIRENLexer.lex"
 {
   capture_token(yylval,wasp::PLUS);
   return token::PLUS;
@@ -1389,7 +1390,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 191 "SIRENLexer.lex"
+#line 192 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::MINUS);
     return token::MINUS;
@@ -1397,7 +1398,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 196 "SIRENLexer.lex"
+#line 197 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::INT);
     return token::INTEGER;
@@ -1405,7 +1406,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 201 "SIRENLexer.lex"
+#line 202 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::REAL);
     return token::DOUBLE;
@@ -1414,7 +1415,7 @@ YY_RULE_SETUP
 /* gobble up white-spaces */
 case 27:
 YY_RULE_SETUP
-#line 206 "SIRENLexer.lex"
+#line 207 "SIRENLexer.lex"
 {
     yylloc->step();
 }
@@ -1423,15 +1424,15 @@ YY_RULE_SETUP
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 211 "SIRENLexer.lex"
+#line 212 "SIRENLexer.lex"
 {
     yylloc->lines(yyleng); yylloc->step();
-    m_token_data.push_line(file_offset-yyleng);
+    interpreter.push_line_offset(file_offset-yyleng);
 }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 216 "SIRENLexer.lex"
+#line 217 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
@@ -1439,7 +1440,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 222 "SIRENLexer.lex"
+#line 223 "SIRENLexer.lex"
 {
     capture_token(yylval,wasp::DECL);
     return token::DECL;
@@ -1449,7 +1450,7 @@ YY_RULE_SETUP
   * NOTE: references do not support whitespace */
 case 31:
 YY_RULE_SETUP
-#line 229 "SIRENLexer.lex"
+#line 230 "SIRENLexer.lex"
 {
     return static_cast<token_type>(*yytext);
 }
@@ -1457,10 +1458,10 @@ YY_RULE_SETUP
 /*** END EXAMPLE - Change the wasp lexer rules above ***/
 case 32:
 YY_RULE_SETUP
-#line 235 "SIRENLexer.lex"
+#line 236 "SIRENLexer.lex"
 ECHO;
 	YY_BREAK
-#line 1464 "SIRENLexer.cpp"
+#line 1465 "SIRENLexer.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2353,18 +2354,18 @@ void SIRENfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 235 "SIRENLexer.lex"
+#line 236 "SIRENLexer.lex"
 
 
 
 namespace wasp {
 
 SIRENLexerImpl::SIRENLexerImpl(
-                TokenPool<> & token_data,
+                SIRENInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
     : SIRENFlexLexer(in, out)
-    , m_token_data(token_data)
+    , interpreter(interpreter)
     , file_offset(0)
 {
 }
@@ -2387,8 +2388,8 @@ void SIRENLexerImpl::capture_token(
         ,wasp::NODE type)
 {
     std::size_t offset = file_offset - yyleng;
-    yylval->node_index = m_token_data.size();
-    m_token_data.push(yytext,type,offset);
+    yylval->token_index = interpreter.token_count();
+    interpreter.push_token(yytext,type,offset);
 }
 }
 

@@ -9,6 +9,7 @@
 #include <string>
 #include <sstream>
 #include "ExprLexer.h"
+#include "ExprInterpreter.h"
 
 /* import the parser's token type into a local typedef */
 typedef wasp::ExprParser::token token;
@@ -178,7 +179,7 @@ COMMA ,
     yylloc->lines(yyleng); yylloc->step();
     std::size_t offset = yyin->tellg();
     offset-=yyleng;
-    m_token_data.push_line(offset);
+    interpreter.push_line_offset(offset);
 }
 {STRING} {
     capture_token(yylval,wasp::STRING);
@@ -204,11 +205,11 @@ COMMA ,
 namespace wasp {
 
 ExprLexerImpl::ExprLexerImpl(
-                TokenPool<> & token_data,
+                ExprInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
     : ExprFlexLexer(in, out)
-    , m_token_data(token_data)
+    , interpreter(interpreter)
     , file_offset(0)
 {
 }
@@ -231,8 +232,8 @@ void ExprLexerImpl::capture_token(
         ,wasp::NODE type)
 {
     std::size_t offset = file_offset - yyleng;
-    yylval->node_index = m_token_data.size();
-    m_token_data.push(yytext,type,offset);
+    yylval->token_index = interpreter.token_count();
+    interpreter.push_token(yytext,type,offset);
 }
 } // end of namespace
 

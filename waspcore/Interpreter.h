@@ -49,7 +49,26 @@ public:
     virtual bool parse(std::istream &input
                        , std::size_t m_start_line=1u
                        , std::size_t m_start_column=1u)=0;
-
+    /**
+     * @brief token_count acquires the number of tokens so far interpreted
+     * @return the number of tokens
+     */
+    size_t token_count()const{ return m_tree_nodes.token_data().size();}
+    /**
+     * @brief push appends a token
+     * @param str the token's string data
+     * @param type the token's type (enumeration)
+     * @param token_file_offset the token's offset into the file/stream
+     */
+    void push_token(const char * str, token_type_size type
+              , size_t token_file_offset )
+        {m_tree_nodes.token_data().push(str,type,token_file_offset);}
+    /**
+     * @brief push_line appends a line to the new line buffer
+     * @param line_file_offset byte offset into the file/stream for the newline
+     */
+    void push_line_offset(size_t line_file_offset)
+        {m_tree_nodes.token_data().push_line(line_file_offset);}
     /**
      * @brief push_leaf create a leaf node with the given type, name, and token reference
      * @param node_type the leaf node's type enumeration

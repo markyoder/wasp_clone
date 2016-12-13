@@ -1077,6 +1077,7 @@ static yyconst yy_state_type yy_NUL_trans[96] =
 #include <string>
 #include <sstream>
 #include "GetPotLexer.h"
+#include "GetPotInterpreter.h"
 
 /* import the parser's token type into a local typedef */
 typedef wasp::GetPotParser::token token;
@@ -1121,9 +1122,9 @@ typedef wasp::GetPotParser::token_type token_type;
 */
 /* The following paragraph suffices to track locations accurately. Each time
 * yylex is invoked, the begin position is moved onto the end position. */
-#line 108 "GetPot.lex"
+#line 109 "GetPot.lex"
 #define YY_USER_ACTION  yylloc->columns(yyleng); file_offset+=yyleng;
-#line 1127 "GetPotLexer.cpp"
+#line 1128 "GetPotLexer.cpp"
 
 #define INITIAL 0
 #define execution_unit 1
@@ -1232,7 +1233,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 111 "GetPot.lex"
+#line 112 "GetPot.lex"
 
 
  /* code to place at the beginning of yylex() */
@@ -1242,7 +1243,7 @@ YY_DECL
 
  /*** BEGIN EXAMPLE - Change the GetPot lexer rules below ***/
 
-#line 1246 "GetPotLexer.cpp"
+#line 1247 "GetPotLexer.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -1326,7 +1327,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 120 "GetPot.lex"
+#line 121 "GetPot.lex"
 {
     yy_push_state(execution_unit); // enter the 'unit' of execution
     capture_token(yylval,wasp::EXECUTION_UNIT_START);
@@ -1335,7 +1336,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 125 "GetPot.lex"
+#line 126 "GetPot.lex"
 {
     yy_pop_state(); // pop the execution state
     capture_token(yylval,wasp::EXECUTION_UNIT_END);
@@ -1344,7 +1345,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 130 "GetPot.lex"
+#line 131 "GetPot.lex"
 {
     capture_token(yylval,wasp::ASSIGN);
     return token::ASSIGN;
@@ -1352,7 +1353,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 134 "GetPot.lex"
+#line 135 "GetPot.lex"
 {
     capture_token(yylval,wasp::WASP_COMMA);
     return token::COMMA;
@@ -1360,7 +1361,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 138 "GetPot.lex"
+#line 139 "GetPot.lex"
 {
     yy_pop_state();
     capture_token(yylval,wasp::DOT_SLASH);
@@ -1369,7 +1370,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 143 "GetPot.lex"
+#line 144 "GetPot.lex"
 {
     capture_token(yylval,wasp::SUB_OBJECT_TERM);
     return token::SUB_OBJECT_TERM;
@@ -1377,7 +1378,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 147 "GetPot.lex"
+#line 148 "GetPot.lex"
 {
     yy_pop_state();
     capture_token(yylval,wasp::OBJECT_TERM);
@@ -1386,7 +1387,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 152 "GetPot.lex"
+#line 153 "GetPot.lex"
 {
     capture_token(yylval,wasp::QUOTE);
     return token::QUOTE;
@@ -1394,7 +1395,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 157 "GetPot.lex"
+#line 158 "GetPot.lex"
 {
     yy_push_state(subobject_dot_slash);
     capture_token(yylval,wasp::LBRACKET);
@@ -1403,7 +1404,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 162 "GetPot.lex"
+#line 163 "GetPot.lex"
 {
     yy_push_state(object_decl);
     capture_token(yylval,wasp::LBRACKET);
@@ -1412,7 +1413,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 167 "GetPot.lex"
+#line 168 "GetPot.lex"
 {
     capture_token(yylval,wasp::STRING);
     return token::STRING;
@@ -1420,7 +1421,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 171 "GetPot.lex"
+#line 172 "GetPot.lex"
 {
     yy_pop_state();
     yy_push_state(object);
@@ -1430,7 +1431,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 177 "GetPot.lex"
+#line 178 "GetPot.lex"
 {
     yy_pop_state();
     yy_push_state(subobject);
@@ -1440,7 +1441,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 183 "GetPot.lex"
+#line 184 "GetPot.lex"
 {
     capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
@@ -1448,7 +1449,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 187 "GetPot.lex"
+#line 188 "GetPot.lex"
 {
     capture_token(yylval,wasp::INT);
     return token::INTEGER;
@@ -1456,7 +1457,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 192 "GetPot.lex"
+#line 193 "GetPot.lex"
 {
     capture_token(yylval,wasp::REAL);
     return token::REAL;
@@ -1465,7 +1466,7 @@ YY_RULE_SETUP
 /* gobble up white-spaces */
 case 17:
 YY_RULE_SETUP
-#line 197 "GetPot.lex"
+#line 198 "GetPot.lex"
 {
     yylloc->step();
 }
@@ -1474,15 +1475,15 @@ YY_RULE_SETUP
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-#line 202 "GetPot.lex"
+#line 203 "GetPot.lex"
 {
     yylloc->lines(yyleng); yylloc->step();
-    m_token_data.push_line(file_offset-yyleng);
+    interpreter.push_line_offset(file_offset-yyleng);
 }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 206 "GetPot.lex"
+#line 207 "GetPot.lex"
 {
     capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
@@ -1492,7 +1493,7 @@ YY_RULE_SETUP
   * This is actually an early terminating object declaration*/
 case 20:
 YY_RULE_SETUP
-#line 212 "GetPot.lex"
+#line 213 "GetPot.lex"
 {
   // pop subobject state and push object_decl
   yy_pop_state();
@@ -1503,7 +1504,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 219 "GetPot.lex"
+#line 220 "GetPot.lex"
 {
     capture_token(yylval,wasp::STRING);
     return token::STRING;
@@ -1512,7 +1513,7 @@ YY_RULE_SETUP
 /* pass all other characters up to GetPot*/
 case 22:
 YY_RULE_SETUP
-#line 225 "GetPot.lex"
+#line 226 "GetPot.lex"
 {
     return static_cast<token_type>(*yytext);
 }
@@ -1520,10 +1521,10 @@ YY_RULE_SETUP
 /*** END EXAMPLE - Change the GetPot lexer rules above ***/
 case 23:
 YY_RULE_SETUP
-#line 231 "GetPot.lex"
+#line 232 "GetPot.lex"
 ECHO;
 	YY_BREAK
-#line 1527 "GetPotLexer.cpp"
+#line 1528 "GetPotLexer.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(execution_unit):
 case YY_STATE_EOF(object_decl):
@@ -2425,18 +2426,18 @@ void GetPotfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 231 "GetPot.lex"
+#line 232 "GetPot.lex"
 
 
 
 namespace wasp {
 
 GetPotLexerImpl::GetPotLexerImpl(
-                TokenPool<> & token_data,
+                GetPotInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
     : GetPotFlexLexer(in, out)
-    , m_token_data(token_data)
+    , interpreter(interpreter)
     , file_offset(0)
 {
 }
@@ -2459,8 +2460,8 @@ void GetPotLexerImpl::capture_token(
         ,wasp::NODE type)
 {
     std::size_t offset = file_offset - yyleng;
-    yylval->node_index = m_token_data.size();
-    m_token_data.push(yytext,type,offset);
+    yylval->token_index = interpreter.token_count();
+    interpreter.push_token(yytext,type,offset);
 }
 } // end of namespace
 

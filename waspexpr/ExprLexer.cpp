@@ -819,6 +819,7 @@ static yyconst yy_state_type yy_NUL_trans[73] =
 #include <string>
 #include <sstream>
 #include "ExprLexer.h"
+#include "ExprInterpreter.h"
 
 /* import the parser's token type into a local typedef */
 typedef wasp::ExprParser::token token;
@@ -840,9 +841,9 @@ typedef wasp::ExprParser::token_type token_type;
 */
 /* The following paragraph suffices to track locations accurately. Each time
 * yylex is invoked, the begin position is moved onto the end position. */
-#line 76 "Expr.lex"
+#line 77 "Expr.lex"
 #define YY_USER_ACTION  yylloc->columns(yyleng); file_offset+=yyleng;
-#line 846 "ExprLexer.cpp"
+#line 847 "ExprLexer.cpp"
 
 #define INITIAL 0
 
@@ -942,7 +943,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 79 "Expr.lex"
+#line 80 "Expr.lex"
 
 
  /* code to place at the beginning of yylex() */
@@ -951,7 +952,7 @@ YY_DECL
     yylloc->step();
 
  /*** BEGIN EXAMPLE - Change the Expr lexer rules below ***/
-#line 955 "ExprLexer.cpp"
+#line 956 "ExprLexer.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -1034,7 +1035,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 87 "Expr.lex"
+#line 88 "Expr.lex"
 {
     capture_token(yylval,wasp::INT);
     return token::INTEGER;
@@ -1042,7 +1043,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 91 "Expr.lex"
+#line 92 "Expr.lex"
 {
     capture_token(yylval,wasp::REAL);
     return token::REAL;
@@ -1050,7 +1051,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 95 "Expr.lex"
+#line 96 "Expr.lex"
 {
     capture_token(yylval,wasp::LTE);
     return token::LTE;
@@ -1058,7 +1059,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 99 "Expr.lex"
+#line 100 "Expr.lex"
 {
     capture_token(yylval,wasp::GTE);
     return token::GTE;
@@ -1066,7 +1067,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 103 "Expr.lex"
+#line 104 "Expr.lex"
 {
     capture_token(yylval,wasp::LT);
     return token::LT;
@@ -1074,7 +1075,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 107 "Expr.lex"
+#line 108 "Expr.lex"
 {
     capture_token(yylval,wasp::GT);
     return token::GT;
@@ -1082,7 +1083,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 111 "Expr.lex"
+#line 112 "Expr.lex"
 {
     capture_token(yylval,wasp::EQ);
     return token::EQ;
@@ -1090,7 +1091,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 115 "Expr.lex"
+#line 116 "Expr.lex"
 {
     capture_token(yylval,wasp::BANG);
     return token::BANG;
@@ -1098,7 +1099,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 119 "Expr.lex"
+#line 120 "Expr.lex"
 {
     capture_token(yylval,wasp::ASSIGN);
     return token::ASSIGN;
@@ -1106,7 +1107,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 123 "Expr.lex"
+#line 124 "Expr.lex"
 {
     capture_token(yylval,wasp::NEQ);
     return token::NEQ;
@@ -1114,7 +1115,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 127 "Expr.lex"
+#line 128 "Expr.lex"
 {
     capture_token(yylval,wasp::WASP_AND);
     return token::AND;
@@ -1122,7 +1123,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 131 "Expr.lex"
+#line 132 "Expr.lex"
 {
     capture_token(yylval,wasp::WASP_OR);
     return token::OR;
@@ -1130,7 +1131,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 135 "Expr.lex"
+#line 136 "Expr.lex"
 {
     capture_token(yylval,wasp::LBRACKET);
     return token::LBRACKET;
@@ -1138,7 +1139,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 139 "Expr.lex"
+#line 140 "Expr.lex"
 {
     capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
@@ -1146,7 +1147,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 143 "Expr.lex"
+#line 144 "Expr.lex"
 {
     capture_token(yylval,wasp::EXPONENT);
     return token::EXPONENT;
@@ -1154,7 +1155,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 147 "Expr.lex"
+#line 148 "Expr.lex"
 {
     capture_token(yylval,wasp::MULTIPLY);
     return token::MULTIPLY;
@@ -1162,7 +1163,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 151 "Expr.lex"
+#line 152 "Expr.lex"
 {
   capture_token(yylval,wasp::DIVIDE);
   return token::DIVIDE;
@@ -1170,7 +1171,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 155 "Expr.lex"
+#line 156 "Expr.lex"
 {
   capture_token(yylval,wasp::PLUS);
   return token::PLUS;
@@ -1178,7 +1179,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 159 "Expr.lex"
+#line 160 "Expr.lex"
 {
     capture_token(yylval,wasp::MINUS);
     return token::MINUS;
@@ -1186,7 +1187,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 163 "Expr.lex"
+#line 164 "Expr.lex"
 {
   capture_token(yylval,wasp::LPAREN);
   return token::LPAREN;
@@ -1194,7 +1195,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 167 "Expr.lex"
+#line 168 "Expr.lex"
 {
  capture_token(yylval,wasp::RPAREN);
  return token::RPAREN;
@@ -1203,7 +1204,7 @@ YY_RULE_SETUP
 /* gobble up white-spaces */
 case 22:
 YY_RULE_SETUP
-#line 172 "Expr.lex"
+#line 173 "Expr.lex"
 {
     yylloc->step();
 }
@@ -1212,17 +1213,17 @@ YY_RULE_SETUP
 case 23:
 /* rule 23 can match eol */
 YY_RULE_SETUP
-#line 177 "Expr.lex"
+#line 178 "Expr.lex"
 {
     yylloc->lines(yyleng); yylloc->step();
     std::size_t offset = yyin->tellg();
     offset-=yyleng;
-    m_token_data.push_line(offset);
+    interpreter.push_line_offset(offset);
 }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 183 "Expr.lex"
+#line 184 "Expr.lex"
 {
     capture_token(yylval,wasp::STRING);
 //    yylval->stringVal = new std::string(yytext, yyleng);
@@ -1231,7 +1232,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 189 "Expr.lex"
+#line 190 "Expr.lex"
 {
 //    yylval->stringVal = new std::string(yytext,yyleng);
     capture_token(yylval,wasp::COMMENT);
@@ -1241,7 +1242,7 @@ YY_RULE_SETUP
 /* pass all other characters up to Expr*/
 case 26:
 YY_RULE_SETUP
-#line 196 "Expr.lex"
+#line 197 "Expr.lex"
 {
     return static_cast<token_type>(*yytext);
 }
@@ -1249,10 +1250,10 @@ YY_RULE_SETUP
 /*** END EXAMPLE - Change the Expr lexer rules above ***/
 case 27:
 YY_RULE_SETUP
-#line 202 "Expr.lex"
+#line 203 "Expr.lex"
 ECHO;
 	YY_BREAK
-#line 1256 "ExprLexer.cpp"
+#line 1257 "ExprLexer.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2145,18 +2146,18 @@ void Exprfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 202 "Expr.lex"
+#line 203 "Expr.lex"
 
 
 
 namespace wasp {
 
 ExprLexerImpl::ExprLexerImpl(
-                TokenPool<> & token_data,
+                ExprInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
     : ExprFlexLexer(in, out)
-    , m_token_data(token_data)
+    , interpreter(interpreter)
     , file_offset(0)
 {
 }
@@ -2179,8 +2180,8 @@ void ExprLexerImpl::capture_token(
         ,wasp::NODE type)
 {
     std::size_t offset = file_offset - yyleng;
-    yylval->node_index = m_token_data.size();
-    m_token_data.push(yytext,type,offset);
+    yylval->token_index = interpreter.token_count();
+    interpreter.push_token(yytext,type,offset);
 }
 } // end of namespace
 

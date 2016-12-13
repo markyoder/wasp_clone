@@ -19,7 +19,6 @@
 #endif
 
 #include "SONParser.hpp"
-#include "waspcore/TokenPool.h"
 #include "waspcore/wasp_node.h"
 namespace wasp {
 
@@ -34,7 +33,7 @@ public:
     /** Create a new scanner object. The streams arg_yyin and arg_yyout default
      * to cin and cout, but that assignment is only made when initializing in
      * yylex(). */
-    SONLexerImpl(TokenPool<> & token_data,
+    SONLexerImpl(class SONInterpreter& interpreter,
                  std::istream* arg_yyin = 0,
            std::ostream* arg_yyout = 0);
 
@@ -58,8 +57,8 @@ public:
 
     void capture_token(wasp::SONParser::semantic_type* yylval,
                        wasp::NODE type);
-    TokenPool<> & m_token_data;
 private:
+    class SONInterpreter & interpreter;
     std::size_t file_offset;
 };
 

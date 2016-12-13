@@ -188,14 +188,15 @@ bool Interpreter<node_type_size,node_index_size
         , std::size_t start_column)
 {
     m_stream_name = stream_name;
-    LEXER_IMPL lexer(m_tree_nodes.token_data(),&in);
+    INTERPRETER_IMPL & interp_impl = dynamic_cast<INTERPRETER_IMPL&>(*this);
+    LEXER_IMPL lexer(interp_impl,&in);
 //    lexer.set_debug(m_trace_lexing);
 
 //    lexer.set_debug(true);
     m_lexer = &lexer;
     m_start_line = start_line;
     m_start_column = start_column;
-    PARSER_IMPL parser(dynamic_cast<INTERPRETER_IMPL&>(*this));
+    PARSER_IMPL parser(interp_impl);
 //    parser.set_debug_level(true);
 
 

@@ -9,6 +9,7 @@
 #include <string>
 #include <sstream>
 #include "SONLexer.h"
+#include "SONInterpreter.h"
 
 /* import the parser's token type into a local typedef */
 typedef wasp::SONParser::token token;
@@ -249,7 +250,7 @@ COLON :
  /* gobble up end-of-lines */
 \n {
     yylloc->lines(yyleng); yylloc->step();
-    m_token_data.push_line(file_offset-yyleng);
+    interpreter.push_line_offset(file_offset-yyleng);
 }
 
 <*>{QSTRING} {
@@ -287,11 +288,11 @@ COLON :
 namespace wasp {
 
 SONLexerImpl::SONLexerImpl(
-                TokenPool<> & token_data,
+                SONInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
     : SONFlexLexer(in, out)
-    , m_token_data(token_data)
+    , interpreter(interpreter)
     , file_offset(0)
 {
 }
@@ -314,8 +315,8 @@ void SONLexerImpl::capture_token(
         ,wasp::NODE type)
 {
     std::size_t offset = file_offset - yyleng;
-    yylval->node_index = m_token_data.size();
-    m_token_data.push(yytext,type,offset);
+    yylval->token_index = interpreter.token_count();
+    interpreter.push_token(yytext,type,offset);
 }
 }
 

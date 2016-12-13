@@ -9,6 +9,7 @@
 #include <string>
 #include <sstream>
 #include "GetPotLexer.h"
+#include "GetPotInterpreter.h"
 
 /* import the parser's token type into a local typedef */
 typedef wasp::GetPotParser::token token;
@@ -201,7 +202,7 @@ DOT_SLASH \.\/
  /* gobble up end-of-lines */
 \n {
     yylloc->lines(yyleng); yylloc->step();
-    m_token_data.push_line(file_offset-yyleng);
+    interpreter.push_line_offset(file_offset-yyleng);
 }
 {COMMENT} {
     capture_token(yylval,wasp::COMMENT);
@@ -233,11 +234,11 @@ DOT_SLASH \.\/
 namespace wasp {
 
 GetPotLexerImpl::GetPotLexerImpl(
-                TokenPool<> & token_data,
+                GetPotInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
     : GetPotFlexLexer(in, out)
-    , m_token_data(token_data)
+    , interpreter(interpreter)
     , file_offset(0)
 {
 }
@@ -260,8 +261,8 @@ void GetPotLexerImpl::capture_token(
         ,wasp::NODE type)
 {
     std::size_t offset = file_offset - yyleng;
-    yylval->node_index = m_token_data.size();
-    m_token_data.push(yytext,type,offset);
+    yylval->token_index = interpreter.token_count();
+    interpreter.push_token(yytext,type,offset);
 }
 } // end of namespace
 

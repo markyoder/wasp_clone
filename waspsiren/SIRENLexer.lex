@@ -9,6 +9,7 @@
 #include <string>
 #include <sstream>
 #include "SIRENLexer.h"
+#include "SIRENInterpreter.h"
 
 /* import the parser's token type into a local typedef */
 typedef wasp::SIRENParser::token token;
@@ -210,7 +211,7 @@ COLON :
  /* gobble up end-of-lines */
 \n {
     yylloc->lines(yyleng); yylloc->step();
-    m_token_data.push_line(file_offset-yyleng);
+    interpreter.push_line_offset(file_offset-yyleng);
 }
 
 <*>{QSTRING} {
@@ -237,11 +238,11 @@ COLON :
 namespace wasp {
 
 SIRENLexerImpl::SIRENLexerImpl(
-                TokenPool<> & token_data,
+                SIRENInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
     : SIRENFlexLexer(in, out)
-    , m_token_data(token_data)
+    , interpreter(interpreter)
     , file_offset(0)
 {
 }
@@ -264,8 +265,8 @@ void SIRENLexerImpl::capture_token(
         ,wasp::NODE type)
 {
     std::size_t offset = file_offset - yyleng;
-    yylval->node_index = m_token_data.size();
-    m_token_data.push(yytext,type,offset);
+    yylval->token_index = interpreter.token_count();
+    interpreter.push_token(yytext,type,offset);
 }
 }
 

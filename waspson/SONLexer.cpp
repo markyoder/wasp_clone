@@ -2053,6 +2053,7 @@ static yyconst yy_state_type yy_NUL_trans[387] =
 #include <string>
 #include <sstream>
 #include "SONLexer.h"
+#include "SONInterpreter.h"
 
 /* import the parser's token type into a local typedef */
 typedef wasp::SONParser::token token;
@@ -2085,9 +2086,9 @@ typedef wasp::SONParser::token_type token_type;
 */
 /* The following paragraph suffices to track locations accurately. Each time
 * yylex is invoked, the begin position is moved onto the end position. */
-#line 99 "SONLexer.lex"
+#line 100 "SONLexer.lex"
 #define YY_USER_ACTION  yylloc->columns(yyleng); file_offset+=yyleng;
-#line 2091 "SONLexer.cpp"
+#line 2092 "SONLexer.cpp"
 
 #define INITIAL 0
 #define subtraction 1
@@ -2192,7 +2193,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 102 "SONLexer.lex"
+#line 103 "SONLexer.lex"
 
 
  /* code to place at the beginning of yylex() */
@@ -2202,7 +2203,7 @@ YY_DECL
 
  /*** BEGIN EXAMPLE - Change the wasp lexer rules below ***/
 
-#line 2206 "SONLexer.cpp"
+#line 2207 "SONLexer.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -2286,7 +2287,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 111 "SONLexer.lex"
+#line 112 "SONLexer.lex"
 {
     yy_push_state(execution_unit); // enter the 'unit' of execution
         capture_token(yylval,wasp::EXECUTION_UNIT_START);
@@ -2295,7 +2296,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 116 "SONLexer.lex"
+#line 117 "SONLexer.lex"
 {
     yy_pop_state(); // pop the execution state
     capture_token(yylval,wasp::EXECUTION_UNIT_END);
@@ -2304,7 +2305,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 121 "SONLexer.lex"
+#line 122 "SONLexer.lex"
 { // capture the subtraction, return the literal '-'
     yy_pop_state();
     capture_token(yylval,wasp::MINUS);
@@ -2313,7 +2314,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 126 "SONLexer.lex"
+#line 127 "SONLexer.lex"
 {
     capture_token(yylval,wasp::FILL_EXPR);
     return token::FILLER;
@@ -2321,7 +2322,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 130 "SONLexer.lex"
+#line 131 "SONLexer.lex"
 {
     capture_token(yylval,wasp::WASP_COMMA);
     return token::COMMA;
@@ -2329,7 +2330,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 134 "SONLexer.lex"
+#line 135 "SONLexer.lex"
 {
     capture_token(yylval,wasp::COLON);
     return token::COLON;
@@ -2337,7 +2338,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 138 "SONLexer.lex"
+#line 139 "SONLexer.lex"
 {
     capture_token(yylval,wasp::LTE);
     return token::LTE;
@@ -2345,7 +2346,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 142 "SONLexer.lex"
+#line 143 "SONLexer.lex"
 {
     capture_token(yylval,wasp::GTE);
     return token::GTE;
@@ -2353,7 +2354,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 146 "SONLexer.lex"
+#line 147 "SONLexer.lex"
 {
     capture_token(yylval,wasp::LT);
     return token::LT;
@@ -2361,7 +2362,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 150 "SONLexer.lex"
+#line 151 "SONLexer.lex"
 {
     capture_token(yylval,wasp::GT);
     return token::GT;
@@ -2369,7 +2370,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 154 "SONLexer.lex"
+#line 155 "SONLexer.lex"
 {
     capture_token(yylval,wasp::EQ);
     return token::EQ;
@@ -2377,7 +2378,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 158 "SONLexer.lex"
+#line 159 "SONLexer.lex"
 {
     capture_token(yylval,wasp::BANG);
     return token::BANG;
@@ -2385,7 +2386,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 162 "SONLexer.lex"
+#line 163 "SONLexer.lex"
 {
     capture_token(yylval,wasp::ASSIGN);
     return token::ASSIGN;
@@ -2393,7 +2394,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 166 "SONLexer.lex"
+#line 167 "SONLexer.lex"
 {
     capture_token(yylval,wasp::NEQ);
     return token::NEQ;
@@ -2401,7 +2402,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 170 "SONLexer.lex"
+#line 171 "SONLexer.lex"
 {
     capture_token(yylval,wasp::WASP_AND);
     return token::AND;
@@ -2409,7 +2410,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 174 "SONLexer.lex"
+#line 175 "SONLexer.lex"
 {
     capture_token(yylval,wasp::WASP_OR);
     return token::OR;
@@ -2417,7 +2418,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 178 "SONLexer.lex"
+#line 179 "SONLexer.lex"
 {
     capture_token(yylval,wasp::LBRACKET);
     return token::LBRACKET;
@@ -2425,7 +2426,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 182 "SONLexer.lex"
+#line 183 "SONLexer.lex"
 {
     capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
@@ -2433,7 +2434,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 186 "SONLexer.lex"
+#line 187 "SONLexer.lex"
 {
     capture_token(yylval,wasp::LBRACE);
     return token::LBRACE;
@@ -2441,7 +2442,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 190 "SONLexer.lex"
+#line 191 "SONLexer.lex"
 {
     capture_token(yylval,wasp::RBRACE);
     return token::RBRACE;
@@ -2449,7 +2450,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 194 "SONLexer.lex"
+#line 195 "SONLexer.lex"
 {
     capture_token(yylval,wasp::EXPONENT);
     return token::EXPONENT;
@@ -2457,7 +2458,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 198 "SONLexer.lex"
+#line 199 "SONLexer.lex"
 {
     capture_token(yylval,wasp::MULTIPLY);
     return token::MULTIPLY;
@@ -2465,7 +2466,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 202 "SONLexer.lex"
+#line 203 "SONLexer.lex"
 {
   capture_token(yylval,wasp::DIVIDE);
   return token::DIVIDE;
@@ -2473,7 +2474,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 206 "SONLexer.lex"
+#line 207 "SONLexer.lex"
 {
   capture_token(yylval,wasp::PLUS);
   return token::PLUS;
@@ -2481,7 +2482,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 210 "SONLexer.lex"
+#line 211 "SONLexer.lex"
 {
     capture_token(yylval,wasp::MINUS);
     return token::MINUS;
@@ -2489,7 +2490,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 214 "SONLexer.lex"
+#line 215 "SONLexer.lex"
 {
   capture_token(yylval,wasp::LPAREN);
   return token::LPAREN;
@@ -2497,7 +2498,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 218 "SONLexer.lex"
+#line 219 "SONLexer.lex"
 {
  capture_token(yylval,wasp::RPAREN);
  return token::RPAREN;
@@ -2509,7 +2510,7 @@ case 28:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 223 "SONLexer.lex"
+#line 224 "SONLexer.lex"
 {
     yy_push_state(subtraction); // if we have a minus sign immediately following, subtraction is occurring
     capture_token(yylval,wasp::INT);
@@ -2518,7 +2519,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 228 "SONLexer.lex"
+#line 229 "SONLexer.lex"
 {
     capture_token(yylval,wasp::INT);
     return token::INTEGER;
@@ -2530,7 +2531,7 @@ case 30:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 233 "SONLexer.lex"
+#line 234 "SONLexer.lex"
 {
    // if we have a minus sign immediately following, subtraction is occurring
     yy_push_state(subtraction);
@@ -2540,7 +2541,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 240 "SONLexer.lex"
+#line 241 "SONLexer.lex"
 {
     capture_token(yylval,wasp::REAL);
     return token::DOUBLE;
@@ -2549,7 +2550,7 @@ YY_RULE_SETUP
 /* gobble up white-spaces */
 case 32:
 YY_RULE_SETUP
-#line 245 "SONLexer.lex"
+#line 246 "SONLexer.lex"
 {
     yylloc->step();
 }
@@ -2558,15 +2559,15 @@ YY_RULE_SETUP
 case 33:
 /* rule 33 can match eol */
 YY_RULE_SETUP
-#line 250 "SONLexer.lex"
+#line 251 "SONLexer.lex"
 {
     yylloc->lines(yyleng); yylloc->step();
-    m_token_data.push_line(file_offset-yyleng);
+    interpreter.push_line_offset(file_offset-yyleng);
 }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 255 "SONLexer.lex"
+#line 256 "SONLexer.lex"
 {
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
@@ -2574,7 +2575,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 259 "SONLexer.lex"
+#line 260 "SONLexer.lex"
 {
     capture_token(yylval,wasp::WASP_TRUE);
     return token::TOKEN_TRUE;
@@ -2582,7 +2583,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 263 "SONLexer.lex"
+#line 264 "SONLexer.lex"
 {
     capture_token(yylval,wasp::WASP_FALSE);
     return token::TOKEN_FALSE;
@@ -2590,7 +2591,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 268 "SONLexer.lex"
+#line 269 "SONLexer.lex"
 {
     capture_token(yylval,wasp::STRING);
     return token::STRING;
@@ -2598,7 +2599,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 272 "SONLexer.lex"
+#line 273 "SONLexer.lex"
 {
     capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
@@ -2608,7 +2609,7 @@ YY_RULE_SETUP
   * NOTE: references do not support whitespace */
 case 39:
 YY_RULE_SETUP
-#line 279 "SONLexer.lex"
+#line 280 "SONLexer.lex"
 {
     return static_cast<token_type>(*yytext);
 }
@@ -2616,10 +2617,10 @@ YY_RULE_SETUP
 /*** END EXAMPLE - Change the wasp lexer rules above ***/
 case 40:
 YY_RULE_SETUP
-#line 285 "SONLexer.lex"
+#line 286 "SONLexer.lex"
 ECHO;
 	YY_BREAK
-#line 2623 "SONLexer.cpp"
+#line 2624 "SONLexer.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(subtraction):
 case YY_STATE_EOF(execution_unit):
@@ -3517,18 +3518,18 @@ void SONfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 285 "SONLexer.lex"
+#line 286 "SONLexer.lex"
 
 
 
 namespace wasp {
 
 SONLexerImpl::SONLexerImpl(
-                TokenPool<> & token_data,
+                SONInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
     : SONFlexLexer(in, out)
-    , m_token_data(token_data)
+    , interpreter(interpreter)
     , file_offset(0)
 {
 }
@@ -3551,8 +3552,8 @@ void SONLexerImpl::capture_token(
         ,wasp::NODE type)
 {
     std::size_t offset = file_offset - yyleng;
-    yylval->node_index = m_token_data.size();
-    m_token_data.push(yytext,type,offset);
+    yylval->token_index = interpreter.token_count();
+    interpreter.push_token(yytext,type,offset);
 }
 }
 

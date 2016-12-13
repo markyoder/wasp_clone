@@ -20,7 +20,6 @@
 #endif
 
 #include "GetPotParser.hpp"
-#include "waspcore/TokenPool.h"
 #include "waspcore/wasp_node.h"
 namespace wasp {
 
@@ -37,7 +36,7 @@ public:
      * yylex().
      * The token pool is the storage class
     */
-    GetPotLexerImpl(TokenPool<> & token_data,
+    GetPotLexerImpl(class GetPotInterpreter & interpreter,
             std::istream* arg_yyin = 0,
            std::ostream* arg_yyout = 0);
 
@@ -62,8 +61,8 @@ public:
     void capture_token(wasp::GetPotParser::semantic_type* yylval,
                        wasp::NODE type);
 
-    TokenPool<> & m_token_data;
 private:
+    class GetPotInterpreter & interpreter;
     std::size_t file_offset;
 
 };
