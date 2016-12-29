@@ -1,4 +1,10 @@
+INCLUDE(WaspAddCompilerFlags)
+
 TRIBITS_SUBPACKAGE(getpot)
+
+WASP_ADD_CXX_FLAGS(
+  "-Wno-deprecated-register"
+)
 
 
 SET(SOURCE

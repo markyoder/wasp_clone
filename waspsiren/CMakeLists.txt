@@ -1,4 +1,10 @@
+INCLUDE(WaspAddCompilerFlags)
+
 TRIBITS_SUBPACKAGE(siren)
+
+WASP_ADD_CXX_FLAGS(
+  "-Wno-deprecated-register"
+)
 
 SET(SOURCE
 SIRENLexer.cpp
@@ -6,7 +12,7 @@ SIRENParser.cpp
 SIRENResultSet.cpp
 SIRENInterpreter.cpp
 )
- 
+
 # C/C++ headers
 FILE(GLOB HEADERS *.h *.hh *.hpp *.lex *.bison
     "${CMAKE_CURRENT_BINARY_DIR}/*.h"
