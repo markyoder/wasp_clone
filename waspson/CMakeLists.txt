@@ -8,6 +8,8 @@
 ## CMAKE for SON
 ##---------------------------------------------------------------------------##
 
+INCLUDE(WaspAddCompilerFlags)
+
 
 TRIBITS_SUBPACKAGE(son)
 SET_DEFAULT(DBC 0)
@@ -20,6 +22,10 @@ TRIBITS_CONFIGURE_FILE(son_config.h)
 ##---------------------------------------------------------------------------##
 ## HEADER AND SOURCE FILES
 ##---------------------------------------------------------------------------##
+
+WASP_ADD_CXX_FLAGS(
+  "-Wno-deprecated-register"
+)
 
 # C/C++ headers
 FILE(GLOB HEADERS *.h *.hh *.hpp *.lex *.bison

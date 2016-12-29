@@ -1,5 +1,9 @@
+INCLUDE(WaspAddCompilerFlags)
 TRIBITS_SUBPACKAGE(expr)
 
+WASP_ADD_CXX_FLAGS(
+  "-Wno-deprecated-register"
+)
 
 SET(SOURCE
 ExprLexer.cpp
