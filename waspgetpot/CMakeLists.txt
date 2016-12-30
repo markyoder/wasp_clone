@@ -6,6 +6,13 @@ WASP_ADD_CXX_FLAGS(
   "-Wno-deprecated-register"
 )
 
+WASP_FLEX_AND_BISON(
+  FLEX_FILE GetPot.lex
+  FLEX_OPTIONS -Ca -v
+  SED_OPTIONS 's/\#include <FlexLexer.h>/\#include \"waspcore\/FlexLexer.h\"/' GetPotLexer.cpp
+  BISON_FILE GetPot.bison
+  BISON_OPTIONS --report=state --report=lookahead
+)
 
 SET(SOURCE
 GetPotLexer.cpp
