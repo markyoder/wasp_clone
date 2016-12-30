@@ -32,11 +32,10 @@ namespace wasp
 /**
  * @brief The HIVE class contain the Hierachical Input Validation Engine algorithms
  * HIVE requires the following APIs be followed.
- * ====Required InputAdapter API====
+ *
+ * ==== Required InputAdapter API====
  * TAdapter TAdapter::parent()const - acquire parent tree node
  * bool TAdapter::is_null()const - indicates if the node is null (not backed by document)
- * TAdapter TAdapter::id_child()const - acquire the child tree node deemed the current node's identifier
- * std::string TAdapter::id()const - acquire the id as a string
  * std::string TAdapter::path()const - acquire the path of the node in the tree
  * std::string TAdapter::name()const - acquire the name of the node
  * size_t TAdapter::line()const - acquire the line on which the node occurrs in the document
@@ -54,6 +53,11 @@ namespace wasp
  * size_t TAdapter::non_decorative_children_count()const - acquires the count of the non decorative children
  * TAdaper& TAdapter::operator=(const TAdapter & orig) - node's assignment operator
  * bool TAdapter::operator==(const TAdapter & orig) - node's equality operator
+ *
+ * ==== Required SchemaAdapter API ====
+ *  !! All the above and the following !!
+ * std::string TAdapter::id()const - acquire the id as a string
+ * TAdapter TAdapter::id_child()const - acquire the child tree node deemed the current node's identifier
  */
 class HIVE{
 
