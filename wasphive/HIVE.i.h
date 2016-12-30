@@ -43,7 +43,7 @@ bool HIVE::validate(SchemaAdapter & schema_node, InputAdapter & input_node, std:
         if (schSeqNames.find(tmpNode.name()) == schSeqNames.end()) continue;
 
         pass &= traverse_schema(
-                schema_node->getFirstNonDecChildByName(tmpNode.name()),
+                schema_node.first_non_decorative_child_by_name(tmpNode.name()),
                 &tmpNode, errors);
     }
 
@@ -591,7 +591,7 @@ bool HIVE::validateValEnums(SchemaAdapter & schema_node, InputAdapter & input_no
                    }
                    tmpschema_node = tmpschema_node.getFirstNonDecChildByName(refName);
 
-                   if (tmpschema_node == NULL){
+                   if ( tmpschema_node.is_null() ){
                        errors.push_back(Error::BadEnumReference(refName,
                                                                 schema_node.non_decorative_children()[0].line(),
                                                                 schema_node.non_decorative_children()[0].column()));
@@ -1237,8 +1237,8 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 
 //   if (ruleId != "" && ruleId != "Abs" && ruleId != "BeforePeriod"){
 //       errors.push_back(Error::BadOption(schema_node.name(), ruleId,
-//                                         schema_node->getIdNode().line(),
-//                                         schema_node->getIdNode().column(),
+//                                         schema_node.id_node().line(),
+//                                         schema_node.id_node().column(),
 //                                         "Abs BeforePeriod"));
 //       return false;
 //   }
@@ -1295,7 +1295,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 //               while(tmpschema_node.has_parent()){
 //                   tmpschema_node = tmpschema_node.parent();
 //               }
-//               tmpschema_node = tmpschema_node->getFirstNonDecChildByName(refName);
+//               tmpschema_node = tmpschema_node.first_non_decorative_child_by_name(refName);
 
 //               if (tmpschema_node == NULL){
 //                   errors.push_back(Error::BadEnumReference(refName,
@@ -1596,8 +1596,8 @@ bool HIVE::validateNotExistsIn(SchemaAdapter & schema_node, InputAdapter & input
    // check the optional option supplied to this rule
    if (ruleId != "" && ruleId != "Abs" && ruleId != "Zero" && ruleId != "AbsZero"){
        errors.push_back(Error::BadOption(schema_node.name(), ruleId,
-                                         schema_node->getIdNode().line(),
-                                         schema_node->getIdNode().column(),
+                                         schema_node.id_node().line(),
+                                         schema_node.id_node().column(),
                                          "Abs Zero AbsZero"));
        return false;
    }
@@ -2609,8 +2609,8 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
    // check the optional option supplied to this rule
    if (ruleId != "" && ruleId != "Abs" && ruleId != "Zero" && ruleId != "AbsZero"){
        errors.push_back(Error::BadOption(schema_node.name(), ruleId,
-                                         schema_node->getIdNode().line(),
-                                         schema_node->getIdNode().column(),
+                                         schema_node.id_node().line(),
+                                         schema_node.id_node().column(),
                                          "Abs Zero AbsZero"));
        return false;
    }

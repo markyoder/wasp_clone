@@ -32,29 +32,28 @@ namespace wasp
 /**
  * @brief The HIVE class contain the Hierachical Input Validation Engine algorithms
  * HIVE requires the following APIs be followed.
- * ====Required Tree Adapter API====
- *  TODO - revise these with WASP signitures
- * TAdapter TAdapter::parent()const
- * bool TAdapter::is_null()const
- * TAdapter TAdapter::id_child()const
- * std::string TAdapter::id()const
- * std::string TAdapter::path()const
- * std::string TAdapter::name()const
- * size_t TAdapter::line()const
- * size_t TAdapter::column()const
+ * ====Required InputAdapter API====
+ * TAdapter TAdapter::parent()const - acquire parent tree node
+ * bool TAdapter::is_null()const - indicates if the node is null (not backed by document)
+ * TAdapter TAdapter::id_child()const - acquire the child tree node deemed the current node's identifier
+ * std::string TAdapter::id()const - acquire the id as a string
+ * std::string TAdapter::path()const - acquire the path of the node in the tree
+ * std::string TAdapter::name()const - acquire the name of the node
+ * size_t TAdapter::line()const - acquire the line on which the node occurrs in the document
+ * size_t TAdapter::column()const - acquire the column on which the node occurrs in the document
  * std::vector<TAdapter> TAdapter::child_by_name(const std::string & name, size_t limit)const
- * int TAdapter::to_int()const
- * double TAdapter::to_double()const
- * std::string TAdapter::to_string()const
- * std::string TAdapter::last_as_string()const
- * size_t TAdapter::child_count()const
- * size_t TAdapter::child_count_by_name(const std::string& name)const
- * std::string data()const;
- * std::vector<TAdapter> TAdapter::non_decorative_children()const
- * size_t TAdapter::non_decorative_children_count()const
- * TAdaper& TAdapter::operator=(const TAdapter & orig)
- * bool TAdapter::operator=(const TAdapter & orig)
- * ====Required
+ * int TAdapter::to_int()const - converts the node's data to an integer
+ * double TAdapter::to_double()const - converts the node's data to a double
+ * std::string TAdapter::to_string()const - converts the node's data to a string
+ * std::string TAdapter::last_as_string()const - acquires the last, non-decorative child (or current if childless) node's value as a string
+ * size_t TAdapter::child_count()const - the child node count for the current node
+ * size_t TAdapter::child_count_by_name(const std::string& name)const - the child node count where the children have the given name
+ * std::string data()const - the raw data of the node
+ * std::vector<TAdapter> TAdapter::non_decorative_children()const - acquires a vector of all children that are non-decorative
+ * TAdapter TAdaper::first_non_decorative_child_by_name(const std::string & name) - acquires the first non decorative child node with the given name
+ * size_t TAdapter::non_decorative_children_count()const - acquires the count of the non decorative children
+ * TAdaper& TAdapter::operator=(const TAdapter & orig) - node's assignment operator
+ * bool TAdapter::operator==(const TAdapter & orig) - node's equality operator
  */
 class HIVE{
 
