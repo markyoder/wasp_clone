@@ -76,8 +76,6 @@ configure_windows:
   script:
    - where git
    - git --version
-   - where qmake
-   - qmake -version
    - where cmake
    - cmake --version
    - git clone https://github.com/lefebvre/TriBITS.git TriBITS
