@@ -1,0 +1,112 @@
+.stage_artifacts: &stage_artifacts
+  artifacts:
+    paths:
+      - build/
+      - TriBITS/
+      - googletest/
+      - testframework/
+    expire_in: 1 day
+.windows_before_script: &windows_before_script
+  before_script:
+    - set PATH=%PATH%;c:\vendors\mingw-w64\x86_64-4.8.5-posix-seh-rt_v4-rev0\mingw64\bin;c:\vendors\git\2.11\cmd;c:\vendors\cmake\3.6.3\bin;
+stages:
+- configure
+- build
+- test
+- coverage
+
+configure_linux:
+  stage: configure
+  tags:
+    - linux
+  <<: *stage_artifacts
+  script:
+    - which git
+    - git --version
+    - git clone https://github.com/lefebvre/TriBITS.git TriBITS
+    - git clone https://github.com/lefebvre/testframework testframework
+    - git clone https://github.com/lefebvre/googletest googletest
+    - which python
+    - python --version
+    - python TriBITS/tribits/python_utils/gitdist.py pull
+    - mkdir build
+    - cd build
+    - module load cmake
+    - which cmake
+    - cmake -DBUILDNAME=$(uname -s)-GCC-4.8.5-Debug -DCMAKE_BUILD_TYPE=DEBUG -Dwasp_ENABLE_COVERAGE_TESTING=ON -Dwasp_ENABLE_TESTS=ON -Dwasp_ENABLE_ALL_PACKAGES=ON ..
+
+build_linux:
+  stage: build
+  tags:
+    - linux
+  <<: *stage_artifacts
+  script:
+    - cd build
+    - ctest -D ExperimentalStart -D ExperimentalBuild -D ExperimentalSubmit
+  dependencies:
+    - configure_linux
+
+test_linux:
+  stage: test
+  tags:
+    - linux
+  <<: *stage_artifacts
+  script:
+    - cd build
+    - ctest -D ExperimentalTest -D ExperimentalSubmit
+  dependencies:
+    - build_linux
+
+.coverage_linux:
+  stage: coverage
+  tags:
+    - linux
+  script:
+    - cd build
+    - ctest -D ExperimentalCoverage -D ExperimentalSubmit
+  dependencies:
+    - test_linux
+
+configure_windows:
+  stage: configure
+  tags:
+    - windows
+  <<: *stage_artifacts
+  <<: *windows_before_script
+  script:
+   - where git
+   - git --version
+   - where qmake
+   - qmake -version
+   - where cmake
+   - cmake --version
+   - git clone https://github.com/lefebvre/TriBITS.git TriBITS
+   - git clone https://github.com/lefebvre/testframework testframework
+   - git clone https://github.com/lefebvre/googletest googletest
+   - mkdir build
+   - cd build
+   - cmake -DBUILDNAME=Windows-MinGW-GCC-4.8.5-Debug -DCMAKE_BUILD_TYPE=DEBUG -Dradix_ENABLE_TESTS=ON -Dwasp_ENABLE_ALL_PACKAGES=ON -G "MinGW Makefiles" ..
+
+build_windows:
+  stage: build
+  tags:
+    - windows
+  <<: *stage_artifacts
+  <<: *windows_before_script
+  script:
+    - cd build/
+    - ctest -D ExperimentalStart -D ExperimentalBuild -D ExperimentalSubmit
+  dependencies:
+    - configure_windows
+
+test_windows:
+  stage: test
+  tags:
+   - windows
+  <<: *stage_artifacts
+  <<: *windows_before_script
+  script:
+    - cd build
+    - ctest -D ExperimentalTest -D ExperimentalSubmit
+  dependencies:
+    - build_windows
