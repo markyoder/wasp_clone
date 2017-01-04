@@ -1,0 +1,4 @@
+Validation Error: Invalid Schema Rule: Bad IncreaseOver Option "Neither" at line:20 column:39 - Expected [ Mono Strict ]
+line:20 column:5 - Validation Error: invalidtest children "inside" are not strictly increasing at line:29 column:13
+line:34 column:9 - Validation Error: array children "value" are not monotonically increasing at line:34 column:36
+line:34 column:9 - Validation Error: array children "value" are not monotonically increasing at line:34 column:53

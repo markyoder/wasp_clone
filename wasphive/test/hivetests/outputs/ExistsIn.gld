@@ -1,0 +1,64 @@
+Validation Error: Invalid Schema Rule: 50" start of range is greater than or equal to "25" end of range at line:128 column:36
+Validation Error: Invalid Schema Rule: Bad ExistsIn Option "BadFlag" at line:116 column:26 - Expected [ Abs BeforePeriod MooseDecl ]
+Validation Error: Invalid Schema Rule: Range does not have exactly two values at line:134 column:28
+Validation Error: Invalid Schema Rule: fifty range value not a valid number at line:122 column:39
+line:65 column:16 - Validation Error: useone value "seven" does not exist in set: [ ../../defineone/value
+        ../../definetwo/value
+        ../../definethree/value ]
+line:66 column:16 - Validation Error: useone value "japan" does not exist in set: [ ../../defineone/value
+        ../../definetwo/value
+        ../../definethree/value ]
+line:67 column:24 - Validation Error: useone value "spelling" does not exist in set: [ ../../defineone/value
+        ../../definetwo/value
+        ../../definethree/value ]
+line:67 column:33 - Validation Error: useone value "yellow" does not exist in set: [ ../../defineone/value
+        ../../definetwo/value
+        ../../definethree/value ]
+line:67 column:53 - Validation Error: useone value "2" does not exist in set: [ ../../defineone/value
+        ../../definetwo/value
+        ../../definethree/value ]
+line:69 column:23 - Validation Error: usetwo value "honda" does not exist in set: [ ../../defineone/value
+        ../../definetwo/value
+        ../../definethree/value ]
+line:69 column:33 - Validation Error: usetwo value "-1" does not exist in set: [ ../../defineone/value
+        ../../definetwo/value
+        ../../definethree/value ]
+line:70 column:16 - Validation Error: usetwo value "-3" does not exist in set: [ ../../defineone/value
+        ../../definetwo/value
+        ../../definethree/value ]
+line:71 column:16 - Validation Error: usetwo value "purple" does not exist in set: [ ../../defineone/value
+        ../../definetwo/value
+        ../../definethree/value ]
+line:73 column:18 - Validation Error: usethree value "red" does not exist in set: [ ../../definetwo/value ]
+line:74 column:18 - Validation Error: usethree value "three" does not exist in set: [ ../../definetwo/value ]
+line:75 column:26 - Validation Error: usethree value "2.3" does not exist in set: [ ../../definetwo/value ]
+line:75 column:31 - Validation Error: usethree value "blue" does not exist in set: [ ../../definetwo/value ]
+line:76 column:18 - Validation Error: usethree value "lunch" does not exist in set: [ ../../definetwo/value ]
+line:79 column:33 - Validation Error: usefour value "spain" does not exist in set: [ ../../defineone/value
+        ../../definethree/value ]
+line:79 column:46 - Validation Error: usefour value "fries" does not exist in set: [ ../../defineone/value
+        ../../definethree/value ]
+line:80 column:17 - Validation Error: usefour value "orange" does not exist in set: [ ../../defineone/value
+        ../../definethree/value ]
+line:81 column:23 - Validation Error: usefour value "-800" does not exist in set: [ ../../defineone/value
+        ../../definethree/value ]
+line:82 column:17 - Validation Error: usefour value "-900" does not exist in set: [ ../../defineone/value
+        ../../definethree/value ]
+line:88 column:19 - Validation Error: usefive value "600" does not exist in set: [ ../../definetwo/value
+        ../../definethree/value
+         ]
+line:88 column:23 - Validation Error: usefive value "2" does not exist in set: [ ../../definetwo/value
+        ../../definethree/value
+         ]
+line:88 column:29 - Validation Error: usefive value "five" does not exist in set: [ ../../definetwo/value
+        ../../definethree/value
+         ]
+line:89 column:17 - Validation Error: usefive value "200" does not exist in set: [ ../../definetwo/value
+        ../../definethree/value
+         ]
+line:90 column:19 - Validation Error: usefive value "-500" does not exist in set: [ ../../definetwo/value
+        ../../definethree/value
+         ]
+line:90 column:24 - Validation Error: usefive value "-3" does not exist in set: [ ../../definetwo/value
+        ../../definethree/value
+         ]

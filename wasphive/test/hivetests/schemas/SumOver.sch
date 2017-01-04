@@ -1,0 +1,26 @@
+sumover{
+    validtest{
+        container{
+            inside{
+                SumOver("../..")=107.6
+            }
+        }
+        array{
+            value{
+                SumOver("..")=209.4
+            }
+        }
+    }
+    invalidtest{
+        container{
+            inside{
+                SumOver("../..")=107.6
+            }
+        }
+        array{
+            value{
+                SumOver("..")=209.4
+            }
+        }
+    }
+}

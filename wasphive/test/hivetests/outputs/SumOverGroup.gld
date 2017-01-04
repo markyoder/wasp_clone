@@ -1,0 +1,8 @@
+Validation Error: Invalid Schema Rule: SumOverGroup missing ComparePath at line:34 column:17
+Validation Error: Invalid Schema Rule: SumOverGroup missing GroupDivide at line:39 column:17
+Validation Error: Invalid Schema Rule: SumOverGroup missing GroupSum at line:44 column:17
+line:1 column:1 - Validation Error: sumovergroup children "value" sum to 408.5 for 1320 group - instead of the required sum of 418.8
+line:1 column:1 - Validation Error: sumovergroup children "value" sum to 439.2 for 120 group - instead of the required sum of 418.8
+line:61 column:5 - Validation Error: invalidtest children "inside" sum to 97.6 for 72000 group - instead of the required sum of 107.6
+line:61 column:5 - Validation Error: invalidtest children "inside" sum to 117.3 for 92000 group - instead of the required sum of 107.6
+line:61 column:5 - Validation Error: invalidtest children "inside" sum to 197.6 for 82000 group - instead of the required sum of 107.6

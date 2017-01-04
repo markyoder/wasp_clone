@@ -1,0 +1,5 @@
+line:1 column:1 - Validation Error: maxoccurs has 3 "invalidtest" occurrences - when there should be a maximum occurrence of 1
+line:35 column:5 - Validation Error: invalidtest has 11 "valueone" occurrences - when there should be a maximum occurrence of 10
+line:35 column:5 - Validation Error: invalidtest has 16 "valuetwo" occurrences - when there should be a maximum occurrence of "15" from "../control"
+line:70 column:5 - Validation Error: invalidtest has 14 "valueone" occurrences - when there should be a maximum occurrence of 10
+line:86 column:5 - Validation Error: invalidtest has 4 "valuetwo" occurrences - when there should be a maximum occurrence of "2" from "../control"

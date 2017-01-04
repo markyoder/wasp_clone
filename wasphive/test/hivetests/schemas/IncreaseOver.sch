@@ -1,0 +1,29 @@
+increaseover{
+    validtest{
+        container{
+            inside{
+                IncreaseOver("../..")=Strict
+            }
+        }
+        array{
+            value{
+                IncreaseOver("..")=Mono
+            }
+        }
+    }
+    invalidtest{
+        container{
+            inside{
+                IncreaseOver("../..")=Strict
+            }
+            badrule{
+                IncreaseOver("../..")=Neither
+            }
+        }
+        array{
+            value{
+                IncreaseOver("..")=Mono
+            }
+        }
+    }
+}

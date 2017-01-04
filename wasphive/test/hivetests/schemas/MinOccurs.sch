@@ -1,0 +1,27 @@
+minoccurs{
+    validtest{
+        MinOccurs=1
+        control{
+        }
+        valueone{
+            MinOccurs=10
+        }
+        valuetwo{
+            MinOccurs="../control"
+        }
+    }
+    invalidtest{
+        MinOccurs=3
+        control{
+        }
+        valueone{
+            MinOccurs=10
+        }
+        valuetwo{
+            MinOccurs="../control"
+        }
+        valuethree{
+            MinOccurs=-5
+        }
+    }
+}

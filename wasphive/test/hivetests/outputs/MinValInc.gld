@@ -1,0 +1,16 @@
+line:18 column:9 - Validation Error: valueone value "58.6" is less than the allowed minimum inclusive value of 58.7
+line:19 column:23 - Validation Error: valuetwo value "56" is less than the allowed minimum inclusive value of 58.7
+line:19 column:26 - Validation Error: valuetwo value "58.6" is less than the allowed minimum inclusive value of 58.7
+line:19 column:31 - Validation Error: valuetwo value "58" is less than the allowed minimum inclusive value of 58.7
+line:20 column:9 - Validation Error: valuethree value "22.9" is less than the allowed minimum inclusive value of 23
+line:21 column:26 - Validation Error: valuefour value "20.3" is less than the allowed minimum inclusive value of 23
+line:21 column:31 - Validation Error: valuefour value "22.9" is less than the allowed minimum inclusive value of 23
+line:21 column:36 - Validation Error: valuefour value "12.34" is less than the allowed minimum inclusive value of 23
+line:22 column:9 - Validation Error: valuefive value "14" is less than the allowed minimum inclusive value of "15" from "../controlone"
+line:23 column:20 - Validation Error: valuesix value "11" is less than the allowed minimum inclusive value of "15" from "../../controlone"
+line:23 column:23 - Validation Error: valuesix value "12" is less than the allowed minimum inclusive value of "15" from "../../controlone"
+line:23 column:29 - Validation Error: valuesix value "14" is less than the allowed minimum inclusive value of "15" from "../../controlone"
+line:24 column:9 - Validation Error: valueseven value "-45.4" is less than the allowed minimum inclusive value of "-45.3" from "../controltwo"
+line:25 column:22 - Validation Error: valueeight value "-45.4" is less than the allowed minimum inclusive value of "-45.3" from "../../controltwo"
+line:25 column:34 - Validation Error: valueeight value "-100.3" is less than the allowed minimum inclusive value of "-45.3" from "../../controltwo"
+line:25 column:53 - Validation Error: valueeight value "-7e+3" is less than the allowed minimum inclusive value of "-45.3" from "../../controltwo"

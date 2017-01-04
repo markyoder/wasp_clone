@@ -1,0 +1,24 @@
+maxoccurs{
+    validtest{
+        MaxOccurs=NoLimit
+        control{
+        }
+        valueone{
+            MaxOccurs=10
+        }
+        valuetwo{
+            MaxOccurs="../control"
+        }
+    }
+    invalidtest{
+        MaxOccurs=1
+        control{
+        }
+        valueone{
+            MaxOccurs=10
+        }
+        valuetwo{
+            MaxOccurs="../control"
+        }
+    }
+}
