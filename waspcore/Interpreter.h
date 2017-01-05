@@ -29,14 +29,18 @@ public:
      * @brief root acquire the root of the document
      * @return TreeNodeView view into the document parse tree
      */
-    TreeNodeView root()const;
+    TreeNodeView< TreeNodePool<node_type_size,node_index_size
+    ,token_type_size,token_index_type_size
+    ,file_offset_type_size> > root()const;
 
     /**
      * @brief node_at acquire the node at the given index in the pool
      * @param node_pool_index the index at which to acquire the node
      * @return the TreeNodeView from which data (name, type, data, children) can be conventienty acquired
      */
-    TreeNodeView node_at(node_index_size node_pool_index)const;
+    TreeNodeView<TreeNodePool<node_type_size,node_index_size
+    ,token_type_size,token_index_type_size
+    ,file_offset_type_size>> node_at(node_index_size node_pool_index)const;
 
 
     /**

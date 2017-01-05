@@ -12,10 +12,10 @@ TEST( SIREN, parse_only_root )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(3, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
-    TreeNodeView root_selection = document.child_at(0);
+    auto root_selection = document.child_at(0);
     // when there exists only the root selection
     // the node type is a separator
     ASSERT_EQ( DOCUMENT_ROOT, root_selection.type() );
@@ -27,10 +27,10 @@ TEST( SIREN, parse_simple_root )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(4, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
-    TreeNodeView root_selection = document.child_at(0);
+    auto root_selection = document.child_at(0);
     // when there exists a root selection
     // with a child selection the node type is a declaration
     ASSERT_EQ( DOCUMENT_ROOT, root_selection.type() );
@@ -49,7 +49,7 @@ TEST( SIREN, parse_simple_root_w_conditionally_predicated_child )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(17, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -94,7 +94,7 @@ TEST( SIREN, parse_simple_root_w_index_predicated_child )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(15, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -137,7 +137,7 @@ TEST( SIREN, parse_simple_root_w_indices_predicated_child )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(17, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -182,7 +182,7 @@ TEST( SIREN, parse_simple_root_w_strided_indices_predicated_child )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(19, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -229,7 +229,7 @@ TEST( SIREN, parse_eq_pred )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 11, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -266,7 +266,7 @@ TEST( SIREN, parse_gte_pred )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 11, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -303,7 +303,7 @@ TEST( SIREN, parse_lte_pred )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 11, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -340,7 +340,7 @@ TEST( SIREN, parse_neq_pred )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 11, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -377,7 +377,7 @@ TEST( SIREN, parse_lt_pred )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 11, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -414,7 +414,7 @@ TEST( SIREN, parse_gt_pred )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 11, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -452,7 +452,7 @@ TEST( SIREN, parse_single_relative )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 2, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -477,7 +477,7 @@ TEST( SIREN, parse_relative )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 5, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -505,7 +505,7 @@ TEST( SIREN, parse_relative_w_parent )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 8, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -536,7 +536,7 @@ TEST( SIREN, parse_parent )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 5, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -565,7 +565,7 @@ TEST( SIREN, parse_root_based_any_selection )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 2, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -590,7 +590,7 @@ TEST( SIREN, parse_root_based_any_selection_w_child )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 4, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -619,7 +619,7 @@ TEST( SIREN, parse_relative_based_any_selection )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 4, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);
@@ -648,7 +648,7 @@ TEST( SIREN, parse_relative_based_any_selection_w_child )
     SIRENInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 5, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( DOCUMENT_ROOT, document.type() );
     ASSERT_EQ( 1, document.child_count() );
 //    document.paths(std::cout);

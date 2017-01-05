@@ -268,10 +268,11 @@ private:
  * @brief The TreeNodeView class provies light weight interface to TreeNodes
  * Allows traversing child nodes and parent as well as acquire node information *
  */
+template<class TreeNodePool_T>
 class TreeNodeView{
 public:
 
-    TreeNodeView(std::size_t node_index, const TreeNodePool<> & nodes);
+    TreeNodeView(std::size_t node_index, const TreeNodePool_T & nodes);
     TreeNodeView(const TreeNodeView& orig);
     ~TreeNodeView();
 
@@ -359,14 +360,15 @@ public:
      */
     int to_int() const;
 
-    friend std::ostream& operator<< (std::ostream& str, const wasp::TreeNodeView & view){
+    // Friendly stream operator
+    friend std::ostream& operator<< (std::ostream& str, const wasp::TreeNodeView<TreeNodePool_T> & view){
         str<<"TreeNodeView(tree_node_index="<<view.m_tree_node_index<<", &pool="<<view.m_tree_data<<")";
         return str;
     }
 
 private:
     std::size_t m_tree_node_index;
-    const TreeNodePool<> * m_tree_data;
+    const TreeNodePool_T * m_tree_data;
 };
 #include "waspcore/TreeNodePool.i.h"
 } // end of namespace

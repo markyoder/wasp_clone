@@ -93,7 +93,7 @@ namespace wasp {
          * @return the number of evaluations captured in the result set for the given context
          */
         template<typename TAdapter>
-        size_t evaluate(const TreeNodeView & context
+        size_t evaluate(const TreeNodeView<decltype(m_tree_nodes)> & context
                         , SIRENResultSet<TAdapter> & result
                         , std::vector<TAdapter> & stage)const;
 //        template<typename TAdapter>
@@ -109,7 +109,7 @@ namespace wasp {
          * Loops through each staged node searching its children for specifically named child nodes
          */
         template<typename TAdapter>
-        void search_child_name(const TreeNodeView & context, std::vector<TAdapter> & stage)const;
+        void search_child_name(const TreeNodeView<decltype(m_tree_nodes)> & context, std::vector<TAdapter> & stage)const;
         /**
          * @brief search_conditional_predicated_child searches the staged node's children for specifically named children with grandchild attributes
          * @param context the context to search for ( the child's name pattern )
@@ -119,7 +119,7 @@ namespace wasp {
          * only where the obj node has a child node 'name' with value 'fred'.
          */
         template<typename TAdapter>
-        void search_conditional_predicated_child(const TreeNodeView & context
+        void search_conditional_predicated_child(const TreeNodeView<decltype(m_tree_nodes)> & context
                                                  , std::vector<TAdapter> & stage)const;
 
         /**
@@ -131,10 +131,10 @@ namespace wasp {
          * only where the obj node is at the 1-10 index and every 3rd
          */
         template<typename TAdapter>
-        void search_index_predicated_child(const TreeNodeView & context
+        void search_index_predicated_child(const TreeNodeView<decltype(m_tree_nodes)> & context
                                                  , std::vector<TAdapter> & stage)const;
         template<typename TAdapter>
-        void recursive_child_select(const TreeNodeView & context
+        void recursive_child_select(const TreeNodeView<decltype(m_tree_nodes)> & context
                                                  , std::vector<TAdapter> & stage)const;
     }; // end of SIRENInterpreter class
 #include "waspsiren/SIRENInterpreter.i.h"
