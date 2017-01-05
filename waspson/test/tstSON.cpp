@@ -33,7 +33,7 @@ TEST( SON, keyed_value)
     SONInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(43, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( 9, document.child_count() );
     std::string expected_paths = R"INPUT(/
 /string
@@ -150,7 +150,7 @@ TEST( SON, empty_object)
     SONInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(35, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( 6, document.child_count() );
     std::string expected_paths = R"INPUT(/
 /e1
@@ -252,7 +252,7 @@ TEST( SON, empty_array )
     SONInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(35, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( 6, document.child_count() );
     std::string expected_paths = R"INPUT(/
 /e1
@@ -345,7 +345,7 @@ end)INPUT";
     SONInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(5, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( 1, document.child_count() );
     std::string expected_paths = R"INPUT(/
 /code
@@ -388,7 +388,7 @@ end)INPUT";
     SONInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(47, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( 1, document.child_count() );
     std::string expected_paths = R"INPUT(/
 /code
@@ -516,7 +516,7 @@ TEST( SON, int_array)
     SONInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(24, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( 3, document.child_count() );
     std::string expected_paths = R"INPUT(/
 /ints
@@ -625,7 +625,7 @@ TEST( SON, real_array)
     SONInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(24, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( 3, document.child_count() );
     std::string expected_paths = R"INPUT(/
 /1
@@ -729,7 +729,7 @@ TEST( SON, comments )
     SONInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(7, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( 3, document.child_count() );
     std::string expected_paths = R"INPUT(/
 /comment (% start of line)
@@ -784,7 +784,7 @@ end % conclusion of unit of execution
     SONInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(85, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     // var, comment, global_obj, execution unit, comment
     ASSERT_EQ( 5, document.child_count() );
     std::string expected_paths = R"INPUT(/
@@ -998,7 +998,7 @@ TEST( SON, expressions )
     SONInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(312+5, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     // var, comment, global_obj, execution unit, comment
     ASSERT_EQ( 1, document.child_count() );
 

@@ -455,7 +455,7 @@ TEST(GetPotInterpreter,simple_view)
     ASSERT_EQ(node_types.size(), node_names.size());
     ASSERT_EQ(node_types.size(), node_columns.size());
     ASSERT_EQ(node_types.size(), node_paths.size());
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     // the root of the document
     ASSERT_EQ( 1, document.child_count() );
     ASSERT_EQ( node_names.back(), document.name() );
@@ -465,7 +465,7 @@ TEST(GetPotInterpreter,simple_view)
     ASSERT_EQ( true, document.equal(document) );
     ASSERT_EQ( false, document.has_parent() );
     ASSERT_EQ( node_paths.back(), document.path() );
-    TreeNodeView key = document.child_at(0);
+    auto key = document.child_at(0);
     ASSERT_EQ(3, key.child_count() );
     ASSERT_EQ( true, key.has_parent() );
     ASSERT_EQ( true, document.equal(key.parent()) );
@@ -480,7 +480,7 @@ TEST(GetPotInterpreter,simple_view)
     {
         {
         SCOPED_TRACE(i);
-        TreeNodeView child = key.child_at(i);
+        auto child = key.child_at(i);
         ASSERT_EQ( node_types[i],child.type() );
         ASSERT_EQ( 0, child.child_count() );
         ASSERT_EQ( node_types[i],child.type() );
@@ -531,7 +531,7 @@ R"INPUT(/
     GetPotInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(18, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ(1, document.child_count() );
     std::stringstream paths;
     document.paths(paths);
@@ -564,9 +564,9 @@ function = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)
     GetPotInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(9, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ(1, document.child_count() );
-    TreeNodeView fnode = document.child_at(0);
+    auto fnode = document.child_at(0);
     ASSERT_EQ(data.size(), fnode.child_count());
     for( std::size_t i = 0; i < fnode.child_count(); ++i)
     {
@@ -588,7 +588,7 @@ TEST(GetPotInterpreter, comments )
    GetPotInterpreter interpreter;
    ASSERT_EQ( true, interpreter.parse(input) );
    ASSERT_EQ(4, interpreter.node_count() );
-   TreeNodeView document = interpreter.root();
+   auto document = interpreter.root();
    ASSERT_EQ(3, document.child_count() );
    std::vector<std::string> data = {"#"
                                     ,"# comment with content"
@@ -631,10 +631,10 @@ TEST(GetPotInterpreter,early_terminated_object)
     GetPotInterpreter interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(46, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( 2, document.child_count() );
     {
-        TreeNodeView first_block = document.child_at(0);
+        auto first_block = document.child_at(0);
         ASSERT_EQ(3, first_block.child_count() );
         std::string name = first_block.name();
         ASSERT_EQ("first_block", name);
@@ -662,7 +662,7 @@ TEST(GetPotInterpreter,early_terminated_object)
         }
     }
     {
-        TreeNodeView new_block = document.child_at(1);
+        auto new_block = document.child_at(1);
         ASSERT_EQ(5, new_block.child_count() );
         std::string name = new_block.name();
         ASSERT_EQ("new_block", name);
@@ -711,7 +711,7 @@ TEST(GetPotInterpreter,nested_subblocks)
     GetPotInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(21, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ( 1, document.child_count() );
     auto block = document.child_at(0);
     ASSERT_EQ( "block", std::string(block.name()) );
@@ -746,7 +746,7 @@ TEST(GetPotInterpreter,multiple_objects)
     GetPotInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(34, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ(2, document.child_count() ); // problem and mesh
 
     std::string expected_paths=R"INPUT(/

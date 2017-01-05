@@ -13,7 +13,7 @@ TEST(ExprInterpreter,addition)
     ExprInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(5, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ(1, document.child_count() );
 }
 
@@ -28,7 +28,7 @@ function = A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)
     ExprInterpreter interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(146, interpreter.node_count() );
-    TreeNodeView document = interpreter.root();
+    auto document = interpreter.root();
     ASSERT_EQ(1, document.child_count() );
 }
 

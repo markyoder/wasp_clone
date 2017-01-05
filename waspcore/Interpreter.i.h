@@ -30,32 +30,40 @@ template<typename node_type_size
          ,typename token_type_size
          ,typename token_index_type_size
          ,typename file_offset_type_size>
-TreeNodeView Interpreter<node_type_size,node_index_size
+TreeNodeView<
+    TreeNodePool<node_type_size,node_index_size
+    ,token_type_size,token_index_type_size
+    ,file_offset_type_size> >
+Interpreter<node_type_size,node_index_size
         ,token_type_size,token_index_type_size
         ,file_offset_type_size>::root()const
 {
     // have any nodes?
     if( m_tree_nodes.size() == 0 )
     {
-        return TreeNodeView(m_tree_nodes.size(),this->m_tree_nodes);
+        return TreeNodeView<decltype(m_tree_nodes)>(m_tree_nodes.size(),this->m_tree_nodes);
     }
-    return TreeNodeView(m_root_index,this->m_tree_nodes);
+    return TreeNodeView<decltype(m_tree_nodes)>(m_root_index,this->m_tree_nodes);
 }
 template<typename node_type_size
          ,typename node_index_size
          ,typename token_type_size
          ,typename token_index_type_size
          ,typename file_offset_type_size>
-TreeNodeView Interpreter<node_type_size,node_index_size
+TreeNodeView<
+    TreeNodePool<node_type_size,node_index_size
+    ,token_type_size,token_index_type_size
+    ,file_offset_type_size> >
+Interpreter<node_type_size,node_index_size
         ,token_type_size,token_index_type_size
         ,file_offset_type_size>::node_at(node_index_size index )const
 {
     // have any nodes?
     if( m_tree_nodes.size() == 0 )
     {
-        return TreeNodeView(m_tree_nodes.size(),this->m_tree_nodes);
+        return TreeNodeView<decltype(m_tree_nodes)>(m_tree_nodes.size(),this->m_tree_nodes);
     }
-    return TreeNodeView(index,this->m_tree_nodes);
+    return TreeNodeView<decltype(m_tree_nodes)>(index,this->m_tree_nodes);
 }
 template<typename node_type_size
          ,typename node_index_size
