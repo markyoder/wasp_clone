@@ -66,7 +66,7 @@ public:
      */
     void push_token(const char * str, token_type_size type
               , size_t token_file_offset )
-        {m_tree_nodes.token_data().push(str,type,token_file_offset);}
+        {m_tree_nodes.push_token(str,type,token_file_offset);}
     /**
      * @brief push_line appends a line to the new line buffer
      * @param line_file_offset byte offset into the file/stream for the newline

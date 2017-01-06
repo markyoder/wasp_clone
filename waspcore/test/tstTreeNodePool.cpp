@@ -145,3 +145,53 @@ TEST(TreeNodePool,push_test)
     ASSERT_EQ(root, tp.type(tp.size()-1));
 }
 
+TEST(TreeNodePool,to_type_test)
+{
+    //'"QString1" \'QString2\' string 14 14e6 15.0 15.0e6 3.145' // data
+    TreeNodePool<char,char,char,char,default_file_offset_type_size> tp;
+
+    { // push the data with needed metadata for testing purposes
+        std::vector<std::string> token_data=
+        {"\"String0\"","'String1'","String2","14","14e6","15.0","3.145"};
+        char type_test = -1; // dont care - not testing
+
+        for(std::size_t i = 0; i < token_data.size(); ++i)
+        {
+            char index = static_cast<char>(i);
+            // only attribute we care about in this test is the data
+            // dummy everything else
+            tp.push_token(token_data[i].c_str(),type_test,0);
+            tp.push_leaf(type_test,"test",index);
+        }
+        // test strings
+        ASSERT_LE( 3, token_data.size() );
+        for( std::size_t i = 0; i < 3 /*strings*/; ++i)
+        {
+            std::string expected_string = std::string("String")+std::to_string(i);
+            TreeNodeView<decltype(tp)> view(i,tp);
+            EXPECT_EQ(expected_string, view.to_string() );
+            bool ok = false;
+            EXPECT_EQ(expected_string, view.to_string(&ok) );
+            EXPECT_TRUE( ok );
+        }
+        // test all others as strings
+        for( std::size_t i = 3; i < token_data.size(); ++i)
+        {
+            std::string expected_string = token_data[i];
+            TreeNodeView<decltype(tp)> view(i,tp);
+            EXPECT_EQ(expected_string, view.to_string() );
+            bool ok = false;
+            EXPECT_EQ(expected_string, view.to_string(&ok) );
+            EXPECT_TRUE( ok );
+        }
+        // test strings as doubles - failure
+        for( std::size_t i = 0; i < 3 /*strings*/; ++i)
+        {
+            TreeNodeView<decltype(tp)> view(i,tp);
+            EXPECT_EQ(0.0, view.to_double() );
+            bool ok = false;
+            view.to_double(&ok);
+            EXPECT_FALSE( ok );
+        }
+    }
+}

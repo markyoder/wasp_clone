@@ -69,6 +69,8 @@ public:
     void push_leaf(node_type_size node_type
                    , const char * node_name
                    , token_index_type_size token_index);
+
+
     /**
      * @brief size acquire the number of nodes (leaf and parent)
      * @return node count
@@ -81,6 +83,21 @@ public:
      */
     std::size_t parent_node_count()const{return m_node_parent_data.size();}
 
+    /**
+     * @brief token_count acquire the number of tokens needed for all TreeNodes
+     * @return the number of tokens backing all tree nodes
+     */
+    std::size_t token_count()const{return m_token_data.size();}
+
+    /**
+     * @brief push appends a token
+     * @param str the token's string data
+     * @param type the token's type (enumeration)
+     * @param token_file_offset the token's offset into the file/stream
+     */
+    void push_token(const char * str, token_type_size type
+              , size_t token_file_offset )
+        {m_token_data.push(str,type,token_file_offset);}
     /**
      * @brief parent_data_index acquires the given node's parent data index
      * @param node_index the child node's index for which to retrieve the parent node data index
@@ -358,7 +375,19 @@ public:
      * @brief to_int converts the data to an integer
      * @return the data as an integer
      */
-    int to_int() const;
+    int to_int(bool * ok = nullptr) const;
+
+    /**
+     * @brief to_double converts the data to a double
+     * @return the data as a double
+     */
+    double to_double(bool * ok = nullptr) const;
+
+    /**
+     * @brief to_string converts the data to a string
+     * @return the data as a string (single and double quotes are removed from front and back).
+     */
+    std::string to_string(bool * ok = nullptr) const;
 
     // Friendly stream operator
     friend std::ostream& operator<< (std::ostream& str, const wasp::TreeNodeView<TreeNodePool_T> & view){
@@ -369,6 +398,14 @@ public:
 private:
     std::size_t m_tree_node_index;
     const TreeNodePool_T * m_tree_data;
+
+    /**
+     * @brief to_type acquire the data typed as the requested type
+     * @param result the typed result
+     * @param ok optional boolean return value indicating if conversion was successful.
+     */
+    template<typename T>
+    void to_type(T & result, bool * ok=nullptr)const;
 };
 #include "waspcore/TreeNodePool.i.h"
 } // end of namespace

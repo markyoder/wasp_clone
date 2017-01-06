@@ -337,7 +337,7 @@ void TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::data(NIS node_index
     }
     // 2. accumulate the parent
     else{
-
+        // TODO - implement this
     }
 }
 
@@ -434,13 +434,41 @@ std::size_t TreeNodeView<TreeNodePool_T>::column()const
     return m_tree_data->column(m_tree_node_index);
 }
 template<class TreeNodePool_T>
-int TreeNodeView<TreeNodePool_T>::to_int()const
+int TreeNodeView<TreeNodePool_T>::to_int(bool * ok)const
+{
+    int result = 0;
+    to_type(result, ok);
+    return result;
+}
+template<class TreeNodePool_T>
+double TreeNodeView<TreeNodePool_T>::to_double(bool * ok)const
+{
+    double result = 0.0;
+    to_type(result, ok);
+    return result;
+}
+template<class TreeNodePool_T>
+std::string TreeNodeView<TreeNodePool_T>::to_string(bool * ok)const
+{
+    std::string result;
+    to_type(result, ok);
+    // trim front quotes
+    while( !result.empty() && result.front() == '\'') result.erase(0,1);
+    while( !result.empty() && result.front() == '\"') result.erase(0,1);
+    // trim trailing quotes
+    while( !result.empty() && result.back() == '\'') result.erase(result.size()-1,result.size());
+    while( !result.empty() && result.back() == '\"') result.erase(result.size()-1,result.size());
+    return result;
+}
+
+template<class TreeNodePool_T>
+template<typename T>
+void TreeNodeView<TreeNodePool_T>::to_type(T & result, bool * ok)const
 {
     std::stringstream str;
     str<< data();
-    int result = 0;
     str>> result;
-    return result;
+    if( ok ) *ok = !(str.bad() || str.fail());
 }
 
 #endif
