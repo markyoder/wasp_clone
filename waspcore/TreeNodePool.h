@@ -288,10 +288,11 @@ private:
 template<class TreeNodePool_T>
 class TreeNodeView{
 public:
-
+    TreeNodeView():m_tree_node_index(-1),m_tree_data(nullptr){}
     TreeNodeView(std::size_t node_index, const TreeNodePool_T & nodes);
     TreeNodeView(const TreeNodeView& orig);
     ~TreeNodeView();
+
 
     TreeNodeView& operator=(const TreeNodeView& b);
 
@@ -317,6 +318,12 @@ public:
      * @return true, iff this node has a parent
      */
     bool has_parent()const;
+
+    /**
+     * @brief is_null determines if this view is backed by a storage pool
+     * @return true, iff the view has no storage backing
+     */
+    bool is_null()const{ return m_tree_data == nullptr; }
 
     /**
      * @brief path acquire the path of this node from the document root

@@ -144,6 +144,14 @@ TEST(TreeNodePool,push_test)
     ASSERT_EQ(root_name,tp.name(tp.size()-1));
     ASSERT_EQ(root, tp.type(tp.size()-1));
 }
+TEST(TreeNodePool, is_null_test )
+{
+    TreeNodeView<TreeNodePool<>> null_view;
+    ASSERT_TRUE( null_view.is_null() );
+    TreeNodePool<char,char,char,char,default_file_offset_type_size> tp;
+    TreeNodeView <decltype(tp)> view(1,tp);
+    ASSERT_FALSE( view.is_null() );
+}
 
 TEST(TreeNodePool,to_type_test)
 {
