@@ -9,7 +9,6 @@ WASP_ADD_CXX_FLAGS(
 SET(SOURCE
 SIRENLexer.cpp
 SIRENParser.cpp
-SIRENResultSet.cpp
 SIRENInterpreter.cpp
 )
 

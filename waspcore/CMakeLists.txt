@@ -3,10 +3,6 @@ TRIBITS_SUBPACKAGE(core)
 TRIBITS_CONFIGURE_FILE(version.h)
 
 SET(SOURCE
-Interpreter.cpp
-StringPool.cpp
-TokenPool.cpp
-TreeNodePool.cpp
 utils.cpp
 )
 
