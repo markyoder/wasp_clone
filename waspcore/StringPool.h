@@ -1,6 +1,7 @@
 #ifndef WASP_STRINGPOOL_H
 #define WASP_STRINGPOOL_H
 #include <vector>
+#include <iostream>
 namespace wasp{
 /**
  * @brief default_token_index_type_size
@@ -13,9 +14,8 @@ typedef unsigned int default_token_index_type_size;
 template<typename token_index_type_size = default_token_index_type_size>
 class StringPool{
   public:    
-    StringPool<token_index_type_size>();
-    StringPool<token_index_type_size>
-    (const StringPool<token_index_type_size> & orig);
+    StringPool();
+    StringPool(const StringPool<token_index_type_size> & orig);
     ~StringPool();
     // acquire the string data for the token at the given index
     const char * data(token_index_type_size index)const;

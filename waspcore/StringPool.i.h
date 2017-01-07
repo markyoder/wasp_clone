@@ -10,10 +10,28 @@
     void StringPool<T>::push(const char * str)
     {
         std::size_t string_index = m_data.size();
+
         // capture str data
-        for( std::size_t i = 0; str[i] != '\0'; ++i)
+        // scenario 1 - the string originates from the pool itself
+        // scenario 2 - the string originates outside the pool
+        bool originates_within = !m_data.empty()
+                && (&m_data[0] <= str
+                    && &m_data[m_data.size()-1] > str );
+
+        if( !originates_within )
         {
-            m_data.push_back(str[i]);
+            for( std::size_t i = 0; str[i] != '\0'; ++i)
+            {
+                m_data.push_back(str[i]);
+            }
+        }
+        else{ // str does originate within the data pool
+            // calculate the relative index of the data within the pool
+            std::size_t index = str - &m_data[0];
+            for( std::size_t i = index; m_data[i] != '\0'; ++i)
+            {
+                m_data.push_back(m_data[i]);
+            }
         }
         // ensure null terminated
         m_data.push_back('\0');
