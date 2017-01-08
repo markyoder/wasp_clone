@@ -13,7 +13,7 @@ stages:
 - configure
 - build
 - test
-- coverage
+- analysis
 
 configure_linux:
   stage: configure
@@ -33,7 +33,8 @@ configure_linux:
     - cd build
     - module load cmake
     - which cmake
-    - cmake -DBUILDNAME=$(uname -s)-GCC-4.8.5-Debug -DCMAKE_BUILD_TYPE=DEBUG -Dwasp_ENABLE_COVERAGE_TESTING=ON -Dwasp_ENABLE_TESTS=ON -Dwasp_ENABLE_ALL_PACKAGES=ON ..
+    - module load valgrind
+    - cmake -MEMCHECK_COMMAND="$(which valgrind)" -DBUILDNAME=$(uname -s)-GCC-4.8.5-Debug -DCMAKE_BUILD_TYPE=DEBUG -Dwasp_ENABLE_COVERAGE_TESTING=ON -Dwasp_ENABLE_TESTS=ON -Dwasp_ENABLE_ALL_PACKAGES=ON ..
 
 build_linux:
   stage: build
@@ -57,13 +58,13 @@ test_linux:
   dependencies:
     - build_linux
 
-.coverage_linux:
-  stage: coverage
+analysis_linux:
+  stage: analysis
   tags:
     - linux
   script:
     - cd build
-    - ctest -D ExperimentalCoverage -D ExperimentalSubmit
+    - ctest -D ExperimentalCoverage -DExperimentalMemCheck -D ExperimentalSubmit
   dependencies:
     - test_linux
 
