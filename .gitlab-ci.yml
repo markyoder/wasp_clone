@@ -67,6 +67,7 @@ analysis_linux:
     - ctest -D ExperimentalCoverage -DExperimentalMemCheck -D ExperimentalSubmit
   dependencies:
     - test_linux
+  allow_failure: true
 
 configure_windows:
   stage: configure
