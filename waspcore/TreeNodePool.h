@@ -299,6 +299,7 @@ public:
     TreeNodeView& operator=(const TreeNodeView& b);
 
     bool operator==(const TreeNodeView& b)const;
+    bool operator!=(const TreeNodeView& b)const{return !(*this==b);}
     /**
      * @brief equal determines if this is equal to the provides TreeNodeView
      * @return true, iff and only if the nodes are the same

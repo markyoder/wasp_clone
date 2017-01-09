@@ -128,7 +128,17 @@ TEST(TreeNodePool, is_null_test )
     TreeNodeView <decltype(tp)> view(1,tp);
     ASSERT_FALSE( view.is_null() );
 }
-
+TEST(TreeNodePool, operator_equal_test )
+{
+    TreeNodeView<TreeNodePool<>> null_view;
+    ASSERT_TRUE( null_view.is_null() );
+    TreeNodePool<char,char,char,char,default_file_offset_type_size> tp;
+    TreeNodeView <decltype(tp)> view1(0,tp);
+    TreeNodeView <decltype(tp)> view2(0,tp);
+    TreeNodeView <decltype(tp)> view3(1,tp);
+    ASSERT_EQ( view1, view2 );
+    ASSERT_NE( view1, view3 );
+}
 TEST(TreeNodeView,to_type_test)
 {
     //'"QString1" \'QString2\' string 14 14e6 15.0 15.0e6 3.145' // data
