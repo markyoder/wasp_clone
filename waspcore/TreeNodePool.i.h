@@ -413,6 +413,26 @@ TreeNodeView<TreeNodePool_T> TreeNodeView<TreeNodePool_T>::child_at(std::size_t 
                                 ,index);
     return TreeNodeView<TreeNodePool_T>(child_node_pool_index,*m_tree_data);
 }
+template<class TreeNodePool_T> // template type
+typename TreeNodeView<TreeNodePool_T>::Collection // return type
+TreeNodeView<TreeNodePool_T>::child_by_name(const std::string & name
+                                                       , std::size_t limit)const
+{
+    TreeNodeView<TreeNodePool_T>::Collection results;
+
+    for( std::size_t i = 0, count = child_count(); i < count; ++i )
+    {
+        auto child = child_at(i);
+        std::string child_name = child.name();
+        if( child_name == name )
+        {
+            results.push_back(child);
+        }
+        // limit of 0 is reserved as no limit
+        if( limit != 0 && results.size() == limit ) break;
+    }
+    return results;
+}
 template<class TreeNodePool_T>
 std::size_t TreeNodeView<TreeNodePool_T>::type()const
 {

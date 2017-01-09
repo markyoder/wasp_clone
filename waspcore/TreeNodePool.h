@@ -122,6 +122,7 @@ public:
     */
     std::size_t child_at(node_index_size node_index
                     , node_index_size child_index)const;
+
     /**
      * @brief leaf_node_count acquire the number of leaf nodes
      * @return leaf node count
@@ -288,6 +289,7 @@ private:
 template<class TreeNodePool_T>
 class TreeNodeView{
 public:
+    using Collection = std::vector<TreeNodeView>;
     TreeNodeView():m_tree_node_index(-1),m_tree_data(nullptr){}
     TreeNodeView(std::size_t node_index, const TreeNodePool_T & nodes);
     TreeNodeView(const TreeNodeView& orig);
@@ -349,6 +351,13 @@ public:
      */
     TreeNodeView child_at(std::size_t index)const;
 
+    /**
+     * @brief child_by_name acquire child nodes by the given name
+     * @param name the name of the children to be retrieved
+     * @param limit the limit on the number of children ( 0 := no limit )
+     * @return A collection of views. Empty if no match occurrs
+     */
+    TreeNodeView::Collection child_by_name(const std::string & name, size_t limit=0)const;
     /**
      * @brief type acquire the type of the node
      * @return the node's type
