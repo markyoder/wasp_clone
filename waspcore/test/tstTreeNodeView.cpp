@@ -96,6 +96,7 @@ TEST(TreeNodeView,child_by_name)
     { // test data child_by_name(value)
         TreeNodeView<decltype(tp)> data_view(data_root_index,tp);
         ASSERT_FALSE ( data_view.is_null() );
+        ASSERT_EQ( &tp, data_view.tree_node_pool() );
         std::string name = data_view.name();
         std::string expected_name = "data";
         ASSERT_EQ(expected_name, name);

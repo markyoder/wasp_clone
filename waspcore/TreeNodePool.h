@@ -393,6 +393,11 @@ public:
      */
     std::size_t tree_node_index()const{return m_tree_node_index;}
 
+    /**
+     * @brief tree_node_pool acquire the pointer to the backend storage
+     * @return the TreeNodePool that backs this view
+     */
+    const TreeNodePool_T * tree_node_pool()const{return m_tree_data;}
 
     // !> Type operators
     /**

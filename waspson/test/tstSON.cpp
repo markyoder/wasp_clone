@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <functional>
 #include "waspson/SONInterpreter.h"
+#include "waspson/SONNodeView.h"
 #include <waspson/son_config.h>
 
 #include "gtest/gtest.h"
