@@ -119,19 +119,21 @@ TEST(StringPool,self_copy_test)
     for( size_t i = 0; i < 10; ++i )
     {
         const char * data = sp.data(0);
+        std::string data_copy = data; // need a copy as the push could leave hanging
         sp.push(data);
         std::string es = sp.data(0);
         ASSERT_EQ(100, es.size() );
-        std::string s = data;
+        std::string s = data_copy;
         ASSERT_EQ(s,es);
     }
     // make 10 copies of a string already in the pool
     for( size_t i = 0; i < 10; ++i )
     {
         const char * data = sp.data(1);
+        std::string data_copy = data; // need a copy as the push could leave hanging
         sp.push(data);
         std::string es = sp.data(sp.string_count()-1);
-        std::string s = data;
+        std::string s = data_copy;
         ASSERT_EQ(s,es);
         ASSERT_EQ(200, es.size() );
     }
