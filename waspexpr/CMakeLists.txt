@@ -8,7 +8,7 @@ WASP_ADD_CXX_FLAGS(
 WASP_FLEX_AND_BISON(
   FLEX_FILE Expr.lex
   FLEX_OPTIONS -Ca -v
-  SED_OPTIONS 's/\#include <FlexLexer.h>/\#include \"waspcore\/FlexLexer.h\"/' ExprLexer.cpp
+  SED_OPTIONS 's@\#include <FlexLexer.h>@\#include \"waspcore/FlexLexer.h\"@' ExprLexer.cpp
   BISON_FILE Expr.bison
   BISON_OPTIONS --report=state --report=lookahead
 )

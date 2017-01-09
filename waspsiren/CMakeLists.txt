@@ -10,7 +10,7 @@ WASP_ADD_CXX_FLAGS(
 WASP_FLEX_AND_BISON(
   FLEX_FILE SIRENLexer.lex
   FLEX_OPTIONS -Ca -v
-  SED_OPTIONS 's/\#include <FlexLexer.h>/\#include \"waspcore\/FlexLexer.h\"/' SIRENLexer.cpp
+  SED_OPTIONS 's@\#include <FlexLexer.h>@\#include \"waspcore/FlexLexer.h\"@' SIRENLexer.cpp
   BISON_FILE SIRENParser.cpp
   BISON_OPTIONS --report=state --report=lookahead --report=solved -g
 )
