@@ -344,6 +344,13 @@ public:
      * @return child count
      */
     std::size_t child_count()const;
+    /**
+     * @brief child_count_by_name determines the number of children with the given name
+     * @param name the name of the child nodes to count
+     * @param limit the limit (0 reserved as no limit) which can be used to optimize determination of named children
+     * @return the number of children with the given name
+     */
+    std::size_t child_count_by_name(const std::string & name, size_t limit=0)const;
 
     /**
      * @brief child_at acquire the child node view at the given index

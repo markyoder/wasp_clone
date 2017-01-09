@@ -152,7 +152,26 @@ std::size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::child_count(
     if( parent_index == size() ) return 0;
     return m_node_parent_data[parent_index].m_child_count;
 }
+template<class TreeNodePool_T> // template type
+std::size_t // return type
+TreeNodeView<TreeNodePool_T>::child_count_by_name(const std::string & name
+                                                       , std::size_t limit)const
+{
+    std::size_t matching_named_child_count = 0;
 
+    for( std::size_t i = 0, count = child_count(); i < count; ++i )
+    {
+        auto child = child_at(i);
+        std::string child_name = child.name();
+        if( child_name == name )
+        {
+            ++matching_named_child_count;
+        }
+        // limit of 0 is reserved as no limit
+        if( limit != 0 && matching_named_child_count == limit ) break;
+    }
+    return matching_named_child_count;
+}
 template<typename NTS, typename NIS
          ,typename TTS, typename TITS,typename FOTS>
 std::size_t TreeNodePool<NTS,NIS,TTS,TITS,FOTS>::child_at(

@@ -103,11 +103,16 @@ TEST(TreeNodeView,child_by_name)
             const std::string expected_child_name = "ted";
             TreeNodeView<decltype(tp)>::Collection children = data_view.child_by_name(expected_child_name);
             ASSERT_TRUE( children.empty() );
+            ASSERT_EQ( 0, data_view.child_count_by_name(expected_child_name) );
+            ASSERT_EQ( 0, data_view.child_count_by_name(expected_child_name,1) );
         }
         { // test multiple returned
             const std::string expected_child_name = "value";
             TreeNodeView<decltype(tp)>::Collection children = data_view.child_by_name(expected_child_name);
             ASSERT_EQ(2, children.size() );
+            ASSERT_EQ(2, data_view.child_count_by_name(expected_child_name));
+            ASSERT_EQ(1, data_view.child_count_by_name(expected_child_name,1));
+            ASSERT_EQ(2, data_view.child_count_by_name(expected_child_name,3));
             // t iterates the token_data value information
             for( size_t t = 4, i = 0; i < children.size(); ++i, ++t )
             {

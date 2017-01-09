@@ -40,6 +40,8 @@ namespace wasp
  * std::string TAdapter::name()const - acquire the name of the node
  * size_t TAdapter::line()const - acquire the line on which the node occurrs in the document
  * size_t TAdapter::column()const - acquire the column on which the node occurrs in the document
+ * TAdaper& TAdapter::operator=(const TAdapter & orig) - node's assignment operator
+ * bool TAdapter::operator==(const TAdapter & orig) - node's equality operator
  * std::vector<TAdapter> TAdapter::child_by_name(const std::string & name, size_t limit)const
  * int TAdapter::to_int()const - converts the node's data to an integer
  * double TAdapter::to_double()const - converts the node's data to a double
@@ -51,8 +53,6 @@ namespace wasp
  * std::vector<TAdapter> TAdapter::non_decorative_children()const - acquires a vector of all children that are non-decorative
  * TAdapter TAdaper::first_non_decorative_child_by_name(const std::string & name) - acquires the first non decorative child node with the given name
  * size_t TAdapter::non_decorative_children_count()const - acquires the count of the non decorative children
- * TAdaper& TAdapter::operator=(const TAdapter & orig) - node's assignment operator
- * bool TAdapter::operator==(const TAdapter & orig) - node's equality operator
  *
  * ==== Required SchemaAdapter API ====
  *  !! All the above and the following !!
