@@ -17,13 +17,13 @@ WASP_FLEX_AND_BISON(
 SET(SOURCE
 GetPotLexer.cpp
 GetPotParser.cpp
-GetPotInterpreter.cpp
 )
 
 SET(HEADERS
 GetPotLexer.h
 GetPotParser.hpp
 GetPotInterpreter.h
+GetPotInterpreter.i.h
 location.hh
 position.hh
 stack.hh

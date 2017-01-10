@@ -28,7 +28,7 @@ int main (int argc, char *argv[])
             return 1;
         }
         std::stringstream errors;
-        GetPotInterpreter interpreter(errors);
+        GetPotInterpreter<> interpreter(errors);
         bool parsed = interpreter.parse(input);
         std::cout<<"Listing for '"<<argv[j]<<"'"<<std::endl;
         interpreter.root().paths(std::cout);

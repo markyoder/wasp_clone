@@ -39,15 +39,15 @@
 %initial-action
 {
     // initialize the initial location object
-    @$.begin.filename = @$.end.filename = &interpreter.m_stream_name;
-    @$.begin.line = @$.end.line = interpreter.m_start_line;
-    @$.begin.column = @$.end.column = interpreter.m_start_column;
+    @$.begin.filename = @$.end.filename = &interpreter.stream_name();
+    @$.begin.line = @$.end.line = interpreter.start_line();
+    @$.begin.column = @$.end.column = interpreter.start_column();
 };
 
 /* The interpreter is passed by reference to the parser and to the SIRENLexer. This
  * provides a simple but effective pure interface, not relying on global
  * variables. */
-%parse-param { class SIRENInterpreter& interpreter }
+%parse-param { class AbstractInterpreter& interpreter }
 
 /* verbose error messages */
 %error-verbose
@@ -57,7 +57,7 @@
 %union {
         std::size_t token_index;
         std::size_t node_index;
-        std::vector<unsigned int>* node_indices;
+        std::vector<size_t>* node_indices;
 }
 
 %token                  END          0  "end of file"
@@ -121,7 +121,7 @@
  * object. it defines the yylex() function call to pull the next token from the
  * current lexer object of the interpreter context. */
 #undef yylex
-#define yylex interpreter.m_lexer->lex
+#define yylex dynamic_cast<SIRENLexerImpl*>(interpreter.lexer())->lex
 
 %}
 
@@ -130,57 +130,57 @@
  /*** BEGIN - Change the wasp grammar rules below ***/
 any_selection : ANY
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::ANY,"A",token_index);
     }
 parent_selection : PARENT
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         // P - parent
         $$ = interpreter.push_leaf(wasp::PARENT,"P",token_index);
     }
 comma : COMMA
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
     }
 colon : COLON
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::COLON,":",token_index);
     }
 multiply :  MULTIPLY
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::MULTIPLY,"*",token_index);
     }
 divide :  DIVIDE
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::DIVIDE,"/",token_index);
     }
  // indicates a step in the selection function
  // parent / child / grandchild
 separator :  SEPARATOR
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::SEPARATOR,"/",token_index);
     }
 multiply_divide : multiply | divide
 plus :  PLUS
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::PLUS,"+",token_index);
     }
 minus :  MINUS
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::MINUS,"-",token_index);
     }
 
 exponent :  EXPONENT
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::EXPONENT,"^",token_index);
     }
 
@@ -188,93 +188,93 @@ boolean_numeric_op : eq | neq | gt | lt | gte | lte
 
 eq : EQ
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::EQ,"==",token_index);
     }
 neq : NEQ
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::NEQ,"!=",token_index);
     }
 gte: GTE
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::GTE,">=",token_index);
     }
 gt: GT
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::GT,">",token_index);
     }
 lte: LTE
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::LTE,"<=",token_index);
     }
 lt: LT
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::LT,"<",token_index);
     }
 boolean_logic_op : and | or
 and: AND
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::WASP_AND,"&&",token_index);
     }
 or: OR
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::WASP_OR,"||",token_index);
     }
 
 unary_not : BANG
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::UNARY_NOT,"!",token_index);
     }
 
 lparen  : LPAREN
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::LPAREN,"(",token_index);
     }
 rparen  : RPAREN
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::RPAREN,")",token_index);
     }
 lbrace  : LBRACE
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::LBRACE,"{",token_index);
     }
 rbrace  : RBRACE
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::RBRACE,"}",token_index);
     }
 lbracket  : LBRACKET
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::LBRACKET,"[",token_index);
     }
 rbracket  : RBRACKET
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::RBRACKET,"]",token_index);
     }
 
 ANY_STRING : DECL | QSTRING
 PRIMITIVE : DECL | QSTRING | INTEGER | DOUBLE
 integer : INTEGER {
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::INT,"int"
                          ,token_index);
     }
 value : PRIMITIVE
 {
-    unsigned int token_index = static_cast<unsigned int>($1);
+    size_t token_index = ($1);
     $$ = interpreter.push_leaf(wasp::VALUE,"value"
                      ,token_index);
 }
@@ -294,10 +294,10 @@ component : value
 exp : component
     |exp multiply_divide exp %prec MULTIPLY
     {
-          unsigned int left_i = static_cast<unsigned int>($1);
-          unsigned int op_i = static_cast<unsigned int>($2);
-          unsigned int right_i = static_cast<unsigned int>($3);
-          std::vector<unsigned int> child_indices = {left_i
+          size_t left_i = ($1);
+          size_t op_i = ($2);
+          size_t right_i = ($3);
+          std::vector<size_t> child_indices = {left_i
                                                      ,op_i
                                                      ,right_i
                                                      };
@@ -308,10 +308,10 @@ exp : component
     }
     | exp plus exp %prec PLUS
     {
-        unsigned int left_i = static_cast<unsigned int>($1);
-        unsigned int op_i = static_cast<unsigned int>($2);
-        unsigned int right_i = static_cast<unsigned int>($3);
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ($1);
+        size_t op_i = ($2);
+        size_t right_i = ($3);
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -322,10 +322,10 @@ exp : component
     }
     | exp minus exp %prec MINUS
     {
-        unsigned int left_i = static_cast<unsigned int>($1);
-        unsigned int op_i = static_cast<unsigned int>($2);
-        unsigned int right_i = static_cast<unsigned int>($3);
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ($1);
+        size_t op_i = ($2);
+        size_t right_i = ($3);
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -336,10 +336,10 @@ exp : component
     }
     | exp exponent exp %prec EXPONENT
     {
-        unsigned int left_i = static_cast<unsigned int>($1);
-        unsigned int op_i = static_cast<unsigned int>($2);
-        unsigned int right_i = static_cast<unsigned int>($3);
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ($1);
+        size_t op_i = ($2);
+        size_t right_i = ($3);
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -350,10 +350,10 @@ exp : component
     }
     | exp boolean_numeric_op exp %prec EQ
     {
-        unsigned int left_i = static_cast<unsigned int>($1);
-        unsigned int op_i = static_cast<unsigned int>($2);
-        unsigned int right_i = static_cast<unsigned int>($3);
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ($1);
+        size_t op_i = ($2);
+        size_t right_i = ($3);
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -365,10 +365,10 @@ exp : component
 
     | exp boolean_logic_op exp %prec AND
     {
-        unsigned int left_i = static_cast<unsigned int>($1);
-        unsigned int op_i = static_cast<unsigned int>($2);
-        unsigned int right_i = static_cast<unsigned int>($3);
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ($1);
+        size_t op_i = ($2);
+        size_t right_i = ($3);
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -379,10 +379,10 @@ exp : component
     }    
     | lparen exp rparen %prec "exp"
     {
-        unsigned int left_i = static_cast<unsigned int>($1);
-        unsigned int center_i = static_cast<unsigned int>($2);
-        unsigned int right_i = static_cast<unsigned int>($3);
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ($1);
+        size_t center_i = ($2);
+        size_t right_i = ($3);
+        std::vector<size_t> child_indices = {left_i
                                                    ,center_i
                                                    ,right_i
                                                    };
@@ -393,9 +393,9 @@ exp : component
     }
     | minus exp %prec UMINUS
     {
-        unsigned int op_i = static_cast<unsigned int>($1);
-        unsigned int right_i = static_cast<unsigned int>($2);
-        std::vector<unsigned int> child_indices = {op_i
+        size_t op_i = ($1);
+        size_t right_i = ($2);
+        std::vector<size_t> child_indices = {op_i
                                                    ,right_i
                                                    };
 
@@ -405,9 +405,9 @@ exp : component
     }
     | unary_not exp %prec UNOT
     {
-        unsigned int op_i = static_cast<unsigned int>($1);
-        unsigned int right_i = static_cast<unsigned int>($2);
-        std::vector<unsigned int> child_indices = {op_i
+        size_t op_i = ($1);
+        size_t right_i = ($2);
+        std::vector<size_t> child_indices = {op_i
                                                    ,right_i
                                                    };
 
@@ -417,7 +417,7 @@ exp : component
     }
 decl : ANY_STRING
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         std::string quote_less_data = interpreter.token_data(token_index);
         quote_less_data = wasp::strip_quotes(quote_less_data);
         $$ = interpreter.push_leaf(wasp::DECL
@@ -434,7 +434,7 @@ key_declaration : tag boolean_numeric_op
 declaration : tag
 tag :   decl
         {
-             $$ = new std::vector<unsigned int>();
+             $$ = new std::vector<size_t>();
              $$->push_back($decl);
         }
 
@@ -458,8 +458,8 @@ keyedvalue : key_declaration exp
 indices_selection : integer
             {
                 // capture integer index
-                unsigned int i_i = static_cast<unsigned int>($1);
-                std::vector<unsigned int> child_indices = {i_i
+                size_t i_i = ($1);
+                std::vector<size_t> child_indices = {i_i
                                                            };
 
                 $$ = interpreter.push_parent(wasp::INDEX
@@ -469,10 +469,10 @@ indices_selection : integer
             | integer colon integer
             {
                 // capture index range
-                unsigned int si_i = static_cast<unsigned int>($1);
-                unsigned int c_i = static_cast<unsigned int>($2);
-                unsigned int ei_i = static_cast<unsigned int>($3);
-                std::vector<unsigned int> child_indices = {si_i
+                size_t si_i = ($1);
+                size_t c_i = ($2);
+                size_t ei_i = ($3);
+                std::vector<size_t> child_indices = {si_i
                                                            ,c_i
                                                            ,ei_i
                                                            };
@@ -484,12 +484,12 @@ indices_selection : integer
             | integer colon integer colon integer
             {
                 // capture strided index range
-                unsigned int si_i = static_cast<unsigned int>($1);
-                unsigned int c1_i = static_cast<unsigned int>($2);
-                unsigned int ei_i = static_cast<unsigned int>($3);
-                unsigned int c2_i = static_cast<unsigned int>($4);
-                unsigned int stride_i = static_cast<unsigned int>($3);
-                std::vector<unsigned int> child_indices = {si_i
+                size_t si_i = ($1);
+                size_t c1_i = ($2);
+                size_t ei_i = ($3);
+                size_t c2_i = ($4);
+                size_t stride_i = ($3);
+                std::vector<size_t> child_indices = {si_i
                                                            ,c1_i
                                                            ,ei_i
                                                            ,c2_i
@@ -506,11 +506,11 @@ relative_selection : decl  // simple child
                  // capture condition predicated child selection
                  // obj[name = 'ted']
                  // obj[value <= 5]
-                 unsigned int decl_i = static_cast<unsigned int>($1);
-                 unsigned int lb_i = static_cast<unsigned int>($2);
-                 unsigned int exp_i = static_cast<unsigned int>($3);
-                 unsigned int rb_i = static_cast<unsigned int>($4);
-                 std::vector<unsigned int> child_indices = {decl_i
+                 size_t decl_i = ($1);
+                 size_t lb_i = ($2);
+                 size_t exp_i = ($3);
+                 size_t rb_i = ($4);
+                 std::vector<size_t> child_indices = {decl_i
                                                             ,lb_i
                                                             ,exp_i
                                                             ,rb_i
@@ -526,11 +526,11 @@ relative_selection : decl  // simple child
                  // obj[1]
                  // obj[1:3]
                  // obj[1:10:2]
-                 unsigned int decl_i = static_cast<unsigned int>($1);
-                 unsigned int lb_i = static_cast<unsigned int>($2);
-                 unsigned int indices_i = static_cast<unsigned int>($3);
-                 unsigned int rb_i = static_cast<unsigned int>($4);
-                 std::vector<unsigned int> child_indices = {decl_i
+                 size_t decl_i = ($1);
+                 size_t lb_i = ($2);
+                 size_t indices_i = ($3);
+                 size_t rb_i = ($4);
+                 std::vector<size_t> child_indices = {decl_i
                                                             ,lb_i
                                                             ,indices_i
                                                             ,rb_i
@@ -552,10 +552,10 @@ relative_selection : decl  // simple child
                 // obj/child
                 // obj[name='ted']/child
                 // obj[name='ted']/.[1]
-                 unsigned int left_i = static_cast<unsigned int>($1);
-                 unsigned int sep_i = static_cast<unsigned int>($2);
-                 unsigned int right_i = static_cast<unsigned int>($3);
-                 std::vector<unsigned int> child_indices = {left_i
+                 size_t left_i = ($1);
+                 size_t sep_i = ($2);
+                 size_t right_i = ($3);
+                 std::vector<size_t> child_indices = {left_i
                                                             ,sep_i
                                                             ,right_i
                                                             };
@@ -570,10 +570,10 @@ relative_selection : decl  // simple child
                 // parent//child
                 // obj[name='ted']//child
                 // obj[name='ted']//.[1]
-                 unsigned int left_i = static_cast<unsigned int>($1);
-                 unsigned int any_i = static_cast<unsigned int>($2);
-                 unsigned int right_i = static_cast<unsigned int>($3);
-                 std::vector<unsigned int> child_indices = {left_i
+                 size_t left_i = ($1);
+                 size_t any_i = ($2);
+                 size_t right_i = ($3);
+                 std::vector<size_t> child_indices = {left_i
                                                             ,any_i
                                                             ,right_i
                                                             };
@@ -588,9 +588,9 @@ relative_selection : decl  // simple child
                 // parent//
                 // obj[name='ted']//
                 // obj[1]//
-                 unsigned int left_i = static_cast<unsigned int>($1);
-                 unsigned int any_i = static_cast<unsigned int>($2);
-                 std::vector<unsigned int> child_indices = {left_i
+                 size_t left_i = ($1);
+                 size_t any_i = ($2);
+                 std::vector<size_t> child_indices = {left_i
                                                             ,any_i
                                                             };
 
@@ -600,14 +600,14 @@ relative_selection : decl  // simple child
              }
 document_root :  SEPARATOR
     {
-     auto token_index = static_cast<unsigned int>($1);
+     auto token_index = ($1);
      $$ = interpreter.push_leaf(wasp::DOCUMENT_ROOT,"R",token_index);
     }
 root_based_selection : separator
      {
          // capture root only selection
-         unsigned int s_i = static_cast<unsigned int>($1);
-         std::vector<unsigned int> child_indices = {s_i};
+         size_t s_i = ($1);
+         std::vector<size_t> child_indices = {s_i};
          $$ = interpreter.push_parent(wasp::DOCUMENT_ROOT
                                          ,"R" // R - root
                                          ,child_indices);
@@ -615,9 +615,9 @@ root_based_selection : separator
      | separator relative_selection
      {
          // capture root based child selection
-         unsigned int root_i = static_cast<unsigned int>($1);
-         unsigned int child_i = static_cast<unsigned int>($2);
-         std::vector<unsigned int> child_indices = {root_i
+         size_t root_i = ($1);
+         size_t child_i = ($2);
+         std::vector<size_t> child_indices = {root_i
                                                     ,child_i
                                                     };
 
@@ -629,9 +629,9 @@ root_based_selection : separator
      | any_selection relative_selection
      {
          // capture any child of the root
-         unsigned int any_i = static_cast<unsigned int>($1);
-         unsigned int child_i = static_cast<unsigned int>($2);
-         std::vector<unsigned int> child_indices = {any_i
+         size_t any_i = ($1);
+         size_t child_i = ($2);
+         std::vector<size_t> child_indices = {any_i
                                                     ,child_i
                                                     };
 
@@ -639,8 +639,8 @@ root_based_selection : separator
                                          ,"A" // A - any
                                          ,child_indices);
      }
-start   : root_based_selection {interpreter.add_root_child_index(static_cast<unsigned int>($1)); }
-        | relative_selection {interpreter.add_root_child_index(static_cast<unsigned int>($1)); }
+start   : root_based_selection {interpreter.add_root_child_index(($1)); }
+        | relative_selection {interpreter.add_root_child_index(($1)); }
 
 
  /*** END RULES - Change the wasp grammar rules above ***/

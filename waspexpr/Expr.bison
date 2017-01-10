@@ -39,15 +39,15 @@
 %initial-action
 {
     // initialize the initial location object
-    @$.begin.filename = @$.end.filename = &interpreter.m_stream_name;
-    @$.begin.line = @$.end.line = interpreter.m_start_line;
-    @$.begin.column = @$.end.column = interpreter.m_start_column;
+    @$.begin.filename = @$.end.filename = &interpreter.stream_name();
+    @$.begin.line = @$.end.line = interpreter.start_line();
+    @$.begin.column = @$.end.column = interpreter.start_column();
 };
 
 /* The interpreter is passed by reference to the parser and to the ExprLexer. This
  * provides a simple but effective pure interface, not relying on global
  * variables. */
-%parse-param { class ExprInterpreter& interpreter }
+%parse-param { class AbstractInterpreter& interpreter }
 
 /* verbose error messages */
 %error-verbose
@@ -58,7 +58,7 @@
 %union{
     std::size_t token_index;
     std::size_t node_index;
-    std::vector<unsigned int>* node_indices;
+    std::vector<size_t>* node_indices;
 }
 
 
@@ -119,7 +119,7 @@
  * object. it defines the yylex() function call to pull the next token from the
  * current lexer object of the interpreter context. */
 #undef yylex
-#define yylex interpreter.m_lexer->lex
+#define yylex dynamic_cast<ExprLexerImpl*>(interpreter.lexer())->lex
 
 %}
 
@@ -127,23 +127,23 @@
 
  /*** BEGIN - Change the Expr grammar rules below ***/
 
-bang     : BANG     {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::BANG      ,"!",token_index);}
-gt       : GT       {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::GT      ,">",token_index);}
-lt       : LT       {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::LT      ,"<",token_index);}
-gte      : GTE      {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::GTE      ,">=",token_index);}
-lte      : LTE      {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::LTE      ,"<=",token_index);}
-neq      : NEQ      {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::NEQ      ,"!=",token_index);}
-eq       : EQ       {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::EQ       ,"==",token_index);}
-and      : AND      {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::WASP_AND      ,"&&",token_index);}
-or       : OR       {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::WASP_OR       ,"||",token_index);}
-multiply : MULTIPLY {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::MULTIPLY , "*",token_index);}
-divide   : DIVIDE   {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::DIVIDE   ,"/" ,token_index);}
-plus     : PLUS     {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::PLUS     ,"+" ,token_index);}
-minus    : MINUS    {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::MINUS    ,"-" ,token_index);}
-exponent : EXPONENT {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::EXPONENT ,"^" ,token_index);}
-lparen   : LPAREN   {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::LPAREN   ,"(" ,token_index);}
-rparen   : RPAREN   {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::RPAREN   ,")" ,token_index);}
-comma    : COMMA    {unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::COMMA    ,"," ,token_index);}
+bang     : BANG     {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::BANG      ,"!",token_index);}
+gt       : GT       {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::GT      ,">",token_index);}
+lt       : LT       {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::LT      ,"<",token_index);}
+gte      : GTE      {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::GTE      ,">=",token_index);}
+lte      : LTE      {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::LTE      ,"<=",token_index);}
+neq      : NEQ      {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::NEQ      ,"!=",token_index);}
+eq       : EQ       {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::EQ       ,"==",token_index);}
+and      : AND      {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::WASP_AND      ,"&&",token_index);}
+or       : OR       {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::WASP_OR       ,"||",token_index);}
+multiply : MULTIPLY {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::MULTIPLY , "*",token_index);}
+divide   : DIVIDE   {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::DIVIDE   ,"/" ,token_index);}
+plus     : PLUS     {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::PLUS     ,"+" ,token_index);}
+minus    : MINUS    {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::MINUS    ,"-" ,token_index);}
+exponent : EXPONENT {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::EXPONENT ,"^" ,token_index);}
+lparen   : LPAREN   {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::LPAREN   ,"(" ,token_index);}
+rparen   : RPAREN   {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::RPAREN   ,")" ,token_index);}
+comma    : COMMA    {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::COMMA    ,"," ,token_index);}
 
 %left AND OR ;
 %left LT GT LTE GTE EQ NEQ ;
@@ -153,22 +153,22 @@ comma    : COMMA    {unsigned int token_index = static_cast<unsigned int>($1);$$
 %right EXPONENT;
 
 function_name : STRING {
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::VALUE,"name"
                          ,token_index);
     }
 function_args : /*EMPTY*/ { $$ = nullptr;}
     | math_exp
     {
-        unsigned int node_index = static_cast<unsigned int>($1);
-        $$ = new std::vector<unsigned int>();
+        size_t node_index = ($1);
+        $$ = new std::vector<size_t>();
         $$->push_back(node_index);
     }
     | function_args comma math_exp
     {
         if( $1 == nullptr )
         {
-            $$ = new std::vector<unsigned int>();
+            $$ = new std::vector<size_t>();
         }
         $$->push_back($2);
         $$->push_back($3);
@@ -179,10 +179,10 @@ function_args : /*EMPTY*/ { $$ = nullptr;}
 function : value %prec "constant"
     |  function_name lparen function_args rparen %prec "name"
     {
-        unsigned int name_index = static_cast<unsigned int>($1);
-        unsigned int left_index = static_cast<unsigned int>($2);
-        unsigned int right_index = static_cast<unsigned int>($4);
-        std::vector<unsigned int> child_indices = {name_index
+        size_t name_index = ($1);
+        size_t left_index = ($2);
+        size_t right_index = ($4);
+        std::vector<size_t> child_indices = {name_index
                                                    ,left_index};
         if( $function_args != nullptr )
         {
@@ -201,9 +201,9 @@ function : value %prec "constant"
 math_exp : value // constant value or function( cos(), sin())
     | minus math_exp  %prec UMINUS
     {
-        unsigned int left_index = static_cast<unsigned int>($1);
-        unsigned int op_index = static_cast<unsigned int>($2);
-        std::vector<unsigned int> child_indices = {left_index
+        size_t left_index = ($1);
+        size_t op_index = ($2);
+        std::vector<size_t> child_indices = {left_index
                                                    ,op_index};
         $$ = interpreter.push_parent(wasp::UNARY_MINUS
                                         ,"exp"
@@ -211,9 +211,9 @@ math_exp : value // constant value or function( cos(), sin())
     }
    | bang math_exp %prec UNOT
    {
-       unsigned int left_index = static_cast<unsigned int>($1);
-       unsigned int op_index = static_cast<unsigned int>($2);
-       std::vector<unsigned int> child_indices = {left_index
+       size_t left_index = ($1);
+       size_t op_index = ($2);
+       std::vector<size_t> child_indices = {left_index
                                                   ,op_index};
        $$ = interpreter.push_parent(wasp::UNARY_NOT
                                        ,"exp"
@@ -221,10 +221,10 @@ math_exp : value // constant value or function( cos(), sin())
     }
     | lparen math_exp rparen
     {
-        unsigned int left_index = static_cast<unsigned int>($1);
-        unsigned int op_index = static_cast<unsigned int>($2);
-        unsigned int right_index = static_cast<unsigned int>($3);
-        std::vector<unsigned int> child_indices = {left_index
+        size_t left_index = ($1);
+        size_t op_index = ($2);
+        size_t right_index = ($3);
+        std::vector<size_t> child_indices = {left_index
                                                    ,op_index
                                                    ,right_index};
         $$ = interpreter.push_parent(wasp::PARENTHESIS
@@ -233,10 +233,10 @@ math_exp : value // constant value or function( cos(), sin())
     }
     | math_exp multiply math_exp %prec MULTIPLY
     {
-        unsigned int left_index = static_cast<unsigned int>($1);
-        unsigned int op_index = static_cast<unsigned int>($2);
-        unsigned int right_index = static_cast<unsigned int>($3);
-        std::vector<unsigned int> child_indices = {left_index
+        size_t left_index = ($1);
+        size_t op_index = ($2);
+        size_t right_index = ($3);
+        std::vector<size_t> child_indices = {left_index
                                                    ,op_index
                                                    ,right_index};
         $$ = interpreter.push_parent(wasp::MULTIPLY
@@ -245,10 +245,10 @@ math_exp : value // constant value or function( cos(), sin())
     }
    | math_exp divide math_exp %prec DIVIDE
    {
-       unsigned int left_index = static_cast<unsigned int>($1);
-       unsigned int op_index = static_cast<unsigned int>($2);
-       unsigned int right_index = static_cast<unsigned int>($3);
-       std::vector<unsigned int> child_indices = {left_index
+       size_t left_index = ($1);
+       size_t op_index = ($2);
+       size_t right_index = ($3);
+       std::vector<size_t> child_indices = {left_index
                                                   ,op_index
                                                   ,right_index};
        $$ = interpreter.push_parent(wasp::DIVIDE
@@ -257,10 +257,10 @@ math_exp : value // constant value or function( cos(), sin())
    }
    | math_exp plus math_exp %prec PLUS
    {
-      unsigned int left_index = static_cast<unsigned int>($1);
-      unsigned int op_index = static_cast<unsigned int>($2);
-      unsigned int right_index = static_cast<unsigned int>($3);
-      std::vector<unsigned int> child_indices = {left_index
+      size_t left_index = ($1);
+      size_t op_index = ($2);
+      size_t right_index = ($3);
+      std::vector<size_t> child_indices = {left_index
                                                  ,op_index
                                                  ,right_index};
       $$ = interpreter.push_parent(wasp::PLUS
@@ -269,10 +269,10 @@ math_exp : value // constant value or function( cos(), sin())
    }
    | math_exp minus math_exp %prec MINUS
    {
-      unsigned int left_index = static_cast<unsigned int>($1);
-      unsigned int op_index = static_cast<unsigned int>($2);
-      unsigned int right_index = static_cast<unsigned int>($3);
-      std::vector<unsigned int> child_indices = {left_index
+      size_t left_index = ($1);
+      size_t op_index = ($2);
+      size_t right_index = ($3);
+      std::vector<size_t> child_indices = {left_index
                                                  ,op_index
                                                  ,right_index};
       $$ = interpreter.push_parent(wasp::MINUS
@@ -281,10 +281,10 @@ math_exp : value // constant value or function( cos(), sin())
    }
    | math_exp exponent math_exp %prec EXPONENT
    {
-      unsigned int left_index = static_cast<unsigned int>($1);
-      unsigned int op_index = static_cast<unsigned int>($2);
-      unsigned int right_index = static_cast<unsigned int>($3);
-      std::vector<unsigned int> child_indices = {left_index
+      size_t left_index = ($1);
+      size_t op_index = ($2);
+      size_t right_index = ($3);
+      std::vector<size_t> child_indices = {left_index
                                                  ,op_index
                                                  ,right_index};
       $$ = interpreter.push_parent(wasp::EXPONENT
@@ -293,10 +293,10 @@ math_exp : value // constant value or function( cos(), sin())
    }
    | math_exp eq math_exp %prec EQ
    {
-      unsigned int left_index = static_cast<unsigned int>($1);
-      unsigned int op_index = static_cast<unsigned int>($2);
-      unsigned int right_index = static_cast<unsigned int>($3);
-      std::vector<unsigned int> child_indices = {left_index
+      size_t left_index = ($1);
+      size_t op_index = ($2);
+      size_t right_index = ($3);
+      std::vector<size_t> child_indices = {left_index
                                                  ,op_index
                                                  ,right_index};
       $$ = interpreter.push_parent(wasp::EQ
@@ -305,10 +305,10 @@ math_exp : value // constant value or function( cos(), sin())
    }
    | math_exp neq math_exp %prec NEQ
    {
-      unsigned int left_index = static_cast<unsigned int>($1);
-      unsigned int op_index = static_cast<unsigned int>($2);
-      unsigned int right_index = static_cast<unsigned int>($3);
-      std::vector<unsigned int> child_indices = {left_index
+      size_t left_index = ($1);
+      size_t op_index = ($2);
+      size_t right_index = ($3);
+      std::vector<size_t> child_indices = {left_index
                                                  ,op_index
                                                  ,right_index};
       $$ = interpreter.push_parent(wasp::NEQ
@@ -317,10 +317,10 @@ math_exp : value // constant value or function( cos(), sin())
    }
    | math_exp and math_exp %prec AND
    {
-      unsigned int left_index = static_cast<unsigned int>($1);
-      unsigned int op_index = static_cast<unsigned int>($2);
-      unsigned int right_index = static_cast<unsigned int>($3);
-      std::vector<unsigned int> child_indices = {left_index
+      size_t left_index = ($1);
+      size_t op_index = ($2);
+      size_t right_index = ($3);
+      std::vector<size_t> child_indices = {left_index
                                                  ,op_index
                                                  ,right_index};
       $$ = interpreter.push_parent(wasp::WASP_AND
@@ -329,10 +329,10 @@ math_exp : value // constant value or function( cos(), sin())
    }
    | math_exp or math_exp %prec OR
    {
-      unsigned int left_index = static_cast<unsigned int>($1);
-      unsigned int op_index = static_cast<unsigned int>($2);
-      unsigned int right_index = static_cast<unsigned int>($3);
-      std::vector<unsigned int> child_indices = {left_index
+      size_t left_index = ($1);
+      size_t op_index = ($2);
+      size_t right_index = ($3);
+      std::vector<size_t> child_indices = {left_index
                                                  ,op_index
                                                  ,right_index};
       $$ = interpreter.push_parent(wasp::WASP_OR
@@ -341,10 +341,10 @@ math_exp : value // constant value or function( cos(), sin())
    }
    | math_exp gte math_exp %prec GTE
    {
-      unsigned int left_index = static_cast<unsigned int>($1);
-      unsigned int op_index = static_cast<unsigned int>($2);
-      unsigned int right_index = static_cast<unsigned int>($3);
-      std::vector<unsigned int> child_indices = {left_index
+      size_t left_index = ($1);
+      size_t op_index = ($2);
+      size_t right_index = ($3);
+      std::vector<size_t> child_indices = {left_index
                                                  ,op_index
                                                  ,right_index};
       $$ = interpreter.push_parent(wasp::GTE
@@ -353,10 +353,10 @@ math_exp : value // constant value or function( cos(), sin())
    }
    | math_exp gt math_exp %prec GT
    {
-      unsigned int left_index = static_cast<unsigned int>($1);
-      unsigned int op_index = static_cast<unsigned int>($2);
-      unsigned int right_index = static_cast<unsigned int>($3);
-      std::vector<unsigned int> child_indices = {left_index
+      size_t left_index = ($1);
+      size_t op_index = ($2);
+      size_t right_index = ($3);
+      std::vector<size_t> child_indices = {left_index
                                                  ,op_index
                                                  ,right_index};
       $$ = interpreter.push_parent(wasp::GT
@@ -365,10 +365,10 @@ math_exp : value // constant value or function( cos(), sin())
    }
    | math_exp lte math_exp %prec LTE
    {
-      unsigned int left_index = static_cast<unsigned int>($1);
-      unsigned int op_index = static_cast<unsigned int>($2);
-      unsigned int right_index = static_cast<unsigned int>($3);
-      std::vector<unsigned int> child_indices = {left_index
+      size_t left_index = ($1);
+      size_t op_index = ($2);
+      size_t right_index = ($3);
+      std::vector<size_t> child_indices = {left_index
                                                  ,op_index
                                                  ,right_index};
       $$ = interpreter.push_parent(wasp::LTE
@@ -377,10 +377,10 @@ math_exp : value // constant value or function( cos(), sin())
    }
    | math_exp lt math_exp %prec LT
    {
-      unsigned int left_index = static_cast<unsigned int>($1);
-      unsigned int op_index = static_cast<unsigned int>($2);
-      unsigned int right_index = static_cast<unsigned int>($3);
-      std::vector<unsigned int> child_indices = {left_index
+      size_t left_index = ($1);
+      size_t op_index = ($2);
+      size_t right_index = ($3);
+      std::vector<size_t> child_indices = {left_index
                                                  ,op_index
                                                  ,right_index};
       $$ = interpreter.push_parent(wasp::LT
@@ -389,54 +389,54 @@ math_exp : value // constant value or function( cos(), sin())
    }
 assign : ASSIGN
     {
-        unsigned int assign_token_index = static_cast<unsigned int>($1);
+        size_t assign_token_index = ($1);
         $$ = interpreter.push_leaf(wasp::ASSIGN,"="
                          ,assign_token_index);
     }
 
 //lbracket : LBRACKET
 //    {
-//        unsigned int token_index = static_cast<unsigned int>($1);
+//        size_t token_index = ($1);
 //        $$ = interpreter.push_leaf(wasp::LBRACKET,"["
 //                         ,token_index);
 //    }
 //rbracket : RBRACKET
 //    {
 
-//        unsigned int token_index = static_cast<unsigned int>($1);
+//        size_t token_index = ($1);
 //        $$ = interpreter.push_leaf(wasp::RBRACKET,"]"
 //                         ,token_index);
 //    }
 
 integer : INTEGER
     {
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::INT,"int"
                          ,token_index);
     }
 real : REAL
     {        
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::REAL,"real"
                          ,token_index);
     }
 unquoted_string : STRING
     {        
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::STRING,"string"
                          ,token_index);
     }
 VALUE : INTEGER | REAL | STRING
 value : VALUE
     {
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::VALUE,"value"
                          ,token_index);
     }
 DECL : STRING
 decl : DECL
     {
-        unsigned int decl_token_index = static_cast<unsigned int>($1);
+        size_t decl_token_index = ($1);
         $$ = interpreter.push_leaf(wasp::DECL,"decl"
                          ,decl_token_index);
     }
@@ -445,34 +445,34 @@ string : unquoted_string
 keyedvalue : decl assign math_exp
     {        
 
-        unsigned int key_index = static_cast<unsigned int>($1);
-        unsigned int assign_index = static_cast<unsigned int>($2);
-        unsigned int value_index = static_cast<unsigned int>($3);
+        size_t key_index = ($1);
+        size_t assign_index = ($2);
+        size_t value_index = ($3);
 
-        std::vector<unsigned int> child_indices = {key_index, assign_index,value_index};
+        std::vector<size_t> child_indices = {key_index, assign_index,value_index};
 
         $$ = interpreter.push_parent(wasp::KEYED_VALUE
-                                        ,interpreter.m_tree_nodes.data(key_index).c_str()
+                                        ,interpreter.data(key_index).c_str()
                                         ,child_indices);
     }
 
 
 comment : COMMENT
     {
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::COMMENT,"comment"
                          ,token_index);
     }
 
 start   : /** empty **/
         | start comment{
-            interpreter.add_root_child_index(static_cast<unsigned int>($2));
+            interpreter.add_root_child_index(($2));
         }
         | start keyedvalue{
-            interpreter.add_root_child_index(static_cast<unsigned int>($2));
+            interpreter.add_root_child_index(($2));
         }
         | start math_exp{
-            interpreter.add_root_child_index(static_cast<unsigned int>($2));
+            interpreter.add_root_child_index(($2));
         }
 
 

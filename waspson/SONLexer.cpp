@@ -3525,7 +3525,7 @@ void SONfree (void * ptr )
 namespace wasp {
 
 SONLexerImpl::SONLexerImpl(
-                SONInterpreter & interpreter,
+                AbstractInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
     : SONFlexLexer(in, out)

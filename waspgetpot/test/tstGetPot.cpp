@@ -16,7 +16,7 @@ TEST(GetPotInterpreter,simple)
     //    |_ = '='
     //    |_ value '3.421'
     input << "key =  3.421";
-    GetPotInterpreter interpreter;
+    GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(5, interpreter.node_count() );
 
@@ -74,7 +74,7 @@ TEST(GetPotInterpreter,empty_object)
     //    |_ object_term '[]'
 
     input << "[ted][]";
-    GetPotInterpreter interpreter;
+    GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(7, interpreter.node_count() );
 
@@ -127,7 +127,7 @@ TEST(GetPotInterpreter,simple_object)
     //    |_ object_term '[]'
 
     input << "[ted]key = 3.421[]";
-    GetPotInterpreter interpreter;
+    GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(11, interpreter.node_count() );
 
@@ -190,7 +190,7 @@ TEST(GetPotInterpreter,less_simple_object)
      fred = 1
      key = 3.421
  [])INPUT";
-    GetPotInterpreter interpreter;
+    GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(20, interpreter.node_count() );
 
@@ -256,7 +256,7 @@ TEST(GetPotInterpreter, object_array)
     //    |_ object_term '[]'
 
     input << "[ted]data='basic 201 lu'[]";
-    GetPotInterpreter interpreter;
+    GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(15, interpreter.node_count() );
 
@@ -314,7 +314,7 @@ TEST(GetPotInterpreter, object_empty_subobject)
     //    |_ object_term '[]'
 
     input << "[ted][./fred][../][]";
-    GetPotInterpreter interpreter;
+    GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(14, interpreter.node_count() );
 
@@ -381,7 +381,7 @@ TEST(GetPotInterpreter, object_subobject)
     //    |_ object_term '[]'
 
     input << "[ted][./fred]key=3.4321[../][]";
-    GetPotInterpreter interpreter;
+    GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(18, interpreter.node_count() );
 
@@ -440,7 +440,7 @@ TEST(GetPotInterpreter,simple_view)
     //    |_ = '='
     //    |_ value '3.421'
     input << "key =  3.421";
-    GetPotInterpreter interpreter;
+    GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(5, interpreter.node_count() );
 
@@ -528,7 +528,7 @@ R"INPUT(/
 /Problem/[] ([])
 )INPUT";
 
-    GetPotInterpreter interpreter;
+    GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(18, interpreter.node_count() );
     auto document = interpreter.root();
@@ -561,7 +561,7 @@ function = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)
         ,"'"
     };
 
-    GetPotInterpreter interpreter;
+    GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(9, interpreter.node_count() );
     auto document = interpreter.root();
@@ -585,7 +585,7 @@ TEST(GetPotInterpreter, comments )
     input<<R"INPUT(#
 # comment with content
 #)INPUT";
-   GetPotInterpreter interpreter;
+   GetPotInterpreter<> interpreter;
    ASSERT_EQ( true, interpreter.parse(input) );
    ASSERT_EQ(4, interpreter.node_count() );
    auto document = interpreter.root();
@@ -628,7 +628,7 @@ TEST(GetPotInterpreter,early_terminated_object)
         f=b
 [])INPUT";
 
-    GetPotInterpreter interpreter;
+    GetPotInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(46, interpreter.node_count() );
     auto document = interpreter.root();
@@ -708,7 +708,7 @@ TEST(GetPotInterpreter,nested_subblocks)
     [../]
   [../]
 [])INPUT";
-    GetPotInterpreter interpreter;
+    GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(21, interpreter.node_count() );
     auto document = interpreter.root();
@@ -743,7 +743,7 @@ TEST(GetPotInterpreter,multiple_objects)
 [])INPUT";
 
 
-    GetPotInterpreter interpreter;
+    GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(34, interpreter.node_count() );
     auto document = interpreter.root();

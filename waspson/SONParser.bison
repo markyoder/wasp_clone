@@ -39,15 +39,15 @@
 %initial-action
 {
     // initialize the initial location object
-    @$.begin.filename = @$.end.filename = &interpreter.m_stream_name;
-    @$.begin.line = @$.end.line = interpreter.m_start_line;
-    @$.begin.column = @$.end.column = interpreter.m_start_column;
+    @$.begin.filename = @$.end.filename = &interpreter.stream_name();
+    @$.begin.line = @$.end.line = interpreter.start_line();
+    @$.begin.column = @$.end.column = interpreter.start_column();
 };
 
 /* The interpreter is passed by reference to the parser and to the SONLexer. This
  * provides a simple but effective pure interface, not relying on global
  * variables. */
-%parse-param { class SONInterpreter& interpreter }
+%parse-param { class AbstractInterpreter& interpreter }
 
 /* verbose error messages */
 %error-verbose
@@ -57,7 +57,7 @@
 %union {
         std::size_t token_index;
         std::size_t node_index;
-        std::vector<unsigned int>* node_indices;
+        std::vector<size_t>* node_indices;
 }
 
 %token                  END          0  "end of file"
@@ -135,7 +135,7 @@
  * object. it defines the yylex() function call to pull the next token from the
  * current lexer object of the interpreter context. */
 #undef yylex
-#define yylex interpreter.m_lexer->lex
+#define yylex dynamic_cast<SONLexerImpl*>(interpreter.lexer())->lex
 
 %}
 
@@ -144,44 +144,44 @@
  /*** BEGIN - Change the wasp grammar rules below ***/
 filler : FILLER
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::FILL_EXPR,"filler",token_index);
     }
 comma : COMMA
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
     }
 //tick :  TICK
 //    {
-//        auto token_index = static_cast<unsigned int>($1);
+//        auto token_index = ($1);
 //        $$ = interpreter.push_leaf(wasp::WASP_TICK,"`",token_index);
 //    }
 multiply :  MULTIPLY
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::MULTIPLY,"*",token_index);
     }
 divide :  DIVIDE
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::DIVIDE,"/",token_index);
     }
 multiply_divide : multiply | divide
 plus :  PLUS
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::PLUS,"+",token_index);
     }
 minus :  MINUS
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::MINUS,"-",token_index);
     }
 
 exponent :  EXPONENT
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::EXPONENT,"^",token_index);
     }
 BOOLEAN : TOKEN_TRUE | TOKEN_FALSE
@@ -190,80 +190,80 @@ boolean_numeric_op : eq | neq | gt | lt | gte | lte
 
 eq : EQ
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::EQ,"==",token_index);
     }
 neq : NEQ
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::NEQ,"!=",token_index);
     }
 gte: GTE
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::GTE,">=",token_index);
     }
 gt: GT
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::GT,">",token_index);
     }
 lte: LTE
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::LTE,"<=",token_index);
     }
 lt: LT
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::LT,"<",token_index);
     }
 boolean_logic_op : and | or
 and: AND
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::WASP_AND,"&&",token_index);
     }
 or: OR
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::WASP_OR,"||",token_index);
     }
 
 unary_not : BANG
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::UNARY_NOT,"!",token_index);
     }
 
 lparen  : LPAREN
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::LPAREN,"(",token_index);
     }
 rparen  : RPAREN
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::RPAREN,")",token_index);
     }
 lbrace  : LBRACE
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::LBRACE,"{",token_index);
     }
 rbrace  : RBRACE
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::RBRACE,"}",token_index);
     }
 lbracket  : LBRACKET
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::LBRACKET,"[",token_index);
     }
 rbracket  : RBRACKET
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::RBRACKET,"]",token_index);
     }
 
@@ -272,7 +272,7 @@ PRIMITIVE : STRING | QSTRING | INTEGER | DOUBLE | BOOLEAN
 
 value : PRIMITIVE
 {
-    unsigned int token_index = static_cast<unsigned int>($1);
+    size_t token_index = ($1);
     $$ = interpreter.push_leaf(wasp::VALUE,"value"
                      ,token_index);
 }
@@ -293,10 +293,10 @@ component : value
 exp : component
     |exp multiply_divide exp %prec MULTIPLY
     {
-          unsigned int left_i = static_cast<unsigned int>($1);
-          unsigned int op_i = static_cast<unsigned int>($2);
-          unsigned int right_i = static_cast<unsigned int>($3);
-          std::vector<unsigned int> child_indices = {left_i
+          size_t left_i = ($1);
+          size_t op_i = ($2);
+          size_t right_i = ($3);
+          std::vector<size_t> child_indices = {left_i
                                                      ,op_i
                                                      ,right_i
                                                      };
@@ -307,10 +307,10 @@ exp : component
     }
     | exp plus exp %prec PLUS
     {
-        unsigned int left_i = static_cast<unsigned int>($1);
-        unsigned int op_i = static_cast<unsigned int>($2);
-        unsigned int right_i = static_cast<unsigned int>($3);
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ($1);
+        size_t op_i = ($2);
+        size_t right_i = ($3);
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -321,10 +321,10 @@ exp : component
     }
     | exp minus exp %prec MINUS
     {
-        unsigned int left_i = static_cast<unsigned int>($1);
-        unsigned int op_i = static_cast<unsigned int>($2);
-        unsigned int right_i = static_cast<unsigned int>($3);
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ($1);
+        size_t op_i = ($2);
+        size_t right_i = ($3);
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -335,10 +335,10 @@ exp : component
     }
     | exp exponent exp %prec EXPONENT
     {
-        unsigned int left_i = static_cast<unsigned int>($1);
-        unsigned int op_i = static_cast<unsigned int>($2);
-        unsigned int right_i = static_cast<unsigned int>($3);
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ($1);
+        size_t op_i = ($2);
+        size_t right_i = ($3);
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -349,10 +349,10 @@ exp : component
     }
     | exp boolean_numeric_op exp %prec EQ
     {
-        unsigned int left_i = static_cast<unsigned int>($1);
-        unsigned int op_i = static_cast<unsigned int>($2);
-        unsigned int right_i = static_cast<unsigned int>($3);
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ($1);
+        size_t op_i = ($2);
+        size_t right_i = ($3);
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -364,10 +364,10 @@ exp : component
 
     | exp boolean_logic_op exp %prec AND
     {
-        unsigned int left_i = static_cast<unsigned int>($1);
-        unsigned int op_i = static_cast<unsigned int>($2);
-        unsigned int right_i = static_cast<unsigned int>($3);
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ($1);
+        size_t op_i = ($2);
+        size_t right_i = ($3);
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -378,10 +378,10 @@ exp : component
     }    
     | lparen exp rparen %prec "exp"
     {
-        unsigned int left_i = static_cast<unsigned int>($1);
-        unsigned int center_i = static_cast<unsigned int>($2);
-        unsigned int right_i = static_cast<unsigned int>($3);
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ($1);
+        size_t center_i = ($2);
+        size_t right_i = ($3);
+        std::vector<size_t> child_indices = {left_i
                                                    ,center_i
                                                    ,right_i
                                                    };
@@ -392,9 +392,9 @@ exp : component
     }
     | minus exp %prec UMINUS
     {
-        unsigned int op_i = static_cast<unsigned int>($1);
-        unsigned int right_i = static_cast<unsigned int>($2);
-        std::vector<unsigned int> child_indices = {op_i
+        size_t op_i = ($1);
+        size_t right_i = ($2);
+        std::vector<size_t> child_indices = {op_i
                                                    ,right_i
                                                    };
 
@@ -404,9 +404,9 @@ exp : component
     }
     | unary_not exp %prec UNOT
     {
-        unsigned int op_i = static_cast<unsigned int>($1);
-        unsigned int right_i = static_cast<unsigned int>($2);
-        std::vector<unsigned int> child_indices = {op_i
+        size_t op_i = ($1);
+        size_t right_i = ($2);
+        std::vector<size_t> child_indices = {op_i
                                                    ,right_i
                                                    };
 
@@ -417,22 +417,22 @@ exp : component
 
 execution_unit_end : EXECUTION_UNIT_END
 {
-    auto token_index = static_cast<unsigned int>($1);
+    auto token_index = ($1);
     $$ = interpreter.push_leaf(wasp::EXECUTION_UNIT_END,"uoe_end",token_index);
 }
 execution_unit_start : EXECUTION_UNIT_START
 {
-    auto token_index = static_cast<unsigned int>($1);
+    auto token_index = ($1);
     $$ = interpreter.push_leaf(wasp::EXECUTION_UNIT_START,"uoe_start",token_index);
 }
 identifier : PRIMITIVE
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         $$ = interpreter.push_leaf(wasp::IDENTIFIER,"id",token_index);
     }
 decl : PRIMITIVE
     {
-        auto token_index = static_cast<unsigned int>($1);
+        auto token_index = ($1);
         std::string quote_less_data = interpreter.token_data(token_index);
         quote_less_data = wasp::strip_quotes(quote_less_data);
         $$ = interpreter.push_leaf(wasp::DECL
@@ -441,7 +441,7 @@ decl : PRIMITIVE
     }
 ASSIGNMENT : ASSIGN | COLON
 assignment : ASSIGNMENT {
-             auto token_index = static_cast<unsigned int>($1);
+             auto token_index = ($1);
              $$ = interpreter.push_leaf(wasp::ASSIGN,"=",token_index);
             }
 key_declaration : tag assignment
@@ -453,12 +453,12 @@ key_declaration : tag assignment
 declaration : key_declaration | tag
 tag :   decl
         {
-             $$ = new std::vector<unsigned int>();
+             $$ = new std::vector<size_t>();
              $$->push_back($decl);
         }
         | decl lparen identifier rparen
         {
-            $$ = new std::vector<unsigned int>();
+            $$ = new std::vector<size_t>();
             $$->push_back($1);
             $$->push_back($2);
             $$->push_back($3);
@@ -626,7 +626,7 @@ keyedvalue : key_declaration exp
 members :
         filler
         {
-            $$ = new std::vector<unsigned int>();
+            $$ = new std::vector<size_t>();
             $$->push_back($1);
         }
         | members filler
@@ -636,7 +636,7 @@ members :
         }
         |object
         {
-            $$ = new std::vector<unsigned int>();
+            $$ = new std::vector<size_t>();
             $$->push_back($1);
         }
         | members object
@@ -646,7 +646,7 @@ members :
         }
         | array
         {
-            $$ = new std::vector<unsigned int>();
+            $$ = new std::vector<size_t>();
             $$->push_back($1);
         }
         | members array
@@ -656,7 +656,7 @@ members :
         }
         | keyedvalue
         {
-            $$ = new std::vector<unsigned int>();
+            $$ = new std::vector<size_t>();
             $$->push_back($1);
         }
         | members keyedvalue
@@ -666,7 +666,7 @@ members :
         }
         | comment
         {
-            $$ = new std::vector<unsigned int>();
+            $$ = new std::vector<size_t>();
             $$->push_back($1);
         }
         | members comment
@@ -683,7 +683,7 @@ members :
 array_members : 
         exp
         {
-            $$ = new std::vector<unsigned int>();
+            $$ = new std::vector<size_t>();
             $$->push_back($1);
         }
         | array_members exp
@@ -694,7 +694,7 @@ array_members :
         |
         filler
         {
-            $$ = new std::vector<unsigned int>();
+            $$ = new std::vector<size_t>();
             $$->push_back($1);
         }
         | array_members filler
@@ -704,7 +704,7 @@ array_members :
         }
         |object
         {
-            $$ = new std::vector<unsigned int>();
+            $$ = new std::vector<size_t>();
             $$->push_back($1);
         }
         | array_members object
@@ -714,7 +714,7 @@ array_members :
         }
         | array
         {
-            $$ = new std::vector<unsigned int>();
+            $$ = new std::vector<size_t>();
             $$->push_back($1);
         }
         | array_members array
@@ -724,7 +724,7 @@ array_members :
         }
         | keyedvalue
         {
-            $$ = new std::vector<unsigned int>();
+            $$ = new std::vector<size_t>();
             $$->push_back($1);
         }
         | array_members keyedvalue
@@ -734,7 +734,7 @@ array_members :
         }
         | comment
         {
-            $$ = new std::vector<unsigned int>();
+            $$ = new std::vector<size_t>();
             $$->push_back($1);
         }
         | array_members comment
@@ -750,20 +750,20 @@ array_members :
 
 comment : COMMENT
         {
-            auto token_index = static_cast<unsigned int>($1);
+            auto token_index = ($1);
             $$ = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
 execution_unit_name : ANY_STRING
         {
-            auto token_index = static_cast<unsigned int>($1);
+            auto token_index = ($1);
             $$ = interpreter.push_leaf(wasp::DECL,"name",token_index);
         }
 execution_unit : execution_unit_start execution_unit_name execution_unit_end
        { // account for an empty execution unit
-            unsigned int start_i = static_cast<unsigned int>($1);
-            unsigned int name_i = static_cast<unsigned int>($2);
-            unsigned int end_i = static_cast<unsigned int>($3);
-            std::vector<unsigned int> child_indices = {start_i
+            size_t start_i = ($1);
+            size_t name_i = ($2);
+            size_t end_i = ($3);
+            std::vector<size_t> child_indices = {start_i
                                                        ,name_i
                                                        ,end_i
                                                        };
@@ -774,10 +774,10 @@ execution_unit : execution_unit_start execution_unit_name execution_unit_end
        }
       | execution_unit_start execution_unit_name members execution_unit_end
       { // execution unit with members
-            unsigned int start_i = static_cast<unsigned int>($1);
-            unsigned int name_i = static_cast<unsigned int>($2);
-            unsigned int end_i = static_cast<unsigned int>($4);
-            std::vector<unsigned int> child_indices = {start_i
+            size_t start_i = ($1);
+            size_t name_i = ($2);
+            size_t end_i = ($4);
+            std::vector<size_t> child_indices = {start_i
                                                        ,name_i
                                                        };
             for( std::size_t i = 0; i < $members->size(); ++ i )
@@ -791,11 +791,11 @@ execution_unit : execution_unit_start execution_unit_name execution_unit_end
                         ,child_indices);
        }
 start   : /** empty **/
-        | start comment{interpreter.add_root_child_index(static_cast<unsigned int>($2)); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
-        | start array{interpreter.add_root_child_index(static_cast<unsigned int>($2)); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
-        | start keyedvalue{interpreter.add_root_child_index(static_cast<unsigned int>($2)); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
-        | start object{interpreter.add_root_child_index(static_cast<unsigned int>($2)); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
-        | start execution_unit{interpreter.add_root_child_index(static_cast<unsigned int>($2));if(interpreter.isSingleParse() ) {YYACCEPT;}}
+        | start comment{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {dynamic_cast<SONLexerImpl*>(interpreter.lexer())->rewind();YYACCEPT;}}
+        | start array{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {dynamic_cast<SONLexerImpl*>(interpreter.lexer())->rewind();YYACCEPT;}}
+        | start keyedvalue{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {dynamic_cast<SONLexerImpl*>(interpreter.lexer())->rewind();YYACCEPT;}}
+        | start object{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {dynamic_cast<SONLexerImpl*>(interpreter.lexer())->rewind();YYACCEPT;}}
+        | start execution_unit{interpreter.add_root_child_index(($2));if(interpreter.single_parse() ) {YYACCEPT;}}
 
  /*** END RULES - Change the wasp grammar rules above ***/
 

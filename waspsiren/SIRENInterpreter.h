@@ -12,16 +12,19 @@
 #include <map>
 #include <memory>
 
+#include "waspcore/TreeNodePool.h"
+#include "SIRENLexer.h"  // lexer definition must come before interpreter
 #include "waspcore/Interpreter.h"
 #include "waspsiren/SIRENResultSet.h"
 
 /** The wasp namespace is used to encapsulate the three parser classes
  * wasp::SIRENParser, wasp::SIRENLexerImpl and wasp::SIRENInterpreter */
 namespace wasp {
-
-    class SIRENInterpreter : public Interpreter<> {
+    template<class S = TreeNodePool<> >
+    class SIRENInterpreter : public Interpreter<S> {
     public:
         typedef std::shared_ptr<SIRENInterpreter> SharedPtr;
+        typedef S Storage_type;
         SIRENInterpreter();
         SIRENInterpreter(std::ostream & err);
         virtual ~SIRENInterpreter();
@@ -47,11 +50,7 @@ namespace wasp {
          * @brief lexer - current lexer instance
          */
         class SIRENLexerImpl* m_lexer;
-
-        /**
-         * @brief streamName - stream name (file or input stream) used for error messages.
-         */
-        std::string streamName;
+        virtual class SIRENLexerImpl * lexer(){return m_lexer;}
 
         /**
          * @brief traceLexing - variable available for verbosely debugging lexing logic
@@ -91,7 +90,7 @@ namespace wasp {
          * @return the number of evaluations captured in the result set for the given context
          */
         template<typename TAdapter>
-        size_t evaluate(const TreeNodeView<decltype(m_tree_nodes)> & context
+        size_t evaluate(const TreeNodeView<Storage_type> & context
                         , SIRENResultSet<TAdapter> & result
                         , std::vector<TAdapter> & stage)const;
 //        template<typename TAdapter>
@@ -107,7 +106,7 @@ namespace wasp {
          * Loops through each staged node searching its children for specifically named child nodes
          */
         template<typename TAdapter>
-        void search_child_name(const TreeNodeView<decltype(m_tree_nodes)> & context, std::vector<TAdapter> & stage)const;
+        void search_child_name(const TreeNodeView<Storage_type> & context, std::vector<TAdapter> & stage)const;
         /**
          * @brief search_conditional_predicated_child searches the staged node's children for specifically named children with grandchild attributes
          * @param context the context to search for ( the child's name pattern )
@@ -117,7 +116,7 @@ namespace wasp {
          * only where the obj node has a child node 'name' with value 'fred'.
          */
         template<typename TAdapter>
-        void search_conditional_predicated_child(const TreeNodeView<decltype(m_tree_nodes)> & context
+        void search_conditional_predicated_child(const TreeNodeView<Storage_type> & context
                                                  , std::vector<TAdapter> & stage)const;
 
         /**
@@ -129,10 +128,10 @@ namespace wasp {
          * only where the obj node is at the 1-10 index and every 3rd
          */
         template<typename TAdapter>
-        void search_index_predicated_child(const TreeNodeView<decltype(m_tree_nodes)> & context
+        void search_index_predicated_child(const TreeNodeView<Storage_type> & context
                                                  , std::vector<TAdapter> & stage)const;
         template<typename TAdapter>
-        void recursive_child_select(const TreeNodeView<decltype(m_tree_nodes)> & context
+        void recursive_child_select(const TreeNodeView<Storage_type> & context
                                                  , std::vector<TAdapter> & stage)const;
     }; // end of SIRENInterpreter class
 #include "waspsiren/SIRENInterpreter.i.h"

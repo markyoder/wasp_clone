@@ -12,7 +12,7 @@ bool HIVE::select_nodes( SIRENResultSet<InputAdapter>& results
         , std::vector<std::string> & errors)
 {
     std::stringstream look_up_error;
-    SIRENInterpreter inputSelector(look_up_error);
+    SIRENInterpreter<> inputSelector(look_up_error);
     if( !inputSelector.parseString(selection_path) )
     {
         errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -249,7 +249,7 @@ bool HIVE::validateMinOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
 
        if (!issRV.eof() || issRV.fail()){
            std::stringstream look_up_error;
-           SIRENInterpreter inputSelectorlookup(look_up_error);
+           SIRENInterpreter<> inputSelectorlookup(look_up_error);
            if( !inputSelectorlookup.parseString(ruleValue.substr(3)) )
            {
                errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -315,7 +315,7 @@ bool HIVE::validateMaxOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
    std::string ruleValue = schema_node.to_string();
    bool pass = true;
    std::stringstream look_up_error;
-   SIRENInterpreter inputSelector(look_up_error);
+   SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodeParentPath) )
    {
        errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -338,7 +338,7 @@ bool HIVE::validateMaxOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
 
        if (!issRV.eof() || issRV.fail()){
            std::stringstream look_up_error;
-           SIRENInterpreter inputSelectorlookup(look_up_error);
+           SIRENInterpreter<> inputSelectorlookup(look_up_error);
            if( !inputSelectorlookup.parseString(ruleValue.substr(3)) )
            {
                errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -413,7 +413,7 @@ bool HIVE::validateValType(SchemaAdapter & schema_node, InputAdapter & input_nod
        return false;
    }
    std::stringstream look_up_error;
-   SIRENInterpreter inputSelector(look_up_error);
+   SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodePath) )
    {
        errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -548,7 +548,7 @@ bool HIVE::validateValEnums(SchemaAdapter & schema_node, InputAdapter & input_no
 
    // CREATE THE DEQUE OF THE VALUES FOR THIS NODE
    std::stringstream look_up_error;
-   SIRENInterpreter inputSelector(look_up_error);
+   SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodePath) )
    {
        errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -726,7 +726,7 @@ bool HIVE::validateMinValInc(SchemaAdapter & schema_node, InputAdapter & input_n
    bool pass = true;
 
    std::stringstream look_up_error;
-   SIRENInterpreter inputSelector(look_up_error);
+   SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodePath) )
    {
        errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -766,7 +766,7 @@ bool HIVE::validateMinValInc(SchemaAdapter & schema_node, InputAdapter & input_n
            if (!issRV.eof() || issRV.fail()){
 
                std::stringstream look_up_error;
-               SIRENInterpreter inputSelectorlookup(look_up_error);
+               SIRENInterpreter<> inputSelectorlookup(look_up_error);
                if( !inputSelectorlookup.parseString(ruleValue) )
                {
                    errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -853,7 +853,7 @@ bool HIVE::validateMaxValInc(SchemaAdapter & schema_node, InputAdapter & input_n
    bool pass = true;
 
    std::stringstream look_up_error;
-   SIRENInterpreter inputSelector(look_up_error);
+   SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodePath) )
    {
        errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -893,7 +893,7 @@ bool HIVE::validateMaxValInc(SchemaAdapter & schema_node, InputAdapter & input_n
            if (!issRV.eof() || issRV.fail()){
 
                std::stringstream look_up_error;
-               SIRENInterpreter inputSelectorlookup(look_up_error);
+               SIRENInterpreter<> inputSelectorlookup(look_up_error);
                if( !inputSelectorlookup.parseString(ruleValue) )
                {
                    errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -980,7 +980,7 @@ bool HIVE::validateMinValExc(SchemaAdapter & schema_node, InputAdapter & input_n
    bool pass = true;
 
    std::stringstream look_up_error;
-   SIRENInterpreter inputSelector(look_up_error);
+   SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodePath) )
    {
        errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -1020,7 +1020,7 @@ bool HIVE::validateMinValExc(SchemaAdapter & schema_node, InputAdapter & input_n
            if (!issRV.eof() || issRV.fail()){
 
                std::stringstream look_up_error;
-               SIRENInterpreter inputSelectorlookup(look_up_error);
+               SIRENInterpreter<> inputSelectorlookup(look_up_error);
                if( !inputSelectorlookup.parseString(ruleValue) )
                {
                    errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -1107,7 +1107,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
    bool pass = true;
 
    std::stringstream look_up_error;
-   SIRENInterpreter inputSelector(look_up_error);
+   SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodePath) )
    {
        errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -1147,7 +1147,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
            if (!issRV.eof() || issRV.fail()){
 
                std::stringstream look_up_error;
-               SIRENInterpreter inputSelectorlookup(look_up_error);
+               SIRENInterpreter<> inputSelectorlookup(look_up_error);
                if( !inputSelectorlookup.parseString(ruleValue) )
                {
                    errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -1251,7 +1251,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 
 //        // CREATE THE DEQUE OF THE VALUES FOR THIS NODE
 //   std::stringstream look_up_error;
-//   SIRENInterpreter inputSelector(look_up_error);
+//   SIRENInterpreter<> inputSelector(look_up_error);
 //   if( !inputSelector.parseString(nodePath) )
 //   {
 //       errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -1410,7 +1410,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 //               }
 //               auto sitr = childrenSIRENInterpreterS.find(loop);
 //               if( sitr == childrenSIRENInterpreterS.end() ){
-//                   SIRENInterpreter inputSelectorLookup(ruleValue);
+//                   SIRENInterpreter<> inputSelectorLookup(ruleValue);
 //                   if(inputSelectorLookup.hasParseErrors()){
 //                       for(size_t j = 0; j < inputSelectorLookup.getErrors().size(); j++){
 //                           errors.push_back(Error::SirenParseError(inputSelectorLookup.getErrors().at(j)));
@@ -1610,7 +1610,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter & schema_node, InputAdapter & input
    
    // gather all of the nodes for which this rule applies
    std::stringstream look_up_error;
-   SIRENInterpreter inputSelector(look_up_error);
+   SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodePath) )
    {
        errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -1629,7 +1629,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter & schema_node, InputAdapter & input
 
        // std::set up the siren for this specific lookup path
        std::stringstream look_up_error;
-       SIRENInterpreter childSelector(look_up_error);
+       SIRENInterpreter<> childSelector(look_up_error);
        if( !childSelector.parseString(lookupPath) )
        {
            errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -1796,7 +1796,7 @@ bool HIVE::validateSumOver(SchemaAdapter & schema_node, InputAdapter & input_nod
    bool pass = true;
 
    std::stringstream look_up_error;
-   SIRENInterpreter inputSelector(look_up_error);
+   SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodePath+"/"+ruleId) )
    {
        errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -1807,7 +1807,7 @@ bool HIVE::validateSumOver(SchemaAdapter & schema_node, InputAdapter & input_nod
 
    if (selection.size() != 0){
        std::stringstream look_up_error;
-       SIRENInterpreter inputSelectorlookup(look_up_error);
+       SIRENInterpreter<> inputSelectorlookup(look_up_error);
        if( !inputSelectorlookup.parseString(selection.at(0).path()) )
        {
            errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -1818,7 +1818,7 @@ bool HIVE::validateSumOver(SchemaAdapter & schema_node, InputAdapter & input_nod
 
        for(size_t i = 0; i < selectionLookup.size(); i++){
            std::stringstream look_up_error;
-           SIRENInterpreter sumSelector(look_up_error);
+           SIRENInterpreter<> sumSelector(look_up_error);
            if( !sumSelector.parseString(nodePath.substr(selection.at(0).path().length()+1)) )
            {
                errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -1906,7 +1906,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter & schema_node, InputAdapter & inpu
    int groupDivide = group_divide_schema_node->to_int();
    double groupSum = group_sum_schema_node->to_double();
    std::stringstream look_up_error;
-   SIRENInterpreter inputSelector(look_up_error);
+   SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodePath+"/"+ruleId) )
    {
        errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -1917,7 +1917,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter & schema_node, InputAdapter & inpu
 
    if (selection.size() != 0){
        std::stringstream look_up_error;
-       SIRENInterpreter inputSelectorlookup(look_up_error);
+       SIRENInterpreter<> inputSelectorlookup(look_up_error);
        if( !inputSelectorlookup.parseString(selection.at(0).path()) )
        {
            errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -1926,13 +1926,13 @@ bool HIVE::validateSumOverGroup(SchemaAdapter & schema_node, InputAdapter & inpu
        SIRENResultSet<InputAdapter> selectionLookup;
        inputSelectorlookup.evaluate(input_node,selectionLookup);
 
-       SIRENInterpreter sumSelector(look_up_error);
+       SIRENInterpreter<> sumSelector(look_up_error);
        if( !sumSelector.parseString(nodePath.substr(selection.at(0).path().length()+1)) )
        {
            errors.push_back(Error::SirenParseError(look_up_error.str()));
            return false;
        }
-       SIRENInterpreter comparePathSelector(look_up_error);
+       SIRENInterpreter<> comparePathSelector(look_up_error);
 
        if( !comparePathSelector.parseString(comparePath) )
        {
@@ -2048,7 +2048,7 @@ bool HIVE::validateIncreaseOver(SchemaAdapter & schema_node, InputAdapter & inpu
        return false;
    }
    std::stringstream look_up_error;
-   SIRENInterpreter inputSelector(look_up_error);
+   SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodePath+"/"+ruleId) )
    {
        errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -2059,7 +2059,7 @@ bool HIVE::validateIncreaseOver(SchemaAdapter & schema_node, InputAdapter & inpu
 
     if (selection.size() != 0){
 
-       SIRENInterpreter inputSelectorLookup(look_up_error);
+       SIRENInterpreter<> inputSelectorLookup(look_up_error);
        if( !inputSelectorLookup.parseString(selection.at(0).path()) )
        {
            errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -2070,7 +2070,7 @@ bool HIVE::validateIncreaseOver(SchemaAdapter & schema_node, InputAdapter & inpu
 
        for(size_t i = 0; i < selectionLookup.size(); i++){
 
-           SIRENInterpreter incrSelector(look_up_error);
+           SIRENInterpreter<> incrSelector(look_up_error);
            if( !incrSelector.parseString(nodePath.substr(selection.at(0).path().length()+1)) )
            {
                errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -2182,7 +2182,7 @@ bool HIVE::validateDecreaseOver(SchemaAdapter & schema_node, InputAdapter & inpu
    }
 
    std::stringstream look_up_error;
-   SIRENInterpreter inputSelector(look_up_error);
+   SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodePath+"/"+ruleId) )
    {
        errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -2192,7 +2192,7 @@ bool HIVE::validateDecreaseOver(SchemaAdapter & schema_node, InputAdapter & inpu
    inputSelector.evaluate(input_node,selection);
 
    if (selection.size() != 0){
-       SIRENInterpreter inputSelectorlookup(look_up_error);
+       SIRENInterpreter<> inputSelectorlookup(look_up_error);
        if( !inputSelectorlookup.parseString(selection.at(0).path()) )
        {
            errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -2202,7 +2202,7 @@ bool HIVE::validateDecreaseOver(SchemaAdapter & schema_node, InputAdapter & inpu
        inputSelectorlookup.evaluate(input_node,selectionLookup);
        for(size_t i = 0; i < selectionLookup.size(); i++){
 
-           SIRENInterpreter decrSelector(look_up_error);
+           SIRENInterpreter<> decrSelector(look_up_error);
            if( !decrSelector.parseString(nodePath.substr(selection.at(0).path().length()+1)) )
            {
                errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -2303,7 +2303,7 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter & schema_node, InputAdapter & in
    bool pass = true;
 
    std::stringstream look_up_error;
-   SIRENInterpreter inputSelector(look_up_error);
+   SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodePath) )
    {
        errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -2320,7 +2320,7 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter & schema_node, InputAdapter & in
         if (children[j]->child_count() == 0) lookupPath = children[j].to_string();
         else                                   lookupPath = children[j].name();
 
-        SIRENInterpreter childSelector(look_up_error);
+        SIRENInterpreter<> childSelector(look_up_error);
         if( !childSelector.parseString(lookupPath) )
         {
             errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -2388,7 +2388,7 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter & schema_node, InputAdapter & i
        if (children[j]->child_count() == 0) lookupPath = children[j].to_string();
        else                                   lookupPath = children[j].name();
        std::stringstream look_up_error;
-       SIRENInterpreter childSelector(look_up_error);
+       SIRENInterpreter<> childSelector(look_up_error);
        if( !childSelector.parseString(lookupPath) )
        {
            errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -2471,7 +2471,7 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter & schema_node, InputAdapter & i
        if (children[j]->child_count() == 0) lookupPath = children[j].to_string();
        else                                   lookupPath = children[j].name();
        std::stringstream look_up_error;
-       SIRENInterpreter childSelector(look_up_error);
+       SIRENInterpreter<> childSelector(look_up_error);
        if( !childSelector.parseString(lookupPath) )
        {
            errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -2536,7 +2536,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter & schema_node, InputAdapter & i
    }
 
    std::stringstream look_up_error;
-   SIRENInterpreter inputSelector(look_up_error);
+   SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodePath) )
    {
        errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -2552,7 +2552,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter & schema_node, InputAdapter & i
        bool foundError=false;
        for(int j = 0; j < children.size(); j++){
 
-           SIRENInterpreter childSelector(look_up_error);
+           SIRENInterpreter<> childSelector(look_up_error);
            if( !childSelector.parseString(children[j].to_string()) )
            {
                errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -2623,7 +2623,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
 
    // gather all of the nodes for which this rule applies
    std::stringstream look_up_error;
-   SIRENInterpreter inputSelector(look_up_error);
+   SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodePath) )
    {
        errors.push_back(Error::SirenParseError(look_up_error.str()));
@@ -2649,7 +2649,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
            std::string lookupPath = lookupPaths[j].to_string();
 
            // gather all of the nodes that are at this lookup path relative to this node
-           SIRENInterpreter childSelector(look_up_error);
+           SIRENInterpreter<> childSelector(look_up_error);
            if( !childSelector.parseString(lookupPath) )
            {
                errors.push_back(Error::SirenParseError(look_up_error.str()));

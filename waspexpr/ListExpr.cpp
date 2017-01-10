@@ -27,7 +27,7 @@ int main (int argc, char *argv[])
             input.close();
             return 1;
         }
-        ExprInterpreter interpreter;
+        ExprInterpreter<> interpreter;
         bool parsed = interpreter.parse(input);
         if( !parsed )
         {

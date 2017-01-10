@@ -2361,7 +2361,7 @@ void SIRENfree (void * ptr )
 namespace wasp {
 
 SIRENLexerImpl::SIRENLexerImpl(
-                SIRENInterpreter & interpreter,
+                AbstractInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
     : SIRENFlexLexer(in, out)

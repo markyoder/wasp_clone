@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
         return 1;
     }
     
-    SONInterpreter parser;
+    SONInterpreter<> parser;
     bool failed = !parser.parseFile(argv[1]);
     if( failed ){
         std::cout<<"***Error : Parsing of "<<argv[1]<<" failed!"<<std::endl;

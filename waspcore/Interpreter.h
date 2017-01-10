@@ -2,14 +2,101 @@
 #define WASP_INTERPRETER_H
 #include <vector>
 #include <string>
+#include <cstddef> // size_t
 #include <iostream>
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h" // for UNKNOWN, DOCUMENT_ROOT NODE types
 
 namespace wasp{
 
+
+/**
+ * @brief The AbstractInterpreter class to fulfill design req for parser interaction
+ */
+class AbstractInterpreter{
+public:
+    /**
+     * @brief token_count acquires the number of tokens so far interpreted
+     * @return the number of tokens
+     */
+    virtual size_t token_count()const=0;
+    /**
+     * @brief push appends a token
+     * @param str the token's string data
+     * @param type the token's type (enumeration)
+     * @param token_file_offset the token's offset into the file/stream
+     */
+    virtual void push_token(const char * str, size_t type
+              , size_t token_file_offset )=0;
+    /**
+     * @brief push_line appends a line to the new line buffer
+     * @param line_file_offset byte offset into the file/stream for the newline
+     */
+    virtual void push_line_offset(size_t line_file_offset)=0;
+    /**
+     * @brief push_leaf create a leaf node with the given type, name, and token reference
+     * @param node_type the leaf node's type enumeration
+     * @param node_name the leaf node's name
+     * @param token_index the leaf node's token index
+     * @return the new leaf node's index in the TreeNodePool
+     */
+    virtual size_t push_leaf(size_t node_type
+                     ,const char * node_name
+                     ,size_t token_index)=0;
+    /**
+     * @brief push_parent create a parent node with the given type, node, and child indices
+     * @param node_type the node's enumerated type
+     * @param node_name the node's name
+     * @param child_indices the child indices for the node
+     * @return the new parent node's index in the TreeNodePool
+     */
+    virtual size_t push_parent(size_t node_type
+                       , const char * node_name
+                       , const std::vector<size_t>&child_indices )=0;
+    /**
+     * @brief type acquire the type of the node at the given index
+     * @param node_index the node index
+     * @return the type of the node from the wasp_node.h collection
+     */
+    virtual size_t type(size_t node_index)const=0;
+    /**
+     * @brief name acquire the name of the node at the given index
+     * @param node_index the node index
+     * @return the name of the node
+     */
+    virtual const char * name(size_t node_index)const=0;
+    /**
+     * @brief data acquire the data of the node at the given index
+     * @param node_index
+     * @return
+     */
+    virtual std::string data(size_t node_index)const=0;
+    /**
+     * @brief token_data acquires the data for the token at the given index
+     * @param token_index the index of the token for which the data is requested
+     * @return the data of the token
+     */
+    virtual const char * token_data( size_t token_index )const=0;
+
+    /**
+     * @brief add_root_child_index method accumulates the root node's children
+     * @param node_index child node index
+     * This will be flushed at the conclusion of parsing.
+     */
+    virtual void add_root_child_index(size_t node_index)=0;
+
+    virtual size_t start_column()const=0;
+    virtual size_t start_line()const=0;
+    virtual const std::string& stream_name()const=0;
+    virtual std::string& stream_name()=0;
+    virtual std::ostream & error_stream()=0;
+    virtual class ::FlexLexer * lexer()=0;
+
+    virtual bool single_parse()const=0;
+};
+
 template< class TNS = TreeNodePool<> >
-class Interpreter{
+class Interpreter : public AbstractInterpreter {
 public:
     typedef TNS TreeNodePool_type;
     typedef typename TNS::node_index_size node_index_size;
@@ -42,8 +129,8 @@ public:
      * @return true, iff no input processing errors were encountered
      */
     virtual bool parse(std::istream &input
-                       , std::size_t m_start_line=1u
-                       , std::size_t m_start_column=1u)=0;
+                       , size_t m_start_line=1u
+                       , size_t m_start_column=1u)=0;
     /**
      * @brief token_count acquires the number of tokens so far interpreted
      * @return the number of tokens
@@ -55,7 +142,7 @@ public:
      * @param type the token's type (enumeration)
      * @param token_file_offset the token's offset into the file/stream
      */
-    void push_token(const char * str, token_type_size type
+    void push_token(const char * str, size_t type
               , size_t token_file_offset )
         {m_tree_nodes.push_token(str,type,token_file_offset);}
     /**
@@ -71,9 +158,9 @@ public:
      * @param token_index the leaf node's token index
      * @return the new leaf node's index in the TreeNodePool
      */
-    std::size_t push_leaf(node_type_size node_type
+    size_t push_leaf(size_t node_type
                      ,const char * node_name
-                     ,token_index_type_size token_index);
+                     ,size_t token_index);
     /**
      * @brief push_parent create a parent node with the given type, node, and child indices
      * @param node_type the node's enumerated type
@@ -81,15 +168,15 @@ public:
      * @param child_indices the child indices for the node
      * @return the new parent node's index in the TreeNodePool
      */
-    std::size_t push_parent(node_type_size node_type
+    size_t push_parent(size_t node_type
                        , const char * node_name
-                       , const std::vector<node_index_size>&child_indices );
+                       , const std::vector<size_t>&child_indices );
     /**
      * @brief type acquire the type of the node at the given index
      * @param node_index the node index
      * @return the type of the node from the wasp_node.h collection
      */
-    node_type_size type(node_index_size node_index)const;
+    size_t type(size_t node_index)const;
 
     /**
      * @brief node_token_type acquire the type of the toke backing the node at the given index
@@ -98,37 +185,40 @@ public:
      * If the node index is out of range, wasp::UNKNOWN is returned.
      * If the node at the given index is not a leaf node, wasp::UNKNOWN is returned
      */
-    token_type_size node_token_type( node_index_size node_index)const;
+    token_type_size node_token_type( size_t node_index)const;
     /**
      * @brief name acquire the name of the node at the given index
      * @param node_index the node index
      * @return the name of the node
      */
-    const char * name(node_index_size node_index)const;
+    const char * name(size_t node_index)const;
     /**
      * @brief data acquire the data of the node at the given index
      * @param node_index
      * @return
      */
-    std::string data(node_index_size node_index)const;
+    std::string data(size_t node_index)const;
     /**
      * @brief token_data acquires the data for the token at the given index
      * @param token_index the index of the token for which the data is requested
      * @return the data of the token
      */
-    const char * token_data( token_index_type_size token_index )const;
+    const char * token_data( size_t token_index )const;
 
-    std::size_t node_count()const{return m_tree_nodes.size();}
-    std::size_t leaf_node_count()const{return m_tree_nodes.leaf_node_count();}
-    std::size_t parent_node_count()const{return m_tree_nodes.parent_node_count();}
+    size_t node_count()const{return m_tree_nodes.size();}
+    size_t leaf_node_count()const{return m_tree_nodes.leaf_node_count();}
+    size_t parent_node_count()const{return m_tree_nodes.parent_node_count();}
     /**
      * @brief add_root_child_index method accumulates the root node's children
      * @param node_index child node index
      * TODO make private, friend the parser
      * This will be flushed at the conclusion of parsing.
      */
-    void add_root_child_index(token_index_type_size node_index)
+    void add_root_child_index(size_t node_index)
                 {m_root_child_indices.push_back(node_index);}
+
+    virtual class ::FlexLexer * lexer()=0;
+    virtual bool single_parse()const{return false;}
 protected:
     template<class LEXER_IMPL
              ,class PARSER_IMPL
@@ -136,25 +226,26 @@ protected:
     bool parse_impl( LEXER_IMPL *& lexer
             , std::istream &input
             , const std::string& stream_name
-            , std::size_t m_start_line
-            , std::size_t m_start_column);
+            , size_t m_start_line
+            , size_t m_start_column);
 
 public: // variables
-
-
     /**
      * @brief m_start_column - the starting colum to start parsing at (default 1)
      */
-    std::size_t m_start_column;
+    size_t m_start_column;
+    size_t start_column()const{return m_start_column;}
     /**
      * @brief m_start_line - the starting line to start parsing at (default 1)
      */
-    std::size_t m_start_line;
+    size_t m_start_line;
+    size_t start_line()const{return m_start_line;}
     /**
      * @brief m_stream_name - stream name (file or input stream) used for error messages.
      */
     std::string m_stream_name;
-
+    const std::string& stream_name()const{return m_stream_name;}
+    std::string& stream_name(){return m_stream_name;}
     std::ostream & error_stream(){return m_error_stream;}
 private:
     /**
@@ -162,11 +253,12 @@ private:
      */
     std::ostream & m_error_stream;
 protected:
-    std::vector<node_index_size> m_root_child_indices;
-    std::size_t m_root_index;
+    std::vector<size_t> m_root_child_indices;
+    size_t m_root_index;
 public:
     TreeNodePool_type m_tree_nodes;
 };
+
 #include "waspcore/Interpreter.i.h"
 } // end of namespace
 #endif

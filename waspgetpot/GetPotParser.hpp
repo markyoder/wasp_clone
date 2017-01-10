@@ -135,7 +135,7 @@ namespace wasp {
 
     std::size_t token_index;
     std::size_t node_index;
-    std::vector<unsigned int>* node_indices;
+    std::vector<size_t>* node_indices;
 
 #line 141 "GetPotParser.hpp" // lalr1.cc:377
     };
@@ -278,7 +278,7 @@ namespace wasp {
 
 
     /// Build a parser object.
-    GetPotParser (class GetPotInterpreter& interpreter_yyarg);
+    GetPotParser (class AbstractInterpreter& interpreter_yyarg);
     virtual ~GetPotParser ();
 
     /// Parse.
@@ -491,7 +491,7 @@ namespace wasp {
 
 
     // User arguments.
-    class GetPotInterpreter& interpreter;
+    class AbstractInterpreter& interpreter;
   };
 
 

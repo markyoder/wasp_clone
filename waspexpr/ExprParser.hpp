@@ -135,7 +135,7 @@ namespace wasp {
 
     std::size_t token_index;
     std::size_t node_index;
-    std::vector<unsigned int>* node_indices;
+    std::vector<size_t>* node_indices;
 
 #line 141 "ExprParser.hpp" // lalr1.cc:377
     };
@@ -290,7 +290,7 @@ namespace wasp {
 
 
     /// Build a parser object.
-    ExprParser (class ExprInterpreter& interpreter_yyarg);
+    ExprParser (class AbstractInterpreter& interpreter_yyarg);
     virtual ~ExprParser ();
 
     /// Parse.
@@ -503,7 +503,7 @@ namespace wasp {
 
 
     // User arguments.
-    class ExprInterpreter& interpreter;
+    class AbstractInterpreter& interpreter;
   };
 
 

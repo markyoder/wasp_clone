@@ -36,7 +36,7 @@ public:
      * yylex().
      * The token pool is the storage class
     */
-    ExprLexerImpl(class ExprInterpreter & interpreter,
+    ExprLexerImpl(class AbstractInterpreter & interpreter,
             std::istream* arg_yyin = 0,
            std::ostream* arg_yyout = 0);
 
@@ -62,7 +62,7 @@ public:
                        wasp::NODE type);
 
 private:
-    class ExprInterpreter & interpreter;
+    class AbstractInterpreter & interpreter;
     std::size_t file_offset;
 
 };

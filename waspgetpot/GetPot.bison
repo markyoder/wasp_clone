@@ -39,15 +39,15 @@
 %initial-action
 {
     // initialize the initial location object
-    @$.begin.filename = @$.end.filename = &interpreter.m_stream_name;
-    @$.begin.line = @$.end.line = interpreter.m_start_line;
-    @$.begin.column = @$.end.column = interpreter.m_start_column;
+    @$.begin.filename = @$.end.filename = &interpreter.stream_name();
+    @$.begin.line = @$.end.line = interpreter.start_line();
+    @$.begin.column = @$.end.column = interpreter.start_column();
 };
 
 /* The interpreter is passed by reference to the parser and to the GetPotLexer. This
  * provides a simple but effective pure interface, not relying on global
  * variables. */
-%parse-param { class GetPotInterpreter& interpreter }
+%parse-param { class AbstractInterpreter& interpreter }
 
 /* verbose error messages */
 %error-verbose
@@ -58,7 +58,7 @@
 %union{
     std::size_t token_index;
     std::size_t node_index;
-    std::vector<unsigned int>* node_indices;
+    std::vector<size_t>* node_indices;
 }
 
 
@@ -106,7 +106,7 @@
  * object. it defines the yylex() function call to pull the next token from the
  * current lexer object of the interpreter context. */
 #undef yylex
-#define yylex interpreter.m_lexer->lex
+#define yylex dynamic_cast<GetPotLexerImpl*>(interpreter.lexer())->lex
 
 %}
 
@@ -116,44 +116,44 @@
 
 comma : COMMA
     {
-        unsigned int token_index = static_cast<unsigned int>($1);$$ = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
+        size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
     }
 assign : ASSIGN
     {
-        unsigned int assign_token_index = static_cast<unsigned int>($1);
+        size_t assign_token_index = ($1);
         $$ = interpreter.push_leaf(wasp::ASSIGN,"="
                          ,assign_token_index);
     }
 
 object_term : OBJECT_TERM
     {
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::OBJECT_TERM,"[]"
                          ,token_index);
     }
 sub_object_term : SUB_OBJECT_TERM
     {
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::SUB_OBJECT_TERM,"[../]"
                          ,token_index);
     }
 lbracket : LBRACKET
     {
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::LBRACKET,"["
                          ,token_index);
     }
 rbracket : RBRACKET
     {
 
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::RBRACKET,"]"
                          ,token_index);
     }
 dot_slash : DOT_SLASH
     {
 
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::DOT_SLASH,"./"
                          ,token_index);
     }
@@ -162,72 +162,72 @@ sub_object_member : primitive | keyedvalue | comment | sub_object
 
 sub_object_members : sub_object_member
     {
-        unsigned int node_index = static_cast<unsigned int>($1);
-        $$ = new std::vector<unsigned int>();
+        size_t node_index = ($1);
+        $$ = new std::vector<size_t>();
         $$->push_back(node_index);
     }| sub_object_members sub_object_member
     {
-        $1->push_back(static_cast<unsigned int>($sub_object_member));
+        $1->push_back(($sub_object_member));
     }
 sub_object_decl : lbracket  dot_slash decl rbracket
     {
-        unsigned int lbracket_index = static_cast<unsigned int>($lbracket);
-        unsigned int dot_slash_index = static_cast<unsigned int>($dot_slash);
-        unsigned int decl_index = static_cast<unsigned int>($decl);
-        unsigned int rbracket_index = static_cast<unsigned int>($rbracket);
-        std::vector<unsigned int> child_indices = {lbracket_index
+        size_t lbracket_index = ($lbracket);
+        size_t dot_slash_index = ($dot_slash);
+        size_t decl_index = ($decl);
+        size_t rbracket_index = ($rbracket);
+        std::vector<size_t> child_indices = {lbracket_index
                                                    ,dot_slash_index
                                                    ,decl_index
                                                    ,rbracket_index};
 
         $$ = interpreter.push_parent(wasp::SUB_OBJECT_DECL
-                                        ,interpreter.m_tree_nodes.data(decl_index).c_str()
+                                        ,interpreter.data(decl_index).c_str()
                                         ,child_indices);
     }
 sub_object : sub_object_decl sub_object_term
     {// empty object
-        unsigned int object_decl_i = static_cast<unsigned int>($sub_object_decl);
-        unsigned int object_term_i = static_cast<unsigned int>($sub_object_term);
-        std::vector<unsigned int> child_indices = {object_decl_i
+        size_t object_decl_i = ($sub_object_decl);
+        size_t object_term_i = ($sub_object_term);
+        std::vector<size_t> child_indices = {object_decl_i
                                                    ,object_term_i};
 
         $$ = interpreter.push_parent(wasp::SUB_OBJECT
-                                        ,interpreter.m_tree_nodes.name(object_decl_i)
+                                        ,interpreter.name(object_decl_i)
                                         ,child_indices);
 
     }| sub_object_decl sub_object_members sub_object_term
-    {   std::vector<unsigned int> children; children.reserve(2+$2->size());
-        unsigned int object_decl_i = static_cast<unsigned int>($sub_object_decl);
+    {   std::vector<size_t> children; children.reserve(2+$2->size());
+        size_t object_decl_i = ($sub_object_decl);
         children.push_back(object_decl_i);
-        for( unsigned int child_i: *$2 ) children.push_back(child_i);
-        children.push_back(static_cast<unsigned int>($sub_object_term));
+        for( size_t child_i: *$2 ) children.push_back(child_i);
+        children.push_back(($sub_object_term));
         delete $2;
 
         $$ = interpreter.push_parent(wasp::SUB_OBJECT
-                                    ,interpreter.m_tree_nodes.name(object_decl_i)
+                                    ,interpreter.name(object_decl_i)
                                     ,children);
     }
     | sub_object_decl sub_object_members
-    {   std::vector<unsigned int> children; children.reserve(1+$2->size());
-        unsigned int object_decl_i = static_cast<unsigned int>($sub_object_decl);
+    {   std::vector<size_t> children; children.reserve(1+$2->size());
+        size_t object_decl_i = ($sub_object_decl);
         children.push_back(object_decl_i);
-        for( unsigned int child_i: *$2 ) children.push_back(child_i);
+        for( size_t child_i: *$2 ) children.push_back(child_i);
         delete $2;
 
         $$ = interpreter.push_parent(wasp::SUB_OBJECT
-                                    ,interpreter.m_tree_nodes.name(object_decl_i)
+                                    ,interpreter.name(object_decl_i)
                                     ,children);
     }
 object_decl : lbracket decl rbracket {
-        unsigned int lbracket_index = static_cast<unsigned int>($lbracket);
-        unsigned int decl_index = static_cast<unsigned int>($decl);
-        unsigned int rbracket_index = static_cast<unsigned int>($rbracket);
-        std::vector<unsigned int> child_indices = {lbracket_index
+        size_t lbracket_index = ($lbracket);
+        size_t decl_index = ($decl);
+        size_t rbracket_index = ($rbracket);
+        std::vector<size_t> child_indices = {lbracket_index
                                                    ,decl_index
                                                    ,rbracket_index};
 
         $$ = interpreter.push_parent(wasp::OBJECT_DECL
-                                        ,interpreter.m_tree_nodes.data(decl_index).c_str()
+                                        ,interpreter.data(decl_index).c_str()
                                         ,child_indices);
     }
 object_member : primitive | keyedvalue | comment
@@ -235,74 +235,74 @@ object_member : primitive | keyedvalue | comment
 
 object_members : object_member
     {
-        unsigned int node_index = static_cast<unsigned int>($1);
-        $$ = new std::vector<unsigned int>();
+        size_t node_index = ($1);
+        $$ = new std::vector<size_t>();
         $$->push_back(node_index);
     }| object_members object_member
     {
-        $1->push_back(static_cast<unsigned int>($object_member));
+        $1->push_back(($object_member));
     }
 
 
 object : object_decl object_term
         { // empty object
-        unsigned int object_decl_i = static_cast<unsigned int>($object_decl);
-        unsigned int object_term_i = static_cast<unsigned int>($object_term);
-        std::vector<unsigned int> child_indices = {object_decl_i
+        size_t object_decl_i = ($object_decl);
+        size_t object_term_i = ($object_term);
+        std::vector<size_t> child_indices = {object_decl_i
                                                    ,object_term_i};
 
         $$ = interpreter.push_parent(wasp::OBJECT
-                                        ,interpreter.m_tree_nodes.name(object_decl_i)
+                                        ,interpreter.name(object_decl_i)
                                         ,child_indices);
         }
         | object_decl object_members object_term
         {
-        std::vector<unsigned int> children; children.reserve(2+$object_members->size());
-        unsigned int object_decl_i = static_cast<unsigned int>($object_decl);
+        std::vector<size_t> children; children.reserve(2+$object_members->size());
+        size_t object_decl_i = ($object_decl);
         children.push_back(object_decl_i);
-        for( unsigned int child_i: *$object_members ) children.push_back(child_i);
-        children.push_back(static_cast<unsigned int>($object_term));
+        for( size_t child_i: *$object_members ) children.push_back(child_i);
+        children.push_back(($object_term));
         delete $object_members;
 
         $$ = interpreter.push_parent(wasp::OBJECT
-                                        ,interpreter.m_tree_nodes.name(object_decl_i)
+                                        ,interpreter.name(object_decl_i)
                                         ,children);
         }
 integer : INTEGER
     {
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::INT,"int"
                          ,token_index);
     }
 real : REAL
     {        
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::REAL,"real"
                          ,token_index);
     }
 unquoted_string : STRING
     {        
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::STRING,"string"
                          ,token_index);
     }
 VALUE : INTEGER | REAL | STRING
 value : VALUE
     {
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::VALUE,"value"
                          ,token_index);
     }
 DECL : STRING
 decl : DECL
     {
-        unsigned int decl_token_index = static_cast<unsigned int>($1);
+        size_t decl_token_index = ($1);
         $$ = interpreter.push_leaf(wasp::DECL,"decl"
                          ,decl_token_index);
     }
 quote : QUOTE
     {
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::QUOTE,"'"
                          ,token_index);
     }
@@ -316,86 +316,86 @@ array_member : comma | value | assign
 
 array_members : array_member
     {
-        unsigned int offset = static_cast<unsigned int>($1);
-        $$ = new std::vector<unsigned int>();
+        size_t offset = ($1);
+        $$ = new std::vector<size_t>();
         $$->push_back(offset);
     }| array_members array_member
     {
-        $1->push_back(static_cast<unsigned int>($array_member));
+        $1->push_back(($array_member));
     }
 
 array : quote array_members quote
     {
         $array_members->insert($array_members->begin(),$1);
-        $array_members->push_back(static_cast<unsigned int>($3));
+        $array_members->push_back(($3));
         $$ = $array_members;
     }
     |quote  quote
     {
-        $$ = new std::vector<unsigned int>();
-        $$->push_back(static_cast<unsigned int>($1));
-        $$->push_back(static_cast<unsigned int>($2));
+        $$ = new std::vector<size_t>();
+        $$->push_back(($1));
+        $$->push_back(($2));
     }
 
 
 keyedvalue : decl assign value
     {        
 
-        unsigned int key_index = static_cast<unsigned int>($1);
-        unsigned int assign_index = static_cast<unsigned int>($2);
-        unsigned int value_index = static_cast<unsigned int>($3);
+        size_t key_index = ($1);
+        size_t assign_index = ($2);
+        size_t value_index = ($3);
 
-        std::vector<unsigned int> child_indices = {key_index, assign_index,value_index};
+        std::vector<size_t> child_indices = {key_index, assign_index,value_index};
 
         $$ = interpreter.push_parent(wasp::KEYED_VALUE
-                                        ,interpreter.m_tree_nodes.data(key_index).c_str()
+                                        ,interpreter.data(key_index).c_str()
                                         ,child_indices);
     }
     | decl assign array
     {
 
-        unsigned int key_index = static_cast<unsigned int>($1);
-        unsigned int assign_index = static_cast<unsigned int>($2);
+        size_t key_index = ($1);
+        size_t assign_index = ($2);
 
-        std::vector<unsigned int> child_indices = {key_index, assign_index};
-        for( unsigned int child_i : *$array ) child_indices.push_back(child_i);
+        std::vector<size_t> child_indices = {key_index, assign_index};
+        for( size_t child_i : *$array ) child_indices.push_back(child_i);
         delete $array;
         $$ = interpreter.push_parent(wasp::KEYED_VALUE
-                                        ,interpreter.m_tree_nodes.data(key_index).c_str()
+                                        ,interpreter.data(key_index).c_str()
                                         ,child_indices);
     }
 
 
 comment : COMMENT
     {
-        unsigned int token_index = static_cast<unsigned int>($1);
+        size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::COMMENT,"comment"
                          ,token_index);
     }
 
 start   : /** empty **/
         | start comment{
-            interpreter.add_root_child_index(static_cast<unsigned int>($2));
+            interpreter.add_root_child_index(($2));
         }
         | start keyedvalue{
-            interpreter.add_root_child_index(static_cast<unsigned int>($2));
+            interpreter.add_root_child_index(($2));
         }
         | start object{
-            interpreter.add_root_child_index(static_cast<unsigned int>($2));
+            interpreter.add_root_child_index(($2));
         }
         | start object_decl object_members object
         {
-            std::vector<unsigned int> children; children.reserve(1+$object_members->size());
-            unsigned int object_decl_i = static_cast<unsigned int>($object_decl);
+            std::vector<size_t> children; children.reserve(1+$object_members->size());
+            size_t object_decl_i = ($object_decl);
             children.push_back(object_decl_i);
-            for( unsigned int child_i: *$object_members ) children.push_back(child_i);
+            for( size_t child_i: *$object_members ) children.push_back(child_i);
             delete $object_members;
 
-            unsigned int object_i = interpreter.push_parent(wasp::OBJECT
-                                            ,interpreter.m_tree_nodes.name(object_decl_i)
+            size_t object_i = interpreter.push_parent(wasp::OBJECT
+                                            ,interpreter.name(object_decl_i)
                                             ,children);
             interpreter.add_root_child_index(object_i);
-            interpreter.add_root_child_index(static_cast<unsigned int>($object));
+            interpreter.add_root_child_index(($object));
         }
 
 

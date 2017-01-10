@@ -65,7 +65,7 @@
  * object. it defines the yylex() function call to pull the next token from the
  * current lexer object of the interpreter context. */
 #undef yylex
-#define yylex interpreter.m_lexer->lex
+#define yylex dynamic_cast<SONLexerImpl*>(interpreter.lexer())->lex
 
 
 #line 72 "SONParser.cpp" // lalr1.cc:412
@@ -195,7 +195,7 @@ namespace wasp {
 
 
   /// Build a parser object.
-  SONParser::SONParser (class SONInterpreter& interpreter_yyarg)
+  SONParser::SONParser (class AbstractInterpreter& interpreter_yyarg)
     :
 #if YYDEBUG
       yydebug_ (false),
@@ -570,9 +570,9 @@ namespace wasp {
     #line 40 "SONParser.bison" // lalr1.cc:741
 {
     // initialize the initial location object
-    yyla.location.begin.filename = yyla.location.end.filename = &interpreter.m_stream_name;
-    yyla.location.begin.line = yyla.location.end.line = interpreter.m_start_line;
-    yyla.location.begin.column = yyla.location.end.column = interpreter.m_start_column;
+    yyla.location.begin.filename = yyla.location.end.filename = &interpreter.stream_name();
+    yyla.location.begin.line = yyla.location.end.line = interpreter.start_line();
+    yyla.location.begin.column = yyla.location.end.column = interpreter.start_column();
 }
 
 #line 579 "SONParser.cpp" // lalr1.cc:741
@@ -685,7 +685,7 @@ namespace wasp {
   case 2:
 #line 146 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::FILL_EXPR,"filler",token_index);
     }
 #line 692 "SONParser.cpp" // lalr1.cc:859
@@ -694,7 +694,7 @@ namespace wasp {
   case 3:
 #line 151 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
     }
 #line 701 "SONParser.cpp" // lalr1.cc:859
@@ -703,7 +703,7 @@ namespace wasp {
   case 4:
 #line 161 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::MULTIPLY,"*",token_index);
     }
 #line 710 "SONParser.cpp" // lalr1.cc:859
@@ -712,7 +712,7 @@ namespace wasp {
   case 5:
 #line 166 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DIVIDE,"/",token_index);
     }
 #line 719 "SONParser.cpp" // lalr1.cc:859
@@ -721,7 +721,7 @@ namespace wasp {
   case 8:
 #line 172 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::PLUS,"+",token_index);
     }
 #line 728 "SONParser.cpp" // lalr1.cc:859
@@ -730,7 +730,7 @@ namespace wasp {
   case 9:
 #line 177 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::MINUS,"-",token_index);
     }
 #line 737 "SONParser.cpp" // lalr1.cc:859
@@ -739,7 +739,7 @@ namespace wasp {
   case 10:
 #line 183 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::EXPONENT,"^",token_index);
     }
 #line 746 "SONParser.cpp" // lalr1.cc:859
@@ -748,7 +748,7 @@ namespace wasp {
   case 19:
 #line 192 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::EQ,"==",token_index);
     }
 #line 755 "SONParser.cpp" // lalr1.cc:859
@@ -757,7 +757,7 @@ namespace wasp {
   case 20:
 #line 197 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::NEQ,"!=",token_index);
     }
 #line 764 "SONParser.cpp" // lalr1.cc:859
@@ -766,7 +766,7 @@ namespace wasp {
   case 21:
 #line 202 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::GTE,">=",token_index);
     }
 #line 773 "SONParser.cpp" // lalr1.cc:859
@@ -775,7 +775,7 @@ namespace wasp {
   case 22:
 #line 207 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::GT,">",token_index);
     }
 #line 782 "SONParser.cpp" // lalr1.cc:859
@@ -784,7 +784,7 @@ namespace wasp {
   case 23:
 #line 212 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LTE,"<=",token_index);
     }
 #line 791 "SONParser.cpp" // lalr1.cc:859
@@ -793,7 +793,7 @@ namespace wasp {
   case 24:
 #line 217 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LT,"<",token_index);
     }
 #line 800 "SONParser.cpp" // lalr1.cc:859
@@ -802,7 +802,7 @@ namespace wasp {
   case 27:
 #line 223 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_AND,"&&",token_index);
     }
 #line 809 "SONParser.cpp" // lalr1.cc:859
@@ -811,7 +811,7 @@ namespace wasp {
   case 28:
 #line 228 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_OR,"||",token_index);
     }
 #line 818 "SONParser.cpp" // lalr1.cc:859
@@ -820,7 +820,7 @@ namespace wasp {
   case 29:
 #line 234 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::UNARY_NOT,"!",token_index);
     }
 #line 827 "SONParser.cpp" // lalr1.cc:859
@@ -829,7 +829,7 @@ namespace wasp {
   case 30:
 #line 240 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LPAREN,"(",token_index);
     }
 #line 836 "SONParser.cpp" // lalr1.cc:859
@@ -838,7 +838,7 @@ namespace wasp {
   case 31:
 #line 245 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RPAREN,")",token_index);
     }
 #line 845 "SONParser.cpp" // lalr1.cc:859
@@ -847,7 +847,7 @@ namespace wasp {
   case 32:
 #line 250 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACE,"{",token_index);
     }
 #line 854 "SONParser.cpp" // lalr1.cc:859
@@ -856,7 +856,7 @@ namespace wasp {
   case 33:
 #line 255 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RBRACE,"}",token_index);
     }
 #line 863 "SONParser.cpp" // lalr1.cc:859
@@ -865,7 +865,7 @@ namespace wasp {
   case 34:
 #line 260 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACKET,"[",token_index);
     }
 #line 872 "SONParser.cpp" // lalr1.cc:859
@@ -874,7 +874,7 @@ namespace wasp {
   case 35:
 #line 265 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RBRACKET,"]",token_index);
     }
 #line 881 "SONParser.cpp" // lalr1.cc:859
@@ -883,7 +883,7 @@ namespace wasp {
   case 43:
 #line 274 "SONParser.bison" // lalr1.cc:859
     {
-    unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+    size_t token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                      ,token_index);
 }
@@ -893,10 +893,10 @@ namespace wasp {
   case 46:
 #line 295 "SONParser.bison" // lalr1.cc:859
     {
-          unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-          unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-          unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-          std::vector<unsigned int> child_indices = {left_i
+          size_t left_i = ((yystack_[2].value.node_index));
+          size_t op_i = ((yystack_[1].value.node_index));
+          size_t right_i = ((yystack_[0].value.node_index));
+          std::vector<size_t> child_indices = {left_i
                                                      ,op_i
                                                      ,right_i
                                                      };
@@ -911,10 +911,10 @@ namespace wasp {
   case 47:
 #line 309 "SONParser.bison" // lalr1.cc:859
     {
-        unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-        unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ((yystack_[2].value.node_index));
+        size_t op_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -929,10 +929,10 @@ namespace wasp {
   case 48:
 #line 323 "SONParser.bison" // lalr1.cc:859
     {
-        unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-        unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ((yystack_[2].value.node_index));
+        size_t op_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -947,10 +947,10 @@ namespace wasp {
   case 49:
 #line 337 "SONParser.bison" // lalr1.cc:859
     {
-        unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-        unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ((yystack_[2].value.node_index));
+        size_t op_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -965,10 +965,10 @@ namespace wasp {
   case 50:
 #line 351 "SONParser.bison" // lalr1.cc:859
     {
-        unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-        unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ((yystack_[2].value.node_index));
+        size_t op_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -983,10 +983,10 @@ namespace wasp {
   case 51:
 #line 366 "SONParser.bison" // lalr1.cc:859
     {
-        unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-        unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ((yystack_[2].value.node_index));
+        size_t op_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -1001,10 +1001,10 @@ namespace wasp {
   case 52:
 #line 380 "SONParser.bison" // lalr1.cc:859
     {
-        unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-        unsigned int center_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ((yystack_[2].value.node_index));
+        size_t center_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {left_i
                                                    ,center_i
                                                    ,right_i
                                                    };
@@ -1019,9 +1019,9 @@ namespace wasp {
   case 53:
 #line 394 "SONParser.bison" // lalr1.cc:859
     {
-        unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {op_i
+        size_t op_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {op_i
                                                    ,right_i
                                                    };
 
@@ -1035,9 +1035,9 @@ namespace wasp {
   case 54:
 #line 406 "SONParser.bison" // lalr1.cc:859
     {
-        unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {op_i
+        size_t op_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {op_i
                                                    ,right_i
                                                    };
 
@@ -1051,7 +1051,7 @@ namespace wasp {
   case 55:
 #line 419 "SONParser.bison" // lalr1.cc:859
     {
-    auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+    auto token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::EXECUTION_UNIT_END,"uoe_end",token_index);
 }
 #line 1058 "SONParser.cpp" // lalr1.cc:859
@@ -1060,7 +1060,7 @@ namespace wasp {
   case 56:
 #line 424 "SONParser.bison" // lalr1.cc:859
     {
-    auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+    auto token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::EXECUTION_UNIT_START,"uoe_start",token_index);
 }
 #line 1067 "SONParser.cpp" // lalr1.cc:859
@@ -1069,7 +1069,7 @@ namespace wasp {
   case 57:
 #line 429 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::IDENTIFIER,"id",token_index);
     }
 #line 1076 "SONParser.cpp" // lalr1.cc:859
@@ -1078,7 +1078,7 @@ namespace wasp {
   case 58:
 #line 434 "SONParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         std::string quote_less_data = interpreter.token_data(token_index);
         quote_less_data = wasp::strip_quotes(quote_less_data);
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DECL
@@ -1091,7 +1091,7 @@ namespace wasp {
   case 61:
 #line 443 "SONParser.bison" // lalr1.cc:859
     {
-             auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+             auto token_index = ((yystack_[0].value.token_index));
              (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,"=",token_index);
             }
 #line 1098 "SONParser.cpp" // lalr1.cc:859
@@ -1110,7 +1110,7 @@ namespace wasp {
   case 65:
 #line 455 "SONParser.bison" // lalr1.cc:859
     {
-             (yylhs.value.node_indices) = new std::vector<unsigned int>();
+             (yylhs.value.node_indices) = new std::vector<size_t>();
              (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
 #line 1117 "SONParser.cpp" // lalr1.cc:859
@@ -1119,7 +1119,7 @@ namespace wasp {
   case 66:
 #line 460 "SONParser.bison" // lalr1.cc:859
     {
-            (yylhs.value.node_indices) = new std::vector<unsigned int>();
+            (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[3].value.node_index));
             (yylhs.value.node_indices)->push_back((yystack_[2].value.node_index));
             (yylhs.value.node_indices)->push_back((yystack_[1].value.node_index));
@@ -1338,7 +1338,7 @@ namespace wasp {
   case 80:
 #line 628 "SONParser.bison" // lalr1.cc:859
     {
-            (yylhs.value.node_indices) = new std::vector<unsigned int>();
+            (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
 #line 1345 "SONParser.cpp" // lalr1.cc:859
@@ -1356,7 +1356,7 @@ namespace wasp {
   case 82:
 #line 638 "SONParser.bison" // lalr1.cc:859
     {
-            (yylhs.value.node_indices) = new std::vector<unsigned int>();
+            (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
 #line 1363 "SONParser.cpp" // lalr1.cc:859
@@ -1374,7 +1374,7 @@ namespace wasp {
   case 84:
 #line 648 "SONParser.bison" // lalr1.cc:859
     {
-            (yylhs.value.node_indices) = new std::vector<unsigned int>();
+            (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
 #line 1381 "SONParser.cpp" // lalr1.cc:859
@@ -1392,7 +1392,7 @@ namespace wasp {
   case 86:
 #line 658 "SONParser.bison" // lalr1.cc:859
     {
-            (yylhs.value.node_indices) = new std::vector<unsigned int>();
+            (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
 #line 1399 "SONParser.cpp" // lalr1.cc:859
@@ -1410,7 +1410,7 @@ namespace wasp {
   case 88:
 #line 668 "SONParser.bison" // lalr1.cc:859
     {
-            (yylhs.value.node_indices) = new std::vector<unsigned int>();
+            (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
 #line 1417 "SONParser.cpp" // lalr1.cc:859
@@ -1437,7 +1437,7 @@ namespace wasp {
   case 91:
 #line 685 "SONParser.bison" // lalr1.cc:859
     {
-            (yylhs.value.node_indices) = new std::vector<unsigned int>();
+            (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
 #line 1444 "SONParser.cpp" // lalr1.cc:859
@@ -1455,7 +1455,7 @@ namespace wasp {
   case 93:
 #line 696 "SONParser.bison" // lalr1.cc:859
     {
-            (yylhs.value.node_indices) = new std::vector<unsigned int>();
+            (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
 #line 1462 "SONParser.cpp" // lalr1.cc:859
@@ -1473,7 +1473,7 @@ namespace wasp {
   case 95:
 #line 706 "SONParser.bison" // lalr1.cc:859
     {
-            (yylhs.value.node_indices) = new std::vector<unsigned int>();
+            (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
 #line 1480 "SONParser.cpp" // lalr1.cc:859
@@ -1491,7 +1491,7 @@ namespace wasp {
   case 97:
 #line 716 "SONParser.bison" // lalr1.cc:859
     {
-            (yylhs.value.node_indices) = new std::vector<unsigned int>();
+            (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
 #line 1498 "SONParser.cpp" // lalr1.cc:859
@@ -1509,7 +1509,7 @@ namespace wasp {
   case 99:
 #line 726 "SONParser.bison" // lalr1.cc:859
     {
-            (yylhs.value.node_indices) = new std::vector<unsigned int>();
+            (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
 #line 1516 "SONParser.cpp" // lalr1.cc:859
@@ -1527,7 +1527,7 @@ namespace wasp {
   case 101:
 #line 736 "SONParser.bison" // lalr1.cc:859
     {
-            (yylhs.value.node_indices) = new std::vector<unsigned int>();
+            (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
 #line 1534 "SONParser.cpp" // lalr1.cc:859
@@ -1554,7 +1554,7 @@ namespace wasp {
   case 104:
 #line 752 "SONParser.bison" // lalr1.cc:859
     {
-            auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+            auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
 #line 1561 "SONParser.cpp" // lalr1.cc:859
@@ -1563,7 +1563,7 @@ namespace wasp {
   case 105:
 #line 757 "SONParser.bison" // lalr1.cc:859
     {
-            auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+            auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::DECL,"name",token_index);
         }
 #line 1570 "SONParser.cpp" // lalr1.cc:859
@@ -1572,10 +1572,10 @@ namespace wasp {
   case 106:
 #line 762 "SONParser.bison" // lalr1.cc:859
     { // account for an empty execution unit
-            unsigned int start_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-            unsigned int name_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-            unsigned int end_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-            std::vector<unsigned int> child_indices = {start_i
+            size_t start_i = ((yystack_[2].value.node_index));
+            size_t name_i = ((yystack_[1].value.node_index));
+            size_t end_i = ((yystack_[0].value.node_index));
+            std::vector<size_t> child_indices = {start_i
                                                        ,name_i
                                                        ,end_i
                                                        };
@@ -1590,10 +1590,10 @@ namespace wasp {
   case 107:
 #line 776 "SONParser.bison" // lalr1.cc:859
     { // execution unit with members
-            unsigned int start_i = static_cast<unsigned int>((yystack_[3].value.node_index));
-            unsigned int name_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-            unsigned int end_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-            std::vector<unsigned int> child_indices = {start_i
+            size_t start_i = ((yystack_[3].value.node_index));
+            size_t name_i = ((yystack_[2].value.node_index));
+            size_t end_i = ((yystack_[0].value.node_index));
+            std::vector<size_t> child_indices = {start_i
                                                        ,name_i
                                                        };
             for( std::size_t i = 0; i < (yystack_[1].value.node_indices)->size(); ++ i )
@@ -1611,31 +1611,31 @@ namespace wasp {
 
   case 109:
 #line 794 "SONParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
+    {interpreter.add_root_child_index(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {dynamic_cast<SONLexerImpl*>(interpreter.lexer())->rewind();YYACCEPT;}}
 #line 1616 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 110:
 #line 795 "SONParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
+    {interpreter.add_root_child_index(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {dynamic_cast<SONLexerImpl*>(interpreter.lexer())->rewind();YYACCEPT;}}
 #line 1622 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 111:
 #line 796 "SONParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
+    {interpreter.add_root_child_index(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {dynamic_cast<SONLexerImpl*>(interpreter.lexer())->rewind();YYACCEPT;}}
 #line 1628 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 112:
 #line 797 "SONParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); if(interpreter.isSingleParse() ) {interpreter.m_lexer->rewind();YYACCEPT;}}
+    {interpreter.add_root_child_index(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {dynamic_cast<SONLexerImpl*>(interpreter.lexer())->rewind();YYACCEPT;}}
 #line 1634 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 113:
 #line 798 "SONParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index)));if(interpreter.isSingleParse() ) {YYACCEPT;}}
+    {interpreter.add_root_child_index(((yystack_[0].value.node_index)));if(interpreter.single_parse() ) {YYACCEPT;}}
 #line 1640 "SONParser.cpp" // lalr1.cc:859
     break;
 

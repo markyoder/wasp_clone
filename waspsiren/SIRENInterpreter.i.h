@@ -1,19 +1,63 @@
 #ifndef SIREN_SIRENINTERPRETER_I_H
 #define SIREN_SIRENINTERPRETER_I_H
+template<class S>
+SIRENInterpreter<S>::SIRENInterpreter()
+    :Interpreter<S>(),
+    traceLexing(false),
+    traceParsing(false)
+{
+}
+template<class S>
+SIRENInterpreter<S>::SIRENInterpreter(std::ostream & err)
+    : Interpreter<S>(err),
+    traceLexing(false),
+    traceParsing(false)
+{
+}
+template<class S>
+SIRENInterpreter<S>::~SIRENInterpreter()
+{
+}
+template<class S>
+bool SIRENInterpreter<S>::parse(std::istream& in, std::size_t startLine, std::size_t startColumn)
+{
+    return parseStream(in, "selection statement" , startLine,startColumn);
+}
+template<class S>
+bool SIRENInterpreter<S>::parseStream(std::istream& in
+                                 , const std::string& sname
+                                 , std::size_t start_line
+                                 , std::size_t start_column)
+{
+    return Interpreter<S>::template parse_impl<SIRENLexerImpl
+            ,SIRENParser
+            ,SIRENInterpreter>(m_lexer
+                ,in
+                ,sname
+                ,start_line
+                ,start_column);
+}
+template<class S>
+bool SIRENInterpreter<S>::parseString(const std::string &input, const std::string& sname, std::size_t startLine, std::size_t startColumn)
+{
+    std::istringstream iss(input);
+    return parseStream(iss, sname,startLine,startColumn);
+}
 
+template<class S>
 template<typename TAdapter>
-std::size_t SIRENInterpreter::evaluate(
+std::size_t SIRENInterpreter<S>::evaluate(
         TAdapter & node, SIRENResultSet<TAdapter> & result)const
 {
 
     // the first selection
     // is either a document root-based selection
     // or a node-relative selection
-    TreeNodeView<decltype(m_tree_nodes)> selection_root = root();
+    TreeNodeView<Storage_type> selection_root = Interpreter<S>::template root();
 
     if( selection_root.child_count() == 0 ) return 0;
 
-    TreeNodeView<decltype(m_tree_nodes)> first_selection = selection_root.child_at(0);
+    TreeNodeView<Storage_type> first_selection = selection_root.child_at(0);
 
     // if root-based, need to select the root of the document
     // relative to the node given
@@ -49,9 +93,10 @@ std::size_t SIRENInterpreter::evaluate(
     }
     return result.result_count();
 }
+template<class S>
 template<typename TAdapter>
-std::size_t SIRENInterpreter::evaluate(
-        const TreeNodeView<decltype(m_tree_nodes)> & context
+std::size_t SIRENInterpreter<S>::evaluate(
+        const TreeNodeView<Storage_type> & context
         ,SIRENResultSet<TAdapter> & result
         ,std::vector<TAdapter> & stage )const
 {
@@ -62,7 +107,7 @@ std::size_t SIRENInterpreter::evaluate(
         break;
         case DOCUMENT_ROOT:
             if( context.child_count() > 0 ){ // '/' relative_selection
-                TreeNodeView<decltype(m_tree_nodes)> child_context = context.child_at(1);
+                TreeNodeView<Storage_type> child_context = context.child_at(1);
                 evaluate(child_context,result, stage);
             }
             break;
@@ -83,10 +128,10 @@ std::size_t SIRENInterpreter::evaluate(
         }break;
         case OBJECT : // selection / selection
         {
-            TreeNodeView<decltype(m_tree_nodes)> left_selection = context.child_at(0);
+            TreeNodeView<Storage_type> left_selection = context.child_at(0);
             // TODO - ensure selections are legit
             if( evaluate(left_selection,result,stage) > 0 ){
-                TreeNodeView<decltype(m_tree_nodes)> right_selection = context.child_at(2);
+                TreeNodeView<Storage_type> right_selection = context.child_at(2);
                 evaluate(right_selection,result,stage);
             }
         }break;
@@ -95,7 +140,7 @@ std::size_t SIRENInterpreter::evaluate(
             // 'obj' = [0]
             // '['   = [1]
             // 'id=value' | '1:3:2' = [2]
-            TreeNodeView<decltype(m_tree_nodes)> predicate_node = context.child_at(2);
+            TreeNodeView<Storage_type> predicate_node = context.child_at(2);
             if( predicate_node.type() == KEYED_VALUE )
             {
                 search_conditional_predicated_child(context,stage);
@@ -109,9 +154,10 @@ std::size_t SIRENInterpreter::evaluate(
 
     return stage.size();
 }
+template<class S>
 template<typename TAdapter>
-void SIRENInterpreter::search_child_name(
-        const TreeNodeView<decltype(m_tree_nodes)> & context,
+void SIRENInterpreter<S>::search_child_name(
+        const TreeNodeView<Storage_type> & context,
         std::vector<TAdapter> & stage)const
 {
     if( stage.empty() ) return;
@@ -133,9 +179,10 @@ void SIRENInterpreter::search_child_name(
     }
     stage.erase(stage.begin(),stage.begin()+stage_size);
 }
+template<class S>
 template<typename TAdapter>
-void SIRENInterpreter::search_conditional_predicated_child(
-        const TreeNodeView<decltype(m_tree_nodes)> & context,
+void SIRENInterpreter<S>::search_conditional_predicated_child(
+        const TreeNodeView<Storage_type> & context,
         std::vector<TAdapter> & stage)const
 {
     // context should be something like
@@ -145,16 +192,16 @@ void SIRENInterpreter::search_conditional_predicated_child(
     // 'id=value' = [2]
     // ']' = [3]
     // TODO - ensure context fulfills expectations
-    TreeNodeView<decltype(m_tree_nodes)> child_name_context = context.child_at(0);
+    TreeNodeView<Storage_type> child_name_context = context.child_at(0);
     // predicate context should be something like
     // id = value
     // id = [0]
     // '=' = [1]
     // value = [2]
-    TreeNodeView<decltype(m_tree_nodes)> predicate_context = context.child_at(2);
+    TreeNodeView<Storage_type> predicate_context = context.child_at(2);
     // TODO - ensure predicate context fulfills expectations
-    TreeNodeView<decltype(m_tree_nodes)> predicate_name_context = predicate_context.child_at(0);
-    TreeNodeView<decltype(m_tree_nodes)> predicate_value_context = predicate_context.child_at(2);
+    TreeNodeView<Storage_type> predicate_name_context = predicate_context.child_at(0);
+    TreeNodeView<Storage_type> predicate_value_context = predicate_context.child_at(2);
 
     // the names for which to search
     const char * name = child_name_context.name();
@@ -201,9 +248,10 @@ void SIRENInterpreter::search_conditional_predicated_child(
     }
     stage.erase(stage.begin(),stage.begin()+stage_size);
 }
+template<class S>
 template<typename TAdapter>
-void SIRENInterpreter::search_index_predicated_child(
-        const TreeNodeView<decltype(m_tree_nodes)>& context,
+void SIRENInterpreter<S>::search_index_predicated_child(
+        const TreeNodeView<Storage_type>& context,
         std::vector<TAdapter> & stage)const
 {
     // context should be something like
@@ -213,12 +261,12 @@ void SIRENInterpreter::search_index_predicated_child(
     // index '1' | '1:10' | '1:10:2' = [2]
     // ']' = [3]
     // TODO - ensure context fulfills expectations
-    TreeNodeView<decltype(m_tree_nodes)> child_name_context = context.child_at(0);
+    TreeNodeView<Storage_type> child_name_context = context.child_at(0);
     // predicate context should be something like
     // index  - 1 child
     // start : end - 3 children
     // start : end : stride - 5 children
-    TreeNodeView<decltype(m_tree_nodes)> predicate_context = context.child_at(2);
+    TreeNodeView<Storage_type> predicate_context = context.child_at(2);
     // TODO - ensure predicate context fulfills expectations
     std::size_t start_i = 0, end_i = 0, stride = 1;
     std::size_t incident_count = 0;
@@ -229,22 +277,22 @@ void SIRENInterpreter::search_index_predicated_child(
     // single index selection - start = end, stride =1
     if( predicate_context.child_count() == 1 )
     {   // TODO check type
-        TreeNodeView<decltype(m_tree_nodes)>index = predicate_context.child_at(0);
+        TreeNodeView<Storage_type>index = predicate_context.child_at(0);
         end_i = start_i = index.to_int();
     }else if( predicate_context.child_count() == 3 )
     {   // TODO check type
-        TreeNodeView<decltype(m_tree_nodes)>sindex = predicate_context.child_at(0);
+        TreeNodeView<Storage_type>sindex = predicate_context.child_at(0);
         start_i = sindex.to_int();
-        TreeNodeView<decltype(m_tree_nodes)>eindex = predicate_context.child_at(2);
+        TreeNodeView<Storage_type>eindex = predicate_context.child_at(2);
         end_i = eindex.to_int();
     }else if ( predicate_context.child_count() == 5 )
     {
         // TODO check type
-        TreeNodeView<decltype(m_tree_nodes)>sindex = predicate_context.child_at(0);
+        TreeNodeView<Storage_type>sindex = predicate_context.child_at(0);
         start_i = sindex.to_int();
-        TreeNodeView<decltype(m_tree_nodes)>eindex = predicate_context.child_at(2);
+        TreeNodeView<Storage_type>eindex = predicate_context.child_at(2);
         end_i = eindex.to_int();
-        TreeNodeView<decltype(m_tree_nodes)>stride_node = predicate_context.child_at(4);
+        TreeNodeView<Storage_type>stride_node = predicate_context.child_at(4);
         stride = stride_node.to_int()-1; // remove 1 because 1-based
     }
     int stride_remainder = 1; //always start at 1 to capture first node

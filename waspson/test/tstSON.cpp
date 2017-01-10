@@ -31,7 +31,7 @@ TEST( SON, keyed_value)
                     tag ( "the id" ) = valu
                     tag ( an_id ) = vl
             )INPUT";
-    SONInterpreter interpreter;
+    SONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(43, interpreter.node_count() );
     auto document = interpreter.root();
@@ -148,7 +148,7 @@ TEST( SON, empty_object)
             e5(id1) = { }
             'e6'("id 2") : {}
             )INPUT";
-    SONInterpreter interpreter;
+    SONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(35, interpreter.node_count() );
     auto document = interpreter.root();
@@ -250,7 +250,7 @@ TEST( SON, empty_array )
             e5(id1) = [ ]
             'e6'("id 2") : []
             )INPUT";
-    SONInterpreter interpreter;
+    SONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(35, interpreter.node_count() );
     auto document = interpreter.root();
@@ -343,7 +343,7 @@ TEST( SON, empty_execution_unit)
     std::stringstream input;
     input<< R"INPUT(=code
 end)INPUT";
-    SONInterpreter interpreter;
+    SONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(5, interpreter.node_count() );
     auto document = interpreter.root();
@@ -386,7 +386,7 @@ TEST( SON, execution_unit)
                     tag ( "the id" ) = valu
                     tag ( an_id ) = vl
 end)INPUT";
-    SONInterpreter interpreter;
+    SONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(47, interpreter.node_count() );
     auto document = interpreter.root();
@@ -514,7 +514,7 @@ TEST( SON, int_array)
                      [ 4 5
                        6 7 ]
             )INPUT";
-    SONInterpreter interpreter;
+    SONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(24, interpreter.node_count() );
     auto document = interpreter.root();
@@ -623,7 +623,7 @@ TEST( SON, real_array)
                      [ 4.3 5.4
                        6.1 7.0 ]
             )INPUT";
-    SONInterpreter interpreter;
+    SONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(24, interpreter.node_count() );
     auto document = interpreter.root();
@@ -727,7 +727,7 @@ TEST( SON, comments )
 % start of line
    k=1 % trailing line
             )INPUT";
-    SONInterpreter interpreter;
+    SONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(7, interpreter.node_count() );
     auto document = interpreter.root();
@@ -782,7 +782,7 @@ TEST( SON, SON )
             A[ 1.0-5 -4 ] O { g=d } ]
 end % conclusion of unit of execution
 )INPUT";
-    SONInterpreter interpreter;
+    SONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(85, interpreter.node_count() );
     auto document = interpreter.root();
@@ -996,7 +996,7 @@ TEST( SON, expressions )
             a||b a||2 a||1.2 b||a 2||a 1.2||a
             ]
 )INPUT";
-    SONInterpreter interpreter;
+    SONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(312+5, interpreter.node_count() );
     auto document = interpreter.root();

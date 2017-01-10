@@ -205,7 +205,7 @@ COMMA ,
 namespace wasp {
 
 ExprLexerImpl::ExprLexerImpl(
-                ExprInterpreter & interpreter,
+                AbstractInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
     : ExprFlexLexer(in, out)

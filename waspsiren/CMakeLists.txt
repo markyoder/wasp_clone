@@ -18,7 +18,6 @@ WASP_FLEX_AND_BISON(
 SET(SOURCE
 SIRENLexer.cpp
 SIRENParser.cpp
-SIRENInterpreter.cpp
 )
 
 # C/C++ headers

@@ -43,7 +43,7 @@ public:
      */
     void push_parent(node_type_size type
                 , const char * name
-              ,const std::vector<node_index_size> & child_indices);
+              ,const std::vector<size_t> & child_indices);
     /**
      * @brief push_leaf create a leaf node with the given attributes
      * @param node_type the type of the leaf node (value, decl, term, etc.)

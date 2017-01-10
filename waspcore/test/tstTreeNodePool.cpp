@@ -41,7 +41,7 @@ TEST(TreeNodePool,push_test)
     //'key = 1.23'                   // data
     //'26  3032                      // offsets
     TreeNodePool<char,char,TokenPool<char,char,default_file_offset_type_size>> tp;
-    std::vector<char> root_child_indices;
+    std::vector<size_t> root_child_indices;
     { // push first line's contents
         std::vector<std::string> token_data=
         {"array","(","foo",")","234","1.2343","end"};
@@ -58,7 +58,7 @@ TEST(TreeNodePool,push_test)
         ASSERT_EQ(token_data.size(),node_type.size());
         ASSERT_EQ(token_data.size(),token_type.size());
         ASSERT_EQ(token_data.size(),token_offset.size());
-        std::vector<char> child_indices;
+        std::vector<size_t> child_indices;
         for(std::size_t i = 0; i < token_data.size(); ++i)
         {
             {
@@ -110,14 +110,14 @@ TEST(TreeNodePool,push_test)
         ASSERT_EQ(token_data.size(),node_type.size());
         ASSERT_EQ(token_data.size(),token_type.size());
         ASSERT_EQ(token_data.size(),token_offset.size());
-        std::vector<char> child_indices;
+        std::vector<size_t> child_indices;
         for(std::size_t i = 0; i < token_data.size(); ++i)
         {
             {
             SCOPED_TRACE(i);
             std::size_t node_index = tp.size();
             // capture index of new leaf node
-            child_indices.push_back(static_cast<char>(node_index));
+            child_indices.push_back(node_index);
             tp.push_leaf(node_type[i],node_name[i].c_str()
                          ,token_type[i],token_offset[i]
                          ,token_data[i].c_str());

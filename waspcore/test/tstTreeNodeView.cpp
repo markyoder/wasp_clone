@@ -35,7 +35,7 @@ TEST(TreeNodeView,child_by_name)
     //'array (foo) 234 1.2343 end\n' // data
     // 0     67  1011  15     22     // offsets
     TreeNodePool<char,char,TokenPool<char,char,default_file_offset_type_size>> tp;
-    std::vector<char> root_child_indices;
+    std::vector<size_t> root_child_indices;
     size_t data_root_index;
     std::vector<std::string> token_data=
     {"array","(","foo",")","234","1.2343","end"};
@@ -53,7 +53,7 @@ TEST(TreeNodeView,child_by_name)
         ASSERT_EQ(token_data.size(),node_type.size());
         ASSERT_EQ(token_data.size(),token_type.size());
         ASSERT_EQ(token_data.size(),token_offset.size());
-        std::vector<char> child_indices;
+        std::vector<size_t> child_indices;
         for(std::size_t i = 0; i < token_data.size(); ++i)
         {
             {

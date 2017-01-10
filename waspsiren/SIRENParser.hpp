@@ -134,7 +134,7 @@ namespace wasp {
 
         std::size_t token_index;
         std::size_t node_index;
-        std::vector<unsigned int>* node_indices;
+        std::vector<size_t>* node_indices;
 
 #line 140 "SIRENParser.hpp" // lalr1.cc:377
     };
@@ -294,7 +294,7 @@ namespace wasp {
 
 
     /// Build a parser object.
-    SIRENParser (class SIRENInterpreter& interpreter_yyarg);
+    SIRENParser (class AbstractInterpreter& interpreter_yyarg);
     virtual ~SIRENParser ();
 
     /// Parse.
@@ -507,7 +507,7 @@ namespace wasp {
 
 
     // User arguments.
-    class SIRENInterpreter& interpreter;
+    class AbstractInterpreter& interpreter;
   };
 
 

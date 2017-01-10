@@ -65,7 +65,7 @@
  * object. it defines the yylex() function call to pull the next token from the
  * current lexer object of the interpreter context. */
 #undef yylex
-#define yylex interpreter.m_lexer->lex
+#define yylex dynamic_cast<SIRENLexerImpl*>(interpreter.lexer())->lex
 
 
 #line 72 "SIRENParser.cpp" // lalr1.cc:412
@@ -195,7 +195,7 @@ namespace wasp {
 
 
   /// Build a parser object.
-  SIRENParser::SIRENParser (class SIRENInterpreter& interpreter_yyarg)
+  SIRENParser::SIRENParser (class AbstractInterpreter& interpreter_yyarg)
     :
 #if YYDEBUG
       yydebug_ (false),
@@ -549,9 +549,9 @@ namespace wasp {
     #line 40 "SIRENParser.bison" // lalr1.cc:741
 {
     // initialize the initial location object
-    yyla.location.begin.filename = yyla.location.end.filename = &interpreter.m_stream_name;
-    yyla.location.begin.line = yyla.location.end.line = interpreter.m_start_line;
-    yyla.location.begin.column = yyla.location.end.column = interpreter.m_start_column;
+    yyla.location.begin.filename = yyla.location.end.filename = &interpreter.stream_name();
+    yyla.location.begin.line = yyla.location.end.line = interpreter.start_line();
+    yyla.location.begin.column = yyla.location.end.column = interpreter.start_column();
 }
 
 #line 558 "SIRENParser.cpp" // lalr1.cc:741
@@ -664,7 +664,7 @@ namespace wasp {
   case 2:
 #line 132 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::ANY,"A",token_index);
     }
 #line 671 "SIRENParser.cpp" // lalr1.cc:859
@@ -673,7 +673,7 @@ namespace wasp {
   case 3:
 #line 137 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         // P - parent
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::PARENT,"P",token_index);
     }
@@ -683,7 +683,7 @@ namespace wasp {
   case 4:
 #line 148 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::COLON,":",token_index);
     }
 #line 690 "SIRENParser.cpp" // lalr1.cc:859
@@ -692,7 +692,7 @@ namespace wasp {
   case 5:
 #line 153 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::MULTIPLY,"*",token_index);
     }
 #line 699 "SIRENParser.cpp" // lalr1.cc:859
@@ -701,7 +701,7 @@ namespace wasp {
   case 6:
 #line 158 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DIVIDE,"/",token_index);
     }
 #line 708 "SIRENParser.cpp" // lalr1.cc:859
@@ -710,7 +710,7 @@ namespace wasp {
   case 7:
 #line 165 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::SEPARATOR,"/",token_index);
     }
 #line 717 "SIRENParser.cpp" // lalr1.cc:859
@@ -719,7 +719,7 @@ namespace wasp {
   case 10:
 #line 171 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::PLUS,"+",token_index);
     }
 #line 726 "SIRENParser.cpp" // lalr1.cc:859
@@ -728,7 +728,7 @@ namespace wasp {
   case 11:
 #line 176 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::MINUS,"-",token_index);
     }
 #line 735 "SIRENParser.cpp" // lalr1.cc:859
@@ -737,7 +737,7 @@ namespace wasp {
   case 12:
 #line 182 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::EXPONENT,"^",token_index);
     }
 #line 744 "SIRENParser.cpp" // lalr1.cc:859
@@ -746,7 +746,7 @@ namespace wasp {
   case 19:
 #line 190 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::EQ,"==",token_index);
     }
 #line 753 "SIRENParser.cpp" // lalr1.cc:859
@@ -755,7 +755,7 @@ namespace wasp {
   case 20:
 #line 195 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::NEQ,"!=",token_index);
     }
 #line 762 "SIRENParser.cpp" // lalr1.cc:859
@@ -764,7 +764,7 @@ namespace wasp {
   case 21:
 #line 200 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::GTE,">=",token_index);
     }
 #line 771 "SIRENParser.cpp" // lalr1.cc:859
@@ -773,7 +773,7 @@ namespace wasp {
   case 22:
 #line 205 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::GT,">",token_index);
     }
 #line 780 "SIRENParser.cpp" // lalr1.cc:859
@@ -782,7 +782,7 @@ namespace wasp {
   case 23:
 #line 210 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LTE,"<=",token_index);
     }
 #line 789 "SIRENParser.cpp" // lalr1.cc:859
@@ -791,7 +791,7 @@ namespace wasp {
   case 24:
 #line 215 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LT,"<",token_index);
     }
 #line 798 "SIRENParser.cpp" // lalr1.cc:859
@@ -800,7 +800,7 @@ namespace wasp {
   case 27:
 #line 221 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_AND,"&&",token_index);
     }
 #line 807 "SIRENParser.cpp" // lalr1.cc:859
@@ -809,7 +809,7 @@ namespace wasp {
   case 28:
 #line 226 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_OR,"||",token_index);
     }
 #line 816 "SIRENParser.cpp" // lalr1.cc:859
@@ -818,7 +818,7 @@ namespace wasp {
   case 29:
 #line 232 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::UNARY_NOT,"!",token_index);
     }
 #line 825 "SIRENParser.cpp" // lalr1.cc:859
@@ -827,7 +827,7 @@ namespace wasp {
   case 30:
 #line 238 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LPAREN,"(",token_index);
     }
 #line 834 "SIRENParser.cpp" // lalr1.cc:859
@@ -836,7 +836,7 @@ namespace wasp {
   case 31:
 #line 243 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RPAREN,")",token_index);
     }
 #line 843 "SIRENParser.cpp" // lalr1.cc:859
@@ -845,7 +845,7 @@ namespace wasp {
   case 32:
 #line 258 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACKET,"[",token_index);
     }
 #line 852 "SIRENParser.cpp" // lalr1.cc:859
@@ -854,7 +854,7 @@ namespace wasp {
   case 33:
 #line 263 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RBRACKET,"]",token_index);
     }
 #line 861 "SIRENParser.cpp" // lalr1.cc:859
@@ -863,7 +863,7 @@ namespace wasp {
   case 40:
 #line 270 "SIRENParser.bison" // lalr1.cc:859
     {
-        unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::INT,"int"
                          ,token_index);
     }
@@ -873,7 +873,7 @@ namespace wasp {
   case 41:
 #line 276 "SIRENParser.bison" // lalr1.cc:859
     {
-    unsigned int token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+    size_t token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                      ,token_index);
 }
@@ -883,10 +883,10 @@ namespace wasp {
   case 44:
 #line 296 "SIRENParser.bison" // lalr1.cc:859
     {
-          unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-          unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-          unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-          std::vector<unsigned int> child_indices = {left_i
+          size_t left_i = ((yystack_[2].value.node_index));
+          size_t op_i = ((yystack_[1].value.node_index));
+          size_t right_i = ((yystack_[0].value.node_index));
+          std::vector<size_t> child_indices = {left_i
                                                      ,op_i
                                                      ,right_i
                                                      };
@@ -901,10 +901,10 @@ namespace wasp {
   case 45:
 #line 310 "SIRENParser.bison" // lalr1.cc:859
     {
-        unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-        unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ((yystack_[2].value.node_index));
+        size_t op_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -919,10 +919,10 @@ namespace wasp {
   case 46:
 #line 324 "SIRENParser.bison" // lalr1.cc:859
     {
-        unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-        unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ((yystack_[2].value.node_index));
+        size_t op_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -937,10 +937,10 @@ namespace wasp {
   case 47:
 #line 338 "SIRENParser.bison" // lalr1.cc:859
     {
-        unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-        unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ((yystack_[2].value.node_index));
+        size_t op_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -955,10 +955,10 @@ namespace wasp {
   case 48:
 #line 352 "SIRENParser.bison" // lalr1.cc:859
     {
-        unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-        unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ((yystack_[2].value.node_index));
+        size_t op_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -973,10 +973,10 @@ namespace wasp {
   case 49:
 #line 367 "SIRENParser.bison" // lalr1.cc:859
     {
-        unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-        unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ((yystack_[2].value.node_index));
+        size_t op_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {left_i
                                                    ,op_i
                                                    ,right_i
                                                    };
@@ -991,10 +991,10 @@ namespace wasp {
   case 50:
 #line 381 "SIRENParser.bison" // lalr1.cc:859
     {
-        unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-        unsigned int center_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {left_i
+        size_t left_i = ((yystack_[2].value.node_index));
+        size_t center_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {left_i
                                                    ,center_i
                                                    ,right_i
                                                    };
@@ -1009,9 +1009,9 @@ namespace wasp {
   case 51:
 #line 395 "SIRENParser.bison" // lalr1.cc:859
     {
-        unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {op_i
+        size_t op_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {op_i
                                                    ,right_i
                                                    };
 
@@ -1025,9 +1025,9 @@ namespace wasp {
   case 52:
 #line 407 "SIRENParser.bison" // lalr1.cc:859
     {
-        unsigned int op_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-        unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-        std::vector<unsigned int> child_indices = {op_i
+        size_t op_i = ((yystack_[1].value.node_index));
+        size_t right_i = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {op_i
                                                    ,right_i
                                                    };
 
@@ -1041,7 +1041,7 @@ namespace wasp {
   case 53:
 #line 419 "SIRENParser.bison" // lalr1.cc:859
     {
-        auto token_index = static_cast<unsigned int>((yystack_[0].value.token_index));
+        auto token_index = ((yystack_[0].value.token_index));
         std::string quote_less_data = interpreter.token_data(token_index);
         quote_less_data = wasp::strip_quotes(quote_less_data);
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DECL
@@ -1064,7 +1064,7 @@ namespace wasp {
   case 55:
 #line 436 "SIRENParser.bison" // lalr1.cc:859
     {
-             (yylhs.value.node_indices) = new std::vector<unsigned int>();
+             (yylhs.value.node_indices) = new std::vector<size_t>();
              (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
 #line 1071 "SIRENParser.cpp" // lalr1.cc:859
@@ -1094,8 +1094,8 @@ namespace wasp {
 #line 459 "SIRENParser.bison" // lalr1.cc:859
     {
                 // capture integer index
-                unsigned int i_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-                std::vector<unsigned int> child_indices = {i_i
+                size_t i_i = ((yystack_[0].value.node_index));
+                std::vector<size_t> child_indices = {i_i
                                                            };
 
                 (yylhs.value.node_index) = interpreter.push_parent(wasp::INDEX
@@ -1109,10 +1109,10 @@ namespace wasp {
 #line 470 "SIRENParser.bison" // lalr1.cc:859
     {
                 // capture index range
-                unsigned int si_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-                unsigned int c_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-                unsigned int ei_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-                std::vector<unsigned int> child_indices = {si_i
+                size_t si_i = ((yystack_[2].value.node_index));
+                size_t c_i = ((yystack_[1].value.node_index));
+                size_t ei_i = ((yystack_[0].value.node_index));
+                std::vector<size_t> child_indices = {si_i
                                                            ,c_i
                                                            ,ei_i
                                                            };
@@ -1128,12 +1128,12 @@ namespace wasp {
 #line 485 "SIRENParser.bison" // lalr1.cc:859
     {
                 // capture strided index range
-                unsigned int si_i = static_cast<unsigned int>((yystack_[4].value.node_index));
-                unsigned int c1_i = static_cast<unsigned int>((yystack_[3].value.node_index));
-                unsigned int ei_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-                unsigned int c2_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-                unsigned int stride_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-                std::vector<unsigned int> child_indices = {si_i
+                size_t si_i = ((yystack_[4].value.node_index));
+                size_t c1_i = ((yystack_[3].value.node_index));
+                size_t ei_i = ((yystack_[2].value.node_index));
+                size_t c2_i = ((yystack_[1].value.node_index));
+                size_t stride_i = ((yystack_[2].value.node_index));
+                std::vector<size_t> child_indices = {si_i
                                                            ,c1_i
                                                            ,ei_i
                                                            ,c2_i
@@ -1153,11 +1153,11 @@ namespace wasp {
                  // capture condition predicated child selection
                  // obj[name = 'ted']
                  // obj[value <= 5]
-                 unsigned int decl_i = static_cast<unsigned int>((yystack_[3].value.node_index));
-                 unsigned int lb_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-                 unsigned int exp_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-                 unsigned int rb_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-                 std::vector<unsigned int> child_indices = {decl_i
+                 size_t decl_i = ((yystack_[3].value.node_index));
+                 size_t lb_i = ((yystack_[2].value.node_index));
+                 size_t exp_i = ((yystack_[1].value.node_index));
+                 size_t rb_i = ((yystack_[0].value.node_index));
+                 std::vector<size_t> child_indices = {decl_i
                                                             ,lb_i
                                                             ,exp_i
                                                             ,rb_i
@@ -1177,11 +1177,11 @@ namespace wasp {
                  // obj[1]
                  // obj[1:3]
                  // obj[1:10:2]
-                 unsigned int decl_i = static_cast<unsigned int>((yystack_[3].value.node_index));
-                 unsigned int lb_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-                 unsigned int indices_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-                 unsigned int rb_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-                 std::vector<unsigned int> child_indices = {decl_i
+                 size_t decl_i = ((yystack_[3].value.node_index));
+                 size_t lb_i = ((yystack_[2].value.node_index));
+                 size_t indices_i = ((yystack_[1].value.node_index));
+                 size_t rb_i = ((yystack_[0].value.node_index));
+                 std::vector<size_t> child_indices = {decl_i
                                                             ,lb_i
                                                             ,indices_i
                                                             ,rb_i
@@ -1211,10 +1211,10 @@ namespace wasp {
                 // obj/child
                 // obj[name='ted']/child
                 // obj[name='ted']/.[1]
-                 unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-                 unsigned int sep_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-                 unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-                 std::vector<unsigned int> child_indices = {left_i
+                 size_t left_i = ((yystack_[2].value.node_index));
+                 size_t sep_i = ((yystack_[1].value.node_index));
+                 size_t right_i = ((yystack_[0].value.node_index));
+                 std::vector<size_t> child_indices = {left_i
                                                             ,sep_i
                                                             ,right_i
                                                             };
@@ -1233,10 +1233,10 @@ namespace wasp {
                 // parent//child
                 // obj[name='ted']//child
                 // obj[name='ted']//.[1]
-                 unsigned int left_i = static_cast<unsigned int>((yystack_[2].value.node_index));
-                 unsigned int any_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-                 unsigned int right_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-                 std::vector<unsigned int> child_indices = {left_i
+                 size_t left_i = ((yystack_[2].value.node_index));
+                 size_t any_i = ((yystack_[1].value.node_index));
+                 size_t right_i = ((yystack_[0].value.node_index));
+                 std::vector<size_t> child_indices = {left_i
                                                             ,any_i
                                                             ,right_i
                                                             };
@@ -1255,9 +1255,9 @@ namespace wasp {
                 // parent//
                 // obj[name='ted']//
                 // obj[1]//
-                 unsigned int left_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-                 unsigned int any_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-                 std::vector<unsigned int> child_indices = {left_i
+                 size_t left_i = ((yystack_[1].value.node_index));
+                 size_t any_i = ((yystack_[0].value.node_index));
+                 std::vector<size_t> child_indices = {left_i
                                                             ,any_i
                                                             };
 
@@ -1272,8 +1272,8 @@ namespace wasp {
 #line 607 "SIRENParser.bison" // lalr1.cc:859
     {
          // capture root only selection
-         unsigned int s_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-         std::vector<unsigned int> child_indices = {s_i};
+         size_t s_i = ((yystack_[0].value.node_index));
+         std::vector<size_t> child_indices = {s_i};
          (yylhs.value.node_index) = interpreter.push_parent(wasp::DOCUMENT_ROOT
                                          ,"R" // R - root
                                          ,child_indices);
@@ -1285,9 +1285,9 @@ namespace wasp {
 #line 616 "SIRENParser.bison" // lalr1.cc:859
     {
          // capture root based child selection
-         unsigned int root_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-         unsigned int child_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-         std::vector<unsigned int> child_indices = {root_i
+         size_t root_i = ((yystack_[1].value.node_index));
+         size_t child_i = ((yystack_[0].value.node_index));
+         std::vector<size_t> child_indices = {root_i
                                                     ,child_i
                                                     };
 
@@ -1302,9 +1302,9 @@ namespace wasp {
 #line 630 "SIRENParser.bison" // lalr1.cc:859
     {
          // capture any child of the root
-         unsigned int any_i = static_cast<unsigned int>((yystack_[1].value.node_index));
-         unsigned int child_i = static_cast<unsigned int>((yystack_[0].value.node_index));
-         std::vector<unsigned int> child_indices = {any_i
+         size_t any_i = ((yystack_[1].value.node_index));
+         size_t child_i = ((yystack_[0].value.node_index));
+         std::vector<size_t> child_indices = {any_i
                                                     ,child_i
                                                     };
 
@@ -1317,13 +1317,13 @@ namespace wasp {
 
   case 71:
 #line 642 "SIRENParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); }
+    {interpreter.add_root_child_index(((yystack_[0].value.node_index))); }
 #line 1322 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
   case 72:
 #line 643 "SIRENParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(static_cast<unsigned int>((yystack_[0].value.node_index))); }
+    {interpreter.add_root_child_index(((yystack_[0].value.node_index))); }
 #line 1328 "SIRENParser.cpp" // lalr1.cc:859
     break;
 

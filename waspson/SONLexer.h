@@ -33,7 +33,7 @@ public:
     /** Create a new scanner object. The streams arg_yyin and arg_yyout default
      * to cin and cout, but that assignment is only made when initializing in
      * yylex(). */
-    SONLexerImpl(class SONInterpreter& interpreter,
+    SONLexerImpl(class AbstractInterpreter& interpreter,
                  std::istream* arg_yyin = 0,
            std::ostream* arg_yyout = 0);
 
@@ -58,7 +58,7 @@ public:
     void capture_token(wasp::SONParser::semantic_type* yylval,
                        wasp::NODE type);
 private:
-    class SONInterpreter & interpreter;
+    class AbstractInterpreter & interpreter;
     std::size_t file_offset;
 };
 

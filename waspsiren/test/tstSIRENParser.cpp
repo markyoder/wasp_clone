@@ -9,7 +9,7 @@ TEST( SIREN, parse_only_root )
 {
     std::stringstream input;
     input<< R"INPUT(/)INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(3, interpreter.node_count() );
     auto document = interpreter.root();
@@ -24,7 +24,7 @@ TEST( SIREN, parse_simple_root )
 {
     std::stringstream input;
     input<< R"INPUT(/child)INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(4, interpreter.node_count() );
     auto document = interpreter.root();
@@ -46,7 +46,7 @@ TEST( SIREN, parse_simple_root_w_conditionally_predicated_child )
 {
     std::stringstream input;
     input<< R"INPUT(/child/gchild[id=1]/ggchild)INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(17, interpreter.node_count() );
     auto document = interpreter.root();
@@ -91,7 +91,7 @@ TEST( SIREN, parse_simple_root_w_index_predicated_child )
 {
     std::stringstream input;
     input<< R"INPUT(/child/gchild[1]/ggchild)INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(15, interpreter.node_count() );
     auto document = interpreter.root();
@@ -134,7 +134,7 @@ TEST( SIREN, parse_simple_root_w_indices_predicated_child )
 {
     std::stringstream input;
     input<< R"INPUT(/child/gchild[1:10]/ggchild)INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(17, interpreter.node_count() );
     auto document = interpreter.root();
@@ -179,7 +179,7 @@ TEST( SIREN, parse_simple_root_w_strided_indices_predicated_child )
 {
     std::stringstream input;
     input<< R"INPUT(/child/gchild[1:10:2]/ggchild)INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(19, interpreter.node_count() );
     auto document = interpreter.root();
@@ -226,7 +226,7 @@ TEST( SIREN, parse_eq_pred )
 {
     std::stringstream input;
     input<< R"INPUT(/ child [id = 'x'] )INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 11, interpreter.node_count() );
     auto document = interpreter.root();
@@ -263,7 +263,7 @@ TEST( SIREN, parse_gte_pred )
 {
     std::stringstream input;
     input<< R"INPUT(/ child [r >= 3] )INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 11, interpreter.node_count() );
     auto document = interpreter.root();
@@ -300,7 +300,7 @@ TEST( SIREN, parse_lte_pred )
 {
     std::stringstream input;
     input<< R"INPUT(/ child [r <= 3] )INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 11, interpreter.node_count() );
     auto document = interpreter.root();
@@ -337,7 +337,7 @@ TEST( SIREN, parse_neq_pred )
 {
     std::stringstream input;
     input<< R"INPUT(/ child [r != 3] )INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 11, interpreter.node_count() );
     auto document = interpreter.root();
@@ -374,7 +374,7 @@ TEST( SIREN, parse_lt_pred )
 {
     std::stringstream input;
     input<< R"INPUT(/ child [r < 3] )INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 11, interpreter.node_count() );
     auto document = interpreter.root();
@@ -411,7 +411,7 @@ TEST( SIREN, parse_gt_pred )
 {
     std::stringstream input;
     input<< R"INPUT(/ child [r > 3] )INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 11, interpreter.node_count() );
     auto document = interpreter.root();
@@ -449,7 +449,7 @@ TEST( SIREN, parse_single_relative )
 {
     std::stringstream input;
     input<< R"INPUT( child )INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 2, interpreter.node_count() );
     auto document = interpreter.root();
@@ -474,7 +474,7 @@ TEST( SIREN, parse_relative )
 {
     std::stringstream input;
     input<< R"INPUT( child/grandchild )INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 5, interpreter.node_count() );
     auto document = interpreter.root();
@@ -502,7 +502,7 @@ TEST( SIREN, parse_relative_w_parent )
 {
     std::stringstream input;
     input<< R"INPUT( child/../sibling )INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 8, interpreter.node_count() );
     auto document = interpreter.root();
@@ -533,7 +533,7 @@ TEST( SIREN, parse_parent )
 {
     std::stringstream input;
     input<< R"INPUT( ../uncle )INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 5, interpreter.node_count() );
     auto document = interpreter.root();
@@ -562,7 +562,7 @@ TEST( SIREN, parse_root_based_any_selection )
 {
     std::stringstream input;
     input<< R"INPUT( // )INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 2, interpreter.node_count() );
     auto document = interpreter.root();
@@ -587,7 +587,7 @@ TEST( SIREN, parse_root_based_any_selection_w_child )
 {
     std::stringstream input;
     input<< R"INPUT( //child_name )INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 4, interpreter.node_count() );
     auto document = interpreter.root();
@@ -616,7 +616,7 @@ TEST( SIREN, parse_relative_based_any_selection )
     std::stringstream input;
     // selection from the current context
     input<< R"INPUT( something*// )INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 4, interpreter.node_count() );
     auto document = interpreter.root();
@@ -645,7 +645,7 @@ TEST( SIREN, parse_relative_based_any_selection_w_child )
     std::stringstream input;
     // selection from the current context
     input<< R"INPUT( .//child_name )INPUT";
-    SIRENInterpreter interpreter;
+    SIRENInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ( 5, interpreter.node_count() );
     auto document = interpreter.root();

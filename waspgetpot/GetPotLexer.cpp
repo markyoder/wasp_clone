@@ -2433,7 +2433,7 @@ void GetPotfree (void * ptr )
 namespace wasp {
 
 GetPotLexerImpl::GetPotLexerImpl(
-                GetPotInterpreter & interpreter,
+                AbstractInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
     : GetPotFlexLexer(in, out)

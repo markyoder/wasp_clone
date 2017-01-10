@@ -2,6 +2,7 @@
 #ifndef WASP_SONINTERPRETER_H
 #define WASP_SONINTERPRETER_H
 
+#include <cstddef>
 #include <string>
 #include <fstream>
 #include <istream>
@@ -11,8 +12,12 @@
 #include <map>
 #include <memory>
 
-#include "waspcore/Interpreter.h"
 #include "waspcore/TreeNodePool.h"
+#include "waspcore/TokenPool.h"
+
+#include "waspson/SONLexer.h" // lexer definition must come before interpreter
+#include "waspcore/Interpreter.h" // requires SONLexer for FlexLexer fwd
+
 /** The wasp namespace is used to encapsulate the three parser classes
  * wasp::SONParser, wasp::SONLexerImpl and wasp::SONInterpreter */
 namespace wasp {
@@ -36,8 +41,11 @@ namespace wasp {
      * primitives : (integer|true|false|real|string|quoted_string)+
      * objects : object+
      */
-    class SONInterpreter : public Interpreter<> {
+    template<class S = TreeNodePool<unsigned short, unsigned short
+                                    ,TokenPool<unsigned short,unsigned short, unsigned short>> >
+    class SONInterpreter : public Interpreter<S> {
     public:
+        typedef S Storage_type;
         typedef std::shared_ptr<SONInterpreter> SharedPtr;
         SONInterpreter();
         SONInterpreter(std::ostream & err);
@@ -49,24 +57,24 @@ namespace wasp {
          * @return          true if successfully parsed
          */
         bool parseStream(std::istream& in,
-                const std::string& sname = "stream input", std::size_t startLine=1u, std::size_t startColumn=1u);
-        bool parse(std::istream &input, std::size_t startLine=1u, std::size_t startColumn=1u);
+                const std::string& sname = "stream input", size_t startLine=1u, size_t startColumn=1u);
+        bool parse(std::istream &input, size_t startLine=1u, size_t startColumn=1u);
         /** Invoke the lexer and parser on an input string.
          * @param input     input string
          * @param sname     stream name for error messages
          * @return          true if successfully parsed
          */
         bool parseString(const std::string& input,
-                const std::string& sname = "string stream", std::size_t startLine=1u, std::size_t startColumn=1u);
+                const std::string& sname = "string stream", size_t startLine=1u, size_t startColumn=1u);
         /** Invoke the lexer and parser on a file. Use parse_stream with a
          * std::ifstream if detection of file reading errors is required.
          * @param filename  input file name
          * @return          true if successfully parsed
          */
-        bool parseFile(const std::string& filename, std::size_t startLine=1u);
+        bool parseFile(const std::string& filename, size_t startLine=1u);
 
         void setSingleParse(bool s){singleParse = s;}
-        bool isSingleParse()const{return singleParse;}
+        bool single_parse()const{return singleParse;}
 
     public: // public variables
         /**
@@ -74,10 +82,8 @@ namespace wasp {
          */
         class SONLexerImpl* m_lexer;
 
-        /**
-         * @brief streamName - stream name (file or input stream) used for error messages.
-         */
-        std::string streamName;
+        virtual class SONLexerImpl * lexer(){return m_lexer;}
+
 
         /**
          * @brief setStreamName sets the name of this stream and indicates whether the stream/name is a file[path]
@@ -85,7 +91,7 @@ namespace wasp {
          * @param isFile [default=false] indicates whether the name is a file path
          */
         void setStreamName(const std::string & name, bool isFile=false)
-        {streamName = name; mHasFile = isFile;}
+        {Interpreter<S>::stream_name() = name; mHasFile = isFile;}
         /**
          * @brief traceLexing - variable available for verbosely debugging lexing logic
          * @note '%debug' must be specified in the '.lex' grammar file
@@ -118,6 +124,6 @@ namespace wasp {
          */
         bool mHasFile;
     }; // end of SONInterpreter class
-
+#include "waspson/SONInterpreter.i.h"
 } // namespace wasp
 #endif // WASPSONINTERPRETER_H

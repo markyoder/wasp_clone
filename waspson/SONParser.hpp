@@ -134,7 +134,7 @@ namespace wasp {
 
         std::size_t token_index;
         std::size_t node_index;
-        std::vector<unsigned int>* node_indices;
+        std::vector<size_t>* node_indices;
 
 #line 140 "SONParser.hpp" // lalr1.cc:377
     };
@@ -300,7 +300,7 @@ namespace wasp {
 
 
     /// Build a parser object.
-    SONParser (class SONInterpreter& interpreter_yyarg);
+    SONParser (class AbstractInterpreter& interpreter_yyarg);
     virtual ~SONParser ();
 
     /// Parse.
@@ -513,7 +513,7 @@ namespace wasp {
 
 
     // User arguments.
-    class SONInterpreter& interpreter;
+    class AbstractInterpreter& interpreter;
   };
 
 

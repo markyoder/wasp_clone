@@ -31,7 +31,7 @@ template<typename NTS, typename NIS
          ,class TP>
 void TreeNodePool<NTS,NIS,TP>::push_parent(
         NTS type, const char * name
-        ,const std::vector<NIS> & child_indices)
+        ,const std::vector<size_t> & child_indices)
 {
     // Capture node's basic information
     m_node_names.push(name);
@@ -135,7 +135,7 @@ std::size_t TreeNodePool<NTS,NIS,TP>::parent_node_index(
 {
     // TODO check range    
     auto parent_index = m_node_basic_data[node_index].m_parent_node_index;
-    if( parent_index == -1 )
+    if( parent_index == NIS(-1) )
     {
         return size();
     }
@@ -209,7 +209,9 @@ void TreeNodePool<NTS,NIS,TP>::node_path(
         lineage.pop_back();
     }
     // remove the root 'document'
-    else if( lineage.size() > 1 ) lineage.pop_back();
+    else if( lineage.size() > 1 ){
+        lineage.pop_back();
+    }
     // with the lineage accrued
     // walk in reverse order parent->child
     while( !lineage.empty() )
@@ -247,8 +249,9 @@ template<typename NTS, typename NIS
 bool TreeNodePool<NTS,NIS,TP>::has_parent(
                     NIS node_index )const
 {
-    if( node_index >= size() ) return false;
-
+    if( size() == 0 || node_index >= size()-1 ){
+        return false;
+    }
     std::size_t nodes_parent_index
             = parent_node_index(node_index);
     return nodes_parent_index != size();
