@@ -4,7 +4,6 @@
 #include <ostream>
 
 #include "SONLexer.h"
-#include <waspson/son_config.h>
 namespace wasp {
 
 SONInterpreter::SONInterpreter()
@@ -18,7 +17,7 @@ SONInterpreter::SONInterpreter()
 SONInterpreter::SONInterpreter(std::ostream & err)
     : Interpreter(err),
     traceLexing(false),
-    traceParsing(false),    
+    traceParsing(false),
     singleParse(false),
     mHasFile(false)
 {

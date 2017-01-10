@@ -1,4 +1,5 @@
 #include "waspcore/TreeNodePool.h"
+#include "waspcore/TokenPool.h"
 #include "gtest/gtest.h"
 #include <iostream>
 #include <string>
@@ -33,7 +34,7 @@ TEST(TreeNodeView,child_by_name)
 {
     //'array (foo) 234 1.2343 end\n' // data
     // 0     67  1011  15     22     // offsets
-    TreeNodePool<char,char,char,char,default_file_offset_type_size> tp;
+    TreeNodePool<char,char,TokenPool<char,char,default_file_offset_type_size>> tp;
     std::vector<char> root_child_indices;
     size_t data_root_index;
     std::vector<std::string> token_data=
@@ -130,7 +131,7 @@ TEST(TreeNodePool, is_null_test )
 {
     TreeNodeView<TreeNodePool<>> null_view;
     ASSERT_TRUE( null_view.is_null() );
-    TreeNodePool<char,char,char,char,default_file_offset_type_size> tp;
+    TreeNodePool<char,char,TokenPool<char,char,default_file_offset_type_size>> tp;
     TreeNodeView <decltype(tp)> view(1,tp);
     ASSERT_FALSE( view.is_null() );
 }
@@ -138,7 +139,7 @@ TEST(TreeNodePool, operator_equal_test )
 {
     TreeNodeView<TreeNodePool<>> null_view;
     ASSERT_TRUE( null_view.is_null() );
-    TreeNodePool<char,char,char,char,default_file_offset_type_size> tp;
+    TreeNodePool<char,char,TokenPool<char,char,default_file_offset_type_size>> tp;
     TreeNodeView <decltype(tp)> view1(0,tp);
     TreeNodeView <decltype(tp)> view2(0,tp);
     TreeNodeView <decltype(tp)> view3(1,tp);
@@ -148,7 +149,7 @@ TEST(TreeNodePool, operator_equal_test )
 TEST(TreeNodeView,to_type_test)
 {
     //'"QString1" \'QString2\' string 14 14e6 15.0 15.0e6 3.145' // data
-    TreeNodePool<char,char,char,char,default_file_offset_type_size> tp;
+    TreeNodePool<char,char,TokenPool<char,char,default_file_offset_type_size>> tp;
 
     { // push the data with needed metadata for testing purposes
         std::vector<std::string> token_data=

@@ -16,25 +16,22 @@ typedef unsigned int default_node_index_size;
  */
 template<
     // size type describing node type maximum
-    typename node_type_size =  default_node_type_size
+    typename nts =  default_node_type_size
     // size type describing node occurrence maximum
-    ,typename node_index_size = default_node_index_size
-    // size type describing token type maximum token type count
-    ,typename token_type_size = default_token_type_size
-    // size type describing maximum number of tokens
-    ,typename token_index_type_size = default_token_index_type_size
-    // size type describing the maximum byte file offset
-    ,typename file_offset_type_size = default_file_offset_type_size
+    ,typename nis = default_node_index_size
+    // Token Pool storage type
+    ,class TP = TokenPool<>
 >
 class TreeNodePool{
 public:
+    typedef nts node_type_size;
+    typedef nis node_index_size;
+    typedef TP TokenPool_type;
     TreeNodePool();
     TreeNodePool(const TreeNodePool<
                  node_type_size
                  ,node_index_size
-                 ,token_type_size
-                 ,token_index_type_size
-                 ,file_offset_type_size> & orig);
+                 ,TP> & orig);
     ~TreeNodePool();
 
     /**
@@ -57,8 +54,8 @@ public:
      */
     void push_leaf(node_type_size node_type
                    , const char * node_name
-                   , token_type_size token_type
-                   , file_offset_type_size token_offset
+                   , typename TP::token_type_size token_type
+                   , typename TP::file_offset_type_size token_offset
                    , const char * token_data);
     /**
      * @brief push_leaf create a leaf node with the given attributes and existing token
@@ -68,7 +65,7 @@ public:
      */
     void push_leaf(node_type_size node_type
                    , const char * node_name
-                   , token_index_type_size token_index);
+                   , typename TP::token_index_type_size token_index);
 
 
     /**
@@ -95,7 +92,7 @@ public:
      * @param type the token's type (enumeration)
      * @param token_file_offset the token's offset into the file/stream
      */
-    void push_token(const char * str, token_type_size type
+    void push_token(const char * str, typename TP::token_type_size type
               , size_t token_file_offset )
         {m_token_data.push(str,type,token_file_offset);}
     /**
@@ -164,7 +161,7 @@ public:
      * If the node index is out of range, wasp::UNKNOWN is returned.
      * If the node at the given index is not a leaf node, wasp::UNKNOWN is returned
      */
-    token_type_size node_token_type( node_index_size node_index)const;
+    typename TP::token_type_size node_token_type( node_index_size node_index)const;
     /**
      * @brief data acquire the string data of the node
      * @param node_index the index of the node to acquire the data
@@ -199,27 +196,27 @@ public:
      * @brief push_line add a new line into the underlying token pool
      * @param line_offset the byte offset of the line
      */
-    void push_line(file_offset_type_size line_offset){m_token_data.push_line(line_offset);}
+    void push_line(typename TP::file_offset_type_size line_offset){m_token_data.push_line(line_offset);}
 
     /**
      * @brief token_data acquires the token pool that backs this TreeNodePool
      * @return
      */
-    TokenPool<token_type_size,token_index_type_size,file_offset_type_size>&
+    TokenPool<typename TP::token_type_size,typename TP::token_index_type_size,typename TP::file_offset_type_size>&
         token_data(){return m_token_data;}
 
-    const TokenPool<token_type_size,token_index_type_size,file_offset_type_size>&
+    const TokenPool<typename TP::token_type_size,typename TP::token_index_type_size,typename TP::file_offset_type_size>&
         token_data()const{return m_token_data;}
 private:
     /**
      * @brief m_token_data Leaf node's token data
      * All leaf nodes will have a corresponding token
      */
-    TokenPool<token_type_size,token_index_type_size,file_offset_type_size> m_token_data; //
+    TP m_token_data; //
     /**
      * @brief m_node_names all node names are stored here
      */
-    StringPool<token_index_type_size> m_node_names;
+    StringPool<typename TP::token_index_type_size> m_node_names;
     /**
      * @brief The BasicNodeData struct describes all node's basic data
      */
@@ -278,7 +275,7 @@ private:
      * @brief m_leaf_token_lookup basic node index to token data index in pool
      * An entry will only exist when a basic node is also a leaf node
      */
-    std::unordered_map<node_index_size,token_index_type_size> m_leaf_token_lookup;
+    std::unordered_map<node_index_size,typename TP::token_index_type_size> m_leaf_token_lookup;
 
 };
 

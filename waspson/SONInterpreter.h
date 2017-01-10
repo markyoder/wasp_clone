@@ -12,7 +12,7 @@
 #include <memory>
 
 #include "waspcore/Interpreter.h"
-
+#include "waspcore/TreeNodePool.h"
 /** The wasp namespace is used to encapsulate the three parser classes
  * wasp::SONParser, wasp::SONLexerImpl and wasp::SONInterpreter */
 namespace wasp {
@@ -36,9 +36,7 @@ namespace wasp {
      * primitives : (integer|true|false|real|string|quoted_string)+
      * objects : object+
      */
-    class SONInterpreter : public Interpreter<default_node_type_size,default_node_index_size
-            ,default_token_type_size,default_token_index_type_size
-            ,default_file_offset_type_size> {
+    class SONInterpreter : public Interpreter<> {
     public:
         typedef std::shared_ptr<SONInterpreter> SharedPtr;
         SONInterpreter();

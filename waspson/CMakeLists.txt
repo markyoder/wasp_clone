@@ -42,9 +42,9 @@ FILE(GLOB HEADERS *.h *.hh *.hpp *.lex *.bison
 
 # c++ files
 SET(SOURCES
-SONInterpreter.cpp
 SONLexer.cpp
 SONParser.cpp
+SONInterpreter.cpp
 )
 
 ##---------------------------------------------------------------------------##

@@ -5,9 +5,7 @@
 #include "waspexpr/ExprLexer.h"
 namespace wasp{
 
-class ExprInterpreter : public Interpreter<default_node_type_size,default_node_index_size
-                                            ,default_token_type_size,default_token_index_type_size
-                                            ,default_file_offset_type_size>
+class ExprInterpreter : public Interpreter<>
 {
 public:
     ExprInterpreter(std::ostream & error_stream=std::cerr);

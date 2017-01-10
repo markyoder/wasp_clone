@@ -5,9 +5,7 @@
 #include "waspgetpot/GetPotLexer.h"
 namespace wasp{
 
-class GetPotInterpreter : public Interpreter<default_node_type_size,default_node_index_size
-                                            ,default_token_type_size,default_token_index_type_size
-                                            ,default_file_offset_type_size>
+class GetPotInterpreter : public Interpreter<>
 {
 public:
     GetPotInterpreter(std::ostream & error_stream=std::cerr);

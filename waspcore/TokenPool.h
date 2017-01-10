@@ -22,14 +22,18 @@ typedef unsigned int default_file_offset_type_size;
  */
 template<
     // size type describing token type maximum token type count
-     typename token_type_size = default_token_type_size
+     typename tts = default_token_type_size
     // size type describing maximum number of tokens
-    ,typename token_index_type_size = default_token_index_type_size
+    ,typename tits = default_token_index_type_size
     // size type describing the maximum byte file offset
-    ,typename file_offset_type_size = default_file_offset_type_size
+    ,typename fots = default_file_offset_type_size
 >
 struct TokenPool{
 public:
+
+    typedef tts token_type_size;
+    typedef tits token_index_type_size;
+    typedef fots file_offset_type_size;
     TokenPool();
     TokenPool(const TokenPool<token_type_size
                     ,token_index_type_size

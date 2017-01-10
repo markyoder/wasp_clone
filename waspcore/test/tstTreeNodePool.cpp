@@ -1,4 +1,5 @@
 #include "waspcore/TreeNodePool.h"
+#include "waspcore/TokenPool.h"
 #include "gtest/gtest.h"
 #include <iostream>
 #include <string>
@@ -39,7 +40,7 @@ TEST(TreeNodePool,push_test)
     // 0     67  1011  15     22     // offsets
     //'key = 1.23'                   // data
     //'26  3032                      // offsets
-    TreeNodePool<char,char,char,char,default_file_offset_type_size> tp;
+    TreeNodePool<char,char,TokenPool<char,char,default_file_offset_type_size>> tp;
     std::vector<char> root_child_indices;
     { // push first line's contents
         std::vector<std::string> token_data=

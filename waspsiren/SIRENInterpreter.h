@@ -19,9 +19,7 @@
  * wasp::SIRENParser, wasp::SIRENLexerImpl and wasp::SIRENInterpreter */
 namespace wasp {
 
-    class SIRENInterpreter : public Interpreter<default_node_type_size,default_node_index_size
-            ,default_token_type_size,default_token_index_type_size
-            ,default_file_offset_type_size> {
+    class SIRENInterpreter : public Interpreter<> {
     public:
         typedef std::shared_ptr<SIRENInterpreter> SharedPtr;
         SIRENInterpreter();

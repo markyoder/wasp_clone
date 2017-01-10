@@ -8,20 +8,15 @@
 
 namespace wasp{
 
-template<
-         // size type describing node type maximum
-         typename node_type_size =  default_node_type_size
-         // size type describing node occurrence maximum
-         ,typename node_index_size = default_node_index_size
-         // size type describing token type maximum token type count
-         ,typename token_type_size = default_token_type_size
-         // size type describing maximum number of tokens
-         ,typename token_index_type_size = default_token_index_type_size
-         // size type describing the maximum byte file offset
-         ,typename file_offset_type_size = default_file_offset_type_size
-     >
+template< class TNS = TreeNodePool<> >
 class Interpreter{
 public:
+    typedef TNS TreeNodePool_type;
+    typedef typename TNS::node_index_size node_index_size;
+    typedef typename TNS::node_type_size node_type_size;
+    typedef typename TNS::TokenPool_type::token_index_type_size token_index_type_size;
+    typedef typename TNS::TokenPool_type::token_type_size token_type_size;
+    typedef typename TNS::TokenPool_type::file_offset_type_size file_offset_type_size;
     Interpreter(std::ostream & error_stream=std::cerr);
     virtual ~Interpreter();
 
@@ -29,18 +24,14 @@ public:
      * @brief root acquire the root of the document
      * @return TreeNodeView view into the document parse tree
      */
-    TreeNodeView< TreeNodePool<node_type_size,node_index_size
-    ,token_type_size,token_index_type_size
-    ,file_offset_type_size> > root()const;
+    TreeNodeView< TreeNodePool_type > root()const;
 
     /**
      * @brief node_at acquire the node at the given index in the pool
      * @param node_pool_index the index at which to acquire the node
      * @return the TreeNodeView from which data (name, type, data, children) can be conventienty acquired
      */
-    TreeNodeView<TreeNodePool<node_type_size,node_index_size
-    ,token_type_size,token_index_type_size
-    ,file_offset_type_size>> node_at(node_index_size node_pool_index)const;
+    TreeNodeView< TreeNodePool_type > node_at(node_index_size node_pool_index)const;
 
 
     /**
@@ -174,9 +165,7 @@ protected:
     std::vector<node_index_size> m_root_child_indices;
     std::size_t m_root_index;
 public:
-    TreeNodePool<node_type_size,node_index_size
-        ,token_type_size,token_index_type_size
-        ,file_offset_type_size> m_tree_nodes;
+    TreeNodePool_type m_tree_nodes;
 };
 #include "waspcore/Interpreter.i.h"
 } // end of namespace
