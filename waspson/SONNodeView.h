@@ -12,12 +12,15 @@ namespace wasp{
  * @brief The SONNodeView class provides light weight interface to SON Nodes
  * Allows traversing child nodes and parent as well as acquire node information *
  */
-template<class TreeNodePool_T, class TreeNodeView_T=TreeNodeView<TreeNodePool_T> >
+template< class TNV = TreeNodeView<> >
 class SONNodeView{
 public:
     using Collection = std::vector<SONNodeView>;
+    typedef TNV TreeNodeView_type;
+    typedef typename TNV::TreeNodePool_type TreeNodePool_type;
     SONNodeView():m_tree_node_index(-1),m_tree_data(nullptr){}
-    SONNodeView(std::size_t node_index, const TreeNodePool_T & nodes);
+    SONNodeView(std::size_t node_index, const TreeNodePool_type & nodes);
+    SONNodeView(const TNV& orig);
     SONNodeView(const SONNodeView& orig);
 
     ~SONNodeView();
@@ -83,7 +86,7 @@ public:
      * @param index the index of the child [0-child_count())
      * @return SONNodeView describing the child node
      */
-    SONNodeView child_at(std::size_t index)const;
+    SONNodeView<TNV> child_at(std::size_t index)const;
 
     /**
      * @brief child_by_name acquire child nodes by the given name
@@ -123,7 +126,7 @@ public:
      * @brief tree_node_pool acquire the pointer to the backend storage
      * @return the TreeNodePool that backs this view
      */
-    const TreeNodePool_T * tree_node_pool()const{return m_tree_data;}
+    const TNV * tree_node_pool()const{return m_tree_data;}
 
     // !> Type operators
     /**
@@ -145,14 +148,14 @@ public:
     std::string to_string(bool * ok = nullptr) const;
 
     // Friendly stream operator
-    friend std::ostream& operator<< (std::ostream& str, const wasp::SONNodeView<TreeNodePool_T> & view){
+    friend std::ostream& operator<< (std::ostream& str, const wasp::SONNodeView<TNV> & view){
         str<<"SONNodeView(tree_node_index="<<view.m_tree_node_index<<", &pool="<<view.m_tree_data<<")";
         return str;
     }
 
 private:
-    std::size_t m_tree_node_index;
-    const TreeNodePool_T * m_tree_data;
+    size_t m_tree_node_index;
+    const TreeNodePool_type * m_tree_data;
 
 };
 #include "waspson/SONNodeView.i.h"

@@ -283,10 +283,11 @@ private:
  * @brief The TreeNodeView class provies light weight interface to TreeNodes
  * Allows traversing child nodes and parent as well as acquire node information *
  */
-template<class TreeNodePool_T>
+template<class TreeNodePool_T = TreeNodePool<> >
 class TreeNodeView{
 public:
     using Collection = std::vector<TreeNodeView>;
+    typedef TreeNodePool_T TreeNodePool_type;
     TreeNodeView():m_tree_node_index(-1),m_tree_data(nullptr){}
     TreeNodeView(std::size_t node_index, const TreeNodePool_T & nodes);
     TreeNodeView(const TreeNodeView& orig);
