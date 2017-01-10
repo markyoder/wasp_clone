@@ -53,7 +53,7 @@ std::size_t SIRENInterpreter<S>::evaluate(
     // the first selection
     // is either a document root-based selection
     // or a node-relative selection
-    TreeNodeView<Storage_type> selection_root = Interpreter<S>::template root();
+    TreeNodeView<Storage_type> selection_root = Interpreter<S>::root();
 
     if( selection_root.child_count() == 0 ) return 0;
 
