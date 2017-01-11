@@ -495,11 +495,11 @@ std::string TreeNodeView<TreeNodePool_T>::to_string(bool * ok)const
     std::string result;
     to_type(result, ok);
     // trim front quotes
-    while( !result.empty() && result.front() == '\'') result.erase(0,1);
-    while( !result.empty() && result.front() == '\"') result.erase(0,1);
+    while( !result.empty() && result.front() == '\''){ result.erase(0,1); }
+    while( !result.empty() && result.front() == '\"'){ result.erase(0,1); }
     // trim trailing quotes
-    while( !result.empty() && result.back() == '\'') result.erase(result.size()-1,result.size());
-    while( !result.empty() && result.back() == '\"') result.erase(result.size()-1,result.size());
+    while( !result.empty() && result.back() == '\''){ result.erase(result.size()-1,result.size()); }
+    while( !result.empty() && result.back() == '\"'){ result.erase(result.size()-1,result.size()); }
     return result;
 }
 
