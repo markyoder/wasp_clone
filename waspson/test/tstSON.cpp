@@ -1119,7 +1119,7 @@ key = value
 int_array [ 1 2 3 4 ]
 real_array [ 1.1 2.2 3.3 4.4 ]
 string_array [ s t g h ]
-obj{
+obj(foo){
     % comment 2
     key = value
     int_array [ 1 2 3 4 ]
@@ -1130,7 +1130,7 @@ obj{
 )INPUT";
     SONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(64, interpreter.node_count() );
+    ASSERT_EQ(67, interpreter.node_count() );
     SONNodeView<decltype(interpreter.root())> document=interpreter.root();
     ASSERT_FALSE( document.is_null() );
     ASSERT_FALSE( document.has_parent() );

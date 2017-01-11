@@ -58,6 +58,25 @@ bool SONNodeView<TNV>::has_parent()const
     return m_tree_data->has_parent(m_tree_node_index);
 }
 template<class TNV>
+std::string SONNodeView<TNV>::id()const
+{
+    SONNodeView potential_id_child = id_child();
+    if( potential_id_child.is_null () ) return "";
+    return potential_id_child.name();
+}
+template<class TNV>
+SONNodeView<TNV> SONNodeView<TNV>::id_child()const
+{
+    // id is the 3rd child
+    if( child_count() > 2 )
+    {
+        const SONNodeView& child = child_at(2);
+        std::string child_name = child.name();
+        if( child_name == "id" ) return child_name;
+    }
+    return SONNodeView(); // null view
+}
+template<class TNV>
 std::string SONNodeView<TNV>::data()const{
     std::stringstream str;
     m_tree_data->data(m_tree_node_index,str);

@@ -53,6 +53,13 @@ public:
     bool has_parent()const;
 
     // TODO - add id and id_child
+    /**
+     * @brief id acquire the id of the SON component
+     * @return the identifier of the SON component, empty string if no id exists
+     * This is always the 1=decl 2='(' 3=id child and only if the 3rd is named 'id'
+     */
+    std::string id()const;
+    SONNodeView id_child()const;
     // TODO - add non_decorative_child and is_decorative
 
     /**
@@ -90,7 +97,7 @@ public:
      * @param index the index of the child [0-child_count())
      * @return SONNodeView describing the child node
      */
-    SONNodeView<TNV> child_at(std::size_t index)const;
+    SONNodeView child_at(std::size_t index)const;
 
     /**
      * @brief child_by_name acquire child nodes by the given name
