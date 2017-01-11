@@ -1148,7 +1148,9 @@ obj(foo){
             ASSERT_EQ(names[i],name);
             std::string path = view.path();
             ASSERT_EQ(paths[i], path);
+            ASSERT_EQ( name == "comment", view.is_decorative() );
         }
+        ASSERT_EQ(5, document.non_decorative_children_count() );
     }
     { // test comments
         auto comments = document.child_by_name("comment");
@@ -1185,6 +1187,7 @@ obj(foo){
         {
             SCOPED_TRACE(i);
             ASSERT_EQ(value[i],ints[i].to_int());
+            ASSERT_FALSE( ints[i].is_decorative() );
         }
         // TODO - add non_decorative_child test
     }
@@ -1201,6 +1204,7 @@ obj(foo){
         {
             SCOPED_TRACE(i);
             ASSERT_EQ(value[i],reals[i].to_double());
+            ASSERT_FALSE( reals[i].is_decorative() );
         }
     }
     { // test to_string
@@ -1216,6 +1220,7 @@ obj(foo){
         {
             SCOPED_TRACE(i);
             ASSERT_EQ(value[i],strings[i].to_string());
+            ASSERT_FALSE( strings[i].is_decorative() );
         }
     }
     { // test id methods
@@ -1224,6 +1229,8 @@ obj(foo){
         const auto& obj_view = objs.front();
         ASSERT_EQ("foo", obj_view.id() );
         ASSERT_EQ( "foo", obj_view.id_child().data() );
+        // 4 members + 1 id = 5 non decorative
+        ASSERT_EQ(5, obj_view.non_decorative_children_count() );
         ASSERT_EQ("", document.id() );
         ASSERT_TRUE( document.id_child().is_null() );
     }

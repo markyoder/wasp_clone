@@ -64,8 +64,14 @@ public:
      */
     SONNodeView id_child()const;
 
+    /**
+     * @brief is_decorative determine if this node is decorative
+     * @return true, iff the node is a decorative '(','[','{', etc.
+     * Declarators and terminators are decorative
+     */
     bool is_decorative()const;
     SONNodeView::Collection non_decorative_children()const;
+    size_t non_decorative_children_count()const;
 
     /**
      * @brief is_null determines if this view is backed by a storage pool

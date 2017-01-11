@@ -77,6 +77,52 @@ SONNodeView<TNV> SONNodeView<TNV>::id_child()const
     return SONNodeView(); // null view
 }
 template<class TNV>
+bool SONNodeView<TNV>::is_decorative()const{
+    auto t = type();
+    switch (t)
+    {
+    case wasp::DECL:
+    case wasp::TERM:
+    case wasp::ASSIGN:
+    case wasp::COMMENT:
+    case wasp::OBJECT_DECL:
+    case wasp::OBJECT_TERM:
+    case wasp::WASP_COMMA: // ,
+    case wasp::COLON :
+    case wasp::LPAREN :      // (
+    case wasp::RPAREN :    // )
+    case wasp::LBRACE :     // {
+    case wasp::RBRACE :     // }
+    case wasp::LBRACKET:    // [
+    case wasp::RBRACKET:    // ]
+        return true;
+    }
+    return false;
+}
+template<class TNV>
+typename SONNodeView<TNV>::Collection
+SONNodeView<TNV>::non_decorative_children()const
+{
+    Collection results;
+    for( std::size_t i = 0, count = child_count(); i < count; ++i )
+    {
+        const auto& child = child_at(i);
+        if( !child.is_decorative() ) results.push_back(child);
+    }
+    return results;
+}
+template<class TNV>
+size_t SONNodeView<TNV>::non_decorative_children_count()const
+{
+    size_t result = 0;
+    for( std::size_t i = 0, count = child_count(); i < count; ++i )
+    {
+        const auto& child = child_at(i);
+        if( !child.is_decorative() ) ++result;
+    }
+    return result;
+}
+template<class TNV>
 std::string SONNodeView<TNV>::data()const{
     std::stringstream str;
     m_tree_data->data(m_tree_node_index,str);

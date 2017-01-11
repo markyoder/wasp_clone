@@ -53,7 +53,7 @@ namespace wasp
  * std::vector<TAdapter> TAdapter::non_decorative_children()const - acquires a vector of all children that are non-decorative
  * TAdapter TAdaper::first_non_decorative_child_by_name(const std::string & name) - acquires the first non decorative child node with the given name
  * size_t TAdapter::non_decorative_children_count()const - acquires the count of the non decorative children
- *
+ * bool TAdapter::is_decorative()const - determine if the node is decorative
  * ==== Required SchemaAdapter API ====
  *  !! All the above and the following !!
  * std::string TAdapter::id()const - acquire the id as a string
