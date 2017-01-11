@@ -16,14 +16,27 @@ SONNodeView<TNV>::SONNodeView(const SONNodeView & orig)
 {
 }
 template<class TNV>
+SONNodeView<TNV>::SONNodeView(const TNV & orig)
+    : m_tree_node_index(orig.tree_node_index())
+    ,m_tree_data(orig.tree_node_pool())
+{
+}
+template<class TNV>
 SONNodeView<TNV>::~SONNodeView()
 {
 }
 template<class TNV>
 SONNodeView<TNV>& SONNodeView<TNV>::operator =( const SONNodeView& b)
 {
-    m_tree_node_index = b.m_tree_node_index;
-    m_tree_data = b.m_tree_data;
+    m_tree_node_index = b.tree_node_index();
+    m_tree_data = b.tree_node_pool();
+    return *this;
+}
+template<class TNV>
+SONNodeView<TNV>& SONNodeView<TNV>::operator =( const TNV& b)
+{
+    m_tree_node_index = b.tree_node_index();
+    m_tree_data = b.tree_node_pool();
     return *this;
 }
 template<class TNV>
@@ -65,6 +78,14 @@ std::size_t SONNodeView<TNV>::child_count()const
 {
     return m_tree_data->child_count(m_tree_node_index);
 }
+template<class TNV> // template type
+std::size_t // return type
+SONNodeView<TNV>::child_count_by_name(const std::string & name
+                                                       , std::size_t limit)const
+{
+    TNV view (tree_node_index(),*tree_node_pool());
+    return view.child_count_by_name(name, limit);
+}
 template<class TNV>
 SONNodeView<TNV> SONNodeView<TNV>::child_at(std::size_t index)const
 {
@@ -78,8 +99,19 @@ typename SONNodeView<TNV>::Collection // return type
 SONNodeView<TNV>::child_by_name(const std::string & name
                                                        , std::size_t limit)const
 {
-    TNV adaptee(tree_node_index(), *tree_node_pool());
-    return adaptee.child_by_name(name, limit);
+    Collection results;
+    for( std::size_t i = 0, count = child_count(); i < count; ++i )
+    {
+        auto child = child_at(i);
+        std::string child_name = child.name();
+        if( child_name == name )
+        {
+            results.push_back(child);
+        }
+        // limit of 0 is reserved as no limit
+        if( limit != 0 && results.size() == limit ) break;
+    }
+    return results;
 }
 template<class TNV>
 std::size_t SONNodeView<TNV>::type()const
@@ -117,7 +149,7 @@ template<class TNV>
 std::string SONNodeView<TNV>::to_string(bool * ok)const
 {
     TNV view( tree_node_index(), *tree_node_pool() );
-    return view.to_String(ok);
+    return view.to_string(ok);
 }
 
 #endif

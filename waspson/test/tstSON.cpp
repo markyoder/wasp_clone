@@ -1108,3 +1108,84 @@ TEST( SON, expressions )
         }
     }
 }
+
+
+TEST( SONNodeView, HIVE_API)
+{
+    std::stringstream input;
+    input<< R"INPUT(
+% comment 1
+key = value
+int_array [ 1 2 3 4 ]
+real_array [ 1.1 2.2 3.3 4.4 ]
+string_array [ s t g h ]
+obj{
+    % comment 2
+    key = value
+    int_array [ 1 2 3 4 ]
+    real_array [ 1.1 2.2 3.3 4.4 ]
+    string_array [ s t g h ]
+}
+ % comment 3
+)INPUT";
+    SONInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(64, interpreter.node_count() );
+    SONNodeView<decltype(interpreter.root())> document=interpreter.root();
+    ASSERT_FALSE( document.is_null() );
+    ASSERT_FALSE( document.has_parent() );
+    { // test names
+        std::vector<std::string> names={"comment","key","int_array","real_array"
+                                   ,"string_array","obj","comment"};
+        std::vector<std::string> paths={"/comment","/key","/int_array","/real_array"
+                                        ,"/string_array","/obj","/comment"};
+        ASSERT_EQ( names.size(), document.child_count() );
+        for( size_t i = 0; i < names.size(); ++i )
+        {
+            SCOPED_TRACE(i);
+            const auto & view = document.child_at(i);
+            std::string name = view.name();
+            ASSERT_EQ(names[i],name);
+            std::string path = view.path();
+            ASSERT_EQ(paths[i], path);
+        }
+    }
+    { // test comments
+        auto comments = document.child_by_name("comment");
+        std::vector<std::string>data={"% comment 1","% comment 3"};
+        std::vector<size_t> line={2,14};
+        std::vector<size_t> column={1,2};
+        ASSERT_EQ( data.size(), comments.size() );
+        ASSERT_EQ( data.size(), line.size() );
+        ASSERT_EQ( data.size(), column.size() );
+        ASSERT_EQ( data.size(), document.child_count_by_name("comment") );
+
+        for( size_t i = 0; i < data.size(); ++i )
+        {
+            SCOPED_TRACE(i);
+            const auto & view = comments[i];
+            ASSERT_EQ(data[i], view.data());
+            ASSERT_EQ(wasp::COMMENT, view.type());
+            std::string name = view.name();
+            ASSERT_EQ( "comment", name );
+            ASSERT_EQ( line[i], view.line() );
+            ASSERT_EQ( column[i], view.column() );
+        }
+    }
+    { // test to_int
+        auto int_arrays = document.child_by_name("int_array");
+        ASSERT_EQ(1, int_arrays.size());
+        const auto& int_array = int_arrays.front();
+        ASSERT_EQ(7, int_array.child_count());
+        std::vector<int> value = {1,2,3,4};
+        ASSERT_EQ( value.size(), int_array.child_count_by_name("value") );
+        const auto& ints = int_array.child_by_name("value");
+        ASSERT_EQ(4, ints.size() );
+        for( size_t i = 0; i < ints.size(); ++i)
+        {
+            SCOPED_TRACE(i);
+            ASSERT_EQ(value[i],ints[i].to_int());
+        }
+        // TODO - add non_decorative_child test
+    }
+}

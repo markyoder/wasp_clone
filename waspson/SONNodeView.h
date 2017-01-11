@@ -26,6 +26,7 @@ public:
     ~SONNodeView();
 
     SONNodeView& operator=(const SONNodeView& b);
+    SONNodeView& operator=(const TreeNodeView_type& b);
 
     bool operator==(const SONNodeView& b)const;
     bool operator!=(const SONNodeView& b)const{return !(*this==b);}
@@ -50,6 +51,9 @@ public:
      * @return true, iff this node has a parent
      */
     bool has_parent()const;
+
+    // TODO - add id and id_child
+    // TODO - add non_decorative_child and is_decorative
 
     /**
      * @brief is_null determines if this view is backed by a storage pool
@@ -126,7 +130,7 @@ public:
      * @brief tree_node_pool acquire the pointer to the backend storage
      * @return the TreeNodePool that backs this view
      */
-    const TNV * tree_node_pool()const{return m_tree_data;}
+    const TreeNodePool_type * tree_node_pool()const{return m_tree_data;}
 
     // !> Type operators
     /**
