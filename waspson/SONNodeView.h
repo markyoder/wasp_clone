@@ -52,15 +52,20 @@ public:
      */
     bool has_parent()const;
 
-    // TODO - add id and id_child
     /**
      * @brief id acquire the id of the SON component
      * @return the identifier of the SON component, empty string if no id exists
      * This is always the 1=decl 2='(' 3=id child and only if the 3rd is named 'id'
      */
     std::string id()const;
+    /**
+     * @brief id_child acquire the identifier child node
+     * @return id child node. Always check ::is_null to ensure the node exists.
+     */
     SONNodeView id_child()const;
-    // TODO - add non_decorative_child and is_decorative
+
+    bool is_decorative()const;
+    SONNodeView::Collection non_decorative_children()const;
 
     /**
      * @brief is_null determines if this view is backed by a storage pool
