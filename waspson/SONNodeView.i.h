@@ -62,7 +62,7 @@ std::string SONNodeView<TNV>::id()const
 {
     SONNodeView potential_id_child = id_child();
     if( potential_id_child.is_null () ) return "";
-    return potential_id_child.name();
+    return potential_id_child.data();
 }
 template<class TNV>
 SONNodeView<TNV> SONNodeView<TNV>::id_child()const
@@ -72,7 +72,7 @@ SONNodeView<TNV> SONNodeView<TNV>::id_child()const
     {
         const SONNodeView& child = child_at(2);
         std::string child_name = child.name();
-        if( child_name == "id" ) return child_name;
+        if( child_name == "id" ) return child;
     }
     return SONNodeView(); // null view
 }

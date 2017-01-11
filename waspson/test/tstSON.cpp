@@ -1218,4 +1218,13 @@ obj(foo){
             ASSERT_EQ(value[i],strings[i].to_string());
         }
     }
+    { // test id methods
+        auto objs = document.child_by_name("obj");
+        ASSERT_EQ(1, objs.size());
+        const auto& obj_view = objs.front();
+        ASSERT_EQ("foo", obj_view.id() );
+        ASSERT_EQ( "foo", obj_view.id_child().data() );
+        ASSERT_EQ("", document.id() );
+        ASSERT_TRUE( document.id_child().is_null() );
+    }
 }
