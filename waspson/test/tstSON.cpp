@@ -1188,4 +1188,19 @@ obj(foo){
         }
         // TODO - add non_decorative_child test
     }
+    { // test to_double
+        auto real_arrays = document.child_by_name("real_array");
+        ASSERT_EQ(1, real_arrays.size());
+        const auto& real_array = real_arrays.front();
+        ASSERT_EQ(7, real_array.child_count());
+        std::vector<double> value = {1.1,2.2,3.3,4.4};
+        ASSERT_EQ( value.size(), real_array.child_count_by_name("value") );
+        const auto& reals = real_array.child_by_name("value");
+        ASSERT_EQ(4, reals.size() );
+        for( size_t i = 0; i < reals.size(); ++i)
+        {
+            SCOPED_TRACE(i);
+            ASSERT_EQ(value[i],reals[i].to_double());
+        }
+    }
 }
