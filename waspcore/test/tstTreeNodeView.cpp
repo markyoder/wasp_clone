@@ -125,6 +125,14 @@ TEST(TreeNodeView,child_by_name)
                 ASSERT_EQ( node_type[t], child_view.type() );
             }
         }
+        { // first child
+            const std::string child_name = "value";
+            const auto &  child_view = data_view.first_child_by_name(child_name);
+            ASSERT_FALSE( child_view.is_null() );
+            std::string child_data = child_view.data();
+            ASSERT_EQ( "234", child_data );
+
+        }
     }
 }
 TEST(TreeNodePool, is_null_test )

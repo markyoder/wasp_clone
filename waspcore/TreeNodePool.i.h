@@ -455,6 +455,17 @@ TreeNodeView<TreeNodePool_T>::child_by_name(const std::string & name
     }
     return results;
 }
+template<class TreeNodePool_T> // template type
+TreeNodeView<TreeNodePool_T>
+TreeNodeView<TreeNodePool_T>::first_child_by_name(const std::string & name)const
+{
+    for( std::size_t i = 0, count = child_count(); i < count; ++i )
+    {
+        auto child = child_at(i);
+        if( name == child.name() ) return child;
+    }
+    return TreeNodeView<TreeNodePool_T>(); // null view
+}
 template<class TreeNodePool_T>
 std::size_t TreeNodeView<TreeNodePool_T>::type()const
 {
