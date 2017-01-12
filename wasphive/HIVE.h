@@ -70,6 +70,15 @@ public:
                        bool xmloutput=false, std::string file="", std::ostream&output=std::cout);
 
     static void sort_errors(std::vector<std::string> & errors);
+    static std::string combine(std::vector<std::string> & errors){
+        std::stringstream str;
+        for( const std::string& s : errors )
+        {
+            str << s << std::endl;
+        }
+        return str.str();
+    }
+
 private:
     // TODO document these attributes
     const static float SUMERROR;
