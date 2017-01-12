@@ -61,6 +61,7 @@ namespace wasp
 class HIVE{
 
 public:
+
     HIVE();
     HIVE(const std::atomic<bool> &stop);
     ~HIVE();

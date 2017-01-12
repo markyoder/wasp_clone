@@ -29,7 +29,7 @@ bool HIVE::validate(SchemaAdapter & schema_node, InputAdapter & input_node, std:
 
 
     std::set<std::string> schSeqNames;
-    const std::vector<SchemaAdapter>& children = schema_node.non_decorative_children();
+    const typename SchemaAdapter::Collection children = schema_node.non_decorative_children();
     for(size_t i = 0; i < children.size(); i++){
         SchemaAdapter tmpNode = children[i];
         if (tmpNode.type() == wasp::OBJECT ){
@@ -37,14 +37,13 @@ bool HIVE::validate(SchemaAdapter & schema_node, InputAdapter & input_node, std:
         }
     }
 
-    for(int i = 0; i < input_node->child_count(); i++){
+    for(int i = 0; i < input_node.child_count(); i++){
 
-        InputAdapter tmpNode = input_node->child_at(i);
+        InputAdapter tmpNode = input_node.child_at(i);
         if (schSeqNames.find(tmpNode.name()) == schSeqNames.end()) continue;
-
-        pass &= traverse_schema(
-                schema_node.first_non_decorative_child_by_name(tmpNode.name()),
-                &tmpNode, errors);
+        auto first_non_decorative = schema_node.first_non_decorative_child_by_name(tmpNode.name());
+        pass &= traverse_schema(first_non_decorative
+                                ,tmpNode, errors);
     }
 
     sort_errors(errors);
@@ -59,13 +58,13 @@ bool HIVE::traverse_schema(SchemaAdapter & schema_node, InputAdapter & input_nod
 
    bool pass = true;
 
-   if( schema_node == NULL ) return false;
+   if( schema_node.is_null() ) return false;
    SIRENResultSet<InputAdapter> selection;
    if( !select_nodes(selection, input_node, schema_node.path(), errors) )
    {
        return false;
    }
-   const std::vector<SchemaAdapter> & children = schema_node.non_decorative_children();
+   const typename SchemaAdapter::Collection & children = schema_node.non_decorative_children();
    bool hasToDo = false;
    bool isAny = false;
    std::set<std::string> definitionChildren;
@@ -139,14 +138,6 @@ bool HIVE::traverse_schema(SchemaAdapter & schema_node, InputAdapter & input_nod
            pass &= validateSumOverGroup(tmpNode, input_node, errors);
        }
 
-       else if (tmpNodeName == "ProdOver"){
-           pass &= validateProdOver(tmpNode, input_node, errors);
-       }
-
-       else if (tmpNodeName == "ProdOverGroup"){
-           pass &= validateProdOverGroup(tmpNode, input_node, errors);
-       }
-
        else if (tmpNodeName == "IncreaseOver"){
            pass &= validateIncreaseOver(tmpNode, input_node, errors);
        }
@@ -198,7 +189,7 @@ bool HIVE::traverse_schema(SchemaAdapter & schema_node, InputAdapter & input_nod
        
        /* Error if there is a non-decorative input child with no schema rule */
        for(size_t i = 0; i < selection.size(); i++){
-           const std::vector<SchemaAdapter> & children = selection.at(i).non_decorative_children();
+           const typename SchemaAdapter::Collection & children = selection.adapted(i).non_decorative_children();
            for(size_t j = 0; j < children.size(); j++){
                InputAdapter inputChild = children[j];
                if (inputChild.name() != "value"){
@@ -241,11 +232,11 @@ bool HIVE::validateMinOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
 
    for(size_t i = 0; i < selection.size(); i++){
 
-       if (selection.at(i)->is_decorative() || selection.at(i).name() == "decl") continue;
+       if (selection.adapted(i)->is_decorative() || selection.adapted(i).name() == "decl") continue;
 
        size_t childNodeCount = 0;
-       if (nodeName == "*") childNodeCount = selection.at(i).non_decorative_children_count();
-       else                 childNodeCount = selection.at(i).child_count_by_name(nodeName);
+       if (nodeName == "*") childNodeCount = selection.adapted(i).non_decorative_children_count();
+       else                 childNodeCount = selection.adapted(i).child_count_by_name(nodeName);
 
        if (!issRV.eof() || issRV.fail()){
            std::stringstream look_up_error;
@@ -256,7 +247,7 @@ bool HIVE::validateMinOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
                return false;
            }
            SIRENResultSet<InputAdapter> selectionLookup;
-           InputAdapter inode = selection.at(i);
+           InputAdapter inode = selection.adapted(i);
            inputSelectorlookup.evaluate(inode,selectionLookup);
 
            if (selectionLookup.size() > 1){
@@ -267,21 +258,21 @@ bool HIVE::validateMinOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
            }
            else if (selectionLookup.size() == 1){
 
-               std::istringstream issRV2(selectionLookup.at(0).last_as_string());
+               std::istringstream issRV2(selectionLookup.adapted(0).last_as_string());
                issRV2 >> std::noskipws >> itestRV;
                if (!issRV2.eof() || issRV2.fail()){
-                   errors.push_back(Error::NotAValidNumber(selection.at(i).line(),
-                                                           selection.at(i).column(),
+                   errors.push_back(Error::NotAValidNumber(selection.adapted(i).line(),
+                                                           selection.adapted(i).column(),
                                                            nodeName, ruleName, ruleValue));
                    pass = false;
                }
                else if (childNodeCount <
-                                   stoi(selectionLookup.at(0).last_as_string())){
-                   errors.push_back(Error::Occurance(selection.at(i).line(),
-                                                     selection.at(i).column(),
-                                                     selection.at(i).name(),
+                                   stoi(selectionLookup.adapted(0).last_as_string())){
+                   errors.push_back(Error::Occurance(selection.adapted(i).line(),
+                                                     selection.adapted(i).column(),
+                                                     selection.adapted(i).name(),
                                                      childNodeCount, nodeName, ruleName,
-                                                     selectionLookup.at(0).last_as_string(),
+                                                     selectionLookup.adapted(0).last_as_string(),
                                                      ruleValue));
                    pass = false;
                }
@@ -291,9 +282,9 @@ bool HIVE::validateMinOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
        }
 
        else if (childNodeCount < stoi(ruleValue)){
-           errors.push_back(Error::Occurance(selection.at(i).line(),
-                                             selection.at(i).column(),
-                                             selection.at(i).name(),
+           errors.push_back(Error::Occurance(selection.adapted(i).line(),
+                                             selection.adapted(i).column(),
+                                             selection.adapted(i).name(),
                                              childNodeCount, nodeName, ruleName,
                                              ruleValue));
            pass = false;
@@ -330,11 +321,11 @@ bool HIVE::validateMaxOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
 
    for(size_t i = 0; i < selection.size(); i++){
        
-       if (selection.at(i)->is_decorative() || selection.at(i).name() == "decl") continue;
+       if (selection.adapted(i)->is_decorative() || selection.adapted(i).name() == "decl") continue;
 
        size_t childNodeCount;
-       if (nodeName == "*") childNodeCount = selection.at(i).non_decorative_children_count();
-       else                 childNodeCount = selection.at(i).child_count_by_name(nodeName);
+       if (nodeName == "*") childNodeCount = selection.adapted(i).non_decorative_children_count();
+       else                 childNodeCount = selection.adapted(i).child_count_by_name(nodeName);
 
        if (!issRV.eof() || issRV.fail()){
            std::stringstream look_up_error;
@@ -345,33 +336,33 @@ bool HIVE::validateMaxOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
                return false;
            }
            SIRENResultSet<InputAdapter> selectionLookup;
-           InputAdapter inode = selection.at(i);
+           InputAdapter inode = selection.adapted(i);
            inputSelectorlookup.evaluate(inode,selectionLookup);
 
            if (selectionLookup.size() > 1){
-               errors.push_back(Error::MoreThanOneValue(selection.at(i).line(),
-                                                        selection.at(i).column(),
+               errors.push_back(Error::MoreThanOneValue(selection.adapted(i).line(),
+                                                        selection.adapted(i).column(),
                                                         nodeName, ruleName, ruleValue));
                pass = false;
            }
            else if (selectionLookup.size() == 1){
 
-               std::istringstream issRV2(selectionLookup.at(0).last_as_string());
+               std::istringstream issRV2(selectionLookup.adapted(0).last_as_string());
                issRV2 >> std::noskipws >> itestRV;
 
                if (!issRV2.eof() || issRV2.fail()){
-                   errors.push_back(Error::NotAValidNumber(selection.at(i).line(),
-                                                           selection.at(i).column(),
+                   errors.push_back(Error::NotAValidNumber(selection.adapted(i).line(),
+                                                           selection.adapted(i).column(),
                                                            nodeName, ruleName, ruleValue));
                    pass = false;
                }
                else if (childNodeCount >
-                                   stoi(selectionLookup.at(0).last_as_string())){
-                   errors.push_back(Error::Occurance(selection.at(i).line(),
-                                                     selection.at(i).column(),
-                                                     selection.at(i).name(),
+                                   stoi(selectionLookup.adapted(0).last_as_string())){
+                   errors.push_back(Error::Occurance(selection.adapted(i).line(),
+                                                     selection.adapted(i).column(),
+                                                     selection.adapted(i).name(),
                                                      childNodeCount, nodeName, ruleName,
-                                                     selectionLookup.at(0).last_as_string(),
+                                                     selectionLookup.adapted(0).last_as_string(),
                                                      ruleValue));
                    pass = false;
                }
@@ -381,9 +372,9 @@ bool HIVE::validateMaxOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
        }
 
        else if (childNodeCount > stoi(ruleValue)){
-           errors.push_back(Error::Occurance(selection.at(i).line(),
-                                             selection.at(i).column(),
-                                             selection.at(i).name(),
+           errors.push_back(Error::Occurance(selection.adapted(i).line(),
+                                             selection.adapted(i).column(),
+                                             selection.adapted(i).name(),
                                              childNodeCount, nodeName, ruleName,
                                              ruleValue));
            pass = false;
@@ -423,7 +414,7 @@ bool HIVE::validateValType(SchemaAdapter & schema_node, InputAdapter & input_nod
    inputSelector.evaluate(input_node,selection);
 
    for(size_t i = 0; i < selection.size(); i++){
-       std::istringstream iss(selection.at(i).last_as_string());
+       std::istringstream iss(selection.adapted(i).last_as_string());
        if (ruleValue == "Int" || ruleValue == "Real" || ruleValue == "String"){
            if (ruleValue == "Int"){
                int itest;
@@ -441,48 +432,48 @@ bool HIVE::validateValType(SchemaAdapter & schema_node, InputAdapter & input_nod
            if (!iss.eof() || iss.fail()){
 
                std::string valueNodeName;
-               if (selection.at(i).name() == "value" &&
-                   selection.at(i).has_parent()){
-                   valueNodeName = selection.at(i).parent().name();
+               if (selection.adapted(i).name() == "value" &&
+                   selection.adapted(i).has_parent()){
+                   valueNodeName = selection.adapted(i).parent().name();
                }
                else{
-                   valueNodeName = selection.at(i).name();
+                   valueNodeName = selection.adapted(i).name();
                }
 
-               errors.push_back(Error::BadValType(selection.at(i).line(),
-                                                  selection.at(i).column(),
+               errors.push_back(Error::BadValType(selection.adapted(i).line(),
+                                                  selection.adapted(i).column(),
                                                   valueNodeName,
-                                                  selection.at(i).last_as_string(),
+                                                  selection.adapted(i).last_as_string(),
                                                   ruleValue));
                pass = false;
            }
        }
        else if (ruleValue == "RealOrQuestion"){
-           if (selection.at(i).last_as_string() != "?"){
+           if (selection.adapted(i).last_as_string() != "?"){
                float ftest;
                iss >> std::noskipws >> ftest;
                if (!iss.eof() || iss.fail()){
 
                    std::string valueNodeName;
-                   if (selection.at(i).name() == "value" &&
-                       selection.at(i).has_parent()){
-                       valueNodeName = selection.at(i).parent().name();
+                   if (selection.adapted(i).name() == "value" &&
+                       selection.adapted(i).has_parent()){
+                       valueNodeName = selection.adapted(i).parent().name();
                    }
                    else{
-                       valueNodeName = selection.at(i).name();
+                       valueNodeName = selection.adapted(i).name();
                    }
 
-                   errors.push_back(Error::BadValType(selection.at(i).line(),
-                                                      selection.at(i).column(),
+                   errors.push_back(Error::BadValType(selection.adapted(i).line(),
+                                                      selection.adapted(i).column(),
                                                       valueNodeName,
-                                                      selection.at(i).last_as_string(),
+                                                      selection.adapted(i).last_as_string(),
                                                       ruleValue));
                    pass = false;
                }
            }
        }
        else if (ruleValue == "IntOrYesOrNo"){
-           std::string lowerString = selection.at(i).last_as_string();
+           std::string lowerString = selection.adapted(i).last_as_string();
            transform(lowerString.begin(), lowerString.end(), lowerString.begin(), ::tolower);
            if (lowerString != "yes" && lowerString != "no"){
                int itest;
@@ -490,42 +481,42 @@ bool HIVE::validateValType(SchemaAdapter & schema_node, InputAdapter & input_nod
                if (!iss.eof() || iss.fail()){
 
                    std::string valueNodeName;
-                   if (selection.at(i).name() == "value" &&
-                       selection.at(i).has_parent()){
-                       valueNodeName = selection.at(i).parent().name();
+                   if (selection.adapted(i).name() == "value" &&
+                       selection.adapted(i).has_parent()){
+                       valueNodeName = selection.adapted(i).parent().name();
                    }
                    else{
-                       valueNodeName = selection.at(i).name();
+                       valueNodeName = selection.adapted(i).name();
                    }
 
-                   errors.push_back(Error::BadValType(selection.at(i).line(),
-                                                      selection.at(i).column(),
+                   errors.push_back(Error::BadValType(selection.adapted(i).line(),
+                                                      selection.adapted(i).column(),
                                                       valueNodeName,
-                                                      selection.at(i).last_as_string(),
+                                                      selection.adapted(i).last_as_string(),
                                                       ruleValue));
                    pass = false;
                }
            }
        }
        else if (ruleValue == "IntOrAsterisk"){
-           if (selection.at(i).last_as_string() != "*"){
+           if (selection.adapted(i).last_as_string() != "*"){
                int itest;
                iss >> std::noskipws >> itest;
                if (!iss.eof() || iss.fail()){
 
                    std::string valueNodeName;
-                   if (selection.at(i).name() == "value" &&
-                       selection.at(i).has_parent()){
-                       valueNodeName = selection.at(i).parent().name();
+                   if (selection.adapted(i).name() == "value" &&
+                       selection.adapted(i).has_parent()){
+                       valueNodeName = selection.adapted(i).parent().name();
                    }
                    else{
-                       valueNodeName = selection.at(i).name();
+                       valueNodeName = selection.adapted(i).name();
                    }
 
-                   errors.push_back(Error::BadValType(selection.at(i).line(),
-                                                      selection.at(i).column(),
+                   errors.push_back(Error::BadValType(selection.adapted(i).line(),
+                                                      selection.adapted(i).column(),
                                                       valueNodeName,
-                                                      selection.at(i).last_as_string(),
+                                                      selection.adapted(i).last_as_string(),
                                                       ruleValue));
                    pass = false;
                }
@@ -563,7 +554,7 @@ bool HIVE::validateValEnums(SchemaAdapter & schema_node, InputAdapter & input_no
 
    if (selection.size() != 0){
 
-       const std::vector<SchemaAdapter> & refNodes = schema_node->getChildByName("REF");
+       const typename SchemaAdapter::Collection & refNodes = schema_node.child_by_name("REF");
        std::vector<std::string> refNames;
        for (int i = 0; i < refNodes.size(); i++){
            refNames.push_back(refNodes[i].to_string());
@@ -598,7 +589,7 @@ bool HIVE::validateValEnums(SchemaAdapter & schema_node, InputAdapter & input_no
                        return false;
                    }
 
-                   const std::vector<SchemaAdapter> & children = tmpschema_node.non_decorative_children();
+                   const typename SchemaAdapter::Collection & children = tmpschema_node.non_decorative_children();
                    for(int ic = children.size()-1; ic >= 0; ic--){
                        std::string lowerString = children[ic].to_string();
                        transform(lowerString.begin(), lowerString.end(), lowerString.begin(), ::tolower);
@@ -612,7 +603,7 @@ bool HIVE::validateValEnums(SchemaAdapter & schema_node, InputAdapter & input_no
 
        }
        else{
-           const std::vector<SchemaAdapter> & children = schema_node.non_decorative_children();
+           const typename SchemaAdapter::Collection & children = schema_node.non_decorative_children();
            for(int i = children.size()-1; i >= 0; i--){
                std::string lowerString = children[i].to_string();
                transform(lowerString.begin(), lowerString.end(), lowerString.begin(), ::tolower);
@@ -624,7 +615,7 @@ bool HIVE::validateValEnums(SchemaAdapter & schema_node, InputAdapter & input_no
 
    // LOOP OVER THIS DEQUE CHECKING EACH VALUES EXISTANCE IN THE ENUM UNORDERED SET
    for(size_t i = 0; i < selection.size(); i++){
-       std::string tempString = selection.at(i).last_as_string();
+       std::string tempString = selection.adapted(i).last_as_string();
 
        // if tempString is quoted (single or double), remove quotes before checking
        if (tempString.front() == '\'' && tempString.back() == '\'' && tempString.size() > 1){
@@ -653,12 +644,12 @@ bool HIVE::validateValEnums(SchemaAdapter & schema_node, InputAdapter & input_no
            // CLOSEST MATCH ENUM LIST REPORTING
 
            std::string valueNodeName;
-           if (selection.at(i).name() == "value" &&
-               selection.at(i).has_parent()){
-               valueNodeName = selection.at(i).parent().name();
+           if (selection.adapted(i).name() == "value" &&
+               selection.adapted(i).has_parent()){
+               valueNodeName = selection.adapted(i).parent().name();
            }
            else{
-               valueNodeName = selection.at(i).name();
+               valueNodeName = selection.adapted(i).name();
            }
 
            std::string closestEnums;
@@ -705,8 +696,8 @@ bool HIVE::validateValEnums(SchemaAdapter & schema_node, InputAdapter & input_no
                }
            }
 
-           errors.push_back(Error::BadEnum(selection.at(i).line(),
-                                           selection.at(i).column(),
+           errors.push_back(Error::BadEnum(selection.adapted(i).line(),
+                                           selection.adapted(i).column(),
                                            valueNodeName, tempString, closestEnums));
            pass = false;
        }
@@ -736,24 +727,24 @@ bool HIVE::validateMinValInc(SchemaAdapter & schema_node, InputAdapter & input_n
    inputSelector.evaluate(input_node,selection);
 
    for(size_t i = 0; i < selection.size(); i++){
-       std::istringstream iss(selection.at(i).last_as_string());
+       std::istringstream iss(selection.adapted(i).last_as_string());
        float ftest;
        iss >> std::noskipws >> ftest;
        if (!iss.eof() || iss.fail()){
 
            std::string valueNodeName;
-           if (selection.at(i).name() == "value" &&
-               selection.at(i).has_parent()){
-               valueNodeName = selection.at(i).parent().name();
+           if (selection.adapted(i).name() == "value" &&
+               selection.adapted(i).has_parent()){
+               valueNodeName = selection.adapted(i).parent().name();
            }
            else{
-               valueNodeName = selection.at(i).name();
+               valueNodeName = selection.adapted(i).name();
            }
 
-           errors.push_back(Error::WrongTypeForRule(selection.at(i).line(),
-                                                    selection.at(i).column(),
+           errors.push_back(Error::WrongTypeForRule(selection.adapted(i).line(),
+                                                    selection.adapted(i).column(),
                                                     valueNodeName,
-                                                    selection.at(i).last_as_string(),
+                                                    selection.adapted(i).last_as_string(),
                                                     ruleName));
            pass = false;
        }
@@ -773,7 +764,7 @@ bool HIVE::validateMinValInc(SchemaAdapter & schema_node, InputAdapter & input_n
                    return false;
                }
                SIRENResultSet<InputAdapter> selectionLookup;
-               InputAdapter inode = selection.at(i);
+               InputAdapter inode = selection.adapted(i);
                inputSelectorlookup.evaluate(inode,selectionLookup);
 
                if (selectionLookup.size() > 1){
@@ -785,52 +776,52 @@ bool HIVE::validateMinValInc(SchemaAdapter & schema_node, InputAdapter & input_n
                }
                else if (selectionLookup.size() == 1){
 
-                   std::istringstream issRV2(selectionLookup.at(0).last_as_string());
+                   std::istringstream issRV2(selectionLookup.adapted(0).last_as_string());
                    issRV2 >> std::noskipws >> ftestRV;
 
                    if (!issRV2.eof() || issRV2.fail()){
-                       errors.push_back(Error::NotAValidNumber(selection.at(i).line(),
-                                                               selection.at(i).column(),
-                                                               selection.at(i).name(),
+                       errors.push_back(Error::NotAValidNumber(selection.adapted(i).line(),
+                                                               selection.adapted(i).column(),
+                                                               selection.adapted(i).name(),
                                                                ruleName, ruleValue));
                        pass = false;
                    }
-                   else if (stod(selection.at(i).last_as_string()) < stod(issRV2.str())){
+                   else if (stod(selection.adapted(i).last_as_string()) < stod(issRV2.str())){
 
                        std::string valueNodeName;
-                       if (selection.at(i).name() == "value" &&
-                           selection.at(i).has_parent()){
-                           valueNodeName = selection.at(i).parent().name();
+                       if (selection.adapted(i).name() == "value" &&
+                           selection.adapted(i).has_parent()){
+                           valueNodeName = selection.adapted(i).parent().name();
                        }
                        else{
-                           valueNodeName = selection.at(i).name();
+                           valueNodeName = selection.adapted(i).name();
                        }
 
-                       errors.push_back(Error::MinMax(selection.at(i).line(),
-                                                      selection.at(i).column(),
+                       errors.push_back(Error::MinMax(selection.adapted(i).line(),
+                                                      selection.adapted(i).column(),
                                                       valueNodeName,
-                                                      selection.at(i).last_as_string(),
+                                                      selection.adapted(i).last_as_string(),
                                                       ruleName, issRV2.str(), ruleValue));
                        pass = false;
                    }
                }
 
            }
-           else if (stod(selection.at(i).last_as_string()) < stod(ruleValue)){
+           else if (stod(selection.adapted(i).last_as_string()) < stod(ruleValue)){
 
                std::string valueNodeName;
-               if (selection.at(i).name() == "value" &&
-                   selection.at(i).has_parent()){
-                   valueNodeName = selection.at(i).parent().name();
+               if (selection.adapted(i).name() == "value" &&
+                   selection.adapted(i).has_parent()){
+                   valueNodeName = selection.adapted(i).parent().name();
                }
                else{
-                   valueNodeName = selection.at(i).name();
+                   valueNodeName = selection.adapted(i).name();
                }
 
-               errors.push_back(Error::MinMax(selection.at(i).line(),
-                                              selection.at(i).column(),
+               errors.push_back(Error::MinMax(selection.adapted(i).line(),
+                                              selection.adapted(i).column(),
                                               valueNodeName,
-                                              selection.at(i).last_as_string(),
+                                              selection.adapted(i).last_as_string(),
                                               ruleName, ruleValue));
                pass = false;
            }
@@ -863,24 +854,24 @@ bool HIVE::validateMaxValInc(SchemaAdapter & schema_node, InputAdapter & input_n
    inputSelector.evaluate(input_node,selection);
 
    for(size_t i = 0; i < selection.size(); i++){
-       std::istringstream iss(selection.at(i).last_as_string());
+       std::istringstream iss(selection.adapted(i).last_as_string());
        float ftest;
        iss >> std::noskipws >> ftest;
        if (!iss.eof() || iss.fail()){
 
            std::string valueNodeName;
-           if (selection.at(i).name() == "value" &&
-               selection.at(i).has_parent()){
-               valueNodeName = selection.at(i).parent().name();
+           if (selection.adapted(i).name() == "value" &&
+               selection.adapted(i).has_parent()){
+               valueNodeName = selection.adapted(i).parent().name();
            }
            else{
-               valueNodeName = selection.at(i).name();
+               valueNodeName = selection.adapted(i).name();
            }
 
-           errors.push_back(Error::WrongTypeForRule(selection.at(i).line(),
-                                                    selection.at(i).column(),
+           errors.push_back(Error::WrongTypeForRule(selection.adapted(i).line(),
+                                                    selection.adapted(i).column(),
                                                     valueNodeName,
-                                                    selection.at(i).last_as_string(),
+                                                    selection.adapted(i).last_as_string(),
                                                     ruleName));
            pass = false;
        }
@@ -900,64 +891,64 @@ bool HIVE::validateMaxValInc(SchemaAdapter & schema_node, InputAdapter & input_n
                    return false;
                }
                SIRENResultSet<InputAdapter> selectionLookup;
-               InputAdapter inode = selection.at(i);
+               InputAdapter inode = selection.adapted(i);
                inputSelectorlookup.evaluate(inode,selectionLookup);
 
                if (selectionLookup.size() > 1){
-                   errors.push_back(Error::MoreThanOneValue(selection.at(i).line(),
-                                                            selection.at(i).column(),
-                                                            selection.at(i).name(),
+                   errors.push_back(Error::MoreThanOneValue(selection.adapted(i).line(),
+                                                            selection.adapted(i).column(),
+                                                            selection.adapted(i).name(),
                                                             ruleName, ruleValue));
                    pass = false;
                }
                else if (selectionLookup.size() == 1){
 
-                   std::istringstream issRV2(selectionLookup.at(0).last_as_string());
+                   std::istringstream issRV2(selectionLookup.adapted(0).last_as_string());
                    issRV2 >> std::noskipws >> ftestRV;
 
                    if (!issRV2.eof() || issRV2.fail()){
-                       errors.push_back(Error::NotAValidNumber(selection.at(i).line(),
-                                                               selection.at(i).column(),
-                                                               selection.at(i).name(),
+                       errors.push_back(Error::NotAValidNumber(selection.adapted(i).line(),
+                                                               selection.adapted(i).column(),
+                                                               selection.adapted(i).name(),
                                                                ruleName, ruleValue));
                        pass = false;
                    }
-                   else if (stod(selection.at(i).last_as_string()) > stod(issRV2.str())){
+                   else if (stod(selection.adapted(i).last_as_string()) > stod(issRV2.str())){
 
                        std::string valueNodeName;
-                       if (selection.at(i).name() == "value" &&
-                           selection.at(i).has_parent()){
-                           valueNodeName = selection.at(i).parent().name();
+                       if (selection.adapted(i).name() == "value" &&
+                           selection.adapted(i).has_parent()){
+                           valueNodeName = selection.adapted(i).parent().name();
                        }
                        else{
-                           valueNodeName = selection.at(i).name();
+                           valueNodeName = selection.adapted(i).name();
                        }
 
-                       errors.push_back(Error::MinMax(selection.at(i).line(),
-                                                      selection.at(i).column(),
+                       errors.push_back(Error::MinMax(selection.adapted(i).line(),
+                                                      selection.adapted(i).column(),
                                                       valueNodeName,
-                                                      selection.at(i).last_as_string(),
+                                                      selection.adapted(i).last_as_string(),
                                                       ruleName, issRV2.str(), ruleValue));
                        pass = false;
                    }
                }
 
            }
-           else if (stod(selection.at(i).last_as_string()) > stod(ruleValue)){
+           else if (stod(selection.adapted(i).last_as_string()) > stod(ruleValue)){
 
                std::string valueNodeName;
-               if (selection.at(i).name() == "value" &&
-                   selection.at(i).has_parent()){
-                   valueNodeName = selection.at(i).parent().name();
+               if (selection.adapted(i).name() == "value" &&
+                   selection.adapted(i).has_parent()){
+                   valueNodeName = selection.adapted(i).parent().name();
                }
                else{
-                   valueNodeName = selection.at(i).name();
+                   valueNodeName = selection.adapted(i).name();
                }
 
-               errors.push_back(Error::MinMax(selection.at(i).line(),
-                                              selection.at(i).column(),
+               errors.push_back(Error::MinMax(selection.adapted(i).line(),
+                                              selection.adapted(i).column(),
                                               valueNodeName,
-                                              selection.at(i).last_as_string(),
+                                              selection.adapted(i).last_as_string(),
                                               ruleName, ruleValue));
                pass = false;
            }
@@ -990,24 +981,24 @@ bool HIVE::validateMinValExc(SchemaAdapter & schema_node, InputAdapter & input_n
    inputSelector.evaluate(input_node,selection);
 
    for(size_t i = 0; i < selection.size(); i++){
-       std::istringstream iss(selection.at(i).last_as_string());
+       std::istringstream iss(selection.adapted(i).last_as_string());
        float ftest;
        iss >> std::noskipws >> ftest;
        if (!iss.eof() || iss.fail()){
 
            std::string valueNodeName;
-           if (selection.at(i).name() == "value" &&
-               selection.at(i).has_parent()){
-               valueNodeName = selection.at(i).parent().name();
+           if (selection.adapted(i).name() == "value" &&
+               selection.adapted(i).has_parent()){
+               valueNodeName = selection.adapted(i).parent().name();
            }
            else{
-               valueNodeName = selection.at(i).name();
+               valueNodeName = selection.adapted(i).name();
            }
 
-           errors.push_back(Error::WrongTypeForRule(selection.at(i).line(),
-                                                    selection.at(i).column(),
+           errors.push_back(Error::WrongTypeForRule(selection.adapted(i).line(),
+                                                    selection.adapted(i).column(),
                                                     valueNodeName,
-                                                    selection.at(i).last_as_string(),
+                                                    selection.adapted(i).last_as_string(),
                                                     ruleName));
            pass = false;
        }
@@ -1027,64 +1018,64 @@ bool HIVE::validateMinValExc(SchemaAdapter & schema_node, InputAdapter & input_n
                    return false;
                }
                SIRENResultSet<InputAdapter> selectionLookup;
-               InputAdapter inode = selection.at(i);
+               InputAdapter inode = selection.adapted(i);
                inputSelectorlookup.evaluate(inode,selectionLookup);
 
                if (selectionLookup.size() > 1){
-                   errors.push_back(Error::MoreThanOneValue(selection.at(i).line(),
-                                                            selection.at(i).column(),
-                                                            selection.at(i).name(),
+                   errors.push_back(Error::MoreThanOneValue(selection.adapted(i).line(),
+                                                            selection.adapted(i).column(),
+                                                            selection.adapted(i).name(),
                                                             ruleName, ruleValue));
                    pass = false;
                }
                else if (selectionLookup.size() == 1){
 
-                   std::istringstream issRV2(selectionLookup.at(0).last_as_string());
+                   std::istringstream issRV2(selectionLookup.adapted(0).last_as_string());
                    issRV2 >> std::noskipws >> ftestRV;
 
                    if (!issRV2.eof() || issRV2.fail()){
-                       errors.push_back(Error::NotAValidNumber(selection.at(i).line(),
-                                                               selection.at(i).column(),
-                                                               selection.at(i).name(),
+                       errors.push_back(Error::NotAValidNumber(selection.adapted(i).line(),
+                                                               selection.adapted(i).column(),
+                                                               selection.adapted(i).name(),
                                                                ruleName, ruleValue));
                        pass = false;
                    }
-                   else if (stod(selection.at(i).last_as_string()) <= stod(issRV2.str())){
+                   else if (stod(selection.adapted(i).last_as_string()) <= stod(issRV2.str())){
 
                        std::string valueNodeName;
-                       if (selection.at(i).name() == "value" &&
-                           selection.at(i).has_parent()){
-                           valueNodeName = selection.at(i).parent().name();
+                       if (selection.adapted(i).name() == "value" &&
+                           selection.adapted(i).has_parent()){
+                           valueNodeName = selection.adapted(i).parent().name();
                        }
                        else{
-                           valueNodeName = selection.at(i).name();
+                           valueNodeName = selection.adapted(i).name();
                        }
 
-                       errors.push_back(Error::MinMax(selection.at(i).line(),
-                                                      selection.at(i).column(),
+                       errors.push_back(Error::MinMax(selection.adapted(i).line(),
+                                                      selection.adapted(i).column(),
                                                       valueNodeName,
-                                                      selection.at(i).last_as_string(),
+                                                      selection.adapted(i).last_as_string(),
                                                       ruleName, issRV2.str(), ruleValue));
                        pass = false;
                    }
                }
 
            }
-           else if (stod(selection.at(i).last_as_string()) <= stod(ruleValue)){
+           else if (stod(selection.adapted(i).last_as_string()) <= stod(ruleValue)){
 
                std::string valueNodeName;
-               if (selection.at(i).name() == "value" &&
-                   selection.at(i).has_parent()){
-                   valueNodeName = selection.at(i).parent().name();
+               if (selection.adapted(i).name() == "value" &&
+                   selection.adapted(i).has_parent()){
+                   valueNodeName = selection.adapted(i).parent().name();
                }
                else{
-                   valueNodeName = selection.at(i).name();
+                   valueNodeName = selection.adapted(i).name();
                }
 
-               errors.push_back(Error::MinMax(selection.at(i).line(),
-                                              selection.at(i).column(),
+               errors.push_back(Error::MinMax(selection.adapted(i).line(),
+                                              selection.adapted(i).column(),
                                               valueNodeName,
-                                              selection.at(i).last_as_string(),
+                                              selection.adapted(i).last_as_string(),
                                               ruleName, ruleValue));
                pass = false;
            }
@@ -1117,24 +1108,24 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
    inputSelector.evaluate(input_node,selection);
 
    for(size_t i = 0; i < selection.size(); i++){
-       std::istringstream iss(selection.at(i).last_as_string());
+       std::istringstream iss(selection.adapted(i).last_as_string());
        float ftest;
        iss >> std::noskipws >> ftest;
        if (!iss.eof() || iss.fail()){
 
            std::string valueNodeName;
-           if (selection.at(i).name() == "value" &&
-               selection.at(i).has_parent()){
-               valueNodeName = selection.at(i).parent().name();
+           if (selection.adapted(i).name() == "value" &&
+               selection.adapted(i).has_parent()){
+               valueNodeName = selection.adapted(i).parent().name();
            }
            else{
-               valueNodeName = selection.at(i).name();
+               valueNodeName = selection.adapted(i).name();
            }
 
-           errors.push_back(Error::WrongTypeForRule(selection.at(i).line(),
-                                                    selection.at(i).column(),
+           errors.push_back(Error::WrongTypeForRule(selection.adapted(i).line(),
+                                                    selection.adapted(i).column(),
                                                     valueNodeName,
-                                                    selection.at(i).last_as_string(),
+                                                    selection.adapted(i).last_as_string(),
                                                     ruleName));
            pass = false;
        }
@@ -1154,65 +1145,65 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
                    return false;
                }
                SIRENResultSet<InputAdapter> selectionLookup;
-               InputAdapter inode = selection.at(i);
+               InputAdapter inode = selection.adapted(i);
                inputSelectorlookup.evaluate(inode,selectionLookup);
 
 
                if (selectionLookup.size() > 1){
-                   errors.push_back(Error::MoreThanOneValue(selection.at(i).line(),
-                                                            selection.at(i).column(),
-                                                            selection.at(i).name(),
+                   errors.push_back(Error::MoreThanOneValue(selection.adapted(i).line(),
+                                                            selection.adapted(i).column(),
+                                                            selection.adapted(i).name(),
                                                             ruleName, ruleValue));
                    pass = false;
                }
                else if (selectionLookup.size() == 1){
 
-                   std::istringstream issRV2(selectionLookup.at(0).last_as_string());
+                   std::istringstream issRV2(selectionLookup.adapted(0).last_as_string());
                    issRV2 >> std::noskipws >> ftestRV;
 
                    if (!issRV2.eof() || issRV2.fail()){
-                       errors.push_back(Error::NotAValidNumber(selection.at(i).line(),
-                                                               selection.at(i).column(),
-                                                               selection.at(i).name(),
+                       errors.push_back(Error::NotAValidNumber(selection.adapted(i).line(),
+                                                               selection.adapted(i).column(),
+                                                               selection.adapted(i).name(),
                                                                ruleName, ruleValue));
                        pass = false;
                    }
-                   else if (stod(selection.at(i).last_as_string()) >= stod(issRV2.str())){
+                   else if (stod(selection.adapted(i).last_as_string()) >= stod(issRV2.str())){
 
                        std::string valueNodeName;
-                       if (selection.at(i).name() == "value" &&
-                           selection.at(i).has_parent()){
-                           valueNodeName = selection.at(i).parent().name();
+                       if (selection.adapted(i).name() == "value" &&
+                           selection.adapted(i).has_parent()){
+                           valueNodeName = selection.adapted(i).parent().name();
                        }
                        else{
-                           valueNodeName = selection.at(i).name();
+                           valueNodeName = selection.adapted(i).name();
                        }
 
-                       errors.push_back(Error::MinMax(selection.at(i).line(),
-                                                      selection.at(i).column(),
+                       errors.push_back(Error::MinMax(selection.adapted(i).line(),
+                                                      selection.adapted(i).column(),
                                                       valueNodeName,
-                                                      selection.at(i).last_as_string(),
+                                                      selection.adapted(i).last_as_string(),
                                                       ruleName, issRV2.str(), ruleValue));
                        pass = false;
                    }
                }
 
            }
-           else if (stod(selection.at(i).last_as_string()) >= stod(ruleValue)){
+           else if (stod(selection.adapted(i).last_as_string()) >= stod(ruleValue)){
 
                std::string valueNodeName;
-               if (selection.at(i).name() == "value" &&
-                   selection.at(i).has_parent()){
-                   valueNodeName = selection.at(i).parent().name();
+               if (selection.adapted(i).name() == "value" &&
+                   selection.adapted(i).has_parent()){
+                   valueNodeName = selection.adapted(i).parent().name();
                }
                else{
-                   valueNodeName = selection.at(i).name();
+                   valueNodeName = selection.adapted(i).name();
                }
 
-               errors.push_back(Error::MinMax(selection.at(i).line(),
-                                              selection.at(i).column(),
+               errors.push_back(Error::MinMax(selection.adapted(i).line(),
+                                              selection.adapted(i).column(),
                                               valueNodeName,
-                                              selection.at(i).last_as_string(),
+                                              selection.adapted(i).last_as_string(),
                                               ruleName, ruleValue));
                pass = false;
            }
@@ -1229,7 +1220,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 
 //   std::string nodePath = schema_node.parent().path();
 //   std::string ruleName = getFullRuleName(schema_node.name());
-//   std::string ruleId = schema_node->getId();
+//   std::string ruleId = schema_node.getId();
 //   bool pass = true;
 //   int errorCount = 0;
 //   bool absRule = false;
@@ -1269,7 +1260,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 //   bool setContextNow = false;
 //   bool clearSetsNow = false;
 
-//   const std::vector<SchemaAdapter> & refNodes = schema_node->getChildByName("EXTRAREF");
+//   const typename SchemaAdapter::Collection & refNodes = schema_node.child_by_name("EXTRAREF");
 //   std::vector<std::string> refNames;
 //   for (int i = 0; i < refNodes.size(); i++){
 //       refNames.push_back(refNodes[i].to_string());
@@ -1297,14 +1288,14 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 //               }
 //               tmpschema_node = tmpschema_node.first_non_decorative_child_by_name(refName);
 
-//               if (tmpschema_node == NULL){
+//               if (tmpschema_node.is_null()){
 //                   errors.push_back(Error::BadEnumReference(refName,
 //                                                            schema_node.non_decorative_children()[0].line(),
 //                                                            schema_node.non_decorative_children()[0].column()));
 //                   return false;
 //               }
 
-//               const std::vector<SchemaAdapter> & children = tmpschema_node.non_decorative_children();
+//               const typename SchemaAdapter::Collection & children = tmpschema_node.non_decorative_children();
 //               for(int ic = children.size()-1; ic >= 0; ic--){
 //                   std::string lowerString = children[ic].to_string();
 //                   transform(lowerString.begin(), lowerString.end(), lowerString.begin(), ::tolower);
@@ -1319,7 +1310,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 //   }
 
 //       // LOOP OVER THIS DEQUE CHECKING EACH VALUES EXISTANCE IN THE LOOKUP UNORDERED SET
-//   const std::vector<SchemaAdapter> & children = schema_node.non_decorative_children();
+//   const typename SchemaAdapter::Collection & children = schema_node.non_decorative_children();
 //   std::map<int, SIRENInterpreter> childrenSIRENInterpreterS;
 //   for(size_t i = 0; i < selection.size(); i++){
 
@@ -1335,7 +1326,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 //           }
 
 //           if (children[loop].name() == "RANGE"){
-//               const std::vector<SchemaAdapter> & rangeChildren = children[loop].non_decorative_children();
+//               const typename SchemaAdapter::Collection & rangeChildren = children[loop].non_decorative_children();
 //               if (rangeChildren.size() != 2){
 //                   errors.push_back(Error::RangeNotTwoVals(children[loop].line(),
 //                                                           children[loop].column()));
@@ -1387,7 +1378,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 //           std::string ruleValue = children[loop].to_string();
 //           int parentCount = ruleValue.find_first_not_of("./")/3;
 //           if (setContextNow){
-//               tmpParentInputNode = selection.at(i);
+//               tmpParentInputNode = selection.adapted(i);
 //               for(int parentLoop = 0; parentLoop < parentCount; parentLoop++){
 //                   if (!tmpParentInputNode.has_parent()){
 //                       errors.push_back(Error::BadSchemaPath(schema_node.name(), ruleValue,
@@ -1413,18 +1404,18 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 //                   SIRENInterpreter<> inputSelectorLookup(ruleValue);
 //                   if(inputSelectorLookup.hasParseErrors()){
 //                       for(size_t j = 0; j < inputSelectorLookup.getErrors().size(); j++){
-//                           errors.push_back(Error::SirenParseError(inputSelectorLookup.getErrors().at(j)));
+//                           errors.push_back(Error::SirenParseError(inputSelectorLookup.getErrors().adapted(j)));
 //                       }
 //                       return false;
 //                   }
 //                   childrenSIRENInterpreterS.insert(std::make_pair(loop,inputSelectorLookup));
 //               }
-//               deque<InputNode*> & selectionLookup = childrenSIRENInterpreterS[loop].evaluateAgainst(selection.at(i));
+//               deque<InputNode*> & selectionLookup = childrenSIRENInterpreterS[loop].evaluateAgainst(selection.adapted(i));
 
 //               for(size_t j = 0; j < selectionLookup.size(); j++){
 
 //                   std::string tempString = selectionLookup[j].last_as_string();
-//                   if (absRule && (tempString.at(0) == '-' || tempString.at(0) == '+')){
+//                   if (absRule && (tempString.adapted(0) == '-' || tempString.adapted(0) == '+')){
 //                       tempString.erase(tempString.begin());
 //                   }
 //                   size_t periodIndex = tempString.find('.');
@@ -1496,15 +1487,15 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 //                        refSetPtr->find(lowerKString) == refSetPtr->end())){
 
 //                       std::string valueNodeName;
-//                       if (selection.at(i).name() == "value" &&
-//                           selection.at(i).has_parent()){
-//                           valueNodeName = selection.at(i).parent().name();
+//                       if (selection.adapted(i).name() == "value" &&
+//                           selection.adapted(i).has_parent()){
+//                           valueNodeName = selection.adapted(i).parent().name();
 //                       }
 //                       else{
-//                           valueNodeName = selection.at(i).name();
+//                           valueNodeName = selection.adapted(i).name();
 //                       }
 
-//                       const std::vector<SchemaAdapter> & childrenErr = schema_node.non_decorative_children();
+//                       const typename SchemaAdapter::Collection & childrenErr = schema_node.non_decorative_children();
 //                       std::string lookupPaths;
 //                       for(int loop = 0, count = childrenErr.size(); loop < count; loop++){
 //                           if (childrenErr[loop].name() != "EXTRA" &&
@@ -1517,14 +1508,14 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 //                           }
 //                       }
 
-//                       errors.push_back(Error::NotExistsIn(selection.at(i).line(),
-//                                                           selection.at(i).column(),
+//                       errors.push_back(Error::NotExistsIn(selection.adapted(i).line(),
+//                                                           selection.adapted(i).column(),
 //                                                           valueNodeName, to_string(k),
 //                                                           lookupPaths));
 //                       errorCount++;
 //                       if (errorCount >= MAXERRORS){
-//                           errors.push_back(Error::ErrorLimit(selection.at(i).line(),
-//                                                              selection.at(i).column(),
+//                           errors.push_back(Error::ErrorLimit(selection.adapted(i).line(),
+//                                                              selection.adapted(i).column(),
 //                                                              nodePath, ruleName, MAXERRORS));
 //                           return false;
 //                       }
@@ -1542,15 +1533,15 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 //                    refSetPtr->find(lowerLookupString) == refSetPtr->end()) ){
 
 //           std::string valueNodeName;
-//           if (selection.at(i).name() == "value" &&
-//               selection.at(i).has_parent()){
-//               valueNodeName = selection.at(i).parent().name();
+//           if (selection.adapted(i).name() == "value" &&
+//               selection.adapted(i).has_parent()){
+//               valueNodeName = selection.adapted(i).parent().name();
 //           }
 //           else{
-//               valueNodeName = selection.at(i).name();
+//               valueNodeName = selection.adapted(i).name();
 //           }
 
-//           const std::vector<SchemaAdapter> & childrenErr = schema_node.non_decorative_children();
+//           const typename SchemaAdapter::Collection & childrenErr = schema_node.non_decorative_children();
 //           std::string lookupPaths;
 //           for(int loop = 0, count = childrenErr.size(); loop < count; loop++){
 //               if (childrenErr[loop].name() != "EXTRA" &&
@@ -1563,8 +1554,8 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 //               }
 //           }
 
-//           errors.push_back(Error::NotExistsIn(selection.at(i).line(),
-//                                               selection.at(i).column(),
+//           errors.push_back(Error::NotExistsIn(selection.adapted(i).line(),
+//                                               selection.adapted(i).column(),
 //                                               valueNodeName, lookupString,
 //                                               lookupPaths));
 //           errorCount++;
@@ -1587,7 +1578,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter & schema_node, InputAdapter & input
 
    std::string nodePath = schema_node.parent().path();
    std::string ruleName = getFullRuleName(schema_node.name());
-   std::string ruleId = schema_node->getId();
+   std::string ruleId = schema_node.getId();
    bool pass = true;
    int errorCount = 0;
    bool absRule = false;
@@ -1620,7 +1611,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter & schema_node, InputAdapter & input
    inputSelector.evaluate(input_node,selection);
 
    // gather all of the lookup paths for this rule
-   const std::vector<SchemaAdapter> & lookupPaths = schema_node.non_decorative_children();
+   const typename SchemaAdapter::Collection & lookupPaths = schema_node.non_decorative_children();
    
    // loop through all of the lookup paths for this rule
    for(int j = 0; j < lookupPaths.size(); j++){
@@ -1641,9 +1632,9 @@ bool HIVE::validateNotExistsIn(SchemaAdapter & schema_node, InputAdapter & input
 
            std::unordered_map<std::string, InputAdapter> lookupMap;
 
-           // gather all of the nodes that are at this lookup path relative to this node
+           // gather all of the nodes that are adapted this lookup path relative to this node
            SIRENResultSet<InputAdapter> childSelection;
-           InputAdapter inode = selection.at(i);
+           InputAdapter inode = selection.adapted(i);
            childSelector.evaluate(inode,childSelection);
 
            // loop over all of these nodes and add their values to
@@ -1651,7 +1642,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter & schema_node, InputAdapter & input
            for(size_t loop = 0; loop < childSelection.size(); loop++){
                
                // get the value
-               std::string insertString = childSelection.at(loop).last_as_string();
+               std::string insertString = childSelection.adapted(loop).last_as_string();
 
                // if this is not an alias, then modify the std::string based on the optional
                // flag supplied to this rule, and add it to the lookup
@@ -1668,16 +1659,16 @@ bool HIVE::validateNotExistsIn(SchemaAdapter & schema_node, InputAdapter & input
                            insertString.erase(0, zeroIndex);
                        }
                    }
-                   lookupMap.insert(make_pair(insertString, childSelection.at(loop)));
+                   lookupMap.insert(make_pair(insertString, childSelection.adapted(loop)));
                }
                
            }
 
-           // now we will check all values at this node against the lookup map
+           // now we will check all values adapted this node against the lookup map
            // created above and list std::set of alias ranges created above
            
            // get the value
-           std::string initialString = selection.at(i).last_as_string();
+           std::string initialString = selection.adapted(i).last_as_string();
            
            // determine if it is an alias or not
            // if it is an alias, then std::set the outer loop to the number
@@ -1744,15 +1735,15 @@ bool HIVE::validateNotExistsIn(SchemaAdapter & schema_node, InputAdapter & input
                            // then std::set the name that will be reported to be
                            // its parent's name
                        std::string valueNodeName;
-                       if (selection.at(i).name() == "value" &&
-                           selection.at(i).has_parent()){
-                           valueNodeName = selection.at(i).parent().name();
+                       if (selection.adapted(i).name() == "value" &&
+                           selection.adapted(i).has_parent()){
+                           valueNodeName = selection.adapted(i).parent().name();
                        }
                        else{
-                           valueNodeName = selection.at(i).name();
+                           valueNodeName = selection.adapted(i).name();
                        }
-                       errors.push_back(Error::AlsoExistsAt(selection.at(i).line(),
-                                                            selection.at(i).column(),
+                       errors.push_back(Error::AlsoExistsAt(selection.adapted(i).line(),
+                                                            selection.adapted(i).column(),
                                                             valueNodeName,
                                                             lookupString,
                                                             lookupPath,
@@ -1762,8 +1753,8 @@ bool HIVE::validateNotExistsIn(SchemaAdapter & schema_node, InputAdapter & input
                        // if we max out our errors, then report that and bail out
                        errorCount++;
                        if (errorCount >= MAXERRORS){
-                           errors.push_back(Error::ErrorLimit(selection.at(i).line(),
-                                                              selection.at(i).column(),
+                           errors.push_back(Error::ErrorLimit(selection.adapted(i).line(),
+                                                              selection.adapted(i).column(),
                                                               nodePath, ruleName, MAXERRORS));
                            return false;
                        }
@@ -1781,7 +1772,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter & schema_node, InputAdapter & input
    }
    
    // return whether this rule passed everything
-   // or had at least a single validation failure
+   // or had adapted least a single validation failure
    return pass;
 
 }
@@ -1792,7 +1783,7 @@ bool HIVE::validateSumOver(SchemaAdapter & schema_node, InputAdapter & input_nod
    std::string nodePath = schema_node.parent().path();
    std::string ruleName = getFullRuleName(schema_node.name());
    std::string ruleValue = schema_node.to_string();
-   std::string ruleId = schema_node->getId();
+   std::string ruleId = schema_node.getId();
    bool pass = true;
 
    std::stringstream look_up_error;
@@ -1808,7 +1799,7 @@ bool HIVE::validateSumOver(SchemaAdapter & schema_node, InputAdapter & input_nod
    if (selection.size() != 0){
        std::stringstream look_up_error;
        SIRENInterpreter<> inputSelectorlookup(look_up_error);
-       if( !inputSelectorlookup.parseString(selection.at(0).path()) )
+       if( !inputSelectorlookup.parseString(selection.adapted(0).path()) )
        {
            errors.push_back(Error::SirenParseError(look_up_error.str()));
            return false;
@@ -1819,51 +1810,51 @@ bool HIVE::validateSumOver(SchemaAdapter & schema_node, InputAdapter & input_nod
        for(size_t i = 0; i < selectionLookup.size(); i++){
            std::stringstream look_up_error;
            SIRENInterpreter<> sumSelector(look_up_error);
-           if( !sumSelector.parseString(nodePath.substr(selection.at(0).path().length()+1)) )
+           if( !sumSelector.parseString(nodePath.substr(selection.adapted(0).path().length()+1)) )
            {
                errors.push_back(Error::SirenParseError(look_up_error.str()));
                return false;
            }
 
            SIRENResultSet<InputAdapter> sumSelection;
-           InputAdapter inode = selectionLookup.at(i);
+           InputAdapter inode = selectionLookup.adapted(i);
            sumSelector.evaluate(inode, sumSelection);
            if (sumSelection.size() != 0){
                double sum = 0;
                bool numberslegal = true;
                for(size_t j = 0; j < sumSelection.size(); j++){
-                   std::istringstream iss(sumSelection.at(j).last_as_string());
+                   std::istringstream iss(sumSelection.adapted(j).last_as_string());
                    float ftest;
                    iss >> std::noskipws >> ftest;
                    if (!iss.eof() || iss.fail()){
 
                        std::string valueNodeName;
-                       if (sumSelection.at(j).name() == "value" &&
-                           sumSelection.at(j).has_parent()){
-                           valueNodeName = sumSelection.at(j).parent().name();
+                       if (sumSelection.adapted(j).name() == "value" &&
+                           sumSelection.adapted(j).has_parent()){
+                           valueNodeName = sumSelection.adapted(j).parent().name();
                        }
                        else{
-                           valueNodeName = sumSelection.at(j).name();
+                           valueNodeName = sumSelection.adapted(j).name();
                        }
 
-                       errors.push_back(Error::WrongTypeForRule(sumSelection.at(j).line(),
-                                                                sumSelection.at(j).column(),
+                       errors.push_back(Error::WrongTypeForRule(sumSelection.adapted(j).line(),
+                                                                sumSelection.adapted(j).column(),
                                                                 valueNodeName,
-                                                                sumSelection.at(j).last_as_string(),
+                                                                sumSelection.adapted(j).last_as_string(),
                                                                 ruleName));
                        pass = false;
                        numberslegal = false;
                    }
                    else{
-                        sum += stod(sumSelection.at(j).last_as_string());
+                        sum += stod(sumSelection.adapted(j).last_as_string());
                    }
                }
                if (numberslegal == true &&
                        (sum > (stod(ruleValue) + SUMERROR) || sum < (stod(ruleValue) - SUMERROR))){
                    std::stringstream tmpsumstream; tmpsumstream << sum;
-                   errors.push_back(Error::SumProd(selectionLookup.at(i).line(),
-                                                   selectionLookup.at(i).column(),
-                                                   selectionLookup.at(i).name(),
+                   errors.push_back(Error::SumProd(selectionLookup.adapted(i).line(),
+                                                   selectionLookup.adapted(i).column(),
+                                                   selectionLookup.adapted(i).name(),
                                                    nodeName, tmpsumstream.str(),
                                                    ruleName, ruleValue, ruleId));
                    pass = false;
@@ -1882,7 +1873,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter & schema_node, InputAdapter & inpu
    std::string nodeName = schema_node.parent().name();
    std::string nodePath = schema_node.parent().path();
    std::string ruleName = getFullRuleName(schema_node.name());
-   std::string ruleId = schema_node->getId();
+   std::string ruleId = schema_node.getId();
    SchemaAdapter compare_path_schema_node = schema_node.first_child_by_name("ComparePath");
    if ( compare_path_schema_node.is_null() ){
        errors.push_back(Error::MissingArgument(schema_node.name(), "ComparePath",
@@ -1903,8 +1894,8 @@ bool HIVE::validateSumOverGroup(SchemaAdapter & schema_node, InputAdapter & inpu
    }
 
    std::string comparePath = compare_path_schema_node.to_string();
-   int groupDivide = group_divide_schema_node->to_int();
-   double groupSum = group_sum_schema_node->to_double();
+   int groupDivide = group_divide_schema_node.to_int();
+   double groupSum = group_sum_schema_node.to_double();
    std::stringstream look_up_error;
    SIRENInterpreter<> inputSelector(look_up_error);
    if( !inputSelector.parseString(nodePath+"/"+ruleId) )
@@ -1918,7 +1909,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter & schema_node, InputAdapter & inpu
    if (selection.size() != 0){
        std::stringstream look_up_error;
        SIRENInterpreter<> inputSelectorlookup(look_up_error);
-       if( !inputSelectorlookup.parseString(selection.at(0).path()) )
+       if( !inputSelectorlookup.parseString(selection.adapted(0).path()) )
        {
            errors.push_back(Error::SirenParseError(look_up_error.str()));
            return false;
@@ -1927,7 +1918,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter & schema_node, InputAdapter & inpu
        inputSelectorlookup.evaluate(input_node,selectionLookup);
 
        SIRENInterpreter<> sumSelector(look_up_error);
-       if( !sumSelector.parseString(nodePath.substr(selection.at(0).path().length()+1)) )
+       if( !sumSelector.parseString(nodePath.substr(selection.adapted(0).path().length()+1)) )
        {
            errors.push_back(Error::SirenParseError(look_up_error.str()));
            return false;
@@ -1943,7 +1934,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter & schema_node, InputAdapter & inpu
        for(size_t i = 0; i < selectionLookup.size(); i++){
 
            SIRENResultSet<InputAdapter> sumSelection;
-           InputAdapter inode = selectionLookup.at(i);
+           InputAdapter inode = selectionLookup.adapted(i);
            sumSelector.evaluate(inode,sumSelection);
 
            typename std::map<int, std::vector<InputAdapter>> groupAddends;
@@ -1951,20 +1942,20 @@ bool HIVE::validateSumOverGroup(SchemaAdapter & schema_node, InputAdapter & inpu
            for(size_t j = 0; j < sumSelection.size(); j++){
 
                SIRENResultSet<InputAdapter> comparePathSelection;
-               InputAdapter jnode = sumSelection.at(j);
+               InputAdapter jnode = sumSelection.adapted(j);
                comparePathSelector.evaluate(jnode, comparePathSelection);
 
                int tempCompareQuotient;
                if (comparePathSelection.size() != 0){
 
-                   tempCompareQuotient = comparePathSelection.at(0)->to_int()()/groupDivide;
+                   tempCompareQuotient = comparePathSelection.adapted(0)->to_int()()/groupDivide;
 
                    groupAddendsIter = groupAddends.find(tempCompareQuotient);
                    if (groupAddendsIter != groupAddends.end()){
-                       groupAddendsIter->second.push_back(sumSelection.at(j));
+                       groupAddendsIter->second.push_back(sumSelection.adapted(j));
                    }
                    else{
-                       groupAddends[tempCompareQuotient] = {sumSelection.at(j)};
+                       groupAddends[tempCompareQuotient] = {sumSelection.adapted(j)};
                    }
 
                }
@@ -2009,9 +2000,9 @@ bool HIVE::validateSumOverGroup(SchemaAdapter & schema_node, InputAdapter & inpu
                           (tempSum > (groupSum + SUMERROR) || tempSum < (groupSum - SUMERROR))){
                        std::stringstream tmptsstream; tmptsstream << tempSum;
                        std::stringstream tmpgsstream; tmpgsstream << groupSum;
-                       errors.push_back(Error::SumProdGroup(selectionLookup.at(i).line(),
-                                                            selectionLookup.at(i).column(),
-                                                            selectionLookup.at(i).name(),
+                       errors.push_back(Error::SumProdGroup(selectionLookup.adapted(i).line(),
+                                                            selectionLookup.adapted(i).column(),
+                                                            selectionLookup.adapted(i).name(),
                                                             nodeName, tmptsstream.str(),
                                                             comparePath, groupDivide,
                                                             groupAddendsIter->first,
@@ -2037,7 +2028,7 @@ bool HIVE::validateIncreaseOver(SchemaAdapter & schema_node, InputAdapter & inpu
    std::string nodePath = schema_node.parent().path();
    std::string ruleName = getFullRuleName(schema_node.name());
    std::string ruleValue = schema_node.to_string();
-   std::string ruleId = schema_node->getId();
+   std::string ruleId = schema_node.getId();
    bool pass = true;
 
    if (ruleValue != "Mono" && ruleValue != "Strict"){
@@ -2060,7 +2051,7 @@ bool HIVE::validateIncreaseOver(SchemaAdapter & schema_node, InputAdapter & inpu
     if (selection.size() != 0){
 
        SIRENInterpreter<> inputSelectorLookup(look_up_error);
-       if( !inputSelectorLookup.parseString(selection.at(0).path()) )
+       if( !inputSelectorLookup.parseString(selection.adapted(0).path()) )
        {
            errors.push_back(Error::SirenParseError(look_up_error.str()));
            return false;
@@ -2071,88 +2062,88 @@ bool HIVE::validateIncreaseOver(SchemaAdapter & schema_node, InputAdapter & inpu
        for(size_t i = 0; i < selectionLookup.size(); i++){
 
            SIRENInterpreter<> incrSelector(look_up_error);
-           if( !incrSelector.parseString(nodePath.substr(selection.at(0).path().length()+1)) )
+           if( !incrSelector.parseString(nodePath.substr(selection.adapted(0).path().length()+1)) )
            {
                errors.push_back(Error::SirenParseError(look_up_error.str()));
                return false;
            }
 
            SIRENResultSet<InputAdapter> incrSelection;
-           InputAdapter inode = selectionLookup.at(i);
+           InputAdapter inode = selectionLookup.adapted(i);
            incrSelector.evaluate(inode, incrSelection);
 
            bool numberslegal = true;
            for(size_t j = 0; incrSelection.size() != 0 && j < incrSelection.size()-1; j++){
 
                if (j == 0){
-                   std::istringstream issFirst(incrSelection.at(j).last_as_string());
+                   std::istringstream issFirst(incrSelection.adapted(j).last_as_string());
                    float ftestFirst;
                    issFirst >> std::noskipws >> ftestFirst;
                    if (!issFirst.eof() || issFirst.fail()){
 
                        std::string valueNodeName;
-                       if (incrSelection.at(j).name() == "value" &&
-                           incrSelection.at(j).has_parent()){
-                           valueNodeName = incrSelection.at(j).parent().name();
+                       if (incrSelection.adapted(j).name() == "value" &&
+                           incrSelection.adapted(j).has_parent()){
+                           valueNodeName = incrSelection.adapted(j).parent().name();
                        }
                        else{
-                           valueNodeName = incrSelection.at(j).name();
+                           valueNodeName = incrSelection.adapted(j).name();
                        }
 
-                       errors.push_back(Error::WrongTypeForRule(incrSelection.at(j).line(),
-                                                                incrSelection.at(j).column(),
+                       errors.push_back(Error::WrongTypeForRule(incrSelection.adapted(j).line(),
+                                                                incrSelection.adapted(j).column(),
                                                                 valueNodeName,
-                                                                incrSelection.at(j).last_as_string(),
+                                                                incrSelection.adapted(j).last_as_string(),
                                                                 ruleName));
                        pass = false;
                        numberslegal = false;
                    }
                }
 
-               std::istringstream issSecond(incrSelection.at(j+1).last_as_string());
+               std::istringstream issSecond(incrSelection.adapted(j+1).last_as_string());
                float ftestSecond;
                issSecond >> std::noskipws >> ftestSecond;
                if (!issSecond.eof() || issSecond.fail()){
 
                    std::string valueNodeName;
-                   if (incrSelection.at(j+1).name() == "value" &&
-                       incrSelection.at(j+1).has_parent()){
-                       valueNodeName = incrSelection.at(j+1).parent().name();
+                   if (incrSelection.adapted(j+1).name() == "value" &&
+                       incrSelection.adapted(j+1).has_parent()){
+                       valueNodeName = incrSelection.adapted(j+1).parent().name();
                    }
                    else{
-                       valueNodeName = incrSelection.at(j+1).name();
+                       valueNodeName = incrSelection.adapted(j+1).name();
                    }
 
-                   errors.push_back(Error::WrongTypeForRule(incrSelection.at(j+1).line(),
-                                                            incrSelection.at(j+1).column(),
+                   errors.push_back(Error::WrongTypeForRule(incrSelection.adapted(j+1).line(),
+                                                            incrSelection.adapted(j+1).column(),
                                                             valueNodeName,
-                                                            incrSelection.at(j+1).last_as_string(),
+                                                            incrSelection.adapted(j+1).last_as_string(),
                                                             ruleName));
                    pass = false;
                    numberslegal = false;
                }
 
                if (numberslegal == true && ruleValue == "Mono" &&
-                       stod(incrSelection.at(j).last_as_string()) >
-                       stod(incrSelection.at(j+1).last_as_string())){
-                   errors.push_back(Error::IncreaseDecrease(selectionLookup.at(i).line(),
-                                                            selectionLookup.at(i).column(),
-                                                            selectionLookup.at(i).name(),
+                       stod(incrSelection.adapted(j).last_as_string()) >
+                       stod(incrSelection.adapted(j+1).last_as_string())){
+                   errors.push_back(Error::IncreaseDecrease(selectionLookup.adapted(i).line(),
+                                                            selectionLookup.adapted(i).column(),
+                                                            selectionLookup.adapted(i).name(),
                                                             nodeName, ruleValue, ruleName,
-                                                            ruleId, incrSelection.at(j+1).line(),
-                                                            incrSelection.at(j+1).column()));
+                                                            ruleId, incrSelection.adapted(j+1).line(),
+                                                            incrSelection.adapted(j+1).column()));
                    pass = false;
                }
 
                else if (numberslegal == true && ruleValue == "Strict" &&
-                       stod(incrSelection.at(j).last_as_string()) >=
-                       stod(incrSelection.at(j+1).last_as_string())){
-                   errors.push_back(Error::IncreaseDecrease(selectionLookup.at(i).line(),
-                                                            selectionLookup.at(i).column(),
-                                                            selectionLookup.at(i).name(),
+                       stod(incrSelection.adapted(j).last_as_string()) >=
+                       stod(incrSelection.adapted(j+1).last_as_string())){
+                   errors.push_back(Error::IncreaseDecrease(selectionLookup.adapted(i).line(),
+                                                            selectionLookup.adapted(i).column(),
+                                                            selectionLookup.adapted(i).name(),
                                                             nodeName, ruleValue, ruleName,
-                                                            ruleId, incrSelection.at(j+1).line(),
-                                                            incrSelection.at(j+1).column()));
+                                                            ruleId, incrSelection.adapted(j+1).line(),
+                                                            incrSelection.adapted(j+1).column()));
                    pass = false;
                }
 
@@ -2170,7 +2161,7 @@ bool HIVE::validateDecreaseOver(SchemaAdapter & schema_node, InputAdapter & inpu
    std::string nodePath = schema_node.parent().path();
    std::string ruleName = getFullRuleName(schema_node.name());
    std::string ruleValue = schema_node.to_string();
-   std::string ruleId = schema_node->getId();
+   std::string ruleId = schema_node.getId();
    bool pass = true;
 
    if (ruleValue != "Mono" && ruleValue != "Strict"){
@@ -2193,7 +2184,7 @@ bool HIVE::validateDecreaseOver(SchemaAdapter & schema_node, InputAdapter & inpu
 
    if (selection.size() != 0){
        SIRENInterpreter<> inputSelectorlookup(look_up_error);
-       if( !inputSelectorlookup.parseString(selection.at(0).path()) )
+       if( !inputSelectorlookup.parseString(selection.adapted(0).path()) )
        {
            errors.push_back(Error::SirenParseError(look_up_error.str()));
            return false;
@@ -2203,88 +2194,88 @@ bool HIVE::validateDecreaseOver(SchemaAdapter & schema_node, InputAdapter & inpu
        for(size_t i = 0; i < selectionLookup.size(); i++){
 
            SIRENInterpreter<> decrSelector(look_up_error);
-           if( !decrSelector.parseString(nodePath.substr(selection.at(0).path().length()+1)) )
+           if( !decrSelector.parseString(nodePath.substr(selection.adapted(0).path().length()+1)) )
            {
                errors.push_back(Error::SirenParseError(look_up_error.str()));
                return false;
            }
 
            SIRENResultSet<InputAdapter> decrSelection;
-           InputAdapter inode = selectionLookup.at(i);
+           InputAdapter inode = selectionLookup.adapted(i);
            decrSelector.evaluate(inode, decrSelection);
 
            bool numberslegal = true;
            for(size_t j = 0; decrSelection.size() != 0 && j < decrSelection.size()-1; j++){
 
                if (j == 0){
-                   std::istringstream issFirst(decrSelection.at(j).last_as_string());
+                   std::istringstream issFirst(decrSelection.adapted(j).last_as_string());
                    float ftestFirst;
                    issFirst >> std::noskipws >> ftestFirst;
                    if (!issFirst.eof() || issFirst.fail()){
 
                        std::string valueNodeName;
-                       if (decrSelection.at(j).name() == "value" &&
-                           decrSelection.at(j).has_parent()){
-                           valueNodeName = decrSelection.at(j).parent().name();
+                       if (decrSelection.adapted(j).name() == "value" &&
+                           decrSelection.adapted(j).has_parent()){
+                           valueNodeName = decrSelection.adapted(j).parent().name();
                        }
                        else{
-                           valueNodeName = decrSelection.at(j).name();
+                           valueNodeName = decrSelection.adapted(j).name();
                        }
 
-                       errors.push_back(Error::WrongTypeForRule(decrSelection.at(j).line(),
-                                                                decrSelection.at(j).column(),
+                       errors.push_back(Error::WrongTypeForRule(decrSelection.adapted(j).line(),
+                                                                decrSelection.adapted(j).column(),
                                                                 valueNodeName,
-                                                                decrSelection.at(j).last_as_string(),
+                                                                decrSelection.adapted(j).last_as_string(),
                                                                 ruleName));
                        pass = false;
                        numberslegal = false;
                    }
                }
 
-               std::istringstream issSecond(decrSelection.at(j+1).last_as_string());
+               std::istringstream issSecond(decrSelection.adapted(j+1).last_as_string());
                float ftestSecond;
                issSecond >> std::noskipws >> ftestSecond;
                if (!issSecond.eof() || issSecond.fail()){
 
                    std::string valueNodeName;
-                   if (decrSelection.at(j+1).name() == "value" &&
-                       decrSelection.at(j+1).has_parent()){
-                       valueNodeName = decrSelection.at(j+1).parent().name();
+                   if (decrSelection.adapted(j+1).name() == "value" &&
+                       decrSelection.adapted(j+1).has_parent()){
+                       valueNodeName = decrSelection.adapted(j+1).parent().name();
                    }
                    else{
-                       valueNodeName = decrSelection.at(j+1).name();
+                       valueNodeName = decrSelection.adapted(j+1).name();
                    }
 
-                   errors.push_back(Error::WrongTypeForRule(decrSelection.at(j+1).line(),
-                                                            decrSelection.at(j+1).column(),
+                   errors.push_back(Error::WrongTypeForRule(decrSelection.adapted(j+1).line(),
+                                                            decrSelection.adapted(j+1).column(),
                                                             valueNodeName,
-                                                            decrSelection.at(j+1).last_as_string(),
+                                                            decrSelection.adapted(j+1).last_as_string(),
                                                             ruleName));
                    pass = false;
                    numberslegal = false;
                }
 
                if (numberslegal == true && ruleValue == "Mono" &&
-                       stod(decrSelection.at(j).last_as_string()) <
-                       stod(decrSelection.at(j+1).last_as_string())){
-                   errors.push_back(Error::IncreaseDecrease(selectionLookup.at(i).line(),
-                                                            selectionLookup.at(i).column(),
-                                                            selectionLookup.at(i).name(),
+                       stod(decrSelection.adapted(j).last_as_string()) <
+                       stod(decrSelection.adapted(j+1).last_as_string())){
+                   errors.push_back(Error::IncreaseDecrease(selectionLookup.adapted(i).line(),
+                                                            selectionLookup.adapted(i).column(),
+                                                            selectionLookup.adapted(i).name(),
                                                             nodeName,  ruleValue, ruleName,
-                                                            ruleId, decrSelection.at(j+1).line(),
-                                                            decrSelection.at(j+1).column()));
+                                                            ruleId, decrSelection.adapted(j+1).line(),
+                                                            decrSelection.adapted(j+1).column()));
                    pass = false;
                }
 
                else if (numberslegal == true && ruleValue == "Strict" &&
-                       stod(decrSelection.at(j).last_as_string()) <=
-                       stod(decrSelection.at(j+1).last_as_string())){
-                   errors.push_back(Error::IncreaseDecrease(selectionLookup.at(i).line(),
-                                                            selectionLookup.at(i).column(),
-                                                            selectionLookup.at(i).name(),
+                       stod(decrSelection.adapted(j).last_as_string()) <=
+                       stod(decrSelection.adapted(j+1).last_as_string())){
+                   errors.push_back(Error::IncreaseDecrease(selectionLookup.adapted(i).line(),
+                                                            selectionLookup.adapted(i).column(),
+                                                            selectionLookup.adapted(i).name(),
                                                             nodeName, ruleValue, ruleName,
-                                                            ruleId, decrSelection.at(j+1).line(),
-                                                            decrSelection.at(j+1).column()));
+                                                            ruleId, decrSelection.adapted(j+1).line(),
+                                                            decrSelection.adapted(j+1).column()));
                    pass = false;
                }
 
@@ -2312,7 +2303,7 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter & schema_node, InputAdapter & in
    SIRENResultSet<InputAdapter> selection;
    inputSelector.evaluate(input_node,selection);
     
-    const std::vector<SchemaAdapter> & children = schema_node.non_decorative_children();
+    const typename SchemaAdapter::Collection & children = schema_node.non_decorative_children();
     std::vector<int> selectedChildrenCount(selection.size(),0);
     for(int j = 0; j < children.size(); j++){
 
@@ -2329,13 +2320,13 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter & schema_node, InputAdapter & in
  
         for(size_t i = 0; i < selection.size(); i++){
             SIRENResultSet<InputAdapter> childSelection;
-            InputAdapter inode = selection.at(i);
+            InputAdapter inode = selection.adapted(i);
             childSelector.evaluate(inode,childSelection);
  
             if (childSelection.size() != 0){
                 if (children[j]->child_count() != 0){
                     for(size_t k = 0; k < childSelection.size(); k++){
-                        if (childSelection.at(k).last_as_string() == children[j].last_as_string()){
+                        if (childSelection.adapted(k).last_as_string() == children[j].last_as_string()){
                             selectedChildrenCount[i]++;
                             break;
                         }
@@ -2349,15 +2340,15 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter & schema_node, InputAdapter & in
     for( size_t i = 0; i < selection.size(); i++){
         
         if (selectedChildrenCount[i] > 1){
-            const std::vector<SchemaAdapter> & choices = children;
+            const typename SchemaAdapter::Collection & choices = children;
             std::string childNames;
             for(int js = 0; js < choices.size(); js++){
                 childNames += choices[js]->getData();
                 if (js+1 != choices.size()) childNames += " ";
             }
-            errors.push_back(Error::ChildMostExactLeast(selection.at(i).line(),
-                                                        selection.at(i).column(),
-                                                        selection.at(i).name(),
+            errors.push_back(Error::ChildMostExactLeast(selection.adapted(i).line(),
+                                                        selection.adapted(i).column(),
+                                                        selection.adapted(i).name(),
                                                         childNames, ruleName));
             pass = false;
         }
@@ -2381,7 +2372,7 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter & schema_node, InputAdapter & i
    }
    
    std::vector<int> selectionChildrenFound(selection.size(),0);
-   const std::vector<SchemaAdapter> & children = schema_node.non_decorative_children();
+   const typename SchemaAdapter::Collection & children = schema_node.non_decorative_children();
    for(int j = 0; j < children.size(); j++){
 
        std::string lookupPath;
@@ -2397,13 +2388,13 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter & schema_node, InputAdapter & i
        for(size_t i = 0; i < selection.size(); i++){
 
            SIRENResultSet<InputAdapter> childSelection;
-           InputAdapter inode = selection.at(i);
+           InputAdapter inode = selection.adapted(i);
            childSelector.evaluate(inode,childSelection);
 
            if (childSelection.size() != 0){
                if (children[j]->child_count() != 0){
                    for(size_t k = 0; k < childSelection.size(); k++){
-                       if (childSelection.at(k).last_as_string() == children[j].last_as_string()){
+                       if (childSelection.adapted(k).last_as_string() == children[j].last_as_string()){
                            selectionChildrenFound[i]++;
                            break;
                        }
@@ -2419,28 +2410,28 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter & schema_node, InputAdapter & i
    for( size_t i = 0; i < selection.size(); i++ ){
        
        if (selectionChildrenFound[i] > 1){
-           const std::vector<SchemaAdapter> & choices = children;
+           const typename SchemaAdapter::Collection & choices = children;
            std::string childNames;
            for(int js = 0; js < choices.size(); js++){
                childNames += choices[js]->getData();
                if (js+1 != choices.size()) childNames += " ";
            }
-           errors.push_back(Error::ChildMostExactLeast(selection.at(i).line(),
-                                                       selection.at(i).column(),
-                                                       selection.at(i).name(),
+           errors.push_back(Error::ChildMostExactLeast(selection.adapted(i).line(),
+                                                       selection.adapted(i).column(),
+                                                       selection.adapted(i).name(),
                                                        childNames, ruleName, "more than one"));
            pass = false;
        }
        else if (selectionChildrenFound[i] < 1){
-           const std::vector<SchemaAdapter> & choices = children;
+           const typename SchemaAdapter::Collection & choices = children;
            std::string childNames;
            for(int js = 0; js < choices.size(); js++){
                childNames += choices[js]->getData();
                if (js+1 != choices.size()) childNames += " ";
            }
-           errors.push_back(Error::ChildMostExactLeast(selection.at(i).line(),
-                                                       selection.at(i).column(),
-                                                       selection.at(i).name(),
+           errors.push_back(Error::ChildMostExactLeast(selection.adapted(i).line(),
+                                                       selection.adapted(i).column(),
+                                                       selection.adapted(i).name(),
                                                        childNames, ruleName, "zero"));
            pass = false;
        }
@@ -2464,7 +2455,7 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter & schema_node, InputAdapter & i
    }
    
    std::vector<int> selectedChildCounts(selection.size(),0);
-   const std::vector<SchemaAdapter> & children = schema_node.non_decorative_children();
+   const typename SchemaAdapter::Collection & children = schema_node.non_decorative_children();
    for(int j = 0; j < children.size(); j++){
 
        std::string lookupPath;
@@ -2480,13 +2471,13 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter & schema_node, InputAdapter & i
        for(size_t i = 0; i < selection.size(); i++){
 
            SIRENResultSet<InputAdapter> childSelection;
-           InputAdapter inode = selection.at(i);
+           InputAdapter inode = selection.adapted(i);
            childSelector.evaluate(inode, childSelection);
 
            if (childSelection.size() != 0){
                if (children[j]->child_count() != 0){
                    for(size_t k = 0; k < childSelection.size(); k++){
-                       if (childSelection.at(k).last_as_string() == children[j].last_as_string()){
+                       if (childSelection.adapted(k).last_as_string() == children[j].last_as_string()){
                            selectedChildCounts[i]++;
                            break;
                        }
@@ -2501,15 +2492,15 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter & schema_node, InputAdapter & i
    for( size_t i = 0; i < selection.size(); i++){
        
        if (selectedChildCounts[i] < 1){
-           const std::vector<SchemaAdapter> & choices = children;
+           const typename SchemaAdapter::Collection & choices = children;
            std::string childNames;
            for(int js = 0; js < choices.size(); js++){
                childNames += choices[js]->getData();
                if (js+1 != choices.size()) childNames += " ";
            }
-           errors.push_back(Error::ChildMostExactLeast(selection.at(i).line(),
-                                                       selection.at(i).column(),
-                                                       selection.at(i).name(),
+           errors.push_back(Error::ChildMostExactLeast(selection.adapted(i).line(),
+                                                       selection.adapted(i).column(),
+                                                       selection.adapted(i).name(),
                                                        childNames, ruleName));
            pass = false;
        }
@@ -2524,7 +2515,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter & schema_node, InputAdapter & i
 
    std::string nodePath = schema_node.parent().path();
    std::string ruleName = getFullRuleName(schema_node.name());
-   std::string ruleId = schema_node->getId();
+   std::string ruleId = schema_node.getId();
    bool pass = true;
 
    if (ruleId != "IfExists" && ruleId != "EvenNone"){
@@ -2547,7 +2538,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter & schema_node, InputAdapter & i
 
    for(size_t i = 0; i < selection.size(); i++){
        int tallyChildCount = 0;
-       const std::vector<SchemaAdapter> & children = schema_node.non_decorative_children();
+       const typename SchemaAdapter::Collection & children = schema_node.non_decorative_children();
        bool gotTally=false;
        bool foundError=false;
        for(int j = 0; j < children.size(); j++){
@@ -2559,7 +2550,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter & schema_node, InputAdapter & i
                return false;
            }
            SIRENResultSet<InputAdapter> childSelection;
-           InputAdapter inode = selection.at(i);
+           InputAdapter inode = selection.adapted(i);
            childSelector.evaluate(inode,childSelection);
 
            int localSumCount = childSelection.size();
@@ -2568,16 +2559,16 @@ bool HIVE::validateChildCountEqual(SchemaAdapter & schema_node, InputAdapter & i
            if ( !foundError && gotTally && localSumCount != tallyChildCount &&
                 ( (ruleId == "EvenNone") ||
                   (ruleId == "IfExists" && localSumCount != 0) ) ){
-               const std::vector<SchemaAdapter> & choices = schema_node.non_decorative_children();
+               const typename SchemaAdapter::Collection & choices = schema_node.non_decorative_children();
                std::string childNames;
                for(int js = 0; js < choices.size(); js++){
                    //childNames += choices[js]->getData();
                    childNames += choices[js].to_string();
                    if (js+1 != choices.size()) childNames += " ";
                }
-               errors.push_back(Error::ChildCountEqual(selection.at(i).line(),
-                                                       selection.at(i).column(),
-                                                       selection.at(i).name(),
+               errors.push_back(Error::ChildCountEqual(selection.adapted(i).line(),
+                                                       selection.adapted(i).column(),
+                                                       selection.adapted(i).name(),
                                                        ruleName, ruleId, childNames));
                foundError=true;
                pass = false;
@@ -2600,7 +2591,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
 
    std::string nodePath = schema_node.parent().path();
    std::string ruleName = getFullRuleName(schema_node.name());
-   std::string ruleId = schema_node->getId();
+   std::string ruleId = schema_node.getId();
    bool pass = true;
    int errorCount = 0;
    bool absRule = false;
@@ -2633,7 +2624,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
    inputSelector.evaluate(input_node,selection);
    
    // gather all of the lookup paths for this rule
-   const std::vector<SchemaAdapter> & lookupPaths = schema_node.non_decorative_children();
+   const typename SchemaAdapter::Collection & lookupPaths = schema_node.non_decorative_children();
 
    // loop over all of the nodes for which this rule applies
    for(size_t i = 0; i < selection.size(); i++){
@@ -2648,7 +2639,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
 
            std::string lookupPath = lookupPaths[j].to_string();
 
-           // gather all of the nodes that are at this lookup path relative to this node
+           // gather all of the nodes that are adapted this lookup path relative to this node
            SIRENInterpreter<> childSelector(look_up_error);
            if( !childSelector.parseString(lookupPath) )
            {
@@ -2656,14 +2647,14 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
                return false;
            }
            SIRENResultSet<InputAdapter> childSelection;
-           InputAdapter inode = selection.at(i);
+           InputAdapter inode = selection.adapted(i);
            childSelector.evaluate(inode,childSelection);
            
            // for this node, for this lookup path, loop over all of the relative nodes
            for(size_t loop = 0; loop < childSelection.size(); loop++){
                
                // get the value
-               std::string initialString = childSelection.at(loop).last_as_string();
+               std::string initialString = childSelection.adapted(loop).last_as_string();
                
                // determine if it is an alias or not
                // if it is an alias, then std::set the outer loop to the number
@@ -2672,7 +2663,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
                // so we only do the logic once
                bool isAlias = false;
                int outterloop = 1;
-//               if (childSelection.at(loop).name() == "alias" &&
+//               if (childSelection.adapted(loop).name() == "alias" &&
 //                   AliasPropagationEngine::getAliasCount(initialString, aliasMap) != 0){
 //                   isAlias = true;
 //                   int aliasRangeSize = aliasMap.find(initialString)->second.size();
@@ -2740,8 +2731,8 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
                            // its parent's name
                            std::string valueNodeName;
                            if (lookupPath == "value" &&
-                               childSelection.at(loop).has_parent()){
-                               valueNodeName = childSelection.at(loop).parent().name();
+                               childSelection.adapted(loop).has_parent()){
+                               valueNodeName = childSelection.adapted(loop).parent().name();
                            }
                            else{
                                valueNodeName = lookupPath;
@@ -2759,8 +2750,8 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
                            }
                            // format the error message and push the std::string into the std::vector
                            // of all validation error messages
-                           errors.push_back(Error::AlsoExistsAt(childSelection.at(loop).line(),
-                                                                childSelection.at(loop).column(),
+                           errors.push_back(Error::AlsoExistsAt(childSelection.adapted(loop).line(),
+                                                                childSelection.adapted(loop).column(),
                                                                 valueNodeName,
                                                                 lookupString,
                                                                 valuePathName,
@@ -2780,8 +2771,8 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
                                }
                                std::string valuePathName;
                                if (lookupPath == "value" &&
-                                   childSelection.at(loop).has_parent()){
-                                   valuePathName = childSelection.at(loop).parent().name();
+                                   childSelection.adapted(loop).has_parent()){
+                                   valuePathName = childSelection.adapted(loop).parent().name();
                                }
                                else{
                                    valuePathName = lookupPath;
@@ -2791,8 +2782,8 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
                                                                     valueNodeName,
                                                                     lookupString,
                                                                     valuePathName,
-                                                                    childSelection.at(loop).line(),
-                                                                    childSelection.at(loop).column(),
+                                                                    childSelection.adapted(loop).line(),
+                                                                    childSelection.adapted(loop).column(),
                                                                     ruleName));
                                // make note that this std::string has already had a collision,
                                // so we don't need to do this logic for this std::string again
@@ -2802,8 +2793,8 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
                            // if we max out our errors, then report that and bail out
                            errorCount++;
                            if (errorCount >= MAXERRORS){
-                               errors.push_back(Error::ErrorLimit(childSelection.at(loop).line(),
-                                                                  childSelection.at(loop).column(),
+                               errors.push_back(Error::ErrorLimit(childSelection.adapted(loop).line(),
+                                                                  childSelection.adapted(loop).column(),
                                                                   nodePath, ruleName, MAXERRORS));
                                return false;
                            }
@@ -2820,8 +2811,8 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
                    // to report this path
 //                   if (isAlias){
 //                       rangeSet.push_back(make_pair(&((aliasMap.find(initialString))->second[k]),
-//                                                    childSelection.at(loop)));
-//                       nodesToPaths.insert(make_pair(childSelection.at(loop), lookupPath));
+//                                                    childSelection.adapted(loop)));
+//                       nodesToPaths.insert(make_pair(childSelection.adapted(loop), lookupPath));
 //                   }
                    // if this node is not an alias, then put its std::string value in the lookup
                    // map to check in the future, and also keep track of the path that was
@@ -2829,8 +2820,8 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
                    // this path
 //                   else
                    {
-                       lookupMap.insert(make_pair(lookupString, childSelection.at(loop)));
-                       nodesToPaths.insert(make_pair(childSelection.at(loop), lookupPath));   
+                       lookupMap.insert(make_pair(lookupString, childSelection.adapted(loop)));
+                       nodesToPaths.insert(make_pair(childSelection.adapted(loop), lookupPath));
                    }
                }
            }
@@ -2838,7 +2829,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
    }
 
    // return whether this rule passed everything
-   // or had at least a single validation failure
+   // or had adapted least a single validation failure
    return pass;
 
 }

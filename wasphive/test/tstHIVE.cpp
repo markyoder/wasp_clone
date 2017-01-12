@@ -1,7 +1,7 @@
 #include "waspson/SONInterpreter.h"
 #include "wasphive/HIVE.h"
 #include "waspcore/TreeNodePool.h"
-//#include "waspson/SONNodeView.h"
+#include "waspson/SONNodeView.h"
 #include "gtest/gtest.h"
 #include <string>
 #include <iostream>
@@ -68,8 +68,8 @@ TEST(HIVE,minoccurs)
     ASSERT_TRUE( load_streams(t,"MinOccurs.son","MinOccurs.gld","MinOccurs.sch") );
     ASSERT_TRUE( load_ast(t) );
     std::vector<std::string> errors;
-    auto schema_adapter = t.schema_interpreter->root();
-    auto input_adapter = t.input_interpreter->root();
+    SONNodeView<decltype(t.schema_interpreter->root())> schema_adapter = t.schema_interpreter->root();
+    SONNodeView<decltype(t.input_interpreter->root())> input_adapter = t.input_interpreter->root();
     bool valid = hive.validate(schema_adapter
                              , input_adapter
                              , errors);
