@@ -1,0 +1,6 @@
+line:28 column:5 - Validation Error: invalidtest has zero of: [ one two three ] - exactly one must occur
+line:32 column:5 - Validation Error: invalidtest has more than one of: [ one two three ] - exactly one must occur
+line:36 column:5 - Validation Error: invalidtest has more than one of: [ one two three ] - exactly one must occur
+line:43 column:9 - Validation Error: five has zero of: [ "../four" "../two" ] - exactly one must occur
+line:47 column:9 - Validation Error: five has more than one of: [ "../four" "../two" ] - exactly one must occur
+line:52 column:9 - Validation Error: seven has zero of: [ "../six" ] - exactly one must occur
