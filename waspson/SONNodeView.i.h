@@ -112,6 +112,23 @@ SONNodeView<TNV>::non_decorative_children()const
     return results;
 }
 template<class TNV>
+SONNodeView<TNV>
+SONNodeView<TNV>::first_non_decorative_child_by_name(const std::string & name)const
+{
+    for( std::size_t i = 0, count = child_count(); i < count; ++i )
+    {
+        const auto& child = child_at(i);
+        if( !child.is_decorative() )
+        {
+            if( name == child.name() )
+            {
+                return child;
+            }
+        }
+    }
+    return SONNodeView<TNV>(); // null node
+}
+template<class TNV>
 size_t SONNodeView<TNV>::non_decorative_children_count()const
 {
     size_t result = 0;

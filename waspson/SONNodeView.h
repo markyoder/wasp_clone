@@ -70,7 +70,20 @@ public:
      * Declarators and terminators are decorative
      */
     bool is_decorative()const;
+    /**
+     * @brief non_decorative_children acquires all non decorative children
+     * @return collection of SONNodeViews
+     */
     SONNodeView::Collection non_decorative_children()const;
+    /**
+     * @brief first_non_decorative_child_by_name acquires the first non decorative child
+     * @return SONNodeView - need to check is_null to ensure valid node
+     */
+    SONNodeView first_non_decorative_child_by_name(const std::string& name)const;
+    /**
+     * @brief non_decorative_children_count convenience to determine number of decorative
+     * @return number of decorative children
+     */
     size_t non_decorative_children_count()const;
 
     /**
