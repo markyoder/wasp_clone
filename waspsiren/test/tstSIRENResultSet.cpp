@@ -31,6 +31,7 @@ TEST( SIREN, result )
     ASSERT_EQ("adapter", set.adapted(0).data);
     set.push("count","3");
     ASSERT_EQ( 2, set.result_count() );
+    ASSERT_EQ( 2, set.size() );
     ASSERT_FALSE( set.is_adapted( 1 ) );
     ASSERT_TRUE ( set.is_scalar( 1 ) );
 

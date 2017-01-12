@@ -21,6 +21,7 @@ public:
      * @return set count
      */
     std::size_t result_count()const{return results.size();}
+    std::size_t size()const{return results.size();}
     /**
      * @brief is_adapted determines if the result at the given index is of type \TAdapter
      * @param index
