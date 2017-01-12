@@ -40,7 +40,7 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
-
+#include <memory>
 
 #line 46 "SIRENParser.cpp" // lalr1.cc:404
 

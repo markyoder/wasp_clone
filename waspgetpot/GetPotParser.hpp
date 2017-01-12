@@ -40,7 +40,7 @@
 #ifndef YY_WASP_GETPOTPARSER_HPP_INCLUDED
 # define YY_WASP_GETPOTPARSER_HPP_INCLUDED
 // //                    "%code requires" blocks.
-#line 10 "GetPot.bison" // lalr1.cc:377
+#line 11 "GetPot.bison" // lalr1.cc:377
 
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h"
@@ -131,7 +131,7 @@ namespace wasp {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 60 "GetPot.bison" // lalr1.cc:377
+    #line 61 "GetPot.bison" // lalr1.cc:377
 
     std::size_t token_index;
     std::size_t node_index;

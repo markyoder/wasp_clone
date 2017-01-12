@@ -39,7 +39,7 @@
 
 #include <stdio.h>
 #include <vector>
-
+#include <memory>
 
 #line 45 "ExprParser.cpp" // lalr1.cc:404
 
