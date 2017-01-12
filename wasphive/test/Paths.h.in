@@ -1,0 +1,8 @@
+
+#ifndef WASP_HIVE_TEST_PATHS_H
+#define WASP_HIVE_TEST_PATHS_H
+
+#define TEST_DIR_ROOT "@HIVE_TEST_DIR@/hivetests"
+
+#endif	/* WASP_HIVE_TEST_PATHS_H */
+
