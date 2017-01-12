@@ -39,9 +39,8 @@
 
 #include <stdio.h>
 #include <vector>
-#include <memory>
 
-#line 45 "ExprParser.cpp" // lalr1.cc:404
+#line 44 "ExprParser.cpp" // lalr1.cc:404
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -67,7 +66,7 @@
 #define yylex lexer->lex
 
 
-#line 71 "ExprParser.cpp" // lalr1.cc:412
+#line 70 "ExprParser.cpp" // lalr1.cc:412
 
 
 #ifndef YY_
@@ -153,7 +152,7 @@
 
 
 namespace wasp {
-#line 157 "ExprParser.cpp" // lalr1.cc:479
+#line 156 "ExprParser.cpp" // lalr1.cc:479
 
   /* Return YYSTR after stripping away unnecessary quotes and
      backslashes, so that it's suitable for yyerror.  The heuristic is
@@ -537,7 +536,7 @@ namespace wasp {
     lexer = std::make_shared<ExprLexerImpl>(interpreter,&input_stream);
 }
 
-#line 541 "ExprParser.cpp" // lalr1.cc:741
+#line 540 "ExprParser.cpp" // lalr1.cc:741
 
     /* Initialize the stack.  The initial state will be set in
        yynewstate, since the latter expects the semantical and the
@@ -647,97 +646,97 @@ namespace wasp {
   case 2:
 #line 132 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::BANG      ,"!",token_index);}
-#line 651 "ExprParser.cpp" // lalr1.cc:859
+#line 650 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 3:
 #line 133 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::GT      ,">",token_index);}
-#line 657 "ExprParser.cpp" // lalr1.cc:859
+#line 656 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 4:
 #line 134 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::LT      ,"<",token_index);}
-#line 663 "ExprParser.cpp" // lalr1.cc:859
+#line 662 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 5:
 #line 135 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::GTE      ,">=",token_index);}
-#line 669 "ExprParser.cpp" // lalr1.cc:859
+#line 668 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 6:
 #line 136 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::LTE      ,"<=",token_index);}
-#line 675 "ExprParser.cpp" // lalr1.cc:859
+#line 674 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 7:
 #line 137 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::NEQ      ,"!=",token_index);}
-#line 681 "ExprParser.cpp" // lalr1.cc:859
+#line 680 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 8:
 #line 138 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::EQ       ,"==",token_index);}
-#line 687 "ExprParser.cpp" // lalr1.cc:859
+#line 686 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 9:
 #line 139 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_AND      ,"&&",token_index);}
-#line 693 "ExprParser.cpp" // lalr1.cc:859
+#line 692 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 10:
 #line 140 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_OR       ,"||",token_index);}
-#line 699 "ExprParser.cpp" // lalr1.cc:859
+#line 698 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 11:
 #line 141 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::MULTIPLY , "*",token_index);}
-#line 705 "ExprParser.cpp" // lalr1.cc:859
+#line 704 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 12:
 #line 142 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::DIVIDE   ,"/" ,token_index);}
-#line 711 "ExprParser.cpp" // lalr1.cc:859
+#line 710 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 13:
 #line 143 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::PLUS     ,"+" ,token_index);}
-#line 717 "ExprParser.cpp" // lalr1.cc:859
+#line 716 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 14:
 #line 144 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::MINUS    ,"-" ,token_index);}
-#line 723 "ExprParser.cpp" // lalr1.cc:859
+#line 722 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 15:
 #line 145 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::EXPONENT ,"^" ,token_index);}
-#line 729 "ExprParser.cpp" // lalr1.cc:859
+#line 728 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 16:
 #line 146 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::LPAREN   ,"(" ,token_index);}
-#line 735 "ExprParser.cpp" // lalr1.cc:859
+#line 734 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 17:
 #line 147 "Expr.bison" // lalr1.cc:859
     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::RPAREN   ,")" ,token_index);}
-#line 741 "ExprParser.cpp" // lalr1.cc:859
+#line 740 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 19:
@@ -751,7 +750,7 @@ namespace wasp {
                                         ,"exp"
                                         ,child_indices);
     }
-#line 755 "ExprParser.cpp" // lalr1.cc:859
+#line 754 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 20:
@@ -765,7 +764,7 @@ namespace wasp {
                                        ,"exp"
                                        ,child_indices);
     }
-#line 769 "ExprParser.cpp" // lalr1.cc:859
+#line 768 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 21:
@@ -781,7 +780,7 @@ namespace wasp {
                                         ,"exp"
                                         ,child_indices);
     }
-#line 785 "ExprParser.cpp" // lalr1.cc:859
+#line 784 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 22:
@@ -797,7 +796,7 @@ namespace wasp {
                                         ,"exp"
                                         ,child_indices);
     }
-#line 801 "ExprParser.cpp" // lalr1.cc:859
+#line 800 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 23:
@@ -813,7 +812,7 @@ namespace wasp {
                                        ,"exp"
                                        ,child_indices);
    }
-#line 817 "ExprParser.cpp" // lalr1.cc:859
+#line 816 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 24:
@@ -829,7 +828,7 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 833 "ExprParser.cpp" // lalr1.cc:859
+#line 832 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 25:
@@ -845,7 +844,7 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 849 "ExprParser.cpp" // lalr1.cc:859
+#line 848 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 26:
@@ -861,7 +860,7 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 865 "ExprParser.cpp" // lalr1.cc:859
+#line 864 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 27:
@@ -877,7 +876,7 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 881 "ExprParser.cpp" // lalr1.cc:859
+#line 880 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 28:
@@ -893,7 +892,7 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 897 "ExprParser.cpp" // lalr1.cc:859
+#line 896 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 29:
@@ -909,7 +908,7 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 913 "ExprParser.cpp" // lalr1.cc:859
+#line 912 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 30:
@@ -925,7 +924,7 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 929 "ExprParser.cpp" // lalr1.cc:859
+#line 928 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 31:
@@ -941,7 +940,7 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 945 "ExprParser.cpp" // lalr1.cc:859
+#line 944 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 32:
@@ -957,7 +956,7 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 961 "ExprParser.cpp" // lalr1.cc:859
+#line 960 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 33:
@@ -973,7 +972,7 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 977 "ExprParser.cpp" // lalr1.cc:859
+#line 976 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 34:
@@ -989,7 +988,7 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 993 "ExprParser.cpp" // lalr1.cc:859
+#line 992 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 35:
@@ -999,7 +998,7 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,"="
                          ,assign_token_index);
     }
-#line 1003 "ExprParser.cpp" // lalr1.cc:859
+#line 1002 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 39:
@@ -1009,7 +1008,7 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                          ,token_index);
     }
-#line 1013 "ExprParser.cpp" // lalr1.cc:859
+#line 1012 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 41:
@@ -1019,7 +1018,7 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DECL,"decl"
                          ,decl_token_index);
     }
-#line 1023 "ExprParser.cpp" // lalr1.cc:859
+#line 1022 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 42:
@@ -1036,7 +1035,7 @@ namespace wasp {
                                         ,interpreter.data(key_index).c_str()
                                         ,child_indices);
     }
-#line 1040 "ExprParser.cpp" // lalr1.cc:859
+#line 1039 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 43:
@@ -1046,7 +1045,7 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment"
                          ,token_index);
     }
-#line 1050 "ExprParser.cpp" // lalr1.cc:859
+#line 1049 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 45:
@@ -1054,7 +1053,7 @@ namespace wasp {
     {
             interpreter.add_root_child_index(((yystack_[0].value.node_index)));
         }
-#line 1058 "ExprParser.cpp" // lalr1.cc:859
+#line 1057 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 46:
@@ -1062,7 +1061,7 @@ namespace wasp {
     {
             interpreter.add_root_child_index(((yystack_[0].value.node_index)));
         }
-#line 1066 "ExprParser.cpp" // lalr1.cc:859
+#line 1065 "ExprParser.cpp" // lalr1.cc:859
     break;
 
   case 47:
@@ -1070,11 +1069,11 @@ namespace wasp {
     {
             interpreter.add_root_child_index(((yystack_[0].value.node_index)));
         }
-#line 1074 "ExprParser.cpp" // lalr1.cc:859
+#line 1073 "ExprParser.cpp" // lalr1.cc:859
     break;
 
 
-#line 1078 "ExprParser.cpp" // lalr1.cc:859
+#line 1077 "ExprParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1552,7 +1551,7 @@ namespace wasp {
 
 
 } // wasp
-#line 1556 "ExprParser.cpp" // lalr1.cc:1167
+#line 1555 "ExprParser.cpp" // lalr1.cc:1167
 #line 484 "Expr.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 namespace wasp{

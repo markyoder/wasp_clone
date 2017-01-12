@@ -3,12 +3,12 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
-#include <memory>
 %}
 
 /*** yacc/BISON Declarations ***/
 
 %code requires{
+#include <memory>
 #include "waspcore/utils.h"
 }
 

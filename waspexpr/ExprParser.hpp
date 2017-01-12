@@ -40,12 +40,13 @@
 #ifndef YY_WASP_EXPRPARSER_HPP_INCLUDED
 # define YY_WASP_EXPRPARSER_HPP_INCLUDED
 // //                    "%code requires" blocks.
-#line 10 "Expr.bison" // lalr1.cc:377
+#line 9 "Expr.bison" // lalr1.cc:377
 
+#include <memory>
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h"
 
-#line 49 "ExprParser.hpp" // lalr1.cc:377
+#line 50 "ExprParser.hpp" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -117,7 +118,7 @@
 
 
 namespace wasp {
-#line 121 "ExprParser.hpp" // lalr1.cc:377
+#line 122 "ExprParser.hpp" // lalr1.cc:377
 
 
 
@@ -137,7 +138,7 @@ namespace wasp {
     std::size_t node_index;
     std::vector<size_t>* node_indices;
 
-#line 141 "ExprParser.hpp" // lalr1.cc:377
+#line 142 "ExprParser.hpp" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -511,7 +512,7 @@ namespace wasp {
 
 
 } // wasp
-#line 515 "ExprParser.hpp" // lalr1.cc:377
+#line 516 "ExprParser.hpp" // lalr1.cc:377
 
 
 

@@ -40,12 +40,13 @@
 #ifndef YY_WASP_GETPOTPARSER_HPP_INCLUDED
 # define YY_WASP_GETPOTPARSER_HPP_INCLUDED
 // //                    "%code requires" blocks.
-#line 11 "GetPot.bison" // lalr1.cc:377
+#line 10 "GetPot.bison" // lalr1.cc:377
 
+#include <memory>
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h"
 
-#line 49 "GetPotParser.hpp" // lalr1.cc:377
+#line 50 "GetPotParser.hpp" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -117,7 +118,7 @@
 
 
 namespace wasp {
-#line 121 "GetPotParser.hpp" // lalr1.cc:377
+#line 122 "GetPotParser.hpp" // lalr1.cc:377
 
 
 
@@ -137,7 +138,7 @@ namespace wasp {
     std::size_t node_index;
     std::vector<size_t>* node_indices;
 
-#line 141 "GetPotParser.hpp" // lalr1.cc:377
+#line 142 "GetPotParser.hpp" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -499,7 +500,7 @@ namespace wasp {
 
 
 } // wasp
-#line 503 "GetPotParser.hpp" // lalr1.cc:377
+#line 504 "GetPotParser.hpp" // lalr1.cc:377
 
 
 

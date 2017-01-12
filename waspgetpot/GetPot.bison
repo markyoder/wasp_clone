@@ -2,13 +2,13 @@
 
 #include <stdio.h>
 #include <vector>
-#include <memory>
 
 %}
 
 /*** yacc/bison Declarations ***/
 
 %code requires{
+#include <memory>
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h"
 }

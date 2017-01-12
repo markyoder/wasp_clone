@@ -40,11 +40,12 @@
 #ifndef YY_WASP_SIRENPARSER_HPP_INCLUDED
 # define YY_WASP_SIRENPARSER_HPP_INCLUDED
 // //                    "%code requires" blocks.
-#line 11 "SIRENParser.bison" // lalr1.cc:377
+#line 10 "SIRENParser.bison" // lalr1.cc:377
 
+#include <memory>
 #include "waspcore/utils.h"
 
-#line 48 "SIRENParser.hpp" // lalr1.cc:377
+#line 49 "SIRENParser.hpp" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -116,7 +117,7 @@
 
 
 namespace wasp {
-#line 120 "SIRENParser.hpp" // lalr1.cc:377
+#line 121 "SIRENParser.hpp" // lalr1.cc:377
 
 
 
@@ -136,7 +137,7 @@ namespace wasp {
         std::size_t node_index;
         std::vector<size_t>* node_indices;
 
-#line 140 "SIRENParser.hpp" // lalr1.cc:377
+#line 141 "SIRENParser.hpp" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -515,7 +516,7 @@ namespace wasp {
 
 
 } // wasp
-#line 519 "SIRENParser.hpp" // lalr1.cc:377
+#line 520 "SIRENParser.hpp" // lalr1.cc:377
 
 
 
