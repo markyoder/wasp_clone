@@ -1,4 +1,4 @@
-//#include "waspson/SONInterpreter.h"
+#include "waspson/SONInterpreter.h"
 #include "wasphive/HIVE.h"
 #include "waspcore/TreeNodePool.h"
 //#include "waspson/SONNodeView.h"

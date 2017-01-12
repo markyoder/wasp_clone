@@ -13,8 +13,8 @@
 #include <memory>
 
 #include "waspcore/TreeNodePool.h"
-#include "SIRENLexer.h"  // lexer definition must come before interpreter
 #include "waspcore/Interpreter.h"
+#include "waspsiren/SIRENParser.hpp"
 #include "waspsiren/SIRENResultSet.h"
 
 /** The wasp namespace is used to encapsulate the three parser classes
@@ -46,11 +46,6 @@ namespace wasp {
                 const std::string& sname = "selection statement", size_t startLine=1u, size_t startColumn=1u);
 
     public: // public variables
-        /**
-         * @brief lexer - current lexer instance
-         */
-        class SIRENLexerImpl* m_lexer;
-        virtual class SIRENLexerImpl * lexer(){return m_lexer;}
 
         /**
          * @brief traceLexing - variable available for verbosely debugging lexing logic

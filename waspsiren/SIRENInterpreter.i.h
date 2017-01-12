@@ -29,10 +29,7 @@ bool SIRENInterpreter<S>::parseStream(std::istream& in
                                  , std::size_t start_line
                                  , std::size_t start_column)
 {
-    return Interpreter<S>::template parse_impl<SIRENLexerImpl
-            ,SIRENParser
-            ,SIRENInterpreter>(m_lexer
-                ,in
+    return Interpreter<S>::template parse_impl<SIRENParser>(in
                 ,sname
                 ,start_line
                 ,start_column);

@@ -3,7 +3,6 @@
 template<class S>
 GetPotInterpreter<S>::GetPotInterpreter(std::ostream & err)
     : Interpreter<S>(err)
-    , m_lexer(nullptr)
 {
 }
 template<class S>
@@ -15,10 +14,7 @@ bool GetPotInterpreter<S>::parse(std::istream& in
                                         , std::size_t startLine
                                         , std::size_t startColumn)
 {
-    return Interpreter<S>::template parse_impl<GetPotLexerImpl
-            ,GetPotParser
-            ,GetPotInterpreter>(m_lexer
-                ,in
+    return Interpreter<S>::template parse_impl<GetPotParser>(in
                 ,"input"
                 ,startLine
                 ,startColumn);

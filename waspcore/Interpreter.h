@@ -90,7 +90,6 @@ public:
     virtual const std::string& stream_name()const=0;
     virtual std::string& stream_name()=0;
     virtual std::ostream & error_stream()=0;
-    virtual class ::FlexLexer * lexer()=0;
 
     virtual bool single_parse()const=0;
 };
@@ -217,14 +216,10 @@ public:
     void add_root_child_index(size_t node_index)
                 {m_root_child_indices.push_back(node_index);}
 
-    virtual class ::FlexLexer * lexer()=0;
     virtual bool single_parse()const{return false;}
 protected:
-    template<class LEXER_IMPL
-             ,class PARSER_IMPL
-             ,class INTERPRETER_IMPL>
-    bool parse_impl( LEXER_IMPL *& lexer
-            , std::istream &input
+    template<class PARSER_IMPL>
+    bool parse_impl( std::istream &input
             , const std::string& stream_name
             , size_t m_start_line
             , size_t m_start_column);

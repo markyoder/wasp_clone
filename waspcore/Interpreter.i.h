@@ -111,25 +111,19 @@ const char * Interpreter<TNS>::token_data(size_t index )const
 }
 
 template<class TNS>
-template<class LEXER_IMPL
-         ,class PARSER_IMPL
-         ,class INTERPRETER_IMPL>
-bool Interpreter<TNS>::parse_impl( LEXER_IMPL *& m_lexer
-        , std::istream &in
+template<class PARSER_IMPL>
+bool Interpreter<TNS>::parse_impl(std::istream &in
         , const std::string& stream_name
         , size_t start_line
         , size_t start_column)
 {
-    m_stream_name = stream_name;
-    INTERPRETER_IMPL & interp_impl = dynamic_cast<INTERPRETER_IMPL&>(*this);
-    LEXER_IMPL lexer(interp_impl,&in);
 //    lexer.set_debug(m_trace_lexing);
-
 //    lexer.set_debug(true);
-    m_lexer = &lexer;
+
+    m_stream_name = stream_name;
     m_start_line = start_line;
     m_start_column = start_column;
-    PARSER_IMPL parser(interp_impl);
+    PARSER_IMPL parser(*this, in, nullptr);
 //    parser.set_debug_level(true);
 
 
@@ -142,6 +136,5 @@ bool Interpreter<TNS>::parse_impl( LEXER_IMPL *& m_lexer
                                    ,m_root_child_indices);
         m_root_child_indices.clear();
     }
-    m_lexer = nullptr;
     return parsed;
 }

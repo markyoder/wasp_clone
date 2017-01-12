@@ -15,8 +15,8 @@
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/TokenPool.h"
 
-#include "waspson/SONLexer.h" // lexer definition must come before interpreter
-#include "waspcore/Interpreter.h" // requires SONLexer for FlexLexer fwd
+#include "waspson/SONParser.hpp"
+#include "waspcore/Interpreter.h"
 
 /** The wasp namespace is used to encapsulate the three parser classes
  * wasp::SONParser, wasp::SONLexerImpl and wasp::SONInterpreter */
@@ -77,13 +77,6 @@ namespace wasp {
         bool single_parse()const{return singleParse;}
 
     public: // public variables
-        /**
-         * @brief lexer - current lexer instance
-         */
-        class SONLexerImpl* m_lexer;
-
-        virtual class SONLexerImpl * lexer(){return m_lexer;}
-
 
         /**
          * @brief setStreamName sets the name of this stream and indicates whether the stream/name is a file[path]

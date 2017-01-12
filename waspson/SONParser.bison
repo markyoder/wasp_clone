@@ -42,12 +42,15 @@
     @$.begin.filename = @$.end.filename = &interpreter.stream_name();
     @$.begin.line = @$.end.line = interpreter.start_line();
     @$.begin.column = @$.end.column = interpreter.start_column();
+    lexer = std::make_shared<SONLexerImpl>(interpreter,&input_stream);
 };
 
 /* The interpreter is passed by reference to the parser and to the SONLexer. This
  * provides a simple but effective pure interface, not relying on global
  * variables. */
 %parse-param { class AbstractInterpreter& interpreter }
+             {std::istream &input_stream}
+             {std::shared_ptr<class SONLexerImpl> lexer}
 
 /* verbose error messages */
 %error-verbose
@@ -135,7 +138,7 @@
  * object. it defines the yylex() function call to pull the next token from the
  * current lexer object of the interpreter context. */
 #undef yylex
-#define yylex dynamic_cast<SONLexerImpl*>(interpreter.lexer())->lex
+#define yylex lexer->lex
 
 %}
 
@@ -791,10 +794,10 @@ execution_unit : execution_unit_start execution_unit_name execution_unit_end
                         ,child_indices);
        }
 start   : /** empty **/
-        | start comment{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {dynamic_cast<SONLexerImpl*>(interpreter.lexer())->rewind();YYACCEPT;}}
-        | start array{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {dynamic_cast<SONLexerImpl*>(interpreter.lexer())->rewind();YYACCEPT;}}
-        | start keyedvalue{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {dynamic_cast<SONLexerImpl*>(interpreter.lexer())->rewind();YYACCEPT;}}
-        | start object{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {dynamic_cast<SONLexerImpl*>(interpreter.lexer())->rewind();YYACCEPT;}}
+        | start comment{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
+        | start array{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
+        | start keyedvalue{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
+        | start object{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
         | start execution_unit{interpreter.add_root_child_index(($2));if(interpreter.single_parse() ) {YYACCEPT;}}
 
  /*** END RULES - Change the wasp grammar rules above ***/

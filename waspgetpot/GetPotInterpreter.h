@@ -1,8 +1,9 @@
 #ifndef WASP_GETPOTINTERPRETER_H
 #define WASP_GETPOTINTERPRETER_H
 #include "waspcore/TreeNodePool.h"
-#include "waspgetpot/GetPotLexer.h" // lexer definition must come before interpreter
 #include "waspcore/Interpreter.h"
+
+#include "waspgetpot/GetPotParser.hpp"
 
 namespace wasp{
 
@@ -23,13 +24,6 @@ public:
      bool parse(std::istream &input
                        , std::size_t m_start_line=1u
                        , std::size_t m_start_column=1u);
-
-public: // variables
-    /**
-     * @brief lexer - current lexer instance
-     */
-    class GetPotLexerImpl* m_lexer;
-    virtual class GetPotLexerImpl * lexer(){return m_lexer;}
 };
 #include "waspgetpot/GetPotInterpreter.i.h"
 } // end of namespace

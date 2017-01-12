@@ -34,10 +34,7 @@ bool SONInterpreter<S>::parseStream(std::istream& in
                                  , size_t start_line
                                  , size_t start_column)
 {
-    return Interpreter<S>::template parse_impl<SONLexerImpl
-            ,SONParser
-            ,SONInterpreter>(m_lexer
-                ,in
+    return Interpreter<S>::template parse_impl<SONParser>(in
                 ,sname
                 ,start_line
                 ,start_column);

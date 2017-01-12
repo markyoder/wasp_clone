@@ -2,9 +2,9 @@
 #define WASP_EXPRINTERPRETER_H
 
 #include "waspcore/TreeNodePool.h"
-#include "waspexpr/ExprLexer.h" // lexer definition must come before interpreter
 #include "waspcore/Interpreter.h"
 #include "waspexpr/ExprParser.hpp"
+
 namespace wasp{
 template<class S = TreeNodePool<> >
 class ExprInterpreter : public Interpreter<S>
@@ -25,11 +25,6 @@ public:
                        , std::size_t m_start_column=1u);
 
 public: // variables
-    /**
-     * @brief lexer - current lexer instance
-     */
-    class ExprLexerImpl* m_lexer;
-    virtual class ExprLexerImpl * lexer(){return m_lexer;}
 };
 #include "waspexpr/ExprInterpreter.i.h"
 } // end of namespace

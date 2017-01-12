@@ -42,13 +42,15 @@
     @$.begin.filename = @$.end.filename = &interpreter.stream_name();
     @$.begin.line = @$.end.line = interpreter.start_line();
     @$.begin.column = @$.end.column = interpreter.start_column();
+    lexer = std::make_shared<ExprLexerImpl>(interpreter,&input_stream);
 };
 
 /* The interpreter is passed by reference to the parser and to the ExprLexer. This
  * provides a simple but effective pure interface, not relying on global
  * variables. */
 %parse-param { class AbstractInterpreter& interpreter }
-
+             {std::istream &input_stream}
+             {std::shared_ptr<class ExprLexerImpl> lexer}
 /* verbose error messages */
 %error-verbose
 
@@ -119,7 +121,7 @@
  * object. it defines the yylex() function call to pull the next token from the
  * current lexer object of the interpreter context. */
 #undef yylex
-#define yylex dynamic_cast<ExprLexerImpl*>(interpreter.lexer())->lex
+#define yylex lexer->lex
 
 %}
 

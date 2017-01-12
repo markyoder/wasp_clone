@@ -130,7 +130,7 @@ namespace wasp {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 57 "SIRENParser.bison" // lalr1.cc:377
+    #line 60 "SIRENParser.bison" // lalr1.cc:377
 
         std::size_t token_index;
         std::size_t node_index;
@@ -294,7 +294,7 @@ namespace wasp {
 
 
     /// Build a parser object.
-    SIRENParser (class AbstractInterpreter& interpreter_yyarg);
+    SIRENParser (class AbstractInterpreter& interpreter_yyarg, std::istream &input_stream_yyarg, std::shared_ptr<class SIRENLexerImpl> lexer_yyarg);
     virtual ~SIRENParser ();
 
     /// Parse.
@@ -508,12 +508,14 @@ namespace wasp {
 
     // User arguments.
     class AbstractInterpreter& interpreter;
+    std::istream &input_stream;
+    std::shared_ptr<class SIRENLexerImpl> lexer;
   };
 
 
 
 } // wasp
-#line 517 "SIRENParser.hpp" // lalr1.cc:377
+#line 519 "SIRENParser.hpp" // lalr1.cc:377
 
 
 

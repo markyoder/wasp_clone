@@ -131,7 +131,7 @@ namespace wasp {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 58 "GetPot.bison" // lalr1.cc:377
+    #line 60 "GetPot.bison" // lalr1.cc:377
 
     std::size_t token_index;
     std::size_t node_index;
@@ -278,7 +278,7 @@ namespace wasp {
 
 
     /// Build a parser object.
-    GetPotParser (class AbstractInterpreter& interpreter_yyarg);
+    GetPotParser (class AbstractInterpreter& interpreter_yyarg, std::istream &input_stream_yyarg, std::shared_ptr<class GetPotLexerImpl> lexer_yyarg);
     virtual ~GetPotParser ();
 
     /// Parse.
@@ -492,12 +492,14 @@ namespace wasp {
 
     // User arguments.
     class AbstractInterpreter& interpreter;
+    std::istream &input_stream;
+    std::shared_ptr<class GetPotLexerImpl> lexer;
   };
 
 
 
 } // wasp
-#line 501 "GetPotParser.hpp" // lalr1.cc:377
+#line 503 "GetPotParser.hpp" // lalr1.cc:377
 
 
 

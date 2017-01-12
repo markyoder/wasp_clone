@@ -2,7 +2,7 @@
 #define WASP_EXPRINTERPRETER_I_H
 template<class S>
 ExprInterpreter<S>::ExprInterpreter(std::ostream & err)
-    : Interpreter<S>(), m_lexer(nullptr)
+    : Interpreter<S>()
 {
 }
 template<class S>
@@ -14,10 +14,7 @@ bool ExprInterpreter<S>::parse(std::istream& in
                                         , std::size_t startLine
                                         , std::size_t startColumn)
 {
-    return Interpreter<S>::template parse_impl<ExprLexerImpl
-            ,ExprParser
-            ,ExprInterpreter>(m_lexer
-                ,in
+    return Interpreter<S>::template parse_impl<ExprParser>(in
                 ,"input"
                 ,startLine
                 ,startColumn);
