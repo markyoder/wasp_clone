@@ -10,5 +10,5 @@ using namespace wasp;
 
 TEST(HIVE,instantiation_test)
 {
-//    HIVE test;
+    HIVE test;
 }

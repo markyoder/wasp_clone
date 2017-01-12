@@ -47,7 +47,7 @@ bool HIVE::validate(SchemaAdapter & schema_node, InputAdapter & input_node, std:
                 &tmpNode, errors);
     }
 
-    std::sort(errors.begin(), errors.end(), doj::alphanum_less<std::string>());
+    sort_errors(errors);
     return pass;
 
 }

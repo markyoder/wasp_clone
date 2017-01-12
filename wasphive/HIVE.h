@@ -24,7 +24,6 @@
 #include <vector>
 #include "waspsiren/SIRENInterpreter.h"
 #include "waspsiren/SIRENResultSet.h"
-#include "wasphive/AlphaNum.h" // special alpha numeric sort logic
 
 namespace wasp
 {
@@ -70,6 +69,7 @@ public:
     void printMessages(bool pass, std::vector<std::string>&errors,
                        bool xmloutput=false, std::string file="", std::ostream&output=std::cout);
 
+    static void sort_errors(std::vector<std::string> & errors);
 private:
     // TODO document these attributes
     const static float SUMERROR;

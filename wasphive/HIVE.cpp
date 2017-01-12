@@ -6,10 +6,10 @@
  */
 
 #include "HIVE.h"
+
+#include "wasphive/AlphaNum.h" // special alpha numeric sort logic
+
 using namespace std;
-
-
-
 
 static const std::atomic<bool> GLOBAL_STOP( false );
 
@@ -28,6 +28,11 @@ HIVE::HIVE( const std::atomic<bool> &stop ) : stop( stop ) {
 
 HIVE::~HIVE() {
 }
+void HIVE::sort_errors(std::vector<string> &errors)
+{
+    std::sort(errors.begin(), errors.end(), doj::alphanum_less<std::string>());
+}
+
 void HIVE::printMessages(bool pass, vector<string>&errors,
                                         bool xmloutput, string file, std::ostream&output){
 
