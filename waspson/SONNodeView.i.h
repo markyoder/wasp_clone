@@ -233,5 +233,14 @@ std::string SONNodeView<TNV>::to_string(bool * ok)const
     TNV view( tree_node_index(), *tree_node_pool() );
     return view.to_string(ok);
 }
-
+template<class TNV>
+std::string SONNodeView<TNV>::last_as_string(bool * ok)const
+{
+    size_t count = child_count();
+    if( count > 0 )
+    {
+        return child_at(count-1).last_as_string(ok);
+    }
+    return to_string(ok);
+}
 #endif

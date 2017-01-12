@@ -182,6 +182,13 @@ public:
      */
     std::string to_string(bool * ok = nullptr) const;
 
+    /**
+     * @brief last_as_string acquires this node or last child's node as string
+     * @param ok parameter to allow determination of failed conversion, etc.
+     * @return the last child's data as a string, or this node's data as a string if no children
+     */
+    std::string last_as_string(bool * ok = nullptr) const;
+
     // Friendly stream operator
     friend std::ostream& operator<< (std::ostream& str, const wasp::SONNodeView<TNV> & view){
         str<<"SONNodeView(tree_node_index="<<view.m_tree_node_index<<", &pool="<<view.m_tree_data<<")";

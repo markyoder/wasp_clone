@@ -1115,7 +1115,8 @@ TEST( SONNodeView, HIVE_API)
     std::stringstream input;
     input<< R"INPUT(
 % comment 1
-key = value
+key = value1
+key = "value2"
 int_array [ 1 2 3 4 ]
 real_array [ 1.1 2.2 3.3 4.4 ]
 string_array [ 's' "t" "g" h ]
@@ -1130,14 +1131,14 @@ obj(foo){
 )INPUT";
     SONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(67, interpreter.node_count() );
+    ASSERT_EQ(71, interpreter.node_count() );
     SONNodeView<decltype(interpreter.root())> document=interpreter.root();
     ASSERT_FALSE( document.is_null() );
     ASSERT_FALSE( document.has_parent() );
     { // test names
-        std::vector<std::string> names={"comment","key","int_array","real_array"
+        std::vector<std::string> names={"comment","key","key","int_array","real_array"
                                    ,"string_array","obj","comment"};
-        std::vector<std::string> paths={"/comment","/key","/int_array","/real_array"
+        std::vector<std::string> paths={"/comment","/key","/key","/int_array","/real_array"
                                         ,"/string_array","/obj","/comment"};
         ASSERT_EQ( names.size(), document.child_count() );
         for( size_t i = 0; i < names.size(); ++i )
@@ -1150,12 +1151,13 @@ obj(foo){
             ASSERT_EQ(paths[i], path);
             ASSERT_EQ( name == "comment", view.is_decorative() );
         }
-        ASSERT_EQ(5, document.non_decorative_children_count() );
+        // should be 2 comments -- account accordingly
+        ASSERT_EQ(names.size()-2, document.non_decorative_children_count() );
     }
     { // test comments
         auto comments = document.child_by_name("comment");
         std::vector<std::string>data={"% comment 1","% comment 3"};
-        std::vector<size_t> line={2,14};
+        std::vector<size_t> line={2,15};
         std::vector<size_t> column={1,2};
         ASSERT_EQ( data.size(), comments.size() );
         ASSERT_EQ( data.size(), line.size() );
@@ -1235,5 +1237,11 @@ obj(foo){
         ASSERT_EQ(5, obj_view.non_decorative_children_count() );
         ASSERT_EQ("", document.id() );
         ASSERT_TRUE( document.id_child().is_null() );
+    }
+    { // test last_as_string
+        auto keys = document.child_by_name("key");
+        ASSERT_EQ(2, keys.size());
+        const auto& key_view = keys.front();
+        ASSERT_EQ("value1", key_view.last_as_string());
     }
 }
