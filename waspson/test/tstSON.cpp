@@ -1213,6 +1213,8 @@ obj(foo){
         const auto& string_array = string_arrays.front();
         ASSERT_EQ(7, string_array.child_count());
         std::vector<std::string> value = {"s","t","g","h"};
+        // TODO test with string containing whitespace
+        // std::vector<std::string> value = {"s","t"," g ","h"};
         ASSERT_EQ( value.size(), string_array.child_count_by_name("value") );
         const auto& strings = string_array.child_by_name("value");
         ASSERT_EQ(4, strings.size() );
