@@ -33,7 +33,7 @@ configure_mac:
     - cd build
     - module load cmake
     - which cmake
-    - cmake -DBUILDNAME=$(uname -s)-Debug -DCMAKE_BUILD_TYPE=DEBUG -Dwasp_ENABLE_TESTS=ON -Dwasp_ENABLE_ALL_PACKAGES=ON ..
+    - cmake -DBUILDNAME=$(uname -s)-AppleClang-8-Debug -DCMAKE_BUILD_TYPE=DEBUG -Dwasp_ENABLE_TESTS=ON -Dwasp_ENABLE_ALL_PACKAGES=ON ..
 
 build_mac:
   stage: build
@@ -42,6 +42,7 @@ build_mac:
   <<: *stage_artifacts
   script:
     - cd build
+    - module load cmake
     - ctest -D ExperimentalStart -D ExperimentalBuild -D ExperimentalSubmit
   dependencies:
     - configure_mac
@@ -53,6 +54,7 @@ test_mac:
   <<: *stage_artifacts
   script:
     - cd build
+    - module load cmake
     - ctest -D ExperimentalTest -D ExperimentalSubmit
   dependencies:
     - build_mac
