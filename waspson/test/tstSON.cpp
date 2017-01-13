@@ -1241,7 +1241,11 @@ obj(foo){
     { // test last_as_string
         auto keys = document.child_by_name("key");
         ASSERT_EQ(2, keys.size());
-        const auto& key_view = keys.front();
-        ASSERT_EQ("value1", key_view.last_as_string());
+        const auto& key_view1 = keys.front();
+        ASSERT_EQ("value1", key_view1.last_as_string());
+        ASSERT_EQ("value1", key_view1.to_string());
+        const auto& key_view2 = keys.back();
+        ASSERT_EQ("value2", key_view2.last_as_string());
+        ASSERT_EQ("value2", key_view2.to_string());
     }
 }

@@ -211,6 +211,19 @@ private:
     size_t m_tree_node_index;
     const TreeNodePool_type * m_tree_data;
 
+    /**
+     * @brief value_tree_node_index when the value is requested (to_int, string, etc) this returns the index
+     * @return index of the node considered this node's value
+     * I.e.,  key = value
+     *  key
+     *  |_decl
+     *  |_=
+     *  |_value
+     * When key's value is requested, the index of the 'value' node will be returned.
+     * If no children, the m_tree_node_index is returned
+     */
+    size_t value_tree_node_index()const;
+
 };
 #include "waspson/SONNodeView.i.h"
 } // end of namespace

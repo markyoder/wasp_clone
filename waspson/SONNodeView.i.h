@@ -242,7 +242,7 @@ double SONNodeView<TNV>::to_double(bool * ok)const
 template<class TNV>
 std::string SONNodeView<TNV>::to_string(bool * ok)const
 {
-    TNV view( tree_node_index(), *tree_node_pool() );
+    TNV view( value_tree_node_index(), *tree_node_pool() );
     return view.to_string(ok);
 }
 template<class TNV>
@@ -254,5 +254,15 @@ std::string SONNodeView<TNV>::last_as_string(bool * ok)const
         return child_at(count-1).last_as_string(ok);
     }
     return to_string(ok);
+}
+template<class TNV>
+size_t SONNodeView<TNV>::value_tree_node_index()const
+{
+    /// TODO - could push this lower to TNV ?
+    if( type() == wasp::KEYED_VALUE && child_count() > 0 )
+    {
+        return child_at(child_count()-1).tree_node_index();
+    }
+    return tree_node_index();
 }
 #endif
