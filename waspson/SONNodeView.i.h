@@ -46,6 +46,11 @@ bool SONNodeView<TNV>::operator ==(const SONNodeView& b)const
             && m_tree_node_index == b.m_tree_node_index;
 }
 template<class TNV>
+bool SONNodeView<TNV>::operator <(const SONNodeView& b)const
+{
+    return m_tree_node_index < b.m_tree_node_index;
+}
+template<class TNV>
 SONNodeView<TNV> SONNodeView<TNV>::parent()const
 {
     SONNodeView<TNV> view (m_tree_data->parent_node_index(m_tree_node_index)
@@ -194,6 +199,13 @@ SONNodeView<TNV>::child_by_name(const std::string & name
         if( limit != 0 && results.size() == limit ) break;
     }
     return results;
+}
+template<class TNV> // template type
+SONNodeView<TNV> // return type
+SONNodeView<TNV>::first_child_by_name(const std::string & name)const
+{
+    TNV view (tree_node_index(),*tree_node_pool());
+    return view.first_child_by_name(name);
 }
 template<class TNV>
 std::size_t SONNodeView<TNV>::type()const

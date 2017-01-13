@@ -31,6 +31,12 @@ public:
     bool operator==(const SONNodeView& b)const;
     bool operator!=(const SONNodeView& b)const{return !(*this==b);}
     /**
+     * @brief operator < orders by pool index
+     * @param b the node to compare pool index
+     * @return true, iff this views index is strictly less than b.index
+     */
+    bool operator<(const SONNodeView& b)const;
+    /**
      * @brief equal determines if this is equal to the provides SONNodeView
      * @return true, iff and only if the nodes are the same
      */
@@ -130,6 +136,12 @@ public:
      * @return A collection of views. Empty if no match occurrs
      */
     SONNodeView::Collection child_by_name(const std::string & name, size_t limit=0)const;
+    /**
+     * @brief first_child_by_name acquires the first child with the given name
+     * @param name the name of the requested child
+     * @return Named TreeNodeView as requestd. is_null indicates if none was found
+     */
+    SONNodeView first_child_by_name(const std::string & name)const;
     /**
      * @brief type acquire the type of the node
      * @return the node's type
