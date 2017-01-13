@@ -360,7 +360,10 @@ void TreeNodePool<NTS,NIS,TP>::data(NIS node_index
     // 2. accumulate the parent
     else{
         // TODO - implement this
-        std::cerr << " TODO - implement data acquisition for tree node's parented" <<std::endl;
+        std::stringstream str;
+        node_path(node_index,str);
+        std::cerr << " TODO - implement data acquisition for tree node's parented "
+                  << str.str()<<std::endl;
     }
 }
 
