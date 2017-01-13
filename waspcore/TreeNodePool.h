@@ -8,6 +8,7 @@
 #include "waspcore/StringPool.h"
 #include "waspcore/TokenPool.h"
 #include "waspcore/wasp_node.h" // for UNKNOWN node/token types
+#include "waspcore/utils.h" // string quote trimming
 namespace wasp{
 typedef unsigned short default_node_type_size;
 typedef unsigned int default_node_index_size;
