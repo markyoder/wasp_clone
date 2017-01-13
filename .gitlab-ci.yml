@@ -15,6 +15,50 @@ stages:
 - test
 - analysis
 
+configure_mac:
+  stage: configure
+  tags:
+    - mac
+  <<: *stage_artifacts
+  script:
+    - which git
+    - git --version
+    - git clone https://github.com/lefebvre/TriBITS.git TriBITS
+    - git clone https://github.com/lefebvre/testframework testframework
+    - git clone https://github.com/lefebvre/googletest googletest
+    - which python
+    - python --version
+    - python TriBITS/tribits/python_utils/gitdist.py pull
+    - mkdir build
+    - cd build
+    - module load cmake
+    - which cmake
+    - cmake -DBUILDNAME=$(uname -s)-AppleClang-8-Debug -DCMAKE_BUILD_TYPE=DEBUG -Dwasp_ENABLE_TESTS=ON -Dwasp_ENABLE_ALL_PACKAGES=ON ..
+
+build_mac:
+  stage: build
+  tags:
+    - mac
+  <<: *stage_artifacts
+  script:
+    - cd build
+    - module load cmake
+    - ctest -D ExperimentalStart -D ExperimentalBuild -D ExperimentalSubmit
+  dependencies:
+    - configure_mac
+
+test_mac:
+  stage: test
+  tags:
+    - mac
+  <<: *stage_artifacts
+  script:
+    - cd build
+    - module load cmake
+    - ctest -D ExperimentalTest -D ExperimentalSubmit
+  dependencies:
+    - build_mac
+
 configure_linux:
   stage: configure
   tags:
@@ -57,7 +101,6 @@ test_linux:
     - ctest -D ExperimentalTest -D ExperimentalSubmit
   dependencies:
     - build_linux
-
 analysis_linux:
   stage: analysis
   tags:
