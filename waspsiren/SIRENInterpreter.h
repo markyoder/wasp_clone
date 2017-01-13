@@ -13,8 +13,8 @@
 #include <memory>
 
 #include "waspcore/TreeNodePool.h"
-#include "waspcore/Interpreter.h"
 #include "waspsiren/SIRENParser.hpp"
+#include "waspcore/Interpreter.h"
 #include "waspsiren/SIRENResultSet.h"
 
 /** The wasp namespace is used to encapsulate the three parser classes
