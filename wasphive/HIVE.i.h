@@ -7,7 +7,7 @@
 
 template<class InputAdapter>
 bool HIVE::select_nodes( SIRENResultSet<InputAdapter>& results
-        ,const InputAdapter & input_node
+        ,InputAdapter & input_node
         ,const std::string & selection_path
         , std::vector<std::string> & errors)
 {
@@ -232,7 +232,7 @@ bool HIVE::validateMinOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
 
    for(size_t i = 0; i < selection.size(); i++){
 
-       if (selection.adapted(i)->is_decorative() || selection.adapted(i).name() == "decl") continue;
+       if (selection.adapted(i).is_decorative() || selection.adapted(i).name() == "decl") continue;
 
        size_t childNodeCount = 0;
        if (nodeName == "*") childNodeCount = selection.adapted(i).non_decorative_children_count();
@@ -321,7 +321,7 @@ bool HIVE::validateMaxOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
 
    for(size_t i = 0; i < selection.size(); i++){
        
-       if (selection.adapted(i)->is_decorative() || selection.adapted(i).name() == "decl") continue;
+       if (selection.adapted(i).is_decorative() || selection.adapted(i).name() == "decl") continue;
 
        size_t childNodeCount;
        if (nodeName == "*") childNodeCount = selection.adapted(i).non_decorative_children_count();
@@ -580,7 +580,7 @@ bool HIVE::validateValEnums(SchemaAdapter & schema_node, InputAdapter & input_no
                    while(tmpschema_node.has_parent()){
                        tmpschema_node = tmpschema_node.parent();
                    }
-                   tmpschema_node = tmpschema_node.getFirstNonDecChildByName(refName);
+                   tmpschema_node = tmpschema_node.first_non_decorative_child_by_name(refName);
 
                    if ( tmpschema_node.is_null() ){
                        errors.push_back(Error::BadEnumReference(refName,
@@ -1220,7 +1220,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 
 //   std::string nodePath = schema_node.parent().path();
 //   std::string ruleName = getFullRuleName(schema_node.name());
-//   std::string ruleId = schema_node.getId();
+//   std::string ruleId = schema_node.id();
 //   bool pass = true;
 //   int errorCount = 0;
 //   bool absRule = false;
@@ -1228,8 +1228,8 @@ bool HIVE::validateMaxValExc(SchemaAdapter & schema_node, InputAdapter & input_n
 
 //   if (ruleId != "" && ruleId != "Abs" && ruleId != "BeforePeriod"){
 //       errors.push_back(Error::BadOption(schema_node.name(), ruleId,
-//                                         schema_node.id_node().line(),
-//                                         schema_node.id_node().column(),
+//                                         schema_node.id_child().line(),
+//                                         schema_node.id_child().column(),
 //                                         "Abs BeforePeriod"));
 //       return false;
 //   }
@@ -1578,7 +1578,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter & schema_node, InputAdapter & input
 
    std::string nodePath = schema_node.parent().path();
    std::string ruleName = getFullRuleName(schema_node.name());
-   std::string ruleId = schema_node.getId();
+   std::string ruleId = schema_node.id();
    bool pass = true;
    int errorCount = 0;
    bool absRule = false;
@@ -1587,8 +1587,8 @@ bool HIVE::validateNotExistsIn(SchemaAdapter & schema_node, InputAdapter & input
    // check the optional option supplied to this rule
    if (ruleId != "" && ruleId != "Abs" && ruleId != "Zero" && ruleId != "AbsZero"){
        errors.push_back(Error::BadOption(schema_node.name(), ruleId,
-                                         schema_node.id_node().line(),
-                                         schema_node.id_node().column(),
+                                         schema_node.id_child().line(),
+                                         schema_node.id_child().column(),
                                          "Abs Zero AbsZero"));
        return false;
    }
@@ -1764,10 +1764,6 @@ bool HIVE::validateNotExistsIn(SchemaAdapter & schema_node, InputAdapter & input
                    }
                }
            }
-           
-           // reset state
-           childSelection.clear();
-           
        }
    }
    
@@ -1783,7 +1779,7 @@ bool HIVE::validateSumOver(SchemaAdapter & schema_node, InputAdapter & input_nod
    std::string nodePath = schema_node.parent().path();
    std::string ruleName = getFullRuleName(schema_node.name());
    std::string ruleValue = schema_node.to_string();
-   std::string ruleId = schema_node.getId();
+   std::string ruleId = schema_node.id();
    bool pass = true;
 
    std::stringstream look_up_error;
@@ -1873,7 +1869,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter & schema_node, InputAdapter & inpu
    std::string nodeName = schema_node.parent().name();
    std::string nodePath = schema_node.parent().path();
    std::string ruleName = getFullRuleName(schema_node.name());
-   std::string ruleId = schema_node.getId();
+   std::string ruleId = schema_node.id();
    SchemaAdapter compare_path_schema_node = schema_node.first_child_by_name("ComparePath");
    if ( compare_path_schema_node.is_null() ){
        errors.push_back(Error::MissingArgument(schema_node.name(), "ComparePath",
@@ -1948,7 +1944,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter & schema_node, InputAdapter & inpu
                int tempCompareQuotient;
                if (comparePathSelection.size() != 0){
 
-                   tempCompareQuotient = comparePathSelection.adapted(0)->to_int()()/groupDivide;
+                   tempCompareQuotient = comparePathSelection.adapted(0).to_int()/groupDivide;
 
                    groupAddendsIter = groupAddends.find(tempCompareQuotient);
                    if (groupAddendsIter != groupAddends.end()){
@@ -1959,7 +1955,6 @@ bool HIVE::validateSumOverGroup(SchemaAdapter & schema_node, InputAdapter & inpu
                    }
 
                }
-               comparePathSelection.clear();
            }
 
            if (groupAddends.size() != 0){
@@ -2013,7 +2008,6 @@ bool HIVE::validateSumOverGroup(SchemaAdapter & schema_node, InputAdapter & inpu
                }
 
            }
-           sumSelection.clear(); // reset state
        }
    }
 
@@ -2028,7 +2022,7 @@ bool HIVE::validateIncreaseOver(SchemaAdapter & schema_node, InputAdapter & inpu
    std::string nodePath = schema_node.parent().path();
    std::string ruleName = getFullRuleName(schema_node.name());
    std::string ruleValue = schema_node.to_string();
-   std::string ruleId = schema_node.getId();
+   std::string ruleId = schema_node.id();
    bool pass = true;
 
    if (ruleValue != "Mono" && ruleValue != "Strict"){
@@ -2161,7 +2155,7 @@ bool HIVE::validateDecreaseOver(SchemaAdapter & schema_node, InputAdapter & inpu
    std::string nodePath = schema_node.parent().path();
    std::string ruleName = getFullRuleName(schema_node.name());
    std::string ruleValue = schema_node.to_string();
-   std::string ruleId = schema_node.getId();
+   std::string ruleId = schema_node.id();
    bool pass = true;
 
    if (ruleValue != "Mono" && ruleValue != "Strict"){
@@ -2308,7 +2302,7 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter & schema_node, InputAdapter & in
     for(int j = 0; j < children.size(); j++){
 
         std::string lookupPath;
-        if (children[j]->child_count() == 0) lookupPath = children[j].to_string();
+        if (children[j].child_count() == 0) lookupPath = children[j].to_string();
         else                                   lookupPath = children[j].name();
 
         SIRENInterpreter<> childSelector(look_up_error);
@@ -2324,7 +2318,7 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter & schema_node, InputAdapter & in
             childSelector.evaluate(inode,childSelection);
  
             if (childSelection.size() != 0){
-                if (children[j]->child_count() != 0){
+                if (children[j].child_count() != 0){
                     for(size_t k = 0; k < childSelection.size(); k++){
                         if (childSelection.adapted(k).last_as_string() == children[j].last_as_string()){
                             selectedChildrenCount[i]++;
@@ -2343,7 +2337,7 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter & schema_node, InputAdapter & in
             const typename SchemaAdapter::Collection & choices = children;
             std::string childNames;
             for(int js = 0; js < choices.size(); js++){
-                childNames += choices[js]->getData();
+                childNames += choices[js].data();
                 if (js+1 != choices.size()) childNames += " ";
             }
             errors.push_back(Error::ChildMostExactLeast(selection.adapted(i).line(),
@@ -2376,7 +2370,7 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter & schema_node, InputAdapter & i
    for(int j = 0; j < children.size(); j++){
 
        std::string lookupPath;
-       if (children[j]->child_count() == 0) lookupPath = children[j].to_string();
+       if (children[j].child_count() == 0) lookupPath = children[j].to_string();
        else                                   lookupPath = children[j].name();
        std::stringstream look_up_error;
        SIRENInterpreter<> childSelector(look_up_error);
@@ -2392,7 +2386,7 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter & schema_node, InputAdapter & i
            childSelector.evaluate(inode,childSelection);
 
            if (childSelection.size() != 0){
-               if (children[j]->child_count() != 0){
+               if (children[j].child_count() != 0){
                    for(size_t k = 0; k < childSelection.size(); k++){
                        if (childSelection.adapted(k).last_as_string() == children[j].last_as_string()){
                            selectionChildrenFound[i]++;
@@ -2402,7 +2396,6 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter & schema_node, InputAdapter & i
                }
                else selectionChildrenFound[i]++;
            }
-           childSelection.clear(); // reset state
        }
 
    }
@@ -2413,7 +2406,7 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter & schema_node, InputAdapter & i
            const typename SchemaAdapter::Collection & choices = children;
            std::string childNames;
            for(int js = 0; js < choices.size(); js++){
-               childNames += choices[js]->getData();
+               childNames += choices[js].data();
                if (js+1 != choices.size()) childNames += " ";
            }
            errors.push_back(Error::ChildMostExactLeast(selection.adapted(i).line(),
@@ -2426,7 +2419,7 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter & schema_node, InputAdapter & i
            const typename SchemaAdapter::Collection & choices = children;
            std::string childNames;
            for(int js = 0; js < choices.size(); js++){
-               childNames += choices[js]->getData();
+               childNames += choices[js].data();
                if (js+1 != choices.size()) childNames += " ";
            }
            errors.push_back(Error::ChildMostExactLeast(selection.adapted(i).line(),
@@ -2459,7 +2452,7 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter & schema_node, InputAdapter & i
    for(int j = 0; j < children.size(); j++){
 
        std::string lookupPath;
-       if (children[j]->child_count() == 0) lookupPath = children[j].to_string();
+       if (children[j].child_count() == 0) lookupPath = children[j].to_string();
        else                                   lookupPath = children[j].name();
        std::stringstream look_up_error;
        SIRENInterpreter<> childSelector(look_up_error);
@@ -2475,7 +2468,7 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter & schema_node, InputAdapter & i
            childSelector.evaluate(inode, childSelection);
 
            if (childSelection.size() != 0){
-               if (children[j]->child_count() != 0){
+               if (children[j].child_count() != 0){
                    for(size_t k = 0; k < childSelection.size(); k++){
                        if (childSelection.adapted(k).last_as_string() == children[j].last_as_string()){
                            selectedChildCounts[i]++;
@@ -2485,7 +2478,6 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter & schema_node, InputAdapter & i
                }
                else selectedChildCounts[i]++;
            }
-           childSelection.clear();
        }
    }
    
@@ -2495,7 +2487,7 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter & schema_node, InputAdapter & i
            const typename SchemaAdapter::Collection & choices = children;
            std::string childNames;
            for(int js = 0; js < choices.size(); js++){
-               childNames += choices[js]->getData();
+               childNames += choices[js].data();
                if (js+1 != choices.size()) childNames += " ";
            }
            errors.push_back(Error::ChildMostExactLeast(selection.adapted(i).line(),
@@ -2515,7 +2507,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter & schema_node, InputAdapter & i
 
    std::string nodePath = schema_node.parent().path();
    std::string ruleName = getFullRuleName(schema_node.name());
-   std::string ruleId = schema_node.getId();
+   std::string ruleId = schema_node.id();
    bool pass = true;
 
    if (ruleId != "IfExists" && ruleId != "EvenNone"){
@@ -2562,7 +2554,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter & schema_node, InputAdapter & i
                const typename SchemaAdapter::Collection & choices = schema_node.non_decorative_children();
                std::string childNames;
                for(int js = 0; js < choices.size(); js++){
-                   //childNames += choices[js]->getData();
+                   //childNames += choices[js].data();
                    childNames += choices[js].to_string();
                    if (js+1 != choices.size()) childNames += " ";
                }
@@ -2591,7 +2583,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
 
    std::string nodePath = schema_node.parent().path();
    std::string ruleName = getFullRuleName(schema_node.name());
-   std::string ruleId = schema_node.getId();
+   std::string ruleId = schema_node.id();
    bool pass = true;
    int errorCount = 0;
    bool absRule = false;
@@ -2600,8 +2592,8 @@ bool HIVE::validateChildUniqueness(SchemaAdapter & schema_node, InputAdapter & i
    // check the optional option supplied to this rule
    if (ruleId != "" && ruleId != "Abs" && ruleId != "Zero" && ruleId != "AbsZero"){
        errors.push_back(Error::BadOption(schema_node.name(), ruleId,
-                                         schema_node.id_node().line(),
-                                         schema_node.id_node().column(),
+                                         schema_node.id_child().line(),
+                                         schema_node.id_child().column(),
                                          "Abs Zero AbsZero"));
        return false;
    }

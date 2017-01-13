@@ -41,6 +41,7 @@ namespace wasp
  * size_t TAdapter::column()const - acquire the column on which the node occurrs in the document
  * TAdaper& TAdapter::operator=(const TAdapter & orig) - node's assignment operator
  * bool TAdapter::operator==(const TAdapter & orig) - node's equality operator
+ * bool TAdapter::operator<(const TAdapter & orig) - node's less than operator
  * std::vector<TAdapter> TAdapter::child_by_name(const std::string & name, size_t limit)const
  * int TAdapter::to_int()const - converts the node's data to an integer
  * double TAdapter::to_double()const - converts the node's data to a double
@@ -99,7 +100,7 @@ private:
      */
     template<class InputAdapter>
     bool select_nodes( SIRENResultSet<InputAdapter>& results
-            ,const InputAdapter & input_node
+            ,InputAdapter & input_node
             ,const std::string & selection_path
             , std::vector<std::string> & errors);
 
