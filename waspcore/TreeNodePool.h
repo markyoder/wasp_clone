@@ -364,6 +364,11 @@ public:
      * @return A collection of views. Empty if no match occurrs
      */
     TreeNodeView::Collection child_by_name(const std::string & name, size_t limit=0)const;
+    /**
+     * @brief first_child_by_name acquires the first child with the given name
+     * @param name the name of the requested child
+     * @return Named TreeNodeView as requestd. is_null indicates if none was found
+     */
     TreeNodeView first_child_by_name(const std::string & name)const;
     /**
      * @brief type acquire the type of the node
