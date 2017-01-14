@@ -105,3 +105,19 @@ TEST(HIVE, MinOccurs)
     EXPECT_FALSE( valid );
     ASSERT_EQ( t.output_data->str(), msgs );
 }
+TEST(HIVE, MaxOccurs)
+{
+    HIVE hive;
+    HIVETest t;
+    ASSERT_TRUE( load_streams(t,"MaxOccurs.son","MaxOccurs.gld","MaxOccurs.sch") );
+    ASSERT_TRUE( load_ast(t) );
+    std::vector<std::string> errors;
+    SONNodeView<decltype(t.schema_interpreter->root())> schema_adapter = t.schema_interpreter->root();
+    SONNodeView<decltype(t.input_interpreter->root())> input_adapter = t.input_interpreter->root();
+    bool valid = hive.validate(schema_adapter
+                             , input_adapter
+                             , errors);
+    std::string msgs = HIVE::combine(errors);
+    EXPECT_FALSE( valid );
+    ASSERT_EQ( t.output_data->str(), msgs );
+}
