@@ -1249,3 +1249,34 @@ obj(foo){
         ASSERT_EQ("value2", key_view2.to_string());
     }
 }
+TEST( SON, data_simple )
+{
+    std::stringstream input;
+    input<< "k=1  t =  5";
+    SONInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(9, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 2, document.child_count() );
+    std::stringstream printed_document;
+    wasp::print(printed_document, document);
+    ASSERT_EQ(input.str(), printed_document.str());
+}
+TEST( SON, data )
+{
+    std::stringstream input;
+    input<< R"INPUT(% start of line
+
+   k=1 % trailing line
+
+ t = [1 3 5 ])INPUT";
+    SONInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(15, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 4, document.child_count() );
+    std::stringstream printed_document;
+    wasp::print(printed_document, document);
+    ASSERT_EQ(input.str(), printed_document.str());
+    ASSERT_EQ( input.str(), document.data() );
+}
