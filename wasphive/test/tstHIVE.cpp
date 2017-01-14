@@ -16,31 +16,56 @@ std::string test_dir = TEST_DIR_ROOT;
 using namespace wasp;
 
 struct HIVETest{
-    std::shared_ptr<std::istringstream> input;  // test input for schema to exercise
+    std::string input_path;
+    std::shared_ptr<std::ifstream> input;  // test input for schema to exercise
     std::shared_ptr<SONInterpreter<>> input_interpreter;
-    std::shared_ptr<std::istringstream> output; // expected output
-    std::shared_ptr<std::istringstream> schema; // schema to validate input
+
+    std::string schema_path;
+    std::shared_ptr<std::ifstream> schema; // schema to validate input
     std::shared_ptr<SONInterpreter<>> schema_interpreter;
+
+    std::shared_ptr<std::stringstream> output_data; // expected output
 };
 
+bool load_file_as_string(std::ifstream & f
+                         ,std::shared_ptr<std::stringstream>&s)
+{
+    bool first = true;
+    while( !f.eof() && f.good() )
+    {
+
+        std::string line;
+        std::getline(f,line);
+        if( !first ){ *s<<std::endl;
+        }
+        *s << line;
+        first = false;
+    }
+    return f.eof() && !f.bad();
+}
 
 bool load_streams(HIVETest& t
                    , const std::string& iname
                    , const std::string& oname
                    , const std::string& sname)
 {
-    std::string input_path = test_dir+"/inputs/"+iname;
-    t.input = std::make_shared<std::istringstream>(input_path);
+
+    t.input_path = test_dir+"/inputs/"+iname;
+    t.input = std::make_shared<std::ifstream>(t.input_path);
     bool file_bad = t.input->bad() || t.input->fail();
     EXPECT_FALSE( file_bad );
 
+    {
     std::string output_path = test_dir+"/outputs/"+oname;
-    t.output = std::make_shared<std::istringstream>(output_path);
-    file_bad = t.output->bad() || t.output->fail();
+    SCOPED_TRACE(output_path);
+    std::ifstream output_file(output_path);
+    t.output_data = std::make_shared<std::stringstream>();
+    EXPECT_TRUE( load_file_as_string(output_file,t.output_data) );
+    file_bad = t.output_data->bad() || t.output_data->fail();
     EXPECT_FALSE( file_bad );
-
-    std::string schema_path = test_dir+"/schemas/"+sname;
-    t.schema = std::make_shared<std::istringstream>(schema_path);
+    }
+    t.schema_path = test_dir+"/schemas/"+sname;
+    t.schema = std::make_shared<std::ifstream>(t.schema_path);
     file_bad = t.schema->bad() || t.schema->fail();
     EXPECT_FALSE( file_bad );
 
@@ -50,18 +75,21 @@ bool load_streams(HIVETest& t
 bool load_ast(HIVETest& t)
 {
     t.input_interpreter = std::make_shared<SONInterpreter<>>();
-    bool interpret_bad = t.input_interpreter->parse(*t.input);
-    EXPECT_FALSE( interpret_bad );
+    bool input_good =
+            t.input_interpreter->parseStream(*t.input,t.input_path);
+    EXPECT_TRUE( input_good );
 
     t.schema_interpreter = std::make_shared<SONInterpreter<>>();
-    interpret_bad = t.schema_interpreter->parse(*t.input);
-    EXPECT_FALSE( interpret_bad );
+    bool schema_good =
+            t.schema_interpreter->parseStream(*t.schema
+                                                ,t.schema_path);
+    EXPECT_TRUE( schema_good );
 
-    return !interpret_bad;
+    return schema_good && input_good;
 }
 
 
-TEST(HIVE,minoccurs)
+TEST(HIVE, minoccurs)
 {
     HIVE hive;
     HIVETest t;
@@ -75,6 +103,5 @@ TEST(HIVE,minoccurs)
                              , errors);
     std::string msgs = HIVE::combine(errors);
     EXPECT_FALSE( valid );
-    ASSERT_EQ( t.output->str(), msgs );
-
+    ASSERT_EQ( t.output_data->str(), msgs );
 }

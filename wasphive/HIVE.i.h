@@ -186,13 +186,12 @@ bool HIVE::traverse_schema(SchemaAdapter & schema_node, InputAdapter & input_nod
    }
 
    if ( !isAny && !hasToDo ){
-       
        /* Error if there is a non-decorative input child with no schema rule */
-       for(size_t i = 0; i < selection.size(); i++){
-           const typename SchemaAdapter::Collection & children = selection.adapted(i).non_decorative_children();
+       for(size_t i = 0; i < selection.size(); i++){           
+           const typename InputAdapter::Collection & children = selection.adapted(i).non_decorative_children();
            for(size_t j = 0; j < children.size(); j++){
                InputAdapter inputChild = children[j];
-               if (inputChild.name() != "value"){
+               if ( std::strcmp(inputChild.name(), "value") != 0){
                    if (definitionChildren.find(inputChild.name()) == definitionChildren.end()){
                        errors.push_back(Error::NotExistInSchema(inputChild.line(),
                                                                 inputChild.column(),
@@ -211,7 +210,6 @@ bool HIVE::traverse_schema(SchemaAdapter & schema_node, InputAdapter & input_nod
 template<class SchemaAdapter,class InputAdapter>
 bool HIVE::validateMinOccurs(SchemaAdapter & schema_node, InputAdapter & input_node
                              , std::vector<std::string>&errors){
-
    if ( schema_node.to_string() == "0" ) return true;
 
    std::string nodeName = schema_node.parent().name();
@@ -225,7 +223,6 @@ bool HIVE::validateMinOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
    {
        return false;
    }
-   
    std::istringstream issRV(ruleValue);
    int itestRV;
    issRV >> std::noskipws >> itestRV;
@@ -239,6 +236,7 @@ bool HIVE::validateMinOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
        else                 childNodeCount = selection.adapted(i).child_count_by_name(nodeName);
 
        if (!issRV.eof() || issRV.fail()){
+
            std::stringstream look_up_error;
            SIRENInterpreter<> inputSelectorlookup(look_up_error);
            if( !inputSelectorlookup.parseString(ruleValue.substr(3)) )
@@ -249,7 +247,6 @@ bool HIVE::validateMinOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
            SIRENResultSet<InputAdapter> selectionLookup;
            InputAdapter inode = selection.adapted(i);
            inputSelectorlookup.evaluate(inode,selectionLookup);
-
            if (selectionLookup.size() > 1){
                errors.push_back(Error::MoreThanOneValue(inode.line(),
                                                         inode.column(),
@@ -257,7 +254,6 @@ bool HIVE::validateMinOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
                pass = false;
            }
            else if (selectionLookup.size() == 1){
-
                std::istringstream issRV2(selectionLookup.adapted(0).last_as_string());
                issRV2 >> std::noskipws >> itestRV;
                if (!issRV2.eof() || issRV2.fail()){
@@ -292,7 +288,6 @@ bool HIVE::validateMinOccurs(SchemaAdapter & schema_node, InputAdapter & input_n
    }
 
    return pass;
-
 }
 template<class SchemaAdapter,class InputAdapter>
 bool HIVE::validateMaxOccurs(SchemaAdapter & schema_node, InputAdapter & input_node
