@@ -186,7 +186,7 @@ bool HIVE::traverse_schema(SchemaAdapter& schema_node, InputAdapter& input_node
             }
 
             /* Only continue child schema traversal if this node exists in input
-               */
+             */
             if (selection.size() != 0) {
                 pass &= traverse_schema(tmpNode, input_node, errors);
             }
@@ -245,7 +245,7 @@ bool HIVE::validateMinOccurs(SchemaAdapter           & schema_node,
 
     for (size_t i = 0; i < selection.size(); i++) {
         if (selection.adapted(i).is_decorative() ||
-            (selection.adapted(i).name() == "decl")) continue;
+            (std::strcmp(selection.adapted(i).name(), "decl") == 0)) continue;
 
         size_t childNodeCount = 0;
 
@@ -348,7 +348,7 @@ bool HIVE::validateMaxOccurs(SchemaAdapter           & schema_node,
 
     for (size_t i = 0; i < selection.size(); i++) {
         if (selection.adapted(i).is_decorative() ||
-            (selection.adapted(i).name() == "decl")) continue;
+            (std::strcmp(selection.adapted(i).name(), "decl") == 0)) continue;
 
         size_t childNodeCount;
 
@@ -479,7 +479,7 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
             if (!iss.eof() || iss.fail()) {
                 std::string valueNodeName;
 
-                if ((selection.adapted(i).name() == "value") &&
+                if ((std::strcmp(selection.adapted(i).name(), "value") == 0) &&
                     selection.adapted(i).has_parent()) {
                     valueNodeName = selection.adapted(i).parent().name();
                 }
@@ -504,7 +504,8 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
                 if (!iss.eof() || iss.fail()) {
                     std::string valueNodeName;
 
-                    if ((selection.adapted(i).name() == "value") &&
+                    if ((std::strcmp(selection.adapted(i).name(),
+                                     "value") == 0) &&
                         selection.adapted(i).has_parent()) {
                         valueNodeName = selection.adapted(i).parent().name();
                     }
@@ -535,7 +536,8 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
                 if (!iss.eof() || iss.fail()) {
                     std::string valueNodeName;
 
-                    if ((selection.adapted(i).name() == "value") &&
+                    if ((std::strcmp(selection.adapted(i).name(),
+                                     "value") == 0) &&
                         selection.adapted(i).has_parent()) {
                         valueNodeName = selection.adapted(i).parent().name();
                     }
@@ -562,7 +564,8 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
                 if (!iss.eof() || iss.fail()) {
                     std::string valueNodeName;
 
-                    if ((selection.adapted(i).name() == "value") &&
+                    if ((std::strcmp(selection.adapted(i).name(),
+                                     "value") == 0) &&
                         selection.adapted(i).has_parent()) {
                         valueNodeName = selection.adapted(i).parent().name();
                     }
@@ -723,7 +726,7 @@ bool HIVE::validateValEnums(SchemaAdapter& schema_node, InputAdapter& input_node
 
             std::string valueNodeName;
 
-            if ((selection.adapted(i).name() == "value") &&
+            if ((std::strcmp(selection.adapted(i).name(), "value") == 0) &&
                 selection.adapted(i).has_parent()) {
                 valueNodeName = selection.adapted(i).parent().name();
             }
@@ -825,7 +828,7 @@ bool HIVE::validateMinValInc(SchemaAdapter           & schema_node,
         if (!iss.eof() || iss.fail()) {
             std::string valueNodeName;
 
-            if ((selection.adapted(i).name() == "value") &&
+            if ((std::strcmp(selection.adapted(i).name(), "value") == 0) &&
                 selection.adapted(i).has_parent()) {
                 valueNodeName = selection.adapted(i).parent().name();
             }
@@ -888,7 +891,8 @@ bool HIVE::validateMinValInc(SchemaAdapter           & schema_node,
                              stod(issRV2.str())) {
                         std::string valueNodeName;
 
-                        if ((selection.adapted(i).name() == "value") &&
+                        if ((std::strcmp(selection.adapted(i).name(),
+                                         "value") == 0) &&
                             selection.adapted(i).has_parent()) {
                             valueNodeName =
                                 selection.adapted(i).parent().name();
@@ -913,7 +917,7 @@ bool HIVE::validateMinValInc(SchemaAdapter           & schema_node,
                      stod(ruleValue)) {
                 std::string valueNodeName;
 
-                if ((selection.adapted(i).name() == "value") &&
+                if ((std::strcmp(selection.adapted(i).name(), "value") == 0) &&
                     selection.adapted(i).has_parent()) {
                     valueNodeName = selection.adapted(i).parent().name();
                 }
@@ -965,7 +969,7 @@ bool HIVE::validateMaxValInc(SchemaAdapter           & schema_node,
         if (!iss.eof() || iss.fail()) {
             std::string valueNodeName;
 
-            if ((selection.adapted(i).name() == "value") &&
+            if ((std::strcmp(selection.adapted(i).name(), "value") == 0) &&
                 selection.adapted(i).has_parent()) {
                 valueNodeName = selection.adapted(i).parent().name();
             }
@@ -1031,7 +1035,8 @@ bool HIVE::validateMaxValInc(SchemaAdapter           & schema_node,
                              stod(issRV2.str())) {
                         std::string valueNodeName;
 
-                        if ((selection.adapted(i).name() == "value") &&
+                        if ((std::strcmp(selection.adapted(i).name(),
+                                         "value") == 0) &&
                             selection.adapted(i).has_parent()) {
                             valueNodeName =
                                 selection.adapted(i).parent().name();
@@ -1056,7 +1061,7 @@ bool HIVE::validateMaxValInc(SchemaAdapter           & schema_node,
                      stod(ruleValue)) {
                 std::string valueNodeName;
 
-                if ((selection.adapted(i).name() == "value") &&
+                if ((std::strcmp(selection.adapted(i).name(), "value") == 0) &&
                     selection.adapted(i).has_parent()) {
                     valueNodeName = selection.adapted(i).parent().name();
                 }
@@ -1108,7 +1113,7 @@ bool HIVE::validateMinValExc(SchemaAdapter           & schema_node,
         if (!iss.eof() || iss.fail()) {
             std::string valueNodeName;
 
-            if ((selection.adapted(i).name() == "value") &&
+            if ((std::strcmp(selection.adapted(i).name(), "value") == 0) &&
                 selection.adapted(i).has_parent()) {
                 valueNodeName = selection.adapted(i).parent().name();
             }
@@ -1174,7 +1179,8 @@ bool HIVE::validateMinValExc(SchemaAdapter           & schema_node,
                              stod(issRV2.str())) {
                         std::string valueNodeName;
 
-                        if ((selection.adapted(i).name() == "value") &&
+                        if ((std::strcmp(selection.adapted(i).name(),
+                                         "value") == 0) &&
                             selection.adapted(i).has_parent()) {
                             valueNodeName =
                                 selection.adapted(i).parent().name();
@@ -1199,7 +1205,7 @@ bool HIVE::validateMinValExc(SchemaAdapter           & schema_node,
                      stod(ruleValue)) {
                 std::string valueNodeName;
 
-                if ((selection.adapted(i).name() == "value") &&
+                if ((std::strcmp(selection.adapted(i).name(), "value") == 0) &&
                     selection.adapted(i).has_parent()) {
                     valueNodeName = selection.adapted(i).parent().name();
                 }
@@ -1251,7 +1257,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
         if (!iss.eof() || iss.fail()) {
             std::string valueNodeName;
 
-            if ((selection.adapted(i).name() == "value") &&
+            if ((std::strcmp(selection.adapted(i).name(), "value") == 0) &&
                 selection.adapted(i).has_parent()) {
                 valueNodeName = selection.adapted(i).parent().name();
             }
@@ -1318,7 +1324,8 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
                              stod(issRV2.str())) {
                         std::string valueNodeName;
 
-                        if ((selection.adapted(i).name() == "value") &&
+                        if ((std::strcmp(selection.adapted(i).name(),
+                                         "value") == 0) &&
                             selection.adapted(i).has_parent()) {
                             valueNodeName =
                                 selection.adapted(i).parent().name();
@@ -1343,7 +1350,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
                      stod(ruleValue)) {
                 std::string valueNodeName;
 
-                if ((selection.adapted(i).name() == "value") &&
+                if ((std::strcmp(selection.adapted(i).name(), "value") == 0) &&
                     selection.adapted(i).has_parent()) {
                     valueNodeName = selection.adapted(i).parent().name();
                 }
@@ -1499,7 +1506,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
 
 //           if (loop == 0) setContextNow = true;
 
-//           if (children[loop].name() == "EXTRA"){
+//           if (std::strcmp(children[loop].name(),"EXTRA")==0){
 //               std::string lowerString = children[loop].to_string();
 //               transform(lowerString.begin(), lowerString.end(),
 // lowerString.begin(), ::tolower);
@@ -1507,7 +1514,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
 //               continue;
 //           }
 
-//           if (children[loop].name() == "RANGE"){
+//           if (std::strcmp(children[loop].name(),"RANGE")==0){
 //               const typename SchemaAdapter::Collection & rangeChildren =
 // children[loop].non_decorative_children();
 //               if (rangeChildren.size() != 2){
@@ -1613,7 +1620,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
 //               continue;
 //           }
 
-//           if (children[loop].name() == "EXTRAREF"){
+//           if (std::strcmp(children[loop].name(),"EXTRAREF")==0){
 //               continue;
 //           }
 
@@ -1702,7 +1709,9 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
 //                       }
 //                   }
 //                   if (selectionLookup[j].has_parent() &&
-//                       selectionLookup[j].parent().name() != "alias"){
+//
+//
+//                  std::strcmp(selectionLookup[j].parent().name(),"alias")!=0){
 //                       transform(tempString.begin(), tempString.end(),
 // tempString.begin(), ::tolower);
 //                   }
@@ -1738,7 +1747,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
 //       transform(lowerLookupString.begin(), lowerLookupString.end(),
 // lowerLookupString.begin(), ::tolower);
 
-//       if (schema_node.parent().name() == "alias" &&
+//       if (std::strcmp(schema_node.parent().name(),"alias") == 0 &&
 //           AliasPropagationEngine::getAliasCount(lookupString, aliasMap) !=
 // 0){
 
@@ -1764,7 +1773,8 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
 //                        refSetPtr->find(lowerKString) == refSetPtr->end())){
 
 //                       std::string valueNodeName;
-//                       if (selection.adapted(i).name() == "value" &&
+//                       if (std::strcmp(selection.adapted(i).name(),"value") ==
+// 0 &&
 //                           selection.adapted(i).has_parent()){
 //                           valueNodeName =
 // selection.adapted(i).parent().name();
@@ -1778,9 +1788,13 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
 //                       std::string lookupPaths;
 //                       for(int loop = 0, count = childrenErr.size(); loop <
 // count; loop++){
-//                           if (childrenErr[loop].name() != "EXTRA" &&
-//                               childrenErr[loop].name() != "EXTRAREF" &&
-//                               childrenErr[loop].name() != "RANGE"){
+//                           if (std::strcmp(childrenErr[loop].name(),"EXTRA")
+// != 0 &&
+//
+//                             std::strcmp(childrenErr[loop].name(),"EXTRAREF")
+// != 0 &&
+//                               std::strcmp(childrenErr[loop].name(),"RANGE")
+// != 0){
 //                               lookupPaths += childrenErr[loop].to_string();
 //                               if (loop+1 !=count){
 //                                   lookupPaths += "\n        ";
@@ -1825,17 +1839,19 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
 //           }
 //       }
 
-//       else if ((selection[i].parent().name() == "alias"           ||
+//       else if ((std::strcmp(selection[i].parent().name(),"alias")==0
+//          ||
 //                    lookupSet.find(lowerLookupString) == lookupSet.end())
 //     &&
-//                (selection[i].parent().name() != "alias"           ||
+//                (std::strcmp(selection[i].parent().name(),"alias")!=0
+//          ||
 //                    lookupSet.find(lookupString) == lookupSet.end())
 //          &&
 //                (refSetPtr == NULL                                         ||
 //                    refSetPtr->find(lowerLookupString) == refSetPtr->end()) ){
 
 //           std::string valueNodeName;
-//           if (selection.adapted(i).name() == "value" &&
+//           if (std::strcmp(selection.adapted(i).name(),"value") == 0 &&
 //               selection.adapted(i).has_parent()){
 //               valueNodeName = selection.adapted(i).parent().name();
 //           }
@@ -1848,9 +1864,9 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
 //           std::string lookupPaths;
 //           for(int loop = 0, count = childrenErr.size(); loop < count;
 // loop++){
-//               if (childrenErr[loop].name() != "EXTRA" &&
-//                   childrenErr[loop].name() != "EXTRAREF" &&
-//                   childrenErr[loop].name() != "RANGE"){
+//               if (std::strcmp(childrenErr[loop].name(),"EXTRA") != 0 &&
+//                   std::strcmp(childrenErr[loop].name(),"EXTRAREF") != 0 &&
+//                   std::strcmp(childrenErr[loop].name(),"RANGE") != 0){
 //                   lookupPaths += childrenErr[loop].to_string();
 //                   if (loop+1 !=count){
 //                       lookupPaths += "\n        ";
@@ -2062,7 +2078,8 @@ bool HIVE::validateNotExistsIn(SchemaAdapter           & schema_node,
                         // its parent's name
                         std::string valueNodeName;
 
-                        if ((selection.adapted(i).name() == "value") &&
+                        if ((std::strcmp(selection.adapted(i).name(),
+                                         "value") == 0) &&
                             selection.adapted(i).has_parent()) {
                             valueNodeName =
                                 selection.adapted(i).parent().name();
@@ -2171,7 +2188,8 @@ bool HIVE::validateSumOver(SchemaAdapter           & schema_node,
                     if (!iss.eof() || iss.fail()) {
                         std::string valueNodeName;
 
-                        if ((sumSelection.adapted(j).name() == "value") &&
+                        if ((std::strcmp(sumSelection.adapted(j).name(),
+                                         "value") == 0) &&
                             sumSelection.adapted(j).has_parent()) {
                             valueNodeName =
                                 sumSelection.adapted(j).parent().name();
@@ -2354,8 +2372,8 @@ bool HIVE::validateSumOverGroup(SchemaAdapter           & schema_node,
                         if (!iss.eof() || iss.fail()) {
                             std::string valueNodeName;
 
-                            if ((groupAddendsIter->second[k].name() ==
-                                 "value") &&
+                            if ((std::strcmp(groupAddendsIter->second[k].name(),
+                                             "value") == 0) &&
                                 groupAddendsIter->second[k].has_parent()) {
                                 valueNodeName =
                                     groupAddendsIter->second[k].parent().name();
@@ -2483,7 +2501,8 @@ bool HIVE::validateIncreaseOver(SchemaAdapter           & schema_node,
                     if (!issFirst.eof() || issFirst.fail()) {
                         std::string valueNodeName;
 
-                        if ((incrSelection.adapted(j).name() == "value") &&
+                        if ((std::strcmp(incrSelection.adapted(j).name(),
+                                         "value")  == 0) &&
                             incrSelection.adapted(j).has_parent()) {
                             valueNodeName =
                                 incrSelection.adapted(j).parent().name();
@@ -2515,7 +2534,8 @@ bool HIVE::validateIncreaseOver(SchemaAdapter           & schema_node,
                 if (!issSecond.eof() || issSecond.fail()) {
                     std::string valueNodeName;
 
-                    if ((incrSelection.adapted(j + 1).name() == "value") &&
+                    if ((std::strcmp(incrSelection.adapted(j + 1).name(),
+                                     "value") == 0) &&
                         incrSelection.adapted(j + 1).has_parent()) {
                         valueNodeName =
                             incrSelection.adapted(j + 1).parent().name();
@@ -2662,7 +2682,8 @@ bool HIVE::validateDecreaseOver(SchemaAdapter           & schema_node,
                     if (!issFirst.eof() || issFirst.fail()) {
                         std::string valueNodeName;
 
-                        if ((decrSelection.adapted(j).name() == "value") &&
+                        if ((std::strcmp(decrSelection.adapted(j).name(),
+                                         "value") == 0) &&
                             decrSelection.adapted(j).has_parent()) {
                             valueNodeName =
                                 decrSelection.adapted(j).parent().name();
@@ -2694,7 +2715,8 @@ bool HIVE::validateDecreaseOver(SchemaAdapter           & schema_node,
                 if (!issSecond.eof() || issSecond.fail()) {
                     std::string valueNodeName;
 
-                    if ((decrSelection.adapted(j + 1).name() == "value") &&
+                    if ((std::strcmp(decrSelection.adapted(j + 1).name(),
+                                     "value") ==  0) &&
                         decrSelection.adapted(j + 1).has_parent()) {
                         valueNodeName =
                             decrSelection.adapted(j + 1).parent().name();
@@ -3193,27 +3215,8 @@ bool HIVE::validateChildUniqueness(SchemaAdapter           & schema_node,
                 std::string initialString =
                     childSelection.adapted(loop).last_as_string();
 
-                // determine if it is an alias or not
-                // if it is an alias, then std::set the outer loop to the number
-                // of ranges for this alias
-                // otherwise, std::set the outer loop to just 1,
-                // so we only do the logic once
-                bool isAlias    = false;
-                int  outterloop = 1;
+                int outterloop = 1;
 
-                //               if (childSelection.adapted(loop).name() ==
-                // "alias" &&
-                //
-                //
-                //
-                //
-                //        AliasPropagationEngine::getAliasCount(initialString,
-                // aliasMap) != 0){
-                //                   isAlias = true;
-                //                   int aliasRangeSize =
-                // aliasMap.find(initialString)->second.size();
-                //                   outterloop = aliasRangeSize;
-                //               }
 
                 // if an alias, then loop over all of the ranges
                 // otherwise, only run through this logic once
@@ -3418,7 +3421,8 @@ bool HIVE::validateChildUniqueness(SchemaAdapter           & schema_node,
                     //
                     //
                     //
-                    //   rangeSet.push_back(make_pair(&((aliasMap.find(initialString))->second[k]),
+                    //
+                    // rangeSet.push_back(make_pair(&((aliasMap.find(initialString))->second[k]),
                     //
                     //
                     //
@@ -3436,7 +3440,8 @@ bool HIVE::validateChildUniqueness(SchemaAdapter           & schema_node,
                     //
                     //
                     //
-                    //   nodesToPaths.insert(make_pair(childSelection.adapted(loop),
+                    //
+                    // nodesToPaths.insert(make_pair(childSelection.adapted(loop),
                     // lookupPath));
                     //                   }
                     // if this node is not an alias, then put its std::string
