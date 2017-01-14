@@ -1244,6 +1244,7 @@ obj(foo){
         const auto& key_view1 = keys.front();
         ASSERT_EQ("value1", key_view1.last_as_string());
         ASSERT_EQ("value1", key_view1.to_string());
+        ASSERT_EQ("value1", key_view1.first_child_by_name("value").to_string());
         const auto& key_view2 = keys.back();
         ASSERT_EQ("value2", key_view2.last_as_string());
         ASSERT_EQ("value2", key_view2.to_string());
