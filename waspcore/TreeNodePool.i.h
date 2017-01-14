@@ -491,35 +491,26 @@ template<class TreeNodePool_T>
 int TreeNodeView<TreeNodePool_T>::to_int(bool * ok)const
 {
     int result = 0;
-    to_type(result, ok);
+    to_type(result, data(), ok);
     return result;
 }
 template<class TreeNodePool_T>
 double TreeNodeView<TreeNodePool_T>::to_double(bool * ok)const
 {
     double result = 0.0;
-    to_type(result, ok);
+    to_type(result, data(), ok);
     return result;
 }
 template<class TreeNodePool_T>
 std::string TreeNodeView<TreeNodePool_T>::to_string(bool * ok)const
 {
     std::string result;
-    to_type(result, ok);
+    to_type(result, data(), ok);
     // trim front quotes
     result = wasp::strip_quotes(result);
     return result;
 }
 
-template<class TreeNodePool_T>
-template<typename T>
-void TreeNodeView<TreeNodePool_T>::to_type(T & result, bool * ok)const
-{
-    std::stringstream str;
-    str<< data();
-    str>> result;
-    if( ok ) *ok = !(str.bad() || str.fail());
-}
 
 template<class TAdapter>
 void print_from(std::ostream & stream, const TAdapter& tree_node, size_t& last_line, size_t& last_column)

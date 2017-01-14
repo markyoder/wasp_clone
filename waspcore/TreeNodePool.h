@@ -8,7 +8,7 @@
 #include "waspcore/StringPool.h"
 #include "waspcore/TokenPool.h"
 #include "waspcore/wasp_node.h" // for UNKNOWN node/token types
-#include "waspcore/utils.h" // string quote trimming
+#include "waspcore/utils.h" // string quote trimming, to_type
 namespace wasp{
 typedef unsigned short default_node_type_size;
 typedef unsigned int default_node_index_size;
@@ -432,15 +432,8 @@ public:
 private:
     std::size_t m_tree_node_index;
     const TreeNodePool_T * m_tree_data;
-
-    /**
-     * @brief to_type acquire the data typed as the requested type
-     * @param result the typed result
-     * @param ok optional boolean return value indicating if conversion was successful.
-     */
-    template<typename T>
-    void to_type(T & result, bool * ok=nullptr)const;
 };
+
 
 template<class TAdapter>
 void print_from(std::ostream & out, const TAdapter& tree_node
