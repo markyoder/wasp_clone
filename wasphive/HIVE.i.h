@@ -456,7 +456,7 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
     inputSelector.evaluate(input_node, selection);
 
     for (size_t i = 0; i < selection.size(); i++) {
-        std::istringstream iss(selection.adapted(i).last_as_string());
+        std::istringstream iss(selection.adapted(i).to_string());
 
         if ((ruleValue == "Int") || (ruleValue == "Real") ||
             (ruleValue == "String")) {
@@ -491,7 +491,7 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
                                                    selection.adapted(i).column(),
                                                    valueNodeName,
                                                    selection.adapted(i).
-                                                   last_as_string(),
+                                                   to_string(),
                                                    ruleValue));
                 pass = false;
             }
@@ -518,14 +518,14 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
                                                        column(),
                                                        valueNodeName,
                                                        selection.adapted(i).
-                                                       last_as_string(),
+                                                       to_string(),
                                                        ruleValue));
                     pass = false;
                 }
             }
         }
         else if (ruleValue == "IntOrYesOrNo") {
-            std::string lowerString = selection.adapted(i).last_as_string();
+            std::string lowerString = selection.adapted(i).to_string();
             transform(lowerString.begin(), lowerString.end(),
                       lowerString.begin(), ::tolower);
 
@@ -550,7 +550,7 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
                                                        column(),
                                                        valueNodeName,
                                                        selection.adapted(i).
-                                                       last_as_string(),
+                                                       to_string(),
                                                        ruleValue));
                     pass = false;
                 }
@@ -578,7 +578,7 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
                                                        column(),
                                                        valueNodeName,
                                                        selection.adapted(i).
-                                                       last_as_string(),
+                                                       to_string(),
                                                        ruleValue));
                     pass = false;
                 }
