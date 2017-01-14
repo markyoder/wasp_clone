@@ -690,7 +690,7 @@ bool HIVE::validateValEnums(SchemaAdapter& schema_node, InputAdapter& input_node
     // LOOP OVER THIS DEQUE CHECKING EACH VALUES EXISTANCE IN THE ENUM UNORDERED
     // SET
     for (size_t i = 0; i < selection.size(); i++) {
-        std::string tempString = selection.adapted(i).last_as_string();
+        std::string tempString = selection.adapted(i).to_string();
 
         // if tempString is quoted (single or double), remove quotes before
         // checking
