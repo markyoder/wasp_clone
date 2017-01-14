@@ -359,11 +359,8 @@ void TreeNodePool<NTS,NIS,TP>::data(NIS node_index
     }
     // 2. accumulate the parent
     else{
-        // TODO - implement this
-        std::stringstream str;
-        node_path(node_index,str);
-        std::cerr << " TODO - implement data acquisition for tree node's parented "
-                  << str.str()<<std::endl;
+        TreeNodeView<TreeNodePool<NTS,NIS,TP>> view(node_index, *this);
+        print(out,view);
     }
 }
 
@@ -522,6 +519,49 @@ void TreeNodeView<TreeNodePool_T>::to_type(T & result, bool * ok)const
     str<< data();
     str>> result;
     if( ok ) *ok = !(str.bad() || str.fail());
+}
+
+template<class TAdapter>
+void print_from(std::ostream & stream, const TAdapter& tree_node, size_t& last_line, size_t& last_column)
+{
+    if( tree_node.child_count() == 0 )
+    {
+        //
+        // determine distance from previous
+        //
+        size_t line = tree_node.line();
+        size_t column = tree_node.column();
+        size_t ldiff;
+        if (line >= last_line) ldiff = line - last_line;
+        else ldiff = 0;
+
+        size_t cdiff;
+        if (ldiff > 0) cdiff = column - 1;
+        else if (column >= last_column) cdiff = column - last_column;
+        else cdiff = 1;
+
+//        if( cdiff <= column || cdiff <= lastColumn )
+        // write preceeding newlines
+        for( size_t i = 0; i < ldiff; i++) stream<<std::endl;
+        //
+        if( cdiff > 0 ) stream<<std::string(cdiff,' ');
+        const std::string& data = tree_node.data();
+        if( !(data.length() == 1 && data[0] == '\n') )stream<<data;
+
+        int newLinePrintedCount = 0;
+        if( !(data.length() == 1 && data[0] == '\n') ){
+            newLinePrintedCount = std::count(data.begin(), data.end(), '\n');
+        }
+        last_line = line + newLinePrintedCount;
+        // todo - data could span newlines making column some remainder
+        last_column = column+data.size();
+        return;
+    }
+    for(size_t i = 0, cc = tree_node.child_count(); i < cc; i++)
+    {
+        const TAdapter& child = tree_node.child_at(i);
+        print_from(stream,child,last_line,last_column);
+    }
 }
 
 #endif

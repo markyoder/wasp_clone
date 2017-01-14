@@ -441,6 +441,18 @@ private:
     template<typename T>
     void to_type(T & result, bool * ok=nullptr)const;
 };
+
+template<class TAdapter>
+void print_from(std::ostream & out, const TAdapter& tree_node
+                , size_t& last_line, size_t& last_col);
+
+template<class TAdapter>
+void print(std::ostream & out, const TAdapter& tree_node)
+{
+    size_t l=tree_node.line(),c=tree_node.column();
+    print_from(out, tree_node, l, c);
+}
+
 #include "waspcore/TreeNodePool.i.h"
 } // end of namespace
 
