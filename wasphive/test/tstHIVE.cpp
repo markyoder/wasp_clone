@@ -89,7 +89,7 @@ bool load_ast(HIVETest& t)
 }
 
 
-TEST(HIVE, minoccurs)
+TEST(HIVE, MinOccurs)
 {
     HIVE hive;
     HIVETest t;
