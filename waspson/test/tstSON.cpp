@@ -1119,7 +1119,7 @@ key = value1
 key = "value2"
 int_array [ 1 2 3 4 ]
 real_array [ 1.1 2.2 3.3 4.4 ]
-string_array [ 's' "t" "g" h ]
+string_array [ 's' "t" " g " h ]
 obj(foo){
     % comment 2
     key = value
@@ -1214,9 +1214,7 @@ obj(foo){
         ASSERT_EQ(1, string_arrays.size());
         const auto& string_array = string_arrays.front();
         ASSERT_EQ(7, string_array.child_count());
-        std::vector<std::string> value = {"s","t","g","h"};
-        // TODO test with string containing whitespace
-        // std::vector<std::string> value = {"s","t"," g ","h"};
+        std::vector<std::string> value = {"s","t"," g ","h"};
         ASSERT_EQ( value.size(), string_array.child_count_by_name("value") );
         const auto& strings = string_array.child_by_name("value");
         ASSERT_EQ(4, strings.size() );
