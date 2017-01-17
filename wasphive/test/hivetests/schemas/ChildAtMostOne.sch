@@ -1,50 +1,22 @@
-childatmostone{
+test{
 
-    validtest{
+    ChildAtMostOne = [ one two three ]
 
-        ChildAtMostOne = [ one two three ]
-
-        one{
-        }
-        two{
-        }
-        three{
-        }
-        four{
-        }
-        five{
-            ChildAtMostOne=[ "../four" "../two" ]
-        }
-        six{
-        }
-        seven{
-            ChildAtMostOne=[ "../six" ]
-        }
-
+    one{
     }
-
-    invalidtest{
-
-        ChildAtMostOne = [ one two three ]
-
-        one{
-        }
-        two{
-        }
-        three{
-        }
-        four{
-        }
-        five{
-            ChildAtMostOne=[ "../four" "../two" ]
-        }
-        six{
-        }
-        seven{
-            ChildAtMostOne=[ "../six" ]
-        }
-
+    two{
     }
-
+    three{
+    }
+    four{
+    }
+    five{
+        ChildAtMostOne=[ "../four" "../two" ]
+    }
+    six{
+    }
+    seven{
+        ChildAtMostOne=[ "../six" ]
+    }
 
 }

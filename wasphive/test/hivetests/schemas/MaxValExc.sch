@@ -1,85 +1,56 @@
-maxvalexc{
+test{
 
-    validtest{
-        controlone{
-        }
-        controltwo{
-        }
-        valueone{
-            MaxValExc=58.8
-        }
-        valuetwo{
-            value{
-                MaxValExc=58.8
-            }
-        }
-        valuethree{
-            MaxValExc=23.1
-        }
-        valuefour{
-            value{
-                MaxValExc=23.1
-            }
-        }
-        valuefive{
-            MaxValExc="../controlone"
-        }
-        valuesix{
-            value{
-                MaxValExc="../controlone"
-            }
-        }
-        valueseven{
-            MaxValExc="../controltwo"
-        }
-        valueeight{
-            value{
-                MaxValExc="../controltwo"
-            }
-        }
-        valuenine{
-            MaxValExc=NoLimit
-        }
+    controlone{
     }
-    invalidtest{
-        controlone{
-        }
-        controltwo{
-        }
-        valueone{
+    controltwo{
+    }
+    bad_two_numbers{
+    }
+    bad_string{
+    }
+    valueone{
+        MaxValExc=58.7
+    }
+    valuetwo{
+        value{
             MaxValExc=58.7
         }
-        valuetwo{
-            value{
-                MaxValExc=58.7
-            }
-        }
-        valuethree{
+    }
+    valuethree{
+        MaxValExc=23
+    }
+    valuefour{
+        value{
             MaxValExc=23
         }
-        valuefour{
-            value{
-                MaxValExc=23
-            }
+    }
+    valuefive{
+        MaxValExc="../controlone"
+    }
+    valuesix{
+        value{
+            MaxValExc="../../controlone"
         }
-        valuefive{
-            MaxValExc="../controlone"
+    }
+    valueseven{
+        MaxValExc="../controltwo"
+    }
+    valueeight{
+        value{
+            MaxValExc="../../controltwo"
         }
-        valuesix{
-            value{
-                MaxValExc="../../controlone"
-            }
+    }
+    valuenine{
+        MaxValExc=NoLimit
+    }
+    value_bad_one{
+        inside{
+            MaxValExc="../../bad_two_numbers"
         }
-        valueseven{
-            MaxValExc="../controltwo"
-        }
-        valueeight{
-            value{
-                MaxValExc="../../controltwo"
-            }
-        }
-        valuenine{
-            MaxValExc=NoLimit
+    }
+    value_bad_two{
+        inside{
+            MaxValExc="../../bad_string"
         }
     }
 

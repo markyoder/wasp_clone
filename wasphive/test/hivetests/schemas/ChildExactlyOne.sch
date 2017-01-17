@@ -1,50 +1,22 @@
-childexactlyone{
+test{
 
-    validtest{
+    ChildExactlyOne = [ one two three ]
 
-        ChildExactlyOne = [ one two three ]
-
-        one{
-        }
-        two{
-        }
-        three{
-        }
-        four{
-        }
-        five{
-            ChildExactlyOne=[ "../four" "../two" ]
-        }
-        six{
-        }
-        seven{
-            ChildExactlyOne=[ "../six" ]
-        }
-
+    one{
     }
-
-    invalidtest{
-
-        ChildExactlyOne = [ one two three ]
-
-        one{
-        }
-        two{
-        }
-        three{
-        }
-        four{
-        }
-        five{
-            ChildExactlyOne=[ "../four" "../two" ]
-        }
-        six{
-        }
-        seven{
-            ChildExactlyOne=[ "../six" ]
-        }
-
+    two{
     }
-
+    three{
+    }
+    four{
+    }
+    five{
+        ChildExactlyOne=[ "../four" "../two" ]
+    }
+    six{
+    }
+    seven{
+        ChildExactlyOne=[ "../six" ]
+    }
 
 }
