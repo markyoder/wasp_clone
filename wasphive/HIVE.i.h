@@ -31,28 +31,7 @@ bool HIVE::validate(SchemaAdapter           & schema_node,
     bool pass = true;
 
 
-    std::set<std::string> schSeqNames;
-
-    const typename SchemaAdapter::Collection children =
-        schema_node.non_decorative_children();
-
-    for (size_t i = 0; i < children.size(); i++) {
-        SchemaAdapter tmpNode = children[i];
-
-        if (tmpNode.type() == wasp::OBJECT) {
-            schSeqNames.insert(tmpNode.name());
-        }
-    }
-
-    for (int i = 0; i < input_node.child_count(); i++) {
-        InputAdapter tmpNode = input_node.child_at(i);
-
-        if (schSeqNames.find(tmpNode.name()) == schSeqNames.end()) continue;
-        auto first_non_decorative =
-            schema_node.first_non_decorative_child_by_name(tmpNode.name());
-        pass &= traverse_schema(first_non_decorative
-                                , tmpNode, errors);
-    }
+    pass = traverse_schema(schema_node, input_node, errors);
 
     sort_errors(errors);
     return pass;
@@ -187,7 +166,7 @@ bool HIVE::traverse_schema(SchemaAdapter& schema_node, InputAdapter& input_node
 
             /* Only continue child schema traversal if this node exists in input
              */
-            if (selection.size() != 0) {
+            if (selection.size() != 0) {                
                 pass &= traverse_schema(tmpNode, input_node, errors);
             }
             definitionChildren.insert(tmpNodeName);
@@ -242,7 +221,6 @@ bool HIVE::validateMinOccurs(SchemaAdapter           & schema_node,
     std::istringstream issRV(ruleValue);
     int itestRV;
     issRV >> std::noskipws >> itestRV;
-
     for (size_t i = 0; i < selection.size(); i++) {
         if (selection.adapted(i).is_decorative() ||
             (std::strcmp(selection.adapted(i).name(), "decl") == 0)) continue;
@@ -254,7 +232,6 @@ bool HIVE::validateMinOccurs(SchemaAdapter           & schema_node,
                 selection.adapted(i).non_decorative_children_count();
         else                 childNodeCount =
                 selection.adapted(i).child_count_by_name(nodeName);
-
         if (!issRV.eof() || issRV.fail()) {
             std::stringstream  look_up_error;
             SIRENInterpreter<> inputSelectorlookup(look_up_error);
