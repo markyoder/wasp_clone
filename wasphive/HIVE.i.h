@@ -2979,9 +2979,8 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter           & schema_node,
     for (int j = 0; j < children.size(); j++) {
         std::string lookupPath;
 
-        if (children[j].child_count() ==
-            0) lookupPath = children[j].to_string();
-        else                                   lookupPath = children[j].name();
+        if(children[j].child_count() == 0) lookupPath = children[j].to_string();
+        else                               lookupPath = children[j].name();
         std::stringstream  look_up_error;
         SIRENInterpreter<> childSelector(look_up_error);
 
@@ -2990,7 +2989,6 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter           & schema_node,
             errors.push_back(Error::SirenParseError(look_up_error.str()));
             return false;
         }
-
         for (size_t i = 0; i < selection.size(); i++) {
             SIRENResultSet<InputAdapter> childSelection;
             InputAdapter inode = selection.adapted(i);

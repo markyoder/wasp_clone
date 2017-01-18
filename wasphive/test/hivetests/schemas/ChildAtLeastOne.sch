@@ -1,6 +1,6 @@
 test{
 
-    ChildAtLeastOne = [ one two/value three/value ]
+    ChildAtLeastOne = [ one 'two/value' 'three/value' ]
 
     one{
     }
