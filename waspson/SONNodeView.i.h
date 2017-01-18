@@ -67,7 +67,7 @@ std::string SONNodeView<TNV>::id()const
 {
     SONNodeView potential_id_child = id_child();
     if( potential_id_child.is_null () ) return "";
-    return potential_id_child.data();
+    return potential_id_child.to_string();
 }
 template<class TNV>
 SONNodeView<TNV> SONNodeView<TNV>::id_child()const
@@ -90,6 +90,7 @@ bool SONNodeView<TNV>::is_decorative()const{
     case wasp::TERM:
     case wasp::ASSIGN:
     case wasp::COMMENT:
+    case wasp::IDENTIFIER:
     case wasp::OBJECT_DECL:
     case wasp::OBJECT_TERM:
     case wasp::WASP_COMMA: // ,
@@ -230,13 +231,13 @@ std::size_t SONNodeView<TNV>::column()const
 template<class TNV>
 int SONNodeView<TNV>::to_int(bool * ok)const
 {
-    TNV view( tree_node_index(), *tree_node_pool() );
+    TNV view( value_tree_node_index(), *tree_node_pool() );
     return view.to_int(ok);
 }
 template<class TNV>
 double SONNodeView<TNV>::to_double(bool * ok)const
 {
-    TNV view( tree_node_index(), *tree_node_pool() );
+    TNV view( value_tree_node_index(), *tree_node_pool() );
     return view.to_double(ok);
 }
 template<class TNV>

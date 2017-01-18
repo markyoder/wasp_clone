@@ -43,7 +43,7 @@ typedef wasp::SONParser::token_type token_type;
 %x subtraction
 %s execution_unit
 
-INT [0-9]+([eE]\+?[0-9]+)?
+INT \-?[0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INT}
 DOUBLE {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
 
@@ -267,6 +267,12 @@ COLON :
 }
 
 {STRING} {
+    capture_token(yylval,wasp::STRING);
+    return token::STRING;
+}
+<INITIAL,execution_unit>{STRING}/\- {
+   // if we have a minus sign immediately following, subtraction is occurring
+    yy_push_state(subtraction);
     capture_token(yylval,wasp::STRING);
     return token::STRING;
 }

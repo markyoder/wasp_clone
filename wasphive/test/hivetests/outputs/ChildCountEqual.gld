@@ -1,4 +1,0 @@
-Validation Error: Invalid Schema Rule: Bad ChildCountEqual Option "" at line:39 column:39 - Expected [ IfExists EvenNone ]
-Validation Error: Invalid Schema Rule: Bad ChildCountEqual Option "BadFlag" at line:40 column:39 - Expected [ IfExists EvenNone ]
-line:27 column:5 - Validation Error: invalidtest does not have an equal number of existing: [ one/value two/value three/value ]
-line:27 column:5 - Validation Error: invalidtest does not have an equal number of: [ four/value five/value six/value ]

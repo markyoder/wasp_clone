@@ -1,79 +1,53 @@
-maxvalinc{
+test{
 
-    validtest{
-        controlone{
-        }
-        controltwo{
-        }
-        valueone{
+    controlone{
+    }
+    controltwo{
+    }
+    bad_two_numbers{
+    }
+    bad_string{
+    }
+    valueone{
+        MaxValInc=58.7
+    }
+    valuetwo{
+        value{
             MaxValInc=58.7
-        }
-        valuetwo{
-            value{
-                MaxValInc=58.7
-            }
-        }
-        valuethree{
-            MaxValInc=23
-        }
-        valuefour{
-            value{
-                MaxValInc=23
-            }
-        }
-        valuefive{
-            MaxValInc="../controlone"
-        }
-        valuesix{
-            value{
-                MaxValInc="../../controlone"
-            }
-        }
-        valueseven{
-            MaxValInc="../controltwo"
-        }
-        valueeight{
-            value{
-                MaxValInc="../../controltwo"
-            }
         }
     }
-    invalidtest{
-        controlone{
-        }
-        controltwo{
-        }
-        valueone{
-            MaxValInc=58.7
-        }
-        valuetwo{
-            value{
-                MaxValInc=58.7
-            }
-        }
-        valuethree{
+    valuethree{
+        MaxValInc=23
+    }
+    valuefour{
+        value{
             MaxValInc=23
         }
-        valuefour{
-            value{
-                MaxValInc=23
-            }
+    }
+    valuefive{
+        MaxValInc="../controlone"
+    }
+    valuesix{
+        value{
+            MaxValInc="../../controlone"
         }
-        valuefive{
-            MaxValInc="../controlone"
+    }
+    valueseven{
+        MaxValInc="../controltwo"
+    }
+    valueeight{
+        value{
+            MaxValInc="../../controltwo"
         }
-        valuesix{
-            value{
-                MaxValInc="../../controlone"
-            }
+    }
+    value_bad_one{
+        inside{
+            MaxValInc="../../bad_two_numbers"
         }
-        valueseven{
-            MaxValInc="../controltwo"
-        }
-        valueeight{
-            value{
-                MaxValInc="../../controltwo"
-            }
+    }
+    value_bad_two{
+        inside{
+            MaxValInc="../../bad_string"
         }
     }
 
