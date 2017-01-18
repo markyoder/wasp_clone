@@ -141,12 +141,8 @@ TEST(HIVE, MaxOccurs)
 {
     do_test("MaxOccurs");
 }
-/**
- * @brief TEST
- * Disabled because of reference constructs
- * TODO - fix reference issues
- */
-TEST(HIVE, DISABLED_ValEnums)
+
+TEST(HIVE, ValEnums)
 {
     do_test("ValEnums");
 }
@@ -154,4 +150,68 @@ TEST(HIVE, DISABLED_ValEnums)
 TEST(HIVE, ValType)
 {
     do_test("ValType");
+}
+TEST(HIVE, MinValInc)
+{
+    do_test("MinValInc");
+}
+TEST(HIVE, MinValExc)
+{
+    do_test("MinValExc");
+}
+TEST(HIVE, MaxValInc)
+{
+    do_test("MaxValInc");
+}
+TEST(HIVE, MaxValExc)
+{
+    do_test("MaxValExc");
+}
+TEST(HIVE, ChildAtLeastOne   )
+{
+    do_test("ChildAtLeastOne");
+}
+TEST(HIVE, ChildAtMostOne    )
+{
+    do_test("ChildAtMostOne");
+}
+TEST(HIVE, ChildCountEqual   )
+{
+    do_test("ChildCountEqual");
+}
+TEST(HIVE, ChildExactlyOne   )
+{
+    do_test("ChildExactlyOne");
+}
+TEST(HIVE, ChildUniqueness   )
+{
+    do_test("ChildUniqueness");
+}
+TEST(HIVE, DecreaseOver      )
+{
+    do_test("DecreaseOver");
+}
+TEST(HIVE, ExistsIn          )
+{
+    do_test("ExistsIn");
+}
+TEST(HIVE, Extras            )
+{
+    do_test("Extras");
+}
+TEST(HIVE, IncreaseOver      )
+{
+    do_test("IncreaseOver");
+}
+TEST(HIVE, NotExistsIn       )
+{
+    do_test("NotExistsIn");
+}
+TEST(HIVE, SumOver           )
+{
+    do_test("SumOver");
+}
+TEST(HIVE, SumOverGroup      )
+{
+    do_test("SumOverGroup");
 }

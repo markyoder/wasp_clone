@@ -61,6 +61,13 @@ bool HIVE::traverse_schema(SchemaAdapter& schema_node, InputAdapter& input_node
         SchemaAdapter tmpNode          = children[i];
         const std::string& tmpNodeName = tmpNode.name();
         bool isToDo                    = tmpNodeName == "ToDo";
+
+        //This shortcut to stop processing schema allows one to use
+        //enumerations flexibly in the schema without the variables
+        //being treated like part of the schema and causing an error to
+        //be thrown.
+        if( tmpNodeName == "EndOfSchema" )break;
+
         isAny |= tmpNodeName == "*";
 
         if (isToDo                       ||

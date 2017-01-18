@@ -111,6 +111,6 @@ test{
     }
 
 }
-
+EndOfSchema{}
 ReferencedColors=[ red orange yellow green blue indigo violet ]
 ReferencedNumbers=[ 1 2 3 4 5 ]
