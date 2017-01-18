@@ -67,7 +67,7 @@ std::string SONNodeView<TNV>::id()const
 {
     SONNodeView potential_id_child = id_child();
     if( potential_id_child.is_null () ) return "";
-    return potential_id_child.data();
+    return potential_id_child.to_string();
 }
 template<class TNV>
 SONNodeView<TNV> SONNodeView<TNV>::id_child()const
