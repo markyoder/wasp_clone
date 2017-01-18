@@ -191,7 +191,7 @@ TEST(HIVE, DecreaseOver      )
 {
     do_test("DecreaseOver");
 }
-TEST(HIVE, ExistsIn          )
+TEST(HIVE, DISABLED_ExistsIn          )
 {
     do_test("ExistsIn");
 }

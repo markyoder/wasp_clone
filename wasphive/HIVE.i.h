@@ -2265,6 +2265,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter           & schema_node,
 
     std::string comparePath = compare_path_schema_node.to_string();
     int groupDivide         = group_divide_schema_node.to_int();
+    // TODO check zero as divisor
     double groupSum         = group_sum_schema_node.to_double();
     std::stringstream  look_up_error;
     SIRENInterpreter<> inputSelector(look_up_error);
@@ -2605,7 +2606,6 @@ bool HIVE::validateDecreaseOver(SchemaAdapter           & schema_node,
     std::string ruleValue = schema_node.to_string();
     std::string ruleId    = schema_node.id();
     bool pass             = true;
-
     if ((ruleValue != "Mono") && (ruleValue != "Strict")) {
         errors.push_back(Error::BadOption(schema_node.name(), ruleValue,
                                           schema_node.non_decorative_children()[
@@ -2618,15 +2618,14 @@ bool HIVE::validateDecreaseOver(SchemaAdapter           & schema_node,
 
     std::stringstream  look_up_error;
     SIRENInterpreter<> inputSelector(look_up_error);
-
-    if (!inputSelector.parseString(nodePath + "/" + ruleId))
+    std::string path = nodePath + "/" + ruleId;
+    if (!inputSelector.parseString(path))
     {
         errors.push_back(Error::SirenParseError(look_up_error.str()));
         return false;
     }
     SIRENResultSet<InputAdapter> selection;
     inputSelector.evaluate(input_node, selection);
-
     if (selection.size() != 0) {
         SIRENInterpreter<> inputSelectorlookup(look_up_error);
 
