@@ -107,89 +107,46 @@ bool load_ast(HIVETest& t)
     return schema_good && input_fail_good && input_pass_good;
 }
 
+void do_test(const std::string & name)
+{
+    SCOPED_TRACE(name);
+    HIVE hive;
+    HIVETest t;
+    ASSERT_TRUE( load_streams(t,name+".fail.son"
+                              ,name+".pass.son"
+                              ,name+".fail.gld"
+                              ,name+".sch") );
+    ASSERT_TRUE( load_ast(t) );
+    std::vector<std::string> errors;
+    SONNodeView<decltype(t.schema_interpreter->root())> schema_adapter = t.schema_interpreter->root();
+    SONNodeView<decltype(t.input_fail_interpreter->root())> input_fail_adapter = t.input_fail_interpreter->root();
+    SONNodeView<decltype(t.input_pass_interpreter->root())> input_pass_adapter = t.input_pass_interpreter->root();
+    bool valid = hive.validate(schema_adapter
+                             , input_fail_adapter
+                             , errors);
+    std::string msgs = HIVE::combine(errors);
+    EXPECT_FALSE( valid );
+    ASSERT_EQ( t.output_data->str(), msgs );
+    valid = hive.validate(schema_adapter
+                        , input_pass_adapter
+                        , errors);
+    EXPECT_TRUE( valid );
+}
 
 TEST(HIVE, MinOccurs)
 {
-    HIVE hive;
-    HIVETest t;
-    ASSERT_TRUE( load_streams(t,"MinOccurs.fail.son","MinOccurs.pass.son","MinOccurs.fail.gld","MinOccurs.sch") );
-    ASSERT_TRUE( load_ast(t) );
-    std::vector<std::string> errors;
-    SONNodeView<decltype(t.schema_interpreter->root())> schema_adapter = t.schema_interpreter->root();
-    SONNodeView<decltype(t.input_fail_interpreter->root())> input_fail_adapter = t.input_fail_interpreter->root();
-    SONNodeView<decltype(t.input_pass_interpreter->root())> input_pass_adapter = t.input_pass_interpreter->root();
-    bool valid = hive.validate(schema_adapter
-                             , input_fail_adapter
-                             , errors);
-    std::string msgs = HIVE::combine(errors);
-    EXPECT_FALSE( valid );
-    ASSERT_EQ( t.output_data->str(), msgs );
-    valid = hive.validate(schema_adapter
-                        , input_pass_adapter
-                        , errors);
-    EXPECT_TRUE( valid );
+    do_test("MinOccurs");
 }
 TEST(HIVE, MaxOccurs)
 {
-    HIVE hive;
-    HIVETest t;
-    ASSERT_TRUE( load_streams(t,"MaxOccurs.fail.son","MaxOccurs.pass.son","MaxOccurs.fail.gld","MaxOccurs.sch") );
-    ASSERT_TRUE( load_ast(t) );
-    std::vector<std::string> errors;
-    SONNodeView<decltype(t.schema_interpreter->root())> schema_adapter = t.schema_interpreter->root();
-    SONNodeView<decltype(t.input_fail_interpreter->root())> input_fail_adapter = t.input_fail_interpreter->root();
-    SONNodeView<decltype(t.input_pass_interpreter->root())> input_pass_adapter = t.input_pass_interpreter->root();
-    bool valid = hive.validate(schema_adapter
-                             , input_fail_adapter
-                             , errors);
-    std::string msgs = HIVE::combine(errors);
-    EXPECT_FALSE( valid );
-    ASSERT_EQ( t.output_data->str(), msgs );
-    valid = hive.validate(schema_adapter
-                        , input_pass_adapter
-                        , errors);
-    EXPECT_TRUE( valid );
+    do_test("MaxOccurs");
 }
 TEST(HIVE, ValEnums)
 {
-    HIVE hive;
-    HIVETest t;
-    ASSERT_TRUE( load_streams(t,"ValEnums.fail.son","ValEnums.pass.son","ValEnums.fail.gld","ValEnums.sch") );
-    ASSERT_TRUE( load_ast(t) );
-    std::vector<std::string> errors;
-    SONNodeView<decltype(t.schema_interpreter->root())> schema_adapter = t.schema_interpreter->root();
-    SONNodeView<decltype(t.input_fail_interpreter->root())> input_fail_adapter = t.input_fail_interpreter->root();
-    SONNodeView<decltype(t.input_pass_interpreter->root())> input_pass_adapter = t.input_pass_interpreter->root();
-    bool valid = hive.validate(schema_adapter
-                             , input_fail_adapter
-                             , errors);
-    std::string msgs = HIVE::combine(errors);
-    EXPECT_FALSE( valid );
-    ASSERT_EQ( t.output_data->str(), msgs );
-    valid = hive.validate(schema_adapter
-                        , input_pass_adapter
-                        , errors);
-    EXPECT_TRUE( valid );
+    do_test("ValEnums");
 }
 
 TEST(HIVE, ValType)
 {
-    HIVE hive;
-    HIVETest t;
-    ASSERT_TRUE( load_streams(t,"ValType.fail.son","ValType.pass.son","ValType.fail.gld","ValType.sch") );
-    ASSERT_TRUE( load_ast(t) );
-    std::vector<std::string> errors;
-    SONNodeView<decltype(t.schema_interpreter->root())> schema_adapter = t.schema_interpreter->root();
-    SONNodeView<decltype(t.input_fail_interpreter->root())> input_fail_adapter = t.input_fail_interpreter->root();
-    SONNodeView<decltype(t.input_pass_interpreter->root())> input_pass_adapter = t.input_pass_interpreter->root();
-    bool valid = hive.validate(schema_adapter
-                             , input_fail_adapter
-                             , errors);
-    std::string msgs = HIVE::combine(errors);
-    EXPECT_FALSE( valid );
-    ASSERT_EQ( t.output_data->str(), msgs );
-    valid = hive.validate(schema_adapter
-                        , input_pass_adapter
-                        , errors);
-    EXPECT_TRUE( valid );
+    do_test("ValType");
 }
