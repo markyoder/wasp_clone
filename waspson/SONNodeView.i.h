@@ -231,13 +231,13 @@ std::size_t SONNodeView<TNV>::column()const
 template<class TNV>
 int SONNodeView<TNV>::to_int(bool * ok)const
 {
-    TNV view( tree_node_index(), *tree_node_pool() );
+    TNV view( value_tree_node_index(), *tree_node_pool() );
     return view.to_int(ok);
 }
 template<class TNV>
 double SONNodeView<TNV>::to_double(bool * ok)const
 {
-    TNV view( tree_node_index(), *tree_node_pool() );
+    TNV view( value_tree_node_index(), *tree_node_pool() );
     return view.to_double(ok);
 }
 template<class TNV>

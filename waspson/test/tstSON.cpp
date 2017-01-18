@@ -1270,6 +1270,35 @@ TEST( SON, array_of_unary_minus )
     ASSERT_FALSE( array.is_null() );
     ASSERT_EQ( 5, array.non_decorative_children_count() );
 }
+TEST( SON, keyed_to_value )
+{
+    std::stringstream input;
+    input<< "a =ted b = 1 c =  1.3";
+    SONInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    EXPECT_EQ(13, interpreter.node_count() );
+    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    EXPECT_EQ( 3, document.child_count() );
+    std::stringstream printed_document;
+    wasp::print(printed_document, document);
+    ASSERT_EQ(input.str(), printed_document.str());
+    {
+    auto a = document.first_child_by_name("a");
+    ASSERT_FALSE( a.is_null() );
+    ASSERT_EQ("ted", a.to_string() );
+    }
+    {
+    auto b = document.first_child_by_name("b");
+    ASSERT_FALSE( b.is_null() );
+    ASSERT_EQ(1, b.to_int() );
+    }
+    {
+    auto c = document.first_child_by_name("c");
+    ASSERT_FALSE( c.is_null() );
+    ASSERT_EQ(1.3, c.to_double() );
+    }
+
+}
 TEST( SON, data )
 {
     std::stringstream input;
@@ -1288,3 +1317,4 @@ TEST( SON, data )
     ASSERT_EQ(input.str(), printed_document.str());
     ASSERT_EQ( input.str(), document.data() );
 }
+
