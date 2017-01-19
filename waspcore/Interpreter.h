@@ -252,6 +252,7 @@ protected:
     size_t m_root_index;
 public:
     TreeNodePool_type m_tree_nodes;
+    NODE m_root_type;
 };
 
 #include "waspcore/Interpreter.i.h"
