@@ -19,9 +19,9 @@ using namespace wasp;
 
 
 /**
- * @brief TEST simple json data with mix of standard
+ * @brief TEST simple json object data with mix of standard
  */
-TEST( JSON, simple )
+TEST( JSON, simple_object )
 {
     std::stringstream input;
     input<< R"INPUT({
@@ -142,4 +142,22 @@ TEST( JSON, simple )
     ASSERT_EQ( expected_paths.str(), paths.str() );
 }
 
+/**
+ * @brief TEST simple json array data with mix of standard
+ */
+TEST( JSON, simple_array )
+{
+    std::stringstream input;
+    input<< "[]"; // empty
+    JSONInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(3, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 2, document.child_count() );
+    ASSERT_EQ(wasp::ARRAY, document.type() );
+    std::stringstream printed_document;
+    wasp::print(printed_document, document);
+    ASSERT_EQ(input.str(), printed_document.str());
+    ASSERT_EQ( input.str(), document.data() );
+}
 // TODO - add test for each potential fail scenario and verify expected message
