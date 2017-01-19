@@ -39,54 +39,19 @@ typedef wasp::JSONParser::token_type token_type;
 %option yywrap nounput
 
  /* enables the use of start condition stacks */
-%option stack
-%x subtraction
-%s execution_unit
+ /*%option stack*/
+ /*%x exclusive*/
+ /*%s inclusive*/
 
 INT \-?[0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INT}
 DOUBLE {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
 
-STRING [A-Za-z_]([A-Za-z0-9_])*
-FILLER_REPEAT [0-9]+[rR][' ']*({INT}|{DOUBLE})
-FILLER_ALTERNATE [0-9]+[pP][' ']*({INT}|{DOUBLE})
-FILLER_FILL [fF]({INT}|{DOUBLE})
-FILLER_LINEAR_INTERP [0-9]+[iI][' ']*({INT}|{DOUBLE})[' ']+({INT}|{DOUBLE})
-FILLER_LOG_INTERP [0-9]+[lL][' ']*({INT}|{DOUBLE})[' ']+({INT}|{DOUBLE})
-FILLER {FILLER_REPEAT}|{FILLER_ALTERNATE}|{FILLER_FILL}|{FILLER_LINEAR_INTERP}|{FILLER_LOG_INTERP}
 
-
- /* This string does not allow special characters '-','/'
- *  and should only occur in the context of reference
- */
-LESSER_STRING [A-Za-z_][A-Za-z0-9_]*
-
-TOKEN_TRUE true|TRUE|True|yes|YES|Yes
-TOKEN_FALSE false|FALSE|False|no|NO|No
+TOKEN_TRUE true
+TOKEN_FALSE false
+TOKEN_NULL null
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
-SINGLE_QUOTED_STRING \'([^\\\'\n])*\'
-QSTRING {DOUBLE_QUOTED_STRING}|{SINGLE_QUOTED_STRING}
-COMMENT \/\/[^\n]*|%[^\n]*
- /*
- * The 'execution unit' is a rebranded SCALE sequence construct
- * where the sequence started with the unit_start rule below
- * and terminated with unit_end rule below.
- * We reproduce it here to account for the input construct
- * while in transition...
- */
-EXECUTION_UNIT_START ^=
-EXECUTION_UNIT_END ^[Ee][Nn][Dd]
-LTE <=
-GTE >=
-LT <
-GT >
-BANG !
-EQ ==
-EXPONENT_OP \^
-ASSIGN =
-NEQ \!=
-AND &&
-OR \|\|
 LBRACKET \[
 RBRACKET \]
 LBRACE \{
@@ -108,26 +73,6 @@ COLON :
     yylloc->step();
 %}
  /*** BEGIN EXAMPLE - Change the wasp lexer rules below ***/
-
-{EXECUTION_UNIT_START} {
-    yy_push_state(execution_unit); // enter the 'unit' of execution
-        capture_token(yylval,wasp::EXECUTION_UNIT_START);
-    return token::EXECUTION_UNIT_START;
-}
-<execution_unit>{EXECUTION_UNIT_END} {
-    yy_pop_state(); // pop the execution state
-    capture_token(yylval,wasp::EXECUTION_UNIT_END);
-    return token::EXECUTION_UNIT_END;
-}
-<subtraction>\- { // capture the subtraction, return the literal '-'
-    yy_pop_state();
-    capture_token(yylval,wasp::MINUS);
-    return token::MINUS;
-}
-{FILLER} {
-    capture_token(yylval,wasp::FILL_EXPR);
-    return token::FILLER;
-}
 {COMMA}  {
     capture_token(yylval,wasp::WASP_COMMA);
     return token::COMMA;
@@ -135,46 +80,6 @@ COLON :
 {COLON}  {
     capture_token(yylval,wasp::COLON);
     return token::COLON;
-}
-{LTE} {
-    capture_token(yylval,wasp::LTE);
-    return token::LTE;
-}
-{GTE}  {
-    capture_token(yylval,wasp::GTE);
-    return token::GTE;
-}
-{LT} {
-    capture_token(yylval,wasp::LT);
-    return token::LT;
-}
-{GT}  {
-    capture_token(yylval,wasp::GT);
-    return token::GT;
-}
-{EQ} {
-    capture_token(yylval,wasp::EQ);
-    return token::EQ;
-}
-{BANG} {
-    capture_token(yylval,wasp::BANG);
-    return token::BANG;
-}
-{ASSIGN} {
-    capture_token(yylval,wasp::ASSIGN);
-    return token::ASSIGN;
-}
-{NEQ} {
-    capture_token(yylval,wasp::NEQ);
-    return token::NEQ;
-}
-{AND} {
-    capture_token(yylval,wasp::WASP_AND);
-    return token::AND;
-}
-{OR} {
-    capture_token(yylval,wasp::WASP_OR);
-    return token::OR;
 }
 {LBRACKET} {
     capture_token(yylval,wasp::LBRACKET);
@@ -192,56 +97,6 @@ COLON :
     capture_token(yylval,wasp::RBRACE);
     return token::RBRACE;
 }
-{EXPONENT_OP} {
-    capture_token(yylval,wasp::EXPONENT);
-    return token::EXPONENT;
-}
-\* {
-    capture_token(yylval,wasp::MULTIPLY);
-    return token::MULTIPLY;
-}
-\/ {
-  capture_token(yylval,wasp::DIVIDE);
-  return token::DIVIDE;
-}
-\+ {
-  capture_token(yylval,wasp::PLUS);
-  return token::PLUS;
-}
-- {
-    capture_token(yylval,wasp::MINUS);
-    return token::MINUS;
-}
-\( {
-  capture_token(yylval,wasp::LPAREN);
-  return token::LPAREN;
-}
-\) {
- capture_token(yylval,wasp::RPAREN);
- return token::RPAREN;
-}
- /* Cannot match this rule when in the subtraction state, it will override as a longer match */
-<INITIAL,execution_unit>{INT}/\- {
-    yy_push_state(subtraction); // if we have a minus sign immediately following, subtraction is occurring
-    capture_token(yylval,wasp::INT);
-    return token::INTEGER;
-}
-<INITIAL,execution_unit>{INT} {
-    capture_token(yylval,wasp::INT);
-    return token::INTEGER;
-}
- /* Cannot match this rule when in the subtraction state, it will override as a longer match */
-<INITIAL,execution_unit>{DOUBLE}/\- {
-   // if we have a minus sign immediately following, subtraction is occurring
-    yy_push_state(subtraction);
-    capture_token(yylval,wasp::REAL);
-    return token::DOUBLE;
-}
-
-<INITIAL,execution_unit>{DOUBLE} {
-    capture_token(yylval,wasp::REAL);
-    return token::DOUBLE;
-}
  /* gobble up white-spaces */
 [ \t\r]+ {
     yylloc->step();
@@ -253,7 +108,7 @@ COLON :
     interpreter.push_line_offset(file_offset-yyleng);
 }
 
-<*>{QSTRING} {
+{DOUBLE_QUOTED_STRING} {
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
 }
@@ -265,20 +120,9 @@ COLON :
     capture_token(yylval,wasp::WASP_FALSE);
     return token::TOKEN_FALSE;
 }
-
-{STRING} {
-    capture_token(yylval,wasp::STRING);
-    return token::STRING;
-}
-<INITIAL,execution_unit>{STRING}/\- {
-   // if we have a minus sign immediately following, subtraction is occurring
-    yy_push_state(subtraction);
-    capture_token(yylval,wasp::STRING);
-    return token::STRING;
-}
-{COMMENT} {
-    capture_token(yylval,wasp::COMMENT);
-    return token::COMMENT;
+{TOKEN_NULL} {
+    capture_token(yylval,wasp::WASP_NULL);
+    return token::TOKEN_NULL;
 }
 
  /* pass all other characters up to bison

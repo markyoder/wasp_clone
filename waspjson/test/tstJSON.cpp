@@ -26,8 +26,10 @@ TEST( JJSON, DISABLED_simple )
  "key_string":"value",
  "key_int" :1,
  "key_double" : 1.03,
- "object": { },
- "array" : []
+ "object_empty": { },
+ "object_mixed": { "o":{}, "a":[], "k":1.0 },
+ "array_empty" : [],
+ "array_mixed" : ["o":{}, "a":[], "k":1.0 ]
 })INPUT";
     JSONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
@@ -40,3 +42,4 @@ TEST( JJSON, DISABLED_simple )
     ASSERT_EQ( input.str(), document.data() );
 }
 
+// TODO - add test for each potential fail scenario and verify expected message

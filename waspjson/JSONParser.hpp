@@ -159,44 +159,18 @@ namespace wasp {
       {
         END = 0,
         EOL = 258,
-        MINUS = 259,
-        LPAREN = 260,
-        RPAREN = 261,
-        LBRACKET = 262,
-        RBRACKET = 263,
-        LBRACE = 264,
-        RBRACE = 265,
-        ASSIGN = 266,
-        COMMA = 267,
-        COLON = 268,
-        GTE = 269,
-        LT = 270,
-        GT = 271,
-        LTE = 272,
-        NEQ = 273,
-        EQ = 274,
-        AND = 275,
-        OR = 276,
-        BANG = 277,
-        FILLER = 278,
-        MULTIPLY = 279,
-        DIVIDE = 280,
-        PLUS = 281,
-        EXPONENT = 282,
-        AMPERSAND = 283,
-        INTEGER = 284,
-        TOKEN_TRUE = 285,
-        TOKEN_FALSE = 286,
-        DOUBLE = 287,
-        STRING = 288,
-        QSTRING = 289,
-        COMMENT = 290,
-        EXECUTION_UNIT_START = 291,
-        EXECUTION_UNIT_END = 292,
-        OBJECT = 293,
-        ARRAY = 294,
-        UMINUS = 295,
-        UNOT = 296
+        LBRACKET = 259,
+        RBRACKET = 260,
+        LBRACE = 261,
+        RBRACE = 262,
+        COMMA = 263,
+        COLON = 264,
+        INTEGER = 265,
+        TOKEN_TRUE = 266,
+        TOKEN_FALSE = 267,
+        TOKEN_NULL = 268,
+        DOUBLE = 269,
+        QSTRING = 270
       };
     };
 
@@ -366,7 +340,7 @@ namespace wasp {
     // Tables.
   // YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
   // STATE-NUM.
-  static const short int yypact_[];
+  static const signed char yypact_[];
 
   // YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
   // Performed when YYTABLE does not specify something else to do.  Zero
@@ -382,9 +356,9 @@ namespace wasp {
   // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
   // positive, shift that token.  If negative, reduce the rule whose
   // number is the opposite.  If YYTABLE_NINF, syntax error.
-  static const short int yytable_[];
+  static const signed char yytable_[];
 
-  static const short int yycheck_[];
+  static const signed char yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -504,12 +478,12 @@ namespace wasp {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 298,     ///< Last index in yytable_.
-      yynnts_ = 50,  ///< Number of nonterminal symbols.
+      yylast_ = 53,     ///< Last index in yytable_.
+      yynnts_ = 19,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 43  ///< Number of tokens.
+      yyntokens_ = 16  ///< Number of tokens.
     };
 
 
@@ -522,7 +496,7 @@ namespace wasp {
 
 
 } // wasp
-#line 526 "JSONParser.hpp" // lalr1.cc:377
+#line 500 "JSONParser.hpp" // lalr1.cc:377
 
 
 
