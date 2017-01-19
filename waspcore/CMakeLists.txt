@@ -17,6 +17,7 @@ TokenPool.i.h
 TreeNodePool.h
 TreeNodePool.i.h
 utils.h
+wasp_bug.h
 wasp_node.h
 )
 
