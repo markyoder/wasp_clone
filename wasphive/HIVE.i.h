@@ -116,9 +116,8 @@ bool HIVE::traverse_schema(SchemaAdapter& schema_node, InputAdapter& input_node
             pass &= validateMaxValExc(tmpNode, input_node, errors);
         }
 
-        else if (tmpNodeName == "ExistsIn") {
-            // TODO
-            //           pass &= validateExistsIn(tmpNode, input_node, errors);
+        else if (tmpNodeName == "ExistsIn") {            
+            pass &= validateExistsIn(tmpNode, input_node, errors);
         }
 
         else if (tmpNodeName == "NotExistsIn") {
@@ -1264,16 +1263,16 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
 
             if (!issRV.eof() || issRV.fail()) {
                 std::stringstream  look_up_error;
-                SIRENInterpreter<> inputSelectorlookup(look_up_error);
+                SIRENInterpreter<> inputSelectorLookup(look_up_error);
 
-                if (!inputSelectorlookup.parseString(ruleValue))
+                if (!inputSelectorLookup.parseString(ruleValue))
                 {
                     errors.push_back(Error::SirenParseError(look_up_error.str()));
                     return false;
                 }
                 SIRENResultSet<InputAdapter> selectionLookup;
                 InputAdapter inode = selection.adapted(i);
-                inputSelectorlookup.evaluate(inode, selectionLookup);
+                inputSelectorLookup.evaluate(inode, selectionLookup);
 
 
                 if (selectionLookup.size() > 1) {
@@ -1356,528 +1355,321 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
     return pass;
 }
 
-// template<class SchemaAdapter,class InputAdapter>
-// bool HIVE::validateExistsIn(SchemaAdapter & schema_node, InputAdapter &
-// input_node, std::vector<std::string>&errors){
+ template<class SchemaAdapter,class InputAdapter>
+ bool HIVE::validateExistsIn(SchemaAdapter & schema_node, InputAdapter &
+                             input_node, std::vector<std::string>&errors){
 
-//   std::string nodePath = schema_node.parent().path();
-//   std::string ruleName = getFullRuleName(schema_node.name());
-//   std::string ruleId = schema_node.id();
-//   bool pass = true;
-//   int errorCount = 0;
-//   bool absRule = false;
-//   bool beforePeriodRule = false;
+     std::string nodePath = schema_node.parent().path();
+     std::string ruleName = getFullRuleName(schema_node.name());
+     std::string ruleId = schema_node.id();
+     bool pass = true;
+     int errorCount = 0;
+     bool absRule = false;
+     bool beforePeriodRule = false;
 
-//   if (ruleId != "" && ruleId != "Abs" && ruleId != "BeforePeriod"){
-//       errors.push_back(Error::BadOption(schema_node.name(), ruleId,
-//                                         schema_node.id_child().line(),
-//                                         schema_node.id_child().column(),
-//                                         "Abs BeforePeriod"));
-//       return false;
-//   }
-//   if (ruleId == "Abs"){
-//       absRule = true;
-//   }
-//   if (ruleId == "BeforePeriod"){
-//       beforePeriodRule = true;
-//   }
+     if (ruleId != "" && ruleId != "Abs" && ruleId != "BeforePeriod"){
+         errors.push_back(Error::BadOption(schema_node.name(), ruleId,
+                                           schema_node.id_child().line(),
+                                           schema_node.id_child().column(),
+                                           "Abs BeforePeriod"));
+         return false;
+     }
+     if (ruleId == "Abs"){
+         absRule = true;
+     }
+     if (ruleId == "BeforePeriod"){
+         beforePeriodRule = true;
+     }
 
-//        // CREATE THE DEQUE OF THE VALUES FOR THIS NODE
-//   std::stringstream look_up_error;
-//   SIRENInterpreter<> inputSelector(look_up_error);
-//   if( !inputSelector.parseString(nodePath) )
-//   {
-//       errors.push_back(Error::SirenParseError(look_up_error.str()));
-//       return false;
-//   }
-//   SIRENResultSet<InputAdapter> selection;
-//   inputSelector.evaluate(input_node,selection);
+     std::stringstream look_up_error;
+     SIRENInterpreter<> inputSelector(look_up_error);
+     if( !inputSelector.parseString(nodePath) )
+     {
+         errors.push_back(Error::SirenParseError(look_up_error.str()));
+         return false;
+     }
+     SIRENResultSet<InputAdapter> selection;
+     inputSelector.evaluate(input_node,selection);
 
-//        // CREATE LOOKUP UNORDERED SET
-//   std::unordered_set<std::string> lookupSet;
-//   std::set<std::string> * refSetPtr = NULL;
-//   std::set<std::string> aliasNamesFound;
-//   InputAdapter savedParentInputNode;
-//   InputAdapter tmpParentInputNode;
-//   bool setContextNow = false;
-//   bool clearSetsNow = false;
+     // CREATE LOOKUP UNORDERED SET
+     std::unordered_set<std::string> lookupSet;
+     std::set<std::string> * refSetPtr = NULL;
+     std::set<std::string> aliasNamesFound;
+     InputAdapter savedParentInputNode;
+     InputAdapter tmpParentInputNode;
+     bool setContextNow = false;
+     bool clearSetsNow = false;
 
-//   const typename SchemaAdapter::Collection & refNodes =
-// schema_node.child_by_name("EXTRAREF");
-//   std::vector<std::string> refNames;
-//   for (int i = 0; i < refNodes.size(); i++){
-//       refNames.push_back(refNodes[i].to_string());
-//   }
-//   sort(refNames.begin(), refNames.end());
-//   std::string refTag = accumulate(refNames.begin(), refNames.end(),
-// std::string(""));
+     const typename SchemaAdapter::Collection & refNodes =
+             schema_node.child_by_name("EXTRAREF");
+     std::vector<std::string> refNames;
+     for (int i = 0; i < refNodes.size(); i++){
+         refNames.push_back(refNodes[i].to_string());
+     }
+     sort(refNames.begin(), refNames.end());
+     std::string refTag = accumulate(refNames.begin(), refNames.end(),
+                                     std::string(""));
+     if (refNames.size() != 0){
 
-//   if (refNames.size() != 0){
+         std::map< std::string, std::set<std::string> >::iterator enumRefIter;
+         enumRefIter = enumRef.find(refTag);
 
-//       std::map< std::string, std::set<std::string> >::iterator enumRefIter;
-//       enumRefIter = enumRef.find(refTag);
+         if (enumRefIter == enumRef.end()){
 
-//       if (enumRefIter == enumRef.end()){
+             enumRef.insert(make_pair(refTag, std::set<std::string>()));
+             enumRefIter = enumRef.find(refTag);
 
-//           enumRef.insert(make_pair(refTag, std::set<std::string>()));
-//           enumRefIter = enumRef.find(refTag);
+             for(int i = 0; i < refNames.size(); i++){
 
-//           for(int i = 0; i < refNames.size(); i++){
+                 std::string refName = refNames[i];
 
-//               std::string refName = refNames[i];
+                 SchemaAdapter tmpschema_node = schema_node;
+                 while(tmpschema_node.has_parent()){
+                     tmpschema_node = tmpschema_node.parent();
+                 }
+                 tmpschema_node =
+                         tmpschema_node.first_non_decorative_child_by_name(refName);
 
-//               SchemaAdapter tmpschema_node = schema_node;
-//               while(tmpschema_node.has_parent()){
-//                   tmpschema_node = tmpschema_node.parent();
-//               }
-//               tmpschema_node =
-// tmpschema_node.first_non_decorative_child_by_name(refName);
+                 if (tmpschema_node.is_null()){
+                     errors.push_back(Error::BadEnumReference(refName,
+                                                              schema_node.non_decorative_children()[0].line(),
+                                      schema_node.non_decorative_children()[0].column()));
+                     return false;
+                 }
 
-//               if (tmpschema_node.is_null()){
-//                   errors.push_back(Error::BadEnumReference(refName,
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//                            schema_node.non_decorative_children()[0].line(),
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//                         schema_node.non_decorative_children()[0].column()));
-//                   return false;
-//               }
+                 const typename SchemaAdapter::Collection & children =
+                         tmpschema_node.non_decorative_children();
+                 for(int ic = children.size()-1; ic >= 0; ic--){
+                     std::string lowerString = children[ic].to_string();
+                     transform(lowerString.begin(), lowerString.end(),
+                               lowerString.begin(), ::tolower);
+                     enumRefIter->second.insert(lowerString);
+                 }
 
-//               const typename SchemaAdapter::Collection & children =
-// tmpschema_node.non_decorative_children();
-//               for(int ic = children.size()-1; ic >= 0; ic--){
-//                   std::string lowerString = children[ic].to_string();
-//                   transform(lowerString.begin(), lowerString.end(),
-// lowerString.begin(), ::tolower);
-//                   enumRefIter->second.insert(lowerString);
-//               }
+             }
+         }
+         refSetPtr = &enumRefIter->second;
+     }
+     const typename SchemaAdapter::Collection & children =
+             schema_node.non_decorative_children();
+     std::map<int, typename SIRENInterpreter<>::SharedPtr> childrenSelectors;
+     for(size_t i = 0; i < selection.size(); i++){
 
-//           }
-//       }
+         for(int loop = 0, count = children.size(); loop < count; loop++){
+             if (loop == 0) setContextNow = true;
+             if (std::strcmp(children[loop].name(),"EXTRA")==0){
+                 std::string lowerString = children[loop].to_string();
+                 transform(lowerString.begin(), lowerString.end(),
+                           lowerString.begin(), ::tolower);
+                 lookupSet.insert(lowerString);
+                 continue;
+             }
 
-//       refSetPtr = &enumRefIter->second;
+             if (std::strcmp(children[loop].name(),"RANGE")==0){
+                 const typename SchemaAdapter::Collection & rangeChildren =
+                         children[loop].non_decorative_children();
+                 if (rangeChildren.size() != 2){
+                     errors.push_back(Error::RangeNotTwoVals(children[loop].line(),
+                                                             children[loop].column()));
+                     pass = false;
+                 }
+                 else{
+                     int itestStart;
+                     int itestEnd;
+                     std::istringstream
+                             rangeStreamStart(rangeChildren[0].to_string());
+                     std::istringstream rangeStreamEnd
+                             (rangeChildren[1].to_string());
+                     rangeStreamStart >> std::noskipws >> itestStart;
+                     rangeStreamEnd   >> std::noskipws >> itestEnd;
+                     if (!rangeStreamStart.eof() || rangeStreamStart.fail()){
+                         errors.push_back(Error::RangeNotValidNum(rangeChildren[0].to_string(),
+                                          rangeChildren[0].line(),
+                                 rangeChildren[0].column()));
+                         pass = false;
+                     }
+                     else if (!rangeStreamEnd.eof() || rangeStreamEnd.fail()){
+                         errors.push_back(Error::RangeNotValidNum(rangeChildren[1].to_string(),
+                                          rangeChildren[1].line(),
+                                 rangeChildren[1].column()));
+                         pass = false;
+                     }
+                     else{
+                         int rangeStart = stoi(rangeChildren[0].to_string());
+                         int rangeEnd = stoi(rangeChildren[1].to_string());
+                         if (rangeStart >= rangeEnd){
+                             errors.push_back(Error::RangeInvalid(rangeChildren[0].to_string(),
+                                              rangeChildren[1].to_string(),
+                                                 rangeChildren[0].line(),
+                                                 rangeChildren[0].column()));
+                             pass = false;
+                         }
+                         else{
+                             for(int rangeLoop = rangeStart; rangeLoop <=
+                                 rangeEnd; rangeLoop++){
+                                 lookupSet.insert(std::to_string(rangeLoop));
+                             }
+                         }
+                     }
+                 }
+                 continue;
+             }
 
-//   }
+             if (std::strcmp(children[loop].name(),"EXTRAREF")==0){
+                 continue;
+             }
 
-//       // LOOP OVER THIS DEQUE CHECKING EACH VALUES EXISTANCE IN THE LOOKUP
-// UNORDERED SET
-//   const typename SchemaAdapter::Collection & children =
-// schema_node.non_decorative_children();
-//   std::map<int, SIRENInterpreter> childrenSIRENInterpreterS;
-//   for(size_t i = 0; i < selection.size(); i++){
+             std::string ruleValue = children[loop].to_string();
+             int parentCount = ruleValue.find_first_not_of("./")/3;
+             if (setContextNow){
+                 tmpParentInputNode = selection.adapted(i);
+                 for(int parentLoop = 0; parentLoop < parentCount;
+                     parentLoop++){
+                     if (!tmpParentInputNode.has_parent()){
+                         errors.push_back(Error::BadSchemaPath(schema_node.name(),
+                                                               ruleValue,
+                                                               children[loop].line(),
+                                                               children[loop].column()));
+                         return false;
+                     }
+                     tmpParentInputNode = tmpParentInputNode.parent();
+                     setContextNow = false;
+                     clearSetsNow = true;
+                 }
+             }
 
-//       for(int loop = 0, count = children.size(); loop < count; loop++){
+             if ( !(tmpParentInputNode == savedParentInputNode) ){
+                 if (!savedParentInputNode.is_null() && clearSetsNow){
+                     lookupSet.clear();
+                     aliasNamesFound.clear();
+                     clearSetsNow = false;
+                 }
+                 auto sitr = childrenSelectors.find(loop);
+                 // if no children selector has been created, do so now
+                 if( sitr == childrenSelectors.end() ){
+                     // this avoids runtime cost of reparsing the same
+                     // siren expression many times
+                     typename SIRENInterpreter<>::SharedPtr inputSelectorLookup
+                             =std::make_shared<SIRENInterpreter<>>(look_up_error);
+                     if (!inputSelectorLookup->parseString(ruleValue))
+                     {
+                         errors.push_back(Error::SirenParseError(look_up_error.str()));
+                         return false;
+                     }
 
-//           if (loop == 0) setContextNow = true;
+                     childrenSelectors.insert(std::make_pair(loop,inputSelectorLookup));
+                 }
 
-//           if (std::strcmp(children[loop].name(),"EXTRA")==0){
-//               std::string lowerString = children[loop].to_string();
-//               transform(lowerString.begin(), lowerString.end(),
-// lowerString.begin(), ::tolower);
-//               lookupSet.insert(lowerString);
-//               continue;
-//           }
+                 SIRENResultSet<InputAdapter> selectionLookup;
+                 InputAdapter inode = selection.adapted(i);
+                 childrenSelectors[loop]->evaluate(inode,selectionLookup);
 
-//           if (std::strcmp(children[loop].name(),"RANGE")==0){
-//               const typename SchemaAdapter::Collection & rangeChildren =
-// children[loop].non_decorative_children();
-//               if (rangeChildren.size() != 2){
-//
-//
-//              errors.push_back(Error::RangeNotTwoVals(children[loop].line(),
-//
-//
-//
-//                                                   children[loop].column()));
-//                   pass = false;
-//               }
-//               else{
-//                   int itestStart;
-//                   int itestEnd;
-//                   std::istringstream
-// rangeStreamStart(rangeChildren[0].to_string());
-//                   std::istringstream rangeStreamEnd
-//  (rangeChildren[1].to_string());
-//                   rangeStreamStart >> std::noskipws >> itestStart;
-//                   rangeStreamEnd   >> std::noskipws >> itestEnd;
-//                   if (!rangeStreamStart.eof() || rangeStreamStart.fail()){
-//
-//
-//
-//
-//
-//
-//      errors.push_back(Error::RangeNotValidNum(rangeChildren[0].to_string(),
-//
-//
-//
-//
-//                                                     rangeChildren[0].line(),
-//
-//
-//
-//
-//
-//                                                  rangeChildren[0].column()));
-//                       pass = false;
-//                   }
-//                   else if (!rangeStreamEnd.eof() || rangeStreamEnd.fail()){
-//
-//
-//
-//
-//
-//
-//      errors.push_back(Error::RangeNotValidNum(rangeChildren[1].to_string(),
-//
-//
-//
-//
-//                                                     rangeChildren[1].line(),
-//
-//
-//
-//
-//
-//                                                  rangeChildren[1].column()));
-//                       pass = false;
-//                   }
-//                   else{
-//                       int rangeStart = stoi(rangeChildren[0].to_string());
-//                       int rangeEnd = stoi(rangeChildren[1].to_string());
-//                       if (rangeStart >= rangeEnd){
-//
-//
-//
-//
-//
-//
-//          errors.push_back(Error::RangeInvalid(rangeChildren[0].to_string(),
-//
-//
-//
-//
-//
-//
-//                                               rangeChildren[1].to_string(),
-//
-//
-//
-//
-//                                                     rangeChildren[0].line(),
-//
-//
-//
-//
-//
-//                                                  rangeChildren[0].column()));
-//                           pass = false;
-//                       }
-//                       else{
-//                           for(int rangeLoop = rangeStart; rangeLoop <=
-// rangeEnd; rangeLoop++){
-//                               lookupSet.insert(std::to_string(rangeLoop));
-//                           }
-//                       }
-//                   }
-//               }
-//               continue;
-//           }
+                 for(size_t j = 0; j < selectionLookup.size(); j++){
 
-//           if (std::strcmp(children[loop].name(),"EXTRAREF")==0){
-//               continue;
-//           }
+                     std::string tempString =
+                             selectionLookup.adapted(j).to_string();
+                     if (absRule && (tempString.at(0) == '-' ||
+                                     tempString.at(0) == '+')){
+                         tempString.erase(tempString.begin());
+                     }
+                     size_t periodIndex = tempString.find('.');
+                     if (beforePeriodRule && periodIndex != std::string::npos){
+                         tempString = tempString.substr(0, periodIndex);
+                     }
+                     size_t zeroIndex = tempString.find_first_not_of('0');
+                     if (zeroIndex != 0 && zeroIndex != std::string::npos){
+                         int itest;
+                         std::istringstream iss(tempString);
+                         iss >> std::noskipws >> itest;
+                         if (iss.eof() && !iss.fail()){
+                             tempString.erase(0, zeroIndex);
+                         }
+                     }
+                     if (selectionLookup.adapted(j).has_parent() &&
+                             std::strcmp(selectionLookup.adapted(j).parent().name(),"alias")!=0){
+                         transform(tempString.begin(), tempString.end(),
+                                   tempString.begin(), ::tolower);
+                     }
+                     lookupSet.insert(tempString);
+                 }
+             }
+         }
+         savedParentInputNode = tmpParentInputNode;
+         std::string lookupString = selection.adapted(i).to_string();
+         if (absRule && (lookupString.at(0) == '-' || lookupString.at(0) == '+')){
+             lookupString.erase(lookupString.begin());
+         }
+         size_t periodIndex = lookupString.find('.');
+         if (beforePeriodRule && periodIndex != std::string::npos){
+             lookupString = lookupString.substr(0, periodIndex);
+         }
+         size_t zeroIndex = lookupString.find_first_not_of('0');
+         if (zeroIndex != 0 && zeroIndex != std::string::npos){
+             int itest;
+             std::istringstream iss(lookupString);
+             iss >> std::noskipws >> itest;
+             if (iss.eof() && !iss.fail()){
+                 lookupString.erase(0, zeroIndex);
+             }
+         }
 
-//           std::string ruleValue = children[loop].to_string();
-//           int parentCount = ruleValue.find_first_not_of("./")/3;
-//           if (setContextNow){
-//               tmpParentInputNode = selection.adapted(i);
-//               for(int parentLoop = 0; parentLoop < parentCount;
-// parentLoop++){
-//                   if (!tmpParentInputNode.has_parent()){
-//
-//                     errors.push_back(Error::BadSchemaPath(schema_node.name(),
-// ruleValue,
-//
-//
-//                                                        children[loop].line(),
-//
-//
-//
-//
-//                                                  children[loop].column()));
-//                       return false;
-//                   }
-//                   tmpParentInputNode = tmpParentInputNode.parent();
-//                   setContextNow = false;
-//                   clearSetsNow = true;
-//               }
-//           }
+         std::string lowerLookupString = lookupString;
+         transform(lowerLookupString.begin(), lowerLookupString.end(),
+                   lowerLookupString.begin(), ::tolower);
 
-//           if ( !(tmpParentInputNode == savedParentInputNode) ){
+         if ((std::strcmp(selection.adapted(i).parent().name(),"alias")==0
+                   ||
+                   lookupSet.find(lowerLookupString) == lookupSet.end())
+                  &&
+                  (std::strcmp(selection.adapted(i).parent().name(),"alias")!=0
+                   ||
+                   lookupSet.find(lookupString) == lookupSet.end())
+                  &&
+                  (refSetPtr == NULL                                         ||
+                   refSetPtr->find(lowerLookupString) == refSetPtr->end()) ){
 
-//               if (!savedParentInputNode.is_null() && clearSetsNow){
-//                   lookupSet.clear();
-//                   aliasNamesFound.clear();
-//                   clearSetsNow = false;
-//               }
-//               auto sitr = childrenSIRENInterpreterS.find(loop);
-//               if( sitr == childrenSIRENInterpreterS.end() ){
-//                   SIRENInterpreter<> inputSelectorLookup(ruleValue);
-//                   if(inputSelectorLookup.hasParseErrors()){
-//                       for(size_t j = 0; j <
-// inputSelectorLookup.getErrors().size(); j++){
-//
-//
-//
-//
-//
-//
-//
-//
-//
-// errors.push_back(Error::SirenParseError(inputSelectorLookup.getErrors().adapted(j)));
-//                       }
-//                       return false;
-//                   }
-//
-//
-//
-//
-//
-//
-//  childrenSIRENInterpreterS.insert(std::make_pair(loop,inputSelectorLookup));
-//               }
-//               deque<InputNode*> & selectionLookup =
-// childrenSIRENInterpreterS[loop].evaluateAgainst(selection.adapted(i));
+             std::string valueNodeName;
+             if (std::strcmp(selection.adapted(i).name(),"value") == 0 &&
+                     selection.adapted(i).has_parent()){
+                 valueNodeName = selection.adapted(i).parent().name();
+             }
+             else{
+                 valueNodeName = selection.adapted(i).name();
+             }
 
-//               for(size_t j = 0; j < selectionLookup.size(); j++){
+             const typename SchemaAdapter::Collection & childrenErr =
+                     schema_node.non_decorative_children();
+             std::string lookupPaths;
+             for(int loop = 0, count = childrenErr.size(); loop < count;
+                 loop++){
+                 if (std::strcmp(childrenErr[loop].name(),"EXTRA") != 0 &&
+                         std::strcmp(childrenErr[loop].name(),"EXTRAREF") != 0 &&
+                         std::strcmp(childrenErr[loop].name(),"RANGE") != 0){
+                     lookupPaths += childrenErr[loop].to_string();
+                     if (loop+1 !=count){
+                         lookupPaths += "\n        ";
+                     }
+                 }
+             }
 
-//                   std::string tempString =
-// selectionLookup[j].to_string();
-//                   if (absRule && (tempString.adapted(0) == '-' ||
-// tempString.adapted(0) == '+')){
-//                       tempString.erase(tempString.begin());
-//                   }
-//                   size_t periodIndex = tempString.find('.');
-//                   if (beforePeriodRule && periodIndex != std::string::npos){
-//                       tempString = tempString.substr(0, periodIndex);
-//                   }
-//                   size_t zeroIndex = tempString.find_first_not_of('0');
-//                   if (zeroIndex != 0 && zeroIndex != std::string::npos){
-//                       int itest;
-//                       std::istringstream iss(tempString);
-//                       iss >> std::noskipws >> itest;
-//                       if (iss.eof() && !iss.fail()){
-//                           tempString.erase(0, zeroIndex);
-//                       }
-//                   }
-//                   if (selectionLookup[j].has_parent() &&
-//
-//
-//                  std::strcmp(selectionLookup[j].parent().name(),"alias")!=0){
-//                       transform(tempString.begin(), tempString.end(),
-// tempString.begin(), ::tolower);
-//                   }
-//                   lookupSet.insert(tempString);
+             errors.push_back(Error::NotExistsIn(selection.adapted(i).line(),
+                                                 selection.adapted(i).column(),
+                                                 valueNodeName, lookupString,
+                                                 lookupPaths));
+             errorCount++;
+             if (errorCount >= MAXERRORS){
+                 errors.push_back(Error::ErrorLimit(selection.adapted(i).line(),
+                                                    selection.adapted(i).column(),
+                                                    nodePath, ruleName,
+                                                    MAXERRORS));
+                 return false;
+             }
+             pass = false;
+         }
 
-//               }
-//               selectionLookup.clear();
-//           }
-//       }
-
-//       savedParentInputNode = tmpParentInputNode;
-
-//       std::string lookupString = selection[i].to_string();
-//       if (absRule && (lookupString.at(0) == '-' || lookupString.at(0) ==
-// '+')){
-//           lookupString.erase(lookupString.begin());
-//       }
-//       size_t periodIndex = lookupString.find('.');
-//       if (beforePeriodRule && periodIndex != std::string::npos){
-//           lookupString = lookupString.substr(0, periodIndex);
-//       }
-//       size_t zeroIndex = lookupString.find_first_not_of('0');
-//       if (zeroIndex != 0 && zeroIndex != std::string::npos){
-//           int itest;
-//           std::istringstream iss(lookupString);
-//           iss >> std::noskipws >> itest;
-//           if (iss.eof() && !iss.fail()){
-//               lookupString.erase(0, zeroIndex);
-//           }
-//       }
-
-//       std::string lowerLookupString = lookupString;
-//       transform(lowerLookupString.begin(), lowerLookupString.end(),
-// lowerLookupString.begin(), ::tolower);
-
-//       if (std::strcmp(schema_node.parent().name(),"alias") == 0 &&
-//           AliasPropagationEngine::getAliasCount(lookupString, aliasMap) !=
-// 0){
-
-//           int aliasRangeSize = aliasMap.find(lookupString)->second.size();
-//           for(int j = 0; j < aliasRangeSize; j++){
-
-//               // GO AHEAD AND CONTINUE IF THIS ALIAS IS ACTUALLY IN THE LIST
-// SEARCHING FOR
-//               // BECAUSE ALL MIXTURE NUMBERS WILL DEFINITELY EXIST
-//               if (aliasNamesFound.find(lookupString) !=
-// aliasNamesFound.end()) continue;
-
-//               int rangeStart = aliasMap.find(lookupString)->second[j].start;
-//               int rangeEnd = aliasMap.find(lookupString)->second[j].end;
-//               for(int k = rangeStart; k <= rangeEnd; k++){
-
-//                   std::string lowerKString = to_string(k);
-//                   transform(lowerKString.begin(), lowerKString.end(),
-// lowerKString.begin(), ::tolower);
-
-//                   if (lookupSet.find(to_string(k)) == lookupSet.end() &&
-//                       (refSetPtr == NULL ||
-//                        refSetPtr->find(lowerKString) == refSetPtr->end())){
-
-//                       std::string valueNodeName;
-//                       if (std::strcmp(selection.adapted(i).name(),"value") ==
-// 0 &&
-//                           selection.adapted(i).has_parent()){
-//                           valueNodeName =
-// selection.adapted(i).parent().name();
-//                       }
-//                       else{
-//                           valueNodeName = selection.adapted(i).name();
-//                       }
-
-//                       const typename SchemaAdapter::Collection & childrenErr
-// = schema_node.non_decorative_children();
-//                       std::string lookupPaths;
-//                       for(int loop = 0, count = childrenErr.size(); loop <
-// count; loop++){
-//                           if (std::strcmp(childrenErr[loop].name(),"EXTRA")
-// != 0 &&
-//
-//                             std::strcmp(childrenErr[loop].name(),"EXTRAREF")
-// != 0 &&
-//                               std::strcmp(childrenErr[loop].name(),"RANGE")
-// != 0){
-//                               lookupPaths += childrenErr[loop].to_string();
-//                               if (loop+1 !=count){
-//                                   lookupPaths += "\n        ";
-//                               }
-//                           }
-//                       }
-
-//
-//
-//
-//
-//            errors.push_back(Error::NotExistsIn(selection.adapted(i).line(),
-//
-//
-//
-//
-//                                                selection.adapted(i).column(),
-//                                                           valueNodeName,
-// to_string(k),
-//                                                           lookupPaths));
-//                       errorCount++;
-//                       if (errorCount >= MAXERRORS){
-//
-//
-//
-//
-//
-//             errors.push_back(Error::ErrorLimit(selection.adapted(i).line(),
-//
-//
-//
-//
-//
-//                                                selection.adapted(i).column(),
-//                                                              nodePath,
-// ruleName, MAXERRORS));
-//                           return false;
-//                       }
-//                       pass = false;
-//                   }
-//               }
-//           }
-//       }
-
-//       else if ((std::strcmp(selection[i].parent().name(),"alias")==0
-//          ||
-//                    lookupSet.find(lowerLookupString) == lookupSet.end())
-//     &&
-//                (std::strcmp(selection[i].parent().name(),"alias")!=0
-//          ||
-//                    lookupSet.find(lookupString) == lookupSet.end())
-//          &&
-//                (refSetPtr == NULL                                         ||
-//                    refSetPtr->find(lowerLookupString) == refSetPtr->end()) ){
-
-//           std::string valueNodeName;
-//           if (std::strcmp(selection.adapted(i).name(),"value") == 0 &&
-//               selection.adapted(i).has_parent()){
-//               valueNodeName = selection.adapted(i).parent().name();
-//           }
-//           else{
-//               valueNodeName = selection.adapted(i).name();
-//           }
-
-//           const typename SchemaAdapter::Collection & childrenErr =
-// schema_node.non_decorative_children();
-//           std::string lookupPaths;
-//           for(int loop = 0, count = childrenErr.size(); loop < count;
-// loop++){
-//               if (std::strcmp(childrenErr[loop].name(),"EXTRA") != 0 &&
-//                   std::strcmp(childrenErr[loop].name(),"EXTRAREF") != 0 &&
-//                   std::strcmp(childrenErr[loop].name(),"RANGE") != 0){
-//                   lookupPaths += childrenErr[loop].to_string();
-//                   if (loop+1 !=count){
-//                       lookupPaths += "\n        ";
-//                   }
-//               }
-//           }
-
-//           errors.push_back(Error::NotExistsIn(selection.adapted(i).line(),
-//                                               selection.adapted(i).column(),
-//                                               valueNodeName, lookupString,
-//                                               lookupPaths));
-//           errorCount++;
-//           if (errorCount >= MAXERRORS){
-//               errors.push_back(Error::ErrorLimit(selection[i].line(),
-//                                                  selection[i].column(),
-//                                                  nodePath, ruleName,
-// MAXERRORS));
-//               return false;
-//           }
-//           pass = false;
-//       }
-
-//   }
-
-//   return pass;
-
-// }
+     }
+     return pass;
+ }
 template<class SchemaAdapter, class InputAdapter>
 bool HIVE::validateNotExistsIn(SchemaAdapter           & schema_node,
                                InputAdapter            & input_node,

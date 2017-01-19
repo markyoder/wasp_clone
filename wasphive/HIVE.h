@@ -13,6 +13,7 @@
 #include <iostream>
 #include <iomanip>
 #include <map>
+#include <memory>
 #include <numeric>
 #include <cstdlib>
 #include <string>
