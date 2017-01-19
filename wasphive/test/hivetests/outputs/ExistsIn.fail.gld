@@ -1,5 +1,5 @@
 Validation Error: Invalid Schema Rule: 50" start of range is greater than or equal to "25" end of range at line:92 column:32
-Validation Error: Invalid Schema Rule: Bad ExistsIn Option "BadFlag" at line:80 column:22 - Expected [ Abs BeforePeriod MooseDecl ]
+Validation Error: Invalid Schema Rule: Bad ExistsIn Option "BadFlag" at line:80 column:22 - Expected [ Abs BeforePeriod ]
 Validation Error: Invalid Schema Rule: Bad ExistsIn Path "../../../../defineone/value" at line:109 column:24
 Validation Error: Invalid Schema Rule: Enum Reference "BadReference" at line:103 column:24 not found in schema
 Validation Error: Invalid Schema Rule: Range does not have exactly two values at line:98 column:24
