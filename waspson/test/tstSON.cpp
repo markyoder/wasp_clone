@@ -774,7 +774,7 @@ TEST( SON, SON )
     input<< R"INPUT( var = 3.14 % global variable
  g_obj { k=v a[ 1 ] g{x=y} }
 =eu
-    obj { e=-5  % unary minus of 5
+    obj { e=-5
             r[ 1.0 ] n { g=d } }
     arr [ r=5.3
             % A array has a 2 elements, 1) subtraction expression followed by
@@ -784,7 +784,7 @@ end % conclusion of unit of execution
 )INPUT";
     SONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(85, interpreter.node_count() );
+    ASSERT_EQ(80, interpreter.node_count() );
     auto document = interpreter.root();
     // var, comment, global_obj, execution unit, comment
     ASSERT_EQ( 5, document.child_count() );
@@ -824,10 +824,7 @@ end % conclusion of unit of execution
 /eu/obj/e
 /eu/obj/e/decl (e)
 /eu/obj/e/= (=)
-/eu/obj/e/value
-/eu/obj/e/value/- (-)
-/eu/obj/e/value/value (5)
-/eu/obj/comment (% unary minus of 5)
+/eu/obj/e/value (-5)
 /eu/obj/r
 /eu/obj/r/decl (r)
 /eu/obj/r/[ ([)
@@ -855,12 +852,10 @@ end % conclusion of unit of execution
 /eu/arr/A/decl (A)
 /eu/arr/A/[ ([)
 /eu/arr/A/value
-/eu/arr/A/value/value
-/eu/arr/A/value/value/value (1.0)
-/eu/arr/A/value/value/- (-)
-/eu/arr/A/value/value/value (5)
+/eu/arr/A/value/value (1.0)
 /eu/arr/A/value/- (-)
-/eu/arr/A/value/value (4)
+/eu/arr/A/value/value (5)
+/eu/arr/A/value (-4)
 /eu/arr/A/] (])
 /eu/arr/O
 /eu/arr/O/decl (O)
@@ -910,11 +905,8 @@ end % conclusion of unit of execution
             ,wasp::LBRACE         // /eu/obj/{ ({)
             ,wasp::DECL           // /eu/obj/e/decl (e)
             ,wasp::ASSIGN         // /eu/obj/e/= (=)
-            ,wasp::MINUS          // /eu/obj/e/value/- (-)
-            ,wasp::VALUE          // /eu/obj/e/value/value (5)
-            ,wasp::MINUS          // /eu/obj/e/value
+            ,wasp::VALUE          // /eu/obj/e/value (-5)
             ,wasp::KEYED_VALUE    // /eu/obj/e
-            ,wasp::COMMENT        // /eu/obj/comment (% unary minus of 5)
             ,wasp::DECL           // /eu/obj/r/decl (r)
             ,wasp::LBRACKET       // /eu/obj/r/[ ([)
             ,wasp::VALUE          // /eu/obj/r/value (1.0)
@@ -944,9 +936,7 @@ end % conclusion of unit of execution
             ,wasp::MINUS          // /eu/arr/A/value/- (-)
             ,wasp::VALUE          // /eu/arr/A/value/value (5)
             ,wasp::MINUS          // /eu/arr/A/value
-            ,wasp::MINUS          // /eu/arr/A/value/- (-)
-            ,wasp::VALUE          // /eu/arr/A/value/value (4)
-            ,wasp::MINUS          // /eu/arr/A/value
+            ,wasp::VALUE          // /eu/arr/A/value (-4)
             ,wasp::RBRACKET       // /eu/arr/A/] (])
             ,wasp::ARRAY          // /eu/arr/A
             ,wasp::DECL           // /eu/arr/O/decl (O)
@@ -998,7 +988,7 @@ TEST( SON, expressions )
 )INPUT";
     SONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(312+5, interpreter.node_count() );
+    EXPECT_EQ(312+5, interpreter.node_count() );
     auto document = interpreter.root();
     // var, comment, global_obj, execution unit, comment
     ASSERT_EQ( 1, document.child_count() );
@@ -1099,7 +1089,7 @@ TEST( SON, expressions )
         ,ARRAY
         ,wasp::DOCUMENT_ROOT   // /
     };
-    ASSERT_EQ( types.size(), interpreter.node_count() );
+    EXPECT_EQ( types.size(), interpreter.node_count() );
     for( std::size_t i = 0; i < types.size(); ++i )
     {
         {
@@ -1231,8 +1221,8 @@ obj(foo){
         const auto& obj_view = objs.front();
         ASSERT_EQ("foo", obj_view.id() );
         ASSERT_EQ( "foo", obj_view.id_child().data() );
-        // 4 members + 1 id = 5 non decorative
-        ASSERT_EQ(5, obj_view.non_decorative_children_count() );
+        // 4 members + 1 (id is decorative) non decorative
+        ASSERT_EQ(4, obj_view.non_decorative_children_count() );
         ASSERT_EQ("", document.id() );
         ASSERT_TRUE( document.id_child().is_null() );
     }
@@ -1264,6 +1254,51 @@ TEST( SON, data_simple )
     wasp::print(printed_document, document);
     ASSERT_EQ(input.str(), printed_document.str());
 }
+TEST( SON, array_of_unary_minus )
+{
+    std::stringstream input;
+    input<< "a  [ -1 -2 -3 -4 -5 ]";
+    SONInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    EXPECT_EQ(10, interpreter.node_count() );
+    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    EXPECT_EQ( 1, document.child_count() );
+    std::stringstream printed_document;
+    wasp::print(printed_document, document);
+    ASSERT_EQ(input.str(), printed_document.str());
+    auto array = document.first_child_by_name("a");
+    ASSERT_FALSE( array.is_null() );
+    ASSERT_EQ( 5, array.non_decorative_children_count() );
+}
+TEST( SON, keyed_to_value )
+{
+    std::stringstream input;
+    input<< "a =ted b = 1 c =  1.3";
+    SONInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    EXPECT_EQ(13, interpreter.node_count() );
+    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    EXPECT_EQ( 3, document.child_count() );
+    std::stringstream printed_document;
+    wasp::print(printed_document, document);
+    ASSERT_EQ(input.str(), printed_document.str());
+    {
+    auto a = document.first_child_by_name("a");
+    ASSERT_FALSE( a.is_null() );
+    ASSERT_EQ("ted", a.to_string() );
+    }
+    {
+    auto b = document.first_child_by_name("b");
+    ASSERT_FALSE( b.is_null() );
+    ASSERT_EQ(1, b.to_int() );
+    }
+    {
+    auto c = document.first_child_by_name("c");
+    ASSERT_FALSE( c.is_null() );
+    ASSERT_EQ(1.3, c.to_double() );
+    }
+
+}
 TEST( SON, data )
 {
     std::stringstream input;
@@ -1282,3 +1317,4 @@ TEST( SON, data )
     ASSERT_EQ(input.str(), printed_document.str());
     ASSERT_EQ( input.str(), document.data() );
 }
+

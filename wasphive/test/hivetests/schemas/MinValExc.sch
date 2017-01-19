@@ -1,85 +1,56 @@
-minvalexc{
+test{
 
-    validtest{
-        controlone{
-        }
-        controltwo{
-        }
-        valueone{
+    controlone{
+    }
+    controltwo{
+    }
+    bad_two_numbers{
+    }
+    bad_string{
+    }
+    valueone{
+        MinValExc=58.7
+    }
+    valuetwo{
+        value{
             MinValExc=58.7
-        }
-        valuetwo{
-            value{
-                MinValExc=58.7
-            }
-        }
-        valuethree{
-            MinValExc=23
-        }
-        valuefour{
-            value{
-                MinValExc=23
-            }
-        }
-        valuefive{
-            MinValExc="../controlone"
-        }
-        valuesix{
-            value{
-                MinValExc="../../controlone"
-            }
-        }
-        valueseven{
-            MinValExc="../controltwo"
-        }
-        valueeight{
-            value{
-                MinValExc="../../controltwo"
-            }
-        }
-        valuenine{
-            MinValExc=NoLimit
         }
     }
-    invalidtest{
-        controlone{
-        }
-        controltwo{
-        }
-        valueone{
-            MinValExc=58.7
-        }
-        valuetwo{
-            value{
-                MinValExc=58.7
-            }
-        }
-        valuethree{
+    valuethree{
+        MinValExc=23
+    }
+    valuefour{
+        value{
             MinValExc=23
         }
-        valuefour{
-            value{
-                MinValExc=23
-            }
+    }
+    valuefive{
+        MinValExc="../controlone"
+    }
+    valuesix{
+        value{
+            MinValExc="../../controlone"
         }
-        valuefive{
-            MinValExc="../controlone"
+    }
+    valueseven{
+        MinValExc="../controltwo"
+    }
+    valueeight{
+        value{
+            MinValExc="../../controltwo"
         }
-        valuesix{
-            value{
-                MinValExc="../../controlone"
-            }
+    }
+    valuenine{
+        MinValExc=NoLimit
+    }
+    value_bad_one{
+        inside{
+            MinValExc="../../bad_two_numbers"
         }
-        valueseven{
-            MinValExc="../controltwo"
-        }
-        valueeight{
-            value{
-                MinValExc="../../controltwo"
-            }
-        }
-        valuenine{
-            MinValExc=NoLimit
+    }
+    value_bad_two{
+        inside{
+            MinValExc="../../bad_string"
         }
     }
 

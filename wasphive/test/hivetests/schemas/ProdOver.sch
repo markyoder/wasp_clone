@@ -1,26 +1,19 @@
-sumover{
-    validtest{
-        container{
-            inside{
-                ProdOver("../..")=1445.6
-            }
-        }
-        array{
-            value{
-                ProdOver("..")=392.85
-            }
+test{
+
+    container{
+        inside{
+            ProdOver("../..")=1445.6
         }
     }
-    invalidtest{
-        container{
-            inside{
-                ProdOver("../..")=1445.6
-            }
-        }
-        array{
-            value{
-                ProdOver("..")=392.85
-            }
+    array{
+        value{
+            ProdOver("..")=392.85
         }
     }
+    invalid_array{
+        value{
+            ProdOver("..")=123.4
+        }
+    }
+
 }

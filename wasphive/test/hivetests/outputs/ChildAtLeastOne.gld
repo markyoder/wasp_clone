@@ -1,3 +1,0 @@
-line:29 column:5 - Validation Error: invalidtest has zero of: [ one two/value three/value ] - at least one must occur
-line:35 column:9 - Validation Error: five has zero of: [ "../four" "../two/value" ] - at least one must occur
-line:40 column:9 - Validation Error: seven has zero of: [ "../six/value" ] - at least one must occur
