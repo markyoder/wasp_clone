@@ -73,6 +73,14 @@ COLON :
     yylloc->step();
 %}
  /*** BEGIN EXAMPLE - Change the wasp lexer rules below ***/
+{DOUBLE}  {
+    capture_token(yylval,wasp::REAL);
+    return token::DOUBLE;
+}
+{INT}  {
+    capture_token(yylval,wasp::INT);
+    return token::INTEGER;
+}
 {COMMA}  {
     capture_token(yylval,wasp::WASP_COMMA);
     return token::COMMA;

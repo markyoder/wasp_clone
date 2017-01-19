@@ -18,28 +18,128 @@ using namespace wasp;
 
 
 
-TEST( JJSON, DISABLED_simple )
+/**
+ * @brief TEST simple json data with mix of standard
+ */
+TEST( JSON, simple )
 {
     std::stringstream input;
-    input<< R"INPUT(
-{
- "key_string":"value",
- "key_int" :1,
+    input<< R"INPUT({
+ "key_string":"value1",
+ "key_int" : 1 ,
  "key_double" : 1.03,
+ "key_bool_true" : true,
+ "key_bool_false" : false,
+ "key_bool_null" : null,
  "object_empty": { },
  "object_mixed": { "o":{}, "a":[], "k":1.0 },
  "array_empty" : [],
- "array_mixed" : ["o":{}, "a":[], "k":1.0 ]
+ "array_mixed" : [{}, [], 1, 1.0, true, false, null ]
 })INPUT";
     JSONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(15, interpreter.node_count() );
+    ASSERT_EQ(89, interpreter.node_count() );
     auto document = interpreter.root();
-    ASSERT_EQ( 4, document.child_count() );
+    ASSERT_EQ( 21, document.child_count() );
+    ASSERT_EQ(wasp::OBJECT, document.type() );
     std::stringstream printed_document;
     wasp::print(printed_document, document);
     ASSERT_EQ(input.str(), printed_document.str());
     ASSERT_EQ( input.str(), document.data() );
+    std::stringstream paths;
+    document.paths(paths);
+    std::stringstream expected_paths;
+    expected_paths<<R"INPUT(/
+/{ ({)
+/key_string
+/key_string/decl ("key_string")
+/key_string/: (:)
+/key_string/value ("value1")
+/, (,)
+/key_int
+/key_int/decl ("key_int")
+/key_int/: (:)
+/key_int/value (1)
+/, (,)
+/key_double
+/key_double/decl ("key_double")
+/key_double/: (:)
+/key_double/value (1.03)
+/, (,)
+/key_bool_true
+/key_bool_true/decl ("key_bool_true")
+/key_bool_true/: (:)
+/key_bool_true/value (true)
+/, (,)
+/key_bool_false
+/key_bool_false/decl ("key_bool_false")
+/key_bool_false/: (:)
+/key_bool_false/value (false)
+/, (,)
+/key_bool_null
+/key_bool_null/decl ("key_bool_null")
+/key_bool_null/: (:)
+/key_bool_null/value (null)
+/, (,)
+/object_empty
+/object_empty/decl ("object_empty")
+/object_empty/: (:)
+/object_empty/{ ({)
+/object_empty/} (})
+/, (,)
+/object_mixed
+/object_mixed/decl ("object_mixed")
+/object_mixed/: (:)
+/object_mixed/{ ({)
+/object_mixed/o
+/object_mixed/o/decl ("o")
+/object_mixed/o/: (:)
+/object_mixed/o/{ ({)
+/object_mixed/o/} (})
+/object_mixed/, (,)
+/object_mixed/a
+/object_mixed/a/decl ("a")
+/object_mixed/a/: (:)
+/object_mixed/a/[ ([)
+/object_mixed/a/] (])
+/object_mixed/, (,)
+/object_mixed/k
+/object_mixed/k/decl ("k")
+/object_mixed/k/: (:)
+/object_mixed/k/value (1.0)
+/object_mixed/} (})
+/, (,)
+/array_empty
+/array_empty/decl ("array_empty")
+/array_empty/: (:)
+/array_empty/[ ([)
+/array_empty/] (])
+/, (,)
+/array_mixed
+/array_mixed/decl ("array_mixed")
+/array_mixed/: (:)
+/array_mixed/[ ([)
+/array_mixed/value
+/array_mixed/value/{ ({)
+/array_mixed/value/} (})
+/array_mixed/, (,)
+/array_mixed/value
+/array_mixed/value/[ ([)
+/array_mixed/value/] (])
+/array_mixed/, (,)
+/array_mixed/value (1)
+/array_mixed/, (,)
+/array_mixed/value (1.0)
+/array_mixed/, (,)
+/array_mixed/value (true)
+/array_mixed/, (,)
+/array_mixed/value (false)
+/array_mixed/, (,)
+/array_mixed/value (null)
+/array_mixed/] (])
+/} (})
+)INPUT";
+    ASSERT_EQ( expected_paths.str(), paths.str() );
 }
 
 // TODO - add test for each potential fail scenario and verify expected message

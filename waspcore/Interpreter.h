@@ -92,6 +92,8 @@ public:
     virtual std::ostream & error_stream()=0;
 
     virtual bool single_parse()const=0;
+    virtual void set_root_type(const NODE & root_type )=0;
+    virtual NODE root_type()const=0;
 };
 
 template< class TNS = TreeNodePool<> >
@@ -253,6 +255,8 @@ protected:
 public:
     TreeNodePool_type m_tree_nodes;
     NODE m_root_type;
+    void set_root_type(const NODE &root_type){m_root_type = root_type;}
+    NODE root_type()const{return m_root_type;}
 };
 
 #include "waspcore/Interpreter.i.h"

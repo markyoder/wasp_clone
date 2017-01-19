@@ -88,13 +88,11 @@
 %type <node_index>  decl
 %type <node_index>  comma
 %type <node_index>  primitive
-%type <node_index>  array
-%type <node_index>  object
-%type <node_index>  keyed_primitive
+%type <node_index>  keyed_primitive keyed_array keyed_object
 
 
-%type <node_indices>  members declaration
-%destructor { delete $$; } members declaration
+%type <node_indices>  object_members array_members declaration object array
+%destructor { delete $$; } object_members array_members declaration object array
 
 %{
 
@@ -171,99 +169,64 @@ declaration : decl assignment
         }
 
 array :
-    declaration lbracket rbracket
+    lbracket rbracket
     {
-        $1->push_back($2);
-        $1->push_back($3);
-        $$ = interpreter.push_parent(wasp::ARRAY
-                ,wasp::strip_quotes(interpreter.data($1->front())).c_str()
-                ,*$1);
-        delete $1;
+        $$ = new std::vector<size_t>();
+        $$->push_back($1);
+        $$->push_back($2);
     }
-    | declaration lbracket END
+    | lbracket END
     {
-        $1->push_back($2);
-        std::string name = interpreter.name($1->front());
-        $$ = interpreter.push_parent(wasp::ARRAY
-                                    , name.c_str()
-                                        ,*$1);
-        delete $1;
-        error(@2, name+" has unmatched left bracket!");
-        delete $1;
+        error(@2, "array has unmatched left bracket!");
         YYERROR;
+        $$ = nullptr;
     }
-    | declaration lbracket members END
+    | lbracket array_members END
     {
-        std::string name = interpreter.name($1->front());
-        auto last_component_type = interpreter.type($1->back());
-        // TODO capture partial definition
-        if( $3->size() ==0 ) error(@2, name+" has unmatched left bracket!");
-        else if( last_component_type == wasp::ARRAY ) error(@2, name+" or one of its components has unmatched left bracket!");
-        else error(@2, name+" has unmatched left bracket!");
-
-        delete $1;
+        std::string name = "object";
+        auto last_component_type = interpreter.type($2->back());
+        if( $2->size() ==0 ) error(@1, name+" has unmatched left bracket!");
+        else if( last_component_type == wasp::OBJECT ) error(@1, name+" or one of its components has unmatched left bracket!");
+        else error(@1, name+" has unmatched left bracket!");
+        delete $2;
         YYERROR;
+        $$ = nullptr;
     }
-    |declaration lbracket members rbracket
-    {
-        $1->push_back($2);
-        for( std::size_t i = 0; i < $3->size(); ++i )
-        {
-            $1->push_back( $3->at( i ) );
-        }
-        $1->push_back($4);
-        $$ = interpreter.push_parent(wasp::ARRAY
-            ,wasp::strip_quotes(interpreter.data($1->front())).c_str()
-            ,*$1);
-        delete $1;
-        delete $3;
-
+    | lbracket array_members rbracket
+    {            
+            $array_members->insert($array_members->begin(),$1);
+            $array_members->push_back($3);
+            $$ = $array_members;
     }
-object : declaration lbrace rbrace
+object : lbrace rbrace
     {
-        $1->push_back($2);
-        $1->push_back($3);
-        $$ = interpreter.push_parent(wasp::OBJECT
-            ,wasp::strip_quotes(interpreter.data($1->front())).c_str()
-            ,*$1);
-        delete $1;
+        $$ = new std::vector<size_t>();
+        $$->push_back($1);
+        $$->push_back($2);
     }    
-    | declaration lbrace END
-    {
-        $1->push_back($2);
-        std::string name = interpreter.data($1->front());
-        $$ = interpreter.push_parent(wasp::OBJECT
-                                     , name.c_str()
-                                     , *$1);
-        delete $1;
-        error(@2, name+" has unmatched left brace!");
+    |  lbrace END
+    {        
+        error(@2, "object has unmatched left brace!");
         YYERROR;
+        $$ = nullptr;
     }
-    | declaration lbrace members END
+    |  lbrace object_members END
     {
         // TODO capture partial definition
-        std::string name = interpreter.data($1->front());
-        auto last_component_type = interpreter.type($1->back());
-        if( $3->size() ==0 ) error(@2, name+" has unmatched left brace!");
-        else if( last_component_type == wasp::OBJECT ) error(@2, name+" or one of its components has unmatched left brace!");
-        else error(@2, name+" has unmatched left brace!");
-        delete $3;
-        delete $1;
+        std::string name = "object";
+        auto last_component_type = interpreter.type($2->back());
+        if( $2->size() ==0 ) error(@1, name+" has unmatched left brace!");
+        else if( last_component_type == wasp::OBJECT ) error(@1, name+" or one of its components has unmatched left brace!");
+        else error(@1, name+" has unmatched left brace!");
+        delete $2;
         YYERROR;
+        $$ = nullptr;
     }    
-    | declaration lbrace members rbrace
+    | lbrace object_members rbrace
     {
-        $1->push_back($2);
-        for( std::size_t i = 0; i < $3->size(); ++i )
-        {
-            $1->push_back( $3->at( i ) );
-        }
-        $1->push_back($4);
-        $$ = interpreter.push_parent(wasp::OBJECT
-                                    ,wasp::strip_quotes(interpreter.data($1->front())).c_str()
-                                        ,*$1);
-        delete $1;
-        delete $3;
+        $object_members->insert($object_members->begin(),$1);
+        $object_members->push_back($3);
+        $$ = $object_members;
     }
 
 
@@ -273,34 +236,100 @@ keyed_primitive : declaration primitive
         std::string quote_less_data = interpreter.data($1->front());
         quote_less_data = wasp::strip_quotes(quote_less_data);
         $$ = interpreter.push_parent(wasp::KEYED_VALUE
-                                     // use the data instead of the name
-                                     // this provides the following tree
-                                     // data
-                                     //  |_ decl (data)
-                                     //  |_ : (:)
-                                     //  |_ value (1.2..blah)
                                     ,quote_less_data.c_str()
                                     ,*$1);
         delete $1;
     }
-
-members :object
+keyed_object : declaration object
+    {
+        for( size_t i = 0; i < $2->size(); ++i )
+        {
+            $1->push_back($2->at(i));
+        }
+        std::string quote_less_data = interpreter.data($1->front());
+        quote_less_data = wasp::strip_quotes(quote_less_data);
+        $$ = interpreter.push_parent(wasp::OBJECT
+                                    ,quote_less_data.c_str()
+                                    ,*$1);
+        delete $1;
+    }
+keyed_array : declaration array
+    {
+        for( size_t i = 0; i < $2->size(); ++i )
+        {
+            $1->push_back($2->at(i));
+        }
+        std::string quote_less_data = interpreter.data($1->front());
+        quote_less_data = wasp::strip_quotes(quote_less_data);
+        $$ = interpreter.push_parent(wasp::ARRAY
+                                    ,quote_less_data.c_str()
+                                    ,*$1);
+        delete $1;
+    }
+array_members :object
+        {
+            $$ = new std::vector<size_t>();
+            size_t obj_i = interpreter.push_parent(wasp::OBJECT
+                                        ,"value"
+                                        ,*$1);
+            $$->push_back(obj_i);
+        }
+        | array_members comma object
+        {
+            $$ = $1;
+            $$->push_back($2);
+            size_t obj_i = interpreter.push_parent(wasp::OBJECT
+                                        ,"value"
+                                        ,*$3);
+            $$->push_back(obj_i);
+        }
+        | array
+        {
+            $$ = new std::vector<size_t>();
+            size_t arr_i = interpreter.push_parent(wasp::ARRAY
+                                        ,"value"
+                                        ,*$1);
+            $$->push_back(arr_i);
+            delete $1;
+        }
+        | array_members comma array
+        {
+            $$ = $1;
+            $$->push_back($2);
+            size_t arr_i = interpreter.push_parent(wasp::ARRAY
+                                        ,"value"
+                                        ,*$3);
+            $$->push_back(arr_i);
+            delete $3;
+        }
+        | primitive
         {
             $$ = new std::vector<size_t>();
             $$->push_back($1);
         }
-        | members comma object
+        | array_members comma primitive
         {
             $$ = $1;
             $$->push_back($2);
             $$->push_back($3);
         }
-        | array
+object_members : keyed_object
         {
             $$ = new std::vector<size_t>();
             $$->push_back($1);
         }
-        | members comma array
+        | object_members comma keyed_object
+        {
+            $$ = $1;
+            $$->push_back($2);
+            $$->push_back($3);
+        }
+        | keyed_array
+        {
+            $$ = new std::vector<size_t>();
+            $$->push_back($1);
+        }
+        | object_members comma keyed_array
         {
             $$ = $1;
             $$->push_back($2);
@@ -310,28 +339,32 @@ members :object
         {
             $$ = new std::vector<size_t>();
             $$->push_back($1);
-
         }
-        | members comma keyed_primitive
+        | object_members comma keyed_primitive
         {
             $$ = $1;
             $$->push_back($2);
             $$->push_back($3);
         }
-        | primitive
-        {
-            $$ = new std::vector<size_t>();
-            $$->push_back($1);
-        }
-        | members comma primitive
-        {
-            $$ = $1;
-            $$->push_back($2);
-            $$->push_back($3);
-        }
-     
 start   : /** empty **/        
-        | start object{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}        
+        | object{
+            interpreter.set_root_type(wasp::OBJECT);
+            for( size_t i = 0; i < $object->size(); ++i)
+            {
+                interpreter.add_root_child_index($object->at(i));
+            }
+            delete $object;
+            if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}
+        }
+        | array{
+            interpreter.set_root_type(wasp::ARRAY);
+            for( size_t i = 0; i < $array->size(); ++i)
+            {
+                interpreter.add_root_child_index($array->at(i));
+            }
+            delete $array;
+            if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}
+        }
 
  /*** END RULES - Change the wasp grammar rules above ***/
 
