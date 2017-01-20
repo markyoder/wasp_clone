@@ -37,17 +37,16 @@ namespace wasp
  * TAdapter TAdapter::parent()const - acquire parent tree node
  * bool TAdapter::is_null()const - indicates if the node is null (not backed by document)
  * std::string TAdapter::path()const - acquire the path of the node in the tree
- * std::string TAdapter::name()const - acquire the name of the node
+ * std::string TAdapter::name()const - acquire the quoteless name of the node
  * size_t TAdapter::line()const - acquire the line on which the node occurrs in the document
  * size_t TAdapter::column()const - acquire the column on which the node occurrs in the document
  * TAdaper& TAdapter::operator=(const TAdapter & orig) - node's assignment operator
  * bool TAdapter::operator==(const TAdapter & orig) - node's equality operator
- * bool TAdapter::operator<(const TAdapter & orig) - node's less than operator
+ * bool TAdapter::operator<(const TAdapter & orig) - node's less than operator using lexical order
  * std::vector<TAdapter> TAdapter::child_by_name(const std::string & name, size_t limit)const
  * int TAdapter::to_int()const - converts the node's data to an integer
  * double TAdapter::to_double()const - converts the node's data to a double
- * std::string TAdapter::to_string()const - converts the node's data to a string
- * std::string TAdapter::last_as_string()const - acquires the last, non-decorative child (or current if childless) node's value as a string
+ * std::string TAdapter::to_string()const - converts the node's data to a quoteless string
  * size_t TAdapter::child_count()const - the child node count for the current node
  * size_t TAdapter::child_count_by_name(const std::string& name)const - the child node count where the children have the given name
  * std::string data()const - the raw data of the node
@@ -57,7 +56,7 @@ namespace wasp
  * bool TAdapter::is_decorative()const - determine if the node is decorative
  * ==== Required SchemaAdapter API ====
  *  !! All the above and the following !!
- * std::string TAdapter::id()const - acquire the id as a string
+ * std::string TAdapter::id()const - acquire the id as a quoteless string
  * TAdapter TAdapter::id_child()const - acquire the child tree node deemed the current node's identifier
  */
 class HIVE{
