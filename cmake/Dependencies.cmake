@@ -4,6 +4,6 @@ TRIBITS_PACKAGE_DEFINE_DEPENDENCIES(
      siren waspsiren   PT OPTIONAL
      expr  waspexpr    PT OPTIONAL
      son   waspson     PT OPTIONAL
-     getpot waspgetpot PT OPTIONAL
      hive  wasphive    PT OPTIONAL
+     getpot waspgetpot PT OPTIONAL     
 )
