@@ -7,7 +7,6 @@ GetPotNodeView<TNV>::GetPotNodeView(std::size_t node_index
     : m_tree_node_index(node_index)
     ,m_tree_data(&nodes)
 {
-    // TODO verify index is legal
 }
 template<class TNV>
 GetPotNodeView<TNV>::GetPotNodeView(const GetPotNodeView & orig)
@@ -78,7 +77,8 @@ bool GetPotNodeView<TNV>::is_decorative()const{
     case wasp::SUB_OBJECT_TERM:  // [./] | [../]
     case wasp::DOT_SLASH: // sub block component '[./subblock]'
     case wasp::WASP_COMMA: // ,
-    case wasp::COLON :    
+    case wasp::COLON :
+    case wasp::QUOTE :      // delimits arrays, e.g., ' 1 2 3 '
     case wasp::LBRACKET:    // [
     case wasp::RBRACKET:    // ]
         return true;

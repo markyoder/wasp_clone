@@ -4,8 +4,8 @@
 #include <iostream>
 #include <fstream>
 #include "waspcore/version.h"
+#include "waspcore/wasp_bug.h"
 #include "waspgetpot/GetPotInterpreter.h"
-
 using namespace wasp;
 
 int main (int argc, char *argv[])
@@ -29,7 +29,15 @@ int main (int argc, char *argv[])
         }
         std::stringstream errors;
         GetPotInterpreter<> interpreter(errors);
+        wasp_timer(parse_time);
+        wasp_timer_start(parse_time);
         bool parsed = interpreter.parse(input);
+        wasp_timer_stop(parse_time);
+        wasp_timer_block(std::cout << "Parse Timer duration: "
+                         << parse_time.duration()
+                         << " nanoseconds with "
+                         << parse_time.intervals()
+                         << " invervals" << std::endl);
         std::cout<<"Listing for '"<<argv[j]<<"'"<<std::endl;
         interpreter.root().paths(std::cout);
         if( !parsed )

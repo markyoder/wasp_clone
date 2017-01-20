@@ -1,4 +1,5 @@
-#include "../GetPotInterpreter.h"
+#include "waspgetpot/GetPotInterpreter.h"
+#include "waspgetpot/GetPotNodeView.h"
 #include "gtest/gtest.h"
 #include <iostream>
 #include <string>
@@ -746,7 +747,8 @@ TEST(GetPotInterpreter,multiple_objects)
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(34, interpreter.node_count() );
-    auto document = interpreter.root();
+    GetPotNodeView<decltype(interpreter.root())> document
+            = interpreter.root();
     ASSERT_EQ(2, document.child_count() ); // problem and mesh
 
     std::string expected_paths=R"INPUT(/
@@ -787,5 +789,15 @@ TEST(GetPotInterpreter,multiple_objects)
     std::stringstream paths;
     document.paths(paths);
     ASSERT_EQ( expected_paths, paths.str() );
+    auto mesh_view = document.first_child_by_name("Mesh");
+    ASSERT_FALSE( mesh_view.is_null() );
+    ASSERT_FALSE( mesh_view.is_decorative() );
+    ASSERT_EQ(wasp::OBJECT, mesh_view.type());
+    ASSERT_EQ(6, mesh_view.child_count() );
+    ASSERT_EQ(3, mesh_view.non_decorative_children_count() );
+    auto disp_view = mesh_view.first_child_by_name("displacements");
+    ASSERT_FALSE( disp_view.is_null() );
+    ASSERT_EQ( wasp::KEYED_VALUE, disp_view.type() );
+    ASSERT_EQ( 2, disp_view.non_decorative_children_count() );
 }
 
