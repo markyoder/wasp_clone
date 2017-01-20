@@ -124,8 +124,8 @@ class WaspTimer
 {
 private:
     bool mRunning;
-    std::chrono::system_clock::time_point mStart;
-    std::chrono::system_clock::time_point mEnd;
+    std::chrono::steady_clock::time_point mStart;
+    std::chrono::steady_clock::time_point mEnd;
     std::chrono::nanoseconds mDuration;
     size_t mIntervals;
 public:
@@ -139,12 +139,12 @@ public:
         wasp_check(!mRunning);
         mRunning = true;
         mIntervals++;
-        mStart = std::chrono::system_clock::now();
+        mStart = std::chrono::steady_clock::now();
     }
     void stop()
     {
         wasp_check(mRunning);
-        mEnd = std::chrono::system_clock::now();
+        mEnd = std::chrono::steady_clock::now();
         mRunning = false;
         mDuration += std::chrono::duration_cast<std::chrono::nanoseconds>(mEnd-mStart);
     }
