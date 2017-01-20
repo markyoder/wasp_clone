@@ -107,7 +107,7 @@ analysis_linux:
     - linux
   script:
     - cd build
-    - ctest -D ExperimentalCoverage -DExperimentalMemCheck -D ExperimentalSubmit
+    - ctest -D ExperimentalCoverage -D ExperimentalMemCheck -D ExperimentalSubmit
   dependencies:
     - test_linux
   allow_failure: true
