@@ -213,7 +213,7 @@ private:
     size_t value_tree_node_index()const;
 
 };
-#include "waspGetPot/GetPotNodeView.i.h"
+#include "waspgetpot/GetPotNodeView.i.h"
 } // end of namespace
 
 #endif
