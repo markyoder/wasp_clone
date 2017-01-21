@@ -20,35 +20,35 @@
     useone=japan
     useone=' -500 600 seven -300 art '
 
-    usetwo=' science "recess" '
-    usetwo="lunch"
+    usetwo=' science recess '
+    usetwo=lunch
     usetwo=economics
-    usetwo=' "math" geography '
+    usetwo=' math geography '
 
     usethree=canada
     usethree=england
-    usethree=' -200 "italy" 300 '
-    usethree="-600"
+    usethree=' -200 italy 300 '
+    usethree=-600
 
-    usefour="one"
-    usefour=' "two" one '
-    usefour="four"
-    usefour=' "four" three '
-    usefour="three"
+    usefour=one
+    usefour=' two one '
+    usefour=four
+    usefour=' four three '
+    usefour=three
 
     usefive=-600
-    usefive=' "england" economics '
-    usefive="math"
+    usefive=' england economics '
+    usefive=math
     usefive=0
 
     usesix=four
     usesix=recess
-    usesix=' "lunch" "one" math '
+    usesix=' lunch one math '
     usesix=two
     usesix=0
 
     useseven=' 300 -600 '
-    useseven="one"
-    useseven=' three italy "england" '
+    useseven=one
+    useseven=' three italy england '
 
 []

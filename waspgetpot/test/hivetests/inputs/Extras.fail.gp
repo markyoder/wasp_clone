@@ -11,8 +11,8 @@
     should_not_exist_three = 31
     should_not_exist_four  = ' 32 33 34 35 '
 
-    invalid_rule{
+    [./invalid_rule]
         inside=5
-    []
+    [./]
 
 []

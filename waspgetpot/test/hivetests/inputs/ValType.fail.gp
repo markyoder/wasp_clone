@@ -2,7 +2,7 @@
 [test]
     one=-8.3
     two=0.3
-    three="+8e-3"
+    three=+8e-3
     four='*'
     five=StringHere
     six='another string here'

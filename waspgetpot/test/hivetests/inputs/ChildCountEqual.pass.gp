@@ -5,9 +5,9 @@
     one=d
     one=' e f '
 
-    three=' "!" "@" "#" '
-    three="$"
-    three=' "%" "^" '
+    three=' ! @ # '
+    three=$
+    three=' % ^ '
 
     four=' red orange yellow '
     four=green

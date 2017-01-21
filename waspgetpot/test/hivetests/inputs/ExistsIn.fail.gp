@@ -25,7 +25,7 @@
 
     usethree=red
     usethree=three
-    usethree=' 5 "3" -2.3 blue "1" '
+    usethree=' 5 3 -2.3 blue 1 '
     usethree=lunch
 
     usefour_reg=geography
@@ -36,7 +36,7 @@
 
     usefive_reg=orange
     usefive_reg=economics
-    usefive_reg=' "indigo" violet "geography" '
+    usefive_reg=' indigo violet geography '
     usefive_reg=science
     usefive_reg=' 600 2 300 five '
     usefive_reg=200

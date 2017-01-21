@@ -25,18 +25,18 @@
 
     usethree=england
     usethree=italy
-    usethree=' 5 "3" -2 canada "1" '
+    usethree=' 5 3 -2 canada 1 '
     usethree=-4
 
     usefour_abs=geography
-    usefour_abs=' hamburger 900 math hotdog "four" '
+    usefour_abs=' hamburger 900 math hotdog four '
     usefour_abs=three
     usefour_abs=' 800 -800 '
     usefour_abs=-900
 
     usefive_abs=orange
     usefive_abs=economics
-    usefive_abs=' "indigo" violet "geography" '
+    usefive_abs=' indigo violet geography '
     usefive_abs=science
     usefive_abs=' 600 -600 300 -300 1200 1300 '
     usefive_abs=200

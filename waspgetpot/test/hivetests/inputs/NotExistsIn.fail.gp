@@ -21,14 +21,14 @@
     useone=' three recess lunch italy canada '
 
     usetwo=' two germany -600 '
-    usetwo="four"
-    usetwo="600"
+    usetwo=four
+    usetwo=600
     usetwo=' -200 200 one '
 
     usethree=four
     usethree=lunch
-    usethree=' two "three" '
-    usethree="science"
+    usethree=' two three '
+    usethree=science
 
     usefour=300
     usefour=' -600 economics '
@@ -37,16 +37,16 @@
     usefour=math
 
     usefive=one
-    usefive=' "two" three '
+    usefive=' two three '
 
     usesix=-200
     usesix=200
     usesix=' england canada 600 '
     usesix=-600
 
-    useseven=' recess "math" '
-    useseven="science"
-    useseven=' math economics "geography" '
+    useseven=' recess math '
+    useseven=science
+    useseven=' math economics geography '
     useseven=0
 
     useeight=one

@@ -7,7 +7,7 @@
     five=3
     six='+9e-3'
     seven=ThisIsAString
-    eight="This Is Also A String"
+    eight=This Is Also A String
     nine='?'
     ten=8.3
     eleven=yes
