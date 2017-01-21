@@ -1,7 +1,7 @@
 
 [test]
     one=yes
-    two='Maybe'
+    two=Maybe
     three=blue
     four=4
     five=oRanGe

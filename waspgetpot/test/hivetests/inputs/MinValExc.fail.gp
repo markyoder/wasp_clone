@@ -20,5 +20,5 @@
     [./value_bad_two]
         inside=48
     [./]
-    valueone='a_string'
+    valueone=a_string
 []

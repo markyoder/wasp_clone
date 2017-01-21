@@ -134,6 +134,7 @@ void do_test(const std::string & name)
                         , input_pass_adapter
                         , errors);
     msgs = HIVE::combine(errors);
+    if( !valid ) std::cout<< msgs<< std::endl;
     EXPECT_TRUE( valid );
 }
 
