@@ -16,4 +16,4 @@ line:15 column:30 - Validation Error: valueeight value "-100.3" is less than the
 line:15 column:49 - Validation Error: valueeight value "-7e+3" is less than the allowed minimum inclusive value of "-45.3" from "../../controltwo"
 line:17 column:9 - Validation Error: inside minimum inclusive value checks against "../../bad_two_numbers" which returns more than one value
 line:20 column:9 - Validation Error: inside minimum inclusive value checks against "../../bad_string" which does not return a valid number
-line:22 column:5 - Validation Error: valueone value "a-string" is wrong value type for minimum inclusive value
+line:22 column:5 - Validation Error: valueone value "a_string" is wrong value type for minimum inclusive value

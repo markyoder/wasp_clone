@@ -13,4 +13,4 @@ line:15 column:30 - Validation Error: valueeight value "-10.3" is greater than o
 line:15 column:36 - Validation Error: valueeight value "-45.3" is greater than or equal to the allowed maximum exclusive value of "-453e-1" from "../../controltwo"
 line:18 column:9 - Validation Error: inside maximum exclusive value checks against "../../bad_two_numbers" which returns more than one value
 line:21 column:9 - Validation Error: inside maximum exclusive value checks against "../../bad_string" which does not return a valid number
-line:23 column:5 - Validation Error: valueone value "a-string" is wrong value type for maximum exclusive value
+line:23 column:5 - Validation Error: valueone value "a_string" is wrong value type for maximum exclusive value

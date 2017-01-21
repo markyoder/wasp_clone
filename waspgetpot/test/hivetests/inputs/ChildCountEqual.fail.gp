@@ -9,9 +9,9 @@
     two=4
     two=' 5 6 7 '
 
-    three=' ! @ # '
-    three=$
-    three=' % ^ '
+    three=' ban att pou '
+    three=dol
+    three=' per car '
 
     four=' red orange yellow '
     four=green

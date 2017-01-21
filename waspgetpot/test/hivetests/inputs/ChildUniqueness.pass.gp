@@ -11,10 +11,10 @@
     two=5
     two=' 6 7 8 '
 
-    three=' ! @ # '
-    three=$
-    three=%
-    three=' ^ & 0 * '
+    three=' ban att pou '
+    three=dol
+    three=per
+    three=' car amp 0 ast '
 
 []
 

@@ -13,4 +13,4 @@ line:15 column:24 - Validation Error: valueeight value "-41.9" is greater than t
 line:15 column:43 - Validation Error: valueeight value "-4E-8" is greater than the allowed maximum inclusive value of "-45.3" from "../../controltwo"
 line:17 column:9 - Validation Error: inside maximum inclusive value checks against "../../bad_two_numbers" which returns more than one value
 line:20 column:9 - Validation Error: inside maximum inclusive value checks against "../../bad_string" which does not return a valid number
-line:22 column:5 - Validation Error: valueone value "a-string" is wrong value type for maximum inclusive value
+line:22 column:5 - Validation Error: valueone value "a_string" is wrong value type for maximum inclusive value

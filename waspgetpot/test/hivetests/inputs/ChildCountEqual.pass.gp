@@ -5,9 +5,9 @@
     one=d
     one=' e f '
 
-    three=' ! @ # '
+    three=' ban att pou '
     three=$
-    three=' % ^ '
+    three=' per car '
 
     four=' red orange yellow '
     four=green

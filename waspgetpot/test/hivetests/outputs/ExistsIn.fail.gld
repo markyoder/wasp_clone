@@ -33,8 +33,8 @@ line:24 column:12 - Validation Error: usetwo value "purple" does not exist in se
         ../../definethree/value ]
 line:26 column:14 - Validation Error: usethree value "red" does not exist in set: [ ../../definetwo/value ]
 line:27 column:14 - Validation Error: usethree value "three" does not exist in set: [ ../../definetwo/value ]
-line:28 column:22 - Validation Error: usethree value "2.3" does not exist in set: [ ../../definetwo/value ]
-line:28 column:27 - Validation Error: usethree value "blue" does not exist in set: [ ../../definetwo/value ]
+line:28 column:20 - Validation Error: usethree value "2.3" does not exist in set: [ ../../definetwo/value ]
+line:28 column:25 - Validation Error: usethree value "blue" does not exist in set: [ ../../definetwo/value ]
 line:29 column:14 - Validation Error: usethree value "lunch" does not exist in set: [ ../../definetwo/value ]
 line:32 column:33 - Validation Error: usefour_reg value "spain" does not exist in set: [ ../../defineone/value
         ../../definethree/value ]
