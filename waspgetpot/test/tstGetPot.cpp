@@ -270,7 +270,7 @@ TEST(GetPotInterpreter, object_array)
                                            , wasp::VALUE
                                            , wasp::VALUE
                                            , wasp::QUOTE
-                                           , wasp::KEYED_VALUE
+                                           , wasp::ARRAY
                                            ,wasp::OBJECT_TERM
                                            ,wasp::OBJECT
                                           ,wasp::DOCUMENT_ROOT};
@@ -797,7 +797,14 @@ TEST(GetPotInterpreter,multiple_objects)
     ASSERT_EQ(3, mesh_view.non_decorative_children_count() );
     auto disp_view = mesh_view.first_child_by_name("displacements");
     ASSERT_FALSE( disp_view.is_null() );
-    ASSERT_EQ( wasp::KEYED_VALUE, disp_view.type() );
+    ASSERT_EQ( wasp::ARRAY, disp_view.type() );
     ASSERT_EQ( 2, disp_view.non_decorative_children_count() );
+    auto values = disp_view.non_decorative_children();
+    ASSERT_EQ( 2, values.size() );
+    for( auto v : values)
+    {
+        ASSERT_EQ("value",std::string(v.name()));
+        ASSERT_EQ("disp", v.to_string().substr(0,4));
+    }
 }
 

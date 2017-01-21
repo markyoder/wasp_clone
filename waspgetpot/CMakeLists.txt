@@ -24,6 +24,8 @@ GetPotLexer.h
 GetPotParser.hpp
 GetPotInterpreter.h
 GetPotInterpreter.i.h
+GetPotNodeView.h
+GetPotNodeView.i.h
 location.hh
 position.hh
 stack.hh

@@ -435,11 +435,11 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
         errors.push_back(Error::SirenParseError(look_up_error.str()));
         return false;
     }
-    SIRENResultSet<InputAdapter> selection;
-    inputSelector.evaluate(input_node, selection);
+    SIRENResultSet<InputAdapter> input_selection;
+    inputSelector.evaluate(input_node, input_selection);
 
-    for (size_t i = 0; i < selection.size(); i++) {
-        std::istringstream iss(selection.adapted(i).to_string());
+    for (size_t i = 0; i < input_selection.size(); i++) {
+        std::istringstream iss(input_selection.adapted(i).to_string());
 
         if ((ruleValue == "Int") || (ruleValue == "Real") ||
             (ruleValue == "String")) {
@@ -462,45 +462,45 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
             if (!iss.eof() || iss.fail()) {
                 std::string valueNodeName;
 
-                if ((std::strcmp(selection.adapted(i).name(), "value") == 0) &&
-                    selection.adapted(i).has_parent()) {
-                    valueNodeName = selection.adapted(i).parent().name();
+                if ((std::strcmp(input_selection.adapted(i).name(), "value") == 0) &&
+                    input_selection.adapted(i).has_parent()) {
+                    valueNodeName = input_selection.adapted(i).parent().name();
                 }
                 else {
-                    valueNodeName = selection.adapted(i).name();
+                    valueNodeName = input_selection.adapted(i).name();
                 }
 
-                errors.push_back(Error::BadValType(selection.adapted(i).line(),
-                                                   selection.adapted(i).column(),
+                errors.push_back(Error::BadValType(input_selection.adapted(i).line(),
+                                                   input_selection.adapted(i).column(),
                                                    valueNodeName,
-                                                   selection.adapted(i).
+                                                   input_selection.adapted(i).
                                                    to_string(),
                                                    ruleValue));
                 pass = false;
             }
         }
         else if (ruleValue == "RealOrQuestion") {
-            if (selection.adapted(i).to_string() != "?") {
+            if (input_selection.adapted(i).to_string() != "?") {
                 float ftest;
                 iss >> std::noskipws >> ftest;
 
                 if (!iss.eof() || iss.fail()) {
                     std::string valueNodeName;
 
-                    if ((std::strcmp(selection.adapted(i).name(),
+                    if ((std::strcmp(input_selection.adapted(i).name(),
                                      "value") == 0) &&
-                        selection.adapted(i).has_parent()) {
-                        valueNodeName = selection.adapted(i).parent().name();
+                        input_selection.adapted(i).has_parent()) {
+                        valueNodeName = input_selection.adapted(i).parent().name();
                     }
                     else {
-                        valueNodeName = selection.adapted(i).name();
+                        valueNodeName = input_selection.adapted(i).name();
                     }
 
-                    errors.push_back(Error::BadValType(selection.adapted(i).line(),
-                                                       selection.adapted(i).
+                    errors.push_back(Error::BadValType(input_selection.adapted(i).line(),
+                                                       input_selection.adapted(i).
                                                        column(),
                                                        valueNodeName,
-                                                       selection.adapted(i).
+                                                       input_selection.adapted(i).
                                                        to_string(),
                                                        ruleValue));
                     pass = false;
@@ -508,7 +508,7 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
             }
         }
         else if (ruleValue == "IntOrYesOrNo") {
-            std::string lowerString = selection.adapted(i).to_string();
+            std::string lowerString = input_selection.adapted(i).to_string();
             transform(lowerString.begin(), lowerString.end(),
                       lowerString.begin(), ::tolower);
 
@@ -519,20 +519,20 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
                 if (!iss.eof() || iss.fail()) {
                     std::string valueNodeName;
 
-                    if ((std::strcmp(selection.adapted(i).name(),
+                    if ((std::strcmp(input_selection.adapted(i).name(),
                                      "value") == 0) &&
-                        selection.adapted(i).has_parent()) {
-                        valueNodeName = selection.adapted(i).parent().name();
+                        input_selection.adapted(i).has_parent()) {
+                        valueNodeName = input_selection.adapted(i).parent().name();
                     }
                     else {
-                        valueNodeName = selection.adapted(i).name();
+                        valueNodeName = input_selection.adapted(i).name();
                     }
 
-                    errors.push_back(Error::BadValType(selection.adapted(i).line(),
-                                                       selection.adapted(i).
+                    errors.push_back(Error::BadValType(input_selection.adapted(i).line(),
+                                                       input_selection.adapted(i).
                                                        column(),
                                                        valueNodeName,
-                                                       selection.adapted(i).
+                                                       input_selection.adapted(i).
                                                        to_string(),
                                                        ruleValue));
                     pass = false;
@@ -540,27 +540,27 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
             }
         }
         else if (ruleValue == "IntOrAsterisk") {
-            if (selection.adapted(i).to_string() != "*") {
+            if (input_selection.adapted(i).to_string() != "*") {
                 int itest;
                 iss >> std::noskipws >> itest;
 
                 if (!iss.eof() || iss.fail()) {
                     std::string valueNodeName;
 
-                    if ((std::strcmp(selection.adapted(i).name(),
+                    if ((std::strcmp(input_selection.adapted(i).name(),
                                      "value") == 0) &&
-                        selection.adapted(i).has_parent()) {
-                        valueNodeName = selection.adapted(i).parent().name();
+                        input_selection.adapted(i).has_parent()) {
+                        valueNodeName = input_selection.adapted(i).parent().name();
                     }
                     else {
-                        valueNodeName = selection.adapted(i).name();
+                        valueNodeName = input_selection.adapted(i).name();
                     }
 
-                    errors.push_back(Error::BadValType(selection.adapted(i).line(),
-                                                       selection.adapted(i).
+                    errors.push_back(Error::BadValType(input_selection.adapted(i).line(),
+                                                       input_selection.adapted(i).
                                                        column(),
                                                        valueNodeName,
-                                                       selection.adapted(i).
+                                                       input_selection.adapted(i).
                                                        to_string(),
                                                        ruleValue));
                     pass = false;
