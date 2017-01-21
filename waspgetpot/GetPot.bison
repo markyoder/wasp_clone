@@ -363,7 +363,7 @@ keyedvalue : decl assign value
         std::vector<size_t> child_indices = {key_index, assign_index};
         for( size_t child_i : *$array ) child_indices.push_back(child_i);
         delete $array;
-        $$ = interpreter.push_parent(wasp::KEYED_VALUE
+        $$ = interpreter.push_parent(wasp::ARRAY
                                         ,interpreter.data(key_index).c_str()
                                         ,child_indices);
     }

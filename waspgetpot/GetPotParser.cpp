@@ -990,7 +990,7 @@ namespace wasp {
         std::vector<size_t> child_indices = {key_index, assign_index};
         for( size_t child_i : *(yystack_[0].value.node_indices) ) child_indices.push_back(child_i);
         delete (yystack_[0].value.node_indices);
-        (yylhs.value.node_index) = interpreter.push_parent(wasp::KEYED_VALUE
+        (yylhs.value.node_index) = interpreter.push_parent(wasp::ARRAY
                                         ,interpreter.data(key_index).c_str()
                                         ,child_indices);
     }
