@@ -62,6 +62,11 @@
     std::size_t token_index;
     std::size_t node_index;
     std::vector<size_t>* node_indices;
+    // Objects have children and the child's type field's value is promoted
+    // to the parent object's name. The pairing indicates the index to
+    // the 'type' field in the vector. If no type field exist
+    // the pair.first (index) = pair.second (vector>.size()
+    std::pair<size_t, std::vector<size_t>*>* object_children;
 }
 
 
@@ -97,7 +102,8 @@
 %type <node_index>  keyedvalue dot_slash
 %type <node_index>  comment value decl primitive
 %type <node_index> object_member array_member sub_object_member
-%type <node_indices> object_members array_members array sub_object_members
+%type <node_indices> array_members array
+%type <object_children> object_members sub_object_members
  //%type <node_indices> last_object
 
 %{
@@ -166,11 +172,30 @@ sub_object_member : primitive | keyedvalue | comment | sub_object
 sub_object_members : sub_object_member
     {
         size_t node_index = ($1);
-        $$ = new std::vector<size_t>();
-        $$->push_back(node_index);
+        auto indices = new std::vector<size_t>();
+        indices->push_back(node_index);
+        if( std::strcmp("type",interpreter.name(node_index)) == 0 )
+        {
+            // -1 because we just pushed the 'type' node
+            $$ = new std::pair<size_t,std::vector<size_t>*>
+                    (indices->size()-1, indices);
+        }
+        else{
+            $$ = new std::pair<size_t,std::vector<size_t>*>
+                    (indices->size(), indices);
+        }
     }| sub_object_members sub_object_member
     {
-        $1->push_back(($sub_object_member));
+        $1->second->push_back(($sub_object_member));
+        // only if the type has not already be assigned
+        // and the new object is named type
+        if( $1->first == $1->second->size()-1
+            && std::strcmp("type",interpreter.name($sub_object_member)) == 0 )
+        {
+            $1->first = $1->second->size()-1; // -1 because we just pushed the type
+        }else{
+            $1->first = $1->second->size();
+        }
     }
 sub_object_decl : lbracket  dot_slash decl rbracket
     {
@@ -199,24 +224,24 @@ sub_object : sub_object_decl sub_object_term
                                         ,child_indices);
 
     }| sub_object_decl sub_object_members sub_object_term
-    {   std::vector<size_t> children; children.reserve(2+$2->size());
+    {   std::vector<size_t> children; children.reserve(2+$2->second->size());
         size_t object_decl_i = ($sub_object_decl);
         children.push_back(object_decl_i);
-        for( size_t child_i: *$2 ) children.push_back(child_i);
+        for( size_t child_i: *$2->second ) children.push_back(child_i);
         children.push_back(($sub_object_term));
+        delete $2->second;
         delete $2;
-
         $$ = interpreter.push_parent(wasp::SUB_OBJECT
                                     ,interpreter.name(object_decl_i)
                                     ,children);
     }
     | sub_object_decl sub_object_members
-    {   std::vector<size_t> children; children.reserve(1+$2->size());
+    {   std::vector<size_t> children; children.reserve(1+$2->second->size());
         size_t object_decl_i = ($sub_object_decl);
         children.push_back(object_decl_i);
-        for( size_t child_i: *$2 ) children.push_back(child_i);
+        for( size_t child_i: *$2->second ) children.push_back(child_i);
+        delete $2->second;
         delete $2;
-
         $$ = interpreter.push_parent(wasp::SUB_OBJECT
                                     ,interpreter.name(object_decl_i)
                                     ,children);
@@ -239,11 +264,30 @@ object_member : primitive | keyedvalue | comment
 object_members : object_member
     {
         size_t node_index = ($1);
-        $$ = new std::vector<size_t>();
-        $$->push_back(node_index);
+        auto indices = new std::vector<size_t>();
+        indices->push_back(node_index);
+        if( std::strcmp("type",interpreter.name(node_index)) == 0 )
+        {
+            // -1 because we just pushed the 'type' node
+            $$ = new std::pair<size_t,std::vector<size_t>*>
+                    (indices->size()-1, indices);
+        }
+        else{
+            $$ = new std::pair<size_t,std::vector<size_t>*>
+                    (indices->size(), indices);
+        }
     }| object_members object_member
     {
-        $1->push_back(($object_member));
+        $1->second->push_back(($object_member));
+        // only if the type has not already be assigned
+        // and the new object is named type
+        if( $1->first == $1->second->size()-1
+            && std::strcmp("type",interpreter.name($object_member)) == 0 )
+        {
+            $1->first = $1->second->size()-1; // -1 because we just pushed the type
+        }else{
+            $1->first = $1->second->size();
+        }
     }
 
 
@@ -260,13 +304,14 @@ object : object_decl object_term
         }
         | object_decl object_members object_term
         {
-        std::vector<size_t> children; children.reserve(2+$object_members->size());
+        std::vector<size_t> children;
+        children.reserve(2+$object_members->second->size());
         size_t object_decl_i = ($object_decl);
         children.push_back(object_decl_i);
-        for( size_t child_i: *$object_members ) children.push_back(child_i);
+        for( size_t child_i: *$object_members->second ) children.push_back(child_i);
         children.push_back(($object_term));
+        delete $object_members->second;
         delete $object_members;
-
         $$ = interpreter.push_parent(wasp::OBJECT
                                         ,interpreter.name(object_decl_i)
                                         ,children);
@@ -388,10 +433,12 @@ start   : /** empty **/
         }
         | start object_decl object_members object
         {
-            std::vector<size_t> children; children.reserve(1+$object_members->size());
+            std::vector<size_t> children;
+            children.reserve(1+$object_members->second->size());
             size_t object_decl_i = ($object_decl);
             children.push_back(object_decl_i);
-            for( size_t child_i: *$object_members ) children.push_back(child_i);
+            for( size_t child_i: *$object_members->second ) children.push_back(child_i);
+            delete $object_members->second;
             delete $object_members;
 
             size_t object_i = interpreter.push_parent(wasp::OBJECT

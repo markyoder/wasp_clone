@@ -137,8 +137,13 @@ namespace wasp {
     std::size_t token_index;
     std::size_t node_index;
     std::vector<size_t>* node_indices;
+    // Objects have children and the child's type field's value is promoted
+    // to the parent object's name. The pairing indicates the index to
+    // the 'type' field in the vector. If no type field exist
+    // the pair.first (index) = pair.second (vector>.size()
+    std::pair<size_t, std::vector<size_t>*>* object_children;
 
-#line 142 "GetPotParser.hpp" // lalr1.cc:377
+#line 147 "GetPotParser.hpp" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -500,7 +505,7 @@ namespace wasp {
 
 
 } // wasp
-#line 504 "GetPotParser.hpp" // lalr1.cc:377
+#line 509 "GetPotParser.hpp" // lalr1.cc:377
 
 
 
