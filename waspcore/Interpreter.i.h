@@ -37,6 +37,17 @@ Interpreter<TNS>::node_at(node_index_size index )const
     return TreeNodeView<TNS>(index,this->m_tree_nodes);
 }
 template<class TNS>
+size_t Interpreter<TNS>::child_count( size_t node_index )const
+{
+    return this->m_tree_nodes.child_count(node_index);
+}
+template<class TNS>
+size_t Interpreter<TNS>::child_index_at( size_t node_index
+                                         ,size_t child_index)const
+{
+    return this->m_tree_nodes.child_at(node_index, child_index);
+}
+template<class TNS>
 size_t Interpreter<TNS>::push_leaf(size_t node_type
                                     , const char *node_name
                                     , size_t token_index)

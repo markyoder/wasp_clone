@@ -79,6 +79,19 @@ public:
     virtual const char * token_data( size_t token_index )const=0;
 
     /**
+     * @brief child_count determines the number of children for the node
+     * @param node_index index of the node of which children count are requested
+     * @return the number of children nodes
+     */
+    virtual size_t child_count(size_t node_index)const=0;
+    /**
+     * @brief child_index_at acquire the index of the given child
+     * @param node_index the index of the parent node from which child_index is relative
+     * @param child_index the relative child index
+     * @return the index of the child at the requested index
+     */
+    virtual size_t child_index_at( size_t node_index, size_t child_index)const=0;
+    /**
      * @brief add_root_child_index method accumulates the root node's children
      * @param node_index child node index
      * This will be flushed at the conclusion of parsing.
@@ -203,7 +216,19 @@ public:
      * @return the data of the token
      */
     const char * token_data( size_t token_index )const;
-
+    /**
+     * @brief child_count determines the number of children for the node
+     * @param node_index index of the node of which children count are requested
+     * @return the number of children nodes
+     */
+    size_t child_count(size_t node_index) const;
+    /**
+     * @brief child_index_at acquire the index of the given child
+     * @param node_index the index of the parent node from which child_index is relative
+     * @param child_index the relative child index
+     * @return the index of the child at the requested index
+     */
+    size_t child_index_at( size_t node_index, size_t child_index)const;
     size_t node_count()const{return m_tree_nodes.size();}
     size_t leaf_node_count()const{return m_tree_nodes.leaf_node_count();}
     size_t parent_node_count()const{return m_tree_nodes.parent_node_count();}

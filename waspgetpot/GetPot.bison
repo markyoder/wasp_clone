@@ -310,10 +310,24 @@ object : object_decl object_term
         children.push_back(object_decl_i);
         for( size_t child_i: *$object_members->second ) children.push_back(child_i);
         children.push_back(($object_term));
+        bool has_type = $object_members->first != $object_members->second->size();
+        auto name_i = object_decl_i;
+        std::string name;
+        if( has_type )
+        { // update/promote
+            // should be type = value
+            name_i = $object_members->second->at($object_members->first);
+            // acquire the data from the value
+            //TODO - conduct checks
+            name_i = interpreter.child_index_at(name_i,interpreter.child_count(name_i)-1);
+            name = interpreter.data(name_i);
+        }else{
+            name = interpreter.name(name_i);
+        }
         delete $object_members->second;
         delete $object_members;
         $$ = interpreter.push_parent(wasp::OBJECT
-                                        ,interpreter.name(object_decl_i)
+                                        ,name.c_str()
                                         ,children);
         }
 integer : INTEGER
@@ -438,11 +452,17 @@ start   : /** empty **/
             size_t object_decl_i = ($object_decl);
             children.push_back(object_decl_i);
             for( size_t child_i: *$object_members->second ) children.push_back(child_i);
+            bool has_type = $object_members->first != $object_members->second->size();
+            auto name_i = object_decl_i;
+            if( has_type )
+            { // update/promote
+                name_i = $object_members->second->at($object_members->first);
+            }
             delete $object_members->second;
             delete $object_members;
 
             size_t object_i = interpreter.push_parent(wasp::OBJECT
-                                            ,interpreter.name(object_decl_i)
+                                            ,interpreter.name(name_i)
                                             ,children);
             interpreter.add_root_child_index(object_i);
             interpreter.add_root_child_index(($object));
