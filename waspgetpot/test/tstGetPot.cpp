@@ -817,13 +817,14 @@ TEST(GetPotInterpreter,type_promotion)
     input <<R"INPUT([Problem]
     # Specify coordinate system type
     type = ted
+    [./sub] type = fred [../]
 []
 )INPUT";
 
 
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(12, interpreter.node_count() );
+    ASSERT_EQ(23, interpreter.node_count() );
     GetPotNodeView<decltype(interpreter.root())> document
             = interpreter.root();
     ASSERT_EQ(1, document.child_count() ); // problem and mesh
@@ -839,6 +840,17 @@ TEST(GetPotInterpreter,type_promotion)
 /ted/type/decl (type)
 /ted/type/= (=)
 /ted/type/value (ted)
+/ted/fred
+/ted/fred/sub
+/ted/fred/sub/[ ([)
+/ted/fred/sub/./ (./)
+/ted/fred/sub/decl (sub)
+/ted/fred/sub/] (])
+/ted/fred/type
+/ted/fred/type/decl (type)
+/ted/fred/type/= (=)
+/ted/fred/type/value (fred)
+/ted/fred/[../] ([../])
 /ted/[] ([])
 )INPUT";
     std::stringstream paths;
@@ -848,7 +860,8 @@ TEST(GetPotInterpreter,type_promotion)
     ASSERT_FALSE( ted_view.is_null() );
     ASSERT_FALSE( ted_view.is_decorative() );
     ASSERT_EQ(wasp::OBJECT, ted_view.type());
-    ASSERT_EQ(4, ted_view.child_count() );
-    ASSERT_EQ(1, ted_view.non_decorative_children_count() );
+    ASSERT_EQ(5, ted_view.child_count() );
+    // ted/type and ted/fred
+    ASSERT_EQ(2, ted_view.non_decorative_children_count() );
 
 }

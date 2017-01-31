@@ -186,16 +186,17 @@ sub_object_members : sub_object_member
         }
     }| sub_object_members sub_object_member
     {
-        $1->second->push_back(($sub_object_member));
         // only if the type has not already be assigned
         // and the new object is named type
-        if( $1->first == $1->second->size()-1
+        bool type_not_present = $1->first == $1->second->size();
+        if( type_not_present
             && std::strcmp("type",interpreter.name($sub_object_member)) == 0 )
         {
-            $1->first = $1->second->size()-1; // -1 because we just pushed the type
-        }else{
             $1->first = $1->second->size();
+        }else if( type_not_present ){
+            $1->first = $1->second->size() + 1;
         }
+        $1->second->push_back(($sub_object_member));
     }
 sub_object_decl : lbracket  dot_slash decl rbracket
     {
@@ -229,10 +230,25 @@ sub_object : sub_object_decl sub_object_term
         children.push_back(object_decl_i);
         for( size_t child_i: *$2->second ) children.push_back(child_i);
         children.push_back(($sub_object_term));
+        bool has_type = $sub_object_members->first
+                != $sub_object_members->second->size();
+        auto name_i = object_decl_i;
+        std::string name;
+        if( has_type )
+        { // update/promote
+            // should be type = value
+            name_i = $sub_object_members->second->at($sub_object_members->first);
+            // acquire the data from the value
+            //TODO - conduct checks
+            name_i = interpreter.child_index_at(name_i,interpreter.child_count(name_i)-1);
+            name = interpreter.data(name_i);
+        }else{
+            name = interpreter.name(name_i);
+        }
         delete $2->second;
         delete $2;
         $$ = interpreter.push_parent(wasp::SUB_OBJECT
-                                    ,interpreter.name(object_decl_i)
+                                    ,name.c_str()
                                     ,children);
     }
     | sub_object_decl sub_object_members
@@ -278,16 +294,18 @@ object_members : object_member
         }
     }| object_members object_member
     {
-        $1->second->push_back(($object_member));
+
         // only if the type has not already be assigned
         // and the new object is named type
-        if( $1->first == $1->second->size()-1
+        bool type_not_present = $1->first == $1->second->size();
+        if( type_not_present
             && std::strcmp("type",interpreter.name($object_member)) == 0 )
         {
-            $1->first = $1->second->size()-1; // -1 because we just pushed the type
-        }else{
             $1->first = $1->second->size();
+        }else if (type_not_present){
+            $1->first = $1->second->size()+1;
         }
+        $1->second->push_back(($object_member));
     }
 
 
