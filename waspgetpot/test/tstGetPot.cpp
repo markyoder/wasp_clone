@@ -821,6 +821,7 @@ TEST(GetPotInterpreter,multiple_objects)
  * 2. block with type = value and other stuff
  * 3. subblock with only type = value
  * 4. subblock with type = value and other stuff
+ * 5. subblock with type = value but no subblock terminator
  */
 TEST(GetPotInterpreter,type_promotion)
 {
@@ -833,13 +834,15 @@ TEST(GetPotInterpreter,type_promotion)
 []
 [p2]
    type = t2
+    [./s3]
+        type = us3
 []
 )INPUT";
 
 
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(48, interpreter.node_count() );
+    ASSERT_EQ(58, interpreter.node_count() );
     GetPotNodeView<decltype(interpreter.root())> document
             = interpreter.root();
     ASSERT_EQ(2, document.child_count() ); // problem and mesh
@@ -891,6 +894,16 @@ TEST(GetPotInterpreter,type_promotion)
 /t2/type/decl (type)
 /t2/type/= (=)
 /t2/type/value (t2)
+/t2/us3
+/t2/us3/s3
+/t2/us3/s3/[ ([)
+/t2/us3/s3/./ (./)
+/t2/us3/s3/decl (s3)
+/t2/us3/s3/] (])
+/t2/us3/type
+/t2/us3/type/decl (type)
+/t2/us3/type/= (=)
+/t2/us3/type/value (us3)
 /t2/[] ([])
 )INPUT";
     std::stringstream paths;
