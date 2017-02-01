@@ -817,7 +817,8 @@ TEST(GetPotInterpreter,type_promotion)
     input <<R"INPUT([Problem]
     # Specify coordinate system type
     type = ted
-    [./sub] type = fred [../]
+    [./s1] type = fred [../]
+    [./s2] type = x  y=1 [../]
 []
 [p2]
    type = t2
@@ -827,7 +828,7 @@ TEST(GetPotInterpreter,type_promotion)
 
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(33, interpreter.node_count() );
+    ASSERT_EQ(48, interpreter.node_count() );
     GetPotNodeView<decltype(interpreter.root())> document
             = interpreter.root();
     ASSERT_EQ(2, document.child_count() ); // problem and mesh
@@ -844,16 +845,31 @@ TEST(GetPotInterpreter,type_promotion)
 /ted/type/= (=)
 /ted/type/value (ted)
 /ted/fred
-/ted/fred/sub
-/ted/fred/sub/[ ([)
-/ted/fred/sub/./ (./)
-/ted/fred/sub/decl (sub)
-/ted/fred/sub/] (])
+/ted/fred/s1
+/ted/fred/s1/[ ([)
+/ted/fred/s1/./ (./)
+/ted/fred/s1/decl (s1)
+/ted/fred/s1/] (])
 /ted/fred/type
 /ted/fred/type/decl (type)
 /ted/fred/type/= (=)
 /ted/fred/type/value (fred)
 /ted/fred/[../] ([../])
+/ted/x
+/ted/x/s2
+/ted/x/s2/[ ([)
+/ted/x/s2/./ (./)
+/ted/x/s2/decl (s2)
+/ted/x/s2/] (])
+/ted/x/type
+/ted/x/type/decl (type)
+/ted/x/type/= (=)
+/ted/x/type/value (x)
+/ted/x/y
+/ted/x/y/decl (y)
+/ted/x/y/= (=)
+/ted/x/y/value (1)
+/ted/x/[../] ([../])
 /ted/[] ([])
 /t2
 /t2/p2
@@ -873,8 +889,8 @@ TEST(GetPotInterpreter,type_promotion)
     ASSERT_FALSE( ted_view.is_null() );
     ASSERT_FALSE( ted_view.is_decorative() );
     ASSERT_EQ(wasp::OBJECT, ted_view.type());
-    ASSERT_EQ(5, ted_view.child_count() );
+    ASSERT_EQ(6, ted_view.child_count() );
     // ted/type and ted/fred
-    ASSERT_EQ(2, ted_view.non_decorative_children_count() );
+    ASSERT_EQ(3, ted_view.non_decorative_children_count() );
 
 }
