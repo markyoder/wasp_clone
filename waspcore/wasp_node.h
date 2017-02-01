@@ -19,7 +19,6 @@ namespace wasp{
         , VALUE
         , COMMENT
         , KEYED_VALUE
-        , OBJECT_DECL
         , OBJECT_TERM
         , OBJECT
         , WASP_COMMA // ,
@@ -47,7 +46,6 @@ namespace wasp{
         , PARENTHESIS
         , FUNCTION
         , MATH_EXPRESSION
-        , SUB_OBJECT_DECL
         , LBRACKET    // [
         , RBRACKET    // ]
         , SUB_OBJECT_TERM

@@ -71,9 +71,7 @@ bool GetPotNodeView<TNV>::is_decorative()const{
     case wasp::ASSIGN:
     case wasp::COMMENT:
     case wasp::IDENTIFIER:
-    case wasp::OBJECT_DECL:
     case wasp::OBJECT_TERM:
-    case wasp::SUB_OBJECT_DECL:
     case wasp::SUB_OBJECT_TERM:  // [./] | [../]
     case wasp::DOT_SLASH: // sub block component '[./subblock]'
     case wasp::WASP_COMMA: // ,

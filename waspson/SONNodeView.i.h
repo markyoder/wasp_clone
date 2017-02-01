@@ -91,7 +91,6 @@ bool SONNodeView<TNV>::is_decorative()const{
     case wasp::ASSIGN:
     case wasp::COMMENT:
     case wasp::IDENTIFIER:
-    case wasp::OBJECT_DECL:
     case wasp::OBJECT_TERM:
     case wasp::WASP_COMMA: // ,
     case wasp::COLON :
