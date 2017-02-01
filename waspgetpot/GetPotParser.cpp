@@ -39,7 +39,7 @@
 
 #include <stdio.h>
 #include <vector>
-
+#include <cstring>
 
 #line 45 "GetPotParser.cpp" // lalr1.cc:404
 

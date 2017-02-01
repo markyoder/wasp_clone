@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <vector>
-
+#include <cstring>
 %}
 
 /*** yacc/bison Declarations ***/
