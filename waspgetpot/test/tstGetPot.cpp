@@ -819,16 +819,19 @@ TEST(GetPotInterpreter,type_promotion)
     type = ted
     [./sub] type = fred [../]
 []
+[p2]
+   type = t2
+[]
 )INPUT";
 
 
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(23, interpreter.node_count() );
+    ASSERT_EQ(33, interpreter.node_count() );
     GetPotNodeView<decltype(interpreter.root())> document
             = interpreter.root();
-    ASSERT_EQ(1, document.child_count() ); // problem and mesh
-    ASSERT_EQ(1, interpreter.child_count(document.tree_node_index()) );
+    ASSERT_EQ(2, document.child_count() ); // problem and mesh
+    ASSERT_EQ(2, interpreter.child_count(document.tree_node_index()) );
     std::string expected_paths=R"INPUT(/
 /ted
 /ted/Problem
@@ -852,6 +855,16 @@ TEST(GetPotInterpreter,type_promotion)
 /ted/fred/type/value (fred)
 /ted/fred/[../] ([../])
 /ted/[] ([])
+/t2
+/t2/p2
+/t2/p2/[ ([)
+/t2/p2/decl (p2)
+/t2/p2/] (])
+/t2/type
+/t2/type/decl (type)
+/t2/type/= (=)
+/t2/type/value (t2)
+/t2/[] ([])
 )INPUT";
     std::stringstream paths;
     document.paths(paths);
