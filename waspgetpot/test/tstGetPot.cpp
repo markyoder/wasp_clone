@@ -811,6 +811,17 @@ TEST(GetPotInterpreter,multiple_objects)
     }
 }
 
+/**
+ * @brief TEST getpot type promotion
+ * When a block/subblock has a type field,
+ * the block/subblock name becomes the type field's value.
+ *
+ * Test each scenario for block and subblock
+ * 1. block with only type = value
+ * 2. block with type = value and other stuff
+ * 3. subblock with only type = value
+ * 4. subblock with type = value and other stuff
+ */
 TEST(GetPotInterpreter,type_promotion)
 {
     std::stringstream input;
