@@ -105,7 +105,8 @@
 %type <node_indices> array_members array
 %type <object_children> object_members sub_object_members
  //%type <node_indices> last_object
-
+%destructor { delete $$; } array_members array
+%destructor { delete $$->second; delete $$; } object_members sub_object_members
 %{
 
 #include "GetPotInterpreter.h"
