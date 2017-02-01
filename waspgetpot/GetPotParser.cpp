@@ -1127,24 +1127,32 @@ namespace wasp {
             for( size_t child_i: *(yystack_[1].value.object_children)->second ) children.push_back(child_i);
             bool has_type = (yystack_[1].value.object_children)->first != (yystack_[1].value.object_children)->second->size();
             auto name_i = object_decl_i;
+            std::string name;
             if( has_type )
             { // update/promote
+                // should be type = value
                 name_i = (yystack_[1].value.object_children)->second->at((yystack_[1].value.object_children)->first);
+                // acquire the data from the value
+                //TODO - conduct checks
+                name_i = interpreter.child_index_at(name_i,interpreter.child_count(name_i)-1);
+                name = interpreter.data(name_i);
+            }else{
+                name = interpreter.name(name_i);
             }
             delete (yystack_[1].value.object_children)->second;
             delete (yystack_[1].value.object_children);
 
             size_t object_i = interpreter.push_parent(wasp::OBJECT
-                                            ,interpreter.name(name_i)
+                                            ,name.c_str()
                                             ,children);
             interpreter.add_root_child_index(object_i);
             interpreter.add_root_child_index(((yystack_[0].value.node_index)));
         }
-#line 1144 "GetPotParser.cpp" // lalr1.cc:859
+#line 1152 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
 
-#line 1148 "GetPotParser.cpp" // lalr1.cc:859
+#line 1156 "GetPotParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1620,8 +1628,8 @@ namespace wasp {
 
 
 } // wasp
-#line 1624 "GetPotParser.cpp" // lalr1.cc:1167
-#line 507 "GetPot.bison" // lalr1.cc:1168
+#line 1632 "GetPotParser.cpp" // lalr1.cc:1167
+#line 515 "GetPot.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 namespace wasp{
 void GetPotParser::error(const GetPotParser::location_type& l,

@@ -822,6 +822,7 @@ TEST(GetPotInterpreter,multiple_objects)
  * 3. subblock with only type = value
  * 4. subblock with type = value and other stuff
  * 5. subblock with type = value but no subblock terminator
+ * 6. block with type = value but no block terminator
  */
 TEST(GetPotInterpreter,type_promotion)
 {
@@ -832,6 +833,8 @@ TEST(GetPotInterpreter,type_promotion)
     [./s1] type = fred [../]
     [./s2] type = x  y=1 [../]
 []
+[p1]
+    type = t1
 [p2]
    type = t2
     [./s3]
@@ -842,11 +845,11 @@ TEST(GetPotInterpreter,type_promotion)
 
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(58, interpreter.node_count() );
+    ASSERT_EQ(67, interpreter.node_count() );
     GetPotNodeView<decltype(interpreter.root())> document
             = interpreter.root();
-    ASSERT_EQ(2, document.child_count() ); // problem and mesh
-    ASSERT_EQ(2, interpreter.child_count(document.tree_node_index()) );
+    ASSERT_EQ(3, document.child_count() ); // problem and mesh
+    ASSERT_EQ(3, interpreter.child_count(document.tree_node_index()) );
     std::string expected_paths=R"INPUT(/
 /ted
 /ted/Problem
@@ -885,6 +888,15 @@ TEST(GetPotInterpreter,type_promotion)
 /ted/x/y/value (1)
 /ted/x/[../] ([../])
 /ted/[] ([])
+/t1
+/t1/p1
+/t1/p1/[ ([)
+/t1/p1/decl (p1)
+/t1/p1/] (])
+/t1/type
+/t1/type/decl (type)
+/t1/type/= (=)
+/t1/type/value (t1)
 /t2
 /t2/p2
 /t2/p2/[ ([)
