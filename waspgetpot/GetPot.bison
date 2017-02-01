@@ -110,6 +110,26 @@
 
 #include "GetPotInterpreter.h"
 #include "GetPotLexer.h"
+std::string getpot_get_name(size_t object_decl_i
+                            , wasp::AbstractInterpreter & interpreter
+                            , std::pair<size_t, std::vector<size_t>*>* object_members)
+{
+    bool has_type = object_members->first != object_members->second->size();
+    auto name_i = object_decl_i;
+    std::string name;
+    if( has_type )
+    { // update/promote
+        // should be type = value
+        name_i = object_members->second->at(object_members->first);
+        // acquire the data from the value
+        //TODO - conduct checks
+        name_i = interpreter.child_index_at(name_i,interpreter.child_count(name_i)-1);
+        name = interpreter.data(name_i);
+    }else{
+        name = interpreter.name(name_i);
+    }
+    return name;
+}
 
 /* this "connects" the GetPot parser in the interpreter to the flex GetPotLexer class
  * object. it defines the yylex() function call to pull the next token from the
@@ -230,21 +250,10 @@ sub_object : sub_object_decl sub_object_term
         children.push_back(object_decl_i);
         for( size_t child_i: *$2->second ) children.push_back(child_i);
         children.push_back(($sub_object_term));
-        bool has_type = $sub_object_members->first
-                != $sub_object_members->second->size();
-        auto name_i = object_decl_i;
-        std::string name;
-        if( has_type )
-        { // update/promote
-            // should be type = value
-            name_i = $sub_object_members->second->at($sub_object_members->first);
-            // acquire the data from the value
-            //TODO - conduct checks
-            name_i = interpreter.child_index_at(name_i,interpreter.child_count(name_i)-1);
-            name = interpreter.data(name_i);
-        }else{
-            name = interpreter.name(name_i);
-        }
+        const std::string& name
+                = getpot_get_name(object_decl_i
+                                  ,interpreter
+                                  ,$sub_object_members);
         delete $2->second;
         delete $2;
         $$ = interpreter.push_parent(wasp::SUB_OBJECT
@@ -256,21 +265,10 @@ sub_object : sub_object_decl sub_object_term
         size_t object_decl_i = ($sub_object_decl);
         children.push_back(object_decl_i);
         for( size_t child_i: *$2->second ) children.push_back(child_i);
-        bool has_type = $sub_object_members->first
-                != $sub_object_members->second->size();
-        auto name_i = object_decl_i;
-        std::string name;
-        if( has_type )
-        { // update/promote
-            // should be type = value
-            name_i = $sub_object_members->second->at($sub_object_members->first);
-            // acquire the data from the value
-            //TODO - conduct checks
-            name_i = interpreter.child_index_at(name_i,interpreter.child_count(name_i)-1);
-            name = interpreter.data(name_i);
-        }else{
-            name = interpreter.name(name_i);
-        }
+        const std::string & name
+                = getpot_get_name(object_decl_i
+                                   ,interpreter
+                                   ,$sub_object_members);
         delete $2->second;
         delete $2;
         $$ = interpreter.push_parent(wasp::SUB_OBJECT
@@ -343,20 +341,10 @@ object : object_decl object_term
         children.push_back(object_decl_i);
         for( size_t child_i: *$object_members->second ) children.push_back(child_i);
         children.push_back(($object_term));
-        bool has_type = $object_members->first != $object_members->second->size();
-        auto name_i = object_decl_i;
-        std::string name;
-        if( has_type )
-        { // update/promote
-            // should be type = value
-            name_i = $object_members->second->at($object_members->first);
-            // acquire the data from the value
-            //TODO - conduct checks
-            name_i = interpreter.child_index_at(name_i,interpreter.child_count(name_i)-1);
-            name = interpreter.data(name_i);
-        }else{
-            name = interpreter.name(name_i);
-        }
+        const std::string& name
+                = getpot_get_name(object_decl_i
+                                  ,interpreter
+                                  ,$object_members);
         delete $object_members->second;
         delete $object_members;
         $$ = interpreter.push_parent(wasp::OBJECT
@@ -435,7 +423,6 @@ array : quote array_members quote
 
 keyedvalue : decl assign value
     {        
-
         size_t key_index = ($1);
         size_t assign_index = ($2);
         size_t value_index = ($3);
@@ -485,20 +472,10 @@ start   : /** empty **/
             size_t object_decl_i = ($object_decl);
             children.push_back(object_decl_i);
             for( size_t child_i: *$object_members->second ) children.push_back(child_i);
-            bool has_type = $object_members->first != $object_members->second->size();
-            auto name_i = object_decl_i;
-            std::string name;
-            if( has_type )
-            { // update/promote
-                // should be type = value
-                name_i = $object_members->second->at($object_members->first);
-                // acquire the data from the value
-                //TODO - conduct checks
-                name_i = interpreter.child_index_at(name_i,interpreter.child_count(name_i)-1);
-                name = interpreter.data(name_i);
-            }else{
-                name = interpreter.name(name_i);
-            }
+            const std::string& name
+                    = getpot_get_name(object_decl_i
+                                      ,interpreter
+                                      ,$object_members);
             delete $object_members->second;
             delete $object_members;
 
