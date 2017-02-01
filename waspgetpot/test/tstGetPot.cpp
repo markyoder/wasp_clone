@@ -68,7 +68,7 @@ TEST(GetPotInterpreter,empty_object)
     // Simple parse
     // document
     //  |_object
-    //    |_ object_decl 'ted'
+    //    |_ decl 'ted'
     //      |_ [ '['
     //      |_ string 'ted'
     //      |_ ] ']'
@@ -77,7 +77,7 @@ TEST(GetPotInterpreter,empty_object)
     input << "[ted][]";
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(7, interpreter.node_count() );
+    ASSERT_EQ(6, interpreter.node_count() );
 
     std::vector<std::string> token_data = {"[","ted","]"};
     std::vector<std::string> leaf_node_names = {"[","decl","]"};
@@ -93,11 +93,11 @@ TEST(GetPotInterpreter,empty_object)
         }
     }
     std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::DECL
-                                           ,wasp::RBRACKET,wasp::OBJECT_DECL
+                                           ,wasp::RBRACKET
                                            ,wasp::OBJECT_TERM
                                            ,wasp::OBJECT
                                           ,wasp::DOCUMENT_ROOT};
-    std::vector<std::string> node_names = {"[","decl","]","ted"
+    std::vector<std::string> node_names = {"[","decl","]"
                                            ,"[]"
                                            ,"ted","document"};
     ASSERT_EQ( node_types.size(), node_names.size() );
@@ -130,11 +130,11 @@ TEST(GetPotInterpreter,simple_object)
     input << "[ted]key = 3.421[]";
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(11, interpreter.node_count() );
+    ASSERT_EQ(10, interpreter.node_count() );
 
                                            // object decl
     std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::DECL
-                                           ,wasp::RBRACKET,wasp::OBJECT_DECL
+                                           ,wasp::RBRACKET
                                            // keyed value
                                            ,wasp::DECL,wasp::ASSIGN
                                            ,wasp::VALUE,wasp::KEYED_VALUE
@@ -144,7 +144,7 @@ TEST(GetPotInterpreter,simple_object)
                                            ,wasp::OBJECT
                                            // document root
                                           ,wasp::DOCUMENT_ROOT};
-    std::vector<std::string> node_names = {"[","decl","]","ted"
+    std::vector<std::string> node_names = {"[","decl","]"
                                            ,"decl","=","value"
                                            ,"key"
                                            ,"[]"
@@ -193,11 +193,11 @@ TEST(GetPotInterpreter,less_simple_object)
  [])INPUT";
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(20, interpreter.node_count() );
+    ASSERT_EQ(19, interpreter.node_count() );
 
                                            // object decl
     std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::DECL
-                                           ,wasp::RBRACKET,wasp::OBJECT_DECL
+                                           ,wasp::RBRACKET
                                            // keyed value boo
                                            ,wasp::DECL,wasp::ASSIGN
                                            ,wasp::VALUE,wasp::KEYED_VALUE
@@ -215,7 +215,7 @@ TEST(GetPotInterpreter,less_simple_object)
                                            ,wasp::OBJECT
                                            // document root
                                           ,wasp::DOCUMENT_ROOT};
-    std::vector<std::string> node_names = {"[","decl","]","ted"
+    std::vector<std::string> node_names = {"[","decl","]"
                                            ,"decl","=","value" // boo
                                            ,"boo"
                                            ,"comment" // halloween
@@ -259,10 +259,10 @@ TEST(GetPotInterpreter, object_array)
     input << "[ted]data='basic 201 lu'[]";
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(15, interpreter.node_count() );
+    ASSERT_EQ(14, interpreter.node_count() );
 
     std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::DECL
-                                           ,wasp::RBRACKET,wasp::OBJECT_DECL
+                                           ,wasp::RBRACKET
                                            // keyed value array data
                                            ,wasp::DECL,wasp::ASSIGN
                                            , wasp::QUOTE
@@ -274,7 +274,7 @@ TEST(GetPotInterpreter, object_array)
                                            ,wasp::OBJECT_TERM
                                            ,wasp::OBJECT
                                           ,wasp::DOCUMENT_ROOT};
-    std::vector<std::string> node_names = {"[","decl","]","ted"
+    std::vector<std::string> node_names = {"[","decl","]"
                                            ,"decl","="// data array
                                            ,"'" // start
                                            ,"value" // basic
@@ -317,18 +317,16 @@ TEST(GetPotInterpreter, object_empty_subobject)
     input << "[ted][./fred][../][]";
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(14, interpreter.node_count() );
+    ASSERT_EQ(12, interpreter.node_count() );
 
     std::vector<wasp::NODE> node_types = {wasp::LBRACKET
                                           ,wasp::DECL
                                            ,wasp::RBRACKET
-                                          ,wasp::OBJECT_DECL
                                            // sub object
                                            ,wasp::LBRACKET
                                           ,wasp::DOT_SLASH
                                           ,wasp::DECL
                                           ,wasp::RBRACKET
-                                          ,wasp::SUB_OBJECT_DECL
                                            ,wasp::SUB_OBJECT_TERM
                                           ,wasp::SUB_OBJECT
                                            ,wasp::OBJECT_TERM
@@ -337,12 +335,10 @@ TEST(GetPotInterpreter, object_empty_subobject)
     std::vector<std::string> node_names = {"["
                                            ,"decl"
                                            ,"]"
-                                           ,"ted"
                                            ,"["
                                            ,"./"
                                            ,"decl"
                                            ,"]"
-                                           ,"fred"
                                            ,"[../]"
                                            ,"fred"
                                            ,"[]"
@@ -384,18 +380,16 @@ TEST(GetPotInterpreter, object_subobject)
     input << "[ted][./fred]key=3.4321[../][]";
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(18, interpreter.node_count() );
+    ASSERT_EQ(16, interpreter.node_count() );
 
     std::vector<wasp::NODE> node_types = {wasp::LBRACKET
                                           ,wasp::DECL
                                            ,wasp::RBRACKET
-                                          ,wasp::OBJECT_DECL
                                            // sub object
                                            ,wasp::LBRACKET
                                           ,wasp::DOT_SLASH
                                           ,wasp::DECL
                                           ,wasp::RBRACKET
-                                          ,wasp::SUB_OBJECT_DECL
                                           // keyed value key
                                           ,wasp::DECL,wasp::ASSIGN
                                           ,wasp::VALUE,wasp::KEYED_VALUE
@@ -407,12 +401,10 @@ TEST(GetPotInterpreter, object_subobject)
     std::vector<std::string> node_names = {"["
                                            ,"decl"
                                            ,"]"
-                                           ,"ted"
                                            ,"["
                                            ,"./"
                                            ,"decl"
                                            ,"]"
-                                           ,"fred"
                                            ,"decl","=","value" // key
                                            ,"key"
                                            ,"[../]"
@@ -511,27 +503,25 @@ TEST(GetPotInterpreter,paths)
     std::string expected_paths=
 R"INPUT(/
 /Problem
-/Problem/Problem
-/Problem/Problem/[ ([)
-/Problem/Problem/decl (Problem)
-/Problem/Problem/] (])
+/Problem/[ ([)
+/Problem/decl (Problem)
+/Problem/] (])
 /Problem/coord_type
 /Problem/coord_type/decl (coord_type)
 /Problem/coord_type/= (=)
 /Problem/coord_type/value (RZ)
 /Problem/child
-/Problem/child/child
-/Problem/child/child/[ ([)
-/Problem/child/child/./ (./)
-/Problem/child/child/decl (child)
-/Problem/child/child/] (])
+/Problem/child/[ ([)
+/Problem/child/./ (./)
+/Problem/child/decl (child)
+/Problem/child/] (])
 /Problem/child/[../] ([../])
 /Problem/[] ([])
 )INPUT";
 
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(18, interpreter.node_count() );
+    ASSERT_EQ(16, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ(1, document.child_count() );
     std::stringstream paths;
@@ -631,22 +621,24 @@ TEST(GetPotInterpreter,early_terminated_object)
 
     GetPotInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(46, interpreter.node_count() );
+    ASSERT_EQ(41, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 2, document.child_count() );
     {
         auto first_block = document.child_at(0);
-        ASSERT_EQ(3, first_block.child_count() );
+        ASSERT_EQ(5, first_block.child_count() );
         std::string name = first_block.name();
         ASSERT_EQ("first_block", name);
-        std::vector<std::string> names={"first_block"
+        std::vector<std::string> names={"[","decl","]"
                                         ,"subblock"
                                         ,"comment"};
-        std::vector<wasp::NODE> types={wasp::OBJECT_DECL
+        std::vector<wasp::NODE> types={wasp::LBRACKET
+                                       ,wasp::DECL
+                                       ,wasp::RBRACKET
                                        ,wasp::SUB_OBJECT
                                        ,wasp::COMMENT};
-        std::vector<std::size_t> line = {1,2,5};
-        std::vector<std::size_t> column = {1,3,2};
+        std::vector<std::size_t> line = {1,1,1,2,5};
+        std::vector<std::size_t> column = {1,2,13,3,2};
         ASSERT_EQ(names.size(), types.size());
         ASSERT_EQ(names.size(), line.size());
         ASSERT_EQ(names.size(), column.size());
@@ -664,22 +656,24 @@ TEST(GetPotInterpreter,early_terminated_object)
     }
     {
         auto new_block = document.child_at(1);
-        ASSERT_EQ(5, new_block.child_count() );
+        ASSERT_EQ(7, new_block.child_count() );
         std::string name = new_block.name();
         ASSERT_EQ("new_block", name);
-        std::vector<std::string> names={"new_block"
+        std::vector<std::string> names={"[","decl","]"
                                         ,"comment"
                                         ,"subblock1"
                                         ,"subblock2"
                                         ,"[]"
                                         };
-        std::vector<wasp::NODE> types={wasp::OBJECT_DECL
+        std::vector<wasp::NODE> types={wasp::LBRACKET
+                                       ,wasp::DECL
+                                       ,wasp::RBRACKET
                                        ,wasp::COMMENT
                                        ,wasp::SUB_OBJECT
                                        ,wasp::SUB_OBJECT
                                       ,wasp::OBJECT_TERM};
-        std::vector<std::size_t> line =   {6,7,8,10,12};
-        std::vector<std::size_t> column = {1,5,5, 5, 1};
+        std::vector<std::size_t> line =   {6,6,6,7,8,10,12};
+        std::vector<std::size_t> column = {1,2,11,5,5, 5, 1};
         ASSERT_EQ(names.size(), types.size());
         ASSERT_EQ(names.size(), line.size());
         ASSERT_EQ(names.size(), column.size());
@@ -711,18 +705,18 @@ TEST(GetPotInterpreter,nested_subblocks)
 [])INPUT";
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(21, interpreter.node_count() );
+    ASSERT_EQ(18, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 1, document.child_count() );
     auto block = document.child_at(0);
     ASSERT_EQ( "block", std::string(block.name()) );
     ASSERT_EQ( wasp::OBJECT, block.type() );
-    ASSERT_EQ( 3, block.child_count() );
-    auto subblock = block.child_at(1);
+    ASSERT_EQ( 5, block.child_count() );
+    auto subblock = block.child_at(3);
     ASSERT_EQ( "subblock", std::string(subblock.name()) );
     ASSERT_EQ( wasp::SUB_OBJECT, subblock.type() );
-    ASSERT_EQ( 3, subblock.child_count() );
-    auto nestedsubblock = subblock.child_at(1);
+    ASSERT_EQ( 6, subblock.child_count() );
+    auto nestedsubblock = subblock.child_at(4);
     ASSERT_EQ( "nested_subblock", std::string(nestedsubblock.name()));
     ASSERT_EQ( wasp::SUB_OBJECT, nestedsubblock.type() );
     ASSERT_EQ( 3, nestedsubblock.line() );
@@ -746,7 +740,7 @@ TEST(GetPotInterpreter,multiple_objects)
 
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(34, interpreter.node_count() );
+    ASSERT_EQ(32, interpreter.node_count() );
     GetPotNodeView<decltype(interpreter.root())> document
             = interpreter.root();
     ASSERT_EQ(2, document.child_count() ); // problem and mesh
@@ -756,10 +750,9 @@ TEST(GetPotInterpreter,multiple_objects)
                                            ,0));
     std::string expected_paths=R"INPUT(/
 /Problem
-/Problem/Problem
-/Problem/Problem/[ ([)
-/Problem/Problem/decl (Problem)
-/Problem/Problem/] (])
+/Problem/[ ([)
+/Problem/decl (Problem)
+/Problem/] (])
 /Problem/comment (# Specify coordinate system type)
 /Problem/coord_type
 /Problem/coord_type/decl (coord_type)
@@ -767,10 +760,9 @@ TEST(GetPotInterpreter,multiple_objects)
 /Problem/coord_type/value (RZ)
 /Problem/[] ([])
 /Mesh
-/Mesh/Mesh
-/Mesh/Mesh/[ ([)
-/Mesh/Mesh/decl (Mesh)
-/Mesh/Mesh/] (])
+/Mesh/[ ([)
+/Mesh/decl (Mesh)
+/Mesh/] (])
 /Mesh/file
 /Mesh/file/decl (file)
 /Mesh/file/= (=)
@@ -796,7 +788,7 @@ TEST(GetPotInterpreter,multiple_objects)
     ASSERT_FALSE( mesh_view.is_null() );
     ASSERT_FALSE( mesh_view.is_decorative() );
     ASSERT_EQ(wasp::OBJECT, mesh_view.type());
-    ASSERT_EQ(6, mesh_view.child_count() );
+    ASSERT_EQ(8, mesh_view.child_count() );
     ASSERT_EQ(3, mesh_view.non_decorative_children_count() );
     auto disp_view = mesh_view.first_child_by_name("displacements");
     ASSERT_FALSE( disp_view.is_null() );
@@ -845,39 +837,36 @@ TEST(GetPotInterpreter,type_promotion)
 
     GetPotInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-    ASSERT_EQ(67, interpreter.node_count() );
+    ASSERT_EQ(61, interpreter.node_count() );
     GetPotNodeView<decltype(interpreter.root())> document
             = interpreter.root();
     ASSERT_EQ(3, document.child_count() ); // problem and mesh
     ASSERT_EQ(3, interpreter.child_count(document.tree_node_index()) );
     std::string expected_paths=R"INPUT(/
 /ted
-/ted/Problem
-/ted/Problem/[ ([)
-/ted/Problem/decl (Problem)
-/ted/Problem/] (])
+/ted/[ ([)
+/ted/decl (Problem)
+/ted/] (])
 /ted/comment (# Specify coordinate system type)
 /ted/type
 /ted/type/decl (type)
 /ted/type/= (=)
 /ted/type/value (ted)
 /ted/fred
-/ted/fred/s1
-/ted/fred/s1/[ ([)
-/ted/fred/s1/./ (./)
-/ted/fred/s1/decl (s1)
-/ted/fred/s1/] (])
+/ted/fred/[ ([)
+/ted/fred/./ (./)
+/ted/fred/decl (s1)
+/ted/fred/] (])
 /ted/fred/type
 /ted/fred/type/decl (type)
 /ted/fred/type/= (=)
 /ted/fred/type/value (fred)
 /ted/fred/[../] ([../])
 /ted/x
-/ted/x/s2
-/ted/x/s2/[ ([)
-/ted/x/s2/./ (./)
-/ted/x/s2/decl (s2)
-/ted/x/s2/] (])
+/ted/x/[ ([)
+/ted/x/./ (./)
+/ted/x/decl (s2)
+/ted/x/] (])
 /ted/x/type
 /ted/x/type/decl (type)
 /ted/x/type/= (=)
@@ -889,29 +878,26 @@ TEST(GetPotInterpreter,type_promotion)
 /ted/x/[../] ([../])
 /ted/[] ([])
 /t1
-/t1/p1
-/t1/p1/[ ([)
-/t1/p1/decl (p1)
-/t1/p1/] (])
+/t1/[ ([)
+/t1/decl (p1)
+/t1/] (])
 /t1/type
 /t1/type/decl (type)
 /t1/type/= (=)
 /t1/type/value (t1)
 /t2
-/t2/p2
-/t2/p2/[ ([)
-/t2/p2/decl (p2)
-/t2/p2/] (])
+/t2/[ ([)
+/t2/decl (p2)
+/t2/] (])
 /t2/type
 /t2/type/decl (type)
 /t2/type/= (=)
 /t2/type/value (t2)
 /t2/us3
-/t2/us3/s3
-/t2/us3/s3/[ ([)
-/t2/us3/s3/./ (./)
-/t2/us3/s3/decl (s3)
-/t2/us3/s3/] (])
+/t2/us3/[ ([)
+/t2/us3/./ (./)
+/t2/us3/decl (s3)
+/t2/us3/] (])
 /t2/us3/type
 /t2/us3/type/decl (type)
 /t2/us3/type/= (=)
@@ -925,7 +911,7 @@ TEST(GetPotInterpreter,type_promotion)
     ASSERT_FALSE( ted_view.is_null() );
     ASSERT_FALSE( ted_view.is_decorative() );
     ASSERT_EQ(wasp::OBJECT, ted_view.type());
-    ASSERT_EQ(6, ted_view.child_count() );
+    ASSERT_EQ(8, ted_view.child_count() );
     // ted/type and ted/fred
     ASSERT_EQ(3, ted_view.non_decorative_children_count() );
 

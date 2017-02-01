@@ -95,16 +95,18 @@
 %type <token_index>   DECL "declarator"
 %type <token_index>   VALUE "value"
 %type <node_index>  integer real string lbracket rbracket quote assign comma
-%type <node_index>  object_decl object_term
-%type <node_index>  sub_object_decl sub_object_term
+%type <node_index>  object_term
+%type <node_index>  sub_object_term
 %type <node_index>  object sub_object
 %type <node_index>  unquoted_string
 %type <node_index>  keyedvalue dot_slash
 %type <node_index>  comment value decl primitive
 %type <node_index> object_member array_member sub_object_member
 %type <node_indices> array_members array
+%type <node_indices> object_decl sub_object_decl
 %type <object_children> object_members sub_object_members
  //%type <node_indices> last_object
+%destructor { delete $$; } object_decl sub_object_decl
 %destructor { delete $$; } array_members array
 %destructor { delete $$->second; delete $$; } object_members sub_object_members
 %{
@@ -127,7 +129,7 @@ std::string getpot_get_name(size_t object_decl_i
         name_i = interpreter.child_index_at(name_i,interpreter.child_count(name_i)-1);
         name = interpreter.data(name_i);
     }else{
-        name = interpreter.name(name_i);
+        name = interpreter.data(name_i);
     }
     return name;
 }
@@ -225,30 +227,27 @@ sub_object_decl : lbracket  dot_slash decl rbracket
         size_t dot_slash_index = ($dot_slash);
         size_t decl_index = ($decl);
         size_t rbracket_index = ($rbracket);
-        std::vector<size_t> child_indices = {lbracket_index
-                                                   ,dot_slash_index
-                                                   ,decl_index
-                                                   ,rbracket_index};
 
-        $$ = interpreter.push_parent(wasp::SUB_OBJECT_DECL
-                                        ,interpreter.data(decl_index).c_str()
-                                        ,child_indices);
+
+        $$ = new std::vector<size_t>{lbracket_index
+                ,dot_slash_index
+                ,decl_index
+                ,rbracket_index};
     }
 sub_object : sub_object_decl sub_object_term
     {// empty object
-        size_t object_decl_i = ($sub_object_decl);
-        size_t object_term_i = ($sub_object_term);
-        std::vector<size_t> child_indices = {object_decl_i
-                                                   ,object_term_i};
+        std::vector<size_t> &child_indices = *$sub_object_decl;
+        size_t object_decl_i = child_indices.at(2);
+        child_indices.push_back($sub_object_term);
 
         $$ = interpreter.push_parent(wasp::SUB_OBJECT
-                                        ,interpreter.name(object_decl_i)
+                                        ,interpreter.data(object_decl_i).c_str()
                                         ,child_indices);
+        delete $1;
 
     }| sub_object_decl sub_object_members sub_object_term
-    {   std::vector<size_t> children; children.reserve(2+$2->second->size());
-        size_t object_decl_i = ($sub_object_decl);
-        children.push_back(object_decl_i);
+    {   std::vector<size_t> & children = *$sub_object_decl;
+        size_t object_decl_i = children.at(2);
         for( size_t child_i: *$2->second ) children.push_back(child_i);
         children.push_back(($sub_object_term));
         const std::string& name
@@ -260,11 +259,11 @@ sub_object : sub_object_decl sub_object_term
         $$ = interpreter.push_parent(wasp::SUB_OBJECT
                                     ,name.c_str()
                                     ,children);
+        delete $1;
     }
     | sub_object_decl sub_object_members
-    {   std::vector<size_t> children; children.reserve(1+$2->second->size());
-        size_t object_decl_i = ($sub_object_decl);
-        children.push_back(object_decl_i);
+    {   std::vector<size_t> & children = *$sub_object_decl;
+        size_t object_decl_i = children.at(2);
         for( size_t child_i: *$2->second ) children.push_back(child_i);
         const std::string & name
                 = getpot_get_name(object_decl_i
@@ -275,18 +274,15 @@ sub_object : sub_object_decl sub_object_term
         $$ = interpreter.push_parent(wasp::SUB_OBJECT
                                     ,name.c_str()
                                     ,children);
+        delete $1;
     }
 object_decl : lbracket decl rbracket {
         size_t lbracket_index = ($lbracket);
         size_t decl_index = ($decl);
         size_t rbracket_index = ($rbracket);
-        std::vector<size_t> child_indices = {lbracket_index
+        $$ = new std::vector<size_t>{lbracket_index
                                                    ,decl_index
                                                    ,rbracket_index};
-
-        $$ = interpreter.push_parent(wasp::OBJECT_DECL
-                                        ,interpreter.data(decl_index).c_str()
-                                        ,child_indices);
     }
 object_member : primitive | keyedvalue | comment
                 | sub_object
@@ -325,21 +321,20 @@ object_members : object_member
 
 object : object_decl object_term
         { // empty object
-        size_t object_decl_i = ($object_decl);
+        std::vector<size_t> &child_indices = *$object_decl;
+        size_t object_decl_i = child_indices.at(1);
         size_t object_term_i = ($object_term);
-        std::vector<size_t> child_indices = {object_decl_i
-                                                   ,object_term_i};
+        child_indices.push_back(object_term_i);
 
         $$ = interpreter.push_parent(wasp::OBJECT
-                                        ,interpreter.name(object_decl_i)
+                                        ,interpreter.data(object_decl_i).c_str()
                                         ,child_indices);
+        delete $1;
         }
         | object_decl object_members object_term
         {
-        std::vector<size_t> children;
-        children.reserve(2+$object_members->second->size());
-        size_t object_decl_i = ($object_decl);
-        children.push_back(object_decl_i);
+        std::vector<size_t> & children = *$object_decl;
+        size_t object_decl_i = children.at(1);
         for( size_t child_i: *$object_members->second ) children.push_back(child_i);
         children.push_back(($object_term));
         const std::string& name
@@ -351,6 +346,7 @@ object : object_decl object_term
         $$ = interpreter.push_parent(wasp::OBJECT
                                         ,name.c_str()
                                         ,children);
+        delete $1;
         }
 integer : INTEGER
     {
@@ -468,10 +464,9 @@ start   : /** empty **/
         }
         | start object_decl object_members object
         {
-            std::vector<size_t> children;
-            children.reserve(1+$object_members->second->size());
-            size_t object_decl_i = ($object_decl);
-            children.push_back(object_decl_i);
+            std::vector<size_t> & children = *$object_decl;
+            // [0] = '[', [1] = 'name', [2] = ']'
+            size_t object_decl_i = children[1];
             for( size_t child_i: *$object_members->second ) children.push_back(child_i);
             const std::string& name
                     = getpot_get_name(object_decl_i
@@ -485,6 +480,7 @@ start   : /** empty **/
                                             ,children);
             interpreter.add_root_child_index(object_i);
             interpreter.add_root_child_index(($object));
+            delete $2;
         }
 
 
