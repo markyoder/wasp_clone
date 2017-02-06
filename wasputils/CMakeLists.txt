@@ -29,12 +29,22 @@ FILE(GLOB HEADERS *.h *.hh *.hpp
 ## PACKAGE TARGETS AND INSTALL
 ##---------------------------------------------------------------------------##
 
+IF ( wasp_ENABLE_waspgetpot )
 TRIBITS_ADD_EXECUTABLE(getpotlist
   SOURCES getpotlist.cpp
   NOEXEPREFIX
   NOEXESUFFIX
   INSTALLABLE
 )
+ENDIF()
+IF ( wasp_ENABLE_waspson )
+TRIBITS_ADD_EXECUTABLE(sonlist
+  SOURCES sonlist.cpp
+  NOEXEPREFIX
+  NOEXESUFFIX
+  INSTALLABLE
+)
+ENDIF()
 ##---------------------------------------------------------------------------##
 ##                   end of utils/CMakeLists.txt
 ##---------------------------------------------------------------------------##

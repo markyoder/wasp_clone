@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
-#include "SONInterpreter.h"
+#include "waspson/SONInterpreter.h"
 using namespace std;
 using namespace wasp;
 

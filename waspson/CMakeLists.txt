@@ -60,12 +60,6 @@ INSTALL(FILES
   DESTINATION
   include/waspson)
 
-TRIBITS_ADD_EXECUTABLE(sonls
-  NOEXEPREFIX
-  NOEXESUFFIX
-  SOURCES ListSON.cpp
-  INSTALLABLE
-)
 #
 # Add test directory for this package
 #
