@@ -6,4 +6,5 @@ TRIBITS_PACKAGE_DEFINE_DEPENDENCIES(
      son   waspson     PT OPTIONAL
      hive  wasphive    PT OPTIONAL
      getpot waspgetpot PT OPTIONAL     
+     utils wasputils PT OPTIONAL
 )
