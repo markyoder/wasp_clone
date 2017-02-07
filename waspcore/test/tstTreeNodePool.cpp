@@ -146,3 +146,24 @@ TEST(TreeNodePool,push_test)
     ASSERT_EQ(root_name,tp.name(tp.size()-1));
     ASSERT_EQ(root, tp.type(tp.size()-1));    
 }
+
+TEST(TreeNodePool, set)
+{
+    TreeNodePool<> tp;
+    { // push the data and leaf node
+        size_t token_index = 0;
+        tp.push_token("data1", wasp::STRING, token_index);
+        tp.push_leaf(wasp::VALUE, "value", token_index);
+        std::string name = "id";
+        ASSERT_TRUE( tp.set_name(0,name.c_str()) );
+        std::string id = tp.name(0);
+        ASSERT_EQ( name, id );
+        tp.push_token("data2", wasp::STRING, token_index+1);
+        tp.push_leaf(wasp::VALUE, "value", token_index+1);
+        ASSERT_TRUE( tp.set_name(1,name.c_str()) );
+        id = tp.name(1);
+        ASSERT_EQ( name, id );
+
+        ASSERT_FALSE( tp.set_name(0,name.c_str()) );
+    }
+}

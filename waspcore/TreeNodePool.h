@@ -153,6 +153,20 @@ public:
      */
     const char * name(node_index_size node_index)const
                             {return m_node_names.data(node_index);}
+    /**
+     * @brief set_name updates the name of the existing node
+     * @param node_index the index of the node for which the name will be updated
+     * @param name the new name to provide the node at the given index
+     * @return true, iff the name is successfully updated.
+     * NOTE : if the memory adjustment for the new name cannot take place, false
+     * will be returned/
+     * NOTE' : current implementation only supports adjustments of the last node
+     *         inserted into the TreeNodePool. The reason for this is the implementation
+     *         is simplest as no reordering needs to take place as there are no
+     *         subsequent nodes to adjust.
+     */
+    bool set_name(node_index_size node_index, const char * name);
+
     node_type_size type(node_index_size node_index)const
                             {return m_node_basic_data[node_index].m_node_type;}    
     /**

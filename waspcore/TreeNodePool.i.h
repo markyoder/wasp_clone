@@ -141,7 +141,16 @@ std::size_t TreeNodePool<NTS,NIS,TP>::parent_node_index(
     }
     return parent_index;
 }
-
+template<typename NTS, typename NIS
+         ,class TP>
+bool TreeNodePool<NTS,NIS,TP>::set_name(
+        NIS node_index, const char * name)
+{
+    if( m_node_basic_data.empty() ) return false;
+    if( node_index < m_node_basic_data.size()-1
+            || node_index > m_node_basic_data.size()-1) return false;
+    return m_node_names.set(node_index, name);
+}
 template<typename NTS, typename NIS
          ,class TP>
 std::size_t TreeNodePool<NTS,NIS,TP>::child_count(
