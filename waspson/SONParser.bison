@@ -428,10 +428,12 @@ execution_unit_start : EXECUTION_UNIT_START
     auto token_index = ($1);
     $$ = interpreter.push_leaf(wasp::EXECUTION_UNIT_START,"uoe_start",token_index);
 }
-identifier : PRIMITIVE
+
+identifier : exp
     {
-        auto token_index = ($1);
-        $$ = interpreter.push_leaf(wasp::IDENTIFIER,"id",token_index);
+        interpreter.set_type($exp, wasp::IDENTIFIER);
+        interpreter.set_name($exp, "id");
+        $$ = $exp;
     }
 decl : PRIMITIVE
     {

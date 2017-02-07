@@ -1318,3 +1318,26 @@ TEST( SON, data )
     ASSERT_EQ( input.str(), document.data() );
 }
 
+/**
+ * @brief TEST the capture of an expression as the identifer
+ */
+TEST( SON, expression_identifier )
+{
+    std::stringstream input;
+    input<<"k( my-id )=1";
+    SONInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(11, interpreter.node_count() );
+    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    ASSERT_EQ( 1, document.child_count() );
+    std::stringstream printed_document;
+    wasp::print(printed_document, document);
+    ASSERT_EQ(input.str(), printed_document.str());
+    ASSERT_EQ( input.str(), document.data() );
+
+    auto k_view = document.child_at(0);
+    ASSERT_FALSE ( k_view.is_null() );
+    ASSERT_EQ( 6, k_view.child_count() );
+    ASSERT_EQ( 1, k_view.non_decorative_children_count() );
+}
+
