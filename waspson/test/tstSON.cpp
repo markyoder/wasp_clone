@@ -1373,3 +1373,36 @@ TEST( SON, object_expression_identifier )
     ASSERT_FALSE( k_id_view.is_null() );
     ASSERT_EQ( "id", std::string(k_id_view.name()) );
 }
+
+/**
+ * @brief TEST the capture of an expression as the identifer of an array
+ * DISABLED as the REDUCE/REDUCE conflict causes
+ * the identifier pattern to be seen as an expression
+ * causing a parse error when encountering the '='
+ */
+TEST( SON, DISABLED_array_expression_identifier )
+{
+    std::stringstream input;
+    input<<"arr(my-arr)[ k( my-id )=1 ]";
+    SONInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(21, interpreter.node_count() );
+    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    ASSERT_EQ( 1, document.child_count() );
+    std::stringstream printed_document;
+    wasp::print(printed_document, document);
+    ASSERT_EQ(input.str(), printed_document.str());
+    ASSERT_EQ( input.str(), document.data() );
+    auto obj_view = document.child_at(0);
+    ASSERT_EQ( 7, obj_view.child_count() );
+    auto obj_id_view = obj_view.id_child();
+    ASSERT_FALSE( obj_id_view.is_null() );
+    ASSERT_EQ( "id", std::string(obj_id_view.name()) );
+    auto k_view = obj_view.first_child_by_name("k");
+    ASSERT_FALSE ( k_view.is_null() );
+    ASSERT_EQ( 6, k_view.child_count() );
+    ASSERT_EQ( 1, k_view.non_decorative_children_count() );
+    auto k_id_view = k_view.id_child();
+    ASSERT_FALSE( k_id_view.is_null() );
+    ASSERT_EQ( "id", std::string(k_id_view.name()) );
+}
