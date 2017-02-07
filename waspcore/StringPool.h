@@ -44,8 +44,10 @@ class StringPool{
     /**
      * @brief set the data at the given location
      * @param data_index the index of the location to change
-     * @param str
-     * @return
+     * @param str the new string
+     * @return true, iff the set was successful.
+     * NOTE : current implementation only allows for setting the str
+     * for the last inserted string.
      */
     bool set(index_type_size data_index, const char * str);
 private:

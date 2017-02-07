@@ -168,7 +168,8 @@ public:
     bool set_name(node_index_size node_index, const char * name);
 
     node_type_size type(node_index_size node_index)const
-                            {return m_node_basic_data[node_index].m_node_type;}    
+                            {return m_node_basic_data[node_index].m_node_type;}
+    void set_type(node_index_size node_index, node_type_size node_type);
     /**
      * @brief node_token_type acquire the type of the toke backing the node at the given index
      * @param node_index the node for which the token type is requested.

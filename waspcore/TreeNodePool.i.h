@@ -65,7 +65,13 @@ void TreeNodePool<NTS,NIS,TP>::push_parent(
         m_node_child_indices.push_back(child_index);
     }
 }
-
+template<typename NTS, typename NIS
+         ,class TP>
+void TreeNodePool<NTS,NIS,TP>::set_type(NIS node_index,
+        NTS type)
+{
+    m_node_basic_data[node_index].m_node_type = type;
+}
 // Create a leaf node
 template<typename NTS, typename NIS
          ,class TP>

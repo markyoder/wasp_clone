@@ -144,7 +144,14 @@ TEST(TreeNodePool,push_test)
     size_t root_index = tp.size();
     tp.push_parent(root,root_name.c_str(),root_child_indices);
     ASSERT_EQ(root_name,tp.name(tp.size()-1));
-    ASSERT_EQ(root, tp.type(tp.size()-1));    
+    ASSERT_EQ(root, tp.type(tp.size()-1));
+    // test changing the type
+    {
+        tp.set_type(tp.size()-1, assign);
+        ASSERT_EQ(assign, tp.type(tp.size()-1));
+        tp.set_type(tp.size()-1, root);
+        ASSERT_EQ(root, tp.type(tp.size()-1));
+    }
 }
 
 TEST(TreeNodePool, set)
