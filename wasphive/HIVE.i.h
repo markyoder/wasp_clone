@@ -78,8 +78,7 @@ bool HIVE::traverse_schema(SchemaAdapter& schema_node, InputAdapter& input_node
             (tmpNodeName == "InputType") ||
 
             (tmpNodeName == "InputDefault") ||
-            (tmpNodeName == "InputTmpl") ||
-            (tmpNode.to_string() == "ToDo")) {
+            (tmpNodeName == "InputTmpl") ) {
             hasToDo |= isToDo;
             continue;
         }
