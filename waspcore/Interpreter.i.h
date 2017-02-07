@@ -100,6 +100,18 @@ const char * Interpreter<TNS>::name(size_t index )const
     return this->m_tree_nodes.name( index );
 }
 template<class TNS>
+bool Interpreter<TNS>::set_name(size_t node_index
+                                    , const char *node_name)
+{
+    return this->m_tree_nodes.set_name(node_index, node_name);
+}
+template<class TNS>
+void Interpreter<TNS>::set_type(size_t node_index
+                                    , size_t node_type)
+{
+    return this->m_tree_nodes.set_type(node_index, node_type);
+}
+template<class TNS>
 std::string Interpreter<TNS>::data(size_t index )const
 {
     // have any nodes?

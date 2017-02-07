@@ -65,6 +65,9 @@ public:
      * @return the name of the node
      */
     virtual const char * name(size_t node_index)const=0;
+
+    virtual bool set_name(size_t node_index, const char * name)=0;
+    virtual void set_type(size_t node_index, size_t node_type)=0;
     /**
      * @brief data acquire the data of the node at the given index
      * @param node_index
@@ -204,6 +207,8 @@ public:
      * @return the name of the node
      */
     const char * name(size_t node_index)const;
+    bool set_name(size_t node_index, const char * name);
+    void set_type(size_t node_index, size_t node_type);
     /**
      * @brief data acquire the data of the node at the given index
      * @param node_index
