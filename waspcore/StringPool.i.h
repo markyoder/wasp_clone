@@ -39,6 +39,18 @@
         m_token_data_indices.push_back(static_cast<T>(string_index));
     }
     template<typename T>
+    bool StringPool<T>::set(T data_index, const char * str)
+    {
+        std::size_t string_index = m_token_data_indices.size();
+        // current implementation only supports
+        // setting the last string's data
+        if( data_index < string_index-1
+                || data_index > m_data.size()-1 ) return false;
+        pop(); // remove last string
+        push(str); // push new string
+        return true;
+    }
+    template<typename T>
     void StringPool<T>::pop()
     {
         if( m_token_data_indices.empty() ) return;

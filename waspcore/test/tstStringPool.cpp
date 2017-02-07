@@ -139,3 +139,50 @@ TEST(StringPool,self_copy_test)
     }
 
 }
+
+TEST(StringPool, set_legal)
+{
+    StringPool<> sp;
+    {
+        std::string data = "ted";
+        std::string ndata = "fred";
+        sp.push(data.c_str());
+        EXPECT_TRUE( sp.set(0,ndata.c_str()) );
+        // ensure change occurred
+        std::string result = sp.data(0);
+        EXPECT_EQ(ndata.c_str(), result);
+    }
+    {
+        std::string data = "jan";
+        std::string ndata = "fran";
+        sp.push(data.c_str());
+        EXPECT_TRUE( sp.set(1,ndata.c_str()) );
+        // ensure change occurred
+        std::string result = sp.data(1);
+        EXPECT_EQ(ndata, result);
+
+    }
+}
+
+TEST(StringPool, set_illegal)
+{
+    std::string ndata = "fred";
+    StringPool<> sp;
+    {
+        std::string data = "ted";
+        sp.push(data.c_str());
+        EXPECT_TRUE( sp.set(0,ndata.c_str()) );
+        // ensure change occurred
+        std::string result = sp.data(0);
+        EXPECT_EQ(ndata.c_str(), result);
+    }
+    {
+        std::string data = "jan";
+        sp.push(data.c_str());
+        EXPECT_FALSE( sp.set(0,data.c_str()) );
+        // ensure change occurred
+        std::string result = sp.data(0);
+        EXPECT_EQ(ndata, result);
+
+    }
+}

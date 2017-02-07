@@ -14,11 +14,12 @@ typedef unsigned int default_token_index_type_size;
 template<typename token_index_type_size = default_token_index_type_size>
 class StringPool{
   public:    
+    typedef token_index_type_size index_type_size;
     StringPool();
-    StringPool(const StringPool<token_index_type_size> & orig);
+    StringPool(const StringPool<index_type_size> & orig);
     ~StringPool();
     // acquire the string data for the token at the given index
-    const char * data(token_index_type_size index)const;
+    const char * data(index_type_size index)const;
     /**
      * @brief push push a new string into the pool
      * @param str the new string to place into the pool
@@ -39,6 +40,14 @@ class StringPool{
      * @return std::size_t the number of strings in the pool
      */
     std::size_t string_count()const{ return m_token_data_indices.size();}
+
+    /**
+     * @brief set the data at the given location
+     * @param data_index the index of the location to change
+     * @param str
+     * @return
+     */
+    bool set(index_type_size data_index, const char * str);
 private:
     /**
      * @brief m_data null terminated character array
@@ -47,7 +56,7 @@ private:
     /**
      * @brief m_token_data_indices the indices of each token
      */
-    std::vector<token_index_type_size> m_token_data_indices; // token starting indices into m_data
+    std::vector<index_type_size> m_token_data_indices; // token starting indices into m_data
 };
 #include "waspcore/StringPool.i.h"
 } // end of namespace
