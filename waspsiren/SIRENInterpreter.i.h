@@ -168,7 +168,7 @@ void SIRENInterpreter<S>::search_child_name(
         {
             const TAdapter & child_node = node.child_at(c);
             // if child is a match, push back onto stage
-            if( strcmp( name, child_node.name() ) == 0 )
+            if( wildcard_name_match( name, child_node.name() ) )
             {
                 stage.push_back( child_node );
             }
@@ -212,7 +212,7 @@ void SIRENInterpreter<S>::search_conditional_predicated_child(
         {
             const TAdapter & child_node = node.child_at(c);
             // if child is a match, push back onto stage
-            if( strcmp( name, child_node.name() ) == 0 )
+            if( wildcard_name_match( name, child_node.name() ) )
             {
                 // prior to pushing, must determine if the
                 // predicate passes
@@ -227,7 +227,7 @@ void SIRENInterpreter<S>::search_conditional_predicated_child(
                     const TAdapter & g_child_node = child_node.child_at(gc);
                     // if grand child name is a match, need to determine
                     // if value matches
-                    if( strcmp( predicate_name, g_child_node.name() ) == 0 )
+                    if( wildcard_name_match( predicate_name, g_child_node.name() ) )
                     {
                         const std::string & g_child_node_value = g_child_node.data();
                         predicate_accepted = predicate_value == g_child_node_value;
