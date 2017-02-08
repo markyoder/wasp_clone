@@ -20,6 +20,7 @@ TEST( SIREN, name_wilds)
                                                            // instances of 'c'
     EXPECT_TRUE(wildcard_name_match("*c*d", "abcd")); // Yes
     EXPECT_TRUE(wildcard_name_match("*?c*d", "abcd")); // Yes
+    EXPECT_TRUE(wildcard_name_match("*", "could_be_anything")); // Yes
 }
 
 
