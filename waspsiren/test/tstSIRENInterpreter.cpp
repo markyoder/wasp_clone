@@ -6,6 +6,24 @@
 
 using namespace wasp;
 
+/**
+ * @brief TEST tests wild card pattern matching
+ *
+ */
+TEST( SIREN, name_wilds)
+{
+    EXPECT_TRUE(wildcard_name_match("ge?ks*", "geeksforgeeks")); // Yes
+    EXPECT_FALSE(wildcard_name_match("g*k", "gee"));  // No because 'k' is not in second
+    EXPECT_FALSE(wildcard_name_match("*pqrs", "pqrst")); // No because 't' is not in first
+    EXPECT_TRUE(wildcard_name_match("abc*bcd", "abcdhghgbcd")); // Yes
+    EXPECT_FALSE(wildcard_name_match("abc*c?d", "abcd")); // No because second must have 2
+                                                           // instances of 'c'
+    EXPECT_TRUE(wildcard_name_match("*c*d", "abcd")); // Yes
+    EXPECT_TRUE(wildcard_name_match("*?c*d", "abcd")); // Yes
+}
+
+
+
 
 TEST( SIREN, selection_on_keyed_value )
 {    
