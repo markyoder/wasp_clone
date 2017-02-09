@@ -96,6 +96,19 @@ TEST( SIREN, selection_on_keyed_value )
             ASSERT_EQ( VALUE, set.adapted(0).type() );
         }
     }
+    {// select the any first level's value child
+        SIRENInterpreter<decltype(tree)> siren;
+        ASSERT_TRUE( siren.parseString("/*/value") );
+        {
+            SIRENResultSet<decltype(document)> set;
+            ASSERT_EQ( 1, siren.evaluate(document, set));
+            ASSERT_EQ( 1, set.result_count() );
+            ASSERT_TRUE( set.is_adapted(0) );
+            std::string value = "value";
+            ASSERT_EQ( value, set.adapted(0).name() );
+            ASSERT_EQ( VALUE, set.adapted(0).type() );
+        }
+    }
     {// select the key's decl child
         SIRENInterpreter<decltype(tree)> siren;
         ASSERT_TRUE( siren.parseString(" / key / decl ") );
@@ -178,6 +191,19 @@ TEST( SIREN, selection_on_keyed_value )
     {// select the key's decl where key's value=3.14
         SIRENInterpreter<decltype(tree)> siren;
         ASSERT_TRUE( siren.parseString(" / key [ value = 3.14 ]/ decl ") );
+        {
+            SIRENResultSet<decltype(document)> set;
+            ASSERT_EQ( 1, siren.evaluate(document, set));
+            ASSERT_EQ( 1, set.result_count() );
+            ASSERT_TRUE( set.is_adapted(0) );
+            std::string decl = "decl";
+            ASSERT_EQ( decl, set.adapted(0).name() );
+            ASSERT_EQ( DECL, set.adapted(0).type() );
+        }
+    }
+    {// select the key's *l where ke?'s va?ue=3.14
+        SIRENInterpreter<decltype(tree)> siren;
+        ASSERT_TRUE( siren.parseString(" / ke? [ va?ue = 3.14 ]/ *l ") );
         {
             SIRENResultSet<decltype(document)> set;
             ASSERT_EQ( 1, siren.evaluate(document, set));
