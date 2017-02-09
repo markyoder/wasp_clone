@@ -42,6 +42,12 @@ IF ( wasp_ENABLE_waspgetpot )
       NOEXESUFFIX
       INSTALLABLE
     )
+    TRIBITS_ADD_EXECUTABLE(getpotselect
+      SOURCES getpotselect.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
 ENDIF()
 IF ( wasp_ENABLE_waspson )
     TRIBITS_ADD_EXECUTABLE(sonlist
@@ -52,6 +58,12 @@ IF ( wasp_ENABLE_waspson )
     )
     TRIBITS_ADD_EXECUTABLE(sonvalid
       SOURCES sonvalid.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
+    TRIBITS_ADD_EXECUTABLE(sonselect
+      SOURCES sonselect.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE

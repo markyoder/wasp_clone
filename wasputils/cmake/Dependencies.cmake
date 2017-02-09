@@ -4,7 +4,7 @@
 ##---------------------------------------------------------------------------##
 
 TRIBITS_PACKAGE_DEFINE_DEPENDENCIES(
-LIB_REQUIRED_PACKAGES waspcore wasphive
+LIB_REQUIRED_PACKAGES waspcore wasphive waspsiren
 LIB_OPTIONAL_PACKAGES waspgetpot waspson
 TEST_REQUIRED_PACKAGES testframework
 TEST_OPTIONAL_PACKAGES
