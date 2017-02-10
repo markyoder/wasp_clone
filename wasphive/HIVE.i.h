@@ -46,7 +46,6 @@ bool HIVE::traverse_schema(SchemaAdapter& schema_node, InputAdapter& input_node
 
     if (schema_node.is_null()) return false;
     SIRENResultSet<InputAdapter> selection;
-
     if (!select_nodes(selection, input_node, schema_node.path(), errors))
     {
         return false;
@@ -177,8 +176,8 @@ bool HIVE::traverse_schema(SchemaAdapter& schema_node, InputAdapter& input_node
             definitionChildren.insert(tmpNodeName);
         }
     }
-
-    if (!isAny && !hasToDo) {
+    bool is_wild_card = std::strcmp(schema_node.name(),"*") == 0;
+    if (!isAny && !hasToDo && !is_wild_card) {
         /* Error if there is a non-decorative input child with no schema rule */
         for (size_t i = 0; i < selection.size(); i++) {
             const typename InputAdapter::Collection& children =
@@ -2798,8 +2797,13 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter           & schema_node,
             }
         }
     }
-
+    auto input_grandparent = schema_node.parent().parent();
+    bool is_wild_card = nodePath.back() == '*';
     for (size_t i = 0; i < selection.size(); i++) {
+        if ( is_wild_card
+             && (selection.adapted(i).is_decorative() ||
+          input_grandparent.first_child_by_name(selection.adapted(i).name()).is_null()
+           )) continue;
         if (selectedChildCounts[i] < 1) {
             const typename SchemaAdapter::Collection& choices = children;
             std::string childNames;
