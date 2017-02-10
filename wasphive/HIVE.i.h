@@ -177,9 +177,17 @@ bool HIVE::traverse_schema(SchemaAdapter& schema_node, InputAdapter& input_node
         }
     }
     bool is_wild_card = std::strcmp(schema_node.name(),"*") == 0;
-    if (!isAny && !hasToDo && !is_wild_card) {
+    auto parent_schema_node = schema_node.parent();
+    if (!isAny && !hasToDo ) {
+
         /* Error if there is a non-decorative input child with no schema rule */
         for (size_t i = 0; i < selection.size(); i++) {
+
+            if( is_wild_card && parent_schema_node.is_null() == false
+                    && parent_schema_node.first_child_by_name(selection.adapted(i).name()).is_null() == false )
+            {
+                continue;
+            }
             const typename InputAdapter::Collection& children =
                 selection.adapted(i).non_decorative_children();
 
@@ -1398,6 +1406,8 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
      bool setContextNow = false;
      bool clearSetsNow = false;
 
+     bool numbersAreOkay = false;
+
      const typename SchemaAdapter::Collection & refNodes =
              schema_node.child_by_name("EXTRAREF");
      std::vector<std::string> refNames;
@@ -1457,9 +1467,13 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
              if (loop == 0) setContextNow = true;
              if (std::strcmp(children[loop].name(),"EXTRA")==0){
                  std::string lowerString = children[loop].to_string();
-                 transform(lowerString.begin(), lowerString.end(),
+                 if( lowerString == "NumericalConstants" ) numbersAreOkay = true;
+                 else{
+                    transform(lowerString.begin(), lowerString.end(),
                            lowerString.begin(), ::tolower);
-                 lookupSet.insert(lowerString);
+
+                    lookupSet.insert(lowerString);
+                 }
                  continue;
              }
 
@@ -1625,7 +1639,13 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
                   &&
                   (refSetPtr == NULL                                         ||
                    refSetPtr->find(lowerLookupString) == refSetPtr->end()) ){
-
+             if( numbersAreOkay )
+             {
+                 float ftest;
+                 std::istringstream iss(lookupString);
+                 iss >> std::noskipws >> ftest;
+                 if (iss.eof() && !iss.fail()) continue;
+             }
              std::string valueNodeName;
              if (std::strcmp(selection.adapted(i).name(),"value") == 0 &&
                      selection.adapted(i).has_parent()){
@@ -2802,7 +2822,7 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter           & schema_node,
     for (size_t i = 0; i < selection.size(); i++) {
         if ( is_wild_card
              && (selection.adapted(i).is_decorative() ||
-          input_grandparent.first_child_by_name(selection.adapted(i).name()).is_null()
+          input_grandparent.first_child_by_name(selection.adapted(i).name()).is_null() == false
            )) continue;
         if (selectedChildCounts[i] < 1) {
             const typename SchemaAdapter::Collection& choices = children;
