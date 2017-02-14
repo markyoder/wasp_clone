@@ -341,6 +341,11 @@ public:
      * @return true, iff the view has no storage backing
      */
     bool is_null()const{ return m_tree_data == nullptr; }
+    /**
+     * @brief is_decorative default TreeNodeView interface implementation
+     * @return always false
+     */
+    bool is_decorative() const{ return false;}
 
     /**
      * @brief path acquire the path of this node from the document root

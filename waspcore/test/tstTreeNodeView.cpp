@@ -134,6 +134,24 @@ TEST(TreeNodeView,child_by_name)
 
         }
     }
+    TreeNodeView<decltype(tp)> root_view(tp.size()-1,tp);
+    std::cout<<root_view.data()<<std::endl;
+    std::stringstream xml;
+    wasp::to_xml(root_view, xml);
+    std::string expected_xml = R"INPUT(<root>
+  <data>
+    <decl loc="1.1">array</decl>
+    <op loc="1.7">(</op>
+    <id loc="1.8">foo</id>
+    <cp loc="1.11">)</cp>
+    <value loc="1.12">234</value>
+    <value loc="1.16">1.2343</value>
+    <term loc="1.23">end</term>
+  </data>
+</root>
+)INPUT";
+    std::cout<<xml.str()<<std::endl;
+    ASSERT_EQ(expected_xml, xml.str());
 }
 TEST(TreeNodePool, is_null_test )
 {
