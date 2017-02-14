@@ -41,15 +41,18 @@ namespace wasp{
      * @brief to_xml walk the given node and emit xml elements into out
      * @param node the node to convert to xml
      * @param out the stream to emit the xml
+     * @param emit_decorative indicates whether to emit decorative nodes to xml stream
      * @param space amount of whitespace to prefix to a line
+     * TODO - escape special characters
      */
     template<class TAdapter>
-    inline void to_xml(const TAdapter& node, std::ostream & out, std::string space="")
+    inline void to_xml(const TAdapter& node, std::ostream & out, bool emit_decorative=true, std::string space="")
     {
+        bool decorative = node.is_decorative();
+        if( decorative && !emit_decorative ) return;
         size_t child_count = node.child_count();
         // print element name and location
         out<<space<<"<"<<node.name();
-        bool decorative = node.is_decorative();
         // capture location if it is a leaf
         if( child_count == 0 ) out<<" loc=\""<<node.line()<<"."<<node.column()<<"\"";
         if( decorative ) out<<" dec=\""<<std::boolalpha<<decorative<<"\"";
@@ -59,7 +62,7 @@ namespace wasp{
         // recurse into each child
         for( size_t i = 0; i < child_count; ++i )
         {
-            to_xml(node.child_at(i),out, space+"  ");
+            to_xml(node.child_at(i),out, emit_decorative, space+"  ");
         }
 
         // close the element

@@ -150,7 +150,6 @@ TEST(TreeNodeView,child_by_name)
   </data>
 </root>
 )INPUT";
-    std::cout<<xml.str()<<std::endl;
     ASSERT_EQ(expected_xml, xml.str());
 }
 TEST(TreeNodePool, is_null_test )
