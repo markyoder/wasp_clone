@@ -396,6 +396,12 @@ public:
      * @return the node's type
      */
     std::size_t type()const;
+
+    /**
+     * @brief token_type acquires the type of the underlying token
+     * @return the token type, wasp::UNKNOWN if the node is null or not a leaf
+     */
+    std::size_t token_type()const;
     /**
      * @brief name acquire the name of the node
      * @return the node's name

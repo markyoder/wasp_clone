@@ -488,6 +488,11 @@ std::size_t TreeNodeView<TreeNodePool_T>::type()const
     return m_tree_data->type(m_tree_node_index);
 }
 template<class TreeNodePool_T>
+std::size_t TreeNodeView<TreeNodePool_T>::token_type()const
+{
+    return m_tree_data->node_token_type(m_tree_node_index);
+}
+template<class TreeNodePool_T>
 const char* TreeNodeView<TreeNodePool_T>::name()const
 {
     return m_tree_data->name(m_tree_node_index);
