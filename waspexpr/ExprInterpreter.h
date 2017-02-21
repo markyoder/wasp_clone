@@ -113,6 +113,15 @@ public: // variables
                 greater_or_equal(right_op);
                 break;
             }
+            case wasp::EQ:
+            {
+                // evaluate this result as the left operation
+                evaluate(tree_view.child_at(0));
+                Result right_op;
+                right_op.evaluate(tree_view.child_at(2));
+                equal(right_op);
+                break;
+            }
             case wasp::PLUS:
             {
                 // evaluate this result as the left operation
@@ -175,13 +184,25 @@ public: // variables
             return !equal(a);
 
          }
-         bool equal(const Result& a) const{
+         bool equal(const Result& a) {
              if( is_number() && a.is_number() )
              {
-                 return number() == a.number();
+                 m_value.m_bool = number() == a.number();
              }
-             if( m_type != a.m_type ) return false;
-             return m_value == a.m_value;
+             else if( is_string() && a.is_string() )
+             {
+                 m_value.m_bool = string() == a.string();
+             }
+             else if( is_bool() && a.is_bool() )
+             {
+                 m_value.m_bool = boolean() == a.boolean();
+             }
+             else {
+                 m_value.m_bool = false;
+             }
+
+             m_type = BOOLEAN;
+             return m_value.m_bool;
          }
          bool less (const Result & a) {
 
