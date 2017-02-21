@@ -291,6 +291,13 @@ TEST(ExprInterpreter,pos_scalar)
     auto op = document.child_at(0);
     ASSERT_EQ(wasp::VALUE, op.type());
     ASSERT_EQ(0, op.child_count());
+    auto result = interpreter.evaluate();
+    ASSERT_TRUE(result.is_integer());
+    ASSERT_TRUE(result.is_number());
+    ASSERT_FALSE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_EQ(9, result.integer());
 }
 TEST(ExprInterpreter,neg_scalar)
 {
