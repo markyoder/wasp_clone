@@ -82,6 +82,15 @@ public: // variables
                 less(right_op);
                 break;
             }
+            case wasp::LTE:
+            {
+                // evaluate this result as the left operation
+                evaluate(tree_view.child_at(0));
+                Result right_op;
+                right_op.evaluate(tree_view.child_at(2));
+                less_or_equal(right_op);
+                break;
+            }
             case wasp::PLUS:
             {
                 // evaluate this result as the left operation
@@ -167,14 +176,16 @@ public: // variables
 
              return false;
          }
-         bool less_or_equal(const Result & a) const
+         bool less_or_equal(const Result & a)
          {
              if( is_number() && a.is_number() )
              {
+                 m_type = BOOLEAN;
                  return number() <= a.number();
              }
              if( is_string() && a.is_string() )
              {
+                 m_type = BOOLEAN;
                  return string() <= a.string();
              }
              return false;
