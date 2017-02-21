@@ -73,6 +73,15 @@ public: // variables
                 evaluate(tree_view.child_at(1));
                 unary_minus();
                 break;
+            case wasp::LT:
+            {
+                // evaluate this result as the left operation
+                evaluate(tree_view.child_at(0));
+                Result right_op;
+                right_op.evaluate(tree_view.child_at(2));
+                less(right_op);
+                break;
+            }
             case wasp::PLUS:
             {
                 // evaluate this result as the left operation
@@ -143,15 +152,19 @@ public: // variables
              if( m_type != a.m_type ) return false;
              return m_value == a.m_value;
          }
-         bool less (const Result & a) const{
+         bool less (const Result & a) {
+
              if( is_number() && a.is_number() )
              {
+                 m_type = BOOLEAN;
                  return number() < a.number();
              }
              if( is_string() && a.is_string() )
              {
+                 m_type = BOOLEAN;
                  return string() < a.string();
              }
+
              return false;
          }
          bool less_or_equal(const Result & a) const
@@ -539,12 +552,16 @@ public: // variables
              }
              return std::numeric_limits<double>::quiet_NaN();
          }
+         bool boolean()const{return m_value.m_bool;}
          const std::string& string()const{
              return (m_string);}
 
          std::string& string(){
              return (m_string);}
 
+         bool is_bool()const{
+             return m_type == BOOLEAN;
+         }
          bool is_integer()const{
              return m_type == INTEGER;
          }
