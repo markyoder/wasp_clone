@@ -176,6 +176,14 @@ TEST(ExprInterpreter,not_equal)
     ASSERT_EQ(wasp::VALUE, op.child_at(0).type());
     ASSERT_EQ(wasp::NEQ, op.child_at(1).type());
     ASSERT_EQ(wasp::VALUE, op.child_at(2).type());
+    auto result = interpreter.evaluate();
+    ASSERT_FALSE(result.is_integer());
+    ASSERT_FALSE(result.is_number());
+    ASSERT_FALSE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_TRUE( result.is_bool());
+    ASSERT_TRUE(result.boolean());
 }
 TEST(ExprInterpreter,less_than)
 {

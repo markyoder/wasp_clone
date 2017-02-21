@@ -122,6 +122,15 @@ public: // variables
                 equal(right_op);
                 break;
             }
+            case wasp::NEQ:
+            {
+                // evaluate this result as the left operation
+                evaluate(tree_view.child_at(0));
+                Result right_op;
+                right_op.evaluate(tree_view.child_at(2));
+                not_equal(right_op);
+                break;
+            }
             case wasp::PLUS:
             {
                 // evaluate this result as the left operation
@@ -180,8 +189,10 @@ public: // variables
             return *this;
          }
 
-         bool not_equal(const Result& a) const{
-            return !equal(a);
+         bool not_equal(const Result& a){
+             m_value.m_bool = !equal(a);
+             m_type = BOOLEAN;
+            return m_value.m_bool;
 
          }
          bool equal(const Result& a) {
