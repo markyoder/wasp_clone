@@ -341,6 +341,20 @@ TEST(ExprInterpreter,basic_combined_integer)
     ASSERT_FALSE(result.is_error());
     ASSERT_EQ(0, result.integer());
 }
+TEST(ExprInterpreter,basic_combined_real)
+{
+    std::stringstream input;
+    input <<"1+2/3.0*4/-(2.0^3)"<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    auto result = interpreter.evaluate();
+    ASSERT_FALSE(result.is_integer());
+    ASSERT_TRUE(result.is_number());
+    ASSERT_TRUE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_NEAR(2/3.0, result.real(),1e-12);
+}
 TEST(ExprInterpreter,combined)
 {
     std::stringstream input;
