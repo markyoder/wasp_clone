@@ -321,6 +321,26 @@ TEST(ExprInterpreter,neg_scalar)
     ASSERT_FALSE(result.is_error());
     ASSERT_EQ(-9, result.integer());
 }
+TEST(ExprInterpreter,basic_combined_integer)
+{
+    std::stringstream input;
+    input <<"-(1+2-3*8/2^3)"<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(22, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count() );
+    auto op = document.child_at(0);
+    ASSERT_EQ(wasp::UNARY_MINUS, op.type());
+    ASSERT_EQ(2, op.child_count());
+    auto result = interpreter.evaluate();
+    ASSERT_TRUE(result.is_integer());
+    ASSERT_TRUE(result.is_number());
+    ASSERT_FALSE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_EQ(0, result.integer());
+}
 TEST(ExprInterpreter,combined)
 {
     std::stringstream input;
