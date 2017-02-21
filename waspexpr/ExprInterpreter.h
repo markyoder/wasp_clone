@@ -100,6 +100,15 @@ public: // variables
                 greater(right_op);
                 break;
             }
+            case wasp::GTE:
+            {
+                // evaluate this result as the left operation
+                evaluate(tree_view.child_at(0));
+                Result right_op;
+                right_op.evaluate(tree_view.child_at(2));
+                greater_or_equal(right_op);
+                break;
+            }
             case wasp::PLUS:
             {
                 // evaluate this result as the left operation
@@ -218,14 +227,18 @@ public: // variables
              }
              return false;
          }
-         bool greater_or_equal(const Result & a) const{
+         bool greater_or_equal(const Result & a){
              if( is_number() && a.is_number() )
              {
-                 return number() >= a.number();
+                 m_value.m_bool = number() >= a.number();
+                 m_type = BOOLEAN;
+                 return m_value.m_bool;
              }
              if( is_string() && a.is_string() )
              {
-                 return string() >= a.string();
+                 m_value.m_bool = string() >= a.string();
+                 m_type = BOOLEAN;
+                 return m_value.m_bool;
              }
              return false;
          }
