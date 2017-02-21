@@ -67,6 +67,7 @@ TEST(ExprInterpreter,assign)
     ASSERT_EQ(wasp::DECL, op.child_at(0).type());
     ASSERT_EQ(wasp::ASSIGN, op.child_at(1).type());
     ASSERT_EQ(wasp::VALUE, op.child_at(2).type());
+    ASSERT_FALSE( interpreter.context().exists("x") );
     auto result = interpreter.evaluate();
     ASSERT_TRUE(result.is_integer());
     ASSERT_TRUE(result.is_number());
@@ -74,6 +75,8 @@ TEST(ExprInterpreter,assign)
     ASSERT_FALSE(result.is_string());
     ASSERT_FALSE(result.is_error());
     ASSERT_EQ(2, result.integer());
+    ASSERT_TRUE( interpreter.context().exists("x") );
+
 }
 TEST(ExprInterpreter,exponent)
 {

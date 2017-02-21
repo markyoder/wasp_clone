@@ -79,6 +79,7 @@ public: // variables
         bool store( const std::string & name, const std::string& v ){
             return store_ref<VarString>(name,v);
         }
+
      private:
         template<class T, class V>
         bool store_ref(const std::string & name, V & v){
@@ -95,11 +96,32 @@ public: // variables
         public:
             virtual Type type()const=0;
             virtual ~Variable(){}
+            virtual int integer(bool * ok=nullptr)const{
+                if( ok != nullptr ) *ok = false;
+                // not implemented
+                return std::numeric_limits<int>::quiet_NaN();
+            }
+            virtual double real(bool * ok=nullptr)const{
+                if( ok != nullptr ) *ok = false;
+                // not implemented
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+            virtual bool boolean(bool * ok=nullptr)const{
+                if( ok != nullptr ) *ok = false;
+                // not implemented
+                return std::numeric_limits<bool>::quiet_NaN();
+            }
+            virtual std::string string(bool * ok=nullptr)const{
+                if( ok != nullptr ) *ok = false;
+                // not implemented
+                return std::string();
+            }
         };
         class VarRefInt : public Variable{
         public:
             VarRefInt(int & i):v(i){}
             Type type() const{return INTEGER;}
+            int integer(bool * ok)const{ if( ok ) *ok = true; return v;}
         private:
             int & v;
         };
@@ -114,6 +136,7 @@ public: // variables
         public:
             VarRefBool(bool & b):v(b){}
             Type type() const{return BOOLEAN;}
+            bool boolean(bool * ok)const{ if( ok ) *ok = true; return v;}
         private:
             bool & v;
         };
@@ -127,6 +150,7 @@ public: // variables
         public:
             VarRefReal(double & d):v(d){}
             Type type() const{return REAL;}
+            double real(bool * ok)const{ if( ok ) *ok = true; return v;}
         private:
             double & v;
         };
@@ -140,6 +164,7 @@ public: // variables
         public:
             VarRefString(std::string & s):v(s){}
             Type type() const{return STRING;}
+            std::string string(bool * ok)const{ if( ok ) *ok = true; return v;}
         private:
             std::string & v;
         };
@@ -310,7 +335,7 @@ public: // variables
                 std::string variable_name = tree_view.name();
                 evaluate(tree_view.child_at(2),context);
                 bool new_variable = context.exists(variable_name);
-                if( new_variable ){
+                if( new_variable == false ){
                     switch( m_type ){ // switch on current Result's type
                         case BOOLEAN:
                         context.store(variable_name,boolean());
