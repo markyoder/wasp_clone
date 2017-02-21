@@ -91,6 +91,15 @@ public: // variables
                 less_or_equal(right_op);
                 break;
             }
+            case wasp::GT:
+            {
+                // evaluate this result as the left operation
+                evaluate(tree_view.child_at(0));
+                Result right_op;
+                right_op.evaluate(tree_view.child_at(2));
+                greater(right_op);
+                break;
+            }
             case wasp::PLUS:
             {
                 // evaluate this result as the left operation
@@ -165,13 +174,15 @@ public: // variables
 
              if( is_number() && a.is_number() )
              {
+                 m_value.m_bool = number() < a.number();
                  m_type = BOOLEAN;
-                 return number() < a.number();
+                 return m_value.m_bool;
              }
              if( is_string() && a.is_string() )
              {
+                 m_value.m_bool = string() < a.string();
                  m_type = BOOLEAN;
-                 return string() < a.string();
+                 return m_value.m_bool;
              }
 
              return false;
@@ -180,24 +191,30 @@ public: // variables
          {
              if( is_number() && a.is_number() )
              {
+                 m_value.m_bool = number() <= a.number();
                  m_type = BOOLEAN;
-                 return number() <= a.number();
+                 return m_value.m_bool;
              }
              if( is_string() && a.is_string() )
              {
                  m_type = BOOLEAN;
-                 return string() <= a.string();
+                 m_value.m_bool = string() <= a.string();
+                 return m_value.m_bool;
              }
              return false;
          }
-         bool greater (const Result & a) const{
+         bool greater (const Result & a) {
              if( is_number() && a.is_number() )
              {
-                 return number() > a.number();
+                 m_value.m_bool = number() > a.number();
+                 m_type = BOOLEAN;
+                 return m_value.m_bool;
              }
              if( is_string() && a.is_string() )
              {
-                 return string() > a.string();
+                 m_value.m_bool = string() > a.string();
+                 m_type = BOOLEAN;
+                 return m_value.m_bool;
              }
              return false;
          }
