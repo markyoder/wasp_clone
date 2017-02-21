@@ -73,6 +73,10 @@ public: // variables
                 evaluate(tree_view.child_at(1));
                 unary_minus();
                 break;
+            case wasp::UNARY_NOT:
+                evaluate(tree_view.child_at(1));
+                unary_not();
+                break;
             case wasp::LT:
             {
                 // evaluate this result as the left operation
@@ -548,14 +552,21 @@ public: // variables
          }
          Result& unary_not()
          {
-             m_type = BOOLEAN; // holds if not a string
-             if( is_integer() )
+
+             if( is_bool() )
              {
-                 m_value.m_bool = bool(integer());
+                 m_value.m_bool = !m_value.m_bool;
+                 m_type = BOOLEAN;
+             }
+             else if( is_integer() )
+             {
+                 m_value.m_bool = !bool(integer());
+                 m_type = BOOLEAN;
              }
              else if( is_real() )
              {
-                m_value.m_bool = bool(real());
+                m_value.m_bool = !bool(real());
+                m_type = BOOLEAN;
              }
              else if( is_string() )
              {

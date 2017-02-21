@@ -303,6 +303,14 @@ TEST(ExprInterpreter,unary_not)
     ASSERT_EQ(2, op.child_count());
     ASSERT_EQ(wasp::BANG, op.child_at(0).type());
     ASSERT_EQ(wasp::PARENTHESIS, op.child_at(1).type());
+    auto result = interpreter.evaluate();
+    ASSERT_FALSE(result.is_integer());
+    ASSERT_FALSE(result.is_number());
+    ASSERT_FALSE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_TRUE( result.is_bool());
+    ASSERT_FALSE(result.boolean());
 }
 TEST(ExprInterpreter,unary_minus)
 {
