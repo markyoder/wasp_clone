@@ -69,6 +69,10 @@ public: // variables
             case wasp::PARENTHESIS:
                 evaluate(tree_view.child_at(1));
                 break;
+            case wasp::UNARY_MINUS:
+                evaluate(tree_view.child_at(1));
+                unary_minus();
+                break;
             case wasp::PLUS:
             {
                 // evaluate this result as the left operation
@@ -510,7 +514,7 @@ public: // variables
          Result& unary_minus(){
              if( is_integer() )
              {
-                 m_value.m_integer = -(integer());
+                 m_value.m_int = -(integer());
              }
              else if( is_real() )
              {

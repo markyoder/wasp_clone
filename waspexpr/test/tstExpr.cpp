@@ -313,6 +313,13 @@ TEST(ExprInterpreter,neg_scalar)
     ASSERT_EQ(2, op.child_count());
     ASSERT_EQ(wasp::MINUS, op.child_at(0).type());
     ASSERT_EQ(wasp::VALUE, op.child_at(1).type());
+    auto result = interpreter.evaluate();
+    ASSERT_TRUE(result.is_integer());
+    ASSERT_TRUE(result.is_number());
+    ASSERT_FALSE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_EQ(-9, result.integer());
 }
 TEST(ExprInterpreter,combined)
 {
