@@ -76,7 +76,14 @@ TEST(ExprInterpreter,assign)
     ASSERT_FALSE(result.is_error());
     ASSERT_EQ(2, result.integer());
     ASSERT_TRUE( interpreter.context().exists("x") );
-
+    ASSERT_FALSE( interpreter.context().exists("y") );
+    bool ok = false;
+    ASSERT_EQ(2, interpreter.context().variable("x")->integer(&ok) );
+    ASSERT_TRUE(ok);
+    ASSERT_EQ(2, interpreter.context().variable("x")->real(&ok) );
+    ASSERT_TRUE(ok);
+    ASSERT_TRUE( interpreter.context().variable("x")->boolean(&ok) );
+    ASSERT_TRUE(ok);
 }
 TEST(ExprInterpreter,exponent)
 {

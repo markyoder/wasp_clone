@@ -5,6 +5,7 @@
 #include "waspcore/Interpreter.h"
 #include "waspexpr/ExprParser.hpp"
 #include <cmath>
+#include <sstream>
 #include <map>
 
 namespace wasp{
@@ -88,7 +89,7 @@ public: // variables
             m_variables[name] = ptr;
             return ptr != nullptr;
         }
-
+    public:
         /**
          * @brief The Variable class is an abstract interface for dealing with
          */
@@ -116,12 +117,29 @@ public: // variables
                 // not implemented
                 return std::string();
             }
+        protected:
+            template<typename T>
+            std::string to_string(T v, bool * ok=nullptr)const{
+                std::stringstream s;
+                s<<v;
+                if( ok ) *ok = !(s.bad() || s.fail());
+                return s.str();
+            }
         };
+        Variable * variable(const std::string & name)const{
+            auto itr = m_variables.find(name);
+            if( itr == m_variables.end() ) return nullptr;
+            return itr->second;
+        }
+     private:
         class VarRefInt : public Variable{
         public:
             VarRefInt(int & i):v(i){}
             Type type() const{return INTEGER;}
+            bool boolean(bool * ok)const{ if( ok ) *ok = true; return bool(v);}
             int integer(bool * ok)const{ if( ok ) *ok = true; return v;}
+            double real(bool * ok)const{ if( ok ) *ok = true; return double(v);}
+            std::string string(bool * ok)const{ return Variable::to_string(v,ok);}
         private:
             int & v;
         };
@@ -136,7 +154,10 @@ public: // variables
         public:
             VarRefBool(bool & b):v(b){}
             Type type() const{return BOOLEAN;}
-            bool boolean(bool * ok)const{ if( ok ) *ok = true; return v;}
+            bool boolean(bool * ok)const{ if( ok ) *ok = true; return bool(v);}
+            int integer(bool * ok)const{ if( ok ) *ok = true; return v;}
+            double real(bool * ok)const{ if( ok ) *ok = true; return double(v);}
+            std::string string(bool * ok)const{ return Variable::to_string(v,ok);}
         private:
             bool & v;
         };
@@ -150,7 +171,10 @@ public: // variables
         public:
             VarRefReal(double & d):v(d){}
             Type type() const{return REAL;}
-            double real(bool * ok)const{ if( ok ) *ok = true; return v;}
+            bool boolean(bool * ok)const{ if( ok ) *ok = true; return bool(v);}
+            int integer(bool * ok)const{ if( ok ) *ok = true; return int(v);}
+            double real(bool * ok)const{ if( ok ) *ok = true; return double(v);}
+            std::string string(bool * ok)const{ return Variable::to_string(v,ok);}
         private:
             double & v;
         };
