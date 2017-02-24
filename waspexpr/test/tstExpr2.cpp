@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 #include <iostream>
 #include <string>
+#include <cmath>
 using namespace wasp;
 
 template<typename T>
@@ -161,5 +162,53 @@ TEST(ExprInterpreter,scalar_boolean)
         ASSERT_FALSE(result.is_string());
         ASSERT_TRUE(result.is_bool());
         ASSERT_EQ(t.expected, result.boolean());
+    }
+}
+
+TEST(ExprInterpreter,scalar_integer)
+{
+
+    for( int i = -2500, count = 0; count < 5000; ++count,i=-2500+count  )
+    {
+        SCOPED_TRACE( i );
+        std::stringstream input;
+        input <<"result="<<i<<"^2"; // exponentiation is higher precendence than unary minus
+        ExprInterpreter<> interpreter;
+        ASSERT_EQ( true, interpreter.parse(input) );
+
+        auto result = interpreter.evaluate();
+        ASSERT_TRUE(result.is_integer());
+        ASSERT_TRUE(result.is_number());
+        ASSERT_FALSE(result.is_real());
+        ASSERT_FALSE(result.is_string());
+        ASSERT_FALSE(result.is_bool());
+        int expected = i > 0 ? std::pow(i,2) : -std::pow(i,2);
+        ASSERT_EQ(expected, result.integer());
+        ASSERT_EQ(expected, interpreter.context().variable("result")->integer());
+    }
+}
+
+TEST(ExprInterpreter,DISABLED_scalar_real)
+{
+
+    for( double i = -50.1, count = 0; count < 100; ++count,i=-50.1+count  )
+    {
+        SCOPED_TRACE( i );
+        std::stringstream input;
+        input <<"result=("<<i<<"-15)*3"; // exponentiation is higher precendence than unary minus
+        ExprInterpreter<> interpreter;
+        std::cout<<input.str()<<std::endl;
+        ASSERT_EQ( true, interpreter.parse(input) );
+
+        auto result = interpreter.evaluate();
+        ASSERT_FALSE(result.is_integer());
+        ASSERT_TRUE(result.is_number());
+        ASSERT_TRUE(result.is_real());
+        ASSERT_FALSE(result.is_string());
+        ASSERT_FALSE(result.is_bool());
+        float expected = (i-15.0)*3;
+        ASSERT_NEAR(expected, result.real(),1e-10);
+        ASSERT_NEAR(expected, interpreter.context().variable("result")->real()
+                    ,1e-10);
     }
 }
