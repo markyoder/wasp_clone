@@ -284,6 +284,14 @@ public: // variables
                 evaluate(tree_view.child_at(1),context);
                 unary_not();
                 break;
+            case wasp::WASP_AND:
+            {
+                evaluate(tree_view.child_at(0), context);
+                Result right_op;
+                right_op.evaluate(tree_view.child_at(2),context);
+                and_expr(right_op);
+                break;
+            }
             case wasp::LT:
             {
                 // evaluate this result as the left operation
@@ -441,6 +449,24 @@ public: // variables
             return *this;
          }
      private:
+         bool and_expr(const Result & a){
+
+             if( is_number() && a.is_number() )
+             {
+                 m_value.m_bool = number() && a.number();
+             }
+             else if( is_bool() && a.is_bool() )
+             {
+                 m_value.m_bool = boolean() && a.boolean();
+             }
+             else {
+                 // NOT IMPLEMENTED
+                 m_value.m_bool = false;
+             }
+             m_type = BOOLEAN;
+             return m_value.m_bool;
+         }
+
          bool not_equal(const Result& a){
              m_value.m_bool = !equal(a);
              m_type = BOOLEAN;
