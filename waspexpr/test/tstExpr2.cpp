@@ -137,6 +137,12 @@ TEST(ExprInterpreter,scalar_boolean)
         ,{"1==2 && 0==2",false} // false && false
         ,{"1==2 && 2==2",false} // false and true
 
+        // cont'd
+        ,{"1==1 || 2==2",true}
+        ,{"1==1 || 2==1",true}
+        ,{"1==2 || 0==2",false}
+        ,{"1==2 || 2==2",true}
+
     };
 
     ASSERT_FALSE( tests.empty() );
