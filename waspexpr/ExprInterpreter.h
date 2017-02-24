@@ -117,6 +117,18 @@ public: // variables
                 // not implemented
                 return std::string();
             }
+            virtual void store(bool v){
+                // not implemented
+            }
+            virtual void store(int v){
+                // not implemented
+            }
+            virtual void store(double v){
+                // not implemented
+            }
+            virtual void store(const std::string& v){
+                // not implemented
+            }
         protected:
             template<typename T>
             std::string to_string(T v, bool * ok=nullptr)const{
@@ -140,6 +152,10 @@ public: // variables
             int integer(bool * ok)const{ if( ok ) *ok = true; return v;}
             double real(bool * ok)const{ if( ok ) *ok = true; return double(v);}
             std::string string(bool * ok)const{ return Variable::to_string(v,ok);}
+
+            void store(bool v) { this->v = v;}
+            void store(int v) { this->v = v;}
+            void store(double v) { this->v = v;}
         private:
             int & v;
         };
@@ -158,6 +174,10 @@ public: // variables
             int integer(bool * ok)const{ if( ok ) *ok = true; return v;}
             double real(bool * ok)const{ if( ok ) *ok = true; return double(v);}
             std::string string(bool * ok)const{ return Variable::to_string(v,ok);}
+
+            void store(bool v) { this->v = v;}
+            void store(int v) { this->v = v;}
+            void store(double v) { this->v = v;}
         private:
             bool & v;
         };
@@ -175,6 +195,10 @@ public: // variables
             int integer(bool * ok)const{ if( ok ) *ok = true; return int(v);}
             double real(bool * ok)const{ if( ok ) *ok = true; return double(v);}
             std::string string(bool * ok)const{ return Variable::to_string(v,ok);}
+
+            void store(bool v) { this->v = v;}
+            void store(int v) { this->v = v;}
+            void store(double v) { this->v = v;}
         private:
             double & v;
         };
@@ -189,6 +213,11 @@ public: // variables
             VarRefString(std::string & s):v(s){}
             Type type() const{return STRING;}
             std::string string(bool * ok)const{ if( ok ) *ok = true; return v;}
+
+            void store(bool v) { this->v = Variable::to_string(v);}
+            void store(int v) { this->v = Variable::to_string(v);}
+            void store(double v){ this->v = Variable::to_string(v);}
+            void store(const std::string & v){this->v = v;}
         private:
             std::string & v;
         };
@@ -358,7 +387,8 @@ public: // variables
             {
                 std::string variable_name = tree_view.name();
                 evaluate(tree_view.child_at(2),context);
-                bool new_variable = context.exists(variable_name);
+                auto * v = context.variable(variable_name);
+                bool new_variable = v != nullptr;
                 if( new_variable == false ){
                     switch( m_type ){ // switch on current Result's type
                         case BOOLEAN:
@@ -374,9 +404,29 @@ public: // variables
                         context.store(variable_name,string());
                         break;
                     default:
+                        // not implemented
                         break;
                     }
                 } // end of new variable store
+                else {
+                    switch( m_type ){ // switch on current Result's type
+                        case BOOLEAN:
+                        v->store(boolean());
+                        break;
+                    case INTEGER:
+                        v->store(integer());
+                        break;
+                    case REAL:
+                        v->store(real());
+                        break;
+                    case STRING:
+                        v->store(string());
+                        break;
+                    default:
+                        // not implemented
+                        break;
+                    }
+                }
             }
             case wasp::DOCUMENT_ROOT:
                 // evaluate all children, storing only last result

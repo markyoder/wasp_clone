@@ -85,6 +85,33 @@ TEST(ExprInterpreter,assign)
     ASSERT_TRUE( interpreter.context().variable("x")->boolean(&ok) );
     ASSERT_TRUE(ok);
 }
+TEST(ExprInterpreter,assign_existing)
+{
+    std::stringstream input;
+    input <<"x=2+5"<<std::endl;
+    ExprInterpreter<> interpreter;
+    int x = 3;
+    interpreter.context().store_ref("x",x);
+    ASSERT_TRUE( interpreter.context().exists("x") );
+    ASSERT_EQ(3, interpreter.context().variable("x")->integer());
+    ASSERT_EQ( true, interpreter.parse(input) );
+    auto result = interpreter.evaluate();
+    ASSERT_TRUE(result.is_integer());
+    ASSERT_TRUE(result.is_number());
+    ASSERT_FALSE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_EQ(7, result.integer());
+    ASSERT_EQ(7, x); // ensure x was updated
+    ASSERT_TRUE( interpreter.context().exists("x") );
+    bool ok = false;
+    ASSERT_EQ(7, interpreter.context().variable("x")->integer(&ok) );
+    ASSERT_TRUE(ok);
+    ASSERT_EQ(7, interpreter.context().variable("x")->real(&ok) );
+    ASSERT_TRUE(ok);
+    ASSERT_TRUE( interpreter.context().variable("x")->boolean(&ok) );
+    ASSERT_TRUE(ok);
+}
 TEST(ExprInterpreter,exponent)
 {
     std::stringstream input;
