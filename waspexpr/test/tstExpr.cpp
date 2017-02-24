@@ -73,6 +73,27 @@ TEST(ExprInterpreter,and_expr)
     ASSERT_TRUE(result.is_bool());
     ASSERT_TRUE( result.boolean());
 }
+TEST(ExprInterpreter,or_expr)
+{
+    std::stringstream input;
+    input <<"1==1 || 1==2"<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(11, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count() );
+    auto op = document.child_at(0);
+    ASSERT_EQ(wasp::WASP_OR, op.type());
+
+    auto result = interpreter.evaluate();
+    ASSERT_FALSE(result.is_integer());
+    ASSERT_FALSE(result.is_number());
+    ASSERT_FALSE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_TRUE(result.is_bool());
+    ASSERT_TRUE( result.boolean());
+}
 TEST(ExprInterpreter,assign)
 {
     std::stringstream input;
