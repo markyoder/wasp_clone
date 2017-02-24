@@ -131,6 +131,12 @@ TEST(ExprInterpreter,scalar_boolean)
         ,{"-0.33 || -3.33", true}
         ,{"-0.33 && -3.33", true}
 
+        // boolean algebra tables
+        ,{"1==1 && 2==2",true} // true && true
+        ,{"1==1 && 2==1",false} // true && false
+        ,{"1==2 && 0==2",false} // false && false
+        ,{"1==2 && 2==2",false} // false and true
+
     };
 
     ASSERT_FALSE( tests.empty() );
