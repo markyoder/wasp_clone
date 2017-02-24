@@ -30,6 +30,8 @@ TEST(ExprInterpreter,scalar_boolean)
         ,{"-1000000 >= -1000000", true}
         ,{"-1000000 == -1000000", true}
         ,{"-1000000 != -1000000", false}
+        ,{"-1000000 || -1000000", true}
+        ,{"-1000000 && -1000000", true}
 
         // same zero integer
         ,{"0 <  0", false}
@@ -38,6 +40,8 @@ TEST(ExprInterpreter,scalar_boolean)
         ,{"0 >= 0", true}
         ,{"0 == 0", true}
         ,{"0 != 0", false}
+        ,{"0 || 0", false}
+        ,{"0 && 0", false}
 
         // same positive integer
        ,{"1000000 <  1000000", false}
@@ -54,6 +58,8 @@ TEST(ExprInterpreter,scalar_boolean)
         ,{"2 <= 3", true}
         ,{"2 == 3", false}
         ,{"2 != 3", true}
+        ,{"2 || 3", true}
+        ,{"2 && 3", true}
 
         // negative different integers
         ,{"-2 >  -3", true}
@@ -62,6 +68,8 @@ TEST(ExprInterpreter,scalar_boolean)
         ,{"-2 <= -3", false}
         ,{"-2 == -3", false}
         ,{"-2 != -3", true}
+        ,{"-2 || -3", true}
+        ,{"-2 && -3", true}
 
         // mixed sign different integer
         ,{"2 >  -3", true}
@@ -70,6 +78,8 @@ TEST(ExprInterpreter,scalar_boolean)
         ,{"2 <= -3", false}
         ,{"2 == -3", false}
         ,{"2 != -3", true}
+        ,{"2 || -3", true}
+        ,{"2 && -3", true}
 
         // same zero real number
         ,{"0.0 <  0.0", false}
@@ -78,6 +88,8 @@ TEST(ExprInterpreter,scalar_boolean)
         ,{"0.0 >= 0.0", true}
         ,{"0.0 == 0.0", true}
         ,{"0.0 != 0.0", false}
+        ,{"0.0 || 0.0", false}
+        ,{"0.0 && 0.0", false}
 
         // positive same reals
         ,{"3.33 <  3.33", false}
@@ -86,6 +98,8 @@ TEST(ExprInterpreter,scalar_boolean)
         ,{"3.33 >= 3.33", true}
         ,{"3.33 == 3.33", true}
         ,{"3.33 != 3.33", false}
+        ,{"3.33 || 3.33", true}
+        ,{"3.33 && 3.33", true}
 
         // positive different reals
         ,{"0.33 <  3.33", true}
@@ -94,6 +108,8 @@ TEST(ExprInterpreter,scalar_boolean)
         ,{"0.33 >= 3.33", false}
         ,{"0.33 == 3.33", false}
         ,{"0.33 != 3.33", true}
+        ,{"0.33 || 3.33", true}
+        ,{"0.33 && 3.33", true}
 
         // negative same reals
         ,{"-3.33 <  -3.33", false}
@@ -102,6 +118,8 @@ TEST(ExprInterpreter,scalar_boolean)
         ,{"-3.33 >= -3.33", true}
         ,{"-3.33 == -3.33", true}
         ,{"-3.33 != -3.33", false}
+        ,{"-3.33 || -3.33", true}
+        ,{"-3.33 && -3.33", true}
 
         // negative different reals
         ,{"-0.33 <  -3.33", false}
@@ -110,6 +128,8 @@ TEST(ExprInterpreter,scalar_boolean)
         ,{"-0.33 >= -3.33", true}
         ,{"-0.33 == -3.33", false}
         ,{"-0.33 != -3.33", true}
+        ,{"-0.33 || -3.33", true}
+        ,{"-0.33 && -3.33", true}
 
     };
 
