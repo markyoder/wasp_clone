@@ -755,7 +755,7 @@ public: // variables
                      m_type = STRING;
                      string()
                              = std::to_string(integer())
-                             + a.string();
+                             +"-"+ a.string();
                  }
              }
              else if( is_real() )

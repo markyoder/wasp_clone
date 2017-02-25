@@ -458,3 +458,30 @@ TEST(ExprInterpreter,DISABLED_scalar_real)
                     ,1e-10);
     }
 }
+
+TEST(ExprInterpreter,string_concat)
+{
+
+    std::vector<ScalarExprTest<std::string>> tests={
+        {"'x'+'y'","xy"}
+        ,{"\"x\"+\"y\"","xy"}
+        ,{"'x'+'y'+' z '","xy z "}
+        ,{"'x'+'y'+(' z ')","xy z "}
+    };
+    for( auto t : tests )
+    {
+        SCOPED_TRACE( t.tst );
+        std::stringstream input;
+        input <<t.tst;
+        ExprInterpreter<> interpreter;
+        ASSERT_EQ( true, interpreter.parse(input) );
+
+        auto result = interpreter.evaluate();
+        ASSERT_FALSE(result.is_integer());
+        ASSERT_FALSE(result.is_number());
+        ASSERT_FALSE(result.is_real());
+        ASSERT_TRUE(result.is_string());
+        ASSERT_FALSE(result.is_bool());
+        ASSERT_EQ(t.expected, result.string());
+    }
+}
