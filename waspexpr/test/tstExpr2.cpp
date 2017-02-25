@@ -467,6 +467,12 @@ TEST(ExprInterpreter,string_concat)
         ,{"\"x\"+\"y\"","xy"}
         ,{"'x'+'y'+' z '","xy z "}
         ,{"'x'+'y'+(' z ')","xy z "}
+        ,{"3+'y'+' z '","3y z "}
+        ,{"'y'+3+' z '","y3 z "}
+        ,{"3/'y'+' z '","3/y z "}
+        ,{"'y'+3/' z '","y3/ z "}
+        ,{"3 - 'y' +' z '","3-y z "}
+        ,{"'y' + 3 - ' z '","y3- z "}
     };
     for( auto t : tests )
     {
