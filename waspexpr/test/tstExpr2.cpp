@@ -12,13 +12,13 @@ struct ScalarExprTest{
     ScalarExprTest(const std::string & tst, T expected)
         :tst(tst),expected(expected){}
 };
-template<typename V1, typename V2,typename T>
+template<typename V1, typename V2, typename T>
 struct VariableExprTest{
     std::string tst;
     V1 v1;
     V2 v2;
     T expected;
-    VariableExprTest(const std::string & tst, V1 v1, V2, T expected)
+    VariableExprTest(const std::string & tst, V1 v1, V2 v2, T expected)
         :tst(tst),v1(v1),v2(v2),expected(expected){}
 };
 
@@ -166,6 +166,104 @@ TEST(ExprInterpreter,scalar_boolean)
         ASSERT_EQ(t.expected, result.boolean());
     }
 }
+TEST(ExprInterpreter,integer_variable_boolean)
+{
+    std::vector<VariableExprTest<int,int,bool>> tests={
+
+        // same negative numbers
+         {"x < y",-1000000,-1000000, false}
+        ,{"x <= y",-1000000,-1000000, true}
+        ,{"x >  y",-1000000,-1000000, false}
+        ,{"x >= y",-1000000,-1000000, true}
+        ,{"x == y",-1000000,-1000000, true}
+        ,{"x != y",-1000000,-1000000, false}
+        ,{"x || y",-1000000,-1000000, true}
+        ,{"x && y",-1000000,-1000000, true}
+
+        // same zero integer
+        ,{"x <  y",0, 0,false}
+        ,{"x <= y",0, 0,true}
+        ,{"x >  y",0, 0,false}
+        ,{"x >= y",0, 0,true}
+        ,{"x == y",0, 0,true}
+        ,{"x != y",0, 0,false}
+        ,{"x || y",0, 0,false}
+        ,{"x && y",0, 0,false}
+
+        // same positive integer
+       ,{"x <  y",1000000,1000000, false}
+       ,{"x <= y",1000000,1000000, true}
+       ,{"x >  y",1000000,1000000, false}
+       ,{"x >= y",1000000,1000000, true}
+       ,{"x == y",1000000,1000000, true}
+       ,{"x != y",1000000,1000000, false}
+
+        // positive different integers
+        ,{"x >  y",2,3, false}
+        ,{"x >= y",2,3, false}
+        ,{"x <  y",2,3, true}
+        ,{"x <= y",2,3, true}
+        ,{"x == y",2,3, false}
+        ,{"x != y",2,3, true}
+        ,{"x || y",2,3, true}
+        ,{"x && y",2,3, true}
+
+        // negative different integers
+        ,{"x >  y",-2,-3, true}
+        ,{"x >= y",-2,-3, true}
+        ,{"x <  y",-2,-3, false}
+        ,{"x <= y",-2,-3, false}
+        ,{"x == y",-2,-3, false}
+        ,{"x != y",-2,-3, true}
+        ,{"x || y",-2,-3, true}
+        ,{"x && y",-2,-3, true}
+
+        // mixed sign different integer
+        ,{"x >  y",2, -3, true}
+        ,{"x >= y",2, -3, true}
+        ,{"x <  y",2, -3, false}
+        ,{"x <= y",2, -3, false}
+        ,{"x == y",2, -3, false}
+        ,{"x != y",2, -3, true}
+        ,{"x || y",2, -3, true}
+        ,{"x && y",2, -3, true}
+
+        // boolean algebra tables
+        ,{"x==x && y==y",1,2,true} // true && true
+        ,{"x==x && y==x",1,2,false} // true && false
+        ,{"x==y && 0==y",1,2,false} // false && false
+        ,{"x==y && y==y",1,2,false} // false and true
+
+        // cont'd
+        ,{"x==x || y==y",1,2,true}
+        ,{"x==x || y==x",1,2,true}
+        ,{"x==y || 0==y",1,2,false}
+        ,{"x==y || y==y",1,2,true}
+    };
+
+    ASSERT_FALSE( tests.empty() );
+    for( auto & t : tests )
+    {
+        SCOPED_TRACE( t.tst );
+        std::stringstream input;
+        input <<t.tst;
+        ExprInterpreter<> interpreter;
+
+        interpreter.context().store("x",t.v1);
+        interpreter.context().store("y",t.v2);
+        ASSERT_EQ( true, interpreter.parse(input) );
+
+        auto result = interpreter.evaluate();
+        ASSERT_FALSE(result.is_integer());
+        ASSERT_FALSE(result.is_number());
+        ASSERT_FALSE(result.is_real());
+        ASSERT_FALSE(result.is_string());
+        ASSERT_TRUE(result.is_bool());
+        ASSERT_EQ(t.expected, result.boolean());
+    }
+}
+
+
 TEST(ExprInterpreter,scalar_integer)
 {
 
