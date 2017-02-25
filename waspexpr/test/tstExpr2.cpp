@@ -12,14 +12,16 @@ struct ScalarExprTest{
     ScalarExprTest(const std::string & tst, T expected)
         :tst(tst),expected(expected){}
 };
-template<typename V,typename T>
+template<typename V1, typename V2,typename T>
 struct VariableExprTest{
     std::string tst;
-    V var;
+    V1 v1;
+    V2 v2;
     T expected;
-    VariableExprTest(const std::string & tst, V var, T expected)
-        :tst(tst),var(var),expected(expected){}
+    VariableExprTest(const std::string & tst, V1 v1, V2, T expected)
+        :tst(tst),v1(v1),v2(v2),expected(expected){}
 };
+
 TEST(ExprInterpreter,scalar_boolean)
 {
     std::vector<ScalarExprTest<bool>> tests={
@@ -164,7 +166,6 @@ TEST(ExprInterpreter,scalar_boolean)
         ASSERT_EQ(t.expected, result.boolean());
     }
 }
-
 TEST(ExprInterpreter,scalar_integer)
 {
 

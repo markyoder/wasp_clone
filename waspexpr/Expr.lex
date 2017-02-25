@@ -43,16 +43,11 @@ INT [0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INT}
 REAL {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
 
-STRING [A-Za-z_]((\-)?[A-Za-z0-9\._/])*
-
-
-
- /* This string does not allow special characters '-','/'
- *  and should only occur in the context of reference
- */
-LESSER_STRING [A-Za-z_][A-Za-z0-9_]*
+STRING [A-Za-z_]([A-Za-z0-9\._/])*
 
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
+SINGLE_QUOTED_STRING \'([^\'\n])*\'
+QSTRING {DOUBLE_QUOTED_STRING}|{SINGLE_QUOTED_STRING}
 COMMENT #[^\n]*|%[^\n]*
 
 LTE <=
@@ -183,12 +178,13 @@ COMMA ,
 }
 {STRING} {
     capture_token(yylval,wasp::STRING);
-//    yylval->stringVal = new std::string(yytext, yyleng);
     return token::STRING;
 }
-
+{QSTRING} {
+    capture_token(yylval,wasp::QUOTED_STRING);
+    return token::QSTRING;
+}
 {COMMENT} {
-//    yylval->stringVal = new std::string(yytext,yyleng);
     capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
 }

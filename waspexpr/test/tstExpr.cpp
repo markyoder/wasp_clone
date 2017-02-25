@@ -429,6 +429,26 @@ TEST(ExprInterpreter,unary_minus)
     ASSERT_EQ(wasp::MINUS, op.child_at(0).type());
     ASSERT_EQ(wasp::PARENTHESIS, op.child_at(1).type());
 }
+TEST(ExprInterpreter,string)
+{
+    std::stringstream input;
+    input <<" 'my string' "<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(2, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count() );
+    auto op = document.child_at(0);
+    ASSERT_EQ(wasp::VALUE, op.type());
+    ASSERT_EQ(0, op.child_count());
+    auto result = interpreter.evaluate();
+    ASSERT_FALSE(result.is_integer());
+    ASSERT_FALSE(result.is_number());
+    ASSERT_FALSE(result.is_real());
+    ASSERT_TRUE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_EQ("my string", result.string());
+}
 TEST(ExprInterpreter,pos_scalar)
 {
     std::stringstream input;

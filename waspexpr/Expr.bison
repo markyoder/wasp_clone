@@ -425,10 +425,10 @@ real : REAL
 unquoted_string : STRING
     {        
         size_t token_index = ($1);
-        $$ = interpreter.push_leaf(wasp::STRING,"string"
+        $$ = interpreter.push_leaf(wasp::STRING,"str"
                          ,token_index);
     }
-VALUE : INTEGER | REAL | STRING
+VALUE : INTEGER | REAL | STRING | QSTRING
 value : VALUE
     {
         size_t token_index = ($1);
