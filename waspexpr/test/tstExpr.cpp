@@ -449,6 +449,49 @@ TEST(ExprInterpreter,string)
     ASSERT_FALSE(result.is_error());
     ASSERT_EQ("my string", result.string());
 }
+TEST(ExprInterpreter,variable_ref)
+{
+    std::stringstream input;
+    input <<" x "<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(2, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count() );
+    auto op = document.child_at(0);
+    ASSERT_EQ(wasp::VALUE, op.type());
+    ASSERT_EQ(0, op.child_count());
+    double x = 3.14;
+    interpreter.context().store("x",x);
+    auto result = interpreter.evaluate();
+    ASSERT_FALSE(result.is_integer());
+    ASSERT_TRUE(result.is_number());
+    ASSERT_TRUE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_EQ(x, result.real());
+}
+TEST(ExprInterpreter,variable_ref_undefined)
+{
+    std::stringstream input;
+    input <<" x "<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(2, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count() );
+    auto op = document.child_at(0);
+    ASSERT_EQ(wasp::VALUE, op.type());
+    ASSERT_EQ(0, op.child_count());
+    auto result = interpreter.evaluate();
+    ASSERT_FALSE(result.is_integer());
+    ASSERT_FALSE(result.is_number());
+    ASSERT_FALSE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_TRUE(result.is_error());
+    ASSERT_EQ("***Error : 'value' at line 1 and column 2 - is not a known variable.\n"
+              , result.string());
+}
 TEST(ExprInterpreter,pos_scalar)
 {
     std::stringstream input;

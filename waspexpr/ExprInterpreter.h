@@ -248,6 +248,8 @@ public: // variables
          template<class T>
          Result & evaluate( const T & tree_view, Context & context)
          {
+             // if an ambiguous 'value' node
+             // determine operation via the token's type
             size_t type = tree_view.type();
             if( type == wasp::VALUE ) type = tree_view.token_type();
 
@@ -268,7 +270,6 @@ public: // variables
                 m_type = REAL;
                 m_value.m_real = tree_view.to_double();
                 break;
-            case wasp::STRING:
             case wasp::QUOTED_STRING:
                 m_type = STRING;
                 string() = tree_view.to_string();
@@ -397,6 +398,37 @@ public: // variables
                 Result right_op;
                 right_op.evaluate(tree_view.child_at(2),context);
                 div(right_op);
+                break;
+            }
+            case wasp::STRING:
+            {
+                std::string name = tree_view.data();
+                auto * v = context.variable(name);
+                if( v == nullptr )
+                {
+                    m_type = ERROR;
+                    string() = error_msg(tree_view,"is not a known variable.");
+
+                }else{
+                    m_type = v->type();
+                    switch( m_type ){ // switch on current Result's type
+                        case BOOLEAN:
+                        m_value.m_bool = v->boolean();
+                        break;
+                    case INTEGER:
+                        m_value.m_int = v->integer();
+                        break;
+                    case REAL:
+                        m_value.m_real = v->real();
+                        break;
+                    case STRING:
+                        string() = v->string();
+                        break;
+                    default:
+                        // not implemented
+                        break;
+                    }
+                }
                 break;
             }
             case wasp::KEYED_VALUE:
