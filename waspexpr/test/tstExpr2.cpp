@@ -337,7 +337,80 @@ TEST(ExprInterpreter,real_variable_boolean)
         ASSERT_EQ(t.expected, result.boolean());
     }
 }
+TEST(ExprInterpreter,mixed_numeric_variable_boolean)
+{
+    std::vector<VariableExprTest<int,double,bool>> tests={
+        // same zero number
+         {"x <  y",0,0.0, false}
+        ,{"x <= y",0,0.0, true}
+        ,{"x >  y",0,0.0, false}
+        ,{"x >= y",0,0.0, true}
+        ,{"x == y",0,0.0, true}
+        ,{"x != y",0,0.0, false}
+        ,{"x || y",0,0.0, false}
+        ,{"x  && y",0,0.0, false}
 
+        // positive same number
+        ,{"x <  y",3,3.00, false}
+        ,{"x <= y",3,3.00, true}
+        ,{"x >  y",3,3.00, false}
+        ,{"x >= y",3,3.00, true}
+        ,{"x == y",3,3.00, true}
+        ,{"x != y",3,3.00, false}
+        ,{"x || y",3,3.00, true}
+        ,{"x &&  y",3,3.00, true}
+
+        // positive different numbers
+        ,{"x <  y",0,3.33, true}
+        ,{"x <= y",0,3.33, true}
+        ,{"x >  y",0,3.33, false}
+        ,{"x >= y",0,3.33, false}
+        ,{"x == y",0,3.33, false}
+        ,{"x != y",0,3.33, true}
+        ,{"x || y",0,3.33, true}
+        ,{"x  &&  y",0,3.33, false}
+
+        // negative same number
+        ,{"x <  y",-3,-3.00, false}
+        ,{"x <= y",-3,-3.00, true}
+        ,{"x >  y",-3,-3.00, false}
+        ,{"x >= y",-3,-3.00, true}
+        ,{"x == y",-3,-3.00, true}
+        ,{"x != y",-3,-3.00, false}
+        ,{"x || y",-3,-3.00, true}
+        ,{"x&&y",-3,-3.00, true}
+
+        // negative different numbers
+        ,{"x <  y",-0,-3.33, false}
+        ,{"x <= y",-0,-3.33, false}
+        ,{"x >  y",-0,-3.33, true}
+        ,{"x >= y",-0,-3.33, true}
+        ,{"x == y",-0,-3.33, false}
+        ,{"x != y",-0,-3.33, true}
+        ,{"x || y",-0,-3.33, true}
+        ,{"x && y",-0,-3.33, false}
+    };
+    ASSERT_FALSE( tests.empty() );
+    for( auto & t : tests )
+    {
+        SCOPED_TRACE( t.tst );
+        std::stringstream input;
+        input <<t.tst;
+        ExprInterpreter<> interpreter;
+
+        interpreter.context().store("x",t.v1);
+        interpreter.context().store("y",t.v2);
+        ASSERT_EQ( true, interpreter.parse(input) );
+
+        auto result = interpreter.evaluate();
+        ASSERT_FALSE(result.is_integer());
+        ASSERT_FALSE(result.is_number());
+        ASSERT_FALSE(result.is_real());
+        ASSERT_FALSE(result.is_string());
+        ASSERT_TRUE(result.is_bool());
+        ASSERT_EQ(t.expected, result.boolean());
+    }
+}
 TEST(ExprInterpreter,scalar_integer)
 {
 
