@@ -1039,7 +1039,7 @@ namespace wasp {
     break;
 
   case 44:
-#line 463 "Expr.bison" // lalr1.cc:859
+#line 462 "Expr.bison" // lalr1.cc:859
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment"
@@ -1049,7 +1049,7 @@ namespace wasp {
     break;
 
   case 46:
-#line 470 "Expr.bison" // lalr1.cc:859
+#line 469 "Expr.bison" // lalr1.cc:859
     {
             interpreter.add_root_child_index(((yystack_[0].value.node_index)));
         }
@@ -1057,7 +1057,7 @@ namespace wasp {
     break;
 
   case 47:
-#line 473 "Expr.bison" // lalr1.cc:859
+#line 472 "Expr.bison" // lalr1.cc:859
     {
             interpreter.add_root_child_index(((yystack_[0].value.node_index)));
         }
@@ -1065,7 +1065,7 @@ namespace wasp {
     break;
 
   case 48:
-#line 476 "Expr.bison" // lalr1.cc:859
+#line 475 "Expr.bison" // lalr1.cc:859
     {
             interpreter.add_root_child_index(((yystack_[0].value.node_index)));
         }
@@ -1467,7 +1467,7 @@ namespace wasp {
      140,   141,   142,   143,   144,   145,   146,   147,   203,   204,
      214,   224,   236,   248,   260,   272,   284,   296,   308,   320,
      332,   344,   356,   368,   380,   392,   431,   431,   431,   431,
-     432,   438,   439,   447,   462,   469,   470,   473,   476
+     432,   438,   439,   447,   461,   468,   469,   472,   475
   };
 
   // Print the state stack on the debug stream.
@@ -1552,7 +1552,7 @@ namespace wasp {
 
 } // wasp
 #line 1555 "ExprParser.cpp" // lalr1.cc:1167
-#line 484 "Expr.bison" // lalr1.cc:1168
+#line 483 "Expr.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 namespace wasp{
 void ExprParser::error(const ExprParser::location_type& l,

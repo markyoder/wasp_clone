@@ -471,6 +471,30 @@ TEST(ExprInterpreter,variable_ref)
     ASSERT_FALSE(result.is_error());
     ASSERT_EQ(x, result.real());
 }
+TEST(ExprInterpreter,assign_variable_ref)
+{
+    std::stringstream input;
+    input <<" y=x "<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(5, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count() );
+    auto op = document.child_at(0);
+    ASSERT_EQ(wasp::KEYED_VALUE, op.type());
+    ASSERT_EQ(3, op.child_count());
+    double x = 3.14;
+    interpreter.context().store("x",x);
+    auto result = interpreter.evaluate();
+    ASSERT_FALSE(result.is_integer());
+    ASSERT_TRUE(result.is_number());
+    ASSERT_TRUE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_EQ(x, result.real());
+    ASSERT_TRUE(interpreter.context().exists("y"));
+    ASSERT_EQ(x, interpreter.context().variable("y")->real());
+}
 TEST(ExprInterpreter,variable_ref_undefined)
 {
     std::stringstream input;
