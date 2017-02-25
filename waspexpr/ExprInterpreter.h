@@ -780,18 +780,18 @@ public: // variables
                  // string - integer
                  if( a.is_integer() ){
                      string()
-                             += std::to_string(a.integer());
+                             += "-"+std::to_string(a.integer());
                  }
                  // string - real
                  else if( a.is_real() ){
                      string()
-                             += std::to_string(a.real());
+                             += "-"+std::to_string(a.real());
                  }
                  // string - string
                  else if( a.is_string() )
                  {
                     string()
-                            += a.string();
+                            += "-"+a.string();
                  }
              }
              return *this;
@@ -815,7 +815,7 @@ public: // variables
                      m_type = STRING;
                      string()
                              = std::to_string(integer())
-                             + a.string();
+                             + "/"+a.string();
                  }
              }
              else if( is_real() )
@@ -834,7 +834,7 @@ public: // variables
                      m_type = STRING;
                      string()
                              = std::to_string(real())
-                             + a.string();
+                             + +"/"+a.string();
                  }
              }else if( is_string() ){
                  // string / integer
@@ -851,7 +851,7 @@ public: // variables
                  else if( a.is_string() )
                  {
                     string()
-                            += a.string();
+                            += "/"+a.string();
                  }
              }
              return *this;
