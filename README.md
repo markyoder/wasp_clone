@@ -46,3 +46,19 @@ cmake \
 `../configure.sh or ..\configure.bat`
   * I place the configure script in the build directory as opposed to the build/wasp directory because it allows me to delete the build/wasp
 directory without removing my script.
+
+
+
+# Package Overview 
+The Workbench Analysis Sequence Processor (WASP) is intended to streamline lexing, parsing, access, validation, and analysis of ascii text files.
+
+The foundation of WASP resides on the parse tree data structure where each node in the tree represents syntax of the input document. Nodes can parent nodes with children. 
+Nodes that have no children are known as terminal or leaf nodes and represent Tokens (string, number, delimiter, etc.) in the text file.
+
+## Components
+WASP is composed of the following primary components:
+1. __Core__ - the waspcore package contains most necessary data structures and interface classes needed to interact with text files. 
+    * StringPool - a string storage optimization class where ascii data are stored in a contiguous memory block where each string is null terminated and indexed.
+    * TokenPool - a token/word storage optimization class where Token information (string data via StringPool, file location) are stored. Line and column are calculated on-the-fly via token file offset and file line offset.
+    * TreeNodePool - a TreeNode
+    * Interpreter - an interface and highlevel implementation class which facilitates specific grammar lexer and parser state information and parse tree storage
