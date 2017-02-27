@@ -60,5 +60,5 @@ WASP is composed of the following primary components:
 1. __Core__ - the waspcore package contains most necessary data structures and interface classes needed to interact with text files. 
     * StringPool - a string storage optimization class where ascii data are stored in a contiguous memory block where each string is null terminated and indexed.
     * TokenPool - a token/word storage optimization class where Token information (string data via StringPool, file location) are stored. Line and column are calculated on-the-fly via token file offset and file line offset.
-    * TreeNodePool - a TreeNode
+    * TreeNodePool - a TreeNode storage class where TreeNode information (token, name, parent, type, children, etc) are stored. 
     * Interpreter - an interface and highlevel implementation class which facilitates specific grammar lexer and parser state information and parse tree storage
