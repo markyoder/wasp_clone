@@ -79,7 +79,7 @@ WASP is composed of the following primary components:
 4. __HIVE__ - the Hierarchical Input Validation Engine contains algorithms for validating a parse tree using a document schema/definition file.
     * Flexible scalar and referential rules - supports element occurrence, value, child uniqueness and choice, existence, sum, predicated sum, etc.  
 5. __JSON__ - the waspjson package contains lexer, and parser for the JSON grammar (http://www.json.org/) 
-6. __SIREN__ - the Sequence Input Retrieval ENgine (SIREN) contains lexer, parser, and evaluation logic for tree node lookup.
+6. [__SIREN__](/waspsiren/README.md) - the Sequence Input Retrieval ENgine (SIREN) contains lexer, parser, and evaluation logic for tree node lookup.
     * Flexible tree node lookup mechanism - supports absolute and relative wild-carded named and value or index -predicated node path lookup.
 7. __SON__ - the Standard Object Notation (SON) - waspson package contains the lexer, parser, and tree node view for the son grammar.
     * Flexible, structured, input entry mechanism - supports Objects, Arrays, and keyed values. Also supports identified objects, arrays, and keyed values.
