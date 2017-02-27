@@ -81,7 +81,7 @@ WASP is composed of the following primary components:
 5. __JSON__ - the waspjson package contains lexer, and parser for the JSON grammar (http://www.json.org/) 
 6. [__SIREN__](/waspsiren/README.md) - the Sequence Input Retrieval ENgine (SIREN) contains lexer, parser, and evaluation logic for tree node lookup.
     * Flexible tree node lookup mechanism - supports absolute and relative wild-carded named and value or index -predicated node path lookup.
-7. __SON__ - the Standard Object Notation (SON) - waspson package contains the lexer, parser, and tree node view for the son grammar.
+7. [__SON__](/waspson/README.md) - the Standard Object Notation (SON) - waspson package contains the lexer, parser, and tree node view for the son grammar.
     * Flexible, structured, input entry mechanism - supports Objects, Arrays, and keyed values. Also supports identified objects, arrays, and keyed values.
 8. __Utils__ - the wasputils package contains executable utilities for listing/viewing, selecting, validating, and transforming WASP supported grammars.
     * List - lists paths to each file element.
