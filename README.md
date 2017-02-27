@@ -62,3 +62,5 @@ WASP is composed of the following primary components:
     * TokenPool - a token/word storage optimization class where Token information (string data via StringPool, file location) are stored. Line and column are calculated on-the-fly via token file offset and file line offset.
     * TreeNodePool - a TreeNode storage class where TreeNode information (token, name, parent, type, children, etc) are stored. 
     * Interpreter - an interface and highlevel implementation class which facilitates specific grammar lexer and parser state information and parse tree storage
+    * wasp_node - enumerated token/node types used to aid in identifying context and intent. 
+
