@@ -4,6 +4,7 @@ The standard object notation is a lightweight data entry syntax intended to faci
 The supported constructs are Objects, Arrays, and Keyed values. Additionally, Objects, Arrays, and Keyed values can be further disambiguated using identifiers.
 
 SON can facilitate simple constructs such as property or configuration files using keyed-values. 
+
 ## Keyed-Value 
 
 The Keyed-Value is the simplest construct for representing information. 
@@ -57,7 +58,7 @@ Objects have the following syntax.
  ... 
  }`
  
- The example property store file above illustrates object use as follows.
+ The example property store file above illustrates potential object use as follows.
  
  ```
 main{
@@ -70,3 +71,35 @@ settings{
     width = 120 height = 120
 }
  ```
+
+Objects support the same identifier scheme as keyed-values. 
+ 
+ ##Arrays of Data
+ SON supports 1d arrays of data. This data can be scalar values, keyed-values, and nested-objects or arrays. 
+ Multi-dimensional data can be flattened to 1d and application specific context provided in associated keyed-value elements.
+ 
+ Arrays have the following syntax.
+ 
+ `array [ ... ]`
+ 
+ `array [
+ ... 
+ ]`
+ 
+ `array 
+ [ 
+ ... 
+ ]`
+ 
+ The example property store file above illustrates potential array use as follows:
+ 
+ ```
+ name  [ main settings ]
+ x     [  544      520 ]
+ y     [  100      800 ]
+ width [ 1920     1080 ]
+ height[  120      120 ]
+ 
+ ```
+ 
+Arrays support the same identifier scheme as keyed-values with one exception of nested arrays cannot have identifiers.
