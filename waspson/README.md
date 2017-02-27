@@ -16,10 +16,25 @@ Alternatively, the colon ':' can be used to indicate assignemt.
 
 `name : value`
 
-An example property store file follows:
+An example property store file that illustrates an application window attribute follows:
 
 ```
 x=544 y=100
 width = 1920
 height = 1080
+```
+
+Lastly, if the keyed-value needs to be further disambiguated an identifier can be added.
+
+`name ( id ) = value`
+
+An example property store file that illustrates an application with two window (main, settings) attributes follows:
+
+```
+x(main)=544 y(main)=100
+width(main) = 1920
+height(main) = 1080
+
+x(settings) = 520 y(settings) = 800
+width (settings) = 120 height(settings) = 120
 ```
