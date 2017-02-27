@@ -37,3 +37,14 @@ Predicates can be used at all level of the path expression.
 |_child_[_name_ = 'fred']/_ear_ | Selects all nodes with the name "_ear_" which are children of _child_ of the current node, only when _child_'s name is 'fred' |
 |_child_[_name_ = 'fred']/_ear_[hairy='true'] | Selects all nodes with the name "_ear_" which are children of _child_ of the current node, only when _child_'s name is 'fred' and the ear is hair |
 
+
+### Selecting Unknown Nodes
+Certain parts of the document may not be known. For this reason wildcards are supported in the expression path.
+
+|Expression | Description |
+| --------- | ----------- |
+|* | Selects all nodes that are children of the current node, regardless of name |
+|*less | Selects all nodes that are children of the current node, where the node name is '_less_' or ends with '_less_' |
+|less* | Selects all nodes that are children of the current node, where the node name is '_less_' or starts with '_less_' |
+|l*s | Selects all nodes that are children of the current node, where the node name is '_ls_', or starts with '_l_' and ends with '_s_' with any character between|
+
