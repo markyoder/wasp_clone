@@ -28,9 +28,12 @@ An empty result set will be produced if no elements in the document match the gi
 ### Predicates
 Selection of document elements may require predicated search patterns that evaluate the position of value of the element.
 
+Predicates can be used at all level of the path expression.
+
 |Expression | Description |
 | --------- | ----------- |
 |_value_[1] | Selects the first node with the name "_value_" that is a child of the current node |
 |_child_[_value_ = 3.14] | Selects all nodes with the name "_child_" of the current node where the _child_'s _value_ is equal to 3.14  |
 |_child_[_name_ = 'fred']/_ear_ | Selects all nodes with the name "_ear_" which are children of _child_ of the current node, only when _child_'s name is 'fred' |
+|_child_[_name_ = 'fred']/_ear_[hairy='true'] | Selects all nodes with the name "_ear_" which are children of _child_ of the current node, only when _child_'s name is 'fred' and the ear is hair |
 
