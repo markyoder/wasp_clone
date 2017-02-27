@@ -64,4 +64,8 @@ WASP is composed of the following primary components:
     * Interpreter - an interface and highlevel implementation class which facilitates specific grammar lexer and parser state information and parse tree storage
     * wasp_node - enumerated token/node types used to aid in identifying context and intent. 
     * utils - contains utility functions useful for string processing and tree visiting.
+    * wasp_bug - contains software quality assurance and development aids that can be preprocessed out of deployments.
+        * design by contract - insist, require, ensure, assert, check, remember.
+        * timing - 3 levels of timers for code performance monitoring. 1-3, highest to lowest.
+        * debug lines - set of macros that allow printing debug information to screen.
 
