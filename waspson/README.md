@@ -56,3 +56,17 @@ Objects have the following syntax.
  { 
  ... 
  }`
+ 
+ The example property store file above illustrates object use as follows.
+ 
+ ```
+main{
+    x=544 y=100
+    width = 1920
+    height = 1080
+}
+settings{
+    x = 520 y = 800
+    width = 120 height = 120
+}
+ ```
