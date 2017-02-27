@@ -55,6 +55,8 @@ The Workbench Analysis Sequence Processor (WASP) is intended to streamline lexin
 The foundation of WASP resides on the parse tree data structure where each node in the tree represents syntax of the input document. Nodes can parent nodes with children. 
 Nodes that have no children are known as terminal or leaf nodes and represent Tokens (string, number, delimiter, etc.) in the text file.
 
+The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) and GNU Bison parser generator (https://www.gnu.org/software/bison/) are extensively used for lexing and parsing.
+
 ## Components
 WASP is composed of the following primary components:
 1. __Core__ - the waspcore package contains most necessary data structures and interface classes needed to interact with text files. 
