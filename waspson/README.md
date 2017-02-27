@@ -28,7 +28,7 @@ Lastly, if the keyed-value needs to be further disambiguated an identifier can b
 
 `name ( id ) = value`
 
-An example property store file that illustrates an application with two window (main, settings) attributes follows:
+An example property store file that illustrates an application with attributes of two windows (main, settings) follows:
 
 ```
 x(main)=544 y(main)=100
@@ -38,3 +38,21 @@ height(main) = 1080
 x(settings) = 520 y(settings) = 800
 width (settings) = 120 height(settings) = 120
 ```
+
+## Heriarchy via Objects
+Heirarchy or grouping can be added using the Object construct. Objects are useful in exuming common context a succinct handle. 
+
+Objects can have nested objects, keyed-values, and arrays in any order. 
+
+Objects have the following syntax.
+
+`object_name { ... }`
+
+`object_name { 
+... 
+}`
+
+`object_name 
+ { 
+ ... 
+ }`
