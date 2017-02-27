@@ -83,3 +83,9 @@ WASP is composed of the following primary components:
     * Flexible tree node lookup mechanism - supports absolute and relative wild-carded named and value or index -predicated node path lookup.
 7. __SON__ - the Standard Object Notation (SON) - waspson package contains the lexer, parser, and tree node view for the son grammar.
     * Flexible, structured, input entry mechanism - supports Objects, Arrays, and keyed values. Also supports identified objects, arrays, and keyed values.
+8. __Utils__ - the wasputils package contains executable utilities for listing/viewing, selecting, validating, and transforming WASP supported grammars.
+    * List - lists paths to each file element.
+    * Select - allows using SIREN expression to select pieces of input.
+    * Valid - validates a given text file with a given document definition/schema.
+    * XML - translates a given text file into XML with data and location information.
+    * TODO - not all grammars support all utilities yet.
