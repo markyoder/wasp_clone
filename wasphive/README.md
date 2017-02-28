@@ -26,7 +26,7 @@ creation, and navigation.
 * IncreaseOver - describes that the values under the element must be increasing in the order that they are read in and saved in the parse tree.
 * DecreaseOver - describes that the values under the element must be decreasing in the order that they are read in and saved in the parse tree
 * ChildAtMostOne - describes one or more lists of relative paths (and possible values) into the parse tree where at most one is allowed to exist
-* ChildExactlyOne 
+* ChildExactlyOne - describes one or more lists of relative paths (and possible values) into the parse tree where exactly one is allowed to exist
 * ChildAtLeastOne 
 * ChildCountEqual 
 * ChildUniqueness 
@@ -175,5 +175,14 @@ path could be assigned a lookup value to predicate sets with the set member's va
 Of the given list of elements, at most one is allowed to exist in the input.  If there
 is a lookup value associate with the lookup path, then that path's value in the input
 must be equal to what is provided in order for that element to count towards the existence of the children. 
+
+ 
+### Child Exactly One
+__ChildExactlyOne__ There may be multiple of these restrictions on any given element in the Input Definition.
+Therefore, this restriction has one or more lookup paths.  Each of these lookup paths could have an optional 
+value assigned. Of the given list of elements, exactly one is allowed to exist in the input.  If there is a
+lookup value associated with the lookup path, then that element's value must be equal to what is provided
+in order for that element to count towards existence of the children. 
+
 
 
