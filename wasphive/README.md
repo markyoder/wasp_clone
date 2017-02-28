@@ -55,12 +55,12 @@ validated.
  
 ### Value Type
 __ValType__  Checks the type of the element. This can be one of the following: 
-	* _Int_ - meaning a negative or positive integer
-	* _Real_- meaning a negative or positive floating point value (or integer)
-	* _String_ meaning a literal string of text
-	* _RealOrQuestion_ meaning a negative or positive floating point value or the literal "?"
-	* _IntOrYesOrNo_ meaning a negative or positive integer or the literals "yes" or "no" (case insensitive)
-	* _IntOrAsterisk_ meaning a negative or positive integer or the literal "*"
+* _Int_ - meaning a negative or positive integer
+* _Real_- meaning a negative or positive floating point value (or integer)
+* _String_ meaning a literal string of text
+* _RealOrQuestion_ meaning a negative or positive floating point value or the literal "?"
+* _IntOrYesOrNo_ meaning a negative or positive integer or the literals "yes" or "no" (case insensitive)
+* _IntOrAsterisk_ meaning a negative or positive integer or the literal "*"
 TODO - give example situations 
 
 ### Value Enumerations
