@@ -24,7 +24,7 @@ creation, and navigation.
 * SumOver - describes what sum the values must add to under a given context
 * SumOverGroup - describes what sum the values over a given context must add to when grouped by dividing another input element's value by a given value
 * IncreaseOver - describes that the values under the element must be increasing in the order that they are read in and saved in the parse tree.
-* DecreaseOver 
+* DecreaseOver - describes that the values under the element must be decreasing in the order that they are read in and saved in the parse tree
 * ChildAtMostOne 
 * ChildExactlyOne 
 * ChildAtLeastOne 
@@ -158,5 +158,12 @@ the relative ancestry in the parse tree that the values must be increasing over.
 usually be "..". However, it may go back further in lineage if needed (e.g. "../../..").
 
 
-
+### Decrease Over
+__DecreaseOver__ It will have a type indicating the monotonicity. The type will either be Strict,
+meaning that the values must be strictly decreasing (no two values are the same), or Mono, meaning
+that multiple value are allowed to be the same as long as they never increase.  
+For example 7 6 5 5 4 3 would pass a Mono, but fail a Strict check due to two value being
+the same.  It will also have a context that describes the ancestry in the parse tree that
+the values must be decreasing over.  For a simple array, this will usually be "..". 
+However, it may go back further in lineage if needed (e.g. "../../..").
 
