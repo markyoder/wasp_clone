@@ -1,6 +1,6 @@
-#Heirarchical Input Validation Engine (HIVE) 
+# Heirarchical Input Validation Engine (HIVE) 
 
-##Restriction Descriptions
+## Restriction Descriptions
 
 
 * MinOccurs - describes the minimum occurrences that an input element is allowed to occur under its parent context
