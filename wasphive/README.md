@@ -32,8 +32,8 @@ creation, and navigation.
 * ChildUniqueness 
  
 
-1. __MinOccurs__ It is used mostly to denote if a piece of input is required or not. Most often, this rule will have a literal constant for minimum allowances.  The value must be an integer. For example, `MinOccurs=0` denotes that this element is optional under its parent context, and `MinOccurs=1` denotes that this element is required to occur at least once under its parent. Rarely, this rule may have a lookup path that contains a relative path from the current element into the parse tree.  If the lookup path describes a set containing a single value, and if that value is an integer, then that value will be used to determine the minimum allowed occurrences of the element being validated.
 
+1. __MinOccurs__ It is used mostly to denote if a piece of input is required or not. Most often, this rule will have a literal constant for minimum allowances.  The value must be an integer. For example, `MinOccurs=0` denotes that this element is optional under its parent context, and `MinOccurs=1` denotes that this element is required to occur at least once under its parent. Rarely, this rule may have a lookup path that contains a relative path from the current element into the parse tree.  If the lookup path describes a set containing a single value, and if that value is an integer, then that value will be used to determine the minimum allowed occurrences of the element being validated.
 TODO - give example situations
  
 
@@ -48,12 +48,9 @@ TODO - give example situations
 	* _RealOrQuestion_ meaning a negative or positive floating point value or the literal "?"
 	* _IntOrYesOrNo_ meaning a negative or positive integer or the literals "yes" or "no" (case insensitive)
 	* _IntOrAsterisk_ meaning a negative or positive integer or the literal "*"
-
-
- TODO - give example situations 
+TODO - give example situations 
 
 4. __ValEnums__ Compares the element's value with once of the provided. If the element's value is anything other than the listed allowed enumerations, then this check will fail.  
  
  Note : This check is case insensitive and if the value being checked is an integer, then leading zeros are ignored.
-
 TODO - give example situation
