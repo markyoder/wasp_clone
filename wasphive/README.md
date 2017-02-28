@@ -25,7 +25,7 @@ creation, and navigation.
 * SumOverGroup - describes what sum the values over a given context must add to when grouped by dividing another input element's value by a given value
 * IncreaseOver - describes that the values under the element must be increasing in the order that they are read in and saved in the parse tree.
 * DecreaseOver - describes that the values under the element must be decreasing in the order that they are read in and saved in the parse tree
-* ChildAtMostOne 
+* ChildAtMostOne - describes one or more lists of relative paths (and possible values) into the parse tree where at most one is allowed to exist
 * ChildExactlyOne 
 * ChildAtLeastOne 
 * ChildCountEqual 
@@ -165,5 +165,15 @@ that multiple value are allowed to be the same as long as they never increase.
 For example 7 6 5 5 4 3 would pass a Mono, but fail a Strict check due to two value being
 the same.  It will also have a context that describes the ancestry in the parse tree that
 the values must be decreasing over.  For a simple array, this will usually be "..". 
-However, it may go back further in lineage if needed (e.g. "../../..").
+However, it may go back further in lineage if needed (e.g
+
+
+### Child At Most One
+__ChildAtMostOne__ There may be multiple of these restrictions for any given element.
+Therefore, this restriction has one or more lookup paths.  Additionally, the look up
+path could be assigned a lookup value to predicate sets with the set member's value.
+Of the given list of elements, at most one is allowed to exist in the input.  If there
+is a lookup value associate with the lookup path, then that path's value in the input
+must be equal to what is provided in order for that element to count towards the existence of the children. 
+
 
