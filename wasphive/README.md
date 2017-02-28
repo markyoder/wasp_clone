@@ -19,7 +19,7 @@ creation, and navigation.
 * MaxValInc - describes the maximum inclusive value that this element is allowed to have if it is a number (float or integer)
 * MinValExc - describes the minimum exclusive value of the element if it is a number (float or integer)
 * MaxValExc - describes the maximum exclusive value of the element in the input if it is a number (float or integer)
-* ExistsIn 
+* ExistsIn - describes a set of lookup paths and possible constant values where the input element being validated must exist
 * NotExistsIn 
 * SumOver 
 * SumOverGroup 
@@ -111,4 +111,16 @@ allowed for the  element.  For example, 0.0 denotes that this element must be le
 Rarely, this rule may have a lookup path.  If there is a single value in the set represented by
 the lookup path, and if that value is a number, then that value will be used to determine the
 largest exclusive value allowed for the element being validated.
+
+### Exists In
+__ExistsIn__ This is basically used like a key to say that an element must be defined somewhere
+else.  This restriction will always contain one or more lookup paths that define relative paths
+into the parse tree from the element being validated.  The pieces of input at these paths will
+be collected into a set.  This restriction also may contain one or more optional constant value.
+If these exist, then the constant values will also be added to the set.  Then, all of the values
+in the parse tree at the element being validated with the ExistsIn restriction must exist in the
+set built from the lookup paths and the constant values in order to pass the validation.  If any
+element does not exist in this set, then the validation check fails.  This check is case insensitive
+and if the value being checked is an integer, then leading zeros are ignored.
+
 
