@@ -22,7 +22,7 @@ creation, and navigation.
 * ExistsIn - describes a set of lookup paths and possible constant values where the input element being validated must exist
 * NotExistsIn - describes a set of lookup paths where the value of the input element being validated must be not exist
 * SumOver - describes what sum the values must add to under a given context
-* SumOverGroup 
+* SumOverGroup - describes what sum the values over a given context must add to when grouped by dividing another input element's value by a given value
 * IncreaseOver 
 * DecreaseOver 
 * ChildAtMostOne 
@@ -136,5 +136,16 @@ __SumOver__ This restriction will always contain a context expression and an exp
 The value is the desired sum when all of the the  elements in the given context are summed.  
 The context contains a relative ancestry path in the parse tree that the values will be summed over.
 For a simple array, this will usually be "..", however it may go back further in lineage if needed (e.g. "../../..").  
+
+
+### Sum Over Group
+__SumOverGroup__ This restriction will always contain a context path, a group sum value, a compare path
+, and a group divide value.  The compare path is used to acquire another element in the parse tree using
+this as a relative path into the input from the current element being validated.  This value must exist
+in the input and be a number.  Then, this value is divided by the group divide value.  This does integer
+division to split the input element that will be added into groups.  Then, each group must successfully
+add to the group sum value.  If any group does not add to the group sum value, then this validation check
+fails.  If every group (when split by performing an integer division on the value at the compare path relative
+location by the group divide value) adds to the same desired group sum, then this validation check passes.
 
 
