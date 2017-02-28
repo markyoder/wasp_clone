@@ -23,7 +23,7 @@ creation, and navigation.
 * NotExistsIn - describes a set of lookup paths where the value of the input element being validated must be not exist
 * SumOver - describes what sum the values must add to under a given context
 * SumOverGroup - describes what sum the values over a given context must add to when grouped by dividing another input element's value by a given value
-* IncreaseOver 
+* IncreaseOver - describes that the values under the element must be increasing in the order that they are read in and saved in the parse tree.
 * DecreaseOver 
 * ChildAtMostOne 
 * ChildExactlyOne 
@@ -147,5 +147,16 @@ division to split the input element that will be added into groups.  Then, each 
 add to the group sum value.  If any group does not add to the group sum value, then this validation check
 fails.  If every group (when split by performing an integer division on the value at the compare path relative
 location by the group divide value) adds to the same desired group sum, then this validation check passes.
+
+
+### Increase Over 
+__IncreaseOver__  It will have a type indicating the monotonicity. The element will either be Strict,
+meaning that the values must be strictly increasing (no two values are the same), or Mono, meaning
+that multiple value are allowed to be the same as long as they never decrease.  For example 3 4 5 5 6 7 would
+pass a Mono, but fail a Strict check due to two value being the same.  It will also have a context that describes
+the relative ancestry in the parse tree that the values must be increasing over.  For a simple array, this will
+usually be "..". However, it may go back further in lineage if needed (e.g. "../../..").
+
+
 
 
