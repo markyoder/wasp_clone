@@ -16,8 +16,8 @@ creation, and navigation.
 * ValType - describes the allowed value type for the element (Int, Real, etc.)
 * ValEnums - describes a list of allowed values for the element 
 * MinValInc - describes the minimum inclusive value that this element is allowed to have if it is a number (float or integer)
-* MaxValInc 
-* MinValExc 
+* MaxValInc - describes the maximum inclusive value that this element is allowed to have if it is a number (float or integer)
+* MinValExc - describes the minimum exclusive value of the element if it is a number (float or integer)
 * MaxValExc 
 * ExistsIn 
 * NotExistsIn 
@@ -76,7 +76,7 @@ a relative path into the parse tree.  If the set represented by the relative pat
 value, and if that value is a number, then that value will be used to determine the lowest
 allowed value for the node being validated.
 
-6. __MaxValInc__  If this element exists in the input and it does not have
+6. __MaxValInc__ If this element exists in the input and it does not have
 a value that is a number, then it will fail this check.  However, if this element does not
 exist at all in the input, then this validation check will not fail - that is delegated
 to the MinOccurs check.  Most often, this restriction node will have a constant that will 
@@ -86,4 +86,13 @@ contains a relative path into the parse tree from the current element.  If there
 value in the set described by the relative path, and if that value is a number, then that
 value will be used to determine the largest allowed value for the element being validated.
 
-
+7. __MinValExc__ The value of this element in the input must be strictly greater
+than the element's MinValExc to pass this restriction check.  If this element exists in the input
+and it does not have a value that is a number, then it will fail this check.  However, if this
+element does not exist at all in the input, then this validation check will not fail - that
+is delegated to the MinOccurs check.  Most often, this restriction will have a constant that
+will contain the lowest exclusive value allowed for the element.  For example, 0.0 denotes
+that this element must be greater than zero. Rarely, this rule may have a lookup path that
+defines a relative path into the parse tree from the current element. If there is a single
+value the set described by the relative, and if that value is a number, then that value will
+be used to determine the lowest exclusive value allowed for the element being validated.
