@@ -21,7 +21,7 @@ creation, and navigation.
 * MaxValExc - describes the maximum exclusive value of the element in the input if it is a number (float or integer)
 * ExistsIn - describes a set of lookup paths and possible constant values where the input element being validated must exist
 * NotExistsIn - describes a set of lookup paths where the value of the input element being validated must be not exist
-* SumOver 
+* SumOver - describes what sum the values must add to under a given context
 * SumOverGroup 
 * IncreaseOver 
 * DecreaseOver 
@@ -131,6 +131,10 @@ these paths will be collected into a set.  If the value of the element being val
 in this set, then this validation check fails.  If it does not exist, then the validation check passes.
 If the value being checked is an integer, then leading zeros are ignored.
 
-
+### Sum Over
+__SumOver__ This restriction will always contain a context expression and an expected sum value. 
+The value is the desired sum when all of the the  elements in the given context are summed.  
+The context contains a relative ancestry path in the parse tree that the values will be summed over.
+For a simple array, this will usually be "..", however it may go back further in lineage if needed (e.g. "../../..").  
 
 
