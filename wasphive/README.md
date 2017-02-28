@@ -27,7 +27,7 @@ creation, and navigation.
 * DecreaseOver - describes that the values under the element must be decreasing in the order that they are read in and saved in the parse tree
 * ChildAtMostOne - describes one or more lists of relative paths (and possible values) into the parse tree where at most one is allowed to exist
 * ChildExactlyOne - describes one or more lists of relative paths (and possible values) into the parse tree where exactly one is allowed to exist
-* ChildAtLeastOne 
+* ChildAtLeastOne - describes one or more lists of relative paths (and possible values) into the parse tree where at least one must exist
 * ChildCountEqual 
 * ChildUniqueness 
  
@@ -184,5 +184,11 @@ value assigned. Of the given list of elements, exactly one is allowed to exist i
 lookup value associated with the lookup path, then that element's value must be equal to what is provided
 in order for that element to count towards existence of the children. 
 
-
+### Child At Least One
+__ChildAtLeastOne__ There may be multiple of these restrictions for any given element.
+Therefore, this restriction has one or more lookup paths.  Each of these lookup paths 
+can optionally have an assigned lookup value. Of the given list elements, at least one
+must exist in order for the restriction to pass.  If there is a lookup value associate
+with the lookup path, then that path's value in the input must be equal to what is
+provided in order for that element to count towards the existence of the children.
 
