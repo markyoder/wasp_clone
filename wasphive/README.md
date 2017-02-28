@@ -32,8 +32,8 @@ creation, and navigation.
 * ChildUniqueness 
  
 
-
-1. __MinOccurs__ It is used mostly to denote if a piece of input is required or not.
+### Minimum Occurrence 
+__MinOccurs__ It is used mostly to denote if a piece of input is required or not.
 Most often, this rule will have a literal constant for minimum allowances.  The value 
 must be an integer. For example, `MinOccurs=0` denotes that this element is optional 
 under its parent context, and `MinOccurs=1` denotes that this element is required to
@@ -43,8 +43,8 @@ path describes a set containing a single value, and if that value is an integer,
 that value will be used to determine the minimum allowed occurrences of the element being validated.
 TODO - give example situations
  
-
-2. __MaxOccurs__ Most often, this element will have a literal constant value to describe
+### Maximum Occurrence
+__MaxOccurs__ Most often, this element will have a literal constant value to describe
 a  number of maximum allowances.  The value  must be integer or '+INF' (indicating that
 there is no upper limit on the number of time this element can occur). This rule may have
 a  lookup path that contains a relative path from the current element into the parse tree.
@@ -53,8 +53,8 @@ then that value will be used to determine the maximum allowed occurrences of the
 validated.
 
  
-
-3. __ValType__  Checks the type of the element. This can be one of the following: 
+### Value Type
+__ValType__  Checks the type of the element. This can be one of the following: 
 	* _Int_ - meaning a negative or positive integer
 	* _Real_- meaning a negative or positive floating point value (or integer)
 	* _String_ meaning a literal string of text
@@ -63,20 +63,23 @@ validated.
 	* _IntOrAsterisk_ meaning a negative or positive integer or the literal "*"
 TODO - give example situations 
 
-4. __ValEnums__ Compares the element's value with once of the provided. If the element's
+### Value Enumerations
+__ValEnums__ Compares the element's value with once of the provided. If the element's
 value is anything other than the listed allowed enumerations, then this check will fail.  
 Note : This check is case insensitive and if the value being checked is an integer, 
 then leading zeros are ignored.
 TODO - give example situation
 
-5. __MinValInc__ Most often, this restriction will have a constant defines the minimum 
+### Minimum Value Incrusive
+__MinValInc__ Most often, this restriction will have a constant defines the minimum 
 value that this element is allowed to be.  For example, 0.0 denotes that this element
 is allowed to be zero or greater.  Rarely, this rule may have a lookup path that contains
 a relative path into the parse tree.  If the set represented by the relative path is a single
 value, and if that value is a number, then that value will be used to determine the lowest
 allowed value for the element being validated.
 
-6. __MaxValInc__ If this element exists in the input and it does not have
+### Maximum Value Inclusive
+__MaxValInc__ If this element exists in the input and it does not have
 a value that is a number, then it will fail this check.  However, if this element does not
 exist at all in the input, then this validation check will not fail - that is delegated
 to the MinOccurs check.  Most often, this restriction element will have a constant that will 
@@ -86,7 +89,8 @@ contains a relative path into the parse tree from the current element.  If there
 value in the set described by the relative path, and if that value is a number, then that
 value will be used to determine the largest allowed value for the element being validated.
 
-7. __MinValExc__ The value of this element in the input must be strictly greater
+### Minimum Value Exclusive
+__MinValExc__ The value of this element in the input must be strictly greater
 than the element's MinValExc to pass this restriction check.  If this element exists in the input
 and it does not have a value that is a number, then it will fail this check.  However, if this
 element does not exist at all in the input, then this validation check will not fail - that
@@ -97,7 +101,8 @@ defines a relative path into the parse tree from the current element. If there i
 value the set described by the relative, and if that value is a number, then that value will
 be used to determine the lowest exclusive value allowed for the element being validated.
 
-8. __MaxValExc__ The value at the element in the input must be strictly less than this MaxValExc
+### Maximum Value Exclusive
+__MaxValExc__ The value at the element in the input must be strictly less than this MaxValExc
 to pass this restriction check.  If the element exists in the input and it does not have a value
 that is a number, then it will fail this check.  However, if the element does not exist at all
 in the input, then this validation check will not fail - that is delegated to the MinOccurs check.
