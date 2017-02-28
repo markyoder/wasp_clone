@@ -76,5 +76,14 @@ a relative path into the parse tree.  If the set represented by the relative pat
 value, and if that value is a number, then that value will be used to determine the lowest
 allowed value for the node being validated.
 
+6. __MaxValInc__  If this element exists in the input and it does not have
+a value that is a number, then it will fail this check.  However, if this element does not
+exist at all in the input, then this validation check will not fail - that is delegated
+to the MinOccurs check.  Most often, this restriction node will have a constant that will 
+define the largest value that this element is allowed to be.  For example, 0.0 denotes that
+this element is allowed to be zero or less. Rarely, this rule may have a lookup path that 
+contains a relative path into the parse tree from the current element.  If there is a single
+value in the set described by the relative path, and if that value is a number, then that
+value will be used to determine the largest allowed value for the element being validated.
 
 
