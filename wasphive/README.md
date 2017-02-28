@@ -18,7 +18,7 @@ creation, and navigation.
 * MinValInc - describes the minimum inclusive value that this element is allowed to have if it is a number (float or integer)
 * MaxValInc - describes the maximum inclusive value that this element is allowed to have if it is a number (float or integer)
 * MinValExc - describes the minimum exclusive value of the element if it is a number (float or integer)
-* MaxValExc 
+* MaxValExc - describes the maximum exclusive value of the element in the input if it is a number (float or integer)
 * ExistsIn 
 * NotExistsIn 
 * SumOver 
@@ -97,4 +97,13 @@ defines a relative path into the parse tree from the current element. If there i
 value the set described by the relative, and if that value is a number, then that value will
 be used to determine the lowest exclusive value allowed for the element being validated.
 
+8. __MaxValExc__ The value at the element in the input must be strictly less than this MaxValExc
+to pass this restriction check.  If the element exists in the input and it does not have a value
+that is a number, then it will fail this check.  However, if the element does not exist at all
+in the input, then this validation check will not fail - that is delegated to the MinOccurs check.
+Most often, this restriction will have a constant that will define the largest exclusive value
+allowed for the  element.  For example, 0.0 denotes that this element must be less than zero. 
+Rarely, this rule may have a lookup path.  If there is a single value in the set represented by
+the lookup path, and if that value is a number, then that value will be used to determine the
+largest exclusive value allowed for the element being validated.
 
