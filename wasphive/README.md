@@ -20,7 +20,7 @@ creation, and navigation.
 * MinValExc - describes the minimum exclusive value of the element if it is a number (float or integer)
 * MaxValExc - describes the maximum exclusive value of the element in the input if it is a number (float or integer)
 * ExistsIn - describes a set of lookup paths and possible constant values where the input element being validated must exist
-* NotExistsIn 
+* NotExistsIn - describes a set of lookup paths where the value of the input element being validated must be not exist
 * SumOver 
 * SumOverGroup 
 * IncreaseOver 
@@ -122,5 +122,15 @@ in the parse tree at the element being validated with the ExistsIn restriction m
 set built from the lookup paths and the constant values in order to pass the validation.  If any
 element does not exist in this set, then the validation check fails.  This check is case insensitive
 and if the value being checked is an integer, then leading zeros are ignored.
+
+
+### Not Exists In
+__NotExistsIn__ This restriction will always contain one or more lookup path nodes that contain
+relative paths into the parse tree from the element being validated. The pieces of input at
+these paths will be collected into a set.  If the value of the element being validated exists
+in this set, then this validation check fails.  If it does not exist, then the validation check passes.
+If the value being checked is an integer, then leading zeros are ignored.
+
+
 
 
