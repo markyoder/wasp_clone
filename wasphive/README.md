@@ -1,6 +1,6 @@
 # Heirarchical Input Validation Engine (HIVE) 
 HIVE uses a set of restrictions or rules to describe the definition or schema of an application input. 
-These rules describe scalar and relational restrictions. These rules can user [_SIREN_](/waspsiren/README.md)
+These rules describe scalar and relational restrictions. These rules can use [_SIREN_](/waspsiren/README.md)
 expression paths to define restrictions related to sets of elements. E.g., an identifier reference but refer to an existing
 element's identifier.
 
