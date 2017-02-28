@@ -33,11 +33,24 @@ creation, and navigation.
  
 
 
-1. __MinOccurs__ It is used mostly to denote if a piece of input is required or not. Most often, this rule will have a literal constant for minimum allowances.  The value must be an integer. For example, `MinOccurs=0` denotes that this element is optional under its parent context, and `MinOccurs=1` denotes that this element is required to occur at least once under its parent. Rarely, this rule may have a lookup path that contains a relative path from the current element into the parse tree.  If the lookup path describes a set containing a single value, and if that value is an integer, then that value will be used to determine the minimum allowed occurrences of the element being validated.
+1. __MinOccurs__ It is used mostly to denote if a piece of input is required or not.
+Most often, this rule will have a literal constant for minimum allowances.  The value 
+must be an integer. For example, `MinOccurs=0` denotes that this element is optional 
+under its parent context, and `MinOccurs=1` denotes that this element is required to
+occur at least once under its parent. Rarely, this rule may have a lookup path that 
+contains a relative path from the current element into the parse tree.  If the lookup
+path describes a set containing a single value, and if that value is an integer, then
+that value will be used to determine the minimum allowed occurrences of the element being validated.
 TODO - give example situations
  
 
-2. __MaxOccurs__ Most often, this element will have a literal constant value to describe a  number of maximum allowances.  The value  must be integer or '+INF' (indicating that there is no upper limit on the number of time this element can occur). This rule may have a  lookup path that contains a relative path from the current element into the parse tree.  If the lookup path describes a set containing a single value, and if that value is an integer, then that value will be used to determine the maximum allowed occurrences of the element being validated.
+2. __MaxOccurs__ Most often, this element will have a literal constant value to describe
+a  number of maximum allowances.  The value  must be integer or '+INF' (indicating that
+there is no upper limit on the number of time this element can occur). This rule may have
+a  lookup path that contains a relative path from the current element into the parse tree.
+If the lookup path describes a set containing a single value, and if that value is an integer,
+then that value will be used to determine the maximum allowed occurrences of the element being
+validated.
 
  
 
@@ -50,7 +63,18 @@ TODO - give example situations
 	* _IntOrAsterisk_ meaning a negative or positive integer or the literal "*"
 TODO - give example situations 
 
-4. __ValEnums__ Compares the element's value with once of the provided. If the element's value is anything other than the listed allowed enumerations, then this check will fail.  
- 
- Note : This check is case insensitive and if the value being checked is an integer, then leading zeros are ignored.
+4. __ValEnums__ Compares the element's value with once of the provided. If the element's
+value is anything other than the listed allowed enumerations, then this check will fail.  
+Note : This check is case insensitive and if the value being checked is an integer, 
+then leading zeros are ignored.
 TODO - give example situation
+
+5. __MinValInc__ Most often, this restriction will have a constant defines the minimum 
+value that this element is allowed to be.  For example, 0.0 denotes that this element
+is allowed to be zero or greater.  Rarely, this rule may have a lookup path that contains
+a relative path into the parse tree.  If the set represented by the relative path is a single
+value, and if that value is a number, then that value will be used to determine the lowest
+allowed value for the node being validated.
+
+
+
