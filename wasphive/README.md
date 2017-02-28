@@ -29,7 +29,7 @@ creation, and navigation.
 * ChildExactlyOne - describes one or more lists of relative paths (and possible values) into the parse tree where exactly one is allowed to exist
 * ChildAtLeastOne - describes one or more lists of relative paths (and possible values) into the parse tree where at least one must exist
 * ChildCountEqual - describes one or more lists of relative paths into the parse tree where the number of existing values associated must be equal
-* ChildUniqueness 
+* ChildUniqueness - describes one or more lists of relative paths into the parse tree where the values at all of these paths must be unique 
  
 
 ### Minimum Occurrence 
@@ -203,4 +203,26 @@ it means that the pieces of input in the relative lookup paths must be equal onl
 if they actually exist.  If this is _EvenNone_, then this is a stricter restriction
 that denotes that the relative lookup path nodes in the input must be equal
 regardless if they exist or not. 
+
+
+### Child Uniqueness
+__ChildUniqueness__ In other words, every value in this set has to occur once
+and only once among all other values, at all other paths.  This restriction
+is used quite often.  There may be multiple of these restrictions on any given
+element. Each of these lookup paths has an optional modifier flag.  This may be
+either _Abs_ or _Zero_.  _Abs_ indicates that the absolute value of all values
+added to the set checked for uniqueness are used.  Then, even if one value is
+negative and the other is positive, but they have the same absolute value, it
+will fail this validation check.  _Zero_ indicates that the value must be unique
+unless it is a zero.  If the value being checked is an integer, then leading
+zeros are ignored.
+
+
+## Use Scenarios
+TODO - this section is intended to provide combinatorial examples of using multiple rules
+to achieve the desired validation. Additionally, while the forward approach may not 
+be feasible, a converse approach may, and this section should attempt to 
+provide the user some perspective as to how to approach using their 'validation hat.'
+
+
 
