@@ -28,7 +28,7 @@ creation, and navigation.
 * ChildAtMostOne - describes one or more lists of relative paths (and possible values) into the parse tree where at most one is allowed to exist
 * ChildExactlyOne - describes one or more lists of relative paths (and possible values) into the parse tree where exactly one is allowed to exist
 * ChildAtLeastOne - describes one or more lists of relative paths (and possible values) into the parse tree where at least one must exist
-* ChildCountEqual 
+* ChildCountEqual - describes one or more lists of relative paths into the parse tree where the number of existing values associated must be equal
 * ChildUniqueness 
  
 
@@ -191,4 +191,16 @@ can optionally have an assigned lookup value. Of the given list elements, at lea
 must exist in order for the restriction to pass.  If there is a lookup value associate
 with the lookup path, then that path's value in the input must be equal to what is
 provided in order for that element to count towards the existence of the children.
+
+
+### Child Exactly One
+__ChildExactlyOne__ This restriction is usually used to ensure that arrays in the
+input have an equal number of value members.  There may be multiple of these
+restrictions on any given element.  Therefore, this restriction has one or
+more lookup paths.  Each of these contains multiple lookup path and a modifier
+flag.  This may be either _IfExists_ or _EvenNone_.  If this is _IfExists_, then
+it means that the pieces of input in the relative lookup paths must be equal only
+if they actually exist.  If this is _EvenNone_, then this is a stricter restriction
+that denotes that the relative lookup path nodes in the input must be equal
+regardless if they exist or not. 
 
