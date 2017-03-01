@@ -84,7 +84,7 @@
 %type <node_index>  decl
 %type <node_index>  comma
 %type <node_index>  value
-%type <node_index>  definition_level
+%type <node_index>  definition_section
 %type <node_index>  comment
 
 %type <node_indices>  value_list
@@ -149,7 +149,7 @@ value_list : value
             $$ = $1;
             $$->push_back($2);
         }
-definition_level : decl  value_list
+definition_section : decl  value_list
     {
         $2->insert($2->begin(),$1);
         std::string quote_less_data = interpreter.data($1);
@@ -200,7 +200,7 @@ comment : COMMENT
         }
 start   : /** empty **/
         | start comment{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}        
-        | start definition_level{
+        | start definition_section{
             interpreter.add_root_child_index(($2));
             if(interpreter.single_parse() )
             {
