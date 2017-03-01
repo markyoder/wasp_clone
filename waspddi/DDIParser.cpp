@@ -750,23 +750,34 @@ namespace wasp {
 #line 751 "DDIParser.cpp" // lalr1.cc:859
     break;
 
+  case 13:
+#line 188 "DDIParser.bison" // lalr1.cc:859
+    {
+        std::vector<size_t> child_indices = {(yystack_[0].value.node_index)};
+        (yylhs.value.node_index) = interpreter.push_parent(wasp::OBJECT
+                                    ,interpreter.data((yystack_[0].value.node_index)).c_str()
+                                    ,child_indices);
+    }
+#line 762 "DDIParser.cpp" // lalr1.cc:859
+    break;
+
   case 14:
-#line 192 "DDIParser.bison" // lalr1.cc:859
+#line 197 "DDIParser.bison" // lalr1.cc:859
     {
             auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
-#line 760 "DDIParser.cpp" // lalr1.cc:859
+#line 771 "DDIParser.cpp" // lalr1.cc:859
     break;
 
   case 16:
-#line 197 "DDIParser.bison" // lalr1.cc:859
+#line 202 "DDIParser.bison" // lalr1.cc:859
     {interpreter.add_root_child_index(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
-#line 766 "DDIParser.cpp" // lalr1.cc:859
+#line 777 "DDIParser.cpp" // lalr1.cc:859
     break;
 
   case 17:
-#line 198 "DDIParser.bison" // lalr1.cc:859
+#line 203 "DDIParser.bison" // lalr1.cc:859
     {
             interpreter.add_root_child_index(((yystack_[0].value.node_index)));
             if(interpreter.single_parse() )
@@ -774,11 +785,11 @@ namespace wasp {
                 lexer->rewind();
                 YYACCEPT;}
         }
-#line 778 "DDIParser.cpp" // lalr1.cc:859
+#line 789 "DDIParser.cpp" // lalr1.cc:859
     break;
 
 
-#line 782 "DDIParser.cpp" // lalr1.cc:859
+#line 793 "DDIParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1116,7 +1127,7 @@ namespace wasp {
   DDIParser::yyrline_[] =
   {
        0,   111,   117,   117,   117,   119,   128,   137,   138,   142,
-     147,   152,   169,   188,   191,   196,   197,   198
+     147,   152,   169,   188,   196,   201,   202,   203
   };
 
   // Print the state stack on the debug stream.
@@ -1198,8 +1209,8 @@ namespace wasp {
 
 
 } // wasp
-#line 1202 "DDIParser.cpp" // lalr1.cc:1167
-#line 209 "DDIParser.bison" // lalr1.cc:1168
+#line 1213 "DDIParser.cpp" // lalr1.cc:1167
+#line 214 "DDIParser.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 
 void wasp::DDIParser::error(const DDIParser::location_type& l,

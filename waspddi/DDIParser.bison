@@ -185,7 +185,12 @@ definition_level : decl  value_list
         // TODO determine push/pop interpreter state information
         delete $3;
     }
-    | decl
+    | decl {
+        std::vector<size_t> child_indices = {$decl};
+        $$ = interpreter.push_parent(wasp::OBJECT
+                                    ,interpreter.data($decl).c_str()
+                                    ,child_indices);
+    }
 
 
 comment : COMMENT

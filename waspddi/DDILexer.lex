@@ -47,7 +47,7 @@ INT \-?[0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INT}
 DOUBLE {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
 
-STRING [A-Za-z_]([A-Za-z0-9_])*
+STRING [A-Za-z_]([A-Za-z0-9_\.])*
 
 
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
