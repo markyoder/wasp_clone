@@ -197,9 +197,9 @@ comment : COMMENT
             $$ = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
 start   : /** empty **/
-        | start comment{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}        
+        | start comment{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}        
         | start definition_section{
-            interpreter.add_root_child_index(($2));
+            interpreter.push_staged_child(($2));
             if(interpreter.single_parse() )
             {
                 lexer->rewind();

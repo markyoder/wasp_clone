@@ -1041,33 +1041,27 @@ namespace wasp {
   case 44:
 #line 350 "JSONParser.bison" // lalr1.cc:859
     {
-            interpreter.set_root_type(wasp::OBJECT);
-            for( size_t i = 0; i < (yystack_[0].value.node_indices)->size(); ++i)
-            {
-                interpreter.add_root_child_index((yystack_[0].value.node_indices)->at(i));
-            }
+            interpreter.staged_type() = wasp::OBJECT;
+            interpreter.push_staged_child(*(yystack_[0].value.node_indices));
             delete (yystack_[0].value.node_indices);
             if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}
         }
-#line 1053 "JSONParser.cpp" // lalr1.cc:859
+#line 1050 "JSONParser.cpp" // lalr1.cc:859
     break;
 
   case 45:
-#line 359 "JSONParser.bison" // lalr1.cc:859
+#line 356 "JSONParser.bison" // lalr1.cc:859
     {
-            interpreter.set_root_type(wasp::ARRAY);
-            for( size_t i = 0; i < (yystack_[0].value.node_indices)->size(); ++i)
-            {
-                interpreter.add_root_child_index((yystack_[0].value.node_indices)->at(i));
-            }
+            interpreter.staged_type() = wasp::ARRAY;
+            interpreter.push_staged_child(*(yystack_[0].value.node_indices));
             delete (yystack_[0].value.node_indices);
             if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}
         }
-#line 1067 "JSONParser.cpp" // lalr1.cc:859
+#line 1061 "JSONParser.cpp" // lalr1.cc:859
     break;
 
 
-#line 1071 "JSONParser.cpp" // lalr1.cc:859
+#line 1065 "JSONParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1442,7 +1436,7 @@ namespace wasp {
      142,   142,   142,   142,   142,   144,   150,   159,   160,   164,
      172,   178,   184,   195,   201,   207,   213,   225,   233,   243,
      256,   269,   277,   286,   295,   305,   310,   316,   321,   327,
-     332,   338,   343,   349,   350,   359
+     332,   338,   343,   349,   350,   356
   };
 
   // Print the state stack on the debug stream.
@@ -1525,8 +1519,8 @@ namespace wasp {
 
 
 } // wasp
-#line 1529 "JSONParser.cpp" // lalr1.cc:1167
-#line 371 "JSONParser.bison" // lalr1.cc:1168
+#line 1523 "JSONParser.cpp" // lalr1.cc:1167
+#line 365 "JSONParser.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 
 void wasp::JSONParser::error(const JSONParser::location_type& l,

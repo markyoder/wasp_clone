@@ -454,13 +454,13 @@ comment : COMMENT
 
 start   : /** empty **/
         | start comment{
-            interpreter.add_root_child_index(($2));
+            interpreter.push_staged_child(($2));
         }
         | start keyedvalue{
-            interpreter.add_root_child_index(($2));
+            interpreter.push_staged_child(($2));
         }
         | start object{
-            interpreter.add_root_child_index(($2));
+            interpreter.push_staged_child(($2));
         }
         | start object_decl object_members object
         {
@@ -478,8 +478,8 @@ start   : /** empty **/
             size_t object_i = interpreter.push_parent(wasp::OBJECT
                                             ,name.c_str()
                                             ,children);
-            interpreter.add_root_child_index(object_i);
-            interpreter.add_root_child_index(($object));
+            interpreter.push_staged_child(object_i);
+            interpreter.push_staged_child(($object));
             delete $2;
         }
 

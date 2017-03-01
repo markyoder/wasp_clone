@@ -6,9 +6,12 @@ Interpreter<TNS>::Interpreter(std::ostream & err)
     , m_start_line(1)
     , m_stream_name("stream")
     , m_error_stream(err)
-    , m_root_index(-1) // not set
-    , m_root_type(wasp::DOCUMENT_ROOT)
+    , m_root_index(-1)
 {
+    // All documents have a root.
+    // However, if no elements are parsed
+    // this staged root will not be committed.
+    push_staged(wasp::DOCUMENT_ROOT, "document", {});
 }
 template<class TNS>
 Interpreter<TNS>::~Interpreter()
@@ -153,12 +156,48 @@ bool Interpreter<TNS>::parse_impl(std::istream &in
 
     bool parsed = parser.parse() == 0;
 
-    if( !m_root_child_indices.empty() )
+    // at this point, only 1 stage should exist
+    wasp_ensure( m_staged.size() == 1 );
+    Stage& document = m_staged.front();
+    if( !document.m_child_indices.empty() )
     {
-        m_root_index = push_parent(m_root_type
-                                   ,"document"
-                                   ,m_root_child_indices);
-        m_root_child_indices.clear();
+        m_root_index = push_parent( document.m_type
+                                   ,document.m_name.c_str()
+                                   ,document.m_child_indices);
+        document.m_child_indices.clear();
     }
     return parsed;
+}
+
+template<class TNS>
+const size_t& Interpreter<TNS>::staged_type()const
+{
+    wasp_require( m_staged.empty() == false );
+    return m_staged.back().m_type;
+}
+template<class TNS>
+size_t& Interpreter<TNS>::staged_type()
+{
+    wasp_require( m_staged.empty() == false );
+    return m_staged.back().m_type;
+}
+template<class TNS>
+void Interpreter<TNS>::push_staged(size_t node_type
+                               , const std::string& node_name
+                               , const std::vector<size_t>&child_indices)
+{
+    m_staged.push_back(Stage());
+    auto & back = m_staged.back();
+    back.m_type = node_type;
+    back.m_name = node_name;
+    back.m_child_indices = child_indices;
+}
+
+template<class TNS>
+size_t Interpreter<TNS>::push_staged_child(size_t child_index)
+{
+    wasp_require( m_staged.empty() == false );
+    auto & back = m_staged.back();
+    back.m_child_indices.push_back(child_index);
+    return back.m_child_indices.size();
 }

@@ -1319,13 +1319,13 @@ namespace wasp {
 
   case 71:
 #line 645 "SIRENParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(((yystack_[0].value.node_index))); }
+    {interpreter.push_staged_child(((yystack_[0].value.node_index))); }
 #line 1324 "SIRENParser.cpp" // lalr1.cc:859
     break;
 
   case 72:
 #line 646 "SIRENParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(((yystack_[0].value.node_index))); }
+    {interpreter.push_staged_child(((yystack_[0].value.node_index))); }
 #line 1330 "SIRENParser.cpp" // lalr1.cc:859
     break;
 

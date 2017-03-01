@@ -6,6 +6,7 @@
 #include <iostream>
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h" // for UNKNOWN, DOCUMENT_ROOT NODE types
+#include "waspcore/wasp_bug.h"
 
 namespace wasp{
 
@@ -94,12 +95,17 @@ public:
      * @return the index of the child at the requested index
      */
     virtual size_t child_index_at( size_t node_index, size_t child_index)const=0;
+
     /**
-     * @brief add_root_child_index method accumulates the root node's children
-     * @param node_index child node index
-     * This will be flushed at the conclusion of parsing.
+     * @brief push_staged_child adds the given child index to the currently staged node
+     * @param child_index the index of the adopted child
+     * @return the number of children for the current stage
      */
-    virtual void add_root_child_index(size_t node_index)=0;
+    virtual size_t push_staged_child(size_t child_index)=0;
+    virtual size_t push_staged_child(const std::vector<size_t>& child_indices) = 0;
+
+    virtual const size_t& staged_type()const = 0;
+    virtual size_t& staged_type() = 0;
 
     virtual size_t start_column()const=0;
     virtual size_t start_line()const=0;
@@ -108,8 +114,6 @@ public:
     virtual std::ostream & error_stream()=0;
 
     virtual bool single_parse()const=0;
-    virtual void set_root_type(const NODE & root_type )=0;
-    virtual NODE root_type()const=0;
 };
 
 template< class TNS = TreeNodePool<> >
@@ -239,14 +243,38 @@ public:
     size_t node_count()const{return m_tree_nodes.size();}
     size_t leaf_node_count()const{return m_tree_nodes.leaf_node_count();}
     size_t parent_node_count()const{return m_tree_nodes.parent_node_count();}
+
     /**
-     * @brief add_root_child_index method accumulates the root node's children
-     * @param node_index child node index
-     * TODO make private, friend the parser
-     * This will be flushed at the conclusion of parsing.
+     * @brief push_staged stages the given node for child accrual and later commitment
+     * @param node_type the type of the node, i.e., WASP::DOCUMENT_ROOT
+     * @param node_name the name of the node, i.e., "document"
+     * @param child_indices the indices of any known children in the tree node pool
+     * This method is used for managing tree creation. This most frequently
+     * is associated with creating the root document node once all children
+     * have been processed and are staged.
      */
-    void add_root_child_index(size_t node_index)
-                {m_root_child_indices.push_back(node_index);}
+    void push_staged(size_t node_type
+                     , const std::string& node_name
+                     , const std::vector<size_t>&child_indices );
+
+    /**
+     * @brief push_staged_child adds the given child index to the currently staged node
+     * @param child_index the index of the adopted child
+     * @return the number of children for the current stage
+     */
+    size_t push_staged_child(size_t child_index);
+    size_t push_staged_child(const std::vector<size_t>& child_indices)
+    {
+        // TODO : require a stage to be present
+        size_t child_count = 0;
+        for( size_t child_index : child_indices) {
+            child_count = push_staged_child(child_index);
+        }
+        return child_count;
+    }
+
+    const size_t& staged_type()const;
+    size_t& staged_type();
 
     virtual bool single_parse()const{return false;}
 protected:
@@ -280,13 +308,23 @@ private:
      */
     std::ostream & m_error_stream;
 protected:
-    std::vector<size_t> m_root_child_indices;
+    struct Stage{
+
+        Stage() : m_type(wasp::UNKNOWN){}
+        Stage(const Stage& orig)
+            :m_type(orig.m_type),m_name(orig.m_name)
+        , m_child_indices(orig.m_child_indices){}
+
+        size_t m_type;
+        std::string m_name;
+        std::vector<size_t> m_child_indices;
+    };
+    std::vector<Stage> m_staged;
     size_t m_root_index;
 public:
+    // TODO protect/privatize this.
     TreeNodePool_type m_tree_nodes;
-    NODE m_root_type;
-    void set_root_type(const NODE &root_type){m_root_type = root_type;}
-    NODE root_type()const{return m_root_type;}
+
 };
 
 #include "waspcore/Interpreter.i.h"

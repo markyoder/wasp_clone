@@ -348,20 +348,14 @@ object_members : keyed_object
         }
 start   : /** empty **/        
         | object{
-            interpreter.set_root_type(wasp::OBJECT);
-            for( size_t i = 0; i < $object->size(); ++i)
-            {
-                interpreter.add_root_child_index($object->at(i));
-            }
+            interpreter.staged_type() = wasp::OBJECT;
+            interpreter.push_staged_child(*$object);
             delete $object;
             if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}
         }
         | array{
-            interpreter.set_root_type(wasp::ARRAY);
-            for( size_t i = 0; i < $array->size(); ++i)
-            {
-                interpreter.add_root_child_index($array->at(i));
-            }
+            interpreter.staged_type() = wasp::ARRAY;
+            interpreter.push_staged_child(*$array);
             delete $array;
             if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}
         }
