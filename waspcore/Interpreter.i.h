@@ -7,6 +7,7 @@ Interpreter<TNS>::Interpreter(std::ostream & err)
     , m_stream_name("stream")
     , m_error_stream(err)
     , m_root_index(-1) // not set
+    , m_root_type(wasp::DOCUMENT_ROOT)
 {
 }
 template<class TNS>
@@ -154,7 +155,7 @@ bool Interpreter<TNS>::parse_impl(std::istream &in
 
     if( !m_root_child_indices.empty() )
     {
-        m_root_index = push_parent(wasp::DOCUMENT_ROOT
+        m_root_index = push_parent(m_root_type
                                    ,"document"
                                    ,m_root_child_indices);
         m_root_child_indices.clear();
