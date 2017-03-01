@@ -49,3 +49,9 @@ TEST(waspcore, WaspTimer)
     EXPECT_EQ(timer3.intervals(), (100*10000));
 
 }
+
+TEST(waspcore, not_implemented_test)
+{
+    ASSERT_THROW( wasp_not_implemented("test") , std::runtime_error);
+}
+

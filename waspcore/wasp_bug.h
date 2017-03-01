@@ -109,6 +109,14 @@
     << std::endl << msg << std::endl; \
     throw std::runtime_error(stream.str()); }
 
+#define wasp_not_implemented(msg) { \
+    std::ostringstream stream; \
+    stream << __FILE__ << ":" \
+    << __LINE__ << " : "<< msg\
+    << " is not implemented. " \
+    << std::endl; \
+    throw std::runtime_error(stream.str()); }
+
 /// set default timing to off
 #ifndef WASP_TIMING
 #define WASP_TIMING 0
