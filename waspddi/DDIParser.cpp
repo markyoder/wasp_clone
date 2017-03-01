@@ -1119,7 +1119,7 @@ namespace wasp {
   "\"end of file\"", "error", "$undefined", "\"end of line\"", "\"=\"",
   "\",\"", "\"integer\"", "\"double\"", "\"string\"", "\"quoted string\"",
   "\"comment\"", "$accept", "PRIMITIVE", "value", "decl", "ASSIGNMENT",
-  "assignment", "value_list", "definition_level", "comment", "start", YY_NULLPTR
+  "assignment", "value_list", "definition_section", "comment", "start", YY_NULLPTR
   };
 
 #if YYDEBUG

@@ -55,6 +55,7 @@ SINGLE_QUOTED_STRING \'([^\\\'\n])*\'
 QSTRING {DOUBLE_QUOTED_STRING}|{SINGLE_QUOTED_STRING}
 COMMENT #[^\n]*|%[^\n]*
 COMMA ,
+ASSIGN =
 
  /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
@@ -74,6 +75,10 @@ COMMA ,
 {COMMA}  {
     capture_token(yylval,wasp::WASP_COMMA);
     return token::COMMA;
+}
+{ASSIGN}  {
+    capture_token(yylval,wasp::ASSIGN);
+    return token::ASSIGN;
 }
 {DOUBLE} {
     capture_token(yylval,wasp::REAL);
