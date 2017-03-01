@@ -123,8 +123,6 @@ value : PRIMITIVE
                      ,token_index);
 }
 
-
-
 decl : STRING
     {
         auto token_index = ($1);
@@ -205,7 +203,8 @@ start   : /** empty **/
             if(interpreter.single_parse() )
             {
                 lexer->rewind();
-                YYACCEPT;}
+                YYACCEPT;
+            }
         }
 
 
