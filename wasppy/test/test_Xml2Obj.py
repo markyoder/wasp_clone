@@ -1,9 +1,13 @@
 import unittest
-import subprocess
+import subprocess, os, sys
 import xml2obj
 
 ### convert son file to xml stream and create python data structure
-cmd = '../../wasputils/sonvalidxml ./test/schema.sch ./test/input.son'
+sonvalidxml = os.path.dirname(__file__)+"/../../bin/sonvalidxml" 
+schema = os.path.dirname(__file__)+"/schema.sch"
+input_file = os.path.dirname(__file__)+"/input.son"
+print "---",sonvalidxml,"---"
+cmd = sonvalidxml+' '+schema+' '+input_file
 xmlresult = subprocess.check_output(cmd, shell=True)
 
 ### obtain pieces of input by name for convenience
