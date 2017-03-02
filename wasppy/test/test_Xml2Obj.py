@@ -1,14 +1,13 @@
-import unittest, subprocess
-from xml2obj import xml2obj
+import unittest
+import subprocess
+import xml2obj
 
-    ### convert son file to xml stream and create python data structure
-
-cmd = '../../install/bin/sonvalidxml schema.sch input.son'
+### convert son file to xml stream and create python data structure
+cmd = '../../wasputils/sonvalidxml ./test/schema.sch ./test/input.son'
 xmlresult = subprocess.check_output(cmd, shell=True)
-document = xml2obj(xmlresult)
 
-    ### obtain pieces of input by name for convenience
-
+### obtain pieces of input by name for convenience
+document = xml2obj.xml2obj(xmlresult)
 pytest = document.pytest
 object_one = pytest.object_one
 color = object_one.color
@@ -19,7 +18,6 @@ circle   = object_two.circle
 square   = object_two.square
 triangle = object_two.square.triangle
 pentagon = object_two.square.pentagon
-
     ### class for unit testing
 
 class TestArcPy(unittest.TestCase):

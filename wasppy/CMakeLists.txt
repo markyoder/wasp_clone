@@ -5,7 +5,7 @@ TRIBITS_SUBPACKAGE(py)
 TRIBITS_ADD_TEST_DIRECTORIES(test)
 
 install(DIRECTORY .
-        DESTINATION "../wasppy"
+        DESTINATION "wasppy"
         PATTERN "./*.py"
         PATTERN "./test/*.py"
         PATTERN "./test/*.son"

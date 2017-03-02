@@ -1,3 +1,2 @@
 INCLUDE(GoogleTest)
 include(SetDefault)
-SET_DEFAULT(HIVE_TEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}" )
