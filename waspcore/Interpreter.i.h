@@ -157,8 +157,7 @@ bool Interpreter<TNS>::parse_impl(std::istream &in
     bool parsed = parser.parse() == 0;
 
     // at this point, if any results are still staged
-    // we need to commit them and add newly realized
-    // tree nodes to their staged parents
+    // we need to commit them
     while( staged_count() > 1 )
     {
         commit_staged(staged_count()-1);
