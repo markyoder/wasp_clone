@@ -17,4 +17,40 @@ std::string strip_quotes( const std::string& src )
     }
     return s;
 }  // strip_quotes
+
+std::string xml_escape_data(const std::string& src)
+{
+    std::stringstream dst;
+    for (char ch : src) {
+        switch (ch) {
+            case '&':  dst << "&amp;";  break;
+            case '\'': dst << "&apos;"; break;
+            case '"':  dst << "&quot;"; break;
+            case '<':  dst << "&lt;";   break;
+            case '>':  dst << "&gt;";   break;
+            default:   dst << ch;       break;
+        }
+    }
+    return dst.str();
+}  // xml_escape_data
+
+std::string xml_escape_name(const std::string& src)
+{
+    std::stringstream dst;
+    for (char ch : src) {
+        switch (ch) {
+            case '{':  dst << "LBC";    break;
+            case '}':  dst << "RBC";    break;
+            case '[':  dst << "LBK";    break;
+            case ']':  dst << "RBK";    break;
+            case '(':  dst << "LP";     break;
+            case ')':  dst << "RP";     break;
+            case '-':  dst << "MINUS";  break;
+            case '=':  dst << "ASSIGN"; break;
+            default:   dst << ch;       break;
+        }
+    }
+    return dst.str();
+}  // xml_escape_name
+
 }
