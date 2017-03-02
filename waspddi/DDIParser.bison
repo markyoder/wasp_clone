@@ -60,6 +60,7 @@
 %union {
         std::size_t token_index;
         std::size_t node_index;
+        std::size_t stage_index;
         std::vector<size_t>* node_indices;
 }
 
@@ -84,7 +85,7 @@
 %type <node_index>  decl
 %type <node_index>  comma
 %type <node_index>  value
-%type <node_index>  definition_section
+%type <stage_index>  definition_section
 %type <node_index>  comment
 
 %type <node_indices>  value_list
@@ -149,29 +150,32 @@ value_list : value
         }
 definition_section : decl  value_list
     {
+        bool is_array = $2->size() > 1;
         $2->insert($2->begin(),$1);
         std::string quote_less_data = interpreter.data($1);
         quote_less_data = wasp::strip_quotes(quote_less_data);
 
-        $$ = interpreter.push_parent(wasp::KEYED_VALUE
+
+        $$ = interpreter.push_staged(is_array ? wasp::ARRAY : wasp::KEYED_VALUE
                                      // use the data instead of the name
                                      // this provides the following tree
                                      // data
                                      //  |_ decl (data)
                                      //  |_ value (1.2..blah)
-                                    ,quote_less_data.c_str()
+                                    ,quote_less_data
                                     ,*$2);
         // TODO determine push/pop interpeter state information
         delete $2;
     }
     | decl assignment value_list // keyed = value/values
     {
+        bool is_array = $3->size() > 1;
         $3->insert($3->begin(),$2);
         $3->insert($3->begin(),$1);
 
         std::string quote_less_data = interpreter.data($1);
         quote_less_data = wasp::strip_quotes(quote_less_data);
-        $$ = interpreter.push_parent(wasp::KEYED_VALUE
+        $$ = interpreter.push_staged(is_array ? wasp::ARRAY : wasp::KEYED_VALUE
                                      // use the data instead of the name
                                      // this provides the following tree
                                      // data
@@ -185,7 +189,7 @@ definition_section : decl  value_list
     }
     | decl {
         std::vector<size_t> child_indices = {$decl};
-        $$ = interpreter.push_parent(wasp::OBJECT
+        $$ = interpreter.push_staged(wasp::OBJECT
                                     ,interpreter.data($decl).c_str()
                                     ,child_indices);
     }
@@ -199,7 +203,26 @@ comment : COMMENT
 start   : /** empty **/
         | start comment{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}        
         | start definition_section{
-            interpreter.push_staged_child(($2));
+            const std::string & name = interpreter.staged_name($2);
+            std::cout<<" Staging ("<<$2<<") "<<name<<std::endl;
+            // three options
+            // 1) the new section is a child of staged - push_staged_child
+            // 2) the
+
+            //
+
+//            if( true/* stage child */ )
+//            {
+//                interpreter.push_staged_child();
+//            }
+//            else if( /* push new stage */ )
+//            {
+//                interpreter.push_staged()
+//            }
+//            else if(  /* pop/commit current stage */)
+//            {
+
+//            }
             if(interpreter.single_parse() )
             {
                 lexer->rewind();

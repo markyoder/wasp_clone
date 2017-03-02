@@ -135,9 +135,10 @@ namespace wasp {
 
         std::size_t token_index;
         std::size_t node_index;
+        std::size_t stage_index;
         std::vector<size_t>* node_indices;
 
-#line 141 "DDIParser.hpp" // lalr1.cc:377
+#line 142 "DDIParser.hpp" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -491,7 +492,7 @@ namespace wasp {
 
 
 } // wasp
-#line 495 "DDIParser.hpp" // lalr1.cc:377
+#line 496 "DDIParser.hpp" // lalr1.cc:377
 
 
 

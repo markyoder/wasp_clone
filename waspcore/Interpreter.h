@@ -95,7 +95,19 @@ public:
      * @return the index of the child at the requested index
      */
     virtual size_t child_index_at( size_t node_index, size_t child_index)const=0;
-
+    /**
+     * @brief push_staged stages the given node for child accrual and later commitment
+     * @param node_type the type of the node, i.e., WASP::DOCUMENT_ROOT
+     * @param node_name the name of the node, i.e., "document"
+     * @param child_indices the indices of any known children in the tree node pool
+     * @return the number of stages
+     * This method is used for managing tree creation. This most frequently
+     * is associated with creating the root document node once all children
+     * have been processed and are staged.
+     */
+    virtual size_t push_staged(size_t node_type
+                     , const std::string& node_name
+                     , const std::vector<size_t>&child_indices )=0;
     /**
      * @brief push_staged_child adds the given child index to the currently staged node
      * @param child_index the index of the adopted child
@@ -103,9 +115,22 @@ public:
      */
     virtual size_t push_staged_child(size_t child_index)=0;
     virtual size_t push_staged_child(const std::vector<size_t>& child_indices) = 0;
+    /**
+     * @brief commit_staged commits the staged tree node
+     * @param stage_index the stage at which to commit to the tree
+     * @return the new tree node's index into the tree node pool
+     * The new tree node is added to the parent stage's list of
+     * children
+     */
+    virtual size_t commit_staged(size_t stage_index)=0;
 
-    virtual const size_t& staged_type()const = 0;
-    virtual size_t& staged_type() = 0;
+    virtual const size_t& staged_type(size_t staged_index)const = 0;
+    virtual size_t& staged_type(size_t staged_index) = 0;
+
+    virtual const std::string& staged_name(size_t staged_index)const = 0;
+    virtual std::string& staged_name(size_t staged_index) = 0;
+
+    virtual size_t staged_count()const = 0;
 
     virtual size_t start_column()const=0;
     virtual size_t start_line()const=0;
@@ -249,11 +274,12 @@ public:
      * @param node_type the type of the node, i.e., WASP::DOCUMENT_ROOT
      * @param node_name the name of the node, i.e., "document"
      * @param child_indices the indices of any known children in the tree node pool
+     * @return the number of stages
      * This method is used for managing tree creation. This most frequently
      * is associated with creating the root document node once all children
      * have been processed and are staged.
      */
-    void push_staged(size_t node_type
+    size_t push_staged(size_t node_type
                      , const std::string& node_name
                      , const std::vector<size_t>&child_indices );
 
@@ -265,17 +291,38 @@ public:
     size_t push_staged_child(size_t child_index);
     size_t push_staged_child(const std::vector<size_t>& child_indices)
     {
-        // TODO : require a stage to be present
+        wasp_require( m_staged.empty() == false );
         size_t child_count = 0;
         for( size_t child_index : child_indices) {
             child_count = push_staged_child(child_index);
         }
         return child_count;
     }
+    virtual const std::string& staged_name(size_t staged_index)const
+    {
+        wasp_require( staged_index < m_staged.size() )
+        return m_staged[staged_index].m_name;
+    }
+    virtual std::string& staged_name(size_t staged_index)
+    {
 
-    const size_t& staged_type()const;
-    size_t& staged_type();
+        wasp_require( staged_index < m_staged.size() )
+        return m_staged[staged_index].m_name;
+    }
 
+    /**
+     * @brief commit_staged commits the staged tree node
+     * @param stage_index the stage at which to commit to the tree
+     * @return the new tree node's index into the tree node pool
+     * The new tree node is added to the parent stage's list of
+     * children
+     */
+    size_t commit_staged(size_t stage_index);
+
+    const size_t& staged_type(size_t staged_index)const;
+    size_t& staged_type(size_t staged_index);
+
+    size_t staged_count()const{ return m_staged.size(); }
     virtual bool single_parse()const{return false;}
 protected:
     template<class PARSER_IMPL>

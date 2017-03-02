@@ -348,13 +348,13 @@ object_members : keyed_object
         }
 start   : /** empty **/        
         | object{
-            interpreter.staged_type() = wasp::OBJECT;
+            interpreter.staged_type(0) = wasp::OBJECT;
             interpreter.push_staged_child(*$object);
             delete $object;
             if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}
         }
         | array{
-            interpreter.staged_type() = wasp::ARRAY;
+            interpreter.staged_type(0) = wasp::ARRAY;
             interpreter.push_staged_child(*$array);
             delete $array;
             if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}

@@ -1041,7 +1041,7 @@ namespace wasp {
   case 44:
 #line 350 "JSONParser.bison" // lalr1.cc:859
     {
-            interpreter.staged_type() = wasp::OBJECT;
+            interpreter.staged_type(0) = wasp::OBJECT;
             interpreter.push_staged_child(*(yystack_[0].value.node_indices));
             delete (yystack_[0].value.node_indices);
             if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}
@@ -1052,7 +1052,7 @@ namespace wasp {
   case 45:
 #line 356 "JSONParser.bison" // lalr1.cc:859
     {
-            interpreter.staged_type() = wasp::ARRAY;
+            interpreter.staged_type(0) = wasp::ARRAY;
             interpreter.push_staged_child(*(yystack_[0].value.node_indices));
             delete (yystack_[0].value.node_indices);
             if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}
