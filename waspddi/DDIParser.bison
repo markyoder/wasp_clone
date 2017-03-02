@@ -155,6 +155,10 @@ definition_section : decl  value_list
         std::string quote_less_data = interpreter.data($1);
         quote_less_data = wasp::strip_quotes(quote_less_data);
 
+        // TODO determine whether to
+        // 1) push stage
+        // 2) commit current stage[s] and push new stage
+        // 3) push_parent and push_staged_child
 
         $$ = interpreter.push_staged(is_array ? wasp::ARRAY : wasp::KEYED_VALUE
                                      // use the data instead of the name
@@ -175,6 +179,10 @@ definition_section : decl  value_list
 
         std::string quote_less_data = interpreter.data($1);
         quote_less_data = wasp::strip_quotes(quote_less_data);
+        // TODO determine whether to
+        // 1) push stage
+        // 2) commit current stage[s] and push new stage
+        // 3) push_parent and push_staged_child
         $$ = interpreter.push_staged(is_array ? wasp::ARRAY : wasp::KEYED_VALUE
                                      // use the data instead of the name
                                      // this provides the following tree
@@ -189,6 +197,11 @@ definition_section : decl  value_list
     }
     | decl {
         std::vector<size_t> child_indices = {$decl};
+
+        // TODO determine whether to
+        // 1) push stage
+        // 2) commit current stage[s] and push new stage
+        // 3) push_parent and push_staged_child
         $$ = interpreter.push_staged(wasp::OBJECT
                                     ,interpreter.data($decl).c_str()
                                     ,child_indices);

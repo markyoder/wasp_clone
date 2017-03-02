@@ -138,6 +138,7 @@ public:
     virtual std::string& stream_name()=0;
     virtual std::ostream & error_stream()=0;
 
+
     virtual bool single_parse()const=0;
 };
 
