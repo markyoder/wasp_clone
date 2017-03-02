@@ -5,7 +5,7 @@ import xml2obj
 import unittest
 
 ### convert son file to xml stream and create python data structure
-sonvalidxml = os.path.dirname(__file__)+"/../../bin/sonvalidxml" 
+sonvalidxml = os.path.dirname(__file__)+"/../wasputils/sonvalidxml" 
 schema = os.path.dirname(__file__)+"/schema.sch"
 input_file = os.path.dirname(__file__)+"/input.son"
 print "---",sonvalidxml,"---"
