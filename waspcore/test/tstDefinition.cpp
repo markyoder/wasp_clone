@@ -23,3 +23,26 @@ TEST( Definition, current_section)
     ASSERT_EQ(0, clone->delta( "child" ) );
 }
 
+
+TEST( Definition, parent_section)
+{
+    Definition definition;
+    Definition * child = definition.create("child");
+    Definition * grandchild1 = child->create("grandchild1");
+    Definition * grandchild2 = child->create("grandchild2");
+
+    ASSERT_TRUE( child->has( "grandchild1" ) );
+    ASSERT_EQ(0, child->delta( "grandchild1" ) );
+
+    ASSERT_TRUE( child->has( "grandchild2" ) );
+    ASSERT_EQ(0, child->delta( "grandchild2" ) );
+
+    ASSERT_EQ(1, grandchild1->delta("grandchild1") );
+    ASSERT_EQ(1, grandchild1->delta("grandchild2") );
+
+    ASSERT_EQ(1, grandchild2->delta("grandchild1") );
+    ASSERT_EQ(1, grandchild2->delta("grandchild2") );
+
+    ASSERT_EQ(2, grandchild1->delta("child") );
+    ASSERT_EQ(2, grandchild2->delta("child") );
+}

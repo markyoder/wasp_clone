@@ -37,7 +37,7 @@ Definition * Definition::create(const std::string &name)
     if( itr != m_children.end() ) return nullptr;
     Definition * definition = new Definition();
     wasp_ensure ( definition );
-
+    definition->m_parent = this;
     m_children[name] = definition;
     return definition;
 }
