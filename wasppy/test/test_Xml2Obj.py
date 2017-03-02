@@ -1,6 +1,8 @@
-import unittest
 import subprocess, os, sys
+# MAKE SURE THE xml2obj MODULE IS IN THE PATH
+sys.path.insert(0, os.path.dirname(__file__)+"/..")
 import xml2obj
+import unittest
 
 ### convert son file to xml stream and create python data structure
 sonvalidxml = os.path.dirname(__file__)+"/../../bin/sonvalidxml" 
