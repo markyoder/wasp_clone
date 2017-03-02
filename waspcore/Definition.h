@@ -3,10 +3,11 @@
 
 #include "waspcore/wasp_bug.h"
 #include <map>
-
+#include <memory>
 namespace wasp{
 class Definition {
 public:
+    typedef std::shared_ptr<Definition> SP;
     Definition();
     Definition(const Definition& orig);
     ~Definition();

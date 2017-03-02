@@ -7,7 +7,7 @@
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h" // for UNKNOWN, DOCUMENT_ROOT NODE types
 #include "waspcore/wasp_bug.h"
-#include "Definition.h"
+#include "waspcore/Definition.h"
 
 namespace wasp{
 
@@ -138,6 +138,9 @@ public:
     virtual const std::string& stream_name()const=0;
     virtual std::string& stream_name()=0;
     virtual std::ostream & error_stream()=0;    
+
+    virtual const Definition::SP& definition()const{wasp_not_implemented("definition");}
+    virtual Definition::SP& definition(){wasp_not_implemented("definition");}
 
     virtual bool single_parse()const=0;
 

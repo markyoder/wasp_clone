@@ -17,30 +17,12 @@
 
 #include "waspddi/DDIParser.hpp"
 #include "waspcore/Interpreter.h"
+#include "waspcore/Definition.h"
 
 /** The wasp namespace is used to encapsulate the three parser classes
  * wasp::DDIParser, wasp::DDILexerImpl and wasp::DDIInterpreter */
 namespace wasp {
 
-    /** The DDIInterpreter class brings together all components. It creates an instance of
-     * the DDIParser and DDILexerImpl classes and connects them. Then the input stream is
-     * fed into the lexer object and the parser gets it's token
-     * sequence. Furthermore the driver object is available in the grammar rules as
-     * a parameter. Therefore the driver class contains a reference to the
-     * structure into which the parsed data is saved. 
-     * 
-     * @brief Parse a Standard Object Notation (DDIInterpreter) file/stream
-     * DDIInterpreter currently supports the following grammar:
-     * 
-     * File : (object|array|keyedvalue)*
-     * keyedvalue : primitive '=' primitive
-     * object : tag ( '(' identifier ')' )? '{' members '}'
-     * identifier : string | quoted_string
-     * members : (object|array|keyedvalue)+
-     * array : tag ( '(' identifier ')' )? '[' (objects|primitives|arrays)+ ']'
-     * primitives : (integer|true|false|real|string|quoted_string)+
-     * objects : object+
-     */
     template<class S = TreeNodePool<unsigned short, unsigned short
                                     ,TokenPool<unsigned short,unsigned short, unsigned short>> >
     class DDIInterpreter : public Interpreter<S> {
@@ -101,6 +83,9 @@ namespace wasp {
          * @return
          */
         bool hasFile()const{return mHasFile;}
+
+        const Definition::SP& definition()const;
+        Definition::SP& definition();
     private: // private variables
 
         /**
@@ -111,7 +96,7 @@ namespace wasp {
         bool singleParse;
 
     private: // private methods
-
+        Definition::SP m_definition;
         /**
          * @brief mHasFile indicates whether this parser was instantiated via a file
          */

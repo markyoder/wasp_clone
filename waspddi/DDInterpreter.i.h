@@ -56,4 +56,17 @@ bool DDIInterpreter<S>::parseString(const std::string &input, const std::string&
     std::istringstream iss(input);
     return parseStream(iss, sname,startLine,startColumn);
 }
+
+template<class S>
+const Definition::SP& DDIInterpreter<S>::definition()const
+{
+    wasp_require( m_definition != nullptr );
+    return m_definition;
+}
+template<class S>
+Definition::SP& DDIInterpreter<S>::definition()
+{
+    if( m_definition == nullptr ) m_definition = std::make_shared<Definition>();
+    return m_definition;
+}
 #endif
