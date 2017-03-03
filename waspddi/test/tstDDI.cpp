@@ -17,6 +17,78 @@ TEST(DDInterpreter,comments)
     ASSERT_TRUE( ddi.parse(input) );
     ASSERT_EQ(4, ddi.root().child_count());
 }
+
+TEST(DDInterpreter,comment_placement)
+{
+    std::stringstream input;
+    input <<R"I( # comment of document
+ sect1 "a"
+    # comment for section 1
+    sect1.1
+        sect1.1.1 # comment for sect 1.1.1
+        #comment still 1.1.1
+        sect1.1.2
+            #comment for 1.1.2
+    sect1.2
+        # comment of 1.2
+        sect1.2.1
+# sect 1.2.1
+        sect1.2.2
+        sect1.2.3 = "value"
+    #sect 1.2.3
+    sect1.3
+ sect2
+)I"<<std::endl;
+    DDInterpreter<> ddi;
+    auto * sect1 = ddi.definition()->create("sect1");
+    auto * sect1_1 = sect1->create("sect1.1");
+    sect1_1->create("sect1.1.1");
+    sect1_1->create("sect1.1.2");
+    auto * sect1_2 = sect1->create("sect1.2");
+    sect1_2->create("sect1.2.1");
+    sect1_2->create("sect1.2.2");
+    sect1_2->create("sect1.2.3");
+    auto * sect1_3 = sect1->create("sect1.3");
+    ddi.definition()->create("sect2");
+    EXPECT_TRUE( ddi.parse(input) );
+    std::stringstream paths;
+    ddi.root().paths(paths);
+    std::stringstream expected;
+    input <<R"I(/
+/comment (# comment of document)
+/sect1
+/sect1/decl (sect1)
+/sect1/value ("a")
+/sect1/comment (# comment for section 1)
+/sect1/sect1.1
+/sect1/sect1.1/decl (sect1.1)
+/sect1/sect1.1/sect1.1.1
+/sect1/sect1.1/sect1.1.1/decl (sect1.1.1)
+/sect1/sect1.1/sect1.1.1/comment (# comment for sect 1.1.1)
+/sect1/sect1.1/sect1.1.1/comment (#comment still 1.1.1)
+/sect1/sect1.1/sect1.1.2
+/sect1/sect1.1/sect1.1.2/decl (sect1.1.2)
+/sect1/sect1.1/sect1.1.2/comment (#comment for 1.1.2)
+/sect1/sect1.2
+/sect1/sect1.2/decl (sect1.2)
+/sect1/sect1.2/comment (# comment of 1.2)
+/sect1/sect1.2/sect1.2.1
+/sect1/sect1.2/sect1.2.1/decl (sect1.2.1)
+/sect1/sect1.2/sect1.2.1/comment (# sect 1.2.1)
+/sect1/sect1.2/sect1.2.2
+/sect1/sect1.2/sect1.2.2/decl (sect1.2.2)
+/sect1/sect1.2/sect1.2.3
+/sect1/sect1.2/sect1.2.3/decl (sect1.2.3)
+/sect1/sect1.2/sect1.2.3/= (=)
+/sect1/sect1.2/sect1.2.3/value ("value")
+/sect1/sect1.2/sect1.2.3/comment (#sect 1.2.3)
+/sect1/sect1.3
+/sect1/sect1.3/decl (sect1.3)
+/sect2
+/sect2/decl (sect2))I";
+
+    ASSERT_EQ(expected.str(), paths.str());
+}
 TEST(DDInterpreter,passing_flat)
 {
     std::stringstream input;
