@@ -1,6 +1,6 @@
 
-#ifndef WASP_DDIINTERPRETER_H
-#define WASP_DDIINTERPRETER_H
+#ifndef WASP_DDINTERPRETER_H
+#define WASP_DDINTERPRETER_H
 
 #include <cstddef>
 #include <string>
@@ -25,13 +25,13 @@ namespace wasp {
 
     template<class S = TreeNodePool<unsigned short, unsigned short
                                     ,TokenPool<unsigned short,unsigned short, unsigned short>> >
-    class DDIInterpreter : public Interpreter<S> {
+    class DDInterpreter : public Interpreter<S> {
     public:
         typedef S Storage_type;
-        typedef std::shared_ptr<DDIInterpreter> SharedPtr;
-        DDIInterpreter();
-        DDIInterpreter(std::ostream & err);
-        virtual ~DDIInterpreter();
+        typedef std::shared_ptr<DDInterpreter> SharedPtr;
+        DDInterpreter();
+        DDInterpreter(std::ostream & err);
+        virtual ~DDInterpreter();
 
         /** Invoke the lexer and parser for a stream.
          * @param in        input stream

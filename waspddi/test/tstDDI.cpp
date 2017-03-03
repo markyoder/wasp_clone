@@ -17,7 +17,7 @@ sect7 = "ted"
 sect8 = 1 2 3.4 "five"
 sect9  1 2 3.4 "five"
 )I"<<std::endl;
-    DDIInterpreter<> ddi;
+    DDInterpreter<> ddi;
     ddi.definition()->create("sect1");
     ddi.definition()->create("sect2");
     ddi.definition()->create("sect3");

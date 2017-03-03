@@ -1,8 +1,8 @@
-#ifndef WASP_DDIINTERPRETER_I_H
-#define WASP_DDIINTERPRETER_I_H
+#ifndef WASP_DDINTERPRETER_I_H
+#define WASP_DDINTERPRETER_I_H
 
 template<class S>
-DDIInterpreter<S>::DDIInterpreter()
+DDInterpreter<S>::DDInterpreter()
     :Interpreter<S>(),
     traceLexing(false),
     traceParsing(false),
@@ -12,7 +12,7 @@ DDIInterpreter<S>::DDIInterpreter()
 {
 }
 template<class S>
-DDIInterpreter<S>::DDIInterpreter(std::ostream & err)
+DDInterpreter<S>::DDInterpreter(std::ostream & err)
     : Interpreter<S>(err),
     traceLexing(false),
     traceParsing(false),
@@ -22,17 +22,17 @@ DDIInterpreter<S>::DDIInterpreter(std::ostream & err)
 {
 }
 template<class S>
-DDIInterpreter<S>::~DDIInterpreter()
+DDInterpreter<S>::~DDInterpreter()
 {
     m_current = nullptr;
 }
 template<class S>
-bool DDIInterpreter<S>::parse(std::istream& in, size_t startLine, size_t startColumn)
+bool DDInterpreter<S>::parse(std::istream& in, size_t startLine, size_t startColumn)
 {
     return parseStream(in, hasFile() ? Interpreter<S>::stream_name() : "stream input" , startLine,startColumn);
 }
 template<class S>
-bool DDIInterpreter<S>::parseStream(std::istream& in
+bool DDInterpreter<S>::parseStream(std::istream& in
                                  , const std::string& sname
                                  , size_t start_line
                                  , size_t start_column)
@@ -43,7 +43,7 @@ bool DDIInterpreter<S>::parseStream(std::istream& in
                 ,start_column);
 }
 template<class S>
-bool DDIInterpreter<S>::parseFile(const std::string &filename, size_t line)
+bool DDInterpreter<S>::parseFile(const std::string &filename, size_t line)
 {
     std::ifstream in(filename.c_str());
     if (!in.good()){
@@ -54,20 +54,20 @@ bool DDIInterpreter<S>::parseFile(const std::string &filename, size_t line)
     return parseStream(in, filename, line);
 }
 template<class S>
-bool DDIInterpreter<S>::parseString(const std::string &input, const std::string& sname, size_t startLine, size_t startColumn)
+bool DDInterpreter<S>::parseString(const std::string &input, const std::string& sname, size_t startLine, size_t startColumn)
 {
     std::istringstream iss(input);
     return parseStream(iss, sname,startLine,startColumn);
 }
 
 template<class S>
-const Definition* DDIInterpreter<S>::definition()const
+const Definition* DDInterpreter<S>::definition()const
 {
     wasp_require( m_current != nullptr );
     return m_current;
 }
 template<class S>
-Definition* DDIInterpreter<S>::definition()
+Definition* DDInterpreter<S>::definition()
 {
     if( m_current == nullptr ){
         m_definition = std::make_shared<Definition>();
@@ -76,7 +76,7 @@ Definition* DDIInterpreter<S>::definition()
     return m_current;
 }
 template<class S>
-size_t DDIInterpreter<S>::push_staged(size_t node_type
+size_t DDInterpreter<S>::push_staged(size_t node_type
                                , const std::string& node_name
                                , const std::vector<size_t>&child_indices)
 {
@@ -87,7 +87,7 @@ size_t DDIInterpreter<S>::push_staged(size_t node_type
     return stage_count;
 }
 template<class S>
-size_t DDIInterpreter<S>::commit_staged(size_t stage_index)
+size_t DDInterpreter<S>::commit_staged(size_t stage_index)
 {
     auto node_index
             = Interpreter<S>::commit_staged(stage_index);
