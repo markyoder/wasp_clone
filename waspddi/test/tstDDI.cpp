@@ -70,3 +70,42 @@ expected<<R"I(/
     ddi.root().paths(paths);
 }
 
+
+/**
+ * @brief TEST ensures that an unknown section produces an expected error
+ * Specifically tests unknown in 'decl values' logic
+ */
+TEST(DDInterpreter,failing_decl_values)
+{
+    std::stringstream input;
+    input <<R"I( sect1
+sect_eek 1
+)I"<<std::endl;
+    std::stringstream errors;
+    DDInterpreter<> ddi(errors);
+    ddi.definition()->create("sect1");
+
+    EXPECT_FALSE( ddi.parse(input) );
+    std::string msg = "stream input:2.1-8: 'sect_eek' is unknown.";
+    ASSERT_EQ(msg, errors.str());
+
+}
+/**
+ * @brief TEST ensures that an unknown section produces an expected error
+ * Specifically tests unknown in 'decl' logic
+ */
+TEST(DDInterpreter,failing_decl)
+{
+    std::stringstream input;
+    input <<R"I( sect1
+ sect_eek
+)I"<<std::endl;
+    std::stringstream errors;
+    DDInterpreter<> ddi(errors);
+    ddi.definition()->create("sect1");
+
+    EXPECT_FALSE( ddi.parse(input) );
+    std::string msg = "stream input:2.2-9: 'sect_eek' is unknown.";
+    ASSERT_EQ(msg, errors.str());
+
+}
