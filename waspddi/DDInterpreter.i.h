@@ -10,6 +10,7 @@ DDInterpreter<S>::DDInterpreter()
     m_current(nullptr),
     mHasFile(false)
 {
+    definition(); // create empty definition needed by interpreter
 }
 template<class S>
 DDInterpreter<S>::DDInterpreter(std::ostream & err)
@@ -20,6 +21,7 @@ DDInterpreter<S>::DDInterpreter(std::ostream & err)
     m_current(nullptr),
     mHasFile(false)
 {
+    definition(); // create empty definition needed by interpreter
 }
 template<class S>
 DDInterpreter<S>::~DDInterpreter()

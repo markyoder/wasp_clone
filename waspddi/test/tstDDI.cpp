@@ -4,6 +4,19 @@
 #include <string>
 using namespace wasp;
 
+TEST(DDInterpreter,comments)
+{
+    std::stringstream input;
+    input <<R"I( # comments
+ #comments here
+ #comments there
+
+ # comments everywhere
+)I"<<std::endl;
+    DDInterpreter<> ddi;
+    ASSERT_TRUE( ddi.parse(input) );
+    ASSERT_EQ(4, ddi.root().child_count());
+}
 TEST(DDInterpreter,passing_flat)
 {
     std::stringstream input;
