@@ -37,6 +37,19 @@ public:
      */
     bool has( const std::string & name )const;
 
+    /**
+     * @brief get acquire the requested definition
+     * @param name the name of the requested definition
+     * @return Definition * - pointer to requested, nullptr iff no definition with given name exists
+     */
+    Definition * get( const std::string & name )const;
+
+    /**
+     * @brief parent acquires the parent definition of this definition
+     * @return the parent - nullptr iff it has no parent
+     */
+    Definition * parent()const;
+
 private:
     Definition * m_parent;
     std::map<std::string,Definition*> m_children;

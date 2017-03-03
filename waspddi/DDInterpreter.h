@@ -84,8 +84,20 @@ namespace wasp {
          */
         bool hasFile()const{return mHasFile;}
 
-        const Definition::SP& definition()const;
-        Definition::SP& definition();
+        const Definition* definition()const;
+        Definition* definition();
+        /**
+         * Override from parent class in order to manage definition selection.
+         * Pushes the new definition with the given node_name
+         */
+        virtual size_t push_staged(size_t node_type
+                         , const std::string& node_name
+                         , const std::vector<size_t>&child_indices );
+        /**
+         * Override from parent class in order to manage definition selection
+         * Pops the existing definition
+         */
+        virtual size_t commit_staged(size_t stage_index);
     private: // private variables
 
         /**
@@ -97,6 +109,7 @@ namespace wasp {
 
     private: // private methods
         Definition::SP m_definition;
+        Definition * m_current;
         /**
          * @brief mHasFile indicates whether this parser was instantiated via a file
          */

@@ -61,3 +61,14 @@ int Definition::delta(const std::string & name)const{
     }
     return -1; // couldn't find
 }
+
+Definition * Definition::get(const std::string &name)const
+{
+    auto itr = m_children.find(name);
+    if( itr == m_children.end() ) return nullptr;
+    return itr->second;
+}
+Definition * Definition::parent()const
+{
+    return m_parent;
+}

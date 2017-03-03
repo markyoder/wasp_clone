@@ -139,8 +139,8 @@ public:
     virtual std::string& stream_name()=0;
     virtual std::ostream & error_stream()=0;    
 
-    virtual const Definition::SP& definition()const{wasp_not_implemented("definition");}
-    virtual Definition::SP& definition(){wasp_not_implemented("definition");}
+    virtual const Definition* definition()const{wasp_not_implemented("definition");}
+    virtual Definition* definition(){wasp_not_implemented("definition");}
 
     virtual bool single_parse()const=0;
 
@@ -285,7 +285,7 @@ public:
      * is associated with creating the root document node once all children
      * have been processed and are staged.
      */
-    size_t push_staged(size_t node_type
+    virtual size_t push_staged(size_t node_type
                      , const std::string& node_name
                      , const std::vector<size_t>&child_indices );
 
@@ -323,7 +323,7 @@ public:
      * The new tree node is added to the parent stage's list of
      * children
      */
-    size_t commit_staged(size_t stage_index);
+    virtual size_t commit_staged(size_t stage_index);
 
     const size_t& staged_type(size_t staged_index)const;
     size_t& staged_type(size_t staged_index);

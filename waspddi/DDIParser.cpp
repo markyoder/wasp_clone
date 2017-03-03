@@ -714,11 +714,21 @@ namespace wasp {
         std::string quote_less_data = interpreter.data((yystack_[1].value.node_index));
         quote_less_data = wasp::strip_quotes(quote_less_data);
 
-        // TODO determine whether to
-        // 1) push stage
-        // 2) commit current stage[s] and push new stage
-        // 3) push_parent and push_staged_child
-
+        wasp_check(interpreter.definition());
+        int delta = interpreter.definition()->delta(quote_less_data);
+        if( -1 == delta )
+        {
+            error(yystack_[1].location, "'"+quote_less_data+"' is unknown.");
+            delete (yystack_[0].value.node_indices);
+            YYERROR; // returns
+        }
+        else if( delta > 0 ){
+            wasp_ensure( delta < interpreter.staged_count() );
+            while( delta > 0 ){
+                interpreter.commit_staged(interpreter.staged_count()-1);
+                --delta;
+            }
+        }
         (yylhs.value.stage_index) = interpreter.push_staged(is_array ? wasp::ARRAY : wasp::KEYED_VALUE
                                      // use the data instead of the name
                                      // this provides the following tree
@@ -727,14 +737,13 @@ namespace wasp {
                                      //  |_ value (1.2..blah)
                                     ,quote_less_data
                                     ,*(yystack_[0].value.node_indices));
-        // TODO determine push/pop interpeter state information
         delete (yystack_[0].value.node_indices);
     }
-#line 734 "DDIParser.cpp" // lalr1.cc:859
+#line 743 "DDIParser.cpp" // lalr1.cc:859
     break;
 
   case 12:
-#line 175 "DDIParser.bison" // lalr1.cc:859
+#line 184 "DDIParser.bison" // lalr1.cc:859
     {
         bool is_array = (yystack_[0].value.node_indices)->size() > 1;
         (yystack_[0].value.node_indices)->insert((yystack_[0].value.node_indices)->begin(),(yystack_[1].value.node_index));
@@ -742,10 +751,22 @@ namespace wasp {
 
         std::string quote_less_data = interpreter.data((yystack_[2].value.node_index));
         quote_less_data = wasp::strip_quotes(quote_less_data);
-        // TODO determine whether to
-        // 1) push stage
-        // 2) commit current stage[s] and push new stage
-        // 3) push_parent and push_staged_child
+        wasp_check(interpreter.definition());
+        int delta = interpreter.definition()->delta(quote_less_data);
+        if( -1 == delta )
+        {
+            error(yystack_[2].location, "'"+quote_less_data+"' is unknown.");
+            delete (yystack_[0].value.node_indices);
+            YYERROR; // returns
+        }
+        else if( delta > 0 ){
+            wasp_ensure( delta < interpreter.staged_count() );
+            while( delta > 0 ){
+                interpreter.commit_staged(interpreter.staged_count()-1);
+                --delta;
+            }
+        }
+
         (yylhs.value.stage_index) = interpreter.push_staged(is_array ? wasp::ARRAY : wasp::KEYED_VALUE
                                      // use the data instead of the name
                                      // this provides the following tree
@@ -758,74 +779,66 @@ namespace wasp {
         // TODO determine push/pop interpreter state information
         delete (yystack_[0].value.node_indices);
     }
-#line 762 "DDIParser.cpp" // lalr1.cc:859
+#line 783 "DDIParser.cpp" // lalr1.cc:859
     break;
 
   case 13:
-#line 198 "DDIParser.bison" // lalr1.cc:859
+#line 219 "DDIParser.bison" // lalr1.cc:859
     {
-        std::vector<size_t> child_indices = {(yystack_[0].value.node_index)};
 
-        // TODO determine whether to
-        // 1) push stage
-        // 2) commit current stage[s] and push new stage
-        // 3) push_parent and push_staged_child
+        std::string quote_less_data = interpreter.data((yystack_[0].value.node_index));
+        quote_less_data = wasp::strip_quotes(quote_less_data);
+        wasp_check(interpreter.definition());
+        int delta = interpreter.definition()->delta(quote_less_data);
+        if( -1 == delta )
+        {
+            error(yystack_[0].location, "'"+quote_less_data+"' is unknown.");
+            YYERROR; // returns
+        }
+        else if( delta > 0 ){
+            wasp_ensure( delta < interpreter.staged_count() );
+            while( delta > 0 ){
+                interpreter.commit_staged(interpreter.staged_count()-1);
+                --delta;
+            }
+        }
+        std::vector<size_t> child_indices = {(yystack_[0].value.node_index)};
         (yylhs.value.stage_index) = interpreter.push_staged(wasp::OBJECT
                                     ,interpreter.data((yystack_[0].value.node_index)).c_str()
                                     ,child_indices);
     }
-#line 778 "DDIParser.cpp" // lalr1.cc:859
+#line 811 "DDIParser.cpp" // lalr1.cc:859
     break;
 
   case 14:
-#line 212 "DDIParser.bison" // lalr1.cc:859
+#line 245 "DDIParser.bison" // lalr1.cc:859
     {
             auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
-#line 787 "DDIParser.cpp" // lalr1.cc:859
+#line 820 "DDIParser.cpp" // lalr1.cc:859
     break;
 
   case 16:
-#line 217 "DDIParser.bison" // lalr1.cc:859
+#line 250 "DDIParser.bison" // lalr1.cc:859
     {interpreter.push_staged_child(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
-#line 793 "DDIParser.cpp" // lalr1.cc:859
+#line 826 "DDIParser.cpp" // lalr1.cc:859
     break;
 
   case 17:
-#line 218 "DDIParser.bison" // lalr1.cc:859
+#line 251 "DDIParser.bison" // lalr1.cc:859
     {
-            const std::string & name = interpreter.staged_name((yystack_[0].value.stage_index));
-            std::cout<<" Staging ("<<(yystack_[0].value.stage_index)<<") "<<name<<std::endl;
-            // three options
-            // 1) the new section is a child of staged - push_staged_child
-            // 2) the
-
-            //
-
-//            if( true/* stage child */ )
-//            {
-//                interpreter.push_staged_child();
-//            }
-//            else if( /* push new stage */ )
-//            {
-//                interpreter.push_staged()
-//            }
-//            else if(  /* pop/commit current stage */)
-//            {
-
-//            }
             if(interpreter.single_parse() )
             {
                 lexer->rewind();
                 YYACCEPT;
             }
         }
-#line 825 "DDIParser.cpp" // lalr1.cc:859
+#line 838 "DDIParser.cpp" // lalr1.cc:859
     break;
 
 
-#line 829 "DDIParser.cpp" // lalr1.cc:859
+#line 842 "DDIParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1163,7 +1176,7 @@ namespace wasp {
   DDIParser::yyrline_[] =
   {
        0,   112,   118,   118,   118,   120,   127,   136,   137,   141,
-     146,   151,   174,   198,   211,   216,   217,   218
+     146,   151,   183,   219,   244,   249,   250,   251
   };
 
   // Print the state stack on the debug stream.
@@ -1245,8 +1258,8 @@ namespace wasp {
 
 
 } // wasp
-#line 1249 "DDIParser.cpp" // lalr1.cc:1167
-#line 249 "DDIParser.bison" // lalr1.cc:1168
+#line 1262 "DDIParser.cpp" // lalr1.cc:1167
+#line 262 "DDIParser.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 
 void wasp::DDIParser::error(const DDIParser::location_type& l,

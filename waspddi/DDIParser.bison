@@ -155,11 +155,21 @@ definition_section : decl  value_list
         std::string quote_less_data = interpreter.data($1);
         quote_less_data = wasp::strip_quotes(quote_less_data);
 
-        // TODO determine whether to
-        // 1) push stage
-        // 2) commit current stage[s] and push new stage
-        // 3) push_parent and push_staged_child
-
+        wasp_check(interpreter.definition());
+        int delta = interpreter.definition()->delta(quote_less_data);
+        if( -1 == delta )
+        {
+            error(@1, "'"+quote_less_data+"' is unknown.");
+            delete $2;
+            YYERROR; // returns
+        }
+        else if( delta > 0 ){
+            wasp_ensure( delta < interpreter.staged_count() );
+            while( delta > 0 ){
+                interpreter.commit_staged(interpreter.staged_count()-1);
+                --delta;
+            }
+        }
         $$ = interpreter.push_staged(is_array ? wasp::ARRAY : wasp::KEYED_VALUE
                                      // use the data instead of the name
                                      // this provides the following tree
@@ -168,7 +178,6 @@ definition_section : decl  value_list
                                      //  |_ value (1.2..blah)
                                     ,quote_less_data
                                     ,*$2);
-        // TODO determine push/pop interpeter state information
         delete $2;
     }
     | decl assignment value_list // keyed = value/values
@@ -179,10 +188,22 @@ definition_section : decl  value_list
 
         std::string quote_less_data = interpreter.data($1);
         quote_less_data = wasp::strip_quotes(quote_less_data);
-        // TODO determine whether to
-        // 1) push stage
-        // 2) commit current stage[s] and push new stage
-        // 3) push_parent and push_staged_child
+        wasp_check(interpreter.definition());
+        int delta = interpreter.definition()->delta(quote_less_data);
+        if( -1 == delta )
+        {
+            error(@1, "'"+quote_less_data+"' is unknown.");
+            delete $3;
+            YYERROR; // returns
+        }
+        else if( delta > 0 ){
+            wasp_ensure( delta < interpreter.staged_count() );
+            while( delta > 0 ){
+                interpreter.commit_staged(interpreter.staged_count()-1);
+                --delta;
+            }
+        }
+
         $$ = interpreter.push_staged(is_array ? wasp::ARRAY : wasp::KEYED_VALUE
                                      // use the data instead of the name
                                      // this provides the following tree
@@ -196,12 +217,24 @@ definition_section : decl  value_list
         delete $3;
     }
     | decl {
-        std::vector<size_t> child_indices = {$decl};
 
-        // TODO determine whether to
-        // 1) push stage
-        // 2) commit current stage[s] and push new stage
-        // 3) push_parent and push_staged_child
+        std::string quote_less_data = interpreter.data($1);
+        quote_less_data = wasp::strip_quotes(quote_less_data);
+        wasp_check(interpreter.definition());
+        int delta = interpreter.definition()->delta(quote_less_data);
+        if( -1 == delta )
+        {
+            error(@1, "'"+quote_less_data+"' is unknown.");
+            YYERROR; // returns
+        }
+        else if( delta > 0 ){
+            wasp_ensure( delta < interpreter.staged_count() );
+            while( delta > 0 ){
+                interpreter.commit_staged(interpreter.staged_count()-1);
+                --delta;
+            }
+        }
+        std::vector<size_t> child_indices = {$decl};
         $$ = interpreter.push_staged(wasp::OBJECT
                                     ,interpreter.data($decl).c_str()
                                     ,child_indices);
@@ -216,26 +249,6 @@ comment : COMMENT
 start   : /** empty **/
         | start comment{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}        
         | start definition_section{
-            const std::string & name = interpreter.staged_name($2);
-            std::cout<<" Staging ("<<$2<<") "<<name<<std::endl;
-            // three options
-            // 1) the new section is a child of staged - push_staged_child
-            // 2) the
-
-            //
-
-//            if( true/* stage child */ )
-//            {
-//                interpreter.push_staged_child();
-//            }
-//            else if( /* push new stage */ )
-//            {
-//                interpreter.push_staged()
-//            }
-//            else if(  /* pop/commit current stage */)
-//            {
-
-//            }
             if(interpreter.single_parse() )
             {
                 lexer->rewind();

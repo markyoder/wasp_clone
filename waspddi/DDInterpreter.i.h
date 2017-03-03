@@ -7,6 +7,7 @@ DDIInterpreter<S>::DDIInterpreter()
     traceLexing(false),
     traceParsing(false),
     singleParse(false),
+    m_current(nullptr),
     mHasFile(false)
 {
 }
@@ -16,12 +17,14 @@ DDIInterpreter<S>::DDIInterpreter(std::ostream & err)
     traceLexing(false),
     traceParsing(false),
     singleParse(false),
+    m_current(nullptr),
     mHasFile(false)
 {
 }
 template<class S>
 DDIInterpreter<S>::~DDIInterpreter()
 {
+    m_current = nullptr;
 }
 template<class S>
 bool DDIInterpreter<S>::parse(std::istream& in, size_t startLine, size_t startColumn)
@@ -58,15 +61,38 @@ bool DDIInterpreter<S>::parseString(const std::string &input, const std::string&
 }
 
 template<class S>
-const Definition::SP& DDIInterpreter<S>::definition()const
+const Definition* DDIInterpreter<S>::definition()const
 {
-    wasp_require( m_definition != nullptr );
-    return m_definition;
+    wasp_require( m_current != nullptr );
+    return m_current;
 }
 template<class S>
-Definition::SP& DDIInterpreter<S>::definition()
+Definition* DDIInterpreter<S>::definition()
 {
-    if( m_definition == nullptr ) m_definition = std::make_shared<Definition>();
-    return m_definition;
+    if( m_current == nullptr ){
+        m_definition = std::make_shared<Definition>();
+        m_current = &(*m_definition);
+    }
+    return m_current;
+}
+template<class S>
+size_t DDIInterpreter<S>::push_staged(size_t node_type
+                               , const std::string& node_name
+                               , const std::vector<size_t>&child_indices)
+{
+    auto stage_count
+            = Interpreter<S>::push_staged(node_type,node_name, child_indices);
+    wasp_check( m_current->has(node_name) );
+    m_current = m_current->get(node_name); // push new definition
+    return stage_count;
+}
+template<class S>
+size_t DDIInterpreter<S>::commit_staged(size_t stage_index)
+{
+    auto node_index
+            = Interpreter<S>::commit_staged(stage_index);
+    wasp_check(m_current);
+    m_current = m_current->parent(); // pops current definition
+    return node_index;
 }
 #endif
