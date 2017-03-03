@@ -19,8 +19,9 @@ TEST( Definition, current_section)
 
     Definition * clone = definition.clone();
 
-    ASSERT_TRUE( clone->has( "child" ) );
-    ASSERT_EQ(0, clone->delta( "child" ) );
+    EXPECT_TRUE( clone->has( "child" ) );
+    EXPECT_EQ(0, clone->delta( "child" ) );
+    delete clone;
 }
 
 
