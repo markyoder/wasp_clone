@@ -54,7 +54,7 @@ TEST(DDInterpreter,comment_placement)
     std::stringstream paths;
     ddi.root().paths(paths);
     std::stringstream expected;
-    input <<R"I(/
+    expected <<R"I(/
 /comment (# comment of document)
 /sect1
 /sect1/decl (sect1)
@@ -85,7 +85,8 @@ TEST(DDInterpreter,comment_placement)
 /sect1/sect1.3
 /sect1/sect1.3/decl (sect1.3)
 /sect2
-/sect2/decl (sect2))I";
+/sect2/decl (sect2)
+)I";
 
     ASSERT_EQ(expected.str(), paths.str());
 }
