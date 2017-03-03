@@ -265,6 +265,7 @@ keyed_array : declaration array
                                     ,quote_less_data.c_str()
                                     ,*$1);
         delete $1;
+        delete $2;
     }
 array_members :object
         {
