@@ -109,3 +109,22 @@ TEST(DDInterpreter,failing_decl)
     ASSERT_EQ(msg, errors.str());
 
 }
+/**
+ * @brief TEST ensures that an unknown section produces an expected error
+ * Specifically tests unknown in 'decl=values' logic
+ */
+TEST(DDInterpreter,failing_decl_assign_values)
+{
+    std::stringstream input;
+    input <<R"I( sect1
+  boom="boom"
+)I"<<std::endl;
+    std::stringstream errors;
+    DDInterpreter<> ddi(errors);
+    ddi.definition()->create("sect1");
+
+    EXPECT_FALSE( ddi.parse(input) );
+    std::string msg = "stream input:2.3-6: 'boom' is unknown.";
+    ASSERT_EQ(msg, errors.str());
+
+}
