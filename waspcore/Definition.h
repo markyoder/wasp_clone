@@ -20,7 +20,18 @@ public:
      * @return pointer to new Definition, or nullptr if collision occurs
      * Collisions occur then the given name is already assigned a definition
      */
-    Definition * create(const std::string & name);
+    Definition * create(const std::string & name);    
+    template< class TreeView >
+    Definition * create_from(const TreeView & view )
+    {
+        for( size_t i = 0; i < view.child_count(); ++i )
+        {
+            const auto& child_view = view.child_at(i);
+            Definition * child_definition = create(child_view.name());
+            child_definition->create_from(child_view);
+        }
+        return this;
+    }
 
     /**
      * @brief delta determine the definition section delta
