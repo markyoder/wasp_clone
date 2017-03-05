@@ -32,6 +32,7 @@ typename ExprInterpreter<S>::Context& ExprInterpreter<S>::Context::add_default_v
 {
     store("e",2.7182818284590452353602874713527);
     store("pi",3.14159265359);
+    return *this;
 }
 
 #endif
