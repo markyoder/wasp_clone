@@ -64,6 +64,13 @@ public: // variables
          */
         Context & add_default_variables();
         /**
+         * @brief add_default_variables add set of default functions
+         * @return this Context with addition of functions
+         * Default functions are :
+         * sin(x) - the sine is a trigonometric function of an angle (radians)
+         */
+        Context & add_default_functions();
+        /**
          * @brief clear deletes all associated variables and function
          */
         void clear();
@@ -95,6 +102,23 @@ public: // variables
         }
         bool store( const std::string & name, const std::string& v ){
             return store_ref<VarString>(name,v);
+        }
+
+        bool function_exists(const std::string & name)const;
+
+        /**
+         * @brief add_function adds the given function to this context
+         * @param name the name of the function (e.g., 'sin', 'cos')
+         * @param f the function pointer to reference upon evaluation
+         * @return this context with addition of function
+         * If the function f already exists the
+         */
+        Context& add_function(const std::string & name
+                              , class ExprInterpreter::Function* f)
+        {
+            wasp_require( function_exists(name) == false );
+            m_functions[name] = f;
+            return *this;
         }
 
      private:
@@ -440,6 +464,15 @@ public: // variables
                         break;
                     }
                 }
+                break;
+            }
+            case wasp::FUNCTION:
+            {
+                wasp_check(tree_view.child_count() > 0);
+                const auto& name_view = tree_view.child_at(0);
+                std::string function_name = name_view.data();
+                // TODO - acquire ARGS as results for the function
+                wasp_not_implemented("functions");
                 break;
             }
             case wasp::KEYED_VALUE:
