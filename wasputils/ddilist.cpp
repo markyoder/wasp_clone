@@ -9,6 +9,8 @@
 #include <fstream>
 #include "waspddi/DDInterpreter.h"
 #include "waspson/SONInterpreter.h"
+#include "waspson/SONNodeView.h"
+#include"wasphive/HIVE.h"
 using namespace std;
 using namespace wasp;
 
@@ -35,12 +37,21 @@ int main(int argc, char** argv) {
         std::cout<<"***Error : Parsing of "<<argv[1]<<" failed!"<<std::endl;
         return 1;
     }
+    // Construct the definition
+    SONNodeView<decltype(schema.root())> schema_root = schema.root();
+    std::stringstream definition_errors;
+    if ( !HIVE::create_definition(parser.definition()
+                                  ,schema_root
+                                  , definition_errors) )
+    {
+        std::cerr<<definition_errors.str()<<std::endl;
+        return 1;
+    }
     bool failed = !parser.parseFile(argv[2]);
     if( failed ){
         std::cout<<"***Error : Parsing of "<<argv[2]<<" failed!"<<std::endl;
         return 1;
     }
-    parser.definition()->create_from(schema.root());
     parser.root().paths(std::cout);
     
     return 0;
