@@ -622,3 +622,71 @@ function = A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)
     auto document = interpreter.root();
     ASSERT_EQ(1, document.child_count() );
 }
+
+TEST(ExprInterpreter, functions)
+{
+
+    std::vector<std::string> function_strings =
+    {
+            "sin(x)",
+            "cos(x)",
+            "tan(x)",
+            "asin(x)",
+            "acos(x)",
+            "atan(x)",
+            "atan2(y, x)",
+            "sec(x)",
+            "cosec(x)",
+            "cot(x)",
+            "sinh(x)",
+            "cosh(x)",
+            "tanh(x)",
+            "asinh(x)",
+            "acosh(x)",
+            "atanh(x)",
+            "ln(x) ",
+            "log(x)",
+            "lg(x)",
+            "exp(x)",
+            "pow(x)",
+            "avg(x1,x2)",
+            "avg(x1,x2,x3)",
+            "min(x1,x2)",
+            "min(x1,x2,x3)",
+            "max(x1,x2)",
+            "max(x1,x2,x3)",
+            "round(x)",
+            "round(x, p)",
+            "floor(x)",
+            "ceil(x)",
+            "if(cond, trueval, falseval)",
+            "str(x)",
+            "abs(x)",
+            "rand()",
+            "mod(x,y)",
+            "sqrt(x)",
+            "get(name,index)",
+            "get(name,child_name)",
+            "length(attribute)",
+            "left(string, count)",
+            "right(string, count)",
+            "find(string, substr)",
+            "replace(string,x,y)",
+            "exists(filepath)",
+            "current_date()",
+            "date('mm-dd-yyyy')",
+            "binom(n, i)"
+    };
+    for (const std::string & f : function_strings )
+    {
+        SCOPED_TRACE(f);
+        std::stringstream input;
+        input <<f;
+        ExprInterpreter<> interpreter;
+        ASSERT_EQ( true, interpreter.parse(input) );
+        ASSERT_LT(1, interpreter.node_count() );
+        auto document = interpreter.root();
+        ASSERT_EQ(1, document.child_count() );
+        ASSERT_EQ(wasp::FUNCTION, document.child_at(0).type());
+    }
+}

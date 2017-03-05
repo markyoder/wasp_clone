@@ -145,7 +145,7 @@ minus    : MINUS    {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::
 exponent : EXPONENT {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::EXPONENT ,"^" ,token_index);}
 lparen   : LPAREN   {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::LPAREN   ,"(" ,token_index);}
 rparen   : RPAREN   {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::RPAREN   ,")" ,token_index);}
-comma    : COMMA    {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::COMMA    ,"," ,token_index);}
+comma    : COMMA    {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::WASP_COMMA    ,"," ,token_index);}
 
 %left AND OR ;
 %left LT GT LTE GTE EQ NEQ ;
@@ -200,7 +200,7 @@ function : value %prec "constant"
                                         ,"exp"
                                         ,child_indices);
      }
-math_exp : value // constant value or function( cos(), sin())
+math_exp : function // constant value or function( cos(), sin())
     | minus math_exp  %prec UMINUS
     {
         size_t left_index = ($1);
@@ -458,24 +458,14 @@ keyedvalue : decl assign math_exp
                                         ,child_indices);
     }
 
-comment : COMMENT
-    {
-        size_t token_index = ($1);
-        $$ = interpreter.push_leaf(wasp::COMMENT,"comment"
-                         ,token_index);
-    }
 
 start   : /** empty **/
-        | start comment{
-            interpreter.push_staged_child(($2));
+        | keyedvalue{
+            interpreter.push_staged_child($1);
         }
-        | start keyedvalue{
-            interpreter.push_staged_child(($2));
+        | math_exp{
+            interpreter.push_staged_child($1);
         }
-        | start math_exp{
-            interpreter.push_staged_child(($2));
-        }
-
 
 
  /*** END RULES - Change the Expr grammar rules above ***/

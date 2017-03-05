@@ -739,7 +739,77 @@ namespace wasp {
 #line 740 "ExprParser.cpp" // lalr1.cc:859
     break;
 
+  case 18:
+#line 148 "Expr.bison" // lalr1.cc:859
+    {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_COMMA    ,"," ,token_index);}
+#line 746 "ExprParser.cpp" // lalr1.cc:859
+    break;
+
   case 19:
+#line 157 "Expr.bison" // lalr1.cc:859
+    {
+        size_t token_index = ((yystack_[0].value.token_index));
+        (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"name"
+                         ,token_index);
+    }
+#line 756 "ExprParser.cpp" // lalr1.cc:859
+    break;
+
+  case 20:
+#line 162 "Expr.bison" // lalr1.cc:859
+    { (yylhs.value.node_indices) = nullptr;}
+#line 762 "ExprParser.cpp" // lalr1.cc:859
+    break;
+
+  case 21:
+#line 164 "Expr.bison" // lalr1.cc:859
+    {
+        size_t node_index = ((yystack_[0].value.node_index));
+        (yylhs.value.node_indices) = new std::vector<size_t>();
+        (yylhs.value.node_indices)->push_back(node_index);
+    }
+#line 772 "ExprParser.cpp" // lalr1.cc:859
+    break;
+
+  case 22:
+#line 170 "Expr.bison" // lalr1.cc:859
+    {
+        if( (yystack_[2].value.node_indices) == nullptr )
+        {
+            (yylhs.value.node_indices) = new std::vector<size_t>();
+        }
+        (yylhs.value.node_indices)->push_back((yystack_[1].value.node_index));
+        (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
+    }
+#line 785 "ExprParser.cpp" // lalr1.cc:859
+    break;
+
+  case 24:
+#line 183 "Expr.bison" // lalr1.cc:859
+    {
+        size_t name_index = ((yystack_[3].value.node_index));
+        size_t left_index = ((yystack_[2].value.node_index));
+        size_t right_index = ((yystack_[0].value.node_index));
+        std::vector<size_t> child_indices = {name_index
+                                                   ,left_index};
+        if( (yystack_[1].value.node_indices) != nullptr )
+        {
+            child_indices.reserve(child_indices.size()+(yystack_[1].value.node_indices)->size());
+            for( std::size_t i = 0; i < (yystack_[1].value.node_indices)->size(); ++i)
+            {
+                child_indices.push_back((yystack_[1].value.node_indices)->at(i));
+            }
+            delete (yystack_[1].value.node_indices);
+        }
+        child_indices.push_back(right_index);
+        (yylhs.value.node_index) = interpreter.push_parent(wasp::FUNCTION
+                                        ,"exp"
+                                        ,child_indices);
+     }
+#line 810 "ExprParser.cpp" // lalr1.cc:859
+    break;
+
+  case 26:
 #line 205 "Expr.bison" // lalr1.cc:859
     {
         size_t left_index = ((yystack_[1].value.node_index));
@@ -750,10 +820,10 @@ namespace wasp {
                                         ,"exp"
                                         ,child_indices);
     }
-#line 754 "ExprParser.cpp" // lalr1.cc:859
+#line 824 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 20:
+  case 27:
 #line 215 "Expr.bison" // lalr1.cc:859
     {
        size_t left_index = ((yystack_[1].value.node_index));
@@ -764,10 +834,10 @@ namespace wasp {
                                        ,"exp"
                                        ,child_indices);
     }
-#line 768 "ExprParser.cpp" // lalr1.cc:859
+#line 838 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 21:
+  case 28:
 #line 225 "Expr.bison" // lalr1.cc:859
     {
         size_t left_index = ((yystack_[2].value.node_index));
@@ -780,10 +850,10 @@ namespace wasp {
                                         ,"exp"
                                         ,child_indices);
     }
-#line 784 "ExprParser.cpp" // lalr1.cc:859
+#line 854 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 22:
+  case 29:
 #line 237 "Expr.bison" // lalr1.cc:859
     {
         size_t left_index = ((yystack_[2].value.node_index));
@@ -796,10 +866,10 @@ namespace wasp {
                                         ,"exp"
                                         ,child_indices);
     }
-#line 800 "ExprParser.cpp" // lalr1.cc:859
+#line 870 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 23:
+  case 30:
 #line 249 "Expr.bison" // lalr1.cc:859
     {
        size_t left_index = ((yystack_[2].value.node_index));
@@ -812,10 +882,10 @@ namespace wasp {
                                        ,"exp"
                                        ,child_indices);
    }
-#line 816 "ExprParser.cpp" // lalr1.cc:859
+#line 886 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 24:
+  case 31:
 #line 261 "Expr.bison" // lalr1.cc:859
     {
       size_t left_index = ((yystack_[2].value.node_index));
@@ -828,10 +898,10 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 832 "ExprParser.cpp" // lalr1.cc:859
+#line 902 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 25:
+  case 32:
 #line 273 "Expr.bison" // lalr1.cc:859
     {
       size_t left_index = ((yystack_[2].value.node_index));
@@ -844,10 +914,10 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 848 "ExprParser.cpp" // lalr1.cc:859
+#line 918 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 26:
+  case 33:
 #line 285 "Expr.bison" // lalr1.cc:859
     {
       size_t left_index = ((yystack_[2].value.node_index));
@@ -860,10 +930,10 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 864 "ExprParser.cpp" // lalr1.cc:859
+#line 934 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 27:
+  case 34:
 #line 297 "Expr.bison" // lalr1.cc:859
     {
       size_t left_index = ((yystack_[2].value.node_index));
@@ -876,10 +946,10 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 880 "ExprParser.cpp" // lalr1.cc:859
+#line 950 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 28:
+  case 35:
 #line 309 "Expr.bison" // lalr1.cc:859
     {
       size_t left_index = ((yystack_[2].value.node_index));
@@ -892,10 +962,10 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 896 "ExprParser.cpp" // lalr1.cc:859
+#line 966 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 29:
+  case 36:
 #line 321 "Expr.bison" // lalr1.cc:859
     {
       size_t left_index = ((yystack_[2].value.node_index));
@@ -908,10 +978,10 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 912 "ExprParser.cpp" // lalr1.cc:859
+#line 982 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 30:
+  case 37:
 #line 333 "Expr.bison" // lalr1.cc:859
     {
       size_t left_index = ((yystack_[2].value.node_index));
@@ -924,10 +994,10 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 928 "ExprParser.cpp" // lalr1.cc:859
+#line 998 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 31:
+  case 38:
 #line 345 "Expr.bison" // lalr1.cc:859
     {
       size_t left_index = ((yystack_[2].value.node_index));
@@ -940,10 +1010,10 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 944 "ExprParser.cpp" // lalr1.cc:859
+#line 1014 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 32:
+  case 39:
 #line 357 "Expr.bison" // lalr1.cc:859
     {
       size_t left_index = ((yystack_[2].value.node_index));
@@ -956,10 +1026,10 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 960 "ExprParser.cpp" // lalr1.cc:859
+#line 1030 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 33:
+  case 40:
 #line 369 "Expr.bison" // lalr1.cc:859
     {
       size_t left_index = ((yystack_[2].value.node_index));
@@ -972,10 +1042,10 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 976 "ExprParser.cpp" // lalr1.cc:859
+#line 1046 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 34:
+  case 41:
 #line 381 "Expr.bison" // lalr1.cc:859
     {
       size_t left_index = ((yystack_[2].value.node_index));
@@ -988,40 +1058,40 @@ namespace wasp {
                                       ,"exp"
                                       ,child_indices);
    }
-#line 992 "ExprParser.cpp" // lalr1.cc:859
+#line 1062 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 35:
+  case 42:
 #line 393 "Expr.bison" // lalr1.cc:859
     {
         size_t assign_token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,"="
                          ,assign_token_index);
     }
-#line 1002 "ExprParser.cpp" // lalr1.cc:859
+#line 1072 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 40:
+  case 47:
 #line 433 "Expr.bison" // lalr1.cc:859
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                          ,token_index);
     }
-#line 1012 "ExprParser.cpp" // lalr1.cc:859
+#line 1082 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 42:
+  case 49:
 #line 440 "Expr.bison" // lalr1.cc:859
     {
         size_t decl_token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DECL,"decl"
                          ,decl_token_index);
     }
-#line 1022 "ExprParser.cpp" // lalr1.cc:859
+#line 1092 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 43:
+  case 50:
 #line 448 "Expr.bison" // lalr1.cc:859
     {        
 
@@ -1035,45 +1105,27 @@ namespace wasp {
                                         ,interpreter.data(key_index).c_str()
                                         ,child_indices);
     }
-#line 1039 "ExprParser.cpp" // lalr1.cc:859
+#line 1109 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 44:
-#line 462 "Expr.bison" // lalr1.cc:859
+  case 52:
+#line 463 "Expr.bison" // lalr1.cc:859
     {
-        size_t token_index = ((yystack_[0].value.token_index));
-        (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment"
-                         ,token_index);
-    }
-#line 1049 "ExprParser.cpp" // lalr1.cc:859
-    break;
-
-  case 46:
-#line 469 "Expr.bison" // lalr1.cc:859
-    {
-            interpreter.push_staged_child(((yystack_[0].value.node_index)));
+            interpreter.push_staged_child((yystack_[0].value.node_index));
         }
-#line 1057 "ExprParser.cpp" // lalr1.cc:859
+#line 1117 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 47:
-#line 472 "Expr.bison" // lalr1.cc:859
+  case 53:
+#line 466 "Expr.bison" // lalr1.cc:859
     {
-            interpreter.push_staged_child(((yystack_[0].value.node_index)));
+            interpreter.push_staged_child((yystack_[0].value.node_index));
         }
-#line 1065 "ExprParser.cpp" // lalr1.cc:859
-    break;
-
-  case 48:
-#line 475 "Expr.bison" // lalr1.cc:859
-    {
-            interpreter.push_staged_child(((yystack_[0].value.node_index)));
-        }
-#line 1073 "ExprParser.cpp" // lalr1.cc:859
+#line 1125 "ExprParser.cpp" // lalr1.cc:859
     break;
 
 
-#line 1077 "ExprParser.cpp" // lalr1.cc:859
+#line 1129 "ExprParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1328,116 +1380,121 @@ namespace wasp {
   }
 
 
-  const signed char ExprParser::yypact_ninf_ = -18;
+  const signed char ExprParser::yypact_ninf_ = -41;
 
-  const signed char ExprParser::yytable_ninf_ = -42;
+  const signed char ExprParser::yytable_ninf_ = -49;
 
   const signed char
   ExprParser::yypact_[] =
   {
-     -18,    67,   -18,   -18,   -18,   -18,   -18,   -18,    -2,   -18,
-     -18,    -7,    -7,    -7,    87,   -18,   -18,   -18,     2,   -18,
-     -18,   -18,   -11,   -11,    65,   -18,   -18,   -18,   -18,   -18,
-     -18,   -18,   -18,   -18,   -18,   -18,   -18,    -7,    -7,    -7,
-      -7,    -7,    -7,    -7,    -7,    -7,    -7,    -7,    -7,    -7,
-     -18,    -7,   -18,   -18,   -17,   -17,   -17,   -17,   -17,   -17,
-     100,   100,   -11,   -11,     4,     4,   -11,    87
+      -4,   -41,   -41,   -41,   -41,   -41,    -3,   -41,    53,    53,
+      53,   -19,   -41,    87,   -41,   -41,   -41,    -2,   -41,     8,
+     -15,   -13,   -13,    72,    53,   -41,   -41,   -41,   -41,   -41,
+     -41,   -41,   -41,   -41,   -41,   -41,   -41,    53,    53,    53,
+      53,    53,    53,    53,    53,    53,    53,    53,    53,    53,
+     -41,    53,   -41,   -41,   -41,    17,    87,    47,    47,    47,
+      47,    47,    47,   100,   100,   -13,   -13,   105,   105,   -13,
+      87,   -41,   -41,    53,    87
   };
 
   const unsigned char
   ExprParser::yydefact_[] =
   {
-      45,     0,     1,     2,    14,    16,    36,    37,    38,    39,
-      44,     0,     0,     0,    48,    40,    18,    42,     0,    47,
-      46,    38,    20,    19,     0,     5,     6,     4,     3,     7,
+      51,     2,    14,    16,    43,    44,    45,    46,     0,     0,
+       0,     0,    25,    53,    47,    23,    49,     0,    52,     0,
+      45,    27,    26,     0,    20,     5,     6,     4,     3,     7,
        8,     9,    10,    11,    12,    13,    15,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-      35,     0,    17,    21,    32,    34,    31,    33,    28,    27,
-      29,    30,    22,    23,    24,    25,    26,    43
+      42,     0,     1,    17,    28,     0,    21,    39,    41,    38,
+      40,    35,    34,    36,    37,    29,    30,    31,    32,    33,
+      50,    18,    24,     0,    22
   };
 
   const signed char
   ExprParser::yypgoto_[] =
   {
-     -18,   -18,   -18,   -18,   -18,   -18,   -18,   -18,   -18,   -18,
-     -18,   -18,   -18,   -14,   -18,   -18,   -18,    17,   -18,   -18,
-     -18,   -18,   -18,   -18,   -18,   -18
+     -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,
+     -41,   -41,   -41,   -10,   -41,     3,   -40,   -41,   -41,   -41,
+     -41,    -8,   -41,   -41,   -41,   -41,   -41,   -41,   -41
   };
 
   const signed char
   ExprParser::yydefgoto_[] =
   {
-      -1,    11,    37,    38,    39,    40,    41,    42,    43,    44,
-      45,    46,    47,    12,    49,    13,    53,    14,    51,    15,
-      16,    17,    18,    19,    20,     1
+      -1,     8,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,     9,    49,    10,    54,    73,    11,    55,
+      12,    13,    51,    14,    15,    16,    17,    18,    19
   };
 
   const signed char
   ExprParser::yytable_[] =
   {
-      48,     3,    33,    34,    35,     4,    36,   -41,    48,    48,
-      48,    50,    36,     0,     0,     4,     0,     5,     0,     6,
-       7,    21,     9,    33,    34,     0,     0,    36,    22,    23,
-      24,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+      21,    22,    23,    48,     1,     3,   -48,    50,    52,   -19,
+      36,    48,    48,    48,    24,    72,    56,     0,     2,     0,
+       3,   -19,     4,     5,     6,     7,     0,    71,     0,    57,
+      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
+      68,    69,    53,    70,     0,     0,    48,    48,    48,    48,
       48,    48,    48,    48,    48,    48,    48,    48,    48,    48,
-      48,    48,    48,    48,    54,    55,    56,    57,    58,    59,
-      60,    61,    62,    63,    64,    65,    66,     2,    67,     0,
-       0,     0,     0,     0,     0,     3,    25,    26,    27,    28,
-      29,    30,    31,    32,    33,    34,    35,     4,    36,     4,
-      52,     5,     0,     6,     7,     8,     9,    10,    25,    26,
-      27,    28,    29,    30,    31,    32,    33,    34,    35,     4,
+      48,     1,     0,     0,    48,    74,    33,    34,    35,     2,
+      36,     0,     0,     0,     0,     2,     0,     3,     0,     4,
+       5,    20,     7,    25,    26,    27,    28,    29,    30,    31,
+      32,    33,    34,    35,     2,    36,     0,    53,    25,    26,
+      27,    28,    29,    30,    31,    32,    33,    34,    35,     2,
       36,    25,    26,    27,    28,    29,    30,     0,     0,    33,
-      34,    35,     4,    36
+      34,    35,     2,    36,    33,    34,     0,     0,    36
   };
 
   const signed char
   ExprParser::yycheck_[] =
   {
-      14,     8,    19,    20,    21,    22,    23,     9,    22,    23,
-      24,     9,    23,    -1,    -1,    22,    -1,    24,    -1,    26,
-      27,    28,    29,    19,    20,    -1,    -1,    23,    11,    12,
-      13,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      54,    55,    56,    57,    58,    59,    60,    61,    62,    63,
-      64,    65,    66,    67,    37,    38,    39,    40,    41,    42,
-      43,    44,    45,    46,    47,    48,    49,     0,    51,    -1,
-      -1,    -1,    -1,    -1,    -1,     8,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20,    21,    22,    23,    22,
-      25,    24,    -1,    26,    27,    28,    29,    30,    11,    12,
+       8,     9,    10,    13,     8,    24,     9,     9,     0,    24,
+      23,    21,    22,    23,    11,    55,    24,    -1,    22,    -1,
+      24,    24,    26,    27,    28,    29,    -1,    10,    -1,    37,
+      38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
+      48,    49,    25,    51,    -1,    -1,    56,    57,    58,    59,
+      60,    61,    62,    63,    64,    65,    66,    67,    68,    69,
+      70,     8,    -1,    -1,    74,    73,    19,    20,    21,    22,
+      23,    -1,    -1,    -1,    -1,    22,    -1,    24,    -1,    26,
+      27,    28,    29,    11,    12,    13,    14,    15,    16,    17,
+      18,    19,    20,    21,    22,    23,    -1,    25,    11,    12,
       13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
       23,    11,    12,    13,    14,    15,    16,    -1,    -1,    19,
-      20,    21,    22,    23
+      20,    21,    22,    23,    19,    20,    -1,    -1,    23
   };
 
   const unsigned char
   ExprParser::yystos_[] =
   {
-       0,    62,     0,     8,    22,    24,    26,    27,    28,    29,
-      30,    38,    50,    52,    54,    56,    57,    58,    59,    60,
-      61,    28,    54,    54,    54,    11,    12,    13,    14,    15,
+       0,     8,    22,    24,    26,    27,    28,    29,    38,    50,
+      52,    55,    57,    58,    60,    61,    62,    63,    64,    65,
+      28,    58,    58,    58,    52,    11,    12,    13,    14,    15,
       16,    17,    18,    19,    20,    21,    23,    39,    40,    41,
       42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
-       9,    55,    25,    53,    54,    54,    54,    54,    54,    54,
-      54,    54,    54,    54,    54,    54,    54,    54
+       9,    59,     0,    25,    53,    56,    58,    58,    58,    58,
+      58,    58,    58,    58,    58,    58,    58,    58,    58,    58,
+      58,    10,    53,    54,    58
   };
 
   const unsigned char
   ExprParser::yyr1_[] =
   {
        0,    37,    38,    39,    40,    41,    42,    43,    44,    45,
-      46,    47,    48,    49,    50,    51,    52,    53,    54,    54,
-      54,    54,    54,    54,    54,    54,    54,    54,    54,    54,
-      54,    54,    54,    54,    54,    55,    56,    56,    56,    56,
-      57,    58,    59,    60,    61,    62,    62,    62,    62
+      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
+      56,    56,    56,    57,    57,    58,    58,    58,    58,    58,
+      58,    58,    58,    58,    58,    58,    58,    58,    58,    58,
+      58,    58,    59,    60,    60,    60,    60,    61,    62,    63,
+      64,    65,    65,    65
   };
 
   const unsigned char
   ExprParser::yyr2_[] =
   {
        0,     2,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     2,
-       2,     3,     3,     3,     3,     3,     3,     3,     3,     3,
-       3,     3,     3,     3,     3,     1,     1,     1,     1,     1,
-       1,     1,     1,     3,     1,     0,     2,     2,     2
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       0,     1,     3,     1,     4,     1,     2,     2,     3,     3,
+       3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
+       3,     3,     1,     1,     1,     1,     1,     1,     1,     1,
+       3,     0,     1,     1
   };
 
 
@@ -1455,8 +1512,9 @@ namespace wasp {
   "\"declarator\"", "\"value\"", "UMINUS", "UNOT", "\"constant\"",
   "\"name\"", "$accept", "bang", "gt", "lt", "gte", "lte", "neq", "eq",
   "and", "or", "multiply", "divide", "plus", "minus", "exponent", "lparen",
-  "rparen", "math_exp", "assign", "VALUE", "value", "DECL", "decl",
-  "keyedvalue", "comment", "start", YY_NULLPTR
+  "rparen", "comma", "function_name", "function_args", "function",
+  "math_exp", "assign", "VALUE", "value", "DECL", "decl", "keyedvalue",
+  "start", YY_NULLPTR
   };
 
 #if YYDEBUG
@@ -1464,10 +1522,11 @@ namespace wasp {
   ExprParser::yyrline_[] =
   {
        0,   132,   132,   133,   134,   135,   136,   137,   138,   139,
-     140,   141,   142,   143,   144,   145,   146,   147,   203,   204,
-     214,   224,   236,   248,   260,   272,   284,   296,   308,   320,
-     332,   344,   356,   368,   380,   392,   431,   431,   431,   431,
-     432,   438,   439,   447,   461,   468,   469,   472,   475
+     140,   141,   142,   143,   144,   145,   146,   147,   148,   157,
+     162,   163,   169,   181,   182,   203,   204,   214,   224,   236,
+     248,   260,   272,   284,   296,   308,   320,   332,   344,   356,
+     368,   380,   392,   431,   431,   431,   431,   432,   438,   439,
+     447,   462,   463,   466
   };
 
   // Print the state stack on the debug stream.
@@ -1551,8 +1610,8 @@ namespace wasp {
 
 
 } // wasp
-#line 1555 "ExprParser.cpp" // lalr1.cc:1167
-#line 483 "Expr.bison" // lalr1.cc:1168
+#line 1614 "ExprParser.cpp" // lalr1.cc:1167
+#line 473 "Expr.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 namespace wasp{
 void ExprParser::error(const ExprParser::location_type& l,

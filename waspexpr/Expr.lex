@@ -80,6 +80,10 @@ COMMA ,
     yylloc->step();
 %}
  /*** BEGIN EXAMPLE - Change the Expr lexer rules below ***/
+{COMMA} {
+    capture_token(yylval,wasp::WASP_COMMA);
+    return token::COMMA;
+}
 {INT} {
     capture_token(yylval,wasp::INT);
     return token::INTEGER;
@@ -183,10 +187,6 @@ COMMA ,
 {QSTRING} {
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
-}
-{COMMENT} {
-    capture_token(yylval,wasp::COMMENT);
-    return token::COMMENT;
 }
 
  /* pass all other characters up to Expr*/
