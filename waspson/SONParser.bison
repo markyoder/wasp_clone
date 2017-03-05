@@ -796,11 +796,11 @@ execution_unit : execution_unit_start execution_unit_name execution_unit_end
                         ,child_indices);
        }
 start   : /** empty **/
-        | start comment{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
-        | start array{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
-        | start keyedvalue{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
-        | start object{interpreter.add_root_child_index(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
-        | start execution_unit{interpreter.add_root_child_index(($2));if(interpreter.single_parse() ) {YYACCEPT;}}
+        | start comment{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
+        | start array{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
+        | start keyedvalue{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
+        | start object{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
+        | start execution_unit{interpreter.push_staged_child(($2));if(interpreter.single_parse() ) {YYACCEPT;}}
 
  /*** END RULES - Change the wasp grammar rules above ***/
 

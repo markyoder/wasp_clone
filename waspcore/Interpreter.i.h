@@ -6,8 +6,12 @@ Interpreter<TNS>::Interpreter(std::ostream & err)
     , m_start_line(1)
     , m_stream_name("stream")
     , m_error_stream(err)
-    , m_root_index(-1) // not set
+    , m_root_index(-1)
 {
+    // All documents have a root.
+    // However, if no elements are parsed
+    // this staged root will not be committed.
+    push_staged(wasp::DOCUMENT_ROOT, "document", {});
 }
 template<class TNS>
 Interpreter<TNS>::~Interpreter()
@@ -152,12 +156,70 @@ bool Interpreter<TNS>::parse_impl(std::istream &in
 
     bool parsed = parser.parse() == 0;
 
-    if( !m_root_child_indices.empty() )
+    // at this point, if any results are still staged
+    // we need to commit them
+    while( staged_count() > 1 )
     {
-        m_root_index = push_parent(wasp::DOCUMENT_ROOT
-                                   ,"document"
-                                   ,m_root_child_indices);
-        m_root_child_indices.clear();
+        commit_staged(staged_count()-1);
+    }
+    wasp_ensure( m_staged.size() == 1 );
+    Stage& document = m_staged.front();
+    if( !document.m_child_indices.empty() )
+    {
+        m_root_index = commit_staged(0);
+        document.m_child_indices.clear();
     }
     return parsed;
+}
+
+template<class TNS>
+const size_t& Interpreter<TNS>::staged_type(size_t staged_index)const
+{
+    wasp_require( staged_index < m_staged.size() );
+    return m_staged[staged_index].m_type;
+}
+template<class TNS>
+size_t& Interpreter<TNS>::staged_type(size_t staged_index)
+{
+    wasp_require( staged_index < m_staged.size() );
+    return m_staged[staged_index].m_type;
+}
+template<class TNS>
+size_t Interpreter<TNS>::push_staged(size_t node_type
+                               , const std::string& node_name
+                               , const std::vector<size_t>&child_indices)
+{
+    m_staged.push_back(Stage());
+    auto & back = m_staged.back();
+    back.m_type = node_type;
+    back.m_name = node_name;
+    back.m_child_indices = child_indices;
+    return m_staged.size()-1;
+}
+
+template<class TNS>
+size_t Interpreter<TNS>::push_staged_child(size_t child_index)
+{
+    wasp_require( m_staged.empty() == false );
+    auto & back = m_staged.back();
+    back.m_child_indices.push_back(child_index);
+    return back.m_child_indices.size();
+}
+template<class TNS>
+size_t Interpreter<TNS>::commit_staged(size_t stage_index)
+{
+    wasp_require( m_staged.empty() == false );
+    wasp_require( stage_index < m_staged.size() );
+    Stage& stage = m_staged[stage_index];
+
+    size_t node_index = push_parent( stage.m_type
+                                   ,stage.m_name.c_str()
+                                   ,stage.m_child_indices);
+
+    wasp_ensure( node_index >= 0 && node_index < m_tree_nodes.size() );
+    m_staged.pop_back();
+    // make sure to add newly realized tree node
+    // to existing staged parent
+    if( !m_staged.empty() ) push_staged_child(node_index);
+    return node_index;
 }

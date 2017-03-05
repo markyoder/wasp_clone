@@ -1051,7 +1051,7 @@ namespace wasp {
   case 46:
 #line 469 "Expr.bison" // lalr1.cc:859
     {
-            interpreter.add_root_child_index(((yystack_[0].value.node_index)));
+            interpreter.push_staged_child(((yystack_[0].value.node_index)));
         }
 #line 1057 "ExprParser.cpp" // lalr1.cc:859
     break;
@@ -1059,7 +1059,7 @@ namespace wasp {
   case 47:
 #line 472 "Expr.bison" // lalr1.cc:859
     {
-            interpreter.add_root_child_index(((yystack_[0].value.node_index)));
+            interpreter.push_staged_child(((yystack_[0].value.node_index)));
         }
 #line 1065 "ExprParser.cpp" // lalr1.cc:859
     break;
@@ -1067,7 +1067,7 @@ namespace wasp {
   case 48:
 #line 475 "Expr.bison" // lalr1.cc:859
     {
-            interpreter.add_root_child_index(((yystack_[0].value.node_index)));
+            interpreter.push_staged_child(((yystack_[0].value.node_index)));
         }
 #line 1073 "ExprParser.cpp" // lalr1.cc:859
     break;

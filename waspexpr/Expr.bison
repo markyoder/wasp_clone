@@ -467,13 +467,13 @@ comment : COMMENT
 
 start   : /** empty **/
         | start comment{
-            interpreter.add_root_child_index(($2));
+            interpreter.push_staged_child(($2));
         }
         | start keyedvalue{
-            interpreter.add_root_child_index(($2));
+            interpreter.push_staged_child(($2));
         }
         | start math_exp{
-            interpreter.add_root_child_index(($2));
+            interpreter.push_staged_child(($2));
         }
 
 

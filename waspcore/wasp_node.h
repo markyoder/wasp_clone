@@ -65,6 +65,7 @@ namespace wasp{
         , PREDICATED_CHILD
         , INDEX
         , ANY
+        , WASP_NULL // disambiguated from C-NULL
      };
 }
 #endif

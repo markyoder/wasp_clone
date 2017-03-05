@@ -3,10 +3,12 @@ TRIBITS_SUBPACKAGE(core)
 TRIBITS_CONFIGURE_FILE(version.h)
 
 SET(SOURCE
+Definition.cpp
 utils.cpp
 )
 
 SET(HEADERS
+Definition.h
 FlexLexer.h
 Interpreter.h
 Interpreter.i.h

@@ -642,8 +642,8 @@ root_based_selection : separator
                                          ,"A" // A - any
                                          ,child_indices);
      }
-start   : root_based_selection {interpreter.add_root_child_index(($1)); }
-        | relative_selection {interpreter.add_root_child_index(($1)); }
+start   : root_based_selection {interpreter.push_staged_child(($1)); }
+        | relative_selection {interpreter.push_staged_child(($1)); }
 
 
  /*** END RULES - Change the wasp grammar rules above ***/

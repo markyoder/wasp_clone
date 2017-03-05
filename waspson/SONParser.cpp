@@ -1614,31 +1614,31 @@ namespace wasp {
 
   case 109:
 #line 799 "SONParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
+    {interpreter.push_staged_child(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
 #line 1619 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 110:
 #line 800 "SONParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
+    {interpreter.push_staged_child(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
 #line 1625 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 111:
 #line 801 "SONParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
+    {interpreter.push_staged_child(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
 #line 1631 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 112:
 #line 802 "SONParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
+    {interpreter.push_staged_child(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
 #line 1637 "SONParser.cpp" // lalr1.cc:859
     break;
 
   case 113:
 #line 803 "SONParser.bison" // lalr1.cc:859
-    {interpreter.add_root_child_index(((yystack_[0].value.node_index)));if(interpreter.single_parse() ) {YYACCEPT;}}
+    {interpreter.push_staged_child(((yystack_[0].value.node_index)));if(interpreter.single_parse() ) {YYACCEPT;}}
 #line 1643 "SONParser.cpp" // lalr1.cc:859
     break;
 

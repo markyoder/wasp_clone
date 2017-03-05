@@ -1124,7 +1124,7 @@ namespace wasp {
   case 53:
 #line 456 "GetPot.bison" // lalr1.cc:859
     {
-            interpreter.add_root_child_index(((yystack_[0].value.node_index)));
+            interpreter.push_staged_child(((yystack_[0].value.node_index)));
         }
 #line 1130 "GetPotParser.cpp" // lalr1.cc:859
     break;
@@ -1132,7 +1132,7 @@ namespace wasp {
   case 54:
 #line 459 "GetPot.bison" // lalr1.cc:859
     {
-            interpreter.add_root_child_index(((yystack_[0].value.node_index)));
+            interpreter.push_staged_child(((yystack_[0].value.node_index)));
         }
 #line 1138 "GetPotParser.cpp" // lalr1.cc:859
     break;
@@ -1140,7 +1140,7 @@ namespace wasp {
   case 55:
 #line 462 "GetPot.bison" // lalr1.cc:859
     {
-            interpreter.add_root_child_index(((yystack_[0].value.node_index)));
+            interpreter.push_staged_child(((yystack_[0].value.node_index)));
         }
 #line 1146 "GetPotParser.cpp" // lalr1.cc:859
     break;
@@ -1162,8 +1162,8 @@ namespace wasp {
             size_t object_i = interpreter.push_parent(wasp::OBJECT
                                             ,name.c_str()
                                             ,children);
-            interpreter.add_root_child_index(object_i);
-            interpreter.add_root_child_index(((yystack_[0].value.node_index)));
+            interpreter.push_staged_child(object_i);
+            interpreter.push_staged_child(((yystack_[0].value.node_index)));
             delete (yystack_[2].value.node_indices);
         }
 #line 1170 "GetPotParser.cpp" // lalr1.cc:859

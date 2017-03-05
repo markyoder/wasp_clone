@@ -128,42 +128,8 @@ namespace wasp {
         template<typename TAdapter>
         void recursive_child_select(const TreeNodeView<Storage_type> & context
                                                  , std::vector<TAdapter> & stage)const;
-    }; // end of SIRENInterpreter class
+    }; // end of SIRENInterpreter class    
 
-    //
-    /**
-     * @brief wildcard_name_match
-     * @param first wildcarded pattern to match
-     * @param second literal string to determine match
-     * @return true, iff, second matches first
-     * NOTE: gratefully acquired from :
-     * http://www.geeksforgeeks.org/wildcard-character-matching/
-     */
-    inline bool wildcard_name_match(const char *first, const char * second)
-    {
-        // If we reach at the end of both strings, we are done
-        if (*first == '\0' && *second == '\0')
-            return true;
-
-        // Make sure that the characters after '*' are present
-        // in second string. This function assumes that the first
-        // string will not contain two consecutive '*'
-        if (*first == '*' && *(first+1) != '\0' && *second == '\0')
-            return false;
-
-        // If the first string contains '?', or current characters
-        // of both strings match
-        if (*first == '?' || *first == *second)
-            return wildcard_name_match(first+1, second+1);
-
-        // If there is *, then there are two possibilities
-        // a) We consider current character of second string
-        // b) We ignore current character of second string.
-        if (*first == '*')
-            return wildcard_name_match(first+1, second)
-                    || wildcard_name_match(first, second+1);
-        return false;
-    }
 #include "waspsiren/SIRENInterpreter.i.h"
 } // namespace wasp
 #endif // WASPSIRENINTERPRETER_H

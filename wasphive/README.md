@@ -1,0 +1,228 @@
+# Heirarchical Input Validation Engine (HIVE) 
+HIVE uses a set of restrictions or rules to describe the definition or schema of an application input. 
+These rules describe scalar and relational restrictions. These rules can use [_SIREN_](/waspsiren/README.md)
+expression paths to define restrictions related to sets of elements. E.g., an identifier reference but refer to an existing
+element's identifier.
+
+The input definition can be used by other applications (user interfaces) to facilitate interactive validation,
+creation, and navigation.
+
+
+## Restriction Descriptions
+
+
+* MinOccurs - describes the minimum occurrences that an input element is allowed to occur under its parent context
+* MaxOccurs - describes the maximum occurrences that an input element can occur under its parent context
+* ValType - describes the allowed value type for the element (Int, Real, etc.)
+* ValEnums - describes a list of allowed values for the element 
+* MinValInc - describes the minimum inclusive value that this element is allowed to have if it is a number (float or integer)
+* MaxValInc - describes the maximum inclusive value that this element is allowed to have if it is a number (float or integer)
+* MinValExc - describes the minimum exclusive value of the element if it is a number (float or integer)
+* MaxValExc - describes the maximum exclusive value of the element in the input if it is a number (float or integer)
+* ExistsIn - describes a set of lookup paths and possible constant values where the input element being validated must exist
+* NotExistsIn - describes a set of lookup paths where the value of the input element being validated must be not exist
+* SumOver - describes what sum the values must add to under a given context
+* SumOverGroup - describes what sum the values over a given context must add to when grouped by dividing another input element's value by a given value
+* IncreaseOver - describes that the values under the element must be increasing in the order that they are read in and saved in the parse tree.
+* DecreaseOver - describes that the values under the element must be decreasing in the order that they are read in and saved in the parse tree
+* ChildAtMostOne - describes one or more lists of relative paths (and possible values) into the parse tree where at most one is allowed to exist
+* ChildExactlyOne - describes one or more lists of relative paths (and possible values) into the parse tree where exactly one is allowed to exist
+* ChildAtLeastOne - describes one or more lists of relative paths (and possible values) into the parse tree where at least one must exist
+* ChildCountEqual - describes one or more lists of relative paths into the parse tree where the number of existing values associated must be equal
+* ChildUniqueness - describes one or more lists of relative paths into the parse tree where the values at all of these paths must be unique 
+ 
+
+### Minimum Occurrence 
+__MinOccurs__ It is used mostly to denote if a piece of input is required or not.
+Most often, this rule will have a literal constant for minimum allowances.  The value 
+must be an integer. For example, `MinOccurs=0` denotes that this element is optional 
+under its parent context, and `MinOccurs=1` denotes that this element is required to
+occur at least once under its parent. Rarely, this rule may have a lookup path that 
+contains a relative path from the current element into the parse tree.  If the lookup
+path describes a set containing a single value, and if that value is an integer, then
+that value will be used to determine the minimum allowed occurrences of the element being validated.
+TODO - give example situations
+ 
+### Maximum Occurrence
+__MaxOccurs__ Most often, this element will have a literal constant value to describe
+a  number of maximum allowances.  The value  must be integer or '+INF' (indicating that
+there is no upper limit on the number of time this element can occur). This rule may have
+a  lookup path that contains a relative path from the current element into the parse tree.
+If the lookup path describes a set containing a single value, and if that value is an integer,
+then that value will be used to determine the maximum allowed occurrences of the element being
+validated.
+
+ 
+### Value Type
+__ValType__  Checks the type of the element. This can be one of the following: 
+* _Int_ - meaning a negative or positive integer
+* _Real_- meaning a negative or positive floating point value (or integer)
+* _String_ meaning a literal string of text
+* _RealOrQuestion_ meaning a negative or positive floating point value or the literal "?"
+* _IntOrYesOrNo_ meaning a negative or positive integer or the literals "yes" or "no" (case insensitive)
+* _IntOrAsterisk_ meaning a negative or positive integer or the literal "*"
+TODO - give example situations 
+
+### Value Enumerations
+__ValEnums__ Compares the element's value with once of the provided. If the element's
+value is anything other than the listed allowed enumerations, then this check will fail.  
+Note : This check is case insensitive and if the value being checked is an integer, 
+then leading zeros are ignored.
+TODO - give example situation
+
+### Minimum Value Incrusive
+__MinValInc__ Most often, this restriction will have a constant defines the minimum 
+value that this element is allowed to be.  For example, 0.0 denotes that this element
+is allowed to be zero or greater.  Rarely, this rule may have a lookup path that contains
+a relative path into the parse tree.  If the set represented by the relative path is a single
+value, and if that value is a number, then that value will be used to determine the lowest
+allowed value for the element being validated.
+
+### Maximum Value Inclusive
+__MaxValInc__ If this element exists in the input and it does not have
+a value that is a number, then it will fail this check.  However, if this element does not
+exist at all in the input, then this validation check will not fail - that is delegated
+to the MinOccurs check.  Most often, this restriction element will have a constant that will 
+define the largest value that this element is allowed to be.  For example, 0.0 denotes that
+this element is allowed to be zero or less. Rarely, this rule may have a lookup path that 
+contains a relative path into the parse tree from the current element.  If there is a single
+value in the set described by the relative path, and if that value is a number, then that
+value will be used to determine the largest allowed value for the element being validated.
+
+### Minimum Value Exclusive
+__MinValExc__ The value of this element in the input must be strictly greater
+than the element's MinValExc to pass this restriction check.  If this element exists in the input
+and it does not have a value that is a number, then it will fail this check.  However, if this
+element does not exist at all in the input, then this validation check will not fail - that
+is delegated to the MinOccurs check.  Most often, this restriction will have a constant that
+will contain the lowest exclusive value allowed for the element.  For example, 0.0 denotes
+that this element must be greater than zero. Rarely, this rule may have a lookup path that
+defines a relative path into the parse tree from the current element. If there is a single
+value the set described by the relative, and if that value is a number, then that value will
+be used to determine the lowest exclusive value allowed for the element being validated.
+
+### Maximum Value Exclusive
+__MaxValExc__ The value at the element in the input must be strictly less than this MaxValExc
+to pass this restriction check.  If the element exists in the input and it does not have a value
+that is a number, then it will fail this check.  However, if the element does not exist at all
+in the input, then this validation check will not fail - that is delegated to the MinOccurs check.
+Most often, this restriction will have a constant that will define the largest exclusive value
+allowed for the  element.  For example, 0.0 denotes that this element must be less than zero. 
+Rarely, this rule may have a lookup path.  If there is a single value in the set represented by
+the lookup path, and if that value is a number, then that value will be used to determine the
+largest exclusive value allowed for the element being validated.
+
+### Exists In
+__ExistsIn__ This is basically used like a key to say that an element must be defined somewhere
+else.  This restriction will always contain one or more lookup paths that define relative paths
+into the parse tree from the element being validated.  The pieces of input at these paths will
+be collected into a set.  This restriction also may contain one or more optional constant value.
+If these exist, then the constant values will also be added to the set.  Then, all of the values
+in the parse tree at the element being validated with the ExistsIn restriction must exist in the
+set built from the lookup paths and the constant values in order to pass the validation.  If any
+element does not exist in this set, then the validation check fails.  This check is case insensitive
+and if the value being checked is an integer, then leading zeros are ignored.
+
+
+### Not Exists In
+__NotExistsIn__ This restriction will always contain one or more lookup path nodes that contain
+relative paths into the parse tree from the element being validated. The pieces of input at
+these paths will be collected into a set.  If the value of the element being validated exists
+in this set, then this validation check fails.  If it does not exist, then the validation check passes.
+If the value being checked is an integer, then leading zeros are ignored.
+
+### Sum Over
+__SumOver__ This restriction will always contain a context expression and an expected sum value. 
+The value is the desired sum when all of the the  elements in the given context are summed.  
+The context contains a relative ancestry path in the parse tree that the values will be summed over.
+For a simple array, this will usually be "..", however it may go back further in lineage if needed (e.g. "../../..").  
+
+
+### Sum Over Group
+__SumOverGroup__ This restriction will always contain a context path, a group sum value, a compare path
+, and a group divide value.  The compare path is used to acquire another element in the parse tree using
+this as a relative path into the input from the current element being validated.  This value must exist
+in the input and be a number.  Then, this value is divided by the group divide value.  This does integer
+division to split the input element that will be added into groups.  Then, each group must successfully
+add to the group sum value.  If any group does not add to the group sum value, then this validation check
+fails.  If every group (when split by performing an integer division on the value at the compare path relative
+location by the group divide value) adds to the same desired group sum, then this validation check passes.
+
+
+### Increase Over 
+__IncreaseOver__  It will have a type indicating the monotonicity. The element will either be Strict,
+meaning that the values must be strictly increasing (no two values are the same), or Mono, meaning
+that multiple value are allowed to be the same as long as they never decrease.  For example 3 4 5 5 6 7 would
+pass a Mono, but fail a Strict check due to two value being the same.  It will also have a context that describes
+the relative ancestry in the parse tree that the values must be increasing over.  For a simple array, this will
+usually be "..". However, it may go back further in lineage if needed (e.g. "../../..").
+
+
+### Decrease Over
+__DecreaseOver__ It will have a type indicating the monotonicity. The type will either be Strict,
+meaning that the values must be strictly decreasing (no two values are the same), or Mono, meaning
+that multiple value are allowed to be the same as long as they never increase.  
+For example 7 6 5 5 4 3 would pass a Mono, but fail a Strict check due to two value being
+the same.  It will also have a context that describes the ancestry in the parse tree that
+the values must be decreasing over.  For a simple array, this will usually be "..". 
+However, it may go back further in lineage if needed (e.g
+
+
+### Child At Most One
+__ChildAtMostOne__ There may be multiple of these restrictions for any given element.
+Therefore, this restriction has one or more lookup paths.  Additionally, the look up
+path could be assigned a lookup value to predicate sets with the set member's value.
+Of the given list of elements, at most one is allowed to exist in the input.  If there
+is a lookup value associate with the lookup path, then that path's value in the input
+must be equal to what is provided in order for that element to count towards the existence of the children. 
+
+ 
+### Child Exactly One
+__ChildExactlyOne__ There may be multiple of these restrictions on any given element in the Input Definition.
+Therefore, this restriction has one or more lookup paths.  Each of these lookup paths could have an optional 
+value assigned. Of the given list of elements, exactly one is allowed to exist in the input.  If there is a
+lookup value associated with the lookup path, then that element's value must be equal to what is provided
+in order for that element to count towards existence of the children. 
+
+### Child At Least One
+__ChildAtLeastOne__ There may be multiple of these restrictions for any given element.
+Therefore, this restriction has one or more lookup paths.  Each of these lookup paths 
+can optionally have an assigned lookup value. Of the given list elements, at least one
+must exist in order for the restriction to pass.  If there is a lookup value associate
+with the lookup path, then that path's value in the input must be equal to what is
+provided in order for that element to count towards the existence of the children.
+
+
+### Child Exactly One
+__ChildExactlyOne__ This restriction is usually used to ensure that arrays in the
+input have an equal number of value members.  There may be multiple of these
+restrictions on any given element.  Therefore, this restriction has one or
+more lookup paths.  Each of these contains multiple lookup path and a modifier
+flag.  This may be either _IfExists_ or _EvenNone_.  If this is _IfExists_, then
+it means that the pieces of input in the relative lookup paths must be equal only
+if they actually exist.  If this is _EvenNone_, then this is a stricter restriction
+that denotes that the relative lookup path nodes in the input must be equal
+regardless if they exist or not. 
+
+
+### Child Uniqueness
+__ChildUniqueness__ In other words, every value in this set has to occur once
+and only once among all other values, at all other paths.  This restriction
+is used quite often.  There may be multiple of these restrictions on any given
+element. Each of these lookup paths has an optional modifier flag.  This may be
+either _Abs_ or _Zero_.  _Abs_ indicates that the absolute value of all values
+added to the set checked for uniqueness are used.  Then, even if one value is
+negative and the other is positive, but they have the same absolute value, it
+will fail this validation check.  _Zero_ indicates that the value must be unique
+unless it is a zero.  If the value being checked is an integer, then leading
+zeros are ignored.
+
+
+## Use Scenarios
+TODO - this section is intended to provide combinatorial examples of using multiple rules
+to achieve the desired validation. Additionally, while the forward approach may not 
+be feasible, a converse approach may, and this section should attempt to 
+provide the user some perspective as to how to approach using their 'validation hat.'
+
+
+

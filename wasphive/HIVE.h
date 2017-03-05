@@ -212,11 +212,69 @@ private:
         if (fullNamesIter == fullNames.end()) return shortName;
         else return fullNamesIter->second;
     }
+    static bool schema_element(const std::string & name){
+        static std::set<std::string> element_names = {
+            "MinOccurs",
+            "MaxOccurs",
+            "ValType",
+            "ValEnums",
+            "MinValInc",
+            "MaxValInc",
+            "MinValExc",
+            "MaxValExc",
+            "ExistsIn",
+            "NotExistsIn",
+            "SumOver",
+            "SumOverGroup",
+            "ProdOver",
+            "ProdOverGroup",
+            "IncreaseOver",
+            "DecreaseOver",
+            "ChildAtMostOne",
+            "ChildExactlyOne",
+            "ChildAtLeastOne",
+            "ChildCountEqual",
+            "ChildUniqueness",
+            "InputTmpl"
+        };
+        return element_names.find(name) != element_names.end();
+    }
 
     const std::atomic<bool> &stop;
 
 public:
-
+    template< class D, class V>
+    static bool create_definition(D * definition_model
+                                  , const V& schema_view
+                                  ,std::ostream & errors)
+    {
+        wasp_require(definition_model);
+        for( size_t i = 0; i < schema_view.child_count(); ++i )
+        {
+            const auto& child_view = schema_view.child_at(i);
+            // skip decorative elements
+            if( child_view.is_decorative() ) continue;
+            const std::string child_view_name = child_view.name();
+            // skip schema elements
+            if( schema_element(child_view_name) ) continue;
+            D * child_definition = definition_model->create(child_view_name);
+            //
+            if( child_definition == nullptr
+                    && definition_model->has(child_view_name) )
+            {
+                errors<<"***Error : Ambiguous definition for '"<<child_view_name
+                     <<"' found at line "<<child_view.line()<<" and column "
+                    <<child_view.column()<<std::endl;
+                return false;
+            }
+            wasp_ensure(child_definition);
+            if( !create_definition(child_definition, child_view, errors) )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
     class Error{
 
     public:
