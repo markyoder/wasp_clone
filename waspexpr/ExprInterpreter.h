@@ -3,6 +3,7 @@
 
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/Interpreter.h"
+#include "waspcore/wasp_bug.h"
 #include "waspexpr/ExprParser.hpp"
 #include <cmath>
 #include <sstream>
@@ -36,6 +37,13 @@ private:
          ,STRING
          ,ERROR
      };
+     template<typename T>
+     static std::string to_string(T v, bool * ok=nullptr){
+         std::stringstream s;
+         s<<v;
+         if( ok ) *ok = !(s.bad() || s.fail());
+         return s.str();
+     }
 public: // variables
 
      /**
@@ -47,10 +55,18 @@ public: // variables
         Context(const Context& orig){}
         ~Context(){clear();}
 
-        void clear(){
-            for( auto v: m_variables ) delete v.second;
-            m_variables.clear();
-        }
+        /**
+         * @brief add_default_variables add set of default variables
+         * @return this Context with addition of variables
+         * Default variables are :
+         * 'pi' - pi ~3.14 or (2 * std::acos(0.0))
+         * 'e' - 2.7182818284590452353602874713527
+         */
+        Context & add_default_variables();
+        /**
+         * @brief clear deletes all associated variables and function
+         */
+        void clear();
 
         bool exists(const std::string & name)const{
             // TODO - ensure it is not nullptr
@@ -129,20 +145,14 @@ public: // variables
             virtual void store(const std::string& v){
                 // not implemented
             }
-        protected:
-            template<typename T>
-            std::string to_string(T v, bool * ok=nullptr)const{
-                std::stringstream s;
-                s<<v;
-                if( ok ) *ok = !(s.bad() || s.fail());
-                return s.str();
-            }
         };
         Variable * variable(const std::string & name)const{
             auto itr = m_variables.find(name);
             if( itr == m_variables.end() ) return nullptr;
             return itr->second;
         }
+
+
      private:
         class VarRefInt : public Variable{
         public:
@@ -151,7 +161,7 @@ public: // variables
             bool boolean(bool * ok)const{ if( ok ) *ok = true; return bool(v);}
             int integer(bool * ok)const{ if( ok ) *ok = true; return v;}
             double real(bool * ok)const{ if( ok ) *ok = true; return double(v);}
-            std::string string(bool * ok)const{ return Variable::to_string(v,ok);}
+            std::string string(bool * ok)const{ return to_string(v,ok);}
 
             void store(bool v) { this->v = v;}
             void store(int v) { this->v = v;}
@@ -173,7 +183,7 @@ public: // variables
             bool boolean(bool * ok)const{ if( ok ) *ok = true; return bool(v);}
             int integer(bool * ok)const{ if( ok ) *ok = true; return v;}
             double real(bool * ok)const{ if( ok ) *ok = true; return double(v);}
-            std::string string(bool * ok)const{ return Variable::to_string(v,ok);}
+            std::string string(bool * ok)const{ return to_string(v,ok);}
 
             void store(bool v) { this->v = v;}
             void store(int v) { this->v = v;}
@@ -194,7 +204,7 @@ public: // variables
             bool boolean(bool * ok)const{ if( ok ) *ok = true; return bool(v);}
             int integer(bool * ok)const{ if( ok ) *ok = true; return int(v);}
             double real(bool * ok)const{ if( ok ) *ok = true; return double(v);}
-            std::string string(bool * ok)const{ return Variable::to_string(v,ok);}
+            std::string string(bool * ok)const{ return to_string(v,ok);}
 
             void store(bool v) { this->v = v;}
             void store(int v) { this->v = v;}
@@ -214,9 +224,9 @@ public: // variables
             Type type() const{return STRING;}
             std::string string(bool * ok)const{ if( ok ) *ok = true; return v;}
 
-            void store(bool v) { this->v = Variable::to_string(v);}
-            void store(int v) { this->v = Variable::to_string(v);}
-            void store(double v){ this->v = Variable::to_string(v);}
+            void store(bool v) { this->v = to_string(v);}
+            void store(int v) { this->v = to_string(v);}
+            void store(double v){ this->v = to_string(v);}
             void store(const std::string & v){this->v = v;}
         private:
             std::string & v;
@@ -229,6 +239,7 @@ public: // variables
         };
 
         std::map<std::string,Variable*> m_variables;
+        std::map<std::string,class ExprInterpreter::Function*> m_functions;
      };// end of class Context
 
      /**
@@ -1018,6 +1029,83 @@ public: // variables
              return msg.str();
          }
      }; // end of Result
+     /**
+      * @brief The Function class wraps Context accessible functions
+      */
+     class Function{
+     public:
+         typedef std::vector<Result> Args;
+         virtual Type type()const=0;
+         virtual ~Function(){}
+         virtual int integer( const Args& args
+                              , std::ostream & err
+                              , bool * ok=nullptr)const{
+             if( ok != nullptr ) *ok = false;
+             wasp_not_implemented("Function::integer");
+         }
+         virtual double real(const Args& args
+                             , std::ostream & err
+                             , bool * ok=nullptr)const{
+             if( ok != nullptr ) *ok = false;
+             wasp_not_implemented("Function::real");
+         }
+         virtual bool boolean(const Args& args
+                              , std::ostream & err
+                              , bool * ok=nullptr)const{
+             if( ok != nullptr ) *ok = false;
+             wasp_not_implemented("Function::boolean");
+         }
+         virtual std::string string(const Args& args
+                                    , std::ostream & err
+                                    , bool * ok=nullptr)const{
+             if( ok != nullptr ) *ok = false;
+             wasp_not_implemented("Function::string");
+         }
+     };
+     class FSin: public Function
+     {
+     public:
+         typedef std::vector<Result> Args;
+         virtual Type type()const{return REAL;}
+         virtual ~FSin(){}
+         virtual int integer( const Args& args
+                              , std::ostream & err
+                              , bool * ok=nullptr)const{
+             return real(args,err,ok);
+         }
+         virtual double real(const Args& args
+                             , std::ostream & err
+                             , bool * ok=nullptr)const{
+             bool l_ok = true;
+             if( args.size() != 1 )
+             {   l_ok = false;
+                 err<<"function expects 1 argument, given "<<args.size()<<".";
+             }
+             else if( !args.front().is_number() )
+             {
+                 l_ok = false;
+                 err<<"function expects a number";
+             }
+             if( ok != nullptr ) *ok = l_ok;
+             const auto & a = args.front();
+             if( a.is_integer() ){
+                return std::sin(a.integer());
+             }else if ( a.is_real() ){
+                 return std::sin(a.real());
+             }
+             return std::numeric_limits<double>::quiet_NaN();
+         }
+         virtual bool boolean(const Args& args
+                              , std::ostream & err
+                              , bool * ok=nullptr)const{
+             return real(args,err,ok);
+         }
+         virtual std::string string(const Args& args
+                                    , std::ostream & err
+                                    , bool * ok=nullptr)const{
+             return to_string(real(args,err,ok));
+         }
+     };
 
 private :
      Context m_context;

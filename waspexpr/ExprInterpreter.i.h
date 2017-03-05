@@ -19,5 +19,19 @@ bool ExprInterpreter<S>::parse(std::istream& in
                 ,startLine
                 ,startColumn);
 }
+template<class S>
+void ExprInterpreter<S>::Context::clear(){
+    for( auto v: m_variables ) delete v.second;
+    m_variables.clear();
+    for( auto f: m_functions) delete f.second;
+    m_functions.clear();
+}
+
+template<class S>
+typename ExprInterpreter<S>::Context& ExprInterpreter<S>::Context::add_default_variables()
+{
+    store("e",2.7182818284590452353602874713527);
+    store("pi",3.14159265359);
+}
 
 #endif

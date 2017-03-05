@@ -107,7 +107,7 @@
 %type <node_index>  unquoted_string
 %type <node_index>  primitive math_exp
 %type <node_index>  keyedvalue 
-%type <node_index>  comment value decl
+%type <node_index>  value decl
 %type <node_indices> function_args
 
 
