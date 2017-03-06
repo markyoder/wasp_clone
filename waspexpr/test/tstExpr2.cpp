@@ -62,6 +62,9 @@ TEST(ExprInterpreter, default_functions)
         {"tan(1)",1.55740772465},
         {"tan(pi/6)",0.57735026919},
         {"tan(-pi/3)",-1.73205080757},
+        {"asin(1)",1.57079633},
+        {"acos(1)",0.0},
+        {"atan(1)",0.785398163},
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )

@@ -355,10 +355,16 @@ ExprInterpreter<S>::Context::add_default_functions()
 {
     wasp_check( function_exists("sin") == false );
     add_function("sin",new FSin() );
+    wasp_check( function_exists("asin") == false );
+    add_function("asin",new FASin() );
     wasp_check( function_exists("cos") == false );
     add_function("cos",new FCos() );
+    wasp_check( function_exists("acos") == false );
+    add_function("acos",new FACos() );
     wasp_check( function_exists("tan") == false );
     add_function("tan",new FTan() );
+    wasp_check( function_exists("atan") == false );
+    add_function("atan",new FATan() );
     return *this;
 }
 template<class S>

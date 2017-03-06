@@ -906,8 +906,11 @@ public: // variables
          } \
      };
      WASP_REAL_FUNCTION_1ARG(FSin, RealFunction, std::sin)
+     WASP_REAL_FUNCTION_1ARG(FASin, RealFunction, std::asin)
      WASP_REAL_FUNCTION_1ARG(FCos, RealFunction, std::cos)
+     WASP_REAL_FUNCTION_1ARG(FACos, RealFunction, std::acos)
      WASP_REAL_FUNCTION_1ARG(FTan, RealFunction, std::tan)
+     WASP_REAL_FUNCTION_1ARG(FATan, RealFunction, std::atan)
 
 private :
      Context m_context;
