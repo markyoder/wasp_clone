@@ -401,6 +401,10 @@ ExprInterpreter<S>::Context::add_default_functions()
     add_function("sqrt",new FSqrt() );
     wasp_check( function_exists("pow") == false );
     add_function("pow",new FPow() );
+
+    // popular variants
+    wasp_check( function_exists("cosec") == false );
+    add_function("cosec",new FCsc() );
     return *this;
 }
 template<class S>
