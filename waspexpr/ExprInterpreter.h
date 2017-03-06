@@ -905,10 +905,13 @@ public: // variables
      };
      WASP_REAL_FUNCTION_1ARG(FSin, RealFunction, std::sin)
      WASP_REAL_FUNCTION_1ARG(FASin, RealFunction, std::asin)
+     WASP_REAL_FUNCTION_1ARG(FASinh, RealFunction, std::asinh)
      WASP_REAL_FUNCTION_1ARG(FCos, RealFunction, std::cos)
      WASP_REAL_FUNCTION_1ARG(FACos, RealFunction, std::acos)
+     WASP_REAL_FUNCTION_1ARG(FACosh, RealFunction, std::acosh)
      WASP_REAL_FUNCTION_1ARG(FTan, RealFunction, std::tan)
      WASP_REAL_FUNCTION_1ARG(FATan, RealFunction, std::atan)
+     WASP_REAL_FUNCTION_1ARG(FATanh, RealFunction, std::atanh)
 
      WASP_REAL_FUNCTION_1ARG(FSinh, RealFunction, std::sinh)
      WASP_REAL_FUNCTION_1ARG(FCosh, RealFunction, std::cosh)

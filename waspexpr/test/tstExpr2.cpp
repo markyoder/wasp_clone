@@ -83,6 +83,15 @@ TEST(ExprInterpreter, default_functions)
         {"sin  (1) + sinh (1) + sqrt (1) + tan  (1)",4.57407990311},
         {"atan2(1,0)",3.14159265359/2.0},
         {"pow(2,3)",8.0},
+        {"asinh(0)",0.0},
+        {"atanh(0)",0.0},
+        {"acosh(1)",0.0},
+        {"acosh(4)",2.0634370688955},
+        {"atanh(.8)",1.0986122886},
+        {"atanh(-.8)",-1.0986122886},
+        {"asinh(1)",0.881373587019},
+        {"acosh(pi)",1.81152627246},
+        {"asinh(-1)",-0.881373587019},
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )
