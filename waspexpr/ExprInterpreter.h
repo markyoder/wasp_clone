@@ -877,6 +877,59 @@ public: // variables
              return to_string(real(args,err,ok));
          }
      };
+     class IntegerFunction : public Function
+     {
+     public:
+         typedef std::vector<Result> Args;
+         virtual Type type()const{return REAL;}
+         virtual int integer( const Args& args
+                              , std::ostream & err
+                              , bool * ok=nullptr)const=0;
+         virtual double real(const Args& args
+                             , std::ostream & err
+                             , bool * ok=nullptr)const{
+             return integer(args,err,ok);
+         };
+         virtual bool boolean(const Args& args
+                              , std::ostream & err
+                              , bool * ok=nullptr)const{
+             return integer(args,err,ok);
+         }
+         virtual std::string string(const Args& args
+                                    , std::ostream & err
+                                    , bool * ok=nullptr)const{
+             return to_string(integer(args,err,ok));
+         }
+     };
+#define WASP_INTEGER_FUNCTION_1ARG(NAME, XTENS, CALL) \
+     class NAME: public XTENS \
+     {  \
+     public: \
+         typedef std::vector<Result> Args; \
+         virtual int integer(const Args& args \
+                             , std::ostream & err \
+                             , bool * ok=nullptr)const{ \
+             bool l_ok = true; \
+             if( args.size() != 1 ) \
+             {   l_ok = false; \
+                 err<<"function expects 1 argument, given "<<args.size()<<"."; \
+             } \
+             else if( !args.front().is_number() ) \
+             { \
+                 l_ok = false; \
+                 err<<"function expects a number"; \
+             } \
+             if( ok != nullptr ) *ok = l_ok; \
+             const auto & a = args.front(); \
+             if( a.is_number() ){ \
+                return CALL; \
+             } \
+             return std::numeric_limits<int>::quiet_NaN(); \
+         } \
+     };
+
+
+
 #define WASP_REAL_FUNCTION_1ARG(NAME, XTENS, CALL) \
      class NAME: public XTENS \
      {  \
@@ -961,6 +1014,32 @@ public: // variables
 
      WASP_REAL_FUNCTION_2ARG(FATan2, RealFunction, std::atan2(a1.number(),a2.number()))
      WASP_REAL_FUNCTION_2ARG(FPow, RealFunction, std::pow(a1.number(),a2.number()))
+
+#define WASP_INTEGER_FUNCTION_2ARG(NAME, XTENS, CALL) \
+     class NAME: public XTENS \
+     {  \
+     public: \
+         typedef std::vector<Result> Args; \
+         virtual int integer(const Args& args \
+                             , std::ostream & err \
+                             , bool * ok=nullptr)const{ \
+             bool l_ok = true; \
+             if( args.size() != 2 ) \
+             {   l_ok = false; \
+                 err<<"function expects 2 argument, given "<<args.size()<<"."; \
+             } \
+             else if( !args.front().is_number() || !args.front().is_number()  ) \
+             { \
+                 l_ok = false; \
+                 err<<"function expect numbers"; \
+             } \
+             if( ok != nullptr ) *ok = l_ok; \
+             const auto & a1 = args.front(); \
+             const auto & a2 = args.back(); \
+             return CALL; \
+         } \
+     };
+     WASP_INTEGER_FUNCTION_2ARG(FMod, IntegerFunction, a1.integer()%a2.integer())
 
 private :
      Context m_context;

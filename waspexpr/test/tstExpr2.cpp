@@ -108,6 +108,8 @@ TEST(ExprInterpreter, default_functions)
         {"abs(-0.4999)",0.4999},
         {"abs(-12)",12},
         {"abs(12)",12},
+        {"mod(12,3)",0},
+        {"mod(12,5)",2},
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )
