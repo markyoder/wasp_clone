@@ -414,6 +414,8 @@ ExprInterpreter<S>::Context::add_default_functions()
 
     wasp_check( function_exists("round") == false );
     add_function("round",new FRound() );
+    wasp_check( function_exists("abs") == false );
+    add_function("abs",new FAbs() );
 
     // popular variants
     wasp_check( function_exists("cosec") == false );

@@ -105,6 +105,9 @@ TEST(ExprInterpreter, default_functions)
         {"round(-1.9)",-2.0},
         {"round(-1.4999)",-1.0},
         {"round(-0.4999)",-0.0},
+        {"abs(-0.4999)",0.4999},
+        {"abs(-12)",12},
+        {"abs(12)",12},
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )
