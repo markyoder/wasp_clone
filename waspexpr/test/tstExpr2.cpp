@@ -82,6 +82,7 @@ TEST(ExprInterpreter, default_functions)
         {"sec  (1) + csc  (1) + tanh (1) + cot  (1)",4.44289759535},
         {"sin  (1) + sinh (1) + sqrt (1) + tan  (1)",4.57407990311},
         {"atan2(1,0)",3.14159265359/2.0},
+        {"pow(2,3)",8.0},
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )

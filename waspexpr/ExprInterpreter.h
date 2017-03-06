@@ -925,6 +925,7 @@ public: // variables
      WASP_REAL_FUNCTION_1ARG(FSqrt, RealFunction, std::sqrt)
 
 
+
 #define WASP_REAL_FUNCTION_2ARG(NAME, XTENS, CALL) \
      class NAME: public XTENS \
      {  \
@@ -951,6 +952,7 @@ public: // variables
      };
 
      WASP_REAL_FUNCTION_2ARG(FATan2, RealFunction, std::atan2)
+     WASP_REAL_FUNCTION_2ARG(FPow, RealFunction, std::pow)
 
 private :
      Context m_context;

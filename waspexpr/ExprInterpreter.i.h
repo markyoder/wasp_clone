@@ -393,7 +393,8 @@ ExprInterpreter<S>::Context::add_default_functions()
     add_function("cot",new FCot() );
     wasp_check( function_exists("sqrt") == false );
     add_function("sqrt",new FSqrt() );
-
+    wasp_check( function_exists("pow") == false );
+    add_function("pow",new FPow() );
     return *this;
 }
 template<class S>
