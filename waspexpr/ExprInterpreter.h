@@ -911,6 +911,19 @@ public: // variables
      WASP_REAL_FUNCTION_1ARG(FACos, RealFunction, std::acos)
      WASP_REAL_FUNCTION_1ARG(FTan, RealFunction, std::tan)
      WASP_REAL_FUNCTION_1ARG(FATan, RealFunction, std::atan)
+     WASP_REAL_FUNCTION_1ARG(FSinh, RealFunction, std::sinh)
+     WASP_REAL_FUNCTION_1ARG(FCosh, RealFunction, std::cosh)
+     WASP_REAL_FUNCTION_1ARG(FTanh, RealFunction, std::tanh)
+
+     WASP_REAL_FUNCTION_1ARG(FFloor, RealFunction, std::floor)
+     WASP_REAL_FUNCTION_1ARG(FCeil, RealFunction, std::ceil)
+     WASP_REAL_FUNCTION_1ARG(FExp, RealFunction, std::exp)
+     WASP_REAL_FUNCTION_1ARG(FLog, RealFunction, std::log)
+     WASP_REAL_FUNCTION_1ARG(FLog10, RealFunction, std::log10)
+     WASP_REAL_FUNCTION_1ARG(FSec, RealFunction, 1.0/std::sin)
+     WASP_REAL_FUNCTION_1ARG(FCsc, RealFunction, 1.0/std::cos)
+     WASP_REAL_FUNCTION_1ARG(FCot, RealFunction, 1.0/std::tan)
+     WASP_REAL_FUNCTION_1ARG(FSqrt, RealFunction, std::sqrt)
 
 private :
      Context m_context;

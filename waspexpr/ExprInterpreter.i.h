@@ -365,6 +365,32 @@ ExprInterpreter<S>::Context::add_default_functions()
     add_function("tan",new FTan() );
     wasp_check( function_exists("atan") == false );
     add_function("atan",new FATan() );
+    wasp_check( function_exists("sinh") == false );
+    add_function("sinh",new FSinh() );
+    wasp_check( function_exists("cosh") == false );
+    add_function("cosh",new FCosh() );
+    wasp_check( function_exists("Tanh") == false );
+    add_function("tanh",new FTanh() );
+
+    wasp_check( function_exists("floor") == false );
+    add_function("floor",new FFloor() );
+    wasp_check( function_exists("ceil") == false );
+    add_function("ceil",new FCeil() );
+    wasp_check( function_exists("exp") == false );
+    add_function("exp",new FExp() );
+    wasp_check( function_exists("log") == false );
+    add_function("log",new FLog() );
+    wasp_check( function_exists("log10") == false );
+    add_function("log10",new FLog10() );
+    wasp_check( function_exists("sec") == false );
+    add_function("sec",new FSec() );
+    wasp_check( function_exists("csc") == false );
+    add_function("csc",new FCsc() );
+    wasp_check( function_exists("cot") == false );
+    add_function("cot",new FCot() );
+    wasp_check( function_exists("sqrt") == false );
+    add_function("sqrt",new FSqrt() );
+
     return *this;
 }
 template<class S>
