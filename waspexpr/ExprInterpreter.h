@@ -974,6 +974,7 @@ public: // variables
      WASP_REAL_FUNCTION_1ARG(FCeil, RealFunction, std::ceil(a.number()))
      WASP_REAL_FUNCTION_1ARG(FExp, RealFunction, std::exp(a.number()))
      WASP_REAL_FUNCTION_1ARG(FLog, RealFunction, std::log(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FLg, RealFunction, std::log2(a.number()))
      WASP_REAL_FUNCTION_1ARG(FLog10, RealFunction, std::log10(a.number()))
      WASP_REAL_FUNCTION_1ARG(FSec, RealFunction, 1.0/std::sin(a.number()))
      WASP_REAL_FUNCTION_1ARG(FCsc, RealFunction, 1.0/std::cos(a.number()))

@@ -389,6 +389,8 @@ ExprInterpreter<S>::Context::add_default_functions()
     add_function("exp",new FExp() );
     wasp_check( function_exists("log") == false );
     add_function("log",new FLog() );
+    wasp_check( function_exists("lg") == false );
+    add_function("lg",new FLg() );
     wasp_check( function_exists("log10") == false );
     add_function("log10",new FLog10() );
     wasp_check( function_exists("sec") == false );
