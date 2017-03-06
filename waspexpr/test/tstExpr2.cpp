@@ -98,6 +98,13 @@ TEST(ExprInterpreter, default_functions)
         {"rad2deg(0.5)",28.647889756541161},
         {"grad2deg(1)",1*10.0/9},
         {"deg2grad(1)",1*9.0/10},
+        {"round(1.23)",1.0},
+        {"round(1.5)",2.0},
+        {"round(1.49999)",1.0},
+        {"round(1.9)",2.0},
+        {"round(-1.9)",-2.0},
+        {"round(-1.4999)",-1.0},
+        {"round(-0.4999)",-0.0},
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )

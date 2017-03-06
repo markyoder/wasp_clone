@@ -412,6 +412,9 @@ ExprInterpreter<S>::Context::add_default_functions()
     wasp_check( function_exists("deg2grad") == false );
     add_function("deg2grad",new FDeg2Grad() );
 
+    wasp_check( function_exists("round") == false );
+    add_function("round",new FRound() );
+
     // popular variants
     wasp_check( function_exists("cosec") == false );
     add_function("cosec",new FCsc() );
