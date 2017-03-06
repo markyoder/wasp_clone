@@ -347,6 +347,8 @@ ExprInterpreter<S>::Context::add_default_variables()
     return *this;
 }
 
+
+
 template<class S>
 typename ExprInterpreter<S>::Context&
 ExprInterpreter<S>::Context::add_default_functions()
@@ -355,6 +357,8 @@ ExprInterpreter<S>::Context::add_default_functions()
     add_function("sin",new FSin() );
     wasp_check( function_exists("cos") == false );
     add_function("cos",new FCos() );
+    wasp_check( function_exists("tan") == false );
+    add_function("tan",new FTan() );
     return *this;
 }
 template<class S>

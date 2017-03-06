@@ -57,7 +57,11 @@ TEST(ExprInterpreter, default_functions)
         {"cos(pi)",-1},
         {"cos(1)",0.54030230586},
         {"cos(0.0)",1},
-        {"cos(pi/2)",0.0}
+        {"cos(pi/2)",0.0},
+        {"tan(0)",0.0},
+        {"tan(1)",1.55740772465},
+        {"tan(pi/6)",0.57735026919},
+        {"tan(-pi/3)",-1.73205080757},
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )
