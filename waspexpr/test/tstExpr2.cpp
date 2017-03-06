@@ -51,12 +51,13 @@ TEST(ExprInterpreter, default_functions)
 {
     std::vector<ScalarExprTest<double>> tests={
         {"sin(pi)",0.0},
+        {"sin(pi/2.0)",1.0},
         {"sin(1.0)",0.8414709848},
         {"sin(1)",0.8414709848},
         {"cos(pi)",-1},
         {"cos(1)",0.54030230586},
         {"cos(0.0)",1},
-//        {"cos(pi/2)",0.0}
+        {"cos(pi/2)",0.0}
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )
@@ -449,7 +450,7 @@ TEST(ExprInterpreter,mixed_numeric_variable_boolean)
         ,{"x && y",-0,-3.33, false}
 
         // expressions
-//        ,{"x/2 == y",1,0.5, true}
+        ,{"x/2.0 == y",1,0.5, true}
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )
