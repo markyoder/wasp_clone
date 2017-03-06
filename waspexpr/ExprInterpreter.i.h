@@ -225,7 +225,8 @@ ExprInterpreter<S>::Result::evaluate( const T & tree_view
             c < count; ++c)
        {
            const auto & child_view = tree_view.child_at(c);
-           if( child_view.is_decorative() ) continue;
+           if( child_view.is_decorative()
+                   || child_view.type() == wasp::WASP_COMMA) continue;
            function_args.push_back(Result());
            function_args.back().evaluate(child_view, context);
            if( function_args.back().is_error() )
@@ -363,6 +364,8 @@ ExprInterpreter<S>::Context::add_default_functions()
     add_function("acos",new FACos() );
     wasp_check( function_exists("tan") == false );
     add_function("tan",new FTan() );
+    wasp_check( function_exists("atan2") == false );
+    add_function("atan2",new FATan2() );
     wasp_check( function_exists("atan") == false );
     add_function("atan",new FATan() );
     wasp_check( function_exists("sinh") == false );

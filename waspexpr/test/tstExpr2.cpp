@@ -81,6 +81,7 @@ TEST(ExprInterpreter, default_functions)
         {"sqrt(2)",1.41421356},
         {"sec  (1) + csc  (1) + tanh (1) + cot  (1)",4.44289759535},
         {"sin  (1) + sinh (1) + sqrt (1) + tan  (1)",4.57407990311},
+        {"atan2(1,0)",3.14159265359/2.0},
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )
@@ -93,7 +94,7 @@ TEST(ExprInterpreter, default_functions)
         interpreter.context().add_default_variables();
         ASSERT_TRUE(interpreter.parse(input) );
         auto result = interpreter.evaluate();
-
+        if( result.is_error() ) std::cout<<result.string()<<std::endl;
         ASSERT_FALSE(result.is_error());
         ASSERT_FALSE(result.is_integer());
         ASSERT_TRUE(result.is_number());

@@ -897,10 +897,8 @@ public: // variables
              } \
              if( ok != nullptr ) *ok = l_ok; \
              const auto & a = args.front(); \
-             if( a.is_integer() ){ \
-                return CALL(a.integer()); \
-             }else if ( a.is_real() ){ \
-                return CALL(a.real()); \
+             if( a.is_number() ){ \
+                return CALL(a.number()); \
              } \
              return std::numeric_limits<double>::quiet_NaN(); \
          } \
@@ -911,6 +909,7 @@ public: // variables
      WASP_REAL_FUNCTION_1ARG(FACos, RealFunction, std::acos)
      WASP_REAL_FUNCTION_1ARG(FTan, RealFunction, std::tan)
      WASP_REAL_FUNCTION_1ARG(FATan, RealFunction, std::atan)
+
      WASP_REAL_FUNCTION_1ARG(FSinh, RealFunction, std::sinh)
      WASP_REAL_FUNCTION_1ARG(FCosh, RealFunction, std::cosh)
      WASP_REAL_FUNCTION_1ARG(FTanh, RealFunction, std::tanh)
@@ -924,6 +923,34 @@ public: // variables
      WASP_REAL_FUNCTION_1ARG(FCsc, RealFunction, 1.0/std::cos)
      WASP_REAL_FUNCTION_1ARG(FCot, RealFunction, 1.0/std::tan)
      WASP_REAL_FUNCTION_1ARG(FSqrt, RealFunction, std::sqrt)
+
+
+#define WASP_REAL_FUNCTION_2ARG(NAME, XTENS, CALL) \
+     class NAME: public XTENS \
+     {  \
+     public: \
+         typedef std::vector<Result> Args; \
+         virtual double real(const Args& args \
+                             , std::ostream & err \
+                             , bool * ok=nullptr)const{ \
+             bool l_ok = true; \
+             if( args.size() != 2 ) \
+             {   l_ok = false; \
+                 err<<"function expects 2 argument, given "<<args.size()<<"."; \
+             } \
+             else if( !args.front().is_number() || !args.front().is_number()  ) \
+             { \
+                 l_ok = false; \
+                 err<<"function expect numbers"; \
+             } \
+             if( ok != nullptr ) *ok = l_ok; \
+             const auto & a = args.front(); \
+             const auto & b = args.back(); \
+             return CALL(a.number(),b.number()); \
+         } \
+     };
+
+     WASP_REAL_FUNCTION_2ARG(FATan2, RealFunction, std::atan2)
 
 private :
      Context m_context;
