@@ -853,17 +853,35 @@ public: // variables
              wasp_not_implemented("Function::string");
          }
      };
-     class FSin: public Function
+     class RealFunction : public Function
      {
      public:
          typedef std::vector<Result> Args;
          virtual Type type()const{return REAL;}
-         virtual ~FSin(){}
          virtual int integer( const Args& args
                               , std::ostream & err
                               , bool * ok=nullptr)const{
              return real(args,err,ok);
          }
+         virtual double real(const Args& args
+                             , std::ostream & err
+                             , bool * ok=nullptr)const=0;
+         virtual bool boolean(const Args& args
+                              , std::ostream & err
+                              , bool * ok=nullptr)const{
+             return real(args,err,ok);
+         }
+         virtual std::string string(const Args& args
+                                    , std::ostream & err
+                                    , bool * ok=nullptr)const{
+             return to_string(real(args,err,ok));
+         }
+     };
+
+     class FSin: public RealFunction
+     {
+     public:
+         typedef std::vector<Result> Args;
          virtual double real(const Args& args
                              , std::ostream & err
                              , bool * ok=nullptr)const{
@@ -885,16 +903,6 @@ public: // variables
                  return std::sin(a.real());
              }
              return std::numeric_limits<double>::quiet_NaN();
-         }
-         virtual bool boolean(const Args& args
-                              , std::ostream & err
-                              , bool * ok=nullptr)const{
-             return real(args,err,ok);
-         }
-         virtual std::string string(const Args& args
-                                    , std::ostream & err
-                                    , bool * ok=nullptr)const{
-             return to_string(real(args,err,ok));
          }
      };
 
