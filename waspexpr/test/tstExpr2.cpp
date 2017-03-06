@@ -95,6 +95,7 @@ TEST(ExprInterpreter, default_functions)
         {"acosh(pi)",1.81152627246},
         {"asinh(-1)",-0.881373587019},
         {"sin(deg2rad(30))",0.5},
+        {"rad2deg(0.5)",28.647889756541161},
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )

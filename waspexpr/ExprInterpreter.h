@@ -927,7 +927,7 @@ public: // variables
      WASP_REAL_FUNCTION_1ARG(FCot, RealFunction, 1.0/std::tan(a.number()))
      WASP_REAL_FUNCTION_1ARG(FSqrt, RealFunction, std::sqrt(a.number()))
      WASP_REAL_FUNCTION_1ARG(FDeg2Rad, RealFunction, 2.0*std::acos(0.0)/180.0*a.number())
-
+     WASP_REAL_FUNCTION_1ARG(FRad2Deg, RealFunction, 180.0/(2.0*std::acos(0.0))*a.number())
 
 
 

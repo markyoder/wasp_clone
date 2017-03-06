@@ -404,6 +404,8 @@ ExprInterpreter<S>::Context::add_default_functions()
 
     wasp_check( function_exists("deg2rad") == false );
     add_function("deg2rad",new FDeg2Rad() );
+    wasp_check( function_exists("rad2deg") == false );
+    add_function("rad2deg",new FRad2Deg() );
 
     // popular variants
     wasp_check( function_exists("cosec") == false );
