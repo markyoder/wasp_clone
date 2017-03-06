@@ -1015,6 +1015,7 @@ public: // variables
 
      WASP_REAL_FUNCTION_2ARG(FATan2, RealFunction, std::atan2(a1.number(),a2.number()))
      WASP_REAL_FUNCTION_2ARG(FPow, RealFunction, std::pow(a1.number(),a2.number()))
+     WASP_REAL_FUNCTION_2ARG(FRoundn, RealFunction, std::floor((a1.number()*std::pow(10,std::floor(a2.number())) + 0.5)) / std::pow(10,std::floor(a2.number())))
 
 #define WASP_INTEGER_FUNCTION_2ARG(NAME, XTENS, CALL) \
      class NAME: public XTENS \

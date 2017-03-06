@@ -113,6 +113,10 @@ TEST(ExprInterpreter, default_functions)
         {"abs(12)",12},
         {"mod(12,3)",0},
         {"mod(12,5)",2},
+        {"roundn(pi,2)",3.14},
+        {"roundn(pi,1)",3.1},
+        {"roundn(pi,3)",3.142},
+        {"roundn(pi,4)",3.1416},
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )
