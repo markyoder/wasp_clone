@@ -464,6 +464,7 @@ TEST(ExprInterpreter,mixed_numeric_variable_boolean)
         ASSERT_EQ( true, interpreter.parse(input) );
 
         auto result = interpreter.evaluate();
+
         ASSERT_FALSE(result.is_integer());
         ASSERT_FALSE(result.is_number());
         ASSERT_FALSE(result.is_real());
