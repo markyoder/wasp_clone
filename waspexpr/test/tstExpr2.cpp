@@ -96,6 +96,8 @@ TEST(ExprInterpreter, default_functions)
         {"asinh(-1)",-0.881373587019},
         {"sin(deg2rad(30))",0.5},
         {"rad2deg(0.5)",28.647889756541161},
+        {"grad2deg(1)",1*10.0/9},
+        {"deg2grad(1)",1*9.0/10},
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )

@@ -929,7 +929,8 @@ public: // variables
      WASP_REAL_FUNCTION_1ARG(FDeg2Rad, RealFunction, 2.0*std::acos(0.0)/180.0*a.number())
      WASP_REAL_FUNCTION_1ARG(FRad2Deg, RealFunction, 180.0/(2.0*std::acos(0.0))*a.number())
 
-
+     WASP_REAL_FUNCTION_1ARG(FGrad2Deg, RealFunction, (10.0/9.0) * a.number())
+     WASP_REAL_FUNCTION_1ARG(FDeg2Grad, RealFunction, (9.0/10.0) * a.number())
 
 #define WASP_REAL_FUNCTION_2ARG(NAME, XTENS, CALL) \
      class NAME: public XTENS \

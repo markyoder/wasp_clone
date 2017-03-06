@@ -407,6 +407,11 @@ ExprInterpreter<S>::Context::add_default_functions()
     wasp_check( function_exists("rad2deg") == false );
     add_function("rad2deg",new FRad2Deg() );
 
+    wasp_check( function_exists("grad2deg") == false );
+    add_function("grad2deg",new FGrad2Deg() );
+    wasp_check( function_exists("deg2grad") == false );
+    add_function("deg2grad",new FDeg2Grad() );
+
     // popular variants
     wasp_check( function_exists("cosec") == false );
     add_function("cosec",new FCsc() );
