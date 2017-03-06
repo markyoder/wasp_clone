@@ -881,7 +881,7 @@ public: // variables
      {
      public:
          typedef std::vector<Result> Args;
-         virtual Type type()const{return REAL;}
+         virtual Type type()const{return INTEGER;}
          virtual int integer( const Args& args
                               , std::ostream & err
                               , bool * ok=nullptr)const=0;
@@ -901,6 +901,7 @@ public: // variables
              return to_string(integer(args,err,ok));
          }
      };
+
 #define WASP_INTEGER_FUNCTION_1ARG(NAME, XTENS, CALL) \
      class NAME: public XTENS \
      {  \

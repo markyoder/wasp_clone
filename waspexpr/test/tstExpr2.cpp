@@ -47,7 +47,7 @@ TEST(ExprInterpreter, default_variables)
         ASSERT_NEAR(t.expected, result.real(),1e-8);
     }
 }
-TEST(ExprInterpreter, default_functions)
+TEST(ExprInterpreter, default_real_functions)
 {
     std::vector<ScalarExprTest<double>> tests={
         {"sin(pi)",0.0},
@@ -111,8 +111,6 @@ TEST(ExprInterpreter, default_functions)
         {"abs(-0.4999)",0.4999},
         {"abs(-12)",12},
         {"abs(12)",12},
-        {"mod(12,3)",0},
-        {"mod(12,5)",2},
         {"roundn(pi,2)",3.14},
         {"roundn(pi,1)",3.1},
         {"roundn(pi,3)",3.142},
@@ -139,7 +137,33 @@ TEST(ExprInterpreter, default_functions)
         ASSERT_NEAR(t.expected, result.real(),1e-8);
     }
 }
-
+TEST(ExprInterpreter, default_integer_functions)
+{
+    std::vector<ScalarExprTest<int>> tests={
+        {"mod(12,3)",0},
+        {"mod(12,5)",2},
+    };
+    ASSERT_FALSE( tests.empty() );
+    for( auto & t : tests )
+    {
+        SCOPED_TRACE( t.tst );
+        std::stringstream input;
+        input <<t.tst;
+        ExprInterpreter<> interpreter;
+        interpreter.context().add_default_functions();
+        interpreter.context().add_default_variables();
+        ASSERT_TRUE(interpreter.parse(input) );
+        auto result = interpreter.evaluate();
+        if( result.is_error() ) std::cout<<result.string()<<std::endl;
+        ASSERT_FALSE(result.is_error());
+        ASSERT_TRUE(result.is_integer());
+        ASSERT_TRUE(result.is_number());
+        ASSERT_FALSE(result.is_real());
+        ASSERT_FALSE(result.is_string());
+        ASSERT_FALSE(result.is_bool());
+        ASSERT_EQ(t.expected, result.integer());
+    }
+}
 TEST(ExprInterpreter,scalar_boolean)
 {
     std::vector<ScalarExprTest<bool>> tests={
