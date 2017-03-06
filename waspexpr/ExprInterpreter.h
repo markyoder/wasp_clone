@@ -929,6 +929,7 @@ public: // variables
 
 
 
+
 #define WASP_REAL_FUNCTION_2ARG(NAME, XTENS, CALL) \
      class NAME: public XTENS \
      {  \

@@ -405,6 +405,8 @@ ExprInterpreter<S>::Context::add_default_functions()
     // popular variants
     wasp_check( function_exists("cosec") == false );
     add_function("cosec",new FCsc() );
+    wasp_check( function_exists("ln") == false );
+    add_function("ln",new FLog() );
     return *this;
 }
 template<class S>
