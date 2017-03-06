@@ -905,6 +905,33 @@ public: // variables
              return std::numeric_limits<double>::quiet_NaN();
          }
      };
+     class FCos: public RealFunction
+     {
+     public:
+         typedef std::vector<Result> Args;
+         virtual double real(const Args& args
+                             , std::ostream & err
+                             , bool * ok=nullptr)const{
+             bool l_ok = true;
+             if( args.size() != 1 )
+             {   l_ok = false;
+                 err<<"function expects 1 argument, given "<<args.size()<<".";
+             }
+             else if( !args.front().is_number() )
+             {
+                 l_ok = false;
+                 err<<"function expects a number";
+             }
+             if( ok != nullptr ) *ok = l_ok;
+             const auto & a = args.front();
+             if( a.is_integer() ){
+                return std::cos(a.integer());
+             }else if ( a.is_real() ){
+                 return std::cos(a.real());
+             }
+             return std::numeric_limits<double>::quiet_NaN();
+         }
+     };
 
 private :
      Context m_context;

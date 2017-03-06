@@ -53,6 +53,10 @@ TEST(ExprInterpreter, default_functions)
         {"sin(pi)",0.0},
         {"sin(1.0)",0.8414709848},
         {"sin(1)",0.8414709848},
+        {"cos(pi)",-1},
+        {"cos(1)",0.54030230586},
+        {"cos(0.0)",1},
+//        {"cos(pi/2)",0.0}
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )
@@ -64,8 +68,9 @@ TEST(ExprInterpreter, default_functions)
         interpreter.context().add_default_functions();
         interpreter.context().add_default_variables();
         ASSERT_TRUE(interpreter.parse(input) );
-
         auto result = interpreter.evaluate();
+
+        ASSERT_FALSE(result.is_error());
         ASSERT_FALSE(result.is_integer());
         ASSERT_TRUE(result.is_number());
         ASSERT_TRUE(result.is_real());
@@ -442,6 +447,9 @@ TEST(ExprInterpreter,mixed_numeric_variable_boolean)
         ,{"x != y",-0,-3.33, true}
         ,{"x || y",-0,-3.33, true}
         ,{"x && y",-0,-3.33, false}
+
+        // expressions
+//        ,{"x/2 == y",1,0.5, true}
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )

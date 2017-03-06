@@ -220,6 +220,7 @@ ExprInterpreter<S>::Result::evaluate( const T & tree_view
        // we can traverse range [2,c-1]
        std::vector<Result> function_args;
        wasp_check( tree_view.child_count() > 1 );
+       bool function_args_error = false;
        for( size_t c = 2, count = tree_view.child_count()-1;
             c < count; ++c)
        {
@@ -227,6 +228,18 @@ ExprInterpreter<S>::Result::evaluate( const T & tree_view
            if( child_view.is_decorative() ) continue;
            function_args.push_back(Result());
            function_args.back().evaluate(child_view, context);
+           if( function_args.back().is_error() )
+           {
+               function_args_error = true;
+               m_type = ERROR;
+               string() = function_args.back().string();
+               break;
+           }
+       }
+       // function arguments contain error
+       if( function_args_error )
+       {
+           break;
        }
        Function * function = context.function(function_name);
        wasp_ensure( function );
@@ -340,6 +353,8 @@ ExprInterpreter<S>::Context::add_default_functions()
 {
     wasp_check( function_exists("sin") == false );
     add_function("sin",new FSin() );
+    wasp_check( function_exists("cos") == false );
+    add_function("cos",new FCos() );
     return *this;
 }
 template<class S>
