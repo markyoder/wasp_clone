@@ -402,6 +402,9 @@ ExprInterpreter<S>::Context::add_default_functions()
     wasp_check( function_exists("pow") == false );
     add_function("pow",new FPow() );
 
+    wasp_check( function_exists("deg2rad") == false );
+    add_function("deg2rad",new FDeg2Rad() );
+
     // popular variants
     wasp_check( function_exists("cosec") == false );
     add_function("cosec",new FCsc() );

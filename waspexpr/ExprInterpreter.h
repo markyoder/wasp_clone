@@ -898,34 +898,35 @@ public: // variables
              if( ok != nullptr ) *ok = l_ok; \
              const auto & a = args.front(); \
              if( a.is_number() ){ \
-                return CALL(a.number()); \
+                return CALL; \
              } \
              return std::numeric_limits<double>::quiet_NaN(); \
          } \
      };
-     WASP_REAL_FUNCTION_1ARG(FSin, RealFunction, std::sin)
-     WASP_REAL_FUNCTION_1ARG(FASin, RealFunction, std::asin)
-     WASP_REAL_FUNCTION_1ARG(FASinh, RealFunction, std::asinh)
-     WASP_REAL_FUNCTION_1ARG(FCos, RealFunction, std::cos)
-     WASP_REAL_FUNCTION_1ARG(FACos, RealFunction, std::acos)
-     WASP_REAL_FUNCTION_1ARG(FACosh, RealFunction, std::acosh)
-     WASP_REAL_FUNCTION_1ARG(FTan, RealFunction, std::tan)
-     WASP_REAL_FUNCTION_1ARG(FATan, RealFunction, std::atan)
-     WASP_REAL_FUNCTION_1ARG(FATanh, RealFunction, std::atanh)
+     WASP_REAL_FUNCTION_1ARG(FSin, RealFunction, std::sin(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FASin, RealFunction, std::asin(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FASinh, RealFunction, std::asinh(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FCos, RealFunction, std::cos(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FACos, RealFunction, std::acos(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FACosh, RealFunction, std::acosh(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FTan, RealFunction, std::tan(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FATan, RealFunction, std::atan(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FATanh, RealFunction, std::atanh(a.number()))
 
-     WASP_REAL_FUNCTION_1ARG(FSinh, RealFunction, std::sinh)
-     WASP_REAL_FUNCTION_1ARG(FCosh, RealFunction, std::cosh)
-     WASP_REAL_FUNCTION_1ARG(FTanh, RealFunction, std::tanh)
+     WASP_REAL_FUNCTION_1ARG(FSinh, RealFunction, std::sinh(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FCosh, RealFunction, std::cosh(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FTanh, RealFunction, std::tanh(a.number()))
 
-     WASP_REAL_FUNCTION_1ARG(FFloor, RealFunction, std::floor)
-     WASP_REAL_FUNCTION_1ARG(FCeil, RealFunction, std::ceil)
-     WASP_REAL_FUNCTION_1ARG(FExp, RealFunction, std::exp)
-     WASP_REAL_FUNCTION_1ARG(FLog, RealFunction, std::log)
-     WASP_REAL_FUNCTION_1ARG(FLog10, RealFunction, std::log10)
-     WASP_REAL_FUNCTION_1ARG(FSec, RealFunction, 1.0/std::sin)
-     WASP_REAL_FUNCTION_1ARG(FCsc, RealFunction, 1.0/std::cos)
-     WASP_REAL_FUNCTION_1ARG(FCot, RealFunction, 1.0/std::tan)
-     WASP_REAL_FUNCTION_1ARG(FSqrt, RealFunction, std::sqrt)
+     WASP_REAL_FUNCTION_1ARG(FFloor, RealFunction, std::floor(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FCeil, RealFunction, std::ceil(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FExp, RealFunction, std::exp(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FLog, RealFunction, std::log(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FLog10, RealFunction, std::log10(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FSec, RealFunction, 1.0/std::sin(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FCsc, RealFunction, 1.0/std::cos(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FCot, RealFunction, 1.0/std::tan(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FSqrt, RealFunction, std::sqrt(a.number()))
+     WASP_REAL_FUNCTION_1ARG(FDeg2Rad, RealFunction, 2.0*std::acos(0.0)/180.0*a.number())
 
 
 
@@ -949,14 +950,14 @@ public: // variables
                  err<<"function expect numbers"; \
              } \
              if( ok != nullptr ) *ok = l_ok; \
-             const auto & a = args.front(); \
-             const auto & b = args.back(); \
-             return CALL(a.number(),b.number()); \
+             const auto & a1 = args.front(); \
+             const auto & a2 = args.back(); \
+             return CALL; \
          } \
      };
 
-     WASP_REAL_FUNCTION_2ARG(FATan2, RealFunction, std::atan2)
-     WASP_REAL_FUNCTION_2ARG(FPow, RealFunction, std::pow)
+     WASP_REAL_FUNCTION_2ARG(FATan2, RealFunction, std::atan2(a1.number(),a2.number()))
+     WASP_REAL_FUNCTION_2ARG(FPow, RealFunction, std::pow(a1.number(),a2.number()))
 
 private :
      Context m_context;
