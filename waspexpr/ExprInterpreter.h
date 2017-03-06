@@ -146,35 +146,31 @@ public: // variables
             virtual ~Variable(){}
             virtual int integer(bool * ok=nullptr)const{
                 if( ok != nullptr ) *ok = false;
-                // not implemented
-                return std::numeric_limits<int>::quiet_NaN();
+                wasp_not_implemented("acquiring integer value");
             }
             virtual double real(bool * ok=nullptr)const{
                 if( ok != nullptr ) *ok = false;
-                // not implemented
-                return std::numeric_limits<double>::quiet_NaN();
+                wasp_not_implemented("acquiring double precision value");
             }
             virtual bool boolean(bool * ok=nullptr)const{
                 if( ok != nullptr ) *ok = false;
-                // not implemented
-                return std::numeric_limits<bool>::quiet_NaN();
+                wasp_not_implemented("acquiring boolean value");
             }
             virtual std::string string(bool * ok=nullptr)const{
                 if( ok != nullptr ) *ok = false;
-                // not implemented
-                return std::string();
+                wasp_not_implemented("acquiring string value");
             }
             virtual void store(bool v){
-                // not implemented
+                wasp_not_implemented("storing boolean variable");
             }
             virtual void store(int v){
-                // not implemented
+                wasp_not_implemented("storing integer variable");
             }
             virtual void store(double v){
-                // not implemented
+                wasp_not_implemented("storing double precision variable");
             }
             virtual void store(const std::string& v){
-                // not implemented
+                wasp_not_implemented("storing string variable");
             }
         };
         Variable * variable(const std::string & name)const{
@@ -901,7 +897,6 @@ public: // variables
              return to_string(integer(args,err,ok));
          }
      };
-
 #define WASP_INTEGER_FUNCTION_1ARG(NAME, XTENS, CALL) \
      class NAME: public XTENS \
      {  \
@@ -929,8 +924,6 @@ public: // variables
          } \
      };
 
-
-
 #define WASP_REAL_FUNCTION_1ARG(NAME, XTENS, CALL) \
      class NAME: public XTENS \
      {  \
@@ -957,6 +950,7 @@ public: // variables
              return std::numeric_limits<double>::quiet_NaN(); \
          } \
      };
+
      WASP_REAL_FUNCTION_1ARG(FSin, RealFunction, std::sin(a.number()))
      WASP_REAL_FUNCTION_1ARG(FASin, RealFunction, std::asin(a.number()))
      WASP_REAL_FUNCTION_1ARG(FASinh, RealFunction, std::asinh(a.number()))
