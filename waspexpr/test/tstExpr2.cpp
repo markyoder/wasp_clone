@@ -47,7 +47,7 @@ TEST(ExprInterpreter, default_variables)
         ASSERT_NEAR(t.expected, result.real(),1e-8);
     }
 }
-TEST(ExprInterpreter, DISABLED_default_functions)
+TEST(ExprInterpreter, default_functions)
 {
     std::vector<ScalarExprTest<double>> tests={
         {"sin(pi)",0.0},
@@ -61,6 +61,7 @@ TEST(ExprInterpreter, DISABLED_default_functions)
         std::stringstream input;
         input <<t.tst;
         ExprInterpreter<> interpreter;
+        interpreter.context().add_default_functions();
         interpreter.context().add_default_variables();
         ASSERT_TRUE(interpreter.parse(input) );
 
