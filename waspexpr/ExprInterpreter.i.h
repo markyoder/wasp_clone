@@ -220,7 +220,8 @@ ExprInterpreter<S>::Result::evaluate( const T & tree_view
             string() = error_msg(tree_view,"is not a known variable.");
 
         }
-        else {
+        // name [ index ]  - 4 children
+        else if( tree_view.child_count() == 4){
 
             // name [ index
             wasp_check( tree_view.child_count() > 2 );
@@ -252,6 +253,44 @@ ExprInterpreter<S>::Result::evaluate( const T & tree_view
                     wasp_not_implemented("unknown index variable type value acquisition");
                     break;
                 }
+            }
+        } // end of name [ index ]
+        // name [ index ] = value
+        else if( tree_view.child_count() == 6 )
+        {
+            const auto & index_view = tree_view.child_at(2);
+            if( evaluate(index_view, context).m_type == ERROR )
+            {
+                break;
+            }
+            Result value;
+            const auto & value_view = tree_view.child_at(5);
+            value.evaluate(value_view, context);
+            wasp_ensure( is_number() );
+
+            size_t index = integer();
+            m_type = v->type();
+
+            switch( value.m_type ){ // switch on current Result's type
+                case BOOLEAN:
+                m_value.m_bool = value.boolean();
+                v->store(index, boolean());
+                break;
+            case INTEGER:
+                m_value.m_int = value.integer();
+                v->store(index,integer());
+                break;
+            case REAL:
+                m_value.m_real = value.real();
+                v->store(index,real());
+                break;
+            case STRING:
+                string() = value.string();
+                v->store(index,string());
+                break;
+            default:
+                wasp_not_implemented("unknown index variable type value acquisition");
+                break;
             }
         }
         break;

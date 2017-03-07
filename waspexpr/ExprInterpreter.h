@@ -92,7 +92,7 @@ public: // variables
             return store_ref<VarRefString>(name, v);
         }
         bool store_ref( const std::string & name, std::vector<int>& v ){
-            return store_ref< VarRefVector<decltype(v)> >(name,v);
+            return store_ref< VarRefVector<int> >(name,v);
         }
         bool store( const std::string & name, const bool& v ){
             return store_ref<VarBool>(name,v);
@@ -107,7 +107,7 @@ public: // variables
             return store_ref<VarString>(name,v);
         }
         bool store( const std::string & name, const std::vector<int>& v ){
-            return store_ref< VarVector<decltype(v)> >(name,v);
+            return store_ref< VarVector<int> >(name,v);
         }
         bool function_exists(const std::string & name)const;
 
@@ -300,7 +300,7 @@ public: // variables
         template<class T>
         class VarRefVector : public Variable{
         public:
-            VarRefVector(T & v):v(v){}
+            VarRefVector(std::vector<T> & v):v(v){}
             Type type() const{return type(v);}
             Type type(const std::vector<int>& )const{return INTEGER;}
             Type type(const std::vector<double>& )const{return REAL;}
@@ -325,12 +325,21 @@ public: // variables
                 wasp_require( i < d.size() );
                 return d[i];
             }
-            void store(size_t i, const T & v){
+            void store(size_t i, int vv){
+                store_t(i,vv);
+            }
+            void store(size_t i, double vv){
+                store_t(i,vv);
+            }
+//            void store(size_t i, const std::string& vv){
+//                store_t(i,vv);
+//            }
+            void store_t(size_t i,  const T & vv){
                 if( this->v.size() < i ) this->v.resize(i+1);
-                this->v[i] = v;
+                this->v[i] = vv;
             }
         private:
-            T & v;
+            std::vector<T> & v;
         };
         template<class T>
         class VarVector : public VarRefVector<T>{

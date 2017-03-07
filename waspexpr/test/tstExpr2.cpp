@@ -30,7 +30,7 @@ TEST(ExprInterpreter, vector_int_variables)
         {"data[1]",9},
         {"data[2]",8},
         {"data[data[0]]",9},
-//        {"data[2]=7",8},
+        {"data[2]=7",7},
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )
@@ -51,7 +51,7 @@ TEST(ExprInterpreter, vector_int_variables)
         ASSERT_FALSE(result.is_bool());
         ASSERT_EQ(t.expected, result.integer());
     }
-    std::vector<int> expected = {1,9,8};
+    std::vector<int> expected = {1,9,7};
     ASSERT_EQ(expected, data);
 }
 TEST(ExprInterpreter, default_variables)

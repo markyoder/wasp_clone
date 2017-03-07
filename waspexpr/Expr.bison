@@ -210,6 +210,15 @@ function : value %prec "constant"
                                          , name.c_str()
                                          , child_indices);
      }
+     | function_name lbracket math_exp rbracket assign math_exp
+     {
+         std::vector<size_t> child_indices = {$1,$2,$3,$4,$5,$6};
+
+         const std::string & name = interpreter.data($1);
+         $$ = interpreter.push_parent(wasp::OBJECT
+                                         , name.c_str()
+                                         , child_indices);
+     }
 math_exp : function // constant value or function( cos(), sin())
     | minus math_exp  %prec UMINUS
     {
