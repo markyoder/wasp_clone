@@ -22,6 +22,38 @@ struct VariableExprTest{
         :tst(tst),v1(v1),v2(v2),expected(expected){}
 };
 
+TEST(ExprInterpreter, vector_int_variables)
+{
+    std::vector<int> data = {1,9,8};
+    std::vector<ScalarExprTest<int>> tests={
+        {"data[0]",1},
+        {"data[1]",9},
+        {"data[2]",8},
+        {"data[data[0]]",9},
+//        {"data[2]=7",8},
+    };
+    ASSERT_FALSE( tests.empty() );
+    for( auto & t : tests )
+    {
+        SCOPED_TRACE( t.tst );
+        std::stringstream input;
+        input <<t.tst;
+        ExprInterpreter<> interpreter;
+        interpreter.context().store_ref("data",data);
+        ASSERT_TRUE(interpreter.parse(input) );
+
+        auto result = interpreter.evaluate();
+        ASSERT_FALSE( result.is_error() );
+        ASSERT_TRUE(result.is_integer());
+        ASSERT_TRUE(result.is_number());
+        ASSERT_FALSE(result.is_real());
+        ASSERT_FALSE(result.is_string());
+        ASSERT_FALSE(result.is_bool());
+        ASSERT_EQ(t.expected, result.integer());
+    }
+    std::vector<int> expected = {1,9,8};
+    ASSERT_EQ(expected, data);
+}
 TEST(ExprInterpreter, default_variables)
 {
     std::vector<ScalarExprTest<double>> tests={

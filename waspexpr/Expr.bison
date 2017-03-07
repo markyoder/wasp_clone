@@ -97,7 +97,7 @@
 %type <token_index>   DECL "declarator"
 %type <token_index>   VALUE "value"
 %type <node_index>  integer real string
-//%type <node_index>  lbracket rbracket
+%type <node_index>  lbracket rbracket
 %type <node_index>  assign comma
 %type <node_index>  gt lt gte lte neq eq and or multiply divide plus minus
 %type <node_index>  exponent lparen rparen bang
@@ -196,9 +196,19 @@ function : value %prec "constant"
             delete $function_args;
         }
         child_indices.push_back(right_index);
+        const std::string & name = interpreter.data(name_index);
         $$ = interpreter.push_parent(wasp::FUNCTION
-                                        ,"exp"
+                                        ,name.c_str()
                                         ,child_indices);
+     }
+     | function_name lbracket math_exp rbracket
+     {
+         std::vector<size_t> child_indices = {$1,$2,$3,$4};
+
+         const std::string & name = interpreter.data($1);
+         $$ = interpreter.push_parent(wasp::OBJECT
+                                         , name.c_str()
+                                         , child_indices);
      }
 math_exp : function // constant value or function( cos(), sin())
     | minus math_exp  %prec UMINUS
@@ -396,19 +406,19 @@ assign : ASSIGN
                          ,assign_token_index);
     }
 
-//lbracket : LBRACKET
-//    {
-//        size_t token_index = ($1);
-//        $$ = interpreter.push_leaf(wasp::LBRACKET,"["
-//                         ,token_index);
-//    }
-//rbracket : RBRACKET
-//    {
+lbracket : LBRACKET
+    {
+        size_t token_index = ($1);
+        $$ = interpreter.push_leaf(wasp::LBRACKET,"["
+                         ,token_index);
+    }
+rbracket : RBRACKET
+    {
 
-//        size_t token_index = ($1);
-//        $$ = interpreter.push_leaf(wasp::RBRACKET,"]"
-//                         ,token_index);
-//    }
+        size_t token_index = ($1);
+        $$ = interpreter.push_leaf(wasp::RBRACKET,"]"
+                         ,token_index);
+    }
 
 integer : INTEGER
     {

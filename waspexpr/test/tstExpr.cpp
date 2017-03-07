@@ -690,3 +690,26 @@ TEST(ExprInterpreter, functions)
         ASSERT_EQ(wasp::FUNCTION, document.child_at(0).type());
     }
 }
+
+TEST(ExprInterpreter, variable_indexing)
+{
+
+    std::vector<std::string> variable_strings =
+    {
+           "array[i]"
+           ,"obj['fred']"
+           ,"array[1]"
+    };
+    for (const std::string & f : variable_strings )
+    {
+        SCOPED_TRACE(f);
+        std::stringstream input;
+        input <<f;
+        ExprInterpreter<> interpreter;
+        ASSERT_EQ( true, interpreter.parse(input) );
+        ASSERT_LT(1, interpreter.node_count() );
+        auto document = interpreter.root();
+        ASSERT_EQ(1, document.child_count() );
+        ASSERT_EQ(wasp::OBJECT, document.child_at(0).type());
+    }
+}

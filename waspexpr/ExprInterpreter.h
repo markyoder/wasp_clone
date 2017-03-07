@@ -91,6 +91,9 @@ public: // variables
         bool store_ref(const std::string & name, std::string & v ){
             return store_ref<VarRefString>(name, v);
         }
+        bool store_ref( const std::string & name, std::vector<int>& v ){
+            return store_ref< VarRefVector<decltype(v)> >(name,v);
+        }
         bool store( const std::string & name, const bool& v ){
             return store_ref<VarBool>(name,v);
         }
@@ -103,7 +106,9 @@ public: // variables
         bool store( const std::string & name, const std::string& v ){
             return store_ref<VarString>(name,v);
         }
-
+        bool store( const std::string & name, const std::vector<int>& v ){
+            return store_ref< VarVector<decltype(v)> >(name,v);
+        }
         bool function_exists(const std::string & name)const;
 
         /**
@@ -160,6 +165,22 @@ public: // variables
                 if( ok != nullptr ) *ok = false;
                 wasp_not_implemented("acquiring string value");
             }
+            virtual int integer(size_t i, bool * ok=nullptr)const{
+                if( ok != nullptr ) *ok = false;
+                wasp_not_implemented("acquiring integer value at index");
+            }
+            virtual double real(size_t i,bool * ok=nullptr)const{
+                if( ok != nullptr ) *ok = false;
+                wasp_not_implemented("acquiring double precision value at index");
+            }
+            virtual bool boolean(size_t i,bool * ok=nullptr)const{
+                if( ok != nullptr ) *ok = false;
+                wasp_not_implemented("acquiring boolean value at index");
+            }
+            virtual std::string string(size_t i, bool * ok=nullptr)const{
+                if( ok != nullptr ) *ok = false;
+                wasp_not_implemented("acquiring string value at index");
+            }
             virtual void store(bool v){
                 wasp_not_implemented("storing boolean variable");
             }
@@ -171,6 +192,18 @@ public: // variables
             }
             virtual void store(const std::string& v){
                 wasp_not_implemented("storing string variable");
+            }
+            virtual void store(size_t i, bool v){
+                wasp_not_implemented("storing boolean variable into vector");
+            }
+            virtual void store(size_t i, int v){
+                wasp_not_implemented("storing integer variable into vector");
+            }
+            virtual void store(size_t i, double v){
+                wasp_not_implemented("storing double precision variable into vector");
+            }
+            virtual void store(size_t i, const std::string& v){
+                wasp_not_implemented("storing string variable into vector");
             }
         };
         Variable * variable(const std::string & name)const{
@@ -264,7 +297,52 @@ public: // variables
         private:
             std::string v;
         };
+        template<class T>
+        class VarRefVector : public Variable{
+        public:
+            VarRefVector(T & v):v(v){}
+            Type type() const{return type(v);}
+            Type type(const std::vector<int>& )const{return INTEGER;}
+            Type type(const std::vector<double>& )const{return REAL;}
+            Type type(const std::vector<std::string>& )const{return STRING;}
 
+            int integer(size_t i, bool *ok) const{
+                if( ok ) *ok = true; return get(i,v);}
+            double real(size_t i, bool *ok) const{
+                if( ok ) *ok = true; return get(i,v);}
+            std::string string(size_t i, bool *ok) const{
+                return to_string(get(i,v),ok);}
+
+            int get(size_t i , const std::vector<int>& d)const{
+                wasp_require( i < d.size() );
+                return d[i];
+            }
+            double get(size_t i , const std::vector<double>& d)const{
+                wasp_require( i < d.size() );
+                return d[i];
+            }
+            std::string get(size_t i , const std::vector<std::string>& d)const{
+                wasp_require( i < d.size() );
+                return d[i];
+            }
+            void store(size_t i, const T & v){
+                if( this->v.size() < i ) this->v.resize(i+1);
+                this->v[i] = v;
+            }
+        private:
+            T & v;
+        };
+        template<class T>
+        class VarVector : public VarRefVector<T>{
+        public:
+            VarVector(const T & d):VarRefVector<T>(v),v(d){}
+            Type type() const{return type(v);}
+            Type type(const std::vector<int>& ){return INTEGER;}
+            Type type(const std::vector<double>& ){return REAL;}
+            Type type(const std::vector<std::string>& ){return STRING;}
+        private:
+            T v;
+        };
         std::map<std::string,Variable*> m_variables;
         std::map<std::string,class ExprInterpreter::Function*> m_functions;
      };// end of class Context

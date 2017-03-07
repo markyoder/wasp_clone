@@ -209,6 +209,53 @@ ExprInterpreter<S>::Result::evaluate( const T & tree_view
        }
        break;
    }
+   case wasp::OBJECT:
+   {
+        const std::string var_name = tree_view.name();
+
+        auto * v = context.variable(var_name);
+        if( v == nullptr )
+        {
+            m_type = ERROR;
+            string() = error_msg(tree_view,"is not a known variable.");
+
+        }
+        else {
+
+            // name [ index
+            wasp_check( tree_view.child_count() > 2 );
+            const auto & index_view = tree_view.child_at(2);
+            // the following evaluation makes this result the
+            // result of the index/hash
+            if( evaluate(index_view, context).m_type == ERROR )
+            {
+                break;
+            }else if( is_number() )
+            {
+                size_t index = integer();
+                m_type = v->type();
+
+                switch( m_type ){ // switch on current Result's type
+                    case BOOLEAN:
+                    m_value.m_bool = v->boolean(index);
+                    break;
+                case INTEGER:
+                    m_value.m_int = v->integer(index);
+                    break;
+                case REAL:
+                    m_value.m_real = v->real(index);
+                    break;
+                case STRING:
+                    string() = v->string(index);
+                    break;
+                default:
+                    wasp_not_implemented("unknown index variable type value acquisition");
+                    break;
+                }
+            }
+        }
+        break;
+   }
    case wasp::FUNCTION:
    {
        wasp_check(tree_view.child_count() > 0);
@@ -272,7 +319,7 @@ ExprInterpreter<S>::Result::evaluate( const T & tree_view
            string() = error_msg(tree_view, "unable to interpret, "+errs.str());
        }
        break;
-   }
+   } // end of function
    case wasp::KEYED_VALUE:
    {
        std::string variable_name = tree_view.name();
