@@ -513,7 +513,7 @@ TEST(ExprInterpreter,variable_ref_undefined)
     ASSERT_FALSE(result.is_real());
     ASSERT_FALSE(result.is_string());
     ASSERT_TRUE(result.is_error());
-    ASSERT_EQ("***Error : 'value' at line 1 and column 2 - is not a known variable.\n"
+    ASSERT_EQ("***Error : value (x) at line 1 and column 2 - is not a known variable.\n"
               , result.string());
 }
 TEST(ExprInterpreter,pos_scalar)
