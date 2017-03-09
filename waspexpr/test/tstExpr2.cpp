@@ -54,6 +54,40 @@ TEST(ExprInterpreter, vector_int_variables)
     std::vector<int> expected = {1,9,7};
     ASSERT_EQ(expected, data);
 }
+TEST(ExprInterpreter, vector_real_variables)
+{
+    std::vector<double> data = {1.1,9.2,8.3};
+    std::vector<ScalarExprTest<double>> tests={
+        {"data[0]",1.1},
+        {"data[1]",9.2},
+        {"data[2]",8.3},
+        {"data[2]=7.8",7.8},
+        {"data[2]=7.0",7},
+        {"data[0]=pi",3.14159265359},
+    };
+    ASSERT_FALSE( tests.empty() );
+    for( auto & t : tests )
+    {
+        SCOPED_TRACE( t.tst );
+        std::stringstream input;
+        input <<t.tst;
+        ExprInterpreter<> interpreter;
+        interpreter.context().add_default_variables(); // needed for pi
+        interpreter.context().store_ref("data",data);
+        ASSERT_TRUE(interpreter.parse(input) );
+
+        auto result = interpreter.evaluate();
+        ASSERT_FALSE( result.is_error() );
+        ASSERT_FALSE(result.is_integer());
+        ASSERT_TRUE(result.is_number());
+        ASSERT_TRUE(result.is_real());
+        ASSERT_FALSE(result.is_string());
+        ASSERT_FALSE(result.is_bool());
+        ASSERT_EQ(t.expected, result.real());
+    }
+    std::vector<double> expected = {3.14159265359,9.2,7.0};
+    ASSERT_EQ(expected, data);
+}
 TEST(ExprInterpreter, default_variables)
 {
     std::vector<ScalarExprTest<double>> tests={

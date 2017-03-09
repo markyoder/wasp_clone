@@ -91,8 +91,9 @@ public: // variables
         bool store_ref(const std::string & name, std::string & v ){
             return store_ref<VarRefString>(name, v);
         }
-        bool store_ref( const std::string & name, std::vector<int>& v ){
-            return store_ref< VarRefVector<int> >(name,v);
+        template<typename DT>
+        bool store_ref( const std::string & name, std::vector<DT>& v ){
+            return store_ref< VarRefVector<DT> >(name,v);
         }
         bool store( const std::string & name, const bool& v ){
             return store_ref<VarBool>(name,v);
@@ -106,8 +107,9 @@ public: // variables
         bool store( const std::string & name, const std::string& v ){
             return store_ref<VarString>(name,v);
         }
-        bool store( const std::string & name, const std::vector<int>& v ){
-            return store_ref< VarVector<int> >(name,v);
+        template<typename DT>
+        bool store( const std::string & name, const std::vector<DT>& v ){
+            return store_ref< VarVector<DT> >(name,v);
         }
         bool function_exists(const std::string & name)const;
 

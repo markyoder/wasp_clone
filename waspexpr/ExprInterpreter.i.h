@@ -288,6 +288,10 @@ ExprInterpreter<S>::Result::evaluate( const T & tree_view
                 string() = value.string();
                 v->store(index,string());
                 break;
+            case ERROR:
+                m_type = value.m_type;
+                string() = value.string();
+                break;
             default:
                 wasp_not_implemented("unknown index variable type value acquisition");
                 break;
