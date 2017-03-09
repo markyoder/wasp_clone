@@ -41,8 +41,9 @@ int main(int argc, char** argv) {
     SONNodeView<decltype(schema.root())> schema_root = schema.root();
     std::stringstream definition_errors;
     if ( !HIVE::create_definition(parser.definition()
-                                  ,schema_root
-                                  , definition_errors) )
+                                  , schema_root
+                                  , definition_errors
+                                  , false) )
     {
         std::cerr<<definition_errors.str()<<std::endl;
         return 1;

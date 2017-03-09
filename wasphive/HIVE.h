@@ -246,7 +246,7 @@ public:
     template< class D, class V>
     static bool create_definition(D * definition_model
                                   , const V& schema_view
-                                  ,std::ostream & errors)
+                                  ,std::ostream & errors, bool ambig_error = true)
     {
         wasp_require(definition_model);
         for( size_t i = 0; i < schema_view.child_count(); ++i )
@@ -260,15 +260,20 @@ public:
             D * child_definition = definition_model->create(child_view_name);
             //
             if( child_definition == nullptr
-                    && definition_model->has(child_view_name) )
+                    && definition_model->has(child_view_name)
+                    && ambig_error)
             {
                 errors<<"***Error : Ambiguous definition for '"<<child_view_name
                      <<"' found at line "<<child_view.line()<<" and column "
                     <<child_view.column()<<std::endl;
                 return false;
             }
-            wasp_ensure(child_definition);
-            if( !create_definition(child_definition, child_view, errors) )
+
+            else if( child_definition != nullptr
+                     && !create_definition(child_definition
+                                           , child_view
+                                           , errors
+                                           , ambig_error ) )
             {
                 return false;
             }
