@@ -899,7 +899,14 @@ public: // variables
          std::string error_msg( const T & tree_view, const std::string & msg_str)
          {
              std::stringstream msg;
-             msg<<"***Error : '"<<tree_view.name()<<"' at line "
+             msg<<"***Error : "<<tree_view.name();
+             // if the view is a leaf, incorporate the leaf's data in the message.
+             // This should improve context
+             if( tree_view.child_count() == 0 )
+             {
+                 msg<<" ("<<tree_view.data()<<")";
+             }
+             msg<<" at line "
                <<tree_view.line()<<" and column "<<tree_view.column()
               <<" - "<<msg_str<<std::endl;
              return msg.str();

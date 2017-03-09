@@ -87,6 +87,39 @@ TEST(ExprInterpreter, vector_real_variables)
     }
     std::vector<double> expected = {3.14159265359,9.2,7.0};
     ASSERT_EQ(expected, data);
+
+    { // test the unknown variable reference
+        std::stringstream input;
+        input <<"data[0]=unknown";
+        ExprInterpreter<> interpreter;
+        interpreter.context().store_ref("data",data);
+        ASSERT_TRUE(interpreter.parse(input) );
+
+        auto result = interpreter.evaluate();
+        ASSERT_TRUE( result.is_error() );
+        ASSERT_FALSE(result.is_integer());
+        ASSERT_FALSE(result.is_number());
+        ASSERT_FALSE(result.is_real());
+        ASSERT_FALSE(result.is_string());
+        ASSERT_FALSE(result.is_bool());
+        ASSERT_EQ("***Error : value (unknown) at line 1 and column 9 - is not a known variable.\n", result.string());
+    }
+    { // test the unknown variable reference
+        std::stringstream input;
+        input <<"data[unknown]=3";
+        ExprInterpreter<> interpreter;
+        interpreter.context().store_ref("data",data);
+        ASSERT_TRUE(interpreter.parse(input) );
+
+        auto result = interpreter.evaluate();
+        ASSERT_TRUE( result.is_error() );
+        ASSERT_FALSE(result.is_integer());
+        ASSERT_FALSE(result.is_number());
+        ASSERT_FALSE(result.is_real());
+        ASSERT_FALSE(result.is_string());
+        ASSERT_FALSE(result.is_bool());
+        ASSERT_EQ("***Error : value (unknown) at line 1 and column 6 - is not a known variable.\n", result.string());
+    }
 }
 TEST(ExprInterpreter, default_variables)
 {
