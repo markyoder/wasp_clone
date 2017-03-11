@@ -188,3 +188,30 @@ TEST( utils, format_integer )
         EXPECT_EQ( tst.expected, out.str() );
     }
 }
+TEST( utils, DISABLED_format_string )
+{
+    std::vector<format_test<std::string>> tests={
+        {"|%s|","3","|3|"}
+        ,{"|%1s|","30","|30|"}
+        ,{"|%5s|","30","|   30|"}
+        ,{"|%-5s|","30","|30   |"}
+        ,{"|%(5s|","-30","| (30)|"}
+        ,{"|%+5s|","30","|  +30|"}
+        ,{"|%+5s|","-30","|  -30|"}
+        ,{"|%05s|","-30","|00-30|"}
+        ,{"%%5s=|%05s|","-30","%5d=|00-30|"}
+        ,{"|% s|","30","| 30|"}
+        ,{"|% 3s|","30","| 30|"}
+        ,{"|% 4s|","30","|  30|"}
+        ,{"|% 10s|","30","|        30|"}
+    };
+
+    for( const auto & tst : tests )
+    {
+        SCOPED_TRACE(tst.format);
+        std::cout<<"Testing string format of "<<tst.format<<std::endl;
+        std::stringstream out, err;
+//        ASSERT_TRUE(wasp::format(out,err,tst.format.c_str(),tst.arg));
+        EXPECT_EQ( tst.expected, out.str() );
+    }
+}

@@ -3,6 +3,7 @@
 #include "waspcore/wasp_bug.h"
 #include <cmath>
 #include <string>
+#include <cstring>
 #include <sstream>
 #include <iostream>
 #include <iomanip>
