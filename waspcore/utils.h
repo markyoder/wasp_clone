@@ -142,6 +142,7 @@ namespace wasp{
                 // Check for escaped formatting '%%'
                 const char * sl = s + 1; // string lookahead char
                 if ( *sl== '%') {
+                    out << *sl; // emit escaped '%'
                     s=sl+1; // move beyond
                     continue;
                 }
