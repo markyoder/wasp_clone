@@ -282,6 +282,16 @@ namespace wasp{
                             out<<std::setw(width)<<std::setprecision(prec);
                             out<<'+'<<value;
                         }
+                        else if (include_lead_space_for_positive
+                                 && std::is_fundamental<T>::value
+                                 && value > 0 )
+                        {
+                            // only adjust for leading ws if no width already
+                            width -=2;
+                            if( width < 0 ) width = 0;
+                            out<<std::setw(width)<<std::setprecision(prec);
+                            out<<" "<<value;
+                        }
                         else {
                             out<<std::setw(width)<<std::setprecision(prec);
                             out<<value;
