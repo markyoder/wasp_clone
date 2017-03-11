@@ -167,6 +167,7 @@ namespace wasp{
                     else if( *sl == '0' )
                     {   // pad space with zeros
                         out.fill('0');
+                        out<<std::internal;
                         ++sl;
                     }
                     else if( *sl == '(')
@@ -204,7 +205,7 @@ namespace wasp{
                     }
                     else if ( std::isdigit(*sl) ) // check for width
                     {
-                        const char * w = sl;
+                        const char * w = sl; // cache beginning of width substr
                         ++sl;
                         while( std::isdigit(*sl) )
                         {
@@ -254,18 +255,34 @@ namespace wasp{
                             break;
                         }
                         case 's':
-
+                            // nothing special to see here ... yet
+                            break;
+                        case 'd':
+                            out<<std::fixed;
+                            prec = 0; // float -> integer
                             break;
                         }
-                        out<<std::setw(width)<<std::setprecision(prec);
 
                         if( include_parenthesis_for_negative
                                 && std::is_fundamental<T>::value
                                 && value < 0)
                         {
-                            out<<"("<<value<<")";
+                            width -=3; // account for ()
+                            if( width < 0 ) width = 0;
+                            out<<std::setw(width)<<std::setprecision(prec);
+                            out<<"("<<-value<<")";
+                        }
+                        else if( include_sign
+                                 && std::is_fundamental<T>::value
+                                 && value > 0 )
+                        {
+                            width-=2; // account for '+'
+                            if( width < 0 ) width = 0;
+                            out<<std::setw(width)<<std::setprecision(prec);
+                            out<<'+'<<value;
                         }
                         else {
+                            out<<std::setw(width)<<std::setprecision(prec);
                             out<<value;
                         }
                         break; // break from lookahead loop

@@ -36,7 +36,8 @@ struct format_test{
 TEST( utils, format_fixed_precision )
 {
     std::vector<format_test<double>> tests={
-        {"|%7f|",3.14159265,"|3.141593|"}
+        {"|%f|",3.14159265,"|3.141593|"}
+       ,{"|%7f|",3.14159265,"|3.141593|"}
        ,{"|%8f|",3.14159265,"|3.141593|"}
        ,{"|%9f|",3.14159265,"| 3.141593|"}
        ,{"|%10f|",3.14159265,"|  3.141593|"}
@@ -68,7 +69,8 @@ TEST( utils, format_fixed_precision )
 TEST( utils, format_general_scientific_precision )
 {
     std::vector<format_test<double>> tests={
-        {"|%.0g|",3.14159265,"|3|"}
+        {"|%g|",3.14159265,"|3.14159|"}
+        ,{"|%.0g|",3.14159265,"|3|"}
         ,{"|%.1g|",3.14159265,"|3|"}
         ,{"|%.2g|",3.14159265,"|3.1|"}
         ,{"|%.3g|",3.14159265,"|3.14|"}
@@ -106,7 +108,8 @@ TEST( utils, format_general_scientific_precision )
 TEST( utils, format_scientific_precision )
 {
     std::vector<format_test<double>> tests={
-        {"|%.0e|",3.14159265,"|3e+00|"}
+        {"|%e|",3.14159265,"|3.141593e+00|"}
+        ,{"|%.0e|",3.14159265,"|3e+00|"}
         ,{"|%.1e|",3.14159265,"|3.1e+00|"}
         ,{"|%.2e|",3.14159265,"|3.14e+00|"}
         ,{"|%.3e|",3.14159265,"|3.142e+00|"}
@@ -135,6 +138,46 @@ TEST( utils, format_scientific_precision )
     {
         SCOPED_TRACE(tst.format);
         std::cout<<"Testing scientific format of "<<tst.format<<std::endl;
+        std::stringstream out, err;
+        ASSERT_TRUE(wasp::format(out,err,tst.format.c_str(),tst.arg));
+        EXPECT_EQ( tst.expected, out.str() );
+    }
+}
+
+TEST( utils, format_double_as_integer )
+{
+    std::vector<format_test<double>> tests={
+        {"|%d|",3.14159265,"|3|"}
+        ,{"|%d|",1e-4,"|0|"}
+    };
+
+    for( const auto & tst : tests )
+    {
+        SCOPED_TRACE(tst.format);
+        std::cout<<"Testing double as integer format of "<<tst.format<<std::endl;
+        std::stringstream out, err;
+        ASSERT_TRUE(wasp::format(out,err,tst.format.c_str(),tst.arg));
+        EXPECT_EQ( tst.expected, out.str() );
+    }
+}
+
+TEST( utils, format_integer )
+{
+    std::vector<format_test<int>> tests={
+        {"|%d|",3,"|3|"}
+        ,{"|%1d|",30,"|30|"}
+        ,{"|%5d|",30,"|   30|"}
+        ,{"|%-5d|",30,"|30   |"}
+        ,{"|%(5d|",-30,"| (30)|"}
+        ,{"|%+5d|", 30,"|  +30|"}
+        ,{"|%+5d|",-30,"|  -30|"}
+        ,{"|%05d|",-30,"|-0030|"}
+    };
+
+    for( const auto & tst : tests )
+    {
+        SCOPED_TRACE(tst.format);
+        std::cout<<"Testing integer format of "<<tst.format<<std::endl;
         std::stringstream out, err;
         ASSERT_TRUE(wasp::format(out,err,tst.format.c_str(),tst.arg));
         EXPECT_EQ( tst.expected, out.str() );
