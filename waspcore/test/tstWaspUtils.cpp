@@ -33,7 +33,7 @@ struct format_test{
     }
 };
 
-TEST( utils, format )
+TEST( utils, format_fixed_precision )
 {
     std::vector<format_test<double>> tests={
         {"|%7f|",3.14159265,"|3.141593|"}
@@ -58,7 +58,44 @@ TEST( utils, format )
     for( const auto & tst : tests )
     {
         SCOPED_TRACE(tst.format);
-        std::cout<<"Testing Format of "<<tst.format<<std::endl;
+        std::cout<<"Testing fixed format of "<<tst.format<<std::endl;
+        std::stringstream out, err;
+        ASSERT_TRUE(wasp::format(out,err,tst.format.c_str(),tst.arg));
+        EXPECT_EQ( tst.expected, out.str() );
+    }
+}
+
+TEST( utils, format_scientific_precision )
+{
+    std::vector<format_test<double>> tests={
+        {"|%.0g|",3.14159265,"|3|"}
+        ,{"|%.1g|",3.14159265,"|3|"}
+        ,{"|%.2g|",3.14159265,"|3.1|"}
+        ,{"|%.3g|",3.14159265,"|3.14|"}
+        ,{"|%1.0g|",3.14159265,"|3|"}
+        ,{"|%4.1g|",3.14159265,"|   3|"}
+        ,{"|%4.8g|",3.14159265,"|3.1415927|"}
+        ,{"|%8.2g|",3.14159265,"|     3.1|"}
+        ,{"|%10.3g|",3.14159265,"|      3.14|"}
+        ,{"|%01.0g|",3.14159265,"|3|"}
+        ,{"|%04.1g|",3.14159265,"|0003|"}
+        ,{"|%04.8g|",3.14159265,"|3.1415927|"}
+        ,{"|%08.2g|",3.14159265,"|000003.1|"}
+        ,{"|%010.3g|",3.14159265,"|0000003.14|"}
+        ,{"|%.4g|",1e-4,"|0.0001000|"}
+        ,{"|%10.4g|",1e-4,"| 0.0001000|"}
+        ,{"|%.5g|",1e-4,"|0.00010000|"}
+        ,{"|%.5g|",1e-5,"|1.0000e-05|"}
+        ,{"|%.6g|",1e-6,"|1.00000e-06|"}
+        ,{"|%.7g|",1e-2,"|0.01000000|"}
+        ,{"|%.7g|",1e-2,"|0.01000000|"}
+        ,{"|%10.7g|",1e-2,"|0.01000000|"}
+        ,{"|%10.7g|",1e2,"|  100.0000|"}
+    };
+    for( const auto & tst : tests )
+    {
+        SCOPED_TRACE(tst.format);
+        std::cout<<"Testing scientific format of "<<tst.format<<std::endl;
         std::stringstream out, err;
         ASSERT_TRUE(wasp::format(out,err,tst.format.c_str(),tst.arg));
         EXPECT_EQ( tst.expected, out.str() );

@@ -1,6 +1,7 @@
 #ifndef WASP_UTILS_H
 #define WASP_UTILS_H
 #include "waspcore/wasp_bug.h"
+#include <cmath>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -122,7 +123,6 @@ namespace wasp{
     {
         int width = out.width();
         int prec  = out.precision();
-        wasp_line("format :: width="<<width<<", prec="<<prec);
         static char conversion_types[] = "dfsg";
         while (*s) {
             // are we encountering a possible format statement
@@ -140,7 +140,6 @@ namespace wasp{
             wasp_line("s="<<*s);
             if (*s == '%') {
                 // Check for escaped formatting '%%'
-                wasp_line("###found format expression");
                 const char * sl = s + 1; // string lookahead char
                 if ( *sl== '%') {
                     s=sl+1; // move beyond
@@ -201,6 +200,7 @@ namespace wasp{
                         std::stringstream prec_substr(std::string(p,sl));
                         prec_substr>>prec;
                         wasp_check( !prec_substr.bad() || !prec_substr.fail() );
+
                     }
                     else if ( std::isdigit(*sl) ) // check for width
                     {
@@ -212,29 +212,52 @@ namespace wasp{
                         }
                         // capture the precision
                         std::string substr(w,sl);
-                        wasp_line("format width str '"<<substr<<"'");
                         std::stringstream width_substr(substr);
                         width_substr>>width;
-                        wasp_line("WIDTH="<<width);
                         wasp_check( !width_substr.bad() || !width_substr.fail() );
                     }
                     else if( std::strchr(conversion_types,*sl) != nullptr )
                     {
                         // a format expression has been consumed, emit the value
-                        wasp_line("width = "<<width<<", prec="<<prec);
-                        out<<std::setw(width)<<std::setprecision(prec);
                         switch( *sl )
                         {
-                        case 'g':
+                        case 'e':
                             out<<std::scientific;
                             break;
                         case 'f':
                             out<<std::fixed;
                             break;
+                        case 'g':
+                        {
+                            if( std::is_fundamental<T>::value  == false )
+                            {
+                                err<<"format argument is not a fundamental type";
+                                return false;
+                            }
+                            int magnitude = std::floor(std::log10(value));
+                            if(  magnitude < -4
+                                    && prec >= std::abs(magnitude))
+                            {
+                                out<<std::scientific;
+                                --prec;
+                            }
+                            else if( magnitude <= -4 )
+                            {
+                                out<<std::fixed;
+                                prec +=3;
+                            }
+                            else
+                            {
+                                out<<std::fixed;
+                                if( prec > 0 ) prec -=magnitude+1;
+                            }
+                            break;
+                        }
                         case 's':
 
                             break;
                         }
+                        out<<std::setw(width)<<std::setprecision(prec);
 
                         if( include_parenthesis_for_negative
                                 && std::is_fundamental<T>::value
@@ -255,7 +278,6 @@ namespace wasp{
                 // ensure we concluded on a conversion type
                 if( std::strchr(conversion_types,*sl) == nullptr ){
                     err<<"format type conversion is missing";
-                    wasp_line("error at lookahead loop conclusion.");
                     return false;
                 }
                 ++s;
