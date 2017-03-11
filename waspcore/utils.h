@@ -123,7 +123,7 @@ namespace wasp{
     {
         int width = out.width();
         int prec  = out.precision();
-        static char conversion_types[] = "dfsg";
+        static char conversion_types[] = "dfsge";
         while (*s) {
             // are we encountering a possible format statement
             // %[flags][width][.precision]conversion is lexed and parsed where

@@ -65,7 +65,7 @@ TEST( utils, format_fixed_precision )
     }
 }
 
-TEST( utils, format_scientific_precision )
+TEST( utils, format_general_scientific_precision )
 {
     std::vector<format_test<double>> tests={
         {"|%.0g|",3.14159265,"|3|"}
@@ -91,7 +91,46 @@ TEST( utils, format_scientific_precision )
         ,{"|%.7g|",1e-2,"|0.01000000|"}
         ,{"|%10.7g|",1e-2,"|0.01000000|"}
         ,{"|%10.7g|",1e2,"|  100.0000|"}
+
     };
+    for( const auto & tst : tests )
+    {
+        SCOPED_TRACE(tst.format);
+        std::cout<<"Testing general scientific format of "<<tst.format<<std::endl;
+        std::stringstream out, err;
+        ASSERT_TRUE(wasp::format(out,err,tst.format.c_str(),tst.arg));
+        EXPECT_EQ( tst.expected, out.str() );
+    }
+}
+
+TEST( utils, format_scientific_precision )
+{
+    std::vector<format_test<double>> tests={
+        {"|%.0e|",3.14159265,"|3e+00|"}
+        ,{"|%.1e|",3.14159265,"|3.1e+00|"}
+        ,{"|%.2e|",3.14159265,"|3.14e+00|"}
+        ,{"|%.3e|",3.14159265,"|3.142e+00|"}
+        ,{"|%1.0e|",3.14159265,"|3e+00|"}
+        ,{"|%4.1e|",3.14159265,"|3.1e+00|"}
+        ,{"|%4.8e|",3.14159265,"|3.14159265e+00|"}
+        ,{"|%8.2e|",3.14159265,"|3.14e+00|"}
+        ,{"|%10.3e|",3.14159265,"| 3.142e+00|"}
+        ,{"|%01.0e|",3.14159265,"|3e+00|"}
+        ,{"|%04.1e|",3.14159265,"|3.1e+00|"}
+        ,{"|%04.8e|",3.14159265,"|3.14159265e+00|"}
+        ,{"|%08.2e|",3.14159265,"|3.14e+00|"}
+        ,{"|%010.3e|",3.14159265,"|03.142e+00|"}
+        ,{"|%.4e|",1e-4,"|1.0000e-04|"}
+        ,{"|%10.4e|",1e-4,"|1.0000e-04|"}
+        ,{"|%.5e|",1e-4,"|1.00000e-04|"}
+        ,{"|%.5e|",1e-5,"|1.00000e-05|"}
+        ,{"|%.6e|",1e-6,"|1.000000e-06|"}
+        ,{"|%.7e|",1e-2,"|1.0000000e-02|"}
+        ,{"|%.7e|",1e-2,"|1.0000000e-02|"}
+        ,{"|%10.7e|",1e-2,"|1.0000000e-02|"}
+        ,{"|%10.7e|",1e2,"|1.0000000e+02|"}
+    };
+
     for( const auto & tst : tests )
     {
         SCOPED_TRACE(tst.format);
