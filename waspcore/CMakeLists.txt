@@ -9,6 +9,7 @@ utils.cpp
 
 SET(HEADERS
 Definition.h
+Format.h
 FlexLexer.h
 Interpreter.h
 Interpreter.i.h
