@@ -7,6 +7,7 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <stdio.h> // windows exponent configure
 
 namespace wasp{
     /**
@@ -122,10 +123,16 @@ namespace wasp{
     template<typename T>
     bool format(std::ostream& out,std::ostream& err, const char *s, T value)
     {
+        //if Windows, only output two-digits of exponent if possible like linux
+    #ifdef _WIN32
+        unsigned int old_exponent_format;
+        old_exponent_format = _set_output_format(_TWO_DIGIT_EXPONENT);
+    #endif
         int width = out.width();
         int prec  = out.precision();
         static char conversion_types[] = "dfsge";
-        while (*s) {
+        bool error_occurred = false;
+        while ( *s && error_occurred == false ) {
             // are we encountering a possible format statement
             // %[flags][width][.precision]conversion is lexed and parsed where
             //   flags : justification, sign, padding and parenthesis
@@ -190,14 +197,16 @@ namespace wasp{
                         if( p == sl )
                         {  // if no difference in character pointers, error
                             err<<"missing precision format statement at index "<<(sl-p);
-                            return false;
+                            error_occurred = true;
+                            break;
                         }
                         // the precision should be terminated by the type 'conversion'
                         // check that the 'conversion' is supported
                         if( std::strchr(conversion_types,*sl) == nullptr )
                         {
                             err<<"unsupported format conversion type ("<<*sl<<"), must be one of "<<conversion_types;
-                            return false;
+                            error_occurred = true;
+                            break;
                         }
                         // capture the precision
                         std::stringstream prec_substr(std::string(p,sl));
@@ -235,7 +244,8 @@ namespace wasp{
                             if( std::is_fundamental<T>::value  == false )
                             {
                                 err<<"format argument is not a fundamental type";
-                                return false;
+                                error_occurred = true;
+                                break;
                             }
                             int magnitude = std::floor(std::log10(value));
                             if(  magnitude < -4
@@ -300,14 +310,16 @@ namespace wasp{
                         break; // break from lookahead loop
                     }else{
                         err<<"'"<<*sl<<"' is an unknown format element";
-                        return false;
+                        error_occurred = true;
+                        break;
                     }
                 }// end of format lookahead loop
                 s = sl; // move forward the lookahead amount
                 // ensure we concluded on a conversion type
                 if( std::strchr(conversion_types,*sl) == nullptr ){
                     err<<"format type conversion is missing";
-                    return false;
+                    error_occurred = true;
+                    break;
                 }
                 ++s;
             }else{
@@ -315,7 +327,10 @@ namespace wasp{
                 out << *s++;
             }
         } // eo while loop
-        return true;
+#ifdef _WIN32
+    _set_output_format( old_exponent_format );
+#endif
+        return error_occurred == false;
     } // end of fmt
 }
 #endif
