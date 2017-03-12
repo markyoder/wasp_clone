@@ -254,7 +254,53 @@ namespace wasp{
             out<<value;
         }
         return true;
-    }
+    } // end of fmt_emit
+
+
+
 }; // end of class Foramt
+
+    template<>
+    // string specialization
+    bool Format::fmt_emit<std::string>(std::ostream& out,std::ostream& err, char format
+                  , const std::string& value
+                  , int width
+                  , int prec
+                  , bool include_parenthesis_for_negative
+                  , bool include_lead_space_for_positive
+                  , bool include_sign
+                  )
+    {
+        switch( format )
+        {
+            case 'e':
+            case 'f':
+            case 'g':
+            case 'd':
+            {
+                err<<"invalid value type 'String' for format type '"<<format<<"'";
+                return false;
+            }
+        }
+        if( include_parenthesis_for_negative )
+        {
+            err<<"malformed format string: flag '(' does not match the conversion 's'";
+            return false;
+        }
+        if( include_lead_space_for_positive )
+        {
+            err<<"malformed format string: flag ' ' does not match the conversion 's'";
+            return false;
+        }
+        if( include_sign )
+        {
+            err<<"malformed format string: flag '+' does not match the conversion 's'";
+            return false;
+        }
+
+        out<<std::setw(width)<<std::setprecision(prec);
+        out<<value;
+        return true;
+    } // end of fmt_emit<string>
 } // end of namespace
 #endif
