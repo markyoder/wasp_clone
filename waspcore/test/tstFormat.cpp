@@ -180,6 +180,15 @@ TEST( utils, format_string )
         ,{"|%05s|","-30","|00-30|"}
         ,{"%%5s=|%05s|","-30","%5s=|00-30|"}
         ,{"|%10s|","30","|        30|"}
+        ,{"|%010s|","30","|0000000030|"}
+        ,{"|%-10s|","30","|30        |"}
+        //        ,{"|%-5s|","30","|30   |"}
+        //        ,{"|%(5s|","-30","| (30)|"}
+        //        ,{"|%+5s|","30","|  +30|"}
+        //        ,{"|%+5s|","-30","|  -30|"}
+        //        ,{"|% s|","30","| 30|"}
+        //        ,{"|% 3s|","30","| 30|"}
+        //        ,{"|% 4s|","30","|  30|"}
     };
 
     for( const auto & tst : tests )
@@ -189,5 +198,25 @@ TEST( utils, format_string )
         std::stringstream out, err;
         ASSERT_TRUE(wasp::Format::fmt(out,err,tst.format.c_str(),tst.arg));
         EXPECT_EQ( tst.expected, out.str() );
+    }
+}
+
+TEST( utils, format_string_error )
+{
+    std::vector<format_test<std::string>> tests={
+    {"|%(5s|","-30","malformed format string: flag '(' does not match the conversion 's'"}
+    ,{"|%+5s|","-30","malformed format string: flag '+' does not match the conversion 's'"}
+    ,{"|% s|","30","malformed format string: flag ' ' does not match the conversion 's'"}
+    ,{"|% 3s|","30","malformed format string: flag ' ' does not match the conversion 's'"}
+    ,{"|% 4s|","30","malformed format string: flag ' ' does not match the conversion 's'"}
+    };
+
+    for( const auto & tst : tests )
+    {
+        SCOPED_TRACE(tst.format);
+        std::cout<<"Testing error string format of "<<tst.format<<std::endl;
+        std::stringstream out, err;
+        ASSERT_FALSE(wasp::Format::fmt(out,err,tst.format.c_str(),tst.arg));
+        EXPECT_EQ( tst.expected, err.str() );
     }
 }
