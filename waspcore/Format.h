@@ -138,13 +138,13 @@ namespace wasp{
                     {
                         // a format expression has been consumed, emit the value
                         error_occurred = !fmt_emit(out,err
-                                               ,*sl
-                                               ,value
-                                               ,width
-                                               ,prec
-                                               ,include_parenthesis_for_negative
-                                               ,include_lead_space_for_positive
-                                               ,include_sign);
+                                           ,*sl
+                                           ,value
+                                           ,width
+                                           ,prec
+                                           ,include_parenthesis_for_negative
+                                           ,include_lead_space_for_positive
+                                           ,include_sign);
                         break; // break from lookahead loop
                     }else{
                         err<<"'"<<*sl<<"' is an unknown format element";
@@ -173,7 +173,8 @@ namespace wasp{
 
     private:
     template<typename T>
-    static bool fmt_emit(std::ostream& out,std::ostream& err, char format, const T& value
+    static bool fmt_emit(std::ostream& out,std::ostream& err, char format
+                  , const T& value
                   , int width
                   , int prec
                   , bool include_parenthesis_for_negative
