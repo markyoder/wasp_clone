@@ -156,19 +156,8 @@ bool Interpreter<TNS>::parse_impl(std::istream &in
 
     bool parsed = parser.parse() == 0;
 
-    // at this point, if any results are still staged
-    // we need to commit them
-    while( staged_count() > 1 )
-    {
-        commit_staged(staged_count()-1);
-    }
-    wasp_ensure( m_staged.size() == 1 );
-    Stage& document = m_staged.front();
-    if( !document.m_child_indices.empty() )
-    {
-        m_root_index = commit_staged(0);
-        document.m_child_indices.clear();
-    }
+    commit_stages();
+
     return parsed;
 }
 

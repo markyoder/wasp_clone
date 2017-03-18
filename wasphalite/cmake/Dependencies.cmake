@@ -1,12 +1,12 @@
 ##---------------------------------------------------------------------------##
-## wasphive/cmake/Dependencies.cmake
+## wasphalite/cmake/Dependencies.cmake
 ## Robert A. Lefebvre
 ##---------------------------------------------------------------------------##
 
 TRIBITS_PACKAGE_DEFINE_DEPENDENCIES(
-LIB_REQUIRED_PACKAGES waspcore waspsiren
+LIB_REQUIRED_PACKAGES waspcore waspexpr
 LIB_OPTIONAL_PACKAGES
-TEST_REQUIRED_PACKAGES waspson testframework
+TEST_REQUIRED_PACKAGES  testframework
 TEST_OPTIONAL_PACKAGES
 LIB_REQUIRED_TPLS
 LIB_OPTIONAL_TPLS

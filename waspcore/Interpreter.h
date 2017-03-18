@@ -337,17 +337,33 @@ protected:
             , size_t m_start_line
             , size_t m_start_column);
 
+    void commit_stages(){
+        while( staged_count() > 1 )
+        {
+            commit_staged(staged_count()-1);
+        }
+        wasp_ensure( m_staged.size() == 1 );
+        Stage& document = m_staged.front();
+        if( !document.m_child_indices.empty() )
+        {
+            m_root_index = commit_staged(0);
+            document.m_child_indices.clear();
+        }
+    }
+
 public: // variables
     /**
      * @brief m_start_column - the starting colum to start parsing at (default 1)
      */
     size_t m_start_column;
     size_t start_column()const{return m_start_column;}
+    size_t& start_column(){return m_start_column;}
     /**
      * @brief m_start_line - the starting line to start parsing at (default 1)
      */
     size_t m_start_line;
     size_t start_line()const{return m_start_line;}
+    size_t& start_line(){return m_start_line;}
     /**
      * @brief m_stream_name - stream name (file or input stream) used for error messages.
      */
