@@ -74,6 +74,41 @@ TEST( Halite, sub_string_merge_simple)
 }
 
 /**
+ * @brief TEST test matching indices with nested matches
+ */
+TEST( Halite, sub_string_merge_nested)
+{
+    std::string str = " foo <<ted> bar>";
+    SubStringIndexer start_indices;
+    {
+        std::string startstr = "<";
+        ASSERT_TRUE( start_indices.index(str,startstr) );
+        const SubStringIndexer::Index_type & index = start_indices.data();
+        ASSERT_TRUE( index.empty() == false );
+        SubStringIndexer::Index_type expected = {5,6};
+        ASSERT_EQ( expected, index );
+    }
+    SubStringIndexer end_indices;
+    {
+        std::string endstr = ">";
+        ASSERT_TRUE( end_indices.index(str,endstr) );
+        const SubStringIndexer::Index_type & index = end_indices.data();
+        ASSERT_TRUE( index.empty() == false );
+        SubStringIndexer::Index_type expected = {10,15};
+        ASSERT_EQ( expected, index );
+    }
+
+    SubStringIndexer::IndexPairs_type results = start_indices.merge(end_indices);
+
+    {
+        ASSERT_EQ(2, results.size() );
+        SubStringIndexer::IndexPairs_type expected = {{6,10},{5,15}};
+        ASSERT_EQ( expected, results );
+    }
+
+}
+
+/**
  * @brief TEST test indices involving unmatched/hanging indices
  */
 TEST( Halite, sub_string_merge_hanging)
