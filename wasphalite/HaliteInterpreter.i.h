@@ -135,7 +135,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     }
 
     if( attribute_indices.empty() == false )
-    {
+    { // in addition to the attributes, capture the components before, between, and after
         wasp_not_implemented("attribute capture");
     }
     // if line is plain text, capture

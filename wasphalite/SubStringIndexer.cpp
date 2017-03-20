@@ -72,6 +72,8 @@ SubStringIndexer::IndexPairs_type SubStringIndexer::merge(const SubStringIndexer
         // remove the matched index
         opening.erase(ub);
     }
+    // ensure nested pairs come after parent
+    std::sort(pairs.begin(),pairs.end());
 
     return pairs;
 }

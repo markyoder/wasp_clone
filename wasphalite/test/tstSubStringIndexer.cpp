@@ -102,7 +102,7 @@ TEST( Halite, sub_string_merge_nested)
 
     {
         ASSERT_EQ(2, results.size() );
-        SubStringIndexer::IndexPairs_type expected = {{6,10},{5,15}};
+        SubStringIndexer::IndexPairs_type expected = {{5,15},{6,10}};
         ASSERT_EQ( expected, results );
     }
 
@@ -137,7 +137,7 @@ TEST( Halite, sub_string_merge_nested_unmatched)
 
     {
         ASSERT_EQ(2, results.size() );
-        SubStringIndexer::IndexPairs_type expected = {{7,11},{6,16}};
+        SubStringIndexer::IndexPairs_type expected = {{6,16},{7,11}};
         ASSERT_EQ( expected, results );
     }
 
@@ -274,7 +274,7 @@ TEST( Halite, mulitchar_sub_string_merge_nested_unmatched)
 
     {
         ASSERT_EQ(2, results.size() );
-        SubStringIndexer::IndexPairs_type expected = {{9,14},{7,20}};
+        SubStringIndexer::IndexPairs_type expected = {{7,20},{9,14}};
         ASSERT_EQ( expected, results );
     }
 

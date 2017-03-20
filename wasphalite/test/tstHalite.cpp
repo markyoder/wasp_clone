@@ -39,3 +39,37 @@ line2
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
+
+
+TEST( Halite, DISABLED_simple_parameterized_text)
+{
+    std::stringstream input;
+    input<< R"INPUT(This is plain test
+<attribute1><attr2><ted>
+            )INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(6, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 5, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/txt (This is plain test)
+/attr
+/attr/< (<)
+/attr/name (attribute1)
+/attr/> (>)
+/attr
+/attr/< (<)
+/attr/name (attr2)
+/attr/> (>)
+/attr
+/attr/< (<)
+/attr/name (ted)
+/attr/> (>)
+/txt (            )
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}

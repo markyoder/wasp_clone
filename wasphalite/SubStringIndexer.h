@@ -26,7 +26,7 @@ public:
     /**
      * @brief merge produce a merged set of index pairs
      * @param other the indices to merge with
-     * @return a vector of paired indices order from inside to out, left to right
+     * @return a vector of paired indices order from left to right
      * This uses a simple opening/closing matching algorithm
      * where the indices contained in other are deemed the closing indices
      * Note : Not all indices will be in the resulting merged set, only those
