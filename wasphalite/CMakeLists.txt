@@ -34,6 +34,7 @@ FILE(GLOB HEADERS *.h *.hh *.hpp
 # c++ files
 SET(SOURCES
 DataAccessor.cpp
+SubStringIndexer.cpp
 )
 
 ##---------------------------------------------------------------------------##

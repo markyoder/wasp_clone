@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "waspcore/Interpreter.h"
+#include "wasphalite/SubStringIndexer.h"
 
 namespace wasp {
 
@@ -48,6 +49,8 @@ namespace wasp {
     private:
 
         bool parse_content(std::istream& in);
+
+        bool parse_line(const std::string & line );
 
     public: // public variables
 

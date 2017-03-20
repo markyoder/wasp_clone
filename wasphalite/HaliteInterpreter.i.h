@@ -102,5 +102,30 @@ bool HaliteInterpreter<S>::parse_content(std::istream& in)
     }
     return true;
 }
+template<class S>
+bool HaliteInterpreter<S>::parse_line(const std::string& line)
+{
+    // a line could contain the following constructs with given priority
+    // 1. zero or more attribute/expression substitution
+    // 1.1 attribute substitution '<' name '>'
+    // 1.2 expression substutution '<(' expression ')>'
+    // 1.3 silent evaluation '<-' name '>' or '<-(' expression ')>'
+    // 1.4 each evaluation/substitution can have optional format
+    //    e.g., '<' name [: fmt="format"] '>'
+    //    i.e., < pi : fmt=%2.8f >
+
+    //
+    // identify all attribute
+    //
+    SubStringIndexer attribute_declarators;
+
+    if( attribute_declarators.index(line, m_attribute_start_delim) )
+    {
+        SubStringIndexer attribute_terminators(line, m_attribute_end_delim);
+
+    }
+
+    return true;
+}
 
 #endif
