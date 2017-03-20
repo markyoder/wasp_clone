@@ -11,6 +11,8 @@ class SubStringIndexer{
 
 public:
     typedef std::vector<size_t> Index_type;
+    typedef std::pair<size_t,size_t> IndexPair_type;
+    typedef std::vector<IndexPair_type> IndexPairs_type;
     SubStringIndexer();
     SubStringIndexer(const SubStringIndexer& orig);
     ~SubStringIndexer();
@@ -31,11 +33,12 @@ public:
      * Note : Not all indices will be in the resulting merged set, only those
      * that are deemed matching
      */
-    std::vector<std::pair<size_t,size_t> > merge(const SubStringIndexer& other) const;
+    IndexPairs_type merge(const SubStringIndexer& other) const;
 
     const Index_type& data()const{return m_indices;}
 private:    
     Index_type m_indices;
+
 };
 
 } // wasp
