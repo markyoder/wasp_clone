@@ -245,3 +245,37 @@ TEST( Halite, multichar_sub_string_merge_multiple)
         ASSERT_EQ( expected, results );
     }
 }
+/**
+ * @brief TEST test matching indices with nested matches
+ */
+TEST( Halite, mulitchar_sub_string_merge_nested_unmatched)
+{
+    std::string str = "{{ foo {{{{ted}} bar}}";
+    SubStringIndexer start_indices;
+    {
+        std::string startstr = "{{";
+        ASSERT_TRUE( start_indices.index(str,startstr) );
+        const SubStringIndexer::Index_type & index = start_indices.data();
+        ASSERT_TRUE( index.empty() == false );
+        SubStringIndexer::Index_type expected = {0,7,9};
+        ASSERT_EQ( expected, index );
+    }
+    SubStringIndexer end_indices;
+    {
+        std::string endstr = "}}";
+        ASSERT_TRUE( end_indices.index(str,endstr) );
+        const SubStringIndexer::Index_type & index = end_indices.data();
+        ASSERT_TRUE( index.empty() == false );
+        SubStringIndexer::Index_type expected = {14,20};
+        ASSERT_EQ( expected, index );
+    }
+
+    SubStringIndexer::IndexPairs_type results = start_indices.merge(end_indices);
+
+    {
+        ASSERT_EQ(2, results.size() );
+        SubStringIndexer::IndexPairs_type expected = {{9,14},{7,20}};
+        ASSERT_EQ( expected, results );
+    }
+
+}
