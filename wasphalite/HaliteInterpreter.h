@@ -52,6 +52,11 @@ namespace wasp {
 
         bool parse_line(const std::string & line );
 
+        void capture_leaf(const std::string& node_name
+                          , size_t node_type
+                          , const std::string& data
+                          , size_t token_type
+                          , size_t file_offset);
     public: // public variables
 
         /**

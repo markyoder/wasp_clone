@@ -23,7 +23,6 @@ public:
     bool index(const std::string & str
                , const std::string& substr);
 
-
     /**
      * @brief merge produce a merged set of index pairs
      * @param other the indices to merge with

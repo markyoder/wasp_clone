@@ -28,11 +28,11 @@ line2
     auto document = interpreter.root();
     ASSERT_EQ( 5, document.child_count() );
     std::string expected_paths = R"INPUT(/
-/text (This is plain test)
-/text (line2)
-/text ( line3)
-/text (   line)
-/text (            )
+/txt (This is plain test)
+/txt (line2)
+/txt ( line3)
+/txt (   line)
+/txt (            )
 )INPUT";
         std::stringstream paths;
         document.paths(paths);

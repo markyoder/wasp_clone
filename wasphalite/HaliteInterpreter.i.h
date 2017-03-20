@@ -75,22 +75,10 @@ bool HaliteInterpreter<S>::parse_content(std::istream& in)
         // acquire the line from the template
         std::getline(in, line);
 
-        // acquire the soon-to-be-fullfilled token index
-        size_t token_i = Interpreter<S>::token_count();
-        // push the token text
-        Interpreter<S>::push_token(line.c_str(), wasp::STRING, m_file_offset);
-        // push the leaf node representing the token
-        size_t node_i = Interpreter<S>::push_leaf(wasp::STRING, "text", token_i);
+        bool line_processed = parse_line(line);
 
-        // stage the leaf for committal as a child of the document
-        // templates are very flat; nearly all nodes are a child
-        // of the document root
-        Interpreter<S>::push_staged_child(node_i);
+        if( line_processed == false ) return false;
 
-        // compute the new offset
-        m_file_offset+= line.size();
-
-        Interpreter<S>::push_line_offset(m_file_offset);
         ++m_file_offset; // increment past newline
     }
     if( in.fail() )
@@ -102,6 +90,27 @@ bool HaliteInterpreter<S>::parse_content(std::istream& in)
     }
     return true;
 }
+template<class S>
+void HaliteInterpreter<S>::capture_leaf(const std::string& node_name
+                                        , size_t node_type
+                                        , const std::string& data
+                                        , size_t token_type
+                                        , size_t file_offset)
+{
+    // acquire the soon-to-be-fullfilled token index
+    size_t token_i = Interpreter<S>::token_count();
+
+    // push the token text
+    Interpreter<S>::push_token(data.c_str(), token_type, file_offset);
+    // push the leaf node representing the token
+    size_t node_i = Interpreter<S>::push_leaf(node_type, node_name.c_str(), token_i);
+
+    // stage the leaf for committal as a child of the document
+    // templates are very flat; nearly all nodes are a child
+    // of the document root
+    Interpreter<S>::push_staged_child(node_i);
+}
+
 template<class S>
 bool HaliteInterpreter<S>::parse_line(const std::string& line)
 {
@@ -115,17 +124,31 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     //    i.e., < pi : fmt=%2.8f >
 
     //
-    // identify all attribute
+    // identify all attribute locations
     //
     SubStringIndexer attribute_declarators;
-
+    SubStringIndexer::IndexPairs_type attribute_indices;
     if( attribute_declarators.index(line, m_attribute_start_delim) )
     {
         SubStringIndexer attribute_terminators(line, m_attribute_end_delim);
-        SubStringIndexer::IndexPairs_type attribute_indices
-                = attribute_declarators.merge(attribute_terminators);
-
+        attribute_indices = attribute_declarators.merge(attribute_terminators);
     }
+
+    if( attribute_indices.empty() == false )
+    {
+        wasp_not_implemented("attribute capture");
+    }
+    // if line is plain text, capture
+    else
+    {
+        capture_leaf("txt", wasp::STRING, line, wasp::STRING, m_file_offset );
+
+        // compute the new offset
+        m_file_offset+= line.size();
+
+        Interpreter<S>::push_line_offset(m_file_offset);
+    }
+
 
     return true;
 }
