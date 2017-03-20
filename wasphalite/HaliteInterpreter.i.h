@@ -122,6 +122,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     if( attribute_declarators.index(line, m_attribute_start_delim) )
     {
         SubStringIndexer attribute_terminators(line, m_attribute_end_delim);
+        SubStringIndexer::IndexPairs_type attribute_indices
+                = attribute_declarators.merge(attribute_terminators);
 
     }
 
