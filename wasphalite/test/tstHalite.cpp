@@ -111,3 +111,31 @@ TEST( Halite, simple_parameterized_text_wss)
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
+/**
+ * @brief TEST test attributes with whitespace separations
+ */
+TEST( Halite, DISABLED_nested_attr_left)
+{
+    std::stringstream input;
+    input<<"<<a>b>";
+    HaliteInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+//    ASSERT_EQ(9, interpreter.node_count() );
+    auto document = interpreter.root();
+//    ASSERT_EQ( 1, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/attr
+/attr/< (<)
+/attr/txt (a)
+/attr/> (>)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
+
+//<<a><b>c>
+//<a<b>c>
+//<a<b<c>>>
+//<<<a>b>c>
