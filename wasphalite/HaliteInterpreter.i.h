@@ -68,20 +68,16 @@ bool HaliteInterpreter<S>::parse_content(std::istream& in)
 {
 
     // process all lines of the file
-    while( in.good() )
+    for(std::string line; std::getline(in,line); )
     {
         ++m_current_line_count;
-        std::string line;
-        // acquire the line from the template
-        std::getline(in, line);
-
         bool line_processed = parse_line(line);
 
         if( line_processed == false ) return false;
 
         ++m_file_offset; // increment past newline
     }
-    if( in.fail() )
+    if( !in.eof() && in.fail() )
     {
         Interpreter<S>::error_stream()
                 <<Interpreter<S>::stream_name()
