@@ -73,3 +73,41 @@ TEST( Halite, simple_parameterized_text)
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
+/**
+ * @brief TEST test attributes with whitespace separations
+ */
+TEST( Halite, simple_parameterized_text_wss)
+{
+    std::stringstream input;
+    input<< R"INPUT(This is plain test
+ <attribute1>  <attr2>   <ted>
+            )INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(18, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 8, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/txt (This is plain test)
+/txt ( )
+/attr
+/attr/< (<)
+/attr/txt (attribute1)
+/attr/> (>)
+/txt (  )
+/attr
+/attr/< (<)
+/attr/txt (attr2)
+/attr/> (>)
+/txt (   )
+/attr
+/attr/< (<)
+/attr/txt (ted)
+/attr/> (>)
+/txt (            )
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
