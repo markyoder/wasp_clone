@@ -57,6 +57,19 @@ namespace wasp {
                           , const std::string& data
                           , size_t token_type
                           , size_t file_offset);
+
+        /**
+         * @brief capture captures the given attributes into a tree structure
+         * @param current_column_index the line's column to begin capture
+         * @param current_attribute_index
+         * @param attribute_indices
+         * @param limit default of 0, meaning no limit.
+         */
+        void capture(const std::string& data
+                     ,size_t& current_column_index
+                     ,size_t& current_attribute_index
+                     ,const SubStringIndexer::IndexPairs_type& attribute_indices
+                     ,size_t limit=0);
     public: // public variables
 
         /**

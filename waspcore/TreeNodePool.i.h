@@ -540,8 +540,8 @@ void print_from(std::ostream & stream, const TAdapter& tree_node, size_t& last_l
         //
         // determine distance from previous
         //
-        size_t line = tree_node.line();
-        size_t column = tree_node.column();
+        size_t line = tree_node.line(); wasp_check(line > 0);
+        size_t column = tree_node.column(); wasp_check(column > 0);
         size_t ldiff;
         if (line >= last_line) ldiff = line - last_line;
         else ldiff = 0;
