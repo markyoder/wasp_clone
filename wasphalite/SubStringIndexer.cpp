@@ -1,4 +1,5 @@
 #include "wasphalite/SubStringIndexer.h"
+#include "waspcore/wasp_bug.h"
 #include <algorithm> // upper_bound
 
 namespace wasp{
@@ -77,4 +78,41 @@ SubStringIndexer::IndexPairs_type SubStringIndexer::merge(const SubStringIndexer
 
     return pairs;
 }
+
+std::vector<size_t> SubStringIndexer::depths(const IndexPairs_type& indices )
+{
+    wasp_require( std::is_sorted(indices.begin(),indices.end()) );
+
+    std::vector<size_t> d;
+    if( indices.empty() ) return d;
+
+    d.reserve(indices.size());
+
+    // a stack for tracking nested
+    std::vector<size_t> prev;
+    prev.reserve(indices.size());
+
+    for( size_t i = 0; i < indices.size(); ++i )
+    {
+        const auto&  index = indices[i];
+
+        while( !prev.empty() && prev.back() < index.second )
+        {
+            prev.pop_back();
+        }
+        if( prev.empty() )
+        {
+            prev.push_back(index.second);
+            d.push_back(1);
+            wasp_line("root");
+            continue;
+        }
+        // the stack is at the correct level, push
+        prev.push_back(index.second);
+        d.push_back(prev.size());
+    }
+    wasp_ensure( d.size() == indices.size() );
+    return d;
+}
+
 } // end of namespace

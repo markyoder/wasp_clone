@@ -93,6 +93,9 @@ void HaliteInterpreter<S>::capture_leaf(const std::string& node_name
                                         , size_t token_type
                                         , size_t file_offset)
 {
+    wasp_line("capturing leaf '"<<node_name<<"'"
+              <<" at file offset "<<file_offset
+              <<" - '"<<data<<"'");
     // acquire the soon-to-be-fullfilled token index
     size_t token_i = Interpreter<S>::token_count();
 
@@ -144,7 +147,11 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     // if line is plain text, capture
     else
     {
-        capture_leaf("txt", wasp::STRING, line, wasp::STRING, m_file_offset );
+        // only capture lines with content
+        if( line.empty() == false )
+        {
+            capture_leaf("txt", wasp::STRING, line, wasp::STRING, m_file_offset );
+        }
     }
     // compute the new offset
     m_file_offset+= line.size();
@@ -159,6 +166,8 @@ void HaliteInterpreter<S>::capture(const std::string& data
                    ,size_t limit)
 {
     wasp_require( limit <= attribute_indices.size() );
+    wasp_line("capturing indices from "<<current_attribute_index<<" to "<<limit
+              <<" starting from column index "<<current_column_index);
     if( limit == 0 ) limit = attribute_indices.size();
     for( size_t i = current_attribute_index; i < limit; ++i )
     {
@@ -169,6 +178,7 @@ void HaliteInterpreter<S>::capture(const std::string& data
         {
             size_t length = attribute_index.first - current_column_index;
             size_t file_offset = m_file_offset + current_column_index;
+            wasp_tagged_line("PREFIX");
             const std::string & prefixed
                     = data.substr(current_column_index,length);
             capture_leaf("txt",wasp::STRING, prefixed.c_str()
@@ -176,6 +186,7 @@ void HaliteInterpreter<S>::capture(const std::string& data
         }
         size_t stage = Interpreter<S>::push_staged(wasp::IDENTIFIER, "attr",{});
         { // capture declarator
+            wasp_tagged_line("DECL");
             size_t file_offset = m_file_offset + attribute_index.first;
             capture_leaf(m_attribute_start_delim,wasp::DECL
                      ,m_attribute_start_delim,wasp::STRING
@@ -191,9 +202,36 @@ void HaliteInterpreter<S>::capture(const std::string& data
         // check if we need to capture nested
         if( look_ahead_i != i )
         {
-            capture(data,current_column_index
-                    ,i,attribute_indices
-                    ,look_ahead_i);
+            wasp_line("identified a lookahead of "<<(look_ahead_i-i));
+            wasp_tagged_line("index "<<i);
+            ++i;
+            // this updates i
+            capture(data
+                    ,current_column_index
+                    ,i
+                    ,attribute_indices
+                    ,look_ahead_i+1);
+            --i;
+            wasp_tagged_line("index "<<i);
+            const SubStringIndexer::IndexPair_type& last_nested_attribute_index
+                    = attribute_indices[i];
+            wasp_tagged_line("last attr index "<<attribute_index.second);
+            // because the attributes are nested
+            size_t remaining_length = attribute_index.second
+                    - (last_nested_attribute_index.second+m_attribute_end_delim.size());
+            wasp_tagged_line("Trailing context length "<<remaining_length);
+            if( remaining_length > 0 )
+            {
+                current_column_index = last_nested_attribute_index.second
+                        +m_attribute_end_delim.size();
+                wasp_tagged_line("last nested column index "<<last_nested_attribute_index.second);
+                const std::string& remaining_text
+                        = data.substr(current_column_index,remaining_length);
+                size_t file_offset = m_file_offset + current_column_index;
+                wasp_line("capturing trailing text '"<<remaining_text<<"' offset "<<file_offset);
+                capture_leaf("txt",wasp::STRING, remaining_text.c_str()
+                             ,wasp::STRING,file_offset);
+            }
         }
         // nothing is nested, just capture the txt
         else
@@ -205,8 +243,10 @@ void HaliteInterpreter<S>::capture(const std::string& data
             capture_leaf("txt",wasp::STRING, txt.c_str()
                          ,wasp::STRING,file_offset);
         }
+
         { // capture terminator
             size_t file_offset = m_file_offset + attribute_index.second;
+            wasp_tagged_line("TERM");
             capture_leaf(m_attribute_end_delim,wasp::TERM
                      ,m_attribute_end_delim,wasp::STRING
                      ,file_offset);
@@ -214,9 +254,17 @@ void HaliteInterpreter<S>::capture(const std::string& data
         Interpreter<S>::commit_staged(stage);
 
         // update the current column index to be past delimiter
+        wasp_tagged_line("current column index  "<<current_column_index<<" to "<<
+                         attribute_indices[i].second
+                                         + m_attribute_end_delim.size()
+                <<" for attr index "<<i);
         current_column_index=attribute_indices[i].second
                 + m_attribute_end_delim.size();
     }
+    // update attribute index
+    // this facilitate multiple levels of attributing nesting
+    current_attribute_index = limit;
+    wasp_tagged_line("current attr index = "<<limit);
 }
 
 #endif

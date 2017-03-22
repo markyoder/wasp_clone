@@ -277,5 +277,81 @@ TEST( Halite, mulitchar_sub_string_merge_nested_unmatched)
         SubStringIndexer::IndexPairs_type expected = {{7,20},{9,14}};
         ASSERT_EQ( expected, results );
     }
+}
+TEST( Halite, sub_string_merge_nested2)
+{
+    std::string str = "<<a>b><<<a>b>c>";
+    SubStringIndexer start_indices;
+    {
+        std::string startstr = "<";
+        ASSERT_TRUE( start_indices.index(str,startstr) );
+        const SubStringIndexer::Index_type & index = start_indices.data();
+        ASSERT_TRUE( index.empty() == false );
+        SubStringIndexer::Index_type expected = {0,1,6,7,8};
+        ASSERT_EQ( expected, index );
+    }
+    SubStringIndexer end_indices;
+    {
+        std::string endstr = ">";
+        ASSERT_TRUE( end_indices.index(str,endstr) );
+        const SubStringIndexer::Index_type & index = end_indices.data();
+        ASSERT_TRUE( index.empty() == false );
+        SubStringIndexer::Index_type expected = {3,5,10,12,14};
+        ASSERT_EQ( expected, index );
+    }
 
+    SubStringIndexer::IndexPairs_type results = start_indices.merge(end_indices);
+
+    {
+        ASSERT_EQ(5, results.size() );
+        SubStringIndexer::IndexPairs_type expected = {{0,5},{1,3},{6,14},{7,12},{8,10}};
+        ASSERT_EQ( expected, results );
+    }
+
+    std::vector<size_t> depths = SubStringIndexer::depths(results);
+    {
+        ASSERT_EQ( 5, depths.size() );
+        std::vector<size_t> expected = {1,2,1,2,3};
+        ASSERT_EQ( expected, depths );
+    }
+}
+
+TEST( Halite, depths)
+{
+
+    // test nested <   >
+    SubStringIndexer::IndexPairs_type data = {{0,4}};
+    std::vector<size_t> depths = SubStringIndexer::depths(data);
+    {
+        std::vector<size_t> expected = {1};
+        ASSERT_EQ( expected, depths );
+    }
+}
+TEST( Halite, depths_nested_siblings)
+{
+
+    // test nested <<><><>>
+    SubStringIndexer::IndexPairs_type data = {{0,7}
+                                                ,{1,2},{3,4},{5,6}};
+    std::vector<size_t> depths = SubStringIndexer::depths(data);
+    {
+        std::vector<size_t> expected = {1,2,2,2};
+        ASSERT_EQ( expected, depths );
+    }
+}
+
+TEST( Halite, depths_nested_cousins)
+{
+
+    // test nested <<><>><<<>>>>
+    SubStringIndexer::IndexPairs_type data = {{0,5}
+                                                ,{1,2},{3,4}
+                                              ,{6,11}
+                                                ,{7,10}
+                                                    ,{8,9}};
+    std::vector<size_t> depths = SubStringIndexer::depths(data);
+    {
+        std::vector<size_t> expected = {1,2,2,1,2,3};
+        ASSERT_EQ( expected, depths );
+    }
 }

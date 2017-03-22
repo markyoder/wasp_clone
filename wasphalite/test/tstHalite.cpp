@@ -112,21 +112,37 @@ TEST( Halite, simple_parameterized_text_wss)
         ASSERT_EQ(input.str(), document.data());
 }
 /**
- * @brief TEST test attributes with whitespace separations
+ * @brief TEST test nested attribute, left recursion
+ * DISABLED - waiting for implementation details
  */
 TEST( Halite, DISABLED_nested_attr_left)
 {
     std::stringstream input;
-    input<<"<<a>b>";
+    input<<"<<a>b><<<a>b>c>";
     HaliteInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
-//    ASSERT_EQ(9, interpreter.node_count() );
+    ASSERT_EQ(22, interpreter.node_count() );
     auto document = interpreter.root();
-//    ASSERT_EQ( 1, document.child_count() );
+    ASSERT_EQ( 2, document.child_count() );
     std::string expected_paths = R"INPUT(/
 /attr
 /attr/< (<)
-/attr/txt (a)
+/attr/attr
+/attr/attr/< (<)
+/attr/attr/txt (a)
+/attr/attr/> (>)
+/attr/txt (b)
+/attr/> (>)
+/attr/< (<)
+/attr/attr
+/attr/attr/< (<)
+/attr/attr/attr
+/attr/attr/attr/< (<)
+/attr/attr/attr/txt (a)
+/attr/attr/attr/> (>)
+/attr/attr/txt (b)
+/attr/attr/> (>)
+/attr/txt (c)
 /attr/> (>)
 )INPUT";
         std::stringstream paths;
