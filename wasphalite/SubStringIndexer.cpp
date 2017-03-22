@@ -104,7 +104,6 @@ std::vector<size_t> SubStringIndexer::depths(const IndexPairs_type& indices )
         {
             prev.push_back(index.second);
             d.push_back(1);
-            wasp_line("root");
             continue;
         }
         // the stack is at the correct level, push
