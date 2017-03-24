@@ -112,6 +112,43 @@ TEST( Halite, simple_parameterized_text_wss)
         ASSERT_EQ(input.str(), document.data());
 }
 /**
+ * @brief TEST test nested empty attribute
+ */
+TEST( Halite, nested_attr_empty)
+{
+    std::stringstream input;
+    input<<"<><<>><<<>>>";
+    HaliteInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(19, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 3, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/attr
+/attr/< (<)
+/attr/> (>)
+/attr
+/attr/< (<)
+/attr/attr
+/attr/attr/< (<)
+/attr/attr/> (>)
+/attr/> (>)
+/attr
+/attr/< (<)
+/attr/attr
+/attr/attr/< (<)
+/attr/attr/attr
+/attr/attr/attr/< (<)
+/attr/attr/attr/> (>)
+/attr/attr/> (>)
+/attr/> (>)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
+/**
  * @brief TEST test nested attribute, left recursion
  */
 TEST( Halite, nested_attr_left)
