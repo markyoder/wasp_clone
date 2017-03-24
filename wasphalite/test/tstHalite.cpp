@@ -149,9 +149,9 @@ TEST( Halite, nested_attr_empty)
         ASSERT_EQ(input.str(), document.data());
 }
 /**
- * @brief TEST test nested attribute, left recursion
+ * @brief TEST test nested attribute, suffixed text
  */
-TEST( Halite, nested_attr_left)
+TEST( Halite, nested_attr_suffix)
 {
     std::stringstream input;
     input<<"<<a>b><<<c>d>e>";
@@ -188,6 +188,45 @@ TEST( Halite, nested_attr_left)
         ASSERT_EQ(input.str(), document.data());
 }
 
+/**
+ * @brief TEST test nested attribute, prefixed text
+ */
+TEST( Halite, nested_attr_prefix)
+{
+    std::stringstream input;
+    input<<"<b<a>><e<d<c>>>";
+    HaliteInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(21, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 2, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/attr
+/attr/< (<)
+/attr/txt (b)
+/attr/attr
+/attr/attr/< (<)
+/attr/attr/txt (a)
+/attr/attr/> (>)
+/attr/> (>)
+/attr
+/attr/< (<)
+/attr/txt (e)
+/attr/attr
+/attr/attr/< (<)
+/attr/attr/txt (d)
+/attr/attr/attr
+/attr/attr/attr/< (<)
+/attr/attr/attr/txt (c)
+/attr/attr/attr/> (>)
+/attr/attr/> (>)
+/attr/> (>)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
 //<<a><b>c>
 //<a<b>c>
 //<a<b<c>>>
