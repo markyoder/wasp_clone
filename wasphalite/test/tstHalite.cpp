@@ -294,3 +294,26 @@ TEST( Halite, nested_attr_surrounding)
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
+
+/**
+ * @brief TEST test import statement
+ */
+TEST( Halite, import_basic)
+{
+    std::stringstream input;
+    input<<"#import some/path/to/some/file";
+    HaliteInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(4, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 1, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/import
+/import/decl (#import)
+/import/txt ( some/path/to/some/file)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}

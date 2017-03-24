@@ -132,10 +132,20 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
         SubStringIndexer attribute_terminators(line, m_attribute_end_delim);
         attribute_indices = attribute_declarators.merge(attribute_terminators);
     }
-
+    size_t current_column_index = 0;
+    // check for file import statement
+    static std::string import_stmt = "#import";
+    bool is_import_statement = line.compare(0, import_stmt.size(), import_stmt) == 0;
+    if( is_import_statement )
+    { // capture import declarator
+        size_t stage = Interpreter<S>::push_staged(wasp::STRING, "import",{});
+        capture_leaf("decl", wasp::DECL
+                     ,line.substr(current_column_index,import_stmt.size())
+                     , wasp::STRING, current_column_index );
+        current_column_index += import_stmt.size();
+    }
     if( attribute_indices.empty() == false )
     { // in addition to the attributes, capture the components before, between, and after
-        size_t current_column_index = 0;
         size_t current_attribute_index = 0;
         size_t limit = attribute_indices.size();
         // capture up to the conclusion of the attributes
@@ -143,8 +153,21 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                 ,current_column_index
                 ,current_attribute_index
                 ,attribute_indices
-                ,limit);
-        // current_column index has been updated by capture()
+                ,limit);        
+    }
+    // if line is plain text, capture
+    if( is_import_statement == false && attribute_indices.empty() )
+    {
+        // only capture lines with content
+        if( line.empty() == false )
+        {
+            capture_leaf("txt", wasp::STRING, line, wasp::STRING, m_file_offset );
+        }
+    }
+    // capture potential trailing text
+    else
+    {
+        // current_column index has been updated by capture(), etc.
         size_t offset = m_file_offset + current_column_index;
         size_t remaining_length = line.size() - current_column_index;
         wasp_tagged_line("remaining text length "<<remaining_length);
@@ -157,15 +180,6 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
             capture_leaf("txt", wasp::STRING
                          ,line.substr(current_column_index,remaining_length)
                          , wasp::STRING, offset );
-        }
-    }
-    // if line is plain text, capture
-    else
-    {
-        // only capture lines with content
-        if( line.empty() == false )
-        {
-            capture_leaf("txt", wasp::STRING, line, wasp::STRING, m_file_offset );
         }
     }
     // compute the new offset
