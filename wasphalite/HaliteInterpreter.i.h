@@ -138,11 +138,26 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
         size_t current_column_index = 0;
         size_t current_attribute_index = 0;
         size_t limit = attribute_indices.size();
+        // capture up to the conclusion of the attributes
         capture(line
                 ,current_column_index
                 ,current_attribute_index
                 ,attribute_indices
                 ,limit);
+        // current_column index has been updated by capture()
+        size_t offset = m_file_offset + current_column_index;
+        size_t remaining_length = line.size() - current_column_index;
+        wasp_tagged_line("remaining text length "<<remaining_length);
+        wasp_check( current_column_index+remaining_length <= line.size() );
+        if( remaining_length > 0 )
+        {
+            wasp_line("capture trailing text from "<<current_column_index
+                      <<" to "<<current_column_index+remaining_length
+                      << "("<<remaining_length<<")");
+            capture_leaf("txt", wasp::STRING
+                         ,line.substr(current_column_index,remaining_length)
+                         , wasp::STRING, offset );
+        }
     }
     // if line is plain text, capture
     else
@@ -281,7 +296,6 @@ void HaliteInterpreter<S>::capture(const std::string& data
             open_tree.push_back(attribute_index);
         }
     } // end of attribute loop
-    // update attribute index
 }
 
 #endif
