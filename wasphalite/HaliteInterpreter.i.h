@@ -139,9 +139,10 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     if( is_import_statement )
     { // capture import declarator
         size_t stage = Interpreter<S>::push_staged(wasp::STRING, "import",{});
+        size_t offset = m_file_offset + current_column_index;
         capture_leaf("decl", wasp::DECL
                      ,line.substr(current_column_index,import_stmt.size())
-                     , wasp::STRING, current_column_index );
+                     , wasp::STRING, offset );
         current_column_index += import_stmt.size();
     }
     if( attribute_indices.empty() == false )
@@ -180,6 +181,12 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
             capture_leaf("txt", wasp::STRING
                          ,line.substr(current_column_index,remaining_length)
                          , wasp::STRING, offset );
+        }
+
+        // when closing import statement, commit the tree
+        if( is_import_statement)
+        {
+            Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
         }
     }
     // compute the new offset

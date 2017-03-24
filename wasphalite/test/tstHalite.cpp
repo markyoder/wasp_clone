@@ -391,3 +391,49 @@ TEST( Halite, import_parameterized_using)
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
+/**
+ * @brief TEST test parameterized import statement
+ */
+TEST( Halite, multiple_import_parameterized_using)
+{
+    std::stringstream input;
+    input<<"#import <ned>/<ted>/to/some/file using <zed>"<<std::endl
+        <<"random text line"<<std::endl
+       <<"#import some/other/import using <fred>";
+    HaliteInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(26, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 3, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/import
+/import/decl (#import)
+/import/txt ( )
+/import/attr
+/import/attr/< (<)
+/import/attr/txt (ned)
+/import/attr/> (>)
+/import/txt (/)
+/import/attr
+/import/attr/< (<)
+/import/attr/txt (ted)
+/import/attr/> (>)
+/import/txt (/to/some/file using )
+/import/attr
+/import/attr/< (<)
+/import/attr/txt (zed)
+/import/attr/> (>)
+/txt (random text line)
+/import
+/import/decl (#import)
+/import/txt ( some/other/import using )
+/import/attr
+/import/attr/< (<)
+/import/attr/txt (fred)
+/import/attr/> (>)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
