@@ -189,7 +189,7 @@ void HaliteInterpreter<S>::capture(const std::string& data
 
     if( limit == 0 ) limit = attribute_indices.size();
 
-    std::vector<const SubStringIndexer::IndexPair_type> open_tree;
+    std::vector<SubStringIndexer::IndexPair_type> open_tree;
 
     for( size_t i = current_attribute_index; i < limit; ++i )
     {
@@ -221,7 +221,7 @@ void HaliteInterpreter<S>::capture(const std::string& data
         wasp_tagged_line("cc="<<current_column_index);
         // initial assumed depth to worst scenario, no more attributes
         // in this situation, all open trees must be closed/committed
-        int depth_delta = -open_tree.size();
+        int depth_delta = open_tree.size()*-1;
         // acquire the
         if( i+1 < attribute_indices.size() )
         {
