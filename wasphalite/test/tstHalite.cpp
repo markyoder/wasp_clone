@@ -317,3 +317,40 @@ TEST( Halite, import_basic)
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
+
+/**
+ * @brief TEST test parameterized import statement
+ */
+TEST( Halite, import_parameterized)
+{
+    std::stringstream input;
+    input<<"#import <ned>/<ted>/to/some/<fred>";
+    HaliteInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(18, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 1, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/import
+/import/decl (#import)
+/import/txt ( )
+/import/attr
+/import/attr/< (<)
+/import/attr/txt (ned)
+/import/attr/> (>)
+/import/txt (/)
+/import/attr
+/import/attr/< (<)
+/import/attr/txt (ted)
+/import/attr/> (>)
+/import/txt (/to/some/)
+/import/attr
+/import/attr/< (<)
+/import/attr/txt (fred)
+/import/attr/> (>)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
