@@ -36,9 +36,9 @@ bool HaliteInterpreter<S>::parseStream(std::istream& in
                                  , size_t start_line
                                  , size_t start_column)
 {
-    Interpreter<S>::template stream_name() = sname;
-    Interpreter<S>::template start_line() = start_line;
-    Interpreter<S>::template start_column() = start_column;
+    Interpreter<S>::stream_name() = sname;
+    Interpreter<S>::start_line() = start_line;
+    Interpreter<S>::start_column() = start_column;
 
     bool parsed = parse_content(in);
 
