@@ -113,12 +113,11 @@ TEST( Halite, simple_parameterized_text_wss)
 }
 /**
  * @brief TEST test nested attribute, left recursion
- * DISABLED - waiting for implementation details
  */
 TEST( Halite, DISABLED_nested_attr_left)
 {
     std::stringstream input;
-    input<<"<<a>b><<<a>b>c>";
+    input<<"<<a>b><<<c>d>e>";
     HaliteInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(22, interpreter.node_count() );
@@ -138,11 +137,11 @@ TEST( Halite, DISABLED_nested_attr_left)
 /attr/attr/< (<)
 /attr/attr/attr
 /attr/attr/attr/< (<)
-/attr/attr/attr/txt (a)
+/attr/attr/attr/txt (c)
 /attr/attr/attr/> (>)
-/attr/attr/txt (b)
+/attr/attr/txt (d)
 /attr/attr/> (>)
-/attr/txt (c)
+/attr/txt (e)
 /attr/> (>)
 )INPUT";
         std::stringstream paths;

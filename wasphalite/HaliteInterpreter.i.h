@@ -168,12 +168,19 @@ void HaliteInterpreter<S>::capture(const std::string& data
     wasp_require( limit <= attribute_indices.size() );
     wasp_line("capturing indices from "<<current_attribute_index<<" to "<<limit
               <<" starting from column index "<<current_column_index);
+
+    std::vector<size_t> depths = SubStringIndexer::depths(attribute_indices);
+    wasp_check( depths.size() == attribute_indices.size() );
+
     if( limit == 0 ) limit = attribute_indices.size();
+
+    std::vector<const SubStringIndexer::IndexPair_type> open_tree;
+
     for( size_t i = current_attribute_index; i < limit; ++i )
     {
         const SubStringIndexer::IndexPair_type& attribute_index
                 = attribute_indices[i];
-        // check for preceeding text/name that needs to be put into tree
+        // check for preceding text/name that needs to be put into tree
         if( attribute_index.first > current_column_index )
         {
             size_t length = attribute_index.first - current_column_index;
@@ -185,7 +192,7 @@ void HaliteInterpreter<S>::capture(const std::string& data
                          ,wasp::STRING,file_offset);
         }
         size_t stage = Interpreter<S>::push_staged(wasp::IDENTIFIER, "attr",{});
-        { // capture declarator
+        { // capture declarative delimiter
             wasp_tagged_line("DECL");
             size_t file_offset = m_file_offset + attribute_index.first;
             capture_leaf(m_attribute_start_delim,wasp::DECL
@@ -193,78 +200,88 @@ void HaliteInterpreter<S>::capture(const std::string& data
                      ,file_offset);
         }
 
-        size_t look_ahead_i = i+1;
-        while( look_ahead_i < limit && attribute_indices[look_ahead_i].first
-               < attribute_index.second) ++ look_ahead_i;
-        look_ahead_i -= 1;
+        // increment current column to next potential block of text
         current_column_index = attribute_index.first
                 +m_attribute_start_delim.size();
-        // check if we need to capture nested
-        if( look_ahead_i != i )
+        wasp_tagged_line("cc="<<current_column_index);
+        // initial assumed depth to worst scenario, no more attributes
+        // in this situation, all open trees must be closed/committed
+        int depth_delta = -open_tree.size();
+        // acquire the
+        if( i+1 < attribute_indices.size() )
         {
-            wasp_line("identified a lookahead of "<<(look_ahead_i-i));
-            wasp_tagged_line("index "<<i);
-            ++i;
-            // this updates i
-            capture(data
-                    ,current_column_index
-                    ,i
-                    ,attribute_indices
-                    ,look_ahead_i+1);
-            --i;
-            wasp_tagged_line("index "<<i);
-            const SubStringIndexer::IndexPair_type& last_nested_attribute_index
-                    = attribute_indices[i];
-            wasp_tagged_line("last attr index "<<attribute_index.second);
-            // because the attributes are nested
-            size_t remaining_length = attribute_index.second
-                    - (last_nested_attribute_index.second+m_attribute_end_delim.size());
-            wasp_tagged_line("Trailing context length "<<remaining_length);
-            if( remaining_length > 0 )
-            {
-                current_column_index = last_nested_attribute_index.second
-                        +m_attribute_end_delim.size();
-                wasp_tagged_line("last nested column index "<<last_nested_attribute_index.second);
-                const std::string& remaining_text
-                        = data.substr(current_column_index,remaining_length);
-                size_t file_offset = m_file_offset + current_column_index;
-                wasp_line("capturing trailing text '"<<remaining_text<<"' offset "<<file_offset);
-                capture_leaf("txt",wasp::STRING, remaining_text.c_str()
-                             ,wasp::STRING,file_offset);
-            }
+            depth_delta = depths[i+1]-depths[i];
         }
-        // nothing is nested, just capture the txt
-        else
-        {
-            size_t file_offset = m_file_offset + current_column_index;
-            size_t length = attribute_index.second - current_column_index;
-            const std::string & txt
-                    = data.substr(current_column_index,length);
-            capture_leaf("txt",wasp::STRING, txt.c_str()
-                         ,wasp::STRING,file_offset);
-        }
+        wasp_tagged_line("depth_delta = "<<depth_delta);
 
-        { // capture terminator
+        // The next attribute should be a sibling or uncle in the tree.
+        // Capture the current attribute's text, terminator,
+        // commit open sub tree and update current column index
+        // to next potential block of text.
+        if( depth_delta <= 0 )
+        {
+            wasp_tagged_line("SIBLING/Uncle (delta<=0)");
+            size_t remaining_length
+                    = attribute_index.second - current_column_index;
+            // capture text, if any
+            if( remaining_length > 0 ){
+                size_t file_offset = m_file_offset + current_column_index;
+                capture_leaf("txt",wasp::STRING
+                             ,data.substr(current_column_index,remaining_length)
+                             ,wasp::STRING ,file_offset);
+            }
+            // capture attribute terminator
             size_t file_offset = m_file_offset + attribute_index.second;
-            wasp_tagged_line("TERM");
             capture_leaf(m_attribute_end_delim,wasp::TERM
                      ,m_attribute_end_delim,wasp::STRING
                      ,file_offset);
-        }
-        Interpreter<S>::commit_staged(stage);
+            // close/commit the subtree
+            wasp_check( Interpreter<S>::staged_count() > 1 );
+            Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
+            // update current column to end of delimiter
+            current_column_index = attribute_index.second
+                    + m_attribute_end_delim.size();
+            wasp_tagged_line("cc="<<current_column_index);
+        } // end of depth == 0
+        // The next attribute is an uncle/great/great uncle etc.
+        // Capture the appropriate open ancestral subtrees
+        if ( depth_delta < 0 )
+        {
+            while( depth_delta != 0 ){
+                const auto & prev = open_tree.back();
+                // check for trailing suffix text
+                size_t remaining_length = prev.second - current_column_index;
+                if( remaining_length > 0 ){
+                    size_t file_offset = m_file_offset + current_column_index;
+                    capture_leaf("txt",wasp::STRING
+                                 ,data.substr(current_column_index,remaining_length)
+                                 ,wasp::STRING ,file_offset);
+                }
+                // capture attribute terminator
+                size_t file_offset = m_file_offset + attribute_index.second;
+                capture_leaf(m_attribute_end_delim,wasp::TERM
+                         ,m_attribute_end_delim,wasp::STRING
+                         ,file_offset);
+                // update current column to end of delimiter
+                current_column_index = attribute_index.second
+                        + m_attribute_end_delim.size();
+                wasp_tagged_line("cc="<<current_column_index);
+                // close/commit the subtree
+                wasp_check( Interpreter<S>::staged_count() > 1 );
+                Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
+                ++depth_delta;
+                open_tree.pop_back();
+            }
 
-        // update the current column index to be past delimiter
-        wasp_tagged_line("current column index  "<<current_column_index<<" to "<<
-                         attribute_indices[i].second
-                                         + m_attribute_end_delim.size()
-                <<" for attr index "<<i);
-        current_column_index=attribute_indices[i].second
-                + m_attribute_end_delim.size();
-    }
+        }
+        // The next attribute is a child.
+        // Push onto the open tree stack for future closure.
+        else if( depth_delta > 0){
+            wasp_tagged_line("Pushing attribute "<<i<<" onto STACK...");
+            open_tree.push_back(attribute_index);
+        }
+    } // end of attribute loop
     // update attribute index
-    // this facilitate multiple levels of attributing nesting
-    current_attribute_index = limit;
-    wasp_tagged_line("current attr index = "<<limit);
 }
 
 #endif
