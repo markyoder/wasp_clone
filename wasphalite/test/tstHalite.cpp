@@ -227,7 +227,45 @@ TEST( Halite, nested_attr_prefix)
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
-//<<a><b>c>
-//<a<b>c>
-//<a<b<c>>>
-//<<<a>b>c>
+/**
+ * @brief TEST test nested attribute, prefixed text
+ */
+TEST( Halite, nested_attr_infix)
+{
+    std::stringstream input;
+    input<<"<b< a >b1><e<d<c>d1>e1>";
+    HaliteInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(24, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 2, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/attr
+/attr/< (<)
+/attr/txt (b)
+/attr/attr
+/attr/attr/< (<)
+/attr/attr/txt ( a )
+/attr/attr/> (>)
+/attr/txt (b1)
+/attr/> (>)
+/attr
+/attr/< (<)
+/attr/txt (e)
+/attr/attr
+/attr/attr/< (<)
+/attr/attr/txt (d)
+/attr/attr/attr
+/attr/attr/attr/< (<)
+/attr/attr/attr/txt (c)
+/attr/attr/attr/> (>)
+/attr/attr/txt (d1)
+/attr/attr/> (>)
+/attr/txt (e1)
+/attr/> (>)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
