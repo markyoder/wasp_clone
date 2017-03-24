@@ -258,12 +258,12 @@ void HaliteInterpreter<S>::capture(const std::string& data
                                  ,wasp::STRING ,file_offset);
                 }
                 // capture attribute terminator
-                size_t file_offset = m_file_offset + attribute_index.second;
+                size_t file_offset = m_file_offset + prev.second;
                 capture_leaf(m_attribute_end_delim,wasp::TERM
                          ,m_attribute_end_delim,wasp::STRING
                          ,file_offset);
                 // update current column to end of delimiter
-                current_column_index = attribute_index.second
+                current_column_index = prev.second
                         + m_attribute_end_delim.size();
                 wasp_tagged_line("cc="<<current_column_index);
                 // close/commit the subtree
