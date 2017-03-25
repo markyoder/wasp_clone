@@ -776,3 +776,23 @@ TEST( Halite, elseif_error)
         ASSERT_EQ("***Error : line 2 is an unmatched conditional elseif. The matching #if, #ifdef, #ifndef, or #elseif is missing.\n"
                   ,error.str());
 }
+
+TEST( Halite, else_error)
+{
+    std::stringstream input;
+    input<<"conditional template"<<std::endl<<std::endl
+    <<"#else blah";
+    std::stringstream error;
+    HaliteInterpreter<> interpreter(error);
+    ASSERT_FALSE( interpreter.parse(input) );
+    auto document = interpreter.root();
+    std::string expected_paths = R"INPUT(/
+/txt (conditional template)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ("conditional template", document.data());
+        ASSERT_EQ("***Error : line 3 is an unmatched conditional else. The matching #if, #ifdef, #ifndef, or #elseif is missing.\n"
+                  ,error.str());
+}

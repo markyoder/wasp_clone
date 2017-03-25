@@ -220,7 +220,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
             Interpreter<S>::error_stream()<<"***Error : line "
                          <<Interpreter<S>::line_count()+1
                         <<" is an unmatched conditional else."
-                       <<" The matching #if, #ifdef, #ifndef, #elseif"
+                       <<" The matching #if, #ifdef, #ifndef, or #elseif"
                         <<" is missing."<<std::endl;
             return false;
         }
