@@ -523,3 +523,39 @@ TEST( Halite, ifndef_parameterized)
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
+
+/**
+ * @brief TEST test if with parameter and body
+ */
+TEST( Halite, if_parameterized)
+{
+    std::stringstream input;
+    input<<"#if <x> < <y>"<<std::endl
+       <<" only if x is less than y "<<std::endl
+       <<"#endif";
+    HaliteInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(15, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 1, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/if
+/if/decl (#if)
+/if/txt ( )
+/if/attr
+/if/attr/< (<)
+/if/attr/txt (x)
+/if/attr/> (>)
+/if/txt ( < )
+/if/attr
+/if/attr/< (<)
+/if/attr/txt (y)
+/if/attr/> (>)
+/if/txt ( only if x is less than y )
+/if/endif (#endif)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}

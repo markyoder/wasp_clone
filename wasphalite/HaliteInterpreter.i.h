@@ -141,8 +141,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     bool is_ifdef = false; // assume false
     static std::string ifndef_stmt = "#ifndef";
     bool is_ifndef = false; // assume false
-//    static std::string if_stmt = "#if";
-//    bool is_if = false; // assume false
+    static std::string if_stmt = "#if";
+    bool is_if = false; // assume false
 //    static std::string elseif_stmt = "#elseif";
 //    bool is_elseif = false; // assume false
 //    static std::string else_stmt = "#else";
@@ -176,6 +176,15 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      ,line.substr(current_column_index,ifndef_stmt.size())
                      , wasp::STRING, offset );
         current_column_index += ifndef_stmt.size();
+    }
+    else if( (is_if = line.compare(0,if_stmt.size(),if_stmt) == 0) )
+    {
+        Interpreter<S>::push_staged(wasp::CONDITIONAL, "if",{});
+        size_t offset = m_file_offset + current_column_index;
+        capture_leaf("decl", wasp::DECL
+                     ,line.substr(current_column_index,if_stmt.size())
+                     , wasp::STRING, offset );
+        current_column_index += if_stmt.size();
     }
     else if( (is_endif = line.compare(0,endif_stmt.size(),endif_stmt) == 0) )
     {
@@ -217,6 +226,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     if( is_import == false
             && is_ifdef == false
             && is_ifndef == false
+            && is_if == false
             && is_endif == false
             && attribute_indices.empty() )
     {
