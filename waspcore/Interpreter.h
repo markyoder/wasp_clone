@@ -203,6 +203,14 @@ public:
      */
     void push_line_offset(size_t line_file_offset)
         {m_tree_nodes.token_data().push_line(line_file_offset);}
+
+    /**
+     * @brief line_count acquire the number of lines processed by this interpreter
+     * @return the number of lines processed
+     */
+    size_t line_count()const{
+        return m_tree_nodes.token_data().line_count();
+    }
     /**
      * @brief push_leaf create a leaf node with the given type, name, and token reference
      * @param node_type the leaf node's type enumeration

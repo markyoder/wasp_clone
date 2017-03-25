@@ -66,6 +66,7 @@ namespace wasp{
         , INDEX
         , ANY
         , WASP_NULL // disambiguated from C-NULL
+        , CONDITIONAL
      };
 }
 #endif

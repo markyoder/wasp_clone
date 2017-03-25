@@ -437,3 +437,28 @@ TEST( Halite, multiple_import_parameterized_using)
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
+
+/**
+ * @brief TEST test ifdef
+ */
+TEST( Halite, ifdef)
+{
+    std::stringstream input;
+    input<<"#ifdef something"<<std::endl
+       <<"#endif";
+    HaliteInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(5, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 1, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/ifdef
+/ifdef/decl (#ifdef)
+/ifdef/txt ( something)
+/ifdef/endif (#endif)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
