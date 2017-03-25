@@ -493,3 +493,33 @@ TEST( Halite, ifdef_parameterized)
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
+/**
+ * @brief TEST test ifndef with parameter and body
+ */
+TEST( Halite, ifndef_parameterized)
+{
+    std::stringstream input;
+    input<<"#ifndef <x>"<<std::endl
+       <<" intermediate text "<<std::endl
+       <<"#endif";
+    HaliteInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(10, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 1, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/ifndef
+/ifndef/decl (#ifndef)
+/ifndef/txt ( )
+/ifndef/attr
+/ifndef/attr/< (<)
+/ifndef/attr/txt (x)
+/ifndef/attr/> (>)
+/ifndef/txt ( intermediate text )
+/ifndef/endif (#endif)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}

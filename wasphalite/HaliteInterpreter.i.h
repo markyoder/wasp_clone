@@ -139,8 +139,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
 
     static std::string ifdef_stmt = "#ifdef";
     bool is_ifdef = false; // assume false
-//    static std::string ifndef_stmt = "#ifndef";
-//    bool is_ifndef = false; // assume false
+    static std::string ifndef_stmt = "#ifndef";
+    bool is_ifndef = false; // assume false
 //    static std::string if_stmt = "#if";
 //    bool is_if = false; // assume false
 //    static std::string elseif_stmt = "#elseif";
@@ -161,13 +161,23 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     }
     else if( (is_ifdef = line.compare(0,ifdef_stmt.size(),ifdef_stmt) == 0) )
     {
-        size_t stage = Interpreter<S>::push_staged(wasp::CONDITIONAL, "ifdef",{});
+        Interpreter<S>::push_staged(wasp::CONDITIONAL, "ifdef",{});
         size_t offset = m_file_offset + current_column_index;
         capture_leaf("decl", wasp::DECL
                      ,line.substr(current_column_index,ifdef_stmt.size())
                      , wasp::STRING, offset );
         current_column_index += ifdef_stmt.size();
-    }else if( (is_endif = line.compare(0,endif_stmt.size(),endif_stmt) == 0) )
+    }
+    else if( (is_ifndef = line.compare(0,ifndef_stmt.size(),ifndef_stmt) == 0) )
+    {
+        Interpreter<S>::push_staged(wasp::CONDITIONAL, "ifndef",{});
+        size_t offset = m_file_offset + current_column_index;
+        capture_leaf("decl", wasp::DECL
+                     ,line.substr(current_column_index,ifndef_stmt.size())
+                     , wasp::STRING, offset );
+        current_column_index += ifndef_stmt.size();
+    }
+    else if( (is_endif = line.compare(0,endif_stmt.size(),endif_stmt) == 0) )
     {
         wasp_check( Interpreter<S>::staged_count() > 0 );
         size_t staged_type = Interpreter<S>::staged_type(Interpreter<S>::staged_count()-1);
@@ -206,6 +216,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     // if line is plain text, capture
     if( is_import == false
             && is_ifdef == false
+            && is_ifndef == false
             && is_endif == false
             && attribute_indices.empty() )
     {
