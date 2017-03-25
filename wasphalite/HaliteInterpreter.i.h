@@ -134,9 +134,9 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     }
     size_t current_column_index = 0;
     // check for file import statement
+    bool is_directive = line.compare(0,1,"#") == 0;
     static std::string import_stmt = "#import";
-    bool is_import = line.compare(0, import_stmt.size(), import_stmt) == 0;
-
+    bool is_import = false;
     static std::string ifdef_stmt = "#ifdef";
     bool is_ifdef = false; // assume false
     static std::string ifndef_stmt = "#ifndef";
@@ -150,7 +150,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     static std::string endif_stmt = "#endif";
     bool is_endif = false; // assume false
 
-    if( is_import )
+    if( is_directive && (is_import = line.compare(0, import_stmt.size(), import_stmt) == 0) )
     { // capture import declarator
         size_t stage = Interpreter<S>::push_staged(wasp::STRING, "import",{});
         size_t offset = m_file_offset + current_column_index;
@@ -159,7 +159,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      , wasp::STRING, offset );
         current_column_index += import_stmt.size();
     }
-    else if( (is_ifdef = line.compare(0,ifdef_stmt.size(),ifdef_stmt) == 0) )
+    else if(is_directive &&  (is_ifdef = line.compare(0,ifdef_stmt.size(),ifdef_stmt) == 0) )
     {
         Interpreter<S>::push_staged(wasp::CONDITIONAL, "ifdef",{});
         size_t offset = m_file_offset + current_column_index;
@@ -168,7 +168,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      , wasp::STRING, offset );
         current_column_index += ifdef_stmt.size();
     }
-    else if( (is_ifndef = line.compare(0,ifndef_stmt.size(),ifndef_stmt) == 0) )
+    else if(is_directive &&  (is_ifndef = line.compare(0,ifndef_stmt.size(),ifndef_stmt) == 0) )
     {
         Interpreter<S>::push_staged(wasp::CONDITIONAL, "ifndef",{});
         size_t offset = m_file_offset + current_column_index;
@@ -177,7 +177,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      , wasp::STRING, offset );
         current_column_index += ifndef_stmt.size();
     }
-    else if( (is_if = line.compare(0,if_stmt.size(),if_stmt) == 0) )
+    else if(is_directive &&  (is_if = line.compare(0,if_stmt.size(),if_stmt) == 0) )
     {
         Interpreter<S>::push_staged(wasp::CONDITIONAL, "if",{});
         size_t offset = m_file_offset + current_column_index;
@@ -186,7 +186,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      , wasp::STRING, offset );
         current_column_index += if_stmt.size();
     }
-    else if( (is_elseif = line.compare(0,elseif_stmt.size(),elseif_stmt) == 0) )
+    else if(is_directive &&  (is_elseif = line.compare(0,elseif_stmt.size(),elseif_stmt) == 0) )
     {
         // check for required condition to be open
         wasp_check( Interpreter<S>::staged_count() > 0 );
@@ -210,7 +210,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      , wasp::STRING, offset );
         current_column_index += elseif_stmt.size();
     }
-    else if( (is_else = line.compare(0,else_stmt.size(),else_stmt) == 0) )
+    else if(is_directive &&  (is_else = line.compare(0,else_stmt.size(),else_stmt) == 0) )
     {
         // check for required condition to be open
         wasp_check( Interpreter<S>::staged_count() > 0 );
@@ -234,7 +234,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      , wasp::STRING, offset );
         current_column_index += else_stmt.size();
     }
-    else if( (is_endif = line.compare(0,endif_stmt.size(),endif_stmt) == 0) )
+    else if(is_directive &&  (is_endif = line.compare(0,endif_stmt.size(),endif_stmt) == 0) )
     {
         wasp_check( Interpreter<S>::staged_count() > 0 );
         size_t staged_type = Interpreter<S>::staged_type(Interpreter<S>::staged_count()-1);
