@@ -642,3 +642,98 @@ TEST( Halite, else_parameterized)
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
+/**
+ * @brief TEST test if conditionals with parameters, body, and nested conditions
+ */
+TEST( Halite, conditionals)
+{
+    std::stringstream input;
+    input<<"conditional template"<<std::endl
+    <<"#if cond1"<<std::endl
+        <<" cond1 must be true"<<std::endl
+
+        <<"#ifdef cond2"<<std::endl
+        <<" cond1 must be true and 2 must be defined (eval to true)"<<std::endl
+
+        <<"#else"<<std::endl
+        <<" cond1 must be true and 2 must not be defined (eval to false)"<<std::endl
+        <<"#endif"<<std::endl
+
+    <<"#elseif cond3"<<std::endl
+        <<" cond1 is false and cond3 true"<<std::endl
+
+        <<"#ifndef cond4"<<std::endl
+            <<" cond1 must be false, 3 true and 4 not defined (evals to false)"<<std::endl
+        <<"#elseif cond5"<<std::endl
+            <<" cond1 is false, 3 is true, 4 not defined, 5 true"<<std::endl
+        <<"#else"<<std::endl
+            <<" cond1 is false, 3 is true, 4 not defined, 5 false"<<std::endl
+        <<"#endif"<<std::endl
+
+    <<"#else"<<std::endl
+        <<"cond1 and 3 are false"<<std::endl
+        <<"#if cond6"<<std::endl
+            <<" cond1 must be false, 3 false and 6 true"<<std::endl
+        <<"#elseif cond7"<<std::endl
+            <<" cond1 is false, 3 is false, 6 false, and 7 true"<<std::endl
+        <<"#else"<<std::endl
+            <<" cond1 is false, 3 is false, 6 false, and 7 false"<<std::endl
+        <<"#endif"<<std::endl
+    <<"#endif";
+    HaliteInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+//    ASSERT_EQ(18, interpreter.node_count() );
+    auto document = interpreter.root();
+//    ASSERT_EQ( 2, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/txt (conditional template)
+/if
+/if/decl (#if)
+/if/txt ( cond1)
+/if/txt ( cond1 must be true)
+/if/ifdef
+/if/ifdef/decl (#ifdef)
+/if/ifdef/txt ( cond2)
+/if/ifdef/txt ( cond1 must be true and 2 must be defined (eval to true))
+/if/else
+/if/else/decl (#else)
+/if/else/txt ( cond1 must be true and 2 must not be defined (eval to false))
+/if/else/endif (#endif)
+/elseif
+/elseif/decl (#elseif)
+/elseif/txt ( cond3)
+/elseif/txt ( cond1 is false and cond3 true)
+/elseif/ifndef
+/elseif/ifndef/decl (#ifndef)
+/elseif/ifndef/txt ( cond4)
+/elseif/ifndef/txt ( cond1 must be false, 3 true and 4 not defined (evals to false))
+/elseif/elseif
+/elseif/elseif/decl (#elseif)
+/elseif/elseif/txt ( cond5)
+/elseif/elseif/txt ( cond1 is false, 3 is true, 4 not defined, 5 true)
+/elseif/else
+/elseif/else/decl (#else)
+/elseif/else/txt ( cond1 is false, 3 is true, 4 not defined, 5 false)
+/elseif/else/endif (#endif)
+/else
+/else/decl (#else)
+/else/txt (cond1 and 3 are false)
+/else/if
+/else/if/decl (#if)
+/else/if/txt ( cond6)
+/else/if/txt ( cond1 must be false, 3 false and 6 true)
+/else/elseif
+/else/elseif/decl (#elseif)
+/else/elseif/txt ( cond7)
+/else/elseif/txt ( cond1 is false, 3 is false, 6 false, and 7 true)
+/else/else
+/else/else/decl (#else)
+/else/else/txt ( cond1 is false, 3 is false, 6 false, and 7 false)
+/else/else/endif (#endif)
+/else/endif (#endif)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
