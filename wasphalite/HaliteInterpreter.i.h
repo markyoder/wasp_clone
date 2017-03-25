@@ -242,7 +242,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
         {
             Interpreter<S>::error_stream()<<"***Error : line "
                          <<Interpreter<S>::line_count()
-                        <<" is an unmatched conditional terminator."
+                        <<" is an unmatched conditional terminator - '"
+                       <<line<<"'."
                        <<" The matching #if, #ifdef, #ifndef, #elseif,"
                         <<" or #else is missing."<<std::endl;
             return false;
