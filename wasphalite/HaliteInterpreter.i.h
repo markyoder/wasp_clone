@@ -440,5 +440,27 @@ void HaliteInterpreter<S>::capture(const std::string& data
         }
     } // end of attribute loop
 }
+template<class S>
+bool HaliteInterpreter<S>::evaluate(std::ostream & out
+                                    , std::ostream * activity_log)const
+{
+    auto root_view = Interpreter<S>::root();
+    size_t current_line = 1, column = 1;
 
+    for( size_t i = 0; i < root_view.child_count(); ++i)
+    {
+        const auto & child_view = root_view.child_at(i);
+        if( child_view.type() == wasp::STRING )
+        {
+//            if( activity_log ) *activity_log<<Interpreter<S>::stream_name()<<": line "<<current_line<<std::endl;
+            // print the text and update the current line and column
+            wasp::print_from(out, child_view, current_line, column);
+        }
+        else{
+            wasp_not_implemented("template construct at line "
+                                 +std::to_string(current_line));
+        }
+    }
+    return true;
+}
 #endif

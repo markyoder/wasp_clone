@@ -45,7 +45,13 @@ namespace wasp {
          */
         bool parseFile(const std::string& filename, size_t startLine=1u);
 
-
+        /**
+         * @brief evaluate evaluates the template emitting the expansion into out stream
+         * @param out the stream on which to emit the expanded template
+         * @param activity_log an optional activity log to emit template activity on
+         * @return true, iff the template expanded with no errors.
+         */
+        bool evaluate(std::ostream & out, std::ostream * activity_log=nullptr)const;
     private:
 
         bool parse_content(std::istream& in);
