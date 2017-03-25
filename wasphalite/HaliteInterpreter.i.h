@@ -145,8 +145,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     bool is_if = false; // assume false
     static std::string elseif_stmt = "#elseif";
     bool is_elseif = false; // assume false
-//    static std::string else_stmt = "#else";
-//    bool is_else = false; // assume false
+    static std::string else_stmt = "#else";
+    bool is_else = false; // assume false
     static std::string endif_stmt = "#endif";
     bool is_endif = false; // assume false
 
@@ -210,6 +210,30 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      , wasp::STRING, offset );
         current_column_index += elseif_stmt.size();
     }
+    else if( (is_else = line.compare(0,else_stmt.size(),else_stmt) == 0) )
+    {
+        // check for required condition to be open
+        wasp_check( Interpreter<S>::staged_count() > 0 );
+        size_t staged_type = Interpreter<S>::staged_type(Interpreter<S>::staged_count()-1);
+        if( staged_type != wasp::CONDITIONAL  )
+        {
+            Interpreter<S>::error_stream()<<"***Error : line "
+                         <<Interpreter<S>::line_count()
+                        <<" is an unmatched conditional else."
+                       <<" The matching #if, #ifdef, #ifndef, #elseif"
+                        <<" is missing."<<std::endl;
+            return false;
+        }
+        // commit/close the current staged conditional to the parse tree
+        Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
+        // push new elseif staged conditional
+        Interpreter<S>::push_staged(wasp::CONDITIONAL, "else",{});
+        size_t offset = m_file_offset + current_column_index;
+        capture_leaf("decl", wasp::DECL
+                     ,line.substr(current_column_index,else_stmt.size())
+                     , wasp::STRING, offset );
+        current_column_index += else_stmt.size();
+    }
     else if( (is_endif = line.compare(0,endif_stmt.size(),endif_stmt) == 0) )
     {
         wasp_check( Interpreter<S>::staged_count() > 0 );
@@ -252,6 +276,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
             && is_ifndef == false
             && is_if == false
             && is_elseif == false
+            && is_else == false
             && is_endif == false
             && attribute_indices.empty() )
     {

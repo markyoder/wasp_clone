@@ -569,7 +569,7 @@ TEST( Halite, elseif_parameterized)
     input<<"#if <x> < <y>"<<std::endl
        <<" only if x is less than y "<<std::endl
         <<"#elseif condition "<<std::endl
-        <<" only if x is not less than y "<<std::endl
+        <<" only if x is not less than y and condition is true "<<std::endl
        <<"#endif";
     HaliteInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
@@ -593,8 +593,49 @@ TEST( Halite, elseif_parameterized)
 /elseif
 /elseif/decl (#elseif)
 /elseif/txt ( condition )
-/elseif/txt ( only if x is not less than y )
+/elseif/txt ( only if x is not less than y and condition is true )
 /elseif/endif (#endif)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
+
+/**
+ * @brief TEST test if elseif with parameter and body
+ */
+TEST( Halite, else_parameterized)
+{
+    std::stringstream input;
+    input<<"#if <x> < <y>"<<std::endl
+       <<" only if x is less than y "<<std::endl
+        <<"#else"<<std::endl
+        <<" only if x is not less than y "<<std::endl
+       <<"#endif";
+    HaliteInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(18, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 2, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/if
+/if/decl (#if)
+/if/txt ( )
+/if/attr
+/if/attr/< (<)
+/if/attr/txt (x)
+/if/attr/> (>)
+/if/txt ( < )
+/if/attr
+/if/attr/< (<)
+/if/attr/txt (y)
+/if/attr/> (>)
+/if/txt ( only if x is less than y )
+/else
+/else/decl (#else)
+/else/txt ( only if x is not less than y )
+/else/endif (#endif)
 )INPUT";
         std::stringstream paths;
         document.paths(paths);
