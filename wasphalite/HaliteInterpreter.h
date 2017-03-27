@@ -11,6 +11,7 @@
 #include "waspcore/Interpreter.h"
 #include "wasphalite/SubStringIndexer.h"
 #include "waspexpr/ExprInterpreter.h"
+#include "waspcore/wasp_bug.h"
 
 namespace wasp {
 

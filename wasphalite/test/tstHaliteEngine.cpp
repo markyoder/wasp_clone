@@ -32,14 +32,14 @@ TEST( Halite, parameterized_text )
 {
     std::stringstream input;
     input<< R"INPUT(This is plain test
- <pi>
+ < pi >  <pi>
  <pi>
    line
             )INPUT";
     std::stringstream expected;
     expected<< R"INPUT(This is plain test
- 3.1459
- 3.1459
+ 3.14159  3.14159
+ 3.14159
    line
             )INPUT";
     HaliteInterpreter<> interpreter;

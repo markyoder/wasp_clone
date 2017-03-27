@@ -466,7 +466,7 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
             {
                 return false;
             }
-
+            out<<substitution.str();
         }
         else if ( child_type == wasp::FILE )
         {
@@ -501,19 +501,28 @@ bool HaliteInterpreter<S>::print_attribute(const TreeNodeView<S>& attr_view
             case wasp::STRING:
             wasp::print(attr_str, child_view);
             break;
+        default:
+            wasp_not_implemented("nested attribute printing");
         }
     }
+
     // attribute string contains the full attribute name
-    std::string attr_name = attr_str.str();
-//    attr_name = wasp::trim(attr_name," \t");
     ExprInterpreter<> expr(Interpreter<S>::error_stream());
     if( false == expr.parse(attr_str, line, column + m_attribute_start_delim.size()) )
     {
         return false;
     }
     // TODO - provide context with data/attributes, etc. available
-//    auto result = expr.evaluate();
-
+    expr.context().add_default_variables().add_default_functions();
+    auto result = expr.evaluate();
+    if( result.is_error() )
+    {
+        wasp_tagged_line(result.string());
+        return false;
+    }
+    result.format( out ) ;
+    column = attr_view.child_at(attr_view.child_count()-1).column() + m_attribute_end_delim.size();
+    return true;
 }
 
 #endif
