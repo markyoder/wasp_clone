@@ -49,7 +49,7 @@ TEST( Halite, parameterized_text )
     ASSERT_EQ( expected.str(), out.str() );
 }
 
-TEST( Halite, DISABLED_static_text_fileimport)
+TEST( Halite, static_text_fileimport)
 {
 
     std::ofstream import("nested template.tmpl");
@@ -59,8 +59,9 @@ TEST( Halite, DISABLED_static_text_fileimport)
         <<std::endl // empty line
        <<"content"; // missing new line
     import<<expected.str();
+    import.close();
     std::stringstream input;
-    input<< R"INPUT(#import nested template.tmpl )INPUT";
+    input<< R"INPUT(#import ./nested template.tmpl )INPUT";
     HaliteInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
     std::stringstream out;

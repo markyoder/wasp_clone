@@ -451,13 +451,15 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
     {
         const auto & child_view = root_view.child_at(i);
         auto child_type = child_view.type();
-        if( child_type == wasp::STRING )
+        switch( child_type )
         {
+        case  wasp::STRING:
+
 //            if( activity_log ) *activity_log<<Interpreter<S>::stream_name()<<": line "<<current_line<<std::endl;
             // print the text and update the current line and column
             wasp::print_from(out, child_view, current_line, current_column);
-        }
-        else if( child_type == wasp::IDENTIFIER )
+        break;
+        case wasp::IDENTIFIER:
         {
             std::stringstream substitution;
             if( false == print_attribute(child_view
@@ -468,14 +470,15 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
             }
             out<<substitution.str();
         }
-        else if ( child_type == wasp::FILE )
-        {
-            wasp_not_implemented("file importation");
-        }
-        else{
+        break;
+        case wasp::FILE:
+            if( !import_file(child_view, out, current_line, current_column) ) return false;
+        break;
+        default:
             wasp_not_implemented("template construct at line "
                                  +std::to_string(current_line));
-        }
+        break;
+        } // end of switch
     }
     return true;
 }
@@ -501,8 +504,9 @@ bool HaliteInterpreter<S>::print_attribute(const TreeNodeView<S>& attr_view
             case wasp::STRING:
             wasp::print(attr_str, child_view);
             break;
-        default:
+            default:
             wasp_not_implemented("nested attribute printing");
+
         }
     }
 
@@ -525,4 +529,65 @@ bool HaliteInterpreter<S>::print_attribute(const TreeNodeView<S>& attr_view
     return true;
 }
 
+template<class S>
+bool HaliteInterpreter<S>::import_file(const TreeNodeView<S>& import_view
+                                           ,std::ostream& out
+                                           ,size_t & line
+                                           ,size_t & column)
+{
+
+    // attributes must have '#import txt'
+    // e.g., #import txt or #import txt<a1>txt<a2>...
+    wasp_require( import_view.child_count() > 1);
+    std::stringstream import_str;
+    // accumulate an attribute string
+    for( size_t i = 1, count = import_view.child_count(); i < count; ++i )
+    {
+        const auto& child_view = import_view.child_at(i);
+        auto type = child_view.type();
+        switch( type )
+        {
+            case wasp::STRING:
+                wasp::print(import_str, child_view);
+            break;
+            case wasp::IDENTIFIER:
+                print_attribute(child_view, import_str, line, column);
+            break;
+            default:
+                wasp_not_implemented("parameterized file import");
+        }
+    }
+    std::string path = import_str.str();
+    path = wasp::trim(path," \t");
+    wasp_tagged_line("importing '"<<path<<"' relative to '"
+                     <<Interpreter<S>::stream_name()<<"'");
+    std::ifstream relative_to_working_dir(path.c_str());
+    std::string relative_to_current_path = Interpreter<S>::stream_name()+"/"+path;
+    std::ifstream relative_to_current(relative_to_current_path.c_str());
+    HaliteInterpreter<S> nested_interp(Interpreter<S>::error_stream());
+    if( !relative_to_working_dir.good() )
+    {
+        if( !relative_to_current.good() )
+        {
+            Interpreter<S>::error_stream()<<"***Error : unable to open '"
+                                         <<path<<".'"<<std::endl;
+            return false;
+        }
+        nested_interp.setStreamName(relative_to_current_path,true);
+        bool parsed = nested_interp.parse(relative_to_current);
+        if( parsed == false )
+        {
+            return false;
+        }
+        return nested_interp.evaluate(out);
+    }
+
+    nested_interp.setStreamName(path,true);
+    bool parsed = nested_interp.parse(relative_to_working_dir);
+    if( parsed == false )
+    {
+        return false;
+    }
+    return nested_interp.evaluate(out);
+}
 #endif

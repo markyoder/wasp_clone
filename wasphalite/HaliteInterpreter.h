@@ -79,8 +79,28 @@ namespace wasp {
                      ,const SubStringIndexer::IndexPairs_type& attribute_indices
                      ,size_t limit=0);
 
+        /**
+         * @brief print_attribute prints attribute to output stream
+         * @param attr_view tree view containing attribute structure
+         * @param out the stream to emit the attribute substitution result
+         * @param line the line on which the substitution is taking place
+         * @param column the column at which the substitution is starting, will be updated
+         * @return true, iff no errors occurred during the substitution/printing of the attribute
+         * TODO - implement nested attributes and attribute formatting
+         */
         bool print_attribute(const TreeNodeView<S> & attr_view
                              ,std::ostream& out, size_t& line, size_t& column  );
+
+        /**
+         * @brief import_file imports the file represented by the given tree view
+         * @param import_view the tree view containing the directive and potentially parameterized text
+         * @param out the output stream on which to emit the file contents
+         * @param line the line on which the import is taking place
+         * @param column the column at which the import starts
+         * @return true, iff the file and its contents were successfully imported and emitted
+         */
+        bool import_file(const TreeNodeView<S> & import_view
+                         ,std::ostream& out, size_t& line, size_t & column);
     public: // public variables
 
         /**
