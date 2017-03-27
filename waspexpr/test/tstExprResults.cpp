@@ -736,3 +736,43 @@ TEST(ExprInterpreter,string_concat)
         ASSERT_EQ(t.expected, result.string());
     }
 }
+
+struct ScalarExprFmtTest{
+    std::string tst;
+    std::string expected;
+    std::string fmt;
+    ScalarExprFmtTest(const std::string & tst, const std::string& expected
+                   , const std::string& fmt)
+        :tst(tst),expected(expected),fmt(fmt){}
+};
+TEST(ExprInterpreter, format)
+{
+    std::vector<ScalarExprFmtTest> tests={
+        {"pi","3.14159265359","%6.11f"},
+        {"pi","3.14159","%6.5f"},
+        {"e","2.718281828459","%6.12f"},
+        {"e","result=2.718281828459","result=%6.12f"},
+        {"1.0","result=1","result=%.0f"},
+        {"1","result=1","result=%d"},
+        {"'fred'","result=    fred","result=%8s"},
+        {"'fred'","result=fred    ","result=%-8s"},
+    };
+    ASSERT_FALSE( tests.empty() );
+    for( auto & t : tests )
+    {
+        SCOPED_TRACE( t.tst );
+        std::stringstream input;
+        input <<t.tst;
+        ExprInterpreter<> interpreter;
+        interpreter.context().add_default_variables();
+        ASSERT_TRUE(interpreter.parse(input) );
+
+        auto result = interpreter.evaluate();
+
+        ASSERT_FALSE(result.is_error());
+        std::stringstream fmt_result;
+        std::stringstream fmt_error;
+        ASSERT_TRUE( result.format(fmt_result, t.fmt, fmt_error) );
+        ASSERT_EQ(t.expected, fmt_result.str());
+    }
+}

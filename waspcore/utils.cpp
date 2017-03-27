@@ -17,4 +17,20 @@ std::string strip_quotes( const std::string& src )
     }
     return s;
 }  // strip_quotes
+std::string trim(  std::string str, const std::string& char_seq )
+{
+    // trim trailing char sequences
+    size_t endpos = str.find_last_not_of(char_seq);
+    if( std::string::npos != endpos )
+    {
+        str = str.substr( 0, endpos+1 );
+    }
+    // trim leading char sequences
+    size_t startpos = str.find_first_not_of(char_seq);
+    if( std::string::npos != startpos )
+    {
+        str = str.substr( startpos );
+    }
+    return str;
+}
 }

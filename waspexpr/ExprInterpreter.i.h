@@ -422,6 +422,53 @@ ExprInterpreter<S>::Result::evaluate( const T & tree_view
 }
 
 template<class S>
+bool ExprInterpreter<S>::Result::format(std::ostream & out)const
+{
+    if( is_real() )
+    {
+        out << real();
+    }
+    else if( is_integer() )
+    {
+        out << integer();
+    }
+    else if( is_string() || is_error())
+    {
+        out << string();
+    }
+    else{
+        return false;
+    }
+    return true;
+}
+
+template<class S>
+bool ExprInterpreter<S>::Result::format(std::ostream & out, const std::string& fmt
+                                        , std::ostream& err)const
+{
+    bool result = true;
+    if( is_real() )
+    {
+        result = wasp::Format::fmt(out,err
+                                   ,fmt.c_str(),real());
+    }
+    else if( is_integer() )
+    {
+        result = wasp::Format::fmt(out,err
+                                   ,fmt.c_str(), integer());
+    }
+    else if( is_string() || is_error())
+    {
+        result = wasp::Format::fmt(out,err
+                                   ,fmt.c_str(), string());
+    }
+    else{
+        result = false;
+    }
+    return result;
+}
+
+template<class S>
 void ExprInterpreter<S>::Context::clear(){
     for( auto v: m_variables ) delete v.second;
     m_variables.clear();

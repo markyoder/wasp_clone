@@ -51,7 +51,6 @@ namespace wasp{
             bool include_sign = false; // true when '%+...' is specified
             bool include_lead_space_for_positive = false; // true when '% ...' is specified
             bool include_parenthesis_for_negative = false; // true when '%(...' is specified
-            wasp_line("s="<<*s);
             if (*s == '%') {
                 // Check for escaped formatting '%%'
                 const char * sl = s + 1; // string lookahead char
@@ -62,7 +61,6 @@ namespace wasp{
                 }
                 while( *sl )
                 {
-                    wasp_line("sl="<<*sl);
                     // check for flag
                     if( *sl == '-' )
                     {   // %-..., left justified
@@ -263,7 +261,7 @@ namespace wasp{
 
     template<>
     // string specialization
-    bool Format::fmt_emit<std::string>(std::ostream& out,std::ostream& err, char format
+    inline bool Format::fmt_emit<std::string>(std::ostream& out,std::ostream& err, char format
                   , const std::string& value
                   , int width
                   , int prec

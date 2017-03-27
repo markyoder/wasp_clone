@@ -10,6 +10,7 @@
 
 #include "waspcore/Interpreter.h"
 #include "wasphalite/SubStringIndexer.h"
+#include "waspexpr/ExprInterpreter.h"
 
 namespace wasp {
 
@@ -51,7 +52,7 @@ namespace wasp {
          * @param activity_log an optional activity log to emit template activity on
          * @return true, iff the template expanded with no errors.
          */
-        bool evaluate(std::ostream & out, std::ostream * activity_log=nullptr)const;
+        bool evaluate(std::ostream & out, std::ostream * activity_log=nullptr);
     private:
 
         bool parse_content(std::istream& in);
@@ -76,6 +77,9 @@ namespace wasp {
                      ,size_t& current_attribute_index
                      ,const SubStringIndexer::IndexPairs_type& attribute_indices
                      ,size_t limit=0);
+
+        bool print_attribute(const TreeNodeView<S> & attr_view
+                             ,std::ostream& out, size_t& line, size_t& column  );
     public: // public variables
 
         /**

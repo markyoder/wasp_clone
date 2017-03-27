@@ -19,3 +19,12 @@ TEST( utils, string_wilds)
     EXPECT_TRUE(wildcard_string_match("*", "could_be_anything")); // Yes
 }
 
+
+TEST( utils, trim )
+{
+    EXPECT_EQ( "str", trim(" str    ", " ") );
+    EXPECT_EQ( "str", trim("str", " ") );
+    EXPECT_EQ( "str", trim("str  ", " ") );
+    EXPECT_EQ( "str", trim("  str", " ") );
+    EXPECT_EQ( "tr", trim("strs", " s") );
+}

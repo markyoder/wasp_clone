@@ -4,6 +4,7 @@
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/Interpreter.h"
 #include "waspcore/wasp_bug.h"
+#include "waspcore/Format.h"
 #include "waspexpr/ExprParser.hpp"
 #include <cmath>
 #include <sstream>
@@ -374,7 +375,9 @@ public: // variables
 
          template<class T>
          Result & evaluate( const T & tree_view, Context & context);
-
+         bool format(std::ostream& out)const;
+         bool format(std::ostream& out,const std::string& fmt
+                     ,std::ostream& err)const;
      private:
          bool and_expr(const Result & a){
 
@@ -1146,6 +1149,6 @@ public:
      }
 };
 #include "waspexpr/ExprInterpreter.i.h"
-} // end of namespace
 
+} // end of namespace
 #endif

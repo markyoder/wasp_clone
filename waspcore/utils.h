@@ -15,7 +15,15 @@ namespace wasp{
      * @param s the string to have the quotes removes from.
      * @return a string with 1 set of single or double quotes removed
      */
-    std::string strip_quotes( const std::string & s);  
+    std::string strip_quotes( const std::string & s);
+
+    /**
+     * @brief trim removes the given character set leading and trailing from the given string
+     * @param s the string to trim potential prefix and suffix characters
+     * @param char_set the set of characters to be remove
+     * @return the string with all leading and trailing character set removed
+     */
+    std::string trim(  std::string s, const std::string& char_set);
     /**
      * @brief to_type acquire the data typed as the requested type
      * @param result the typed result

@@ -152,7 +152,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
 
     if( is_directive && (is_import = line.compare(0, import_stmt.size(), import_stmt) == 0) )
     { // capture import declarator
-        size_t stage = Interpreter<S>::push_staged(wasp::STRING, "import",{});
+        Interpreter<S>::push_staged(wasp::FILE, "import",{});
         size_t offset = m_file_offset + current_column_index;
         capture_leaf("decl", wasp::DECL
                      ,line.substr(current_column_index,import_stmt.size())
@@ -442,19 +442,35 @@ void HaliteInterpreter<S>::capture(const std::string& data
 }
 template<class S>
 bool HaliteInterpreter<S>::evaluate(std::ostream & out
-                                    , std::ostream * activity_log)const
+                                    , std::ostream * activity_log)
 {
     auto root_view = Interpreter<S>::root();
-    size_t current_line = 1, column = 1;
+    size_t current_line = 1, current_column = 1;
 
     for( size_t i = 0; i < root_view.child_count(); ++i)
     {
         const auto & child_view = root_view.child_at(i);
-        if( child_view.type() == wasp::STRING )
+        auto child_type = child_view.type();
+        if( child_type == wasp::STRING )
         {
 //            if( activity_log ) *activity_log<<Interpreter<S>::stream_name()<<": line "<<current_line<<std::endl;
             // print the text and update the current line and column
-            wasp::print_from(out, child_view, current_line, column);
+            wasp::print_from(out, child_view, current_line, current_column);
+        }
+        else if( child_type == wasp::IDENTIFIER )
+        {
+            std::stringstream substitution;
+            if( false == print_attribute(child_view
+                                           , substitution
+                                           , current_line, current_column) )
+            {
+                return false;
+            }
+
+        }
+        else if ( child_type == wasp::FILE )
+        {
+            wasp_not_implemented("file importation");
         }
         else{
             wasp_not_implemented("template construct at line "
@@ -463,4 +479,41 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
     }
     return true;
 }
+template<class S>
+bool HaliteInterpreter<S>::print_attribute(const TreeNodeView<S>& attr_view
+                                           ,std::ostream& out
+                                           ,size_t & line
+                                           ,size_t & column)
+{
+
+    // attributes must have '<' txt? '>'
+    // e.g., < txt> or <>
+    wasp_require( attr_view.child_count() > 1);
+    std::stringstream attr_str;
+
+    // accumulate an attribute string
+    for( size_t i = 1, count = attr_view.child_count()-1; i < count; ++i )
+    {
+        auto child_view = attr_view.child_at(i);
+        auto type = child_view.type();
+        switch( type )
+        {
+            case wasp::STRING:
+            wasp::print(attr_str, child_view);
+            break;
+        }
+    }
+    // attribute string contains the full attribute name
+    std::string attr_name = attr_str.str();
+//    attr_name = wasp::trim(attr_name," \t");
+    ExprInterpreter<> expr(Interpreter<S>::error_stream());
+    if( false == expr.parse(attr_str, line, column + m_attribute_start_delim.size()) )
+    {
+        return false;
+    }
+    // TODO - provide context with data/attributes, etc. available
+//    auto result = expr.evaluate();
+
+}
+
 #endif

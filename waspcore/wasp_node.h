@@ -67,6 +67,7 @@ namespace wasp{
         , ANY
         , WASP_NULL // disambiguated from C-NULL
         , CONDITIONAL
+        , FILE
      };
 }
 #endif
