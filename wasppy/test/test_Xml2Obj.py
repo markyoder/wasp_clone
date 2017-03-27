@@ -8,7 +8,6 @@ import unittest
 sonvalidxml = os.path.dirname(__file__)+"/../wasputils/sonvalidxml" 
 schema = os.path.dirname(__file__)+"/schema.sch"
 input_file = os.path.dirname(__file__)+"/input.son"
-print "---",sonvalidxml,"---"
 cmd = sonvalidxml+' '+schema+' '+input_file
 xmlresult = subprocess.check_output(cmd, shell=True)
 
@@ -56,26 +55,26 @@ class TestArcPy(unittest.TestCase):
         for idx, foo in enumerate(foos.foo):
             if str(foo.fffs) != 'None':
                 for idy, fffs in enumerate(foo.fffs):
-                    if str(fffs.fnum) != 'None':
-                        for idz, fnum in enumerate(fffs.fnum):
+                    if str(fffs.f_num) != 'None':
+                        for idz, f_num in enumerate(fffs.f_num):
                             if  idy == 0 and idz == 0:
-                                self.assertEqual(str(wfrac.id),  'ac209')
-                                self.assertEqual(str(wfrac.value), '0.4')
+                                self.assertEqual(str(f_num.id),  'ac226')
+                                self.assertEqual(str(f_num.value), '0.7')
                             if  idy == 0 and idz == 1:
-                                self.assertEqual(str(wfrac.id),  'ac230')
-                                self.assertEqual(str(wfrac.value), '0.2')
+                                self.assertEqual(str(f_num.id),  'ac228')
+                                self.assertEqual(str(f_num.value), '0.2')
                             if  idy == 0 and idz == 2:
-                                self.assertEqual(str(wfrac.id),  'ac231')
-                                self.assertEqual(str(wfrac.value), '0.4')
+                                self.assertEqual(str(f_num.id),  'ac229')
+                                self.assertEqual(str(f_num.value), '0.1')
                             if  idy == 1 and idz == 0:
-                                self.assertEqual(str(wfrac.id),  'ac229')
-                                self.assertEqual(str(wfrac.value), '0.5')
+                                self.assertEqual(str(f_num.id),  'ac221')
+                                self.assertEqual(str(f_num.value), '0.3')
                             if  idy == 1 and idz == 1:
-                                self.assertEqual(str(wfrac.id),  'ac223')
-                                self.assertEqual(str(wfrac.value), '0.3')
+                                self.assertEqual(str(f_num.id),  'ac224')
+                                self.assertEqual(str(f_num.value), '0.3')
                             if  idy == 1 and idz == 2:
-                                self.assertEqual(str(wfrac.id),  'ac223')
-                                self.assertEqual(str(wfrac.value), '0.2')
+                                self.assertEqual(str(f_num.id),  'ac224')
+                                self.assertEqual(str(f_num.value), '0.4')
 
     def test_bars_typethree_y(self):
         typethree_y_count = 0
