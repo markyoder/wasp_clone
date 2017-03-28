@@ -58,6 +58,13 @@ public:
 
     Value::Type type()const;
 
+    bool is_null()const{return m_type == TYPE_NULL;}
+    bool is_integer()const{return m_type == TYPE_INTEGER;}
+    bool is_double()const{return m_type == TYPE_DOUBLE;}
+    bool is_number()const{return is_integer() || is_double();}
+    bool is_bool()const{return m_type == TYPE_BOOLEAN;}
+    bool is_string()const{return m_type == TYPE_STRING;}
+
 private:
     /**
      * @brief nullify deletes and nullifies this object
