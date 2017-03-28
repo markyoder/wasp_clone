@@ -5,6 +5,7 @@ TRIBITS_CONFIGURE_FILE(version.h)
 SET(SOURCE
 Definition.cpp
 utils.cpp
+Object.cpp
 )
 
 SET(HEADERS
@@ -13,6 +14,7 @@ Format.h
 FlexLexer.h
 Interpreter.h
 Interpreter.i.h
+Object.h
 StringPool.h
 StringPool.i.h
 TokenPool.h
