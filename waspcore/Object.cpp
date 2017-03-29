@@ -2,6 +2,7 @@
 
 #include "waspcore/wasp_bug.h"
 #include <string.h> // strdup
+#include <cstdlib> // atoi/atof, etc
 
 namespace wasp{
 
@@ -111,6 +112,170 @@ void Value::nullify()
 Value::~Value()
 {
     this->nullify();
+}
+
+int Value::to_int()const
+{
+    switch( m_type )
+    {
+    case TYPE_NULL:
+        return 0;
+
+    case TYPE_BOOLEAN:
+        return int(m_data.m_bool);
+
+    case TYPE_INTEGER:
+        return m_data.m_int;
+
+    case TYPE_DOUBLE:
+        return int(m_data.m_double);
+
+    case TYPE_STRING:
+        wasp_ensure(m_allocated);
+        wasp_ensure(m_data.m_string);
+        return atoi(m_data.m_string);
+
+    case TYPE_ARRAY:
+        wasp_not_implemented("conversion of array to integer");
+
+    case TYPE_OBJECT:
+        wasp_not_implemented("conversion of object to integer");
+    }
+    wasp_not_implemented("unknown type conversion to integer");
+}
+double Value::to_double()const
+{
+    switch( m_type )
+    {
+    case TYPE_NULL:
+        return 0.0;
+
+    case TYPE_BOOLEAN:
+        return double(m_data.m_bool);
+
+    case TYPE_INTEGER:
+        return double(m_data.m_int);
+
+    case TYPE_DOUBLE:
+        return m_data.m_double;
+
+    case TYPE_STRING:
+        wasp_ensure(m_allocated);
+        wasp_ensure(m_data.m_string);
+        return atof(m_data.m_string);
+
+    case TYPE_ARRAY:
+        wasp_not_implemented("conversion of array to double");
+
+    case TYPE_OBJECT:
+        wasp_not_implemented("conversion of object to double");
+    }
+    wasp_not_implemented("unknown type conversion to double");
+}
+bool Value::to_bool()const
+{
+    switch( m_type )
+    {
+    case TYPE_NULL:
+        return false;
+
+    case TYPE_BOOLEAN:
+        return m_data.m_bool;
+
+    case TYPE_INTEGER:
+        return m_data.m_int ? true : false;
+
+    case TYPE_DOUBLE:
+        return m_data.m_double  ? true : false;
+
+    case TYPE_STRING:
+        wasp_not_implemented("conversion of string to boolean");
+
+    case TYPE_ARRAY:
+        wasp_not_implemented("conversion of array to double");
+
+    case TYPE_OBJECT:
+        wasp_not_implemented("conversion of object to double");
+    }
+    wasp_not_implemented("unknown type conversion to bool");
+}
+const char* Value::to_cstring()const
+{
+    switch( m_type )
+    {
+    case TYPE_NULL:
+    case TYPE_BOOLEAN:
+    case TYPE_INTEGER:
+    case TYPE_DOUBLE:
+        return nullptr;
+    case TYPE_STRING:
+        wasp_check( m_allocated );
+        return m_data.m_string;
+
+    case TYPE_ARRAY:
+        wasp_not_implemented("conversion of array to cstring");
+
+    case TYPE_OBJECT:
+        wasp_not_implemented("conversion of object to cstring");
+    }
+    wasp_not_implemented("unknown type conversion to cstring");
+}
+std::string Value::to_string()const
+{
+    switch( m_type )
+    {
+    case TYPE_NULL:
+        return "null";
+    case TYPE_BOOLEAN:
+        return m_data.m_bool ? "true" : "false";
+    case TYPE_INTEGER:
+        return std::to_string(m_data.m_int);
+    case TYPE_DOUBLE:
+        return std::to_string(m_data.m_double);
+    case TYPE_STRING:
+        wasp_check( m_allocated );
+        return m_data.m_string;
+
+    case TYPE_ARRAY:
+        wasp_not_implemented("conversion of array to string");
+
+    case TYPE_OBJECT:
+        wasp_not_implemented("conversion of object to string");
+    }
+    wasp_not_implemented("unknown type conversion to string");
+}
+
+DataArray* Value::to_array()const
+{
+    wasp_insist(convertable(TYPE_ARRAY)
+                ,"Value object must be convertable to an array");
+    return m_data.m_array;
+}
+DataObject* Value::to_object()const
+{
+    wasp_insist(convertable(TYPE_OBJECT)
+                ,"Value object must be convertable to an object");
+    return m_data.m_object;
+}
+bool Value::convertable(Value::Type to) const
+{
+    switch( to )
+    {
+    case TYPE_NULL:
+        return ( is_number() && to_double() == 0.0 );
+    case TYPE_BOOLEAN:
+    case TYPE_INTEGER:
+    case TYPE_DOUBLE:
+        return is_bool() || is_null() || is_number();
+    case TYPE_STRING:
+        return is_string();
+    case TYPE_ARRAY:
+        return is_array();
+    case TYPE_OBJECT:
+        return is_object();
+
+    }
+    wasp_not_implemented("unknown type conversion");
 }
 
 DataArray::DataArray()

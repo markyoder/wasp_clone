@@ -64,6 +64,18 @@ public:
     bool is_number()const{return is_integer() || is_double();}
     bool is_bool()const{return m_type == TYPE_BOOLEAN;}
     bool is_string()const{return m_type == TYPE_STRING;}
+    bool is_array()const{return m_type == TYPE_ARRAY;}
+    bool is_object()const{return m_type == TYPE_OBJECT;}
+
+    bool convertable(Value::Type to)const;
+
+    int to_int()const;
+    double to_double()const;
+    bool to_bool()const;
+    const char * to_cstring()const;
+    std::string to_string()const;
+    DataArray* to_array()const;
+    DataObject* to_object()const;
 
 private:
     /**
