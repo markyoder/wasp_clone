@@ -53,4 +53,31 @@ TEST( Value, constructors )
     ASSERT_EQ("fred",d);
     ASSERT_EQ( Value::TYPE_STRING, v.type() );
     }
+    {
+    DataArray da;
+    Value v( da );
+    ASSERT_FALSE(v.is_string());
+    ASSERT_TRUE(v.is_array());
+    ASSERT_EQ( Value::TYPE_ARRAY, v.type() );
+    }
+    {
+    DataObject obj;
+    Value v( obj );
+    ASSERT_FALSE(v.is_string());
+    ASSERT_TRUE(v.is_object());
+    ASSERT_EQ( Value::TYPE_OBJECT, v.type() );
+    }
+}
+
+TEST(DataArray, methods)
+{
+    DataArray a;
+    ASSERT_EQ(0, a.size() );
+    ASSERT_TRUE(a.empty());
+}
+TEST(DataObject, methods)
+{
+    DataObject o;
+    ASSERT_EQ(0, o.size() );
+    ASSERT_TRUE(o.empty());
 }

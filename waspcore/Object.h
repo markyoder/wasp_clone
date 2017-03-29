@@ -51,7 +51,10 @@ public:
     Value(const char * v);
     // string
     Value(const std::string & v);
-
+    // data array
+    Value(const DataArray& d);
+    // data object
+    Value(const DataObject& d);
     ~Value();
 
     Value& operator=(const Value& v);

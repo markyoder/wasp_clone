@@ -37,6 +37,14 @@ Value::Value(const std::string & v)
 {
     m_data.m_string = strdup(v.c_str()); m_type = TYPE_STRING; m_allocated = true;
 }
+Value::Value(const DataArray & v)
+{
+    m_data.m_array = new DataArray(v); m_type = TYPE_ARRAY; m_allocated = true;
+}
+Value::Value(const DataObject & v)
+{
+    m_data.m_object = new DataObject(v); m_type = TYPE_OBJECT; m_allocated = true;
+}
 void Value::copy_from(const Value &orig)
 {
     m_allocated = orig.m_allocated;
@@ -285,17 +293,34 @@ DataArray::~DataArray()
 {
 }
 DataArray::DataArray(const DataArray &orig)
+    :m_data(orig.m_data)
 {
 }
-
+size_t DataArray::size()const
+{
+    return m_data.size();
+}
+bool DataArray::empty()const
+{
+    return m_data.empty();
+}
 DataObject::DataObject()
 {
 }
 DataObject::DataObject(const DataObject &orig)
+    :m_data(orig.m_data)
 {
 }
 
 DataObject::~DataObject()
 {
+}
+size_t DataObject::size()const
+{
+    return m_data.size();
+}
+bool DataObject::empty()const
+{
+    return m_data.empty();
 }
 } // end of namespace wasp
