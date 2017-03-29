@@ -74,6 +74,14 @@ TEST(DataArray, methods)
     DataArray a;
     ASSERT_EQ(0, a.size() );
     ASSERT_TRUE(a.empty());
+    ASSERT_TRUE( a.begin() == a.end() );
+    a.push_back(Value(1));
+    ASSERT_EQ(1,a.size());
+    ASSERT_FALSE(a.empty());
+    ASSERT_EQ(Value::TYPE_INTEGER, a.back().type());
+    ASSERT_EQ(1, a.back().to_int());
+
+
 }
 TEST(DataObject, methods)
 {

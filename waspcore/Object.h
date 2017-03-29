@@ -107,17 +107,21 @@ public:
     size_t size()const;
     bool empty()const;
 
-    storage_type::const_iterator begin()const;
-    storage_type::const_iterator end()const;
-    storage_type::iterator begin();
-    storage_type::iterator end();
+    storage_type::const_iterator begin()const{return m_data.begin();}
+    storage_type::const_iterator end()const{return m_data.end();}
+    storage_type::iterator begin(){return m_data.begin();}
+    storage_type::iterator end(){return m_data.end();}
 
-    Value& operator[](size_t i);
+    Value& operator[](size_t i){ if(size()<=i) resize(i+1); return m_data[i];}
 
-    Value& at(size_t);
-    const Value& at(size_t)const;
-    void push_back(const Value& n);
-
+    const Value& front()const{return m_data.front();}
+    Value& front(){return m_data.front();}
+    const Value& back()const{return m_data.back();}
+    Value& back(){return m_data.back();}
+    Value& at(size_t i ){return m_data.at(i);}
+    const Value& at(size_t i)const{return m_data.at(i);}
+    void push_back(const Value& n){m_data.push_back(n);}
+    void resize(size_t nsize){m_data.resize(nsize);}
 };
 
 class DataObject
