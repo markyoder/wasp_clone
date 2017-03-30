@@ -137,5 +137,7 @@ TEST(DataObject, methods)
     {
         SCOPED_TRACE(i);
         ASSERT_EQ(i, a->at(i).to_int());
+        ASSERT_EQ(Value::TYPE_INTEGER,o["ted"]["arabic numbers"][i].type());
+        ASSERT_EQ(i,o["ted"]["arabic numbers"][i].to_int());
     }
 }

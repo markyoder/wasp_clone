@@ -298,6 +298,18 @@ Value Value::operator [](const std::string & name)const
     const DataObject* o = to_object();
     return o->operator [](name);
 }
+Value& Value::operator [](size_t i)
+{
+    wasp_check( is_array() );
+    DataArray* a = to_array();
+    return a->operator [](i);
+}
+Value Value::operator [](size_t i)const
+{
+    wasp_check( is_array() );
+    DataArray* a = to_array();
+    return a->operator [](i);
+}
 DataArray::DataArray()
 {
 }

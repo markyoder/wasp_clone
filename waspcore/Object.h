@@ -82,6 +82,8 @@ public:
 
     Value& operator[](const std::string& name);
     Value operator[](const std::string& name)const;
+    Value& operator[](size_t i);
+    Value operator[](size_t i)const;
 private:
     /**
      * @brief nullify deletes and nullifies this object
