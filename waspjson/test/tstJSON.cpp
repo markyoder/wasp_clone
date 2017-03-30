@@ -11,7 +11,7 @@
 #include <stdexcept>
 #include <functional>
 #include "waspjson/JSONInterpreter.h"
-
+#include "waspcore/Object.h"
 #include "gtest/gtest.h"
 using namespace std;
 using namespace wasp;
@@ -140,6 +140,15 @@ TEST( JSON, simple_object )
 /} (})
 )INPUT";
     ASSERT_EQ( expected_paths.str(), paths.str() );
+
+    DataObject json;
+    std::stringstream gen_errors;
+    bool json_object_generated = interpreter.generate_object(json, gen_errors);
+    std::cout<<gen_errors.str();
+    ASSERT_TRUE( json_object_generated );
+
+    ASSERT_EQ(10, json.size());
+    //TODO test all object members
 }
 
 /**

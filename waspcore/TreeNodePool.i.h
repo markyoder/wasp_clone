@@ -508,6 +508,16 @@ std::size_t TreeNodeView<TreeNodePool_T>::column()const
     return m_tree_data->column(m_tree_node_index);
 }
 template<class TreeNodePool_T>
+bool TreeNodeView<TreeNodePool_T>::to_bool(bool * ok)const
+{
+    bool result = false;
+    std::stringstream str;
+    str<<std::boolalpha<< data();
+    str>> result;
+    if( ok ) *ok = !(str.bad() || str.fail());
+    return result;
+}
+template<class TreeNodePool_T>
 int TreeNodeView<TreeNodePool_T>::to_int(bool * ok)const
 {
     int result = 0;

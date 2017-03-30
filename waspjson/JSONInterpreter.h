@@ -14,9 +14,10 @@
 
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/TokenPool.h"
-
+#include "waspcore/Object.h"
 #include "waspjson/JSONParser.hpp"
 #include "waspcore/Interpreter.h"
+#include "waspcore/wasp_node.h"
 
 /** The wasp namespace is used to encapsulate the three parser classes
  * wasp::JSONParser, wasp::JSONLexerImpl and wasp::JSONInterpreter */
@@ -67,6 +68,7 @@ namespace wasp {
         void setSingleParse(bool s){singleParse = s;}
         bool single_parse()const{return singleParse;}
 
+        bool generate_object(DataObject& obj, std::ostream & err)const;
     public: // public variables
 
         /**
@@ -100,13 +102,23 @@ namespace wasp {
          * Default is false;
          */
         bool singleParse;
-
-    private: // private methods
-
         /**
          * @brief mHasFile indicates whether this parser was instantiated via a file
          */
         bool mHasFile;
+
+    private: // private methods
+        // TODO these generate methods do not need to live in the interpreter class
+
+        bool generate_object_internal(const TreeNodeView<S> & view
+                               , DataObject & obj
+                                , std::ostream & err)const;
+        bool generate_array_internal(const TreeNodeView<S> & view
+                               , DataArray & obj
+                                , std::ostream & err)const;
+        bool generate_value_internal(const TreeNodeView<S> & value_view
+                                     ,wasp::Value & value
+                                     , std::ostream & err)const;
     }; // end of JSONInterpreter class
 #include "waspjson/JSONInterpreter.i.h"
 } // namespace wasp

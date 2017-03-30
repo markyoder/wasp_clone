@@ -56,4 +56,202 @@ bool JSONInterpreter<S>::parseString(const std::string &input, const std::string
     std::istringstream iss(input);
     return parseStream(iss, sname,startLine,startColumn);
 }
+
+template<class S>
+bool JSONInterpreter<S>::generate_object(DataObject & obj
+                                         , std::ostream & err)const
+{
+    auto root_view = Interpreter<S>::root();
+    if( root_view.is_null() ) return true; // empty file OK
+    return generate_object_internal(root_view
+                                    ,obj
+                                    ,err);
+}
+
+template<class S>
+bool JSONInterpreter<S>::generate_object_internal(const TreeNodeView<S> & view
+                                          ,DataObject & obj
+                                         , std::ostream & err)const
+{
+
+
+    wasp_require( view.is_null() == false );
+    for( size_t i = 0, count = view.child_count(); i < count; ++i )
+    {
+        auto child_view = view.child_at(i);
+        auto child_type = child_view.type();
+        std::string child_name = child_view.name();
+        switch ( child_type )
+        {
+        case wasp::DECL:
+        case wasp::ASSIGN: // :
+        case wasp::LBRACE:
+        case wasp::RBRACE:
+        case wasp::WASP_COMMA:
+            continue; // skip decorative
+            case wasp::OBJECT:
+            {
+                obj[child_name] = DataObject();
+                wasp_check( Value::TYPE_OBJECT == obj[child_name].type() );
+                if( false == generate_object_internal(child_view
+                                                 ,*obj[child_name].to_object()
+                                                 ,err))
+                {
+                    return false;
+                }
+                break;
+            }
+            case wasp::ARRAY:
+            {
+                obj[child_name] = DataArray();
+                wasp_check( Value::TYPE_ARRAY == obj[child_name].type() );
+                if( false == generate_array_internal(child_view
+                                                 ,*obj[child_name].to_array()
+                                                 ,err))
+                {
+                    return false;
+                }
+                break;
+            }
+            case wasp::KEYED_VALUE:
+            {
+                // 3 children required - key : value
+                wasp_check( child_view.child_count() == 3 );
+                auto value_view = child_view.child_at(2);
+                auto result_pair = obj.insert(std::make_pair(child_name,Value()));
+                if( result_pair.second == false )
+                {
+                    err<<"***Error : value component '"<<child_name<<"' at line "
+                      << child_view.line()<<" and column "
+                      << child_view.column()<<" is duplicate. "
+                      <<std::endl;
+                    return false;
+                }
+                if( false == generate_value_internal(value_view
+                                                     ,result_pair.first->second
+                                                     ,err))
+                {
+                    return false;
+                }
+
+                break;
+            }
+            default:
+            err<<"***Error : object component '"<<child_name<<"' at line "
+              << child_view.line()<<" and column "
+              << child_view.column()<<" is of an unknown type ("<<child_type<<")"
+              <<std::endl;
+            return false;
+        }
+    }
+    return true;
+}
+
+template<class S>
+bool JSONInterpreter<S>::generate_array_internal(const TreeNodeView<S> & view
+                                          ,DataArray & array
+                                         , std::ostream & err)const
+{
+
+
+    wasp_require( view.is_null() == false );
+    size_t child_index = 0;
+    for( size_t i = 0, count = view.child_count(); i < count; ++i )
+    {
+        auto child_view = view.child_at(i);
+        auto child_type = child_view.type();
+
+
+
+        std::string child_name = child_view.name();
+        switch ( child_type )
+        {
+        case wasp::DECL:
+        case wasp::ASSIGN: // :
+        case wasp::LBRACKET:
+        case wasp::RBRACKET:
+        case wasp::WASP_COMMA:
+
+            continue; // skip decorative
+
+            case wasp::OBJECT:
+            {
+                array[child_index] = DataObject();
+                wasp_check( Value::TYPE_OBJECT == array[child_index].type() );
+                if( false == generate_object_internal(child_view
+                                                 ,*array[child_index].to_object()
+                                                 ,err))
+                {
+                    return false;
+                }
+                break;
+            }
+            case wasp::ARRAY:
+            {
+                array[child_index] = DataArray();
+                wasp_check( Value::TYPE_ARRAY == array[child_index].type() );
+                if( false == generate_array_internal(child_view
+                                                 ,*array[child_index].to_array()
+                                                 ,err))
+                {
+                    return false;
+                }
+                break;
+            }
+            case wasp::VALUE:
+
+                if( false == generate_value_internal(child_view
+                                                     ,array[i]
+                                                     ,err))
+                {
+                    return false;
+                }
+                break;
+            default:
+            err<<"***Error : array element '"<<child_name<<"' at line "
+              << child_view.line()<<" and column "
+              << child_view.column()<<" is of an unknown type ("<<child_type<<")"
+              <<std::endl;
+            return false;
+        }
+        ++child_index;
+    }
+    return true;
+}
+template<class S>
+bool JSONInterpreter<S>::generate_value_internal(const TreeNodeView<S> & value_view
+                                                 ,wasp::Value & value
+                                                 , std::ostream & err)const
+{
+    wasp_check( value_view.is_null() == false );
+    auto value_type = value_view.token_type();
+    switch( value_type )
+    {
+        case wasp::WASP_NULL:
+            value = Value(); // null value
+            break;
+        case wasp::INT:
+            value = value_view.to_int();
+            break;
+        case wasp::REAL:
+            value = value_view.to_double();
+            break;
+        case wasp::WASP_TRUE:
+        case wasp::WASP_FALSE:
+            value = value_view.to_bool();
+            break;
+        case wasp::QUOTED_STRING:
+            value = value_view.to_string();
+            break;
+        default:
+            err<<"***Error : JSON Value at line "<<value_view.line()
+              <<" and column "<<value_view.column()
+             <<" is an unsupported type. Only true, false, null,"
+              <<" number, and quoted string are supported."
+            <<std::endl;
+            return false;
+    }
+    return true;
+}
+
 #endif

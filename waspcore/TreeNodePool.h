@@ -431,6 +431,7 @@ public:
     const TreeNodePool_T * tree_node_pool()const{return m_tree_data;}
 
     // !> Type operators
+    bool to_bool(bool * ok = nullptr)const;
     /**
      * @brief to_int converts the data to an integer
      * @return the data as an integer

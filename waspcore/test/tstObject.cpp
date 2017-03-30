@@ -52,6 +52,12 @@ TEST( Value, constructors )
     std::string d = v.to_cstring();
     ASSERT_EQ("fred",d);
     ASSERT_EQ( Value::TYPE_STRING, v.type() );
+    v = 1;
+    ASSERT_TRUE(v.is_integer());
+    ASSERT_TRUE(v.is_number());
+    ASSERT_EQ(1, v.to_int() );
+    ASSERT_EQ(1.0, v.to_double() );
+    ASSERT_EQ( Value::TYPE_INTEGER, v.type() );
     }
     {
     DataArray da;
