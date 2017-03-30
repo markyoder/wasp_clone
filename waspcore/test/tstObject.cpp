@@ -81,7 +81,10 @@ TEST(DataArray, methods)
     ASSERT_EQ(Value::TYPE_INTEGER, a.back().type());
     ASSERT_EQ(1, a.back().to_int());
 
-
+    a.push_back("ted");
+    ASSERT_EQ(Value::TYPE_STRING, a.back().type());
+    ASSERT_EQ("ted", a.back().to_string());
+    ASSERT_EQ(2, a.size() );
 }
 TEST(DataObject, methods)
 {
