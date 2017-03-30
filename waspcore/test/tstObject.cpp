@@ -97,4 +97,24 @@ TEST(DataObject, methods)
     ASSERT_FALSE( o.insert(std::make_pair("fed",Value("bye"))).second );
     ASSERT_EQ(1, o.size() );
     ASSERT_FALSE(o.empty());
+    o["ted"] = 1;
+    ASSERT_EQ(2, o.size() );
+    ASSERT_TRUE( o.contains("ted") );
+    ASSERT_EQ(Value::TYPE_INTEGER, o["ted"].type() );
+    ASSERT_EQ(1, o["ted"].to_int());
+    o["ted"] = 1.4;
+    ASSERT_EQ(2, o.size() );
+    ASSERT_TRUE( o.contains("ted") );
+    ASSERT_EQ(Value::TYPE_DOUBLE, o["ted"].type() );
+    ASSERT_EQ(1.4, o["ted"].to_double());
+
+    {
+    DataObject o2;
+    o2["fred"] = "teds brother";
+    o["ted"] = o2;
+    }
+    ASSERT_EQ(Value::TYPE_OBJECT, o["ted"].type());
+    ASSERT_TRUE(o["ted"].to_object() != nullptr );
+    ASSERT_TRUE(o["ted"].to_object()->contains("fred"));
+    ASSERT_EQ(Value::TYPE_STRING, o["ted"]["fred"]);
 }
