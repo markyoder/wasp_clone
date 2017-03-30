@@ -80,6 +80,8 @@ public:
     DataArray* to_array()const;
     DataObject* to_object()const;
 
+    Value& operator[](const std::string& name);
+    Value operator[](const std::string& name)const;
 private:
     /**
      * @brief nullify deletes and nullifies this object
@@ -113,6 +115,7 @@ public:
     storage_type::iterator end(){return m_data.end();}
 
     Value& operator[](size_t i){ if(size()<=i) resize(i+1); return m_data[i];}
+    Value operator[](size_t i)const{ if(size()<=i) return Value(); return m_data[i];}
 
     const Value& front()const{return m_data.front();}
     Value& front(){return m_data.front();}

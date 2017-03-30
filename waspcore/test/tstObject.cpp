@@ -85,6 +85,9 @@ TEST(DataArray, methods)
     ASSERT_EQ(Value::TYPE_STRING, a.back().type());
     ASSERT_EQ("ted", a.back().to_string());
     ASSERT_EQ(2, a.size() );
+
+    const DataArray& b = a;
+    ASSERT_EQ(Value::TYPE_NULL, b[a.size()+1].type() );
 }
 TEST(DataObject, methods)
 {
@@ -116,5 +119,23 @@ TEST(DataObject, methods)
     ASSERT_EQ(Value::TYPE_OBJECT, o["ted"].type());
     ASSERT_TRUE(o["ted"].to_object() != nullptr );
     ASSERT_TRUE(o["ted"].to_object()->contains("fred"));
-    ASSERT_EQ(Value::TYPE_STRING, o["ted"]["fred"]);
+    ASSERT_EQ(Value::TYPE_STRING, o["ted"]["fred"].type());
+    ASSERT_EQ("teds brother", o["ted"]["fred"].to_string());
+    {
+        DataArray a;
+        for( int i = 0; i < 10; ++i)
+        {
+            a.push_back(i);
+        }
+        o["ted"]["arabic numbers"] = a;
+    }
+    ASSERT_TRUE( o["ted"].to_object()->contains("arabic numbers") );
+    DataArray * a = o["ted"]["arabic numbers"].to_array();
+    ASSERT_TRUE( a != nullptr );
+    ASSERT_EQ(10, a->size() );
+    for( int i = 0; i < a->size(); ++i )
+    {
+        SCOPED_TRACE(i);
+        ASSERT_EQ(i, a->at(i).to_int());
+    }
 }

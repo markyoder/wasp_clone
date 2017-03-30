@@ -286,6 +286,18 @@ bool Value::convertable(Value::Type to) const
     wasp_not_implemented("unknown type conversion");
 }
 
+Value& Value::operator [](const std::string & name)
+{
+    wasp_check( is_object() );
+    DataObject* o = to_object();
+    return o->operator [](name);
+}
+Value Value::operator [](const std::string & name)const
+{
+    wasp_check( is_object() );
+    const DataObject* o = to_object();
+    return o->operator [](name);
+}
 DataArray::DataArray()
 {
 }
