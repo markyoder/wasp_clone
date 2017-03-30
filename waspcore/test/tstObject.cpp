@@ -91,4 +91,10 @@ TEST(DataObject, methods)
     DataObject o;
     ASSERT_EQ(0, o.size() );
     ASSERT_TRUE(o.empty());
+    ASSERT_TRUE( o.begin() == o.end() );
+    ASSERT_FALSE( o.contains("fed") );
+    ASSERT_TRUE( o.insert(std::make_pair("fed",Value("hi"))).second );
+    ASSERT_FALSE( o.insert(std::make_pair("fed",Value("bye"))).second );
+    ASSERT_EQ(1, o.size() );
+    ASSERT_FALSE(o.empty());
 }

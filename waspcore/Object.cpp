@@ -323,4 +323,27 @@ bool DataObject::empty()const
 {
     return m_data.empty();
 }
+
+Value& DataObject::operator [](const std::string & name)
+{
+    auto itr = m_data.find(name);
+
+    if( itr == m_data.end() )
+    {
+        auto result_pair = m_data.insert(
+                    std::make_pair(name,Value())); // create null entry
+        return result_pair.first->second;
+    }
+    return itr->second;
+}
+Value DataObject::operator [](const std::string & name)const
+{
+    auto itr = m_data.find(name);
+
+    if( itr == m_data.end() )
+    {
+        return Value(); // null value
+    }
+    return itr->second;
+}
 } // end of namespace wasp

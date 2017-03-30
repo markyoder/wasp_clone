@@ -143,17 +143,18 @@ public:
     storage_type::const_iterator find(const std::string & name)const;
     storage_type::iterator find(const std::string & name);
 
-    storage_type::const_iterator begin()const;
-    storage_type::const_iterator end()const;
+    storage_type::const_iterator begin()const{return m_data.begin();}
+    storage_type::const_iterator end()const{return m_data.end();}
 
-    storage_type::iterator begin();
-    storage_type::iterator end();
+    storage_type::iterator begin(){return m_data.begin();}
+    storage_type::iterator end(){return m_data.end();}
 
     Value& operator[](const std::string& name);
-    const Value& operator[](const std::string& name)const;
+    Value operator[](const std::string& name)const;
 
-    bool contains(const std::string & name)const;
-    std::pair<storage_type::iterator, bool> insert(const std::pair<std::string,Value>&v);
+    bool contains(const std::string & name)const{return m_data.find(name)!=end();}
+    std::pair<storage_type::iterator, bool>
+    insert(const std::pair<std::string,Value>&v){return m_data.insert(v);}
 
 };
 } // end of namespace
