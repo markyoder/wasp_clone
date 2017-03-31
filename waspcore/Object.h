@@ -84,6 +84,19 @@ public:
     Value operator[](const std::string& name)const;
     Value& operator[](size_t i);
     Value operator[](size_t i)const;
+
+    /**
+     * @brief empty whether the value is empty
+     * @return false when value is null or empty object/array
+     */
+    bool empty()const;
+
+    /**
+     * @brief size the number of elements (object keys or array indices)
+     * @return size_t array element count, object member count, or 0
+     */
+    size_t size()const;
+
 private:
     /**
      * @brief nullify deletes and nullifies this object

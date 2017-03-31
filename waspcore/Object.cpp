@@ -310,6 +310,30 @@ Value Value::operator [](size_t i)const
     DataArray* a = to_array();
     return a->operator [](i);
 }
+bool Value::empty()const
+{
+    if( is_array() ){
+        wasp_check(to_array());
+        return to_array()->empty();
+    }
+    if( is_object() ){
+        wasp_check(to_object());
+        return to_object()->empty();
+    }
+    return is_null();
+}
+size_t Value::size()const
+{
+    if( is_array() ){
+        wasp_check(to_array());
+        return to_array()->size();
+    }
+    if( is_object() ){
+        wasp_check(to_object());
+        return to_object()->size();
+    }
+    return 0;
+}
 DataArray::DataArray()
 {
 }

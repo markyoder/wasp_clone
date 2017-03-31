@@ -30,7 +30,7 @@ TEST( JSON, simple_object )
  "key_double" : 1.03,
  "key_bool_true" : true,
  "key_bool_false" : false,
- "key_bool_null" : null,
+ "key_null" : null,
  "object_empty": { },
  "object_mixed": { "o":{}, "a":[], "k":1.0 },
  "array_empty" : [],
@@ -76,10 +76,10 @@ TEST( JSON, simple_object )
 /key_bool_false/: (:)
 /key_bool_false/value (false)
 /, (,)
-/key_bool_null
-/key_bool_null/decl ("key_bool_null")
-/key_bool_null/: (:)
-/key_bool_null/value (null)
+/key_null
+/key_null/decl ("key_null")
+/key_null/: (:)
+/key_null/value (null)
 /, (,)
 /object_empty
 /object_empty/decl ("object_empty")
@@ -148,7 +148,23 @@ TEST( JSON, simple_object )
     ASSERT_TRUE( json_object_generated );
 
     ASSERT_EQ(10, json.size());
-    //TODO test all object members
+    ASSERT_EQ("value1",json["key_string"].to_string());
+    ASSERT_EQ(1,json["key_int"].to_int());
+    ASSERT_EQ(1.03,json["key_double"].to_double());
+    ASSERT_EQ(true,json["key_bool_true"].to_bool());
+    ASSERT_EQ(false,json["key_bool_false"].to_bool());
+    ASSERT_FALSE(json["key_null"].to_bool());
+    ASSERT_TRUE(json["key_null"].is_null());
+
+    ASSERT_TRUE(json["object_empty"].empty());
+    ASSERT_EQ(0,json["object_empty"].size());
+
+    ASSERT_EQ(0,json["object_mixed"]["o"].size());
+    ASSERT_TRUE(json["object_mixed"]["o"].empty());
+
+    ASSERT_EQ(0,json["object_mixed"]["a"].size());
+    ASSERT_TRUE(json["object_mixed"]["a"].empty());
+    ASSERT_EQ(1.0,json["object_mixed"]["k"].to_double());
 }
 
 /**
