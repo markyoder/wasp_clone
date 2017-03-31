@@ -196,6 +196,13 @@ TEST( JSON, simple_object )
     ASSERT_EQ(0, json["array_mixed"][5].to_int() );
     ASSERT_FALSE( json["array_mixed"][5].to_bool() );
     ASSERT_TRUE( json["array_mixed"][5].is_bool() );
+
+    // null
+    ASSERT_EQ(0.0, json["array_mixed"][6].to_double() );
+    ASSERT_EQ(0, json["array_mixed"][6].to_int() );
+    ASSERT_FALSE( json["array_mixed"][6].to_bool() );
+    ASSERT_FALSE( json["array_mixed"][6].is_bool() );
+    ASSERT_TRUE( json["array_mixed"][6].is_null() );
 }
 
 /**
