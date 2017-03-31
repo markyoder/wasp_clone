@@ -165,6 +165,12 @@ TEST( JSON, simple_object )
     ASSERT_EQ(0,json["object_mixed"]["a"].size());
     ASSERT_TRUE(json["object_mixed"]["a"].empty());
     ASSERT_EQ(1.0,json["object_mixed"]["k"].to_double());
+
+    ASSERT_TRUE(json["array_empty"].empty());
+    ASSERT_EQ(0,json["array_empty"].size());
+
+    ASSERT_FALSE(json["array_mixed"].empty());
+    ASSERT_EQ(7,json["array_mixed"].size());
 }
 
 /**
