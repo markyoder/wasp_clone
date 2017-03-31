@@ -161,19 +161,16 @@ bool JSONInterpreter<S>::generate_array_internal(const TreeNodeView<S> & view
         auto child_view = view.child_at(i);
         auto child_type = child_view.type();
 
-
-
+        if( child_type == wasp::DECL
+            || child_type == wasp::ASSIGN
+            || child_type == wasp::LBRACKET
+            || child_type == wasp::RBRACKET
+            || child_type == wasp::WASP_COMMA) {
+            continue; // skip decorative
+        }
         std::string child_name = child_view.name();
         switch ( child_type )
         {
-        case wasp::DECL:
-        case wasp::ASSIGN: // :
-        case wasp::LBRACKET:
-        case wasp::RBRACKET:
-        case wasp::WASP_COMMA:
-
-            continue; // skip decorative
-
             case wasp::OBJECT:
             {
                 array[child_index] = DataObject();
@@ -201,7 +198,7 @@ bool JSONInterpreter<S>::generate_array_internal(const TreeNodeView<S> & view
             case wasp::VALUE:
 
                 if( false == generate_value_internal(child_view
-                                                     ,array[i]
+                                                     ,array[child_index]
                                                      ,err))
                 {
                     return false;

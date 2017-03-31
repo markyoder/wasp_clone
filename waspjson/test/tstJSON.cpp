@@ -159,6 +159,9 @@ TEST( JSON, simple_object )
     ASSERT_TRUE(json["object_empty"].empty());
     ASSERT_EQ(0,json["object_empty"].size());
 
+    ASSERT_EQ(3,json["object_mixed"].size());
+    ASSERT_FALSE(json["object_mixed"].empty());
+
     ASSERT_EQ(0,json["object_mixed"]["o"].size());
     ASSERT_TRUE(json["object_mixed"]["o"].empty());
 
