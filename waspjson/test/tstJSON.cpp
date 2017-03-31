@@ -34,7 +34,7 @@ TEST( JSON, simple_object )
  "object_empty": { },
  "object_mixed": { "o":{}, "a":[], "k":1.0 },
  "array_empty" : [],
- "array_mixed" : [{}, [], 1, 1.0, true, false, null ]
+ "array_mixed" : [{}, [], 1, 1.004, true, false, null ]
 })INPUT";
     JSONInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
@@ -129,7 +129,7 @@ TEST( JSON, simple_object )
 /array_mixed/, (,)
 /array_mixed/value (1)
 /array_mixed/, (,)
-/array_mixed/value (1.0)
+/array_mixed/value (1.004)
 /array_mixed/, (,)
 /array_mixed/value (true)
 /array_mixed/, (,)
@@ -174,6 +174,28 @@ TEST( JSON, simple_object )
 
     ASSERT_FALSE(json["array_mixed"].empty());
     ASSERT_EQ(7,json["array_mixed"].size());
+
+    ASSERT_TRUE( json["array_mixed"][0].is_object() );
+    ASSERT_TRUE( json["array_mixed"][0].empty() );
+
+    ASSERT_TRUE( json["array_mixed"][1].is_array() );
+    ASSERT_TRUE( json["array_mixed"][1].empty() );
+
+    ASSERT_EQ(1, json["array_mixed"][2].to_int() );
+    ASSERT_TRUE( json["array_mixed"][2].is_int() );
+
+    ASSERT_EQ(1.004, json["array_mixed"][3].to_double() );
+    ASSERT_TRUE( json["array_mixed"][3].is_double() );
+
+    ASSERT_EQ(1.0, json["array_mixed"][4].to_double() );
+    ASSERT_EQ(1, json["array_mixed"][4].to_int() );
+    ASSERT_TRUE( json["array_mixed"][4].to_bool() );
+    ASSERT_TRUE( json["array_mixed"][4].is_bool() );
+
+    ASSERT_EQ(0.0, json["array_mixed"][5].to_double() );
+    ASSERT_EQ(0, json["array_mixed"][5].to_int() );
+    ASSERT_FALSE( json["array_mixed"][5].to_bool() );
+    ASSERT_TRUE( json["array_mixed"][5].is_bool() );
 }
 
 /**
