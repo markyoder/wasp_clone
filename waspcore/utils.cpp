@@ -1,4 +1,5 @@
 #include "waspcore/utils.h"
+
 namespace wasp{
 std::string strip_quotes( const std::string& src )
 {

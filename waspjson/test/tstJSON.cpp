@@ -203,6 +203,36 @@ TEST( JSON, simple_object )
     ASSERT_FALSE( json["array_mixed"][6].to_bool() );
     ASSERT_FALSE( json["array_mixed"][6].is_bool() );
     ASSERT_TRUE( json["array_mixed"][6].is_null() );
+
+    std::stringstream json_formatted;
+    json.format_json(json_formatted);
+//    std::cout<<json_formatted.str();
+    std::stringstream expected_json_formatted;
+    expected_json_formatted<<R"INPUT({
+  "array_empty" : []
+  ,"array_mixed" : [
+    {}
+    ,[]
+    ,1
+    ,1.004
+    ,true
+    ,false
+    ,null
+  ]
+  ,"key_bool_false" : false
+  ,"key_bool_true" : true
+  ,"key_double" : 1.03
+  ,"key_int" : 1
+  ,"key_null" : null
+  ,"key_string" : "value1"
+  ,"object_empty" : {}
+  ,"object_mixed" : {
+    "a" : []
+    ,"k" : 1
+    ,"o" : {}
+  }
+})INPUT";
+    ASSERT_EQ( expected_json_formatted.str(), json_formatted.str() );
 }
 
 /**

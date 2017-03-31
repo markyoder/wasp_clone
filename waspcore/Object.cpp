@@ -334,6 +334,42 @@ size_t Value::size()const
     }
     return 0;
 }
+
+bool Value::format_json(std::ostream & out, int indent_level, int level)const
+{
+    if( is_object() )
+    {
+        to_object()->format_json(out, indent_level,level);
+    }
+    else if( is_array() )
+    {
+        to_array()->format_json(out, indent_level,level);
+    }
+    else{
+        switch( type() ){
+        case TYPE_STRING:
+            out<<"\""<<to_string()<<"\"";
+            break;
+        case TYPE_BOOLEAN:
+            out<<std::boolalpha<<to_bool();
+            break;
+        case TYPE_INTEGER:
+            out<<to_int();
+            break;
+        case TYPE_DOUBLE:
+            // TODO determine desire precision
+            out<<to_double();
+            break;
+        case TYPE_NULL:
+            out<<"null";
+            break;
+        default:
+            wasp_not_implemented("unknown Object value type json emission");
+        }
+    }
+    return out.good();
+}
+
 DataArray::DataArray()
 {
 }
@@ -351,6 +387,30 @@ size_t DataArray::size()const
 bool DataArray::empty()const
 {
     return m_data.empty();
+}
+bool DataArray::format_json(std::ostream & out, int indent_level, int level)const
+{
+    wasp_require( indent_level >= 0 );
+    wasp_require( level >= 0 );
+    if( empty() ){
+        out<<"[]";
+        return true;
+    }
+    out<<"["<<std::endl;
+    wasp_tagged_line("aindent = "<<indent_level*(level+1)<<" level "<<level);
+    std::string indent = std::string(indent_level*(level+1),' ');
+    out<<indent;
+    at(0).format_json(out,indent_level,level);
+    out<<std::endl;
+
+    for(size_t i = 1, count = size(); i < count; ++i )
+    {
+        out<<indent<<",";
+        if( !at(i).format_json(out,indent_level, level) ) return false;
+        out<<std::endl;
+    }
+    out<<std::string(indent_level*(level),' ')<<"]";
+    return out.good();
 }
 DataObject::DataObject()
 {
@@ -393,5 +453,34 @@ Value DataObject::operator [](const std::string & name)const
         return Value(); // null value
     }
     return itr->second;
+}
+bool DataObject::format_json(std::ostream & out, int indent_level, int level)const
+{
+    wasp_require( indent_level >= 0 );
+    wasp_check(level >= 0);
+    if( empty() ){
+        out<<"{}";
+        return true;
+    }
+
+    out<<"{"<<std::endl;
+    wasp_tagged_line("oindent = "<<indent_level*(level+1)<<" level "<<level);
+    std::string indent = std::string(indent_level*(level+1),' ');
+    out<<indent;
+    auto itr = begin();
+    out<<"\""<<itr->first<<"\" : ";
+    itr->second.format_json(out,indent_level,level);
+    out<<std::endl;
+    ++itr;
+    for( ; itr != end(); ++itr )
+    {
+        out<<indent<<",";
+        out<<"\""<<itr->first<<"\" : ";
+        if( !itr->second.format_json(out,indent_level, level+1) ) return false;
+        out<<std::endl;
+    }
+
+    out<<std::string(indent_level*(level),' ')<<"}";
+    return out.good();
 }
 } // end of namespace wasp

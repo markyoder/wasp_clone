@@ -97,6 +97,7 @@ public:
      */
     size_t size()const;
 
+    bool format_json(std::ostream & out, int indent_level=2, int level=0)const;
 private:
     /**
      * @brief nullify deletes and nullifies this object
@@ -140,6 +141,8 @@ public:
     const Value& at(size_t i)const{return m_data.at(i);}
     void push_back(const Value& n){m_data.push_back(n);}
     void resize(size_t nsize){m_data.resize(nsize);}
+
+    bool format_json(std::ostream & out, int indent_level=2, int level=0)const;
 };
 
 class DataObject
@@ -174,6 +177,9 @@ public:
     std::pair<storage_type::iterator, bool>
     insert(const std::pair<std::string,Value>&v){return m_data.insert(v);}
 
+    bool format_json(std::ostream & out, int indent_level=2, int level=0)const;
+
 };
+
 } // end of namespace
 #endif
