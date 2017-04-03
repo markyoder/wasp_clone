@@ -40,7 +40,7 @@
 #ifndef YY_WASP_DDIPARSER_HPP_INCLUDED
 # define YY_WASP_DDIPARSER_HPP_INCLUDED
 // //                    "%code requires" blocks.
-#line 10 "DDIParser.bison" // lalr1.cc:377
+#line 11 "DDIParser.bison" // lalr1.cc:377
 
 #include <memory>
 #include "waspcore/utils.h"
@@ -131,7 +131,7 @@ namespace wasp {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 60 "DDIParser.bison" // lalr1.cc:377
+    #line 61 "DDIParser.bison" // lalr1.cc:377
 
         std::size_t token_index;
         std::size_t node_index;
@@ -375,7 +375,7 @@ namespace wasp {
     static const char* const yytname_[];
 #if YYDEBUG
   // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-  static const unsigned char yyrline_[];
+  static const unsigned short int yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r);
     /// Print the state stack on the debug stream.
@@ -474,8 +474,8 @@ namespace wasp {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 16,     ///< Last index in yytable_.
-      yynnts_ = 10,  ///< Number of nonterminal symbols.
+      yylast_ = 17,     ///< Last index in yytable_.
+      yynnts_ = 11,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,

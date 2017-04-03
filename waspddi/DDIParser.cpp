@@ -41,7 +41,8 @@
 #include <string>
 #include <vector>
 
-#line 45 "DDIParser.cpp" // lalr1.cc:404
+
+#line 46 "DDIParser.cpp" // lalr1.cc:404
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -54,11 +55,39 @@
 #include "DDIParser.hpp"
 
 // User implementation prologue.
-#line 95 "DDIParser.bison" // lalr1.cc:412
+#line 96 "DDIParser.bison" // lalr1.cc:412
 
 
 #include "DDInterpreter.h"
 #include "DDILexer.h"
+
+#include "waspcore/wasp_bug.h"
+
+/**
+ * @brief adjust_interpreter_stages convenience method for committing staged parse trees
+ * @param interpreter the interpreter to conduct the adjustments on
+ * @param definition_name the name of the definition for which to adjust the interpreter's stage
+ * @return true, iff the definition with the given name can be found as a direct child of
+ * the current or ancenstral stage.
+ */
+bool adjust_interpreter_stages( wasp::AbstractInterpreter & interpreter
+                               , const std::string & definition_name)
+{
+    wasp_check(interpreter.definition());
+    int delta = interpreter.definition()->delta(definition_name);
+    if( -1 == delta )
+    {
+        return false;
+    }
+    else if( delta > 0 ){
+        wasp_ensure( delta < interpreter.staged_count() );
+        while( delta > 0 ){
+            interpreter.commit_staged(interpreter.staged_count()-1);
+            --delta;
+        }
+    }
+    return true;
+}
 
 /* this "connects" the bison parser in the interpreter to the flex DDILexer class
  * object. it defines the yylex() function call to pull the next token from the
@@ -67,7 +96,7 @@
 #define yylex lexer->lex
 
 
-#line 71 "DDIParser.cpp" // lalr1.cc:412
+#line 100 "DDIParser.cpp" // lalr1.cc:412
 
 
 #ifndef YY_
@@ -153,7 +182,7 @@
 
 
 namespace wasp {
-#line 157 "DDIParser.cpp" // lalr1.cc:479
+#line 186 "DDIParser.cpp" // lalr1.cc:479
 
   /* Return YYSTR after stripping away unnecessary quotes and
      backslashes, so that it's suitable for yyerror.  The heuristic is
@@ -404,11 +433,11 @@ namespace wasp {
     // User destructor.
     switch (yysym.type_get ())
     {
-            case 17: // value_list
+            case 18: // value_list
 
-#line 93 "DDIParser.bison" // lalr1.cc:614
+#line 94 "DDIParser.bison" // lalr1.cc:614
         { delete (yysym.value.node_indices); }
-#line 412 "DDIParser.cpp" // lalr1.cc:614
+#line 441 "DDIParser.cpp" // lalr1.cc:614
         break;
 
 
@@ -540,7 +569,7 @@ namespace wasp {
 
 
     // User initialization code.
-    #line 40 "DDIParser.bison" // lalr1.cc:741
+    #line 41 "DDIParser.bison" // lalr1.cc:741
 {
     // initialize the initial location object
     yyla.location.begin.filename = yyla.location.end.filename = &interpreter.stream_name();
@@ -549,7 +578,7 @@ namespace wasp {
     lexer = std::make_shared<DDILexerImpl>(interpreter,&input_stream);
 }
 
-#line 553 "DDIParser.cpp" // lalr1.cc:741
+#line 582 "DDIParser.cpp" // lalr1.cc:741
 
     /* Initialize the stack.  The initial state will be set in
        yynewstate, since the latter expects the semantical and the
@@ -656,18 +685,27 @@ namespace wasp {
         {
           switch (yyn)
             {
-  case 5:
-#line 121 "DDIParser.bison" // lalr1.cc:859
+  case 2:
+#line 142 "DDIParser.bison" // lalr1.cc:859
+    {
+        auto token_index = ((yystack_[0].value.token_index));
+        (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
+    }
+#line 695 "DDIParser.cpp" // lalr1.cc:859
+    break;
+
+  case 6:
+#line 150 "DDIParser.bison" // lalr1.cc:859
     {
     size_t token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                      ,token_index);
 }
-#line 667 "DDIParser.cpp" // lalr1.cc:859
+#line 705 "DDIParser.cpp" // lalr1.cc:859
     break;
 
-  case 6:
-#line 128 "DDIParser.bison" // lalr1.cc:859
+  case 7:
+#line 157 "DDIParser.bison" // lalr1.cc:859
     {
         auto token_index = ((yystack_[0].value.token_index));
         std::string quote_less_data = interpreter.token_data(token_index);
@@ -676,38 +714,38 @@ namespace wasp {
                                    ,"decl"
                                    ,token_index);
     }
-#line 680 "DDIParser.cpp" // lalr1.cc:859
+#line 718 "DDIParser.cpp" // lalr1.cc:859
     break;
 
-  case 8:
-#line 137 "DDIParser.bison" // lalr1.cc:859
+  case 9:
+#line 166 "DDIParser.bison" // lalr1.cc:859
     {
              auto token_index = ((yystack_[0].value.token_index));
              (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,"=",token_index);
             }
-#line 689 "DDIParser.cpp" // lalr1.cc:859
+#line 727 "DDIParser.cpp" // lalr1.cc:859
     break;
 
-  case 9:
-#line 142 "DDIParser.bison" // lalr1.cc:859
+  case 10:
+#line 171 "DDIParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 698 "DDIParser.cpp" // lalr1.cc:859
+#line 736 "DDIParser.cpp" // lalr1.cc:859
     break;
 
-  case 10:
-#line 147 "DDIParser.bison" // lalr1.cc:859
+  case 11:
+#line 176 "DDIParser.bison" // lalr1.cc:859
     {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 707 "DDIParser.cpp" // lalr1.cc:859
+#line 745 "DDIParser.cpp" // lalr1.cc:859
     break;
 
-  case 11:
-#line 152 "DDIParser.bison" // lalr1.cc:859
+  case 12:
+#line 181 "DDIParser.bison" // lalr1.cc:859
     {
         bool is_array = (yystack_[0].value.node_indices)->size() > 1;
         (yystack_[0].value.node_indices)->insert((yystack_[0].value.node_indices)->begin(),(yystack_[1].value.node_index));
@@ -716,18 +754,12 @@ namespace wasp {
 
         wasp_check(interpreter.definition());
         int delta = interpreter.definition()->delta(quote_less_data);
-        if( -1 == delta )
+
+        if( false == adjust_interpreter_stages(interpreter, quote_less_data ) )
         {
             error(yystack_[1].location, "'"+quote_less_data+"' is unknown.");
             delete (yystack_[0].value.node_indices);
             YYERROR; // returns
-        }
-        else if( delta > 0 ){
-            wasp_ensure( delta < interpreter.staged_count() );
-            while( delta > 0 ){
-                interpreter.commit_staged(interpreter.staged_count()-1);
-                --delta;
-            }
         }
         (yylhs.value.stage_index) = interpreter.push_staged(is_array ? wasp::ARRAY : wasp::KEYED_VALUE
                                      // use the data instead of the name
@@ -739,11 +771,11 @@ namespace wasp {
                                     ,*(yystack_[0].value.node_indices));
         delete (yystack_[0].value.node_indices);
     }
-#line 743 "DDIParser.cpp" // lalr1.cc:859
+#line 775 "DDIParser.cpp" // lalr1.cc:859
     break;
 
-  case 12:
-#line 184 "DDIParser.bison" // lalr1.cc:859
+  case 13:
+#line 207 "DDIParser.bison" // lalr1.cc:859
     {
         bool is_array = (yystack_[0].value.node_indices)->size() > 1;
         (yystack_[0].value.node_indices)->insert((yystack_[0].value.node_indices)->begin(),(yystack_[1].value.node_index));
@@ -751,20 +783,11 @@ namespace wasp {
 
         std::string quote_less_data = interpreter.data((yystack_[2].value.node_index));
         quote_less_data = wasp::strip_quotes(quote_less_data);
-        wasp_check(interpreter.definition());
-        int delta = interpreter.definition()->delta(quote_less_data);
-        if( -1 == delta )
+        if( false == adjust_interpreter_stages(interpreter, quote_less_data ) )
         {
             error(yystack_[2].location, "'"+quote_less_data+"' is unknown.");
             delete (yystack_[0].value.node_indices);
             YYERROR; // returns
-        }
-        else if( delta > 0 ){
-            wasp_ensure( delta < interpreter.staged_count() );
-            while( delta > 0 ){
-                interpreter.commit_staged(interpreter.staged_count()-1);
-                --delta;
-            }
         }
 
         (yylhs.value.stage_index) = interpreter.push_staged(is_array ? wasp::ARRAY : wasp::KEYED_VALUE
@@ -776,57 +799,67 @@ namespace wasp {
                                      //  |_ value (1.2..blah)
                                     ,quote_less_data.c_str()
                                     ,*(yystack_[0].value.node_indices));
-        // TODO determine push/pop interpreter state information
+
         delete (yystack_[0].value.node_indices);
     }
-#line 783 "DDIParser.cpp" // lalr1.cc:859
+#line 806 "DDIParser.cpp" // lalr1.cc:859
     break;
 
-  case 13:
-#line 219 "DDIParser.bison" // lalr1.cc:859
+  case 14:
+#line 233 "DDIParser.bison" // lalr1.cc:859
     {
 
         std::string quote_less_data = interpreter.data((yystack_[0].value.node_index));
         quote_less_data = wasp::strip_quotes(quote_less_data);
-        wasp_check(interpreter.definition());
-        int delta = interpreter.definition()->delta(quote_less_data);
-        if( -1 == delta )
+        if( false == adjust_interpreter_stages(interpreter, quote_less_data ) )
         {
             error(yystack_[0].location, "'"+quote_less_data+"' is unknown.");
             YYERROR; // returns
-        }
-        else if( delta > 0 ){
-            wasp_ensure( delta < interpreter.staged_count() );
-            while( delta > 0 ){
-                interpreter.commit_staged(interpreter.staged_count()-1);
-                --delta;
-            }
         }
         std::vector<size_t> child_indices = {(yystack_[0].value.node_index)};
         (yylhs.value.stage_index) = interpreter.push_staged(wasp::OBJECT
                                     ,interpreter.data((yystack_[0].value.node_index)).c_str()
                                     ,child_indices);
     }
-#line 811 "DDIParser.cpp" // lalr1.cc:859
+#line 825 "DDIParser.cpp" // lalr1.cc:859
     break;
 
-  case 14:
-#line 245 "DDIParser.bison" // lalr1.cc:859
+  case 15:
+#line 247 "DDIParser.bison" // lalr1.cc:859
+    {
+
+        std::string quote_less_data = interpreter.data((yystack_[1].value.node_index));
+        quote_less_data = wasp::strip_quotes(quote_less_data);
+        if( false == adjust_interpreter_stages(interpreter, quote_less_data ) )
+        {
+            error(yystack_[1].location, "'"+quote_less_data+"' is unknown.");
+            YYERROR; // returns
+        }
+        std::vector<size_t> child_indices = {(yystack_[1].value.node_index),(yystack_[0].value.node_index)};
+        (yylhs.value.stage_index) = interpreter.push_staged(wasp::OBJECT
+                                    ,interpreter.data((yystack_[1].value.node_index)).c_str()
+                                    ,child_indices);
+    }
+#line 844 "DDIParser.cpp" // lalr1.cc:859
+    break;
+
+  case 16:
+#line 264 "DDIParser.bison" // lalr1.cc:859
     {
             auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
-#line 820 "DDIParser.cpp" // lalr1.cc:859
+#line 853 "DDIParser.cpp" // lalr1.cc:859
     break;
 
-  case 16:
-#line 250 "DDIParser.bison" // lalr1.cc:859
+  case 18:
+#line 269 "DDIParser.bison" // lalr1.cc:859
     {interpreter.push_staged_child(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
-#line 826 "DDIParser.cpp" // lalr1.cc:859
+#line 859 "DDIParser.cpp" // lalr1.cc:859
     break;
 
-  case 17:
-#line 251 "DDIParser.bison" // lalr1.cc:859
+  case 19:
+#line 270 "DDIParser.bison" // lalr1.cc:859
     {
             if(interpreter.single_parse() )
             {
@@ -834,11 +867,11 @@ namespace wasp {
                 YYACCEPT;
             }
         }
-#line 838 "DDIParser.cpp" // lalr1.cc:859
+#line 871 "DDIParser.cpp" // lalr1.cc:859
     break;
 
 
-#line 842 "DDIParser.cpp" // lalr1.cc:859
+#line 875 "DDIParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1093,69 +1126,74 @@ namespace wasp {
   }
 
 
-  const signed char DDIParser::yypact_ninf_ = -14;
+  const signed char DDIParser::yypact_ninf_ = -13;
 
   const signed char DDIParser::yytable_ninf_ = -1;
 
   const signed char
   DDIParser::yypact_[] =
   {
-     -14,     0,   -14,   -14,   -14,    -3,   -14,   -14,   -14,   -14,
-     -14,   -14,   -14,   -14,   -14,     5,     5,     5,   -14
+     -13,     0,   -13,   -13,   -13,    -3,   -13,   -13,   -13,   -13,
+     -13,   -13,   -13,   -13,   -13,   -13,   -13,     5,     5,     5,
+     -13
   };
 
   const unsigned char
   DDIParser::yydefact_[] =
   {
-      15,     0,     1,     6,    14,    13,    17,    16,     7,     3,
-       4,     2,     5,     9,     8,     0,    11,    12,    10
+      17,     0,     1,     7,    16,    14,    19,    18,     8,     2,
+       4,     5,     3,    15,     6,    10,     9,     0,    12,    13,
+      11
   };
 
   const signed char
   DDIParser::yypgoto_[] =
   {
-     -14,   -14,    -1,   -14,   -14,   -14,   -13,   -14,   -14,   -14
+     -13,   -13,   -13,    -2,   -13,   -13,   -13,   -12,   -13,   -13,
+     -13
   };
 
   const signed char
   DDIParser::yydefgoto_[] =
   {
-      -1,    12,    13,     5,    14,    15,    16,     6,     7,     1
+      -1,    13,    14,    15,     5,    16,    17,    18,     6,     7,
+       1
   };
 
   const unsigned char
   DDIParser::yytable_[] =
   {
-       2,     8,    17,     9,    10,     0,    11,     0,     3,     0,
-       4,     9,    10,     0,    11,    18,    18
+       2,     8,     9,    10,    11,    19,    12,     0,     3,     0,
+       4,    10,    11,     0,    12,     0,    20,    20
   };
 
   const signed char
   DDIParser::yycheck_[] =
   {
-       0,     4,    15,     6,     7,    -1,     9,    -1,     8,    -1,
-      10,     6,     7,    -1,     9,    16,    17
+       0,     4,     5,     6,     7,    17,     9,    -1,     8,    -1,
+      10,     6,     7,    -1,     9,    -1,    18,    19
   };
 
   const unsigned char
   DDIParser::yystos_[] =
   {
-       0,    20,     0,     8,    10,    14,    18,    19,     4,     6,
-       7,     9,    12,    13,    15,    16,    17,    17,    13
+       0,    21,     0,     8,    10,    15,    19,    20,     4,     5,
+       6,     7,     9,    12,    13,    14,    16,    17,    18,    18,
+      14
   };
 
   const unsigned char
   DDIParser::yyr1_[] =
   {
-       0,    11,    12,    12,    12,    13,    14,    15,    16,    17,
-      17,    18,    18,    18,    19,    20,    20,    20
+       0,    11,    12,    13,    13,    13,    14,    15,    16,    17,
+      18,    18,    19,    19,    19,    19,    20,    21,    21,    21
   };
 
   const unsigned char
   DDIParser::yyr2_[] =
   {
        0,     2,     1,     1,     1,     1,     1,     1,     1,     1,
-       2,     2,     3,     1,     1,     0,     2,     2
+       1,     2,     2,     3,     1,     2,     1,     0,     2,     2
   };
 
 
@@ -1167,16 +1205,17 @@ namespace wasp {
   {
   "\"end of file\"", "error", "$undefined", "\"end of line\"", "\"=\"",
   "\",\"", "\"integer\"", "\"double\"", "\"string\"", "\"quoted string\"",
-  "\"comment\"", "$accept", "PRIMITIVE", "value", "decl", "ASSIGNMENT",
-  "assignment", "value_list", "definition_section", "comment", "start", YY_NULLPTR
+  "\"comment\"", "$accept", "comma", "PRIMITIVE", "value", "decl",
+  "ASSIGNMENT", "assignment", "value_list", "definition_section",
+  "comment", "start", YY_NULLPTR
   };
 
 #if YYDEBUG
-  const unsigned char
+  const unsigned short int
   DDIParser::yyrline_[] =
   {
-       0,   112,   118,   118,   118,   120,   127,   136,   137,   141,
-     146,   151,   183,   219,   244,   249,   250,   251
+       0,   141,   141,   147,   147,   147,   149,   156,   165,   166,
+     170,   175,   180,   206,   233,   247,   263,   268,   269,   270
   };
 
   // Print the state stack on the debug stream.
@@ -1258,8 +1297,8 @@ namespace wasp {
 
 
 } // wasp
-#line 1262 "DDIParser.cpp" // lalr1.cc:1167
-#line 262 "DDIParser.bison" // lalr1.cc:1168
+#line 1301 "DDIParser.cpp" // lalr1.cc:1167
+#line 281 "DDIParser.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 
 void wasp::DDIParser::error(const DDIParser::location_type& l,

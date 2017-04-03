@@ -24,7 +24,7 @@ TEST(DDInterpreter,comment_placement)
     input <<R"I( # comment of document
  sect1 "a"
     # comment for section 1
-    sect1.1
+    sect1.1,
         sect1.1.1 # comment for sect 1.1.1
         #comment still 1.1.1
         sect1.1.2
@@ -33,7 +33,7 @@ TEST(DDInterpreter,comment_placement)
         # comment of 1.2
         sect1.2.1
 # sect 1.2.1
-        sect1.2.2
+        sect1.2.2,
         sect1.2.3 = "value"
     #sect 1.2.3
     sect1.3
@@ -62,6 +62,7 @@ TEST(DDInterpreter,comment_placement)
 /sect1/comment (# comment for section 1)
 /sect1/sect1.1
 /sect1/sect1.1/decl (sect1.1)
+/sect1/sect1.1/, (,)
 /sect1/sect1.1/sect1.1.1
 /sect1/sect1.1/sect1.1.1/decl (sect1.1.1)
 /sect1/sect1.1/sect1.1.1/comment (# comment for sect 1.1.1)
@@ -77,6 +78,7 @@ TEST(DDInterpreter,comment_placement)
 /sect1/sect1.2/sect1.2.1/comment (# sect 1.2.1)
 /sect1/sect1.2/sect1.2.2
 /sect1/sect1.2/sect1.2.2/decl (sect1.2.2)
+/sect1/sect1.2/sect1.2.2/, (,)
 /sect1/sect1.2/sect1.2.3
 /sect1/sect1.2/sect1.2.3/decl (sect1.2.3)
 /sect1/sect1.2/sect1.2.3/= (=)
@@ -97,7 +99,7 @@ TEST(DDInterpreter,passing_flat)
 sect2 1
 sect3 = 1
 sect4 1.1
-sect5 = 1.1
+sect5 = 1.e29
 sect6 "ted"
 sect7 = "ted"
 sect8 = 1 2 3.4 "five"
@@ -131,7 +133,7 @@ expected<<R"I(/
 /sect5
 /sect5/decl (sect5)
 /sect5/= (=)
-/sect5/value (1.1)
+/sect5/value (1.e29)
 /sect6
 /sect6/decl (sect6)
 /sect6/value ("ted")
