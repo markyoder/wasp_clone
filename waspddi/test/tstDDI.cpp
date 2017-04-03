@@ -97,7 +97,7 @@ TEST(DDInterpreter,passing_flat)
 sect2 1
 sect3 = 1
 sect4 1.1
-sect5 = 1.1
+sect5 = 1.e29
 sect6 "ted"
 sect7 = "ted"
 sect8 = 1 2 3.4 "five"
@@ -131,7 +131,7 @@ expected<<R"I(/
 /sect5
 /sect5/decl (sect5)
 /sect5/= (=)
-/sect5/value (1.1)
+/sect5/value (1.e29)
 /sect6
 /sect6/decl (sect6)
 /sect6/value ("ted")
