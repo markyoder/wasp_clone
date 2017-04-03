@@ -252,6 +252,7 @@ keyed_object : declaration object
                                     ,quote_less_data.c_str()
                                     ,*$1);
         delete $1;
+        delete $2;
     }
 keyed_array : declaration array
     {
@@ -274,6 +275,7 @@ array_members :object
                                         ,"value"
                                         ,*$1);
             $$->push_back(obj_i);
+            delete $object;
         }
         | array_members comma object
         {
@@ -283,6 +285,7 @@ array_members :object
                                         ,"value"
                                         ,*$3);
             $$->push_back(obj_i);
+            delete $object;
         }
         | array
         {
