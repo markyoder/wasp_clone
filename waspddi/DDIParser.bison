@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
+
 %}
 
 /*** yacc/bison Declarations ***/
@@ -97,6 +98,34 @@
 #include "DDInterpreter.h"
 #include "DDILexer.h"
 
+#include "waspcore/wasp_bug.h"
+
+/**
+ * @brief adjust_interpreter_stages convenience method for committing staged parse trees
+ * @param interpreter the interpreter to conduct the adjustments on
+ * @param definition_name the name of the definition for which to adjust the interpreter's stage
+ * @return true, iff the definition with the given name can be found as a direct child of
+ * the current or ancenstral stage.
+ */
+bool adjust_interpreter_stages( wasp::AbstractInterpreter & interpreter
+                               , const std::string & definition_name)
+{
+    wasp_check(interpreter.definition());
+    int delta = interpreter.definition()->delta(definition_name);
+    if( -1 == delta )
+    {
+        return false;
+    }
+    else if( delta > 0 ){
+        wasp_ensure( delta < interpreter.staged_count() );
+        while( delta > 0 ){
+            interpreter.commit_staged(interpreter.staged_count()-1);
+            --delta;
+        }
+    }
+    return true;
+}
+
 /* this "connects" the bison parser in the interpreter to the flex DDILexer class
  * object. it defines the yylex() function call to pull the next token from the
  * current lexer object of the interpreter context. */
@@ -157,18 +186,12 @@ definition_section : decl  value_list
 
         wasp_check(interpreter.definition());
         int delta = interpreter.definition()->delta(quote_less_data);
-        if( -1 == delta )
+
+        if( false == adjust_interpreter_stages(interpreter, quote_less_data ) )
         {
             error(@1, "'"+quote_less_data+"' is unknown.");
             delete $2;
             YYERROR; // returns
-        }
-        else if( delta > 0 ){
-            wasp_ensure( delta < interpreter.staged_count() );
-            while( delta > 0 ){
-                interpreter.commit_staged(interpreter.staged_count()-1);
-                --delta;
-            }
         }
         $$ = interpreter.push_staged(is_array ? wasp::ARRAY : wasp::KEYED_VALUE
                                      // use the data instead of the name
@@ -188,20 +211,11 @@ definition_section : decl  value_list
 
         std::string quote_less_data = interpreter.data($1);
         quote_less_data = wasp::strip_quotes(quote_less_data);
-        wasp_check(interpreter.definition());
-        int delta = interpreter.definition()->delta(quote_less_data);
-        if( -1 == delta )
+        if( false == adjust_interpreter_stages(interpreter, quote_less_data ) )
         {
             error(@1, "'"+quote_less_data+"' is unknown.");
             delete $3;
             YYERROR; // returns
-        }
-        else if( delta > 0 ){
-            wasp_ensure( delta < interpreter.staged_count() );
-            while( delta > 0 ){
-                interpreter.commit_staged(interpreter.staged_count()-1);
-                --delta;
-            }
         }
 
         $$ = interpreter.push_staged(is_array ? wasp::ARRAY : wasp::KEYED_VALUE
@@ -213,26 +227,17 @@ definition_section : decl  value_list
                                      //  |_ value (1.2..blah)
                                     ,quote_less_data.c_str()
                                     ,*$3);
-        // TODO determine push/pop interpreter state information
+
         delete $3;
     }
     | decl {
 
         std::string quote_less_data = interpreter.data($1);
         quote_less_data = wasp::strip_quotes(quote_less_data);
-        wasp_check(interpreter.definition());
-        int delta = interpreter.definition()->delta(quote_less_data);
-        if( -1 == delta )
+        if( false == adjust_interpreter_stages(interpreter, quote_less_data ) )
         {
             error(@1, "'"+quote_less_data+"' is unknown.");
             YYERROR; // returns
-        }
-        else if( delta > 0 ){
-            wasp_ensure( delta < interpreter.staged_count() );
-            while( delta > 0 ){
-                interpreter.commit_staged(interpreter.staged_count()-1);
-                --delta;
-            }
         }
         std::vector<size_t> child_indices = {$decl};
         $$ = interpreter.push_staged(wasp::OBJECT
