@@ -1,7 +1,7 @@
 #include "waspcore/Object.h"
 
 #include "waspcore/wasp_bug.h"
-#include <string.h> // strdup
+#include <string.h> // strdup, free
 #include <cstdlib> // atoi/atof, etc
 
 namespace wasp{
@@ -103,7 +103,7 @@ void Value::nullify()
         break;
     case TYPE_STRING:
         wasp_check( m_allocated );
-        delete m_data.m_string;
+        free(m_data.m_string);
         break;
     case TYPE_ARRAY:
         wasp_check( m_allocated );
