@@ -474,8 +474,8 @@ namespace wasp {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 16,     ///< Last index in yytable_.
-      yynnts_ = 10,  ///< Number of nonterminal symbols.
+      yylast_ = 17,     ///< Last index in yytable_.
+      yynnts_ = 11,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,

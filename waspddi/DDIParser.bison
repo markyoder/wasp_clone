@@ -244,6 +244,20 @@ definition_section : decl  value_list
                                     ,interpreter.data($decl).c_str()
                                     ,child_indices);
     }
+    | decl comma {
+
+        std::string quote_less_data = interpreter.data($1);
+        quote_less_data = wasp::strip_quotes(quote_less_data);
+        if( false == adjust_interpreter_stages(interpreter, quote_less_data ) )
+        {
+            error(@1, "'"+quote_less_data+"' is unknown.");
+            YYERROR; // returns
+        }
+        std::vector<size_t> child_indices = {$decl,$comma};
+        $$ = interpreter.push_staged(wasp::OBJECT
+                                    ,interpreter.data($decl).c_str()
+                                    ,child_indices);
+    }
 
 
 comment : COMMENT
