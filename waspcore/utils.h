@@ -51,6 +51,13 @@ namespace wasp{
         if( ok ) *ok = true;
     }
 
+    template<typename T>
+    static std::string to_string(T v, bool * ok=nullptr){
+        std::stringstream s;
+        s<<v;
+        if( ok ) *ok = !(s.bad() || s.fail());
+        return s.str();
+    }
 
     /**
      * @brief to_xml walk the given node and emit xml elements into out

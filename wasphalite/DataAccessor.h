@@ -1,9 +1,12 @@
 #ifndef HALITE_DATA_ACCESSOR_H
 #define HALITE_DATA_ACCESSOR_H
 
+#include "waspcore/Object.h"
+#include "waspexpr/ExprContext.h"
+
 namespace wasp{
 
-class DataAccessor{
+class DataAccessor : public Context {
 
 public:
     DataAccessor();

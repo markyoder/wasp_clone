@@ -14,11 +14,13 @@ WASP_FLEX_AND_BISON(
 )
 
 SET(SOURCE
+ExprContext.cpp
 ExprLexer.cpp
 ExprParser.cpp
 )
 
 SET(HEADERS
+ExprContext.h
 ExprLexer.h
 ExprParser.hpp
 ExprInterpreter.h
