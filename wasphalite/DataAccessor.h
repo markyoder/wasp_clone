@@ -13,7 +13,12 @@ public:
     DataAccessor(const DataAccessor& orig);
     virtual ~DataAccessor();
 
+    virtual bool exists(const std::string &name) const;
 private:
+    /**
+     * @brief m_data unamanaged data pointer
+     */
+    DataObject * m_data;
 };
 
 } // wasp

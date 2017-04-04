@@ -675,7 +675,7 @@ TEST(ExprInterpreter,scalar_integer)
         ASSERT_FALSE(result.is_bool());
         int expected = i > 0 ? std::pow(i,2) : -std::pow(i,2);
         ASSERT_EQ(expected, result.integer());
-        ASSERT_EQ(expected, interpreter.context().variable("result")->integer());
+        ASSERT_EQ(expected, interpreter.context().integer("result"));
     }
 }
 
@@ -699,7 +699,7 @@ TEST(ExprInterpreter,DISABLED_scalar_real)
         ASSERT_FALSE(result.is_bool());
         float expected = (i-15.0)*3;
         ASSERT_NEAR(expected, result.real(),1e-10);
-        ASSERT_NEAR(expected, interpreter.context().variable("result")->real()
+        ASSERT_NEAR(expected, interpreter.context().real("result")
                     ,1e-10);
     }
 }

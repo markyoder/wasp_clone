@@ -8,6 +8,7 @@
 #include <sstream>
 #include <vector>
 #include <map>
+#include <type_traits>
 #include "waspcore/utils.h"
 #include "waspcore/wasp_node.h"
 
@@ -25,6 +26,7 @@ public:
         ,REAL
         ,STRING
         ,ERROR
+        ,UNDEFINED
     };
    Context(){}
    Context(const Context& orig){}
@@ -50,7 +52,75 @@ public:
     */
    void clear();
 
-   bool exists(const std::string & name)const{
+   virtual Context::Type type(const std::string& name)const{
+       auto *v = variable(name);
+       if( v == nullptr ) return Context::Type::UNDEFINED;
+       return v->type();
+   }
+
+   // todo add book*ok
+   virtual bool boolean(const std::string& name,size_t index,bool * ok=nullptr)const{
+       auto * var = variable(name);
+       wasp_require(var);
+       return var->boolean(index,ok);
+   }
+   virtual bool boolean(const std::string& name,bool * ok=nullptr)const{
+       auto * var = variable(name);
+       wasp_require(var);
+       return var->boolean(ok);
+   }
+   virtual int integer(const std::string& name,size_t index,bool * ok=nullptr)const{
+       auto * var = variable(name);
+       wasp_require(var);
+       return var->integer(index,ok);
+   }
+   virtual int integer(const std::string& name,bool * ok=nullptr)const{
+       auto * var = variable(name);
+       wasp_require(var);
+       return var->integer(ok);
+   }
+   virtual double real(const std::string& name,size_t index,bool * ok=nullptr)const{
+       auto * var = variable(name);
+       wasp_require(var);
+       return var->real(index,ok);
+   }
+   virtual double real(const std::string& name, bool * ok=nullptr)const{
+       auto * var = variable(name);
+       wasp_require(var);
+       return var->real(ok);
+   }
+   virtual std::string string(const std::string& name, size_t index,bool * ok=nullptr)const{
+       auto * var = variable(name);
+       wasp_require(var);
+       return var->string(index,ok);
+   }
+   virtual std::string string(const std::string& name,bool * ok=nullptr)const{
+       auto * var = variable(name);
+       wasp_require(var);
+       return var->string(ok);
+   }
+
+   virtual bool store(const std::string& name, size_t index, int v)const{
+       auto * var = variable(name);
+       wasp_require(var);
+       return var->store(index,v);
+   }
+   virtual bool store(const std::string& name, size_t index, double v)const{
+       auto * var = variable(name);
+       wasp_require(var);
+       return var->store(index,v);
+   }
+   virtual bool store(const std::string& name, size_t index, bool v)const{
+       auto * var = variable(name);
+       wasp_require(var);
+       return var->store(index,v);
+   }
+   virtual bool store(const std::string& name, size_t index, const std::string& v)const{
+       auto * var = variable(name);
+       wasp_require(var);
+       return var->store(index,v);
+   }
+   virtual bool exists(const std::string & name)const{
        // TODO - ensure it is not nullptr
        return m_variables.find(name) != m_variables.end();
    }
@@ -111,20 +181,12 @@ public:
    }
 
 private:
-   template<class T, class V>
-   bool store_ref(const std::string & name, V & v){
-       if( exists(name) ) return false;
-       auto * ptr = new T(v);
-       m_variables[name] = ptr;
-       return ptr != nullptr;
-   }
-public:
    /**
     * @brief The Variable class is an abstract interface for dealing with
     */
    class Variable{
    public:
-       virtual Type type()const=0;
+       virtual Context::Type type()const=0;
        virtual ~Variable(){}
        virtual int integer(bool * ok=nullptr)const{
            if( ok != nullptr ) *ok = false;
@@ -158,51 +220,43 @@ public:
            if( ok != nullptr ) *ok = false;
            wasp_not_implemented("acquiring string value at index");
        }
-       virtual void store(bool v){
-           wasp_not_implemented("storing boolean variable");
+       virtual bool store(bool v){
+           return false;
        }
-       virtual void store(int v){
-           wasp_not_implemented("storing integer variable");
+       virtual bool store(int v){
+           return false;
        }
-       virtual void store(double v){
-           wasp_not_implemented("storing double precision variable");
+       virtual bool store(double v){
+           return false;
        }
-       virtual void store(const std::string& v){
-           wasp_not_implemented("storing string variable");
+       virtual bool store(const std::string& v){
+           return false;
        }
-       virtual void store(size_t i, bool v){
-           wasp_not_implemented("storing boolean variable into vector");
+       virtual bool store(size_t i, bool v){
+           return false;
        }
-       virtual void store(size_t i, int v){
-           wasp_not_implemented("storing integer variable into vector");
+       virtual bool store(size_t i, int v){
+           return false;
        }
-       virtual void store(size_t i, double v){
-           wasp_not_implemented("storing double precision variable into vector");
+       virtual bool store(size_t i, double v){
+           return false;
        }
-       virtual void store(size_t i, const std::string& v){
-           wasp_not_implemented("storing string variable into vector");
+       virtual bool store(size_t i, const std::string& v){
+           return false;
        }
    };
-   Variable * variable(const std::string & name)const{
-       auto itr = m_variables.find(name);
-       if( itr == m_variables.end() ) return nullptr;
-       return itr->second;
-   }
-
-
-private:
    class VarRefInt : public Variable{
    public:
        VarRefInt(int & i):v(i){}
-       Type type() const{return Context::Type::INTEGER;}
+       Context::Type type() const{return Context::Type::INTEGER;}
        bool boolean(bool * ok)const{ if( ok ) *ok = true; return bool(v);}
        int integer(bool * ok)const{ if( ok ) *ok = true; return v;}
        double real(bool * ok)const{ if( ok ) *ok = true; return double(v);}
        std::string string(bool * ok)const{ return to_string(v,ok);}
 
-       void store(bool v) { this->v = v;}
-       void store(int v) { this->v = v;}
-       void store(double v) { this->v = v;}
+       bool store(bool v) { this->v = v;return true;}
+       bool store(int v) { this->v = v;return true;}
+       bool store(double v) { this->v = v; return true;}
    private:
        int & v;
    };
@@ -216,15 +270,15 @@ private:
    class VarRefBool : public Variable{
    public:
        VarRefBool(bool & b):v(b){}
-       Type type() const{return Context::Type::BOOLEAN;}
+       Context::Type type() const{return Context::Type::BOOLEAN;}
        bool boolean(bool * ok)const{ if( ok ) *ok = true; return bool(v);}
        int integer(bool * ok)const{ if( ok ) *ok = true; return v;}
        double real(bool * ok)const{ if( ok ) *ok = true; return double(v);}
        std::string string(bool * ok)const{ return to_string(v,ok);}
 
-       void store(bool v) { this->v = v;}
-       void store(int v) { this->v = v;}
-       void store(double v) { this->v = v;}
+       bool store(bool v) { this->v = v;return true;}
+       bool store(int v) { this->v = v;return true;}
+       bool store(double v) { this->v = v; return true;}
    private:
        bool & v;
    };
@@ -237,15 +291,15 @@ private:
    class VarRefReal : public Variable{
    public:
        VarRefReal(double & d):v(d){}
-       Type type() const{return Context::Type::REAL;}
+       Context::Type type() const{return Context::Type::REAL;}
        bool boolean(bool * ok)const{ if( ok ) *ok = true; return bool(v);}
        int integer(bool * ok)const{ if( ok ) *ok = true; return int(v);}
        double real(bool * ok)const{ if( ok ) *ok = true; return double(v);}
        std::string string(bool * ok)const{ return to_string(v,ok);}
 
-       void store(bool v) { this->v = v;}
-       void store(int v) { this->v = v;}
-       void store(double v) { this->v = v;}
+       bool store(bool v) { this->v = v;return true;}
+       bool store(int v) { this->v = v;return true;}
+       bool store(double v) { this->v = v; return true;}
    private:
        double & v;
    };
@@ -258,13 +312,13 @@ private:
    class VarRefString : public Variable{
    public:
        VarRefString(std::string & s):v(s){}
-       Type type() const{return Context::Type::STRING;}
+       Context::Type type() const{return Context::Type::STRING;}
        std::string string(bool * ok)const{ if( ok ) *ok = true; return v;}
 
-       void store(bool v) { this->v = to_string(v);}
-       void store(int v) { this->v = to_string(v);}
-       void store(double v){ this->v = to_string(v);}
-       void store(const std::string & v){this->v = v;}
+       bool store(bool v) { bool k = false; this->v = to_string(v,&k); return k;}
+       bool store(int v) { bool k = false; this->v = to_string(v,&k); return k;}
+       bool store(double v) { bool k = false; this->v = to_string(v,&k); return k;}
+       bool store(const std::string & v){this->v = v; return true;}
    private:
        std::string & v;
    };
@@ -278,10 +332,10 @@ private:
    class VarRefVector : public Variable{
    public:
        VarRefVector(std::vector<T> & v):v(v){}
-       Type type() const{return type(v);}
-       Type type(const std::vector<int>& )const{return Context::Type::INTEGER;}
-       Type type(const std::vector<double>& )const{return Context::Type::REAL;}
-       Type type(const std::vector<std::string>& )const{return Context::Type::STRING;}
+       Context::Type type() const{return type(v);}
+       Context::Type type(const std::vector<int>& )const{return Context::Type::INTEGER;}
+       Context::Type type(const std::vector<double>& )const{return Context::Type::REAL;}
+       Context::Type type(const std::vector<std::string>& )const{return Context::Type::STRING;}
 
        int integer(size_t i, bool *ok) const{
            if( ok ) *ok = true; return get(i,v);}
@@ -302,18 +356,19 @@ private:
            wasp_require( i < d.size() );
            return d[i];
        }
-       void store(size_t i, int vv){
-           store_t(i,vv);
+       bool store(size_t i, int vv){
+           return store_t(i,vv);
        }
-       void store(size_t i, double vv){
-           store_t(i,vv);
+       bool store(size_t i, double vv){
+           return store_t(i,vv);
        }
 //            void store(size_t i, const std::string& vv){
 //                store_t(i,vv);
 //            }
-       void store_t(size_t i,  const T & vv){
+       bool store_t(size_t i,  const T & vv){
            if( this->v.size() < i ) this->v.resize(i+1);
            this->v[i] = vv;
+           return true;
        }
    private:
        std::vector<T> & v;
@@ -322,15 +377,46 @@ private:
    class VarVector : public VarRefVector<T>{
    public:
        VarVector(const T & d):VarRefVector<T>(v),v(d){}
-       Type type() const{return type(v);}
-       Type type(const std::vector<int>& ){return Context::Type::INTEGER;}
-       Type type(const std::vector<double>& ){return Context::Type::REAL;}
-       Type type(const std::vector<std::string>& ){return Context::Type::STRING;}
+       Context::Type type() const{return type(v);}
+       Context::Type type(const std::vector<int>& ){return Context::Type::INTEGER;}
+       Context::Type type(const std::vector<double>& ){return Context::Type::REAL;}
+       Context::Type type(const std::vector<std::string>& ){return Context::Type::STRING;}
    private:
        T v;
    };
+
+private:
+   template<class T, class V>
+   typename std::enable_if<std::is_pod<V>::value,bool>::type
+   store_ref(const std::string & name, V & v){
+       auto * existing_var = variable(name);
+       if( existing_var != nullptr )
+       { // check if new variable is compatible
+           return existing_var->store(v);
+       }
+       auto * ptr = new T(v);
+       m_variables[name] = ptr;
+       return ptr != nullptr;
+   }
+   template<class T, class V>
+   typename std::enable_if<!std::is_pod<V>::value,bool>::type
+   store_ref(const std::string & name, V & v){
+       auto * existing_var = variable(name);
+       if( existing_var != nullptr )
+       { return false; } // cannot assign complex types (arrays, etc)
+       auto * ptr = new T(v);
+       m_variables[name] = ptr;
+       return ptr != nullptr;
+   }
+   Variable * variable(const std::string & name)const{
+       auto itr = m_variables.find(name);
+       if( itr == m_variables.end() ) return nullptr;
+       return itr->second;
+   }
+   // variables
    std::map<std::string,Variable*> m_variables;
    std::map<std::string,class Function*> m_functions;
+
 };// end of class Context
 
 /**
@@ -1271,26 +1357,26 @@ Result::evaluate( const T & tree_view
    case wasp::STRING:
    {
        std::string name = tree_view.data();
-       auto * v = context.variable(name);
-       if( v == nullptr )
+       auto var_type = context.type(name);
+       if( var_type == Context::Type::UNDEFINED )
        {
            m_type = Context::Type::ERROR;
            string() = error_msg(tree_view,"is not a known variable.");
 
        }else{
-           m_type = v->type();
+           m_type = var_type;
            switch( m_type ){ // switch on current Result's type
             case Context::Type::BOOLEAN:
-               m_value.m_bool = v->boolean();
+               m_value.m_bool = context.boolean(name);
                break;
            case Context::Type::INTEGER:
-               m_value.m_int = v->integer();
+               m_value.m_int = context.integer(name);
                break;
            case Context::Type::REAL:
-               m_value.m_real = v->real();
+               m_value.m_real = context.real(name);
                break;
            case Context::Type::STRING:
-               string() = v->string();
+               string() = context.string(name);
                break;
            default:
                // not implemented
@@ -1303,12 +1389,11 @@ Result::evaluate( const T & tree_view
    {
         const std::string var_name = tree_view.name();
 
-        auto * v = context.variable(var_name);
-        if( v == nullptr )
+        Context::Type var_type = context.type(var_name);
+        if( var_type == Context::Type::UNDEFINED )
         {
             m_type = Context::Type::ERROR;
             string() = error_msg(tree_view,"is not a known variable.");
-
         }
         // name [ index ]  - 4 children
         else if( tree_view.child_count() == 4){
@@ -1324,20 +1409,20 @@ Result::evaluate( const T & tree_view
             }else if( is_number() )
             {
                 size_t index = integer();
-                m_type = v->type();
+                m_type = var_type;
 
                 switch( m_type ){ // switch on current Result's type
                 case Context::Type::BOOLEAN:
-                    m_value.m_bool = v->boolean(index);
+                    m_value.m_bool = context.boolean(var_name,index);
                     break;
                 case Context::Type::INTEGER:
-                    m_value.m_int = v->integer(index);
+                    m_value.m_int = context.integer(var_name,index);
                     break;
                 case Context::Type::REAL:
-                    m_value.m_real = v->real(index);
+                    m_value.m_real = context.real(var_name,index);
                     break;
                 case Context::Type::STRING:
-                    string() = v->string(index);
+                    string() = context.string(var_name, index);
                     break;
                 default:
                     wasp_not_implemented("unknown index variable type value acquisition");
@@ -1359,24 +1444,24 @@ Result::evaluate( const T & tree_view
             wasp_ensure( is_number() );
 
             size_t index = integer();
-            m_type = v->type();
+            m_type = var_type;
 
             switch( value.m_type ){ // switch on current Result's type
                 case Context::Type::BOOLEAN:
                 m_value.m_bool = value.boolean();
-                v->store(index, boolean());
+                context.store(var_name, index, boolean());
                 break;
             case Context::Type::INTEGER:
                 m_value.m_int = value.integer();
-                v->store(index,integer());
+                context.store(var_name,index,integer());
                 break;
             case Context::Type::REAL:
                 m_value.m_real = value.real();
-                v->store(index,real());
+                context.store(var_name,index,real());
                 break;
             case Context::Type::STRING:
                 string() = value.string();
-                v->store(index,string());
+                context.store(var_name,index,string());
                 break;
             case Context::Type::ERROR:
                 m_type = value.m_type;
@@ -1457,8 +1542,8 @@ Result::evaluate( const T & tree_view
    {
        std::string variable_name = tree_view.name();
        evaluate(tree_view.child_at(2),context);
-       auto * v = context.variable(variable_name);
-       bool new_variable = v != nullptr;
+       auto var_type = context.type(variable_name);
+       bool new_variable = var_type == Context::Type::UNDEFINED;
        if( new_variable == false ){
            switch( m_type ){ // switch on current Result's type
                case Context::Type::BOOLEAN:
@@ -1481,16 +1566,16 @@ Result::evaluate( const T & tree_view
        else {
            switch( m_type ){ // switch on current Result's type
                case Context::Type::BOOLEAN:
-               v->store(boolean());
+               context.store(variable_name,boolean());
                break;
            case Context::Type::INTEGER:
-               v->store(integer());
+               context.store(variable_name,integer());
                break;
            case Context::Type::REAL:
-               v->store(real());
+               context.store(variable_name,real());
                break;
            case Context::Type::STRING:
-               v->store(string());
+               context.store(variable_name,string());
                break;
            default:
                // not implemented

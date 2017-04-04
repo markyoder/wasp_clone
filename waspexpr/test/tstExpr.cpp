@@ -120,11 +120,11 @@ TEST(ExprInterpreter,assign)
     ASSERT_TRUE( interpreter.context().exists("x") );
     ASSERT_FALSE( interpreter.context().exists("y") );
     bool ok = false;
-    ASSERT_EQ(2, interpreter.context().variable("x")->integer(&ok) );
+    ASSERT_EQ(2, interpreter.context().integer("x",&ok) );
     ASSERT_TRUE(ok);
-    ASSERT_EQ(2, interpreter.context().variable("x")->real(&ok) );
+    ASSERT_EQ(2, interpreter.context().real("x",&ok) );
     ASSERT_TRUE(ok);
-    ASSERT_TRUE( interpreter.context().variable("x")->boolean(&ok) );
+    ASSERT_TRUE( interpreter.context().boolean("x",&ok) );
     ASSERT_TRUE(ok);
 }
 TEST(ExprInterpreter,assign_existing)
@@ -135,7 +135,7 @@ TEST(ExprInterpreter,assign_existing)
     int x = 3;
     interpreter.context().store_ref("x",x);
     ASSERT_TRUE( interpreter.context().exists("x") );
-    ASSERT_EQ(3, interpreter.context().variable("x")->integer());
+    ASSERT_EQ(3, interpreter.context().integer("x"));
     ASSERT_EQ( true, interpreter.parse(input) );
     auto result = interpreter.evaluate();
     ASSERT_TRUE(result.is_integer());
@@ -147,11 +147,11 @@ TEST(ExprInterpreter,assign_existing)
     ASSERT_EQ(7, x); // ensure x was updated
     ASSERT_TRUE( interpreter.context().exists("x") );
     bool ok = false;
-    ASSERT_EQ(7, interpreter.context().variable("x")->integer(&ok) );
+    ASSERT_EQ(7, interpreter.context().integer("x",&ok) );
     ASSERT_TRUE(ok);
-    ASSERT_EQ(7, interpreter.context().variable("x")->real(&ok) );
+    ASSERT_EQ(7, interpreter.context().real("x",&ok) );
     ASSERT_TRUE(ok);
-    ASSERT_TRUE( interpreter.context().variable("x")->boolean(&ok) );
+    ASSERT_TRUE( interpreter.context().boolean("x",&ok) );
     ASSERT_TRUE(ok);
 }
 TEST(ExprInterpreter,exponent)
@@ -493,7 +493,7 @@ TEST(ExprInterpreter,assign_variable_ref)
     ASSERT_FALSE(result.is_error());
     ASSERT_EQ(x, result.real());
     ASSERT_TRUE(interpreter.context().exists("y"));
-    ASSERT_EQ(x, interpreter.context().variable("y")->real());
+    ASSERT_EQ(x, interpreter.context().real("y"));
 }
 TEST(ExprInterpreter,variable_ref_undefined)
 {
