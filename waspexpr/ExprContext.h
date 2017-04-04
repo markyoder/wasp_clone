@@ -1446,7 +1446,7 @@ Result::evaluate( const T & tree_view
             size_t index = integer();
             m_type = var_type;
 
-            switch( value.m_type ){ // switch on current Result's type
+            switch( value.m_type ){ // switch on current value's type
                 case Context::Type::BOOLEAN:
                 m_value.m_bool = value.boolean();
                 context.store(var_name, index, boolean());

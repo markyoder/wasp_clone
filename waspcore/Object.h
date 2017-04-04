@@ -69,6 +69,7 @@ public:
     bool is_string()const{return m_type == TYPE_STRING;}
     bool is_array()const{return m_type == TYPE_ARRAY;}
     bool is_object()const{return m_type == TYPE_OBJECT;}
+    bool is_primitive()const{return !(is_array() || is_object());}
 
     bool convertable(Value::Type to)const;
 
