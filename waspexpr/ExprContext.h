@@ -4,6 +4,7 @@
 #include "waspcore/wasp_bug.h"
 #include "waspcore/Format.h"
 #include <cmath>
+#include <limits>
 #include <sstream>
 #include <vector>
 #include <map>
