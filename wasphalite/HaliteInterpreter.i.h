@@ -92,10 +92,7 @@ void HaliteInterpreter<S>::capture_leaf(const std::string& node_name
                                         , const std::string& data
                                         , size_t token_type
                                         , size_t file_offset)
-{
-    wasp_line("capturing leaf '"<<node_name<<"'"
-              <<" at file offset "<<file_offset
-              <<" - '"<<data<<"'");
+{    
     // acquire the soon-to-be-fullfilled token index
     size_t token_i = Interpreter<S>::token_count();
 
@@ -510,6 +507,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
         wasp_tagged_line(result.string());
         return false;
     }
+
     result.format( out ) ;
     column = attr_view.child_at(attr_view.child_count()-1).column() + m_attribute_end_delim.size();
     return true;
@@ -575,6 +573,9 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
     {
         return false;
     }
-    return nested_interp.evaluate(out,data);
+    bool import = nested_interp.evaluate(out,data);
+    ++line; // we know imports take 1 line
+    out<<std::endl;
+    return import;
 }
 #endif

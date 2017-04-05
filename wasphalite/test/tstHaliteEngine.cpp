@@ -17,6 +17,19 @@
 using namespace std;
 using namespace wasp;
 
+TEST( Halite, single_attribute)
+{
+    std::stringstream input;
+    input<< R"INPUT(<attribute>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data;
+    data.store("attribute",std::string("value")); // need explicit string type
+    ASSERT_EQ( Context::Type::STRING, data.type("attribute") );
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "value", out.str() );
+}
 TEST( Halite, static_text)
 {
     std::stringstream input;
@@ -100,7 +113,8 @@ TEST( Halite, attributed_text_fileimport)
     import<<content.str();
     import.close();
     std::stringstream input;
-    input<< R"INPUT(#import ./nested parameterized template.tmpl )INPUT";
+    input<< R"INPUT(#import ./nested parameterized template.tmpl
+<ted> has <fred> brothers)INPUT";
     HaliteInterpreter<> interpreter;
 
     ASSERT_TRUE( interpreter.parse(input) );
@@ -109,6 +123,7 @@ TEST( Halite, attributed_text_fileimport)
     DataAccessor data(&o);
     o["ted"] = "wombat";
     o["fred"] = 3.14159;
+    ASSERT_EQ( Value::TYPE_STRING, o["ted"].type() );
     ASSERT_EQ( Value::TYPE_DOUBLE, o["fred"].type() );
     o["x"] = 2;
     ASSERT_TRUE( interpreter.evaluate(out,data) );
@@ -117,7 +132,8 @@ TEST( Halite, attributed_text_fileimport)
     expected<< R"INPUT(this is
 nested files using wombat
 
-and assigning fred to 2)INPUT";
+and assigning fred to 2
+wombat has 2 brothers)INPUT";
     ASSERT_EQ( expected.str(), out.str() );
     std::remove("nested parameterized template.tmpl");
     ASSERT_EQ( Value::TYPE_INTEGER, o["fred"].type() );

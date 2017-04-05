@@ -23,7 +23,7 @@ line2
    line
             )INPUT";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(6, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 5, document.child_count() );
@@ -48,7 +48,7 @@ TEST( Halite, simple_parameterized_text)
 <attribute1><attr2><ted>
             )INPUT";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(15, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 5, document.child_count() );
@@ -83,7 +83,7 @@ TEST( Halite, simple_parameterized_text_wss)
  <attribute1>  <attr2>   <ted>
             )INPUT";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(18, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 8, document.child_count() );
@@ -119,7 +119,7 @@ TEST( Halite, nested_attr_empty)
     std::stringstream input;
     input<<"<><<>><<<>>>";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(19, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 3, document.child_count() );
@@ -156,7 +156,7 @@ TEST( Halite, nested_attr_suffix)
     std::stringstream input;
     input<<"<<a>b><<<c>d>e>";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(21, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 2, document.child_count() );
@@ -196,7 +196,7 @@ TEST( Halite, nested_attr_prefix)
     std::stringstream input;
     input<<"<b<a>><e<d<c>>>";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(21, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 2, document.child_count() );
@@ -235,7 +235,7 @@ TEST( Halite, nested_attr_infix)
     std::stringstream input;
     input<<"<b< a >b1><e<d<c>d1>e1>";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(24, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 2, document.child_count() );
@@ -278,7 +278,7 @@ TEST( Halite, nested_attr_surrounding)
     std::stringstream input;
     input<<"prefix <> suffix ";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(6, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 3, document.child_count() );
@@ -303,7 +303,7 @@ TEST( Halite, import_basic)
     std::stringstream input;
     input<<"#import some/path/to/some/file";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(4, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 1, document.child_count() );
@@ -326,7 +326,7 @@ TEST( Halite, import_parameterized)
     std::stringstream input;
     input<<"#import <ned>/<ted>/to/some/<fred>";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(18, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 1, document.child_count() );
@@ -363,7 +363,7 @@ TEST( Halite, import_parameterized_using)
     std::stringstream input;
     input<<"#import <ned>/<ted>/to/some/file using <zed>";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(18, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 1, document.child_count() );
@@ -401,7 +401,7 @@ TEST( Halite, multiple_import_parameterized_using)
         <<"random text line"<<std::endl
        <<"#import some/other/import using <fred>";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(26, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 3, document.child_count() );
@@ -447,7 +447,7 @@ TEST( Halite, ifdef)
     input<<"#ifdef something"<<std::endl
        <<"#endif";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(5, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 1, document.child_count() );
@@ -473,7 +473,7 @@ TEST( Halite, ifdef_parameterized)
        <<" intermediate text "<<std::endl
        <<"#endif";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(10, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 1, document.child_count() );
@@ -503,7 +503,7 @@ TEST( Halite, ifndef_parameterized)
        <<" intermediate text "<<std::endl
        <<"#endif";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(10, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 1, document.child_count() );
@@ -534,7 +534,7 @@ TEST( Halite, if_parameterized)
        <<" only if x is less than y "<<std::endl
        <<"#endif";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(15, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 1, document.child_count() );
@@ -572,7 +572,7 @@ TEST( Halite, elseif_parameterized)
         <<" only if x is not less than y and condition is true "<<std::endl
        <<"#endif";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(19, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 2, document.child_count() );
@@ -614,7 +614,7 @@ TEST( Halite, else_parameterized)
         <<" only if x is not less than y "<<std::endl
        <<"#endif";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(18, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 2, document.child_count() );
@@ -681,7 +681,7 @@ TEST( Halite, conditionals)
         <<"#endif"<<std::endl
     <<"#endif";
     HaliteInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
 //    ASSERT_EQ(18, interpreter.node_count() );
     auto document = interpreter.root();
 //    ASSERT_EQ( 2, document.child_count() );
