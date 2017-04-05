@@ -1582,6 +1582,7 @@ Result::evaluate( const T & tree_view
                break;
            }
        }
+       break;
    }
    case wasp::DOCUMENT_ROOT:
        // evaluate all children, storing only last result
