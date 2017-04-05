@@ -140,16 +140,16 @@ public:
    bool store_ref( const std::string & name, std::vector<DT>& v ){
        return store_ref< VarRefVector<DT> >(name,v);
    }
-   bool store( const std::string & name, const bool& v ){
+   virtual bool store( const std::string & name, const bool& v ){
        return store_ref<VarBool>(name,v);
    }
-   bool store( const std::string & name, const int& v ){
+   virtual bool store( const std::string & name, const int& v ){
        return store_ref<VarInt>(name,v);
    }
-   bool store( const std::string & name, const double& v ){
+   virtual bool store( const std::string & name, const double& v ){
        return store_ref<VarReal>(name,v);
    }
-   bool store( const std::string & name, const std::string& v ){
+   virtual bool store( const std::string & name, const std::string& v ){
        return store_ref<VarString>(name,v);
    }
    template<typename DT>

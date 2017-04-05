@@ -293,13 +293,9 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
         // current_column index has been updated by capture(), etc.
         size_t offset = m_file_offset + current_column_index;
         size_t remaining_length = line.size() - current_column_index;
-        wasp_tagged_line("remaining text length "<<remaining_length);
         wasp_check( current_column_index+remaining_length <= line.size() );
         if( remaining_length > 0 )
-        {
-            wasp_line("capture trailing text from "<<current_column_index
-                      <<" to "<<current_column_index+remaining_length
-                      << "("<<remaining_length<<")");
+        {            
             capture_leaf("txt", wasp::STRING
                          ,line.substr(current_column_index,remaining_length)
                          , wasp::STRING, offset );
@@ -324,8 +320,6 @@ void HaliteInterpreter<S>::capture(const std::string& data
                    ,size_t limit)
 {
     wasp_require( limit <= attribute_indices.size() );
-    wasp_line("capturing indices from "<<current_attribute_index<<" to "<<limit
-              <<" starting from column index "<<current_column_index);
 
     std::vector<size_t> depths = SubStringIndexer::depths(attribute_indices);
     wasp_check( depths.size() == attribute_indices.size() );
@@ -343,7 +337,6 @@ void HaliteInterpreter<S>::capture(const std::string& data
         {
             size_t length = attribute_index.first - current_column_index;
             size_t file_offset = m_file_offset + current_column_index;
-            wasp_tagged_line("PREFIX");
             const std::string & prefixed
                     = data.substr(current_column_index,length);
             capture_leaf("txt",wasp::STRING, prefixed.c_str()
@@ -351,7 +344,6 @@ void HaliteInterpreter<S>::capture(const std::string& data
         }
         size_t stage = Interpreter<S>::push_staged(wasp::IDENTIFIER, "attr",{});
         { // capture declarative delimiter
-            wasp_tagged_line("DECL");
             size_t file_offset = m_file_offset + attribute_index.first;
             capture_leaf(m_attribute_start_delim,wasp::DECL
                      ,m_attribute_start_delim,wasp::STRING
@@ -361,7 +353,6 @@ void HaliteInterpreter<S>::capture(const std::string& data
         // increment current column to next potential block of text
         current_column_index = attribute_index.first
                 +m_attribute_start_delim.size();
-        wasp_tagged_line("cc="<<current_column_index);
         // initial assumed depth to worst scenario, no more attributes
         // in this situation, all open trees must be closed/committed
         int depth_delta = open_tree.size()*-1;
@@ -370,7 +361,6 @@ void HaliteInterpreter<S>::capture(const std::string& data
         {
             depth_delta = depths[i+1]-depths[i];
         }
-        wasp_tagged_line("depth_delta = "<<depth_delta);
 
         // The next attribute should be a sibling or uncle in the tree.
         // Capture the current attribute's text, terminator,
@@ -378,7 +368,6 @@ void HaliteInterpreter<S>::capture(const std::string& data
         // to next potential block of text.
         if( depth_delta <= 0 )
         {
-            wasp_tagged_line("SIBLING/Uncle (delta<=0)");
             size_t remaining_length
                     = attribute_index.second - current_column_index;
             // capture text, if any
@@ -399,7 +388,6 @@ void HaliteInterpreter<S>::capture(const std::string& data
             // update current column to end of delimiter
             current_column_index = attribute_index.second
                     + m_attribute_end_delim.size();
-            wasp_tagged_line("cc="<<current_column_index);
         } // end of depth == 0
         // The next attribute is an uncle/great/great uncle etc.
         // Capture the appropriate open ancestral subtrees
@@ -423,7 +411,6 @@ void HaliteInterpreter<S>::capture(const std::string& data
                 // update current column to end of delimiter
                 current_column_index = prev.second
                         + m_attribute_end_delim.size();
-                wasp_tagged_line("cc="<<current_column_index);
                 // close/commit the subtree
                 wasp_check( Interpreter<S>::staged_count() > 1 );
                 Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
@@ -435,7 +422,6 @@ void HaliteInterpreter<S>::capture(const std::string& data
         // The next attribute is a child.
         // Push onto the open tree stack for future closure.
         else if( depth_delta > 0){
-            wasp_tagged_line("Pushing attribute "<<i<<" onto STACK...");
             open_tree.push_back(attribute_index);
         }
     } // end of attribute loop
