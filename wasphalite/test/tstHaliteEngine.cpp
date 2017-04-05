@@ -140,3 +140,45 @@ wombat has 2 brothers)INPUT";
     ASSERT_EQ( 2, o["fred"].to_int() );
 }
 
+/**
+ * @brief test attribute usage from nested template where nested path is parameterized
+ */
+TEST( Halite, parameterized_fileimport)
+{
+
+    std::ofstream import("nested attr wombat.tmpl");
+    std::stringstream content;
+    content<<"this is"<<std::endl
+         <<"nested files using <ted>"<<std::endl
+        <<std::endl // empty line
+       <<"and assigning fred to < fred = x >"; // missing new line
+    import<<content.str();
+    import.close();
+    std::stringstream input;
+    input<< R"INPUT(#import ./nested <x> <ted>.tmpl
+<ted> has <fred> brothers)INPUT";
+    HaliteInterpreter<> interpreter;
+
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["ted"] = "wombat";
+    o["fred"] = 3.14159;
+    ASSERT_EQ( Value::TYPE_STRING, o["ted"].type() );
+    ASSERT_EQ( Value::TYPE_DOUBLE, o["fred"].type() );
+    o["x"] = "attr";
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+
+    std::stringstream expected;
+    expected<< R"INPUT(this is
+nested files using wombat
+
+and assigning fred to attr
+wombat has attr brothers)INPUT";
+    ASSERT_EQ( expected.str(), out.str() );
+    std::remove("nested attr wombat.tmpl");
+    ASSERT_EQ( Value::TYPE_STRING, o["fred"].type() );
+    ASSERT_EQ( "attr", o["fred"].to_string() );
+}
+
