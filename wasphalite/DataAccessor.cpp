@@ -6,7 +6,6 @@ DataAccessor::DataAccessor(DataObject*data)
     : m_root_data(data)
     , m_current_data(data)
 {
-    wasp_require(data);
 }
 
 DataAccessor::DataAccessor(const DataAccessor &orig)
@@ -24,12 +23,21 @@ DataAccessor::~DataAccessor()
 
 bool DataAccessor::exists(const std::string &name) const
 {
-    wasp_check( m_current_data );
+
+    if( m_current_data == nullptr
+            || m_current_data->contains(name) == false)
+    {
+        return Context::exists(name);
+    }
     return m_current_data->contains(name);
 }
 Context::Type DataAccessor::type(const std::string& name)const
 {
-    wasp_check( m_current_data );
+    if( m_current_data == nullptr
+            || m_current_data->contains(name) == false)
+    {
+        return Context::type(name);
+    }
     auto itr = m_current_data->find(name);
     if( itr == m_current_data->end() ) return Context::Type::UNDEFINED;
     const wasp::Value & variable = itr->second;
@@ -41,35 +49,50 @@ Context::Type DataAccessor::type(const std::string& name)const
 }
 bool DataAccessor::store(const std::string &name, const bool &v)
 {
-    wasp_check( m_current_data );
+    if( m_current_data == nullptr)
+    {
+        return Context::store(name,v);
+    }
     (*m_current_data)[name] = v;
     return true;
 }
 
 bool DataAccessor::store(const std::string &name, const int &v)
 {
-    wasp_check( m_current_data );
+    if( m_current_data == nullptr)
+    {
+        return Context::store(name,v);
+    }
     (*m_current_data)[name] = v;
     return true;
 }
 
 bool DataAccessor::store(const std::string &name, const std::string &v)
 {
-    wasp_check( m_current_data );
+    if( m_current_data == nullptr)
+    {
+        return Context::store(name,v);
+    }
     (*m_current_data)[name] = v;
     return true;
 }
 
 bool DataAccessor::store(const std::string &name, const double &v)
 {
-    wasp_check( m_current_data );
+    if( m_current_data == nullptr)
+    {
+        return Context::store(name,v);
+    }
     (*m_current_data)[name] = v;
     return true;
 }
 
 bool DataAccessor::boolean(const std::string& name,size_t index,bool * ok)const
 {
-    wasp_check( m_current_data );
+    if( m_current_data == nullptr)
+    {
+        return Context::boolean(name,index,ok);
+    }
     auto itr = m_current_data->find(name);
     DataArray * array = nullptr;
     if( ok && itr == m_current_data->end() ) *ok = false;
@@ -87,7 +110,10 @@ bool DataAccessor::boolean(const std::string& name,size_t index,bool * ok)const
 }
 bool DataAccessor::boolean(const std::string& name, bool * ok)const
 {
-    wasp_check( m_current_data );
+    if( m_current_data == nullptr)
+    {
+        return Context::boolean(name,ok);
+    }
     auto itr = m_current_data->find(name);
 
     if( ok && itr == m_current_data->end() ) *ok = false;
@@ -100,7 +126,10 @@ bool DataAccessor::boolean(const std::string& name, bool * ok)const
 
 int DataAccessor::integer(const std::string& name,size_t index,bool * ok)const
 {
-    wasp_check( m_current_data );
+    if( m_current_data == nullptr)
+    {
+        return Context::integer(name,index,ok);
+    }
     auto itr = m_current_data->find(name);
     DataArray * array = nullptr;
     if( ok && itr == m_current_data->end() ) *ok = false;
@@ -118,7 +147,10 @@ int DataAccessor::integer(const std::string& name,size_t index,bool * ok)const
 }
 int DataAccessor::integer(const std::string& name,bool * ok)const
 {
-    wasp_check( m_current_data );
+    if( m_current_data == nullptr)
+    {
+        return Context::boolean(name,ok);
+    }
     auto itr = m_current_data->find(name);
 
     if( ok && itr == m_current_data->end() ) *ok = false;
@@ -131,7 +163,10 @@ int DataAccessor::integer(const std::string& name,bool * ok)const
 
 double DataAccessor::real(const std::string& name,size_t index,bool * ok)const
 {
-    wasp_check( m_current_data );
+    if( m_current_data == nullptr)
+    {
+        return Context::real(name,index,ok);
+    }
     auto itr = m_current_data->find(name);
     DataArray * array = nullptr;
     if( ok && itr == m_current_data->end() ) *ok = false;
@@ -149,7 +184,10 @@ double DataAccessor::real(const std::string& name,size_t index,bool * ok)const
 }
 double DataAccessor::real(const std::string& name, bool * ok)const
 {
-    wasp_check( m_current_data );
+    if( m_current_data == nullptr)
+    {
+        return Context::real(name,ok);
+    }
     auto itr = m_current_data->find(name);
 
     if( ok && itr == m_current_data->end() ) *ok = false;
@@ -162,7 +200,10 @@ double DataAccessor::real(const std::string& name, bool * ok)const
 
 std::string DataAccessor::string(const std::string& name, size_t index,bool * ok)const
 {
-    wasp_check( m_current_data );
+    if( m_current_data == nullptr)
+    {
+        return Context::string(name,index,ok);
+    }
     auto itr = m_current_data->find(name);
     DataArray * array = nullptr;
     if( ok && itr == m_current_data->end() ) *ok = false;
@@ -180,7 +221,10 @@ std::string DataAccessor::string(const std::string& name, size_t index,bool * ok
 }
 std::string DataAccessor::string(const std::string& name,bool * ok)const
 {
-    wasp_check( m_current_data );
+    if( m_current_data == nullptr)
+    {
+        return Context::string(name,ok);
+    }
     auto itr = m_current_data->find(name);
 
     if( ok && itr == m_current_data->end() ) *ok = false;

@@ -162,8 +162,14 @@ public:
     size_t size()const;
     bool empty()const;
 
-    storage_type::const_iterator find(const std::string & name)const;
-    storage_type::iterator find(const std::string & name);
+    storage_type::const_iterator find(const std::string & name)const
+    {
+        return m_data.find(name);
+    }
+    storage_type::iterator find(const std::string & name)
+    {
+        return m_data.find(name);
+    }
 
     storage_type::const_iterator begin()const{return m_data.begin();}
     storage_type::const_iterator end()const{return m_data.end();}

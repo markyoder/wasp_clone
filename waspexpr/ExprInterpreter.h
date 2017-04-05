@@ -30,15 +30,19 @@ public:
                        , std::size_t m_start_line=1u
                        , std::size_t m_start_column=1u);
 
-private :
-     Context m_context;
+
 public:
-     Context & context(){return m_context;}
-     const Context & context()const{return m_context;}
-     Result evaluate(){
+
+     Result evaluate()
+     {
+         Context context;
+         return evaluate(context);
+     }
+
+     Result evaluate(Context & context){
          Result r;
          auto root_view = this->root();
-         return r.evaluate(root_view,m_context);
+         return r.evaluate(root_view,context);
      }
 };
 #include "waspexpr/ExprInterpreter.i.h"

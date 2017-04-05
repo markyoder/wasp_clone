@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <functional>
 #include "wasphalite/HaliteInterpreter.h"
+#include "waspcore/Object.h"
 
 #include "gtest/gtest.h"
 using namespace std;
@@ -25,7 +26,8 @@ line2
     HaliteInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
     std::stringstream out;
-    ASSERT_TRUE( interpreter.evaluate(out) );
+    DataAccessor data;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( input.str(), out.str() );
 }
 TEST( Halite, parameterized_text )
@@ -45,7 +47,8 @@ TEST( Halite, parameterized_text )
     HaliteInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
     std::stringstream out;
-    ASSERT_TRUE( interpreter.evaluate(out) );
+    DataAccessor data; data.add_default_variables();
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( expected.str(), out.str() );
 }
 
@@ -65,6 +68,8 @@ TEST( Halite, static_text_fileimport)
     HaliteInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
     std::stringstream out;
-    ASSERT_TRUE( interpreter.evaluate(out) );
+    DataAccessor data;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( expected.str(), out.str() );
 }
+

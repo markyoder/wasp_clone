@@ -1,4 +1,5 @@
 #include "waspexpr/ExprInterpreter.h"
+#include "waspexpr/ExprContext.h"
 #include "gtest/gtest.h"
 #include <iostream>
 #include <string>
@@ -39,10 +40,11 @@ TEST(ExprInterpreter, vector_int_variables)
         std::stringstream input;
         input <<t.tst;
         ExprInterpreter<> interpreter;
-        interpreter.context().store_ref("data",data);
+        Context context;
+        context.store_ref("data",data);
         ASSERT_TRUE(interpreter.parse(input) );
 
-        auto result = interpreter.evaluate();
+        auto result = interpreter.evaluate(context);
         ASSERT_FALSE( result.is_error() );
         ASSERT_TRUE(result.is_integer());
         ASSERT_TRUE(result.is_number());
@@ -72,11 +74,12 @@ TEST(ExprInterpreter, vector_real_variables)
         std::stringstream input;
         input <<t.tst;
         ExprInterpreter<> interpreter;
-        interpreter.context().add_default_variables(); // needed for pi
-        interpreter.context().store_ref("data",data);
+        Context context;
+        context.add_default_variables(); // needed for pi
+        context.store_ref("data",data);
         ASSERT_TRUE(interpreter.parse(input) );
 
-        auto result = interpreter.evaluate();
+        auto result = interpreter.evaluate(context);
         ASSERT_FALSE( result.is_error() );
         ASSERT_FALSE(result.is_integer());
         ASSERT_TRUE(result.is_number());
@@ -92,10 +95,11 @@ TEST(ExprInterpreter, vector_real_variables)
         std::stringstream input;
         input <<"data[0]=unknown";
         ExprInterpreter<> interpreter;
-        interpreter.context().store_ref("data",data);
+        Context context;
+        context.store_ref("data",data);
         ASSERT_TRUE(interpreter.parse(input) );
 
-        auto result = interpreter.evaluate();
+        auto result = interpreter.evaluate(context);
         ASSERT_TRUE( result.is_error() );
         ASSERT_FALSE(result.is_integer());
         ASSERT_FALSE(result.is_number());
@@ -108,10 +112,11 @@ TEST(ExprInterpreter, vector_real_variables)
         std::stringstream input;
         input <<"data[unknown]=3";
         ExprInterpreter<> interpreter;
-        interpreter.context().store_ref("data",data);
+        Context context;
+        context.store_ref("data",data);
         ASSERT_TRUE(interpreter.parse(input) );
 
-        auto result = interpreter.evaluate();
+        auto result = interpreter.evaluate(context);
         ASSERT_TRUE( result.is_error() );
         ASSERT_FALSE(result.is_integer());
         ASSERT_FALSE(result.is_number());
@@ -134,10 +139,11 @@ TEST(ExprInterpreter, default_variables)
         std::stringstream input;
         input <<t.tst;
         ExprInterpreter<> interpreter;
-        interpreter.context().add_default_variables();
+        Context context;
+        context.add_default_variables();
         ASSERT_TRUE(interpreter.parse(input) );
 
-        auto result = interpreter.evaluate();
+        auto result = interpreter.evaluate(context);
         ASSERT_FALSE(result.is_integer());
         ASSERT_TRUE(result.is_number());
         ASSERT_TRUE(result.is_real());
@@ -222,10 +228,11 @@ TEST(ExprInterpreter, default_real_functions)
         std::stringstream input;
         input <<t.tst;
         ExprInterpreter<> interpreter;
-        interpreter.context().add_default_functions();
-        interpreter.context().add_default_variables();
+        Context context;
+        context.add_default_functions();
+        context.add_default_variables();
         ASSERT_TRUE(interpreter.parse(input) );
-        auto result = interpreter.evaluate();
+        auto result = interpreter.evaluate(context);
         if( result.is_error() ) std::cout<<result.string()<<std::endl;
         ASSERT_FALSE(result.is_error());
         ASSERT_FALSE(result.is_integer());
@@ -249,10 +256,11 @@ TEST(ExprInterpreter, default_integer_functions)
         std::stringstream input;
         input <<t.tst;
         ExprInterpreter<> interpreter;
-        interpreter.context().add_default_functions();
-        interpreter.context().add_default_variables();
+        Context context;
+        context.add_default_functions();
+        context.add_default_variables();
         ASSERT_TRUE(interpreter.parse(input) );
-        auto result = interpreter.evaluate();
+        auto result = interpreter.evaluate(context);
         if( result.is_error() ) std::cout<<result.string()<<std::endl;
         ASSERT_FALSE(result.is_error());
         ASSERT_TRUE(result.is_integer());
@@ -489,12 +497,12 @@ TEST(ExprInterpreter,integer_variable_boolean)
         std::stringstream input;
         input <<t.tst;
         ExprInterpreter<> interpreter;
-
-        interpreter.context().store("x",t.v1);
-        interpreter.context().store("y",t.v2);
+        Context context;
+        context.store("x",t.v1);
+        context.store("y",t.v2);
         ASSERT_EQ( true, interpreter.parse(input) );
 
-        auto result = interpreter.evaluate();
+        auto result = interpreter.evaluate(context);
         ASSERT_FALSE(result.is_integer());
         ASSERT_FALSE(result.is_number());
         ASSERT_FALSE(result.is_real());
@@ -564,12 +572,12 @@ TEST(ExprInterpreter,real_variable_boolean)
         std::stringstream input;
         input <<t.tst;
         ExprInterpreter<> interpreter;
-
-        interpreter.context().store("x",t.v1);
-        interpreter.context().store("y",t.v2);
+        Context context;
+        context.store("x",t.v1);
+        context.store("y",t.v2);
         ASSERT_EQ( true, interpreter.parse(input) );
 
-        auto result = interpreter.evaluate();
+        auto result = interpreter.evaluate(context);
         ASSERT_FALSE(result.is_integer());
         ASSERT_FALSE(result.is_number());
         ASSERT_FALSE(result.is_real());
@@ -641,12 +649,12 @@ TEST(ExprInterpreter,mixed_numeric_variable_boolean)
         std::stringstream input;
         input <<t.tst;
         ExprInterpreter<> interpreter;
-
-        interpreter.context().store("x",t.v1);
-        interpreter.context().store("y",t.v2);
+        Context context;
+        context.store("x",t.v1);
+        context.store("y",t.v2);
         ASSERT_EQ( true, interpreter.parse(input) );
 
-        auto result = interpreter.evaluate();
+        auto result = interpreter.evaluate(context);
 
         ASSERT_FALSE(result.is_integer());
         ASSERT_FALSE(result.is_number());
@@ -666,8 +674,8 @@ TEST(ExprInterpreter,scalar_integer)
         input <<"result="<<i<<"^2"; // exponentiation is higher precendence than unary minus
         ExprInterpreter<> interpreter;
         ASSERT_EQ( true, interpreter.parse(input) );
-
-        auto result = interpreter.evaluate();
+        Context context;
+        auto result = interpreter.evaluate(context);
         ASSERT_TRUE(result.is_integer());
         ASSERT_TRUE(result.is_number());
         ASSERT_FALSE(result.is_real());
@@ -675,7 +683,7 @@ TEST(ExprInterpreter,scalar_integer)
         ASSERT_FALSE(result.is_bool());
         int expected = i > 0 ? std::pow(i,2) : -std::pow(i,2);
         ASSERT_EQ(expected, result.integer());
-        ASSERT_EQ(expected, interpreter.context().integer("result"));
+        ASSERT_EQ(expected, context.integer("result"));
     }
 }
 
@@ -690,8 +698,8 @@ TEST(ExprInterpreter,DISABLED_scalar_real)
         ExprInterpreter<> interpreter;
         std::cout<<input.str()<<std::endl;
         ASSERT_EQ( true, interpreter.parse(input) );
-
-        auto result = interpreter.evaluate();
+        Context context;
+        auto result = interpreter.evaluate(context);
         ASSERT_FALSE(result.is_integer());
         ASSERT_TRUE(result.is_number());
         ASSERT_TRUE(result.is_real());
@@ -699,7 +707,7 @@ TEST(ExprInterpreter,DISABLED_scalar_real)
         ASSERT_FALSE(result.is_bool());
         float expected = (i-15.0)*3;
         ASSERT_NEAR(expected, result.real(),1e-10);
-        ASSERT_NEAR(expected, interpreter.context().real("result")
+        ASSERT_NEAR(expected, context.real("result")
                     ,1e-10);
     }
 }
@@ -764,10 +772,11 @@ TEST(ExprInterpreter, format)
         std::stringstream input;
         input <<t.tst;
         ExprInterpreter<> interpreter;
-        interpreter.context().add_default_variables();
+        Context context;
+        context.add_default_variables();
         ASSERT_TRUE(interpreter.parse(input) );
 
-        auto result = interpreter.evaluate();
+        auto result = interpreter.evaluate(context);
 
         ASSERT_FALSE(result.is_error());
         std::stringstream fmt_result;

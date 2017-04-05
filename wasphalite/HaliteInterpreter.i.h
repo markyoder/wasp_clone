@@ -442,6 +442,7 @@ void HaliteInterpreter<S>::capture(const std::string& data
 }
 template<class S>
 bool HaliteInterpreter<S>::evaluate(std::ostream & out
+                                    ,DataAccessor & data
                                     , std::ostream * activity_log)
 {
     auto root_view = Interpreter<S>::root();
@@ -462,7 +463,7 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
         case wasp::IDENTIFIER:
         {
             std::stringstream substitution;
-            if( false == print_attribute(child_view
+            if( false == print_attribute(data, child_view
                                            , substitution
                                            , current_line, current_column) )
             {
@@ -472,7 +473,7 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
         }
         break;
         case wasp::FILE:
-            if( !import_file(child_view, out, current_line, current_column) ) return false;
+            if( !import_file(data, child_view, out, current_line, current_column) ) return false;
         break;
         default:
             wasp_not_implemented("template construct at line "
@@ -483,7 +484,8 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
     return true;
 }
 template<class S>
-bool HaliteInterpreter<S>::print_attribute(const TreeNodeView<S>& attr_view
+bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
+                                           ,const TreeNodeView<S>& attr_view
                                            ,std::ostream& out
                                            ,size_t & line
                                            ,size_t & column)
@@ -516,9 +518,7 @@ bool HaliteInterpreter<S>::print_attribute(const TreeNodeView<S>& attr_view
     {
         return false;
     }
-    // TODO - provide context with data/attributes, etc. available
-    expr.context().add_default_variables().add_default_functions();
-    auto result = expr.evaluate();
+    auto result = expr.evaluate(data);
     if( result.is_error() )
     {
         wasp_tagged_line(result.string());
@@ -530,7 +530,8 @@ bool HaliteInterpreter<S>::print_attribute(const TreeNodeView<S>& attr_view
 }
 
 template<class S>
-bool HaliteInterpreter<S>::import_file(const TreeNodeView<S>& import_view
+bool HaliteInterpreter<S>::import_file(DataAccessor & data
+                                       ,const TreeNodeView<S>& import_view
                                            ,std::ostream& out
                                            ,size_t & line
                                            ,size_t & column)
@@ -551,7 +552,7 @@ bool HaliteInterpreter<S>::import_file(const TreeNodeView<S>& import_view
                 wasp::print(import_str, child_view);
             break;
             case wasp::IDENTIFIER:
-                print_attribute(child_view, import_str, line, column);
+                print_attribute(data,child_view, import_str, line, column);
             break;
             default:
                 wasp_not_implemented("parameterized file import");
@@ -579,7 +580,7 @@ bool HaliteInterpreter<S>::import_file(const TreeNodeView<S>& import_view
         {
             return false;
         }
-        return nested_interp.evaluate(out);
+        return nested_interp.evaluate(out,data);
     }
 
     nested_interp.setStreamName(path,true);
@@ -588,6 +589,6 @@ bool HaliteInterpreter<S>::import_file(const TreeNodeView<S>& import_view
     {
         return false;
     }
-    return nested_interp.evaluate(out);
+    return nested_interp.evaluate(out,data);
 }
 #endif

@@ -11,6 +11,7 @@
 #include "waspcore/Interpreter.h"
 #include "wasphalite/SubStringIndexer.h"
 #include "waspexpr/ExprInterpreter.h"
+#include "wasphalite/DataAccessor.h"
 #include "waspcore/wasp_bug.h"
 
 namespace wasp {
@@ -50,10 +51,13 @@ namespace wasp {
         /**
          * @brief evaluate evaluates the template emitting the expansion into out stream
          * @param out the stream on which to emit the expanded template
+         * @param data the accessor to the data for template expansion
          * @param activity_log an optional activity log to emit template activity on
          * @return true, iff the template expanded with no errors.
          */
-        bool evaluate(std::ostream & out, std::ostream * activity_log=nullptr);
+        bool evaluate(std::ostream & out
+                      , DataAccessor & data
+                      , std::ostream * activity_log=nullptr);
     private:
 
         bool parse_content(std::istream& in);
@@ -88,8 +92,10 @@ namespace wasp {
          * @return true, iff no errors occurred during the substitution/printing of the attribute
          * TODO - implement nested attributes and attribute formatting
          */
-        bool print_attribute(const TreeNodeView<S> & attr_view
-                             ,std::ostream& out, size_t& line, size_t& column  );
+        bool print_attribute(DataAccessor & data
+                             ,const TreeNodeView<S> & attr_view
+                             ,std::ostream& out
+                            , size_t& line, size_t& column  );
 
         /**
          * @brief import_file imports the file represented by the given tree view
@@ -99,7 +105,8 @@ namespace wasp {
          * @param column the column at which the import starts
          * @return true, iff the file and its contents were successfully imported and emitted
          */
-        bool import_file(const TreeNodeView<S> & import_view
+        bool import_file(DataAccessor & data
+                         ,const TreeNodeView<S> & import_view
                          ,std::ostream& out, size_t& line, size_t & column);
     public: // public variables
 

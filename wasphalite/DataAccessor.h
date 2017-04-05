@@ -9,7 +9,7 @@ namespace wasp{
 class DataAccessor : public Context {
 
 public:
-    DataAccessor(DataObject * data);
+    DataAccessor(DataObject * data=nullptr);
     DataAccessor(const DataAccessor& orig);
     virtual ~DataAccessor();
 
