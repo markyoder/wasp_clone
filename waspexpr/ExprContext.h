@@ -424,7 +424,7 @@ private:
  */
 class Result{
 public:
-    Result():m_type(Context::Type::INTEGER){}
+    Result():m_type(Context::Type::UNDEFINED){}
     Result(const Result& orig)
         :m_type(orig.m_type)
     , m_value(orig.m_value)

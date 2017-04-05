@@ -473,12 +473,12 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
                                            ,size_t & line
                                            ,size_t & column)
 {
-
+    wasp_tagged_line("printing attribute "<<attr_view.data());
     // attributes must have '<' txt? '>'
     // e.g., < txt> or <>
     wasp_require( attr_view.child_count() > 1);
     std::stringstream attr_str;
-
+    size_t start_column = column; // todo ensure column is propogated appropriately
     // accumulate an attribute string
     for( size_t i = 1, count = attr_view.child_count()-1; i < count; ++i )
     {
@@ -489,18 +489,24 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
             case wasp::STRING:
             wasp::print(attr_str, child_view);
             break;
+            case wasp::IDENTIFIER:
+            if( !print_attribute(data, child_view, attr_str, line, column) )
+            {
+                return false;
+            }
+            break;
             default:
             wasp_not_implemented("nested attribute printing");
-
         }
     }
 
     // attribute string contains the full attribute name
     ExprInterpreter<> expr(Interpreter<S>::error_stream());
-    if( false == expr.parse(attr_str, line, column + m_attribute_start_delim.size()) )
+    if( false == expr.parse(attr_str, line, start_column + m_attribute_start_delim.size()) )
     {
         return false;
     }
+    wasp_tagged_line("evaluating statement '"<<attr_str.str()<<"'");
     auto result = expr.evaluate(data);
     if( result.is_error() )
     {

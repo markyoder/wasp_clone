@@ -30,6 +30,22 @@ TEST( Halite, single_attribute)
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "value", out.str() );
 }
+TEST( Halite, indirect_attribute)
+{
+    std::stringstream input;
+    input<< R"INPUT(<<attr>> <<what>.<member>>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["attr"]=std::string("what");
+    o["what"]=std::string("obj");
+    o["member"]=std::string("x");
+    o["obj.x"]=3.14159;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "obj 3.14159", out.str() );
+}
 TEST( Halite, static_text)
 {
     std::stringstream input;

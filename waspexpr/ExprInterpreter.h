@@ -42,6 +42,7 @@ public:
      Result evaluate(Context & context){
          Result r;
          auto root_view = this->root();
+         wasp_check(root_view.is_null()==false);
          return r.evaluate(root_view,context);
      }
 };
