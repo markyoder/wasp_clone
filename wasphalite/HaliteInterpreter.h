@@ -72,7 +72,15 @@ namespace wasp {
          */
         void capture_attribute_text(const std::string& txt
                                     ,size_t offset);
-
+        /**
+         * @brief capture_attribute_delim convenience method for capturing terminator and potential trailing text
+         * @param data the data string being examined for traililng text and terminator capture
+         * @param current_column_index the current column being examined - will be updated upon capture
+         * @param attribute_end_index the terminating index of the attribute
+         */
+        void capture_attribute_delim(const std::string& data
+                                   , size_t & current_column_index
+                                  ,size_t attribute_end_index);
         void capture_leaf(const std::string& node_name
                           , size_t node_type
                           , const std::string& data

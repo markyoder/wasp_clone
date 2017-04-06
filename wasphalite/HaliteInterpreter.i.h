@@ -386,26 +386,8 @@ void HaliteInterpreter<S>::capture(const std::string& data
         // to next potential block of text.
         if( depth_delta <= 0 )
         {
-            size_t remaining_length
-                    = attribute_index.second - current_column_index;
-            // capture text, if any
-            if( remaining_length > 0 ){
-                size_t file_offset = m_file_offset + current_column_index;
-                capture_attribute_text(
-                            data.substr(current_column_index,remaining_length)
-                            ,file_offset);
-            }
-            // capture attribute terminator
-            size_t file_offset = m_file_offset + attribute_index.second;
-            capture_leaf(m_attribute_end_delim,wasp::TERM
-                     ,m_attribute_end_delim,wasp::STRING
-                     ,file_offset);
-            // close/commit the subtree
-            wasp_check( Interpreter<S>::staged_count() > 1 );
-            Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
-            // update current column to end of delimiter
-            current_column_index = attribute_index.second
-                    + m_attribute_end_delim.size();
+            capture_attribute_delim(data, current_column_index, attribute_index.second);
+
         } // end of depth == 0
         // The next attribute is an uncle/great/great uncle etc.
         // Capture the appropriate open ancestral subtrees
@@ -413,25 +395,7 @@ void HaliteInterpreter<S>::capture(const std::string& data
         {
             while( depth_delta != 0 ){
                 const auto & prev = open_tree.back();
-                // check for trailing suffix text
-                size_t remaining_length = prev.second - current_column_index;
-                if( remaining_length > 0 ){
-                    size_t file_offset = m_file_offset + current_column_index;
-                    capture_attribute_text(
-                                data.substr(current_column_index,remaining_length)
-                                ,file_offset);
-                }
-                // capture attribute terminator
-                size_t file_offset = m_file_offset + prev.second;
-                capture_leaf(m_attribute_end_delim,wasp::TERM
-                         ,m_attribute_end_delim,wasp::STRING
-                         ,file_offset);
-                // update current column to end of delimiter
-                current_column_index = prev.second
-                        + m_attribute_end_delim.size();
-                // close/commit the subtree
-                wasp_check( Interpreter<S>::staged_count() > 1 );
-                Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
+                capture_attribute_delim(data,current_column_index, prev.second);
                 ++depth_delta;
                 open_tree.pop_back();
             }
@@ -624,4 +588,32 @@ void HaliteInterpreter<S>::capture_attribute_text(const std::string& text
     }
 }
 
+
+template<class S>
+void HaliteInterpreter<S>::capture_attribute_delim(const std::string& data
+                                                   , size_t & current_column_index
+                                                  ,size_t attribute_end_index)
+{
+    wasp_require(attribute_end_index >= current_column_index);
+    size_t remaining_length
+            = attribute_end_index - current_column_index;
+    // capture text, if any
+    if( remaining_length > 0 ){
+        size_t file_offset = m_file_offset + current_column_index;
+        capture_attribute_text(
+                    data.substr(current_column_index,remaining_length)
+                    ,file_offset);
+    }
+    // capture attribute terminator
+    size_t file_offset = m_file_offset + attribute_end_index;
+    capture_leaf(m_attribute_end_delim,wasp::TERM
+             ,m_attribute_end_delim,wasp::STRING
+             ,file_offset);
+    // close/commit the subtree
+    wasp_check( Interpreter<S>::staged_count() > 1 );
+    Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
+    // update current column to end of delimiter
+    current_column_index = attribute_end_index
+            + m_attribute_end_delim.size();
+}
 #endif
