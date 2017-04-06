@@ -26,9 +26,13 @@ HaliteInterpreter<S>::~HaliteInterpreter()
 {
 }
 template<class S>
-bool HaliteInterpreter<S>::parse(std::istream& in, size_t startLine, size_t startColumn)
+bool HaliteInterpreter<S>::parse(std::istream& in
+                                 , size_t startLine, size_t startColumn)
 {
-    return parseStream(in, hasFile() ? Interpreter<S>::stream_name() : "stream input" , startLine,startColumn);
+    return parseStream(in,
+                       hasFile()
+                       ? Interpreter<S>::stream_name()
+                       : "stream input" , startLine,startColumn);
 }
 template<class S>
 bool HaliteInterpreter<S>::parseStream(std::istream& in
@@ -51,14 +55,18 @@ bool HaliteInterpreter<S>::parseFile(const std::string &filename, size_t line)
 {
     std::ifstream in(filename.c_str());
     if (!in.good()){
-        Interpreter<S>::error_stream()<<"file '"<<filename<<"' is either inaccessible or doesn't exist! Unable to read."<<std::endl;
+        Interpreter<S>::error_stream()
+                <<"file '"<<filename<<"' is either inaccessible or doesn't exist!"
+                                      " Unable to read."<<std::endl;
         return false;
     }
     m_has_file = true;
     return parseStream(in, filename, line);
 }
 template<class S>
-bool HaliteInterpreter<S>::parseString(const std::string &input, const std::string& sname, size_t startLine, size_t startColumn)
+bool HaliteInterpreter<S>::parseString(const std::string &input
+                                       , const std::string& sname
+                                       , size_t startLine, size_t startColumn)
 {
     std::istringstream iss(input);
     return parseStream(iss, sname,startLine,startColumn);
@@ -99,7 +107,8 @@ void HaliteInterpreter<S>::capture_leaf(const std::string& node_name
     // push the token text
     Interpreter<S>::push_token(data.c_str(), token_type, file_offset);
     // push the leaf node representing the token
-    size_t node_i = Interpreter<S>::push_leaf(node_type, node_name.c_str(), token_i);
+    size_t node_i
+            = Interpreter<S>::push_leaf(node_type, node_name.c_str(), token_i);
 
     // stage the leaf for committal as a child of the document
     // templates are very flat; nearly all nodes are a child
@@ -147,7 +156,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     static std::string endif_stmt = "#endif";
     bool is_endif = false; // assume false
 
-    if( is_directive && (is_import = line.compare(0, import_stmt.size(), import_stmt) == 0) )
+    if( is_directive && (is_import
+                         = line.compare(0, import_stmt.size(), import_stmt) == 0) )
     { // capture import declarator
         Interpreter<S>::push_staged(wasp::FILE, "import",{});
         size_t offset = m_file_offset + current_column_index;
@@ -156,7 +166,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      , wasp::STRING, offset );
         current_column_index += import_stmt.size();
     }
-    else if(is_directive &&  (is_ifdef = line.compare(0,ifdef_stmt.size(),ifdef_stmt) == 0) )
+    else if(is_directive &&  (is_ifdef
+                              = line.compare(0,ifdef_stmt.size(),ifdef_stmt) == 0) )
     {
         Interpreter<S>::push_staged(wasp::CONDITIONAL, "ifdef",{});
         size_t offset = m_file_offset + current_column_index;
@@ -165,7 +176,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      , wasp::STRING, offset );
         current_column_index += ifdef_stmt.size();
     }
-    else if(is_directive &&  (is_ifndef = line.compare(0,ifndef_stmt.size(),ifndef_stmt) == 0) )
+    else if(is_directive &&  (is_ifndef
+                              = line.compare(0,ifndef_stmt.size(),ifndef_stmt) == 0) )
     {
         Interpreter<S>::push_staged(wasp::CONDITIONAL, "ifndef",{});
         size_t offset = m_file_offset + current_column_index;
@@ -174,7 +186,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      , wasp::STRING, offset );
         current_column_index += ifndef_stmt.size();
     }
-    else if(is_directive &&  (is_if = line.compare(0,if_stmt.size(),if_stmt) == 0) )
+    else if(is_directive &&  (is_if
+                              = line.compare(0,if_stmt.size(),if_stmt) == 0) )
     {
         Interpreter<S>::push_staged(wasp::CONDITIONAL, "if",{});
         size_t offset = m_file_offset + current_column_index;
@@ -183,7 +196,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      , wasp::STRING, offset );
         current_column_index += if_stmt.size();
     }
-    else if(is_directive &&  (is_elseif = line.compare(0,elseif_stmt.size(),elseif_stmt) == 0) )
+    else if(is_directive &&  (is_elseif
+                              = line.compare(0,elseif_stmt.size(),elseif_stmt) == 0) )
     {
         // check for required condition to be open
         wasp_check( Interpreter<S>::staged_count() > 0 );
@@ -207,7 +221,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      , wasp::STRING, offset );
         current_column_index += elseif_stmt.size();
     }
-    else if(is_directive &&  (is_else = line.compare(0,else_stmt.size(),else_stmt) == 0) )
+    else if(is_directive &&  (is_else
+                              = line.compare(0,else_stmt.size(),else_stmt) == 0) )
     {
         // check for required condition to be open
         wasp_check( Interpreter<S>::staged_count() > 0 );
@@ -414,7 +429,6 @@ void HaliteInterpreter<S>::capture(const std::string& data
                 ++depth_delta;
                 open_tree.pop_back();
             }
-
         }
         // The next attribute is a child.
         // Push onto the open tree stack for future closure.
