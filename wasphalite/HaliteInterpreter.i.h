@@ -6,6 +6,7 @@ HaliteInterpreter<S>::HaliteInterpreter()
     :Interpreter<S>(),        
     m_attribute_start_delim("<"),
     m_attribute_end_delim(">"),
+    m_attribute_options_delim(":"),
     m_current_line_count(0),
     m_file_offset(0),
     m_has_file(false)
@@ -16,6 +17,7 @@ HaliteInterpreter<S>::HaliteInterpreter(std::ostream & err)
     : Interpreter<S>(err),    
     m_attribute_start_delim("<"),
     m_attribute_end_delim(">"),
+    m_attribute_options_delim(":"),
     m_current_line_count(0),
     m_file_offset(0),
     m_has_file(false)
@@ -308,9 +310,12 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
         wasp_check( current_column_index+remaining_length <= line.size() );
         if( remaining_length > 0 )
         {            
-            capture_leaf("txt", wasp::STRING
-                         ,line.substr(current_column_index,remaining_length)
-                         , wasp::STRING, offset );
+            capture_attribute_text(
+                        line.substr(current_column_index,remaining_length)
+                        ,offset);
+//            capture_leaf("txt", wasp::STRING
+//                         ,line.substr(current_column_index,remaining_length)
+//                         , wasp::STRING, offset );
         }
 
         // when closing import statement, commit the tree
@@ -351,10 +356,11 @@ void HaliteInterpreter<S>::capture(const std::string& data
             size_t file_offset = m_file_offset + current_column_index;
             const std::string & prefixed
                     = data.substr(current_column_index,length);
-            capture_leaf("txt",wasp::STRING, prefixed.c_str()
-                         ,wasp::STRING,file_offset);
+            capture_attribute_text(prefixed,file_offset);
+//            capture_leaf("txt",wasp::STRING, prefixed.c_str()
+//                         ,wasp::STRING,file_offset);
         }
-        size_t stage = Interpreter<S>::push_staged(wasp::IDENTIFIER, "attr",{});
+        Interpreter<S>::push_staged(wasp::IDENTIFIER, "attr",{});
         { // capture declarative delimiter
             size_t file_offset = m_file_offset + attribute_index.first;
             capture_leaf(m_attribute_start_delim,wasp::DECL
@@ -385,9 +391,9 @@ void HaliteInterpreter<S>::capture(const std::string& data
             // capture text, if any
             if( remaining_length > 0 ){
                 size_t file_offset = m_file_offset + current_column_index;
-                capture_leaf("txt",wasp::STRING
-                             ,data.substr(current_column_index,remaining_length)
-                             ,wasp::STRING ,file_offset);
+                capture_attribute_text(
+                            data.substr(current_column_index,remaining_length)
+                            ,file_offset);
             }
             // capture attribute terminator
             size_t file_offset = m_file_offset + attribute_index.second;
@@ -411,9 +417,9 @@ void HaliteInterpreter<S>::capture(const std::string& data
                 size_t remaining_length = prev.second - current_column_index;
                 if( remaining_length > 0 ){
                     size_t file_offset = m_file_offset + current_column_index;
-                    capture_leaf("txt",wasp::STRING
-                                 ,data.substr(current_column_index,remaining_length)
-                                 ,wasp::STRING ,file_offset);
+                    capture_attribute_text(
+                                data.substr(current_column_index,remaining_length)
+                                ,file_offset);
                 }
                 // capture attribute terminator
                 size_t file_offset = m_file_offset + prev.second;
@@ -460,7 +466,7 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
         case wasp::IDENTIFIER:
         {
             std::stringstream substitution;
-            if( false == print_attribute(data, child_view
+            if( !print_attribute(data, child_view
                                            , substitution
                                            , current_line, current_column) )
             {
@@ -598,4 +604,24 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
     out<<std::endl;
     return import;
 }
+template<class S>
+void HaliteInterpreter<S>::capture_attribute_text(const std::string& text
+                                                  ,size_t offset)
+{
+    size_t options_index = text.find(m_attribute_options_delim);
+    bool contains_options = options_index != std::string::npos;
+    if( !contains_options ) options_index = text.size();
+
+    // capture text
+    capture_leaf("txt",wasp::STRING, text.substr(0,options_index)
+                 ,wasp::STRING,offset);
+    size_t options_text_size = text.size() - options_index;
+    // capture attribute options
+    if( options_text_size > 0 )
+    {
+        capture_leaf("opt",wasp::FUNCTION, text.substr(options_index,options_text_size)
+                     ,wasp::STRING,offset+options_index);
+    }
+}
+
 #endif

@@ -294,6 +294,36 @@ TEST( Halite, nested_attr_surrounding)
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
+/**
+ * @brief TEST test attribute option of formatting
+ */
+TEST( Halite, attr_options_surrounding)
+{
+    std::stringstream input;
+    input<<"prefix <pi:fmt=%2.8f> suffix ";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    ASSERT_EQ(8, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 3, document.child_count() );
+    ASSERT_EQ( 3, document.child_count() );
+    auto attr = document.child_at(1);
+    ASSERT_EQ( wasp::IDENTIFIER, attr.type() );
+    ASSERT_EQ( 4, attr.child_count() );
+    std::string expected_paths = R"INPUT(/
+/txt (prefix )
+/attr
+/attr/< (<)
+/attr/txt (pi)
+/attr/opt (:fmt=%2.8f)
+/attr/> (>)
+/txt ( suffix )
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
 
 /**
  * @brief TEST test import statement

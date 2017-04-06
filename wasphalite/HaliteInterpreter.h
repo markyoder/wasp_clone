@@ -64,6 +64,15 @@ namespace wasp {
 
         bool parse_line(const std::string & line );
 
+        /**
+         * @brief capture_attribute_text processes attribute text and constructs appropriate leaf nodes.
+         * @param txt the text of the attribute - contains attribute name and potentially attribute options (format, etc)
+         * @param offset the offset into the file of this attribute text.
+         * This will call capture_leaf as needed.
+         */
+        void capture_attribute_text(const std::string& txt
+                                    ,size_t offset);
+
         void capture_leaf(const std::string& node_name
                           , size_t node_type
                           , const std::string& data
@@ -125,6 +134,14 @@ namespace wasp {
          */
         bool hasFile()const{return m_has_file;}
     private: // private variables
+        //
+        // Attribute are delimited by 3 components.
+        // 1) declarator or starting delimitor
+        // 2) terminator or end delimitor
+        // 3) an attribute substitution options indicator
+        // E.g., < V : O > where start='<', end ='>', and option = ':'
+        // V and O indicate the variable name and options respectively
+        //
 
         /**
          * @brief attribute_start_delim attribute substitution declarator
@@ -134,6 +151,11 @@ namespace wasp {
          * @brief attribute_end_delim attribute substitution terminator
          */
         std::string m_attribute_end_delim;
+
+        /**
+         * @brief m_attribute_options_delim attribute substitution options indicator
+         */
+        std::string m_attribute_options_delim;
 
         size_t m_current_line_count;
         size_t m_file_offset;
