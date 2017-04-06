@@ -313,9 +313,6 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
             capture_attribute_text(
                         line.substr(current_column_index,remaining_length)
                         ,offset);
-//            capture_leaf("txt", wasp::STRING
-//                         ,line.substr(current_column_index,remaining_length)
-//                         , wasp::STRING, offset );
         }
 
         // when closing import statement, commit the tree
@@ -357,8 +354,6 @@ void HaliteInterpreter<S>::capture(const std::string& data
             const std::string & prefixed
                     = data.substr(current_column_index,length);
             capture_attribute_text(prefixed,file_offset);
-//            capture_leaf("txt",wasp::STRING, prefixed.c_str()
-//                         ,wasp::STRING,file_offset);
         }
         Interpreter<S>::push_staged(wasp::IDENTIFIER, "attr",{});
         { // capture declarative delimiter
@@ -430,9 +425,8 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
         case wasp::IDENTIFIER:
         {
             std::stringstream substitution;
-            if( !print_attribute(data, child_view
-                                           , substitution
-                                           , current_line, current_column) )
+            if( !print_attribute(data, child_view, substitution
+                               , current_line, current_column) )
             {
                 return false;
             }
@@ -463,6 +457,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     wasp_require( attr_view.child_count() > 1);
     std::stringstream attr_str;
     size_t start_column = column; // todo ensure column is propogated appropriately
+    SubstitutionOptions options;
     // accumulate an attribute string
     for( size_t i = 1, count = attr_view.child_count()-1; i < count; ++i )
     {
@@ -470,19 +465,28 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
         auto type = child_view.type();
         switch( type )
         {
+            // plain text to be printed for variable substitution
             case wasp::STRING:
             wasp::print(attr_str, child_view);
             break;
+            // nested attribute, recurse
             case wasp::IDENTIFIER:
             if( !print_attribute(data, child_view, attr_str, line, column) )
             {
                 return false;
             }
+            // indicates the attribute has options for substitution
+            case wasp::FUNCTION:
+                attribute_options(options, child_view.data());
             break;
             default:
             wasp_not_implemented("nested attribute printing");
         }
     }
+
+    // TODO - add optimization to check if above loop only encounters STRING
+    // and optionally FUNCTION in which indicate a variable can be directly substituted
+    // and formatted and no expression evaluation is needed
 
     // attribute string contains the full attribute name
     ExprInterpreter<> expr(Interpreter<S>::error_stream());
@@ -498,7 +502,16 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
         return false;
     }
 
-    result.format( out ) ;
+    if( options.has_format() )
+    {
+        if( !result.format(  out, options.format(), Interpreter<S>::error_stream()) )
+        {
+            return false;
+        }
+    }
+    else {
+       if( !result.format( out ) ) return false;
+    }
     column = attr_view.child_at(attr_view.child_count()-1).column() + m_attribute_end_delim.size();
     return true;
 }
@@ -615,5 +628,17 @@ void HaliteInterpreter<S>::capture_attribute_delim(const std::string& data
     // update current column to end of delimiter
     current_column_index = attribute_end_index
             + m_attribute_end_delim.size();
+}
+template<class S>
+void HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
+        ,const std::string& data)const
+{
+    static std::string fmt = "fmt=";
+    size_t format_index = data.find(fmt);
+    if( format_index != std::string::npos )
+    {
+        options.format() = data.substr(format_index+fmt.size());
+        wasp_tagged_line("Format of '"<<options.format()<<"' captured");
+    }
 }
 #endif

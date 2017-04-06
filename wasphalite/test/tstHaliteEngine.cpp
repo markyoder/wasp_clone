@@ -30,6 +30,18 @@ TEST( Halite, single_attribute)
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "value", out.str() );
 }
+TEST( Halite, formatted_single_attribute)
+{
+    std::stringstream input;
+    input<< R"INPUT(<pi:fmt=rounded=%12.8f>
+<pi>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data; data.add_default_variables();
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "rounded=  3.14159265\n3.14159", out.str() );
+}
 TEST( Halite, indirect_attribute)
 {
     std::stringstream input;

@@ -87,6 +87,7 @@ namespace wasp {
                           , size_t token_type
                           , size_t file_offset);
 
+
         /**
          * @brief capture captures the given attributes into a tree structure
          * @param current_column_index the line's column to begin capture
@@ -106,13 +107,32 @@ namespace wasp {
          * @param out the stream to emit the attribute substitution result
          * @param line the line on which the substitution is taking place
          * @param column the column at which the substitution is starting, will be updated
-         * @return true, iff no errors occurred during the substitution/printing of the attribute
-         * TODO - implement nested attributes and attribute formatting
+         * @return true, iff no errors occurred during the substitution/printing of the attribute         
          */
         bool print_attribute(DataAccessor & data
                              ,const TreeNodeView<S> & attr_view
                              ,std::ostream& out
                             , size_t& line, size_t& column  );
+
+        class SubstitutionOptions{
+        public:
+            SubstitutionOptions(){}
+            SubstitutionOptions(const SubstitutionOptions&orig)
+                :m_format(orig.m_format){}
+            bool has_format()const{return m_format.empty() == false;}
+            const std::string& format()const{return m_format;}
+            std::string& format(){return m_format;}
+          private:
+            std::string m_format; // format of the substitution
+            //...
+        };
+        /**
+         * @brief attribute_options processes the options listed in data
+         * @param options the options to populate
+         * @param data the data containing the text representation of options
+         */
+        void attribute_options( SubstitutionOptions & options
+                               , const std::string& data)const;
 
         /**
          * @brief import_file imports the file represented by the given tree view
@@ -166,7 +186,8 @@ namespace wasp {
         std::string m_attribute_options_delim;
 
         size_t m_current_line_count;
-        size_t m_file_offset;
+        size_t m_file_offset;        
+
     private: // private methods
 
         /**
