@@ -5,7 +5,47 @@
 #include <string>
 using namespace wasp;
 
+TEST(GetPotInterpreter, bad)
 
+{
+    std::stringstream input;
+    input<<R"INPUT([GlobalParams]
+disp_x = disp_x
+disp_y = disp_y
+disp_z = disp_z
+[../])INPUT";
+    std::stringstream error;
+    GetPotInterpreter<> interpreter(error);
+    ASSERT_FALSE( interpreter.parse(input) );
+    ASSERT_EQ("input:5.1-5: syntax error, unexpected subblock terminator"
+              ,error.str());
+    std::stringstream tree_print;
+    auto root_view = interpreter.root();
+    ASSERT_FALSE( root_view.is_null() );
+    root_view.paths(tree_print);
+    std::stringstream expected_tree;
+    expected_tree<<
+R"INPUT(/
+/GlobalParams
+/GlobalParams/[ ([)
+/GlobalParams/decl (GlobalParams)
+/GlobalParams/] (])
+/GlobalParams/disp_x
+/GlobalParams/disp_x/decl (disp_x)
+/GlobalParams/disp_x/= (=)
+/GlobalParams/disp_x/value (disp_x)
+/GlobalParams/disp_y
+/GlobalParams/disp_y/decl (disp_y)
+/GlobalParams/disp_y/= (=)
+/GlobalParams/disp_y/value (disp_y)
+/GlobalParams/disp_z
+/GlobalParams/disp_z/decl (disp_z)
+/GlobalParams/disp_z/= (=)
+/GlobalParams/disp_z/value (disp_z)
+/GlobalParams/[../] ([../])
+)INPUT";
+    ASSERT_EQ( expected_tree.str(), tree_print.str() );
+}
 
 TEST(GetPotInterpreter,simple)
 {
@@ -18,7 +58,7 @@ TEST(GetPotInterpreter,simple)
     //    |_ value '3.421'
     input << "key =  3.421";
     GetPotInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(5, interpreter.node_count() );
 
     std::vector<std::string> token_data = {"key","=","3.421"};
@@ -76,7 +116,7 @@ TEST(GetPotInterpreter,empty_object)
 
     input << "[ted][]";
     GetPotInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(6, interpreter.node_count() );
 
     std::vector<std::string> token_data = {"[","ted","]"};
@@ -129,7 +169,7 @@ TEST(GetPotInterpreter,simple_object)
 
     input << "[ted]key = 3.421[]";
     GetPotInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(10, interpreter.node_count() );
 
                                            // object decl
@@ -192,7 +232,7 @@ TEST(GetPotInterpreter,less_simple_object)
      key = 3.421
  [])INPUT";
     GetPotInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(19, interpreter.node_count() );
 
                                            // object decl
@@ -258,7 +298,7 @@ TEST(GetPotInterpreter, object_array)
 
     input << "[ted]data='basic 201 lu'[]";
     GetPotInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(14, interpreter.node_count() );
 
     std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::DECL
@@ -316,7 +356,7 @@ TEST(GetPotInterpreter, object_empty_subobject)
 
     input << "[ted][./fred][../][]";
     GetPotInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(12, interpreter.node_count() );
 
     std::vector<wasp::NODE> node_types = {wasp::LBRACKET
@@ -379,7 +419,7 @@ TEST(GetPotInterpreter, object_subobject)
 
     input << "[ted][./fred]key=3.4321[../][]";
     GetPotInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(16, interpreter.node_count() );
 
     std::vector<wasp::NODE> node_types = {wasp::LBRACKET
@@ -434,7 +474,7 @@ TEST(GetPotInterpreter,simple_view)
     //    |_ value '3.421'
     input << "key =  3.421";
     GetPotInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(5, interpreter.node_count() );
 
     std::vector<wasp::NODE> node_types = {wasp::DECL,wasp::ASSIGN
@@ -455,13 +495,13 @@ TEST(GetPotInterpreter,simple_view)
     ASSERT_EQ(wasp::DOCUMENT_ROOT, document.type());
     ASSERT_EQ( 1, document.line() );
     ASSERT_EQ( 1, document.column() );
-    ASSERT_EQ( true, document.equal(document) );
+    ASSERT_TRUE( document.equal(document) );
     ASSERT_EQ( false, document.has_parent() );
     ASSERT_EQ( node_paths.back(), document.path() );
     auto key = document.child_at(0);
     ASSERT_EQ(3, key.child_count() );
-    ASSERT_EQ( true, key.has_parent() );
-    ASSERT_EQ( true, document.equal(key.parent()) );
+    ASSERT_TRUE( key.has_parent() );
+    ASSERT_TRUE( document.equal(key.parent()) );
     ASSERT_EQ(wasp::KEYED_VALUE,key.type());
     ASSERT_EQ( node_names[3], key.name() );
     ASSERT_EQ( 1, key.line() );
@@ -480,8 +520,8 @@ TEST(GetPotInterpreter,simple_view)
         ASSERT_EQ( node_names[i], child.name() );
         ASSERT_EQ( 1, child.line() );
         ASSERT_EQ( node_columns[i], child.column() );
-        ASSERT_EQ( true, child.has_parent() );
-        ASSERT_EQ( true, key.equal(child.parent()));
+        ASSERT_TRUE( child.has_parent() );
+        ASSERT_TRUE( key.equal(child.parent()));
         ASSERT_EQ( node_paths[i],child.path() );
         }
     }
@@ -520,7 +560,7 @@ R"INPUT(/
 )INPUT";
 
     GetPotInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(16, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ(1, document.child_count() );
@@ -553,7 +593,7 @@ function = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)
     };
 
     GetPotInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(9, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ(1, document.child_count() );
@@ -577,7 +617,7 @@ TEST(GetPotInterpreter, comments )
 # comment with content
 #)INPUT";
    GetPotInterpreter<> interpreter;
-   ASSERT_EQ( true, interpreter.parse(input) );
+   ASSERT_TRUE( interpreter.parse(input) );
    ASSERT_EQ(4, interpreter.node_count() );
    auto document = interpreter.root();
    ASSERT_EQ(3, document.child_count() );
@@ -704,7 +744,7 @@ TEST(GetPotInterpreter,nested_subblocks)
   [../]
 [])INPUT";
     GetPotInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(18, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 1, document.child_count() );
@@ -739,7 +779,7 @@ TEST(GetPotInterpreter,multiple_objects)
 
 
     GetPotInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(32, interpreter.node_count() );
     GetPotNodeView<decltype(interpreter.root())> document
             = interpreter.root();
@@ -836,7 +876,7 @@ TEST(GetPotInterpreter,type_promotion)
 
 
     GetPotInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(61, interpreter.node_count() );
     GetPotNodeView<decltype(interpreter.root())> document
             = interpreter.root();

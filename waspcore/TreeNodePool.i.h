@@ -242,10 +242,15 @@ void TreeNodePool<NTS,NIS,TP>::node_paths(
                     NIS node_index
                     ,std::ostream & out)const
 {
-    // TODO conduct node index range check
+    wasp_tagged_line("node path for node @ "<<node_index);
+    wasp_require( node_index <  size() );
     std::size_t node_child_count = child_count(node_index);
     node_path(node_index,out);
     if( node_child_count == 0 ){
+        wasp_tagged_line("found leaf "
+                         <<name(node_index)<<" at "
+                         <<line(node_index)
+                         <<"."<<column(node_index));
         out<<" ("<<data(node_index)<<")"<<std::endl;
     }
     else{
@@ -385,7 +390,6 @@ TreeNodeView<TreeNodePool_T>::TreeNodeView(std::size_t node_index
     : m_tree_node_index(node_index)
     ,m_tree_data(&nodes)
 {
-    // TODO verify index is legal
 }
 template<class TreeNodePool_T>
 TreeNodeView<TreeNodePool_T>::TreeNodeView(const TreeNodeView & orig)
@@ -436,6 +440,7 @@ std::string TreeNodeView<TreeNodePool_T>::path()const{
 }
 template<class TreeNodePool_T>
 void TreeNodeView<TreeNodePool_T>::paths(std::ostream& out)const{
+    wasp_tagged_line("Paths from "<<m_tree_node_index);
     m_tree_data->node_paths(m_tree_node_index,out);
 }
 template<class TreeNodePool_T>

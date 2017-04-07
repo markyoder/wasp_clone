@@ -348,6 +348,25 @@ object : object_decl object_term
                                         ,children);
         delete $1;
         }
+        | object_decl object_members sub_object_term
+        {
+        std::vector<size_t> & children = *$object_decl;
+        size_t object_decl_i = children.at(1);
+        for( size_t child_i: *$object_members->second ) children.push_back(child_i);
+        children.push_back(($sub_object_term));
+        const std::string& name
+                = getpot_get_name(object_decl_i
+                                  ,interpreter
+                                  ,$object_members);
+        delete $object_members->second;
+        delete $object_members;
+        $$ = interpreter.push_parent(wasp::OBJECT
+                                        ,name.c_str()
+                                        ,children);
+        delete $1;
+        error(@3,"syntax error, unexpected subblock terminator");
+        YYERROR;
+        }
 integer : INTEGER
     {
         size_t token_index = ($1);

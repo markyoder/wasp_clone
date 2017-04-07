@@ -352,6 +352,10 @@ protected:
         }
         wasp_ensure( m_staged.size() == 1 );
         Stage& document = m_staged.front();
+        if( document.m_child_indices.empty() && m_tree_nodes.size() > 0)
+        {
+            document.m_child_indices.push_back(m_tree_nodes.size()-1);
+        }
         if( !document.m_child_indices.empty() )
         {
             m_root_index = commit_staged(0);
