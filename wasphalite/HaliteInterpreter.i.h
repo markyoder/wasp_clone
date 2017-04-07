@@ -417,8 +417,6 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
         switch( child_type )
         {
         case  wasp::STRING:
-
-//            if( activity_log ) *activity_log<<Interpreter<S>::stream_name()<<": line "<<current_line<<std::endl;
             // print the text and update the current line and column
             wasp::print_from(out, child_view, current_line, current_column);
         break;
@@ -450,13 +448,16 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
                                            ,std::ostream& out
                                            ,size_t & line
                                            ,size_t & column)
-{
-    wasp_tagged_line("printing attribute "<<attr_view.data());
+{    
     // attributes must have '<' txt? '>'
     // e.g., < txt> or <>
     wasp_require( attr_view.child_count() > 1);
     std::stringstream attr_str;
     size_t start_column = column; // todo ensure column is propogated appropriately
+    size_t new_line = attr_view.line();
+    int delta = new_line - line;
+    wasp_check(delta >= 0);
+    if( delta > 0 ) out<<std::string(delta, '\n');
     SubstitutionOptions options;
     // accumulate an attribute string
     for( size_t i = 1, count = attr_view.child_count()-1; i < count; ++i )
@@ -494,7 +495,6 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     {
         return false;
     }
-    wasp_tagged_line("evaluating statement '"<<attr_str.str()<<"'");
     auto result = expr.evaluate(data);
     if( result.is_error() )
     {
@@ -512,7 +512,9 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     else {
        if( !result.format( out ) ) return false;
     }
-    column = attr_view.child_at(attr_view.child_count()-1).column() + m_attribute_end_delim.size();
+    auto last_attr_component = attr_view.child_at(attr_view.child_count()-1);
+    column = last_attr_component.column() + m_attribute_end_delim.size();
+    line = new_line;
     return true;
 }
 
