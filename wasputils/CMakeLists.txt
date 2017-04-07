@@ -28,6 +28,16 @@ FILE(GLOB HEADERS *.h *.hh *.hpp
 ##---------------------------------------------------------------------------##
 ## PACKAGE TARGETS AND INSTALL
 ##---------------------------------------------------------------------------##
+
+IF ( wasp_ENABLE_wasphalite  AND wasp_ENABLE_waspjson  )
+    TRIBITS_ADD_EXECUTABLE(halite
+      SOURCES halite.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
+ENDIF()
+
 IF ( wasp_ENABLE_waspddi )
     TRIBITS_ADD_EXECUTABLE(ddilist
       SOURCES ddilist.cpp
