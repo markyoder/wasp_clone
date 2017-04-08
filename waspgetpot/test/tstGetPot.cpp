@@ -335,6 +335,92 @@ TEST(GetPotInterpreter, object_array)
     }
 }
 
+TEST(GetPotInterpreter, object_array_commas)
+{
+    std::stringstream input;
+    // Simple parse
+    // document
+    //  |_object
+    //    |_ object_decl 'ted'
+    //      |_ [ '['
+    //      |_ string 'ted'
+    //      |_ ] ']'
+    //    |_array 'data'
+    //      |_ decl 'data'
+    //      |_ = '='
+    //      |_ ' '''
+    //      |_ value basic
+    //      |_ , wasp_comma
+    //      |_ value 201
+    //      |_ , wasp_comma
+    //      |_ value again
+    //      |_ , wasp_comma
+    //      |_ value here
+    //      |_ , wasp_comma
+    //      |_ value close
+    //      |_ , wasp_comma
+    //      |_ value far
+    //      |_ value lu
+    //      |_ ' '''
+    //    |_ object_term '[]'
+
+    input << "[ted]data='basic,201 , again,here,close , far lu'[]";
+    GetPotInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    ASSERT_EQ(23, interpreter.node_count() );
+
+    std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::DECL
+                                           ,wasp::RBRACKET
+                                           // keyed value array data
+                                           ,wasp::DECL,wasp::ASSIGN
+                                           , wasp::QUOTE
+                                           , wasp::VALUE
+                                           , wasp::WASP_COMMA
+                                           , wasp::VALUE
+                                           , wasp::WASP_COMMA
+                                           , wasp::VALUE
+                                           , wasp::WASP_COMMA
+                                           , wasp::VALUE
+                                           , wasp::WASP_COMMA
+                                           , wasp::VALUE
+                                           , wasp::WASP_COMMA
+                                           , wasp::VALUE
+                                           , wasp::VALUE
+                                           , wasp::QUOTE
+                                           , wasp::ARRAY
+                                           ,wasp::OBJECT_TERM
+                                           ,wasp::OBJECT
+                                          ,wasp::DOCUMENT_ROOT};
+    std::vector<std::string> node_names = {"[","decl","]"
+                                           ,"decl","="// data array
+                                           ,"'" // start
+                                           ,"value" // basic
+                                           ,"," // wasp_comma
+                                           ,"value" // 201
+                                           ,"," // wasp_comma
+                                           ,"value" // again
+                                           ,"," // wasp_comma
+                                           ,"value" // here
+                                           ,"," // wasp_comma
+                                           ,"value" // close
+                                           ,"," // wasp_comma
+                                           ,"value" // far
+                                           ,"value" // lu
+                                           ,"'" // terminator
+                                           ,"data"
+                                           ,"[]"
+                                           ,"ted","document"};
+    ASSERT_EQ( node_types.size(), node_names.size() );
+    for( std::size_t i = 0; i < interpreter.node_count(); ++i )
+    {
+        {
+        SCOPED_TRACE(i);
+        ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
+        ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
+        }
+    }
+}
+
 TEST(GetPotInterpreter, object_empty_subobject)
 {
     std::stringstream input;
