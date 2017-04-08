@@ -44,7 +44,7 @@ int main (int argc, char *argv[])
                      << " invervals" << std::endl);
     if( !parsed )
     {
-        std::cout<<errors.str()<<std::endl;
+        std::cerr<<errors.str()<<std::endl;
         return -1;
     }
     std::vector<decltype(interpreter.root())> select_from_node;

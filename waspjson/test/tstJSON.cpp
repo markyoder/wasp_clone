@@ -32,7 +32,7 @@ TEST( JSON, simple_object )
  "key_bool_false" : false,
  "key_null" : null,
  "object_empty": { },
- "object_mixed": { "o":{}, "a":[], "k":1.0 },
+ "object_mixed": { "o":{}, "a bc \"esca ped\" de f":[], "k":1.0 },
  "array_empty" : [],
  "array_mixed" : [{}, [], 1, 1.004, true, false, null ]
 })INPUT";
@@ -97,11 +97,11 @@ TEST( JSON, simple_object )
 /object_mixed/o/{ ({)
 /object_mixed/o/} (})
 /object_mixed/, (,)
-/object_mixed/a
-/object_mixed/a/decl ("a")
-/object_mixed/a/: (:)
-/object_mixed/a/[ ([)
-/object_mixed/a/] (])
+/object_mixed/a bc \"esca ped\" de f
+/object_mixed/a bc \"esca ped\" de f/decl ("a bc \"esca ped\" de f")
+/object_mixed/a bc \"esca ped\" de f/: (:)
+/object_mixed/a bc \"esca ped\" de f/[ ([)
+/object_mixed/a bc \"esca ped\" de f/] (])
 /object_mixed/, (,)
 /object_mixed/k
 /object_mixed/k/decl ("k")
@@ -227,7 +227,8 @@ TEST( JSON, simple_object )
   ,"key_string" : "value1"
   ,"object_empty" : {}
   ,"object_mixed" : {
-    "a" : []
+    "a" : null
+    ,"a bc \"esca ped\" de f" : []
     ,"k" : 1
     ,"o" : {}
   }
