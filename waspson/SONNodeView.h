@@ -76,6 +76,8 @@ public:
      * Declarators and terminators are decorative
      */
     bool is_decorative()const;
+
+    bool is_leaf()const;
     /**
      * @brief non_decorative_children acquires all non decorative children
      * @return collection of SONNodeViews

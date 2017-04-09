@@ -82,6 +82,11 @@ SONNodeView<TNV> SONNodeView<TNV>::id_child()const
     return SONNodeView(); // null view
 }
 template<class TNV>
+bool SONNodeView<TNV>::is_leaf()const{
+    TNV view (tree_node_index(),*tree_node_pool());
+    return view.is_leaf();
+}
+template<class TNV>
 bool SONNodeView<TNV>::is_decorative()const{
     auto t = type();
     switch (t)

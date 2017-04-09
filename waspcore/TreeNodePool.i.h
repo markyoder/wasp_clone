@@ -242,24 +242,23 @@ void TreeNodePool<NTS,NIS,TP>::node_paths(
                     NIS node_index
                     ,std::ostream & out)const
 {
-    wasp_tagged_line("node path for node @ "<<node_index);
     wasp_require( node_index <  size() );
-    std::size_t node_child_count = child_count(node_index);
     node_path(node_index,out);
-    if( node_child_count == 0 ){
-        wasp_tagged_line("found leaf "
-                         <<name(node_index)<<" at "
-                         <<line(node_index)
-                         <<"."<<column(node_index));
-        out<<" ("<<data(node_index)<<")"<<std::endl;
-    }
-    else{
-        out<<std::endl;
-    }
+    size_t parent_data_i = parent_data_index(node_index);
+    size_t node_child_count = child_count(node_index);
 
+    // no parent data - childless 'parent' node
+    if( parent_data_i == size() && node_child_count == 0)
+    {
+
+        out<<" ("<<data(node_index)<<")"<<std::endl;
+        return;
+    }
+    out<<std::endl;
     for( std::size_t i = 0; i < node_child_count; ++i){
         node_paths( child_at( node_index, i ), out );
     }
+
 }
 
 
@@ -330,8 +329,10 @@ std::size_t TreeNodePool<NTS,NIS,TP>::leaf_index(
     if( parent_itr != m_basic_parent_data_lookup.end() )
     {
         auto parent_data_index = parent_itr->second;
+        auto parent_data = m_node_parent_data[parent_data_index];
+        if( parent_data.m_child_count == 0 ) return -1;
         auto first_child_lookup_index
-                = m_node_parent_data[parent_data_index].m_first_child_index;
+                = parent_data.m_first_child_index;
         auto first_child_basic_data_index
                 = m_node_child_indices[first_child_lookup_index];
         return leaf_index(first_child_basic_data_index);
@@ -369,6 +370,7 @@ template<typename NTS, typename NIS
 void TreeNodePool<NTS,NIS,TP>::data(NIS node_index
                                                ,std::ostream& out)const
 {
+
     // two scenarios - 1 leaf node, 2 parent node
     // 1. obtain the leaf node's token data
     auto leaf_itr = m_leaf_token_lookup.find(node_index);
@@ -427,6 +429,11 @@ bool TreeNodeView<TreeNodePool_T>::has_parent()const
     return m_tree_data->has_parent(m_tree_node_index);
 }
 template<class TreeNodePool_T>
+bool TreeNodeView<TreeNodePool_T>::is_leaf()const
+{
+    return m_tree_data->is_leaf(m_tree_node_index);
+}
+template<class TreeNodePool_T>
 std::string TreeNodeView<TreeNodePool_T>::data()const{
     std::stringstream str;
     m_tree_data->data(m_tree_node_index,str);
@@ -439,8 +446,7 @@ std::string TreeNodeView<TreeNodePool_T>::path()const{
     return str.str();
 }
 template<class TreeNodePool_T>
-void TreeNodeView<TreeNodePool_T>::paths(std::ostream& out)const{
-    wasp_tagged_line("Paths from "<<m_tree_node_index);
+void TreeNodeView<TreeNodePool_T>::paths(std::ostream& out)const{    
     m_tree_data->node_paths(m_tree_node_index,out);
 }
 template<class TreeNodePool_T>
@@ -550,13 +556,17 @@ std::string TreeNodeView<TreeNodePool_T>::to_string(bool * ok)const
 template<class TAdapter>
 void print_from(std::ostream & stream, const TAdapter& tree_node, size_t& last_line, size_t& last_column)
 {
-    if( tree_node.child_count() == 0 )
-    {
+    size_t child_count = tree_node.child_count();
+    if(  child_count == 0 ) // fast check
+    {        
+        if( tree_node.is_leaf() == false ) return;
         //
         // determine distance from previous
         //
-        size_t line = tree_node.line(); wasp_check(line > 0);
-        size_t column = tree_node.column(); wasp_check(column > 0);
+        size_t line = tree_node.line();
+        wasp_check( line != size_t(-1) );
+        size_t column = tree_node.column();
+        wasp_check( column != size_t(-1) );
         size_t ldiff;
         if (line >= last_line) ldiff = line - last_line;
         else ldiff = 0;
@@ -583,7 +593,7 @@ void print_from(std::ostream & stream, const TAdapter& tree_node, size_t& last_l
         last_column = column+data.size();
         return;
     }
-    for(size_t i = 0, cc = tree_node.child_count(); i < cc; i++)
+    for(size_t i = 0, cc = child_count; i < cc; i++)
     {
         const TAdapter& child = tree_node.child_at(i);
         print_from(stream,child,last_line,last_column);

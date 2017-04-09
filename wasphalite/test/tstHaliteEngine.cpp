@@ -210,3 +210,31 @@ wombat has attr brothers)INPUT";
     ASSERT_EQ( "attr", o["fred"].to_string() );
 }
 
+/**
+ * @brief test conditional blocks
+ */
+TEST( Halite, DISABLED_conditional_text_data_accessed )
+{
+    std::stringstream input;
+    input<< R"INPUT(#ifdef x
+x is defined and has a value of <x>
+#else
+x is not defined
+#endif
+ <x>
+   line
+            )INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    { // test defined path through template
+        std::stringstream expected;
+        expected<< R"INPUT(x is defined and has a value of 3.14159)INPUT";
+        std::stringstream out;
+        DataObject o;
+        DataAccessor data(&o);
+        o["x"] = 3.14159;
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        ASSERT_EQ( expected.str(), out.str() );
+    }
+    // TODO test undefined path
+}

@@ -69,6 +69,8 @@ public:
                    , typename TP::token_index_type_size token_index);
 
 
+    bool is_leaf(size_t node_index)const
+    {return m_leaf_token_lookup.find(node_index) != m_leaf_token_lookup.end();}
     /**
      * @brief size acquire the number of nodes (leaf and parent)
      * @return node count
@@ -346,6 +348,12 @@ public:
      * @return always false
      */
     bool is_decorative() const{ return false;}
+
+    /**
+     * @brief is_leaf indicates whether this is a leaf node (no parent data)
+     * @return true, iff there is no parent data associated
+     */
+    bool is_leaf()const;
 
     /**
      * @brief path acquire the path of this node from the document root

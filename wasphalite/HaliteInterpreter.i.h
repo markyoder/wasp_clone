@@ -121,14 +121,16 @@ void HaliteInterpreter<S>::capture_leaf(const std::string& node_name
 template<class S>
 bool HaliteInterpreter<S>::parse_line(const std::string& line)
 {
-    // a line could contain the following constructs with given priority
-    // 1. zero or more attribute/expression substitution
-    // 1.1 attribute substitution '<' name '>'
-    // 1.2 expression substutution '<(' expression ')>'
-    // 1.3 silent evaluation '<-' name '>' or '<-(' expression ')>'
-    // 1.4 each evaluation/substitution can have optional format
-    //    e.g., '<' name [: fmt="format"] '>'
-    //    i.e., < pi : fmt=%2.8f >
+    //
+    // A line could be the following
+    // 1) a plain line of text
+    // 2) a line of text with attributes
+    // 3) an import statement
+    // 4) the start of an actioned conditional block (if,ifdef,ifndef)
+    // 5) the continuation of an actioned conditional block (elseif, else)
+    // 6) the termination of an actioned conditional block (endif)
+    //
+
 
     //
     // identify all attribute locations
@@ -171,6 +173,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     else if(is_directive &&  (is_ifdef
                               = line.compare(0,ifdef_stmt.size(),ifdef_stmt) == 0) )
     {
+        Interpreter<S>::push_staged(wasp::PREDICATED_CHILD, "A",{});
         Interpreter<S>::push_staged(wasp::CONDITIONAL, "ifdef",{});
         size_t offset = m_file_offset + current_column_index;
         capture_leaf("decl", wasp::DECL
@@ -181,6 +184,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     else if(is_directive &&  (is_ifndef
                               = line.compare(0,ifndef_stmt.size(),ifndef_stmt) == 0) )
     {
+        Interpreter<S>::push_staged(wasp::PREDICATED_CHILD, "A",{});
         Interpreter<S>::push_staged(wasp::CONDITIONAL, "ifndef",{});
         size_t offset = m_file_offset + current_column_index;
         capture_leaf("decl", wasp::DECL
@@ -191,6 +195,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     else if(is_directive &&  (is_if
                               = line.compare(0,if_stmt.size(),if_stmt) == 0) )
     {
+        Interpreter<S>::push_staged(wasp::PREDICATED_CHILD, "A",{});
         Interpreter<S>::push_staged(wasp::CONDITIONAL, "if",{});
         size_t offset = m_file_offset + current_column_index;
         capture_leaf("decl", wasp::DECL
@@ -204,7 +209,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
         // check for required condition to be open
         wasp_check( Interpreter<S>::staged_count() > 0 );
         size_t staged_type = Interpreter<S>::staged_type(Interpreter<S>::staged_count()-1);
-        if( staged_type != wasp::CONDITIONAL  )
+        if( staged_type != wasp::WASP_TRUE  )
         {
             Interpreter<S>::error_stream()<<"***Error : line "
                          <<Interpreter<S>::line_count()+1
@@ -214,6 +219,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
             return false;
         }
         // commit/close the current staged conditional to the parse tree
+        Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
+        wasp_check( wasp::CONDITIONAL == Interpreter<S>::staged_type(Interpreter<S>::staged_count()-1));
         Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
         // push new elseif staged conditional
         Interpreter<S>::push_staged(wasp::CONDITIONAL, "elseif",{});
@@ -229,7 +236,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
         // check for required condition to be open
         wasp_check( Interpreter<S>::staged_count() > 0 );
         size_t staged_type = Interpreter<S>::staged_type(Interpreter<S>::staged_count()-1);
-        if( staged_type != wasp::CONDITIONAL  )
+        if( staged_type != wasp::WASP_TRUE  )
         {
             Interpreter<S>::error_stream()<<"***Error : line "
                          <<Interpreter<S>::line_count()+1
@@ -240,7 +247,9 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
         }
         // commit/close the current staged conditional to the parse tree
         Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
-        // push new elseif staged conditional
+        wasp_check( wasp::CONDITIONAL == Interpreter<S>::staged_type(Interpreter<S>::staged_count()-1));
+        Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
+        // push new else staged conditional
         Interpreter<S>::push_staged(wasp::CONDITIONAL, "else",{});
         size_t offset = m_file_offset + current_column_index;
         capture_leaf("decl", wasp::DECL
@@ -252,7 +261,9 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     {
         wasp_check( Interpreter<S>::staged_count() > 0 );
         size_t staged_type = Interpreter<S>::staged_type(Interpreter<S>::staged_count()-1);
-        if( staged_type != wasp::CONDITIONAL  )
+        bool is_true = staged_type == wasp::WASP_TRUE;
+        if( !is_true  // any if construct will have TRUE
+                && staged_type != wasp::CONDITIONAL) // else has no TRUE,
         {
             Interpreter<S>::error_stream()<<"***Error : line "
                          <<Interpreter<S>::line_count()+1
@@ -262,6 +273,9 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                         <<" or #else is missing."<<std::endl;
             return false;
         }
+        // commit/close the current staged conditional TRUE content to the parse tree
+        Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
+
         // capture the terminator as a leaf of the current stage
         size_t offset = m_file_offset + current_column_index;
         capture_leaf("endif", wasp::TERM
@@ -273,9 +287,20 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
         // update the current column
         current_column_index += endif_stmt.size();
     }
-
+    bool condition_captured = false;
     if( attribute_indices.empty() == false )
     { // in addition to the attributes, capture the components before, between, and after
+        // capture the condition
+        bool is_condition = is_ifdef
+                || is_ifndef
+                || is_if
+                || is_elseif;
+        condition_captured = is_condition;
+        if( is_condition )
+        {
+            // push condition
+            Interpreter<S>::push_staged(wasp::EXPRESSION, "C",{});
+        }
         size_t current_attribute_index = 0;
         size_t limit = attribute_indices.size();
         // capture up to the conclusion of the attributes
@@ -283,8 +308,9 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                 ,current_column_index
                 ,current_attribute_index
                 ,attribute_indices
-                ,limit);        
-    }
+                ,limit);
+
+    }    
     // if line is plain text, capture
     if( is_import == false
             && is_ifdef == false
@@ -304,21 +330,41 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     // capture potential trailing text
     else
     {
+        // capture the condition
+        bool is_condition = (is_ifdef
+                || is_ifndef
+                || is_if
+                || is_elseif) ;
+        if( is_condition && !condition_captured)
+        {
+            // push condition
+            Interpreter<S>::push_staged(wasp::EXPRESSION, "C",{});
+        }
         // current_column index has been updated by capture(), etc.
         size_t offset = m_file_offset + current_column_index;
         size_t remaining_length = line.size() - current_column_index;
         wasp_check( current_column_index+remaining_length <= line.size() );
+
         if( remaining_length > 0 )
-        {            
+        {
             capture_attribute_text(
                         line.substr(current_column_index,remaining_length)
                         ,offset);
         }
 
-        // when closing import statement, commit the tree
-        if( is_import )
+        // when closing import statement or condition expression, commit the tree
+        if( is_import || is_condition )
         {
             Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
+        }
+
+        // when conditional is in play, we need to stage all
+        // template components that are to be emitted when
+        // the conditional evaluates as TRUE
+        if( is_condition )
+        {
+            // push condition
+            Interpreter<S>::push_staged(wasp::WASP_TRUE, "T",{});
         }
     }
     // compute the new offset
@@ -433,6 +479,9 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
         break;
         case wasp::FILE:
             if( !import_file(data, child_view, out, current_line, current_column) ) return false;
+        break;
+        case wasp::CONDITIONAL:
+            wasp_not_implemented("conditional blocks");
         break;
         default:
             wasp_not_implemented("template construct at line "
