@@ -213,7 +213,7 @@ wombat has attr brothers)INPUT";
 /**
  * @brief test conditional blocks
  */
-TEST( Halite, DISABLED_conditional_text_data_accessed )
+TEST( Halite, conditional_text_data_accessed )
 {
     std::stringstream input;
     input<< R"INPUT(#ifdef x
@@ -228,7 +228,10 @@ x is not defined
     ASSERT_TRUE( interpreter.parse(input) );
     { // test defined path through template
         std::stringstream expected;
-        expected<< R"INPUT(x is defined and has a value of 3.14159)INPUT";
+        expected<< R"INPUT(x is defined and has a value of 3.14159
+ 3.14159
+   line
+            )INPUT";
         std::stringstream out;
         DataObject o;
         DataAccessor data(&o);

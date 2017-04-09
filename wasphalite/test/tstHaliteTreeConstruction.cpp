@@ -488,7 +488,7 @@ TEST( Halite, ifdef)
 /A/ifdef/C
 /A/ifdef/C/txt ( something)
 /A/ifdef/T
-/A/ifdef/endif (#endif)
+/A/endif (#endif)
 )INPUT";
         std::stringstream paths;
         document.paths(paths);
@@ -522,7 +522,7 @@ TEST( Halite, ifdef_parameterized)
 /A/ifdef/C/attr/> (>)
 /A/ifdef/T
 /A/ifdef/T/txt ( intermediate text )
-/A/ifdef/endif (#endif)
+/A/endif (#endif)
 )INPUT";
         std::stringstream paths;
         document.paths(paths);        
@@ -555,7 +555,7 @@ TEST( Halite, ifndef_parameterized)
 /A/ifndef/C/attr/> (>)
 /A/ifndef/T
 /A/ifndef/T/txt ( intermediate text )
-/A/ifndef/endif (#endif)
+/A/endif (#endif)
 )INPUT";
         std::stringstream paths;
         document.paths(paths);
@@ -594,7 +594,7 @@ TEST( Halite, if_parameterized)
 /A/if/C/attr/> (>)
 /A/if/T
 /A/if/T/txt ( only if x is less than y )
-/A/if/endif (#endif)
+/A/endif (#endif)
 )INPUT";
         std::stringstream paths;
         document.paths(paths);
@@ -641,7 +641,7 @@ TEST( Halite, elseif_parameterized)
 /A/elseif/C/txt ( condition )
 /A/elseif/T
 /A/elseif/T/txt ( only if x is not less than y and condition is true )
-/A/elseif/endif (#endif)
+/A/endif (#endif)
 )INPUT";
         std::stringstream paths;
         document.paths(paths);

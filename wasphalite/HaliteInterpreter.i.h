@@ -203,13 +203,15 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      , wasp::STRING, offset );
         current_column_index += if_stmt.size();
     }
+    // TODO clean up!
     else if(is_directive &&  (is_elseif
                               = line.compare(0,elseif_stmt.size(),elseif_stmt) == 0) )
     {
         // check for required condition to be open
         wasp_check( Interpreter<S>::staged_count() > 0 );
         size_t staged_type = Interpreter<S>::staged_type(Interpreter<S>::staged_count()-1);
-        if( staged_type != wasp::WASP_TRUE  )
+        bool is_true = staged_type == wasp::WASP_TRUE;
+        if( !is_true && staged_type != wasp::PREDICATED_CHILD  )
         {
             Interpreter<S>::error_stream()<<"***Error : line "
                          <<Interpreter<S>::line_count()+1
@@ -219,9 +221,12 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
             return false;
         }
         // commit/close the current staged conditional to the parse tree
+        if( is_true )
+        {
         Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
         wasp_check( wasp::CONDITIONAL == Interpreter<S>::staged_type(Interpreter<S>::staged_count()-1));
         Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
+        }
         // push new elseif staged conditional
         Interpreter<S>::push_staged(wasp::CONDITIONAL, "elseif",{});
         size_t offset = m_file_offset + current_column_index;
@@ -230,13 +235,16 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      , wasp::STRING, offset );
         current_column_index += elseif_stmt.size();
     }
+    // TODO clean up!
     else if(is_directive &&  (is_else
                               = line.compare(0,else_stmt.size(),else_stmt) == 0) )
     {
         // check for required condition to be open
         wasp_check( Interpreter<S>::staged_count() > 0 );
         size_t staged_type = Interpreter<S>::staged_type(Interpreter<S>::staged_count()-1);
-        if( staged_type != wasp::WASP_TRUE  )
+
+        bool is_true = staged_type == wasp::WASP_TRUE;
+        if( !is_true && staged_type != wasp::PREDICATED_CHILD )
         {
             Interpreter<S>::error_stream()<<"***Error : line "
                          <<Interpreter<S>::line_count()+1
@@ -246,9 +254,12 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
             return false;
         }
         // commit/close the current staged conditional to the parse tree
+        if( is_true )
+        {
         Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
         wasp_check( wasp::CONDITIONAL == Interpreter<S>::staged_type(Interpreter<S>::staged_count()-1));
         Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
+        }
         // push new else staged conditional
         Interpreter<S>::push_staged(wasp::CONDITIONAL, "else",{});
         size_t offset = m_file_offset + current_column_index;
@@ -257,13 +268,16 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                      , wasp::STRING, offset );
         current_column_index += else_stmt.size();
     }
+    // TODO clean up!
     else if(is_directive &&  (is_endif = line.compare(0,endif_stmt.size(),endif_stmt) == 0) )
     {
         wasp_check( Interpreter<S>::staged_count() > 0 );
         size_t staged_type = Interpreter<S>::staged_type(Interpreter<S>::staged_count()-1);
         bool is_true = staged_type == wasp::WASP_TRUE;
+        bool is_action = staged_type == wasp::PREDICATED_CHILD;
         if( !is_true  // any if construct will have TRUE
-                && staged_type != wasp::CONDITIONAL) // else has no TRUE,
+                && staged_type != wasp::CONDITIONAL
+                && !is_action ) // else has no TRUE,
         {
             Interpreter<S>::error_stream()<<"***Error : line "
                          <<Interpreter<S>::line_count()+1
@@ -273,16 +287,20 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                         <<" or #else is missing."<<std::endl;
             return false;
         }
+        if( !is_action )
+        {
         // commit/close the current staged conditional TRUE content to the parse tree
         Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
+        }
 
-        // capture the terminator as a leaf of the current stage
+        // commit/close the current staged conditional to the parse tree
+        if( is_true ) Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
+        // capture the terminator as a leaf of the current staged action
         size_t offset = m_file_offset + current_column_index;
         capture_leaf("endif", wasp::TERM
                      ,line.substr(current_column_index,endif_stmt.size())
                      , wasp::STRING, offset );
-
-        // commit/close the current staged conditional to the parse tree
+        // commit/close the current staged Action content to the parse tree
         Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
         // update the current column
         current_column_index += endif_stmt.size();
@@ -453,12 +471,22 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
                                     ,DataAccessor & data
                                     , std::ostream * activity_log)
 {
-    auto root_view = Interpreter<S>::root();
-    size_t current_line = 1, current_column = 1;
+    auto tree_view = Interpreter<S>::root();
+    size_t line = 1, column = 1;
 
-    for( size_t i = 0; i < root_view.child_count(); ++i)
+    return evaluate(data,tree_view,out,line,column);
+
+}
+template<class S>
+bool HaliteInterpreter<S>::evaluate(DataAccessor & data
+                                    ,const TreeNodeView<S>& tree_view
+                                        ,std::ostream& out
+                                        ,size_t & current_line
+                                        ,size_t & current_column)
+{
+    for( size_t i = 0; i < tree_view.child_count(); ++i)
     {
-        const auto & child_view = root_view.child_at(i);
+        const auto & child_view = tree_view.child_at(i);
         auto child_type = child_view.type();
         switch( child_type )
         {
@@ -480,8 +508,10 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
         case wasp::FILE:
             if( !import_file(data, child_view, out, current_line, current_column) ) return false;
         break;
-        case wasp::CONDITIONAL:
-            wasp_not_implemented("conditional blocks");
+        // actioned conditional blocks ifdef,etc.
+        case wasp::PREDICATED_CHILD:
+            if( !conditional( data, child_view, out, current_line, current_column) ) return false;
+            wasp_tagged_line("returning from conditional with line="<<current_line);
         break;
         default:
             wasp_not_implemented("template construct at line "
@@ -491,6 +521,7 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
     }
     return true;
 }
+
 template<class S>
 bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
                                            ,const TreeNodeView<S>& attr_view
@@ -564,6 +595,71 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     auto last_attr_component = attr_view.child_at(attr_view.child_count()-1);
     column = last_attr_component.column() + m_attribute_end_delim.size();
     line = new_line;
+    return true;
+}
+template<class S>
+bool HaliteInterpreter<S>::conditional(DataAccessor & data
+                                       ,const TreeNodeView<S>& action_view
+                                           ,std::ostream& out
+                                           ,size_t & line
+                                           ,size_t & column)
+{
+    // action fields start with if,ifdef,ifndef
+    size_t child_count = action_view.child_count();
+    wasp_require( child_count > 0 );
+    for(size_t i = 0; i < child_count; ++i )
+    {
+        const auto& child_view = action_view.child_at(i);
+        std::string name = child_view.name();
+        wasp_check(name.size() >= 2);
+        // check for 'if','ifdef','ifndef'
+        if( name.compare(0,2,"if") == 0
+                || name.compare(name.size()-2,2,"if" )) // 'elseif'
+        {
+            // child at 0 is decl, 1 is the condition,
+            const auto cond_view = child_view.child_at(1);
+            // simple name lookup to determine existance
+            if( cond_view.child_count() == 1 )
+            {
+                std::string name = trim(cond_view.data()," ");
+                bool exists = data.exists(name);
+                wasp_tagged_line("conditional check on "<<name
+                                 <<" existance..."<<std::boolalpha<<exists);
+
+                // if'n'def
+                if( name.size() > 3 && name.at(2) == 'n')
+                {
+                    // ifndef and variable exists
+                    // this action is not to be performed
+                    wasp_tagged_line("skipping action at "
+                                     <<cond_view.line()<<"."<<cond_view.column()
+                                     <<"? "<<std::boolalpha<<exists);
+                    if( exists ) continue;
+                }
+                // if, ifdef and variable doesn't exist, not performing action
+                else if( !exists )
+                {
+                    wasp_tagged_line("skipping action at "
+                                     <<cond_view.line()<<"."<<cond_view.column()
+                                     <<"? "<<std::boolalpha<<!exists);
+                }
+                wasp_tagged_line("Conducting action at "
+                                 <<cond_view.line()<<"."<<cond_view.column()
+                                 <<"? "<<std::boolalpha<<exists);
+                // made the gauntlet - evaluate
+                wasp_tagged_line("updating line from "<<line<<" to "<<action_view.child_at(action_view.child_count()-1).line()+1);
+
+                ++line; // increment past conditinoal directive (#if,etc)
+                const auto & action_true_view = child_view.child_at(2);
+                bool result = evaluate(data
+                                ,action_true_view,out
+                                ,line,column);
+                line=action_view.child_at(action_view.child_count()-1).line();
+                return result;
+            }
+            wasp_not_implemented("paramterized conditional");
+        }
+    }
     return true;
 }
 
