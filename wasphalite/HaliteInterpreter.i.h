@@ -466,6 +466,7 @@ void HaliteInterpreter<S>::capture(const std::string& data
         }
     } // end of attribute loop
 }
+
 template<class S>
 bool HaliteInterpreter<S>::evaluate(std::ostream & out
                                     ,DataAccessor & data
@@ -477,6 +478,7 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
     return evaluate(data,tree_view,out,line,column);
 
 }
+
 template<class S>
 bool HaliteInterpreter<S>::evaluate(DataAccessor & data
                                     ,const TreeNodeView<S>& tree_view
@@ -487,41 +489,55 @@ bool HaliteInterpreter<S>::evaluate(DataAccessor & data
     for( size_t i = 0; i < tree_view.child_count(); ++i)
     {
         const auto & child_view = tree_view.child_at(i);
-        auto child_type = child_view.type();
-        switch( child_type )
+        if( !evaluate_component(data,child_view,out,current_line,current_column) )
         {
-        case  wasp::STRING:
-            // print the text and update the current line and column
-            wasp::print_from(out, child_view, current_line, current_column);
-        break;
-        case wasp::IDENTIFIER:
-        {
-            std::stringstream substitution;
-            if( !print_attribute(data, child_view, substitution
-                               , current_line, current_column) )
-            {
-                return false;
-            }
-            out<<substitution.str();
+            return false;
         }
-        break;
-        case wasp::FILE:
-            if( !import_file(data, child_view, out, current_line, current_column) ) return false;
-        break;
-        // actioned conditional blocks ifdef,etc.
-        case wasp::PREDICATED_CHILD:
-            if( !conditional( data, child_view, out, current_line, current_column) ) return false;
-            wasp_tagged_line("returning from conditional with line="<<current_line);
-        break;
-        default:
-            wasp_not_implemented("template construct at line "
-                                 +std::to_string(current_line));
-        break;
-        } // end of switch
     }
     return true;
 }
+template<class S>
+bool HaliteInterpreter<S>::evaluate_component(DataAccessor & data
+                                    ,const TreeNodeView<S>& tree_view
+                                        ,std::ostream& out
+                                        ,size_t & current_line
+                                        ,size_t & current_column)
+{
 
+    auto child_type = tree_view.type();
+    switch( child_type )
+    {
+    case  wasp::STRING:
+        // print the text and update the current line and column
+        wasp::print_from(out, tree_view, current_line, current_column);
+    break;
+    case wasp::IDENTIFIER:
+    {
+        std::stringstream substitution;
+        if( !print_attribute(data, tree_view, substitution
+                           , current_line, current_column) )
+        {
+            return false;
+        }
+        out<<substitution.str();
+    }
+    break;
+    case wasp::FILE:
+        if( !import_file(data, tree_view, out, current_line, current_column) ) return false;
+    break;
+    // actioned conditional blocks ifdef,etc.
+    case wasp::PREDICATED_CHILD:
+        if( !conditional( data, tree_view, out, current_line, current_column) ) return false;
+        wasp_tagged_line("returning from conditional with line="<<current_line);
+    break;
+    default:
+        wasp_not_implemented("template construct at line "
+                             +std::to_string(current_line));
+    break;
+    } // end of switch
+
+    return true;
+}
 template<class S>
 bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
                                            ,const TreeNodeView<S>& attr_view
@@ -610,12 +626,15 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
     for(size_t i = 0; i < child_count; ++i )
     {
         const auto& child_view = action_view.child_at(i);
+        if( child_view.type() == wasp::TERM ) continue; // 'endif'
         std::string name = child_view.name();
+        wasp_tagged_line("Condition '"<<child_view.name()<<"' @ "<<child_view.line()<<" evaluation...");
         wasp_check(name.size() >= 2);
         // check for 'if','ifdef','ifndef'
         if( name.compare(0,2,"if") == 0
-                || name.compare(name.size()-2,2,"if" )) // 'elseif'
+                || name.compare(name.size()-2,2,"eif" ) == 0) // 'elseif'
         {
+            wasp_tagged_line("if condition...");
             // child at 0 is decl, 1 is the condition,
             const auto cond_view = child_view.child_at(1);
             // simple name lookup to determine existance
@@ -634,7 +653,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
                     wasp_tagged_line("skipping action at "
                                      <<cond_view.line()<<"."<<cond_view.column()
                                      <<"? "<<std::boolalpha<<exists);
-                    if( exists ) continue;
+                    if( exists ) continue; // try next block in action list (#else,#elseif)
                 }
                 // if, ifdef and variable doesn't exist, not performing action
                 else if( !exists )
@@ -642,6 +661,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
                     wasp_tagged_line("skipping action at "
                                      <<cond_view.line()<<"."<<cond_view.column()
                                      <<"? "<<std::boolalpha<<!exists);
+                    continue; // try next block in action list
                 }
                 wasp_tagged_line("Conducting action at "
                                  <<cond_view.line()<<"."<<cond_view.column()
@@ -651,15 +671,35 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
 
                 ++line; // increment past conditinoal directive (#if,etc)
                 const auto & action_true_view = child_view.child_at(2);
-                bool result = evaluate(data
+                if( !evaluate(data
                                 ,action_true_view,out
-                                ,line,column);
-                line=action_view.child_at(action_view.child_count()-1).line();
-                return result;
+                                ,line,column) )
+                {
+                    return false;
+                }
+                break;
             }
             wasp_not_implemented("paramterized conditional");
         }
+        else{ // #else
+            wasp_tagged_line("else scenario for '"<<child_view.name()<<"'");
+            wasp_check(child_view.name() == std::string("else") );
+            line=child_view.line()+1; // collapse the #else
+            // #else
+            for(size_t j = 1, count = child_view.child_count(); j < count; ++j )
+            {
+                const auto & else_child_view = child_view.child_at(j);
+                wasp_tagged_line("else child view of "<<else_child_view.data());
+                wasp_tagged_line("evaluating #else component at "<<else_child_view.line());
+                if( !evaluate_component(data, else_child_view, out, line, column) )
+                {
+                    return false;
+                }
+            }
+            break;
+        }
     }
+    line=action_view.child_at(action_view.child_count()-1).line();
     return true;
 }
 

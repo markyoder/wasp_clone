@@ -221,7 +221,6 @@ x is defined and has a value of <x>
 #else
 x is not defined
 #endif
- <x>
    line
             )INPUT";
     HaliteInterpreter<> interpreter;
@@ -229,15 +228,24 @@ x is not defined
     { // test defined path through template
         std::stringstream expected;
         expected<< R"INPUT(x is defined and has a value of 3.14159
- 3.14159
+   line
+            )INPUT";
+        std::stringstream out;
+        DataObject o;
+        o["x"] = 3.14159;
+        DataAccessor data(&o);
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        ASSERT_EQ( expected.str(), out.str() );
+    }
+    { // test undefined path through template
+        std::stringstream expected;
+        expected<< R"INPUT(x is not defined
    line
             )INPUT";
         std::stringstream out;
         DataObject o;
         DataAccessor data(&o);
-        o["x"] = 3.14159;
         ASSERT_TRUE( interpreter.evaluate(out,data) );
         ASSERT_EQ( expected.str(), out.str() );
     }
-    // TODO test undefined path
 }

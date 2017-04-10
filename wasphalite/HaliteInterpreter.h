@@ -149,6 +149,9 @@ namespace wasp {
         bool evaluate(DataAccessor & data
                          ,const TreeNodeView<S> & action_view
                          ,std::ostream& out, size_t& line, size_t & column);
+        bool evaluate_component(DataAccessor & data
+                                ,const TreeNodeView<S> & action_view
+                                ,std::ostream& out, size_t& line, size_t & column);
 
         /**
          * @brief import_file imports the file represented by the given tree view
