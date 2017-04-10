@@ -1483,7 +1483,7 @@ Result::evaluate( const T & tree_view
        // reserved function with special
        if( function_name == "defined" )
        {
-           if( tree_view.child_count() < 3 )
+           if( tree_view.child_count() < 4 )
            {
                m_type = Context::Type::ERROR;
                string() = error_msg(tree_view,"reserved function 'defined' requires an argument!");
@@ -1496,7 +1496,6 @@ Result::evaluate( const T & tree_view
                const auto & child_view = tree_view.child_at(c);
                if( child_view.is_decorative()
                        || child_view.type() == wasp::WASP_COMMA) continue;
-               wasp_tagged_line("determining existence of '"<<child_view.to_string()<<"'");
                if( !context.exists(child_view.to_string()) )
                {
                    variable_defined = false;

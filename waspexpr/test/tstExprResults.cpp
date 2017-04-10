@@ -27,6 +27,7 @@ TEST(ExprInterpreter, defined_variables)
     std::vector<ScalarExprTest<bool>> tests={
         {"defined(pi)",true},
         {"defined(e)",true},
+        {"defined(pi,e)",true},
         {"defined(ted)",false},
     };
     ASSERT_FALSE( tests.empty() );
@@ -41,12 +42,25 @@ TEST(ExprInterpreter, defined_variables)
         ASSERT_TRUE(interpreter.parse(input) );
 
         auto result = interpreter.evaluate(context);
+        ASSERT_FALSE(result.is_error());
         ASSERT_FALSE(result.is_integer());
         ASSERT_FALSE(result.is_number());
         ASSERT_FALSE(result.is_real());
         ASSERT_FALSE(result.is_string());
         ASSERT_TRUE(result.is_bool());
     }
+    {
+        std::stringstream input;
+        input <<"defined()";
+        ExprInterpreter<> interpreter;
+        Context context;
+        ASSERT_TRUE(interpreter.parse(input) );
+
+        auto result = interpreter.evaluate(context);
+        ASSERT_TRUE(result.is_error());
+        ASSERT_EQ("***Error : defined at line 1 and column 1 - reserved function 'defined' requires an argument!\n", result.string());
+    }
+
 }
 TEST(ExprInterpreter, vector_int_variables)
 {
