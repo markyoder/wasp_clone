@@ -22,7 +22,32 @@ struct VariableExprTest{
     VariableExprTest(const std::string & tst, V1 v1, V2 v2, T expected)
         :tst(tst),v1(v1),v2(v2),expected(expected){}
 };
+TEST(ExprInterpreter, defined_variables)
+{
+    std::vector<ScalarExprTest<bool>> tests={
+        {"defined(pi)",true},
+        {"defined(e)",true},
+        {"defined(ted)",false},
+    };
+    ASSERT_FALSE( tests.empty() );
+    for( auto & t : tests )
+    {
+        SCOPED_TRACE( t.tst );
+        std::stringstream input;
+        input <<t.tst;
+        ExprInterpreter<> interpreter;
+        Context context;
+        context.add_default_variables();
+        ASSERT_TRUE(interpreter.parse(input) );
 
+        auto result = interpreter.evaluate(context);
+        ASSERT_FALSE(result.is_integer());
+        ASSERT_FALSE(result.is_number());
+        ASSERT_FALSE(result.is_real());
+        ASSERT_FALSE(result.is_string());
+        ASSERT_TRUE(result.is_bool());
+    }
+}
 TEST(ExprInterpreter, vector_int_variables)
 {
     std::vector<int> data = {1,9,8};

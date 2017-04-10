@@ -1479,12 +1479,39 @@ Result::evaluate( const T & tree_view
        wasp_check(tree_view.child_count() > 0);
        const auto& name_view = tree_view.child_at(0);
        std::string function_name = name_view.data();
+       wasp_check( tree_view.child_count() > 1 );
+       // reserved function with special
+       if( function_name == "defined" )
+       {
+           if( tree_view.child_count() < 3 )
+           {
+               m_type = Context::Type::ERROR;
+               string() = error_msg(tree_view,"reserved function 'defined' requires an argument!");
+               break;
+           }
+           bool variable_defined = true;
+           for( size_t c = 2, count = tree_view.child_count()-1;
+                c < count; ++c)
+           {
+               const auto & child_view = tree_view.child_at(c);
+               if( child_view.is_decorative()
+                       || child_view.type() == wasp::WASP_COMMA) continue;
+               wasp_tagged_line("determining existence of '"<<child_view.to_string()<<"'");
+               if( !context.exists(child_view.to_string()) )
+               {
+                   variable_defined = false;
+                   break;
+               }
+           }
 
+           m_type = Context::Type::BOOLEAN;
+           m_value.m_bool = variable_defined;
+           break;
+       }
        // functions are of the form
        // name '(' [arg1 [',' argn]] ')'
        // we can traverse range [2,c-1]
        std::vector<Result> function_args;
-       wasp_check( tree_view.child_count() > 1 );
        bool function_args_error = false;
        for( size_t c = 2, count = tree_view.child_count()-1;
             c < count; ++c)
