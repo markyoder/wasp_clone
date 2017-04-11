@@ -8,7 +8,7 @@
     expire_in: 1 day
 .windows_before_script: &windows_before_script
   before_script:
-    - set PATH=%PATH%;c:\vendors\mingw-w64\x86_64-4.8.5-posix-seh-rt_v4-rev0\mingw64\bin;c:\vendors\git\2.11\cmd;c:\vendors\cmake\3.6.3\bin;
+    - set PATH=%PATH%;c:\vendors\mingw-w64\x86_64-4.8.5-posix-seh-rt_v4-rev0\mingw64\bin;c:\vendors\git\2.11\cmd;c:\vendors\cmake\3.6.3\bin;c:\Python27;
 stages:
 - configure
 - build
@@ -121,6 +121,8 @@ configure_windows:
   script:
    - where git
    - git --version
+   - which python
+   - python --version   
    - where cmake
    - cmake --version
    - git clone https://github.com/lefebvre/TriBITS.git TriBITS
