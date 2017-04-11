@@ -125,5 +125,15 @@ namespace wasp{
                     || wildcard_string_match(first, second+1);
         return false;
     }   
+    template<class TV>
+    std::string info( const TV & view )
+    {
+        if( view.is_null() ) return "@TreeView(null)";
+        else return "@TreeView(loc="+std::to_string(view.line())
+                +","+std::to_string(view.column())
+                +": t="+std::to_string(view.tree_node_index())
+                +", i"+std::to_string(view.type())
+                +")";
+    }
 }
 #endif
