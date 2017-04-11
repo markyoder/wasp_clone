@@ -213,7 +213,7 @@ wombat has attr brothers)INPUT";
 TEST( Halite, simple_conditional)
 {
     std::stringstream input;
-    input<< R"INPUT(#ifdef <pi>
+    input<< R"INPUT(#ifdef pi
 
 
 <pi> is defined as pi math constant
@@ -221,7 +221,12 @@ TEST( Halite, simple_conditional)
 
 #else
 
-some else statement
+ some else statement
+
+
+text
+
+
 
 #endif
 )INPUT";
@@ -238,6 +243,22 @@ some else statement
         std::stringstream out;
         DataObject o;
         o["pi"] = 3.14159;
+        DataAccessor data(&o);
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        ASSERT_EQ( expected.str(), out.str() );
+    }
+    { // test defined path through template
+        std::stringstream expected;
+        expected<< R"INPUT(
+ some else statement
+
+
+text
+
+
+)INPUT";
+        std::stringstream out;
+        DataObject o;
         DataAccessor data(&o);
         ASSERT_TRUE( interpreter.evaluate(out,data) );
         ASSERT_EQ( expected.str(), out.str() );
