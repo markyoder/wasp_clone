@@ -100,6 +100,8 @@ bool SONNodeView<TNV>::is_decorative()const{
     case wasp::RBRACE :     // }
     case wasp::LBRACKET:    // [
     case wasp::RBRACKET:    // ]
+    case wasp::EXECUTION_UNIT_START:
+    case wasp::EXECUTION_UNIT_END:
         return true;
     }
     return false;
