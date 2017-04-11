@@ -210,6 +210,40 @@ wombat has attr brothers)INPUT";
     ASSERT_EQ( "attr", o["fred"].to_string() );
 }
 
+TEST( Halite, simple_conditional)
+{
+    std::stringstream input;
+    input<< R"INPUT(#ifdef <pi>
+
+
+<pi> is defined as pi math constant
+
+
+#else
+
+some else statement
+
+#endif
+)INPUT";
+
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    { // test defined path through template
+        std::stringstream expected;
+        expected<< R"INPUT(
+
+3.14159 is defined as pi math constant
+
+)INPUT";
+        std::stringstream out;
+        DataObject o;
+        o["pi"] = 3.14159;
+        DataAccessor data(&o);
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        ASSERT_EQ( expected.str(), out.str() );
+    }
+}
+
 /**
  * @brief test conditional blocks
  */
@@ -240,6 +274,7 @@ x and y are not defined
         ASSERT_TRUE( interpreter.evaluate(out,data) );
         ASSERT_EQ( expected.str(), out.str() );
     }
+
     { // test elseif  path through template
         std::stringstream expected;
         expected<< R"INPUT(x is not defined,

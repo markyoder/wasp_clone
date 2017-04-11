@@ -145,10 +145,11 @@ namespace wasp{
     std::string info( const TV & view )
     {
         if( view.is_null() ) return "@TreeView(null)";
-        else return "@TreeView(loc="+std::to_string(view.line())
+        else return "@TreeView(l="+std::to_string(view.line())
                 +","+std::to_string(view.column())
                 +": t="+std::to_string(view.tree_node_index())
                 +", i"+std::to_string(view.type())
+                +", n'"+view.name()+"'"
                 +")";
     }
 }

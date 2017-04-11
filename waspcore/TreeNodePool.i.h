@@ -556,6 +556,7 @@ std::string TreeNodeView<TreeNodePool_T>::to_string(bool * ok)const
 template<class TAdapter>
 void print_from(std::ostream & stream, const TAdapter& tree_node, size_t& last_line, size_t& last_column)
 {
+    wasp_tagged_line("printing "<<info(tree_node)<<" from "<<last_line<<","<<last_column);
     size_t child_count = tree_node.child_count();
     if(  child_count == 0 ) // fast check
     {        
