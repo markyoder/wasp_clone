@@ -72,6 +72,28 @@ TEST(ExprInterpreter, defined_variables)
     }
 
 }
+
+TEST(ExprInterpreter, right_operator_undefined_variables)
+{
+
+    std::vector<std::string> ops={"< ","> ","<=",">=","==","!="
+                                  ,"&&","||"
+                                  ,"+ ","- ","* ","/ "};
+    for( std::string op : ops)
+    {
+        SCOPED_TRACE(op);
+        std::stringstream input;
+        input <<"pi+4 "<<op<<"y";
+        ExprInterpreter<> interpreter;
+        Context context;
+        context.add_default_variables();
+        ASSERT_TRUE(interpreter.parse(input) );
+
+        auto result = interpreter.evaluate(context);
+        ASSERT_TRUE(result.is_error());
+        ASSERT_EQ("***Error : value (y) at line 1 and column 8 - is not a known variable.\n", result.string());
+    }
+}
 TEST(ExprInterpreter, vector_int_variables)
 {
     std::vector<int> data = {1,9,8};

@@ -1253,6 +1253,11 @@ Result::evaluate( const T & tree_view
        evaluate(tree_view.child_at(0), context);
        Result right_op;
        right_op.evaluate(tree_view.child_at(2),context);
+       if( right_op.is_error() ){
+           m_type = Context::Type::ERROR;
+           string()=right_op.string();
+           break;
+       }
        and_expr(right_op);
        break;
    }
@@ -1261,6 +1266,11 @@ Result::evaluate( const T & tree_view
        evaluate(tree_view.child_at(0), context);
        Result right_op;
        right_op.evaluate(tree_view.child_at(2),context);
+       if( right_op.is_error() ){
+           m_type = Context::Type::ERROR;
+           string()=right_op.string();
+           break;
+       }
        or_expr(right_op);
        break;
    }
@@ -1270,6 +1280,11 @@ Result::evaluate( const T & tree_view
        evaluate(tree_view.child_at(0), context);
        Result right_op;
        right_op.evaluate(tree_view.child_at(2),context);
+       if( right_op.is_error() ){
+           m_type = Context::Type::ERROR;
+           string()=right_op.string();
+           break;
+       }
        less(right_op);
        break;
    }
@@ -1279,6 +1294,11 @@ Result::evaluate( const T & tree_view
        evaluate(tree_view.child_at(0),context);
        Result right_op;
        right_op.evaluate(tree_view.child_at(2),context);
+       if( right_op.is_error() ){
+           m_type = Context::Type::ERROR;
+           string()=right_op.string();
+           break;
+       }
        less_or_equal(right_op);
        break;
    }
@@ -1288,6 +1308,11 @@ Result::evaluate( const T & tree_view
        evaluate(tree_view.child_at(0),context);
        Result right_op;
        right_op.evaluate(tree_view.child_at(2),context);
+       if( right_op.is_error() ){
+           m_type = Context::Type::ERROR;
+           string()=right_op.string();
+           break;
+       }
        greater(right_op);
        break;
    }
@@ -1297,6 +1322,11 @@ Result::evaluate( const T & tree_view
        evaluate(tree_view.child_at(0),context);
        Result right_op;
        right_op.evaluate(tree_view.child_at(2),context);
+       if( right_op.is_error() ){
+           m_type = Context::Type::ERROR;
+           string()=right_op.string();
+           break;
+       }
        greater_or_equal(right_op);
        break;
    }
@@ -1306,6 +1336,11 @@ Result::evaluate( const T & tree_view
        evaluate(tree_view.child_at(0),context);
        Result right_op;
        right_op.evaluate(tree_view.child_at(2),context);
+       if( right_op.is_error() ){
+           m_type = Context::Type::ERROR;
+           string()=right_op.string();
+           break;
+       }
        equal(right_op);
        break;
    }
@@ -1315,6 +1350,11 @@ Result::evaluate( const T & tree_view
        evaluate(tree_view.child_at(0),context);
        Result right_op;
        right_op.evaluate(tree_view.child_at(2),context);
+       if( right_op.is_error() ){
+           m_type = Context::Type::ERROR;
+           string()=right_op.string();
+           break;
+       }
        not_equal(right_op);
        break;
    }
@@ -1324,6 +1364,11 @@ Result::evaluate( const T & tree_view
        evaluate(tree_view.child_at(0),context);
        Result right_op;
        right_op.evaluate(tree_view.child_at(2),context);
+       if( right_op.is_error() ){
+           m_type = Context::Type::ERROR;
+           string()=right_op.string();
+           break;
+       }
        plus(right_op);
        break;
    }
@@ -1333,6 +1378,11 @@ Result::evaluate( const T & tree_view
        evaluate(tree_view.child_at(0),context);
        Result right_op;
        right_op.evaluate(tree_view.child_at(2),context);
+       if( right_op.is_error() ){
+           m_type = Context::Type::ERROR;
+           string()=right_op.string();
+           break;
+       }
        minus(right_op);
        break;
    }
@@ -1342,6 +1392,11 @@ Result::evaluate( const T & tree_view
        evaluate(tree_view.child_at(0),context);
        Result right_op;
        right_op.evaluate(tree_view.child_at(2),context);
+       if( right_op.is_error() ){
+           m_type = Context::Type::ERROR;
+           string()=right_op.string();
+           break;
+       }
        mult(right_op);
        break;
    }
@@ -1351,6 +1406,11 @@ Result::evaluate( const T & tree_view
        evaluate(tree_view.child_at(0),context);
        Result right_op;
        right_op.evaluate(tree_view.child_at(2),context);
+       if( right_op.is_error() ){
+           m_type = Context::Type::ERROR;
+           string()=right_op.string();
+           break;
+       }
        pow(right_op);
        break;
    }
@@ -1360,6 +1420,11 @@ Result::evaluate( const T & tree_view
        evaluate(tree_view.child_at(0),context);
        Result right_op;
        right_op.evaluate(tree_view.child_at(2),context);
+       if( right_op.is_error() ){
+           m_type = Context::Type::ERROR;
+           string()=right_op.string();
+           break;
+       }
        div(right_op);
        break;
    }
