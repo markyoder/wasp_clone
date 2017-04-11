@@ -121,7 +121,7 @@ configure_windows:
   script:
    - where git
    - git --version
-   - which python
+   - where python
    - python --version   
    - where cmake
    - cmake --version
