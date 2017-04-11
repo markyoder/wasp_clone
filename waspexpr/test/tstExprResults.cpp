@@ -48,6 +48,16 @@ TEST(ExprInterpreter, defined_variables)
         ASSERT_FALSE(result.is_real());
         ASSERT_FALSE(result.is_string());
         ASSERT_TRUE(result.is_bool());
+        if( result.boolean() )
+        {
+            std::stringstream str;
+            result.format(str);
+            ASSERT_EQ("1",str.str());
+        }else{
+            std::stringstream str;
+            result.format(str);
+            ASSERT_EQ("0",str.str());
+        }
     }
     {
         std::stringstream input;

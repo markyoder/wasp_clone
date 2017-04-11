@@ -438,6 +438,15 @@ public:
     bool format(std::ostream& out)const;
     bool format(std::ostream& out,const std::string& fmt
                 ,std::ostream& err)const;
+    std::string as_string()const
+    {
+        if( is_bool() ) return "bool("+std::to_string(boolean())+")";
+        if( is_integer() ) return "int("+std::to_string(integer())+")";
+        if( is_real() ) return "double("+std::to_string(real())+")";
+        if( is_string() ) return "string("+string()+")";
+        if( is_error() ) return "error("+string()+")";
+        return "unknown!";
+    }
 private:
     bool and_expr(const Result & a){
 

@@ -218,8 +218,11 @@ TEST( Halite, conditional_text_data_accessed )
     std::stringstream input;
     input<< R"INPUT(#ifdef x
 x is defined and has a value of <x>
+#elseif    <defined(y)>
+x is not defined,
+ but y is defined with value as an int of <y:fmt=%.0f>
 #else
-x is not defined
+x and y are not defined
 #endif
    line
             )INPUT";
@@ -237,9 +240,22 @@ x is not defined
         ASSERT_TRUE( interpreter.evaluate(out,data) );
         ASSERT_EQ( expected.str(), out.str() );
     }
+    { // test elseif  path through template
+        std::stringstream expected;
+        expected<< R"INPUT(x is not defined,
+ but y is defined with value as an int of 7
+   line
+            )INPUT";
+        std::stringstream out;
+        DataObject o;
+        o["y"] = 7.14159;
+        DataAccessor data(&o);
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        ASSERT_EQ( expected.str(), out.str() );
+    }
     { // test undefined path through template
         std::stringstream expected;
-        expected<< R"INPUT(x is not defined
+        expected<< R"INPUT(x and y are not defined
    line
             )INPUT";
         std::stringstream out;

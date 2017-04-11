@@ -509,6 +509,8 @@ bool HaliteInterpreter<S>::evaluate_component(DataAccessor & data
     {
     case  wasp::STRING:
         // print the text and update the current line and column
+        wasp_tagged_line("printing '"<<tree_view.data()<<"' from "<<current_line<<","<<current_column
+                         <<" to "<<tree_view.line()<<","<<tree_view.column());
         wasp::print_from(out, tree_view, current_line, current_column);
     break;
     case wasp::IDENTIFIER:
@@ -570,6 +572,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
             case wasp::IDENTIFIER:
             if( !print_attribute(data, child_view, attr_str, line, column) )
             {
+                wasp_tagged_line("failing for "<<child_view.data());
                 return false;
             }
             // indicates the attribute has options for substitution
@@ -589,6 +592,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     ExprInterpreter<> expr(Interpreter<S>::error_stream());
     if( false == expr.parse(attr_str, line, start_column + m_attribute_start_delim.size()) )
     {
+        wasp_tagged_line("failing...");
         return false;
     }
     auto result = expr.evaluate(data);
@@ -602,11 +606,18 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     {
         if( !result.format(  out, options.format(), Interpreter<S>::error_stream()) )
         {
+            Interpreter<S>::error_stream()<<"***Error: failed to format result ("
+                                         <<result.as_string()<<") as '"<<options.format()<<"'"<<std::endl;
             return false;
         }
     }
     else {
-       if( !result.format( out ) ) return false;
+       if( !result.format( out ) )
+       {
+           Interpreter<S>::error_stream()<<"***Error: failed to format result ("
+                                        <<result.as_string()<<")."<<std::endl;
+           return false;
+       }
     }
     auto last_attr_component = attr_view.child_at(attr_view.child_count()-1);
     column = last_attr_component.column() + m_attribute_end_delim.size();
@@ -630,9 +641,10 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
         std::string name = child_view.name();
         wasp_tagged_line("Condition '"<<child_view.name()<<"' @ "<<child_view.line()<<" evaluation...");
         wasp_check(name.size() >= 2);
+        line = child_view.line(); //
         // check for 'if','ifdef','ifndef'
         if( name.compare(0,2,"if") == 0
-                || name.compare(name.size()-2,2,"eif" ) == 0) // 'elseif'
+            || (name.size() > 3 && name.compare(name.size()-3,3,"eif" ) == 0)) // 'elseif'
         {
             wasp_tagged_line("if condition...");
             // child at 0 is decl, 1 is the condition,
@@ -668,24 +680,96 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
                                  <<"? "<<std::boolalpha<<exists);
                 // made the gauntlet - evaluate
                 wasp_tagged_line("updating line from "<<line<<" to "<<action_view.child_at(action_view.child_count()-1).line()+1);
-
-                ++line; // increment past conditinoal directive (#if,etc)
+                ++line; // account for #if, etc.
+                column = 1;
                 const auto & action_true_view = child_view.child_at(2);
                 if( !evaluate(data
                                 ,action_true_view,out
                                 ,line,column) )
                 {
+                    wasp_tagged_line("failing - evaluation of if conditional...");
                     return false;
                 }
                 break;
+            }
+            // more than 1 component indicates attributes need evaluation
+            else if( cond_view.child_count() > 1  ) // ' ' attribute...
+            {
+                SubstitutionOptions options;
+                std::stringstream attr_str;
+                for( size_t ci = 0; ci < cond_view.child_count(); ++ci )
+                {
+                    const auto & elseif_cond_view = cond_view.child_at(ci);
+                    auto type = elseif_cond_view.type();
+                    switch( type )
+                    {
+                        // plain text to be printed for variable substitution
+                        case wasp::STRING:
+                        wasp::print(attr_str, elseif_cond_view);
+                        break;
+                        // nested attribute, recurse
+                        case wasp::IDENTIFIER:
+                        if( !print_attribute(data, elseif_cond_view, attr_str, line, column) )
+                        {
+                            wasp_tagged_line("failing for attribute "<<elseif_cond_view.data());
+                            return false;
+                        }
+                        // indicates the attribute has options for substitution
+                        case wasp::FUNCTION:
+                            // legal, but not used
+                            attribute_options(options, elseif_cond_view.data());
+                        break;
+                        default:
+                        wasp_not_implemented(elseif_cond_view.data()+" is not supported.");
+                    }
+                }
+                wasp_tagged_line("#if,elseif, etc evaluating expression '"<<attr_str.str()<<"'...");
+                ExprInterpreter<> expr(Interpreter<S>::error_stream());
+                if( false == expr.parse(attr_str, line, column + m_attribute_start_delim.size()) )
+                {
+                    wasp_tagged_line("failing...");
+                    return false;
+                }
+                auto result = expr.evaluate(data);
+                if( result.is_error() )
+                {
+                    wasp_tagged_line(result.string());
+                    return false;
+                }
+                // if result is true, evaluate the Condition node
+                if( (result.is_bool() && result.boolean() )
+                    || (result.is_number() && result.number() != 0.0 )
+                    || (result.is_string() && data.exists(result.string())))
+                {
+                    const auto & action_true_view = child_view.child_at(2);
+                    ++line; // account for #if, etc.
+                    column = 1;
+                    if( !evaluate(data
+                                    ,action_true_view,out
+                                    ,line,column) )
+                    {
+                        wasp_tagged_line("failing...");
+                        return false;
+                    }
+                    break; // leave #if,elseif,else chain
+                }
+                continue; // this if construct failed
+            }
+            else{
+                Interpreter<S>::error_stream()<<"Error: conditional action (#if,#elseif, etc.) "
+                                "must have a single argument. E.g., 'name' or "
+                             <<m_attribute_start_delim<<"name"<<m_attribute_end_delim
+                            <<"."<<std::endl;
+                return false;
             }
             wasp_not_implemented("paramterized conditional");
         }
         else{ // #else
             wasp_tagged_line("else scenario for '"<<child_view.name()<<"'");
             wasp_check(child_view.name() == std::string("else") );
-            line=child_view.line()+1; // collapse the #else
-            // #else
+            ++line;
+            column = 1;
+            // #else followed by template lines... eval the lines
             for(size_t j = 1, count = child_view.child_count(); j < count; ++j )
             {
                 const auto & else_child_view = child_view.child_at(j);

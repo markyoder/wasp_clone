@@ -134,6 +134,10 @@ namespace wasp {
         void attribute_options( SubstitutionOptions & options
                                , const std::string& data)const;
 
+        bool accumulate_attribute(DataAccessor & data
+                                  ,const TreeNodeView<S> & attr_view
+                                  ,std::ostream& out
+                                 , size_t& line, size_t& column)const;
         /**
          * @brief conditional handles actioned conditional blocks
          * @param data the data accessor
