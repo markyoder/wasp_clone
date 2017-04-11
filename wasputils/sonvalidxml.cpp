@@ -1,0 +1,86 @@
+/* 
+ * File:   sonvalidxml.cpp
+ * Author: orl
+ */
+
+#include <cstdlib>
+#include <iostream>
+#include <fstream>
+#include "waspson/SONInterpreter.h"
+#include "waspson/SONNodeView.h"
+#include "wasphive/HIVE.h"
+using namespace std;
+using namespace wasp;
+
+/*
+ * 
+ */
+int main(int argc, char** argv) {
+
+    if( argc != 3 )
+    {
+        std::cerr<<"Workbench Analysis Sequence Processor (SON) Validator and XML printer"<<std::endl
+                << "sonvalidxml : An application for validating SON formatted input"<<std::endl
+                << "            : and transforming into xml and printing"<<std::endl
+                << "      Usage : "<<argv[0]<<" path/to/SON/formatted/schema path/to/SON/formatted/input"
+                <<std::endl;
+        return 1;
+    }
+    
+    std::ifstream schema(argv[1]);
+    if (schema.fail() || schema.bad()) {
+        std::cerr << "Failed to open/read " << argv[1] << std::endl;
+        schema.close();
+        return 1;
+    }
+    std::stringstream errors;
+    // TODO - adjust file offset size based on file size
+    SONInterpreter<TreeNodePool<unsigned int, unsigned int
+            , TokenPool<unsigned int,unsigned int, unsigned int>>> schema_interp(errors);
+    bool parsed_schema = schema_interp.parse(schema);
+    if( !parsed_schema )
+    {
+        std::cerr<<"Failed to process schema file '"<<argv[1]<<"'"<<std::endl;
+        std::cerr<<errors.str()<<std::endl;
+        return -1;
+    }
+    
+    std::ifstream input(argv[2]);
+    if (input.fail() || input.bad()) {
+        std::cerr << "Failed to open/read " << argv[2] << std::endl;
+        input.close();
+        return 2;
+    }
+    // TODO - adjust file offset size based on file size
+    SONInterpreter<TreeNodePool<unsigned int, unsigned int
+            , TokenPool<unsigned int,unsigned int, unsigned int>>> input_interp(errors);
+    bool parsed_input = input_interp.parse(input);
+    if( !parsed_input )
+    {
+        std::cerr<<"Failed to process input file '"<<argv[2]<<"'"<<std::endl;
+        std::cerr<<errors.str()<<std::endl;
+        return -1;
+    }
+    SONNodeView<decltype(input_interp.root())> input_root = input_interp.root();
+    SONNodeView<decltype(schema_interp.root())> schema_root = schema_interp.root();
+    HIVE validation_engine;
+    std::vector<std::string> validation_errors;
+    bool valid = validation_engine.validate(schema_root,input_root, validation_errors);
+    if( !valid )
+    { // TODO - pass xml option if so desired.
+        validation_engine.printMessages(valid, validation_errors, false, argv[2],std::cerr);
+        return 1;
+    }
+    
+    SONInterpreter<TreeNodePool<unsigned int, unsigned int
+            ,TokenPool<unsigned int,unsigned int, unsigned int>>> parser;
+    bool failed = !parser.parseFile(argv[1]);
+    if( failed ){
+        std::cerr<<"***Error : Parsing of "<<argv[1]<<" failed!"<<std::endl;
+        return 1;
+    }
+    wasp::to_xml(input_root,std::cout);
+    return 0;
+}
+
+
