@@ -552,6 +552,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     size_t new_line = attr_view.line();
     int delta = new_line - line;
     wasp_check(delta >= 0);
+    wasp_tagged_line(info(attr_view)<<" line delta "<<delta);
     if( delta > 0 ) out<<std::string(delta, '\n');
     SubstitutionOptions options;
     // accumulate an attribute string
@@ -631,30 +632,41 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
     wasp_require( child_count > 0 );
 
     const auto  & term_view = action_view.child_at(child_count-1);
+    size_t action_line = action_view.line();
+    int delta = action_line - line;
+    if( delta > 0 ){
+        out<<std::string(delta,'\n');
+        line += delta;
+        wasp_tagged_line("conditional block has "<<delta<<" lines to emit for "<<info(action_view));
+    }
+    line = action_line;
     wasp_require(term_view.type() == wasp::TERM);
     size_t i = 0;
     for(; i < child_count; ++i )
     {
         const auto& child_view = action_view.child_at(i);
-        if( child_view.type() == wasp::TERM ) continue; // 'endif'
-        std::string name = child_view.name();
+        if( child_view.type() == wasp::TERM ) break; // 'endif'
+        std::string action_name = child_view.name();
 
-        wasp_check(name.size() >= 2);
+        wasp_check(action_name.size() >= 2);
         // check for 'if','ifdef','ifndef'
-        if( name.compare(0,2,"if") == 0
-            || (name.size() > 3 && name.compare(name.size()-3,3,"eif" ) == 0)) // 'elseif'
+        if( action_name.compare(0,2,"if") == 0
+            || (action_name.size() > 3
+                && action_name.compare(action_name.size()-3,3,"eif" )
+                == 0)) // 'elseif'
         {
             // child at 0 is decl, 1 is the condition,
             const auto cond_view = child_view.child_at(1);
             // simple name lookup to determine existance
             if( cond_view.child_count() == 1 )
             {
-                std::string name = trim(cond_view.data()," ");
-                bool exists = data.exists(name);
-
+                std::string var_name = trim(cond_view.data()," ");
+                bool exists = data.exists(var_name);
+                wasp_tagged_line(action_name<<" exists? "<<std::boolalpha<<exists);
                 // if'n'def
-                if( name.size() > 3 && name.at(2) == 'n')
+                if( action_name.size() > 3 && action_name.at(2) == 'n')
                 {
+                    wasp_tagged_line("conducting ifndef...");
                     // ifndef and variable exists
                     // this action is not to be performed                    
                     if( exists )
@@ -672,7 +684,12 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
                 ++line; // account for #if, etc.
                 column = 1;
                 const auto & action_true_view = child_view.child_at(2);
-
+                int delta = action_true_view.line() - line;
+                if( delta > 0 ){
+                    out<<std::string(delta,'\n');
+                    line += delta;
+                    wasp_tagged_line("conditional block has "<<delta<<" lines to emit for "<<info(child_view));
+                }
                 if( !evaluate(data
                                 ,action_true_view,out
                                 ,line,column) )
@@ -688,7 +705,8 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
             {
                 SubstitutionOptions options;
                 std::stringstream attr_str;
-                line = cond_view.line();
+                size_t cline = cond_view.line();
+                size_t ccol = column;
                 for( size_t ci = 0; ci < cond_view.child_count(); ++ci )
                 {
                     const auto & if_cond_view = cond_view.child_at(ci);
@@ -699,11 +717,11 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
                         // plain text to be printed for variable substitution
                         case wasp::STRING:
 
-                        wasp::print_from(attr_str, if_cond_view, line, column);
+                        wasp::print_from(attr_str, if_cond_view, cline, ccol);
                         break;
                         // nested attribute, recurse
                         case wasp::IDENTIFIER:
-                        if( !print_attribute(data, if_cond_view, attr_str, line, column) )
+                        if( !print_attribute(data, if_cond_view, attr_str, cline, ccol) )
                         {
                             return false;
                         }
@@ -733,7 +751,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
                     || (result.is_string() && data.exists(result.string())))
                 {
                     const auto & action_true_view = child_view.child_at(2);
-                    ++line; // account for #if, etc.
+                    line=cline+1; // account for #if, etc.
                     column = 1;                    
                     if( !evaluate(data
                                     ,action_true_view,out
@@ -771,12 +789,15 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
             break;
         }
     }
-    wasp_check(i+1 < action_view.child_count());
-    const auto& end_of_action = action_view.child_at(i+1);
-    int delta = end_of_action.line() - 1 - line;
-    wasp_check(delta >= 0);
-    wasp_tagged_line("conditional line delta "<<delta);
-    if( delta > 0 ) out<<std::string(delta,'\n');
+    if( i+1 < child_count )
+    {
+        wasp_check(i+1 <= action_view.child_count());
+        const auto& end_of_action = action_view.child_at(i+1);
+        int delta = end_of_action.line() - 1 - line;
+        wasp_check(delta >= 0);
+        wasp_tagged_line("conditional line delta "<<delta<<" for "<<info(action_view));
+        if( delta > 0 ) out<<std::string(delta,'\n');
+    }
     line = term_view.line();
     column = 1;
     return true;

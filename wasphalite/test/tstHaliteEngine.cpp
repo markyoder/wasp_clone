@@ -264,6 +264,56 @@ text
         ASSERT_EQ( expected.str(), out.str() );
     }
 }
+TEST( Halite, nested_conditional)
+{
+    std::stringstream input;
+    input<< R"INPUT(#ifdef pi
+
+#if <<pi:fmt=%.0f>==3>
+<pi> is defined as pi math constant
+#endif
+
+#else
+
+ some else statement
+
+#ifndef pi
+text
+#endif
+
+
+#endif
+)INPUT";
+
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    { // test defined path through template
+        std::stringstream expected;
+        expected<< R"INPUT(
+3.14159 is defined as pi math constant
+)INPUT";
+        std::stringstream out;
+        DataObject o;
+        o["pi"] = 3.14159;
+        DataAccessor data(&o);
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        ASSERT_EQ( expected.str(), out.str() );
+    }
+    { // test defined path through template
+        std::stringstream expected;
+        expected<< R"INPUT(
+ some else statement
+
+text
+
+)INPUT";
+        std::stringstream out;
+        DataObject o;
+        DataAccessor data(&o);
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        ASSERT_EQ( expected.str(), out.str() );
+    }
+}
 
 /**
  * @brief test conditional blocks
