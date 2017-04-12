@@ -66,6 +66,13 @@ public:
     bool is_decorative()const;
 
     bool is_leaf()const;
+
+    /**
+     * @brief is_terminator determine if this node represents a terminator
+     * @return true, iff the node is a terminator
+     */
+    bool is_terminator() const;
+
     /**
      * @brief non_decorative_children acquires all non decorative children
      * @return collection of GetPotNodeViews
@@ -153,6 +160,19 @@ public:
      * @return the starting column of the node
      */
     std::size_t column()const;
+
+    /**
+     * @brief last_line acquire the node's ending line
+     * @return the ending line of the node
+     */
+    std::size_t last_line()const;
+
+    /**
+     * @brief last_column acquire the node's ending column
+     * @return the ending column of the node
+     */
+    std::size_t last_column()const;
+
     /**
      * @brief tree_node_index acquire the index into the tree node data pool
      * @return the index into the data pool

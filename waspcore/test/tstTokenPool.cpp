@@ -278,3 +278,68 @@ TEST(TokenPool,single_line_column)
     }
 }
 
+TEST(TokenPool, multiple_line_column)
+{
+    // token metadata
+    struct Info
+    {
+        std::string data;
+        char type;
+        std::size_t offset;
+        std::size_t line;
+        std::size_t column;
+        std::size_t last_line;
+        std::size_t last_column;
+    };
+
+    // key1 = "multi-line\n    string"
+    // key2 = "another\nmulti-line\nstring"
+    std::vector<std::vector<Info>> info =
+    {
+        {
+            {"key1", word, 0, 1, 1, 1, 4},
+            {"=", assign, 5, 1, 6, 1, 6},
+            {"multi-line\n    string", word, 7, 1, 8, 2, 10}
+        },
+        {
+            {"key2", word, 29, 3, 1, 3, 4},
+            {"=", assign, 34, 3, 6, 3, 6},
+            {"another\nmulti-line\nstring", word, 36, 3, 8, 5, 6}
+        }
+    };
+
+    // token pool for testing
+    TokenPool<char> tp;
+
+    // token index
+    std::size_t index = 0;
+
+    for(std::size_t i = 0, ie = info.size(); i < ie; i++)
+    {
+        SCOPED_TRACE(i);
+        const auto &line = info[i];
+
+        for(std::size_t j = 0, je = line.size(); j < je; j++, index++)
+        {
+            SCOPED_TRACE(j);
+
+            // current info
+            const auto &ci = line[j];
+
+            tp.push(ci.data.data(), ci.type, ci.offset);
+            ASSERT_EQ(index + 1, tp.size());
+
+            // verify token data are correct
+            auto str = tp.str(index);
+            ASSERT_EQ(ci.data, str);
+            ASSERT_EQ(ci.type, tp.type(index));
+            ASSERT_EQ(ci.offset, tp.offset(index));
+            ASSERT_EQ(ci.line, tp.line(index));
+            ASSERT_EQ(ci.column, tp.column(index));
+            ASSERT_EQ(ci.last_line, tp.last_line(index));
+            ASSERT_EQ(ci.last_column, tp.last_column(index));
+        }
+
+        tp.push_line(line.back().offset + line.back().data.size());
+    }
+}

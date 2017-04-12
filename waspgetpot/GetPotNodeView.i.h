@@ -88,6 +88,20 @@ bool GetPotNodeView<TNV>::is_decorative()const{
     }
     return false;
 }
+
+template<class TNV>
+bool GetPotNodeView<TNV>::is_terminator() const {
+    switch(type())
+    {
+    case wasp::TERM:
+    case wasp::OBJECT_TERM:
+    case wasp::SUB_OBJECT_TERM:  // [./] | [../]
+        return true;
+    default:
+        return false;
+    }
+}
+
 template<class TNV>
 typename GetPotNodeView<TNV>::Collection
 GetPotNodeView<TNV>::non_decorative_children()const
@@ -211,6 +225,19 @@ std::size_t GetPotNodeView<TNV>::column()const
 {
     return m_tree_data->column(m_tree_node_index);
 }
+
+template<class TNV>
+std::size_t GetPotNodeView<TNV>::last_line()const
+{
+    return m_tree_data->last_line(m_tree_node_index);
+}
+
+template<class TNV>
+std::size_t GetPotNodeView<TNV>::last_column()const
+{
+    return m_tree_data->last_column(m_tree_node_index);
+}
+
 template<class TNV>
 int GetPotNodeView<TNV>::to_int(bool * ok)const
 {

@@ -63,6 +63,57 @@ std::size_t TokenPool<TTS,TITS,FOTS>::column(TITS index)const
 
     return column;
 }
+
+// GET THE TOKEN'S LAST LINE
+template<typename TTS, typename TITS,typename FOTS>
+std::size_t TokenPool<TTS,TITS,FOTS>::last_line(TITS index)const
+{
+    // token start offset, end position
+    auto token_file_offset = m_tokens[index].m_token_file_offset;
+    auto token_end_position = token_file_offset + std::strlen(m_strings.data(index)) - 1;
+
+    // first newline after the end of the token
+    auto ub = std::upper_bound(m_line_offsets.begin(),
+                               m_line_offsets.end(),
+                               token_end_position);
+
+    // calculate/return line number
+    auto line = std::distance(m_line_offsets.begin(), ub) + 1;
+    return static_cast<std::size_t>(line);
+}
+
+// GET THE TOKEN'S LAST_COLUMN
+template<typename TTS, typename TITS,typename FOTS>
+std::size_t TokenPool<TTS,TITS,FOTS>::last_column(TITS index)const
+{
+    // token start offset, end position
+    auto token_file_offset = m_tokens[index].m_token_file_offset;
+    auto token_end_position = token_file_offset + std::strlen(m_strings.data(index)) - 1;
+
+    // first newline after the end of the token
+    auto ub = std::upper_bound(m_line_offsets.begin(),
+                               m_line_offsets.end(),
+                               token_end_position);
+
+    // last column
+    std::size_t column;
+
+    // check if token is on first line
+    if(ub == m_line_offsets.begin())
+    {
+        column = token_end_position + 1;
+    }
+    else
+    {
+        // back it up 1 as the token's column is past the token's line
+        ub--;
+        // column is the token_offset - token_newline_offset
+        column = token_end_position - *ub;
+    }
+
+    return column;
+}
+
 // GET A TOKEN's OFFSET
 template<typename TTS, typename TITS,typename FOTS>
 FOTS TokenPool<TTS,TITS,FOTS>::offset(TITS token_index)const
@@ -79,6 +130,16 @@ void TokenPool<TTS,TITS,FOTS>::push(const char * str
     // capture the token's string in the string pool
     m_strings.push(str);
     m_tokens.push_back(Token(type,token_file_offset));
+
+    // push embedded newlines
+    for(size_t i = 0; str[i] != 0; i++)
+    {
+        // this is a newline, push its offset
+        if(str[i] == '\n')
+        {
+            m_line_offsets.push_back(token_file_offset + i);
+        }
+    }
 }
 // PUSH A NEW LINE
 template<typename TTS, typename TITS,typename FOTS>

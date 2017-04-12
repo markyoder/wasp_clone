@@ -174,3 +174,110 @@ TEST(TreeNodePool, set)
         ASSERT_FALSE( tp.set_name(0,name.c_str()) );
     }
 }
+
+/**
+ * 'root'
+ *  |_ 'data'
+ *    |_ 'array'
+ *    |_ '('
+ *    |_ 'foo'
+ *    |_ ')'
+ *    |_ '234'
+ *    |_ '1.2343'
+ *    |_ 'end'
+ *  |_ 'attr'
+ *    |_ 'key'
+ *    |_ '='
+ *    |_ '1.23'
+ */
+TEST(TreeNodePool, last_line_and_column)
+{
+    //'array (foo) 234 1.2343 end\n' // data
+    // 0     67  1012  16     23     // offsets
+    //'key = 1.23'                   // data
+    //'27  3133                      // offsets
+    TreeNodePool<char,char,TokenPool<char,char,default_file_offset_type_size>> tp;
+    std::vector<size_t> root_child_indices;
+    { // push first line's contents
+        std::vector<std::string> token_data=
+        {"array","(","foo",")","234","1.2343","end"};
+        std::vector<std::string> node_name=
+        {"decl","op","id","cp","value","value","term"};
+        std::vector<char> node_type =
+        {decl,paren,id,paren,value,value,term};
+        std::vector<char> token_type =
+        {word,paren,word,paren,integer,real,term};
+        std::vector<default_file_offset_type_size> token_offset=
+        {0,6,7,10,12,16,23};
+
+        std::vector<size_t> child_indices;
+        for(std::size_t i = 0; i < token_data.size(); ++i)
+        {
+            // capture index of new leaf node
+            child_indices.push_back(static_cast<char>(i));
+            tp.push_leaf(node_type[i],node_name[i].c_str()
+                         ,token_type[i],token_offset[i]
+                         ,token_data[i].c_str());
+        }
+        // add parent node
+        std::string parent_name = "data";
+        char parent_type = array;
+        // create parent node with type, name, and children
+        root_child_indices.push_back(tp.size()); // capture
+        tp.push_parent(parent_type,parent_name.c_str(),child_indices);
+        default_file_offset_type_size line_offset
+                = token_offset.back()+token_data.back().size();
+        tp.push_line(line_offset);
+    } // done with first line
+    { // push second line
+        //'key = 1.23'      // data
+        //'26  3032         // offsets
+        std::vector<std::string> token_data=
+        {"key","=","1.23"};
+        std::vector<std::string> node_name=
+        {"decl","assign","value"};
+        std::vector<char> node_type =
+        {decl,assign,value};
+        std::vector<char> token_type =
+        {word,assign,real};
+        std::vector<default_file_offset_type_size> token_offset=
+        {27,31,33};
+
+        std::vector<size_t> child_indices;
+        for(std::size_t i = 0; i < token_data.size(); ++i)
+        {
+            std::size_t node_index = tp.size();
+            // capture index of new leaf node
+            child_indices.push_back(node_index);
+            tp.push_leaf(node_type[i],node_name[i].c_str()
+                         ,token_type[i],token_offset[i]
+                         ,token_data[i].c_str());
+        }
+        // add parent node
+        std::string parent_name = "data";
+        char parent_type = array;
+        // create parent node with type, name, and children
+        root_child_indices.push_back(tp.size()); // capture
+        tp.push_parent(parent_type,parent_name.c_str(),child_indices);
+    }
+    std::string root_name = "root";
+    size_t root_index = tp.size();
+    tp.push_parent(root,root_name.c_str(),root_child_indices);
+
+    // test last_line/last_column logic
+    // document's last_line/last_column
+    ASSERT_EQ(2, tp.last_line(root_index));
+    ASSERT_EQ(10, tp.last_column(root_index));
+
+    // array's last_line/last_column
+    size_t array_index = 7;
+    ASSERT_EQ("array (foo) 234 1.2343 end", tp.data(array_index));
+    ASSERT_EQ(1, tp.last_line(array_index));
+    ASSERT_EQ(26, tp.last_column(array_index));
+
+    // key's last_line/last_column
+    size_t key_index = 11;
+    ASSERT_EQ("key = 1.23", tp.data(key_index));
+    ASSERT_EQ(2, tp.last_line(key_index));
+    ASSERT_EQ(10, tp.last_column(key_index));
+}

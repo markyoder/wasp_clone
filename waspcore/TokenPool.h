@@ -1,6 +1,7 @@
 #ifndef WASP_TOKENPOOL_H
 #define WASP_TOKENPOOL_H
 #include <algorithm>
+#include <cstring>
 #include <vector>
 #include "waspcore/StringPool.h"
 namespace wasp{
@@ -55,6 +56,19 @@ public:
      * @return std::size_t the column number for which the token exists
      */
     std::size_t column(token_index_type_size token_index)const;
+
+    /**
+     * @brief last_line acquires the ending line for the token at the given index
+     * @return std::size_t the ending line number for which the token exists
+     */
+    std::size_t last_line(token_index_type_size token_index)const;
+
+    /**
+     * @brief last_column acquires the ending column for the token at the given index
+     * @return std::size_t the ending column number for which the token exists
+     */
+    std::size_t last_column(token_index_type_size token_index)const;
+
     /**
      * @brief offset acquires byte offset for the token at the given index
      * @return file_offset_type_size the byte offset of the token
