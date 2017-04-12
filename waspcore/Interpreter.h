@@ -273,6 +273,24 @@ public:
      */
     size_t child_count(size_t node_index) const;
     /**
+     * @brief column determines column for the node
+     * @param node_index index of the node of which children count are requested
+     * @return the column for the node
+     */
+    size_t column(size_t node_index) const;
+    /**
+     * @brief line determines line for the node
+     * @param node_index index of the node of which children count are requested
+     * @return the line for the node
+     */
+    size_t line(size_t node_index) const;
+    /**
+     * @brief parent_node_index determines parent's node index
+     * @param node_index index of the node of which children count are requested
+     * @return the parent's node index
+     */
+    size_t parent_node_index(size_t node_index) const;
+    /**
      * @brief child_index_at acquire the index of the given child
      * @param node_index the index of the parent node from which child_index is relative
      * @param child_index the relative child index
@@ -388,6 +406,7 @@ private:
      * @brief err - the error stream to report on
      */
     std::ostream & m_error_stream;
+    TreeNodePool_type m_tree_nodes;
 protected:
     struct Stage{
 
@@ -402,9 +421,6 @@ protected:
     };
     std::vector<Stage> m_staged;
     size_t m_root_index;
-public:
-    // TODO protect/privatize this.
-    TreeNodePool_type m_tree_nodes;
 
 };
 
