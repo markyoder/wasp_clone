@@ -90,6 +90,11 @@ bool GetPotNodeView<TNV>::is_decorative()const{
 }
 
 template<class TNV>
+bool GetPotNodeView<TNV>::is_declarator() const {
+    return type() == wasp::DECL;
+}
+
+template<class TNV>
 bool GetPotNodeView<TNV>::is_terminator() const {
     switch(type())
     {

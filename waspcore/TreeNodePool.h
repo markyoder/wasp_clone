@@ -368,6 +368,13 @@ public:
      * @return true, iff there is no parent data associated
      */
     bool is_leaf()const;
+
+    /**
+     * @brief is_declarator default TreeNodeView interface implementation
+     * @return true if the type is 'DECL'
+     */
+    bool is_declarator() const{ return type() == DECL;}
+
     /**
      * @brief is_terminator default TreeNodeView interface implementation
      * @return true if the type is 'TERM'

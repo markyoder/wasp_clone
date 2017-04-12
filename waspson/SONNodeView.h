@@ -81,6 +81,12 @@ public:
     bool is_leaf()const;
 
     /**
+     * @brief is_declarator determine if this node represents a declarator
+     * @return true, iff the node represents a declarator
+     */
+    bool is_declarator() const;
+
+    /**
      * @brief is_terminator determine if this node represents a terminator
      * @return true, iff the node represents a terminator
      */
