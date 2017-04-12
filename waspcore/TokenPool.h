@@ -1,6 +1,7 @@
 #ifndef WASP_TOKENPOOL_H
 #define WASP_TOKENPOOL_H
 #include <algorithm>
+#include <cstring>
 #include <vector>
 #include "waspcore/StringPool.h"
 namespace wasp{
