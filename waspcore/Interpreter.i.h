@@ -46,6 +46,21 @@ size_t Interpreter<TNS>::child_count( size_t node_index )const
     return this->m_tree_nodes.child_count(node_index);
 }
 template<class TNS>
+size_t Interpreter<TNS>::column( size_t node_index )const
+{
+    return this->m_tree_nodes.column(node_index);
+}
+template<class TNS>
+size_t Interpreter<TNS>::line( size_t node_index )const
+{
+    return this->m_tree_nodes.line(node_index);
+}
+template<class TNS>
+size_t Interpreter<TNS>::parent_node_index( size_t node_index )const
+{
+    return this->m_tree_nodes.parent_node_index(node_index);
+}
+template<class TNS>
 size_t Interpreter<TNS>::child_index_at( size_t node_index
                                          ,size_t child_index)const
 {
