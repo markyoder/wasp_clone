@@ -99,6 +99,7 @@ public:
     size_t size()const;
 
     bool format_json(std::ostream & out, int indent_level=2, int level=0)const;
+    bool pack_json(std::ostream & out)const;
 private:
     /**
      * @brief nullify deletes and nullifies this object
@@ -144,6 +145,7 @@ public:
     void resize(size_t nsize){m_data.resize(nsize);}
 
     bool format_json(std::ostream & out, int indent_level=2, int level=0)const;
+    bool pack_json(std::ostream & out)const;
 };
 
 class DataObject
@@ -185,8 +187,19 @@ public:
     insert(const std::pair<std::string,Value>&v){return m_data.insert(v);}
 
     bool format_json(std::ostream & out, int indent_level=2, int level=0)const;
+    bool pack_json(std::ostream & out)const;
 
 };
+
+
+template<class Interp>
+bool generate_object(DataObject & obj, std::istream& input, std::ostream & errors)
+{
+    Interp interpreter(errors);
+    bool parsed = interpreter.parse(input);
+    if( !parsed ) return false;
+    return interpreter.generate_object(obj, errors);
+}
 
 } // end of namespace
 #endif

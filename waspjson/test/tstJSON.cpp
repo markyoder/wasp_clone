@@ -37,7 +37,7 @@ TEST( JSON, simple_object )
  "array_mixed" : [{}, [], 1, 1.004, true, false, null ]
 })INPUT";
     JSONInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(89, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 21, document.child_count() );
@@ -234,6 +234,19 @@ TEST( JSON, simple_object )
   }
 })INPUT";
     ASSERT_EQ( expected_json_formatted.str(), json_formatted.str() );
+    std::stringstream expected_json_packed;
+    expected_json_packed<<R"INPUT({"array_empty":[],"array_mixed":[{},[],1,1.004,true,false,null],"key_bool_false":false,"key_bool_true":true,"key_double":1.03,"key_int":1,"key_null":null,"key_string":"value1","object_empty":{},"object_mixed":{"a":null,"a bc \"esca ped\" de f":[],"k":1,"o":{}}})INPUT";
+    std::stringstream packed;
+    json.pack_json(packed);
+    ASSERT_EQ(expected_json_packed.str(), packed.str());
+    DataObject json_copy;
+    std::stringstream unpack_errors;
+    ASSERT_TRUE( wasp::generate_object<decltype(interpreter)>(json_copy, packed, unpack_errors) );
+    json_formatted.str("");// clear old results
+    ASSERT_EQ("",json_formatted.str());
+    json_copy.format_json(json_formatted);
+    // check round-tripped formatted json
+    ASSERT_EQ( expected_json_formatted.str(), json_formatted.str() );
 }
 
 /**
@@ -244,7 +257,7 @@ TEST( JSON, simple_array )
     std::stringstream input;
     input<< "[]"; // empty
     JSONInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_TRUE( interpreter.parse(input) );
     ASSERT_EQ(3, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 2, document.child_count() );

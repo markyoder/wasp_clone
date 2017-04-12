@@ -369,7 +369,40 @@ bool Value::format_json(std::ostream & out, int indent_level, int level)const
     }
     return out.good();
 }
-
+bool Value::pack_json(std::ostream & out)const
+{
+    if( is_object() )
+    {
+        to_object()->pack_json(out);
+    }
+    else if( is_array() )
+    {
+        to_array()->pack_json(out);
+    }
+    else{
+        switch( type() ){
+        case TYPE_STRING:
+            out<<"\""<<to_string()<<"\"";
+            break;
+        case TYPE_BOOLEAN:
+            out<<std::boolalpha<<to_bool();
+            break;
+        case TYPE_INTEGER:
+            out<<to_int();
+            break;
+        case TYPE_DOUBLE:
+            // TODO determine desire precision
+            out<<to_double();
+            break;
+        case TYPE_NULL:
+            out<<"null";
+            break;
+        default:
+            wasp_not_implemented("unknown Object value type json emission");
+        }
+    }
+    return out.good();
+}
 DataArray::DataArray()
 {
 }
@@ -410,6 +443,23 @@ bool DataArray::format_json(std::ostream & out, int indent_level, int level)cons
         out<<std::endl;
     }
     out<<std::string(indent_level*(level),' ')<<"]";
+    return out.good();
+}
+bool DataArray::pack_json(std::ostream & out)const
+{
+    if( empty() ){
+        out<<"[]";
+        return true;
+    }
+    out<<"[";
+    at(0).pack_json(out);
+
+    for(size_t i = 1, count = size(); i < count; ++i )
+    {
+        out<<",";
+        if( !at(i).pack_json(out) ) return false;
+    }
+    out<<"]";
     return out.good();
 }
 DataObject::DataObject()
@@ -481,6 +531,28 @@ bool DataObject::format_json(std::ostream & out, int indent_level, int level)con
     }
 
     out<<std::string(indent_level*(level),' ')<<"}";
+    return out.good();
+}
+bool DataObject::pack_json(std::ostream & out)const
+{
+    if( empty() ){
+        out<<"{}";
+        return true;
+    }
+
+    out<<"{";
+    auto itr = begin();
+    out<<"\""<<itr->first<<"\":";
+    itr->second.pack_json(out);
+    ++itr;
+    for( ; itr != end(); ++itr )
+    {
+        out<<",";
+        out<<"\""<<itr->first<<"\":";
+        if( !itr->second.pack_json(out) ) return false;
+    }
+
+    out<<"}";
     return out.good();
 }
 } // end of namespace wasp
