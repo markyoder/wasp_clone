@@ -554,7 +554,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     wasp_check(delta >= 0);
     wasp_tagged_line(info(attr_view)<<" line delta "<<delta);
     if( delta > 0 ) out<<std::string(delta, '\n');
-    SubstitutionOptions options;
+    SubstitutionOptions options;    
     // accumulate an attribute string
     for( size_t i = 1, count = attr_view.child_count()-1; i < count; ++i )
     {
@@ -586,7 +586,8 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     // and formatted and no expression evaluation is needed
 
     // attribute string contains the full attribute name
-    ExprInterpreter<> expr(Interpreter<S>::error_stream());
+    ExprInterpreter<S> expr(Interpreter<S>::error_stream());
+    wasp_tagged_line("expression '"<<attr_str.str()<<"'");
     if( false == expr.parse(attr_str, line, start_column + m_attribute_start_delim.size()) )
     {        
         return false;
@@ -814,6 +815,11 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
     // attributes must have '#import txt'
     // e.g., #import txt or #import txt<a1>txt<a2>...
     wasp_require( import_view.child_count() > 1);
+    size_t import_line = import_view.line();
+    int delta = import_line - line;
+    wasp_check(delta >= 0);
+    if( delta > 0 )out<<std::string(delta,'\n');
+
     std::stringstream import_str;
     // accumulate an attribute string
     for( size_t i = 1, count = import_view.child_count(); i < count; ++i )
@@ -826,16 +832,12 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
                 wasp::print(import_str, child_view);
             break;
             case wasp::IDENTIFIER:
-                print_attribute(data,child_view, import_str, line, column);
+                print_attribute(data,child_view, import_str, import_line, column);
             break;
             default:
                 wasp_not_implemented("parameterized file import");
         }
     }
-    size_t import_line = import_view.line();
-    int delta = import_line - line;
-    wasp_check(delta >= 0);
-    if( delta > 0 )out<<std::string(delta,'\n');
     std::string path = import_str.str();
     static std::string using_str = " using ";
     size_t using_i = path.find(using_str);
@@ -846,6 +848,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
     if( has_using )
     {
         using_what = path.substr(using_i+using_str.size());
+        wasp_tagged_line("path is '"<<path<<"'");
         wasp_tagged_line("Found using stmt, import now '"<<path.substr(0,using_i)<<"' using '"<<using_what<<"'");
         path = path.substr(0,using_i);
         using_what = wasp::trim(using_what," ");
@@ -916,10 +919,32 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
             wasp_not_implemented("import using scalar component");
         }
     }
-    else{
-        return nested_interp.evaluate(out,data);
+    else if( has_using )
+    { // check that the component being used is a json payload
+        if( using_what.size() > 0 && using_what.front() != '{' && using_what.front() != '[')
+        {
+            // doesn't look like a json payload... wasn't a known parameter... error
+            Interpreter<S>::error_stream()<<"***Error : unable to import '"
+                                         <<path<<"' on line "
+                                        <<import_view.line()
+                                       <<", the component being used '"
+                                      <<using_what<<"' is not a known variable."<<std::endl;
+            return false;
+        }
+        std::stringstream data_by_copy_str; data_by_copy_str<<using_what;
+        DataObject data_by_copy;
+        if( !wasp::generate_object<JSONInterpreter<S>>(
+                    data_by_copy,data_by_copy_str,Interpreter<S>::error_stream()))
+        {
+            return false;
+        }
+        DataAccessor data_by_copy_accessor(&data_by_copy);
+        import = nested_interp.evaluate(out,data_by_copy_accessor);
     }
-    ++line; // we know imports take 1 line
+    else{
+        import = nested_interp.evaluate(out,data);
+    }
+    line += delta;
     return import;
 }
 template<class S>

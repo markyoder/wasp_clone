@@ -11,6 +11,7 @@
 #include "waspcore/Interpreter.h"
 #include "wasphalite/SubStringIndexer.h"
 #include "waspexpr/ExprInterpreter.h"
+#include "waspjson/JSONInterpreter.h"
 #include "wasphalite/DataAccessor.h"
 #include "waspcore/wasp_bug.h"
 

@@ -248,7 +248,9 @@ std::string Value::to_string()const
         wasp_not_implemented("conversion of array to string");
 
     case TYPE_OBJECT:
-        wasp_not_implemented("conversion of object to string");
+        std::stringstream str;
+        to_object()->pack_json(str);
+        return str.str();
     }
     wasp_not_implemented("unknown type conversion to string");
 }

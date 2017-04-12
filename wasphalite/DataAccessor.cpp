@@ -45,6 +45,7 @@ Context::Type DataAccessor::type(const std::string& name)const
     if( variable.is_int() ) return Context::Type::INTEGER;
     if( variable.is_bool() ) return Context::Type::BOOLEAN;
     if( variable.is_string() ) return Context::Type::STRING;
+    if( variable.is_object() ) return Context::Type::STRING;
     return Context::Type::UNDEFINED;
 }
 bool DataAccessor::store(const std::string &name, const bool &v)
@@ -230,7 +231,7 @@ std::string DataAccessor::string(const std::string& name,bool * ok)const
     if( ok && itr == m_current_data->end() ) *ok = false;
     else if( ok )
     {
-        *ok = itr->second.is_primitive();
+        *ok = itr->second.is_primitive() || itr->second.is_object();
     }
     return itr->second.to_string();
 }
