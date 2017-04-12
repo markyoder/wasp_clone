@@ -832,7 +832,29 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
                 wasp_not_implemented("parameterized file import");
         }
     }
+    size_t import_line = import_view.line();
+    int delta = import_line - line;
+    wasp_check(delta >= 0);
+    if( delta > 0 )out<<std::string(delta,'\n');
     std::string path = import_str.str();
+    static std::string using_str = " using ";
+    size_t using_i = path.find(using_str);
+    bool has_using = using_i != std::string::npos;
+    bool using_reference = false;
+    std::string using_what;
+
+    if( has_using )
+    {
+        using_what = path.substr(using_i+using_str.size());
+        wasp_tagged_line("Found using stmt, import now '"<<path.substr(0,using_i)<<"' using '"<<using_what<<"'");
+        path = path.substr(0,using_i);
+        using_what = wasp::trim(using_what," ");
+        // the text after ' using ' is a variable name
+        using_reference = data.exists(using_what);
+        wasp_tagged_line("Using reference? "<<std::boolalpha<<using_reference);
+
+
+    }
     path = wasp::trim(path," \t");
     wasp_tagged_line("importing '"<<path<<"' relative to '"
                      <<Interpreter<S>::stream_name()<<"'");
@@ -840,6 +862,8 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
     std::string relative_to_current_path = Interpreter<S>::stream_name()+"/"+path;
     std::ifstream relative_to_current(relative_to_current_path.c_str());
     HaliteInterpreter<S> nested_interp(Interpreter<S>::error_stream());
+    bool import = false;
+    bool parsed = false;
     if( !relative_to_working_dir.good() )
     {
         if( !relative_to_current.good() )
@@ -849,23 +873,53 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
             return false;
         }
         nested_interp.setStreamName(relative_to_current_path,true);
-        bool parsed = nested_interp.parse(relative_to_current);
-        if( parsed == false )
-        {
-            return false;
-        }
-        return nested_interp.evaluate(out,data);
-    }
+        parsed = nested_interp.parse(relative_to_current);
 
-    nested_interp.setStreamName(path,true);
-    bool parsed = nested_interp.parse(relative_to_working_dir);
+    }else{
+        nested_interp.setStreamName(path,true);
+        parsed = nested_interp.parse(relative_to_working_dir);
+    }
     if( parsed == false )
     {
         return false;
     }
-    bool import = nested_interp.evaluate(out,data);
+    wasp_tagged_line("importing");
+    if( using_reference )
+    {
+        DataObject * obj = nullptr;
+        DataArray * array = nullptr;
+        if( (obj = data.object(using_what)) != nullptr )
+        {
+            DataAccessor ref(obj);
+            import = nested_interp.evaluate(out,ref);
+        }
+        else if( (array = data.array(using_what)) != nullptr )
+        {
+            for( size_t array_i = 0; array_i < array->size(); ++array_i)
+            {
+                const auto& variable_at_i = array->at(array_i);
+                if( variable_at_i.is_object() )
+                {
+                    DataAccessor ref(variable_at_i.to_object());
+                    import = nested_interp.evaluate(out,ref);
+                    if( !import )
+                    {
+                        return false;
+                    }
+                }else{
+                    wasp_not_implemented("iterative import using scalar elements");
+                    // TODO - encapsulate element in object as a generically named child, 'value', etc.
+                }
+            }
+        }else
+        {
+            wasp_not_implemented("import using scalar component");
+        }
+    }
+    else{
+        return nested_interp.evaluate(out,data);
+    }
     ++line; // we know imports take 1 line
-    out<<std::endl;
     return import;
 }
 template<class S>

@@ -35,6 +35,20 @@ public:
     virtual std::string string(const std::string& name, size_t index,bool * ok=nullptr)const;
     virtual std::string string(const std::string& name,bool * ok=nullptr)const;
 
+    /**
+     * @brief object acquire an object with the given name
+     * @param name the name of the desired object to acquire
+     * @return the object, iff an object with the given name exists, nullptr otherwise
+     */
+    DataObject * object(const std::string & name)const;
+
+    /**
+     * @brief array acquire an array with the given name
+     * @param name the name of the desired array to acquire
+     * @return the array, iff an array with the given name exists, nullptr otherwise
+     */
+    DataArray * array(const std::string & name )const;
+
 private:
     /**
      * @brief m_root_data unmanaged data pointer to root of data hierarchy

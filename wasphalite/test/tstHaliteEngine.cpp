@@ -63,6 +63,7 @@ TEST( Halite, static_text)
     std::stringstream input;
     input<< R"INPUT(This is plain test
 line2
+
  line3
    line
             )INPUT";
@@ -166,6 +167,108 @@ wombat has 2 brothers)INPUT";
     std::remove("nested parameterized template.tmpl");
     ASSERT_EQ( Value::TYPE_INTEGER, o["fred"].type() );
     ASSERT_EQ( 2, o["fred"].to_int() );
+}
+
+
+TEST( Halite, file_import_using_object_by_name)
+{
+
+    std::ofstream import("import_by_name_template.tmpl");
+    std::stringstream content;
+    content<<"this is"<<std::endl
+         <<"nested files using ted's foo (<foo>)"<<std::endl
+        <<std::endl // empty line
+       <<"and assigning foo to < foo = 9 >"<<std::endl;
+    import<<content.str();
+    import.close();
+    std::stringstream input;
+    input<< R"INPUT(
+    text prior
+#import ./import_by_name_template.tmpl using ted
+ text after
+)INPUT";
+    HaliteInterpreter<> interpreter;
+
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["ted"] = DataObject();
+    o["ted"]["foo"] = std::string("bar");
+    ASSERT_EQ( Value::TYPE_OBJECT, o["ted"].type() );
+    ASSERT_EQ( Value::TYPE_STRING, o["ted"]["foo"].type() );
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+
+    std::stringstream expected;
+    expected<< R"INPUT(
+    text prior
+this is
+nested files using ted's foo (bar)
+
+and assigning foo to 9
+ text after)INPUT";
+    ASSERT_EQ( expected.str(), out.str() );
+    std::remove("import_by_name_template.tmpl");
+    // ensure the child was passed by reference (can be changed)
+    ASSERT_EQ( Value::TYPE_INTEGER, o["ted"]["foo"].type() );
+    ASSERT_EQ( 9, o["ted"]["foo"].to_int() );
+}
+TEST( Halite, file_import_using_array_by_name)
+{
+
+    std::ofstream import("import_by_name_iterative.tmpl");
+    std::stringstream content;
+    content<<"nested template"<<std::endl
+         <<"using parameter <name>"<<std::endl
+        <<"with value <value>"<<std::endl
+       <<"and assigning value its own name <value=name>"<<std::endl;
+    import<<content.str();
+    import.close();
+    std::stringstream input;
+    input<< R"INPUT(
+    text prior
+#import ./import_by_name_iterative.tmpl using my_array
+ text after
+)INPUT";
+    HaliteInterpreter<> interpreter;
+
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["my_array"] = DataArray();
+    o["my_array"][0] = DataObject();
+    o["my_array"][0]["name"] = "ted1";
+    o["my_array"][0]["value"] = 1;
+
+    o["my_array"][1] = DataObject();
+    o["my_array"][1]["name"] = "ted2";
+    o["my_array"][1]["value"] = 2.2;
+
+    o["my_array"][2] = DataObject();
+    o["my_array"][2]["name"] = "ted3";
+    o["my_array"][2]["value"] = "fred";
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+
+    std::stringstream expected;
+    expected<< R"INPUT(
+    text prior
+nested template
+using parameter ted1
+with value 1
+and assigning value its own name ted1nested template
+using parameter ted2
+with value 2.2
+and assigning value its own name ted2nested template
+using parameter ted3
+with value fred
+and assigning value its own name ted3
+ text after)INPUT";
+    ASSERT_EQ( expected.str(), out.str() );
+    std::remove("import_by_name_iterative.tmpl");
+    // ensure the child was passed by reference (can be changed)
+    ASSERT_EQ( Value::TYPE_STRING, o["my_array"][0]["value"].type() );
+    ASSERT_EQ( "ted1", o["my_array"][0]["value"].to_string() );
 }
 
 /**

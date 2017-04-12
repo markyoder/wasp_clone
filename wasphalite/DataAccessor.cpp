@@ -234,4 +234,33 @@ std::string DataAccessor::string(const std::string& name,bool * ok)const
     }
     return itr->second.to_string();
 }
+
+DataObject * DataAccessor::object(const std::string &name) const
+{
+    if( m_current_data == nullptr ) return nullptr;
+    auto itr = m_current_data->find(name);
+    if( itr == m_current_data->end() )
+    {
+        return nullptr;
+    }
+    if( itr->second.is_object() )
+    {
+        return itr->second.to_object();
+    }
+    return nullptr;
+}
+DataArray * DataAccessor::array(const std::string &name) const
+{
+    if( m_current_data == nullptr ) return nullptr;
+    auto itr = m_current_data->find(name);
+    if( itr == m_current_data->end() )
+    {
+        return nullptr;
+    }
+    if( itr->second.is_array() )
+    {
+        return itr->second.to_array();
+    }
+    return nullptr;
+}
 } // end of namespace

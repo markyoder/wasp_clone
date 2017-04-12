@@ -111,6 +111,26 @@ bool SONNodeView<TNV>::is_decorative()const{
     }
     return false;
 }
+
+template<class TNV>
+bool SONNodeView<TNV>::is_declarator() const {
+    return type() == wasp::DECL;
+}
+
+template<class TNV>
+bool SONNodeView<TNV>::is_terminator() const {
+    switch(type())
+    {
+    case wasp::TERM:
+    case wasp::RBRACE :     // }
+    case wasp::RBRACKET:    // ]
+    case wasp::EXECUTION_UNIT_END:
+        return true;
+    default:
+        return false;
+    }
+}
+
 template<class TNV>
 typename SONNodeView<TNV>::Collection
 SONNodeView<TNV>::non_decorative_children()const
@@ -234,6 +254,19 @@ std::size_t SONNodeView<TNV>::column()const
 {
     return m_tree_data->column(m_tree_node_index);
 }
+
+template<class TNV>
+std::size_t SONNodeView<TNV>::last_line()const
+{
+    return m_tree_data->last_line(m_tree_node_index);
+}
+
+template<class TNV>
+std::size_t SONNodeView<TNV>::last_column()const
+{
+    return m_tree_data->last_column(m_tree_node_index);
+}
+
 template<class TNV>
 int SONNodeView<TNV>::to_int(bool * ok)const
 {
