@@ -63,6 +63,7 @@ TEST( Halite, static_text)
     std::stringstream input;
     input<< R"INPUT(This is plain test
 line2
+
  line3
    line
             )INPUT";
@@ -166,6 +167,51 @@ wombat has 2 brothers)INPUT";
     std::remove("nested parameterized template.tmpl");
     ASSERT_EQ( Value::TYPE_INTEGER, o["fred"].type() );
     ASSERT_EQ( 2, o["fred"].to_int() );
+}
+
+
+TEST( Halite, file_import_using_object_by_name)
+{
+
+    std::ofstream import("import_by_name_template.tmpl");
+    std::stringstream content;
+    content<<"this is"<<std::endl
+         <<"nested files using ted's foo (<foo>)"<<std::endl
+        <<std::endl // empty line
+       <<"and assigning foo to < foo = 9 >"<<std::endl;
+    import<<content.str();
+    import.close();
+    std::stringstream input;
+    input<< R"INPUT(
+    text prior
+#import ./import_by_name_template.tmpl using ted
+ text after
+)INPUT";
+    HaliteInterpreter<> interpreter;
+
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["ted"] = DataObject();
+    o["ted"]["foo"] = std::string("bar");
+    ASSERT_EQ( Value::TYPE_OBJECT, o["ted"].type() );
+    ASSERT_EQ( Value::TYPE_STRING, o["ted"]["foo"].type() );
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+
+    std::stringstream expected;
+    expected<< R"INPUT(
+    text prior
+this is
+nested files using ted's foo (bar)
+
+and assigning foo to 9
+ text after)INPUT";
+    ASSERT_EQ( expected.str(), out.str() );
+    std::remove("import_by_name_template.tmpl");
+    // ensure the child was passed by reference (can be changed)
+    ASSERT_EQ( Value::TYPE_INTEGER, o["ted"]["foo"].type() );
+    ASSERT_EQ( 9, o["ted"]["foo"].to_int() );
 }
 
 /**
