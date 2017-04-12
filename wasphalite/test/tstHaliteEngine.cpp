@@ -256,6 +256,44 @@ and assigning foo to 9
     ASSERT_EQ( Value::TYPE_STRING, o["ted"]["foo"].type() );
     ASSERT_EQ( "bar", o["ted"]["foo"].to_string() );
 }
+TEST( Halite, file_import_using_inline)
+{
+
+    std::ofstream import("import_by_name_inline.tmpl");
+    std::stringstream content;
+    content<<"this is"<<std::endl
+         <<"nested files using ted's foo (<foo>)"<<std::endl
+        <<std::endl // empty line
+       <<"and assigning foo to < foo = 9 >"<<std::endl;
+    import<<content.str();
+    import.close();
+    std::stringstream input;
+    input<< R"INPUT(
+    text prior
+#import ./import_by_name_inline.tmpl using {"foo":"bar"}
+ text after
+)INPUT";
+    HaliteInterpreter<> interpreter;
+
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+
+    std::stringstream expected;
+    expected<< R"INPUT(
+    text prior
+this is
+nested files using ted's foo (bar)
+
+and assigning foo to 9
+ text after)INPUT";
+    ASSERT_EQ( expected.str(), out.str() );
+    std::remove("import_by_name_inline.tmpl");
+    // ensure the variable is not present
+    ASSERT_FALSE( data.exists("foo") );
+}
 TEST( Halite, file_import_using_array_by_name)
 {
 

@@ -365,9 +365,9 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
 
         if( remaining_length > 0 )
         {
-            capture_attribute_text(
-                        line.substr(current_column_index,remaining_length)
-                        ,offset);
+            capture_leaf("txt",wasp::STRING
+                         , line.substr(current_column_index,remaining_length)
+                         ,wasp::STRING,offset);
         }
 
         // when closing import statement or condition expression, commit the tree
@@ -835,7 +835,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
                 print_attribute(data,child_view, import_str, import_line, column);
             break;
             default:
-                wasp_not_implemented("parameterized file import");
+                wasp_not_implemented("parameterized file import '"+child_view.data()+"'");
         }
     }
     std::string path = import_str.str();
