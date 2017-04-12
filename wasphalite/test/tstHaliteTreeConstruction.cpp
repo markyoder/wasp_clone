@@ -478,14 +478,17 @@ TEST( Halite, ifdef)
        <<"#endif";
     HaliteInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(5, interpreter.node_count() );
+    ASSERT_EQ(8, interpreter.node_count() );
     auto document = interpreter.root();
-    ASSERT_EQ( 1, document.child_count() );
+    ASSERT_EQ( 1, document.child_count() );    
     std::string expected_paths = R"INPUT(/
-/ifdef
-/ifdef/decl (#ifdef)
-/ifdef/txt ( something)
-/ifdef/endif (#endif)
+/A
+/A/ifdef
+/A/ifdef/decl (#ifdef)
+/A/ifdef/C
+/A/ifdef/C/txt ( something)
+/A/ifdef/T
+/A/endif (#endif)
 )INPUT";
         std::stringstream paths;
         document.paths(paths);
@@ -504,22 +507,25 @@ TEST( Halite, ifdef_parameterized)
        <<"#endif";
     HaliteInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(10, interpreter.node_count() );
+    ASSERT_EQ(13, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 1, document.child_count() );
     std::string expected_paths = R"INPUT(/
-/ifdef
-/ifdef/decl (#ifdef)
-/ifdef/txt ( )
-/ifdef/attr
-/ifdef/attr/< (<)
-/ifdef/attr/txt (x)
-/ifdef/attr/> (>)
-/ifdef/txt ( intermediate text )
-/ifdef/endif (#endif)
+/A
+/A/ifdef
+/A/ifdef/decl (#ifdef)
+/A/ifdef/C
+/A/ifdef/C/txt ( )
+/A/ifdef/C/attr
+/A/ifdef/C/attr/< (<)
+/A/ifdef/C/attr/txt (x)
+/A/ifdef/C/attr/> (>)
+/A/ifdef/T
+/A/ifdef/T/txt ( intermediate text )
+/A/endif (#endif)
 )INPUT";
         std::stringstream paths;
-        document.paths(paths);
+        document.paths(paths);        
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
@@ -534,19 +540,22 @@ TEST( Halite, ifndef_parameterized)
        <<"#endif";
     HaliteInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(10, interpreter.node_count() );
+    ASSERT_EQ(13, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 1, document.child_count() );
     std::string expected_paths = R"INPUT(/
-/ifndef
-/ifndef/decl (#ifndef)
-/ifndef/txt ( )
-/ifndef/attr
-/ifndef/attr/< (<)
-/ifndef/attr/txt (x)
-/ifndef/attr/> (>)
-/ifndef/txt ( intermediate text )
-/ifndef/endif (#endif)
+/A
+/A/ifndef
+/A/ifndef/decl (#ifndef)
+/A/ifndef/C
+/A/ifndef/C/txt ( )
+/A/ifndef/C/attr
+/A/ifndef/C/attr/< (<)
+/A/ifndef/C/attr/txt (x)
+/A/ifndef/C/attr/> (>)
+/A/ifndef/T
+/A/ifndef/T/txt ( intermediate text )
+/A/endif (#endif)
 )INPUT";
         std::stringstream paths;
         document.paths(paths);
@@ -565,24 +574,27 @@ TEST( Halite, if_parameterized)
        <<"#endif";
     HaliteInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(15, interpreter.node_count() );
+    ASSERT_EQ(18, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ( 1, document.child_count() );
     std::string expected_paths = R"INPUT(/
-/if
-/if/decl (#if)
-/if/txt ( )
-/if/attr
-/if/attr/< (<)
-/if/attr/txt (x)
-/if/attr/> (>)
-/if/txt ( < )
-/if/attr
-/if/attr/< (<)
-/if/attr/txt (y)
-/if/attr/> (>)
-/if/txt ( only if x is less than y )
-/if/endif (#endif)
+/A
+/A/if
+/A/if/decl (#if)
+/A/if/C
+/A/if/C/txt ( )
+/A/if/C/attr
+/A/if/C/attr/< (<)
+/A/if/C/attr/txt (x)
+/A/if/C/attr/> (>)
+/A/if/C/txt ( < )
+/A/if/C/attr
+/A/if/C/attr/< (<)
+/A/if/C/attr/txt (y)
+/A/if/C/attr/> (>)
+/A/if/T
+/A/if/T/txt ( only if x is less than y )
+/A/endif (#endif)
 )INPUT";
         std::stringstream paths;
         document.paths(paths);
@@ -603,35 +615,90 @@ TEST( Halite, elseif_parameterized)
        <<"#endif";
     HaliteInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(19, interpreter.node_count() );
+    ASSERT_EQ(24, interpreter.node_count() );
     auto document = interpreter.root();
-    ASSERT_EQ( 2, document.child_count() );
+    ASSERT_EQ( 1, document.child_count() );
     std::string expected_paths = R"INPUT(/
-/if
-/if/decl (#if)
-/if/txt ( )
-/if/attr
-/if/attr/< (<)
-/if/attr/txt (x)
-/if/attr/> (>)
-/if/txt ( < )
-/if/attr
-/if/attr/< (<)
-/if/attr/txt (y)
-/if/attr/> (>)
-/if/txt ( only if x is less than y )
-/elseif
-/elseif/decl (#elseif)
-/elseif/txt ( condition )
-/elseif/txt ( only if x is not less than y and condition is true )
-/elseif/endif (#endif)
+/A
+/A/if
+/A/if/decl (#if)
+/A/if/C
+/A/if/C/txt ( )
+/A/if/C/attr
+/A/if/C/attr/< (<)
+/A/if/C/attr/txt (x)
+/A/if/C/attr/> (>)
+/A/if/C/txt ( < )
+/A/if/C/attr
+/A/if/C/attr/< (<)
+/A/if/C/attr/txt (y)
+/A/if/C/attr/> (>)
+/A/if/T
+/A/if/T/txt ( only if x is less than y )
+/A/elseif
+/A/elseif/decl (#elseif)
+/A/elseif/C
+/A/elseif/C/txt ( condition )
+/A/elseif/T
+/A/elseif/T/txt ( only if x is not less than y and condition is true )
+/A/endif (#endif)
 )INPUT";
         std::stringstream paths;
         document.paths(paths);
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
-
+/**
+ * @brief TEST test if elseif else with parameter and body
+ */
+TEST( Halite, if_elseif_else_parameterized)
+{
+    std::stringstream input;
+    input<<"#if <x> < <y>"<<std::endl
+       <<" only if x is less than y "<<std::endl
+        <<"#elseif condition "<<std::endl
+        <<" only if x is not less than y and condition is true "<<std::endl
+        <<"#else"<<std::endl
+        <<"last bastion"<<std::endl
+       <<"#endif";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    ASSERT_EQ(27, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 1, document.child_count() );
+    std::string expected_paths = R"INPUT(/
+/A
+/A/if
+/A/if/decl (#if)
+/A/if/C
+/A/if/C/txt ( )
+/A/if/C/attr
+/A/if/C/attr/< (<)
+/A/if/C/attr/txt (x)
+/A/if/C/attr/> (>)
+/A/if/C/txt ( < )
+/A/if/C/attr
+/A/if/C/attr/< (<)
+/A/if/C/attr/txt (y)
+/A/if/C/attr/> (>)
+/A/if/T
+/A/if/T/txt ( only if x is less than y )
+/A/elseif
+/A/elseif/decl (#elseif)
+/A/elseif/C
+/A/elseif/C/txt ( condition )
+/A/elseif/T
+/A/elseif/T/txt ( only if x is not less than y and condition is true )
+/A/else
+/A/else/decl (#else)
+/A/else/txt (last bastion)
+/A/endif (#endif)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
 /**
  * @brief TEST test if elseif with parameter and body
  */
@@ -645,27 +712,30 @@ TEST( Halite, else_parameterized)
        <<"#endif";
     HaliteInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(18, interpreter.node_count() );
+    ASSERT_EQ(21, interpreter.node_count() );
     auto document = interpreter.root();
-    ASSERT_EQ( 2, document.child_count() );
+    ASSERT_EQ( 1, document.child_count() );
     std::string expected_paths = R"INPUT(/
-/if
-/if/decl (#if)
-/if/txt ( )
-/if/attr
-/if/attr/< (<)
-/if/attr/txt (x)
-/if/attr/> (>)
-/if/txt ( < )
-/if/attr
-/if/attr/< (<)
-/if/attr/txt (y)
-/if/attr/> (>)
-/if/txt ( only if x is less than y )
-/else
-/else/decl (#else)
-/else/txt ( only if x is not less than y )
-/else/endif (#endif)
+/A
+/A/if
+/A/if/decl (#if)
+/A/if/C
+/A/if/C/txt ( )
+/A/if/C/attr
+/A/if/C/attr/< (<)
+/A/if/C/attr/txt (x)
+/A/if/C/attr/> (>)
+/A/if/C/txt ( < )
+/A/if/C/attr
+/A/if/C/attr/< (<)
+/A/if/C/attr/txt (y)
+/A/if/C/attr/> (>)
+/A/if/T
+/A/if/T/txt ( only if x is less than y )
+/A/else
+/A/else/decl (#else)
+/A/else/txt ( only if x is not less than y )
+/A/endif (#endif)
 )INPUT";
         std::stringstream paths;
         document.paths(paths);
@@ -681,17 +751,13 @@ TEST( Halite, conditionals)
     input<<"conditional template"<<std::endl
     <<"#if cond1"<<std::endl
         <<" cond1 must be true"<<std::endl
-
         <<"#ifdef cond2"<<std::endl
         <<" cond1 must be true and 2 must be defined (eval to true)"<<std::endl
-
         <<"#else"<<std::endl
         <<" cond1 must be true and 2 must not be defined (eval to false)"<<std::endl
         <<"#endif"<<std::endl
-
     <<"#elseif cond3"<<std::endl
         <<" cond1 is false and cond3 true"<<std::endl
-
         <<"#ifndef cond4"<<std::endl
             <<" cond1 must be false, 3 true and 4 not defined (evals to false)"<<std::endl
         <<"#elseif cond5"<<std::endl
@@ -699,7 +765,6 @@ TEST( Halite, conditionals)
         <<"#else"<<std::endl
             <<" cond1 is false, 3 is true, 4 not defined, 5 false"<<std::endl
         <<"#endif"<<std::endl
-
     <<"#else"<<std::endl
         <<"cond1 and 3 are false"<<std::endl
         <<"#if cond6"<<std::endl
@@ -710,57 +775,75 @@ TEST( Halite, conditionals)
             <<" cond1 is false, 3 is false, 6 false, and 7 false"<<std::endl
         <<"#endif"<<std::endl
     <<"#endif";
-    HaliteInterpreter<> interpreter;
+    HaliteInterpreter<> interpreter(std::cout);
     ASSERT_TRUE( interpreter.parse(input) );
 //    ASSERT_EQ(18, interpreter.node_count() );
     auto document = interpreter.root();
 //    ASSERT_EQ( 2, document.child_count() );
     std::string expected_paths = R"INPUT(/
 /txt (conditional template)
-/if
-/if/decl (#if)
-/if/txt ( cond1)
-/if/txt ( cond1 must be true)
-/if/ifdef
-/if/ifdef/decl (#ifdef)
-/if/ifdef/txt ( cond2)
-/if/ifdef/txt ( cond1 must be true and 2 must be defined (eval to true))
-/if/else
-/if/else/decl (#else)
-/if/else/txt ( cond1 must be true and 2 must not be defined (eval to false))
-/if/else/endif (#endif)
-/elseif
-/elseif/decl (#elseif)
-/elseif/txt ( cond3)
-/elseif/txt ( cond1 is false and cond3 true)
-/elseif/ifndef
-/elseif/ifndef/decl (#ifndef)
-/elseif/ifndef/txt ( cond4)
-/elseif/ifndef/txt ( cond1 must be false, 3 true and 4 not defined (evals to false))
-/elseif/elseif
-/elseif/elseif/decl (#elseif)
-/elseif/elseif/txt ( cond5)
-/elseif/elseif/txt ( cond1 is false, 3 is true, 4 not defined, 5 true)
-/elseif/else
-/elseif/else/decl (#else)
-/elseif/else/txt ( cond1 is false, 3 is true, 4 not defined, 5 false)
-/elseif/else/endif (#endif)
-/else
-/else/decl (#else)
-/else/txt (cond1 and 3 are false)
-/else/if
-/else/if/decl (#if)
-/else/if/txt ( cond6)
-/else/if/txt ( cond1 must be false, 3 false and 6 true)
-/else/elseif
-/else/elseif/decl (#elseif)
-/else/elseif/txt ( cond7)
-/else/elseif/txt ( cond1 is false, 3 is false, 6 false, and 7 true)
-/else/else
-/else/else/decl (#else)
-/else/else/txt ( cond1 is false, 3 is false, 6 false, and 7 false)
-/else/else/endif (#endif)
-/else/endif (#endif)
+/A
+/A/if
+/A/if/decl (#if)
+/A/if/C
+/A/if/C/txt ( cond1)
+/A/if/T
+/A/if/T/txt ( cond1 must be true)
+/A/if/T/A
+/A/if/T/A/ifdef
+/A/if/T/A/ifdef/decl (#ifdef)
+/A/if/T/A/ifdef/C
+/A/if/T/A/ifdef/C/txt ( cond2)
+/A/if/T/A/ifdef/T
+/A/if/T/A/ifdef/T/txt ( cond1 must be true and 2 must be defined (eval to true))
+/A/if/T/A/else
+/A/if/T/A/else/decl (#else)
+/A/if/T/A/else/txt ( cond1 must be true and 2 must not be defined (eval to false))
+/A/if/T/A/endif (#endif)
+/A/elseif
+/A/elseif/decl (#elseif)
+/A/elseif/C
+/A/elseif/C/txt ( cond3)
+/A/elseif/T
+/A/elseif/T/txt ( cond1 is false and cond3 true)
+/A/elseif/T/A
+/A/elseif/T/A/ifndef
+/A/elseif/T/A/ifndef/decl (#ifndef)
+/A/elseif/T/A/ifndef/C
+/A/elseif/T/A/ifndef/C/txt ( cond4)
+/A/elseif/T/A/ifndef/T
+/A/elseif/T/A/ifndef/T/txt ( cond1 must be false, 3 true and 4 not defined (evals to false))
+/A/elseif/T/A/elseif
+/A/elseif/T/A/elseif/decl (#elseif)
+/A/elseif/T/A/elseif/C
+/A/elseif/T/A/elseif/C/txt ( cond5)
+/A/elseif/T/A/elseif/T
+/A/elseif/T/A/elseif/T/txt ( cond1 is false, 3 is true, 4 not defined, 5 true)
+/A/elseif/T/A/else
+/A/elseif/T/A/else/decl (#else)
+/A/elseif/T/A/else/txt ( cond1 is false, 3 is true, 4 not defined, 5 false)
+/A/elseif/T/A/endif (#endif)
+/A/else
+/A/else/decl (#else)
+/A/else/txt (cond1 and 3 are false)
+/A/else/A
+/A/else/A/if
+/A/else/A/if/decl (#if)
+/A/else/A/if/C
+/A/else/A/if/C/txt ( cond6)
+/A/else/A/if/T
+/A/else/A/if/T/txt ( cond1 must be false, 3 false and 6 true)
+/A/else/A/elseif
+/A/else/A/elseif/decl (#elseif)
+/A/else/A/elseif/C
+/A/else/A/elseif/C/txt ( cond7)
+/A/else/A/elseif/T
+/A/else/A/elseif/T/txt ( cond1 is false, 3 is false, 6 false, and 7 true)
+/A/else/A/else
+/A/else/A/else/decl (#else)
+/A/else/A/else/txt ( cond1 is false, 3 is false, 6 false, and 7 false)
+/A/else/A/endif (#endif)
+/A/endif (#endif)
 )INPUT";
         std::stringstream paths;
         document.paths(paths);

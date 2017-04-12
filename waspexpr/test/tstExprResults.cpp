@@ -22,7 +22,99 @@ struct VariableExprTest{
     VariableExprTest(const std::string & tst, V1 v1, V2 v2, T expected)
         :tst(tst),v1(v1),v2(v2),expected(expected){}
 };
+TEST(ExprInterpreter, defined_variables)
+{
+    std::vector<ScalarExprTest<bool>> tests={
+        {"defined(pi)",true},
+        {"defined(e)",true},
+        {"defined(pi,e)",true},
+        {"defined(ted)",false},
+    };
+    ASSERT_FALSE( tests.empty() );
+    for( auto & t : tests )
+    {
+        SCOPED_TRACE( t.tst );
+        std::stringstream input;
+        input <<t.tst;
+        ExprInterpreter<> interpreter;
+        Context context;
+        context.add_default_variables();
+        ASSERT_TRUE(interpreter.parse(input) );
 
+        auto result = interpreter.evaluate(context);
+        ASSERT_FALSE(result.is_error());
+        ASSERT_FALSE(result.is_integer());
+        ASSERT_FALSE(result.is_number());
+        ASSERT_FALSE(result.is_real());
+        ASSERT_FALSE(result.is_string());
+        ASSERT_TRUE(result.is_bool());
+        if( result.boolean() )
+        {
+            std::stringstream str;
+            result.format(str);
+            ASSERT_EQ("1",str.str());
+        }else{
+            std::stringstream str;
+            result.format(str);
+            ASSERT_EQ("0",str.str());
+        }
+    }
+    {
+        std::stringstream input;
+        input <<"defined()";
+        ExprInterpreter<> interpreter;
+        Context context;
+        ASSERT_TRUE(interpreter.parse(input) );
+
+        auto result = interpreter.evaluate(context);
+        ASSERT_TRUE(result.is_error());
+        ASSERT_EQ("***Error : defined at line 1 and column 1 - reserved function 'defined' requires an argument!\n", result.string());
+    }
+
+}
+
+TEST(ExprInterpreter, right_operator_undefined_variables)
+{
+
+    std::vector<std::string> ops={"< ","> ","<=",">=","==","!="
+                                  ,"&&","||"
+                                  ,"+ ","- ","* ","/ "};
+    for( std::string op : ops)
+    {
+        SCOPED_TRACE(op);
+        std::stringstream input;
+        input <<"pi+4 "<<op<<"y";
+        ExprInterpreter<> interpreter;
+        Context context;
+        context.add_default_variables();
+        ASSERT_TRUE(interpreter.parse(input) );
+
+        auto result = interpreter.evaluate(context);
+        ASSERT_TRUE(result.is_error());
+        ASSERT_EQ("***Error : value (y) at line 1 and column 8 - is not a known variable.\n", result.string());
+    }
+}
+TEST(ExprInterpreter, left_operator_undefined_variables)
+{
+
+    std::vector<std::string> ops={"< ","> ","<=",">=","==","!="
+                                  ,"&&","||"
+                                  ,"+ ","- ","* ","/ "};
+    for( std::string op : ops)
+    {
+        SCOPED_TRACE(op);
+        std::stringstream input;
+        input <<" y+4 "<<op<<"pi";
+        ExprInterpreter<> interpreter;
+        Context context;
+        context.add_default_variables();
+        ASSERT_TRUE(interpreter.parse(input) );
+
+        auto result = interpreter.evaluate(context);
+        ASSERT_TRUE(result.is_error());
+        ASSERT_EQ("***Error : value (y) at line 1 and column 2 - is not a known variable.\n", result.string());
+    }
+}
 TEST(ExprInterpreter, vector_int_variables)
 {
     std::vector<int> data = {1,9,8};

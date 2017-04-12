@@ -199,8 +199,8 @@ size_t Interpreter<TNS>::commit_staged(size_t stage_index)
 {
     wasp_require( m_staged.empty() == false );
     wasp_require( stage_index < m_staged.size() );
-    Stage& stage = m_staged[stage_index];
 
+    Stage& stage = m_staged[stage_index];
     size_t node_index = push_parent( stage.m_type
                                    ,stage.m_name.c_str()
                                    ,stage.m_child_indices);

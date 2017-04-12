@@ -45,7 +45,7 @@ namespace wasp{
         , RBRACE      // }
         , PARENTHESIS
         , FUNCTION
-        , MATH_EXPRESSION
+        , EXPRESSION
         , LBRACKET    // [
         , RBRACKET    // ]
         , SUB_OBJECT_TERM

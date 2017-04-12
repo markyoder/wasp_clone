@@ -12,6 +12,10 @@ bool Result::format(std::ostream & out)const
     {
         out << integer();
     }
+    else if( is_bool() )
+    {
+        out << boolean();
+    }
     else if( is_string() || is_error())
     {
         out << string();
@@ -36,10 +40,14 @@ bool Result::format(std::ostream & out, const std::string& fmt
         result = wasp::Format::fmt(out,err
                                    ,fmt.c_str(), integer());
     }
+    else if( is_bool() )
+    {
+        out << boolean();
+    }
     else if( is_string() || is_error())
     {
         result = wasp::Format::fmt(out,err
-                                   ,fmt.c_str(), string());
+                                   ,fmt.c_str(), string());        
     }
     else{
         result = false;

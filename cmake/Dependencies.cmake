@@ -8,6 +8,7 @@ TRIBITS_PACKAGE_DEFINE_DEPENDENCIES(
      json   waspjson     PT OPTIONAL
      hive  wasphive    PT OPTIONAL
      getpot waspgetpot PT OPTIONAL     
-     halite wasphalite PT OPTIONAL     
-     utils wasputils PT OPTIONAL
+     halite wasphalite PT OPTIONAL          
+     utils wasputils   PT OPTIONAL
+     py wasppy         PT OPTIONAL
 )

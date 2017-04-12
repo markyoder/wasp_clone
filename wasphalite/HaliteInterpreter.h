@@ -134,6 +134,29 @@ namespace wasp {
         void attribute_options( SubstitutionOptions & options
                                , const std::string& data)const;
 
+        bool accumulate_attribute(DataAccessor & data
+                                  ,const TreeNodeView<S> & attr_view
+                                  ,std::ostream& out
+                                 , size_t& line, size_t& column)const;
+        /**
+         * @brief conditional handles actioned conditional blocks
+         * @param data the data accessor
+         * @param action_view view of the action field (if,elseif,else...)
+         * @param out the stream to emit the conditioned field
+         * @param line the line from which the field begins
+         * @param column the column from which the field begins
+         * @return
+         */
+        bool conditional(DataAccessor & data
+                         ,const TreeNodeView<S> & action_view
+                         ,std::ostream& out, size_t& line, size_t & column);
+        bool evaluate(DataAccessor & data
+                         ,const TreeNodeView<S> & action_view
+                         ,std::ostream& out, size_t& line, size_t & column);
+        bool evaluate_component(DataAccessor & data
+                                ,const TreeNodeView<S> & action_view
+                                ,std::ostream& out, size_t& line, size_t & column);
+
         /**
          * @brief import_file imports the file represented by the given tree view
          * @param import_view the tree view containing the directive and potentially parameterized text

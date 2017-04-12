@@ -438,7 +438,38 @@ public:
     bool format(std::ostream& out)const;
     bool format(std::ostream& out,const std::string& fmt
                 ,std::ostream& err)const;
+    std::string as_string()const
+    {
+        if( is_bool() ) return "bool("+std::to_string(boolean())+")";
+        if( is_integer() ) return "int("+std::to_string(integer())+")";
+        if( is_real() ) return "double("+std::to_string(real())+")";
+        if( is_string() ) return "string("+string()+")";
+        if( is_error() ) return "error("+string()+")";
+        return "unknown!";
+    }
 private:
+    template <class TV>
+    bool binary_recurse(const TV & left
+                        , Result & right_op
+                        , const TV& right
+                        , Context & context )
+    {
+        // evaluate this result as the left operation
+        wasp_require(!left.is_null());
+        wasp_require(!right.is_null());
+        evaluate(left,context);
+        if( is_error() ){
+            return false;
+        }
+        right_op.evaluate(right,context);
+        if( right_op.is_error() ){
+            m_type = Context::Type::ERROR;
+            string()=right_op.string();
+            return false;
+        }
+        return true;
+    }
+
     bool and_expr(const Result & a){
 
         if( is_number() && a.is_number() )
@@ -1241,9 +1272,11 @@ Result::evaluate( const T & tree_view
        break;
    case wasp::WASP_AND:
    {
-       evaluate(tree_view.child_at(0), context);
        Result right_op;
-       right_op.evaluate(tree_view.child_at(2),context);
+       if( !binary_recurse(tree_view.child_at(0)
+                           ,right_op
+                           ,tree_view.child_at(2)
+                           ,context)) break;
        and_expr(right_op);
        break;
    }
@@ -1251,106 +1284,131 @@ Result::evaluate( const T & tree_view
    {
        evaluate(tree_view.child_at(0), context);
        Result right_op;
-       right_op.evaluate(tree_view.child_at(2),context);
+       if( !binary_recurse(tree_view.child_at(0)
+                           ,right_op
+                           ,tree_view.child_at(2)
+                           ,context)) break;
        or_expr(right_op);
        break;
    }
    case wasp::LT:
    {
        // evaluate this result as the left operation
-       evaluate(tree_view.child_at(0), context);
        Result right_op;
-       right_op.evaluate(tree_view.child_at(2),context);
+       if( !binary_recurse(tree_view.child_at(0)
+                           ,right_op
+                           ,tree_view.child_at(2)
+                           ,context)) break;
        less(right_op);
        break;
    }
    case wasp::LTE:
    {
        // evaluate this result as the left operation
-       evaluate(tree_view.child_at(0),context);
        Result right_op;
-       right_op.evaluate(tree_view.child_at(2),context);
+       if( !binary_recurse(tree_view.child_at(0)
+                           ,right_op
+                           ,tree_view.child_at(2)
+                           ,context)) break;
        less_or_equal(right_op);
        break;
    }
    case wasp::GT:
    {
        // evaluate this result as the left operation
-       evaluate(tree_view.child_at(0),context);
        Result right_op;
-       right_op.evaluate(tree_view.child_at(2),context);
+       if( !binary_recurse(tree_view.child_at(0)
+                           ,right_op
+                           ,tree_view.child_at(2)
+                           ,context)) break;
        greater(right_op);
        break;
    }
    case wasp::GTE:
    {
        // evaluate this result as the left operation
-       evaluate(tree_view.child_at(0),context);
        Result right_op;
-       right_op.evaluate(tree_view.child_at(2),context);
+       if( !binary_recurse(tree_view.child_at(0)
+                           ,right_op
+                           ,tree_view.child_at(2)
+                           ,context)) break;
        greater_or_equal(right_op);
        break;
    }
    case wasp::EQ:
    {
        // evaluate this result as the left operation
-       evaluate(tree_view.child_at(0),context);
        Result right_op;
-       right_op.evaluate(tree_view.child_at(2),context);
+       if( !binary_recurse(tree_view.child_at(0)
+                           ,right_op
+                           ,tree_view.child_at(2)
+                           ,context)) break;
        equal(right_op);
        break;
    }
    case wasp::NEQ:
    {
        // evaluate this result as the left operation
-       evaluate(tree_view.child_at(0),context);
        Result right_op;
-       right_op.evaluate(tree_view.child_at(2),context);
+       if( !binary_recurse(tree_view.child_at(0)
+                           ,right_op
+                           ,tree_view.child_at(2)
+                           ,context)) break;
        not_equal(right_op);
        break;
    }
    case wasp::PLUS:
    {
        // evaluate this result as the left operation
-       evaluate(tree_view.child_at(0),context);
        Result right_op;
-       right_op.evaluate(tree_view.child_at(2),context);
+       if( !binary_recurse(tree_view.child_at(0)
+                           ,right_op
+                           ,tree_view.child_at(2)
+                           ,context)) break;
        plus(right_op);
        break;
    }
    case wasp::MINUS:
    {
        // evaluate this result as the left operation
-       evaluate(tree_view.child_at(0),context);
        Result right_op;
-       right_op.evaluate(tree_view.child_at(2),context);
+       if( !binary_recurse(tree_view.child_at(0)
+                           ,right_op
+                           ,tree_view.child_at(2)
+                           ,context)) break;
        minus(right_op);
        break;
    }
    case wasp::MULTIPLY:
    {
        // evaluate this result as the left operation
-       evaluate(tree_view.child_at(0),context);
        Result right_op;
-       right_op.evaluate(tree_view.child_at(2),context);
+       if( !binary_recurse(tree_view.child_at(0)
+                           ,right_op
+                           ,tree_view.child_at(2)
+                           ,context)) break;
        mult(right_op);
        break;
    }
    case wasp::EXPONENT:
    {
        // evaluate this result as the left operation
-       evaluate(tree_view.child_at(0),context);
        Result right_op;
-       right_op.evaluate(tree_view.child_at(2),context);
+       if( !binary_recurse(tree_view.child_at(0)
+                           ,right_op
+                           ,tree_view.child_at(2)
+                           ,context)) break;
        pow(right_op);
        break;
    }
    case wasp::DIVIDE:
    {
        // evaluate this result as the left operation
-       evaluate(tree_view.child_at(0),context);
        Result right_op;
-       right_op.evaluate(tree_view.child_at(2),context);
+       if( !binary_recurse(tree_view.child_at(0)
+                           ,right_op
+                           ,tree_view.child_at(2)
+                           ,context)) break;
        div(right_op);
        break;
    }
@@ -1479,12 +1537,38 @@ Result::evaluate( const T & tree_view
        wasp_check(tree_view.child_count() > 0);
        const auto& name_view = tree_view.child_at(0);
        std::string function_name = name_view.data();
+       wasp_check( tree_view.child_count() > 1 );
+       // reserved function with special
+       if( function_name == "defined" )
+       {
+           if( tree_view.child_count() < 4 )
+           {
+               m_type = Context::Type::ERROR;
+               string() = error_msg(tree_view,"reserved function 'defined' requires an argument!");
+               break;
+           }
+           bool variable_defined = true;
+           for( size_t c = 2, count = tree_view.child_count()-1;
+                c < count; ++c)
+           {
+               const auto & child_view = tree_view.child_at(c);
+               if( child_view.is_decorative()
+                       || child_view.type() == wasp::WASP_COMMA) continue;
+               if( !context.exists(child_view.to_string()) )
+               {
+                   variable_defined = false;
+                   break;
+               }
+           }
 
+           m_type = Context::Type::BOOLEAN;
+           m_value.m_bool = variable_defined;
+           break;
+       }
        // functions are of the form
        // name '(' [arg1 [',' argn]] ')'
        // we can traverse range [2,c-1]
        std::vector<Result> function_args;
-       wasp_check( tree_view.child_count() > 1 );
        bool function_args_error = false;
        for( size_t c = 2, count = tree_view.child_count()-1;
             c < count; ++c)

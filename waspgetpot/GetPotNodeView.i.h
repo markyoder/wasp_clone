@@ -62,6 +62,11 @@ bool GetPotNodeView<TNV>::has_parent()const
     return m_tree_data->has_parent(m_tree_node_index);
 }
 template<class TNV>
+bool GetPotNodeView<TNV>::is_leaf()const{
+    TNV view (tree_node_index(),*tree_node_pool());
+    return view.is_leaf();
+}
+template<class TNV>
 bool GetPotNodeView<TNV>::is_decorative()const{
     auto t = type();
     switch (t)
