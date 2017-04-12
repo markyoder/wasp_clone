@@ -76,6 +76,13 @@ public:
      * Declarators and terminators are decorative
      */
     bool is_decorative()const;
+
+    /**
+     * @brief is_terminator determine if this node represents a terminator
+     * @return true, iff the node represents a terminator
+     */
+    bool is_terminator() const;
+
     /**
      * @brief non_decorative_children acquires all non decorative children
      * @return collection of SONNodeViews
@@ -163,6 +170,19 @@ public:
      * @return the starting column of the node
      */
     std::size_t column()const;
+
+    /**
+     * @brief last_line acquire the node's ending line
+     * @return the ending line of the node
+     */
+    std::size_t last_line()const;
+
+    /**
+     * @brief last_column acquire the node's ending column
+     * @return the ending column of the node
+     */
+    std::size_t last_column()const;
+
     /**
      * @brief tree_node_index acquire the index into the tree node data pool
      * @return the index into the data pool

@@ -70,7 +70,7 @@ std::size_t TokenPool<TTS,TITS,FOTS>::last_line(TITS index)const
 {
     // token start offset, end position
     auto token_file_offset = m_tokens[index].m_token_file_offset;
-    auto token_end_position = token_file_offset + std::strlen(m_strings.data(index));
+    auto token_end_position = token_file_offset + std::strlen(m_strings.data(index)) - 1;
 
     // first newline after the end of the token
     auto ub = std::upper_bound(m_line_offsets.begin(),
@@ -88,7 +88,7 @@ std::size_t TokenPool<TTS,TITS,FOTS>::last_column(TITS index)const
 {
     // token start offset, end position
     auto token_file_offset = m_tokens[index].m_token_file_offset;
-    auto token_end_position = token_file_offset + std::strlen(m_strings.data(index));
+    auto token_end_position = token_file_offset + std::strlen(m_strings.data(index)) - 1;
 
     // first newline after the end of the token
     auto ub = std::upper_bound(m_line_offsets.begin(),
@@ -101,14 +101,14 @@ std::size_t TokenPool<TTS,TITS,FOTS>::last_column(TITS index)const
     // check if token is on first line
     if(ub == m_line_offsets.begin())
     {
-        column = token_end_position;
+        column = token_end_position + 1;
     }
     else
     {
         // back it up 1 as the token's column is past the token's line
         ub--;
-        // column is the token_offset - token_newline_offset; subtract 1 to account for size of newline
-        column = token_end_position - *ub - 1;
+        // column is the token_offset - token_newline_offset
+        column = token_end_position - *ub;
     }
 
     return column;
