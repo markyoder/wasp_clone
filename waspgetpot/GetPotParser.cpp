@@ -1043,7 +1043,7 @@ namespace wasp {
 #line 1044 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 37:
+  case 38:
 #line 397 "GetPot.bison" // lalr1.cc:859
     {
         size_t decl_token_index = ((yystack_[0].value.token_index));
@@ -1053,7 +1053,7 @@ namespace wasp {
 #line 1054 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 38:
+  case 39:
 #line 403 "GetPot.bison" // lalr1.cc:859
     {
         size_t token_index = ((yystack_[0].value.token_index));
@@ -1063,7 +1063,7 @@ namespace wasp {
 #line 1064 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 46:
+  case 47:
 #line 417 "GetPot.bison" // lalr1.cc:859
     {
         size_t offset = ((yystack_[0].value.node_index));
@@ -1073,7 +1073,7 @@ namespace wasp {
 #line 1074 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 47:
+  case 48:
 #line 422 "GetPot.bison" // lalr1.cc:859
     {
         (yystack_[1].value.node_indices)->push_back(((yystack_[0].value.node_index)));
@@ -1081,7 +1081,7 @@ namespace wasp {
 #line 1082 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 48:
+  case 49:
 #line 427 "GetPot.bison" // lalr1.cc:859
     {
         (yystack_[1].value.node_indices)->insert((yystack_[1].value.node_indices)->begin(),(yystack_[2].value.node_index));
@@ -1091,7 +1091,7 @@ namespace wasp {
 #line 1092 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 49:
+  case 50:
 #line 433 "GetPot.bison" // lalr1.cc:859
     {
         (yylhs.value.node_indices) = new std::vector<size_t>();
@@ -1101,7 +1101,7 @@ namespace wasp {
 #line 1102 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 50:
+  case 51:
 #line 441 "GetPot.bison" // lalr1.cc:859
     {        
         size_t key_index = ((yystack_[2].value.node_index));
@@ -1117,7 +1117,7 @@ namespace wasp {
 #line 1118 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 51:
+  case 52:
 #line 453 "GetPot.bison" // lalr1.cc:859
     {
 
@@ -1134,7 +1134,7 @@ namespace wasp {
 #line 1135 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 52:
+  case 53:
 #line 468 "GetPot.bison" // lalr1.cc:859
     {
         size_t token_index = ((yystack_[0].value.token_index));
@@ -1144,7 +1144,7 @@ namespace wasp {
 #line 1145 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 54:
+  case 55:
 #line 475 "GetPot.bison" // lalr1.cc:859
     {
             interpreter.push_staged_child(((yystack_[0].value.node_index)));
@@ -1152,7 +1152,7 @@ namespace wasp {
 #line 1153 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 55:
+  case 56:
 #line 478 "GetPot.bison" // lalr1.cc:859
     {
             interpreter.push_staged_child(((yystack_[0].value.node_index)));
@@ -1160,7 +1160,7 @@ namespace wasp {
 #line 1161 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 56:
+  case 57:
 #line 481 "GetPot.bison" // lalr1.cc:859
     {
             interpreter.push_staged_child(((yystack_[0].value.node_index)));
@@ -1168,7 +1168,7 @@ namespace wasp {
 #line 1169 "GetPotParser.cpp" // lalr1.cc:859
     break;
 
-  case 57:
+  case 58:
 #line 485 "GetPot.bison" // lalr1.cc:859
     {
             std::vector<size_t> & children = *(yystack_[2].value.node_indices);
@@ -1448,91 +1448,91 @@ namespace wasp {
   }
 
 
-  const signed char GetPotParser::yypact_ninf_ = -24;
+  const signed char GetPotParser::yypact_ninf_ = -52;
 
-  const signed char GetPotParser::yytable_ninf_ = -37;
+  const signed char GetPotParser::yytable_ninf_ = -38;
 
   const signed char
   GetPotParser::yypact_[] =
   {
-     -24,    45,   -24,   -24,   -24,   -24,    15,    44,   -24,   -24,
-       6,   -24,   -24,    10,   -24,   -24,     8,   -24,   -24,    26,
-       5,   -24,   -24,    19,   -24,   -24,   -24,   -24,   -24,   -24,
-     -24,   -24,    -1,   -24,   -24,   -24,    15,   -24,   -24,   -24,
-       5,   -24,   -24,   -24,   -24,   -24,   -24,    37,    44,   -24,
-     -24,   -24,   -24,   -24,   -24,   -24,   -24,    56,   -24,    10,
-     -24,   -24,    19,   -24,   -24,   -24,   -24,   -24,   -24,    56,
-     -24,   -24,   -24
+     -52,    20,   -52,   -52,   -52,   -52,   -52,    49,    55,   -52,
+     -52,     6,   -52,   -52,     5,    13,   -52,    17,   -52,   -52,
+      28,    44,   -52,   -52,    33,   -52,   -52,   -52,   -52,   -52,
+     -52,   -52,   -52,    64,   -52,   -52,   -52,    49,   -52,   -52,
+     -52,    44,   -52,   -52,   -52,   -52,   -52,   -52,    21,    55,
+     -52,   -52,   -52,   -52,   -52,   -52,   -52,   -52,     4,   -52,
+       5,   -52,   -52,    33,   -52,   -52,   -52,   -52,   -52,   -52,
+       4,   -52,   -52,   -52
   };
 
   const unsigned char
   GetPotParser::yydefact_[] =
   {
-      53,     0,     1,     6,    36,    52,     0,     0,    56,    37,
-       0,    55,    54,     0,    29,    30,    31,     4,    26,     0,
-       0,    23,    24,     0,    40,    41,    39,    42,    20,    21,
-      22,     3,     0,     7,    19,     8,     0,     5,    16,    13,
-      18,    12,     9,    10,    11,    27,    28,     0,     0,    25,
-      57,    38,    32,    33,    34,    35,    50,     0,    51,     0,
-      17,    14,     0,     2,    43,    45,    44,    49,    46,     0,
-      15,    48,    47
+      54,     0,     1,     6,    37,    36,    53,     0,     0,    57,
+      38,     0,    56,    55,     0,    29,    30,    31,     4,    26,
+       0,     0,    23,    24,     0,    41,    42,    40,    43,    20,
+      21,    22,     3,     0,     7,    19,     8,     0,     5,    16,
+      13,    18,    12,     9,    10,    11,    27,    28,     0,     0,
+      25,    58,    39,    32,    33,    34,    35,    51,     0,    52,
+       0,    17,    14,     0,     2,    44,    46,    45,    50,    47,
+       0,    15,    49,    48
   };
 
   const signed char
   GetPotParser::yypgoto_[] =
   {
-     -24,   -24,    27,   -19,   -14,     1,    -9,   -24,    12,   -24,
-     -24,   -13,    30,   -18,     7,    31,   -24,   -24,   -24,   -24,
-      34,   -24,    -6,   -23,   -24,   -12,    -7,   -24,   -24,     0,
-       2,   -24
+     -52,   -52,     0,   -23,   -15,     3,   -21,   -52,     9,   -52,
+     -52,   -13,    27,   -19,    16,    30,   -52,   -52,   -52,   -52,
+      22,   -52,    -7,   -51,   -52,   -12,    -8,   -52,   -52,     1,
+       2,   -52
   };
 
   const signed char
   GetPotParser::yydefgoto_[] =
   {
-      -1,    64,    65,    18,    46,    19,    34,    36,    39,    40,
-      20,    21,     7,    22,    23,     8,    24,    25,    26,    55,
-      66,     9,    10,    57,    27,    28,    68,    69,    58,    29,
-      30,     1
+      -1,    65,    66,    19,    47,    20,    35,    37,    40,    41,
+      21,    22,     8,    23,    24,     9,    25,    26,    27,    56,
+      67,    10,    11,    58,    28,    29,    69,    70,    59,    30,
+      31,     1
   };
 
   const signed char
   GetPotParser::yytable_[] =
   {
-      13,    11,     6,    12,    45,    49,    38,    41,    42,     3,
-      51,    52,    53,    54,    31,    33,   -36,    14,    15,    16,
-      43,     5,    44,     3,    47,    37,    60,    41,    42,     4,
-      59,    14,    15,    16,    67,     5,    35,    32,    17,    37,
-      43,    13,    44,    45,    49,     2,    71,    35,     3,     3,
-      70,     4,    61,    48,    50,    62,    14,    15,    16,     4,
-       5,     5,    72,    17,    31,    63,    56,    51,    52,    53,
-      54
+      14,    46,    12,    13,     7,    50,    39,    68,    42,    43,
+      34,    33,    32,    64,    32,    52,    53,    54,    55,    72,
+       2,   -37,    44,    45,     3,   -36,    61,    48,    42,    43,
+      60,    36,     4,     4,     5,     5,     6,     3,    36,    71,
+      46,    14,    44,    45,    50,    15,    16,    17,     3,     6,
+      62,    49,    18,    38,    51,    57,    15,    16,    17,     3,
+       6,     4,    73,     5,    38,    63,     0,    15,    16,    17,
+       0,     6,     0,     0,    18,    52,    53,    54,    55
   };
 
-  const unsigned char
+  const signed char
   GetPotParser::yycheck_[] =
   {
-       6,     1,     1,     1,    23,    23,    20,    20,    20,     4,
-      11,    12,    13,    14,     8,     5,     8,    12,    13,    14,
-      20,    16,    20,     4,    23,    20,    40,    40,    40,    14,
-      36,    12,    13,    14,    57,    16,    10,    10,    19,    20,
-      40,    47,    40,    62,    62,     0,    69,    10,     4,     4,
-      59,    14,    40,    23,    23,    48,    12,    13,    14,    14,
-      16,    16,    69,    19,     8,     9,    32,    11,    12,    13,
-      14
+       7,    24,     1,     1,     1,    24,    21,    58,    21,    21,
+       5,    11,     8,     9,     8,    11,    12,    13,    14,    70,
+       0,     8,    21,    21,     4,     8,    41,    24,    41,    41,
+      37,    10,    12,    12,    14,    14,    16,     4,    10,    60,
+      63,    48,    41,    41,    63,    12,    13,    14,     4,    16,
+      41,    24,    19,    20,    24,    33,    12,    13,    14,     4,
+      16,    12,    70,    14,    20,    49,    -1,    12,    13,    14,
+      -1,    16,    -1,    -1,    19,    11,    12,    13,    14
   };
 
   const unsigned char
   GetPotParser::yystos_[] =
   {
-       0,    54,     0,     4,    14,    16,    28,    35,    38,    44,
-      45,    52,    53,    45,    12,    13,    14,    19,    26,    28,
-      33,    34,    36,    37,    39,    40,    41,    47,    48,    52,
-      53,     8,    25,     5,    29,    10,    30,    20,    27,    31,
-      32,    34,    48,    52,    53,    26,    27,    28,    35,    36,
-      38,    11,    12,    13,    14,    42,    43,    46,    51,    45,
-      27,    31,    37,     9,    24,    25,    43,    46,    49,    50,
-      29,    46,    49
+       0,    54,     0,     4,    12,    14,    16,    28,    35,    38,
+      44,    45,    52,    53,    45,    12,    13,    14,    19,    26,
+      28,    33,    34,    36,    37,    39,    40,    41,    47,    48,
+      52,    53,     8,    25,     5,    29,    10,    30,    20,    27,
+      31,    32,    34,    48,    52,    53,    26,    27,    28,    35,
+      36,    38,    11,    12,    13,    14,    42,    43,    46,    51,
+      45,    27,    31,    37,     9,    24,    25,    43,    46,    49,
+      50,    29,    46,    49
   };
 
   const unsigned char
@@ -1541,9 +1541,9 @@ namespace wasp {
        0,    23,    24,    25,    26,    27,    28,    29,    30,    31,
       31,    31,    31,    32,    32,    33,    34,    34,    34,    35,
       36,    36,    36,    36,    37,    37,    38,    38,    38,    39,
-      40,    41,    42,    42,    42,    43,    44,    45,    46,    47,
-      48,    48,    48,    49,    49,    49,    50,    50,    51,    51,
-      52,    52,    53,    54,    54,    54,    54,    54
+      40,    41,    42,    42,    42,    43,    44,    44,    45,    46,
+      47,    48,    48,    48,    49,    49,    49,    50,    50,    51,
+      51,    52,    52,    53,    54,    54,    54,    54,    54
   };
 
   const unsigned char
@@ -1553,8 +1553,8 @@ namespace wasp {
        1,     1,     1,     1,     2,     4,     2,     3,     2,     3,
        1,     1,     1,     1,     1,     2,     2,     3,     3,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     2,     3,     2,
-       3,     3,     1,     0,     2,     2,     2,     4
+       1,     1,     1,     1,     1,     1,     1,     1,     2,     3,
+       2,     3,     3,     1,     0,     2,     2,     2,     4
   };
 
 
@@ -1586,9 +1586,9 @@ namespace wasp {
        0,   149,   149,   153,   160,   166,   172,   178,   185,   192,
      192,   192,   192,   195,   210,   224,   237,   248,   264,   279,
      287,   287,   287,   288,   290,   305,   322,   334,   351,   370,
-     376,   382,   388,   388,   388,   389,   395,   396,   402,   408,
-     410,   411,   412,   414,   414,   414,   416,   421,   426,   432,
-     440,   452,   467,   474,   475,   478,   481,   484
+     376,   382,   388,   388,   388,   389,   395,   395,   396,   402,
+     408,   410,   411,   412,   414,   414,   414,   416,   421,   426,
+     432,   440,   452,   467,   474,   475,   478,   481,   484
   };
 
   // Print the state stack on the debug stream.

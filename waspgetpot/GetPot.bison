@@ -392,7 +392,7 @@ value : VALUE
         $$ = interpreter.push_leaf(wasp::VALUE,"value"
                          ,token_index);
     }
-DECL : STRING
+DECL : STRING | INTEGER
 decl : DECL
     {
         size_t decl_token_index = ($1);
