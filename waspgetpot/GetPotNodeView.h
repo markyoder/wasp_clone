@@ -64,6 +64,13 @@ public:
      * Declarators and terminators are decorative
      */
     bool is_decorative()const;
+
+    /**
+     * @brief is_terminator determine if this node represents a terminator
+     * @return true, iff the node is a terminator
+     */
+    bool is_terminator() const;
+
     /**
      * @brief non_decorative_children acquires all non decorative children
      * @return collection of GetPotNodeViews

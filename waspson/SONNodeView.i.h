@@ -106,6 +106,21 @@ bool SONNodeView<TNV>::is_decorative()const{
     }
     return false;
 }
+
+template<class TNV>
+bool SONNodeView<TNV>::is_terminator() const {
+    switch(type())
+    {
+    case wasp::TERM:
+    case wasp::RBRACE :     // }
+    case wasp::RBRACKET:    // ]
+    case wasp::EXECUTION_UNIT_END:
+        return true;
+    default:
+        return false;
+    }
+}
+
 template<class TNV>
 typename SONNodeView<TNV>::Collection
 SONNodeView<TNV>::non_decorative_children()const

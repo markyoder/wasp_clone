@@ -362,6 +362,12 @@ public:
     bool is_decorative() const{ return false;}
 
     /**
+     * @brief is_terminator default TreeNodeView interface implementation
+     * @return true if the type is 'TERM'
+     */
+    bool is_terminator() const{ return type() == TERM;}
+
+    /**
      * @brief path acquire the path of this node from the document root
      * @return path to node, e.g., '/object/key/value'
      */

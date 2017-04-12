@@ -83,6 +83,20 @@ bool GetPotNodeView<TNV>::is_decorative()const{
     }
     return false;
 }
+
+template<class TNV>
+bool GetPotNodeView<TNV>::is_terminator() const {
+    switch(type())
+    {
+    case wasp::TERM:
+    case wasp::OBJECT_TERM:
+    case wasp::SUB_OBJECT_TERM:  // [./] | [../]
+        return true;
+    default:
+        return false;
+    }
+}
+
 template<class TNV>
 typename GetPotNodeView<TNV>::Collection
 GetPotNodeView<TNV>::non_decorative_children()const
