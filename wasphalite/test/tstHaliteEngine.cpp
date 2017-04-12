@@ -213,6 +213,63 @@ and assigning foo to 9
     ASSERT_EQ( Value::TYPE_INTEGER, o["ted"]["foo"].type() );
     ASSERT_EQ( 9, o["ted"]["foo"].to_int() );
 }
+TEST( Halite, file_import_using_array_by_name)
+{
+
+    std::ofstream import("import_by_name_iterative.tmpl");
+    std::stringstream content;
+    content<<"nested template"<<std::endl
+         <<"using parameter <name>"<<std::endl
+        <<"with value <value>"<<std::endl
+       <<"and assigning value its own name <value=name>"<<std::endl;
+    import<<content.str();
+    import.close();
+    std::stringstream input;
+    input<< R"INPUT(
+    text prior
+#import ./import_by_name_iterative.tmpl using my_array
+ text after
+)INPUT";
+    HaliteInterpreter<> interpreter;
+
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["my_array"] = DataArray();
+    o["my_array"][0] = DataObject();
+    o["my_array"][0]["name"] = "ted1";
+    o["my_array"][0]["value"] = 1;
+
+    o["my_array"][1] = DataObject();
+    o["my_array"][1]["name"] = "ted2";
+    o["my_array"][1]["value"] = 2.2;
+
+    o["my_array"][2] = DataObject();
+    o["my_array"][2]["name"] = "ted3";
+    o["my_array"][2]["value"] = "fred";
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+
+    std::stringstream expected;
+    expected<< R"INPUT(
+    text prior
+nested template
+using parameter ted1
+with value 1
+and assigning value its own name ted1nested template
+using parameter ted2
+with value 2.2
+and assigning value its own name ted2nested template
+using parameter ted3
+with value fred
+and assigning value its own name ted3
+ text after)INPUT";
+    ASSERT_EQ( expected.str(), out.str() );
+    std::remove("import_by_name_iterative.tmpl");
+    // ensure the child was passed by reference (can be changed)
+    ASSERT_EQ( Value::TYPE_STRING, o["my_array"][0]["value"].type() );
+    ASSERT_EQ( "ted1", o["my_array"][0]["value"].to_string() );
+}
 
 /**
  * @brief test attribute usage from nested template where nested path is parameterized
