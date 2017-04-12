@@ -200,6 +200,20 @@ public:
     std::size_t column(node_index_size node_index)const;
 
     /**
+     * @brief last_line acquire the line the node ends on
+     * @param node_index the index of the node to acquire the line
+     * @return the node's ending line
+     */
+    std::size_t last_line(node_index_size node_index) const;
+
+    /**
+     * @brief last_column acquire the column the node ends on
+     * @param node_index the index of the node to acquire the column
+     * @return the node's ending column
+     */
+    std::size_t last_column(node_index_size node_index) const;
+
+    /**
      * @brief leaf acquire the node index of the first leaf node at/under node_index
      * @param node_index parent or leaf node index
      * @return the first leaf node index at or under the given node_index
@@ -418,6 +432,19 @@ public:
      * @return the starting column of the node
      */
     std::size_t column()const;
+
+    /**
+     * @brief last_line acquire the node's ending line
+     * @return the ending line of the node
+     */
+    std::size_t last_line() const;
+
+    /**
+     * @brief last_column acquire the node's ending column
+     * @return the ending column of the node
+     */
+    std::size_t last_column() const;
+
     /**
      * @brief tree_node_index acquire the index into the tree node data pool
      * @return the index into the data pool

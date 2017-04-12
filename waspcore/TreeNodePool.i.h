@@ -121,7 +121,7 @@ template<typename NTS, typename NIS
          ,class TP>
 std::size_t TreeNodePool<NTS,NIS,TP>::parent_data_index(
         NIS node_index) const
-{    
+{
     auto itr = m_basic_parent_data_lookup.find(node_index);
     if( itr == m_basic_parent_data_lookup.end() )
     {
@@ -139,7 +139,7 @@ template<typename NTS, typename NIS
 std::size_t TreeNodePool<NTS,NIS,TP>::parent_node_index(
         NIS node_index) const
 {
-    // TODO check range    
+    // TODO check range
     auto parent_index = m_node_basic_data[node_index].m_parent_node_index;
     if( parent_index == NIS(-1) )
     {
@@ -308,6 +308,67 @@ std::size_t TreeNodePool<NTS,NIS,TP>::column(
     // TODO - catch error condition
     return -1;
 }
+
+// Obtain a nodes starting line
+template<typename NTS, typename NIS, class TP>
+std::size_t TreeNodePool<NTS, NIS, TP>::last_line(NIS node_index) const
+{
+    // current node's child count
+    auto node_child_count = child_count(node_index);
+
+    // there's at least one child, recursively search last child's hierarchy
+    if(node_child_count > 0)
+    {
+        // get last child, return its last line
+        auto last_child_index = child_at(node_index, node_child_count - 1);
+        return last_line(last_child_index);
+    }
+
+    auto leaf_node_index = leaf_index(node_index);
+    auto leaf_itr = m_leaf_token_lookup.find(leaf_node_index);
+
+    // obtain the token's column
+    if(leaf_itr != m_leaf_token_lookup.end())
+    {
+        auto token_index = leaf_itr->second;
+        return m_token_data.last_line(token_index);
+    }
+
+    // neither a leaf node or a parent node
+    // TODO - catch error condition
+    return -1;
+}
+
+// Obtain a nodes starting column
+template<typename NTS, typename NIS, class TP>
+std::size_t TreeNodePool<NTS, NIS, TP>::last_column(NIS node_index) const
+{
+    // current node's child count
+    auto node_child_count = child_count(node_index);
+
+    // there's at least one child, recursively search last child's hierarchy
+    if(node_child_count > 0)
+    {
+        // get last child, return its last column
+        auto last_child_index = child_at(node_index, node_child_count - 1);
+        return last_column(last_child_index);
+    }
+
+    auto leaf_node_index = leaf_index(node_index);
+    auto leaf_itr = m_leaf_token_lookup.find(leaf_node_index);
+
+    // obtain the token's column
+    if(leaf_itr != m_leaf_token_lookup.end())
+    {
+        auto token_index = leaf_itr->second;
+        return m_token_data.last_column(token_index);
+    }
+
+    // neither a leaf node or a parent node
+    // TODO - catch error condition
+    return -1;
+}
+
 // Obtain a node's first leaf node index
 template<typename NTS, typename NIS
          ,class TP>
@@ -507,6 +568,19 @@ std::size_t TreeNodeView<TreeNodePool_T>::column()const
 {
     return m_tree_data->column(m_tree_node_index);
 }
+
+template<class TreeNodePool_T>
+std::size_t TreeNodeView<TreeNodePool_T>::last_line() const
+{
+    return m_tree_data->last_line(m_tree_node_index);
+}
+
+template<class TreeNodePool_T>
+std::size_t TreeNodeView<TreeNodePool_T>::last_column() const
+{
+    return m_tree_data->last_column(m_tree_node_index);
+}
+
 template<class TreeNodePool_T>
 int TreeNodeView<TreeNodePool_T>::to_int(bool * ok)const
 {
