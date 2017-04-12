@@ -95,7 +95,7 @@ OR \|\|
 LBRACKET \[
 OBJECT_NAME [^" "\n\[\]]+
 SUBOBJECT_NAME [^" ""./"\n\[\]]+
-STRING [^" "\'\"\=\n\[\]\#\,]+
+STRING (\$\{([^\"\n])*\})|([^" "\'\"\=\n\[\]\#\,]+)
 RBRACKET \]
 COMMA ,
 OBJECT_TERM \[" "*\]

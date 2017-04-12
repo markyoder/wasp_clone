@@ -861,16 +861,23 @@ TEST(GetPotInterpreter,multiple_objects)
     file = pelletcladmergedfine10_rz.e
     displacements = 'disp_x disp_y'
     patch_size = 1000 # For contact algorithm
+[]
+[1]
+    some = thing
+    [./2]
+        another=value
+        sliceheight = ${/ ${fuelheight} ${numslices}}
+    [../]
 [])INPUT";
 
 
     GetPotInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(32, interpreter.node_count() );
+    ASSERT_EQ(55, interpreter.node_count() );
     GetPotNodeView<decltype(interpreter.root())> document
             = interpreter.root();
-    ASSERT_EQ(2, document.child_count() ); // problem and mesh
-    ASSERT_EQ(2, interpreter.child_count(document.tree_node_index()) );
+    ASSERT_EQ(3, document.child_count() ); // problem and mesh
+    ASSERT_EQ(3, interpreter.child_count(document.tree_node_index()) );
     ASSERT_EQ(document.child_at(0).tree_node_index()
               , interpreter.child_index_at(document.tree_node_index()
                                            ,0));
@@ -906,6 +913,29 @@ TEST(GetPotInterpreter,multiple_objects)
 /Mesh/patch_size/value (1000)
 /Mesh/comment (# For contact algorithm)
 /Mesh/[] ([])
+/1
+/1/[ ([)
+/1/decl (1)
+/1/] (])
+/1/some
+/1/some/decl (some)
+/1/some/= (=)
+/1/some/value (thing)
+/1/2
+/1/2/[ ([)
+/1/2/./ (./)
+/1/2/decl (2)
+/1/2/] (])
+/1/2/another
+/1/2/another/decl (another)
+/1/2/another/= (=)
+/1/2/another/value (value)
+/1/2/sliceheight
+/1/2/sliceheight/decl (sliceheight)
+/1/2/sliceheight/= (=)
+/1/2/sliceheight/value (${/ ${fuelheight} ${numslices}})
+/1/2/[../] ([../])
+/1/[] ([])
 )INPUT";
     std::stringstream paths;
     document.paths(paths);
