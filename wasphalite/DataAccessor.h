@@ -17,21 +17,27 @@ public:
     virtual ~DataAccessor();
 
     virtual bool exists(const std::string &name) const;
+    /// type getters - note objects are returned as Context::Type::STRING
     virtual Context::Type type(const std::string& name)const;
+    virtual Context::Type type(const std::string& name,size_t index)const;
     virtual bool store(const std::string &name, const bool &v);
     virtual bool store(const std::string &name, const int &v);
     virtual bool store(const std::string &name, const std::string &v);
     virtual bool store(const std::string &name, const double &v);
 
+    /// Boolean data getters
     virtual bool boolean(const std::string& name,size_t index,bool * ok=nullptr)const;
     virtual bool boolean(const std::string& name,bool * ok=nullptr)const;
 
+    /// integer data getters
     virtual int integer(const std::string& name,size_t index,bool * ok=nullptr)const;
     virtual int integer(const std::string& name,bool * ok=nullptr)const;
 
+    /// double data getters
     virtual double real(const std::string& name,size_t index,bool * ok=nullptr)const;
     virtual double real(const std::string& name, bool * ok=nullptr)const;
 
+    /// string data getters - note Objects are returned as a 'packed' json (single line representation)
     virtual std::string string(const std::string& name, size_t index,bool * ok=nullptr)const;
     virtual std::string string(const std::string& name,bool * ok=nullptr)const;
 

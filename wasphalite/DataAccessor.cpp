@@ -48,6 +48,36 @@ Context::Type DataAccessor::type(const std::string& name)const
     if( variable.is_object() ) return Context::Type::STRING;
     return Context::Type::UNDEFINED;
 }
+Context::Type DataAccessor::type(const std::string& name, size_t index)const
+{
+    wasp_tagged_line("acquiring type for "<<name<<" at index "<<index);
+    if( m_current_data == nullptr
+            || m_current_data->contains(name) == false)
+    {
+        wasp_tagged_line(" delegating to parent class...");
+        return Context::type(name, index);
+    }
+    auto itr = m_current_data->find(name);
+    if( itr == m_current_data->end() ) return Context::Type::UNDEFINED;
+    const wasp::Value & variable = itr->second;
+    if( variable.is_array() )
+    {
+        auto * array = variable.to_array();
+        wasp_check( array );
+        if( array->size() <= index )
+        {
+            return Context::Type::UNDEFINED;
+        }
+        const wasp::Value & variable = array->at(index);
+        if( variable.is_double() ) return Context::Type::REAL;
+        if( variable.is_int() ) return Context::Type::INTEGER;
+        if( variable.is_bool() ) return Context::Type::BOOLEAN;
+        if( variable.is_string() ) return Context::Type::STRING;
+        if( variable.is_object() ) return Context::Type::STRING;
+        return Context::Type::UNDEFINED;
+    }
+    return Context::Type::UNDEFINED;
+}
 bool DataAccessor::store(const std::string &name, const bool &v)
 {
     if( m_current_data == nullptr)
@@ -107,7 +137,12 @@ bool DataAccessor::boolean(const std::string& name,size_t index,bool * ok)const
             if( *ok == false ) return false;
         }
     }
-    return array->at(index).to_bool();
+    if( itr->second.is_array() )
+    {
+        array = itr->second.to_array();
+        return array->at(index).to_bool();
+    }
+    return std::numeric_limits<bool>::quiet_NaN();
 }
 bool DataAccessor::boolean(const std::string& name, bool * ok)const
 {
@@ -144,7 +179,12 @@ int DataAccessor::integer(const std::string& name,size_t index,bool * ok)const
             if( *ok == false ) return std::numeric_limits<int>::quiet_NaN();
         }
     }
-    return array->at(index).to_int();
+    if( itr->second.is_array() )
+    {
+        array = itr->second.to_array();
+        return array->at(index).to_int();
+    }
+    return std::numeric_limits<int>::quiet_NaN();
 }
 int DataAccessor::integer(const std::string& name,bool * ok)const
 {
@@ -181,7 +221,12 @@ double DataAccessor::real(const std::string& name,size_t index,bool * ok)const
             if( *ok == false ) return std::numeric_limits<double>::quiet_NaN();
         }
     }
-    return array->at(index).to_double();
+    if( itr->second.is_array() )
+    {
+        array = itr->second.to_array();
+        return array->at(index).to_double();
+    }
+    return std::numeric_limits<double>::quiet_NaN();
 }
 double DataAccessor::real(const std::string& name, bool * ok)const
 {
@@ -205,20 +250,26 @@ std::string DataAccessor::string(const std::string& name, size_t index,bool * ok
     {
         return Context::string(name,index,ok);
     }
+    wasp_tagged_line("acquiring string for "<<name<<" at index "<<index);
     auto itr = m_current_data->find(name);
     DataArray * array = nullptr;
     if( ok && itr == m_current_data->end() ) *ok = false;
     else if( ok )
     {
-        *ok = itr->second.is_array();
+        *ok = itr->second.is_array();        
         if( *ok )
         {
             array = itr->second.to_array();
             *ok = array->at(index).is_primitive();
             if( *ok == false ) return "";
         }
+    }    
+    if( itr->second.is_array() )
+    {
+        array = itr->second.to_array();
+        return array->at(index).to_string();
     }
-    return array->at(index).to_string();
+    return "";
 }
 std::string DataAccessor::string(const std::string& name,bool * ok)const
 {

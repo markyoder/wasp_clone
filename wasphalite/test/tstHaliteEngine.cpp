@@ -96,6 +96,39 @@ TEST( Halite, parameterized_text )
     ASSERT_EQ( expected.str(), out.str() );
 }
 
+TEST( Halite, array_access )
+{
+    std::stringstream input;
+    input<< R"INPUT( <var> "<str[0]>" <str[1]>
+<int[0]> <int[1]>
+ <double[0]> <double[1]>
+<bool[0]> <bool[1]>)INPUT";
+    std::stringstream expected;
+    expected<< R"INPUT( 1 "ted" fed
+10 20
+ 1.1 3.14159
+0 1)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["var"] = true;
+    o["str"] = DataArray();
+    o["str"][0] = "ted";
+    o["str"][1] = "fed";
+    o["int"] = DataArray();
+    o["int"][0] = 10;
+    o["int"][1] = 20;
+    o["double"] = DataArray();
+    o["double"][0] = 1.1;
+    o["double"][1] = 3.14159;
+    o["bool"] = DataArray();
+    o["bool"][0] = false;
+    o["bool"][1] = true;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( expected.str(), out.str() );
+}
 /**
  * @brief test attribute acquisition using DataAccessor layer
  */
