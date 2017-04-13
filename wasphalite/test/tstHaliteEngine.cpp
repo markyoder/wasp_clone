@@ -102,12 +102,17 @@ TEST( Halite, array_access )
     input<< R"INPUT( <var> "<str[0]>" <str[1]>
 <int[0]> <int[1]>
  <double[0]> <double[1]>
-<bool[0]> <bool[1]>)INPUT";
+<bool[0]> <bool[1]>
+
+<mixed[0]> <mixed[1]> <mixed[2]:fmt=%.6f> <mixed[3]>
+)INPUT";
     std::stringstream expected;
     expected<< R"INPUT( 1 "ted" fed
 10 20
  1.1 3.14159
-0 1)INPUT";
+0 1
+
+0 19 500.123123 dead ted)INPUT";
     HaliteInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
     std::stringstream out;
@@ -126,6 +131,12 @@ TEST( Halite, array_access )
     o["bool"] = DataArray();
     o["bool"][0] = false;
     o["bool"][1] = true;
+
+    o["mixed"] = DataArray();
+    o["mixed"][0] = false;
+    o["mixed"][1] = 19;
+    o["mixed"][2] = 500.123123;
+    o["mixed"][3] = std::string("dead ted");
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( expected.str(), out.str() );
 }
