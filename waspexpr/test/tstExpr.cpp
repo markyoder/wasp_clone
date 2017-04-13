@@ -250,10 +250,58 @@ TEST(ExprInterpreter,equal)
     ASSERT_TRUE( result.is_bool());
     ASSERT_FALSE(result.boolean());
 }
+TEST(ExprInterpreter,equal_alternate)
+{
+    std::stringstream input;
+    input <<"8 .eq. 3"<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(5, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count() );
+    auto op = document.child_at(0);
+    ASSERT_EQ(wasp::EQ, op.type());
+    ASSERT_EQ(3, op.child_count());
+    ASSERT_EQ(wasp::VALUE, op.child_at(0).type());
+    ASSERT_EQ(wasp::EQ, op.child_at(1).type());
+    ASSERT_EQ(wasp::VALUE, op.child_at(2).type());
+    auto result = interpreter.evaluate();
+    ASSERT_FALSE(result.is_integer());
+    ASSERT_FALSE(result.is_number());
+    ASSERT_FALSE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_TRUE( result.is_bool());
+    ASSERT_FALSE(result.boolean());
+}
 TEST(ExprInterpreter,not_equal)
 {
     std::stringstream input;
     input <<"8 != 3"<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(5, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count() );
+    auto op = document.child_at(0);
+    ASSERT_EQ(wasp::NEQ, op.type());
+    ASSERT_EQ(3, op.child_count());
+    ASSERT_EQ(wasp::VALUE, op.child_at(0).type());
+    ASSERT_EQ(wasp::NEQ, op.child_at(1).type());
+    ASSERT_EQ(wasp::VALUE, op.child_at(2).type());
+    auto result = interpreter.evaluate();
+    ASSERT_FALSE(result.is_integer());
+    ASSERT_FALSE(result.is_number());
+    ASSERT_FALSE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_TRUE( result.is_bool());
+    ASSERT_TRUE(result.boolean());
+}
+TEST(ExprInterpreter,not_equal_alternate)
+{
+    std::stringstream input;
+    input <<"8 .neq. 3"<<std::endl;
     ExprInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(5, interpreter.node_count() );
@@ -298,10 +346,58 @@ TEST(ExprInterpreter,less_than)
     ASSERT_TRUE( result.is_bool());
     ASSERT_FALSE(result.boolean());
 }
+TEST(ExprInterpreter,less_than_alternate)
+{
+    std::stringstream input;
+    input <<"8 .lt. 3"<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(5, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count() );
+    auto op = document.child_at(0);
+    ASSERT_EQ(wasp::LT, op.type());
+    ASSERT_EQ(3, op.child_count());
+    ASSERT_EQ(wasp::VALUE, op.child_at(0).type());
+    ASSERT_EQ(wasp::LT, op.child_at(1).type());
+    ASSERT_EQ(wasp::VALUE, op.child_at(2).type());
+    auto result = interpreter.evaluate();
+    ASSERT_FALSE(result.is_integer());
+    ASSERT_FALSE(result.is_number());
+    ASSERT_FALSE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_TRUE( result.is_bool());
+    ASSERT_FALSE(result.boolean());
+}
 TEST(ExprInterpreter,less_than_eq)
 {
     std::stringstream input;
     input <<"8 <= 3"<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(5, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count() );
+    auto op = document.child_at(0);
+    ASSERT_EQ(wasp::LTE, op.type());
+    ASSERT_EQ(3, op.child_count());
+    ASSERT_EQ(wasp::VALUE, op.child_at(0).type());
+    ASSERT_EQ(wasp::LTE, op.child_at(1).type());
+    ASSERT_EQ(wasp::VALUE, op.child_at(2).type());
+    auto result = interpreter.evaluate();
+    ASSERT_FALSE(result.is_integer());
+    ASSERT_FALSE(result.is_number());
+    ASSERT_FALSE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_TRUE( result.is_bool());
+    ASSERT_FALSE(result.boolean());
+}
+TEST(ExprInterpreter,less_than_eq_alternate)
+{
+    std::stringstream input;
+    input <<"8 .lte. 3"<<std::endl;
     ExprInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(5, interpreter.node_count() );
@@ -346,10 +442,58 @@ TEST(ExprInterpreter,greater_than)
     ASSERT_TRUE( result.is_bool());
     ASSERT_TRUE(result.boolean());
 }
+TEST(ExprInterpreter,greater_than_alternate)
+{
+    std::stringstream input;
+    input <<"8 .gt. 3"<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(5, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count() );
+    auto op = document.child_at(0);
+    ASSERT_EQ(wasp::GT, op.type());
+    ASSERT_EQ(3, op.child_count());
+    ASSERT_EQ(wasp::VALUE, op.child_at(0).type());
+    ASSERT_EQ(wasp::GT, op.child_at(1).type());
+    ASSERT_EQ(wasp::VALUE, op.child_at(2).type());
+    auto result = interpreter.evaluate();
+    ASSERT_FALSE(result.is_integer());
+    ASSERT_FALSE(result.is_number());
+    ASSERT_FALSE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_TRUE( result.is_bool());
+    ASSERT_TRUE(result.boolean());
+}
 TEST(ExprInterpreter,greater_than_eq)
 {
     std::stringstream input;
     input <<"8 >= 3"<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(5, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count() );
+    auto op = document.child_at(0);
+    ASSERT_EQ(wasp::GTE, op.type());
+    ASSERT_EQ(3, op.child_count());
+    ASSERT_EQ(wasp::VALUE, op.child_at(0).type());
+    ASSERT_EQ(wasp::GTE, op.child_at(1).type());
+    ASSERT_EQ(wasp::VALUE, op.child_at(2).type());
+    auto result = interpreter.evaluate();
+    ASSERT_FALSE(result.is_integer());
+    ASSERT_FALSE(result.is_number());
+    ASSERT_FALSE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_TRUE( result.is_bool());
+    ASSERT_TRUE(result.boolean());
+}
+TEST(ExprInterpreter,greater_than_eq_alternate)
+{
+    std::stringstream input;
+    input <<"8 .gte. 3"<<std::endl;
     ExprInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(5, interpreter.node_count() );

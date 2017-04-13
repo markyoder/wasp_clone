@@ -50,17 +50,17 @@ SINGLE_QUOTED_STRING \'([^\'\n])*\'
 QSTRING {DOUBLE_QUOTED_STRING}|{SINGLE_QUOTED_STRING}
 COMMENT #[^\n]*|%[^\n]*
 
-LTE <=
-GTE >=
-LT <
-GT >
+LTE <=|".lte."
+GTE >=|".gte."
+LT <|".lt."
+GT >|".gt."
 BANG !
-EQ ==
+EQ ==|".eq."
 EXPONENT_OP \^
 ASSIGN =
-NEQ \!=
-AND &&
-OR \|\|
+NEQ \!=|".neq."
+AND &&|".and."
+OR \|\||".or."
 LBRACKET \[
 RBRACKET \]
 COMMA ,
