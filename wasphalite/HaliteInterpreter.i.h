@@ -489,7 +489,6 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
     size_t line = 1, column = 1;
 
     return evaluate(data,tree_view,out,line,column);
-
 }
 
 template<class S>
@@ -1003,7 +1002,9 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor & data
     bool has_using = using_i != std::string::npos;
 
     std::string using_what;
-
+    std::vector<int> strides;
+    std::vector<std::pair<int,int>> ranges;
+    std::vector<std::string> variables;
     if( has_using )
     {
         using_what = path.substr(using_i+using_str.size());
@@ -1011,6 +1012,61 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor & data
         wasp_tagged_line("Found using stmt, import now '"<<path.substr(0,using_i)<<"' using '"<<using_what<<"'");
         path = path.substr(0,using_i);
         using_what = wasp::trim(using_what," ");
+
+        std::stringstream range_stream(using_what);
+        for( ;range_stream.good(); )
+        {
+            std::string variable;
+            // var = start,end[,stride][;var = start,end[,stride]...]*
+            std::getline(range_stream, variable,'=');
+            wasp_tagged_line("variable = "<<variable);
+            if( !range_stream.good() )
+            {
+                Interpreter<S>::error_stream()<<"***Error: failed to acquire range variable ("
+                                             <<using_what<<") on line "<<repeat_line<<std::endl;
+                return false;
+            }
+
+            std::string tmp;
+            std::getline(range_stream,tmp,',');
+            wasp_tagged_line("stmp="<<tmp);
+            std::stringstream start_str(tmp);
+            int start = 0;
+            start_str >> start;
+            if( !range_stream.good() )
+            {
+                Interpreter<S>::error_stream()<<"***Error: failed to acquire range start ("
+                                             <<using_what<<") on line "<<repeat_line<<std::endl;
+                return false;
+            }
+            std::getline(range_stream,tmp,',');
+            wasp_tagged_line("etmp="<<tmp);
+            int end = 0;
+            std::stringstream end_str(tmp);
+            end_str >> end;
+            if( !range_stream.good() && !range_stream.eof())
+            {
+                Interpreter<S>::error_stream()<<"***Error: failed to acquire range end ("
+                                             <<using_what<<") on line "<<repeat_line<<std::endl;
+                return false;
+            }
+            range_stream >> tmp; // EOL/F, ';' - end of range or ',' stride coming
+            int stride = 1;
+            if( tmp == ",")// capture stride
+            {
+                range_stream >> stride;
+                if( !range_stream.good() )
+                {
+                    Interpreter<S>::error_stream()<<"***Error: failed to acquire range stride ("
+                                                 <<using_what<<") on line "<<repeat_line<<std::endl;
+                    return false;
+                }
+            }
+            variables.push_back(variable);
+            strides.push_back(stride);
+            ranges.push_back(std::make_pair(start,end));
+            wasp_tagged_line("range start = "<<start<<", end = "<<end<<", stride = "<<stride);
+        }
     }
     path = wasp::trim(path," \t");
     wasp_tagged_line("repeating '"<<path<<"' relative to '"
@@ -1043,7 +1099,27 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor & data
     wasp_tagged_line("importing");
     if( has_using )
     {
-        wasp_not_implemented("ranged file repeat ");
+        // This logic is proof of concept and will not function with multiple
+        // variables
+        // TODO - turn this into recursion to preserve typical stack inner-outer loop behavior
+        for( size_t i = 0; i < variables.size(); ++i )
+        {
+            wasp_tagged_line("looping "<<variables[i]);
+            for( int r = ranges[i].first; r <= ranges[i].second; r+=strides[i] )
+            {
+                wasp_tagged_line("looping r="<<r<<" from "<<ranges[i].first<<" to "<<ranges[i].second);
+                DataObject o;
+                o[variables[i]] = r;
+                DataAccessor layer(&o);
+                if( !nested_interp.evaluate(out,layer) )
+                {
+                    wasp_tagged_line("failing iterative file import");
+                    return false;
+                }
+                if( r != ranges[i].second ) out<<std::endl;
+            }
+            import = true;
+        }
     }
     else{
         import = nested_interp.evaluate(out,data);

@@ -22,6 +22,7 @@ public:
      * @return the number of tokens
      */
     virtual size_t token_count()const=0;
+    virtual size_t line_count()const =0;
     /**
      * @brief push appends a token
      * @param str the token's string data

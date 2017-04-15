@@ -253,6 +253,42 @@ no iteration. Fred = 3.14159)INPUT";
     ASSERT_EQ( Value::TYPE_DOUBLE, o["fred"].type() );
     ASSERT_EQ( 3.14159, o["fred"].to_double() );
 }
+/**
+ * @brief test file repeat (single) iteration
+ */
+TEST( Halite, repeat_fileimport_using_single_range)
+{
+
+    std::ofstream import("nested repeated template.tmpl");
+    std::stringstream content;
+    content<<"i=<i>";
+    import<<content.str();
+    import.close();
+    std::stringstream input;
+    input<< R"INPUT(
+            Some preceeding text
+#repeat ./nested repeated template.tmpl using i=1,3
+
+text that follows)INPUT";
+    HaliteInterpreter<> interpreter;
+
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+
+    std::stringstream expected;
+    expected<< R"INPUT(
+            Some preceeding text
+i=1
+i=2
+i=3
+
+text that follows)INPUT";
+    ASSERT_EQ( expected.str(), out.str() );
+    std::remove("nested repeated template.tmpl");
+}
 TEST( Halite, file_import_using_object_by_name)
 {
 
