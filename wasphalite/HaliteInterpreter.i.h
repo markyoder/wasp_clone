@@ -538,6 +538,9 @@ bool HaliteInterpreter<S>::evaluate_component(DataAccessor & data
     case wasp::FILE:
         if( !import_file(data, tree_view, out, current_line, current_column) ) return false;
     break;
+    case wasp::REPEAT:
+        if( !repeat_file(data, tree_view, out, current_line, current_column) ) return false;
+    break;
     // actioned conditional blocks ifdef,etc.
     case wasp::PREDICATED_CHILD:
         if( !conditional( data, tree_view, out, current_line, current_column) ) return false;        
@@ -953,6 +956,94 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
         }
         DataAccessor data_by_copy_accessor(&data_by_copy);
         import = nested_interp.evaluate(out,data_by_copy_accessor);
+    }
+    else{
+        import = nested_interp.evaluate(out,data);
+    }
+    line += delta;
+    return import;
+}
+template<class S>
+bool HaliteInterpreter<S>::repeat_file(DataAccessor & data
+                                       ,const TreeNodeView<S>& repeat_view
+                                           ,std::ostream& out
+                                           ,size_t & line
+                                           ,size_t & column)
+{
+
+    // attributes must have '#repear txt'
+    // e.g., #repeat txt or #repeat txt<a1>txt<a2>...
+    wasp_require( repeat_view.child_count() > 1);
+    size_t repeat_line = repeat_view.line();
+    int delta = repeat_line - line;
+    wasp_check(delta >= 0);
+    if( delta > 0 )out<<std::string(delta,'\n');
+
+    std::stringstream repeat_str;
+    // accumulate an attribute string
+    for( size_t i = 1, count = repeat_view.child_count(); i < count; ++i )
+    {
+        const auto& child_view = repeat_view.child_at(i);
+        auto type = child_view.type();
+        switch( type )
+        {
+            case wasp::STRING:
+                wasp::print(repeat_str, child_view);
+            break;
+            case wasp::IDENTIFIER:
+                print_attribute(data,child_view, repeat_str, repeat_line, column);
+            break;
+            default:
+                wasp_not_implemented("parameterized file repeat '"+child_view.data()+"'");
+        }
+    }
+    std::string path = repeat_str.str();
+    static std::string using_str = " using ";
+    size_t using_i = path.find(using_str);
+    bool has_using = using_i != std::string::npos;
+
+    std::string using_what;
+
+    if( has_using )
+    {
+        using_what = path.substr(using_i+using_str.size());
+        wasp_tagged_line("path is '"<<path<<"'");
+        wasp_tagged_line("Found using stmt, import now '"<<path.substr(0,using_i)<<"' using '"<<using_what<<"'");
+        path = path.substr(0,using_i);
+        using_what = wasp::trim(using_what," ");
+    }
+    path = wasp::trim(path," \t");
+    wasp_tagged_line("repeating '"<<path<<"' relative to '"
+                     <<Interpreter<S>::stream_name()<<"'");
+    std::ifstream relative_to_working_dir(path.c_str());
+    std::string relative_to_current_path = Interpreter<S>::stream_name()+"/"+path;
+    std::ifstream relative_to_current(relative_to_current_path.c_str());
+    HaliteInterpreter<S> nested_interp(Interpreter<S>::error_stream());
+    bool import = false;
+    bool parsed = false;
+    if( !relative_to_working_dir.good() )
+    {
+        if( !relative_to_current.good() )
+        {
+            Interpreter<S>::error_stream()<<"***Error : unable to open '"
+                                         <<path<<".'"<<std::endl;
+            return false;
+        }
+        nested_interp.setStreamName(relative_to_current_path,true);
+        parsed = nested_interp.parse(relative_to_current);
+
+    }else{
+        nested_interp.setStreamName(path,true);
+        parsed = nested_interp.parse(relative_to_working_dir);
+    }
+    if( parsed == false )
+    {
+        return false;
+    }
+    wasp_tagged_line("importing");
+    if( has_using )
+    {
+        wasp_not_implemented("ranged file repeat ");
     }
     else{
         import = nested_interp.evaluate(out,data);

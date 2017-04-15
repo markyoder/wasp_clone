@@ -213,7 +213,46 @@ wombat has 2 brothers)INPUT";
     ASSERT_EQ( 2, o["fred"].to_int() );
 }
 
+/**
+ * @brief test file repeat (single) iteration
+ */
+TEST( Halite, repeat_fileimport)
+{
 
+    std::ofstream import("nested template.tmpl");
+    std::stringstream content;
+    content<<"this is"<<std::endl
+         <<"nested files using nothing"<<std::endl
+        <<std::endl // empty line
+       <<"and assigning fred to < fred = 3.14159 >";
+    import<<content.str();
+    import.close();
+    std::stringstream input;
+    input<< R"INPUT(
+            Some preceeding text
+#repeat ./nested template.tmpl
+no iteration. Fred = <fred>)INPUT";
+    HaliteInterpreter<> interpreter;
+
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+
+    std::stringstream expected;
+    expected<< R"INPUT(
+            Some preceeding text
+this is
+nested files using nothing
+
+and assigning fred to 3.14159
+no iteration. Fred = 3.14159)INPUT";
+    ASSERT_EQ( expected.str(), out.str() );
+    std::remove("nested template.tmpl");
+    ASSERT_EQ( Value::TYPE_DOUBLE, o["fred"].type() );
+    ASSERT_EQ( 3.14159, o["fred"].to_double() );
+}
 TEST( Halite, file_import_using_object_by_name)
 {
 

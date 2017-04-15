@@ -169,6 +169,9 @@ namespace wasp {
         bool import_file(DataAccessor & data
                          ,const TreeNodeView<S> & import_view
                          ,std::ostream& out, size_t& line, size_t & column);        
+        bool repeat_file(DataAccessor & data
+                         ,const TreeNodeView<S> & import_view
+                         ,std::ostream& out, size_t& line, size_t & column);
     public: // public variables
 
         /**
