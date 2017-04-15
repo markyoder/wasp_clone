@@ -347,6 +347,29 @@ TEST( Halite, import_basic)
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
+/**
+ * @brief TEST test repeat statement
+ */
+TEST( Halite, repeat_basic)
+{
+    std::stringstream input;
+    input<<"#repeat some/path/to/some/file";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    ASSERT_EQ(4, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ( 1, document.child_count() );
+    ASSERT_EQ( wasp::REPEAT, document.child_at(0).type());
+    std::string expected_paths = R"INPUT(/
+/repeat
+/repeat/decl (#repeat)
+/repeat/txt ( some/path/to/some/file)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
 
 /**
  * @brief TEST test parameterized import statement

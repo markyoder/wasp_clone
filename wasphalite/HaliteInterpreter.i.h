@@ -125,7 +125,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     // A line could be the following
     // 1) a plain line of text
     // 2) a line of text with attributes
-    // 3) an import statement
+    // 3) an import or repeat statement
     // 4) the start of an actioned conditional block (if,ifdef,ifndef)
     // 5) the continuation of an actioned conditional block (elseif, else)
     // 6) the termination of an actioned conditional block (endif)
@@ -147,6 +147,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     bool is_directive = line.compare(0,1,"#") == 0;
     static std::string import_stmt = "#import";
     bool is_import = false;
+    static std::string repeat_stmt = "#repeat";
+    bool is_repeat = false;
     static std::string ifdef_stmt = "#ifdef";
     bool is_ifdef = false; // assume false
     static std::string ifndef_stmt = "#ifndef";
@@ -305,6 +307,16 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
         // update the current column
         current_column_index += endif_stmt.size();
     }
+    else if( is_directive && (is_repeat
+                         = line.compare(0, repeat_stmt.size(), repeat_stmt) == 0) )
+    { // capture import declarator
+        Interpreter<S>::push_staged(wasp::REPEAT, "repeat",{});
+        size_t offset = m_file_offset + current_column_index;
+        capture_leaf("decl", wasp::DECL
+                     ,line.substr(current_column_index,repeat_stmt.size())
+                     , wasp::STRING, offset );
+        current_column_index += repeat_stmt.size();
+    }
     bool condition_captured = false;
     if( attribute_indices.empty() == false )
     { // in addition to the attributes, capture the components before, between, and after
@@ -331,6 +343,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     }    
     // if line is plain text, capture
     if( is_import == false
+            && is_repeat == false
             && is_ifdef == false
             && is_ifndef == false
             && is_if == false
@@ -370,8 +383,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
                          ,wasp::STRING,offset);
         }
 
-        // when closing import statement or condition expression, commit the tree
-        if( is_import || is_condition )
+        // when closing import/repeat statement or condition expression, commit the tree
+        if( is_import || is_repeat || is_condition )
         {
             Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
         }
