@@ -304,7 +304,7 @@ no iteration. Fred = 3.14159)INPUT";
 }
 TEST(Halite, range)
 {
-    std::vector<HaliteInterpreter<>::ImportRange> expected_imports =
+    std::vector<HaliteInterpreter<>::Range> expected_imports =
     {
         {"x",1,1,1}
         ,{"x",1,1,1}
@@ -326,7 +326,7 @@ TEST(Halite, range)
     for( size_t i = 0; i < expected_imports.size(); ++i ){
         SCOPED_TRACE(i);
         SCOPED_TRACE(ranges[i]);
-        std::vector<HaliteInterpreter<>::ImportRange> imports;
+        std::vector<HaliteInterpreter<>::Range> imports;
         std::string range = ranges[i];
         std::string error;
         EXPECT_TRUE( HaliteInterpreter<>::extract_ranges(range,imports, error));
@@ -341,7 +341,7 @@ TEST(Halite, range)
 }
 TEST(Halite, multi_range)
 {
-    std::vector<std::vector<HaliteInterpreter<>::ImportRange>> expected_imports =
+    std::vector<std::vector<HaliteInterpreter<>::Range>> expected_imports =
     {
         {{"x",1,1,1},{"y",1,1,1}}
         ,{{"x",1,2,1},{"y",2,2,1}}
@@ -363,7 +363,7 @@ TEST(Halite, multi_range)
     for( size_t i = 0; i < expected_imports.size(); ++i ){
         SCOPED_TRACE(i);
         SCOPED_TRACE(ranges[i]);
-        std::vector<HaliteInterpreter<>::ImportRange> imports;
+        std::vector<HaliteInterpreter<>::Range> imports;
         std::string range = ranges[i];
         std::string error;
         EXPECT_TRUE( HaliteInterpreter<>::extract_ranges(range,imports, error));
@@ -414,7 +414,7 @@ TEST(Halite, range_errors)
     for( size_t i = 0; i < expected_error.size(); ++i ){
         SCOPED_TRACE(expected_error[i]);
         SCOPED_TRACE(ranges[i]);
-        std::vector<HaliteInterpreter<>::ImportRange> imports;
+        std::vector<HaliteInterpreter<>::Range> imports;
         std::string range = ranges[i];
         std::string error;
         EXPECT_FALSE( HaliteInterpreter<>::extract_ranges(range,imports, error));

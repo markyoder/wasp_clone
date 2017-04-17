@@ -1005,7 +1005,7 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor & data
     bool has_using = using_i != std::string::npos;
 
     std::string using_what;
-    std::vector<ImportRange> imports;
+    std::vector<Range> imports;
     if( has_using )
     {
         using_what = path.substr(using_i+using_str.size());
@@ -1068,46 +1068,46 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor & data
 }
 
 template<class S>
-bool HaliteInterpreter<S>::extract_ranges( std::string ranges
-                                           , std::vector<ImportRange>& imports
+bool HaliteInterpreter<S>::extract_ranges( std::string range_data
+                                           , std::vector<Range>& ranges
                                            , std::string & error )
 {
-    size_t assign_i = ranges.find("=");
+    size_t assign_i = range_data.find("=");
     if( assign_i == std::string::npos )
     {
         error = "unable to determine range variable - missing assign '=' character";
         return false;
     }
-    std::string variable = trim(ranges.substr(0,assign_i)," ");
+    std::string variable = trim(range_data.substr(0,assign_i)," ");
     wasp_tagged_line("Variable = "<<variable);
 
-    size_t delim_i = ranges.find_first_of(",;");
+    size_t delim_i = range_data.find_first_of(",;");
     int start = 0, end = 0, stride=1;
 
     // extract start
     if( delim_i == std::string::npos )
     {   // no terminator delim exists 'var = x'
 
-        if( assign_i + 1 >= ranges.size() )
+        if( assign_i + 1 >= range_data.size() )
         {
             error = "no range start was specified for '"+variable+"'";
             return false;
         }
         bool ok = false;
-        to_type(start,ranges.substr(assign_i+1), &ok );
+        to_type(start,range_data.substr(assign_i+1), &ok );
         if( !ok )
         {
             error = "unable to extract range start for '"+variable+"'";
             return false;
         }
         end = start; // default
-        imports.push_back(ImportRange(variable, start, end, stride));
+        ranges.push_back(Range(variable, start, end, stride));
         return true;
     }
     else{
         bool ok = false;
         size_t length = delim_i - 1 - assign_i;
-        const std::string& start_str = trim(ranges.substr(assign_i+1,length)," ");
+        const std::string& start_str = trim(range_data.substr(assign_i+1,length)," ");
         to_type(start, start_str, &ok);
         wasp_tagged_line("start '"<<start_str<<"' - "<<std::boolalpha<<ok);
         if( !ok )
@@ -1118,23 +1118,23 @@ bool HaliteInterpreter<S>::extract_ranges( std::string ranges
         end = start;
     }
     size_t start_delim_i = delim_i;
-    wasp_check( delim_i < ranges.size() );
-    bool has_more = ranges[start_delim_i] == ',';
+    wasp_check( delim_i < range_data.size() );
+    bool has_more = range_data[start_delim_i] == ',';
 
     if( has_more )
     {
         // extract end
-        delim_i = ranges.find_first_of(",;",start_delim_i+1);
+        delim_i = range_data.find_first_of(",;",start_delim_i+1);
         if( delim_i == std::string::npos )
         {   // no terminator delim exists ', end'
 
-            if( start_delim_i + 1 >= ranges.size() )
+            if( start_delim_i + 1 >= range_data.size() )
             {
                 error = "no range end was specified for '"+variable+"'";
                 return false;
             }
             bool ok = false;
-            const std::string & range_end = ranges.substr(start_delim_i+1);
+            const std::string & range_end = range_data.substr(start_delim_i+1);
             wasp_tagged_line("range end is '"<<range_end<<"'");
             to_type(end,range_end, &ok );
             if( !ok )
@@ -1142,13 +1142,13 @@ bool HaliteInterpreter<S>::extract_ranges( std::string ranges
                 error = "unable to extract range end for '"+variable+"'";
                 return false;
             }
-            imports.push_back(ImportRange(variable, start, end, stride));
+            ranges.push_back(Range(variable, start, end, stride));
             return true;
         }
         else{
             bool ok = false;
             size_t length = delim_i -1 - start_delim_i;
-            const std::string & range_end = ranges.substr(start_delim_i+1,length);
+            const std::string & range_end = range_data.substr(start_delim_i+1,length);
             wasp_tagged_line("range end '"<<range_end<<"'");
             to_type(end, range_end, &ok);
             if( !ok )
@@ -1160,22 +1160,22 @@ bool HaliteInterpreter<S>::extract_ranges( std::string ranges
 
         // extract stride
         size_t end_delim_i = delim_i;
-        has_more = ranges[end_delim_i] == ',';
+        has_more = range_data[end_delim_i] == ',';
         if( has_more ) // stride available
         {
-            wasp_check( delim_i < ranges.size() );
+            wasp_check( delim_i < range_data.size() );
             // extract stride
-            delim_i = ranges.find_first_of(";",end_delim_i+1);
+            delim_i = range_data.find_first_of(";",end_delim_i+1);
             if( delim_i == std::string::npos )
             {   // no terminator delim exists ', end'
 
-                if( end_delim_i + 1 >= ranges.size() )
+                if( end_delim_i + 1 >= range_data.size() )
                 {
                     error = "no range stride was specified for '"+variable+"'";
                     return false;
                 }
                 bool ok = false;
-                const std::string & range_stride = ranges.substr(end_delim_i+1);
+                const std::string & range_stride = range_data.substr(end_delim_i+1);
                 wasp_tagged_line("range stride is '"<<range_stride<<"'");
                 to_type(stride,range_stride, &ok );
                 if( !ok )
@@ -1183,13 +1183,13 @@ bool HaliteInterpreter<S>::extract_ranges( std::string ranges
                     error = "unable to extract range stride for '"+variable+"'";
                     return false;
                 }
-                imports.push_back(ImportRange(variable, start, end, stride));
+                ranges.push_back(Range(variable, start, end, stride));
                 return true;
             }
             else{
                 bool ok = false;
                 size_t length = delim_i - end_delim_i;
-                to_type(stride, ranges.substr(end_delim_i+1,length), &ok);
+                to_type(stride, range_data.substr(end_delim_i+1,length), &ok);
                 if( !ok )
                 {
                     error = "unable to extract delimited range stride for '"+variable+"'";
@@ -1199,17 +1199,17 @@ bool HaliteInterpreter<S>::extract_ranges( std::string ranges
         } // end of stride
     } // end of 'end' and possible 'stride' acquisition
     wasp_tagged_line("pushing "<<variable<<","<<start<<","<<end<<","<<stride);
-    imports.push_back(ImportRange(variable, start, end, stride));
-    if( delim_i != std::string::npos && delim_i+1 < ranges.size() )
+    ranges.push_back(Range(variable, start, end, stride));
+    if( delim_i != std::string::npos && delim_i+1 < range_data.size() )
     {
         // check for additional ranges after a semi-colon
-        wasp_tagged_line("delim_i = "<<delim_i<<" vs"<< ranges.size()
+        wasp_tagged_line("delim_i = "<<delim_i<<" vs"<< range_data.size()
                          <<" has_more "<<std::boolalpha<<has_more);
 
-        ranges = trim(ranges.substr(delim_i+1), " " );
-        if( ranges.empty() ) return true;
-        wasp_tagged_line("recursing with remaining range '"<<ranges<<"'");
-        return extract_ranges(ranges, imports, error);
+        range_data = trim(range_data.substr(delim_i+1), " " );
+        if( range_data.empty() ) return true;
+        wasp_tagged_line("recursing with remaining range '"<<range_data<<"'");
+        return extract_ranges(range_data, ranges, error);
     }
 
     return true;
@@ -1218,7 +1218,7 @@ bool HaliteInterpreter<S>::extract_ranges( std::string ranges
 template<class S>
 bool HaliteInterpreter<S>::import_range(DataAccessor& data
                                         , HaliteInterpreter<S> & file_interpreter
-                                        , const std::vector<ImportRange>& imports
+                                        , const std::vector<Range>& imports
                                         , size_t i
                                         , std::ostream& out)
 {

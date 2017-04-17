@@ -183,26 +183,26 @@ namespace wasp {
                          ,const TreeNodeView<S> & import_view
                          ,std::ostream& out, size_t& line, size_t & column);
     public:
-        struct ImportRange
+        struct Range
         {
             std::string name;
             int start;
             int end;
             int stride;
-            ImportRange(const std::string& name,int start, int end, int stride)
+            Range(const std::string& name,int start, int end, int stride)
                 :name(name),start(start),end(end),stride(stride){}
-            ImportRange(const ImportRange & o)
+            Range(const Range & o)
                 :name(o.name),start(o.start),end(o.end),stride(o.stride){}
 
         };
 
         bool import_range(DataAccessor & data
                            ,HaliteInterpreter<S> & file_interpreter
-                           ,const std::vector<ImportRange>& imports
+                           ,const std::vector<Range>& imports
                            ,size_t index
                            ,std::ostream& out);
-        static bool extract_ranges(std::string ranges
-                            , std::vector<ImportRange> & imports
+        static bool extract_ranges(std::string range_data
+                            , std::vector<Range> & ranges
                             , std::string & error);
     public: // public variables
 
