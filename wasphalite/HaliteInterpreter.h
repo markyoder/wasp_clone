@@ -172,6 +172,7 @@ namespace wasp {
         bool repeat_file(DataAccessor & data
                          ,const TreeNodeView<S> & import_view
                          ,std::ostream& out, size_t& line, size_t & column);
+    public:
         struct ImportRange
         {
             std::string name;
@@ -190,6 +191,9 @@ namespace wasp {
                            ,const std::vector<ImportRange>& imports
                            ,size_t index
                            ,std::ostream& out);
+        static bool extract_ranges(std::string ranges
+                            , std::vector<ImportRange> & imports
+                            , std::string & error);
     public: // public variables
 
         /**
