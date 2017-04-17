@@ -21,6 +21,7 @@ std::string strip_quotes( const std::string& src )
 
 std::string trim(  std::string str, const std::string& char_seq )
 {
+    if( str.size() == char_seq.size() && str == char_seq ) return "";
     // trim trailing char sequences
     size_t endpos = str.find_last_not_of(char_seq);
     if( std::string::npos != endpos )
