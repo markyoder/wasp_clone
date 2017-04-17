@@ -53,6 +53,20 @@ TEST( Halite, single_present_optional_attribute)
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "b3.14159a", out.str() );
 }
+TEST( Halite, single_silent_attribute)
+{
+    std::stringstream input;
+    input<< R"INPUT(b<attribute=4:|>a)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data;
+
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( Context::Type::INTEGER, data.type("attribute"));
+    ASSERT_EQ( 4, data.integer("attribute") );
+    ASSERT_EQ( "ba", out.str() );
+}
 TEST( Halite, single_present_formatted_optional_attribute)
 {
     std::stringstream input;

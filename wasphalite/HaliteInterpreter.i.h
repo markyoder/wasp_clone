@@ -615,7 +615,8 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     }
     if( result.is_error() == false)
     {
-        if( options.has_format() )
+        wasp_tagged_line("expression result is "<<result.as_string());
+        if( options.has_format() && !options.silent() )
         {
             if( !result.format(  out, options.format(), Interpreter<S>::error_stream()) )
             {
@@ -624,7 +625,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
                 return false;
             }
         }
-        else {
+        else if( !options.silent() ){
            if( !result.format( out ) )
            {
                Interpreter<S>::error_stream()<<"***Error: failed to format result ("
@@ -1311,12 +1312,19 @@ void HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
     {
         options.format() = data.substr(format_index+fmt.size());
         wasp_tagged_line("Format of '"<<options.format()<<"' captured");
-    }
-    bool is_optional = data.size() > 1 && data[1] == '?';
-    wasp_tagged_line("is optional "<<std::boolalpha<<is_optional);
-    if( is_optional )
+    }    
+
+    if( data.size() > 1 )
     {
-        options.optional() = true;
+        switch (data[1]){
+            case '?':
+            options.optional() = true;
+            break;
+            case '|':
+            options.silent() = true;
+            break;
+        }
     }
+
 }
 #endif
