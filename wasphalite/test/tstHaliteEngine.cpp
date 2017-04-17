@@ -30,6 +30,41 @@ TEST( Halite, single_attribute)
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "value", out.str() );
 }
+TEST( Halite, single_abscent_optional_attribute)
+{
+    std::stringstream input;
+    input<< R"INPUT(b<attribute:?>a)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "ba", out.str() );
+}
+TEST( Halite, single_present_optional_attribute)
+{
+    std::stringstream input;
+    input<< R"INPUT(b<attribute:?>a)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data;
+    data.store("attribute",3.14159);
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "b3.14159a", out.str() );
+}
+TEST( Halite, single_present_formatted_optional_attribute)
+{
+    std::stringstream input;
+    input<< R"INPUT(b<attribute:?fmt=%6.2f>a)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data;
+    data.store("attribute",3.14159);
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "b  3.14a", out.str() );
+}
 TEST( Halite, formatted_single_attribute)
 {
     std::stringstream input;

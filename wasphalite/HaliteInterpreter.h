@@ -117,14 +117,17 @@ namespace wasp {
 
         class SubstitutionOptions{
         public:
-            SubstitutionOptions(){}
+            SubstitutionOptions():m_optional(false){}
             SubstitutionOptions(const SubstitutionOptions&orig)
-                :m_format(orig.m_format){}
+                :m_format(orig.m_format),m_optional(orig.m_optional){}
             bool has_format()const{return m_format.empty() == false;}
             const std::string& format()const{return m_format;}
             std::string& format(){return m_format;}
+            bool optional()const{return m_optional;}
+            bool& optional(){return m_optional;}
           private:
             std::string m_format; // format of the substitution
+            bool m_optional;
             //...
         };
         /**

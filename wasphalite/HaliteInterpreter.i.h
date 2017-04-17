@@ -608,28 +608,30 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
         return false;
     }
     auto result = expr.evaluate(data);
-    if( result.is_error() )
+    if( result.is_error() && !options.optional() )
     {
         wasp_tagged_line(result.string());
         return false;
     }
-
-    if( options.has_format() )
+    if( result.is_error() == false)
     {
-        if( !result.format(  out, options.format(), Interpreter<S>::error_stream()) )
+        if( options.has_format() )
         {
-            Interpreter<S>::error_stream()<<"***Error: failed to format result ("
-                                         <<result.as_string()<<") as '"<<options.format()<<"'"<<std::endl;
-            return false;
+            if( !result.format(  out, options.format(), Interpreter<S>::error_stream()) )
+            {
+                Interpreter<S>::error_stream()<<"***Error: failed to format result ("
+                                             <<result.as_string()<<") as '"<<options.format()<<"'"<<std::endl;
+                return false;
+            }
         }
-    }
-    else {
-       if( !result.format( out ) )
-       {
-           Interpreter<S>::error_stream()<<"***Error: failed to format result ("
-                                        <<result.as_string()<<")."<<std::endl;
-           return false;
-       }
+        else {
+           if( !result.format( out ) )
+           {
+               Interpreter<S>::error_stream()<<"***Error: failed to format result ("
+                                            <<result.as_string()<<")."<<std::endl;
+               return false;
+           }
+        }
     }
     auto last_attr_component = attr_view.child_at(attr_view.child_count()-1);
     column = last_attr_component.column() + m_attribute_end_delim.size();
@@ -1302,12 +1304,19 @@ template<class S>
 void HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
         ,const std::string& data)const
 {
+    wasp_tagged_line("getting options for '"<<data<<"'");
     static std::string fmt = "fmt=";
     size_t format_index = data.find(fmt);
     if( format_index != std::string::npos )
     {
         options.format() = data.substr(format_index+fmt.size());
         wasp_tagged_line("Format of '"<<options.format()<<"' captured");
+    }
+    bool is_optional = data.size() > 1 && data[1] == '?';
+    wasp_tagged_line("is optional "<<std::boolalpha<<is_optional);
+    if( is_optional )
+    {
+        options.optional() = true;
     }
 }
 #endif
