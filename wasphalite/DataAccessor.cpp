@@ -50,11 +50,9 @@ Context::Type DataAccessor::type(const std::string& name)const
 }
 Context::Type DataAccessor::type(const std::string& name, size_t index)const
 {
-    wasp_tagged_line("acquiring type for "<<name<<" at index "<<index);
     if( m_current_data == nullptr
             || m_current_data->contains(name) == false)
     {
-        wasp_tagged_line(" delegating to parent class...");
         return Context::type(name, index);
     }
     auto itr = m_current_data->find(name);
@@ -190,7 +188,7 @@ int DataAccessor::integer(const std::string& name,bool * ok)const
 {
     if( m_current_data == nullptr)
     {
-        return Context::boolean(name,ok);
+        return Context::integer(name,ok);
     }
     auto itr = m_current_data->find(name);
 
@@ -250,7 +248,6 @@ std::string DataAccessor::string(const std::string& name, size_t index,bool * ok
     {
         return Context::string(name,index,ok);
     }
-    wasp_tagged_line("acquiring string for "<<name<<" at index "<<index);
     auto itr = m_current_data->find(name);
     DataArray * array = nullptr;
     if( ok && itr == m_current_data->end() ) *ok = false;
