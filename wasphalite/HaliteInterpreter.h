@@ -172,6 +172,24 @@ namespace wasp {
         bool repeat_file(DataAccessor & data
                          ,const TreeNodeView<S> & import_view
                          ,std::ostream& out, size_t& line, size_t & column);
+        struct ImportRange
+        {
+            std::string name;
+            int start;
+            int end;
+            int stride;
+            ImportRange(const std::string& name,int start, int end, int stride)
+                :name(name),start(start),end(end),stride(stride){}
+            ImportRange(const ImportRange & o)
+                :name(o.name),start(o.start),end(o.end),stride(o.stride){}
+
+        };
+
+        bool import_range(DataAccessor & data
+                           ,HaliteInterpreter<S> & file_interpreter
+                           ,const std::vector<ImportRange>& imports
+                           ,size_t index
+                           ,std::ostream& out);
     public: // public variables
 
         /**

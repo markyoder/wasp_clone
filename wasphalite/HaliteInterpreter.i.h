@@ -1002,9 +1002,7 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor & data
     bool has_using = using_i != std::string::npos;
 
     std::string using_what;
-    std::vector<int> strides;
-    std::vector<std::pair<int,int>> ranges;
-    std::vector<std::string> variables;
+    std::vector<ImportRange> imports;
     if( has_using )
     {
         using_what = path.substr(using_i+using_str.size());
@@ -1062,9 +1060,7 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor & data
                     return false;
                 }
             }
-            variables.push_back(variable);
-            strides.push_back(stride);
-            ranges.push_back(std::make_pair(start,end));
+            imports.push_back(ImportRange(variable,start, end, stride));
             wasp_tagged_line("range start = "<<start<<", end = "<<end<<", stride = "<<stride);
         }
     }
@@ -1101,25 +1097,10 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor & data
     {
         // This logic is proof of concept and will not function with multiple
         // variables
-        // TODO - turn this into recursion to preserve typical stack inner-outer loop behavior
-        for( size_t i = 0; i < variables.size(); ++i )
-        {
-            wasp_tagged_line("looping "<<variables[i]);
-            for( int r = ranges[i].first; r <= ranges[i].second; r+=strides[i] )
-            {
-                wasp_tagged_line("looping r="<<r<<" from "<<ranges[i].first<<" to "<<ranges[i].second);
-                DataObject o;
-                o[variables[i]] = r;
-                DataAccessor layer(&o);
-                if( !nested_interp.evaluate(out,layer) )
-                {
-                    wasp_tagged_line("failing iterative file import");
-                    return false;
-                }
-                if( r != ranges[i].second ) out<<std::endl;
-            }
-            import = true;
-        }
+        wasp_check( imports.empty() == false );
+        DataObject o;
+        DataAccessor import_data(&o);
+        import = import_range(import_data, nested_interp, imports,0, out);
     }
     else{
         import = nested_interp.evaluate(out,data);
@@ -1127,6 +1108,37 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor & data
     line += delta;
     return import;
 }
+template<class S>
+bool HaliteInterpreter<S>::import_range(DataAccessor& data
+                                        , HaliteInterpreter<S> & file_interpreter
+                                        , const std::vector<ImportRange>& imports
+                                        , size_t i
+                                        , std::ostream& out)
+{
+    wasp_require( i < imports.size() );
+    wasp_tagged_line("looping "<<imports[i].name);
+    for( int r = imports[i].start; r <= imports[i].end; r+=imports[i].stride )
+    {
+        wasp_tagged_line("looping r="<<r<<" from "<<imports[i].start<<" to "<<imports[i].end);
+        data.store(imports[i].name,r);
+        // bottom of recursion - evaluate
+        if( i+1 == imports.size() )
+        {
+            if( !file_interpreter.evaluate(out,data) )
+            {
+                wasp_tagged_line("failing iterative file import");
+                return false;
+            }
+            if( r != imports[i].end) out<<std::endl;
+        }
+        else if( !import_range(data, file_interpreter, imports, i, out) )
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 template<class S>
 void HaliteInterpreter<S>::capture_attribute_text(const std::string& text
                                                   ,size_t offset)
