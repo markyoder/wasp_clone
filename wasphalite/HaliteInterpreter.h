@@ -202,6 +202,7 @@ namespace wasp {
                     }
                     else{ // reset index and iterate at parent index
                         m_index[i] = m_ranges[i].start;
+                        d.store(m_ranges[i].name,m_index[i]);
                         wasp_tagged_line("resetting "<<m_ranges[i].name<<"="<<m_index[i]);
                     }
                 }

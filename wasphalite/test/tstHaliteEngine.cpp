@@ -124,6 +124,28 @@ TEST( Halite, iterative_formatted_attribute)
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "  1  3", out.str() );
 }
+TEST( Halite, iterative_formatted_attribute_multi_only_start)
+{
+    std::stringstream input;
+    input<< R"INPUT(<i*j:j=3; fmt=%3d; i=1,3,2>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "  3  9", out.str() );
+}
+TEST( Halite, iterative_formatted_attribute_multi_only_start_end)
+{
+    std::stringstream input;
+    input<< R"INPUT(<i*j: j=3,5; i=1,3,2; fmt=%3d; >)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "  3  9  4 12  5 15", out.str() );
+}
 TEST( Halite, indirect_attribute)
 {
     std::stringstream input;
