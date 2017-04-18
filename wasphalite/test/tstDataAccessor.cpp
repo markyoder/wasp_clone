@@ -143,7 +143,7 @@ TEST( Halite, data_accessor_parent_access)
     ASSERT_EQ( Context::Type::INTEGER, l.type("i1") );
     ASSERT_EQ( Context::Type::INTEGER, l.type("a",0) );
     ASSERT_EQ( 11, l.integer("i1") );
-    ASSERT_EQ( 2, l.integer("a",int(0)) );
+    ASSERT_EQ( 2, l.integer("a",size_t(0)) );
 
     ASSERT_EQ( Context::Type::REAL, l.type("d1") );
     ASSERT_EQ( Context::Type::REAL, l.type("a",1) );
