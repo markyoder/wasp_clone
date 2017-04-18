@@ -59,6 +59,28 @@ namespace wasp {
         bool evaluate(std::ostream & out
                       , DataAccessor & data
                       , std::ostream * activity_log=nullptr);
+    public:
+        struct Range
+        {
+            std::string name;
+            int start;
+            int end;
+            int stride;
+            Range(const std::string& name,int start, int end, int stride)
+                :name(name),start(start),end(end),stride(stride){}
+            Range(const Range & o)
+                :name(o.name),start(o.start),end(o.end),stride(o.stride){}
+
+        };
+
+        bool import_range(DataAccessor & data
+                           ,HaliteInterpreter<S> & file_interpreter
+                           ,const std::vector<Range>& imports
+                           ,size_t index
+                           ,std::ostream& out);
+        static bool extract_ranges(std::string range_data
+                            , std::vector<Range> & ranges
+                            , std::string & error);
     private:
 
         bool parse_content(std::istream& in);
@@ -121,7 +143,9 @@ namespace wasp {
             SubstitutionOptions(const SubstitutionOptions&orig)
                 :m_format(orig.m_format)
                 ,m_optional(orig.m_optional)
-                ,m_silent(orig.m_silent){}
+                ,m_silent(orig.m_silent)
+                ,m_ranges(orig.m_ranges)
+                ,m_index(orig.m_index){}
             bool has_format()const{return m_format.empty() == false;}
             const std::string& format()const{return m_format;}
             std::string& format(){return m_format;}
@@ -131,19 +155,76 @@ namespace wasp {
 
             bool silent()const{return m_silent;}
             bool& silent(){return m_silent;}
+
+            const std::vector<Range> & ranges()const{return m_ranges;}
+            std::vector<Range> & ranges(){return m_ranges;}
+
+            void initialize(DataAccessor& d)
+            {
+                m_index.resize(m_ranges.size());
+                for( size_t i = 0; i < m_ranges.size(); ++i)
+                {
+                    m_index[i] = m_ranges[i].start;
+                    d.store(m_ranges[i].name,m_index[i]);
+                    wasp_tagged_line("init "<<m_ranges[i].name<<"="<<m_index[i]);
+                }
+            }
+            bool has_next()const{
+                wasp_check( m_index.size() == m_ranges.size() );
+                for( int i = m_index.size()-1; i >= 0; --i )
+                {
+                    wasp_tagged_line("checking range of "<<m_ranges[i].name
+                    <<" "<<m_index[i]+m_ranges[i].stride<<"<="<<m_ranges[i].end);
+                    if( m_index[i]+m_ranges[i].stride <= m_ranges[i].end )
+                    {
+                        wasp_tagged_line("has next true");
+                        return true;
+                    }
+                }
+                wasp_tagged_line("has next false");
+                return false;
+            }
+            bool next(DataAccessor & d)
+            {
+                for( int i = m_index.size()-1; i >= 0; --i )
+                {
+                    if( m_index[i]+m_ranges[i].stride <= m_ranges[i].end )
+                    {
+                        m_index[i]+=m_ranges[i].stride;
+                        d.store(m_ranges[i].name,m_index[i]);
+                        wasp_tagged_line("next "<<m_ranges[i].name<<"="<<m_index[i]);
+                        return true;
+                    }
+                    else if( i == 0 ) // i = 0, and done with loop
+                    {
+                        wasp_tagged_line("next = false");
+                        return false;
+                    }
+                    else{ // reset index and iterate at parent index
+                        m_index[i] = m_ranges[i].start;
+                        wasp_tagged_line("resetting "<<m_ranges[i].name<<"="<<m_index[i]);
+                    }
+                }
+                wasp_tagged_line("next = false");
+                return false;
+            }
+
           private:
             std::string m_format; // format of the substitution
             bool m_optional;
             bool m_silent;
+            std::vector<Range> m_ranges;
+            std::vector<int> m_index;
             //...
         };
         /**
          * @brief attribute_options processes the options listed in data
          * @param options the options to populate
          * @param data the data containing the text representation of options
+         * @return true, iff no issues arose in option extract
          */
-        void attribute_options( SubstitutionOptions & options
-                               , const std::string& data)const;
+        bool attribute_options( SubstitutionOptions & options
+                               , const std::string& data);
 
         bool accumulate_attribute(DataAccessor & data
                                   ,const TreeNodeView<S> & attr_view
@@ -182,28 +263,7 @@ namespace wasp {
         bool repeat_file(DataAccessor & data
                          ,const TreeNodeView<S> & import_view
                          ,std::ostream& out, size_t& line, size_t & column);
-    public:
-        struct Range
-        {
-            std::string name;
-            int start;
-            int end;
-            int stride;
-            Range(const std::string& name,int start, int end, int stride)
-                :name(name),start(start),end(end),stride(stride){}
-            Range(const Range & o)
-                :name(o.name),start(o.start),end(o.end),stride(o.stride){}
 
-        };
-
-        bool import_range(DataAccessor & data
-                           ,HaliteInterpreter<S> & file_interpreter
-                           ,const std::vector<Range>& imports
-                           ,size_t index
-                           ,std::ostream& out);
-        static bool extract_ranges(std::string range_data
-                            , std::vector<Range> & ranges
-                            , std::string & error);
     public: // public variables
 
         /**

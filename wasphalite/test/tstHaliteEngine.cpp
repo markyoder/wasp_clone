@@ -91,6 +91,39 @@ TEST( Halite, formatted_single_attribute)
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "rounded=  3.14159265\n3.14159", out.str() );
 }
+TEST( Halite, iterative_formatted_attribute_only_start)
+{
+    std::stringstream input;
+    input<< R"INPUT(<i:fmt=rounded=%3d; i=1>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "rounded=  1", out.str() );
+}
+TEST( Halite, iterative_formatted_attribute_only_start_end)
+{
+    std::stringstream input;
+    input<< R"INPUT(<i:fmt=%3d; i=1,3>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "  1  2  3", out.str() );
+}
+TEST( Halite, iterative_formatted_attribute)
+{
+    std::stringstream input;
+    input<< R"INPUT(<i:fmt=%3d; i=1,3,2>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "  1  3", out.str() );
+}
 TEST( Halite, indirect_attribute)
 {
     std::stringstream input;

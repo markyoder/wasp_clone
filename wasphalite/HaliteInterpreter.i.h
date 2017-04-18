@@ -607,31 +607,76 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     {        
         return false;
     }
-    auto result = expr.evaluate(data);
-    if( result.is_error() && !options.optional() )
+    if( options.ranges().empty() )
     {
-        wasp_tagged_line(result.string());
-        return false;
-    }
-    if( result.is_error() == false)
-    {
-        wasp_tagged_line("expression result is "<<result.as_string());
-        if( options.has_format() && !options.silent() )
+        auto result = expr.evaluate(data);
+        if( result.is_error() && !options.optional() )
         {
-            if( !result.format(  out, options.format(), Interpreter<S>::error_stream()) )
+            wasp_tagged_line(result.string());
+            return false;
+        }
+        if( result.is_error() == false)
+        {
+            wasp_tagged_line("expression result is "<<result.as_string());
+            if( options.has_format() && !options.silent() )
             {
-                Interpreter<S>::error_stream()<<"***Error: failed to format result ("
-                                             <<result.as_string()<<") as '"<<options.format()<<"'"<<std::endl;
-                return false;
+                if( !result.format(  out, options.format(), Interpreter<S>::error_stream()) )
+                {
+                    Interpreter<S>::error_stream()<<"***Error: failed to format result ("
+                                                 <<result.as_string()<<") as '"<<options.format()<<"'"<<std::endl;
+                    return false;
+                }
+            }
+            else if( !options.silent() ){
+               if( !result.format( out ) )
+               {
+                   Interpreter<S>::error_stream()<<"***Error: failed to format result ("
+                                                <<result.as_string()<<")."<<std::endl;
+                   return false;
+               }
             }
         }
-        else if( !options.silent() ){
-           if( !result.format( out ) )
-           {
-               Interpreter<S>::error_stream()<<"***Error: failed to format result ("
-                                            <<result.as_string()<<")."<<std::endl;
-               return false;
-           }
+    }
+    else{
+        DataObject o;
+        DataAccessor layer(&o);
+        options.initialize(layer);
+        for( ;; )
+        {
+            auto result = expr.evaluate(layer);
+            if( result.is_error() && !options.optional() )
+            {
+                wasp_tagged_line(result.string());
+                return false;
+            }
+            if( result.is_error() == false)
+            {
+                wasp_tagged_line("expression result is "
+                                 <<result.as_string());
+                if( options.has_format() && !options.silent() )
+                {
+                    if( !result.format(  out
+                                         , options.format()
+                                         , Interpreter<S>::error_stream()) )
+                    {
+                        Interpreter<S>::error_stream()
+                                <<"***Error: failed to format result ("
+                                <<result.as_string()
+                               <<") as '"<<options.format()<<"'"<<std::endl;
+                        return false;
+                    }
+                }
+                else if( !options.silent() ){
+                   if( !result.format( out ) )
+                   {
+                       Interpreter<S>::error_stream()
+                               <<"***Error: failed to format result ("
+                                <<result.as_string()<<")."<<std::endl;
+                       return false;
+                   }
+                }
+            }
+            if( !options.next(layer) ) break;
         }
     }
     auto last_attr_component = attr_view.child_at(attr_view.child_count()-1);
@@ -1302,29 +1347,56 @@ void HaliteInterpreter<S>::capture_attribute_delim(const std::string& data
             + m_attribute_end_delim.size();
 }
 template<class S>
-void HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
-        ,const std::string& data)const
+bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
+        ,const std::string& data)
 {
     wasp_tagged_line("getting options for '"<<data<<"'");
     static std::string fmt = "fmt=";
-    size_t format_index = data.find(fmt);
-    if( format_index != std::string::npos )
-    {
-        options.format() = data.substr(format_index+fmt.size());
-        wasp_tagged_line("Format of '"<<options.format()<<"' captured");
-    }    
-
+    size_t format_i = data.find(fmt);
+    std::stringstream other_options_str;
+    size_t start_i=0;
     if( data.size() > 1 )
     {
         switch (data[1]){
             case '?':
             options.optional() = true;
+            start_i = 2;
             break;
             case '|':
             options.silent() = true;
+            start_i = 2;
             break;
         }
     }
+    if( format_i != std::string::npos )
+    {
+        other_options_str<<data.substr(start_i+1,format_i -1 -start_i);
+        size_t term_i = data.find(';',format_i);
+        size_t length = data.size() - (format_i+fmt.size());
+        if( term_i != std::string::npos )
+        {
+            length = term_i - (format_i+fmt.size());
+            other_options_str<<data.substr(term_i+1);
+        }
+        options.format() = data.substr(format_i+fmt.size(),length);
+        wasp_tagged_line("Format of '"<<options.format()<<"' captured");
+        wasp_check( format_i >= start_i );
+        wasp_tagged_line("Other options of '"<<other_options_str.str()<<"'");
+    }    
+    std::string other_options = other_options_str.str();
+    if( !other_options.empty() )
+    {
+        std::string error;
+        bool extracted = extract_ranges(other_options,options.ranges(),error);
+        if( !extracted )
+        {
+            Interpreter<S>::error_stream()
+                    <<"***Error: unable to acquire attribute options; "
+                                     <<error<<"."<<std::endl;
+            return false;
+        }
+    }
+    return true;
 
 }
 #endif
