@@ -12,7 +12,7 @@ namespace wasp{
 class DataAccessor : public Context {
 
 public:
-    DataAccessor(DataObject * data=nullptr);
+    DataAccessor(DataObject * data=nullptr, DataAccessor * parent = nullptr);
     DataAccessor(const DataAccessor& orig);
     virtual ~DataAccessor();
 
@@ -57,9 +57,9 @@ public:
 
 private:
     /**
-     * @brief m_root_data unmanaged data pointer to root of data hierarchy
+     * @brief m_parent unmanaged data pointer to parent data layer
      */
-    DataObject * m_root_data;
+    DataAccessor * m_parent;
     /**
      * @brief m_current_data unmanaged data pointer to current data hierarchy
      */
