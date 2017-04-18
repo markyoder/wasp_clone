@@ -681,6 +681,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
                 }
             }
             if( !options.next(layer) ) break;
+            out<<options.separator();
         }
     }
     auto last_attr_component = attr_view.child_at(attr_view.child_count()-1);
