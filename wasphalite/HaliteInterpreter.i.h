@@ -125,7 +125,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     // A line could be the following
     // 1) a plain line of text
     // 2) a line of text with attributes
-    // 3) an import statement
+    // 3) an import or repeat statement
     // 4) the start of an actioned conditional block (if,ifdef,ifndef)
     // 5) the continuation of an actioned conditional block (elseif, else)
     // 6) the termination of an actioned conditional block (endif)
@@ -147,6 +147,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     bool is_directive = line.compare(0,1,"#") == 0;
     static std::string import_stmt = "#import";
     bool is_import = false;
+    static std::string repeat_stmt = "#repeat";
+    bool is_repeat = false;
     static std::string ifdef_stmt = "#ifdef";
     bool is_ifdef = false; // assume false
     static std::string ifndef_stmt = "#ifndef";
@@ -305,6 +307,16 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
         // update the current column
         current_column_index += endif_stmt.size();
     }
+    else if( is_directive && (is_repeat
+                         = line.compare(0, repeat_stmt.size(), repeat_stmt) == 0) )
+    { // capture import declarator
+        Interpreter<S>::push_staged(wasp::REPEAT, "repeat",{});
+        size_t offset = m_file_offset + current_column_index;
+        capture_leaf("decl", wasp::DECL
+                     ,line.substr(current_column_index,repeat_stmt.size())
+                     , wasp::STRING, offset );
+        current_column_index += repeat_stmt.size();
+    }
     bool condition_captured = false;
     if( attribute_indices.empty() == false )
     { // in addition to the attributes, capture the components before, between, and after
@@ -331,6 +343,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     }    
     // if line is plain text, capture
     if( is_import == false
+            && is_repeat == false
             && is_ifdef == false
             && is_ifndef == false
             && is_if == false
@@ -365,13 +378,13 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
 
         if( remaining_length > 0 )
         {
-            capture_attribute_text(
-                        line.substr(current_column_index,remaining_length)
-                        ,offset);
+            capture_leaf("txt",wasp::STRING
+                         , line.substr(current_column_index,remaining_length)
+                         ,wasp::STRING,offset);
         }
 
-        // when closing import statement or condition expression, commit the tree
-        if( is_import || is_condition )
+        // when closing import/repeat statement or condition expression, commit the tree
+        if( is_import || is_repeat || is_condition )
         {
             Interpreter<S>::commit_staged(Interpreter<S>::staged_count()-1);
         }
@@ -476,7 +489,6 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
     size_t line = 1, column = 1;
 
     return evaluate(data,tree_view,out,line,column);
-
 }
 
 template<class S>
@@ -525,6 +537,9 @@ bool HaliteInterpreter<S>::evaluate_component(DataAccessor & data
     case wasp::FILE:
         if( !import_file(data, tree_view, out, current_line, current_column) ) return false;
     break;
+    case wasp::REPEAT:
+        if( !repeat_file(data, tree_view, out, current_line, current_column) ) return false;
+    break;
     // actioned conditional blocks ifdef,etc.
     case wasp::PREDICATED_CHILD:
         if( !conditional( data, tree_view, out, current_line, current_column) ) return false;        
@@ -554,7 +569,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     wasp_check(delta >= 0);
     wasp_tagged_line(info(attr_view)<<" line delta "<<delta);
     if( delta > 0 ) out<<std::string(delta, '\n');
-    SubstitutionOptions options;
+    SubstitutionOptions options;    
     // accumulate an attribute string
     for( size_t i = 1, count = attr_view.child_count()-1; i < count; ++i )
     {
@@ -586,34 +601,83 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     // and formatted and no expression evaluation is needed
 
     // attribute string contains the full attribute name
-    ExprInterpreter<> expr(Interpreter<S>::error_stream());
+    ExprInterpreter<S> expr(Interpreter<S>::error_stream());
+    wasp_tagged_line("expression '"<<attr_str.str()<<"'");
     if( false == expr.parse(attr_str, line, start_column + m_attribute_start_delim.size()) )
     {        
         return false;
     }
-    auto result = expr.evaluate(data);
-    if( result.is_error() )
+    if( options.ranges().empty() )
     {
-        wasp_tagged_line(result.string());
-        return false;
-    }
-
-    if( options.has_format() )
-    {
-        if( !result.format(  out, options.format(), Interpreter<S>::error_stream()) )
+        auto result = expr.evaluate(data);
+        if( result.is_error() && !options.optional() )
         {
-            Interpreter<S>::error_stream()<<"***Error: failed to format result ("
-                                         <<result.as_string()<<") as '"<<options.format()<<"'"<<std::endl;
+            wasp_tagged_line(result.string());
             return false;
         }
+        if( result.is_error() == false)
+        {
+            wasp_tagged_line("expression result is "<<result.as_string());
+            if( options.has_format() && !options.silent() )
+            {
+                if( !result.format(  out, options.format(), Interpreter<S>::error_stream()) )
+                {
+                    Interpreter<S>::error_stream()<<"***Error: failed to format result ("
+                                                 <<result.as_string()<<") as '"<<options.format()<<"'"<<std::endl;
+                    return false;
+                }
+            }
+            else if( !options.silent() ){
+               if( !result.format( out ) )
+               {
+                   Interpreter<S>::error_stream()<<"***Error: failed to format result ("
+                                                <<result.as_string()<<")."<<std::endl;
+                   return false;
+               }
+            }
+        }
     }
-    else {
-       if( !result.format( out ) )
-       {
-           Interpreter<S>::error_stream()<<"***Error: failed to format result ("
-                                        <<result.as_string()<<")."<<std::endl;
-           return false;
-       }
+    else{
+        DataObject o;
+        DataAccessor layer(&o);
+        options.initialize(layer);
+        for( ;; )
+        {
+            auto result = expr.evaluate(layer);
+            if( result.is_error() && !options.optional() )
+            {
+                wasp_tagged_line(result.string());
+                return false;
+            }
+            if( result.is_error() == false)
+            {
+                wasp_tagged_line("expression result is "
+                                 <<result.as_string());
+                if( options.has_format() && !options.silent() )
+                {
+                    if( !result.format(  out
+                                         , options.format()
+                                         , Interpreter<S>::error_stream()) )
+                    {
+                        Interpreter<S>::error_stream()
+                                <<"***Error: failed to format result ("
+                                <<result.as_string()
+                               <<") as '"<<options.format()<<"'"<<std::endl;
+                        return false;
+                    }
+                }
+                else if( !options.silent() ){
+                   if( !result.format( out ) )
+                   {
+                       Interpreter<S>::error_stream()
+                               <<"***Error: failed to format result ("
+                                <<result.as_string()<<")."<<std::endl;
+                       return false;
+                   }
+                }
+            }
+            if( !options.next(layer) ) break;
+        }
     }
     auto last_attr_component = attr_view.child_at(attr_view.child_count()-1);
     column = last_attr_component.column() + m_attribute_end_delim.size();
@@ -814,6 +878,11 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
     // attributes must have '#import txt'
     // e.g., #import txt or #import txt<a1>txt<a2>...
     wasp_require( import_view.child_count() > 1);
+    size_t import_line = import_view.line();
+    int delta = import_line - line;
+    wasp_check(delta >= 0);
+    if( delta > 0 )out<<std::string(delta,'\n');
+
     std::stringstream import_str;
     // accumulate an attribute string
     for( size_t i = 1, count = import_view.child_count(); i < count; ++i )
@@ -826,16 +895,12 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
                 wasp::print(import_str, child_view);
             break;
             case wasp::IDENTIFIER:
-                print_attribute(data,child_view, import_str, line, column);
+                print_attribute(data,child_view, import_str, import_line, column);
             break;
             default:
-                wasp_not_implemented("parameterized file import");
+                wasp_not_implemented("parameterized file import '"+child_view.data()+"'");
         }
     }
-    size_t import_line = import_view.line();
-    int delta = import_line - line;
-    wasp_check(delta >= 0);
-    if( delta > 0 )out<<std::string(delta,'\n');
     std::string path = import_str.str();
     static std::string using_str = " using ";
     size_t using_i = path.find(using_str);
@@ -846,6 +911,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
     if( has_using )
     {
         using_what = path.substr(using_i+using_str.size());
+        wasp_tagged_line("path is '"<<path<<"'");
         wasp_tagged_line("Found using stmt, import now '"<<path.substr(0,using_i)<<"' using '"<<using_what<<"'");
         path = path.substr(0,using_i);
         using_what = wasp::trim(using_what," ");
@@ -916,12 +982,322 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
             wasp_not_implemented("import using scalar component");
         }
     }
-    else{
-        return nested_interp.evaluate(out,data);
+    else if( has_using )
+    { // check that the component being used is a json payload
+        if( using_what.size() > 0 && using_what.front() != '{' && using_what.front() != '[')
+        {
+            // doesn't look like a json payload... wasn't a known parameter... error
+            Interpreter<S>::error_stream()<<"***Error : unable to import '"
+                                         <<path<<"' on line "
+                                        <<import_view.line()
+                                       <<", the component being used '"
+                                      <<using_what<<"' is not a known variable."<<std::endl;
+            return false;
+        }
+        std::stringstream data_by_copy_str; data_by_copy_str<<using_what;
+        DataObject data_by_copy;
+        if( !wasp::generate_object<JSONInterpreter<S>>(
+                    data_by_copy,data_by_copy_str,Interpreter<S>::error_stream()))
+        {
+            return false;
+        }
+        DataAccessor data_by_copy_accessor(&data_by_copy);
+        import = nested_interp.evaluate(out,data_by_copy_accessor);
     }
-    ++line; // we know imports take 1 line
+    else{
+        import = nested_interp.evaluate(out,data);
+    }
+    line += delta;
     return import;
 }
+template<class S>
+bool HaliteInterpreter<S>::repeat_file(DataAccessor & data
+                                       ,const TreeNodeView<S>& repeat_view
+                                           ,std::ostream& out
+                                           ,size_t & line
+                                           ,size_t & column)
+{
+
+    // attributes must have '#repear txt'
+    // e.g., #repeat txt or #repeat txt<a1>txt<a2>...
+    wasp_require( repeat_view.child_count() > 1);
+    size_t repeat_line = repeat_view.line();
+    int delta = repeat_line - line;
+    wasp_check(delta >= 0);
+    if( delta > 0 )out<<std::string(delta,'\n');
+
+    std::stringstream repeat_str;
+    // accumulate an attribute string
+    for( size_t i = 1, count = repeat_view.child_count(); i < count; ++i )
+    {
+        const auto& child_view = repeat_view.child_at(i);
+        auto type = child_view.type();
+        switch( type )
+        {
+            case wasp::STRING:
+                wasp::print(repeat_str, child_view);
+            break;
+            case wasp::IDENTIFIER:
+                print_attribute(data,child_view, repeat_str, repeat_line, column);
+            break;
+            default:
+                wasp_not_implemented("parameterized file repeat '"+child_view.data()+"'");
+        }
+    }
+    std::string path = repeat_str.str();
+    static std::string using_str = " using ";
+    size_t using_i = path.find(using_str);
+    bool has_using = using_i != std::string::npos;
+
+    std::string using_what;
+    std::vector<Range> imports;
+    if( has_using )
+    {
+        using_what = path.substr(using_i+using_str.size());
+        wasp_tagged_line("path is '"<<path<<"'");
+        wasp_tagged_line("Found using stmt, import now '"<<path.substr(0,using_i)<<"' using '"<<using_what<<"'");
+        path = path.substr(0,using_i);
+        using_what = wasp::trim(using_what," ");
+
+        std::string error_msg;
+        if( ! extract_ranges(using_what, imports, error_msg) )
+        {
+            Interpreter<S>::error_stream()<<"***Error : unable to extract file repeat range info; "
+                                         <<error_msg<<"."<<std::endl;
+            return false;
+        }
+    }
+    path = wasp::trim(path," \t");
+    wasp_tagged_line("repeating '"<<path<<"' relative to '"
+                     <<Interpreter<S>::stream_name()<<"'");
+    std::ifstream relative_to_working_dir(path.c_str());
+    std::string relative_to_current_path = Interpreter<S>::stream_name()+"/"+path;
+    std::ifstream relative_to_current(relative_to_current_path.c_str());
+    HaliteInterpreter<S> nested_interp(Interpreter<S>::error_stream());
+    bool import = false;
+    bool parsed = false;
+    if( !relative_to_working_dir.good() )
+    {
+        if( !relative_to_current.good() )
+        {
+            Interpreter<S>::error_stream()<<"***Error : unable to open '"
+                                         <<path<<"'."<<std::endl;
+            return false;
+        }
+        nested_interp.setStreamName(relative_to_current_path,true);
+        parsed = nested_interp.parse(relative_to_current);
+
+    }else{
+        nested_interp.setStreamName(path,true);
+        parsed = nested_interp.parse(relative_to_working_dir);
+    }
+    if( parsed == false )
+    {
+        return false;
+    }
+    wasp_tagged_line("importing");
+    if( has_using )
+    {
+        // This logic is proof of concept and will not function with multiple
+        // variables
+        wasp_check( imports.empty() == false );
+        DataObject o;
+        DataAccessor import_data(&o);
+        import = import_range(import_data, nested_interp, imports,0, out);
+    }
+    else{
+        import = nested_interp.evaluate(out,data);
+    }
+    line += delta;
+    return import;
+}
+
+template<class S>
+bool HaliteInterpreter<S>::extract_ranges( std::string range_data
+                                           , std::vector<Range>& ranges
+                                           , std::string & error )
+{
+    size_t assign_i = range_data.find("=");
+    if( assign_i == std::string::npos )
+    {
+        error = "unable to determine range variable - missing assign '=' character";
+        return false;
+    }
+    std::string variable = trim(range_data.substr(0,assign_i)," ");
+    wasp_tagged_line("Variable = "<<variable);
+
+    size_t delim_i = range_data.find_first_of(",;");
+    int start = 0, end = 0, stride=1;
+
+    // extract start
+    if( delim_i == std::string::npos )
+    {   // no terminator delim exists 'var = x'
+
+        if( assign_i + 1 >= range_data.size() )
+        {
+            error = "no range start was specified for '"+variable+"'";
+            return false;
+        }
+        bool ok = false;
+        to_type(start,range_data.substr(assign_i+1), &ok );
+        if( !ok )
+        {
+            error = "unable to extract range start for '"+variable+"'";
+            return false;
+        }
+        end = start; // default
+        ranges.push_back(Range(variable, start, end, stride));
+        return true;
+    }
+    else{
+        bool ok = false;
+        size_t length = delim_i - 1 - assign_i;
+        const std::string& start_str = trim(range_data.substr(assign_i+1,length)," ");
+        to_type(start, start_str, &ok);
+        wasp_tagged_line("start '"<<start_str<<"' - "<<std::boolalpha<<ok);
+        if( !ok )
+        {
+            error = "unable to extract delimited range start for '"+variable+"'";
+            return false;
+        }
+        end = start;
+    }
+    size_t start_delim_i = delim_i;
+    wasp_check( delim_i < range_data.size() );
+    bool has_more = range_data[start_delim_i] == ',';
+
+    if( has_more )
+    {
+        // extract end
+        delim_i = range_data.find_first_of(",;",start_delim_i+1);
+        if( delim_i == std::string::npos )
+        {   // no terminator delim exists ', end'
+
+            if( start_delim_i + 1 >= range_data.size() )
+            {
+                error = "no range end was specified for '"+variable+"'";
+                return false;
+            }
+            bool ok = false;
+            const std::string & range_end = range_data.substr(start_delim_i+1);
+            wasp_tagged_line("range end is '"<<range_end<<"'");
+            to_type(end,range_end, &ok );
+            if( !ok )
+            {
+                error = "unable to extract range end for '"+variable+"'";
+                return false;
+            }
+            ranges.push_back(Range(variable, start, end, stride));
+            return true;
+        }
+        else{
+            bool ok = false;
+            size_t length = delim_i -1 - start_delim_i;
+            const std::string & range_end = range_data.substr(start_delim_i+1,length);
+            wasp_tagged_line("range end '"<<range_end<<"'");
+            to_type(end, range_end, &ok);
+            if( !ok )
+            {
+                error = "unable to extract delimited range end for '"+variable+"'";
+                return false;
+            }
+        }
+
+        // extract stride
+        size_t end_delim_i = delim_i;
+        has_more = range_data[end_delim_i] == ',';
+        if( has_more ) // stride available
+        {
+            wasp_check( delim_i < range_data.size() );
+            // extract stride
+            delim_i = range_data.find_first_of(";",end_delim_i+1);
+            if( delim_i == std::string::npos )
+            {   // no terminator delim exists ', end'
+
+                if( end_delim_i + 1 >= range_data.size() )
+                {
+                    error = "no range stride was specified for '"+variable+"'";
+                    return false;
+                }
+                bool ok = false;
+                const std::string & range_stride = range_data.substr(end_delim_i+1);
+                wasp_tagged_line("range stride is '"<<range_stride<<"'");
+                to_type(stride,range_stride, &ok );
+                if( !ok )
+                {
+                    error = "unable to extract range stride for '"+variable+"'";
+                    return false;
+                }
+                ranges.push_back(Range(variable, start, end, stride));
+                return true;
+            }
+            else{
+                bool ok = false;
+                size_t length = delim_i - end_delim_i;
+                to_type(stride, range_data.substr(end_delim_i+1,length), &ok);
+                if( !ok )
+                {
+                    error = "unable to extract delimited range stride for '"+variable+"'";
+                    return false;
+                }
+            }
+        } // end of stride
+    } // end of 'end' and possible 'stride' acquisition
+    wasp_tagged_line("pushing "<<variable<<","<<start<<","<<end<<","<<stride);
+    ranges.push_back(Range(variable, start, end, stride));
+    if( delim_i != std::string::npos && delim_i+1 < range_data.size() )
+    {
+        // check for additional ranges after a semi-colon
+        wasp_tagged_line("delim_i = "<<delim_i<<" vs"<< range_data.size()
+                         <<" has_more "<<std::boolalpha<<has_more);
+
+        range_data = trim(range_data.substr(delim_i+1), " " );
+        if( range_data.empty() ) return true;
+        wasp_tagged_line("recursing with remaining range '"<<range_data<<"'");
+        return extract_ranges(range_data, ranges, error);
+    }
+
+    return true;
+}
+
+template<class S>
+bool HaliteInterpreter<S>::import_range(DataAccessor& data
+                                        , HaliteInterpreter<S> & file_interpreter
+                                        , const std::vector<Range>& imports
+                                        , size_t i
+                                        , std::ostream& out)
+{
+    wasp_require( i < imports.size() );
+    wasp_tagged_line("looping "<<imports[i].name);
+    for( int r = imports[i].start; r <= imports[i].end; r+=imports[i].stride )
+    {
+        wasp_tagged_line("looping r="<<r<<" from "<<imports[i].start<<" to "<<imports[i].end);
+        data.store(imports[i].name,r);
+        // bottom of recursion - evaluate
+        if( i+1 == imports.size() )
+        {
+            if( !file_interpreter.evaluate(out,data) )
+            {
+                wasp_tagged_line("failing iterative file import");
+                return false;
+            }
+            if( r != imports[i].end )
+            {
+                out<<std::endl;
+            }
+        }
+        else if( !import_range(data, file_interpreter, imports, i+1, out) )
+        {
+            return false;
+        }
+        // range succussfully imported
+        else if( r != imports[i].end ){
+            out<<std::endl;
+        }
+    }
+    return true;
+}
+
 template<class S>
 void HaliteInterpreter<S>::capture_attribute_text(const std::string& text
                                                   ,size_t offset)
@@ -971,15 +1347,56 @@ void HaliteInterpreter<S>::capture_attribute_delim(const std::string& data
             + m_attribute_end_delim.size();
 }
 template<class S>
-void HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
-        ,const std::string& data)const
+bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
+        ,const std::string& data)
 {
+    wasp_tagged_line("getting options for '"<<data<<"'");
     static std::string fmt = "fmt=";
-    size_t format_index = data.find(fmt);
-    if( format_index != std::string::npos )
+    size_t format_i = data.find(fmt);
+    std::stringstream other_options_str;
+    size_t start_i=0;
+    if( data.size() > 1 )
     {
-        options.format() = data.substr(format_index+fmt.size());
-        wasp_tagged_line("Format of '"<<options.format()<<"' captured");
+        switch (data[1]){
+            case '?':
+            options.optional() = true;
+            start_i = 2;
+            break;
+            case '|':
+            options.silent() = true;
+            start_i = 2;
+            break;
+        }
     }
+    if( format_i != std::string::npos )
+    {
+        other_options_str<<data.substr(start_i+1,format_i -1 -start_i);
+        size_t term_i = data.find(';',format_i);
+        size_t length = data.size() - (format_i+fmt.size());
+        if( term_i != std::string::npos )
+        {
+            length = term_i - (format_i+fmt.size());
+            other_options_str<<data.substr(term_i+1);
+        }
+        options.format() = data.substr(format_i+fmt.size(),length);
+        wasp_tagged_line("Format of '"<<options.format()<<"' captured");
+        wasp_check( format_i >= start_i );
+        wasp_tagged_line("Other options of '"<<other_options_str.str()<<"'");
+    }    
+    std::string other_options = other_options_str.str();
+    if( !other_options.empty() )
+    {
+        std::string error;
+        bool extracted = extract_ranges(other_options,options.ranges(),error);
+        if( !extracted )
+        {
+            Interpreter<S>::error_stream()
+                    <<"***Error: unable to acquire attribute options; "
+                                     <<error<<"."<<std::endl;
+            return false;
+        }
+    }
+    return true;
+
 }
 #endif

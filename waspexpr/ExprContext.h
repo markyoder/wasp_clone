@@ -57,6 +57,19 @@ public:
        if( v == nullptr ) return Context::Type::UNDEFINED;
        return v->type();
    }
+   /**
+    * @brief type request the type of the element at the given index
+    * @param name the name of the array
+    * @param index the index into the array
+    * @return the type of the element at the array
+    * Note : Base Context implementation of array's are contain a single type
+    * This interface allows subclasses of Context to work with heterogenously typed elements
+    */
+   virtual Context::Type type(const std::string& name, size_t index)const{
+       auto *v = variable(name);
+       if( v == nullptr ) return Context::Type::UNDEFINED;
+       return v->type(); // base vectors are always homogeneously typed
+   }
 
    // todo add book*ok
    virtual bool boolean(const std::string& name,size_t index,bool * ok=nullptr)const{
@@ -1418,6 +1431,7 @@ Result::evaluate( const T & tree_view
        auto var_type = context.type(name);
        if( var_type == Context::Type::UNDEFINED )
        {
+           wasp_tagged_line("undefined type error");
            m_type = Context::Type::ERROR;
            string() = error_msg(tree_view,"is not a known variable.");
 
@@ -1446,62 +1460,65 @@ Result::evaluate( const T & tree_view
    case wasp::OBJECT:
    {
         const std::string var_name = tree_view.name();
-
-        Context::Type var_type = context.type(var_name);
-        if( var_type == Context::Type::UNDEFINED )
+        if( !context.exists(var_name) )
         {
+            wasp_tagged_line("undefined type error");
             m_type = Context::Type::ERROR;
             string() = error_msg(tree_view,"is not a known variable.");
+        }
+        wasp_check(tree_view.child_count() > 2);
+        const auto & index_view = tree_view.child_at(2);
+        if( evaluate(index_view, context).m_type == Context::Type::ERROR )
+        {
+            break;
+        }
+        if( !is_number() )
+        {
+            wasp_tagged_line("illegal index type error");
+            m_type = Context::Type::ERROR;
+            string() = error_msg(index_view,"is not an integral value so it cannot be used as an index.");
+            break;
+        }
+        size_t index = integer();
+        Context::Type var_type = context.type(var_name,index);
+        if( var_type == Context::Type::UNDEFINED )
+        {
+            wasp_tagged_line("undefined type error");
+            m_type = Context::Type::ERROR;
+            string() = error_msg(tree_view,"is undefined at index "+std::to_string(index)+".");
         }
         // name [ index ]  - 4 children
         else if( tree_view.child_count() == 4){
 
-            // name [ index
-            wasp_check( tree_view.child_count() > 2 );
-            const auto & index_view = tree_view.child_at(2);
-            // the following evaluation makes this result the
-            // result of the index/hash
-            if( evaluate(index_view, context).m_type == Context::Type::ERROR )
-            {
-                break;
-            }else if( is_number() )
-            {
-                size_t index = integer();
-                m_type = var_type;
+            m_type = var_type;
 
-                switch( m_type ){ // switch on current Result's type
-                case Context::Type::BOOLEAN:
-                    m_value.m_bool = context.boolean(var_name,index);
-                    break;
-                case Context::Type::INTEGER:
-                    m_value.m_int = context.integer(var_name,index);
-                    break;
-                case Context::Type::REAL:
-                    m_value.m_real = context.real(var_name,index);
-                    break;
-                case Context::Type::STRING:
-                    string() = context.string(var_name, index);
-                    break;
-                default:
-                    wasp_not_implemented("unknown index variable type value acquisition");
-                    break;
-                }
+            switch( m_type ){ // switch on current Result's type
+            case Context::Type::BOOLEAN:
+                m_value.m_bool = context.boolean(var_name,index);
+                break;
+            case Context::Type::INTEGER:
+                m_value.m_int = context.integer(var_name,index);
+                break;
+            case Context::Type::REAL:
+                m_value.m_real = context.real(var_name,index);
+                break;
+            case Context::Type::STRING:
+                string() = context.string(var_name, index);
+                break;
+            default:
+                wasp_not_implemented("unknown index variable type value acquisition");
+                break;
             }
+
         } // end of name [ index ]
         // name [ index ] = value
         else if( tree_view.child_count() == 6 )
         {
-            const auto & index_view = tree_view.child_at(2);
-            if( evaluate(index_view, context).m_type == Context::Type::ERROR )
-            {
-                break;
-            }
+
             Result value;
             const auto & value_view = tree_view.child_at(5);
-            value.evaluate(value_view, context);
-            wasp_ensure( is_number() );
+            value.evaluate(value_view, context);            
 
-            size_t index = integer();
             m_type = var_type;
 
             switch( value.m_type ){ // switch on current value's type
@@ -1526,9 +1543,16 @@ Result::evaluate( const T & tree_view
                 string() = value.string();
                 break;
             default:
-                wasp_not_implemented("unknown index variable type value acquisition");
+                wasp_tagged_line("unknown object error");
+                m_type = Context::Type::ERROR;
+                string() = error_msg(tree_view,"is an unknown object scenario.");
                 break;
             }
+        }else{
+            wasp_tagged_line("unknown object reference pattern");
+            m_type = Context::Type::ERROR;
+            string() = error_msg(tree_view,"is not a known object reference pattern.");
+            break;
         }
         break;
    }

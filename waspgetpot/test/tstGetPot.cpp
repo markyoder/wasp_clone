@@ -69,9 +69,9 @@ TEST(GetPotInterpreter,simple)
     {
         {
         SCOPED_TRACE(i);
-        ASSERT_EQ(token_data[i], interpreter.m_tree_nodes.data(i));
-        ASSERT_EQ(leaf_node_types[i], interpreter.m_tree_nodes.type(i));
-        ASSERT_EQ(leaf_node_names[i], interpreter.m_tree_nodes.name(i));
+        ASSERT_EQ(token_data[i], interpreter.data(i));
+        ASSERT_EQ(leaf_node_types[i], interpreter.type(i));
+        ASSERT_EQ(leaf_node_names[i], interpreter.name(i));
         }
     }
     std::vector<std::size_t> parent_indices = {3,3,3,4,5};
@@ -90,13 +90,13 @@ TEST(GetPotInterpreter,simple)
     {
         {
         SCOPED_TRACE(i);
-        ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
-        ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
-        ASSERT_EQ(parent_indices[i],interpreter.m_tree_nodes.parent_node_index(i));
-        ASSERT_EQ(child_count[i], interpreter.m_tree_nodes.child_count(i));
-        ASSERT_EQ(child_count[i], interpreter.m_tree_nodes.child_count(i));
-        ASSERT_EQ( column[i], interpreter.m_tree_nodes.column(i));
-        ASSERT_EQ( 1, interpreter.m_tree_nodes.line(i));
+        ASSERT_EQ(node_types[i], interpreter.type(i));
+        ASSERT_EQ(node_names[i], interpreter.name(i));
+        ASSERT_EQ(parent_indices[i],interpreter.parent_node_index(i));
+        ASSERT_EQ(child_count[i], interpreter.child_count(i));
+        ASSERT_EQ(child_count[i], interpreter.child_count(i));
+        ASSERT_EQ( column[i], interpreter.column(i));
+        ASSERT_EQ( 1, interpreter.line(i));
         }
     }
 }
@@ -127,9 +127,9 @@ TEST(GetPotInterpreter,empty_object)
     {
         {
         SCOPED_TRACE(i);
-        ASSERT_EQ(token_data[i], interpreter.m_tree_nodes.data(i));
-        ASSERT_EQ(leaf_node_types[i], interpreter.m_tree_nodes.type(i));
-        ASSERT_EQ(leaf_node_names[i], interpreter.m_tree_nodes.name(i));
+        ASSERT_EQ(token_data[i], interpreter.data(i));
+        ASSERT_EQ(leaf_node_types[i], interpreter.type(i));
+        ASSERT_EQ(leaf_node_names[i], interpreter.name(i));
         }
     }
     std::vector<wasp::NODE> node_types = {wasp::LBRACKET,wasp::DECL
@@ -145,8 +145,8 @@ TEST(GetPotInterpreter,empty_object)
     {
         {
         SCOPED_TRACE(i);
-        ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
-        ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
+        ASSERT_EQ(node_types[i], interpreter.type(i));
+        ASSERT_EQ(node_names[i], interpreter.name(i));
         }
     }
 }
@@ -194,8 +194,8 @@ TEST(GetPotInterpreter,simple_object)
     {
         {
         SCOPED_TRACE(i);
-        ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
-        ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
+        ASSERT_EQ(node_types[i], interpreter.type(i));
+        ASSERT_EQ(node_names[i], interpreter.name(i));
         }
     }
 }
@@ -270,8 +270,8 @@ TEST(GetPotInterpreter,less_simple_object)
     {
         {
         SCOPED_TRACE(i);
-        ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
-        ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
+        ASSERT_EQ(node_types[i], interpreter.type(i));
+        ASSERT_EQ(node_names[i], interpreter.name(i));
         }
     }
 }
@@ -329,8 +329,8 @@ TEST(GetPotInterpreter, object_array)
     {
         {
         SCOPED_TRACE(i);
-        ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
-        ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
+        ASSERT_EQ(node_types[i], interpreter.type(i));
+        ASSERT_EQ(node_names[i], interpreter.name(i));
         }
     }
 }
@@ -415,8 +415,8 @@ TEST(GetPotInterpreter, object_array_commas)
     {
         {
         SCOPED_TRACE(i);
-        ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
-        ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
+        ASSERT_EQ(node_types[i], interpreter.type(i));
+        ASSERT_EQ(node_names[i], interpreter.name(i));
         }
     }
 }
@@ -474,8 +474,8 @@ TEST(GetPotInterpreter, object_empty_subobject)
     {
         {
         SCOPED_TRACE(i);
-        ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
-        ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
+        ASSERT_EQ(node_types[i], interpreter.type(i));
+        ASSERT_EQ(node_names[i], interpreter.name(i));
         }
     }
 }
@@ -542,8 +542,8 @@ TEST(GetPotInterpreter, object_subobject)
     {
         {
         SCOPED_TRACE(i);
-        ASSERT_EQ(node_types[i], interpreter.m_tree_nodes.type(i));
-        ASSERT_EQ(node_names[i], interpreter.m_tree_nodes.name(i));
+        ASSERT_EQ(node_types[i], interpreter.type(i));
+        ASSERT_EQ(node_names[i], interpreter.name(i));
         }
     }
 }
