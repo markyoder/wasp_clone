@@ -602,7 +602,7 @@ TEST( Halite, file_import_using_object_by_name)
     content<<"this is"<<std::endl
          <<"nested files using ted's foo (<foo>)"<<std::endl
         <<std::endl // empty line
-       <<"and assigning foo to < foo = 9 >";
+       <<"and assigning foo to < foo = 9 > and p (<p>) to <p=4>";
     import<<content.str();
     import.close();
     std::stringstream input;
@@ -617,6 +617,7 @@ TEST( Halite, file_import_using_object_by_name)
     std::stringstream out;
     DataObject o;
     DataAccessor data(&o);
+    o["p"] = 3;
     o["ted"] = DataObject();
     o["ted"]["foo"] = std::string("bar");
     ASSERT_EQ( Value::TYPE_OBJECT, o["ted"].type() );
@@ -629,10 +630,12 @@ TEST( Halite, file_import_using_object_by_name)
 this is
 nested files using ted's foo (bar)
 
-and assigning foo to 9
+and assigning foo to 9 and p (3) to 4
  text after)INPUT";
     ASSERT_EQ( expected.str(), out.str() );
     std::remove("import_by_name_template.tmpl");
+    ASSERT_EQ( Value::TYPE_INTEGER, o["p"].type() );
+    ASSERT_EQ( 3, o["p"].to_int() ); // didnt change!!!
     // ensure the child was passed by reference (can be changed)
     ASSERT_EQ( Value::TYPE_INTEGER, o["ted"]["foo"].type() );
     ASSERT_EQ( 9, o["ted"]["foo"].to_int() );

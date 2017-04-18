@@ -643,7 +643,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     }
     else{
         DataObject o;
-        DataAccessor layer(&o);
+        DataAccessor layer(&o,&data);
         options.initialize(layer);
         for( ;; )
         {
@@ -962,7 +962,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
         DataArray * array = nullptr;
         if( (obj = data.object(using_what)) != nullptr )
         {
-            DataAccessor ref(obj);
+            DataAccessor ref(obj,&data);
             import = nested_interp.evaluate(out,ref);
         }
         else if( (array = data.array(using_what)) != nullptr )
@@ -972,7 +972,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
                 const auto& variable_at_i = array->at(array_i);
                 if( variable_at_i.is_object() )
                 {
-                    DataAccessor ref(variable_at_i.to_object());
+                    DataAccessor ref(variable_at_i.to_object(),&data);
                     import = nested_interp.evaluate(out,ref);
                     if( !import )
                     {
@@ -1007,7 +1007,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
         {
             return false;
         }
-        DataAccessor data_by_copy_accessor(&data_by_copy);
+        DataAccessor data_by_copy_accessor(&data_by_copy,&data);
         import = nested_interp.evaluate(out,data_by_copy_accessor);
     }
     else{
@@ -1108,7 +1108,7 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor & data
         // variables
         wasp_check( imports.empty() == false );
         DataObject o;
-        DataAccessor import_data(&o);
+        DataAccessor import_data(&o,&data);
         import = import_range(import_data, nested_interp, imports,0, out);
     }
     else{
