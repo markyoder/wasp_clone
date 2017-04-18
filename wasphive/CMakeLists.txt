@@ -41,7 +41,7 @@ TRIBITS_ADD_LIBRARY(
 INSTALL(FILES
   ${HEADERS}
   DESTINATION
-  include/waspson)
+  include/wasphive)
 
 #
 # Add test directory for this package
