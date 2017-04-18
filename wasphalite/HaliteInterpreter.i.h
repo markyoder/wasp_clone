@@ -587,9 +587,13 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
             {                
                 return false;
             }
+            break;
             // indicates the attribute has options for substitution
             case wasp::FUNCTION:
-                attribute_options(options, child_view.data());
+                if( !attribute_options(options, child_view.data(),line) )
+                {
+                    return false;
+                }
             break;
             default:
             wasp_not_implemented("nested attribute printing");
@@ -789,10 +793,11 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
                         {
                             return false;
                         }
+                        break;
                         // indicates the attribute has options for substitution
                         case wasp::FUNCTION:
                             // legal, but not used
-                            attribute_options(options, if_cond_view.data());
+                            attribute_options(options, if_cond_view.data(),cline);
                         break;
                         default:
                         wasp_not_implemented(if_cond_view.data()+" is not supported.");
@@ -1348,13 +1353,15 @@ void HaliteInterpreter<S>::capture_attribute_delim(const std::string& data
 }
 template<class S>
 bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
-        ,const std::string& data)
+        ,const std::string& data
+        ,size_t line)
 {
     wasp_tagged_line("getting options for '"<<data<<"'");
-    static std::string fmt = "fmt=";
+    static std::string fmt = "fmt=", sep="sep=";
     size_t format_i = data.find(fmt);
-    std::stringstream other_options_str;
-    size_t start_i=0;
+    size_t separator_i = data.find(sep);
+    std::stringstream iterative_options_str;
+    size_t start_i=1;
     if( data.size() > 1 )
     {
         switch (data[1]){
@@ -1368,31 +1375,72 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
             break;
         }
     }
+    std::set<std::pair<size_t,size_t>> intervals;
     if( format_i != std::string::npos )
-    {
-        other_options_str<<data.substr(start_i+1,format_i -1 -start_i);
+    {        
         size_t term_i = data.find(';',format_i);
         size_t length = data.size() - (format_i+fmt.size());
+        size_t delim_s = 0;
         if( term_i != std::string::npos )
         {
             length = term_i - (format_i+fmt.size());
-            other_options_str<<data.substr(term_i+1);
+            delim_s = 1;
         }
         options.format() = data.substr(format_i+fmt.size(),length);
         wasp_tagged_line("Format of '"<<options.format()<<"' captured");
-        wasp_check( format_i >= start_i );
-        wasp_tagged_line("Other options of '"<<other_options_str.str()<<"'");
-    }    
-    std::string other_options = other_options_str.str();
-    if( !other_options.empty() )
+        // capture the format text interval
+        intervals.insert(std::make_pair(format_i,format_i+fmt.size()+length+delim_s));
+    }
+    if( separator_i != std::string::npos )
+    {
+        size_t term_i = data.find(';',separator_i);
+        size_t length = data.size() - (separator_i+fmt.size());
+        size_t delim_s = 0;
+        if( term_i != std::string::npos )
+        {
+            length = term_i - (separator_i+fmt.size());
+            delim_s = 1;
+        }
+        options.separator() = data.substr(separator_i+sep.size(),length);
+        wasp_tagged_line("Separator of '"<<options.separator()<<"' captured");
+        // capture the format text interval
+        intervals.insert(std::make_pair(separator_i,separator_i+sep.size()+length+delim_s));
+    }
+
+    size_t last_i = start_i;
+    for( auto itr = intervals.begin(); itr != intervals.end(); itr++ )
+    {
+        if( last_i > itr->first && last_i < itr->second )
+        {
+            Interpreter<S>::error_stream()
+                    <<"***Error: a delimiter appears to be missing on line "<<line
+                   <<std::endl;
+            return false;
+        }
+        const std::string & extra = data.substr(last_i,itr->first-last_i);
+        wasp_tagged_line("found extra '"<<extra<<"'");
+        iterative_options_str<<extra;
+        last_i = itr->second;
+    }
+    // capture trailing
+    if( last_i < data.size() )
+    {
+        const std::string & extra = data.substr(last_i,data.size()-last_i);
+        wasp_tagged_line("found extra '"<<extra<<"'");
+        iterative_options_str<<extra;
+    }
+    std::string iterative_options = iterative_options_str.str();
+    wasp_tagged_line("iterative options '"<<iterative_options<<"'");
+    if( !iterative_options.empty() )
     {
         std::string error;
-        bool extracted = extract_ranges(other_options,options.ranges(),error);
+        bool extracted = extract_ranges(iterative_options,options.ranges(),error);
         if( !extracted )
         {
             Interpreter<S>::error_stream()
-                    <<"***Error: unable to acquire attribute options; "
-                                     <<error<<"."<<std::endl;
+                    <<"***Error: unable to acquire attribute options on line "
+                   <<line<<"; "
+                    <<error<<"."<<std::endl;
             return false;
         }
     }

@@ -2,6 +2,7 @@
 #ifndef WASP_HALITEINTERPRETER_H
 #define WASP_HALITEINTERPRETER_H
 
+#include <set>
 #include <string>
 #include <fstream>
 #include <istream>
@@ -139,9 +140,11 @@ namespace wasp {
 
         class SubstitutionOptions{
         public:
-            SubstitutionOptions():m_optional(false), m_silent(false){}
+            SubstitutionOptions():m_separator(" ")
+              ,m_optional(false), m_silent(false){}
             SubstitutionOptions(const SubstitutionOptions&orig)
                 :m_format(orig.m_format)
+                ,m_separator(orig.m_separator)
                 ,m_optional(orig.m_optional)
                 ,m_silent(orig.m_silent)
                 ,m_ranges(orig.m_ranges)
@@ -152,6 +155,9 @@ namespace wasp {
 
             bool optional()const{return m_optional;}
             bool& optional(){return m_optional;}
+
+            const std::string & separator()const{return m_separator;}
+            std::string & separator(){return m_separator;}
 
             bool silent()const{return m_silent;}
             bool& silent(){return m_silent;}
@@ -211,7 +217,9 @@ namespace wasp {
             }
 
           private:
-            std::string m_format; // format of the substitution
+            // format of the substitution
+            std::string m_format;
+            std::string m_separator;
             bool m_optional;
             bool m_silent;
             std::vector<Range> m_ranges;
@@ -225,7 +233,8 @@ namespace wasp {
          * @return true, iff no issues arose in option extract
          */
         bool attribute_options( SubstitutionOptions & options
-                               , const std::string& data);
+                               , const std::string& data
+                                , size_t line);
 
         bool accumulate_attribute(DataAccessor & data
                                   ,const TreeNodeView<S> & attr_view
