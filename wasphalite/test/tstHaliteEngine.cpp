@@ -126,6 +126,42 @@ TEST( Halite, iterative_formatted_attribute)
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( " 1  3", out.str() );
 }
+TEST( Halite, iterative_formatted_attribute_sep)
+{
+    std::stringstream input;
+    // default separator is a whitespace making %2 behave like %3
+    input<< R"INPUT(<i:fmt=%2d;i=1,3,2;sep=,>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( " 1, 3", out.str() );
+}
+TEST( Halite, iterative_formatted_sep_attribute)
+{
+    std::stringstream input;
+    // default separator is a whitespace making %2 behave like %3
+    input<< R"INPUT(<i:fmt=%2d;sep=s;i=1,3,2;>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( " 1s 3", out.str() );
+}
+TEST( Halite, iterative_formatted_sep_first_attribute)
+{
+    std::stringstream input;
+    // default separator is a whitespace making %2 behave like %3
+    input<< R"INPUT(<i:sep=*;fmt=%2d;i=1,3,2;>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( " 1* 3", out.str() );
+}
 TEST( Halite, iterative_formatted_attribute_multi_only_start)
 {
     std::stringstream input;

@@ -1395,11 +1395,11 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
     if( separator_i != std::string::npos )
     {
         size_t term_i = data.find(';',separator_i);
-        size_t length = data.size() - (separator_i+fmt.size());
+        size_t length = data.size() - (separator_i+sep.size());
         size_t delim_s = 0;
         if( term_i != std::string::npos )
         {
-            length = term_i - (separator_i+fmt.size());
+            length = term_i - (separator_i+sep.size());
             delim_s = 1;
         }
         options.separator() = data.substr(separator_i+sep.size(),length);
@@ -1418,9 +1418,12 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
                    <<std::endl;
             return false;
         }
-        const std::string & extra = data.substr(last_i,itr->first-last_i);
-        wasp_tagged_line("found extra '"<<extra<<"'");
-        iterative_options_str<<extra;
+        if( last_i < itr->first )
+        {
+            const std::string & extra = data.substr(last_i,itr->first-last_i);
+            wasp_tagged_line("found extra '"<<extra<<"'");
+            iterative_options_str<<extra;
+        }
         last_i = itr->second;
     }
     // capture trailing
