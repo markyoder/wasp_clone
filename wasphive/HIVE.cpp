@@ -7,7 +7,9 @@
 
 #include "HIVE.h"
 
+#define doj wasp
 #include "wasphive/AlphaNum.h" // special alpha numeric sort logic
+#undef doj
 
 using namespace std;
 
@@ -30,7 +32,7 @@ HIVE::~HIVE() {
 }
 void HIVE::sort_errors(std::vector<string> &errors)
 {
-    std::sort(errors.begin(), errors.end(), doj::alphanum_less<std::string>());
+    std::sort(errors.begin(), errors.end(), alphanum_less<std::string>());
 }
 
 void HIVE::printMessages(bool pass, vector<string>&errors,
