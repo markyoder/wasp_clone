@@ -12,8 +12,9 @@
                  )
 #endif
 
+
 #ifndef __FLEX_LEXER_H
-#define yyFlexLexer SIRENFlexLexer
+#define yyFlexLexer WASPSIRENFlexLexer
 #include "waspcore/FlexLexer.h"
 #undef yyFlexLexer
 #endif
@@ -27,7 +28,7 @@ namespace wasp {
  * macros to SIRENLexer. However we change the context of the generated
  * yylex() function to be contained within the SIRENLexerImpl class. This is required
  * because the yylex() defined in SIRENLexer has no parameters. */
-class SIRENLexerImpl : public SIRENFlexLexer
+class SIRENLexerImpl : public WASPSIRENFlexLexer
 {
 public:
     /** Create a new scanner object. The streams arg_yyin and arg_yyout default

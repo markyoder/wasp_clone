@@ -27,7 +27,7 @@ typedef wasp::SIRENParser::token_type token_type;
 %option c++
 
  /* change the name of the scanner class. results in "SIRENFlexLexer" */
-%option prefix="SIREN"
+%option prefix="WASPSIREN"
 %option outfile="SIRENLexer.cpp"
  /*%option yyclass="wasp::SIRENLexerImpl"*/
 
@@ -241,7 +241,7 @@ SIRENLexerImpl::SIRENLexerImpl(
                 AbstractInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
-    : SIRENFlexLexer(in, out)
+    : WASPSIRENFlexLexer(in, out)
     , interpreter(interpreter)
     , file_offset(0)
 {
@@ -278,7 +278,7 @@ void SIRENLexerImpl::capture_token(
 #undef yylex
 #endif
 
-int SIRENFlexLexer::yylex()
+int WASPSIRENFlexLexer::yylex()
 {
     std::cerr << "in SIRENFlexLexer::yylex() !" << std::endl;
     return 0;
@@ -290,7 +290,7 @@ int SIRENFlexLexer::yylex()
  * another input file, and scanning continues. If it returns true (non-zero),
  * then the scanner terminates, returning 0 to its caller. */
 
-int SIRENFlexLexer::yywrap()
+int WASPSIRENFlexLexer::yywrap()
 {
     return 1;
 }
