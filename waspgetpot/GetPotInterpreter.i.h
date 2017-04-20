@@ -19,4 +19,14 @@ bool GetPotInterpreter<S>::parse(std::istream& in
                 ,startLine
                 ,startColumn);
 }
+template<class S>
+bool GetPotInterpreter<S>::parseFile(const std::string &filename, size_t line)
+{
+    std::ifstream in(filename.c_str());
+    if (!in.good()){
+        Interpreter<S>::error_stream()<<"file '"<<filename<<"' is either inaccessible or doesn't exist! Unable to read."<<std::endl;
+        return false;
+    }
+    return parse(in, line);
+}
 #endif

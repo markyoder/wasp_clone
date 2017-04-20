@@ -3,6 +3,10 @@
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/Interpreter.h"
 
+#include <string>
+#include <fstream>
+#include <iostream>
+
 #include "waspgetpot/GetPotParser.hpp"
 
 namespace wasp{
@@ -24,6 +28,7 @@ public:
      bool parse(std::istream &input
                        , std::size_t m_start_line=1u
                        , std::size_t m_start_column=1u);
+     bool parseFile(const std::string& filename, size_t startLine=1u);
 };
 #include "waspgetpot/GetPotInterpreter.i.h"
 } // end of namespace
