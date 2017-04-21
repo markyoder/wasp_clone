@@ -244,6 +244,13 @@ std::size_t GetPotNodeView<TNV>::last_column()const
 }
 
 template<class TNV>
+bool GetPotNodeView<TNV>::to_bool(bool * ok)const
+{
+    TNV view( value_tree_node_index(), *tree_node_pool() );
+    return view.to_bool(ok);
+}
+
+template<class TNV>
 int GetPotNodeView<TNV>::to_int(bool * ok)const
 {
     TNV view( value_tree_node_index(), *tree_node_pool() );

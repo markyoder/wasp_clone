@@ -206,6 +206,12 @@ public:
 
     // !> Type operators
     /**
+     * @brief to_bool converts the data to a bool
+     * @return the data as a bool
+     */
+    bool to_bool(bool * ok = nullptr) const;
+
+    /**
      * @brief to_int converts the data to an integer
      * @return the data as an integer
      */
