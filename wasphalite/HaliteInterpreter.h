@@ -17,6 +17,18 @@
 #include "waspcore/wasp_bug.h"
 
 namespace wasp {
+    /**
+     * @brief expand_template convenience function for expanding a template with an optional data set
+     * @param result the output stream to capture the resulting expansion
+     * @param elog the stream to report error messages on
+     * @param alog the stream to report expansion activity on
+     * @param template_file the template file to expand
+     * @param json_parameter_file the optional data to to drive expansion
+     * @return true, iff the template expansion functions
+     */
+    bool expand_template(std::ostream& result, std::ostream& elog, std::ostream& alog
+                         , const std::string & template_file
+                         , const std::string & json_parameter_file = "");
 
     template<class S = TreeNodePool<unsigned short, unsigned short
                                     ,TokenPool<unsigned short,unsigned short, unsigned short>> >
@@ -325,5 +337,53 @@ namespace wasp {
         bool m_has_file;
     }; // end of HaliteInterpreter class
 #include "wasphalite/HaliteInterpreter.i.h"
+
+    inline bool expand_template(std::ostream &result, std::ostream &elog
+                         , std::ostream &alog, const std::string &template_file
+                         , const std::string &json_parameter_file)
+    {
+        HaliteInterpreter<TreeNodePool<unsigned int, unsigned int
+                ,TokenPool<unsigned int,unsigned int, unsigned int>>> halite(elog);
+
+        bool tmpl_failed = !halite.parseFile(template_file);
+        if( tmpl_failed )
+        {
+            elog<<"***Error : Parsing of template "<<template_file<<" failed!"<<std::endl;
+            return false;
+        }
+        if( json_parameter_file.empty() )
+        {
+            DataObject o;
+            DataAccessor data(&o);
+            bool emitted = halite.evaluate(result,data,&alog);
+
+            if( !emitted )
+            {
+                return false;
+            }
+            return true;
+        }
+        JSONInterpreter<TreeNodePool<unsigned int, unsigned int
+                ,TokenPool<unsigned int,unsigned int, unsigned int>>> json_data;
+        bool json_failed = !json_data.parseFile(json_parameter_file);
+        if( json_failed )
+        {
+            elog<<"***Error : Parsing of data "<<json_parameter_file<<" failed!"<<std::endl;
+            return false;
+        }
+        DataObject o;
+        if( !json_data.generate_object(o,elog) )
+        {
+            return false;
+        }
+        DataAccessor data(&o);
+        bool emitted = halite.evaluate(result,data,&alog);
+
+        if( !emitted )
+        {
+            return false;
+        }
+        return true;
+    }
 } // namespace wasp
 #endif // WASPHaliteIntERPRETER_H

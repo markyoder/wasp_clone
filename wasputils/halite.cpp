@@ -33,45 +33,10 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    HaliteInterpreter<TreeNodePool<unsigned int, unsigned int
-            ,TokenPool<unsigned int,unsigned int, unsigned int>>> halite;
-
-    bool tmpl_failed = !halite.parseFile(argv[1]);
-    if( tmpl_failed )
+    if( !wasp::expand_template(std::cout,std::cerr,std::cerr,argv[1]
+                               ,argc == 3 ? argv[2] : "" ))
     {
-        std::cout<<"***Error : Parsing of template "<<argv[1]<<" failed!"<<std::endl;
-        return 1;
-    }
-    if( argc < 3 )
-    {
-        DataObject o;
-        bool emitted = evaluate_template(halite,o);
-
-        if( !emitted )
-        {
-            return 2;
-        }
-        return 0;
-    }
-    halite.root().paths(std::cout);
-    JSONInterpreter<TreeNodePool<unsigned int, unsigned int
-            ,TokenPool<unsigned int,unsigned int, unsigned int>>> json_data;
-    bool json_failed = !json_data.parseFile(argv[2]);
-    if( json_failed )
-    {
-        std::cout<<"***Error : Parsing of data "<<argv[2]<<" failed!"<<std::endl;
-        return 3;
-    }
-    DataObject o;
-    if( !json_data.generate_object(o,std::cerr) )
-    {
-        return 4;
-    }
-    bool emitted = evaluate_template(halite,o);
-    
-    if( !emitted )
-    {
-        return 5;
+        return -1;
     }
     return 0;
 }

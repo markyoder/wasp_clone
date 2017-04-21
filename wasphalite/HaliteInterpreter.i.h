@@ -579,8 +579,10 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
         {
             // plain text to be printed for variable substitution
             case wasp::STRING:
-            wasp::print_from(attr_str, child_view, line, column);
+            {
+            attr_str<<child_view.data();
             break;
+            }
             // nested attribute, recurse
             case wasp::IDENTIFIER:
             if( !print_attribute(data, child_view, attr_str, line, column) )

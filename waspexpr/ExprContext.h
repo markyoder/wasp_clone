@@ -1268,10 +1268,6 @@ Result::evaluate( const T & tree_view
        m_type = Context::Type::REAL;
        m_value.m_real = tree_view.to_double();
        break;
-   case wasp::QUOTED_STRING:
-       m_type = Context::Type::STRING;
-       string() = tree_view.to_string();
-       break;
    case wasp::PARENTHESIS:
        evaluate(tree_view.child_at(1),context);
        break;
@@ -1425,9 +1421,20 @@ Result::evaluate( const T & tree_view
        div(right_op);
        break;
    }
+   case wasp::QUOTED_STRING:
+       // check if quoted string is actually quoted variable
+       wasp_tagged_line("dealing with quoted string '"<<tree_view.to_string()<<"' determining if variable ?"
+                        <<std::boolalpha<<(context.type(tree_view.to_string()) == Context::Type::UNDEFINED));
+
+       if( context.type(tree_view.to_string()) == Context::Type::UNDEFINED )
+       {
+       m_type = Context::Type::STRING;
+       string() = tree_view.to_string();
+       break;
+       } // else quoted string falls through to variable logic below
    case wasp::STRING:
    {
-       std::string name = tree_view.data();
+       std::string name = tree_view.to_string();// removes quotes if any from the fall-through logic above
        auto var_type = context.type(name);
        if( var_type == Context::Type::UNDEFINED )
        {

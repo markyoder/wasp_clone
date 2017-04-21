@@ -30,6 +30,19 @@ TEST( Halite, single_attribute)
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "value", out.str() );
 }
+TEST( Halite, single_quoted_attribute)
+{
+    std::stringstream input;
+    input<< R"INPUT(<'attr with space( )'>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data;
+    data.store("attr with space( )",std::string("value")); // need explicit string type
+    ASSERT_EQ( Context::Type::STRING, data.type("attr with space( )") );
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "value", out.str() );
+}
 TEST( Halite, single_abscent_optional_attribute)
 {
     std::stringstream input;
