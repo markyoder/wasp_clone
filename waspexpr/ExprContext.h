@@ -1424,7 +1424,7 @@ Result::evaluate( const T & tree_view
    case wasp::QUOTED_STRING:
        // check if quoted string is actually quoted variable
        wasp_tagged_line("dealing with quoted string '"<<tree_view.to_string()<<"' determining if variable ?"
-                        <<std::boolalpha<<(context.type(tree_view.to_string()) == Context::Type::UNDEFINED));
+                        <<std::boolalpha<<(context.type(tree_view.to_string()) != Context::Type::UNDEFINED));
 
        if( context.type(tree_view.to_string()) == Context::Type::UNDEFINED )
        {

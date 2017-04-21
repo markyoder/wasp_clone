@@ -931,9 +931,9 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
     }
     path = wasp::trim(path," \t");
     wasp_tagged_line("importing '"<<path<<"' relative to '"
-                     <<Interpreter<S>::stream_name()<<"'");
+                     <<wasp::dir_name(Interpreter<S>::stream_name())<<"'");
     std::ifstream relative_to_working_dir(path.c_str());
-    std::string relative_to_current_path = Interpreter<S>::stream_name()+"/"+path;
+    std::string relative_to_current_path = wasp::dir_name(Interpreter<S>::stream_name())+"/"+path;
     std::ifstream relative_to_current(relative_to_current_path.c_str());
     HaliteInterpreter<S> nested_interp(Interpreter<S>::error_stream());
     bool import = false;
@@ -1077,9 +1077,9 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor & data
     }
     path = wasp::trim(path," \t");
     wasp_tagged_line("repeating '"<<path<<"' relative to '"
-                     <<Interpreter<S>::stream_name()<<"'");
+                     <<wasp::dir_name(Interpreter<S>::stream_name())<<"'");
     std::ifstream relative_to_working_dir(path.c_str());
-    std::string relative_to_current_path = Interpreter<S>::stream_name()+"/"+path;
+    std::string relative_to_current_path = wasp::dir_name(Interpreter<S>::stream_name())+"/"+path;
     std::ifstream relative_to_current(relative_to_current_path.c_str());
     HaliteInterpreter<S> nested_interp(Interpreter<S>::error_stream());
     bool import = false;

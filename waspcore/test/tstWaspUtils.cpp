@@ -28,3 +28,16 @@ TEST( utils, trim )
     EXPECT_EQ( "str", trim("  str", " ") );
     EXPECT_EQ( "tr", trim("strs", " s") );
 }
+
+TEST(utils, dir_name )
+{
+    EXPECT_EQ("",dir_name("/"));
+    EXPECT_EQ("",dir_name("/ted"));
+    EXPECT_EQ("c:",dir_name("c:\\"));
+    EXPECT_EQ("c:",dir_name("c:\\ted"));
+
+    EXPECT_EQ("/path/to",dir_name("/path/to/stuff"));
+    EXPECT_EQ("/path/to/stuff",dir_name("/path/to/stuff/"));
+    EXPECT_EQ("c:\\path\\to",dir_name("c:\\path\\to\\stuff"));
+    EXPECT_EQ("c:\\path\\to\\stuff",dir_name("c:\\path\\to\\stuff\\"));
+}

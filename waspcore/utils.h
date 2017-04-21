@@ -24,6 +24,13 @@ namespace wasp{
      * @return the string with all leading and trailing character set removed
      */
     std::string trim(  std::string s, const std::string& char_set);
+
+    /**
+     * @brief dir_name convenience method to acquire the directory name for the given path
+     * @param path the path from which the directory name will be acquired
+     * @return path minus the last '/name' or \\name
+     */
+    std::string dir_name(const std::string& path);
     /**
      * @brief xml_escape_data replaces string with escaped versions of the five
      * characters that must be escaped in XML document data ( &, \, ", <, > )

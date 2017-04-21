@@ -37,6 +37,12 @@ std::string trim(  std::string str, const std::string& char_seq )
     return str;
 }
 
+std::string dir_name( const std::string & path )
+{
+    size_t sep_i = path.find_last_of("/\\");
+    if( sep_i != std::string::npos ) return path.substr(0,sep_i);
+    return path;
+}
 
 std::string xml_escape_data(const std::string& src)
 {
