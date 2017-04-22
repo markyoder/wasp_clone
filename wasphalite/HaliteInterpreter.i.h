@@ -939,7 +939,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
         wasp_tagged_line("path is '"<<path<<"'");
         wasp_tagged_line("Found using stmt, import now '"<<path.substr(0,using_i)<<"' using '"<<using_what<<"'");
         path = path.substr(0,using_i);
-        using_what = wasp::trim(using_what," ");
+        using_what = wasp::strip_quotes(wasp::trim(using_what," "));
         // the text after ' using ' is a variable name
         using_reference = data.exists(using_what);
         wasp_tagged_line("Using reference? "<<std::boolalpha<<using_reference);
@@ -997,6 +997,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
                     {
                         return false;
                     }
+                    if( array_i+1 < array->size() ) out<<std::endl;
                 }else{
                     wasp_not_implemented("iterative import using scalar elements");
                     // TODO - encapsulate element in object as a generically named child, 'value', etc.

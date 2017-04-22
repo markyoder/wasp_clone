@@ -792,10 +792,12 @@ TEST( Halite, file_import_using_array_by_name)
 nested template
 using parameter ted1
 with value 1
-and assigning value its own name ted1nested template
+and assigning value its own name ted1
+nested template
 using parameter ted2
 with value 2.2
-and assigning value its own name ted2nested template
+and assigning value its own name ted2
+nested template
 using parameter ted3
 with value fred
 and assigning value its own name ted3
