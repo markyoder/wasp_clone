@@ -71,7 +71,12 @@ public:
        return v->type(); // base vectors are always homogeneously typed
    }
 
-   // todo add book*ok
+   virtual int size(const std::string & name)const{
+       auto * v = variable(name);
+       if( v ) return v->size();
+       return 0;
+   }
+
    virtual bool boolean(const std::string& name,size_t index,bool * ok=nullptr)const{
        auto * var = variable(name);
        wasp_require(var);
@@ -200,6 +205,7 @@ private:
    class Variable{
    public:
        virtual Context::Type type()const=0;
+       virtual int size()const{return 0;}
        virtual ~Variable(){}
        virtual int integer(bool * ok=nullptr)const{
            if( ok != nullptr ) *ok = false;
@@ -345,6 +351,7 @@ private:
    class VarRefVector : public Variable{
    public:
        VarRefVector(std::vector<T> & v):v(v){}
+       int size()const{return v.size();}
        Context::Type type() const{return type(v);}
        Context::Type type(const std::vector<int>& )const{return Context::Type::INTEGER;}
        Context::Type type(const std::vector<double>& )const{return Context::Type::REAL;}
@@ -1594,6 +1601,18 @@ Result::evaluate( const T & tree_view
 
            m_type = Context::Type::BOOLEAN;
            m_value.m_bool = variable_defined;
+           break;
+       }else if ( function_name == "size" )
+       {
+           if( tree_view.child_count() != 4 )
+           {
+               m_type = Context::Type::ERROR;
+               string() = error_msg(tree_view,"reserved function 'size' requires a single argument!");
+               break;
+           }
+           const auto & child_view = tree_view.child_at(2);
+           m_type = Context::Type::INTEGER;
+           m_value.m_int = context.size(child_view.to_string());
            break;
        }
        // functions are of the form
