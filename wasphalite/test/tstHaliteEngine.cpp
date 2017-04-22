@@ -115,6 +115,19 @@ TEST( Halite, iterative_formatted_attribute_only_start)
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "rounded=  1", out.str() );
 }
+TEST( Halite, iterative_formatted_attribute_embedded)
+{
+    std::stringstream input;
+    input<< R"INPUT(<i:fmt=%3d; i=<start>,<end>>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataAccessor data;
+    data.store("start",1);
+    data.store("end",2);
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "  1   2", out.str() );
+}
 TEST( Halite, iterative_formatted_attribute_only_start_end)
 {
     std::stringstream input;

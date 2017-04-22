@@ -40,7 +40,29 @@ line2
         ASSERT_EQ(input.str(), document.data());
 }
 
-
+TEST( Halite, iterative_formatted_attribute_embedded_tree)
+{
+    std::stringstream input;
+    input<< R"INPUT(<i:fmt=%3d; i=1,<end>>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    auto document = interpreter.root();
+    std::string expected_paths = R"INPUT(/
+/attr
+/attr/< (<)
+/attr/txt (i)
+/attr/opt (:fmt=%3d; i=1,)
+/attr/attr
+/attr/attr/< (<)
+/attr/attr/txt (end)
+/attr/attr/> (>)
+/attr/> (>)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
 TEST( Halite, simple_parameterized_text)
 {
     std::stringstream input;

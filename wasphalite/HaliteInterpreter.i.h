@@ -569,7 +569,8 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     wasp_check(delta >= 0);
     wasp_tagged_line(info(attr_view)<<" line delta "<<delta);
     if( delta > 0 ) out<<std::string(delta, '\n');
-    SubstitutionOptions options;    
+    std::stringstream options_str;
+    bool has_options = false;
     // accumulate an attribute string
     for( size_t i = 1, count = attr_view.child_count()-1; i < count; ++i )
     {
@@ -580,28 +581,44 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
             // plain text to be printed for variable substitution
             case wasp::STRING:
             {
-            attr_str<<child_view.data();
+                if( !has_options ) attr_str<<child_view.data();
+                else options_str<<child_view.data();
             break;
             }
             // nested attribute, recurse
             case wasp::IDENTIFIER:
-            if( !print_attribute(data, child_view, attr_str, line, column) )
+            if( !has_options &&
+                   !print_attribute(data, child_view, attr_str, line, column) )
             {                
                 return false;
             }
+            else if( has_options &&
+                    !print_attribute(data, child_view, options_str, line, column) )
+            {
+                return false;
+            }
+
             break;
             // indicates the attribute has options for substitution
             case wasp::FUNCTION:
-                if( !attribute_options(options, child_view.data(),line) )
-                {
-                    return false;
-                }
+            has_options = true;
+            options_str<<child_view.data();
+
             break;
             default:
             wasp_not_implemented("nested attribute printing");
         }
     }
 
+    SubstitutionOptions options;
+    if( has_options )
+    {
+        wasp_tagged_line("Options string is '"<<options_str.str()<<"'");
+        if( !attribute_options(options, options_str.str(), line) )
+        {
+            return false;
+        }
+    }
     // TODO - add optimization to check if above loop only encounters STRING
     // and optionally FUNCTION in which indicate a variable can be directly substituted
     // and formatted and no expression evaluation is needed
