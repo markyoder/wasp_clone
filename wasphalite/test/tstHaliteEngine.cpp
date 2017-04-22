@@ -276,6 +276,7 @@ TEST( Halite, array_access )
 <bool[0]> <bool[1]>
 
 <mixed[0]> <mixed[1]> <mixed[2]:fmt=%.6f> <mixed[3]>
+<mixed[i]:i=0,<size(mixed)-1>>
 )INPUT";
     std::stringstream expected;
     expected<< R"INPUT( 1 "ted" fed
@@ -283,7 +284,8 @@ TEST( Halite, array_access )
  1.1 3.14159
 0 1
 
-0 19 500.123123 dead ted)INPUT";
+0 19 500.123123 dead ted
+0 19 500.123 dead ted)INPUT";
     HaliteInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
     std::stringstream out;

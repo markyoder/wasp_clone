@@ -104,6 +104,34 @@ Context::Type DataAccessor::type(const std::string& name, size_t index)const
     }
     return Context::Type::UNDEFINED;
 }
+
+int DataAccessor::size(const std::string &name) const
+{
+    bool current_data_exists = m_current_data != nullptr
+            && m_current_data->contains(name);
+    bool parent_data_exists = false;
+    if( current_data_exists == false
+            && !(parent_data_exists = ( m_parent && m_parent->exists(name))))
+    {
+        return Context::size(name);
+    }
+    if( current_data_exists )
+    {
+        wasp_check( m_current_data );
+        auto itr = m_current_data->find(name);
+        if( itr == m_current_data->end() ) return 0;
+        const wasp::Value & variable = itr->second;
+        if( variable.is_array() ) return variable.to_array()->size();
+        if( variable.is_object() ) return variable.to_object()->size();
+        return 0;
+    }
+    else if ( parent_data_exists )
+    {
+        wasp_check( m_parent );
+        return m_parent->size(name);
+    }
+    return 0;
+}
 bool DataAccessor::store(const std::string &name, const bool &v)
 {
     if( m_current_data == nullptr)

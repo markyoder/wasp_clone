@@ -20,6 +20,14 @@ public:
     /// type getters - note objects are returned as Context::Type::STRING
     virtual Context::Type type(const std::string& name)const;
     virtual Context::Type type(const std::string& name,size_t index)const;
+
+    /**
+     * @brief size aquire the size of the given variable
+     * @param name the variable for which the size is requested
+     * @return the size of the variable... 0 if not a vector/map, etc.
+     */
+    virtual int size(const std::string& name)const;
+
     virtual bool store(const std::string &name, const bool &v);
     virtual bool store(const std::string &name, const int &v);
     virtual bool store(const std::string &name, const std::string &v);
