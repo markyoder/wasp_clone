@@ -28,6 +28,18 @@ TEST( utils, trim )
     EXPECT_EQ( "str", trim("  str", " ") );
     EXPECT_EQ( "tr", trim("strs", " s") );
 }
+TEST( utils, strip_quotes )
+{
+    EXPECT_EQ( "", strip_quotes("\"\"") ); // empty string
+    EXPECT_EQ( "  ", strip_quotes("\"  \"") ); // empty string
+    EXPECT_EQ( "", strip_quotes("''") ); // empty string
+    EXPECT_EQ( "  ", strip_quotes("'  '") ); // empty string
+
+    EXPECT_EQ( "ted", strip_quotes("ted") ); // no quotes
+    EXPECT_EQ( "ted'", strip_quotes("ted'") ); // single quotes
+    EXPECT_EQ( "'ted", strip_quotes("'ted") ); // single quotes
+    EXPECT_EQ( " ted ", strip_quotes("\" ted \"") );
+}
 
 TEST(utils, dir_name )
 {
