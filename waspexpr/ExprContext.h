@@ -986,9 +986,11 @@ public:
             return string()!="false";
         case Context::Type::ERROR:
             return false;
+        default:
         case Context::Type::UNDEFINED:
             wasp_not_implemented("converting undefined data to boolean");
         }
+        return false;
     }
     const std::string& string()const{
         return (m_string);}

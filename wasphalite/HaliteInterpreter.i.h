@@ -986,6 +986,8 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
         }
         else if( (array = data.array(using_what)) != nullptr )
         {
+            import = true; // assume true ... catches empty array scenario
+            wasp_tagged_line("importing "<<array->size()<<" times...");
             for( size_t array_i = 0; array_i < array->size(); ++array_i)
             {
                 const auto& variable_at_i = array->at(array_i);
@@ -1034,6 +1036,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
         import = nested_interp.evaluate(out,data);
     }
     line += delta;
+    wasp_tagged_line("import successful? "<<std::boolalpha<<import);
     return import;
 }
 template<class S>
