@@ -3,13 +3,15 @@
 namespace wasp{
 
 DataAccessor::DataAccessor(DataObject*data, DataAccessor * parent)
-    : m_parent(parent)
+    : Context()
+    , m_parent(parent)
     , m_current_data(data)
 {
 }
 
 DataAccessor::DataAccessor(const DataAccessor &orig)
-    : m_parent(orig.m_parent)
+    : Context(orig)
+    , m_parent(orig.m_parent)
     , m_current_data(orig.m_current_data)
 {
 

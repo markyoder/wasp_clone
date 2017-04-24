@@ -156,6 +156,7 @@ namespace wasp {
               ,m_optional(false), m_silent(false){}
             SubstitutionOptions(const SubstitutionOptions&orig)
                 :m_format(orig.m_format)
+                ,m_use(orig.m_use)
                 ,m_separator(orig.m_separator)
                 ,m_optional(orig.m_optional)
                 ,m_silent(orig.m_silent)
@@ -164,6 +165,14 @@ namespace wasp {
             bool has_format()const{return m_format.empty() == false;}
             const std::string& format()const{return m_format;}
             std::string& format(){return m_format;}
+
+            /**
+             * @brief has_use determine whether the substitution has an object scope to use
+             * @return true, iff the user has specified 'use=object_name'
+             */
+            bool has_use()const{return m_use.empty() == false;}
+            const std::string& use()const{return m_use;}
+            std::string& use(){return m_use;}
 
             bool optional()const{return m_optional;}
             bool& optional(){return m_optional;}
@@ -231,6 +240,7 @@ namespace wasp {
           private:
             // format of the substitution
             std::string m_format;
+            std::string m_use;
             std::string m_separator;
             bool m_optional;
             bool m_silent;

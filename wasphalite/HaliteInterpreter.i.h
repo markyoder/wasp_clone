@@ -632,7 +632,26 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     }
     if( options.ranges().empty() )
     {
-        auto result = expr.evaluate(data);
+        Result result;
+        if( options.has_use() )
+        {
+            const std::string & obj_name = options.use();
+            wasp_tagged_line("Using options with name '"<<obj_name<<"'");
+            DataObject* use_obj = data.object(obj_name);
+            if( use_obj == nullptr )
+            {
+                Interpreter<S>::error_stream()
+                        <<"***Error: unable to substitute expression on line "
+                       <<line<<" using '"<<options.use()<<"'"<<std::endl;
+                return false;
+            }
+            // capture new scope with appropriate parent
+            DataAccessor use(use_obj,&data);
+            result = expr.evaluate(use);
+        }
+        else{
+            result = expr.evaluate(data);
+        }
         if( result.is_error() && !options.optional() )
         {
             wasp_tagged_line(result.string());
@@ -661,8 +680,24 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
         }
     }
     else{
+
+        DataAccessor use = data;
+        if( options.has_use() )
+        {
+            const std::string & obj_name = options.use();
+            DataObject * use_obj = data.object(obj_name);
+            if( use_obj == nullptr )
+            {
+                Interpreter<S>::error_stream()
+                        <<"***Error: unable to substitute expression on line "
+                       <<line<<" using '"<<options.use()<<"'"<<std::endl;
+                return false;
+            }
+            // capture new scope with appropriate parent
+            use = DataAccessor(use_obj,&data);
+        }
         DataObject o;
-        DataAccessor layer(&o,&data);
+        DataAccessor layer(&o,&use);
         options.initialize(layer);
         for( ;; )
         {
@@ -1381,9 +1416,10 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
         ,size_t line)
 {
     wasp_tagged_line("getting options for '"<<data<<"'");
-    static std::string fmt = "fmt=", sep="sep=";
+    static std::string fmt = "fmt=", sep="sep=", use="use=";
     size_t format_i = data.find(fmt);
     size_t separator_i = data.find(sep);
+    size_t use_i = data.find(use);
     std::stringstream iterative_options_str;
     size_t start_i=1;
     if( data.size() > 1 )
@@ -1427,10 +1463,24 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
         }
         options.separator() = data.substr(separator_i+sep.size(),length);
         wasp_tagged_line("Separator of '"<<options.separator()<<"' captured");
-        // capture the format text interval
+        // capture the separator text interval
         intervals.insert(std::make_pair(separator_i,separator_i+sep.size()+length+delim_s));
     }
-
+    if( use_i != std::string::npos )
+    {
+        size_t term_i = data.find(';',use_i);
+        size_t length = data.size() - (use_i+use.size());
+        size_t delim_s = 0;
+        if( term_i != std::string::npos )
+        {
+            length = term_i - (use_i+use.size());
+            delim_s = 1;
+        }
+        options.use() = trim(data.substr(use_i+use.size(),length)," ");
+        wasp_tagged_line("use of '"<<options.use()<<"' captured");
+        // capture the use text
+        intervals.insert(std::make_pair(use_i,use_i+sep.size()+length+delim_s));
+    }
     size_t last_i = start_i;
     for( auto itr = intervals.begin(); itr != intervals.end(); itr++ )
     {
@@ -1456,7 +1506,7 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
         wasp_tagged_line("found extra '"<<extra<<"'");
         iterative_options_str<<extra;
     }
-    std::string iterative_options = iterative_options_str.str();
+    std::string iterative_options = wasp::trim(iterative_options_str.str()," ");
     wasp_tagged_line("iterative options '"<<iterative_options<<"'");
     if( !iterative_options.empty() )
     {

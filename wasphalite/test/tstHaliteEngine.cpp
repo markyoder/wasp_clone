@@ -70,7 +70,7 @@ TEST( Halite, single_silent_attribute)
 {
     std::stringstream input;
     input<< R"INPUT(b<attribute=4:|>a)INPUT";
-    HaliteInterpreter<> interpreter;
+    HaliteInterpreter<> interpreter(std::cout);
     ASSERT_TRUE( interpreter.parse(input) );
     std::stringstream out;
     DataAccessor data;
@@ -212,6 +212,44 @@ TEST( Halite, iterative_formatted_attribute_multi_only_start_end)
     ASSERT_TRUE( interpreter.evaluate(out,data) );
 
     ASSERT_EQ( " 3  9  4 12  5 15", out.str() );
+}
+TEST( Halite, attribute_use_scope_object)
+{
+    std::stringstream input;
+    // access to x,y,z are restricted to obj
+    // use obj scope to facilitate access
+    input<< R"INPUT(<y+"-"+x*z: use=obj >)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["obj"] = DataObject();
+    o["obj"]["x"]=2;
+    o["obj"]["y"]="ted";
+    o["obj"]["z"]=10.22;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+
+    ASSERT_EQ( "ted-20.440000", out.str() );
+}
+TEST( Halite, iterative_attribute_use_scope_object)
+{
+    std::stringstream input;
+    // access to x,y,z are restricted to obj
+    // use obj scope to facilitate access
+    input<< R"INPUT(<y+"-"+(x*z+i): use=obj; i=0,1;sep=,>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["obj"] = DataObject();
+    o["obj"]["x"]=2;
+    o["obj"]["y"]="ted";
+    o["obj"]["z"]=10.22;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+
+    ASSERT_EQ( "ted-20.440000,ted-21.440000", out.str() );
 }
 TEST( Halite, indirect_attribute)
 {
