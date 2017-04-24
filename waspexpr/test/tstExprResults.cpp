@@ -125,6 +125,10 @@ TEST(ExprInterpreter, vector_int_variables)
         {"data[data[0]]",9},
         {"data[2]=7",7},
         {"size(data)",3},
+        {"if(size(data)==3,1,0)",1},
+        {"if(size(data)!=3,10,49)",49},
+        {"if(size(data)==4,10,50)",50},
+        {"if(size(data)==4,data[0]=10,data[0]+3)",4}, // if_true never evaluated
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )

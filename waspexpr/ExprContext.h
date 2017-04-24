@@ -975,6 +975,21 @@ public:
         return std::numeric_limits<double>::quiet_NaN();
     }
     bool boolean()const{return m_value.m_bool;}
+    bool to_bool()const{
+        switch(m_type){
+            case Context::Type::BOOLEAN:
+            return boolean();
+        case Context::Type::INTEGER:
+        case Context::Type::REAL:
+            return number() != 0.0;
+        case Context::Type::STRING:
+            return string()!="false";
+        case Context::Type::ERROR:
+            return false;
+        case Context::Type::UNDEFINED:
+            wasp_not_implemented("converting undefined data to boolean");
+        }
+    }
     const std::string& string()const{
         return (m_string);}
 
@@ -1613,6 +1628,30 @@ Result::evaluate( const T & tree_view
            const auto & child_view = tree_view.child_at(2);
            m_type = Context::Type::INTEGER;
            m_value.m_int = context.size(child_view.to_string());
+           break;
+       }else if( function_name == "if" )
+       {
+           // 'if' '(' a1 ',' a2 ',' a3 ')'
+           if( tree_view.child_count() != 8 )
+           {
+               m_type = Context::Type::ERROR;
+               string() = error_msg(tree_view,"reserved function 'if' requires a 3 argument. if ( condition, if true, if false).");
+               break;
+           }
+           const auto& a1 = tree_view.child_at(2);
+           if( evaluate(a1,context).is_error() )
+           {
+               break;
+           }
+           if( to_bool() )
+           {
+               const auto& a2 = tree_view.child_at(4);
+               evaluate(a2,context);
+           }
+           else{
+               const auto& a3 = tree_view.child_at(6);
+               evaluate(a3,context);
+           }
            break;
        }
        // functions are of the form
