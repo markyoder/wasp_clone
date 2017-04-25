@@ -614,7 +614,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     if( has_options )
     {
         wasp_tagged_line("Options string is '"<<options_str.str()<<"'");
-        if( !attribute_options(options, options_str.str(), line) )
+        if( !attribute_options(options, options_str.str(), new_line) )
         {
             return false;
         }

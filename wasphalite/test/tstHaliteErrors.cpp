@@ -67,29 +67,29 @@ TEST( Halite,attribute_range_errors)
     {
         "<x:x=>"
         ,"<x:x = >"
-        ,"\n\n<x:x = ,>"
+        ,"<x:x = ,>"
         ,"<x:x = ;>"
         ,"<x:x = 1,>"
         ,"<x:x = 1, >"
         ,"<x:x = 1, ,>"
         ,"<x:x = 1, ;>"
-        ,"<x:x = 1, 2,>"
+        ,"\n\n<x:x = 1, 2,>"
         ,"<x:x = 1, 2, ,>"
         ,"<x:x = 1, 3,;>"
     };
     std::vector<std::string> expected_error =
     {
-      "no range start was specified for 'x'."
-        ,"no range start was specified for 'x'."
-        ,"unable to extract delimited range start for 'x'." // delimited by ',' or ';'
-        ,"unable to extract delimited range start for 'x'." // delimited by ',' or ';'
-        ,"no range end was specified for 'x'."
-        ,"no range end was specified for 'x'." // no ',' or ';'
-        ,"unable to extract delimited range end for 'x'." // nothing between ',' or ';'
-        ,"unable to extract delimited range end for 'x'." // nothing between ',' or ';'
-        ,"no range stride was specified for 'x'."
-        ,"unable to extract range stride for 'x'." // no ',' or ';'
-        ,"unable to extract delimited range stride for 'x'." // delimited by ';'
+      "1; no range start was specified for 'x'."
+        ,"1; no range start was specified for 'x'."
+        ,"1; unable to extract delimited range start for 'x'." // delimited by ',' or ';'
+        ,"1; unable to extract delimited range start for 'x'." // delimited by ',' or ';'
+        ,"1; no range end was specified for 'x'."
+        ,"1; no range end was specified for 'x'." // no ',' or ';'
+        ,"1; unable to extract delimited range end for 'x'." // nothing between ',' or ';'
+        ,"1; unable to extract delimited range end for 'x'." // nothing between ',' or ';'
+        ,"3; no range stride was specified for 'x'."
+        ,"1; unable to extract range stride for 'x'." // no ',' or ';'
+        ,"1; unable to extract delimited range stride for 'x'." // delimited by ';'
     };
     ASSERT_EQ(expected_error.size(), ranges.size());
     for(size_t i = 0; i < ranges.size(); ++i)
@@ -108,6 +108,6 @@ TEST( Halite,attribute_range_errors)
         std::stringstream out;
         DataAccessor data;
         ASSERT_FALSE( interpreter.evaluate(out,data) );
-        ASSERT_EQ("***Error: unable to acquire attribute options on line 1; "+e+"\n", errors.str() );
+        ASSERT_EQ("***Error: unable to acquire attribute options on line "+e+"\n", errors.str() );
     }
 }
