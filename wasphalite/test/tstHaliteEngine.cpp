@@ -542,48 +542,6 @@ TEST(Halite, multi_range)
         }
     }
 }
-TEST(Halite, range_errors)
-{
-    std::vector<std::string> expected_error =
-    {
-      "no range start was specified for 'x'"
-        ,"unable to extract range start for 'x'" // no ',' or ';'
-        ,"unable to extract delimited range start for 'x'" // delimited by ',' or ';'
-        ,"unable to extract delimited range start for 'x'" // delimited by ',' or ';'
-        ,"no range end was specified for 'x'"
-        ,"unable to extract range end for 'x'" // no ',' or ';'
-        ,"unable to extract delimited range end for 'x'" // nothing between ',' or ';'
-        ,"unable to extract delimited range end for 'x'" // nothing between ',' or ';'
-        ,"no range stride was specified for 'x'"
-        ,"unable to extract range stride for 'x'" // no ',' or ';'
-        ,"unable to extract delimited range stride for 'x'" // delimited by ';'
-    };
-    std::vector<std::string> ranges =
-    {
-        " x="
-        ,"x = "
-        ,"x = ,"
-        ,"x = ;"
-        ,"x = 1,"
-        ,"x = 1, "
-        ,"x = 1, ,"
-        ,"x = 1, ;"
-        ,"x = 1, 2,"
-        ,"x = 1, 2, ,"
-        ,"x = 1, 3,;"
-    };
-    ASSERT_EQ( expected_error.size(), ranges.size() );
-    for( size_t i = 0; i < expected_error.size(); ++i ){
-        SCOPED_TRACE(expected_error[i]);
-        SCOPED_TRACE(ranges[i]);
-        std::vector<HaliteInterpreter<>::Range> imports;
-        std::string range = ranges[i];
-        std::string error;
-        EXPECT_FALSE( HaliteInterpreter<>::extract_ranges(range,imports, error));
-        std::cout<<error<<std::endl;
-        ASSERT_EQ(expected_error[i], error);
-    }
-}
 
 /**
  * @brief test file repeat (single) iteration
