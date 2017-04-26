@@ -13,6 +13,7 @@ configure_file("data/expression_evaluation_format_error.result.txt.in" "expressi
 configure_file("data/iterative_expression_range_error.result.txt.in" "iterative_expression_range_error.result.txt" @ONLY)
 configure_file("data/scoped_expression_evaluation_error.result.txt.in" "scoped_expression_evaluation_error.result.txt" @ONLY)
 configure_file("data/scoped_iterative_expression_evaluation_error.result.txt.in" "scoped_iterative_expression_evaluation_error.result.txt" @ONLY)
+configure_file("data/file_repeat_error.result.txt.in" "file_repeat_error.result.txt" @ONLY)
 
 ADD_GOOGLE_TEST(tstHaliteTreeConstruction.cpp NP 1)
 ADD_GOOGLE_TEST(tstHaliteEngine.cpp NP 1)

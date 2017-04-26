@@ -1136,7 +1136,7 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor & data
         std::string error_msg;
         if( ! extract_ranges(using_what, imports, error_msg) )
         {
-            Interpreter<S>::error_stream()<<"***Error : unable to extract file repeat range info; "
+            Interpreter<S>::error_stream()<<"***Error : on line "<<repeat_line<<" - unable to extract file repeat range info; "
                                          <<error_msg<<"."<<std::endl;
             return false;
         }

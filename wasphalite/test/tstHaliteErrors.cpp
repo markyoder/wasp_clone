@@ -238,3 +238,11 @@ TEST(Halite, scoped_iterative_expression_evaluation_error)
                              ,"scoped_iterative_expression_evaluation_error.result.txt" // result
                              ));
 }
+
+TEST(Halite, file_repeat_error)
+{
+    test_template(error_test("file_repeat_error.tmpl" // tmpl
+                             ,"" // json
+                             ,"file_repeat_error.result.txt" // result
+                             ));
+}
