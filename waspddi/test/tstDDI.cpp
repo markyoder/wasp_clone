@@ -1,4 +1,5 @@
 #include "waspddi/DDInterpreter.h"
+#include "waspddi/DDINodeView.h"
 #include "gtest/gtest.h"
 #include <iostream>
 #include <string>
@@ -153,9 +154,12 @@ expected<<R"I(/
 /sect9/value (1)
 /sect9/value (2)
 /sect9/value (3.4)
-/sect9/value ("five"))I";
+/sect9/value ("five")
+)I";
     std::stringstream paths;
-    ddi.root().paths(paths);
+    DDINodeView<decltype(ddi.root())> root = ddi.root();
+    root.paths(paths);
+    ASSERT_EQ(expected.str(), paths.str());
 }
 
 TEST(DDInterpreter,passing_simple_sections)
