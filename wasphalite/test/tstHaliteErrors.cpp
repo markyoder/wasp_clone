@@ -183,3 +183,11 @@ TEST(Halite, unmatched_conditional_elseif)
                              ,"unmatched_conditional_elseif.result.txt" // result
                              ));
 }
+
+TEST(Halite, unmatched_conditional_else)
+{
+    test_template(error_test("unmatched_conditional_else.tmpl" // tmpl
+                             ,"" // json
+                             ,"unmatched_conditional_else.result.txt" // result
+                             ));
+}
