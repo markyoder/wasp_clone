@@ -246,3 +246,10 @@ TEST(Halite, file_repeat_error)
                              ,"file_repeat_error.result.txt" // result
                              ));
 }
+TEST(Halite, attribute_options_missing_delimiter_error)
+{
+    test_template(error_test("attribute_options_missing_delimiter_error.tmpl" // tmpl
+                             ,"" // json
+                             ,"attribute_options_missing_delimiter_error.result.txt" // result
+                             ));
+}

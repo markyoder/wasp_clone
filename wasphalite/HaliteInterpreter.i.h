@@ -1495,14 +1495,15 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
         // capture the use text
         intervals.insert(std::make_pair(use_i,use_i+sep.size()+length+delim_s));
     }
-    size_t last_i = start_i;
+    size_t last_i = start_i;    
     for( auto itr = intervals.begin(); itr != intervals.end(); itr++ )
     {
-        if( last_i > itr->first && last_i < itr->second )
+
+        if( last_i > itr->first && last_i <= itr->second )
         {
             Interpreter<S>::error_stream()
                     <<"***Error : a delimiter appears to be missing on line "<<line
-                   <<std::endl;
+                   <<"."<<std::endl;
             return false;
         }
         if( last_i < itr->first )
