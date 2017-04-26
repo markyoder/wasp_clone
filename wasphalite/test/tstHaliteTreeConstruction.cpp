@@ -69,6 +69,54 @@ ZXCVBNM  ?.,mnbvcxz)INPUT";
         ASSERT_EQ(expected_paths, paths.str());
         ASSERT_EQ(input.str(), document.data());
 }
+TEST( Halite, attribute_options_symbols)
+{
+    std::stringstream input;
+    input<< R"INPUT(
+:<a>: options delimiter
+|<a>| options silent
+?<a>? options optional
+use=<a>use= options use object scope
+fmt=<a>fmt= options format
+sep=<a>sep= options separator
+)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    auto document = interpreter.root();
+    std::string expected_paths = R"INPUT(/
+/txt (:)
+/txt (: options delimiter)
+/attr/< (<)
+/attr/txt (a)
+/attr/> (>)
+/txt (|)
+/txt (| options silent)
+/attr/< (<)
+/attr/txt (a)
+/attr/> (>)
+/txt (?)
+/txt (? options optional)
+/attr/< (<)
+/attr/txt (a)
+/attr/> (>)
+/txt (use=)
+/txt (use= options use object scope)
+/attr/< (<)
+/attr/txt (a)
+/attr/> (>)
+/txt (fmt=)
+/txt (fmt= options format)
+/attr/< (<)
+/attr/txt (a)
+/attr/> (>)
+/txt (sep=)
+/txt (sep= options separator)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
 TEST( Halite, iterative_formatted_attribute_embedded_tree)
 {
     std::stringstream input;
