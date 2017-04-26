@@ -108,7 +108,7 @@ TEST( Halite,attribute_range_errors)
         std::stringstream out;
         DataAccessor data;
         ASSERT_FALSE( interpreter.evaluate(out,data) );
-        ASSERT_EQ("***Error: unable to acquire attribute options on line "+e+"\n", errors.str() );
+        ASSERT_EQ("***Error : unable to acquire attribute options on line "+e+"\n", errors.str() );
     }
 }
 #include "wasphalite/test/Paths.h"
@@ -221,5 +221,13 @@ TEST(Halite, iterative_expression_range_error)
     test_template(error_test("iterative_expression_range_error.tmpl" // tmpl
                              ,"" // json
                              ,"iterative_expression_range_error.result.txt" // result
+                             ));
+}
+
+TEST(Halite, scoped_expression_evaluation_error)
+{
+    test_template(error_test("scoped_expression_evaluation_error.tmpl" // tmpl
+                             ,"" // json
+                             ,"scoped_expression_evaluation_error.result.txt" // result
                              ));
 }

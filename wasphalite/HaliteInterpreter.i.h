@@ -644,8 +644,8 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
             if( use_obj == nullptr )
             {
                 Interpreter<S>::error_stream()
-                        <<"***Error: unable to substitute expression on line "
-                       <<line<<" using '"<<options.use()<<"'"<<std::endl;
+                        <<"***Error : unable to substitute expression on line "
+                       <<line<<" using '"<<options.use()<<"' - the data object could not be found."<<std::endl;
                 return false;
             }
             // capture new scope with appropriate parent
@@ -693,7 +693,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
             if( use_obj == nullptr )
             {
                 Interpreter<S>::error_stream()
-                        <<"***Error: unable to substitute expression on line "
+                        <<"***Error : unable to substitute expression on line "
                        <<line<<" using '"<<options.use()<<"'"<<std::endl;
                 return false;
             }
@@ -723,7 +723,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
                                          , Interpreter<S>::error_stream()) )
                     {
                         Interpreter<S>::error_stream()
-                                <<"***Error: failed to format result ("
+                                <<"***Error : failed to format result ("
                                 <<result.as_string()
                                <<") as '"<<options.format()<<"'"<<std::endl;
                         return false;
@@ -733,7 +733,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
                    if( !result.format( out ) )
                    {
                        Interpreter<S>::error_stream()
-                               <<"***Error: failed to format result ("
+                               <<"***Error : failed to format result ("
                                 <<result.as_string()<<")."<<std::endl;
                        return false;
                    }
@@ -893,7 +893,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
                 continue; // this if construct failed
             }
             else{
-                Interpreter<S>::error_stream()<<"Error: conditional action (#if,#elseif, etc.) "
+                Interpreter<S>::error_stream()<<"Error : conditional action (#if,#elseif, etc.) "
                                 "must have a single argument. E.g., 'name' or "
                              <<m_attribute_start_delim<<"name"<<m_attribute_end_delim
                             <<"."<<std::endl;
@@ -1501,7 +1501,7 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
         if( last_i > itr->first && last_i < itr->second )
         {
             Interpreter<S>::error_stream()
-                    <<"***Error: a delimiter appears to be missing on line "<<line
+                    <<"***Error : a delimiter appears to be missing on line "<<line
                    <<std::endl;
             return false;
         }
@@ -1529,7 +1529,7 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
         if( !extracted )
         {
             Interpreter<S>::error_stream()
-                    <<"***Error: unable to acquire attribute options on line "
+                    <<"***Error : unable to acquire attribute options on line "
                    <<line<<"; "
                     <<error<<"."<<std::endl;
             return false;
