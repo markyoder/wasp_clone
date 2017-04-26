@@ -45,6 +45,12 @@ IF ( wasp_ENABLE_waspddi )
       NOEXESUFFIX
       INSTALLABLE
     )
+    TRIBITS_ADD_EXECUTABLE(ddivalid
+      SOURCES ddivalid.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
 ENDIF()
 IF ( wasp_ENABLE_waspgetpot )
     TRIBITS_ADD_EXECUTABLE(getpotlist

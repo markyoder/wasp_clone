@@ -86,6 +86,9 @@ namespace wasp {
 
         const Definition* definition()const;
         Definition* definition();
+
+        Definition::SP definition_store(){return m_definition;}
+        void set_definition_store(Definition::SP store){m_definition = store; m_current = store.get();}
         /**
          * Override from parent class in order to manage definition selection.
          * Pushes the new definition with the given node_name
