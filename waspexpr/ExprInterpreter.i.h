@@ -2,7 +2,7 @@
 #define WASP_EXPRINTERPRETER_I_H
 template<class S>
 ExprInterpreter<S>::ExprInterpreter(std::ostream & err)
-    : Interpreter<S>()
+    : Interpreter<S>(err)
 {
 }
 template<class S>

@@ -64,7 +64,7 @@
 }
 
 
-%token                  END          0  "end of file"
+%token                  END          0  "end of expression"
 %token                  EOL             "end of line"
 %token <token_index>   LBRACKET         "["
 %token <token_index>   RBRACKET         "]"
@@ -494,6 +494,6 @@ namespace wasp{
 void ExprParser::error(const ExprParser::location_type& l,
                            const std::string& m)
 {
-    interpreter.error_stream()<<l<<": "<<m;
+    interpreter.error_stream()<<"***Error : "<<l<<": "<<m<<"."<<std::endl;
 }
 }; // end of namespace

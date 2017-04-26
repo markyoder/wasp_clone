@@ -1561,17 +1561,17 @@ namespace wasp {
   const char*
   const ExprParser::yytname_[] =
   {
-  "\"end of file\"", "error", "$undefined", "\"end of line\"", "\"[\"",
-  "\"]\"", "'{'", "'}'", "\"!\"", "\"=\"", "\",\"", "\">=\"", "\"<=\"",
-  "\"<\"", "\">\"", "\"!=\"", "\"==\"", "\"&&\"", "\"||\"", "\"*\"",
-  "\"/\"", "\"+\"", "\"-\"", "\"^\"", "\"(\"", "\")\"", "\"integer\"",
-  "\"real\"", "\"string\"", "\"quoted string\"", "\"comment\"",
-  "\"declarator\"", "\"value\"", "UMINUS", "UNOT", "\"constant\"",
-  "\"name\"", "$accept", "bang", "gt", "lt", "gte", "lte", "neq", "eq",
-  "and", "or", "multiply", "divide", "plus", "minus", "exponent", "lparen",
-  "rparen", "comma", "function_name", "function_args", "function",
-  "math_exp", "assign", "lbracket", "rbracket", "VALUE", "value", "DECL",
-  "decl", "keyedvalue", "start", YY_NULLPTR
+  "\"end of expression\"", "error", "$undefined", "\"end of line\"",
+  "\"[\"", "\"]\"", "'{'", "'}'", "\"!\"", "\"=\"", "\",\"", "\">=\"",
+  "\"<=\"", "\"<\"", "\">\"", "\"!=\"", "\"==\"", "\"&&\"", "\"||\"",
+  "\"*\"", "\"/\"", "\"+\"", "\"-\"", "\"^\"", "\"(\"", "\")\"",
+  "\"integer\"", "\"real\"", "\"string\"", "\"quoted string\"",
+  "\"comment\"", "\"declarator\"", "\"value\"", "UMINUS", "UNOT",
+  "\"constant\"", "\"name\"", "$accept", "bang", "gt", "lt", "gte", "lte",
+  "neq", "eq", "and", "or", "multiply", "divide", "plus", "minus",
+  "exponent", "lparen", "rparen", "comma", "function_name",
+  "function_args", "function", "math_exp", "assign", "lbracket",
+  "rbracket", "VALUE", "value", "DECL", "decl", "keyedvalue", "start", YY_NULLPTR
   };
 
 #if YYDEBUG
@@ -1674,6 +1674,6 @@ namespace wasp{
 void ExprParser::error(const ExprParser::location_type& l,
                            const std::string& m)
 {
-    interpreter.error_stream()<<l<<": "<<m;
+    interpreter.error_stream()<<"***Error : "<<l<<": "<<m<<"."<<std::endl;
 }
 }; // end of namespace
