@@ -72,44 +72,51 @@ ZXCVBNM  ?.,mnbvcxz)INPUT";
 TEST( Halite, attribute_options_symbols)
 {
     std::stringstream input;
-    input<< R"INPUT(
-:<a>: options delimiter
+    input<< R"INPUT(:<a>: options delimiter
 |<a>| options silent
 ?<a>? options optional
 use=<a>use= options use object scope
 fmt=<a>fmt= options format
-sep=<a>sep= options separator
-)INPUT";
+sep=<a>sep= options separator)INPUT";
     HaliteInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
     auto document = interpreter.root();
     std::string expected_paths = R"INPUT(/
 /txt (:)
+/attr
+/attr/< (<)
+/attr/txt (a)
+/attr/> (>)
 /txt (: options delimiter)
-/attr/< (<)
-/attr/txt (a)
-/attr/> (>)
 /txt (|)
+/attr
+/attr/< (<)
+/attr/txt (a)
+/attr/> (>)
 /txt (| options silent)
-/attr/< (<)
-/attr/txt (a)
-/attr/> (>)
 /txt (?)
+/attr
+/attr/< (<)
+/attr/txt (a)
+/attr/> (>)
 /txt (? options optional)
-/attr/< (<)
-/attr/txt (a)
-/attr/> (>)
 /txt (use=)
+/attr
+/attr/< (<)
+/attr/txt (a)
+/attr/> (>)
 /txt (use= options use object scope)
-/attr/< (<)
-/attr/txt (a)
-/attr/> (>)
 /txt (fmt=)
-/txt (fmt= options format)
+/attr
 /attr/< (<)
 /attr/txt (a)
 /attr/> (>)
+/txt (fmt= options format)
 /txt (sep=)
+/attr
+/attr/< (<)
+/attr/txt (a)
+/attr/> (>)
 /txt (sep= options separator)
 )INPUT";
         std::stringstream paths;

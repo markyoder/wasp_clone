@@ -430,7 +430,7 @@ void HaliteInterpreter<S>::capture(const std::string& data
             size_t file_offset = m_file_offset + current_column_index;
             const std::string & prefixed
                     = data.substr(current_column_index,length);
-            capture_attribute_text(prefixed,file_offset);
+            capture_attribute_text(prefixed, file_offset, !open_tree.empty() );
         }
         Interpreter<S>::push_staged(wasp::IDENTIFIER, "attr",{});
         { // capture declarative delimiter
@@ -545,6 +545,7 @@ bool HaliteInterpreter<S>::evaluate_component(DataAccessor & data
         if( !conditional( data, tree_view, out, current_line, current_column) ) return false;        
     break;
     default:
+        wasp_tagged_line("unknown construct "<<tree_view.data());
         wasp_not_implemented("template construct at line "
                              +std::to_string(current_line));
     break;
@@ -1366,10 +1367,13 @@ bool HaliteInterpreter<S>::import_range(DataAccessor& data
 
 template<class S>
 void HaliteInterpreter<S>::capture_attribute_text(const std::string& text
-                                                  ,size_t offset)
+                                                  ,size_t offset
+                                                  , bool extract_options)
 {
-    size_t options_index = text.find(m_attribute_options_delim);
-    bool contains_options = options_index != std::string::npos;
+    size_t options_index = extract_options
+            ? text.find(m_attribute_options_delim)
+            : text.size();
+    bool contains_options = extract_options && options_index != std::string::npos;
     if( !contains_options ) options_index = text.size();
 
     // capture text
@@ -1398,7 +1402,8 @@ void HaliteInterpreter<S>::capture_attribute_delim(const std::string& data
         size_t file_offset = m_file_offset + current_column_index;
         capture_attribute_text(
                     data.substr(current_column_index,remaining_length)
-                    ,file_offset);
+                    ,file_offset
+                    ,true);
     }
     // capture attribute terminator
     size_t file_offset = m_file_offset + attribute_end_index;

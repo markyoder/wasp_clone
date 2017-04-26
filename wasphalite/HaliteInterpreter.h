@@ -104,10 +104,12 @@ namespace wasp {
          * @brief capture_attribute_text processes attribute text and constructs appropriate leaf nodes.
          * @param txt the text of the attribute - contains attribute name and potentially attribute options (format, etc)
          * @param offset the offset into the file of this attribute text.
+         * @param extract_options indicates whether to look for attribute options in the given text
          * This will call capture_leaf as needed.
          */
         void capture_attribute_text(const std::string& txt
-                                    ,size_t offset);
+                                    ,size_t offset
+                                    ,bool extract_options);
         /**
          * @brief capture_attribute_delim convenience method for capturing terminator and potential trailing text
          * @param data the data string being examined for traililng text and terminator capture
