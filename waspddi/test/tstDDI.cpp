@@ -160,6 +160,9 @@ expected<<R"I(/
     DDINodeView<decltype(ddi.root())> root = ddi.root();
     root.paths(paths);
     ASSERT_EQ(expected.str(), paths.str());
+
+    ASSERT_EQ(1,root.child_at(1) // sect2
+       .to_int());
 }
 
 TEST(DDInterpreter,passing_simple_sections)
