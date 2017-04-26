@@ -199,3 +199,11 @@ TEST(Halite, undefined_attribute)
                              ,"undefined_attribute.result.txt" // result
                              ));
 }
+
+TEST(Halite, expression_evaluation_syntax_error)
+{
+    test_template(error_test("expression_evaluation_syntax_error.tmpl" // tmpl
+                             ,"" // json
+                             ,"expression_evaluation_syntax_error.result.txt" // result
+                             ));
+}
