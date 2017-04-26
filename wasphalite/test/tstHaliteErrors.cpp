@@ -147,13 +147,14 @@ void test_template( const error_test & t)
     std::string dd = SOURCE_DIR+"/data/";
     std::string bd = BINARY_DIR+"/";
     SCOPED_TRACE(tp);
-    SCOPED_TRACE(dd+t.json_path);
+    std::string json = t.json_path.empty() ?  "" : dd+t.json_path;
+    SCOPED_TRACE(json);
     SCOPED_TRACE(bd+t.expected_path);
     std::stringstream expected_result;
     std::stringstream result;
     std::stringstream errors;
     bool expanded = wasp::expand_template(result,errors,errors,tp
-                 ,dd+t.json_path );
+                 ,json);
     ASSERT_FALSE( expanded );
     if(errors.rdbuf()->in_avail() > 0 ) std::cout<<errors.str()<<std::endl;
     ASSERT_TRUE( load_file(bd+t.expected_path,expected_result) );
