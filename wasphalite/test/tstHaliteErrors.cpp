@@ -215,3 +215,11 @@ TEST(Halite, expression_evaluation_format_error)
                              ,"expression_evaluation_format_error.result.txt" // result
                              ));
 }
+
+TEST(Halite, iterative_expression_range_error)
+{
+    test_template(error_test("iterative_expression_range_error.tmpl" // tmpl
+                             ,"" // json
+                             ,"iterative_expression_range_error.result.txt" // result
+                             ));
+}

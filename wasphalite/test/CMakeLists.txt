@@ -10,6 +10,7 @@ configure_file("data/unmatched_conditional_else.result.txt.in" "unmatched_condit
 configure_file("data/undefined_attribute.result.txt.in" "undefined_attribute.result.txt" @ONLY)
 configure_file("data/expression_evaluation_syntax_error.result.txt.in" "expression_evaluation_syntax_error.result.txt" @ONLY)
 configure_file("data/expression_evaluation_format_error.result.txt.in" "expression_evaluation_format_error.result.txt" @ONLY)
+configure_file("data/iterative_expression_range_error.result.txt.in" "iterative_expression_range_error.result.txt" @ONLY)
 
 ADD_GOOGLE_TEST(tstHaliteTreeConstruction.cpp NP 1)
 ADD_GOOGLE_TEST(tstHaliteEngine.cpp NP 1)
