@@ -112,7 +112,7 @@ public:
      * @brief is_null determines if this view is backed by a storage pool
      * @return true, iff the view has no storage backing
      */
-    bool is_null()const{ return m_tree_data == nullptr; }
+    bool is_null()const{ return m_tree_data == nullptr || m_tree_node_index == m_tree_data->size(); }
 
     /**
      * @brief path acquire the path of this node from the document root

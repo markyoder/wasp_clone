@@ -98,6 +98,14 @@ IF ( wasp_ENABLE_waspson )
       INSTALLABLE
     )
 ENDIF()
+IF ( wasp_ENABLE_waspjson )
+    TRIBITS_ADD_EXECUTABLE(jsonselect
+      SOURCES jsonselect.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
+ENDIF()
 ##---------------------------------------------------------------------------##
 ##                   end of utils/CMakeLists.txt
 ##---------------------------------------------------------------------------##
