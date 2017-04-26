@@ -180,6 +180,7 @@ public:
      * If the node at the given index is not a leaf node, wasp::UNKNOWN is returned
      */
     typename TP::token_type_size node_token_type( node_index_size node_index)const;
+    typename TP::file_offset_type_size node_token_offset( node_index_size node_index)const;
     /**
      * @brief data acquire the string data of the node
      * @param node_index the index of the node to acquire the data
@@ -230,6 +231,12 @@ public:
      */
     void push_line(typename TP::file_offset_type_size line_offset){m_token_data.push_line(line_offset);}
 
+    size_t line_count()const { return m_token_data.line_count(); }
+    typename TP::file_offset_type_size line_offset(typename TP::token_index_type_size line_index)const{
+        wasp_require(line_index < line_count());
+        return m_token_data.line_offset(line_index);
+    }
+
     /**
      * @brief token_data acquires the token pool that backs this TreeNodePool
      * @return
@@ -239,7 +246,14 @@ public:
 
     const TokenPool<typename TP::token_type_size,typename TP::token_index_type_size,typename TP::file_offset_type_size>&
         token_data()const{return m_token_data;}
+    void set_start_line(size_t line){m_start_line = line;}
+    size_t start_line()const{return m_start_line;}
+    void set_start_column(size_t col){m_start_column = col;}
+    size_t start_column()const{return m_start_column;}
 private:
+
+    typename TP::file_offset_type_size m_start_line;
+    typename TP::file_offset_type_size m_start_column;
     /**
      * @brief m_token_data Leaf node's token data
      * All leaf nodes will have a corresponding token

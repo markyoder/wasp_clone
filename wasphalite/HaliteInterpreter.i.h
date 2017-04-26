@@ -590,7 +590,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
             case wasp::IDENTIFIER:
             if( !has_options &&
                    !print_attribute(data, child_view, attr_str, line, column) )
-            {                
+            {
                 return false;
             }
             else if( has_options &&
@@ -626,9 +626,11 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
 
     // attribute string contains the full attribute name
     ExprInterpreter<S> expr(Interpreter<S>::error_stream());
-    wasp_tagged_line("expression '"<<attr_str.str()<<"'");
+    wasp_tagged_line("expression '"<<attr_str.str()<<"' starting on line "<<line<<" and column "<<start_column + m_attribute_start_delim.size());
+
     if( false == expr.parse(attr_str, line, start_column + m_attribute_start_delim.size()) )
-    {        
+    {
+        wasp_tagged_line("Failed parsing expression evaluation...");
         return false;
     }
     if( options.ranges().empty() )
@@ -656,6 +658,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
         if( result.is_error() && !options.optional() )
         {
             wasp_tagged_line(result.string());
+            Interpreter<S>::error_stream()<<result.string();
             return false;
         }
         if( result.is_error() == false)
@@ -706,6 +709,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
             if( result.is_error() && !options.optional() )
             {
                 wasp_tagged_line(result.string());
+                Interpreter<S>::error_stream()<<result.string();
                 return false;
             }
             if( result.is_error() == false)
@@ -956,7 +960,10 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
                 wasp::print(import_str, child_view);
             break;
             case wasp::IDENTIFIER:
-                print_attribute(data,child_view, import_str, import_line, column);
+                if( !print_attribute(data,child_view, import_str, import_line, column) )
+                {
+                    return false;
+                }
             break;
             default:
                 wasp_not_implemented("parameterized file import '"+child_view.data()+"'");

@@ -4,6 +4,8 @@
 template<typename NTS, typename NIS
          ,typename TP>
 TreeNodePool<NTS,NIS,TP>::TreeNodePool()
+    : m_start_line(1)
+    , m_start_column(1)
 {
 }
 // copy constructor
@@ -14,6 +16,8 @@ TreeNodePool<NTS,NIS,TP>::TreeNodePool(
     : m_token_data(orig.m_token_data)
     , m_node_names(orig.m_node_names)
     , m_node_basic_data(orig.m_node_basic_data)
+    , m_start_line(1)
+    , m_start_column(1)
     , m_node_parent_data(orig.m_node_parent_data)
     , m_node_child_indices(orig.m_node_child_indices)
     , m_basic_parent_data_lookup(orig.m_basic_parent_data_lookup)
@@ -288,7 +292,7 @@ std::size_t TreeNodePool<NTS,NIS,TP>::line(
     if( leaf_itr != m_leaf_token_lookup.end() )
     {
         auto token_index = leaf_itr->second;
-        return m_token_data.line(token_index);
+        return m_token_data.line(token_index)+m_start_line-1;
     }
     // neither a leaf node or a parent node
     // TODO - catch error condition
@@ -306,6 +310,16 @@ std::size_t TreeNodePool<NTS,NIS,TP>::column(
     if( leaf_itr != m_leaf_token_lookup.end() )
     {
         auto token_index = leaf_itr->second;
+        // check if token exists on first line
+        // in which case first column is applicable
+        if( start_column() != 1 )
+        {
+            if( line_count() == 0 ||
+                line_offset(0) > m_token_data.offset(token_index))
+            {
+                return m_token_data.column(token_index)+m_start_column-1;
+            }
+        }
         return m_token_data.column(token_index);
     }
     // neither a leaf node or a parent node
@@ -415,6 +429,32 @@ typename TP::token_type_size TreeNodePool<NTS,NIS,TP>::node_token_type(
         return m_token_data.type(leaf_itr->second);
     }
     return wasp::UNKNOWN;
+}
+// Obtain a leaf node's token type
+template<typename NTS, typename NIS
+         ,class TP>
+typename TP::file_offset_type_size TreeNodePool<NTS,NIS,TP>::node_token_offset(
+                    NIS node_index )const
+{
+    auto leaf_itr = m_leaf_token_lookup.find(node_index);
+    // obtain the token's column
+    if( leaf_itr != m_leaf_token_lookup.end() )
+    {
+        return m_token_data.offset(leaf_itr->second);
+    }
+    auto parent_itr = m_basic_parent_data_lookup.find(node_index);
+    if( parent_itr != m_basic_parent_data_lookup.end() )
+    {
+        auto parent_data_index = parent_itr->second;
+        auto parent_data = m_node_parent_data[parent_data_index];
+        wasp_insist( parent_data.m_child_count != 0, "requesting unavailable token offset info!" );
+        auto first_child_lookup_index
+                = parent_data.m_first_child_index;
+        auto first_child_basic_data_index
+                = m_node_child_indices[first_child_lookup_index];
+        return node_token_offset(first_child_basic_data_index);
+    }
+    wasp_not_implemented("node token offset data scenario");
 }
 // Obtain the node's data (string contents)
 template<typename NTS, typename NIS

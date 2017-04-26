@@ -649,7 +649,7 @@ TEST(ExprInterpreter,variable_ref_undefined)
     std::stringstream input;
     input <<" x "<<std::endl;
     ExprInterpreter<> interpreter;
-    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ( true, interpreter.parse(input,10,4) );
     ASSERT_EQ(2, interpreter.node_count() );
     auto document = interpreter.root();
     ASSERT_EQ(1, document.child_count() );
@@ -662,7 +662,7 @@ TEST(ExprInterpreter,variable_ref_undefined)
     ASSERT_FALSE(result.is_real());
     ASSERT_FALSE(result.is_string());
     ASSERT_TRUE(result.is_error());
-    ASSERT_EQ("***Error : value (x) at line 1 and column 2 - is not a known variable.\n"
+    ASSERT_EQ("***Error : value (x) at line 10 and column 5 - is not a known variable.\n"
               , result.string());
 }
 TEST(ExprInterpreter,pos_scalar)
