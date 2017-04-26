@@ -694,7 +694,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
             {
                 Interpreter<S>::error_stream()
                         <<"***Error : unable to substitute expression on line "
-                       <<line<<" using '"<<options.use()<<"'"<<std::endl;
+                       <<line<<" using '"<<options.use()<<"' - the data object could not be found."<<std::endl;
                 return false;
             }
             // capture new scope with appropriate parent
