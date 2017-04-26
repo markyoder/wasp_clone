@@ -40,6 +40,35 @@ line2
         ASSERT_EQ(input.str(), document.data());
 }
 
+TEST( Halite, all_but_constructs)
+{
+    std::stringstream input;
+    input<< R"INPUT(`1234567890-=
+~!@#$%^&*()_+
+    qwertyuiop[]\+_)(*&^%$#@!~
+QWERTYUIOP{}|=-0987654321
+asdfghjkl;'\][poiuytrewq
+ASDFGHJKL:"';lkjhgfdsa'
+zxcvbnm,./  MNBVCXZ
+ZXCVBNM  ?.,mnbvcxz)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    auto document = interpreter.root();
+    std::string expected_paths = R"INPUT(/
+/txt (`1234567890-=)
+/txt (~!@#$%^&*()_+)
+/txt (    qwertyuiop[]\+_)(*&^%$#@!~)
+/txt (QWERTYUIOP{}|=-0987654321)
+/txt (asdfghjkl;'\][poiuytrewq)
+/txt (ASDFGHJKL:"';lkjhgfdsa')
+/txt (zxcvbnm,./  MNBVCXZ)
+/txt (ZXCVBNM  ?.,mnbvcxz)
+)INPUT";
+        std::stringstream paths;
+        document.paths(paths);
+        ASSERT_EQ(expected_paths, paths.str());
+        ASSERT_EQ(input.str(), document.data());
+}
 TEST( Halite, iterative_formatted_attribute_embedded_tree)
 {
     std::stringstream input;
