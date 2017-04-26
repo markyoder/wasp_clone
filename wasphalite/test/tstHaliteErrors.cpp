@@ -165,6 +165,13 @@ TEST(Halite, file_import_file_missing)
     test_template(error_test("file_import_file_missing.tmpl" // tmpl
                              ,"" // json
                              ,"file_import_file_missing.result.txt" // result
-                             ));
+                             ));    
 }
 
+TEST(Halite, unmatched_conditional_terminator)
+{
+    test_template(error_test("unmatched_conditional_terminator.tmpl" // tmpl
+                             ,"" // json
+                             ,"unmatched_conditional_terminator.result.txt" // result
+                             ));
+}
