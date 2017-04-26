@@ -111,3 +111,60 @@ TEST( Halite,attribute_range_errors)
         ASSERT_EQ("***Error: unable to acquire attribute options on line "+e+"\n", errors.str() );
     }
 }
+#include "wasphalite/test/Paths.h"
+// TODO add timing for each template
+struct error_test{
+    std::string template_path;
+    std::string json_path;
+    std::string expected_path;
+    error_test(const std::string& t, const std::string& j, const std::string&e)
+        :template_path(t),json_path(j),expected_path(e){}
+    error_test(const error_test& orig)
+    :template_path(orig.template_path)
+    ,json_path(orig.json_path)
+    ,expected_path(orig.expected_path){}
+};
+bool load_file(const std::string & path
+                         ,std::stringstream&s)
+{
+    std::ifstream f(path);
+    bool first = true;
+    while( !f.eof() && f.good() )
+    {
+
+        std::string line;
+        std::getline(f,line);
+        if( !first ){ s<<std::endl;
+        }
+        s << line;
+        first = false;
+    }
+    return f.eof() && !f.bad();
+}
+void test_template( const error_test & t)
+{
+    std::string tp = SOURCE_DIR+"/data/"+t.template_path;
+    std::string dd = SOURCE_DIR+"/data/";
+    std::string bd = BINARY_DIR+"/";
+    SCOPED_TRACE(tp);
+    SCOPED_TRACE(dd+t.json_path);
+    SCOPED_TRACE(bd+t.expected_path);
+    std::stringstream expected_result;
+    std::stringstream result;
+    std::stringstream errors;
+    bool expanded = wasp::expand_template(result,errors,errors,tp
+                 ,dd+t.json_path ) ;
+
+    if(errors.rdbuf()->in_avail() > 0 ) std::cout<<errors.str()<<std::endl;
+    ASSERT_TRUE( load_file(bd+t.expected_path,expected_result) );
+    ASSERT_EQ( expected_result.str(), errors.str() );
+}
+
+TEST(Halite, file_import_file_missing)
+{
+    test_template(error_test("file_import_file_missing.tmpl" // tmpl
+                             ,"" // json
+                             ,"file_import_file_missing.result.txt" // result
+                             ));
+}
+

@@ -1,5 +1,10 @@
 INCLUDE(GoogleTest)
 
+# configure paths for template tests
+configure_file("Paths.h.in" "Paths.h" @ONLY)
+
+configure_file("data/file_import_file_missing.result.txt.in" "file_import_file_missing.result.txt" @ONLY)
+
 ADD_GOOGLE_TEST(tstHaliteTreeConstruction.cpp NP 1)
 ADD_GOOGLE_TEST(tstHaliteEngine.cpp NP 1)
 ADD_GOOGLE_TEST(tstHaliteErrors.cpp NP 1)

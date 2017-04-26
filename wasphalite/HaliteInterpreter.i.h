@@ -994,8 +994,10 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
     {
         if( !relative_to_current.good() )
         {
-            Interpreter<S>::error_stream()<<"***Error : unable to open '"
-                                         <<path<<".'"<<std::endl;
+            Interpreter<S>::error_stream()<<"***Error : in '"
+                                         <<Interpreter<S>::stream_name()
+                                        <<"' on line "<<import_line<<" - unable to open '"
+                                         <<path<<"' for import."<<std::endl;
             return false;
         }
         nested_interp.setStreamName(relative_to_current_path,true);
