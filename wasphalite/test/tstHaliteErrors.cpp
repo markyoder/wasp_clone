@@ -153,8 +153,8 @@ void test_template( const error_test & t)
     std::stringstream result;
     std::stringstream errors;
     bool expanded = wasp::expand_template(result,errors,errors,tp
-                 ,dd+t.json_path ) ;
-
+                 ,dd+t.json_path );
+    ASSERT_FALSE( expanded );
     if(errors.rdbuf()->in_avail() > 0 ) std::cout<<errors.str()<<std::endl;
     ASSERT_TRUE( load_file(bd+t.expected_path,expected_result) );
     ASSERT_EQ( expected_result.str(), errors.str() );
@@ -189,5 +189,13 @@ TEST(Halite, unmatched_conditional_else)
     test_template(error_test("unmatched_conditional_else.tmpl" // tmpl
                              ,"" // json
                              ,"unmatched_conditional_else.result.txt" // result
+                             ));
+}
+
+TEST(Halite, undefined_attribute)
+{
+    test_template(error_test("undefined_attribute.tmpl" // tmpl
+                             ,"" // json
+                             ,"undefined_attribute.result.txt" // result
                              ));
 }

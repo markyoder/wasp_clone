@@ -7,6 +7,7 @@ configure_file("data/file_import_file_missing.result.txt.in" "file_import_file_m
 configure_file("data/unmatched_conditional_terminator.result.txt.in" "unmatched_conditional_terminator.result.txt" @ONLY)
 configure_file("data/unmatched_conditional_elseif.result.txt.in" "unmatched_conditional_elseif.result.txt" @ONLY)
 configure_file("data/unmatched_conditional_else.result.txt.in" "unmatched_conditional_else.result.txt" @ONLY)
+configure_file("data/undefined_attribute.result.txt.in" "undefined_attribute.result.txt" @ONLY)
 
 ADD_GOOGLE_TEST(tstHaliteTreeConstruction.cpp NP 1)
 ADD_GOOGLE_TEST(tstHaliteEngine.cpp NP 1)
