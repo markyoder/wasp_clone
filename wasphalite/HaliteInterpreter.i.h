@@ -668,16 +668,16 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
             {
                 if( !result.format(  out, options.format(), Interpreter<S>::error_stream()) )
                 {
-                    Interpreter<S>::error_stream()<<"***Error: failed to format result ("
-                                                 <<result.as_string()<<") as '"<<options.format()<<"'"<<std::endl;
+                    Interpreter<S>::error_stream()<<std::endl<<"***Error : on line "<<line<<" failed to format result - "
+                                                 <<result.as_string()<<" - as '"<<options.format()<<"'."<<std::endl;
                     return false;
                 }
             }
             else if( !options.silent() ){
                if( !result.format( out ) )
                {
-                   Interpreter<S>::error_stream()<<"***Error: failed to format result ("
-                                                <<result.as_string()<<")."<<std::endl;
+                   Interpreter<S>::error_stream()<<std::endl<<"***Error : on line "<<line<<" failed to format result - "
+                                                <<result.as_string()<<"."<<std::endl;
                    return false;
                }
             }

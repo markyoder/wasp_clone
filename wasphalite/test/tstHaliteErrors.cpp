@@ -207,3 +207,11 @@ TEST(Halite, expression_evaluation_syntax_error)
                              ,"expression_evaluation_syntax_error.result.txt" // result
                              ));
 }
+
+TEST(Halite, expression_evaluation_format_error)
+{
+    test_template(error_test("expression_evaluation_format_error.tmpl" // tmpl
+                             ,"" // json
+                             ,"expression_evaluation_format_error.result.txt" // result
+                             ));
+}

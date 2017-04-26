@@ -100,7 +100,7 @@ namespace wasp{
                         // check for '%.conversion'| '%.NULL' - missing precision
                         if( p == sl )
                         {  // if no difference in character pointers, error
-                            err<<"missing precision format statement at index "<<(sl-p);
+                            err<<"***Error : missing precision format statement at index "<<(sl-p);
                             error_occurred = true;
                             break;
                         }
@@ -108,7 +108,8 @@ namespace wasp{
                         // check that the 'conversion' is supported
                         if( std::strchr(conversion_types,*sl) == nullptr )
                         {
-                            err<<"unsupported format conversion type ("<<*sl<<"), must be one of "<<conversion_types;
+                            err<<"***Error : unsupported format conversion type '"<<*sl<<"', must be one of "
+                              <<conversion_types;
                             error_occurred = true;
                             break;
                         }
@@ -145,7 +146,7 @@ namespace wasp{
                                            ,include_sign);
                         break; // break from lookahead loop
                     }else{
-                        err<<"'"<<*sl<<"' is an unknown format element";
+                        err<<"***Error : '"<<*sl<<"' is an unknown format element";
                         error_occurred = true;
                         break;
                     }
@@ -153,7 +154,7 @@ namespace wasp{
                 s = sl; // move forward the lookahead amount
                 // ensure we concluded on a conversion type
                 if( std::strchr(conversion_types,*sl) == nullptr ){
-                    err<<"format type conversion is missing";
+                    err<<" - format type conversion is missing.";
                     error_occurred = true;
                     break;
                 }
