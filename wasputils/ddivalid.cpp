@@ -1,6 +1,6 @@
 /* 
- * File:   ddilist.cpp
- * Author: raq
+ * File:   ddivalid.cpp
+ * Author: Robert A. Lefebvre
  *
  */
 
@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 
     if( argc < 3 ){
         std::cout<<"Usage: "<<std::endl;
-        std::cout<<"\tDDIList schema inputFile "<<std::endl;
+        std::cout<<"\tDDIValid schema inputFile(s) "<<std::endl;
         std::cout<<"\ti.e., ddilist /path/to/definition.son /path/to/some/input(s)... "<<std::endl;
         return 1;
     }
