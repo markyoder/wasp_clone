@@ -36,6 +36,12 @@ IF ( wasp_ENABLE_wasphalite  AND wasp_ENABLE_waspjson  )
       NOEXESUFFIX
       INSTALLABLE
     )
+    TRIBITS_ADD_EXECUTABLE(halitelist
+      SOURCES halitelist.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
 ENDIF()
 
 IF ( wasp_ENABLE_waspddi )
