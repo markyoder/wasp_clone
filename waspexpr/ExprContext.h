@@ -672,6 +672,8 @@ private:
                string()
                        += a.string();
             }
+        }else{
+            wasp_not_implemented("operation with unknown type...");
         }
         return *this;
     }
@@ -733,6 +735,8 @@ private:
                string()
                        += a.string();
             }
+        }else{
+            wasp_not_implemented("operation with unknown type...");
         }
         return *this;
     }
@@ -794,6 +798,8 @@ private:
                string()
                        += "-"+a.string();
             }
+        }else{
+            wasp_not_implemented("operation with unknown type...");
         }
         return *this;
     }
@@ -803,7 +809,8 @@ private:
         {
             // integer / interger
             if( a.is_integer() ){
-                m_value.m_int /= a.integer();
+                m_type = Context::Type::REAL;
+                m_value.m_real = integer()/float(a.integer());
             }
             // integer / real
             else if( a.is_real() ){
@@ -813,10 +820,18 @@ private:
             // integer / string
             else if( a.is_string() )
             {
-                m_type = Context::Type::STRING;
-                string()
-                        = std::to_string(integer())
-                        + "/"+a.string();
+                bool ok=false;
+                double result = integer()/a.to_real(&ok);
+                // fall back to string concat
+                if( !ok )
+                {
+                    m_type = Context::Type::STRING;
+                    string() = std::to_string(integer())
+                            +"/"+a.string();
+                }else{
+                    m_type = Context::Type::REAL;
+                    m_value.m_real = result;
+                }
             }
         }
         else if( is_real() )
@@ -832,28 +847,35 @@ private:
             // real / string
             else if( a.is_string() )
             {
-                m_type = Context::Type::STRING;
-                string()
-                        = std::to_string(real())
-                        + +"/"+a.string();
+                bool ok=false;
+                double result = real()/a.to_real(&ok);
+                // fall back to string concat
+                if( !ok )
+                {
+                    m_type = Context::Type::STRING;
+                    string() = std::to_string(real())
+                            +"/"+a.string();
+                }else{
+                    m_type = Context::Type::REAL;
+                    m_value.m_real = result;
+                }
             }
         }else if( is_string() ){
-            // string / integer
-            if( a.is_integer() ){
-                string()
-                        += std::to_string(a.integer());
-            }
-            // string / real
-            else if( a.is_real() ){
-                string()
-                        += std::to_string(a.real());
-            }
-            // string / string
-            else if( a.is_string() )
+
+            bool lok = false;
+            bool rok = false;
+            double result = to_real(&lok)/a.to_real(&rok);
+            if( !lok || !rok )
             {
-               string()
-                       += "/"+a.string();
+                m_type = Context::Type::STRING;
+                string() +="/"+a.to_string();
+            }else
+            {
+                m_type = Context::Type::REAL;
+                m_value.m_real = result;
             }
+        }else{
+            wasp_not_implemented("operation with unknown type...");
         }
         return *this;
     }
@@ -914,7 +936,10 @@ private:
                string()
                        += a.string();
             }
+        }else{
+            wasp_not_implemented("operation with unknown type...");
         }
+
         return *this;
     }
     Result& unary_not()
@@ -969,10 +994,27 @@ public:
             return m_value.m_int;
            case Context::Type::REAL:
             return m_value.m_real;
+        case Context::Type::BOOLEAN:
+            return boolean();
            default:
             break;
         }
         return std::numeric_limits<double>::quiet_NaN();
+    }
+    double to_real(bool * ok=nullptr)const{
+        double result = 1.0;
+        if( is_string() )
+        {
+            to_type(result,string(),ok);
+            wasp_tagged_line("acquiring '"<<string()<<"' as a double "<<result);
+        }
+        else
+        {
+            wasp_tagged_line("acquiring value as a number...");
+            result = number();
+            if( ok ) *ok = true;
+        }
+        return result;
     }
     bool boolean()const{return m_value.m_bool;}
     bool to_bool()const{
@@ -992,12 +1034,31 @@ public:
         }
         return false;
     }
-    const std::string& string()const{
-        return (m_string);}
+    const std::string& string()const{return (m_string);}
 
-    std::string& string(){
-        return (m_string);}
+    std::string& string(){return (m_string);}
 
+    std::string to_string(bool * ok=nullptr)const{
+        if( ok ) *ok = true;
+        switch(m_type){
+            case Context::Type::BOOLEAN:
+            return boolean() ? "1" : "0";
+        case Context::Type::INTEGER:
+            return std::to_string(integer());
+        case Context::Type::REAL:
+            return std::to_string(real());
+        case Context::Type::STRING:
+            return string();
+        case Context::Type::ERROR:
+            if( ok ) *ok = false;
+            return "";
+        default:
+        case Context::Type::UNDEFINED:
+            wasp_not_implemented("converting undefined data to string");
+        }
+        if( ok ) *ok = false;
+        return "";
+    }
     bool is_bool()const{
         return m_type == Context::Type::BOOLEAN;
     }

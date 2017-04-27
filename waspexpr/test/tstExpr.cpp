@@ -219,12 +219,14 @@ TEST(ExprInterpreter,div)
     ASSERT_EQ(wasp::DIVIDE, op.child_at(1).type());
     ASSERT_EQ(wasp::VALUE, op.child_at(2).type());
     auto result = interpreter.evaluate();
-    ASSERT_TRUE(result.is_integer());
+    // integer is not closed under division
+    // reflect this reality in the result
+    ASSERT_FALSE(result.is_integer());
     ASSERT_TRUE(result.is_number());
-    ASSERT_FALSE(result.is_real());
+    ASSERT_TRUE(result.is_real());
     ASSERT_FALSE(result.is_string());
     ASSERT_FALSE(result.is_error());
-    ASSERT_EQ(2, result.integer());
+    ASSERT_NEAR(2.6666667, result.real(),1e-7);
 }
 TEST(ExprInterpreter,equal)
 {
@@ -710,7 +712,8 @@ TEST(ExprInterpreter,neg_scalar)
 TEST(ExprInterpreter,basic_combined_integer)
 {
     std::stringstream input;
-    input <<"-(1+2-3*8/2^3)"<<std::endl;
+    // exclude division because integer division is not closed
+    input <<"-(1+2-3*8-2^3)"<<std::endl;
     ExprInterpreter<> interpreter;
     ASSERT_EQ( true, interpreter.parse(input) );
     ASSERT_EQ(22, interpreter.node_count() );
@@ -725,7 +728,28 @@ TEST(ExprInterpreter,basic_combined_integer)
     ASSERT_FALSE(result.is_real());
     ASSERT_FALSE(result.is_string());
     ASSERT_FALSE(result.is_error());
-    ASSERT_EQ(0, result.integer());
+    ASSERT_EQ(29, result.integer());
+}
+TEST(ExprInterpreter,basic_combined_integer_division)
+{
+    std::stringstream input;
+    // exclude division because integer division is not closed
+    input <<"-(1+2-3*8/2^3)"<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(22, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count() );
+    auto op = document.child_at(0);
+    ASSERT_EQ(wasp::UNARY_MINUS, op.type());
+    ASSERT_EQ(2, op.child_count());
+    auto result = interpreter.evaluate();
+    ASSERT_FALSE(result.is_integer());
+    ASSERT_TRUE(result.is_number());
+    ASSERT_TRUE(result.is_real());
+    ASSERT_FALSE(result.is_string());
+    ASSERT_FALSE(result.is_error());
+    ASSERT_EQ(0.0, result.real());
 }
 TEST(ExprInterpreter,basic_combined_real)
 {

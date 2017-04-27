@@ -167,8 +167,6 @@ bool Interpreter<TNS>::parse_impl(std::istream &in
     m_start_column = start_column;
     m_tree_nodes.set_start_line(start_line);
     m_tree_nodes.set_start_column(start_column);
-    wasp_tagged_line("parsing '"<<stream_name<<"' starting from line "
-                     <<start_line<<" and column "<<start_column);
     PARSER_IMPL parser(*this, in, nullptr);
 //    parser.set_debug_level(true);
 
