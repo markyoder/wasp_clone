@@ -161,6 +161,10 @@ void test_template( const error_test & t)
     ASSERT_EQ( expected_result.str(), errors.str() );
 }
 
+//
+// Test single template errors for their expected error messages - no data needed
+//
+
 TEST(Halite, file_import_file_missing)
 {
     test_template(error_test("file_import_file_missing.tmpl" // tmpl
@@ -252,5 +256,102 @@ TEST(Halite, attribute_options_missing_delimiter_error)
     test_template(error_test("attribute_options_missing_delimiter_error.tmpl" // tmpl
                              ,"" // json
                              ,"attribute_options_missing_delimiter_error.result.txt" // result
+                             ));
+}
+
+//
+// Test the same errors but propogated from
+//
+TEST(Halite, import_with_file_import_file_missing)
+{
+    test_template(error_test("import_with_file_import_file_missing.tmpl" // tmpl
+                             ,"" // json
+                             ,"import_with_file_import_file_missing.result.txt" // result
+                             ));
+}
+
+TEST(Halite, import_with_unmatched_conditional_terminator)
+{
+    test_template(error_test("import_with_unmatched_conditional_terminator.tmpl" // tmpl
+                             ,"" // json
+                             ,"import_with_unmatched_conditional_terminator.result.txt" // result
+                             ));
+}
+
+TEST(Halite, import_with_unmatched_conditional_elseif)
+{
+    test_template(error_test("import_with_unmatched_conditional_elseif.tmpl" // tmpl
+                             ,"" // json
+                             ,"import_with_unmatched_conditional_elseif.result.txt" // result
+                             ));
+}
+
+TEST(Halite, import_with_unmatched_conditional_else)
+{
+    test_template(error_test("import_with_unmatched_conditional_else.tmpl" // tmpl
+                             ,"" // json
+                             ,"import_with_unmatched_conditional_else.result.txt" // result
+                             ));
+}
+
+TEST(Halite, import_with_undefined_attribute)
+{
+    test_template(error_test("import_with_undefined_attribute.tmpl" // tmpl
+                             ,"" // json
+                             ,"import_with_undefined_attribute.result.txt" // result
+                             ));
+}
+
+TEST(Halite, import_with_expression_evaluation_syntax_error)
+{
+    test_template(error_test("import_with_expression_evaluation_syntax_error.tmpl" // tmpl
+                             ,"" // json
+                             ,"import_with_expression_evaluation_syntax_error.result.txt" // result
+                             ));
+}
+
+TEST(Halite, import_with_expression_evaluation_format_error)
+{
+    test_template(error_test("import_with_expression_evaluation_format_error.tmpl" // tmpl
+                             ,"" // json
+                             ,"import_with_expression_evaluation_format_error.result.txt" // result
+                             ));
+}
+
+TEST(Halite, import_with_iterative_expression_range_error)
+{
+    test_template(error_test("import_with_iterative_expression_range_error.tmpl" // tmpl
+                             ,"" // json
+                             ,"import_with_iterative_expression_range_error.result.txt" // result
+                             ));
+}
+
+TEST(Halite, import_with_scoped_expression_evaluation_error)
+{
+    test_template(error_test("import_with_scoped_expression_evaluation_error.tmpl" // tmpl
+                             ,"" // json
+                             ,"import_with_scoped_expression_evaluation_error.result.txt" // result
+                             ));
+}
+TEST(Halite, import_with_scoped_iterative_expression_evaluation_error)
+{
+    test_template(error_test("import_with_scoped_iterative_expression_evaluation_error.tmpl" // tmpl
+                             ,"" // json
+                             ,"import_with_scoped_iterative_expression_evaluation_error.result.txt" // result
+                             ));
+}
+
+TEST(Halite, import_with_file_repeat_error)
+{
+    test_template(error_test("import_with_file_repeat_error.tmpl" // tmpl
+                             ,"" // json
+                             ,"import_with_file_repeat_error.result.txt" // result
+                             ));
+}
+TEST(Halite, import_with_attribute_options_missing_delimiter_error)
+{
+    test_template(error_test("import_with_attribute_options_missing_delimiter_error.tmpl" // tmpl
+                             ,"" // json
+                             ,"import_with_attribute_options_missing_delimiter_error.result.txt" // result
                              ));
 }

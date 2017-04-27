@@ -992,6 +992,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
     path = wasp::trim(path," \t");
     wasp_tagged_line("importing '"<<path<<"' relative to '"
                      <<wasp::dir_name(Interpreter<S>::stream_name())<<"'");
+
     std::ifstream relative_to_working_dir(path.c_str());
     std::string relative_to_current_path = wasp::dir_name(Interpreter<S>::stream_name())+"/"+path;
     std::ifstream relative_to_current(relative_to_current_path.c_str());
@@ -1010,13 +1011,16 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
         }
         nested_interp.setStreamName(relative_to_current_path,true);
         parsed = nested_interp.parse(relative_to_current);
-
     }else{
         nested_interp.setStreamName(path,true);
-        parsed = nested_interp.parse(relative_to_working_dir);
+        parsed = nested_interp.parse(relative_to_working_dir);        
     }
     if( parsed == false )
     {
+        Interpreter<S>::error_stream()<<"***Error : on line "<<import_line
+                                     <<" of '"<<Interpreter<S>::stream_name()
+                                    <<"' - unable to process '"
+                                    <<nested_interp.stream_name()<<"'."<<std::endl;
         return false;
     }
     wasp_tagged_line("importing");
@@ -1042,6 +1046,10 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
                     import = nested_interp.evaluate(out,ref);
                     if( !import )
                     {
+                        Interpreter<S>::error_stream()<<"***Error : on line "<<import_line
+                                                     <<" of '"<<Interpreter<S>::stream_name()
+                                                    <<"' - unable to import '"
+                                                    <<nested_interp.stream_name()<<"'."<<std::endl;
                         return false;
                     }
                     if( array_i+1 < array->size() ) out<<std::endl;
@@ -1079,6 +1087,13 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
     }
     else{
         import = nested_interp.evaluate(out,data);
+        if( !import )
+        {
+            Interpreter<S>::error_stream()<<"***Error : on line "<<import_line
+                                         <<" of '"<<Interpreter<S>::stream_name()
+                                        <<"' - unable to process '"
+                                        <<nested_interp.stream_name()<<"'."<<std::endl;
+        }
     }
     line += delta;
     wasp_tagged_line("import successful? "<<std::boolalpha<<import);
