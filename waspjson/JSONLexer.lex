@@ -52,6 +52,7 @@ TOKEN_TRUE true
 TOKEN_FALSE false
 TOKEN_NULL null
 DOUBLE_QUOTED_STRING \"(\\.|[^"\n])*\"
+SINGLE_QUOTED_STRING \'(\\.|[^'\n])*\'
 LBRACKET \[
 RBRACKET \]
 LBRACE \{
@@ -116,7 +117,7 @@ COLON :
     interpreter.push_line_offset(file_offset-yyleng);
 }
 
-{DOUBLE_QUOTED_STRING} {
+{DOUBLE_QUOTED_STRING}|{SINGLE_QUOTED_STRING} {
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
 }
