@@ -641,6 +641,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
             const std::string & scope_name = options.use();
             wasp_tagged_line("Using options with name '"<<scope_name<<"'");
             DataArray * use_array = data.array(scope_name);
+            DataObject* use_obj = data.object(scope_name);
             if( use_array != nullptr )
             {
                 for( size_t e = 0, array_size = use_array->size();
@@ -659,20 +660,20 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
                     if( !process_result(result, options, line, out) ) return false;
                     if( e+1 != array_size ) out<<options.separator();
                 }
-            }else
+            }else if( use_obj != nullptr)
             {
-                DataObject* use_obj = data.object(scope_name);
-                if( use_obj == nullptr )
-                {
-                    Interpreter<S>::error_stream()
-                            <<"***Error : unable to substitute expression on line "
-                           <<line<<" using '"<<options.use()<<"' - the data object could not be found."<<std::endl;
-                    return false;
-                }
+
                 // capture new scope with appropriate parent
                 DataAccessor use(use_obj,&data);
                 result = expr.evaluate(use);
                 if( !process_result(result, options, line, out) ) return false;
+            }
+            else if( !options.optional() )
+            {
+                Interpreter<S>::error_stream()
+                        <<"***Error : unable to substitute expression on line "
+                       <<line<<" using '"<<options.use()<<"' - the data object or array could not be found."<<std::endl;
+                return false;
             }
         }
         else{

@@ -232,6 +232,21 @@ TEST( Halite, attribute_use_scope_object)
 
     ASSERT_EQ( "ted-20.440000", out.str() );
 }
+TEST( Halite, attribute_use_scope_array_optional)
+{
+    std::stringstream input;
+    // access to x,y,z are restricted to each element of an array
+    // use arrayscope to facilitate access
+    input<< R"INPUT(before<y+"-"+x*z:? use=array >after)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+
+    ASSERT_EQ( "beforeafter", out.str() );
+}
 TEST( Halite, attribute_use_scope_array)
 {
     std::stringstream input;
@@ -256,6 +271,7 @@ TEST( Halite, attribute_use_scope_array)
 
     ASSERT_EQ( "fred-20.440000 ted-40.880000", out.str() );
 }
+
 TEST( Halite, iterative_attribute_use_scope_object)
 {
     std::stringstream input;
