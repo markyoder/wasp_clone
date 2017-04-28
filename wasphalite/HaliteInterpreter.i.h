@@ -638,24 +638,47 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
         Result result;
         if( options.has_use() )
         {
-            const std::string & obj_name = options.use();
-            wasp_tagged_line("Using options with name '"<<obj_name<<"'");
-            DataObject* use_obj = data.object(obj_name);
-            if( use_obj == nullptr )
+            const std::string & scope_name = options.use();
+            wasp_tagged_line("Using options with name '"<<scope_name<<"'");
+            DataArray * use_array = data.array(scope_name);
+            if( use_array != nullptr )
             {
-                Interpreter<S>::error_stream()
-                        <<"***Error : unable to substitute expression on line "
-                       <<line<<" using '"<<options.use()<<"' - the data object could not be found."<<std::endl;
-                return false;
+                for( size_t e = 0, array_size = use_array->size();
+                     e < array_size; ++e)
+                {
+                    const Value & element = use_array->at(e);
+                    if( !element.is_object() ) continue; // todo
+                    DataObject * use_object = element.to_object();
+                    wasp_check( use_object );
+                    DataAccessor use(use_object,&data);
+                    result = expr.evaluate(use);
+                    if( result.is_error() )
+                    {
+                        return false;
+                    }
+                    if( !process_result(result, options, line, out) ) return false;
+                    if( e+1 != array_size ) out<<options.separator();
+                }
+            }else
+            {
+                DataObject* use_obj = data.object(scope_name);
+                if( use_obj == nullptr )
+                {
+                    Interpreter<S>::error_stream()
+                            <<"***Error : unable to substitute expression on line "
+                           <<line<<" using '"<<options.use()<<"' - the data object could not be found."<<std::endl;
+                    return false;
+                }
+                // capture new scope with appropriate parent
+                DataAccessor use(use_obj,&data);
+                result = expr.evaluate(use);
+                if( !process_result(result, options, line, out) ) return false;
             }
-            // capture new scope with appropriate parent
-            DataAccessor use(use_obj,&data);
-            result = expr.evaluate(use);
         }
         else{
             result = expr.evaluate(data);
+            if( !process_result(result, options, line, out) ) return false;
         }
-        if( !process_result(result, options, line, out) ) return false;
     }
     else{
 
