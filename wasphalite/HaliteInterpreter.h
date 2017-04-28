@@ -297,7 +297,18 @@ namespace wasp {
         bool repeat_file(DataAccessor & data
                          ,const TreeNodeView<S> & import_view
                          ,std::ostream& out, size_t& line, size_t & column);
-
+        /**
+         * @brief process_result conduct formatting, error checking of the result
+         * @param result the result to be emitted to the output stream
+         * @param options the options dictating format, etc.
+         * @param line the line on which this is occurring
+         * @param out the output stream to write the result
+         * @return true, iff no error occurred.
+         */
+        bool process_result(const Result & result
+                            , const SubstitutionOptions& options
+                            , size_t line
+                            , std::ostream& out);
     public: // public variables
 
         /**

@@ -655,33 +655,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
         else{
             result = expr.evaluate(data);
         }
-        if( result.is_error() && !options.optional() )
-        {
-            wasp_tagged_line(result.string());
-            Interpreter<S>::error_stream()<<result.string();
-            return false;
-        }
-        if( result.is_error() == false)
-        {
-            wasp_tagged_line("expression result is "<<result.as_string());
-            if( options.has_format() && !options.silent() )
-            {
-                if( !result.format(  out, options.format(), Interpreter<S>::error_stream()) )
-                {
-                    Interpreter<S>::error_stream()<<std::endl<<"***Error : on line "<<line<<" failed to format result - "
-                                                 <<result.as_string()<<" - as '"<<options.format()<<"'."<<std::endl;
-                    return false;
-                }
-            }
-            else if( !options.silent() ){
-               if( !result.format( out ) )
-               {
-                   Interpreter<S>::error_stream()<<std::endl<<"***Error : on line "<<line<<" failed to format result - "
-                                                <<result.as_string()<<"."<<std::endl;
-                   return false;
-               }
-            }
-        }
+        if( !process_result(result, options, line, out) ) return false;
     }
     else{
 
@@ -706,39 +680,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
         for( ;; )
         {
             auto result = expr.evaluate(layer);
-            if( result.is_error() && !options.optional() )
-            {
-                wasp_tagged_line(result.string());
-                Interpreter<S>::error_stream()<<result.string();
-                return false;
-            }
-            if( result.is_error() == false)
-            {
-                wasp_tagged_line("expression result is "
-                                 <<result.as_string());
-                if( options.has_format() && !options.silent() )
-                {
-                    if( !result.format(  out
-                                         , options.format()
-                                         , Interpreter<S>::error_stream()) )
-                    {
-                        Interpreter<S>::error_stream()
-                                <<"***Error : failed to format result ("
-                                <<result.as_string()
-                               <<") as '"<<options.format()<<"'"<<std::endl;
-                        return false;
-                    }
-                }
-                else if( !options.silent() ){
-                   if( !result.format( out ) )
-                   {
-                       Interpreter<S>::error_stream()
-                               <<"***Error : failed to format result ("
-                                <<result.as_string()<<")."<<std::endl;
-                       return false;
-                   }
-                }
-            }
+            if( !process_result(result, options, line, out) ) return false;
             if( !options.next(layer) ) break;
             out<<options.separator();
         }
@@ -748,6 +690,48 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     line = new_line;
     return true;
 }
+template<class S>
+bool HaliteInterpreter<S>::process_result(const Result & result
+                                          , const SubstitutionOptions& options
+                                          , size_t line
+                                          , std::ostream & out)
+{
+    if( result.is_error() && !options.optional() )
+    {
+        wasp_tagged_line(result.string());
+        Interpreter<S>::error_stream()<<result.string();
+        return false;
+    }
+    if( result.is_error() == false)
+    {
+        wasp_tagged_line("expression result is "<<result.as_string());
+        if( options.has_format() && !options.silent() )
+        {
+            if( !result.format(  out, options.format(), Interpreter<S>::error_stream()) )
+            {
+                Interpreter<S>::error_stream()
+                        <<std::endl<<"***Error : on line "
+                       <<line<<" failed to format result - "
+                        <<result.as_string()<<" - as '"<<options.format()
+                       <<"'."<<std::endl;
+                return false;
+            }
+        }
+        else if( !options.silent() ){
+           if( !result.format( out ) )
+           {
+               Interpreter<S>::error_stream()
+                       <<std::endl<<"***Error : on line "<<line
+                      <<" failed to format result - "
+                                            <<result.as_string()
+                                           <<"."<<std::endl;
+               return false;
+           }
+        }
+    }
+    return true;
+}
+
 template<class S>
 bool HaliteInterpreter<S>::conditional(DataAccessor & data
                                        ,const TreeNodeView<S>& action_view
