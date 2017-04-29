@@ -1,10 +1,11 @@
 # HierarchiAL Input Template Expansion engine (HALITE)
 The HALITE engine is a data-driven input template expansion engine intended to facilitate application input or data generation.
 
-The supported constructs data constructs are provide by JSON and are Objects, Arrays, and Keyed values. 
+The supported constructs data constructs are provide by JSON and are Objects, Arrays, and Keyed values. For more about JSON syntax see www.json.org.
+
 The expression evaluation support scalar and vector variable reference and mathematical expression evaluations. 
 
-TODO - add blurb about model-view-controller construct
+
 
 Template constructs available are:
 1. Static text - plain text to be emitted to the expanded result. Contains no attributes or expression evaluation.
