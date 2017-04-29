@@ -28,6 +28,10 @@ template<class SchemaAdapter, class InputAdapter>
 bool HIVE::validate(SchemaAdapter           & schema_node,
                     InputAdapter            & input_node,
                     std::vector<std::string>& errors) {
+    if( schema_node.is_null() || input_node.is_null() )
+    {
+        return false;
+    }
     bool pass = true;
 
 
