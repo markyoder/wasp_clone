@@ -10,7 +10,7 @@ The HALITE engine attempts to bridge these approaches by providing standard glue
 1) the templates preserve clarity of intended text, 
 2) templates facilitate reuse,
 3) development is streamlined by eliminating the developer and only requiring a template designer, and most importantly
-4) templates are interchangeable allowing using the same data to create a different 'look', perhaps, for a different application to consume.
+4) templates are interchangeable which allows using the same data to create a different 'look', perhaps, for a different application to consume.
 
 In addition to the above, the HALITE engine provides a single point, data-driven, expansion capability that removes the need for application-specific glue logic.
 
@@ -33,10 +33,41 @@ Template constructs available are:
 8. Conditional action blocks - support pre-processor style #if/ifdef/ifndef - #elseif/else - #endif conditional blocks which will only be emitted when the appropriate condition is true.
 
 
-TODO describe general HALITE logic flow
 
 ## Attributes and Expressions
-TODO - describe attributes and expressions...
+Attributes and expressions are delimited by an opening and closing delimiter. By default these delimiters are '<' and '>' respectively. 
+
+Attribute names are defined as the regular expression `[A-Za-z_]([A-Za-z0-9\._])*`. Examples of these are: 
+1. `var`
+2. `var_name`
+3. `var.name`
+4. `var1`
+5. `var1.real`
+6. etc.
+
+If an attribute name contains character(s) that violate the regular expression, the variable name can be quoted. Examples of these are:
+1. `'var(name)'`
+2. `'my var(name)'`
+3. etc.
+
+The HALITE Engine uses the WASP [expression engine](/waspexpr) for expression evaluation which supports all regular math operators of 
+multiplication '*', division '/', addition '+', subtraction '-', and precedence '(',')'
+
+* regular trig functions - sin(x),cos(x),tan(x),asin(x),acos(x),atan(x)
+        ,atan2(y, x),sec(x),cosec(x),cot(x),sinh(x),cosh(x),tanh(x),asinh(x),acosh(x),atanh(x)
+* logarithmic functions - ln(x),log(x),lg(x)
+* exp(x)
+* pow(x)
+* round(x),round(x, p)
+* floor(x),ceil(x)
+* if(cond, trueval, falseval)
+* abs(x)
+* modulo - mod(x,y),
+* sqrt(x)
+* defined('x') - indicates if the variable named x is defined
+
+
+
 
 ### Formatting 
 TODO - describe formatting options...
