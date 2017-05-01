@@ -20,6 +20,14 @@ The supported data constructs are provide by JSON and are Objects, Arrays, and K
 
 The expression evaluation support scalar and vector variable reference and mathematical expression evaluations. 
 
+## Template Evaluation Summary
+This section describes the general approach used by the HALITE engine when evaluating a template and constructing the resulting text. 
+
+There are 3 primary components:
+1) The template, consisting of constructs discussed below.
+2) The optional data, described in hierarchal object notation.
+3) The evaluation stream which is the destination of evaluating template constructs.
+
 
 
 Template constructs available are:
@@ -32,7 +40,7 @@ Template constructs available are:
 7. Iterative template imports - import a template for each element of an array via 'using' an array or repeatedly via range variables.
 8. Conditional action blocks - support pre-processor style #if/ifdef/ifndef - #elseif/else - #endif conditional blocks which will only be emitted when the appropriate condition is true.
 
-
+Each construct is evaluated and emitted into the evaluation stream which can be redirected to a file when using the HALITE utility, or c++ std::ostream when using the wasphalite api.
 
 ## Attributes and Expressions
 Attributes and expressions are delimited by an opening and closing delimiter. By default these delimiters are '<' and '>' respectively. 
@@ -99,7 +107,23 @@ E.g.,
 Here the `numeric_result` is concatenated to the string `My result is ` producing a final result that is string typed.
 
 ## Formatting 
-TODO - describe formatting options...
+Attribute and expressions can be formatted prior to insertion into the evaluation stream. This is influenced by the [C printf](http://www.cplusplus.com/reference/cstdio/printf) and  [Java.Format](https://docs.oracle.com/javase/7/docs/api/java/util/Formatter.html) capability.
+
+Specifically, the following constructs are provided:
+`%[flags][width][.precision]specifier` 
+ 
+ The available specifiers are :
+ 
+| Specifier | Description                                        | Example   |
+|-----------|----------------------------------------------------|-----------|
+| f         | Decimal floating point                             | 3.14159   |
+| e         | Scientific notation (mantissa/exponent), lowercase | 3.9265e+2 |
+| s         | String of characters                               | sample    |
+| d         | Signed decimal value                               | 300       |
+ 
+The format declarator percent `%` can be escaped with a double  percent specified, `%%`
+
+TODO document flags, width, and precision.
  
 ## File Imports
 TODO - describe file imports...
