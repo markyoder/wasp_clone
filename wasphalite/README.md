@@ -125,5 +125,30 @@ The format declarator percent `%` can be escaped with a double  percent specifie
 
 TODO document flags, width, and precision.
  
+
+## Scoped Attribute
+Because the data is hierarchical access to lower levels of the data hierarchy can be needed. 
+Access to the can be facilitated by scoping an attribute access via a 'use' statement.
+
+Given hierarchical data of :
+
+```
+{
+   'fox' : { 'color' : 'red', 'speed' : 'quick' }
+   ,'dog color' : 'brown'
+}
+``` 
+the following template uses a scoped attributes of `fox` `color` and `speed` to emit the desired result:
+
+```
+the <speed:use=fox> <color:use=fox> fox jumped over the <'dog color'> dog. 
+```
+or
+```
+<"the "+speed+" "+color:use=fox> fox jumped over the <'dog color'> dog. 
+```
+
+
+
 ## File Imports
 TODO - describe file imports...
