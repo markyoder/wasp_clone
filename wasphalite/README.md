@@ -37,6 +37,7 @@ Template constructs available are:
 ## Attributes and Expressions
 Attributes and expressions are delimited by an opening and closing delimiter. By default these delimiters are '<' and '>' respectively. 
 
+### Attribute Patterns
 Attribute names are defined as the regular expression `[A-Za-z_]([A-Za-z0-9\._])*`. Examples of these are: 
 1. `var`
 2. `var_name`
@@ -50,6 +51,18 @@ If an attribute name contains character(s) that violate the regular expression, 
 2. `'my var(name)'`
 3. etc.
 
+### Example Attribute Pattern
+An example attribute substitution looks like:
+```
+the <FoxSpeed> <FoxColor> fox jumped over the <DogColor> dog.
+```
+or
+```
+the <'fox speed'> <'fox color'> fox jumped over the <'dog color'> dog.
+```
+Here the `FoxSpeed` or `'fox speed'` attributes might be 'quick' or 'fast', the `FoxColor` be 'red', and the `DogColor` or `'dog color'` be 'brown' or 'black.'
+
+### Expressions
 The HALITE Engine uses the WASP [expression engine](/waspexpr) for expression evaluation which supports all regular math operators of 
 multiplication '*', division '/', addition '+', subtraction '-', and precedence '(',')'
 
@@ -67,9 +80,25 @@ multiplication '*', division '/', addition '+', subtraction '-', and precedence 
 * defined('x') - indicates if the variable named x is defined
 
 
+### Example Expression Patterns
+An example attribute substitution looks like:
+```
+the quick red fox jumped over the brown dog going <miles/hour>mph fast.
+```
+or
+```
+the quick red fox jumped over the brown dog going <velocity_mph*1.60934>kph fast.
+```
 
+In addition to integer and double precision math operations, string concatenation is also available.
 
-### Formatting 
+E.g., 
+```
+<"My result is "+numeric_result>
+```
+Here the `numeric_result` is concatenated to the string `My result is ` producing a final result that is string typed.
+
+## Formatting 
 TODO - describe formatting options...
  
 ## File Imports
