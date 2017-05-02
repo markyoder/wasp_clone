@@ -283,7 +283,7 @@ Given the array data of :
     [
         { "what" : "quick red fox", "action" : "jumped over", "dog state" : "brown" }
         ,{ "what" : "honey badger", "action" : "didn't care about", "dog state" : "big angry" }
-        ,{ "what" : "weasel", "action" : "slinked by", "dog state" : "sleeping" }
+        ,{ "what" : "weasel", "action" : "slunk by", "dog state" : "sleeping" }
     ]
 }
 ```
