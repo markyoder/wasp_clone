@@ -110,8 +110,10 @@ Here the `numeric_result` is concatenated to the string `My result is ` producin
 Attribute and expressions can be formatted prior to insertion into the evaluation stream. This is influenced by the [C printf](http://www.cplusplus.com/reference/cstdio/printf) and  [Java.Format](https://docs.oracle.com/javase/7/docs/api/java/util/Formatter.html) capability.
 
 Specifically, the following constructs are provided:
+
 `%[flags][width][.precision]specifier` 
  
+#### Format Specifiers 
  The available specifiers are :
  
 | Specifier | Description                                        | Example   |
@@ -123,8 +125,121 @@ Specifically, the following constructs are provided:
  
 The format declarator percent `%` can be escaped with a double  percent specified, `%%`
 
-TODO document flags, width, and precision.
+#### Format Flags
+The available flags are :
+
+| flag | Description                                                 | Example             |
+|------|-------------------------------------------------------------|---------------------|
+| -    | The result will be left-justified                           | 'left       '       |
+| +    | The result will always include a sign                       | '+result'           |
+| ' '  | The result will include a leading space for positive values | ' result'           |
+| 0    | The result will be zero-padded                              | '0result'           |
+| (    | The result will enclose negative numbers in parentheses     | '(negative result)' |
+
+#### Format Width
+The width is the minimum number of characters to be written to the output. Most frequently used for padding.
+
+#### Format Precision
+For general argument types the precision is the maximum number of characters to be written to the output. 
+For floating-point types (specifier = 'e','f') the precision is the number of digits after the decimal point. 
  
+
+#### Format Examples
+
+String examples:
+
+| Format                    | Result         | Description                                                                                            |
+|---------------------------|----------------|--------------------------------------------------------------------------------------------------------|
+| '<"str":fmt=%s>'          | `'str'`          | Print the raw string "str" as a string                                                                 |
+| '<"str":fmt=%4s>'         | `' str'`         | Print the raw string "str" with a width of 4 as a string                                               |
+| '<"str":fmt=%05s>'        | `'00str'`        | Print the raw string "str" with a width of 5 as a string padded with zeros                             |
+| '<"-30":fmt=%05s>'        | `'00-30'`        | Print the raw string "-30" with a width of 5 as a string padded with zeros                             |
+| '<"-30":fmt=%%05s="%05s"> | `'%05s="00-30"'` | Print the raw string "-30" with a format prefix of '%05s', a width of 5 as a string padded with zeros  |
+| '<"str":fmt=%-10s>'       | `'str`         ' | Print the raw string "str" left justified with a minimum width of 10                                  |
+
+Integer examples:
+
+| Format                    | Result         | Description                                                                                            |
+|---------------------------|----------------|--------------------------------------------------------------------------------------------------------|
+| '\<3:fmt=%d\>'            | `'3'`            | Print the integer 3 as an integer                                                                 |
+| '\<30:fmt=%4d\>'          | `'  30'`         | Print the integer 30 with a width of 4 as an integer                                               |
+| '\<-30:fmt=%-5d\>'        | `'30   '`        | Print the integer 30 left justified with a width of 5 as an integer                           |
+| '\<-30:fmt=%05d\>'        | `'-0030'`        | Print the integer -30 with a width of 5 as an integer padded with zeros                             |
+| '\<30:fmt=% d\>'          | `' 30'`          | Print the integer 30 with a leading space due to positive value  |
+| '\<x=-30:fmt=% d\>'       | `'-30'`          | Print the variable x (-30) and if x > 0 include a leading space |
+| '\<30:fmt=%+d\>'          | `'+30'`          | Print the integer 30 with its sign |
+| '\<x=-30:fmt=%(d\>'       | `'(30)'`         | Print the varaible x (-30) with parenthesis if x < 0 |
+| '\<3.14159:fmt=%d\>'      | `'3'`            | Print the floating point value as an integer |
+
+Float-Point examples:
+
+| Format                    | Result         | Description                                                                                            |
+|---------------------------|----------------|--------------------------------------------------------------------------------------------------------|
+| '\<3.14159265:fmt=%f\>'   | `'3.141593'`     | Print the floating-point value 3.14159265 as a floating point value with default precision of 6 |
+|'\<3.14159265:fmt=%7f\>'|`'3.141593'`|
+|'\<3.14159265:fmt=%8f\>'|`'3.141593'`|
+|'\<3.14159265:fmt=%9f\>'|`' 3.141593'`|
+|'\<3.14159265:fmt=%10f\>'|`'  3.141593'`|
+|'\<3.14159265:fmt=%.0f\>'|`'3'`|
+|'\<3.14159265:fmt=%.1f\>'|`'3.1'`|
+|'\<3.14159265:fmt=%.2f\>'|`'3.14'`|
+|'\<3.14159265:fmt=%.3f\>'|`'3.142'`|
+|'\<3.14159265:fmt=%1.0f\>'|`'3'`|
+|'\<3.14159265:fmt=%4.1f\>'|`' 3.1'`|
+|'\<3.14159265:fmt=%4.8f\>'|`'3.14159265'`|
+|'\<3.14159265:fmt=%8.2f\>'|`'    3.14'`|
+|'\<3.14159265:fmt=%10.3f\>'|`'     3.142'`|
+|'\<3.14159265:fmt=%01.0f\>'|`'3'`|
+|'\<3.14159265:fmt=%04.1f\>'|`'03.1'`|
+|'\<3.14159265:fmt=%04.8f\>'|`'3.14159265'`|
+|'\<3.14159265:fmt=%08.2f\>'|`'00003.14'`|
+|'\<3.14159265:fmt=%010.3f\>'|`'000003.142'`|
+|'\<3.14159265:fmt=%g\>'|`'3.14159'`|
+|'\<3.14159265:fmt=%.0g\>'|`'3'`|
+|'\<3.14159265:fmt=%.1g\>'|`'3'`|
+|'\<3.14159265:fmt=%.2g\>'|`'3.1'`|
+|'\<3.14159265:fmt=%.3g\>'|`'3.14'`|
+|'\<3.14159265:fmt=%1.0g\>'|`'3'`|
+|'\<3.14159265:fmt=%4.1g\>'|`'   3'`|
+|'\<3.14159265:fmt=%4.8g\>'|`'3.1415927'`|
+|'\<3.14159265:fmt=%8.2g\>'|`'     3.1'`|
+|'\<3.14159265:fmt=%10.3g\>'|`'      3.14'`|
+|'\<3.14159265:fmt=%01.0g\>'|`'3'`|
+|'\<3.14159265:fmt=%04.1g\>'|`'0003'`|
+|'\<3.14159265:fmt=%04.8g\>'|`'3.1415927'`|
+|'\<3.14159265:fmt=%08.2g\>'|`'000003.1'`|
+|'\<3.14159265:fmt=%010.3g\>'|`'0000003.14'`|
+|'\<1e-4:fmt=%.4g\>'|`'0.0001000'`|
+|'\<1e-4:fmt=%10.4g\>'|`' 0.0001000'`|
+|'\<1e-4:fmt=%.5g\>'|`'0.00010000'`|
+|'\<1e-5:fmt=%.5g\>'|`'1.0000e-05'`|
+|'\<1e-6:fmt=%.6g\>'|`'1.00000e-06'`|
+|'\<1e-2:fmt=%.7g\>'|`'0.01000000'`|
+|'\<1e2:fmt=%10.7g\>'|`'  100.0000'`|
+|'\<3.14159265:fmt=%e\>'|`'3.141593e+00'`|
+|'\<3.14159265:fmt=%.0e\>'|`'3e+00'`|
+|'\<3.14159265:fmt=%.1e\>'|`'3.1e+00'`|
+|'\<3.14159265:fmt=%.2e\>'|`'3.14e+00'`|
+|'\<3.14159265:fmt=%.3e\>'|`'3.142e+00'`|
+|'\<3.14159265:fmt=%1.0e\>'|`'3e+00'`|
+|'\<3.14159265:fmt=%4.1e\>'|`'3.1e+00'`|
+|'\<3.14159265:fmt=%4.8e\>'|`'3.14159265e+00'`|
+|'\<3.14159265:fmt=%8.2e\>'|`'3.14e+00'`|
+|'\<3.14159265:fmt=%10.3e\>'|`' 3.142e+00'`|
+|'\<3.14159265:fmt=%01.0e\>'|`'3e+00'`|
+|'\<3.14159265:fmt=%04.1e\>'|`'3.1e+00'`|
+|'\<3.14159265:fmt=%04.8e\>'|`'3.14159265e+00'`|
+|'\<3.14159265:fmt=%08.2e\>'|`'3.14e+00'`|
+|'\<3.14159265:fmt=%010.3e\>'|`'03.142e+00'`|
+|'\<1e-4:fmt=%.4e\>'|`'1.0000e-04'`|
+|'\<1e-4:fmt=%10.4e\>'|`'1.0000e-04'`|
+|'\<1e-4:fmt=%.5e\>'|`'1.00000e-04'`|
+|'\<1e-5:fmt=%.5e\>'|`'1.00000e-05'`|
+|'\<1e-6:fmt=%.6e\>'|`'1.000000e-06'`|
+|'\<1e-2:fmt=%.7e\>'|`'1.0000000e-02'`|
+|'\<1e-2:fmt=%10.7e\>'|`'1.0000000e-02'`|
+|'\<1e2:fmt=%10.7e\>'|`'1.0000000e+02'`|
+
 
 ## Scoped Attribute
 Because the data is hierarchical access to lower levels of the data hierarchy can be needed. 
