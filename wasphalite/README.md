@@ -240,11 +240,20 @@ Float-Point examples:
 |'\<1e-2:fmt=%10.7e\>'|`'1.0000000e-02'`|
 |'\<1e2:fmt=%10.7e\>'|`'1.0000000e+02'`|
 
+#### Format Error Examples
+Some flag specifiers are not legal with given specifiers. Here are examples of common scenarios:
+
+| Format                    | Error         |
+|---------------------------|----------------|
+| '\<"some string":fmt=%(5s\>'   | `malformed format string: flag '(' does not match the conversion 's'`     |
+| '\<"some string":fmt=%+5s\>'   | `malformed format string: flag '+' does not match the conversion 's'`     |
+| '\<"some string":fmt=% s\>'   | `malformed format string: flag ' ' does not match the conversion 's'`     |
 
 ## Scoped Attribute
 Because the data is hierarchical access to lower levels of the data hierarchy can be needed. 
-Access to the can be facilitated by scoping an attribute access via a 'use' statement.
+Common single-level access is facilitated by scoping an attribute access via a 'use' statement.
 
+### Object Scoped Attribute
 Given hierarchical data of :
 
 ```
@@ -263,7 +272,36 @@ or
 <"the "+speed+" "+color:use=fox> fox jumped over the <'dog color'> dog. 
 ```
 
+### Array Scoped Attribute
+In addition to object-scoped use statements, an array can be used. 
+When an array is used, an iteration is implied over each element of the array.
+
+Given the array data of :
+```
+{
+    'parts' : 
+    [
+        { "what" : "quick red fox", "action" : "jumped over", "dog state" : "brown" }
+        ,{ "what" : "honey badger", "action" : "didn't care about", "dog state" : "big angry" }
+        ,{ "what" : "weasel", "action" : "slinked by", "dog state" : "sleeping" }
+    ]
+}
+```
+the following template uses the scoped attributes as follows:
+
+```
+<"The "+what+" "+action+" the "+'dog state'+" dog.":use=parts> 
+```
+
+The result is a whitespace separated evaluation of the template using each element in the array:
+
+```
+The quick red fox jumped over the brown dog. The honey badger didn't care about the big angry dog. The weasel slinked by the sleeping dog.
+```
+
+A file import using an object or array facilitates more complex hierarchical data access.
 
 
 ## File Imports
-TODO - describe file imports...
+
+TODO - complete section
