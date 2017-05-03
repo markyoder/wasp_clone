@@ -307,6 +307,42 @@ TEST( Halite, indirect_attribute)
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "obj 3.14159", out.str() );
 }
+TEST( Halite, indirect_attribute_delim)
+{
+    std::stringstream input;
+    input<< R"INPUT({{attr}} {{what}.{member}})INPUT";
+    HaliteInterpreter<> interpreter;
+    interpreter.attr_start_delim() = "{";
+    interpreter.attr_end_delim() = "}";
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["attr"]=std::string("what");
+    o["what"]=std::string("obj");
+    o["member"]=std::string("x");
+    o["obj.x"]=3.14159;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "obj 3.14159", out.str() );
+}
+TEST( Halite, indirect_attribute_non_uniform_delim)
+{
+    std::stringstream input;
+    input<< R"INPUT(${${attr}} ${${what}.${member}})INPUT";
+    HaliteInterpreter<> interpreter;
+    interpreter.attr_start_delim() = "${";
+    interpreter.attr_end_delim() = "}";
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["attr"]=std::string("what");
+    o["what"]=std::string("obj");
+    o["member"]=std::string("x");
+    o["obj.x"]=3.14159;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "obj 3.14159", out.str() );
+}
 TEST( Halite, static_text)
 {
     std::stringstream input;
