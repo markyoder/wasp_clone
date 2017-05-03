@@ -50,14 +50,24 @@ public:
     // const char *
     Value(const char * v);
     // string
-    Value(const std::string & v);
+    Value(const std::string& v);
     // data array
     Value(const DataArray& d);
     // data object
     Value(const DataObject& d);
     ~Value();
 
+    // assignment operators
     Value& operator=(const Value& v);
+    Value& operator=(bool v);
+    Value& operator=(int v);
+    Value& operator=(double v);
+    Value& operator=(const char* v);
+    Value& operator=(const std::string& v);
+    Value& operator=(const DataArray& v);
+    Value& operator=(const DataObject& v);
+
+
 
     Value::Type type()const;
 

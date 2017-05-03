@@ -336,9 +336,9 @@ TEST( Halite, indirect_attribute_non_uniform_delim)
     std::stringstream out;
     DataObject o;
     DataAccessor data(&o);
-    o["attr"]=std::string("what");
-    o["what"]=std::string("obj");
-    o["member"]=std::string("x");
+    o["attr"] = "what";
+    o["what"] = "obj";
+    o["member"] = "x";
     o["obj.x"]=3.14159;
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "obj 3.14159", out.str() );
