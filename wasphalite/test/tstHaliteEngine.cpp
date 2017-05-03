@@ -38,7 +38,7 @@ TEST( Halite, single_quoted_attribute)
     ASSERT_TRUE( interpreter.parse(input) );
     std::stringstream out;
     DataAccessor data;
-    data.store("attr with space( )",std::string("value")); // need explicit string type
+    data.store("attr with space( )", "value");
     ASSERT_EQ( Context::Type::STRING, data.type("attr with space( )") );
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "value", out.str() );
@@ -328,7 +328,7 @@ TEST( Halite, indirect_attribute_delim)
 TEST( Halite, indirect_attribute_non_uniform_delim)
 {
     std::stringstream input;
-    input<< R"INPUT(${${attr}} ${${what}.${member}})INPUT";
+    input<< R"INPUT(${${attr}} ${${what}.${member}} ${value:fmt=%d})INPUT";
     HaliteInterpreter<> interpreter;
     interpreter.attr_start_delim() = "${";
     interpreter.attr_end_delim() = "}";
@@ -340,8 +340,9 @@ TEST( Halite, indirect_attribute_non_uniform_delim)
     o["what"] = "obj";
     o["member"] = "x";
     o["obj.x"]=3.14159;
+    o["value"] = o["obj.x"];
     ASSERT_TRUE( interpreter.evaluate(out,data) );
-    ASSERT_EQ( "obj 3.14159", out.str() );
+    ASSERT_EQ( "obj 3.14159 3", out.str() );
 }
 TEST( Halite, static_text)
 {
