@@ -59,6 +59,20 @@ If an attribute name contains character(s) that violate the regular expression, 
 2. `'my var(name)'`
 3. etc.
 
+If an attribute is an array of data, a 0-based index can be used to access the data element. 
+Given data of :
+```
+json 
+'array':["ted","fred",7, 3.14159 ]
+```
+The following attribute patterns are legal:
+1. `array[0]` - "ted"
+2. `array[1]` - "fred"
+3. `array[2]` - 7
+4. `size(array)` - 4
+
+
+
 ### Example Attribute Pattern
 An example attribute substitution looks like:
 ```
@@ -256,7 +270,7 @@ Common single-level access is facilitated by scoping an attribute access via a '
 ### Object Scoped Attribute
 Given hierarchical data of :
 
-```
+```json
 {
    'fox' : { 'color' : 'red', 'speed' : 'quick' }
    ,'dog color' : 'brown'
@@ -277,7 +291,7 @@ In addition to object-scoped use statements, an array can be used.
 When an array is used, an iteration is implied over each element of the array.
 
 Given the array data of :
-```
+```json
 {
     'parts' : 
     [
@@ -318,12 +332,28 @@ The capability for the file being relative to the working directory allows subte
 The path can also be templated on any available attribute. The subtemplate has immediate access to all attributes at 
 the current data level. 
 
+### Example Data
 E.g., the given data :
-```
+```json
 {
     "x" : "blurg"
     ,"y" : "blarg"
-    ,obj :{ "a" : "blurgit", "e" : "blarg" }
+    ,obj :
+    { 
+        "a" : "blurgit", "e" : "blarg" ,
+        "sarg" : 
+        {
+            "bravo" : 2
+            , "delta" : 4
+            , "charlie" : 3
+        }
+        ...
+    }
+    ,array :
+    [
+        {...}
+        ,...
+    ]
 }
 ```
 The root template (entry for evaluation) has access to `x`, and `y`, but in order to access 
@@ -331,7 +361,23 @@ data members of `obj` either a scoped attribute evaluation or a parameterized te
 must be used.
 
 ### Parameterized File Import
-Parameterized file imports facilitate access to data hierarchy, and more...
-TODO complete this section.
+Parameterized file imports facilitate access to data hierarchy and repetition of templates.
+
+#### File Import Using an Object
+The [example data](#example-data) contains the `obj` data layer which contains nested object `sarg` and other imaginary data `...`. To access all this data
+a subtemplate can be imported 'using' `obj` as follows:
+
+```
+#import some/file.tmpl using obj
+```
+
+The template `some/file.tmpl` can now access all attributes within `obj`. Additionally, all attributes in higher levels (`x`,`y`,`array`,`...`) are still accessible:
+`some/file.tmpl`:
+```
+This is a nested template with access to obj's context
+variable a=<a>, e=<e>
+
+Variables till accessible from parent data are x:<x>, and y:<y>, etc.
+```
 
 
