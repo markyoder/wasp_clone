@@ -154,6 +154,10 @@ bool DataAccessor::store(const std::string &name, const int &v)
     return true;
 }
 
+bool DataAccessor::store(const std::string &name, const char* v)
+{
+    return store(name, std::string(v));
+}
 bool DataAccessor::store(const std::string &name, const std::string &v)
 {
     if( m_current_data == nullptr)

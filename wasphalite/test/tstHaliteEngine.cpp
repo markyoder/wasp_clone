@@ -25,7 +25,7 @@ TEST( Halite, single_attribute)
     ASSERT_TRUE( interpreter.parse(input) );
     std::stringstream out;
     DataAccessor data;
-    data.store("attribute",std::string("value")); // need explicit string type
+    data.store("attribute", "value");
     ASSERT_EQ( Context::Type::STRING, data.type("attribute") );
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "value", out.str() );
