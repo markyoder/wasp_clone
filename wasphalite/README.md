@@ -43,7 +43,52 @@ Template constructs available are:
 Each construct is evaluated and emitted into the evaluation stream which can be redirected to a file when using the HALITE utility, or c++ std::ostream when using the wasphalite api.
 
 ## Attributes and Expressions
-Attributes and expressions are delimited by an opening and closing delimiter. By default these delimiters are '<' and '>' respectively. 
+Attributes and expressions are delimited by an opening and closing delimiter. By default these delimiters are '<' and '>' respectively. These are configurable via corresponding HaliteInterpreter class methods.
+
+Example template attribute statements are :
+1. `<attr>` - default delimiters, '<','>'
+2. `{attr}` - custom '{' and '}'
+3. `${attr}` - custom '${' and '}'
+4. `#{attr}` - custom '#{' and '}'
+5. `[:attr:]` - custom '[:' and ':]'
+6. etc.
+
+Formal attribute expression syntax looks as follows:
+
+` open_delim (name|expression) [':'['?''|'] format? seperator? range* use? close_delim`
+Where :
+1. `open_delim` is configurable, default of '<'
+2. `?` indicates optional attribute evaluation - allows undefined variables to silently fail - MUST OCCUR immediately after the attribute options delimiter, ':'.  
+3. `|` indicates [silent attribute](#silent-attributes) evaluation - conducts computation/variable creation without emitting the result to the evaluation stream - MUST OCCUR immediately after the attribute options delimiter, ':'.
+4. 1 and 2 are optional and mutually exclusive.
+5. optional `format` is `'fmt=' format ';'`, and `format` is described in the [section](formatting) below.
+6. optional `separator` is `'sep=' separator ';'`, and `separator` is emitted for all but the last evaluation iteration.
+7. zero or more `range` specifications where a range looks like `range_variable '=' start[,end[,stride]];`. Start, optional end and stride must be integers or attributes convertable to integers. 
+8. The optional `use`  statement facilitates scoped attribute access as depicted in [scoped attribute](#scoped-attribute) sections below.
+9. `close_delim` is configurable, default of '>'
+
+
+
+### Silent Attributes
+Attributes and expressions that need to be evaluated but not placed into the evaluation stream can be specified using the silent expression indicator:
+```
+<attr:|>
+```
+TODO provide use scenario.
+
+
+### Optional Attributes
+Attributes may not be specified and as such must be considered optional by the template. Optional attribute look as follow:
+```
+<attr:?>
+```
+Here the `:?` attribute option indicates nothing being evaluated will be placed into the evaluation stream unless the `attr` is defined.
+
+This is most useful when combined with formatting to tackle text where data may be optionally available but when available requires context:
+```
+data record <x> <y> <z> <comment:? fmt=com="%s">
+```
+Here the `comment` is optional data, but when present requires a 'com="`comment`"' to indicate context. The format statement proides the context 'com=' only when `comment` is present.
 
 ### Attribute Patterns
 Attribute names are defined as the regular expression `[A-Za-z_]([A-Za-z0-9\._])*`. Examples of these are: 
@@ -62,7 +107,6 @@ If an attribute name contains character(s) that violate the regular expression, 
 If an attribute is an array of data, a 0-based index can be used to access the data element. 
 Given data of :
 ```
-json 
 'array':["ted","fred",7, 3.14159 ]
 ```
 The following attribute patterns are legal:
@@ -270,7 +314,7 @@ Common single-level access is facilitated by scoping an attribute access via a '
 ### Object Scoped Attribute
 Given hierarchical data of :
 
-```json
+```
 {
    'fox' : { 'color' : 'red', 'speed' : 'quick' }
    ,'dog color' : 'brown'
@@ -291,7 +335,7 @@ In addition to object-scoped use statements, an array can be used.
 When an array is used, an iteration is implied over each element of the array.
 
 Given the array data of :
-```json
+```
 {
     'parts' : 
     [
@@ -334,7 +378,7 @@ the current data level.
 
 ### Example Data
 E.g., the given data :
-```json
+```
 {
     "x" : "blurg"
     ,"y" : "blarg"
@@ -372,6 +416,7 @@ a subtemplate can be imported 'using' `obj` as follows:
 ```
 
 The template `some/file.tmpl` can now access all attributes within `obj`. Additionally, all attributes in higher levels (`x`,`y`,`array`,`...`) are still accessible:
+
 `some/file.tmpl`:
 ```
 This is a nested template with access to obj's context
@@ -380,4 +425,10 @@ variable a=<a>, e=<e>
 Variables till accessible from parent data are x:<x>, and y:<y>, etc.
 ```
 
+#### Iterative File Import Using an Array or Ranges
+TODO complete section
+
+
+## Conditional Action Blocks
+TODO complete section
 
