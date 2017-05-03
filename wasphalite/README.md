@@ -296,12 +296,42 @@ the following template uses the scoped attributes as follows:
 The result is a whitespace separated evaluation of the template using each element in the array:
 
 ```
-The quick red fox jumped over the brown dog. The honey badger didn't care about the big angry dog. The weasel slinked by the sleeping dog.
+The quick red fox jumped over the brown dog. The honey badger didn't care about the big angry dog. The weasel slunk by the sleeping dog.
 ```
 
 A file import using an object or array facilitates more complex hierarchical data access.
 
 
 ## File Imports
+The HALITE engine support file import where files consist of all template constructs describes in this readme.
+File imports can be parameterized and implicitly and explicitly iterative. 
 
-TODO - complete section
+The simplest file format looks as follows:
+
+```
+#import relative/or/absolute/file/path.tmpl
+```
+Here the '#import' must occur at the start of the line. The path to the file can be relative to the current template, working directory, or an absolute path.
+
+The capability for the file being relative to the working directory allows subtemplates to be overridden.
+
+The path can also be templated on any available attribute. The subtemplate has immediate access to all attributes at 
+the current data level. 
+
+E.g., the given data :
+```
+{
+    "x" : "blurg"
+    ,"y" : "blarg"
+    ,obj :{ "a" : "blurgit", "e" : "blarg" }
+}
+```
+The root template (entry for evaluation) has access to `x`, and `y`, but in order to access 
+data members of `obj` either a scoped attribute evaluation or a parameterized template import
+must be used.
+
+### Parameterized File Import
+Parameterized file imports facilitate access to data hierarchy, and more...
+TODO complete this section.
+
+
