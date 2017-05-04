@@ -882,6 +882,38 @@ and assigning value its own name ted3
     ASSERT_EQ( "ted1", o["my_array"][0]["value"].to_string() );
 }
 
+TEST( Halite, parent_scope_var_use_in_fileimport)
+{
+
+    std::ofstream import("parent_scope_var_use.tmpl");
+    std::stringstream content;
+    content << "<'var name':use=pobj>" << std::endl;
+    import << content.str();
+    import.close();
+    std::stringstream input;
+    input << "<'var name':use=pobj;fmt=%4d>" << std::endl;
+    input << "#import ./parent_scope_var_use.tmpl using p2obj" << std::endl;
+
+    HaliteInterpreter<> interpreter;
+
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject root;
+    DataObject pobj;
+    DataObject p2obj;
+    DataAccessor data(&root);
+    pobj["var name"] = 3.14;
+    root["pobj"] = pobj;
+    p2obj["var2 name"] = 6.28;
+    root["p2obj"] = p2obj;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+
+    std::stringstream expected;
+    expected << "   3" << std::endl;
+    expected << "3.14";
+    ASSERT_EQ( expected.str(), out.str() );
+    std::remove("parent_scope_var_use.tmpl");
+}
 /**
  * @brief test attribute usage from nested template where nested path is parameterized
  */

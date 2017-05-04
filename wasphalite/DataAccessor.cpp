@@ -436,15 +436,29 @@ std::string DataAccessor::string(const std::string& name,bool * ok)const
 
 DataObject * DataAccessor::object(const std::string &name) const
 {
-    if( m_current_data == nullptr ) return nullptr;
-    auto itr = m_current_data->find(name);
-    if( itr == m_current_data->end() )
+    bool current_data_exists = m_current_data != nullptr
+            && m_current_data->contains(name);
+    bool parent_data_exists = false;
+    if( current_data_exists == false
+            && !(parent_data_exists = ( m_parent
+                                        && m_parent->exists(name))))
     {
         return nullptr;
     }
-    if( itr->second.is_object() )
+    if(current_data_exists)
     {
-        return itr->second.to_object();
+        auto itr = m_current_data->find(name);
+        if( itr == m_current_data->end() )
+        {
+            return nullptr;
+        }
+        if( itr->second.is_object() )
+        {
+            return itr->second.to_object();
+        }
+    } else if(parent_data_exists)
+    {
+        return m_parent->object(name);
     }
     return nullptr;
 }

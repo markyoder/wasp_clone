@@ -136,6 +136,8 @@ TEST( Halite, data_accessor_parent_access)
     o["a"][1] = 3.14;
     o["a"][2] = true;
     o["a"][3] = std::string("ted");
+    o["obj"] = DataObject();
+    o["obj"]["var"] = 6.28;
 
     ASSERT_EQ( Context::Type::UNDEFINED, l.type("undefined"));
 
@@ -160,5 +162,6 @@ TEST( Halite, data_accessor_parent_access)
     ASSERT_EQ( "ten a C", l.string("s1") );
     ASSERT_EQ( "ted", l.string("a",3) );
 
+    ASSERT_NE( nullptr, l.object("obj"));
 
 }

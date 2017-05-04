@@ -1329,7 +1329,7 @@ WASP_INTEGER_FUNCTION_2ARG(FMod, IntegerFunction, a1.integer()%a2.integer())
 template<class T>
 inline Result &
 Result::evaluate( const T & tree_view
-                                      , Context & context)
+                  , Context & context)
 {
     // if an ambiguous 'value' node
     // determine operation via the token's type
@@ -1513,9 +1513,9 @@ Result::evaluate( const T & tree_view
 
        if( context.type(tree_view.to_string()) == Context::Type::UNDEFINED )
        {
-       m_type = Context::Type::STRING;
-       string() = tree_view.to_string();
-       break;
+           m_type = Context::Type::STRING;
+           string() = tree_view.to_string();
+           break;
        } // else quoted string falls through to variable logic below
    case wasp::STRING:
    {
@@ -1609,7 +1609,7 @@ Result::evaluate( const T & tree_view
 
             Result value;
             const auto & value_view = tree_view.child_at(5);
-            value.evaluate(value_view, context);            
+            value.evaluate(value_view, context);
 
             m_type = var_type;
 
