@@ -143,6 +143,44 @@ TEST(ExprInterpreter, left_operator_undefined_variables)
         ASSERT_EQ("***Error : value (y) at line 1 and column 2 - is not a known variable.\n", result.string());
     }
 }
+TEST(ExprInterpreter, vector_quoted_name)
+{
+    std::vector<int> data = {1,9,8};
+    std::vector<ScalarExprTest<int>> tests={
+        {"'my data'[0]",1},
+        {"'my data'[1]",9},
+        {"'my data'[2]",8},
+        {"'my data'['my data'[0]]",9},
+        {"'my data'[2]=7",7},
+        {"size('my data')",3},
+        {"if(size('my data')==3,1,0)",1},
+        {"if(size('my data')!=3,10,49)",49},
+        {"if(size('my data')==4,10,50)",50},
+        {"if(size('my data')==4,'my data'[0]=10,'my data'[0]+3)",4}, // if_true never evaluated
+    };
+    ASSERT_FALSE( tests.empty() );
+    for( auto & t : tests )
+    {
+        SCOPED_TRACE( t.tst );
+        std::stringstream input;
+        input <<t.tst;
+        ExprInterpreter<> interpreter;
+        Context context;
+        context.store_ref("my data",data);
+        ASSERT_TRUE(interpreter.parse(input) );
+
+        auto result = interpreter.evaluate(context);
+        ASSERT_FALSE( result.is_error() );
+        ASSERT_TRUE(result.is_integer());
+        ASSERT_TRUE(result.is_number());
+        ASSERT_FALSE(result.is_real());
+        ASSERT_FALSE(result.is_string());
+        ASSERT_FALSE(result.is_bool());
+        ASSERT_EQ(t.expected, result.integer());
+    }
+    std::vector<int> expected = {1,9,7};
+    ASSERT_EQ(expected, data);
+}
 TEST(ExprInterpreter, vector_int_variables)
 {
     std::vector<int> data = {1,9,8};
