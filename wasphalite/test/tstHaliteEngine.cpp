@@ -25,7 +25,7 @@ TEST( Halite, single_attribute)
     ASSERT_TRUE( interpreter.parse(input) );
     std::stringstream out;
     DataAccessor data;
-    data.store("attribute",std::string("value")); // need explicit string type
+    data.store("attribute", "value");
     ASSERT_EQ( Context::Type::STRING, data.type("attribute") );
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "value", out.str() );
@@ -38,7 +38,7 @@ TEST( Halite, single_quoted_attribute)
     ASSERT_TRUE( interpreter.parse(input) );
     std::stringstream out;
     DataAccessor data;
-    data.store("attr with space( )",std::string("value")); // need explicit string type
+    data.store("attr with space( )", "value");
     ASSERT_EQ( Context::Type::STRING, data.type("attr with space( )") );
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "value", out.str() );
@@ -306,6 +306,43 @@ TEST( Halite, indirect_attribute)
     o["obj.x"]=3.14159;
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "obj 3.14159", out.str() );
+}
+TEST( Halite, indirect_attribute_delim)
+{
+    std::stringstream input;
+    input<< R"INPUT({{attr}} {{what}.{member}})INPUT";
+    HaliteInterpreter<> interpreter;
+    interpreter.attr_start_delim() = "{";
+    interpreter.attr_end_delim() = "}";
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["attr"]=std::string("what");
+    o["what"]=std::string("obj");
+    o["member"]=std::string("x");
+    o["obj.x"]=3.14159;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "obj 3.14159", out.str() );
+}
+TEST( Halite, indirect_attribute_non_uniform_delim)
+{
+    std::stringstream input;
+    input<< R"INPUT(${${attr}} ${${what}.${member}} ${value:fmt=%d})INPUT";
+    HaliteInterpreter<> interpreter;
+    interpreter.attr_start_delim() = "${";
+    interpreter.attr_end_delim() = "}";
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["attr"] = "what";
+    o["what"] = "obj";
+    o["member"] = "x";
+    o["obj.x"]=3.14159;
+    o["value"] = o["obj.x"];
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "obj 3.14159 3", out.str() );
 }
 TEST( Halite, static_text)
 {
@@ -845,6 +882,38 @@ and assigning value its own name ted3
     ASSERT_EQ( "ted1", o["my_array"][0]["value"].to_string() );
 }
 
+TEST( Halite, parent_scope_var_use_in_fileimport)
+{
+
+    std::ofstream import("parent_scope_var_use.tmpl");
+    std::stringstream content;
+    content << "<'var name':use=pobj>" << std::endl;
+    import << content.str();
+    import.close();
+    std::stringstream input;
+    input << "<'var name':use=pobj;fmt=%4d>" << std::endl;
+    input << "#import ./parent_scope_var_use.tmpl using p2obj" << std::endl;
+
+    HaliteInterpreter<> interpreter;
+
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject root;
+    DataObject pobj;
+    DataObject p2obj;
+    DataAccessor data(&root);
+    pobj["var name"] = 3.14;
+    root["pobj"] = pobj;
+    p2obj["var2 name"] = 6.28;
+    root["p2obj"] = p2obj;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+
+    std::stringstream expected;
+    expected << "   3" << std::endl;
+    expected << "3.14";
+    ASSERT_EQ( expected.str(), out.str() );
+    std::remove("parent_scope_var_use.tmpl");
+}
 /**
  * @brief test attribute usage from nested template where nested path is parameterized
  */

@@ -815,7 +815,7 @@ namespace wasp {
     {
          std::vector<size_t> child_indices = {(yystack_[3].value.node_index),(yystack_[2].value.node_index),(yystack_[1].value.node_index),(yystack_[0].value.node_index)};
 
-         const std::string & name = interpreter.data((yystack_[3].value.node_index));
+         const std::string& name = wasp::strip_quotes(interpreter.data((yystack_[3].value.node_index)));
          (yylhs.value.node_index) = interpreter.push_parent(wasp::OBJECT
                                          , name.c_str()
                                          , child_indices);
@@ -828,7 +828,7 @@ namespace wasp {
     {
          std::vector<size_t> child_indices = {(yystack_[5].value.node_index),(yystack_[4].value.node_index),(yystack_[3].value.node_index),(yystack_[2].value.node_index),(yystack_[1].value.node_index),(yystack_[0].value.node_index)};
 
-         const std::string & name = interpreter.data((yystack_[5].value.node_index));
+         const std::string & name = wasp::strip_quotes(interpreter.data((yystack_[5].value.node_index)));
          (yylhs.value.node_index) = interpreter.push_parent(wasp::OBJECT
                                          , name.c_str()
                                          , child_indices);
@@ -1129,7 +1129,7 @@ namespace wasp {
 #line 1130 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 53:
+  case 54:
 #line 459 "Expr.bison" // lalr1.cc:859
     {
         size_t decl_token_index = ((yystack_[0].value.token_index));
@@ -1139,7 +1139,7 @@ namespace wasp {
 #line 1140 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 54:
+  case 55:
 #line 467 "Expr.bison" // lalr1.cc:859
     {        
 
@@ -1156,7 +1156,7 @@ namespace wasp {
 #line 1157 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 56:
+  case 57:
 #line 482 "Expr.bison" // lalr1.cc:859
     {
             interpreter.push_staged_child((yystack_[0].value.node_index));
@@ -1164,7 +1164,7 @@ namespace wasp {
 #line 1165 "ExprParser.cpp" // lalr1.cc:859
     break;
 
-  case 57:
+  case 58:
 #line 485 "Expr.bison" // lalr1.cc:859
     {
             interpreter.push_staged_child((yystack_[0].value.node_index));
@@ -1428,45 +1428,45 @@ namespace wasp {
   }
 
 
-  const signed char ExprParser::yypact_ninf_ = -63;
+  const signed char ExprParser::yypact_ninf_ = -57;
 
-  const signed char ExprParser::yytable_ninf_ = -53;
+  const signed char ExprParser::yytable_ninf_ = -55;
 
   const signed char
   ExprParser::yypact_[] =
   {
-      -3,   -63,   -63,   -63,   -63,   -63,     5,   -63,    56,    56,
-      56,     3,   -63,   106,   -63,   -63,   -63,    -5,   -63,     6,
-       4,   -13,   -13,    91,   -63,    56,    56,   -63,   -63,   -63,
-     -63,   -63,   -63,   -63,   -63,   -63,   -63,   -63,   -63,    56,
+      -3,   -57,   -57,   -57,   -57,   -57,     5,     3,    56,    56,
+      56,     4,   -57,   106,   -57,   -57,   -57,    -5,   -57,    15,
+       6,   -17,   -17,    91,   -57,    56,    56,   -57,   -57,   -57,
+     -57,   -57,   -57,   -57,   -57,   -57,   -57,   -57,   -57,    56,
       56,    56,    56,    56,    56,    56,    56,    56,    56,    56,
-      56,    56,   -63,    56,   -63,   -63,   -63,    90,   106,    76,
-      54,    54,    54,    54,    54,    54,   119,   119,   -13,   -13,
-      47,    47,   -13,   106,   -63,   -63,    56,   -63,    -5,   106,
+      56,    56,   -57,    56,   -57,   -57,   -57,    90,   106,    76,
+      54,    54,    54,    54,    54,    54,   119,   119,   -17,   -17,
+      47,    47,   -17,   106,   -57,   -57,    56,   -57,    -5,   106,
       56,   106
   };
 
   const unsigned char
   ExprParser::yydefact_[] =
   {
-      55,     2,    14,    16,    47,    48,    49,    50,     0,     0,
-       0,     0,    27,    57,    51,    23,    53,     0,    56,     0,
+      56,     2,    14,    16,    47,    48,    49,    50,     0,     0,
+       0,     0,    27,    58,    51,    23,    19,     0,    57,     0,
       49,    29,    28,     0,    45,    20,     0,     5,     6,     4,
        3,     7,     8,     9,    10,    11,    12,    13,    15,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,    44,     0,     1,    17,    30,     0,    21,     0,
       41,    43,    40,    42,    37,    36,    38,    39,    31,    32,
-      33,    34,    35,    54,    18,    24,     0,    46,    25,    22,
+      33,    34,    35,    55,    18,    24,     0,    46,    25,    22,
        0,    26
   };
 
   const signed char
   ExprParser::yypgoto_[] =
   {
-     -63,   -63,   -63,   -63,   -63,   -63,   -63,   -63,   -63,   -63,
-     -63,   -63,   -63,   -10,   -63,     9,   -42,   -63,   -63,   -63,
-     -63,    -8,   -62,   -63,   -63,   -63,   -63,   -63,   -63,   -63,
-     -63
+     -57,   -57,   -57,   -57,   -57,   -57,   -57,   -57,   -57,   -57,
+     -57,   -57,   -57,   -10,   -57,     9,   -41,   -57,   -57,   -57,
+     -57,    -8,   -56,   -57,   -57,   -57,   -57,   -57,   -57,   -57,
+     -57
   };
 
   const signed char
@@ -1481,10 +1481,10 @@ namespace wasp {
   const signed char
   ExprParser::yytable_[] =
   {
-      21,    22,    23,    50,    52,     1,    54,    24,   -19,   -19,
-      38,    50,    50,    50,   -52,    75,    80,    58,    59,     2,
-      25,     3,     0,     4,     5,     6,     7,     3,   -19,   -19,
-       0,    60,    61,    62,    63,    64,    65,    66,    67,    68,
+      21,    22,    23,    50,    52,     1,    38,   -53,    24,   -52,
+     -52,    50,    50,    50,   -54,    54,    75,    58,    59,     2,
+      25,     3,    80,     4,     5,     6,     7,   -53,     3,   -52,
+     -52,    60,    61,    62,    63,    64,    65,    66,    67,    68,
       69,    70,    71,    72,     0,    73,     0,     0,    50,    50,
       50,    50,    50,    50,    50,    50,    50,    50,    50,    50,
       50,    50,    50,    50,     1,     0,    35,    36,    79,    50,
@@ -1501,10 +1501,10 @@ namespace wasp {
   const signed char
   ExprParser::yycheck_[] =
   {
-       8,     9,    10,    13,     9,     8,     0,     4,     4,     4,
-      23,    21,    22,    23,     9,    57,    78,    25,    26,    22,
-      11,    24,    -1,    26,    27,    28,    29,    24,    24,    24,
-      -1,    39,    40,    41,    42,    43,    44,    45,    46,    47,
+       8,     9,    10,    13,     9,     8,    23,     4,     4,     4,
+       4,    21,    22,    23,     9,     0,    57,    25,    26,    22,
+      11,    24,    78,    26,    27,    28,    29,    24,    24,    24,
+      24,    39,    40,    41,    42,    43,    44,    45,    46,    47,
       48,    49,    50,    51,    -1,    53,    -1,    -1,    58,    59,
       60,    61,    62,    63,    64,    65,    66,    67,    68,    69,
       70,    71,    72,    73,     8,    -1,    19,    20,    76,    79,
@@ -1540,7 +1540,7 @@ namespace wasp {
       56,    56,    56,    57,    57,    57,    57,    58,    58,    58,
       58,    58,    58,    58,    58,    58,    58,    58,    58,    58,
       58,    58,    58,    58,    59,    60,    61,    62,    62,    62,
-      62,    63,    64,    65,    66,    67,    67,    67
+      62,    63,    64,    64,    65,    66,    67,    67,    67
   };
 
   const unsigned char
@@ -1551,7 +1551,7 @@ namespace wasp {
        0,     1,     3,     1,     4,     4,     6,     1,     2,     2,
        3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
        3,     3,     3,     3,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     3,     0,     1,     1
+       1,     1,     1,     1,     1,     3,     0,     1,     1
   };
 
 
@@ -1583,7 +1583,7 @@ namespace wasp {
      162,   163,   169,   181,   182,   204,   213,   222,   223,   233,
      243,   255,   267,   279,   291,   303,   315,   327,   339,   351,
      363,   375,   387,   399,   411,   418,   424,   450,   450,   450,
-     450,   451,   457,   458,   466,   481,   482,   485
+     450,   451,   457,   457,   458,   466,   481,   482,   485
   };
 
   // Print the state stack on the debug stream.

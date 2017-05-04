@@ -325,6 +325,13 @@ namespace wasp {
          * @return
          */
         bool hasFile()const{return m_has_file;}
+
+        const std::string& attr_start_delim()const{return m_attribute_start_delim;}
+        std::string& attr_start_delim(){return m_attribute_start_delim;}
+
+        const std::string& attr_end_delim()const{return m_attribute_end_delim;}
+        std::string& attr_end_delim(){return m_attribute_end_delim;}
+
     private: // private variables
         //
         // Attribute are delimited by 3 components.

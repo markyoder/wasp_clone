@@ -84,11 +84,58 @@ Value::Type Value::type()const{return m_type;}
 Value& Value::operator=(const Value& orig)
 {
     // release any allocated memory
-    this->nullify();
-    // copy form the originator
-    this->copy_from(orig);
+    nullify();
+    // copy from the originator
+    copy_from(orig);
     return *this;
 }
+Value& Value::operator=(bool v)
+{
+    nullify();
+    m_type = TYPE_BOOLEAN;
+    m_data.m_bool = v;
+    return *this;
+}
+Value& Value::operator=(int v)
+{
+    nullify();
+    m_type = TYPE_INTEGER;
+    m_data.m_int = v;
+    return *this;
+}
+Value& Value::operator=(double v)
+{
+    nullify();
+    m_type = TYPE_DOUBLE;
+    m_data.m_double = v;
+    return *this;
+}
+Value& Value::operator=(const char* v)
+{
+    nullify();
+    wasp_require(v);
+    m_data.m_string = strdup(v); m_type = TYPE_STRING; m_allocated = true;
+    return *this;
+}
+Value& Value::operator=(const std::string& v)
+{
+    nullify();
+    m_data.m_string = strdup(v.c_str()); m_type = TYPE_STRING; m_allocated = true;
+    return *this;
+}
+Value& Value::operator=(const DataArray& v)
+{
+    nullify();
+    m_data.m_array = new DataArray(v); m_type = TYPE_ARRAY; m_allocated = true;
+    return *this;
+}
+Value& Value::operator=(const DataObject& v)
+{
+    nullify();
+    m_data.m_object = new DataObject(v); m_type = TYPE_OBJECT; m_allocated = true;
+    return *this;
+}
+
 void Value::nullify()
 {
     switch( m_type )
@@ -115,6 +162,7 @@ void Value::nullify()
         break;
     }
     m_type = TYPE_NULL;
+    m_allocated = false;
 }
 
 Value::~Value()
@@ -486,15 +534,8 @@ bool DataObject::empty()const
 
 Value& DataObject::operator [](const std::string & name)
 {
-    auto itr = m_data.find(name);
-
-    if( itr == m_data.end() )
-    {
-        auto result_pair = m_data.insert(
-                    std::make_pair(name,Value())); // create null entry
-        return result_pair.first->second;
-    }
-    return itr->second;
+    // since c++11 std::map<>[] does insertion if key doesn't exist
+    return m_data[name];
 }
 Value DataObject::operator [](const std::string & name)const
 {

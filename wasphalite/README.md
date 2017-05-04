@@ -43,7 +43,52 @@ Template constructs available are:
 Each construct is evaluated and emitted into the evaluation stream which can be redirected to a file when using the HALITE utility, or c++ std::ostream when using the wasphalite api.
 
 ## Attributes and Expressions
-Attributes and expressions are delimited by an opening and closing delimiter. By default these delimiters are '<' and '>' respectively. 
+Attributes and expressions are delimited by an opening and closing delimiter. By default these delimiters are '<' and '>' respectively. These are configurable via corresponding HaliteInterpreter class methods.
+
+Example template attribute statements are :
+1. `<attr>` - default delimiters, '<','>'
+2. `{attr}` - custom '{' and '}'
+3. `${attr}` - custom '${' and '}'
+4. `#{attr}` - custom '#{' and '}'
+5. `[:attr:]` - custom '[:' and ':]'
+6. etc.
+
+Formal attribute expression syntax looks as follows:
+
+` open_delim (name|expression) [':'['?''|'] format? seperator? range* use? close_delim`
+Where :
+1. `open_delim` is configurable, default of '<'
+2. `?` indicates optional attribute evaluation - allows undefined variables to silently fail - MUST OCCUR immediately after the attribute options delimiter, ':'.  
+3. `|` indicates [silent attribute](#silent-attributes) evaluation - conducts computation/variable creation without emitting the result to the evaluation stream - MUST OCCUR immediately after the attribute options delimiter, ':'.
+4. 1 and 2 are optional and mutually exclusive.
+5. optional `format` is `'fmt=' format ';'`, and `format` is described in the [section](formatting) below.
+6. optional `separator` is `'sep=' separator ';'`, and `separator` is emitted for all but the last evaluation iteration.
+7. zero or more `range` specifications where a range looks like `range_variable '=' start[,end[,stride]];`. Start, optional end and stride must be integers or attributes convertable to integers. 
+8. The optional `use`  statement facilitates scoped attribute access as depicted in [scoped attribute](#scoped-attribute) sections below.
+9. `close_delim` is configurable, default of '>'
+
+
+
+### Silent Attributes
+Attributes and expressions that need to be evaluated but not placed into the evaluation stream can be specified using the silent expression indicator:
+```
+<attr:|>
+```
+TODO provide use scenario.
+
+
+### Optional Attributes
+Attributes may not be specified and as such must be considered optional by the template. Optional attribute look as follow:
+```
+<attr:?>
+```
+Here the `:?` attribute option indicates nothing being evaluated will be placed into the evaluation stream unless the `attr` is defined.
+
+This is most useful when combined with formatting to tackle text where data may be optionally available but when available requires context:
+```
+data record <x> <y> <z> <comment:? fmt=com="%s">
+```
+Here the `comment` is optional data, but when present requires a 'com="`comment`"' to indicate context. The format statement proides the context 'com=' only when `comment` is present.
 
 ### Attribute Patterns
 Attribute names are defined as the regular expression `[A-Za-z_]([A-Za-z0-9\._])*`. Examples of these are: 
@@ -58,6 +103,19 @@ If an attribute name contains character(s) that violate the regular expression, 
 1. `'var(name)'`
 2. `'my var(name)'`
 3. etc.
+
+If an attribute is an array of data, a 0-based index can be used to access the data element. 
+Given data of :
+```
+'array':["ted","fred",7, 3.14159 ]
+```
+The following attribute patterns are legal:
+1. `array[0]` - "ted"
+2. `array[1]` - "fred"
+3. `array[2]` - 7
+4. `size(array)` - 4
+
+
 
 ### Example Attribute Pattern
 An example attribute substitution looks like:
@@ -296,12 +354,81 @@ the following template uses the scoped attributes as follows:
 The result is a whitespace separated evaluation of the template using each element in the array:
 
 ```
-The quick red fox jumped over the brown dog. The honey badger didn't care about the big angry dog. The weasel slinked by the sleeping dog.
+The quick red fox jumped over the brown dog. The honey badger didn't care about the big angry dog. The weasel slunk by the sleeping dog.
 ```
 
 A file import using an object or array facilitates more complex hierarchical data access.
 
 
 ## File Imports
+The HALITE engine support file import where files consist of all template constructs describes in this readme.
+File imports can be parameterized and implicitly and explicitly iterative. 
 
-TODO - complete section
+The simplest file format looks as follows:
+
+```
+#import relative/or/absolute/file/path.tmpl
+```
+Here the '#import' must occur at the start of the line. The path to the file can be relative to the current template, working directory, or an absolute path.
+
+The capability for the file being relative to the working directory allows subtemplates to be overridden.
+
+The path can also be templated on any available attribute. The subtemplate has immediate access to all attributes at 
+the current data level. 
+
+### Example Data
+E.g., the given data :
+```
+{
+    "x" : "blurg"
+    ,"y" : "blarg"
+    ,obj :
+    { 
+        "a" : "blurgit", "e" : "blarg" ,
+        "sarg" : 
+        {
+            "bravo" : 2
+            , "delta" : 4
+            , "charlie" : 3
+        }
+        ...
+    }
+    ,array :
+    [
+        {...}
+        ,...
+    ]
+}
+```
+The root template (entry for evaluation) has access to `x`, and `y`, but in order to access 
+data members of `obj` either a scoped attribute evaluation or a parameterized template import
+must be used.
+
+### Parameterized File Import
+Parameterized file imports facilitate access to data hierarchy and repetition of templates.
+
+#### File Import Using an Object
+The [example data](#example-data) contains the `obj` data layer which contains nested object `sarg` and other imaginary data `...`. To access all this data
+a subtemplate can be imported 'using' `obj` as follows:
+
+```
+#import some/file.tmpl using obj
+```
+
+The template `some/file.tmpl` can now access all attributes within `obj`. Additionally, all attributes in higher levels (`x`,`y`,`array`,`...`) are still accessible:
+
+`some/file.tmpl`:
+```
+This is a nested template with access to obj's context
+variable a=<a>, e=<e>
+
+Variables till accessible from parent data are x:<x>, and y:<y>, etc.
+```
+
+#### Iterative File Import Using an Array or Ranges
+TODO complete section
+
+
+## Conditional Action Blocks
+TODO complete section
+

@@ -30,6 +30,7 @@ public:
 
     virtual bool store(const std::string &name, const bool &v);
     virtual bool store(const std::string &name, const int &v);
+    virtual bool store(const std::string &name, const char* v);
     virtual bool store(const std::string &name, const std::string &v);
     virtual bool store(const std::string &name, const double &v);
 

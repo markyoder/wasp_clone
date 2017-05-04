@@ -154,7 +154,7 @@ comma    : COMMA    {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::
 %left UMINUS UNOT ;
 %right EXPONENT;
 
-function_name : STRING {
+function_name : DECL {
         size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::VALUE,"name"
                          ,token_index);
@@ -205,7 +205,7 @@ function : value %prec "constant"
      {
          std::vector<size_t> child_indices = {$1,$2,$3,$4};
 
-         const std::string & name = interpreter.data($1);
+         const std::string& name = wasp::strip_quotes(interpreter.data($1));
          $$ = interpreter.push_parent(wasp::OBJECT
                                          , name.c_str()
                                          , child_indices);
@@ -214,7 +214,7 @@ function : value %prec "constant"
      {
          std::vector<size_t> child_indices = {$1,$2,$3,$4,$5,$6};
 
-         const std::string & name = interpreter.data($1);
+         const std::string & name = wasp::strip_quotes(interpreter.data($1));
          $$ = interpreter.push_parent(wasp::OBJECT
                                          , name.c_str()
                                          , child_indices);
@@ -454,8 +454,8 @@ value : VALUE
         $$ = interpreter.push_leaf(wasp::VALUE,"value"
                          ,token_index);
     }
-DECL : STRING
-decl : DECL
+DECL : STRING | QSTRING
+decl : STRING
     {
         size_t decl_token_index = ($1);
         $$ = interpreter.push_leaf(wasp::DECL,"decl"
