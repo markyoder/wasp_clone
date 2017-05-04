@@ -910,3 +910,40 @@ TEST(ExprInterpreter, format)
         ASSERT_EQ(t.expected, fmt_result.str());
     }
 }
+
+TEST(ExprInterpreter, format_statements)
+{
+    std::vector<VariableExprTest<double,std::string,bool>> tests={
+           {"fmt(x,     '%3.2f')",3.14159,    "3.14",                 true},
+           {"fmt(x,     '%5.4f')",1.123456789,"1.1235",               true},
+           {"fmt(pi,    '%6.11f')",0,         "3.14159265359",        true},
+           {"fmt(pi,    '%6.5f')",0,          "3.14159",              true},
+           {"fmt(e,     '%6.12f')",0,         "2.718281828459",       true},
+           {"fmt(e,     'result=%6.12f')",0,  "result=2.718281828459",true},
+           {"fmt(1.0,   'result=%.0f')",0,    "result=1",             true},
+           {"fmt(1,     'result=%d')",0,      "result=1",             true},
+           {"fmt('fred','result=%8s')",0,     "result=    fred",      true},
+           {"fmt('fred','result=%-8s')",0,    "result=fred    ",      true}
+    };
+    ASSERT_FALSE( tests.empty() );
+    for( auto & t : tests )
+    {
+        SCOPED_TRACE( t.tst );
+        std::stringstream input;
+        input <<t.tst;
+        ExprInterpreter<> interpreter;
+        Context context;
+        context.store("x",t.v1);
+        context.add_default_variables();
+        context.add_default_functions();
+        ASSERT_TRUE(interpreter.parse(input) );
+        auto result = interpreter.evaluate(context);
+        ASSERT_FALSE(result.is_error() );
+        ASSERT_FALSE(result.is_integer());
+        ASSERT_FALSE(result.is_number());
+        ASSERT_FALSE(result.is_real());
+        ASSERT_TRUE (result.is_string());
+        ASSERT_FALSE(result.is_bool());
+        ASSERT_EQ(t.v2, result.string());
+    }
+}
