@@ -21,6 +21,8 @@ Value::Value(Value && orig)
 , m_data( orig.m_data )
 , m_type( orig.m_type )
 {
+    wasp_tagged_line("move constructor type is "<<m_type
+                     <<" allocated "<<std::boolalpha<<m_allocated);
     orig.m_allocated = false;
     orig.m_type = TYPE_NULL;
 }
@@ -91,10 +93,25 @@ Value::Type Value::type()const{return m_type;}
 
 Value& Value::operator=(const Value& orig)
 {
+    wasp_tagged_line("operator= copy...");
     // release any allocated memory
     nullify();
     // copy from the originator
     copy_from(orig);
+    return *this;
+}
+Value& Value::operator=(Value&& orig)
+{
+    // release any allocated memory
+    nullify();
+    m_allocated = orig.m_allocated;
+    m_data = orig.m_data;
+    m_type = orig.m_type;
+    wasp_tagged_line("assignment move...type="<<m_type
+                     <<" allocated? "<<std::boolalpha<<m_allocated);
+
+    orig.m_allocated = false;
+    orig.m_type = TYPE_NULL;
     return *this;
 }
 Value& Value::operator=(bool v)
@@ -146,16 +163,28 @@ Value& Value::operator=(const DataObject& v)
 
 void Value::assign(DataObject *obj)
 {
-    if( obj == nullptr ) return;
+    if( obj == nullptr )
+    {
+        m_type = TYPE_NULL;
+        m_allocated = false;
+        return;
+    }
     nullify();
     m_type = TYPE_OBJECT;
+    m_allocated = true;
     m_data.m_object = obj;
 }
 void Value::assign(DataArray *array)
 {
-    if( array == nullptr ) return;
+    if( array == nullptr )
+    {
+        m_type = TYPE_NULL;
+        m_allocated = false;
+        return;
+    }
     nullify();
     m_type = TYPE_ARRAY;
+    m_allocated = true;
     m_data.m_array = array;
 }
 void Value::nullify()
@@ -557,6 +586,9 @@ bool DataObject::empty()const
 Value& DataObject::operator [](const std::string & name)
 {
     // since c++11 std::map<>[] does insertion if key doesn't exist
+    wasp_tagged_line("requesting "<<name<<" = "
+                     <<(m_data[name].is_primitive()?m_data[name].to_string()
+                                                  :"complex type"));
     return m_data[name];
 }
 Value DataObject::operator [](const std::string & name)const
@@ -565,8 +597,12 @@ Value DataObject::operator [](const std::string & name)const
 
     if( itr == m_data.end() )
     {
+        wasp_tagged_line("requesting "<<name<<" no beuno");
         return Value(); // null value
     }
+    wasp_tagged_line("requesting "<<name<<" = "
+                     <<(itr->second.is_primitive()?itr->second.to_string()
+                                                  :"complex type"));
     return itr->second;
 }
 bool DataObject::format_json(std::ostream & out, int indent_level, int level)const

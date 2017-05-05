@@ -62,6 +62,7 @@ public:
 
     // assignment operators
     Value& operator=(const Value& v);
+    Value& operator=(Value&& v);
     Value& operator=(bool v);
     Value& operator=(int v);
     Value& operator=(double v);

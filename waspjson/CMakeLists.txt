@@ -43,6 +43,8 @@ FILE(GLOB HEADERS *.h *.hh *.hpp *.lex *.bison
 SET(SOURCES
 JSONLexer.cpp
 JSONParser.cpp
+JSONObjectLexer.cpp
+JSONObjectParser.cpp
 )
 
 ##---------------------------------------------------------------------------##
@@ -59,7 +61,7 @@ INSTALL(FILES
   DESTINATION
   include/waspjson)
 
-TRIBITS_ADD_EXECUTABLE(jsonls
+TRIBITS_ADD_EXECUTABLE(jsonlist
   NOEXEPREFIX
   NOEXESUFFIX
   SOURCES ListJSON.cpp
