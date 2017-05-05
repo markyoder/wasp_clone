@@ -12,7 +12,7 @@
 #include "waspcore/Interpreter.h"
 #include "wasphalite/SubStringIndexer.h"
 #include "waspexpr/ExprInterpreter.h"
-#include "waspjson/JSONInterpreter.h"
+#include "waspjson/JSONObjectParser.hpp"
 #include "wasphalite/DataAccessor.h"
 #include "waspcore/wasp_bug.h"
 
@@ -393,20 +393,23 @@ namespace wasp {
             }
             return true;
         }
-        JSONInterpreter<TreeNodePool<unsigned int, unsigned int
-                ,TokenPool<unsigned int,unsigned int, unsigned int>>> json_data;
-        bool json_failed = !json_data.parseFile(json_parameter_file);
+
+        std::ifstream json_file_stream (json_parameter_file);
+        if( !json_file_stream )
+        {
+            elog<<"***Error : JSON file could not be opened!"<<std::endl;
+            return false;
+        }
+        DataObject::SP obj_ptr;
+        JSONObjectParser generator(obj_ptr,json_file_stream,elog,nullptr);
+        bool json_failed = generator.parse() != 0;
         if( json_failed )
         {
             elog<<"***Error : Parsing of data "<<json_parameter_file<<" failed!"<<std::endl;
             return false;
         }
-        DataObject o;
-        if( !json_data.generate_object(o,elog) )
-        {
-            return false;
-        }
-        DataAccessor data(&o);
+
+        DataAccessor data(obj_ptr.get());
         bool emitted = halite.evaluate(result,data,&alog);
 
         if( !emitted )

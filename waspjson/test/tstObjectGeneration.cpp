@@ -36,7 +36,7 @@ TEST( JSON, simple_object )
  "array_empty" : [],
  "array_mixed" : [{}, [], 1, 1.004, true, false, null ]
 })INPUT";
-    std::shared_ptr<DataObject> json_ptr;
+    DataObject::SP json_ptr;
     {
     JSONObjectParser generator(json_ptr,input,std::cerr,nullptr);
     ASSERT_EQ(0, generator.parse() );

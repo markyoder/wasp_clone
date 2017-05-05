@@ -1084,13 +1084,13 @@ bool HaliteInterpreter<S>::import_file(DataAccessor & data
             return false;
         }
         std::stringstream data_by_copy_str; data_by_copy_str<<using_what;
-        DataObject data_by_copy;
-        if( !wasp::generate_object<JSONInterpreter<S>>(
+        DataObject::SP data_by_copy;
+        if( !wasp::generate_object<JSONObjectParser>(
                     data_by_copy,data_by_copy_str,Interpreter<S>::error_stream()))
         {
             return false;
         }
-        DataAccessor data_by_copy_accessor(&data_by_copy,&data);
+        DataAccessor data_by_copy_accessor(data_by_copy.get(),&data);
         import = nested_interp.evaluate(out,data_by_copy_accessor);
     }
     else{

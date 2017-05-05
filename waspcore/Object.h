@@ -2,6 +2,7 @@
 #define WASP_OBJECT_H
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -167,6 +168,7 @@ public:
 class DataObject
 {
 public:
+    typedef std::shared_ptr<DataObject> SP;
     typedef std::map<std::string, Value> storage_type;
 
 private:
@@ -209,12 +211,11 @@ public:
 
 
 template<class Interp>
-bool generate_object(DataObject & obj, std::istream& input, std::ostream & errors)
+bool generate_object(DataObject::SP & obj, std::istream& input, std::ostream & errors)
 {
-    Interp interpreter(errors);
-    bool parsed = interpreter.parse(input);
-    if( !parsed ) return false;
-    return interpreter.generate_object(obj, errors);
+    Interp interpreter(obj,input, errors, nullptr);
+    bool parsed = interpreter.parse() == 0;
+    return parsed;
 }
 
 } // end of namespace
