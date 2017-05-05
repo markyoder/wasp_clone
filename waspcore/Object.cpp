@@ -16,6 +16,14 @@ Value::Value(const Value& orig)
 {
     this->copy_from(orig);
 }
+Value::Value(Value && orig)
+: m_allocated( orig.m_allocated)
+, m_data( orig.m_data )
+, m_type( orig.m_type )
+{
+    orig.m_allocated = false;
+    orig.m_type = TYPE_NULL;
+}
 Value::Value(bool v)
 {
     m_data.m_bool = v; m_type = TYPE_BOOLEAN;
@@ -136,6 +144,20 @@ Value& Value::operator=(const DataObject& v)
     return *this;
 }
 
+void Value::assign(DataObject *obj)
+{
+    if( obj == nullptr ) return;
+    nullify();
+    m_type = TYPE_OBJECT;
+    m_data.m_object = obj;
+}
+void Value::assign(DataArray *array)
+{
+    if( array == nullptr ) return;
+    nullify();
+    m_type = TYPE_ARRAY;
+    m_data.m_array = array;
+}
 void Value::nullify()
 {
     switch( m_type )

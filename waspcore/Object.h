@@ -41,6 +41,9 @@ public:
     Value();
     /// copy constructor
     Value(const Value& orig);
+    // move constructor
+    Value (Value&& orig);
+
     // boolean
     Value(bool v);
     // integer
@@ -66,7 +69,6 @@ public:
     Value& operator=(const std::string& v);
     Value& operator=(const DataArray& v);
     Value& operator=(const DataObject& v);
-
 
 
     Value::Type type()const;
@@ -111,6 +113,9 @@ public:
     bool format_json(std::ostream & out, int indent_level=2, int level=0)const;
     bool pack_json(std::ostream & out)const;
 private:
+    friend class JSONObjectParser;
+    void assign(DataObject * obj);
+    void assign(DataArray* array);
     /**
      * @brief nullify deletes and nullifies this object
      */

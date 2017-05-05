@@ -146,4 +146,36 @@ TEST(DataObject, methods)
         ASSERT_EQ(Value::TYPE_INTEGER,o["ted"]["arabic numbers"][i].type());
         ASSERT_EQ(i,o["ted"]["arabic numbers"][i].to_int());
     }
+    Value vo(o);
+    ASSERT_TRUE( vo.is_object() );
+    ASSERT_FALSE( vo.is_null() );
+    Value moved(std::move(vo));
+    ASSERT_FALSE( vo.is_object() );
+    ASSERT_TRUE( vo.is_null() );
+    {
+        ASSERT_EQ(Value::TYPE_OBJECT, moved["ted"].type());
+        ASSERT_TRUE(moved["ted"].to_object() != nullptr );
+        ASSERT_TRUE(moved["ted"].to_object()->contains("fred"));
+        ASSERT_EQ(Value::TYPE_STRING, moved["ted"]["fred"].type());
+        ASSERT_EQ("teds brother", o["ted"]["fred"].to_string());
+        {
+            DataArray a;
+            for( int i = 0; i < 10; ++i)
+            {
+                a.push_back(i);
+            }
+            moved["ted"]["arabic numbers"] = a;
+        }
+        ASSERT_TRUE( moved["ted"].to_object()->contains("arabic numbers") );
+        DataArray * a = moved["ted"]["arabic numbers"].to_array();
+        ASSERT_TRUE( a != nullptr );
+        ASSERT_EQ(10, a->size() );
+        for( int i = 0; i < a->size(); ++i )
+        {
+            SCOPED_TRACE(i);
+            ASSERT_EQ(i, a->at(i).to_int());
+            ASSERT_EQ(Value::TYPE_INTEGER,moved["ted"]["arabic numbers"][i].type());
+            ASSERT_EQ(i,moved["ted"]["arabic numbers"][i].to_int());
+        }
+    }
 }
