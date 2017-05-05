@@ -39,9 +39,9 @@ typedef wasp::ExprParser::token_type token_type;
 
  /* enables the use of start condition stacks */
 
-INT [0-9]+([eE]\+?[0-9]+)?
+INT [0-9]+
 EXPONENT [eE][\+\-]?{INT}
-REAL {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
+REAL {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}{EXPONENT}
 
 STRING [A-Za-z_]([A-Za-z0-9\._])*
 
@@ -242,7 +242,7 @@ void ExprLexerImpl::capture_token(
 #endif
 
 int ExprFlexLexer::yylex()
-{    
+{
     return 0;
 }
 
