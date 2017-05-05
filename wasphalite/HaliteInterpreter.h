@@ -415,6 +415,8 @@ namespace wasp {
             return false;
         }
         DataAccessor data(&o);
+        if(defaultVars) data.add_default_variables();
+        if(defaultFuncs) data.add_default_functions();
         bool emitted = halite.evaluate(result,data,&alog);
 
         if( !emitted )
