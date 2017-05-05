@@ -1185,6 +1185,67 @@ public:
         return to_string(integer(args,err,ok));
     }
 };
+class StringFunction : public Function
+{
+public:
+    typedef std::vector<Result> Args;
+    virtual Context::Type type()const{return Context::Type::STRING;}
+    virtual int integer( const Args& args
+                         , std::ostream & err
+                         , bool * ok=nullptr)const{
+        if( ok != nullptr ) *ok = false;
+        wasp_not_implemented("Function::integer");
+    }
+    virtual double real(const Args& args
+                        , std::ostream & err
+                        , bool * ok=nullptr)const{
+        if( ok != nullptr ) *ok = false;
+        wasp_not_implemented("Function::real");
+    };
+    virtual bool boolean(const Args& args
+                         , std::ostream & err
+                         , bool * ok=nullptr)const{
+        if( ok != nullptr ) *ok = false;
+        wasp_not_implemented("Function::boolean");
+    }
+    virtual std::string string(const Args& args
+                               , std::ostream & err
+                               , bool * ok=nullptr)const=0;
+};
+class FFmt : public StringFunction
+{
+public:
+    typedef std::vector<Result> Args;
+    std::string string(const Args& args
+                     , std::ostream & err
+                     , bool * ok=nullptr)const{
+        // must have two arguments
+        if ( args.size() != 2 )
+        {
+            if( ok != nullptr ) *ok = false;
+            err<<"function expects 1 argument, given "<<args.size()<<".";
+            return "";
+        }
+        // second arguement must be a string
+        if ( !args[1].is_string() )
+        {
+            if( ok != nullptr ) *ok = false;
+            err<<"function second argument is not a string";
+            return "";
+        }
+        std::stringstream fout, ferr;
+        // format must return true
+        if ( !args[0].format(fout,args[1].string(),ferr) )
+        {
+            if( ok != nullptr ) *ok = false;
+            err<<ferr.str();
+            return "";
+        }
+        // return result
+        if( ok != nullptr ) *ok = true;
+        return fout.str();
+    }
+};
 #define WASP_INTEGER_FUNCTION_1ARG(NAME, XTENS, CALL) \
 class NAME: public XTENS \
 {  \
@@ -1744,7 +1805,12 @@ Result::evaluate( const T & tree_view
            break;
        }
        Function * function = context.function(function_name);
-       wasp_ensure( function );
+       if ( function == nullptr )
+       {
+           m_type = Context::Type::ERROR;
+           string() = error_msg(tree_view,"function " + function_name + " does not exist");
+           break;
+       }
 
        auto f_type = function->type();
        m_type = f_type;

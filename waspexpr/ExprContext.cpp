@@ -144,6 +144,8 @@ Context::add_default_functions()
     add_function("abs",new FAbs() );
     wasp_check( function_exists("mod") == false );
     add_function("mod",new FMod() );
+    wasp_check( function_exists("fmt") == false );
+    add_function("fmt",new FFmt() );
 
     // popular variants
     wasp_check( function_exists("cosec") == false );

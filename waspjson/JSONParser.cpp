@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.0.4.
+// A Bison parser, made by GNU Bison 3.0.2.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015 Free Software Foundation, Inc.
+// Copyright (C) 2002-2013 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,14 +34,14 @@
 #define yylex   wasplex
 
 // First part of user declarations.
-#line 1 "JSONParser.bison" // lalr1.cc:404
+#line 1 "JSONParser.bison" // lalr1.cc:399
  /*** C/C++ Declarations ***/
 
 #include <stdio.h>
 #include <string>
 #include <vector>
 
-#line 45 "JSONParser.cpp" // lalr1.cc:404
+#line 45 "JSONParser.cpp" // lalr1.cc:399
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -54,7 +54,7 @@
 #include "JSONParser.hpp"
 
 // User implementation prologue.
-#line 97 "JSONParser.bison" // lalr1.cc:412
+#line 97 "JSONParser.bison" // lalr1.cc:407
 
 
 #include "JSONInterpreter.h"
@@ -67,7 +67,7 @@
 #define yylex lexer->lex
 
 
-#line 71 "JSONParser.cpp" // lalr1.cc:412
+#line 71 "JSONParser.cpp" // lalr1.cc:407
 
 
 #ifndef YY_
@@ -144,7 +144,7 @@
 #endif // !YYDEBUG
 
 #define yyerrok         (yyerrstatus_ = 0)
-#define yyclearin       (yyla.clear ())
+#define yyclearin       (yyempty = true)
 
 #define YYACCEPT        goto yyacceptlab
 #define YYABORT         goto yyabortlab
@@ -153,7 +153,7 @@
 
 
 namespace wasp {
-#line 157 "JSONParser.cpp" // lalr1.cc:479
+#line 157 "JSONParser.cpp" // lalr1.cc:474
 
   /* Return YYSTR after stripping away unnecessary quotes and
      backslashes, so that it's suitable for yyerror.  The heuristic is
@@ -259,23 +259,6 @@ namespace wasp {
   inline
   JSONParser::basic_symbol<Base>::~basic_symbol ()
   {
-    clear ();
-  }
-
-  template <typename Base>
-  inline
-  void
-  JSONParser::basic_symbol<Base>::clear ()
-  {
-    Base::clear ();
-  }
-
-  template <typename Base>
-  inline
-  bool
-  JSONParser::basic_symbol<Base>::empty () const
-  {
-    return Base::type_get () == empty_symbol;
   }
 
   template <typename Base>
@@ -291,7 +274,7 @@ namespace wasp {
   // by_type.
   inline
   JSONParser::by_type::by_type ()
-    : type (empty_symbol)
+     : type (empty)
   {}
 
   inline
@@ -306,17 +289,10 @@ namespace wasp {
 
   inline
   void
-  JSONParser::by_type::clear ()
-  {
-    type = empty_symbol;
-  }
-
-  inline
-  void
   JSONParser::by_type::move (by_type& that)
   {
     type = that.type;
-    that.clear ();
+    that.type = empty;
   }
 
   inline
@@ -330,7 +306,7 @@ namespace wasp {
   // by_state.
   inline
   JSONParser::by_state::by_state ()
-    : state (empty_state)
+    : state (empty)
   {}
 
   inline
@@ -340,17 +316,10 @@ namespace wasp {
 
   inline
   void
-  JSONParser::by_state::clear ()
-  {
-    state = empty_state;
-  }
-
-  inline
-  void
   JSONParser::by_state::move (by_state& that)
   {
     state = that.state;
-    that.clear ();
+    that.state = empty;
   }
 
   inline
@@ -362,10 +331,7 @@ namespace wasp {
   JSONParser::symbol_number_type
   JSONParser::by_state::type_get () const
   {
-    if (state == empty_state)
-      return empty_symbol;
-    else
-      return yystos_[state];
+    return state == empty ? 0 : yystos_[state];
   }
 
   inline
@@ -379,7 +345,7 @@ namespace wasp {
   {
     value = that.value;
     // that is emptied.
-    that.type = empty_symbol;
+    that.type = empty;
   }
 
   inline
@@ -406,37 +372,37 @@ namespace wasp {
     {
             case 29: // declaration
 
-#line 95 "JSONParser.bison" // lalr1.cc:614
+#line 95 "JSONParser.bison" // lalr1.cc:599
         { delete (yysym.value.node_indices); }
-#line 412 "JSONParser.cpp" // lalr1.cc:614
+#line 378 "JSONParser.cpp" // lalr1.cc:599
         break;
 
       case 30: // array
 
-#line 95 "JSONParser.bison" // lalr1.cc:614
+#line 95 "JSONParser.bison" // lalr1.cc:599
         { delete (yysym.value.node_indices); }
-#line 419 "JSONParser.cpp" // lalr1.cc:614
+#line 385 "JSONParser.cpp" // lalr1.cc:599
         break;
 
       case 31: // object
 
-#line 95 "JSONParser.bison" // lalr1.cc:614
+#line 95 "JSONParser.bison" // lalr1.cc:599
         { delete (yysym.value.node_indices); }
-#line 426 "JSONParser.cpp" // lalr1.cc:614
+#line 392 "JSONParser.cpp" // lalr1.cc:599
         break;
 
       case 35: // array_members
 
-#line 95 "JSONParser.bison" // lalr1.cc:614
+#line 95 "JSONParser.bison" // lalr1.cc:599
         { delete (yysym.value.node_indices); }
-#line 433 "JSONParser.cpp" // lalr1.cc:614
+#line 399 "JSONParser.cpp" // lalr1.cc:599
         break;
 
       case 36: // object_members
 
-#line 95 "JSONParser.bison" // lalr1.cc:614
+#line 95 "JSONParser.bison" // lalr1.cc:599
         { delete (yysym.value.node_indices); }
-#line 440 "JSONParser.cpp" // lalr1.cc:614
+#line 406 "JSONParser.cpp" // lalr1.cc:599
         break;
 
 
@@ -454,10 +420,6 @@ namespace wasp {
     std::ostream& yyoutput = yyo;
     YYUSE (yyoutput);
     symbol_number_type yytype = yysym.type_get ();
-    // Avoid a (spurious) G++ 4.8 warning about "array subscript is
-    // below array bounds".
-    if (yysym.empty ())
-      std::abort ();
     yyo << (yytype < yyntokens_ ? "token" : "nterm")
         << ' ' << yytname_[yytype] << " ("
         << yysym.location << ": ";
@@ -542,6 +504,9 @@ namespace wasp {
   int
   JSONParser::parse ()
   {
+    /// Whether yyla contains a lookahead.
+    bool yyempty = true;
+
     // State.
     int yyn;
     /// Length of the RHS of the rule being reduced.
@@ -568,7 +533,7 @@ namespace wasp {
 
 
     // User initialization code.
-    #line 40 "JSONParser.bison" // lalr1.cc:741
+    #line 40 "JSONParser.bison" // lalr1.cc:725
 {
     // initialize the initial location object
     yyla.location.begin.filename = yyla.location.end.filename = &interpreter.stream_name();
@@ -577,7 +542,7 @@ namespace wasp {
     lexer = std::make_shared<JSONLexerImpl>(interpreter,&input_stream);
 }
 
-#line 581 "JSONParser.cpp" // lalr1.cc:741
+#line 546 "JSONParser.cpp" // lalr1.cc:725
 
     /* Initialize the stack.  The initial state will be set in
        yynewstate, since the latter expects the semantical and the
@@ -605,7 +570,7 @@ namespace wasp {
       goto yydefault;
 
     // Read a lookahead token.
-    if (yyla.empty ())
+    if (yyempty)
       {
         YYCDEBUG << "Reading a token: ";
         try
@@ -617,6 +582,7 @@ namespace wasp {
             error (yyexc);
             goto yyerrlab1;
           }
+        yyempty = false;
       }
     YY_SYMBOL_PRINT ("Next token is", yyla);
 
@@ -635,6 +601,9 @@ namespace wasp {
         yyn = -yyn;
         goto yyreduce;
       }
+
+    // Discard the token being shifted.
+    yyempty = true;
 
     // Count tokens shifted since error; after three, turn off error status.
     if (yyerrstatus_)
@@ -685,62 +654,62 @@ namespace wasp {
           switch (yyn)
             {
   case 2:
-#line 114 "JSONParser.bison" // lalr1.cc:859
+#line 114 "JSONParser.bison" // lalr1.cc:847
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
     }
-#line 694 "JSONParser.cpp" // lalr1.cc:859
+#line 663 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 5:
-#line 121 "JSONParser.bison" // lalr1.cc:859
+#line 121 "JSONParser.bison" // lalr1.cc:847
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACE,"{",token_index);
     }
-#line 703 "JSONParser.cpp" // lalr1.cc:859
+#line 672 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 6:
-#line 126 "JSONParser.bison" // lalr1.cc:859
+#line 126 "JSONParser.bison" // lalr1.cc:847
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RBRACE,"}",token_index);
     }
-#line 712 "JSONParser.cpp" // lalr1.cc:859
+#line 681 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 7:
-#line 131 "JSONParser.bison" // lalr1.cc:859
+#line 131 "JSONParser.bison" // lalr1.cc:847
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACKET,"[",token_index);
     }
-#line 721 "JSONParser.cpp" // lalr1.cc:859
+#line 690 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 8:
-#line 136 "JSONParser.bison" // lalr1.cc:859
+#line 136 "JSONParser.bison" // lalr1.cc:847
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RBRACKET,"]",token_index);
     }
-#line 730 "JSONParser.cpp" // lalr1.cc:859
+#line 699 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 15:
-#line 145 "JSONParser.bison" // lalr1.cc:859
+#line 145 "JSONParser.bison" // lalr1.cc:847
     {
     size_t token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                      ,token_index);
 }
-#line 740 "JSONParser.cpp" // lalr1.cc:859
+#line 709 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 16:
-#line 151 "JSONParser.bison" // lalr1.cc:859
+#line 151 "JSONParser.bison" // lalr1.cc:847
     {
         auto token_index = ((yystack_[0].value.token_index));
         std::string quote_less_data = interpreter.token_data(token_index);
@@ -749,50 +718,50 @@ namespace wasp {
                                    ,"decl"
                                    ,token_index);
     }
-#line 753 "JSONParser.cpp" // lalr1.cc:859
+#line 722 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 18:
-#line 160 "JSONParser.bison" // lalr1.cc:859
+#line 160 "JSONParser.bison" // lalr1.cc:847
     {
              auto token_index = ((yystack_[0].value.token_index));
              (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,":",token_index);
             }
-#line 762 "JSONParser.cpp" // lalr1.cc:859
+#line 731 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 19:
-#line 165 "JSONParser.bison" // lalr1.cc:859
+#line 165 "JSONParser.bison" // lalr1.cc:847
     {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[1].value.node_index));
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 772 "JSONParser.cpp" // lalr1.cc:859
+#line 741 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 20:
-#line 173 "JSONParser.bison" // lalr1.cc:859
+#line 173 "JSONParser.bison" // lalr1.cc:847
     {
         (yylhs.value.node_indices) = new std::vector<size_t>();
         (yylhs.value.node_indices)->push_back((yystack_[1].value.node_index));
         (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
     }
-#line 782 "JSONParser.cpp" // lalr1.cc:859
+#line 751 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 21:
-#line 179 "JSONParser.bison" // lalr1.cc:859
+#line 179 "JSONParser.bison" // lalr1.cc:847
     {
         error(yystack_[0].location, "array has unmatched left bracket!");
         YYERROR;
         (yylhs.value.node_indices) = nullptr;
     }
-#line 792 "JSONParser.cpp" // lalr1.cc:859
+#line 761 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 22:
-#line 185 "JSONParser.bison" // lalr1.cc:859
+#line 185 "JSONParser.bison" // lalr1.cc:847
     {
         std::string name = "object";
         auto last_component_type = interpreter.type((yystack_[1].value.node_indices)->back());
@@ -803,41 +772,41 @@ namespace wasp {
         YYERROR;
         (yylhs.value.node_indices) = nullptr;
     }
-#line 807 "JSONParser.cpp" // lalr1.cc:859
+#line 776 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 23:
-#line 196 "JSONParser.bison" // lalr1.cc:859
+#line 196 "JSONParser.bison" // lalr1.cc:847
     {            
             (yystack_[1].value.node_indices)->insert((yystack_[1].value.node_indices)->begin(),(yystack_[2].value.node_index));
             (yystack_[1].value.node_indices)->push_back((yystack_[0].value.node_index));
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
     }
-#line 817 "JSONParser.cpp" // lalr1.cc:859
+#line 786 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 24:
-#line 202 "JSONParser.bison" // lalr1.cc:859
+#line 202 "JSONParser.bison" // lalr1.cc:847
     {
         (yylhs.value.node_indices) = new std::vector<size_t>();
         (yylhs.value.node_indices)->push_back((yystack_[1].value.node_index));
         (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
     }
-#line 827 "JSONParser.cpp" // lalr1.cc:859
+#line 796 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 25:
-#line 208 "JSONParser.bison" // lalr1.cc:859
+#line 208 "JSONParser.bison" // lalr1.cc:847
     {        
         error(yystack_[0].location, "object has unmatched left brace!");
         YYERROR;
         (yylhs.value.node_indices) = nullptr;
     }
-#line 837 "JSONParser.cpp" // lalr1.cc:859
+#line 806 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 26:
-#line 214 "JSONParser.bison" // lalr1.cc:859
+#line 214 "JSONParser.bison" // lalr1.cc:847
     {
         // TODO capture partial definition
         std::string name = "object";
@@ -849,21 +818,21 @@ namespace wasp {
         YYERROR;
         (yylhs.value.node_indices) = nullptr;
     }
-#line 853 "JSONParser.cpp" // lalr1.cc:859
+#line 822 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 27:
-#line 226 "JSONParser.bison" // lalr1.cc:859
+#line 226 "JSONParser.bison" // lalr1.cc:847
     {
         (yystack_[1].value.node_indices)->insert((yystack_[1].value.node_indices)->begin(),(yystack_[2].value.node_index));
         (yystack_[1].value.node_indices)->push_back((yystack_[0].value.node_index));
         (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
     }
-#line 863 "JSONParser.cpp" // lalr1.cc:859
+#line 832 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 28:
-#line 234 "JSONParser.bison" // lalr1.cc:859
+#line 234 "JSONParser.bison" // lalr1.cc:847
     {
         (yystack_[1].value.node_indices)->push_back((yystack_[0].value.node_index));
         std::string quote_less_data = interpreter.data((yystack_[1].value.node_indices)->front());
@@ -873,11 +842,11 @@ namespace wasp {
                                     ,*(yystack_[1].value.node_indices));
         delete (yystack_[1].value.node_indices);
     }
-#line 877 "JSONParser.cpp" // lalr1.cc:859
+#line 846 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 29:
-#line 244 "JSONParser.bison" // lalr1.cc:859
+#line 244 "JSONParser.bison" // lalr1.cc:847
     {
         for( size_t i = 0; i < (yystack_[0].value.node_indices)->size(); ++i )
         {
@@ -891,11 +860,11 @@ namespace wasp {
         delete (yystack_[1].value.node_indices);
         delete (yystack_[0].value.node_indices);
     }
-#line 895 "JSONParser.cpp" // lalr1.cc:859
+#line 864 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 30:
-#line 258 "JSONParser.bison" // lalr1.cc:859
+#line 258 "JSONParser.bison" // lalr1.cc:847
     {
         for( size_t i = 0; i < (yystack_[0].value.node_indices)->size(); ++i )
         {
@@ -909,11 +878,11 @@ namespace wasp {
         delete (yystack_[1].value.node_indices);
         delete (yystack_[0].value.node_indices);
     }
-#line 913 "JSONParser.cpp" // lalr1.cc:859
+#line 882 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 31:
-#line 272 "JSONParser.bison" // lalr1.cc:859
+#line 272 "JSONParser.bison" // lalr1.cc:847
     {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             size_t obj_i = interpreter.push_parent(wasp::OBJECT
@@ -922,11 +891,11 @@ namespace wasp {
             (yylhs.value.node_indices)->push_back(obj_i);
             delete (yystack_[0].value.node_indices);
         }
-#line 926 "JSONParser.cpp" // lalr1.cc:859
+#line 895 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 32:
-#line 281 "JSONParser.bison" // lalr1.cc:859
+#line 281 "JSONParser.bison" // lalr1.cc:847
     {
             (yylhs.value.node_indices) = (yystack_[2].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[1].value.node_index));
@@ -936,11 +905,11 @@ namespace wasp {
             (yylhs.value.node_indices)->push_back(obj_i);
             delete (yystack_[0].value.node_indices);
         }
-#line 940 "JSONParser.cpp" // lalr1.cc:859
+#line 909 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 33:
-#line 291 "JSONParser.bison" // lalr1.cc:859
+#line 291 "JSONParser.bison" // lalr1.cc:847
     {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             size_t arr_i = interpreter.push_parent(wasp::ARRAY
@@ -949,11 +918,11 @@ namespace wasp {
             (yylhs.value.node_indices)->push_back(arr_i);
             delete (yystack_[0].value.node_indices);
         }
-#line 953 "JSONParser.cpp" // lalr1.cc:859
+#line 922 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 34:
-#line 300 "JSONParser.bison" // lalr1.cc:859
+#line 300 "JSONParser.bison" // lalr1.cc:847
     {
             (yylhs.value.node_indices) = (yystack_[2].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[1].value.node_index));
@@ -963,109 +932,109 @@ namespace wasp {
             (yylhs.value.node_indices)->push_back(arr_i);
             delete (yystack_[0].value.node_indices);
         }
-#line 967 "JSONParser.cpp" // lalr1.cc:859
+#line 936 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 35:
-#line 310 "JSONParser.bison" // lalr1.cc:859
+#line 310 "JSONParser.bison" // lalr1.cc:847
     {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 976 "JSONParser.cpp" // lalr1.cc:859
+#line 945 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 36:
-#line 315 "JSONParser.bison" // lalr1.cc:859
+#line 315 "JSONParser.bison" // lalr1.cc:847
     {
             (yylhs.value.node_indices) = (yystack_[2].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[1].value.node_index));
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 986 "JSONParser.cpp" // lalr1.cc:859
+#line 955 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 37:
-#line 321 "JSONParser.bison" // lalr1.cc:859
+#line 321 "JSONParser.bison" // lalr1.cc:847
     {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 995 "JSONParser.cpp" // lalr1.cc:859
+#line 964 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 38:
-#line 326 "JSONParser.bison" // lalr1.cc:859
+#line 326 "JSONParser.bison" // lalr1.cc:847
     {
             (yylhs.value.node_indices) = (yystack_[2].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[1].value.node_index));
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1005 "JSONParser.cpp" // lalr1.cc:859
+#line 974 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 39:
-#line 332 "JSONParser.bison" // lalr1.cc:859
+#line 332 "JSONParser.bison" // lalr1.cc:847
     {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1014 "JSONParser.cpp" // lalr1.cc:859
+#line 983 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 40:
-#line 337 "JSONParser.bison" // lalr1.cc:859
+#line 337 "JSONParser.bison" // lalr1.cc:847
     {
             (yylhs.value.node_indices) = (yystack_[2].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[1].value.node_index));
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1024 "JSONParser.cpp" // lalr1.cc:859
+#line 993 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 41:
-#line 343 "JSONParser.bison" // lalr1.cc:859
+#line 343 "JSONParser.bison" // lalr1.cc:847
     {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1033 "JSONParser.cpp" // lalr1.cc:859
+#line 1002 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 42:
-#line 348 "JSONParser.bison" // lalr1.cc:859
+#line 348 "JSONParser.bison" // lalr1.cc:847
     {
             (yylhs.value.node_indices) = (yystack_[2].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[1].value.node_index));
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 1043 "JSONParser.cpp" // lalr1.cc:859
+#line 1012 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 44:
-#line 354 "JSONParser.bison" // lalr1.cc:859
+#line 354 "JSONParser.bison" // lalr1.cc:847
     {
             interpreter.staged_type(0) = wasp::OBJECT;
             interpreter.push_staged_child(*(yystack_[0].value.node_indices));
             delete (yystack_[0].value.node_indices);
             if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}
         }
-#line 1054 "JSONParser.cpp" // lalr1.cc:859
+#line 1023 "JSONParser.cpp" // lalr1.cc:847
     break;
 
   case 45:
-#line 360 "JSONParser.bison" // lalr1.cc:859
+#line 360 "JSONParser.bison" // lalr1.cc:847
     {
             interpreter.staged_type(0) = wasp::ARRAY;
             interpreter.push_staged_child(*(yystack_[0].value.node_indices));
             delete (yystack_[0].value.node_indices);
             if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}
         }
-#line 1065 "JSONParser.cpp" // lalr1.cc:859
+#line 1034 "JSONParser.cpp" // lalr1.cc:847
     break;
 
 
-#line 1069 "JSONParser.cpp" // lalr1.cc:859
+#line 1038 "JSONParser.cpp" // lalr1.cc:847
             default:
               break;
             }
@@ -1093,7 +1062,8 @@ namespace wasp {
     if (!yyerrstatus_)
       {
         ++yynerrs_;
-        error (yyla.location, yysyntax_error_ (yystack_[0].state, yyla));
+        error (yyla.location, yysyntax_error_ (yystack_[0].state,
+                                           yyempty ? yyempty_ : yyla.type_get ()));
       }
 
 
@@ -1106,10 +1076,10 @@ namespace wasp {
         // Return failure if at end of input.
         if (yyla.type_get () == yyeof_)
           YYABORT;
-        else if (!yyla.empty ())
+        else if (!yyempty)
           {
             yy_destroy_ ("Error: discarding", yyla);
-            yyla.clear ();
+            yyempty = true;
           }
       }
 
@@ -1185,7 +1155,7 @@ namespace wasp {
     goto yyreturn;
 
   yyreturn:
-    if (!yyla.empty ())
+    if (!yyempty)
       yy_destroy_ ("Cleanup: discarding lookahead", yyla);
 
     /* Do not reclaim the symbols of the rule whose action triggered
@@ -1205,7 +1175,7 @@ namespace wasp {
                  << std::endl;
         // Do not try to display the values of the reclaimed symbols,
         // as their printer might throw an exception.
-        if (!yyla.empty ())
+        if (!yyempty)
           yy_destroy_ (YY_NULLPTR, yyla);
 
         while (1 < yystack_.size ())
@@ -1225,8 +1195,9 @@ namespace wasp {
 
   // Generate an error message.
   std::string
-  JSONParser::yysyntax_error_ (state_type yystate, const symbol_type& yyla) const
+  JSONParser::yysyntax_error_ (state_type yystate, symbol_number_type yytoken) const
   {
+    std::string yyres;
     // Number of reported tokens (one for the "unexpected", one per
     // "expected").
     size_t yycount = 0;
@@ -1240,7 +1211,7 @@ namespace wasp {
          the only way this function was invoked is if the default action
          is an error action.  In that case, don't check for expected
          tokens because there are none.
-       - The only way there can be no lookahead present (in yyla) is
+       - The only way there can be no lookahead present (in yytoken) is
          if this state is a consistent state with a default action.
          Thus, detecting the absence of a lookahead is sufficient to
          determine that there is no unexpected or expected token to
@@ -1260,9 +1231,8 @@ namespace wasp {
          token that will not be accepted due to an error action in a
          later state.
     */
-    if (!yyla.empty ())
+    if (yytoken != yyempty_)
       {
-        int yytoken = yyla.type_get ();
         yyarg[yycount++] = yytname_[yytoken];
         int yyn = yypact_[yystate];
         if (!yy_pact_value_is_default_ (yyn))
@@ -1305,7 +1275,6 @@ namespace wasp {
 #undef YYCASE_
       }
 
-    std::string yyres;
     // Argument number.
     size_t yyi = 0;
     for (char const* yyp = yyformat; *yyp; ++yyp)
@@ -1523,8 +1492,8 @@ namespace wasp {
 
 
 } // wasp
-#line 1527 "JSONParser.cpp" // lalr1.cc:1167
-#line 369 "JSONParser.bison" // lalr1.cc:1168
+#line 1496 "JSONParser.cpp" // lalr1.cc:1155
+#line 369 "JSONParser.bison" // lalr1.cc:1156
  /*** Additional Code ***/
 
 void wasp::JSONParser::error(const JSONParser::location_type& l,

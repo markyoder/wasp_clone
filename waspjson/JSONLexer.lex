@@ -43,9 +43,9 @@ typedef wasp::JSONParser::token_type token_type;
  /*%x exclusive*/
  /*%s inclusive*/
 
-INT \-?[0-9]+([eE]\+?[0-9]+)?
+INT \-?[0-9]+
 EXPONENT [eE][\+\-]?{INT}
-DOUBLE {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
+DOUBLE {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}{EXPONENT}
 
 
 TOKEN_TRUE true
