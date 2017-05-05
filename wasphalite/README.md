@@ -426,7 +426,25 @@ Variables till accessible from parent data are x:<x>, and y:<y>, etc.
 ```
 
 #### Iterative File Import Using an Array or Ranges
-TODO complete section
+The import of files can be repeated using 2 constructs, 1) implicit iteration via use of an array, or 2) explicit iteration using repeated ranges.
+
+The implicit iteration via use of an array is syntactically identical to [import using an object](#file-import-using-an-object) :
+
+```
+#import path/to/file.tmpl using my_array
+```
+
+The explict iteration via ranges is syntactically different to disambiguate and clearly indicates intent:
+
+```
+#repeat path/to/file.tmpl using (var=start[,end[,stride]];)+
+```
+Notice the statement starts with `#repeat`. The range (`var`) can be specified, semicolon ';' delimited to produce embedded loops.
+
+```
+#repeat path/to/file.tmpl using i=1,5; j=2,6,2;
+```
+The above will loop `j`=2,4,6 for `i`=1 through 5. The variables `i` and `j` are available in the imported template.
 
 
 ## Conditional Action Blocks
