@@ -21,7 +21,7 @@ using namespace wasp;
 /**
  * @brief TEST simple json object data with mix of standard
  */
-TEST( JSON, DISABLED_simple_object )
+TEST( JSON, simple_object )
 {
     std::stringstream input;
     input<< R"INPUT({
@@ -37,22 +37,15 @@ TEST( JSON, DISABLED_simple_object )
  "array_mixed" : [{}, [], 1, 1.004, true, false, null ]
 })INPUT";
     std::shared_ptr<DataObject> json_ptr;
-
+    {
     JSONObjectParser generator(json_ptr,input,std::cerr,nullptr);
     ASSERT_EQ(0, generator.parse() );
-
+    }
+    ASSERT_TRUE( json_ptr != nullptr );
     DataObject& json = *(json_ptr.get());
-//    for( auto itr = json.begin(); itr != json.end(); itr++)
-//    {
-//        wasp_tagged_line(itr->first<<" tpyed "<<itr->second.type()
-//                         <<" - "<<(itr->second.is_primitive() ?
-//                                       itr->second.to_string()
-//                                     : "is complex"));
-//        if( itr->second.is_int() ) wasp_tagged_line("integer = "
-//                                                        <<json[itr->first].to_int()
-//                <<" vs "<<itr->second.to_int());
-//    }
+
     ASSERT_EQ(10, json.size());
+
     ASSERT_EQ(1,json["key_int"].to_int());
     ASSERT_EQ(1.03,json["key_double"].to_double());
     ASSERT_EQ("value1",json["key_string"].to_string());

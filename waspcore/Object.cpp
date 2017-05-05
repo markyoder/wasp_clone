@@ -21,8 +21,6 @@ Value::Value(Value && orig)
 , m_data( orig.m_data )
 , m_type( orig.m_type )
 {
-    wasp_tagged_line("move constructor type is "<<m_type
-                     <<" allocated "<<std::boolalpha<<m_allocated);
     orig.m_allocated = false;
     orig.m_type = TYPE_NULL;
 }
@@ -92,8 +90,7 @@ void Value::copy_from(const Value &orig)
 Value::Type Value::type()const{return m_type;}
 
 Value& Value::operator=(const Value& orig)
-{
-    wasp_tagged_line("operator= copy...");
+{    
     // release any allocated memory
     nullify();
     // copy from the originator
@@ -107,11 +104,10 @@ Value& Value::operator=(Value&& orig)
     m_allocated = orig.m_allocated;
     m_data = orig.m_data;
     m_type = orig.m_type;
-    wasp_tagged_line("assignment move...type="<<m_type
-                     <<" allocated? "<<std::boolalpha<<m_allocated);
 
     orig.m_allocated = false;
     orig.m_type = TYPE_NULL;
+
     return *this;
 }
 Value& Value::operator=(bool v)
@@ -531,7 +527,6 @@ bool DataArray::format_json(std::ostream & out, int indent_level, int level)cons
         return true;
     }
     out<<"["<<std::endl;
-    wasp_tagged_line("aindent = "<<indent_level*(level+1)<<" level "<<level);
     std::string indent = std::string(indent_level*(level+1),' ');
     out<<indent;
     at(0).format_json(out,indent_level,level);
@@ -586,9 +581,6 @@ bool DataObject::empty()const
 Value& DataObject::operator [](const std::string & name)
 {
     // since c++11 std::map<>[] does insertion if key doesn't exist
-    wasp_tagged_line("requesting "<<name<<" = "
-                     <<(m_data[name].is_primitive()?m_data[name].to_string()
-                                                  :"complex type"));
     return m_data[name];
 }
 Value DataObject::operator [](const std::string & name)const
@@ -597,12 +589,8 @@ Value DataObject::operator [](const std::string & name)const
 
     if( itr == m_data.end() )
     {
-        wasp_tagged_line("requesting "<<name<<" no beuno");
         return Value(); // null value
     }
-    wasp_tagged_line("requesting "<<name<<" = "
-                     <<(itr->second.is_primitive()?itr->second.to_string()
-                                                  :"complex type"));
     return itr->second;
 }
 bool DataObject::format_json(std::ostream & out, int indent_level, int level)const
@@ -614,8 +602,7 @@ bool DataObject::format_json(std::ostream & out, int indent_level, int level)con
         return true;
     }
 
-    out<<"{"<<std::endl;
-    wasp_tagged_line("oindent = "<<indent_level*(level+1)<<" level "<<level);
+    out<<"{"<<std::endl;    
     std::string indent = std::string(indent_level*(level+1),' ');
     out<<indent;
     auto itr = begin();

@@ -753,7 +753,7 @@ namespace wasp {
   case 7:
 #line 130 "JSONObjectParser.bison" // lalr1.cc:859
     {
-            (yylhs.value.value) = new Value(*(yystack_[0].value.string));
+            (yylhs.value.value) = new Value(wasp::strip_quotes(*(yystack_[0].value.string)));
             delete (yystack_[0].value.string);
         }
 #line 760 "JSONObjectParser.cpp" // lalr1.cc:859
@@ -799,7 +799,7 @@ namespace wasp {
         {
             // move resources
             (*array)[i] = std::move(*(yystack_[1].value.values)->at(i));
-//            delete $2->at(i); // deallocate empty Value
+            delete (yystack_[1].value.values)->at(i); // deallocate empty Value
         }
         delete (yystack_[1].value.values);
         (yylhs.value.value)->assign(array);
@@ -846,130 +846,122 @@ namespace wasp {
         for( size_t i = 0; i < (yystack_[1].value.keyed_values)->size();++i)
         {
             // move resources
-            wasp_tagged_line((yystack_[1].value.keyed_values)->at(i).first);
             (*object)[(yystack_[1].value.keyed_values)->at(i).first] = std::move(*(yystack_[1].value.keyed_values)->at(i).second);
             delete (yystack_[1].value.keyed_values)->at(i).second; // deallocate empty Value
-            if( (*object)[(yystack_[1].value.keyed_values)->at(i).first].is_primitive() )
-            {
-                wasp_tagged_line((yystack_[1].value.keyed_values)->at(i).first<<" = "
-                                 <<(*object)[(yystack_[1].value.keyed_values)->at(i).first].to_string());
-            }
         }
         delete (yystack_[1].value.keyed_values);
 
     }
-#line 862 "JSONObjectParser.cpp" // lalr1.cc:859
+#line 856 "JSONObjectParser.cpp" // lalr1.cc:859
     break;
 
   case 17:
-#line 210 "JSONObjectParser.bison" // lalr1.cc:859
+#line 204 "JSONObjectParser.bison" // lalr1.cc:859
     {
             (yylhs.value.values) = new std::vector<Value*>();
             (yylhs.value.values)->push_back((yystack_[0].value.value));
         }
-#line 871 "JSONObjectParser.cpp" // lalr1.cc:859
+#line 865 "JSONObjectParser.cpp" // lalr1.cc:859
     break;
 
   case 18:
-#line 215 "JSONObjectParser.bison" // lalr1.cc:859
+#line 209 "JSONObjectParser.bison" // lalr1.cc:859
     {
             (yylhs.value.values) = (yystack_[2].value.values);
             (yylhs.value.values)->push_back((yystack_[0].value.value));
         }
-#line 880 "JSONObjectParser.cpp" // lalr1.cc:859
+#line 874 "JSONObjectParser.cpp" // lalr1.cc:859
     break;
 
   case 19:
-#line 220 "JSONObjectParser.bison" // lalr1.cc:859
+#line 214 "JSONObjectParser.bison" // lalr1.cc:859
     {
             (yylhs.value.values) = new std::vector<Value*>();
             (yylhs.value.values)->push_back((yystack_[0].value.value));
         }
-#line 889 "JSONObjectParser.cpp" // lalr1.cc:859
+#line 883 "JSONObjectParser.cpp" // lalr1.cc:859
     break;
 
   case 20:
-#line 225 "JSONObjectParser.bison" // lalr1.cc:859
+#line 219 "JSONObjectParser.bison" // lalr1.cc:859
     {
            (yylhs.value.values) = (yystack_[2].value.values);
            (yylhs.value.values)->push_back((yystack_[0].value.value));
         }
-#line 898 "JSONObjectParser.cpp" // lalr1.cc:859
+#line 892 "JSONObjectParser.cpp" // lalr1.cc:859
     break;
 
   case 21:
-#line 230 "JSONObjectParser.bison" // lalr1.cc:859
+#line 224 "JSONObjectParser.bison" // lalr1.cc:859
     {
             (yylhs.value.values) = new std::vector<Value*>();
             (yylhs.value.values)->push_back((yystack_[0].value.value));
         }
-#line 907 "JSONObjectParser.cpp" // lalr1.cc:859
+#line 901 "JSONObjectParser.cpp" // lalr1.cc:859
     break;
 
   case 22:
-#line 235 "JSONObjectParser.bison" // lalr1.cc:859
+#line 229 "JSONObjectParser.bison" // lalr1.cc:859
     {
             (yylhs.value.values) = (yystack_[2].value.values);
             (yylhs.value.values)->push_back((yystack_[0].value.value));
         }
-#line 916 "JSONObjectParser.cpp" // lalr1.cc:859
+#line 910 "JSONObjectParser.cpp" // lalr1.cc:859
     break;
 
   case 23:
-#line 240 "JSONObjectParser.bison" // lalr1.cc:859
+#line 234 "JSONObjectParser.bison" // lalr1.cc:859
     {
             (yylhs.value.keyed_values) = new std::vector<std::pair<std::string,Value*>>();
-            (yylhs.value.keyed_values)->push_back(std::make_pair(*(yystack_[2].value.string),(yystack_[0].value.value)));
-            wasp_tagged_line((yylhs.value.keyed_values)->back().first<<" = "
-                             <<(yylhs.value.keyed_values)->back().second->to_string());
+            (yylhs.value.keyed_values)->push_back(std::make_pair(wasp::strip_quotes(*(yystack_[2].value.string)),(yystack_[0].value.value)));
             delete (yystack_[2].value.string);
         }
-#line 928 "JSONObjectParser.cpp" // lalr1.cc:859
+#line 920 "JSONObjectParser.cpp" // lalr1.cc:859
     break;
 
   case 24:
-#line 247 "JSONObjectParser.bison" // lalr1.cc:859
+#line 239 "JSONObjectParser.bison" // lalr1.cc:859
     {
             (yylhs.value.keyed_values) = new std::vector<std::pair<std::string,Value*>>();
-            (yylhs.value.keyed_values)->push_back(std::make_pair(*(yystack_[2].value.string),(yystack_[0].value.value)));
+            (yylhs.value.keyed_values)->push_back(std::make_pair(wasp::strip_quotes(*(yystack_[2].value.string)),(yystack_[0].value.value)));
             delete (yystack_[2].value.string);
         }
-#line 938 "JSONObjectParser.cpp" // lalr1.cc:859
+#line 930 "JSONObjectParser.cpp" // lalr1.cc:859
     break;
 
   case 25:
-#line 252 "JSONObjectParser.bison" // lalr1.cc:859
+#line 244 "JSONObjectParser.bison" // lalr1.cc:859
     {
             (yylhs.value.keyed_values) = new std::vector<std::pair<std::string,Value*>>();
-            (yylhs.value.keyed_values)->push_back(std::make_pair(*(yystack_[2].value.string),(yystack_[0].value.value)));
+            (yylhs.value.keyed_values)->push_back(std::make_pair(wasp::strip_quotes(*(yystack_[2].value.string)),(yystack_[0].value.value)));
             delete (yystack_[2].value.string);
         }
-#line 948 "JSONObjectParser.cpp" // lalr1.cc:859
+#line 940 "JSONObjectParser.cpp" // lalr1.cc:859
     break;
 
   case 27:
-#line 259 "JSONObjectParser.bison" // lalr1.cc:859
+#line 251 "JSONObjectParser.bison" // lalr1.cc:859
     {
             (yylhs.value.keyed_values) = (yystack_[2].value.keyed_values);
             (yylhs.value.keyed_values)->push_back((yystack_[0].value.keyed_values)->front());
             delete (yystack_[0].value.keyed_values);
         }
-#line 958 "JSONObjectParser.cpp" // lalr1.cc:859
+#line 950 "JSONObjectParser.cpp" // lalr1.cc:859
     break;
 
   case 29:
-#line 265 "JSONObjectParser.bison" // lalr1.cc:859
+#line 257 "JSONObjectParser.bison" // lalr1.cc:859
     {
             wasp_check( (yystack_[0].value.value)->is_object() );
             root.reset((yystack_[0].value.value)->to_object());
             (yystack_[0].value.value)->assign((DataObject*)nullptr);
             delete (yystack_[0].value.value);
         }
-#line 969 "JSONObjectParser.cpp" // lalr1.cc:859
+#line 961 "JSONObjectParser.cpp" // lalr1.cc:859
     break;
 
 
-#line 973 "JSONObjectParser.cpp" // lalr1.cc:859
+#line 965 "JSONObjectParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1322,8 +1314,8 @@ namespace wasp {
   JSONObjectParser::yyrline_[] =
   {
        0,   113,   113,   117,   120,   123,   126,   129,   134,   138,
-     142,   148,   156,   170,   174,   180,   188,   209,   214,   219,
-     224,   229,   234,   239,   246,   251,   257,   258,   264,   265
+     142,   148,   156,   170,   174,   180,   188,   203,   208,   213,
+     218,   223,   228,   233,   238,   243,   249,   250,   256,   257
   };
 
   // Print the state stack on the debug stream.
@@ -1405,8 +1397,8 @@ namespace wasp {
 
 
 } // wasp
-#line 1409 "JSONObjectParser.cpp" // lalr1.cc:1167
-#line 274 "JSONObjectParser.bison" // lalr1.cc:1168
+#line 1401 "JSONObjectParser.cpp" // lalr1.cc:1167
+#line 266 "JSONObjectParser.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 
 void wasp::JSONObjectParser::error(const JSONObjectParser::location_type& l,

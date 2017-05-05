@@ -128,7 +128,7 @@ primitive : TOKEN_NULL
             $$ = new Value($1);
         }| QSTRING
         {
-            $$ = new Value(*$1);
+            $$ = new Value(wasp::strip_quotes(*$1));
             delete $1;
         }
 decl : QSTRING
@@ -162,7 +162,7 @@ array :
         {
             // move resources
             (*array)[i] = std::move(*$2->at(i));
-//            delete $2->at(i); // deallocate empty Value
+            delete $2->at(i); // deallocate empty Value
         }
         delete $2;
         $$->assign(array);
@@ -193,7 +193,6 @@ object : '{' '}'
         for( size_t i = 0; i < $2->size();++i)
         {
             // move resources
-            wasp_tagged_line($2->at(i).first);
             (*object)[$2->at(i).first] = std::move(*$2->at(i).second);
             delete $2->at(i).second; // deallocate empty Value
         }
@@ -234,19 +233,17 @@ array_members :object
 keyed_member : decl ':' primitive
         {
             $$ = new std::vector<std::pair<std::string,Value*>>();
-            $$->push_back(std::make_pair(*$1,$3));
-            wasp_tagged_line($$->back().first<<" = "
-                             <<$$->back().second->to_string());
+            $$->push_back(std::make_pair(wasp::strip_quotes(*$1),$3));
             delete $1;
         }|decl ':' array
         {
             $$ = new std::vector<std::pair<std::string,Value*>>();
-            $$->push_back(std::make_pair(*$1,$3));
+            $$->push_back(std::make_pair(wasp::strip_quotes(*$1),$3));
             delete $1;
         }|decl ':' object
         {
             $$ = new std::vector<std::pair<std::string,Value*>>();
-            $$->push_back(std::make_pair(*$1,$3));
+            $$->push_back(std::make_pair(wasp::strip_quotes(*$1),$3));
             delete $1;
         }
 object_members : keyed_member
