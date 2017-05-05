@@ -1,4 +1,4 @@
-flex -Ca -v SONLexer.lex
+flex -Caf -v SONLexer.lex
 sed -i '' 's/#include <FlexLexer.h>/#include \"waspcore\/FlexLexer.h\"/' SONLexer.cpp 
 bison --version
 bison SONParser.bison --report=state --report=lookahead --report=solved  -g
