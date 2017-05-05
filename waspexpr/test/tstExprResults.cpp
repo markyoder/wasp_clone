@@ -291,28 +291,54 @@ TEST(ExprInterpreter, vector_real_variables)
 }
 TEST(ExprInterpreter, default_variables)
 {
-    std::vector<ScalarExprTest<double>> tests={
-        {"pi",3.14159265359},
-        {"e",2.718281828459}
-    };
-    ASSERT_FALSE( tests.empty() );
-    for( auto & t : tests )
     {
-        SCOPED_TRACE( t.tst );
-        std::stringstream input;
-        input <<t.tst;
-        ExprInterpreter<> interpreter;
-        Context context;
-        context.add_default_variables();
-        ASSERT_TRUE(interpreter.parse(input) );
+        std::vector<ScalarExprTest<double>> tests={
+            {"pi",3.14159265359},
+            {"e",2.718281828459}
+        };
+        ASSERT_FALSE( tests.empty() );
+        for( auto & t : tests )
+        {
+            SCOPED_TRACE( t.tst );
+            std::stringstream input;
+            input <<t.tst;
+            ExprInterpreter<> interpreter;
+            Context context;
+            context.add_default_variables();
+            ASSERT_TRUE(interpreter.parse(input) );
 
-        auto result = interpreter.evaluate(context);
-        ASSERT_FALSE(result.is_integer());
-        ASSERT_TRUE(result.is_number());
-        ASSERT_TRUE(result.is_real());
-        ASSERT_FALSE(result.is_string());
-        ASSERT_FALSE(result.is_bool());
-        ASSERT_NEAR(t.expected, result.real(),1e-8);
+            auto result = interpreter.evaluate(context);
+            ASSERT_FALSE(result.is_integer());
+            ASSERT_TRUE(result.is_number());
+            ASSERT_TRUE(result.is_real());
+            ASSERT_FALSE(result.is_string());
+            ASSERT_FALSE(result.is_bool());
+            ASSERT_NEAR(t.expected, result.real(),1e-8);
+        }
+    }
+    {
+        std::vector<ScalarExprTest<std::string>> tests={
+            {"nl","\n"}
+        };
+        ASSERT_FALSE( tests.empty() );
+        for( auto & t : tests )
+        {
+            SCOPED_TRACE( t.tst );
+            std::stringstream input;
+            input <<t.tst;
+            ExprInterpreter<> interpreter;
+            Context context;
+            context.add_default_variables();
+            ASSERT_TRUE(interpreter.parse(input) );
+
+            auto result = interpreter.evaluate(context);
+            ASSERT_FALSE(result.is_integer());
+            ASSERT_FALSE(result.is_number());
+            ASSERT_FALSE(result.is_real());
+            ASSERT_TRUE(result.is_string());
+            ASSERT_FALSE(result.is_bool());
+            ASSERT_EQ(t.expected, result.string());
+        }
     }
 }
 TEST(ExprInterpreter, default_real_functions)
@@ -953,6 +979,7 @@ TEST(ExprInterpreter, format_statements)
 {
     std::vector<VariableExprTest<double,std::string,bool>> tests={
            {"fmt(x,     '%3.2f')",3.14159,    "3.14",                 true},
+           {"fmt('x',   '%3.2f')",3.14159,    "3.14",                 true},
            {"fmt(x,     '%5.4f')",1.123456789,"1.1235",               true},
            {"fmt(pi,    '%6.11f')",0,         "3.14159265359",        true},
            {"fmt(pi,    '%6.5f')",0,          "3.14159",              true},

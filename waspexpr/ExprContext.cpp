@@ -47,7 +47,7 @@ bool Result::format(std::ostream & out, const std::string& fmt
     else if( is_string() || is_error())
     {
         result = wasp::Format::fmt(out,err
-                                   ,fmt.c_str(), string());        
+                                   ,fmt.c_str(), string());
     }
     else{
         result = false;
@@ -67,6 +67,7 @@ Context::add_default_variables()
 {
     store("e",2.7182818284590452353602874713527);
     store("pi",3.14159265359);
+    store("nl", "\n");
     return *this;
 }
 

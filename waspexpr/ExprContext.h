@@ -167,6 +167,9 @@ public:
    virtual bool store( const std::string & name, const double& v ){
        return store_ref<VarReal>(name,v);
    }
+   virtual bool store( const std::string & name, const char* v ){
+       return store_ref<VarString>(name,v);
+   }
    virtual bool store( const std::string & name, const std::string& v ){
        return store_ref<VarString>(name,v);
    }

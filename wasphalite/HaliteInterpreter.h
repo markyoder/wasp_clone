@@ -24,11 +24,15 @@ namespace wasp {
      * @param alog the stream to report expansion activity on
      * @param template_file the template file to expand
      * @param json_parameter_file the optional data to to drive expansion
+     * @param defaultVars include default variables (e, pi, nl,...)
+     * @param defaultFuncs include default functions (sin, cos, tang,...)
      * @return true, iff the template expansion functions
      */
     bool expand_template(std::ostream& result, std::ostream& elog, std::ostream& alog
                          , const std::string & template_file
-                         , const std::string & json_parameter_file = "");
+                         , const std::string & json_parameter_file = ""
+            , bool defaultVars = false
+            , bool defaultFuncs = false);
 
     template<class S = TreeNodePool<unsigned short, unsigned short
                                     ,TokenPool<unsigned short,unsigned short, unsigned short>> >
@@ -145,7 +149,7 @@ namespace wasp {
          * @param out the stream to emit the attribute substitution result
          * @param line the line on which the substitution is taking place
          * @param column the column at which the substitution is starting, will be updated
-         * @return true, iff no errors occurred during the substitution/printing of the attribute         
+         * @return true, iff no errors occurred during the substitution/printing of the attribute
          */
         bool print_attribute(DataAccessor & data
                              ,const TreeNodeView<S> & attr_view
@@ -293,7 +297,7 @@ namespace wasp {
          */
         bool import_file(DataAccessor & data
                          ,const TreeNodeView<S> & import_view
-                         ,std::ostream& out, size_t& line, size_t & column);        
+                         ,std::ostream& out, size_t& line, size_t & column);
         bool repeat_file(DataAccessor & data
                          ,const TreeNodeView<S> & import_view
                          ,std::ostream& out, size_t& line, size_t & column);
@@ -357,7 +361,7 @@ namespace wasp {
         std::string m_attribute_options_delim;
 
         size_t m_current_line_count;
-        size_t m_file_offset;        
+        size_t m_file_offset;
 
     private: // private methods
 
@@ -370,7 +374,9 @@ namespace wasp {
 
     inline bool expand_template(std::ostream &result, std::ostream &elog
                          , std::ostream &alog, const std::string &template_file
-                         , const std::string &json_parameter_file)
+                         , const std::string &json_parameter_file
+                                , bool defaultVars
+                                , bool defaultFuncs)
     {
         HaliteInterpreter<TreeNodePool<unsigned int, unsigned int
                 ,TokenPool<unsigned int,unsigned int, unsigned int>>> halite(elog);
@@ -385,6 +391,8 @@ namespace wasp {
         {
             DataObject o;
             DataAccessor data(&o);
+            if(defaultVars) data.add_default_variables();
+            if(defaultFuncs) data.add_default_functions();
             bool emitted = halite.evaluate(result,data,&alog);
 
             if( !emitted )
@@ -408,8 +416,10 @@ namespace wasp {
             elog<<"***Error : Parsing of data "<<json_parameter_file<<" failed!"<<std::endl;
             return false;
         }
-
         DataAccessor data(obj_ptr.get());
+        if(defaultVars) data.add_default_variables();
+        if(defaultFuncs) data.add_default_functions();
+
         bool emitted = halite.evaluate(result,data,&alog);
 
         if( !emitted )
