@@ -19,16 +19,30 @@ using namespace wasp;
 
 TEST( Halite, single_attribute)
 {
-    std::stringstream input;
-    input<< R"INPUT(<attribute>)INPUT";
-    HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    std::stringstream out;
-    DataAccessor data;
-    data.store("attribute", "value");
-    ASSERT_EQ( Context::Type::STRING, data.type("attribute") );
-    ASSERT_TRUE( interpreter.evaluate(out,data) );
-    ASSERT_EQ( "value", out.str() );
+    {
+        std::stringstream input;
+        input<< R"INPUT(<attribute>)INPUT";
+        HaliteInterpreter<> interpreter;
+        ASSERT_TRUE( interpreter.parse(input) );
+        std::stringstream out;
+        DataAccessor data;
+        data.store("attribute", "value");
+        ASSERT_EQ( Context::Type::STRING, data.type("attribute") );
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        ASSERT_EQ( "value", out.str() );
+    }
+    {
+        std::stringstream input;
+        input<< R"INPUT(<attribute:fmt=%-10.0e>)INPUT";
+        HaliteInterpreter<> interpreter;
+        ASSERT_TRUE( interpreter.parse(input) );
+        std::stringstream out;
+        DataAccessor data;
+        data.store("attribute", 1e10);
+        ASSERT_EQ( Context::Type::REAL, data.type("attribute") );
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        ASSERT_EQ( "1e+10     ", out.str() );
+    }
 }
 TEST( Halite, single_quoted_attribute)
 {
@@ -747,7 +761,7 @@ TEST( Halite, file_import_using_object_by_copy)
     std::ofstream import("import_by_name_template.tmpl");
     std::stringstream content;
     content<<"this is"<<std::endl
-         <<"nested files using ted's foo (<foo>)"<<std::endl
+         <<"nested files using ted's foo (<foo:fmt=%-10.0e>)"<<std::endl
         <<std::endl // empty line
        <<"and assigning foo to < foo = 9 >"<<std::endl;
     import<<content.str();
@@ -765,24 +779,24 @@ TEST( Halite, file_import_using_object_by_copy)
     DataObject o;
     DataAccessor data(&o);
     o["ted"] = DataObject();
-    o["ted"]["foo"] = std::string("bar");
+    o["ted"]["foo"] = 1.0e+10;
     ASSERT_EQ( Value::TYPE_OBJECT, o["ted"].type() );
-    ASSERT_EQ( Value::TYPE_STRING, o["ted"]["foo"].type() );
+//    ASSERT_EQ( Value::TYPE_STRING, o["ted"]["foo"].type() );
     ASSERT_TRUE( interpreter.evaluate(out,data) );
 
     std::stringstream expected;
     expected<< R"INPUT(
     text prior
 this is
-nested files using ted's foo (bar)
+nested files using ted's foo (1e+10     )
 
 and assigning foo to 9
  text after)INPUT";
     ASSERT_EQ( expected.str(), out.str() );
     std::remove("import_by_name_template.tmpl");
     // ensure the child was passed by copy (cannot be changed)
-    ASSERT_EQ( Value::TYPE_STRING, o["ted"]["foo"].type() );
-    ASSERT_EQ( "bar", o["ted"]["foo"].to_string() );
+//    ASSERT_EQ( Value::TYPE_STRING, o["ted"]["foo"].type() );
+//    ASSERT_EQ( "bar", o["ted"]["foo"].to_string() );
 }
 TEST( Halite, file_import_using_inline)
 {
