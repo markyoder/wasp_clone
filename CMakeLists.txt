@@ -3,6 +3,26 @@
 #             WASP   TriBITS Project and Package CMakeLists.txt File           #
 #             Workbench Analysis Sequence Processor                            #
 ################################################################################
+IF(NOT DEFINED WASP_DEBUG_OUTPUT)
+   SET(WASP_DEBUG_OUTPUT 0 CACHE STRING "Display debug output.")
+ENDIF()
+IF(WASP_DEBUG_OUTPUT)
+   ADD_DEFINITIONS("-DWASP_DEBUG_OUTPUT=${WASP_DEBUG_OUTPUT}")
+ENDIF()
+
+IF(NOT DEFINED WASP_TIMING)
+   SET(WASP_TIMING 0 CACHE STRING "Timing setting.")
+ENDIF()
+IF(WASP_TIMING)
+   ADD_DEFINITIONS("-DWASP_TIMING=${WASP_TIMING}")
+ENDIF()
+
+IF(NOT DEFINED WASP_DBC)
+   SET(WASP_DBC 0 CACHE STRING "DBC setting.")
+ENDIF()
+IF(WASP_DBC)
+   ADD_DEFINITIONS("-DWASP_DBC=${WASP_DBC}")
+ENDIF()
 
 IF (NOT TRIBITS_PROCESSING_PACKAGE)
   # This CMakeLists.txt file is being processed as the wasp TriBITS projects's base
@@ -27,26 +47,6 @@ IF (NOT TRIBITS_PROCESSING_PACKAGE)
   # default MPI support off
   IF(NOT TPL_ENABLE_MPI)
     SET(TPL_ENABLE_MPI OFF CACHE BOOL "Enable MPI support")
-  ENDIF()
-  IF(NOT DEFINED WASP_DEBUG_OUTPUT)
-     SET(WASP_DEBUG_OUTPUT 0 CACHE STRING "Display debug output.")
-  ENDIF()
-  IF(WASP_DEBUG_OUTPUT)
-     ADD_DEFINITIONS("-DWASP_DEBUG_OUTPUT=${WASP_DEBUG_OUTPUT}")
-  ENDIF()
-
-  IF(NOT DEFINED WASP_TIMING)
-     SET(WASP_TIMING 0 CACHE STRING "Timing setting.")
-  ENDIF()
-  IF(WASP_TIMING)
-     ADD_DEFINITIONS("-DWASP_TIMING=${WASP_TIMING}")
-  ENDIF()
-
-  IF(NOT DEFINED WASP_DBC)
-     SET(WASP_DBC 0 CACHE STRING "DBC setting.")
-  ENDIF()
-  IF(WASP_DBC)
-     ADD_DEFINITIONS("-DWASP_DBC=${WASP_DBC}")
   ENDIF()
 
   TRIBITS_PROJECT_ENABLE_ALL()
