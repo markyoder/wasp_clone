@@ -953,6 +953,7 @@ TEST(ExprInterpreter, format_statements)
 {
     std::vector<VariableExprTest<double,std::string,bool>> tests={
            {"fmt(x,     '%3.2f')",3.14159,    "3.14",                 true},
+           {"fmt('x',   '%3.2f')",3.14159,    "3.14",                 true},
            {"fmt(x,     '%5.4f')",1.123456789,"1.1235",               true},
            {"fmt(pi,    '%6.11f')",0,         "3.14159265359",        true},
            {"fmt(pi,    '%6.5f')",0,          "3.14159",              true},
