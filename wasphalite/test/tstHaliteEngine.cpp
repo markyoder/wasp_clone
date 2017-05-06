@@ -405,8 +405,7 @@ TEST( Halite, array_access )
 <bool[0]> <bool[1]>
 
 <mixed[0]> <mixed[1]> <mixed[2]:fmt=%.6f> <mixed[3]>
-<mixed[i]:i=0,<size(mixed)-1>>
-)INPUT";
+<mixed[i]:i=0,<size(mixed)-1>>)INPUT";
     std::stringstream expected;
     expected<< R"INPUT( 1 "ted" fed
 10 20
@@ -724,8 +723,7 @@ TEST( Halite, file_import_using_object_by_name)
     input<< R"INPUT(
     text prior
 #import ./import_by_name_template.tmpl using ted
- text after
-)INPUT";
+ text after)INPUT";
     HaliteInterpreter<> interpreter;
 
     ASSERT_TRUE( interpreter.parse(input) );
@@ -763,7 +761,7 @@ TEST( Halite, file_import_using_object_by_copy)
     content<<"this is"<<std::endl
          <<"nested files using ted's foo (<foo:fmt=%-10.0e>)"<<std::endl
         <<std::endl // empty line
-       <<"and assigning foo to < foo = 9 >"<<std::endl;
+       <<"and assigning foo to < foo = 9 >";
     import<<content.str();
     import.close();
     std::stringstream input;
@@ -806,7 +804,7 @@ TEST( Halite, file_import_using_inline)
     content<<"this is"<<std::endl
          <<"nested files using ted's foo (<foo>)"<<std::endl
         <<std::endl // empty line
-       <<"and assigning foo to < foo = 9 >"<<std::endl;
+       <<"and assigning foo to < foo = 9 >";
     import<<content.str();
     import.close();
     std::stringstream input;
@@ -814,6 +812,7 @@ TEST( Halite, file_import_using_inline)
     text prior
 #import ./import_by_name_inline.tmpl using {"foo":"bar"}
  text after
+
 )INPUT";
     HaliteInterpreter<> interpreter;
 
@@ -830,7 +829,8 @@ this is
 nested files using ted's foo (bar)
 
 and assigning foo to 9
- text after)INPUT";
+ text after
+)INPUT";
     ASSERT_EQ( expected.str(), out.str() );
     std::remove("import_by_name_inline.tmpl");
     // ensure the variable is not present
@@ -844,7 +844,7 @@ TEST( Halite, file_import_using_array_by_name)
     content<<"nested template"<<std::endl
          <<"using parameter <name>"<<std::endl
         <<"with value <value>"<<std::endl
-       <<"and assigning value its own name <value=name>"<<std::endl;
+       <<"and assigning value its own name <value=name>";
     import<<content.str();
     import.close();
     std::stringstream input;
@@ -901,12 +901,12 @@ TEST( Halite, parent_scope_var_use_in_fileimport)
 
     std::ofstream import("parent_scope_var_use.tmpl");
     std::stringstream content;
-    content << "<'var name':use=pobj>" << std::endl;
+    content << "<'var name':use=pobj>";
     import << content.str();
     import.close();
     std::stringstream input;
     input << "<'var name':use=pobj;fmt=%4d>" << std::endl;
-    input << "#import ./parent_scope_var_use.tmpl using p2obj" << std::endl;
+    input << "#import ./parent_scope_var_use.tmpl using p2obj";
 
     HaliteInterpreter<> interpreter;
 
@@ -999,6 +999,7 @@ text
 
 3.14159 is defined as pi math constant
 
+
 )INPUT";
         std::stringstream out;
         DataObject o;
@@ -1014,6 +1015,7 @@ text
 
 
 text
+
 
 
 )INPUT";
@@ -1042,8 +1044,7 @@ text
 #endif
 
 
-#endif
-)INPUT";
+#endif)INPUT";
 
     HaliteInterpreter<> interpreter;
     ASSERT_TRUE( interpreter.parse(input) );
@@ -1126,6 +1127,70 @@ x and y are not defined
             )INPUT";
         std::stringstream out;
         DataObject o;
+        DataAccessor data(&o);
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        ASSERT_EQ( expected.str(), out.str() );
+    }
+}
+
+/**
+ * @brief TEST issue discovered by Jordan Lefebvre
+ */
+TEST( Halite, simple_if_issue_52)
+{
+    std::stringstream input;
+    input<< R"INPUT(#if <var==1>
+action1
+#endif
+#if <var==2>
+action2
+#endif
+#if <var==3>
+action3
+#endif
+)INPUT";
+
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    { // test undefined path through template
+        std::stringstream expected;
+        expected<< R"INPUT()INPUT";
+        std::stringstream out;
+        DataObject o;
+        o["var"] = 0;
+        DataAccessor data(&o);
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        ASSERT_EQ( expected.str(), out.str() );
+    }
+    { // test defined path action1 through template
+        std::stringstream expected;
+        expected<< R"INPUT(action1
+)INPUT";
+        std::stringstream out;
+        DataObject o;
+        o["var"] = 1;
+        DataAccessor data(&o);
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        ASSERT_EQ( expected.str(), out.str() );
+    }
+    { // test defined path action2 through template
+        std::stringstream expected;
+        expected<< R"INPUT(action2
+)INPUT";
+        std::stringstream out;
+        DataObject o;
+        o["var"] = 2;
+        DataAccessor data(&o);
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        ASSERT_EQ( expected.str(), out.str() );
+    }
+    { // test defined path actoin3 through template
+        std::stringstream expected;
+        expected<< R"INPUT(action3
+)INPUT";
+        std::stringstream out;
+        DataObject o;
+        o["var"] = 3;
         DataAccessor data(&o);
         ASSERT_TRUE( interpreter.evaluate(out,data) );
         ASSERT_EQ( expected.str(), out.str() );

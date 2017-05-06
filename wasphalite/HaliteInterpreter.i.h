@@ -78,9 +78,11 @@ bool HaliteInterpreter<S>::parse_content(std::istream& in)
 {
 
     // process all lines of the file
-    for(std::string line; std::getline(in,line); )
+    while( !in.eof() && in.good() )
     {
-        ++m_current_line_count;
+        std::string line;
+        std::getline(in,line);
+        if( !in.eof() ) ++m_current_line_count;
         bool line_processed = parse_line(line);
 
         if( line_processed == false ) return false;
@@ -93,6 +95,13 @@ bool HaliteInterpreter<S>::parse_content(std::istream& in)
                 <<Interpreter<S>::stream_name()
                << " - error while reading"<<std::endl;
         return false;
+    }
+    // should always have 1 line
+    // but need to try and track lines with no newline
+    if( m_current_line_count == 0 )
+    {
+        wasp_tagged_line("needing newline for "<<Interpreter<S>::stream_name());
+        m_current_line_count =1;
     }
     return true;
 }
@@ -488,7 +497,26 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
     auto tree_view = Interpreter<S>::root();
     size_t line = 1, column = 1;
 
-    return evaluate(data,tree_view,out,line,column);
+    bool result = evaluate(data,tree_view,out,line,column);
+
+    int remaining_lines = m_current_line_count - line;
+    size_t child_count = tree_view.child_count();
+    // account for situation
+    // where conditional concludes file, causing
+    // trailing newline to not be emitted.
+    if( child_count > 0
+            && tree_view.child_at(child_count-1).type() == PREDICATED_CHILD)
+    {
+                remaining_lines++;
+    }
+    wasp_tagged_line(remaining_lines<<" remaining lines for "<<
+                     Interpreter<S>::stream_name()
+                     <<" vs "<<m_current_line_count);
+    if( remaining_lines > 0 )
+    {
+        out<<std::string(remaining_lines, '\n');
+    }
+    return result;
 }
 
 template<class S>
@@ -926,6 +954,9 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
             break;
         }
     }
+    // capture any trailing newlines
+    // between the last text
+    // and the #endif
     if( i+1 < child_count )
     {
         wasp_check(i+1 <= action_view.child_count());
@@ -935,7 +966,10 @@ bool HaliteInterpreter<S>::conditional(DataAccessor & data
         wasp_tagged_line("conditional line delta "<<delta<<" for "<<info(action_view));
         if( delta > 0 ) out<<std::string(delta,'\n');
     }
-    line = term_view.line();
+    // if no action was evaluated (line == action line),
+    // move +1 beyond terminator
+    wasp_tagged_line("actionline vs line is "<<action_line<<" vs "<<line);
+    line = term_view.line() + (line == action_line ? 1 : 0);
     column = 1;
     return true;
 }
