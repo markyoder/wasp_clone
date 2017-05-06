@@ -41,7 +41,7 @@ void HIVE::printMessages(bool pass, vector<string>&errors,
     if (!xmloutput){
         output << endl << (file!=""?file:"N/A") << " - " << (pass?"PASS":"FAIL")  << endl;
         output << "-------------------------------------------------------------" << endl;
-        for (int i = 0; i < errors.size(); i++){
+        for (size_t i = 0; i < errors.size(); i++){
             output << errors[i] << endl;
         }
     }
@@ -51,7 +51,7 @@ void HIVE::printMessages(bool pass, vector<string>&errors,
         output <<        " pass=\"" << (pass?"true":"false") << "\"";
         output <<        " errors=\"" << errors.size();
         output << (errors.size()==0?"\"/>":"\">") << endl;
-        for (int i = 0; i < errors.size(); i++){
+        for (size_t i = 0; i < errors.size(); i++){
             std::size_t foundline;
             std::size_t foundcolumn;
             std::size_t founddash;
