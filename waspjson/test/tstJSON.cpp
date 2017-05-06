@@ -152,8 +152,8 @@ TEST( JSON, simple_object )
     ASSERT_EQ("value1",json["key_string"].to_string());
     ASSERT_EQ(1,json["key_int"].to_int());
     ASSERT_EQ(1.03,json["key_double"].to_double());
-    ASSERT_EQ(true,json["key_bool_true"].to_bool());
-    ASSERT_EQ(false,json["key_bool_false"].to_bool());
+    ASSERT_TRUE(true==json["key_bool_true"].to_bool());
+    ASSERT_TRUE(false==json["key_bool_false"].to_bool());
     ASSERT_FALSE(json["key_null"].to_bool());
     ASSERT_TRUE(json["key_null"].is_null());
 
@@ -239,7 +239,7 @@ TEST( JSON, simple_object )
     expected_json_packed<<R"INPUT({"array_empty":[],"array_mixed":[{},[],1,1.004,true,false,null],"key_bool_false":false,"key_bool_true":true,"key_double":1.03,"key_int":1,"key_null":null,"key_string":"value1","object_empty":{},"object_mixed":{"a":null,"a bc \"esca ped\" de f":[],"k":1,"o":{}}})INPUT";
     std::stringstream packed;
     json.pack_json(packed);
-    ASSERT_EQ(expected_json_packed.str(), packed.str());    
+    ASSERT_EQ(expected_json_packed.str(), packed.str());
     DataObject::SP json_copy;
     std::stringstream unpack_errors;
     ASSERT_TRUE( wasp::generate_object<JSONObjectParser>(json_copy, packed, unpack_errors) );
