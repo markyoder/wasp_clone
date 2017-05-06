@@ -79,16 +79,28 @@ namespace wasp{
                               , const std::string& data
                               , bool * ok)
     {
-        result = std::atoi(data.c_str());
-        if( ok ) *ok = true;
+        try{
+            result = std::stoi(data.c_str());
+            if( ok ) *ok = true;
+        }catch(...)
+        {
+            result = 0;
+            if( ok ) *ok = false;
+        }
     }
     template<>
     inline void to_type<double>(double& result
                               , const std::string& data
                               , bool * ok)
     {
-        result = std::atof(data.c_str());
-        if( ok ) *ok = true;
+        try{
+            result = std::stod(data.c_str());
+            if( ok ) *ok = true;
+        }catch(...)
+        {
+            result = 0.0;
+            if( ok ) *ok = false;
+        }
     }
 
     template<typename T>

@@ -18,7 +18,7 @@ using namespace std;
 using namespace wasp;
 
 
-TEST(Halite, DISABLED_range_errors)
+TEST(Halite, range_errors)
 {
     std::vector<std::string> expected_error =
     {
@@ -61,7 +61,7 @@ TEST(Halite, DISABLED_range_errors)
     }
 }
 
-TEST( Halite, DISABLED_attribute_range_errors)
+TEST( Halite, attribute_range_errors)
 {
     std::vector<std::string> ranges =
     {
