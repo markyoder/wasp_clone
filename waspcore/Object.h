@@ -35,7 +35,7 @@ private:
         char * m_string;
         class DataArray * m_array;
         class DataObject * m_object;
-    }m_data;
+    } m_data;
 public:
 
     /// null constructor

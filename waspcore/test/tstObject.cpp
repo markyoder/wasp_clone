@@ -139,7 +139,7 @@ TEST(DataObject, methods)
     DataArray * a = o["ted"]["arabic numbers"].to_array();
     ASSERT_TRUE( a != nullptr );
     ASSERT_EQ(10, a->size() );
-    for( int i = 0; i < a->size(); ++i )
+    for( size_t i = 0; i < a->size(); ++i )
     {
         SCOPED_TRACE(i);
         ASSERT_EQ(i, a->at(i).to_int());
@@ -170,7 +170,7 @@ TEST(DataObject, methods)
         DataArray * a = moved["ted"]["arabic numbers"].to_array();
         ASSERT_TRUE( a != nullptr );
         ASSERT_EQ(10, a->size() );
-        for( int i = 0; i < a->size(); ++i )
+        for( size_t i = 0; i < a->size(); ++i )
         {
             SCOPED_TRACE(i);
             ASSERT_EQ(i, a->at(i).to_int());

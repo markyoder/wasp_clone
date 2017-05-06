@@ -18,8 +18,8 @@ Value::Value(const Value& orig)
 }
 Value::Value(Value && orig)
 : m_allocated( orig.m_allocated)
-, m_data( orig.m_data )
 , m_type( orig.m_type )
+, m_data( orig.m_data )
 {
     orig.m_allocated = false;
     orig.m_type = TYPE_NULL;
@@ -90,7 +90,7 @@ void Value::copy_from(const Value &orig)
 Value::Type Value::type()const{return m_type;}
 
 Value& Value::operator=(const Value& orig)
-{    
+{
     // release any allocated memory
     nullify();
     // copy from the originator
@@ -602,7 +602,7 @@ bool DataObject::format_json(std::ostream & out, int indent_level, int level)con
         return true;
     }
 
-    out<<"{"<<std::endl;    
+    out<<"{"<<std::endl;
     std::string indent = std::string(indent_level*(level+1),' ');
     out<<indent;
     auto itr = begin();
