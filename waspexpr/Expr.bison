@@ -106,7 +106,7 @@
 //%type <node_index>  numeric_value string_value
 %type <node_index>  unquoted_string
 %type <node_index>  primitive math_exp
-%type <node_index>  keyedvalue 
+%type <node_index>  keyedvalue
 %type <node_index>  value decl
 %type <node_indices> function_args
 
@@ -436,13 +436,13 @@ integer : INTEGER
                          ,token_index);
     }
 real : REAL
-    {        
+    {
         size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::REAL,"real"
                          ,token_index);
     }
 unquoted_string : STRING
-    {        
+    {
         size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::STRING,"str"
                          ,token_index);
@@ -464,7 +464,7 @@ decl : STRING
 string : unquoted_string
 
 keyedvalue : decl assign math_exp
-    {        
+    {
 
         size_t key_index = ($1);
         size_t assign_index = ($2);
@@ -496,4 +496,4 @@ void ExprParser::error(const ExprParser::location_type& l,
 {
     interpreter.error_stream()<<"***Error : "<<l<<": "<<m<<"."<<std::endl;
 }
-}; // end of namespace
+} // end of namespace
