@@ -59,8 +59,8 @@ namespace wasp{
                  , bool * ok=nullptr)
     {
         std::stringstream str;
-        str<< data;
-        str>> result;
+        str << data;
+        str >> result;
         if( ok ) *ok = !(str.bad() || str.fail());
     }
     /**
@@ -72,6 +72,22 @@ namespace wasp{
                               , bool * ok)
     {
         result = data;
+        if( ok ) *ok = true;
+    }
+    template<>
+    inline void to_type<int>(int & result
+                              , const std::string& data
+                              , bool * ok)
+    {
+        result = std::atoi(data.c_str());
+        if( ok ) *ok = true;
+    }
+    template<>
+    inline void to_type<double>(double& result
+                              , const std::string& data
+                              , bool * ok)
+    {
+        result = std::atof(data.c_str());
         if( ok ) *ok = true;
     }
 
@@ -147,7 +163,7 @@ namespace wasp{
             return wildcard_string_match(first+1, second)
                     || wildcard_string_match(first, second+1);
         return false;
-    }   
+    }
     template<class TV>
     std::string info( const TV & view )
     {
