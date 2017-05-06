@@ -18,7 +18,7 @@ using namespace std;
 using namespace wasp;
 
 
-TEST(Halite, range_errors)
+TEST(Halite, DISABLED_range_errors)
 {
     std::vector<std::string> expected_error =
     {
@@ -61,7 +61,7 @@ TEST(Halite, range_errors)
     }
 }
 
-TEST( Halite,attribute_range_errors)
+TEST( Halite, DISABLED_attribute_range_errors)
 {
     std::vector<std::string> ranges =
     {
@@ -170,7 +170,7 @@ TEST(Halite, file_import_file_missing)
     test_template(error_test("file_import_file_missing.tmpl" // tmpl
                              ,"" // json
                              ,"file_import_file_missing.result.txt" // result
-                             ));    
+                             ));
 }
 
 TEST(Halite, unmatched_conditional_terminator)
