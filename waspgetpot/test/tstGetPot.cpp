@@ -582,7 +582,7 @@ TEST(GetPotInterpreter,simple_view)
     ASSERT_EQ( 1, document.line() );
     ASSERT_EQ( 1, document.column() );
     ASSERT_TRUE( document.equal(document) );
-    ASSERT_EQ( false, document.has_parent() );
+    ASSERT_TRUE( false == document.has_parent() );
     ASSERT_EQ( node_paths.back(), document.path() );
     auto key = document.child_at(0);
     ASSERT_EQ(3, key.child_count() );

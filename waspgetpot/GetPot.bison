@@ -374,13 +374,13 @@ integer : INTEGER
                          ,token_index);
     }
 real : REAL
-    {        
+    {
         size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::REAL,"real"
                          ,token_index);
     }
 unquoted_string : STRING
-    {        
+    {
         size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::STRING,"string"
                          ,token_index);
@@ -407,7 +407,7 @@ quote : QUOTE
     }
 string : unquoted_string
 
-primitive : integer           
+primitive : integer
            | real
            | string
 
@@ -438,7 +438,7 @@ array : quote array_members quote
 
 
 keyedvalue : decl assign value
-    {        
+    {
         size_t key_index = ($1);
         size_t assign_index = ($2);
         size_t value_index = ($3);
@@ -512,4 +512,4 @@ void GetPotParser::error(const GetPotParser::location_type& l,
 {
     interpreter.error_stream()<<l<<": "<<m;
 }
-}; // end of namespace
+} // end of namespace
