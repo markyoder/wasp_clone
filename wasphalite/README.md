@@ -38,7 +38,7 @@ Template constructs available are:
 5. Iterative Attributes - expressions which are evaluated iteratively for a specified range(s) with optional separator and format.
 6. Template imports - import a template into the existing template with optional use of data object.
 7. Iterative template imports - import a template for each element of an array via 'using' an array or repeatedly via range variables.
-8. Conditional action blocks - support pre-processor style #if/ifdef/ifndef - #elseif/else - #endif conditional blocks which will only be emitted when the appropriate condition is true.
+8. Conditional blocks - support pre-processor style #if/ifdef/ifndef - #elseif/else - #endif conditional blocks which will only be emitted when the appropriate condition is true.
 
 Each construct is evaluated and emitted into the evaluation stream which can be redirected to a file when using the HALITE utility, or c++ std::ostream when using the wasphalite api.
 
@@ -130,7 +130,8 @@ Here the `FoxSpeed` or `'fox speed'` attributes might be 'quick' or 'fast', the 
 
 ### Expressions
 The HALITE Engine uses the WASP [expression engine](/waspexpr) for expression evaluation which supports all regular math operators of 
-multiplication '*', division '/', addition '+', subtraction '-', and precedence '(',')'
+multiplication '*', division '/', addition '+', subtraction '-', less than '.lt.', less than or equal '.lte.', greater than '.gt.',
+greater than or equal '.gte', equal '==', not equal '!=', and precedence '(',')'
 
 * regular trig functions - sin(x),cos(x),tan(x),asin(x),acos(x),atan(x)
         ,atan2(y, x),sec(x),cosec(x),cot(x),sinh(x),cosh(x),tanh(x),asinh(x),acosh(x),atanh(x)
@@ -439,7 +440,7 @@ The explict iteration via ranges is syntactically different to disambiguate and 
 ```
 #repeat path/to/file.tmpl using (var=start[,end[,stride]];)+
 ```
-Notice the statement starts with `#repeat`. The range (`var`) can be specified, semicolon ';' delimited to produce embedded loops.
+Notice the statement starts with `#repeat` and not the regular `#import`. The range (`var`) can be specified, semicolon ';' delimited to produce embedded loops.
 
 ```
 #repeat path/to/file.tmpl using i=1,5; j=2,6,2;
@@ -447,6 +448,28 @@ Notice the statement starts with `#repeat`. The range (`var`) can be specified, 
 The above will loop `j`=2,4,6 for `i`=1 through 5. The variables `i` and `j` are available in the imported template.
 
 
-## Conditional Action Blocks
-TODO complete section
+## Conditional Blocks
+Conditional blocks facilitate alternative paths through templates. 
+Conditional blocks can be activated with a defined or undefined variable or an expression that evaluates to true or false.
+
+`#if`, `#ifdef` and `#ifndef` indicate the start of a conditional block. Subsequently, an additional condition can be indicated
+by a `#elseif`, or `#else`, and finally terminated by a `#endif`.
+
+```
+#if condition
+block
+#endif
+```
+The above block will be emitted if the `condition` evaluates to true. The `condition` could be a variable name referencing a value that is true, or an attribute expression.
+```
+#if ted_present
+hello ted
+#endif
+```
+or
+```
+#if < i .gt. 0 >
+some logic pertaining to i > 0
+#endif
+```
 
