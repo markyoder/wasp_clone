@@ -473,3 +473,15 @@ some logic pertaining to i > 0
 #endif
 ```
 
+The use of `#elseif` and `#else` allow for alternative logic if the initial or prior condition evaluate to false.
+```
+#if < ted_present && bill_present >
+Bill and  Ted's excellent adventure!
+#elseif ted_present 
+Where is Bill?
+#elseif bill_present
+Where is Ted?
+#else
+Where are Bill and Ted?
+#endif
+```
