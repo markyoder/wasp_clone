@@ -3,7 +3,7 @@
 
 template<class TNV>
 DDINodeView<TNV>::DDINodeView(std::size_t node_index
-                        , const DDINodeView<TNV>::TreeNodePool_type & nodes)
+                        , const typename DDINodeView<TNV>::TreeNodePool_type & nodes)
     : m_tree_node_index(node_index)
     ,m_tree_data(&nodes)
 {

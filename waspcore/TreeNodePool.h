@@ -432,7 +432,7 @@ public:
      * @param limit the limit on the number of children ( 0 := no limit )
      * @return A collection of views. Empty if no match occurrs
      */
-    TreeNodeView::Collection child_by_name(const std::string & name, size_t limit=0)const;
+    typename TreeNodeView::Collection child_by_name(const std::string & name, size_t limit=0)const;
     /**
      * @brief first_child_by_name acquires the first child with the given name
      * @param name the name of the requested child

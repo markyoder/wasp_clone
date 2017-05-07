@@ -3,7 +3,7 @@
 
 template<class TNV>
 GetPotNodeView<TNV>::GetPotNodeView(std::size_t node_index
-                        , const GetPotNodeView<TNV>::TreeNodePool_type & nodes)
+                        , const typename GetPotNodeView<TNV>::TreeNodePool_type & nodes)
     : m_tree_node_index(node_index)
     ,m_tree_data(&nodes)
 {

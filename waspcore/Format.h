@@ -1,6 +1,7 @@
 #ifndef WASPCORE_FORMAT_H
 #define WASPCORE_FORMAT_H
 #include "waspcore/wasp_bug.h"
+#include <ctype.h>
 #include <cmath>
 #include <string>
 #include <cstring>
@@ -93,7 +94,7 @@ namespace wasp{
                         ++sl; // move beyond '.'
                         const char * p = sl; // cache location of the start of the precision
                         // isdigit returns non-zero when character is a digit
-                        while( sl && std::isdigit(*sl) )
+                        while( sl && isdigit(*sl) )
                         {
                             ++sl; // move forward
                         }
@@ -119,11 +120,11 @@ namespace wasp{
                         wasp_check( !prec_substr.bad() || !prec_substr.fail() );
 
                     }
-                    else if ( std::isdigit(*sl) ) // check for width
+                    else if ( isdigit(*sl) ) // check for width
                     {
                         const char * w = sl; // cache beginning of width substr
                         ++sl;
-                        while( std::isdigit(*sl) )
+                        while( isdigit(*sl) )
                         {
                             ++sl;
                         }

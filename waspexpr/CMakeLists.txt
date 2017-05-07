@@ -1,3 +1,4 @@
+INCLUDE(WaspFlexAndBison)
 INCLUDE(WaspAddCompilerFlags)
 TRIBITS_SUBPACKAGE(expr)
 

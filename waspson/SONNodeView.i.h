@@ -3,7 +3,7 @@
 
 template<class TNV>
 SONNodeView<TNV>::SONNodeView(std::size_t node_index
-                        , const SONNodeView<TNV>::TreeNodePool_type & nodes)
+                        , const typename SONNodeView<TNV>::TreeNodePool_type & nodes)
     : m_tree_node_index(node_index)
     ,m_tree_data(&nodes)
 {
