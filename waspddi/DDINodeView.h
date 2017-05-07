@@ -190,7 +190,7 @@ public:
      * @brief tree_node_pool acquire the pointer to the backend storage
      * @return the TreeNodePool that backs this view
      */
-    const typename TreeNodePool_type * tree_node_pool()const{return m_tree_data;}
+    const TreeNodePool_type * tree_node_pool()const{return m_tree_data;}
 
     // !> Type operators
     /**
