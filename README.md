@@ -97,7 +97,7 @@ WASP is composed of the following primary components:
         * design by contract - insist, require, ensure, assert, check, remember.
         * timing - 3 levels of timers for code performance monitoring. 1-3, highest to lowest.
         * debug lines - set of macros that allow printing debug information to screen.
-2. __Expr__ - the waspexpr package contains lexer, parser, and evaluation logic for mathematical expressions.
+2. [__Expr__](/waspexpr/README.md) - the waspexpr package contains lexer, parser, and evaluation logic for mathematical expressions.
     * Basic mathematical operators - multiplication '*', division '/', addition '+', subtraction '-', boolean ('<','<=','==','!=', etc), and exponentiation '\^'.
     * Scalar variable assignment, reference, and creation - known variable can be referenced and updated, or new variables created during expression evaluation.
     * Functions. 
