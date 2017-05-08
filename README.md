@@ -47,7 +47,34 @@ cmake \
   * I place the configure script in the build directory as opposed to the build/wasp directory because it allows me to delete the build/wasp
 directory without removing my script.
 
+Additionally, a script to enable a third part library (TPL) plugin, configure_tpl.sh :
 
+```
+cmake \
+ -D wasp_ENABLE_ALL_PACKAGES:BOOL=ON \
+ -D CMAKE_BUILD_TYPE:STRING=RELWITHDEBINFO \
+ -D wasp_ENABLE_INSTALL_CMAKE_CONFIG_FILES:BOOL=ON \
+ -D wasp_ENABLE_googletest:BOOL=OFF \
+ -D wasp_ENABLE_testframework:BOOL=OFF \
+ -D wasp_ENABLE_wasppy:BOOL=OFF \
+ -D wasp_ENABLE_TESTS:BOOL=OFF \
+ -D CMAKE_INSTALL_PREFIX=`pwd`/install \
+ -D wasp_GENERATE_EXPORT_FILE_DEPENDENCIES:BOOL=ON \
+ -D CMAKE_C_COMPILER:STRING=gcc \
+ -D CMAKE_CXX_COMPILER:STRING=g++ \
+ -VV \
+ $*
+ 
+```
+
+Subsequently, invoke the script with a path to the root source:
+```
+../configure_tpl.sh /path/to/source
+```
+Lastly, due to an issue in cmake install file creation, a manual copy of the `waspConfig_install.cmake` is needed:
+```
+cp waspConfig_install.cmake install/lib/cmake/wasp/waspConfig.cmake
+```
 
 # Package Overview 
 The Workbench Analysis Sequence Processor (WASP) is intended to streamline lexing, parsing, access, validation, and analysis of ascii text files.
