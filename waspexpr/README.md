@@ -103,9 +103,9 @@ The Expr engine has a few special functions that are always available.
 
 | Function                              | Description                                | 
 |---------------------------------------|---------------------|
-| $`if(condition,if_true,if_false)`$   | if the `condition` evaluates to true, the `if_true` value is returned, else `if_false` is returned | 
-| $`defined('variable_name')`$       | return true, if and only if a variable with name `variable_name` exists. Note the argument is quoted | 
-| $`size(array_variable)`$       | acquires the size (element count) of the given array | 
+| $`if(condition,if true,if false)`$   | if the `condition` evaluates to true, the `if true` value is returned, else `if false` is returned | 
+| $`defined('name')`$       | return true, if and only if a variable with name `name` exists. Note the argument is quoted | 
+| $`size(array)`$       | acquires the size (element count) of the given array | 
 
 
 ### Array Access
