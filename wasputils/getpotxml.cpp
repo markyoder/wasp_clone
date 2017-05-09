@@ -14,7 +14,7 @@ int main (int argc, char *argv[])
     {
         std::cout<<"Workbench Analysis Sequence Processor (GetPot)"
                 <<std::endl
-                <<argv[0]<<" : An application for listing GetPot formatted input."<<std::endl;
+                <<argv[0]<<" : An application for listing GetPot formatted input as xml."<<std::endl;
         std::cout<<" Usage : "<<argv[0]<<" path/to/GetPot/formatted/input"
                 <<std::endl;
         return 1;
@@ -39,8 +39,7 @@ int main (int argc, char *argv[])
                          << " nanoseconds with "
                          << parse_time.intervals()
                          << " invervals" << std::endl);
-        std::cout<<"Listing for '"<<argv[j]<<"'"<<std::endl;
-        interpreter.root().paths(std::cout);
+        wasp::to_xml(interpreter.root(),std::cout);
         if( !parsed )
         {
             std::cout<<errors.str()<<std::endl;

@@ -71,6 +71,12 @@ IF ( wasp_ENABLE_waspgetpot )
       NOEXESUFFIX
       INSTALLABLE
     )
+    TRIBITS_ADD_EXECUTABLE(getpotxml
+      SOURCES getpotxml.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
     TRIBITS_ADD_EXECUTABLE(getpotvalid
       SOURCES getpotvalid.cpp
       NOEXEPREFIX
