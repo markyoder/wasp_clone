@@ -183,6 +183,22 @@ The schema's contents are beyond the scope of this readme. The product of *valid
 If an error occurs, a non-zero return code is produced and validation errors emitted. See the [HIVE](/wasphive/README.md) documentation of types of validation errors.
 
  
+## The HierarchAL Input Template Expansion (HALITE) Engine 
+The [HALITE](/wasphalite/README.md) engine has the corresponding `halite` command line utility. 
 
+HALITE provides a data-driven template expansion capability and has sizable feature set for templating text data for input or other needs. 
+
+The `halite` command line utility can be invoked with a template and optional [JSON](http://www.json.org/)-formatted data parameter set:
+
+```
+halite /path/to/template.tmpl
+```
+or with JSON parameter set:
+
+```
+halite /path/to/template.tmpl /path/to/data.json
+```
+
+The expanded template emitted on stdout, and errors/log information is emitted on stderr.
 
 
