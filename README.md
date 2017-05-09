@@ -113,7 +113,7 @@ WASP is composed of the following primary components:
     * Supports attribute and expression evaluations.
     * Supports template imports.
     * Supports conditional action blocks.
-9. __Utils__ - the wasputils package contains executable utilities for listing/viewing, selecting, validating, and transforming WASP supported grammars.
+9. [__Utils__](/wasputils/README.md) - the wasputils package contains executable utilities for listing/viewing, selecting, validating, and transforming WASP supported grammars.
     * List - lists paths to each file element.
     * Select - allows using SIREN expression to select pieces of input.
     * Valid - validates a given text file with a given document definition/schema.
