@@ -68,6 +68,13 @@ Produces a directory-style listing of each component in the file:
 
 These listings describe the interpreted hierachy and value.
 
+
+Note : The Definition-Driven Interpreter (DDI) is different from the others as it requires a schema (definition) in order to parse.
+
+```
+ddilist /path/to/schema.sch /path/to/input.inp
+```
+
 ## File Component Selection Utilities
 The ability to select specific parts of the input can be useful in schema creation. All supported interpreters have corresponding select utilities.
 
@@ -105,3 +112,77 @@ Selecting ../../../array
 1) /array
 array [ 1 2 3 ]
 ```
+The first node selected is the `/object/child/x` node, which has the text `x = 1`. 
+Subsequently, the relative path `../../../array` is used from `/object/child/x` to select three levels up `../../../`, and subsequently the `array` node.
+Notice that the exact user input is reproduced. 
+
+## XML Utilities
+The XML standard is readily accessible in most programming languages where SON, GetPot, DDI, etc. are not. 
+As such, the *xml utilities provide a bridge for prototyping or coupling with higher level scripts, etc.
+
+```
+sonxml example.son
+```
+produces
+
+```xml
+<document>
+  <object>
+    <decl loc="1.1" dec="true">object</decl>
+    <LP loc="1.7" dec="true">(</LP>
+    <id loc="1.8" dec="true">identifier</id>
+    <RP loc="1.18" dec="true">)</RP>
+    <LBC loc="1.19" dec="true">{</LBC>
+    <key>
+      <decl loc="2.4" dec="true">key</decl>
+      <ASSIGN loc="2.8" dec="true">=</ASSIGN>
+      <value loc="2.10">value</value>
+    </key>
+    <child>
+      <decl loc="3.4" dec="true">child</decl>
+      <LP loc="3.10" dec="true">(</LP>
+      <id loc="3.12" dec="true">name</id>
+      <RP loc="3.17" dec="true">)</RP>
+      <LBC loc="3.19" dec="true">{</LBC>
+      <x>
+        <decl loc="4.7" dec="true">x</decl>
+        <ASSIGN loc="4.9" dec="true">=</ASSIGN>
+        <value loc="4.11">1</value>
+      </x>
+      <RBC loc="5.4" dec="true">}</RBC>
+    </child>
+    <RBC loc="6.1" dec="true">}</RBC>
+  </object>
+  <array>
+    <decl loc="7.1" dec="true">array</decl>
+    <LBK loc="7.7" dec="true">[</LBK>
+    <value loc="7.9">1</value>
+    <value loc="7.11">2</value>
+    <value loc="7.13">3</value>
+    <RBK loc="7.15" dec="true">]</RBK>
+  </array>
+</document>
+```
+Any xml element with the atttribute `dec="true"`  indicates a 'decorative' input component, required syntax and could be ignored by most higher level interpreters. 
+
+The attribute `loc="line.column"` indicates the input components location in the file. 
+
+The element's name indicates the name of the input component. The leaf element's data is the data of interest that is stored in the parse tree.
+
+## File Validation Utilities
+The SON, DDI, and GetPot interpreters have Hierarchical Input Validation Engine ([HIVE](/wasphive/README.md)) adapters allowing them to be validated. 
+As such, there are sonvalid, ddivalid, and getpotvalid utilities. 
+
+Invocation of the validation utilities requires a schema, and an input:
+
+```
+sonvalid /path/to/schema.sch /path/to/input.inp
+```
+
+The schema's contents are beyond the scope of this readme. The product of *valid will be a return code of 0 only if no validation errors occur in the input. 
+If an error occurs, a non-zero return code is produced and validation errors emitted. See the [HIVE](/wasphive/README.md) documentation of types of validation errors.
+
+ 
+
+
+
