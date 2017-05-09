@@ -83,3 +83,25 @@ Selecting /array/value[1:3]
 3) /array/value
 3
 ```
+
+Alternatively, `sonselect example.son /object/child/x` produces the following output:
+
+```
+Selecting /object/child/x
+---- 1 nodes selected with statement '/object/child/x' ----
+1) /object/child/x
+x = 1
+```
+
+Subsequent selections select from prior selection sets, so `sonselect example.son /object/child/x ../key/value` produces:
+
+```
+Selecting /object/child/x
+---- 1 nodes selected with statement '/object/child/x' ----
+1) /object/child/x
+x = 1
+Selecting ../../../array
+---- 1 nodes selected with statement '../../../array' ----
+1) /array
+array [ 1 2 3 ]
+```
