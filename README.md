@@ -104,7 +104,7 @@ WASP is composed of the following primary components:
 3. __GetPot__ - the waspgetpot package contains lexer, parser, and tree node view for the getpot grammar (http://getpot.sourceforge.net/) as needed by MOOSE 
 4. [__HIVE__](/wasphive/README.md) - the Hierarchical Input Validation Engine contains algorithms for validating a parse tree using a document schema/definition file.
     * Flexible scalar and referential rules - supports element occurrence, value, child uniqueness and choice, existence, sum, predicated sum, etc.  
-5. __JSON__ - the waspjson package contains lexer, and parser for the JSON grammar (http://www.json.org/) 
+5. [__JSON__](http://www.json.org/) - the waspjson package contains lexer, and parser for the JSON grammar (http://www.json.org/) 
 6. [__SIREN__](/waspsiren/README.md) - the Sequence Input Retrieval ENgine (SIREN) contains lexer, parser, and evaluation logic for tree node lookup.
     * Flexible tree node lookup mechanism - supports absolute and relative wild-carded named and value or index -predicated node path lookup.
 7. [__SON__](/waspson/README.md) - the Standard Object Notation (SON) - waspson package contains the lexer, parser, and tree node view for the son grammar.
