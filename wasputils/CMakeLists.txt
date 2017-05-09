@@ -51,6 +51,12 @@ IF ( wasp_ENABLE_waspddi )
       NOEXESUFFIX
       INSTALLABLE
     )
+    TRIBITS_ADD_EXECUTABLE(ddixml
+      SOURCES ddixml.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
     TRIBITS_ADD_EXECUTABLE(ddivalid
       SOURCES ddivalid.cpp
       NOEXEPREFIX
