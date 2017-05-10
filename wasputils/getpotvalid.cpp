@@ -43,7 +43,7 @@ int main (int argc, char *argv[])
                      << " invervals" << std::endl);
     if( !parsed_schema )
     {
-        std::cout<<"Failed to process schema file '"<<argv[2]<<"'"<<std::endl;
+        std::cout<<"Failed to process schema file '"<<argv[1]<<"'"<<std::endl;
         std::cout<<errors.str()<<std::endl;
         return -1;
     }

@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
         parser.set_definition_store(definition);
         bool failed = !parser.parseFile(argv[i]);
         if( failed ){
-            std::cout<<"***Error : Parsing of "<<argv[2]<<" failed!"<<std::endl;
+            std::cout<<"***Error : Parsing of "<<argv[i]<<" failed!"<<std::endl;
             return 1;
         }
         DDINodeView<decltype(parser.root())> input_root = parser.root();
