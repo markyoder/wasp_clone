@@ -64,6 +64,9 @@ std::string xml_escape_data(const std::string& src)
 std::string xml_escape_name(const std::string& src)
 {
     std::stringstream dst;
+    if (src.at(0) >= '0' && src.at(0) <= '9'){
+        dst << "_";
+    }
     for (char ch : src) {
         switch (ch) {
             case '{':  dst << "LBC";    break;
@@ -74,6 +77,10 @@ std::string xml_escape_name(const std::string& src)
             case ')':  dst << "RP";     break;
             case '-':  dst << "MINUS";  break;
             case '=':  dst << "ASSIGN"; break;
+            case ':':  dst << "COLON";  break;
+            case ',':  dst << "COMMA";  break;
+            case '/':  dst << "FWDSLSH";break;
+            case '\\': dst << "BCKSLSH";break;
             default:   dst << ch;       break;
         }
     }
