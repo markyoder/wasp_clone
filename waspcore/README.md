@@ -77,9 +77,9 @@ document
 Here the inner node is 'keyed_value' with leaf child nodes `declarator`, `assign`, and `value`. 
 
 All nodes have associated meta data:
-1) Node type - declarator, terminator, value, name, etc.
-2) Node name - user familiar name.
-3) Parent node pool index - the location in the tree node pool that the parent of the node resides.
+1. Node type - declarator, terminator, value, name, etc.
+2. Node name - user familiar name.
+3. Parent node pool index - the location in the tree node pool that the parent of the node resides.
 
 Additional meta data for parent/inner nodes consists of:
 
