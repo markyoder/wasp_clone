@@ -61,12 +61,6 @@ INSTALL(FILES
   DESTINATION
   include/waspjson)
 
-TRIBITS_ADD_EXECUTABLE(jsonlist
-  NOEXEPREFIX
-  NOEXESUFFIX
-  SOURCES ListJSON.cpp
-  INSTALLABLE
-)
 #
 # Add test directory for this package
 #

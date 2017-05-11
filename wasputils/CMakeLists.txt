@@ -123,6 +123,12 @@ IF ( wasp_ENABLE_waspson )
     )
 ENDIF()
 IF ( wasp_ENABLE_waspjson )
+    TRIBITS_ADD_EXECUTABLE(jsonlist
+      SOURCES jsonlist.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
     TRIBITS_ADD_EXECUTABLE(jsonselect
       SOURCES jsonselect.cpp
       NOEXEPREFIX
