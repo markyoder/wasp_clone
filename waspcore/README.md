@@ -4,7 +4,7 @@ The core package of WASP provides the foundation for text processing.
 A primary mission of WASP is to capture information in a manner that facilitate reconstituting a users' text file. 
 
 This information is captured in two primary stages which are the lexing and parsing of the text files. 
-Lexical analysis processes the text file by recognizing patterns of text and producing a `token` that encapsulates information pertaining to this pattern.
+Lexical analysis processes the text file by recognizing patterns of text and producing a token that encapsulates information pertaining to this pattern.
 
 The parser recognizes patterns of tokens and constructs a parse tree for future examination. 
 
@@ -38,7 +38,7 @@ E.g., if your application needs to interpreter files that will never be more tha
 ## String Pool
 The string pool consists of two members, 1) a vector of chars, 2) a vector of indices indicating string starts.
 
-In this way, the string data that is consumed from a text file is reasonable maintained and size not inflated. 
+In this way, the string data that is consumed from a text file is reasonably maintained and size not inflated. 
 
 In a benchmark of one application's input where the token's mathematical mode was 3 characters, with a mean of 4, 
 using std::string produces on average ~28+ byte overhead per token. Using the StringPool facilitated the memory consolidation. 
@@ -83,7 +83,16 @@ All nodes have associated meta data:
 
 Additional meta data for parent/inner nodes consists of:
 
-1) First child pool index - the index of the first child.
-2) The number of children.
+1. First child pool index - the index of the first child.
+2. The number of children.
 
 There is a convenient TreeNodeView class that provides consilidated per-node data access.
+
+## Interpreter
+The interpreter is the base class to facilitate all syntax specific interpreters ([DDI](/waspddi/README.md), [SON](/waspson/README.md), etc.). 
+The interpreter brokers transactions between the lexer and parser and stages and stores the parse tree for future access.
+
+The interpreter manages the TreeNodePool and tracks the root of the parse tree. 
+It also provides a stage construct to facilitate text syntax where hierarchy is ambiguous and sub-trees may not exist to immediate parent (E.g., see [DDI](/waspddi/README.md) for active use).
+
+
