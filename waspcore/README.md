@@ -37,3 +37,20 @@ In this way, the string data that is consumed from a text file is reasonable mai
 In a benchmark of one application's input where the token's mathematical mode was 3 characters, with a mean of 4, 
 using std::string produces on average ~28+ byte overhead per token. Using the StringPool facilitated the memory consolidation. 
 
+
+## Token Pool
+Token pool associates a token type and file byte offset with the text that resides in the String Pool. New lines are a special piece of meta data that is captured for text location deduction.
+
+The type information indicates whether it is an integer, real, word, declarator, terminator, etc. and can be used to deduce context or perform operations on a class of data.
+
+The file byte offset is the absolute location in the file at which the text begins. This is not intuitive in and of itself to a user, but when combined with new line offset text location, line and column, can be deduced.
+
+Specifically, the line can be computed as the distance from the upper_bound of token_index into line_offsets.
+
+$` line = distance( \lceil token\_index \rceil_{line\_offsets} )`$
+
+The column can be computed as the difference of the token_index and the upper_bound of the token_index into line_offsets.
+
+$` column = \lceil token\_index \rceil_{line\_offsets} - token\_index `$
+
+
