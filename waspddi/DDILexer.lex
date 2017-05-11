@@ -39,9 +39,9 @@ typedef wasp::DDIParser::token_type token_type;
 %option yywrap nounput
 
  /* enables the use of start condition stacks */
-%option stack
-%x subtraction
-%s execution_unit
+/*%option stack*/
+/*%x exclusive*/
+/*%s inclusive*/
 
 INT \-?[0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INT}
