@@ -109,11 +109,14 @@ WASP is composed of the following primary components:
     * Flexible tree node lookup mechanism - supports absolute and relative wild-carded named and value or index -predicated node path lookup.
 7. [__SON__](/waspson/README.md) - the Standard Object Notation (SON) - waspson package contains the lexer, parser, and tree node view for the son grammar.
     * Flexible, structured, input entry mechanism - supports Objects, Arrays, and keyed values. Also supports identified objects, arrays, and keyed values.
-8. [__HALITE__](/wasphalite/README.md) - the HierarchicAL Input Template Expansion engine provides a data-driven means of expanding patterned input.
+8. [__DDI__](waspddi/README.md) - the Definition-Driven Interpreter (DDI) contains lexer, parser, and interpreter for lightweight input format. 
+    * Hierarchical Input format with very little syntax.
+    * Supports the [Dakota UQ](https://dakota.sandia.gov/) input format.
+9. [__HALITE__](/wasphalite/README.md) - the HierarchicAL Input Template Expansion engine provides a data-driven means of expanding patterned input.
     * Supports attribute and expression evaluations.
     * Supports template imports.
     * Supports conditional action blocks.
-9. [__Utils__](/wasputils/README.md) - the wasputils package contains executable utilities for listing/viewing, selecting, validating, and transforming WASP supported grammars.
+10. [__Utils__](/wasputils/README.md) - the wasputils package contains executable utilities for listing/viewing, selecting, validating, and transforming WASP supported grammars.
     * List - lists paths to each file element.
     * Select - allows using SIREN expression to select pieces of input.
     * Valid - validates a given text file with a given document definition/schema.
