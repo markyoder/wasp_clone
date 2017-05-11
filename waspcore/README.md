@@ -11,8 +11,11 @@ The parser recognizes patterns of tokens and constructs a parse tree for future 
 
 Typically, all whitespace are not captured in the parse tree as they can be deduced and reconstituted upon request. 
 
+
+
 ## Core Parts
-The primary parts of wasp core are:
+
+The primary parts of wasp core:
 
 1. StringPool - provides contiguous string storage. All strings are stored, null-terminated, in a single data container.
 2. TokenPool - provides contiguous token storage. Tokens consist of string data, a token type, and a file byte offset. 
@@ -29,6 +32,9 @@ The primary parts of wasp core are:
 7. Object - generic type data structure to facilitate typed-data access to hierarchical data. 
     * Facilitates Halite data-driven capabilities.
     
+It is important to note that each Pool, and subsequently the Interpreter, are templated classes allowing space consolidation when application size is known.
+E.g., if your application needs to interpreter files that will never be more than 65KiB, you can use an `unsigned short` as the template type.
+
 ## String Pool
 The string pool consists of two members, 1) a vector of chars, 2) a vector of indices indicating string starts.
 
@@ -54,3 +60,30 @@ The column can be computed as the difference of the token_index and the upper_bo
 $` column = \lceil token\_index \rceil_{line\_offsets} - token\_index `$
 
 
+## Tree Node Pool
+The tree node pool coordinates access and storage to nodes. Nodes can be classified as inner and leaf nodes. 
+Inner nodes can have children and represent a set of input. Leaf nodes always represent a token. 
+
+E.g.,` key = 3.14159 `
+
+has the following hierarchy
+```
+document 
+|_keyed_value 
+  |_ declarator ('key')
+  |_ assign ('=')
+  |_ value  (3.14159)
+```
+Here the inner node is 'keyed_value' with leaf child nodes `declarator`, `assign`, and `value`. 
+
+All nodes have associated meta data:
+1) Node type - declarator, terminator, value, name, etc.
+2) Node name - user familiar name.
+3) Parent node pool index - the location in the tree node pool that the parent of the node resides.
+
+Additional meta data for parent/inner nodes consists of:
+
+1) First child pool index - the index of the first child.
+2) The number of children.
+
+There is a convenient TreeNodeView class that provides consilidated per-node data access.
