@@ -163,7 +163,7 @@ produces
   </array>
 </document>
 ```
-Any xml element with the atttribute `dec="true"`  indicates a 'decorative' input component, required syntax and could be ignored by most higher level interpreters. 
+Any xml element with the attribute `dec="true"`  indicates a 'decorative' input component, required syntax and could be ignored by most higher level interpreters. 
 
 The attribute `loc="line.column"` indicates the input components location in the file. 
 
