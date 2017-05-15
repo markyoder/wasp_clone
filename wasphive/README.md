@@ -5,6 +5,7 @@
 
 2. [Input Validation Rules Summary](#input-validation-rules-summary)
 3. [Input Validation Rules Details](#input-validation-rules-details)
+ - [Miscellaneous Validation Details](#miscellaneous-validation-details)
  - [MinOccurs Validation Details](#minoccurs-validation-details)
  - [MaxOccurs Validation Details](#maxoccurs-validation-details)
  - [ValType Validation Details](#valtype-validation-details)
@@ -38,6 +39,7 @@
  - [InputDefault Assistance Details](#inputdefault-assistance-details)
  - [Description Assistance Details](#description-assistance-details)
 5. [Input Validation Rules Examples](#input-validation-rules-examples)
+ - [Miscellaneous Validation Examples](#miscellaneous-validation-examples)
  - [MinOccurs Validation Examples](#minoccurs-validation-examples)
  - [MaxOccurs Validation Examples](#maxoccurs-validation-examples)
  - [ValType Validation Examples](#valtype-validation-examples)
@@ -57,7 +59,6 @@
  - [ChildAtLeastOne Validation Examples](#childatLeastone-validation-examples)
  - [ChildCountEqual Validation Examples](#childcountequal-validation-examples)
  - [ChildUniqueness Validation Examples](#childuniqueness-validation-examples)
- - [Miscellaneous Validation Examples](#miscellaneous-validation-examples)
 
 ---
 ## **Introduction**
@@ -74,6 +75,8 @@ The document layout is as follows:
 
 - The [Input Validation Rules Examples](#input-validation-rules-examples) provides very detailed examples and exact syntax of every validation rule.  This section supplies an example schema, an example input that will pass validation against the schema, an example input that will fail validation against the schema, and the validation messages that HIVE produces when validating the failing input against the provided schema. If incorporating a specific rule in the integration of an application into the NEAMS Workbench, then the examples section for that particular rule should be fully understood syntactically and semantically.
 
+- In this document, the term ***input*** is used when referring to a file is to be validated, and ***schema*** is used when referring to the file that describes the definition and rules against which the input is validated. Currently, schema files must be written in the SON syntax.  We will be using the SON syntax for example input files in this document as well.
+
 ---
 ## **Input Validation Rules Summary**
 
@@ -89,8 +92,8 @@ The document layout is as follows:
 * ***NotExistsIn*** - describes a set of lookup paths into relative sections of the input file where the value of the element being validated must not exist.
 * ***SumOver***  - describes what sum the values must add to under a given context.
 * ***SumOverGroup*** - describes what sum the values must add to under a given context when grouped by dividing another input element's value by a given value.
-* ***IncreaseOver*** - describes that the values under the element must be increasing in the order that they are parsed.
-* ***DecreaseOver*** - describes that the values under the element must be decreasing in the order that they are parsed.
+* ***IncreaseOver*** - describes that the values under the element must be increasing in the order that they are read.
+* ***DecreaseOver*** - describes that the values under the element must be decreasing in the order that they are read.
 * ***ChildAtMostOne*** - describes one or more lists of lookup paths into relative sections of the input file (and possible values) where at most one is allowed to exist.
 * ***ChildExactlyOne*** - describes one or more lists of lookup paths into relative sections of the input file (and possible values) where at exactly one is allowed to exist.
 * ***ChildAtLeastOne*** - describes one or more lists of lookup paths into relative sections of the input file (and possible values) where at least one must exist.
@@ -99,6 +102,26 @@ The document layout is as follows:
 
 ---
 ## **Input Validation Rules Details**
+
+### Miscellaneous Validation Details
+
+- Before exploring the details of all of the validation rules, the first thing to note is that a schema file must represent a superset of the hierarchy of all possible inputs.  This is just to say that every hierarchical node in an input file that is to be validated, must have an exact mapping to a node at the same hierarchical path in the schema. If there is an element in an input file that does not have an exact mapping to an associated node in the schema, then that element is said to be invalid. Once the hierarchy of the schema is built, then rules can be added to every element for validation.
+
+- At the basic level, there are two types of validation messages that may be reported by HIVE.
+
+1. Problems with the ***input*** file are reported in the form:
+        
+            line:X column:Y - Validation Error: MESSAGE
+
+		The NEAMS Workbench captures the line and column reported so that the offending input elements can be navigated to simply by clicking on the message.
+            
+2. Problems with the ***schema*** file are reported in the form:
+        
+            Validation Error: Invalid Schema Rule: MESSAGE line:X column:Y
+
+		These messages denote an actual error in the schema file at the provided line and column number.
+ 
+For examples of these ***Miscellaneous Validation Details*** (including schemas, inputs, and expected validation messages), please see [Miscellaneous Validation Examples](#miscellaneous-validation-examples).
 
 ### MinOccurs Validation Details
 
@@ -153,37 +176,37 @@ For detailed usage examples and syntax of the ***Maximum Value Exclusive*** rule
 
 ### ExistsIn Validation Details
 
-- The ***Exists In*** rule is used as a key to say that an element in the input must be defined somewhere else in the input.  This rule will always contain one or more relative input lookup paths from the element being validated.  The pieces of input at these paths will be collected into a set.  This rule also may contain one or more optional constant values. If these exist, then the constant values will also be added to the set.  Then, all of the values in the input being validated by this rule must exist in the set built from the lookup paths and the constant values in order to pass the validation.  If any element does not exist in this set, then the validation check fails.  This rule may use an optional "**Abs**" modifier flag that can occur as a parenthetical identifier. The "**Abs**" modifier flag indicates that the absolute value of all numbers added to the set checked for existence are used.  Then, even if the value of the element being validated is negative and a value at one of the rule's relative input lookup paths is positive, but they have the same absolute value, this validation check will pass. Note: this check is case insensitive, and if the value being checked is an integer, then leading zeros are ignored.
+- The ***Exists In*** rule is used as a key to say that an element in the input must be defined somewhere else in the input.  This rule will always contain one or more relative input lookup paths from the element being validated.  The pieces of input at these paths will be collected into a set.  This rule also may contain one or more optional constant values. If these exist, then the constant values will also be added to the set.  Then, all of the values in the input being validated by this rule must exist in the set built from the lookup paths and the constant values in order to pass the validation.  If any element does not exist in this set, then the validation check fails.  This rule may use an optional `Abs` modifier flag that can occur as a parenthetical identifier. The `Abs` modifier flag indicates that the absolute value of all numbers added to the set checked for existence are used.  Then, even if the value of the element being validated is negative and a value at one of the rule's relative input lookup paths is positive, but they have the same absolute value, this validation check will pass. Note: this check is case insensitive, and if the value being checked is an integer, then leading zeros are ignored.
 
 For detailed usage examples and syntax of the ***Exists In*** rule (including schemas, inputs, and expected validation messages), please see [ExistsIn Validation Examples](#existsin-validation-examples).
 
 ### NotExistsIn Validation Details
 
-- The ***Not Exists In*** rule will always contain one or more relative input lookup paths from the element being validated. The pieces of input at these paths will be collected into a set.  If the value of the element being validated exists in this set, then this validation check fails.  If it does not exist, then the validation check passes. This rule may use an optional "**Abs**" modifier flag that can occur as a parenthetical identifier. The "**Abs**" modifier flag indicates that the absolute value of all numbers added to the set checked for existence are used.  Then, even if the value of the element being validated is negative and a value at one of the rule's relative input lookup paths is positive, but they have the same absolute value, this validation check will fail. Note: this check is case insensitive, and if the value being checked is an integer, then leading zeros are ignored.
+- The ***Not Exists In*** rule will always contain one or more relative input lookup paths from the element being validated. The pieces of input at these paths will be collected into a set.  If the value of the element being validated exists in this set, then this validation check fails.  If it does not exist, then the validation check passes. This rule may use an optional `Abs` modifier flag that can occur as a parenthetical identifier. The `Abs` modifier flag indicates that the absolute value of all numbers added to the set checked for existence are used.  Then, even if the value of the element being validated is negative and a value at one of the rule's relative input lookup paths is positive, but they have the same absolute value, this validation check will fail. Note: this check is case insensitive, and if the value being checked is an integer, then leading zeros are ignored.
 
 For detailed usage examples and syntax of the ***Not Exists In*** rule (including schemas, inputs, and expected validation messages), please see [NotExistsIn Validation Examples](#notexistsin-validation-examples).
 
 ### SumOver Validation Details
 
- - The ***Sum Over*** rule must always contain a **context expression** and an **expected sum value**. The expected sum value is the desired sum when all of the the  elements in the given context are summed. The context contains a relative ancestry path in the parse tree that the values will be summed over. For a simple array, this will usually be "**..**", however it may go back further in lineage if needed (e.g. "**../../..**").
+ - The ***Sum Over*** rule must always contain a **context expression** and an **expected sum value**. The expected sum value is the desired sum when all of the the  elements in the given context are summed. The context contains a relative ancestry path in the input hierarchy that the values will be summed over. For a simple array, this will usually be "**..**", however it may go back further in lineage if needed (e.g. "**../../..**").
 
 For detailed usage examples and syntax of the ***Sum Over*** rule (including schemas, inputs, and expected validation messages), please see [SumOver Validation Examples](#sumover-validation-examples).
 
 ### SumOverGroup Validation Details
 
-- The ***Sum Over Group*** rule must always contain a **context path**, a **group sum value**, a **compare path**, and a **group divide value**.  The compare path is used to acquire another element in the parse tree using this as a relative path into the input from the current element being validated.  This value must exist in the input and be a number.  Then, this value is divided by the group divide value.  This does integer division to split the input element that will be added into groups.  Then, each group must successfully add to the group sum value.  If any group does not add to the group sum value, then this validation check fails.  If every group (when split by performing an integer division on the value at the compare path relative location by the group divide value) adds to the same desired group sum, then this validation check passes.
+- The ***Sum Over Group*** rule must always contain a **context path**, a **group sum value**, a **compare path**, and a **group divide value**.  The compare path is used to acquire another element in the input hierarchy relative to the current element being validated.  This value must exist in the input and be a number.  Then, this value is divided by the group divide value.  This does integer division to split the input element that will be added into groups.  Then, each group must successfully add to the group sum value.  If any group does not add to the group sum value, then this validation check fails.  If every group (when split by performing an integer division on the value at the compare path relative location by the group divide value) adds to the same desired group sum, then this validation check passes.
 
 For detailed usage examples and syntax of the ***Sum Over Group*** rule (including schemas, inputs, and expected validation messages), please see [SumOverGroup Validation Examples](#sumovergroup-validation-examples).
 
 ### IncreaseOver Validation Details
 
-- The ***Increase Over*** rule must contain a required modifier flag that occurs as a parenthetical identifier and indicates the monotonicity. The flag must either be "**Strict**", meaning that the values must be strictly increasing in the order that they are parsed (no two values are the same), or "**Mono**", meaning that multiple value are allowed to be the same as long as they never decrease.  For example *3 4 5 5 6 7* would pass a "**Mono**" check, but fail a **Strict**" check due to two value being the same.  This rule also contains a context path that describes the relative ancestry in the input hierarchy under which the values must increase.  For a simple array, this will usually be "**..**". However, it may go back further in lineage if needed (e.g. "**../../..**").
+- The ***Increase Over*** rule must contain a required modifier flag that occurs as a parenthetical identifier and indicates the monotonicity. The flag must either be `Strict`, meaning that the values must be strictly increasing in the order that they are read (no two values are the same), or `Mono`, meaning that multiple value are allowed to be the same as long as they never decrease.  For example *3 4 5 5 6 7* would pass a `Mono` check, but fail a `Strict` check due to two value being the same.  This rule also contains a context path that describes the relative ancestry in the input hierarchy under which the values must increase.  For a simple array, this will usually be "**..**". However, it may go back further in lineage if needed (e.g. "**../../..**").
 
 For detailed usage examples and syntax of the ***Increase Over*** rule (including schemas, inputs, and expected validation messages), please see [IncreaseOver Validation Examples](#increaseover-validation-examples).
 
 ### DecreaseOver Validation Details
 
-- The ***Decrease Over*** rule must contain a required modifier flag that occurs as a parenthetical identifier and indicates the monotonicity. The flag must either be "**Strict**", meaning that the values must be strictly decreasing in the order that they are parsed (no two values are the same), or "**Mono**", meaning that multiple value are allowed to be the same as long as they never increase.  For example *7 6 5 5 4 3* would pass a "**Mono**" check, but fail a **Strict**" check due to two value being the same.  This rule also contains a context path that describes the relative ancestry in the input hierarchy under which the values must decrease.  For a simple array, this will usually be "**..**". However, it may go back further in lineage if needed (e.g. "**../../..**").
+- The ***Decrease Over*** rule must contain a required modifier flag that occurs as a parenthetical identifier and indicates the monotonicity. The flag must either be `Strict`, meaning that the values must be strictly decreasing in the order that they are read (no two values are the same), or `Mono`, meaning that multiple value are allowed to be the same as long as they never increase.  For example *7 6 5 5 4 3* would pass a `Mono` check, but fail a `Strict` check due to two value being the same.  This rule also contains a context path that describes the relative ancestry in the input hierarchy under which the values must decrease.  For a simple array, this will usually be "**..**". However, it may go back further in lineage if needed (e.g. "**../../..**").
 
 For detailed usage examples and syntax of the ***Decrease Over*** rule (including schemas, inputs, and expected validation messages), please see [DecreaseOver Validation Examples](#decreaseover-validation-examples).
 
@@ -207,13 +230,13 @@ For detailed usage examples and syntax of the ***Child At Least One*** rule (inc
 
 ### ChildCountEqual Validation Details
 
-- The ***Child Count Equal*** rule is usually used to ensure that arrays in the input have an equal number of value members.  There may be multiple of these rules on any given element.  This rule contains multiple relative input look paths and a required modifier flag that occurs as a parenthetical identifier.  This modifier flag can be either "**IfExists**" or "**EvenNone**".  If the modifier flag is "**IfExists**", then it means that the pieces of input in the relative lookup paths must be equal only if they actually exist.  However, If the modifier flag is "**EvenNone**", then this is a stricter rule that denotes that the relative input lookup path nodes in the input must be equal regardless if they exist or not.
+- The ***Child Count Equal*** rule is usually used to ensure that arrays in the input have an equal number of value members.  There may be multiple of these rules on any given element.  This rule contains multiple relative input look paths and a required modifier flag that occurs as a parenthetical identifier.  This modifier flag can be either `IfExists` or `EvenNone`.  If the modifier flag is `IfExists`, then it means that the pieces of input in the relative lookup paths must be equal only if they actually exist.  However, If the modifier flag is `EvenNone`, then this is a stricter rule that denotes that the relative input lookup path nodes in the input must be equal regardless if they exist or not.
 
 For detailed usage examples and syntax of the ***Child Count Equal*** rule (including schemas, inputs, and expected validation messages), please see [ChildCountEqual Validation Examples](#childcountequal-validation-examples).
 
 ### ChildUniqueness Validation Details
 
-- The ***Child Uniqueness*** rule is used quite often. Every value in this set has to occur once and only once among all other values, at all other paths. There may be multiple of these rules on any given element. This rule may use an optional "**Abs**" modifier flag that can occur as a parenthetical identifier. The "**Abs**" modifier flag indicates that the absolute value of all numbers added to the set checked for uniqueness are used.  Then, even if one value is negative and the other is positive, but they have the same absolute value, this validation check will fail.  For example, if one ChildUniqueness relative input lookup path contains "*-5*" and another relative lookup input path contains "*5*", this validation check will fail if the "**Abs**" modifier flag is used.
+- The ***Child Uniqueness*** rule is used quite often. Every value in this set has to occur once and only once among all other values, at all other paths. There may be multiple of these rules on any given element. This rule may use an optional `Abs` modifier flag that can occur as a parenthetical identifier. The `Abs` modifier flag indicates that the absolute value of all numbers added to the set checked for uniqueness are used.  Then, even if one value is negative and the other is positive, but they have the same absolute value, this validation check will fail.  For example, if one ChildUniqueness relative input lookup path contains "*-5*" and another relative lookup input path contains "*5*", this validation check will fail if the `Abs` modifier flag is used.
 
 For detailed usage examples and syntax of the ***Child Uniqueness*** rule (including schemas, inputs, and expected validation messages), please see [ChildUniqueness Validation Examples](#childuniqueness-validation-examples).
 
@@ -256,7 +279,7 @@ For detailed usage examples and syntax of the ***Child Uniqueness*** rule (inclu
 
 ### InputName Assistance Details
 
-- The ***Input Name*** rule is used by the NEAMS Workbench to override the name of the actual node in the template provided by `InputTmpl` for autocompletion, if desired. For example, if the name of an element in the parse tree is `something_one`, but a template named `MySomething.tmpl` should use the name `something_two` instead, then this can be overridden with `something_one` via:
+- The ***Input Name*** rule is used by the NEAMS Workbench to override the name of the actual node that the template provided by `InputTmpl` uses for autocompletion, if desired. For example, if the name of an element in the input hierarchy is `something_one` (therefore the name in the schema must be the same), but a template named `MySomething.tmpl` should use the name `something_two` instead for autocompletion, then `something_one` can be overridden with  via:
 
 	    something_one{
 	        InputName = "something_two"
@@ -294,6 +317,61 @@ For detailed usage examples and syntax of the ***Child Uniqueness*** rule (inclu
 ---
 
 ## **Input Validation Rules Examples**
+
+### Miscellaneous Validation Examples
+
+For a verbal description of these ***Miscellaneous Validation Details***, please see [Miscellaneous Validation Details](#miscellaneous-validation-details).
+
+ - Schema example:
+
+        test{
+        
+            should_exist_one{
+                MinOccurs=1
+            }
+            should_exist_two{
+                MinOccurs=1
+                value{
+                    MinOccurs=1
+                }
+            }
+            invalid_rule{
+                inside{
+                    BadRuleName=10
+                }
+            }
+        
+        }
+
+ - Input example that **PASSES** validation on schema above:
+
+        
+        test{
+        
+            should_exist_one   = 1
+            should_exist_two   = [ 2 3 4 5 ]
+            
+        }
+
+ - Input example that **FAILS** validation on schema above:
+        
+        test{
+        
+            should_exist_one   = 1
+            should_exist_two   = [ 2 3 4 5 ]
+        
+            should_not_exist_one   = 21
+            should_not_exist_two   = [ 22 23 24 25 ]
+        
+        }
+
+ - HIVE validation messages when validating the failing input shown above against the schema above:
+
+        Validation Error: Invalid Schema Rule: "BadRuleName" line:14 column:13
+
+        line:6 column:5 - Validation Error: /test/should_not_exist_one is not a valid piece of input
+
+        line:9 column:5 - Validation Error: /test/should_not_exist_two is not a valid piece of input
 
 ### MinOccurs Validation Examples        
 
@@ -1565,7 +1643,7 @@ For a verbal description of the ***Exists In*** validation rule, please see [Exi
 
         Validation Error: Invalid Schema Rule: "50" start of range is greater than or equal to "25" end of range at line:92 column:32
 
-        Validation Error: Invalid Schema Rule: Bad ExistsIn Option "BadFlag" at line:80 column:22 - Expected [ Abs BeforePeriod ]
+        Validation Error: Invalid Schema Rule: Bad ExistsIn Option "BadFlag" at line:80 column:22 - Expected [ Abs ]
 
         Validation Error: Invalid Schema Rule: Bad ExistsIn Path "../../../../defineone/value" at line:109 column:24
 
@@ -1667,20 +1745,10 @@ For a verbal description of the ***Not Exists In*** validation rule, please see 
             }
             usefive{
                 value{
-                    NotExistsIn(Zero)=[ "../../defineone/value" ]
-                }
-            }
-            usesix{
-                value{
-                    NotExistsIn(AbsZero)=[ "../../definetwo/value" ]
-                }
-            }
-            useseven{
-                value{
                     NotExistsIn=[ "../../definethree/value" ]
                 }
             }
-            useeight{
+            usesix{
                 value{
                     NotExistsIn(BadFlag)=[ "../../defineone/value" ]
                 }
@@ -1727,21 +1795,10 @@ For a verbal description of the ***Not Exists In*** validation rule, please see 
             usefour="four"
             usefour=[ "four" three ]
             usefour="three"
-        
-            usefive=-600
-            usefive=[ "england" economics ]
-            usefive="math"
-            usefive=0
-        
-            usesix=four
-            usesix=recess
-            usesix=[ "lunch" "one" math ]
-            usesix=two
-            usesix=0
-        
-            useseven=[ 300 -600 ]
-            useseven="one"
-            useseven=[ three italy "england" ]
+       
+            usefive=[ 300 -600 ]
+            usefive="one"
+            usefive=[ three italy "england" ]
         
         }
 
@@ -1753,7 +1810,6 @@ For a verbal description of the ***Not Exists In*** validation rule, please see 
             defineone=two
             defineone=three
             defineone=four
-            defineone=0
         
             definetwo=[ england spain germany italy canada ]
             definetwo=-200
@@ -1784,112 +1840,83 @@ For a verbal description of the ***Not Exists In*** validation rule, please see 
             usefour=[ lunch -200 ]
             usefour=math
         
-            usefive=one
-            usefive=[ "two" three ]
+            usefive=[ recess "math" ]
+            usefive="science"
+            usefive=[ math economics "geography" ]
         
-            usesix=-200
-            usesix=200
-            usesix=[ england canada 600 ]
-            usesix=-600
-        
-            useseven=[ recess "math" ]
-            useseven="science"
-            useseven=[ math economics "geography" ]
-            useseven=0
-        
-            useeight=one
+            usesix=one
         
         }
 
  - HIVE validation messages when validating the failing input shown above against the schema above:
 
-        Validation Error: Invalid Schema Rule: Bad NotExistsIn Option "BadFlag" at line:51 column:25 - Expected [ Abs Zero AbsZero ]
-
-        line:18 column:12 - Validation Error: useone value "two" also exists at "../../defineone/value" on line:4 column:15
-
-        line:19 column:12 - Validation Error: useone value "germany" also exists at "../../definetwo/value" on line:9 column:31
-
-        line:20 column:14 - Validation Error: useone value "three" also exists at "../../defineone/value" on line:5 column:15
-
-        line:20 column:20 - Validation Error: useone value "recess" also exists at "../../definethree/value" on line:16 column:41
-
-        line:20 column:27 - Validation Error: useone value "lunch" also exists at "../../definethree/value" on line:16 column:48
-
-        line:20 column:33 - Validation Error: useone value "italy" also exists at "../../definetwo/value" on line:9 column:39
-
-        line:20 column:39 - Validation Error: useone value "canada" also exists at "../../definetwo/value" on line:9 column:45
-
-        line:22 column:14 - Validation Error: usetwo value "two" also exists at "../../defineone/value" on line:4 column:15
-
-        line:22 column:18 - Validation Error: usetwo value "germany" also exists at "../../definetwo/value" on line:9 column:31
-
-        line:22 column:26 - Validation Error: usetwo value "600" also exists at "../../definetwo/value" on line:12 column:23
-
-        line:23 column:12 - Validation Error: usetwo value "four" also exists at "../../defineone/value" on line:6 column:15
-
-        line:24 column:12 - Validation Error: usetwo value "600" also exists at "../../definetwo/value" on line:12 column:23
-
-        line:25 column:14 - Validation Error: usetwo value "200" also exists at "../../definetwo/value" on line:10 column:15
-
-        line:25 column:19 - Validation Error: usetwo value "200" also exists at "../../definetwo/value" on line:10 column:15
-
-        line:25 column:23 - Validation Error: usetwo value "one" also exists at "../../defineone/value" on line:3 column:15
-
-        line:27 column:14 - Validation Error: usethree value "four" also exists at "../../defineone/value" on line:6 column:15
-
-        line:28 column:14 - Validation Error: usethree value "lunch" also exists at "../../definethree/value" on line:16 column:48
-
-        line:29 column:16 - Validation Error: usethree value "two" also exists at "../../defineone/value" on line:4 column:15
-
-        line:29 column:20 - Validation Error: usethree value "three" also exists at "../../defineone/value" on line:5 column:15
-
-        line:30 column:14 - Validation Error: usethree value "science" also exists at "../../definethree/value" on line:14 column:17
-
-        line:32 column:13 - Validation Error: usefour value "300" also exists at "../../definetwo/value" on line:11 column:15
-
-        line:33 column:15 - Validation Error: usefour value "-600" also exists at "../../definetwo/value" on line:12 column:23
-
-        line:33 column:20 - Validation Error: usefour value "economics" also exists at "../../definethree/value" on line:16 column:29
-
-        line:34 column:13 - Validation Error: usefour value "recess" also exists at "../../definethree/value" on line:16 column:41
-
-        line:35 column:15 - Validation Error: usefour value "lunch" also exists at "../../definethree/value" on line:16 column:48
-
-        line:35 column:21 - Validation Error: usefour value "-200" also exists at "../../definetwo/value" on line:10 column:15
-
-        line:36 column:13 - Validation Error: usefour value "math" also exists at "../../definethree/value" on line:15 column:17
-
-        line:38 column:13 - Validation Error: usefive value "one" also exists at "../../defineone/value" on line:3 column:15
-
-        line:39 column:15 - Validation Error: usefive value "two" also exists at "../../defineone/value" on line:4 column:15
-
-        line:39 column:21 - Validation Error: usefive value "three" also exists at "../../defineone/value" on line:5 column:15
-
-        line:41 column:12 - Validation Error: usesix value "200" also exists at "../../definetwo/value" on line:10 column:15
-
-        line:42 column:12 - Validation Error: usesix value "200" also exists at "../../definetwo/value" on line:10 column:15
-
-        line:43 column:14 - Validation Error: usesix value "england" also exists at "../../definetwo/value" on line:9 column:17
-
-        line:43 column:22 - Validation Error: usesix value "canada" also exists at "../../definetwo/value" on line:9 column:45
-
-        line:43 column:29 - Validation Error: usesix value "600" also exists at "../../definetwo/value" on line:12 column:23
-
-        line:44 column:12 - Validation Error: usesix value "600" also exists at "../../definetwo/value" on line:12 column:23
-
-        line:46 column:16 - Validation Error: useseven value "recess" also exists at "../../definethree/value" on line:16 column:41
-
-        line:46 column:23 - Validation Error: useseven value "math" also exists at "../../definethree/value" on line:15 column:17
-
-        line:47 column:14 - Validation Error: useseven value "science" also exists at "../../definethree/value" on line:14 column:17
-
-        line:48 column:16 - Validation Error: useseven value "math" also exists at "../../definethree/value" on line:15 column:17
-
-        line:48 column:21 - Validation Error: useseven value "economics" also exists at "../../definethree/value" on line:16 column:29
-
-        line:48 column:31 - Validation Error: useseven value "geography" also exists at "../../definethree/value" on line:16 column:19
-
-        line:49 column:14 - Validation Error: useseven value "0" also exists at "../../definethree/value" on line:16 column:39
+        Validation Error: Invalid Schema Rule: Bad NotExistsIn Option "BadFlag" at line:41 column:25 - Expected [ Abs ]
+        
+        line:17 column:12 - Validation Error: useone value "two" also exists at "../../defineone/value" on line:4 column:15
+        
+        line:18 column:12 - Validation Error: useone value "germany" also exists at "../../definetwo/value" on line:8 column:31
+        
+        line:19 column:14 - Validation Error: useone value "three" also exists at "../../defineone/value" on line:5 column:15
+        
+        line:19 column:20 - Validation Error: useone value "recess" also exists at "../../definethree/value" on line:15 column:41
+        
+        line:19 column:27 - Validation Error: useone value "lunch" also exists at "../../definethree/value" on line:15 column:48
+        
+        line:19 column:33 - Validation Error: useone value "italy" also exists at "../../definetwo/value" on line:8 column:39
+        
+        line:19 column:39 - Validation Error: useone value "canada" also exists at "../../definetwo/value" on line:8 column:45
+        
+        line:21 column:14 - Validation Error: usetwo value "two" also exists at "../../defineone/value" on line:4 column:15
+        
+        line:21 column:18 - Validation Error: usetwo value "germany" also exists at "../../definetwo/value" on line:8 column:31
+        
+        line:21 column:26 - Validation Error: usetwo value "600" also exists at "../../definetwo/value" on line:11 column:23
+        
+        line:22 column:12 - Validation Error: usetwo value "four" also exists at "../../defineone/value" on line:6 column:15
+        
+        line:23 column:12 - Validation Error: usetwo value "600" also exists at "../../definetwo/value" on line:11 column:23
+        
+        line:24 column:14 - Validation Error: usetwo value "200" also exists at "../../definetwo/value" on line:9 column:15
+        
+        line:24 column:19 - Validation Error: usetwo value "200" also exists at "../../definetwo/value" on line:9 column:15
+        
+        line:24 column:23 - Validation Error: usetwo value "one" also exists at "../../defineone/value" on line:3 column:15
+        
+        line:26 column:14 - Validation Error: usethree value "four" also exists at "../../defineone/value" on line:6 column:15
+        
+        line:27 column:14 - Validation Error: usethree value "lunch" also exists at "../../definethree/value" on line:15 column:48
+        
+        line:28 column:16 - Validation Error: usethree value "two" also exists at "../../defineone/value" on line:4 column:15
+        
+        line:28 column:20 - Validation Error: usethree value "three" also exists at "../../defineone/value" on line:5 column:15
+        
+        line:29 column:14 - Validation Error: usethree value "science" also exists at "../../definethree/value" on line:13 column:17
+        
+        line:31 column:13 - Validation Error: usefour value "300" also exists at "../../definetwo/value" on line:10 column:15
+        
+        line:32 column:15 - Validation Error: usefour value "-600" also exists at "../../definetwo/value" on line:11 column:23
+        
+        line:32 column:20 - Validation Error: usefour value "economics" also exists at "../../definethree/value" on line:15 column:29
+        
+        line:33 column:13 - Validation Error: usefour value "recess" also exists at "../../definethree/value" on line:15 column:41
+        
+        line:34 column:15 - Validation Error: usefour value "lunch" also exists at "../../definethree/value" on line:15 column:48
+        
+        line:34 column:21 - Validation Error: usefour value "-200" also exists at "../../definetwo/value" on line:9 column:15
+        
+        line:35 column:13 - Validation Error: usefour value "math" also exists at "../../definethree/value" on line:14 column:17
+        
+        line:37 column:15 - Validation Error: usefive value "recess" also exists at "../../definethree/value" on line:15 column:41
+        
+        line:37 column:22 - Validation Error: usefive value "math" also exists at "../../definethree/value" on line:14 column:17
+        
+        line:38 column:13 - Validation Error: usefive value "science" also exists at "../../definethree/value" on line:13 column:17
+        
+        line:39 column:15 - Validation Error: usefive value "math" also exists at "../../definethree/value" on line:14 column:17
+        
+        line:39 column:20 - Validation Error: usefive value "economics" also exists at "../../definethree/value" on line:15 column:29
+        
+        line:39 column:30 - Validation Error: usefive value "geography" also exists at "../../definethree/value" on line:15 column:19
 
 
 ### SumOver Validation Examples        
@@ -2783,8 +2810,6 @@ For a verbal description of the ***Child Uniqueness*** validation rule, please s
             ChildUniqueness          = [ one/value                       ]
             ChildUniqueness          = [ one/value two/value             ]
             ChildUniqueness(Abs)     = [           two/value three/value ]
-            ChildUniqueness(Zero)    = [ one/value           three/value ]
-            ChildUniqueness(AbsZero) = [ one/value two/value three/value ]
             badflags{
                 inside{
                     ChildUniqueness(BadFlag) = [ four/value              ]
@@ -2815,12 +2840,12 @@ For a verbal description of the ***Child Uniqueness*** validation rule, please s
         
         test{
         
-            one=[ a b c 0 ]
+            one=[ 12 a b 11 c 0 -4 ]
             one=d
             one=e
-            one=[ f g h ]
+            one=[ f -12 g h ]
         
-            two=[ 1 2 3 ]
+            two=[ 1 2 3 -11 ]
             two=4
             two=5
             two=[ 6 7 8 ]
@@ -2850,7 +2875,7 @@ For a verbal description of the ***Child Uniqueness*** validation rule, please s
             three=[ 8 "@" c ]
             three="$"
             three="%"
-            three=[ "^" b 0 "*" ]
+            three=[ "^" b 0 -7 "*" ]
         
             badflags{
             }
@@ -2859,152 +2884,52 @@ For a verbal description of the ***Child Uniqueness*** validation rule, please s
 
  - HIVE validation messages when validating the failing input shown above against the schema above:
 
-        Validation Error: Invalid Schema Rule: Bad ChildUniqueness Option "BadFlag" at line:10 column:29 - Expected [ Abs Zero AbsZero ]
-
+        Validation Error: Invalid Schema Rule: Bad ChildUniqueness Option "BadFlag" at line:8 column:29 - Expected [ Abs ]
+        
         line:3 column:13 - Validation Error: one/value value "b" also exists at "one/value" on line:6 column:13
-
+        
         line:3 column:13 - Validation Error: one/value value "b" also exists at "one/value" on line:6 column:13
-
-        line:3 column:13 - Validation Error: one/value value "b" also exists at "one/value" on line:6 column:13
-
-        line:3 column:13 - Validation Error: one/value value "b" also exists at "one/value" on line:6 column:13
-
-        line:3 column:15 - Validation Error: one/value value "c" also exists at "three/value" on line:13 column:19
-
-        line:3 column:15 - Validation Error: one/value value "c" also exists at "three/value" on line:13 column:19
-
-        line:5 column:9 - Validation Error: one/value value "%" also exists at "three/value" on line:15 column:11
-
+        
         line:5 column:9 - Validation Error: one/value value "%" also exists at "two/value" on line:9 column:9
-
-        line:5 column:9 - Validation Error: one/value value "%" also exists at "two/value" on line:9 column:9
-
-        line:6 column:11 - Validation Error: one/value value "8" also exists at "three/value" on line:13 column:13
-
+        
         line:6 column:11 - Validation Error: one/value value "8" also exists at "two/value" on line:11 column:15
-
-        line:6 column:11 - Validation Error: one/value value "8" also exists at "two/value" on line:11 column:15
-
+        
         line:6 column:13 - Validation Error: one/value value "b" also exists at "one/value" on line:3 column:13
-
+        
         line:6 column:13 - Validation Error: one/value value "b" also exists at "one/value" on line:3 column:13
-
-        line:6 column:13 - Validation Error: one/value value "b" also exists at "one/value" on line:3 column:13
-
-        line:6 column:13 - Validation Error: one/value value "b" also exists at "one/value" on line:3 column:13
-
+        
         line:8 column:13 - Validation Error: two/value value "b" also exists at "one/value" on line:3 column:13
-
-        line:8 column:13 - Validation Error: two/value value "b" also exists at "one/value" on line:3 column:13
-
+        
         line:8 column:13 - Validation Error: two/value value "b" also exists at "three/value" on line:16 column:17
-
+        
         line:8 column:15 - Validation Error: two/value value "3" also exists at "two/value" on line:11 column:17
-
-        line:8 column:15 - Validation Error: two/value value "3" also exists at "two/value" on line:11 column:17
-
+        
         line:8 column:17 - Validation Error: two/value value "0" also exists at "three/value" on line:16 column:19
-
+        
         line:9 column:9 - Validation Error: two/value value "%" also exists at "one/value" on line:5 column:9
-
-        line:9 column:9 - Validation Error: two/value value "%" also exists at "one/value" on line:5 column:9
-
+        
         line:9 column:9 - Validation Error: two/value value "%" also exists at "three/value" on line:15 column:11
-
-        line:10 column:9 - Validation Error: two/value value "*" also exists at "three/value" on line:16 column:21
-
-        line:10 column:9 - Validation Error: two/value value "*" also exists at "three/value" on line:16 column:21
-
+        
+        line:10 column:9 - Validation Error: two/value value "*" also exists at "three/value" on line:16 column:24
+        
+        line:11 column:13 - Validation Error: two/value value "7" also exists at "three/value" on line:16 column:21
+        
         line:11 column:15 - Validation Error: two/value value "8" also exists at "one/value" on line:6 column:11
-
-        line:11 column:15 - Validation Error: two/value value "8" also exists at "one/value" on line:6 column:11
-
+        
         line:11 column:15 - Validation Error: two/value value "8" also exists at "three/value" on line:13 column:13
-
+        
         line:11 column:17 - Validation Error: two/value value "3" also exists at "two/value" on line:8 column:15
-
-        line:11 column:17 - Validation Error: two/value value "3" also exists at "two/value" on line:8 column:15
-
-        line:13 column:13 - Validation Error: three/value value "8" also exists at "one/value" on line:6 column:11
-
-        line:13 column:13 - Validation Error: three/value value "8" also exists at "one/value" on line:6 column:11
-
+        
         line:13 column:13 - Validation Error: three/value value "8" also exists at "two/value" on line:11 column:15
-
-        line:13 column:19 - Validation Error: three/value value "c" also exists at "one/value" on line:3 column:15
-
-        line:13 column:19 - Validation Error: three/value value "c" also exists at "one/value" on line:3 column:15
-
-        line:15 column:11 - Validation Error: three/value value "%" also exists at "one/value" on line:5 column:9
-
-        line:15 column:11 - Validation Error: three/value value "%" also exists at "one/value" on line:5 column:9
-
+        
         line:15 column:11 - Validation Error: three/value value "%" also exists at "two/value" on line:9 column:9
-
-        line:16 column:17 - Validation Error: three/value value "b" also exists at "one/value" on line:3 column:13
-
-        line:16 column:17 - Validation Error: three/value value "b" also exists at "one/value" on line:3 column:13
-
+        
         line:16 column:17 - Validation Error: three/value value "b" also exists at "two/value" on line:8 column:13
-
+        
         line:16 column:19 - Validation Error: three/value value "0" also exists at "two/value" on line:8 column:17
-
-        line:16 column:21 - Validation Error: three/value value "*" also exists at "two/value" on line:10 column:9
-
-        line:16 column:21 - Validation Error: three/value value "*" also exists at "two/value" on line:10 column:9
-
-
-### Miscellaneous Validation Examples
-
- - Schema example:
-
-        test{
         
-            should_exist_one{
-                MinOccurs=1
-            }
-            should_exist_two{
-                MinOccurs=1
-                value{
-                    MinOccurs=1
-                }
-            }
-            invalid_rule{
-                inside{
-                    BadRuleName=10
-                }
-            }
+        line:16 column:21 - Validation Error: three/value value "7" also exists at "two/value" on line:11 column:13
         
-        }
-
- - Input example that **PASSES** validation on schema above:
-
-        
-        test{
-        
-            should_exist_one   = 1
-            should_exist_two   = [ 2 3 4 5 ]
-            
-        }
-
- - Input example that **FAILS** validation on schema above:
-        
-        test{
-        
-            should_exist_one   = 1
-            should_exist_two   = [ 2 3 4 5 ]
-        
-            should_not_exist_one   = 21
-            should_not_exist_two   = [ 22 23 24 25 ]
-        
-        }
-
- - HIVE validation messages when validating the failing input shown above against the schema above:
-
-        Validation Error: Invalid Schema Rule: "BadRuleName" line:14 column:13
-
-        line:6 column:5 - Validation Error: /test/should_not_exist_one is not a valid piece of input
-
-        line:9 column:5 - Validation Error: /test/should_not_exist_two is not a valid piece of input
+        line:16 column:24 - Validation Error: three/value value "*" also exists at "two/value" on line:10 column:9
 
 ---
