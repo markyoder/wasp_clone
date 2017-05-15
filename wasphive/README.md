@@ -129,7 +129,7 @@ The document layout is as follows:
         Validation Error: Invalid Schema Rule: MESSAGE line:X column:Y
 
 
-	*These messages denote an actual error in the schema file (not the input) at the provided line and column number.*
+	*This message example denotes an actual error in the schema file (not the input) at the provided line and column number.*
  
 For examples of these ***Miscellaneous Validation Details*** (including schemas, inputs, and expected validation messages), please see [Miscellaneous Validation Examples](#miscellaneous-validation-examples).
 
