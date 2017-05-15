@@ -111,15 +111,18 @@ The document layout is as follows:
 
 1. Problems with the ***input*** file are reported in the form:
         
-            line:X column:Y - Validation Error: MESSAGE
+        line:X column:Y - Validation Error: MESSAGE
 
-		The NEAMS Workbench captures the line and column reported so that the offending input elements can be navigated to simply by clicking on the message.
+
+	*The NEAMS Workbench captures the line and column reported so that the offending input elements can be navigated to simply by clicking on the message.*
+	
             
 2. Problems with the ***schema*** file are reported in the form:
         
-            Validation Error: Invalid Schema Rule: MESSAGE line:X column:Y
+        Validation Error: Invalid Schema Rule: MESSAGE line:X column:Y
 
-		These messages denote an actual error in the schema file at the provided line and column number.
+
+	*These messages denote an actual error in the schema file (not the input) at the provided line and column number.*
  
 For examples of these ***Miscellaneous Validation Details*** (including schemas, inputs, and expected validation messages), please see [Miscellaneous Validation Examples](#miscellaneous-validation-examples).
 
@@ -327,12 +330,9 @@ For a verbal description of these ***Miscellaneous Validation Details***, please
         test{
         
             should_exist_one{
-                MinOccurs=1
             }
             should_exist_two{
-                MinOccurs=1
                 value{
-                    MinOccurs=1
                 }
             }
             invalid_rule{
@@ -350,28 +350,28 @@ For a verbal description of these ***Miscellaneous Validation Details***, please
         
             should_exist_one   = 1
             should_exist_two   = [ 2 3 4 5 ]
-            
+        
         }
 
  - Input example that **FAILS** validation on schema above:
         
         test{
         
-            should_exist_one   = 1
-            should_exist_two   = [ 2 3 4 5 ]
-        
             should_not_exist_one   = 21
             should_not_exist_two   = [ 22 23 24 25 ]
+            invalid_rule{
+                inside=5
+            }
         
         }
 
  - HIVE validation messages when validating the failing input shown above against the schema above:
 
-        Validation Error: Invalid Schema Rule: "BadRuleName" line:14 column:13
-
-        line:6 column:5 - Validation Error: /test/should_not_exist_one is not a valid piece of input
-
-        line:9 column:5 - Validation Error: /test/should_not_exist_two is not a valid piece of input
+        Validation Error: Invalid Schema Rule: "BadRuleName" line:11 column:13
+        
+        line:3 column:5 - Validation Error: /test/should_not_exist_one is not a valid piece of input
+        
+        line:4 column:5 - Validation Error: /test/should_not_exist_two is not a valid piece of input
 
 ### MinOccurs Validation Examples        
 
