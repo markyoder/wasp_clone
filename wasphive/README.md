@@ -69,7 +69,7 @@ The document layout is as follows:
 
 - The [Input Validation Rules Summary](#input-validation-rules-summary) section provides a very brief description of each input validation rule.
 
-- The [Input Validation Rules Details](#input-validation-rules-details) section provides a more detailed description of each input validation rule with verbal examples of how the rules may be applied.
+- The [Input Validation Rules Details](#input-validation-rules-details) section provides a more detailed description of each input validation rule with verbose examples of how the rules may be applied.
 
 - The [Input Assistance Rules Details](#input-assistance-rules-details) section provides descriptions and details of the rules that can be used by NEAMS Workbench for input assistance and autocompletion.
 
