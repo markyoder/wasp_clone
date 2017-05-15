@@ -112,7 +112,7 @@ The document layout is as follows:
 
 ### Miscellaneous Validation Details
 
-- Before exploring the details of all of the validation rules, the first thing to note is that a schema file must represent a superset of the hierarchy of all possible inputs.  This is just to say that every hierarchical node in an input file that is to be validated, must have an exact mapping to a node at the same hierarchical path in the schema. If there is an element in an input file that does not have an exact mapping to an associated node in the schema, then that element is said to be invalid. Once the hierarchy of the schema is built, then rules can be added to every element for validation.
+- Before exploring the details of all of the validation rules, the first thing to note is that a schema file must represent a union of all possible inputs.  This is just to say that every hierarchical node in an input file that is to be validated, must have an exact mapping to a node at the same hierarchical path in the schema. If there is an element in an input file that does not have an exact mapping to an associated node in the schema, then that element is said to be invalid. Once the hierarchy of the schema is built, then rules can be added to every element for validation.
 
 - At the basic level, there are two types of validation messages that may be reported by HIVE.
 
