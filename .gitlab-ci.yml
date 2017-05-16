@@ -6,7 +6,7 @@
       - googletest/
       - testframework/
     expire_in: 1 day
-.windows_before_script: &windows_before_script
+.mingw_windows_before_script: &mingw_windows_before_script
   before_script:
     - set PATH=%PATH%;c:\vendors\mingw-w64\x86_64-4.8.5-posix-seh-rt_v4-rev0\mingw64\bin;c:\vendors\git\2.11\cmd;c:\vendors\cmake\3.6.3\bin;c:\Python27;
 stages:
@@ -113,12 +113,12 @@ analysis_linux:
     - test_linux
   allow_failure: true
 
-configure_windows:
+configure_windows_mingw:
   stage: configure
   tags:
-    - windows
+    - mingw-gcc-4.8.5
   <<: *stage_artifacts
-  <<: *windows_before_script
+  <<: *mingw_windows_before_script
   script:
    - where git
    - git --version
@@ -133,24 +133,24 @@ configure_windows:
    - cd build
    - cmake -DBUILDNAME="Windows-MinGW-GCC-4.8.5-Debug-%CI_BUILD_REF_NAME%" -DCMAKE_BUILD_TYPE=DEBUG -Dwasp_ENABLE_TESTS=ON -Dwasp_ENABLE_ALL_PACKAGES=ON -G "MinGW Makefiles" ..
 
-build_windows:
+build_windows_mingw:
   stage: build
   tags:
-    - windows
+    - mingw-gcc-4.8.5
   <<: *stage_artifacts
-  <<: *windows_before_script
+  <<: *mingw_windows_before_script
   script:
     - cd build/
     - ctest -D ExperimentalStart -D ExperimentalBuild -D ExperimentalSubmit
   dependencies:
     - configure_windows
 
-test_windows:
+test_windows_mingw:
   stage: test
   tags:
-   - windows
+   - mingw-gcc-4.8.5
   <<: *stage_artifacts
-  <<: *windows_before_script
+  <<: *mingw_windows_before_script
   script:
     - cd build
     - ctest -D ExperimentalTest -D ExperimentalSubmit
