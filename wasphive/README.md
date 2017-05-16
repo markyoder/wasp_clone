@@ -3,6 +3,7 @@
 ## **Table of Contents**
 
 1. [Introduction](#introduction)
+
 2. [Input Validation Rules Summary](#input-validation-rules-summary)
 3. [Input Validation Details and Examples](#input-validation-details-and-examples)
  - [Miscellaneous Details and Examples](#miscellaneous-details-and-examples)
@@ -89,7 +90,9 @@ The document layout is as follows:
 
 ### Miscellaneous Details and Examples
 
- - Before exploring the details of all of the validation rules, the first thing to note is that a schema file must represent a union of all possible inputs. This is just to say that every hierarchical node in an input file that is to be validated, must have an exact mapping to a node at the same hierarchical path in the schema. If there is an element in an input file that does not have an exact mapping to an associated node in the schema, then that element is said to be invalid. Once the hierarchy of the schema is built, then rules can be added to every element for validation.
+ - Before exploring the details of all of the validation rules, the first thing to note is that the hierarchy of a schema file must represent a union of all possible input hierarchies. This is just to say that every hierarchical node in an input file that is to be validated, must have an exact mapping to a node at the same hierarchical path in the schema. If there is an element in an input file that does not have an exact mapping to an associated node in the schema, then that element is said to be invalid. Once the hierarchy of the schema is built, then rules can be added to every element for validation. Every element in the input document is represented by a SON object in the schema.  All rules for an element at a given context are represented by either SON flag-values or SON flag-arrays.
+
+ - Hierarchical nodes in the schema that do not have an associated node in the input are not traversed further.  For example if a schema defines nodes **A**, **B**, and **C** at the root level, but a given input only contains nodes **A** and **C** at its root level, then the rules directly inside of node **B** are examined to check if **B** is a required in the input, however the children of node **B** are not traversed further because we already know those children are not in the input.
 
  - At the basic level, there are two types of validation messages that may be reported by HIVE.
 
@@ -136,7 +139,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because both input elements (i.e. `test/should_exist_one` and `test/should_exist_two` exist in the schema and no schema validation rules are broken (no other rules exist for the input elements provided in the input).
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -160,13 +163,13 @@ The document layout is as follows:
     line:4 column:5 - Validation Error: /test/should_not_exist_two is not a valid piece of input
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because (as described above) neither `/test/should_not_exist_one` nor `/test/should_not_exist_two` exist in the schema.  Also, an element exists in the input that has an invalid rule named `BadRuleName` in the schema.
 
 <a href="#top">Back to top</a>
 
 ### MinOccurs Details and Examples
 
- - The ***Minimum Occurrence*** rule describes the minimum number of times that an element must occur under its parent context. It is used mostly to denote if a piece of input is required or optional. Most often, this rule will have a literal constant for minimum allowances. The value must be an integer. For example, `MinOccurs = 0` denotes that this element is optional under its parent context, and `MinOccurs = 1` denotes that this element is required to occur at least once under its parent. This rule may also have a relative input lookup path from the element being validated. If the lookup path describes a set containing a single value, and if that value is an integer, then that value will be used to determine the minimum allowed occurrences of the element being validated.
+ - The ***Minimum Occurrence*** rule describes the minimum number of times that an element must occur under its parent context. It is used mostly to denote if a piece of input is required or optional. Most often, this rule will have a literal constant for minimum allowances. The value must be an integer. For example, `MinOccurs = 0` denotes that this element is optional under its parent context, and `MinOccurs = 1` denotes that this element is required to occur at least once under its parent. This rule may also contain a relative input lookup path from the element being validated. The syntax for this usages is `MinOccurs = "../../some/relative/input/path"` If the lookup path describes a set containing a single value, and if that value is an integer, then that value will be used to determine the minimum allowed occurrences of the element being validated.
 
  - Schema example:
 ```javascript
@@ -246,7 +249,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because `valueone` must occur at least 10 times under its parent context, and it does.  Also, `valuetwo` must occur at least a number of times equal to whatever integer is location at a relative location of  `"../control"`.  A relative lookup from `valuetwo` to `"../control"` yields one integer with the value `15`.  `valuetwo` exists under its parent context at least `15` times, so all is well.
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -314,7 +317,7 @@ The document layout is as follows:
     line:43 column:5 - Validation Error: inside minimum occurrence checks against "../../bad_string" which does not return a valid number
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because `valueone` only occurs 9 times under its parent context when its `MinOccurs` rule in the schema denotes that it should occur at least 10 times. `valuetwo` should occur at least 15 times under its parent context, because its `MinOccurs` rules in the schema contains a path to `"../control"`. A relative lookup from `valuetwo` to `"../control"` yields one integer with the value `15`.  However, `valuetwo` only occurs 14 times under its parent.  The second `test` element in the input has zero `valueone` elements, when there should be at least 10 as previously described ... FINISH - TODO
 
 <a href="#top">Back to top</a>
 
@@ -396,7 +399,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -488,7 +491,7 @@ The document layout is as follows:
     line:67 column:5 - Validation Error: inside minimum occurrence checks against "../../bad_string" which does not return a valid number
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
@@ -549,7 +552,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -583,13 +586,13 @@ The document layout is as follows:
     line:7 column:5 - Validation Error: six value "another string here" is not of type Real
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
 ### ValEnums Details and Examples
 
- - The ***Value Enumerations*** rule contains a static list of values choices. It compares the element's input value with the provided choices. If the element's value is not in the schema's list of allowed enumerations, then this check will fail. Note: This check is case insensitive and if the value being checked is an integer, then leading zeros are ignored.
+ - The ***Value Enumerations*** rule contains a static list of values choices. It compares the element's input value with the provided choices. If the element's value is not in the schema's list of allowed enumerations, then this check will fail. Also, a `REF:` construct may be used to reference a SON array of values that must exist in the schema after an  `EndOfSchema{}` declaration.  These referenced SON arrays can be conveniently defined in one place, but be used by `ValEnums` rules on many different elements. Note: This check is case insensitive and if the value being checked is an integer, then leading zeros are ignored.
 
  - Schema example:
 ```javascript
@@ -634,7 +637,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -663,7 +666,7 @@ The document layout is as follows:
     line:6 column:5 - Validation Error: five value "7" is not one of the allowed values: [ ... "3" "4" "5" "blue" "green" "indigo" ... ]
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
@@ -745,7 +748,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -814,7 +817,7 @@ The document layout is as follows:
     line:21 column:5 - Validation Error: valueone value "a-string" is wrong value type for minimum inclusive value
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
@@ -896,7 +899,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -959,7 +962,7 @@ The document layout is as follows:
     line:21 column:5 - Validation Error: valueone value "a-string" is wrong value type for maximum inclusive value
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
@@ -1045,7 +1048,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -1115,7 +1118,7 @@ The document layout is as follows:
     line:22 column:5 - Validation Error: valueone value "a-string" is wrong value type for minimum exclusive value
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
@@ -1201,7 +1204,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -1265,13 +1268,13 @@ The document layout is as follows:
     line:22 column:5 - Validation Error: valueone value "a-string" is wrong value type for maximum exclusive value
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
 ### ExistsIn Details and Examples
 
- - The ***Exists In*** rule is used as a key to say that an element in the input must be defined somewhere else in the input. This rule will always contain one or more relative input lookup paths from the element being validated. The pieces of input at these paths will be collected into a set. This rule also may contain one or more optional constant values. If these exist, then the constant values will also be added to the set. Then, all of the values in the input being validated by this rule must exist in the set built from the lookup paths and the constant values in order to pass the validation. If any element does not exist in this set, then the validation check fails. This rule may use an optional `Abs` modifier flag that can occur as a parenthetical identifier. The `Abs` modifier flag indicates that the absolute value of all numbers added to the set checked for existence are used. Then, even if the value of the element being validated is negative and a value at one of the rule's relative input lookup paths is positive, but they have the same absolute value, this validation check will pass. Note: this check is case insensitive, and if the value being checked is an integer, then leading zeros are ignored.
+ - The ***Exists In*** rule is used as a key to say that an element in the input must be defined somewhere else in the input. This rule will always contain one or more relative input lookup paths from the element being validated. The pieces of input at these paths will be collected into a set. This rule also may contain one or more optional constant values. If these exist, then the constant values will also be added to the set. Then, all of the values in the input being validated by this rule must exist in the set built from the lookup paths and the constant values in order to pass the validation. If any element does not exist in this set, then the validation check fails. This rule may use an optional `Abs` modifier flag that can occur as a parenthetical identifier. The `Abs` modifier flag indicates that the absolute value of all numbers added to the set checked for existence are used. Then, even if the value of the element being validated is negative and a value at one of the rule's relative input lookup paths is positive, but they have the same absolute value, this validation check will pass. `EXTRA:` may be used within an `ExistsIn` to specify constant values that are allowed. An `EXTRAREF:` construct may be used to reference a SON array of values that must exist in the schema after an  `EndOfSchema{}` declaration.  The values are also allowed by the `ExistsIn` rule.  These referenced SON arrays can be conveniently defined in one place, but be used by `ExistsIn` rules on many different elements. If the allowed `EXTRA` values are actually a contiguous range of integer values, then a `RANGE:[ start end ]` construct may be used for convenience instead of writing a separate `EXTRA:` for every element. These are all shown in the syntax example below. Note: this check is case insensitive, and if the value being checked is an integer, then leading zeros are ignored.
 
  - Schema example:
 ```javascript
@@ -1442,7 +1445,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -1564,7 +1567,7 @@ The document layout is as follows:
     line:42 column:24 - Validation Error: usefive_reg value "-3" does not exist in set: [ ../../definetwo/value ../../definethree/value ]
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
@@ -1667,7 +1670,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -1787,7 +1790,7 @@ The document layout is as follows:
     line:39 column:30 - Validation Error: usefive value "geography" also exists at "../../definethree/value" on line:15 column:19
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
@@ -1836,7 +1839,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -1866,7 +1869,7 @@ The document layout is as follows:
     line:13 column:30 - Validation Error: invalid_array value "something" is wrong value type for sum over
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
@@ -1991,7 +1994,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -2084,7 +2087,7 @@ The document layout is as follows:
     line:63 column:34 - Validation Error: invalid_array value "something" is wrong value type for sum over group
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
@@ -2141,7 +2144,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -2183,7 +2186,7 @@ The document layout is as follows:
     line:19 column:30 - Validation Error: another_array value "something" is wrong value type for increasing
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
@@ -2240,7 +2243,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -2282,7 +2285,7 @@ The document layout is as follows:
     line:19 column:33 - Validation Error: another_array value "something" is wrong value type for decreasing
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
@@ -2368,7 +2371,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -2403,7 +2406,7 @@ The document layout is as follows:
     line:17 column:5 - Validation Error: five has more than one of: [ "../four" "../two" ] - at most one must occur
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
@@ -2465,7 +2468,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -2512,7 +2515,7 @@ The document layout is as follows:
     line:25 column:5 - Validation Error: seven has zero of: [ "../six" ] - exactly one must occur
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
@@ -2581,7 +2584,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -2609,7 +2612,7 @@ The document layout is as follows:
     line:12 column:5 - Validation Error: seven has zero of: [ "../six/value" ] - at least one must occur
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
@@ -2686,7 +2689,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -2729,7 +2732,7 @@ The document layout is as follows:
     line:1 column:1 - Validation Error: test does not have an equal number of: [ four/value five/value six/value ]
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
@@ -2792,7 +2795,7 @@ The document layout is as follows:
     }
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***PASSES*** validation ...
+  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -2870,13 +2873,15 @@ The document layout is as follows:
     line:16 column:24 - Validation Error: three/value value "*" also exists at "two/value" on line:10 column:9
 ```
 
- - ***TODO***: Explain in words ***WHY*** the above input ***FAILS*** validation ...
+  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 <a href="#top">Back to top</a>
 
 ---
 
 ## **Input Assistance Details**
+
+ - Six of the previously described validation rules (`MaxOccurs`, `ChildAtMostOne`, `ChildExactlyOne`, `ValEnums`, `ExistsIn`, and `ValType`) and six new rules (`InputTmpl`, `InputName`, `InputType`, `InputVariants`, `InputDefault`, and `Description`) may also be used by graphical user interfaces to aid with input creation. They may be use for autocompletion assistance or input introspection.
 
 ### MaxOccurs Assistance Details
 
