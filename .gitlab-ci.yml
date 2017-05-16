@@ -123,7 +123,7 @@ configure_windows_mingw:
    - where git
    - git --version
    - where python
-   - python --version   
+   - python --version
    - where cmake
    - cmake --version
    - git clone https://github.com/lefebvre/TriBITS.git TriBITS
@@ -143,7 +143,7 @@ build_windows_mingw:
     - cd build/
     - ctest -D ExperimentalStart -D ExperimentalBuild -D ExperimentalSubmit
   dependencies:
-    - configure_windows
+    - configure_windows_mingw
 
 test_windows_mingw:
   stage: test
@@ -155,4 +155,48 @@ test_windows_mingw:
     - cd build
     - ctest -D ExperimentalTest -D ExperimentalSubmit
   dependencies:
-    - build_windows
+    - build_windows_mingw
+
+configure_windows_vs2013:
+  stage: configure
+  tags:
+    - vs2013
+  <<: *stage_artifacts
+  script:
+    - where git
+    - git --version
+    - where python
+    - python --version
+    - where cmake
+    - cmake --version
+    - git clone https://github.com/lefebvre/TriBITS.git TriBITS
+    - git clone https://github.com/lefebvre/testframework testframework
+    - git clone https://github.com/lefebvre/googletest googletest
+    - mkdir build
+    - cd build
+    - %comspec% /k ""C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"" x86_amd64
+    - cmake -DBUILDNAME="Windows-CL-18-Debug-%CI_BUILD_REF_NAME%" -DCMAKE_BUILD_TYPE=DEBUG -Dwasp_ENABLE_TESTS=ON -Dwasp_ENABLE_ALL_PACKAGES=ON -G "Visual Studio 12 2013 Win64" ..
+
+build_windows_vs2013:
+  stage: build
+  tags:
+    - vs2013
+  <<: *stage_artifacts
+  script:
+    - cd build/
+    - %comspec% /k ""C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"" x86_amd64
+    - ctest -D ExperimentalStart -D ExperimentalBuild -D ExperimentalSubmit
+  dependencies:
+    - configure_windows_vs2013
+
+test_windows_vs2013:
+  stage: test
+  tags:
+    - vs2013
+  <<: *stage_artifacts
+  script:
+    - cd build
+    - %comspec% /k ""C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"" x86_amd64
+    - ctest -D ExperimentalTest -D ExperimentalSubmit
+  dependencies:
+    - build_windows_vs2013
