@@ -219,8 +219,8 @@ configure_windows_intel15:
     - mkdir build
     - cd build
     - cmd /E:ON /V:ON /K ""C:\Program Files (x86)\Intel\Composer XE 2015\bin\ipsxe-comp-vars.bat" intel64 vs2013"
-    - set CC=icl
-    - set CXX=icl
+    - set CC=c:\Program Files (x86)\Intel\Composer XE 2015\bin\intel64\icl.exe
+    - set CXX=c:\Program Files (x86)\Intel\Composer XE 2015\bin\intel64\icl.exe
     - cmake -DBUILDNAME="Windows-Intel-15.0-Release-%CI_BUILD_REF_NAME%" -DCMAKE_BUILD_TYPE:STRING=RELEASE -Dwasp_ENABLE_TESTS:BOOL=ON -Dwasp_ENABLE_ALL_PACKAGES:BOOL=ON -G "NMake Makefiles" ..
 
 build_windows_intel15:
