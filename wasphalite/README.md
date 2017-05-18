@@ -55,7 +55,8 @@ Example template attribute statements are :
 
 Formal attribute expression syntax looks as follows:
 
-` open_delim (name|expression) [':'['?''|'] format? seperator? range* use? close_delim`
+` open_delim (name|expression) (':'['?''|'] format? separator? range* use? )? close_delim`
+
 Where :
 1. `open_delim` is configurable, default of '<'
 2. `?` indicates optional attribute evaluation - allows undefined variables to silently fail - MUST OCCUR immediately after the attribute options delimiter, ':'.  
