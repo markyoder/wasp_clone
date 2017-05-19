@@ -223,7 +223,7 @@ Integer examples:
 |---------------------------|----------------|--------------------------------------------------------------------------------------------------------|
 | '\<3:fmt=%d\>'            | `'3'`            | Print the integer 3 as an integer                                                                 |
 | '\<30:fmt=%4d\>'          | `'  30'`         | Print the integer 30 with a width of 4 as an integer                                               |
-| '\<-30:fmt=%-5d\>'        | `'30   '`        | Print the integer 30 left justified with a width of 5 as an integer                           |
+| '\<-30:fmt=%-5d\>'        | `'-30  '`        | Print the integer -30 left justified with a width of 5 as an integer                           |
 | '\<-30:fmt=%05d\>'        | `'-0030'`        | Print the integer -30 with a width of 5 as an integer padded with zeros                             |
 | '\<30:fmt=% d\>'          | `' 30'`          | Print the integer 30 with a leading space due to positive value  |
 | '\<x=-30:fmt=% d\>'       | `'-30'`          | Print the variable x (-30) and if x > 0 include a leading space |
