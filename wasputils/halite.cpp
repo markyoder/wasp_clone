@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     }
 
     if( !wasp::expand_template(std::cout,std::cerr,std::cerr,argv[1]
-                               ,argc == 3 ? argv[2] : "" ))
+                               ,argc == 3 ? argv[2] : "",true,true ))
     {
         return -1;
     }
