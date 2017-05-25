@@ -15,7 +15,7 @@ bool GetPotInterpreter<S>::parse(std::istream& in
                                         , std::size_t startColumn)
 {
     return Interpreter<S>::template parse_impl<GetPotParser>(in
-                ,"input"
+                ,"stream input"
                 ,startLine
                 ,startColumn);
 }
