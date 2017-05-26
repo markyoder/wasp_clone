@@ -4,7 +4,7 @@
  *
  */
 
-
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include "waspcore/Object.h"
@@ -32,9 +32,18 @@ int main(int argc, char** argv) {
         std::cout<<"\ti.e., halite /path/to/definition.tmpl /path/to/some/data.json "<<std::endl;
         return 1;
     }
-
-    if( !wasp::expand_template(std::cout,std::cerr,std::cerr,argv[1]
-                               ,argc == 3 ? argv[2] : "",true,true ))
+    std::string tmpl = argv[1];
+    std::string json = "";
+    if( argc == 3 )
+    {
+        json = argv[2];
+        if( tmpl.size()> 5 && tmpl.substr(tmpl.size()-5) == ".json" )
+        {
+            std::swap(tmpl,json);
+        }
+    }
+    if( !wasp::expand_template(std::cout,std::cerr,std::cerr,tmpl
+                               ,json,true,true ))
     {
         return -1;
     }
