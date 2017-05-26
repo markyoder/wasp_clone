@@ -1,6 +1,6 @@
 test{
 
-    ChildExactlyOne = [ one two three ]
+    ChildExactlyOne = [ one=Red two three ]
 
     one{
     }
@@ -16,7 +16,7 @@ test{
     six{
     }
     seven{
-        ChildExactlyOne=[ "../six" ]
+        ChildExactlyOne=[ "../six"=no "../four"=YES ]
     }
 
 }
