@@ -519,8 +519,7 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
         }
         else if (ruleValue == "IntOrYesOrNo") {
             std::string lowerString = input_selection.adapted(i).to_string();
-            transform(lowerString.begin(), lowerString.end(),
-                      lowerString.begin(), ::tolower);
+            transform(lowerString.begin(), lowerString.end(), lowerString.begin(), ::tolower);
 
             if ((lowerString != "yes") && (lowerString != "no")) {
                 int itest;
@@ -656,9 +655,7 @@ bool HIVE::validateValEnums(SchemaAdapter& schema_node, InputAdapter& input_node
 
                     for (int ic = children.size() - 1; ic >= 0; ic--) {
                         std::string lowerString = children[ic].to_string();
-                        transform(lowerString.begin(),
-                                  lowerString.end(),
-                                  lowerString.begin(), ::tolower);
+                        transform(lowerString.begin(), lowerString.end(), lowerString.begin(), ::tolower);
                         enumRefIter->second.insert(lowerString);
                     }
                 }
@@ -672,8 +669,7 @@ bool HIVE::validateValEnums(SchemaAdapter& schema_node, InputAdapter& input_node
 
             for (int i = children.size() - 1; i >= 0; i--) {
                 std::string lowerString = children[i].to_string();
-                transform(lowerString.begin(),
-                          lowerString.end(), lowerString.begin(), ::tolower);
+                transform(lowerString.begin(), lowerString.end(), lowerString.begin(), ::tolower);
                 enumSet.insert(lowerString);
             }
             enumSetPtr = &enumSet;
@@ -711,8 +707,7 @@ bool HIVE::validateValEnums(SchemaAdapter& schema_node, InputAdapter& input_node
             }
         }
 
-        transform(tempString.begin(), tempString.end(),
-                  tempString.begin(), ::tolower);
+        transform(tempString.begin(), tempString.end(), tempString.begin(), ::tolower);
 
         if (enumSetPtr->find(tempString) == enumSetPtr->end()) {
             // CLOSEST MATCH ENUM LIST REPORTING
@@ -1453,8 +1448,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
                          tmpschema_node.non_decorative_children();
                  for(int ic = children.size()-1; ic >= 0; ic--){
                      std::string lowerString = children[ic].to_string();
-                     transform(lowerString.begin(), lowerString.end(),
-                               lowerString.begin(), ::tolower);
+                     transform(lowerString.begin(), lowerString.end(), lowerString.begin(), ::tolower);
                      enumRefIter->second.insert(lowerString);
                  }
 
@@ -1473,9 +1467,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
                  std::string lowerString = children[loop].to_string();
                  if( lowerString == "NumericalConstants" ) numbersAreOkay = true;
                  else{
-                    transform(lowerString.begin(), lowerString.end(),
-                           lowerString.begin(), ::tolower);
-
+                    transform(lowerString.begin(), lowerString.end(), lowerString.begin(), ::tolower);
                     lookupSet.insert(lowerString);
                  }
                  continue;
@@ -1603,8 +1595,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
                      }
                      if (selectionLookup.adapted(j).has_parent() &&
                              std::strcmp(selectionLookup.adapted(j).parent().name(),"alias")!=0){
-                         transform(tempString.begin(), tempString.end(),
-                                   tempString.begin(), ::tolower);
+                         transform(tempString.begin(), tempString.end(), tempString.begin(), ::tolower);
                      }
                      lookupSet.insert(tempString);
                  }
@@ -1630,8 +1621,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
          }
 
          std::string lowerLookupString = lookupString;
-         transform(lowerLookupString.begin(), lowerLookupString.end(),
-                   lowerLookupString.begin(), ::tolower);
+         transform(lowerLookupString.begin(), lowerLookupString.end(), lowerLookupString.begin(), ::tolower);
 
          if ((std::strcmp(selection.adapted(i).parent().name(),"alias")==0
                    ||
@@ -2243,10 +2233,8 @@ bool HIVE::validateIncreaseOver(SchemaAdapter           & schema_node,
 
     if ((ruleValue != "Mono") && (ruleValue != "Strict")) {
         errors.push_back(Error::BadOption(schema_node.name(), ruleValue,
-                                          schema_node.non_decorative_children()[
-                                              0].line(),
-                                          schema_node.non_decorative_children()[
-                                              0].column(),
+                                          schema_node.non_decorative_children()[0].line(),
+                                          schema_node.non_decorative_children()[0].column(),
                                           "Mono Strict"));
         return false;
     }
@@ -2344,15 +2332,12 @@ bool HIVE::validateIncreaseOver(SchemaAdapter           & schema_node,
                     }
 
                     errors.push_back(Error::WrongTypeForRule(incrSelection.
-                                                             adapted(j +
-                                                                     1).line(),
+                                                             adapted(j + 1).line(),
                                                              incrSelection.
-                                                             adapted(j +
-                                                                     1).column(),
+                                                             adapted(j + 1).column(),
                                                              valueNodeName,
                                                              incrSelection.
-                                                             adapted(j +
-                                                                     1).
+                                                             adapted(j + 1).
                                                              to_string(),
                                                              ruleName));
                     pass         = false;
@@ -2373,11 +2358,9 @@ bool HIVE::validateIncreaseOver(SchemaAdapter           & schema_node,
                                                              ruleName,
                                                              ruleId,
                                                              incrSelection.
-                                                             adapted(j +
-                                                                     1).line(),
+                                                             adapted(j + 1).line(),
                                                              incrSelection.
-                                                             adapted(j +
-                                                                     1).column()));
+                                                             adapted(j + 1).column()));
                     pass = false;
                 }
 
@@ -2396,11 +2379,9 @@ bool HIVE::validateIncreaseOver(SchemaAdapter           & schema_node,
                                                              ruleName,
                                                              ruleId,
                                                              incrSelection.
-                                                             adapted(j +
-                                                                     1).line(),
+                                                             adapted(j + 1).line(),
                                                              incrSelection.
-                                                             adapted(j +
-                                                                     1).column()));
+                                                             adapted(j + 1).column()));
                     pass = false;
                 }
             }
@@ -2422,10 +2403,8 @@ bool HIVE::validateDecreaseOver(SchemaAdapter           & schema_node,
     bool pass             = true;
     if ((ruleValue != "Mono") && (ruleValue != "Strict")) {
         errors.push_back(Error::BadOption(schema_node.name(), ruleValue,
-                                          schema_node.non_decorative_children()[
-                                              0].line(),
-                                          schema_node.non_decorative_children()[
-                                              0].column(),
+                                          schema_node.non_decorative_children()[0].line(),
+                                          schema_node.non_decorative_children()[0].column(),
                                           "Mono Strict"));
         return false;
     }
@@ -2523,15 +2502,12 @@ bool HIVE::validateDecreaseOver(SchemaAdapter           & schema_node,
                     }
 
                     errors.push_back(Error::WrongTypeForRule(decrSelection.
-                                                             adapted(j +
-                                                                     1).line(),
+                                                             adapted(j + 1).line(),
                                                              decrSelection.
-                                                             adapted(j +
-                                                                     1).column(),
+                                                             adapted(j + 1).column(),
                                                              valueNodeName,
                                                              decrSelection.
-                                                             adapted(j +
-                                                                     1).
+                                                             adapted(j + 1).
                                                              to_string(),
                                                              ruleName));
                     pass         = false;
@@ -2552,11 +2528,9 @@ bool HIVE::validateDecreaseOver(SchemaAdapter           & schema_node,
                                                              ruleName,
                                                              ruleId,
                                                              decrSelection.
-                                                             adapted(j +
-                                                                     1).line(),
+                                                             adapted(j + 1).line(),
                                                              decrSelection.
-                                                             adapted(j +
-                                                                     1).column()));
+                                                             adapted(j + 1).column()));
                     pass = false;
                 }
 
@@ -2575,11 +2549,9 @@ bool HIVE::validateDecreaseOver(SchemaAdapter           & schema_node,
                                                              ruleName,
                                                              ruleId,
                                                              decrSelection.
-                                                             adapted(j +
-                                                                     1).line(),
+                                                             adapted(j + 1).line(),
                                                              decrSelection.
-                                                             adapted(j +
-                                                                     1).column()));
+                                                             adapted(j + 1).column()));
                     pass = false;
                 }
             }
@@ -2616,9 +2588,8 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter           & schema_node,
     for (int j = 0; j < children.size(); j++) {
         std::string lookupPath;
 
-        if (children[j].child_count() ==
-            0) lookupPath = children[j].to_string();
-        else                                   lookupPath = children[j].name();
+        if (children[j].child_count() == 0) lookupPath = children[j].to_string();
+        else                                lookupPath = children[j].name();
 
         SIRENInterpreter<> childSelector(look_up_error);
 
@@ -2636,8 +2607,11 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter           & schema_node,
             if (childSelection.size() != 0) {
                 if (children[j].child_count() != 0) {
                     for (size_t k = 0; k < childSelection.size(); k++) {
-                        if (childSelection.adapted(k).to_string() ==
-                            children[j].to_string()) {
+                        std::string selectionLower = childSelection.adapted(k).to_string();
+                        std::string childrenJLower = children[j].to_string();
+                        transform(selectionLower.begin(), selectionLower.end(), selectionLower.begin(), ::tolower);
+                        transform(childrenJLower.begin(), childrenJLower.end(), childrenJLower.begin(), ::tolower);
+                        if (selectionLower == childrenJLower) {
                             selectedChildrenCount[i]++;
                             break;
                         }
@@ -2694,9 +2668,8 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter           & schema_node,
     for (int j = 0; j < children.size(); j++) {
         std::string lookupPath;
 
-        if (children[j].child_count() ==
-            0) lookupPath = children[j].to_string();
-        else                                   lookupPath = children[j].name();
+        if (children[j].child_count() == 0) lookupPath = children[j].to_string();
+        else                                lookupPath = children[j].name();
         std::stringstream  look_up_error;
         SIRENInterpreter<> childSelector(look_up_error);
 
@@ -2714,8 +2687,11 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter           & schema_node,
             if (childSelection.size() != 0) {
                 if (children[j].child_count() != 0) {
                     for (size_t k = 0; k < childSelection.size(); k++) {
-                        if (childSelection.adapted(k).to_string() ==
-                            children[j].to_string()) {
+                        std::string selectionLower = childSelection.adapted(k).to_string();
+                        std::string childrenJLower = children[j].to_string();
+                        transform(selectionLower.begin(), selectionLower.end(), selectionLower.begin(), ::tolower);
+                        transform(childrenJLower.begin(), childrenJLower.end(), childrenJLower.begin(), ::tolower);
+                        if (selectionLower == childrenJLower) {
                             selectionChildrenFound[i]++;
                             break;
                         }
@@ -2792,8 +2768,8 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter           & schema_node,
     for (int j = 0; j < children.size(); j++) {
         std::string lookupPath;
 
-        if(children[j].child_count() == 0) lookupPath = children[j].to_string();
-        else                               lookupPath = children[j].name();
+        if (children[j].child_count() == 0) lookupPath = children[j].to_string();
+        else                                lookupPath = children[j].name();
         std::stringstream  look_up_error;
         SIRENInterpreter<> childSelector(look_up_error);
 
@@ -2810,8 +2786,11 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter           & schema_node,
             if (childSelection.size() != 0) {
                 if (children[j].child_count() != 0) {
                     for (size_t k = 0; k < childSelection.size(); k++) {
-                        if (childSelection.adapted(k).to_string() ==
-                            children[j].to_string()) {
+                        std::string selectionLower = childSelection.adapted(k).to_string();
+                        std::string childrenJLower = children[j].to_string();
+                        transform(selectionLower.begin(), selectionLower.end(), selectionLower.begin(), ::tolower);
+                        transform(childrenJLower.begin(), childrenJLower.end(), childrenJLower.begin(), ::tolower);
+                        if (selectionLower == childrenJLower) {
                             selectedChildCounts[i]++;
                             break;
                         }

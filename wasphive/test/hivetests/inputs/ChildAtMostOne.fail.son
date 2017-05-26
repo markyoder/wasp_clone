@@ -1,10 +1,10 @@
 
 test{
-    one=1
+    one=Red
     three=2
 }
 test{
-    one=1
+    one=RED
     two=[ 6 7 8 9 ]
     three=3
 }
@@ -13,7 +13,9 @@ test{
     three=5
 }
 test{
-    four=[ 6 7 8 9 ]
+    seven=3
+    four=Yes
     two=5
+    six=No
     five=4
 }

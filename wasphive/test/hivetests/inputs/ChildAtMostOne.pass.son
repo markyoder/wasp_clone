@@ -1,11 +1,11 @@
 
 test{
-    one=1
-    four=4
-    six=6
+    one=Red
+    four=no
+    six=no
 }
 test{
-    four=4
+    four=no
 }
 test{
     two=3
@@ -18,7 +18,7 @@ test{
 }
 test{
     three=[ 2 3 4 ]
-    four=5
+    four=NO
     five=6
 }
 test{
@@ -27,23 +27,23 @@ test{
 }
 test{
     five=6
-    four=5
+    four=NO
 }
 test{
-    one=[ 2 3 4 ]
+    one=red
     seven=5
 }
 test{
-    one=[ 2 3 4 ]
-    six=6
+    one=RED
+    six=No
     seven=5
 }
 test{
-    one=[ 2 3 4 ]
+    one=Red
     five=5
 }
 test{
     two=2
-    six=[ 8 9 10 ]
+    six=NO
     seven=[ 11 12 ]
 }

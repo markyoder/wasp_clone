@@ -1,6 +1,6 @@
 test{
 
-    ChildAtMostOne = [ one two three ]
+    ChildAtMostOne = [ one=Red two three ]
 
     one{
     }
@@ -16,7 +16,7 @@ test{
     six{
     }
     seven{
-        ChildAtMostOne=[ "../six" ]
+        ChildAtMostOne=[ "../six"=no "../four"=YES ]
     }
 
 }

@@ -1,26 +1,30 @@
 
 test{
-    one=1
-    four=4
-    six=6
+    one=red
+    four=no
+    six=No
 }
 test{
     three=[ 2 3 4 ]
-    four=5
+    four=YES
     five=6
 }
 test{
     two=[ 2 3 4 ]
-    four=5
+    four=YES
+    six=No
+    seven=4
     five=6
 }
 test{
     two=2
     five=6
+    seven=3
+    four=yes
 }
 test{
     two=2
     three=[ 5 6 7 ]
-    six=[ 8 9 10 ]
+    six=NO
     seven=[ 11 12 ]
 }

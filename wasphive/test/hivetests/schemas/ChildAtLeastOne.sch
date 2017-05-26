@@ -1,6 +1,6 @@
 test{
 
-    ChildAtLeastOne = [ one 'two/value' 'three/value' ]
+    ChildAtLeastOne = [ one=Red 'two/value' 'three/value' ]
 
     one{
     }
@@ -18,11 +18,9 @@ test{
         ChildAtLeastOne=[ "../four" "../two/value" ]
     }
     six{
-        value{
-        }
     }
     seven{
-        ChildAtLeastOne=[ "../six/value" ]
+        ChildAtLeastOne=[ "../six"=no "../four"=YES ]
     }
 
 }
