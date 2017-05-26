@@ -116,14 +116,14 @@ analysis_linux:
 configure_windows:
   stage: configure
   tags:
-    - windows
+    - mingw-gcc-4.8.5
   <<: *stage_artifacts
   <<: *windows_before_script
   script:
    - where git
    - git --version
    - where python
-   - python --version   
+   - python --version
    - where cmake
    - cmake --version
    - git clone https://github.com/lefebvre/TriBITS.git TriBITS
@@ -136,7 +136,7 @@ configure_windows:
 build_windows:
   stage: build
   tags:
-    - windows
+    - mingw-gcc-4.8.5
   <<: *stage_artifacts
   <<: *windows_before_script
   script:
@@ -148,7 +148,7 @@ build_windows:
 test_windows:
   stage: test
   tags:
-   - windows
+   - mingw-gcc-4.8.5
   <<: *stage_artifacts
   <<: *windows_before_script
   script:
