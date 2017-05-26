@@ -201,7 +201,7 @@ test_windows_vs2013:
   dependencies:
     - build_windows_vs2013
 
-configure_windows_intel15:
+.configure_windows_intel15:
   stage: configure
   tags:
     - intel15
@@ -223,7 +223,7 @@ configure_windows_intel15:
     - set CXX=c:\Program Files (x86)\Intel\Composer XE 2015\bin\intel64\icl.exe
     - cmake -DBUILDNAME="Windows-Intel-15.0-Release-%CI_BUILD_REF_NAME%" -DCMAKE_BUILD_TYPE:STRING=RELEASE -Dwasp_ENABLE_TESTS:BOOL=ON -Dwasp_ENABLE_ALL_PACKAGES:BOOL=ON -G "NMake Makefiles" ..
 
-build_windows_intel15:
+.build_windows_intel15:
   stage: build
   tags:
     - intel15
@@ -235,7 +235,7 @@ build_windows_intel15:
   dependencies:
     - configure_windows_intel15
 
-test_windows_intel15:
+.test_windows_intel15:
   stage: test
   tags:
     - intel15
