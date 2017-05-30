@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include "waspddi/DDInterpreter.h"
+#include "waspddi/DDINodeView.h"
 #include "waspson/SONInterpreter.h"
 #include "waspson/SONNodeView.h"
 #include"wasphive/HIVE.h"
@@ -53,7 +54,7 @@ int main(int argc, char** argv) {
         std::cout<<"***Error : Parsing of "<<argv[2]<<" failed!"<<std::endl;
         return 1;
     }
-    wasp::to_xml(parser.root(),std::cout);
+    wasp::to_xml((DDINodeView<decltype(parser.root())>)parser.root(),std::cout);
     return 0;
 }
 
