@@ -127,6 +127,12 @@ IF ( wasp_ENABLE_waspson )
       NOEXESUFFIX
       INSTALLABLE
     )
+    TRIBITS_ADD_EXECUTABLE(sonschemaskel
+      SOURCES sonschemaskel.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
 ENDIF()
 IF ( wasp_ENABLE_waspjson )
     TRIBITS_ADD_EXECUTABLE(jsonlist
