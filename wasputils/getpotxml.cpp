@@ -6,6 +6,7 @@
 #include "waspcore/version.h"
 #include "waspcore/wasp_bug.h"
 #include "waspgetpot/GetPotInterpreter.h"
+#include "waspgetpot/GetPotNodeView.h"
 using namespace wasp;
 
 int main (int argc, char *argv[])
@@ -39,7 +40,7 @@ int main (int argc, char *argv[])
                          << " nanoseconds with "
                          << parse_time.intervals()
                          << " invervals" << std::endl);
-        wasp::to_xml(interpreter.root(),std::cout);
+        wasp::to_xml((GetPotNodeView<decltype(interpreter.root())>)interpreter.root(),std::cout);
         if( !parsed )
         {
             std::cout<<errors.str()<<std::endl;
