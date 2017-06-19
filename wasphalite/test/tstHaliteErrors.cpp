@@ -258,6 +258,13 @@ TEST(Halite, attribute_options_missing_delimiter_error)
                              ,"attribute_options_missing_delimiter_error.result.txt" // result
                              ));
 }
+TEST(Halite, empty_attribute_substitution_error)
+{
+    test_template(error_test("empty_attribute_substitution_error.tmpl" // tmpl
+                             ,"" // json
+                             ,"empty_attribute_substitution_error.result.txt" // result
+                             ));
+}
 
 //
 // Test the same errors but propogated from
@@ -353,5 +360,12 @@ TEST(Halite, import_with_attribute_options_missing_delimiter_error)
     test_template(error_test("import_with_attribute_options_missing_delimiter_error.tmpl" // tmpl
                              ,"" // json
                              ,"import_with_attribute_options_missing_delimiter_error.result.txt" // result
+                             ));
+}
+TEST(Halite, import_with_empty_attribute_substitution_error)
+{
+    test_template(error_test("import_with_empty_attribute_substitution_error.tmpl" // tmpl
+                             ,"" // json
+                             ,"import_with_empty_attribute_substitution_error.result.txt" // result
                              ));
 }

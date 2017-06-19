@@ -656,6 +656,15 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
     ExprInterpreter<S> expr(Interpreter<S>::error_stream());
     wasp_tagged_line("expression '"<<attr_str.str()<<"' starting on line "<<line<<" and column "<<start_column + m_attribute_start_delim.size());
 
+    // if attribute is empty - then error and return false
+    if(attr_str.str().find_first_not_of(" \t") == std::string::npos)
+    {
+        Interpreter<S>::error_stream()
+            <<"***Error : empty attribute substitution on line "
+            <<line<<" and column "<<column<<"."<<std::endl;
+        return false;
+    }
+
     if( false == expr.parse(attr_str, line, start_column + m_attribute_start_delim.size()) )
     {
         wasp_tagged_line("Failed parsing expression evaluation...");
