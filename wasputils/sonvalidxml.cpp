@@ -26,17 +26,23 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    if( argc != 3 )
+    if ( argc != 3 && ( argc != 4 || std::string(argv[3]) != "--xml") )
     {
         std::cerr<<"Workbench Analysis Sequence Processor (SON) Validator and XML printer"<<std::endl
                 << argv[0]<<" : An application for validating SON formatted input"<<std::endl
                 << "            : and transforming into xml and printing"<<std::endl
-                << "      Usage : "<<argv[0]<<" path/to/SON/formatted/schema path/to/SON/formatted/input"
+                << "      Usage : "<<argv[0]<<" path/to/SON/formatted/schema path/to/SON/formatted/input [--xml]"
                 <<std::endl;
         std::cout<<" Usage : "<<argv[0]<<" --version\t(print version info)"<<std::endl;
         return 1;
     }
-    
+
+    bool xml_output = false;
+    if (argc == 4 && std::string( argv[3] ) == "--xml")
+    {
+        xml_output = true;
+    }  
+
     std::ifstream schema(argv[1]);
     if (schema.fail() || schema.bad()) {
         std::cerr << "Failed to open/read " << argv[1] << std::endl;
@@ -77,8 +83,8 @@ int main(int argc, char** argv) {
     std::vector<std::string> validation_errors;
     bool valid = validation_engine.validate(schema_root,input_root, validation_errors);
     if( !valid )
-    { // TODO - pass xml option if so desired.
-        validation_engine.printMessages(valid, validation_errors, false, argv[2],std::cerr);
+    {
+        validation_engine.printMessages(valid, validation_errors, xml_output, argv[2],std::cerr);
         return 1;
     }
     

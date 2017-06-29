@@ -7,7 +7,7 @@ DDINodeView<TNV>::DDINodeView(std::size_t node_index
     : m_tree_node_index(node_index)
     ,m_tree_data(&nodes)
 {
-    // TODO verify index is legal
+    wasp_require( !this->is_null() );
 }
 template<class TNV>
 DDINodeView<TNV>::DDINodeView(const DDINodeView & orig)

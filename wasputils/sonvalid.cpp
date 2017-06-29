@@ -24,11 +24,19 @@ int main (int argc, char *argv[])
         std::cout<<"Workbench Analysis Sequence Processor (SON) Validator"
                 <<std::endl
                 <<argv[0]<<" : An application for validating SON formatted input."<<std::endl;
-        std::cout<<" Usage : "<<argv[0]<<" path/to/SON/formatted/schema path/to/SON/formatted/input..."
+        std::cout<<" Usage : "<<argv[0]<<" path/to/SON/formatted/schema path/to/SON/formatted/input... [--xml]"
                 <<std::endl;
         std::cout<<" Usage : "<<argv[0]<<" --version\t(print version info)"<<std::endl;
         return 1;
     }
+
+    bool xml_output = false;
+    int argcount = argc;
+    if (argc > 3 && std::string( argv[argc-1] ) == "--xml")
+    {
+        xml_output = true;
+        argcount = argc - 1;
+    }  
 
     std::ifstream schema(argv[1]);
     if (schema.fail() || schema.bad()) {
@@ -56,7 +64,7 @@ int main (int argc, char *argv[])
         return -1;
     }
 
-    for( size_t j = 2; j < argc; ++j)
+    for( size_t j = 2; j < argcount; ++j)
     {
         std::ifstream input(argv[j]);
         if (input.fail() || input.bad()) {
@@ -88,8 +96,8 @@ int main (int argc, char *argv[])
         std::vector<std::string> validation_errors;
         bool valid = validation_engine.validate(schema_root,input_root, validation_errors);
         if( !valid )
-        { // TODO - pass xml option if so desired.
-            validation_engine.printMessages(valid, validation_errors, false, argv[j],std::cout);
+        {
+            validation_engine.printMessages(valid, validation_errors, xml_output, argv[j],std::cout);
         }
     }
 

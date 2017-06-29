@@ -32,12 +32,18 @@ int main(int argc, char** argv) {
     if( argc < 3 ){
         std::cout<<"Usage: "<<std::endl;
         std::cout<<"\t"<<argv[0]<<"schema inputFile(s) "<<std::endl;
-        std::cout<<"\ti.e., "<<argv[0]<<" /path/to/definition.son /path/to/some/input(s)... "<<std::endl;
+        std::cout<<"\ti.e., "<<argv[0]<<" /path/to/definition.son /path/to/some/input(s)... [--xml]"<<std::endl;
         std::cout<<" Usage : "<<argv[0]<<" --version\t(print version info)"<<std::endl;
         return 1;
     }
-    
 
+    bool xml_output = false;
+    int argcount = argc;
+    if (argc > 3 && std::string( argv[argc-1] ) == "--xml")
+    {
+        xml_output = true;
+        argcount = argc - 1;
+    }  
 
     SONInterpreter<TreeNodePool<unsigned int, unsigned int
             ,TokenPool<unsigned int,unsigned int, unsigned int>>> schema;
@@ -61,7 +67,7 @@ int main(int argc, char** argv) {
         return 1;
     }
     int return_code = 0;
-    for( size_t i = 2; i < argc; ++i)
+    for( size_t i = 2; i < argcount; ++i)
     {
         DDInterpreter<TreeNodePool<unsigned int, unsigned int
                 ,TokenPool<unsigned int,unsigned int, unsigned int>>> parser;
@@ -77,8 +83,8 @@ int main(int argc, char** argv) {
         std::vector<std::string> validation_errors;
         bool valid = validation_engine.validate(schema_root,input_root, validation_errors);
         if( !valid )
-        { // TODO - pass xml option if so desired.
-            validation_engine.printMessages(valid, validation_errors, false, argv[i],std::cout);
+        {
+            validation_engine.printMessages(valid, validation_errors, xml_output, argv[i],std::cout);
             return_code++;
         }
     }

@@ -454,7 +454,7 @@ bool Value::format_json(std::ostream & out, int indent_level, int level)const
             out<<to_int();
             break;
         case TYPE_DOUBLE:
-            // TODO determine desire precision
+            // the precision can be set by the caller
             out<<to_double();
             break;
         case TYPE_NULL:
@@ -488,7 +488,7 @@ bool Value::pack_json(std::ostream & out)const
             out<<to_int();
             break;
         case TYPE_DOUBLE:
-            // TODO determine desire precision
+            // the precision can be set by the caller
             out<<to_double();
             break;
         case TYPE_NULL:
