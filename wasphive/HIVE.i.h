@@ -73,15 +73,16 @@ bool HIVE::traverse_schema(SchemaAdapter& schema_node, InputAdapter& input_node
 
         isAny |= tmpNodeName == "*";
 
-        if (isToDo                       ||
-            (tmpNodeName == "Units") ||
-            (tmpNodeName == "Description") ||
-            (tmpNodeName == "InputName") ||
-            (tmpNodeName == "InputTerm") ||
-            (tmpNodeName == "InputType") ||
-            tmpNodeName == "InputVariants" ||
-            (tmpNodeName == "InputDefault") ||
-            (tmpNodeName == "InputTmpl") ) {
+        if (isToDo                           ||
+            (tmpNodeName == "Units")         ||
+            (tmpNodeName == "Description")   ||
+            (tmpNodeName == "InputName")     ||
+            (tmpNodeName == "InputTerm")     ||
+            (tmpNodeName == "InputType")     ||
+            (tmpNodeName == "InputVariants") ||
+            (tmpNodeName == "InputAliases") ||
+            (tmpNodeName == "InputDefault")  ||
+            (tmpNodeName == "InputTmpl")     ){
             hasToDo |= isToDo;
             continue;
         }
