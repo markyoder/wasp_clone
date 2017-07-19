@@ -15,6 +15,9 @@ line:7 column:13 - Validation Error: one/value value "b" also exists at "one/val
 line:7 column:13 - Validation Error: one/value value "b" also exists at "one/value" on line:4 column:13
 line:7 column:13 - Validation Error: one/value value "b" also exists at "one/value" on line:4 column:13
 line:7 column:13 - Validation Error: one/value value "b" also exists at "one/value" on line:4 column:13
+line:7 column:17 - Validation Error: one/value value "word" also exists at "three/value" on line:17 column:25
+line:7 column:17 - Validation Error: one/value value "word" also exists at "two/value" on line:12 column:20
+line:7 column:17 - Validation Error: one/value value "word" also exists at "two/value" on line:12 column:20
 line:9 column:13 - Validation Error: two/value value "b" also exists at "one/value" on line:4 column:13
 line:9 column:13 - Validation Error: two/value value "b" also exists at "one/value" on line:4 column:13
 line:9 column:13 - Validation Error: two/value value "b" also exists at "three/value" on line:17 column:17
@@ -31,6 +34,9 @@ line:12 column:15 - Validation Error: two/value value "8" also exists at "one/va
 line:12 column:15 - Validation Error: two/value value "8" also exists at "three/value" on line:14 column:13
 line:12 column:17 - Validation Error: two/value value "3" also exists at "two/value" on line:9 column:15
 line:12 column:17 - Validation Error: two/value value "3" also exists at "two/value" on line:9 column:15
+line:12 column:20 - Validation Error: two/value value "word" also exists at "one/value" on line:7 column:17
+line:12 column:20 - Validation Error: two/value value "word" also exists at "one/value" on line:7 column:17
+line:12 column:20 - Validation Error: two/value value "word" also exists at "three/value" on line:17 column:25
 line:14 column:13 - Validation Error: three/value value "8" also exists at "one/value" on line:7 column:11
 line:14 column:13 - Validation Error: three/value value "8" also exists at "one/value" on line:7 column:11
 line:14 column:13 - Validation Error: three/value value "8" also exists at "two/value" on line:12 column:15
@@ -45,3 +51,6 @@ line:17 column:17 - Validation Error: three/value value "b" also exists at "two/
 line:17 column:19 - Validation Error: three/value value "0" also exists at "two/value" on line:9 column:17
 line:17 column:21 - Validation Error: three/value value "ast" also exists at "two/value" on line:11 column:9
 line:17 column:21 - Validation Error: three/value value "ast" also exists at "two/value" on line:11 column:9
+line:17 column:25 - Validation Error: three/value value "word" also exists at "one/value" on line:7 column:17
+line:17 column:25 - Validation Error: three/value value "word" also exists at "one/value" on line:7 column:17
+line:17 column:25 - Validation Error: three/value value "word" also exists at "two/value" on line:12 column:20

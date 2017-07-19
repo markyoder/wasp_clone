@@ -7,7 +7,7 @@
     defineone=four
     defineone=0
 
-    definetwo=' england spain germany italy canada '
+    definetwo=' england spain germany italy canada SoMeSTrInG '
     definetwo=-200
     definetwo=300
     definetwo=' 500 0 -600 '
@@ -18,7 +18,7 @@
 
     useone=two
     useone=germany
-    useone=' three recess lunch italy canada '
+    useone=' three recess lunch italy canada SOMEstring '
 
     usetwo=' two germany -600 '
     usetwo=four

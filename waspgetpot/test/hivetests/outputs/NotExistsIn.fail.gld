@@ -6,6 +6,7 @@ line:21 column:20 - Validation Error: useone value "recess" also exists at "../.
 line:21 column:27 - Validation Error: useone value "lunch" also exists at "../../definethree/value" on line:17 column:48
 line:21 column:33 - Validation Error: useone value "italy" also exists at "../../definetwo/value" on line:10 column:39
 line:21 column:39 - Validation Error: useone value "canada" also exists at "../../definetwo/value" on line:10 column:45
+line:21 column:46 - Validation Error: useone value "somestring" also exists at "../../definetwo/value" on line:10 column:52
 line:23 column:14 - Validation Error: usetwo value "two" also exists at "../../defineone/value" on line:5 column:15
 line:23 column:18 - Validation Error: usetwo value "germany" also exists at "../../definetwo/value" on line:10 column:31
 line:23 column:26 - Validation Error: usetwo value "600" also exists at "../../definetwo/value" on line:13 column:23
