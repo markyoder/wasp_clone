@@ -202,3 +202,14 @@ halite /path/to/template.tmpl /path/to/data.json
 The expanded template emitted on stdout, and errors/log information is emitted on stderr.
 
 
+## Schema Skeleton Creation Utility
+
+The ability to take multiple input files that are known to be valid and to create a schema skeleton from these can be a very useful starting point for schema creation.  Currently, a utility exists that allows this to be done with a series of SON input files.
+
+So, if a user has multiple SON formatted input files that they know to be valid, and they wish to begin creating a schema for these files, they may first run
+
+    sonschemaskel path/to/valid/input1.son path/to/valid/input2.son ...
+
+and the resulting output will be a schema skeleton that they can use with the Hierarchical Input Validation Engine to validate their inputs.  These schema skeletons have actual rule stubs for each input node commented out.  These rules can be learned about in more detail in the [HIVE README](/wasphive/README.md) and should be modified for each piece of input.
+
+
