@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "waspcore/Object.h"
+#include "waspcore/wasp_bug.h"
 using namespace wasp;
 
 TEST( Value, constructors )
@@ -92,8 +93,44 @@ TEST(DataArray, methods)
     ASSERT_EQ("ted", a.back().to_string());
     ASSERT_EQ(2, a.size() );
 
-    const DataArray& b = a;
-    ASSERT_EQ(Value::TYPE_NULL, b[a.size()+1].type() );
+//    const DataArray& b = a;
+    // below check makes no sense (auto resizing array on const DataArray)
+//    ASSERT_EQ(Value::TYPE_NULL, b[a.size()+1].type() );
+
+    // check object in array
+
+    {
+        DataObject obj;
+        obj["int"] = 1;
+        obj["float"] = 2.f;
+        obj["double"] = 3.0;
+        a.push_back(obj);
+    }
+    {
+        ASSERT_EQ(3, a.size());
+        const DataObject& obj = a[2].as_object();
+        EXPECT_EQ(Value::TYPE_INTEGER, obj["int"].type());
+        EXPECT_EQ(obj["int"].to_int(), 1);
+        EXPECT_EQ(Value::TYPE_DOUBLE, obj["float"].type());
+        EXPECT_DOUBLE_EQ(obj["float"].to_double(), 2.);
+        EXPECT_EQ(Value::TYPE_DOUBLE, obj["double"].type());
+        EXPECT_DOUBLE_EQ(obj["double"].to_double(), 3.);
+        // check editing reference
+        DataObject& o = a[2].as_object();
+        o["int"] = 1.0;
+        o["float"] = 1;
+        o["double"] = 20.;
+    }
+    {
+        const DataObject& obj = a[2].as_object();
+        EXPECT_EQ(Value::TYPE_DOUBLE, obj["int"].type());
+        EXPECT_DOUBLE_EQ(obj["int"].to_double(), 1.);
+        EXPECT_EQ(Value::TYPE_INTEGER, obj["float"].type());
+        EXPECT_EQ(obj["float"].to_int(), 1);
+        EXPECT_EQ(Value::TYPE_DOUBLE, obj["double"].type());
+        EXPECT_DOUBLE_EQ(obj["double"].to_double(), 20.);
+
+    }
 }
 TEST(DataObject, methods)
 {
