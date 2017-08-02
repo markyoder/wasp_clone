@@ -362,6 +362,34 @@ DataObject* Value::to_object()const
                 ,"Value object must be convertable to an object");
     return m_data.m_object;
 }
+
+const DataArray& Value::as_array()const
+{
+    wasp_insist(convertable(TYPE_ARRAY)
+                , "Value object must be convertable to an array");
+    return *(m_data.m_array);
+}
+
+DataArray& Value::as_array()
+{
+    wasp_insist(convertable(TYPE_ARRAY)
+                , "Value object must be convertable to an array");
+    return *(m_data.m_array);
+}
+
+const DataObject& Value::as_object()const
+{
+    wasp_insist(convertable(TYPE_OBJECT)
+                ,"Value object must be convertable to an object");
+    return *(m_data.m_object);
+}
+
+DataObject& Value::as_object()
+{
+    wasp_insist(convertable(TYPE_OBJECT)
+                ,"Value object must be convertable to an object");
+    return *(m_data.m_object);
+}
 bool Value::convertable(Value::Type to) const
 {
     switch( to )

@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "waspcore/Object.h"
+#include "waspcore/wasp_bug.h"
 using namespace wasp;
 
 TEST( Value, constructors )
@@ -92,8 +93,44 @@ TEST(DataArray, methods)
     ASSERT_EQ("ted", a.back().to_string());
     ASSERT_EQ(2, a.size() );
 
-    const DataArray& b = a;
-    ASSERT_EQ(Value::TYPE_NULL, b[a.size()+1].type() );
+//    const DataArray& b = a;
+    // below check makes no sense (auto resizing array on const DataArray)
+//    ASSERT_EQ(Value::TYPE_NULL, b[a.size()+1].type() );
+
+    // check object in array
+
+    {
+        DataObject obj;
+        obj["int"] = 1;
+        obj["float"] = 2.f;
+        obj["double"] = 3.0;
+        a.push_back(obj);
+    }
+    {
+        ASSERT_EQ(3, a.size());
+        const DataObject& obj = a[2].as_object();
+        EXPECT_EQ(Value::TYPE_INTEGER, obj["int"].type());
+        EXPECT_EQ(obj["int"].to_int(), 1);
+        EXPECT_EQ(Value::TYPE_DOUBLE, obj["float"].type());
+        EXPECT_DOUBLE_EQ(obj["float"].to_double(), 2.);
+        EXPECT_EQ(Value::TYPE_DOUBLE, obj["double"].type());
+        EXPECT_DOUBLE_EQ(obj["double"].to_double(), 3.);
+        // check editing reference
+        DataObject& o = a[2].as_object();
+        o["int"] = 1.0;
+        o["float"] = 1;
+        o["double"] = 20.;
+    }
+    {
+        const DataObject& obj = a[2].as_object();
+        EXPECT_EQ(Value::TYPE_DOUBLE, obj["int"].type());
+        EXPECT_DOUBLE_EQ(obj["int"].to_double(), 1.);
+        EXPECT_EQ(Value::TYPE_INTEGER, obj["float"].type());
+        EXPECT_EQ(obj["float"].to_int(), 1);
+        EXPECT_EQ(Value::TYPE_DOUBLE, obj["double"].type());
+        EXPECT_DOUBLE_EQ(obj["double"].to_double(), 20.);
+
+    }
 }
 TEST(DataObject, methods)
 {
@@ -125,6 +162,7 @@ TEST(DataObject, methods)
     ASSERT_EQ(Value::TYPE_OBJECT, o["ted"].type());
     ASSERT_TRUE(o["ted"].to_object() != nullptr );
     ASSERT_TRUE(o["ted"].to_object()->contains("fred"));
+    ASSERT_TRUE(o["ted"].as_object().contains("fred"));
     ASSERT_EQ(Value::TYPE_STRING, o["ted"]["fred"].type());
     ASSERT_EQ("teds brother", o["ted"]["fred"].to_string());
     {
@@ -136,13 +174,18 @@ TEST(DataObject, methods)
         o["ted"]["arabic numbers"] = a;
     }
     ASSERT_TRUE( o["ted"].to_object()->contains("arabic numbers") );
+    ASSERT_TRUE( o["ted"].as_object().contains("arabic numbers") );
     DataArray * a = o["ted"]["arabic numbers"].to_array();
+    DataArray& aref = o["ted"]["arabic numbers"].as_array();
     ASSERT_TRUE( a != nullptr );
     ASSERT_EQ(10, a->size() );
+    ASSERT_EQ(10, aref.size());
     for( size_t i = 0; i < a->size(); ++i )
     {
         SCOPED_TRACE(i);
         ASSERT_EQ(i, a->at(i).to_int());
+        ASSERT_EQ(i, a->operator [](i).to_int());
+        ASSERT_EQ(i, aref[i].to_int()); //<-- so much cleaner
         ASSERT_EQ(Value::TYPE_INTEGER,o["ted"]["arabic numbers"][i].type());
         ASSERT_EQ(i,o["ted"]["arabic numbers"][i].to_int());
     }
