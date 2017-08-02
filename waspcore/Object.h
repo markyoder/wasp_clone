@@ -15,6 +15,7 @@ namespace wasp{
 class Value
 {
 public:
+    typedef std::shared_ptr<Value> SP;
     enum Type : unsigned char {
         TYPE_NULL
         ,TYPE_BOOLEAN
@@ -95,6 +96,11 @@ public:
     DataArray* to_array()const;
     DataObject* to_object()const;
 
+    const DataArray& as_array()const;
+    DataArray& as_array();
+    const DataObject& as_object()const;
+    DataObject& as_object();
+
     Value& operator[](const std::string& name);
     Value operator[](const std::string& name)const;
     Value& operator[](size_t i);
@@ -132,6 +138,7 @@ private:
 
 class DataArray{
 public:
+    typedef std::shared_ptr<DataArray> SP;
     typedef std::vector<Value> storage_type;
 private:
     storage_type m_data;
@@ -149,8 +156,8 @@ public:
     storage_type::iterator begin(){return m_data.begin();}
     storage_type::iterator end(){return m_data.end();}
 
+    const Value& operator[](size_t i) const {return m_data.at(i);}// at(i) for exception
     Value& operator[](size_t i){ if(size()<=i) resize(i+1); return m_data[i];}
-    Value operator[](size_t i)const{ if(size()<=i) return Value(); return m_data[i];}
 
     const Value& front()const{return m_data.front();}
     Value& front(){return m_data.front();}
