@@ -162,6 +162,7 @@ TEST(DataObject, methods)
     ASSERT_EQ(Value::TYPE_OBJECT, o["ted"].type());
     ASSERT_TRUE(o["ted"].to_object() != nullptr );
     ASSERT_TRUE(o["ted"].to_object()->contains("fred"));
+    ASSERT_TRUE(o["ted"].as_object().contains("fred"));
     ASSERT_EQ(Value::TYPE_STRING, o["ted"]["fred"].type());
     ASSERT_EQ("teds brother", o["ted"]["fred"].to_string());
     {
@@ -173,13 +174,18 @@ TEST(DataObject, methods)
         o["ted"]["arabic numbers"] = a;
     }
     ASSERT_TRUE( o["ted"].to_object()->contains("arabic numbers") );
+    ASSERT_TRUE( o["ted"].as_object().contains("arabic numbers") );
     DataArray * a = o["ted"]["arabic numbers"].to_array();
+    DataArray& aref = o["ted"]["arabic numbers"].as_array();
     ASSERT_TRUE( a != nullptr );
     ASSERT_EQ(10, a->size() );
+    ASSERT_EQ(10, aref.size());
     for( size_t i = 0; i < a->size(); ++i )
     {
         SCOPED_TRACE(i);
         ASSERT_EQ(i, a->at(i).to_int());
+        ASSERT_EQ(i, a->operator [](i).to_int());
+        ASSERT_EQ(i, aref[i].to_int()); //<-- so much cleaner
         ASSERT_EQ(Value::TYPE_INTEGER,o["ted"]["arabic numbers"][i].type());
         ASSERT_EQ(i,o["ted"]["arabic numbers"][i].to_int());
     }
