@@ -73,15 +73,16 @@ bool HIVE::traverse_schema(SchemaAdapter& schema_node, InputAdapter& input_node
 
         isAny |= tmpNodeName == "*";
 
-        if (isToDo                       ||
-            (tmpNodeName == "Units") ||
-            (tmpNodeName == "Description") ||
-            (tmpNodeName == "InputName") ||
-            (tmpNodeName == "InputTerm") ||
-            (tmpNodeName == "InputType") ||
-            tmpNodeName == "InputVariants" ||
-            (tmpNodeName == "InputDefault") ||
-            (tmpNodeName == "InputTmpl") ) {
+        if (isToDo                           ||
+            (tmpNodeName == "Units")         ||
+            (tmpNodeName == "Description")   ||
+            (tmpNodeName == "InputName")     ||
+            (tmpNodeName == "InputTerm")     ||
+            (tmpNodeName == "InputType")     ||
+            (tmpNodeName == "InputVariants") ||
+            (tmpNodeName == "InputAliases") ||
+            (tmpNodeName == "InputDefault")  ||
+            (tmpNodeName == "InputTmpl")     ){
             hasToDo |= isToDo;
             continue;
         }
@@ -181,13 +182,15 @@ bool HIVE::traverse_schema(SchemaAdapter& schema_node, InputAdapter& input_node
         }
     }
     bool is_wild_card = std::strcmp(schema_node.name(),"*") == 0;
-    auto parent_schema_node = schema_node.parent();
+    bool schema_node_has_parent = schema_node.has_parent();
+    SchemaAdapter parent_schema_node;
+    if (schema_node_has_parent) parent_schema_node = schema_node.parent();
     if (!isAny && !hasToDo ) {
 
         /* Error if there is a non-decorative input child with no schema rule */
         for (size_t i = 0; i < selection.size(); i++) {
 
-            if( is_wild_card && parent_schema_node.is_null() == false
+            if( is_wild_card && schema_node_has_parent
                     && parent_schema_node.first_child_by_name(selection.adapted(i).name()).is_null() == false )
             {
                 continue;
@@ -1758,6 +1761,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter           & schema_node,
                 // get the value
                 std::string insertString =
                     childSelection.adapted(loop).to_string();
+                transform(insertString.begin(), insertString.end(), insertString.begin(), ::tolower);
 
                 // if this is not an alias, then modify the std::string based on
                 // the optional
@@ -1790,6 +1794,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter           & schema_node,
 
             // get the value
             std::string initialString = selection.adapted(i).to_string();
+            transform(initialString.begin(), initialString.end(), initialString.begin(), ::tolower);
 
             // determine if it is an alias or not
             // if it is an alias, then std::set the outer loop to the number
@@ -2993,6 +2998,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter           & schema_node,
                 // get the value
                 std::string initialString =
                     childSelection.adapted(loop).to_string();
+                transform(initialString.begin(), initialString.end(), initialString.begin(), ::tolower);
 
                 int outterloop = 1;
 

@@ -3,7 +3,7 @@
 #include <map>
 #include "waspson/SONInterpreter.h"
 #include "waspson/SONNodeView.h"
-
+#include "waspcore/version.h"
 #define TABSIZE 4
 using namespace wasp;
 typedef TokenPool<unsigned int, unsigned int, unsigned int> TP;
@@ -65,7 +65,15 @@ void free_skeleton(skel_node * current_node){
 
 int main (int argc, char *argv[])
 {
-    
+
+    if (argc == 2 && (std::string(argv[1]) == "-v"
+                  ||  std::string(argv[1]) == "--version"))
+    {
+        std::cout << wasp_version_info::name << " "
+                  << wasp_version_info::full_version << std::endl;
+        return 0;
+    }
+
     skel_node * skel_root = new skel_node;
     
     if( argc < 2 )
@@ -75,6 +83,7 @@ int main (int argc, char *argv[])
                 <<argv[0]<<" : An application for creating a schema skeleton from SON formatted inputs."<<std::endl;
         std::cout<<" Usage : "<<argv[0]<<" path/to/SON/formatted/inputs ..."
                 <<std::endl;
+        std::cout<<" Usage : "<<argv[0]<<" --version\t(print version info)"<<std::endl;
         return 1;
     }
     std::stringstream errors;

@@ -55,12 +55,12 @@ void TreeNodePool<NTS,NIS,TP>::push_parent(
     m_basic_parent_data_lookup[basic_data_index] = parent_data_index;
 
     // update the children's parent index
-    // TODO check children range for valid indices
     // TODO check children for lack of parent
     std::size_t last_child_index = first_child_index+child_count;
     for( std::size_t c = 0, i = first_child_index; i < last_child_index; ++i, ++c)
     {
         // assign parent
+        wasp_check( c < child_indices.size() );
         std::size_t child_index = child_indices[c];
         m_node_basic_data[child_index].m_parent_node_index = basic_data_index;
         // assign lookup index mapping parent to list
@@ -143,7 +143,7 @@ template<typename NTS, typename NIS
 std::size_t TreeNodePool<NTS,NIS,TP>::parent_node_index(
         NIS node_index) const
 {
-    // TODO check range
+    wasp_check( node_index < m_node_basic_data.size() );
     auto parent_index = m_node_basic_data[node_index].m_parent_node_index;
     if( parent_index == NIS(-1) )
     {
@@ -196,13 +196,13 @@ template<typename NTS, typename NIS
 std::size_t TreeNodePool<NTS,NIS,TP>::child_at(
         NIS node_index, NIS child_relative_index) const
 {
-    // TODO conduct range check on relative index to child count
-
     // acquire the index into the parent meta data
     std::size_t parent_index = parent_data_index(node_index);
+    wasp_check( parent_index < m_node_parent_data.size() );
     auto child_indices_index
             = m_node_parent_data[parent_index].m_first_child_index
             + child_relative_index;
+    wasp_check( child_indices_index < m_node_child_indices.size() );
     auto child_basic_data_index = m_node_child_indices[child_indices_index];
     return child_basic_data_index;
 }
