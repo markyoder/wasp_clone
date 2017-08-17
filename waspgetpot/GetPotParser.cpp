@@ -73,7 +73,7 @@ std::string getpot_get_name(size_t object_decl_i
         // acquire the data from the value
         //TODO - conduct checks
         name_i = interpreter.child_index_at(name_i,interpreter.child_count(name_i)-1);
-        name = interpreter.data(name_i);
+        name = interpreter.data(name_i) + "_type";
     }else{
         name = interpreter.data(name_i);
     }
