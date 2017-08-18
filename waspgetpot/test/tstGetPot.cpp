@@ -962,7 +962,8 @@ TEST(GetPotInterpreter,multiple_objects)
 /**
  * @brief TEST getpot type promotion
  * When a block/subblock has a type field,
- * the block/subblock name becomes the type field's value.
+ * the block/subblock name becomes the type field's value
+ * with "_type" appended.
  *
  * Test each scenario for block and subblock
  * 1. block with only type = value
@@ -999,71 +1000,71 @@ TEST(GetPotInterpreter,type_promotion)
     ASSERT_EQ(3, document.child_count() ); // problem and mesh
     ASSERT_EQ(3, interpreter.child_count(document.tree_node_index()) );
     std::string expected_paths=R"INPUT(/
-/ted
-/ted/[ ([)
-/ted/decl (Problem)
-/ted/] (])
-/ted/comment (# Specify coordinate system type)
-/ted/type
-/ted/type/decl (type)
-/ted/type/= (=)
-/ted/type/value (ted)
-/ted/fred
-/ted/fred/[ ([)
-/ted/fred/./ (./)
-/ted/fred/decl (s1)
-/ted/fred/] (])
-/ted/fred/type
-/ted/fred/type/decl (type)
-/ted/fred/type/= (=)
-/ted/fred/type/value (fred)
-/ted/fred/[../] ([../])
-/ted/x
-/ted/x/[ ([)
-/ted/x/./ (./)
-/ted/x/decl (s2)
-/ted/x/] (])
-/ted/x/type
-/ted/x/type/decl (type)
-/ted/x/type/= (=)
-/ted/x/type/value (x)
-/ted/x/y
-/ted/x/y/decl (y)
-/ted/x/y/= (=)
-/ted/x/y/value (1)
-/ted/x/[../] ([../])
-/ted/[] ([])
-/t1
-/t1/[ ([)
-/t1/decl (p1)
-/t1/] (])
-/t1/type
-/t1/type/decl (type)
-/t1/type/= (=)
-/t1/type/value (t1)
-/t2
-/t2/[ ([)
-/t2/decl (p2)
-/t2/] (])
-/t2/type
-/t2/type/decl (type)
-/t2/type/= (=)
-/t2/type/value (t2)
-/t2/us3
-/t2/us3/[ ([)
-/t2/us3/./ (./)
-/t2/us3/decl (s3)
-/t2/us3/] (])
-/t2/us3/type
-/t2/us3/type/decl (type)
-/t2/us3/type/= (=)
-/t2/us3/type/value (us3)
-/t2/[] ([])
+/ted_type
+/ted_type/[ ([)
+/ted_type/decl (Problem)
+/ted_type/] (])
+/ted_type/comment (# Specify coordinate system type)
+/ted_type/type
+/ted_type/type/decl (type)
+/ted_type/type/= (=)
+/ted_type/type/value (ted)
+/ted_type/fred_type
+/ted_type/fred_type/[ ([)
+/ted_type/fred_type/./ (./)
+/ted_type/fred_type/decl (s1)
+/ted_type/fred_type/] (])
+/ted_type/fred_type/type
+/ted_type/fred_type/type/decl (type)
+/ted_type/fred_type/type/= (=)
+/ted_type/fred_type/type/value (fred)
+/ted_type/fred_type/[../] ([../])
+/ted_type/x_type
+/ted_type/x_type/[ ([)
+/ted_type/x_type/./ (./)
+/ted_type/x_type/decl (s2)
+/ted_type/x_type/] (])
+/ted_type/x_type/type
+/ted_type/x_type/type/decl (type)
+/ted_type/x_type/type/= (=)
+/ted_type/x_type/type/value (x)
+/ted_type/x_type/y
+/ted_type/x_type/y/decl (y)
+/ted_type/x_type/y/= (=)
+/ted_type/x_type/y/value (1)
+/ted_type/x_type/[../] ([../])
+/ted_type/[] ([])
+/t1_type
+/t1_type/[ ([)
+/t1_type/decl (p1)
+/t1_type/] (])
+/t1_type/type
+/t1_type/type/decl (type)
+/t1_type/type/= (=)
+/t1_type/type/value (t1)
+/t2_type
+/t2_type/[ ([)
+/t2_type/decl (p2)
+/t2_type/] (])
+/t2_type/type
+/t2_type/type/decl (type)
+/t2_type/type/= (=)
+/t2_type/type/value (t2)
+/t2_type/us3_type
+/t2_type/us3_type/[ ([)
+/t2_type/us3_type/./ (./)
+/t2_type/us3_type/decl (s3)
+/t2_type/us3_type/] (])
+/t2_type/us3_type/type
+/t2_type/us3_type/type/decl (type)
+/t2_type/us3_type/type/= (=)
+/t2_type/us3_type/type/value (us3)
+/t2_type/[] ([])
 )INPUT";
     std::stringstream paths;
     document.paths(paths);
     ASSERT_EQ( expected_paths, paths.str() );
-    auto ted_view = document.first_child_by_name("ted");
+    auto ted_view = document.first_child_by_name("ted_type");
     ASSERT_FALSE( ted_view.is_null() );
     ASSERT_FALSE( ted_view.is_decorative() );
     ASSERT_EQ(wasp::OBJECT, ted_view.type());
