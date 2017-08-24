@@ -1761,6 +1761,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter           & schema_node,
                 // get the value
                 std::string insertString =
                     childSelection.adapted(loop).to_string();
+                transform(insertString.begin(), insertString.end(), insertString.begin(), ::tolower);
 
                 // if this is not an alias, then modify the std::string based on
                 // the optional
@@ -1793,6 +1794,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter           & schema_node,
 
             // get the value
             std::string initialString = selection.adapted(i).to_string();
+            transform(initialString.begin(), initialString.end(), initialString.begin(), ::tolower);
 
             // determine if it is an alias or not
             // if it is an alias, then std::set the outer loop to the number
@@ -2996,6 +2998,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter           & schema_node,
                 // get the value
                 std::string initialString =
                     childSelection.adapted(loop).to_string();
+                transform(initialString.begin(), initialString.end(), initialString.begin(), ::tolower);
 
                 int outterloop = 1;
 
