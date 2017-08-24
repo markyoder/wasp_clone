@@ -242,7 +242,7 @@ bool HIVE::validateMinOccurs(SchemaAdapter           & schema_node,
     issRV >> std::noskipws >> itestRV;
     for (size_t i = 0; i < selection.size(); i++) {
         if (selection.adapted(i).is_decorative() ||
-            (std::strcmp(selection.adapted(i).name(), "decl") == 0)) continue;
+            selection.adapted(i).type() == wasp::VALUE) continue;
 
         size_t childNodeCount = 0;
 
@@ -344,7 +344,7 @@ bool HIVE::validateMaxOccurs(SchemaAdapter           & schema_node,
 
     for (size_t i = 0; i < selection.size(); i++) {
         if (selection.adapted(i).is_decorative() ||
-            (std::strcmp(selection.adapted(i).name(), "decl") == 0)) continue;
+            selection.adapted(i).type() == wasp::VALUE) continue;
 
         size_t childNodeCount;
 

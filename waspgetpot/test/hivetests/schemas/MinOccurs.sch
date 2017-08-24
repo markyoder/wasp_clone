@@ -34,5 +34,12 @@ test{
             MinOccurs="../../bad_string"
         }
     }
+    '*'{
+       '*'{
+            decl{
+                MinOccurs=1
+            }
+        }
+    }
 
 }
