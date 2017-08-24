@@ -10,7 +10,7 @@
 #include "waspcore/Object.h"
 #include "waspjson/JSONInterpreter.h"
 #include "wasphalite/HaliteInterpreter.h"
-
+#include "waspcore/version.h"
 using namespace std;
 using namespace wasp;
 
@@ -26,10 +26,19 @@ bool evaluate_template(HaliteInterpreter<S> & halite, DataObject & object)
  */
 int main(int argc, char** argv) {
 
+    if (argc == 2 && (std::string(argv[1]) == "-v"
+                  ||  std::string(argv[1]) == "--version"))
+    {
+        std::cout << wasp_version_info::name << " "
+                  << wasp_version_info::full_version << std::endl;
+        return 0;
+    }
+
     if( argc < 2 ){
         std::cout<<"Usage: "<<std::endl;
-        std::cout<<"\thalite template [data.json] "<<std::endl;
-        std::cout<<"\ti.e., halite /path/to/definition.tmpl /path/to/some/data.json "<<std::endl;
+        std::cout<<"\t"<<argv[0]<<" template [data.json] "<<std::endl;
+        std::cout<<"\ti.e., "<<argv[0]<<" /path/to/definition.tmpl /path/to/some/data.json "<<std::endl;
+        std::cout<<" Usage : "<<argv[0]<<" --version\t(print version info)"<<std::endl;
         return 1;
     }
     std::string tmpl = argv[1];

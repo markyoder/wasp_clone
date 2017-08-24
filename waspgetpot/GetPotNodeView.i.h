@@ -7,6 +7,7 @@ GetPotNodeView<TNV>::GetPotNodeView(std::size_t node_index
     : m_tree_node_index(node_index)
     ,m_tree_data(&nodes)
 {
+    wasp_require( !this->is_null() );
 }
 template<class TNV>
 GetPotNodeView<TNV>::GetPotNodeView(const GetPotNodeView & orig)

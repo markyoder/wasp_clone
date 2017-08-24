@@ -96,9 +96,6 @@ public:
      */
     void pop_line(){m_line_offsets.pop_back();}
 
-    // TODO - add pop(file_offset_type_size) to allow
-    // popping both line and token info together
-
     /**
      * @brief size the number of tokens in this token pool
      * @return std::size_t the token count

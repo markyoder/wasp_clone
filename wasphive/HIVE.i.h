@@ -181,13 +181,15 @@ bool HIVE::traverse_schema(SchemaAdapter& schema_node, InputAdapter& input_node
         }
     }
     bool is_wild_card = std::strcmp(schema_node.name(),"*") == 0;
-    auto parent_schema_node = schema_node.parent();
+    bool schema_node_has_parent = schema_node.has_parent();
+    SchemaAdapter parent_schema_node;
+    if (schema_node_has_parent) parent_schema_node = schema_node.parent();
     if (!isAny && !hasToDo ) {
 
         /* Error if there is a non-decorative input child with no schema rule */
         for (size_t i = 0; i < selection.size(); i++) {
 
-            if( is_wild_card && parent_schema_node.is_null() == false
+            if( is_wild_card && schema_node_has_parent
                     && parent_schema_node.first_child_by_name(selection.adapted(i).name()).is_null() == false )
             {
                 continue;
