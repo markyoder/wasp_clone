@@ -1409,7 +1409,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
      bool setContextNow = false;
      bool clearSetsNow = false;
 
-     bool numbersAreOkay = false;
+     bool expressionsAreOkay = false;
 
      const typename SchemaAdapter::Collection & refNodes =
              schema_node.child_by_name("EXTRAREF");
@@ -1469,7 +1469,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
              if (loop == 0) setContextNow = true;
              if (std::strcmp(children[loop].name(),"EXTRA")==0){
                  std::string lowerString = children[loop].to_string();
-                 if( lowerString == "NumericalConstants" ) numbersAreOkay = true;
+                 if( lowerString == "ExpressionsAreOkay" ) expressionsAreOkay = true;
                  else{
                     transform(lowerString.begin(), lowerString.end(), lowerString.begin(), ::tolower);
                     lookupSet.insert(lowerString);
@@ -1637,13 +1637,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter           & schema_node,
                   &&
                   (refSetPtr == NULL                                         ||
                    refSetPtr->find(lowerLookupString) == refSetPtr->end()) ){
-             if( numbersAreOkay )
-             {
-                 float ftest;
-                 std::istringstream iss(lookupString);
-                 iss >> std::noskipws >> ftest;
-                 if (iss.eof() && !iss.fail()) continue;
-             }
+             if( expressionsAreOkay && is_valid_expression(lookupString) ) continue;
              std::string valueNodeName;
              if (std::strcmp(selection.adapted(i).name(),"value") == 0 &&
                      selection.adapted(i).has_parent()){

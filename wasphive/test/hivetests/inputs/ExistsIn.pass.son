@@ -43,4 +43,10 @@ test{
     usefive_abs=[ -500 500 -200 -1850 ]
     usefive_abs=-1675
 
+    usetwelve=[ two 300 economics
+                "x*10+1"
+                "y*500+100"
+                "300*exp(-t*1.194e-4)+100"
+                "(sin(4+x*8-y)*cos(y*10+1.5*x))^2" ]
+
 }

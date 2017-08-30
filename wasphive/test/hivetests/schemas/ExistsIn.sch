@@ -109,6 +109,14 @@ test{
             ExistsIn=[ "../../../../defineone/value" ]
         }
     }
+    usetwelve{
+        value{
+            ExistsIn=[ EXTRA:ExpressionsAreOkay
+                       "../../defineone/value"
+                       "../../definetwo/value"
+                       "../../definethree/value" ]
+        }
+    }
 
 }
 EndOfSchema{}

@@ -64,3 +64,18 @@ line:43 column:19 - Validation Error: usefive_reg value "-500" does not exist in
 line:43 column:24 - Validation Error: usefive_reg value "-3" does not exist in set: [ ../../definetwo/value
         ../../definethree/value
          ]
+line:52 column:17 - Validation Error: usetwelve value "DoesNotExist" does not exist in set: [ ../../defineone/value
+        ../../definetwo/value
+        ../../definethree/value ]
+line:53 column:17 - Validation Error: usetwelve value "a*10+1" does not exist in set: [ ../../defineone/value
+        ../../definetwo/value
+        ../../definethree/value ]
+line:54 column:17 - Validation Error: usetwelve value "y*500%100" does not exist in set: [ ../../defineone/value
+        ../../definetwo/value
+        ../../definethree/value ]
+line:55 column:17 - Validation Error: usetwelve value "300@exp(-t*1.194e-4)+100" does not exist in set: [ ../../defineone/value
+        ../../definetwo/value
+        ../../definethree/value ]
+line:56 column:17 - Validation Error: usetwelve value "(sin(4+x*8-y)*bad(y*10+1.5*x))^2" does not exist in set: [ ../../defineone/value
+        ../../definetwo/value
+        ../../definethree/value ]

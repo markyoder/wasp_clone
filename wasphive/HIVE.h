@@ -239,6 +239,31 @@ private:
         };
         return element_names.find(name) != element_names.end();
     }
+    static bool is_valid_expression(const std::string & function_string){
+        std::string cpy = function_string;
+        transform(cpy.begin(), cpy.end(), cpy.begin(), ::tolower);
+        const  std::vector<std::string> valid_function_names = {
+            "abs"   , "acos"  , "acosh" , "arg"   , "asin" , "asinh" , "atan"  ,
+            "atan2" , "atanh" , "cbrt"  , "conj"  , "ceil" , "cos"   , "cosh"  ,
+            "cot"   , "csc"   , "eval"  , "exp"   , "exp2" , "floor" , "hypot" ,
+            "if"    , "imag"  , "int"   , "log"   , "log2" , "log10" , "max"   ,
+            "min"   , "polar" , "pow"   , "real"  , "sec"  , "sin"   , "sinh"  ,
+            "sqrt"  , "tan"   , "tanh"  , "trunc" };
+        std::string::size_type i;
+        for (auto & func : valid_function_names){
+            if ((i = cpy.find(func)) != std::string::npos) cpy.erase(i, func.size());
+        }
+        auto valid_function_char = [](char character){
+            const std::set<char> valid_characters = { '0' , '1' , '2' , '3' , '4' ,
+                                                      '5' , '6' , '7' , '8' , '9' ,
+                                                      'e' , 'x' , 'y' , 'z' , 't' ,
+                                                      '.' , ',' , '(' , ')' , '^' ,
+                                                      '+' , '-' , '*' , '/' };
+            return valid_characters.find(character) != valid_characters.end();
+        };
+        cpy.erase(std::remove_if(cpy.begin(), cpy.end(), valid_function_char),cpy.end());
+        return cpy.empty();
+    }
 
     const std::atomic<bool> &stop;
 
