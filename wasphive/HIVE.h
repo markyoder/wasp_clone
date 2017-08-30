@@ -255,8 +255,22 @@ public:
             // skip decorative elements
             if( child_view.is_decorative() ) continue;
             const std::string child_view_name = child_view.name();
+            if( child_view_name == "InputAliases" )
+            {
+                for( size_t a = 0; i < child_view.child_count(); ++a)
+                {
+                    const auto & alias_view = child_view.child_at(a);
+                    if( alias_view.is_decorative() ) continue;
+                    // must be a scalar value - i.e. a string
+                    wasp_check( alias_view.child_count() == 0 );
+                    const std::string & alias_name = alias_view.to_string();
+                    definition_model->parent()
+                            ->create_aliased(alias_name,definition_model);
+                }
+                continue; // skip aliases
+            }
             // skip schema elements
-            if( schema_element(child_view_name) ) continue;
+            else if( schema_element(child_view_name) ) continue;
             D * child_definition = definition_model->create(child_view_name);
             //
             if( child_definition == nullptr
