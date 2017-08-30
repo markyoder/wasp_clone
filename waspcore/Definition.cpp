@@ -3,51 +3,58 @@
 
 using namespace wasp;
 
-Definition::Definition() : m_parent(nullptr)
+Definition::Definition(const std::string & name)
+    : AbstractDefinition()
+    , m_name(name)
+    ,m_parent(nullptr)
 {
 
-}
-
-Definition::Definition(const Definition &orig)
-    : m_parent(nullptr)
-{
-    for( auto pair : orig.m_children)
-    {
-        auto * ptr = pair.second->clone();
-        ptr->m_parent = this;
-        m_children[pair.first] = ptr;
-    }
 }
 
 Definition::~Definition()
 {
-    for( auto pair : m_children ) delete pair.second;
+    for( auto pair : m_children ) delete pair;
 }
 
-Definition * Definition::clone() const
-{
-    return new Definition(*this);
-}
-
-
-
-Definition * Definition::create(const std::string &name)
-{
-    auto itr = m_children.find(name);
-    if( itr != m_children.end() ) return nullptr;
-    Definition * definition = new Definition();
+AbstractDefinition * Definition::create(const std::string &name)
+{    
+    Definition * definition = new Definition(name);
     wasp_ensure ( definition );
     definition->m_parent = this;
-    m_children[name] = definition;
+    auto success = m_children.insert(definition);
+    if( !success.second )
+    {
+        delete definition;
+        definition = nullptr;
+    }
     return definition;
+}
+
+AbstractDefinition * Definition::create_aliased(const std::string &name
+                                                , AbstractDefinition * definition)
+{
+    wasp_require( definition );
+    // Aliased node must have the same parent as the aliasee
+    wasp_require( definition->parent() == this );
+    auto * aliased = new AliasedDefinition(name,definition);
+    wasp_ensure ( aliased );
+    auto success = m_children.insert(aliased);
+    if( !success.second )
+    {
+        delete aliased;
+        aliased = nullptr;
+    }
+    return aliased;
 }
 
 bool Definition::has(const std::string &name)const
 {
-    return m_children.find(name) != m_children.end();
+    Definition def(name);
+    return m_children.find(&def) != m_children.end();
 }
 
-int Definition::delta(const std::string & name)const{
+int Definition::delta(const std::string & name)const
+{
 
     int level = 0;
 
@@ -62,12 +69,14 @@ int Definition::delta(const std::string & name)const{
     return -1; // couldn't find
 }
 
-Definition * Definition::get(const std::string &name)const
+AbstractDefinition * Definition::get(const std::string &name)const
 {
-    auto itr = m_children.find(name);
+    Definition def(name);
+    auto itr = m_children.find(&def);
     if( itr == m_children.end() ) return nullptr;
-    return itr->second;
+    return *itr;
 }
+
 Definition * Definition::parent()const
 {
     return m_parent;

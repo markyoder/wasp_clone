@@ -12,28 +12,46 @@ TEST( Definition, current_section)
     ASSERT_FALSE( definition.has( "child" ) );
     ASSERT_EQ(-1, definition.delta( "child" ) );
 
-    Definition * child = definition.create("child");
+    AbstractDefinition * child = definition.create("child");
 
+    ASSERT_EQ( "child", child->name() );
     ASSERT_TRUE( definition.has( "child" ) );
     ASSERT_EQ(0, definition.delta( "child" ) );
 
-    Definition * clone = definition.clone();
-
-    EXPECT_TRUE( clone->has( "child" ) );
-    EXPECT_EQ(0, clone->delta( "child" ) );
-    delete clone;
+    {
+    AbstractDefinition * alias_of_child = definition.create_aliased("achild",child);
+    ASSERT_EQ("achild", alias_of_child->name());
+    ASSERT_EQ("child", alias_of_child->actual_name());
+    ASSERT_TRUE( definition.has( "achild" ) );
+    ASSERT_EQ(0, definition.delta( "child" ) );
+    ASSERT_EQ(0, definition.delta( "achild" ) );
+    }
+    {
+    AbstractDefinition * alias_of_child = definition.create_aliased("bchild",child);
+    ASSERT_EQ("bchild", alias_of_child->name());
+    ASSERT_EQ("child", alias_of_child->actual_name());
+    ASSERT_TRUE( definition.has( "bchild" ) );
+    ASSERT_TRUE( definition.has( "achild" ) );
+    ASSERT_EQ(0, definition.delta( "child" ) );
+    ASSERT_EQ(0, definition.delta( "achild" ) );
+    ASSERT_EQ(0, definition.delta( "bchild" ) );
+    ASSERT_EQ(1, alias_of_child->delta( "child" ) );
+    }
 }
 
 
 TEST( Definition, parent_section)
 {
     Definition definition;
-    Definition * child = definition.create("child");
-    Definition * grandchild1 = child->create("grandchild1");
-    Definition * grandchild2 = child->create("grandchild2");
+    AbstractDefinition * child = definition.create("child");
+    AbstractDefinition * grandchild1 = child->create("grandchild1");
+    AbstractDefinition * agrandchild1 = child->create_aliased("agrandchild1",grandchild1);
+    AbstractDefinition * grandchild2 = child->create("grandchild2");
 
     ASSERT_TRUE( child->has( "grandchild1" ) );
+    ASSERT_TRUE( child->has( "agrandchild1" ) );
     ASSERT_EQ(0, child->delta( "grandchild1" ) );
+    ASSERT_EQ(0, child->delta( "agrandchild1" ) );
 
     ASSERT_TRUE( child->has( "grandchild2" ) );
     ASSERT_EQ(0, child->delta( "grandchild2" ) );

@@ -2,17 +2,43 @@
 #define WASP_DEFINITION_H
 
 #include "waspcore/wasp_bug.h"
-#include <map>
+#include <set>
 #include <memory>
 namespace wasp{
-class Definition {
-public:
-    typedef std::shared_ptr<Definition> SP;
-    Definition();
-    Definition(const Definition& orig);
-    ~Definition();
 
-    Definition * clone()const;
+/**
+ * @brief The def_compare struct comparator for a set of Definition
+ */
+template<class D>
+struct def_compare {
+    bool operator() (const D* lhs, const D* rhs) const {
+        wasp_require( lhs );
+        wasp_require( rhs );
+        return lhs->name() < rhs->name();
+    }
+};
+class AbstractDefinition{
+public:
+    typedef std::shared_ptr<AbstractDefinition> SP;
+    virtual ~AbstractDefinition(){}
+    virtual       AbstractDefinition * create(const std::string & name)=0;
+    virtual       AbstractDefinition * create_aliased(const std::string & name
+                                                    , AbstractDefinition* def)=0;
+    virtual const std::string &        name()const=0;
+    virtual       bool                 has(const std::string & name)const=0;
+    virtual       int                  delta(const std::string & name)const=0;
+    virtual       AbstractDefinition * parent()const=0;
+    virtual       AbstractDefinition * get(const std::string & name)const=0;
+    virtual const std::string &        actual_name()const=0;
+};
+
+class Definition : public AbstractDefinition{
+public:
+    Definition(const std::string& name="");
+    ~Definition();   
+
+    const std::string & name()const{return m_name;}
+    const std::string & actual_name()const{return name();}
 
     /**
      * @brief create creates a new definition mapped
@@ -20,7 +46,15 @@ public:
      * @return pointer to new Definition, or nullptr if collision occurs
      * Collisions occur then the given name is already assigned a definition
      */
-    Definition * create(const std::string & name);    
+    AbstractDefinition * create(const std::string & name);
+    /**
+     * @brief create_aliased creates a new aliased definition map
+     * @param name the aliase name
+     * @param definition the definition for which the alias is associated
+     * @return the new AliasedDefinition
+     */
+    AbstractDefinition * create_aliased(const std::string & name
+                                        , AbstractDefinition * definition);
     template< class TreeView >
     Definition * create_from(const TreeView & view )
     {
@@ -51,9 +85,9 @@ public:
     /**
      * @brief get acquire the requested definition
      * @param name the name of the requested definition
-     * @return Definition * - pointer to requested, nullptr iff no definition with given name exists
+     * @return AbstractDefinition * - pointer to requested, nullptr iff no definition with given name exists
      */
-    Definition * get( const std::string & name )const;
+    AbstractDefinition * get( const std::string & name )const;
 
     /**
      * @brief parent acquires the parent definition of this definition
@@ -62,9 +96,40 @@ public:
     Definition * parent()const;
 
 private:
+    std::string m_name;
+    /**
+     * @brief The encapsulating definition for this definition
+     */
     Definition * m_parent;
-    std::map<std::string,Definition*> m_children;
+    /**
+     *  @brief Child node name to definition map
+     */
+    std::set<AbstractDefinition*, def_compare<AbstractDefinition>> m_children;
 
 };
-}
+class AliasedDefinition : public AbstractDefinition{
+public:
+    AliasedDefinition(const std::string & name, AbstractDefinition * definition)
+        : AbstractDefinition(), m_definition(definition), m_name(name)
+    {
+    }
+
+    const std::string & name()const{return m_name;}
+    const std::string & actual_name()const{return m_definition->name();}
+
+    AbstractDefinition * parent()const{return m_definition->parent();}
+    AbstractDefinition * get(const std::string & name)const
+                            {return m_definition->get(name);}
+    bool has( const std::string & name )const{return m_definition->has(name);}
+    int delta(const std::string & name)const{return m_definition->delta(name);}
+    AbstractDefinition * create(const std::string & name){return m_definition->create(name);}
+    AbstractDefinition * create_aliased(const std::string & name
+                                        , AbstractDefinition * definition){
+        return m_definition->create_aliased(name, definition);
+    }
+private:
+    AbstractDefinition *  m_definition;
+    std::string m_name;
+};
+} // end of wasp namespace
 #endif

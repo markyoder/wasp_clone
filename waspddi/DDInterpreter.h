@@ -84,11 +84,11 @@ namespace wasp {
          */
         bool hasFile()const{return mHasFile;}
 
-        const Definition* definition()const;
-        Definition* definition();
+        const AbstractDefinition* definition()const;
+        AbstractDefinition* definition();
 
-        Definition::SP definition_store(){return m_definition;}
-        void set_definition_store(Definition::SP store){m_definition = store; m_current = store.get();}
+        AbstractDefinition::SP definition_store(){return m_definition;}
+        void set_definition_store(AbstractDefinition::SP store){m_definition = store; m_current = store.get();}
         /**
          * Override from parent class in order to manage definition selection.
          * Pushes the new definition with the given node_name
@@ -111,8 +111,8 @@ namespace wasp {
         bool singleParse;
 
     private: // private methods
-        Definition::SP m_definition;
-        Definition * m_current;
+        AbstractDefinition::SP m_definition;
+        AbstractDefinition * m_current;
         /**
          * @brief mHasFile indicates whether this parser was instantiated via a file
          */
