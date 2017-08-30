@@ -53,7 +53,7 @@ bool Definition::has(const std::string &name)const
     return m_children.find(&def) != m_children.end();
 }
 
-int Definition::delta(const std::string & name)const
+int Definition::delta(const std::string & name, std::string & actual_name)const
 {
 
     int level = 0;
@@ -62,7 +62,12 @@ int Definition::delta(const std::string & name)const
 
     while( def != nullptr )
     {
-        if( def->has(name) ) return level;
+        auto named_def = def->get(name);
+        if( named_def != nullptr )
+        {
+            actual_name = named_def->actual_name();
+            return level;
+        }
         ++level;
         def = def->m_parent;
     }

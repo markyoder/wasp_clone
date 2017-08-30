@@ -3,6 +3,7 @@
 
 #include "waspcore/wasp_bug.h"
 #include <set>
+#include <string>
 #include <memory>
 namespace wasp{
 
@@ -26,7 +27,8 @@ public:
                                                     , AbstractDefinition* def)=0;
     virtual const std::string &        name()const=0;
     virtual       bool                 has(const std::string & name)const=0;
-    virtual       int                  delta(const std::string & name)const=0;
+    virtual       int                  delta(const std::string & name
+                                             , std::string & actual_name)const=0;
     virtual       AbstractDefinition * parent()const=0;
     virtual       AbstractDefinition * get(const std::string & name)const=0;
     virtual const std::string &        actual_name()const=0;
@@ -69,11 +71,13 @@ public:
 
     /**
      * @brief delta determine the definition section delta
+     * @param name the name for which to search
+     * @param actual_name the dealiased name of the definition (aname = name if not an alias)
      * @return d=0  - the current level accepts the given named section
      *         d>0  - the parent level d levels up accepts.
      *         d=-1 - the named section is not accepted by this or any parent definition
      */
-    int delta(const std::string & name)const;
+    int delta(const std::string & name, std::string & actual_name)const;
 
     /**
      * @brief has determine if this definition the given child definition
@@ -121,7 +125,7 @@ public:
     AbstractDefinition * get(const std::string & name)const
                             {return m_definition->get(name);}
     bool has( const std::string & name )const{return m_definition->has(name);}
-    int delta(const std::string & name)const{return m_definition->delta(name);}
+    int delta(const std::string & name, std::string & actual_name)const{return m_definition->delta(name,actual_name);}
     AbstractDefinition * create(const std::string & name){return m_definition->create(name);}
     AbstractDefinition * create_aliased(const std::string & name
                                         , AbstractDefinition * definition){
