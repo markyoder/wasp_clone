@@ -185,7 +185,6 @@ definition_section : decl  value_list
         quote_less_data = wasp::strip_quotes(quote_less_data);
 
         wasp_check(interpreter.definition());
-        int delta = interpreter.definition()->delta(quote_less_data);
 
         if( false == adjust_interpreter_stages(interpreter, quote_less_data ) )
         {

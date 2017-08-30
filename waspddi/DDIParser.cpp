@@ -753,7 +753,6 @@ namespace wasp {
         quote_less_data = wasp::strip_quotes(quote_less_data);
 
         wasp_check(interpreter.definition());
-        int delta = interpreter.definition()->delta(quote_less_data);
 
         if( false == adjust_interpreter_stages(interpreter, quote_less_data ) )
         {
@@ -771,11 +770,11 @@ namespace wasp {
                                     ,*(yystack_[0].value.node_indices));
         delete (yystack_[0].value.node_indices);
     }
-#line 775 "DDIParser.cpp" // lalr1.cc:859
+#line 774 "DDIParser.cpp" // lalr1.cc:859
     break;
 
   case 13:
-#line 207 "DDIParser.bison" // lalr1.cc:859
+#line 206 "DDIParser.bison" // lalr1.cc:859
     {
         bool is_array = (yystack_[0].value.node_indices)->size() > 1;
         (yystack_[0].value.node_indices)->insert((yystack_[0].value.node_indices)->begin(),(yystack_[1].value.node_index));
@@ -802,11 +801,11 @@ namespace wasp {
 
         delete (yystack_[0].value.node_indices);
     }
-#line 806 "DDIParser.cpp" // lalr1.cc:859
+#line 805 "DDIParser.cpp" // lalr1.cc:859
     break;
 
   case 14:
-#line 233 "DDIParser.bison" // lalr1.cc:859
+#line 232 "DDIParser.bison" // lalr1.cc:859
     {
 
         std::string quote_less_data = interpreter.data((yystack_[0].value.node_index));
@@ -821,11 +820,11 @@ namespace wasp {
                                     ,interpreter.data((yystack_[0].value.node_index)).c_str()
                                     ,child_indices);
     }
-#line 825 "DDIParser.cpp" // lalr1.cc:859
+#line 824 "DDIParser.cpp" // lalr1.cc:859
     break;
 
   case 15:
-#line 247 "DDIParser.bison" // lalr1.cc:859
+#line 246 "DDIParser.bison" // lalr1.cc:859
     {
 
         std::string quote_less_data = interpreter.data((yystack_[1].value.node_index));
@@ -840,26 +839,26 @@ namespace wasp {
                                     ,interpreter.data((yystack_[1].value.node_index)).c_str()
                                     ,child_indices);
     }
-#line 844 "DDIParser.cpp" // lalr1.cc:859
+#line 843 "DDIParser.cpp" // lalr1.cc:859
     break;
 
   case 16:
-#line 264 "DDIParser.bison" // lalr1.cc:859
+#line 263 "DDIParser.bison" // lalr1.cc:859
     {
             auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
-#line 853 "DDIParser.cpp" // lalr1.cc:859
+#line 852 "DDIParser.cpp" // lalr1.cc:859
     break;
 
   case 18:
-#line 269 "DDIParser.bison" // lalr1.cc:859
+#line 268 "DDIParser.bison" // lalr1.cc:859
     {interpreter.push_staged_child(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
-#line 859 "DDIParser.cpp" // lalr1.cc:859
+#line 858 "DDIParser.cpp" // lalr1.cc:859
     break;
 
   case 19:
-#line 270 "DDIParser.bison" // lalr1.cc:859
+#line 269 "DDIParser.bison" // lalr1.cc:859
     {
             if(interpreter.single_parse() )
             {
@@ -867,11 +866,11 @@ namespace wasp {
                 YYACCEPT;
             }
         }
-#line 871 "DDIParser.cpp" // lalr1.cc:859
+#line 870 "DDIParser.cpp" // lalr1.cc:859
     break;
 
 
-#line 875 "DDIParser.cpp" // lalr1.cc:859
+#line 874 "DDIParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1215,7 +1214,7 @@ namespace wasp {
   DDIParser::yyrline_[] =
   {
        0,   141,   141,   147,   147,   147,   149,   156,   165,   166,
-     170,   175,   180,   206,   233,   247,   263,   268,   269,   270
+     170,   175,   180,   205,   232,   246,   262,   267,   268,   269
   };
 
   // Print the state stack on the debug stream.
@@ -1297,8 +1296,8 @@ namespace wasp {
 
 
 } // wasp
-#line 1301 "DDIParser.cpp" // lalr1.cc:1167
-#line 281 "DDIParser.bison" // lalr1.cc:1168
+#line 1300 "DDIParser.cpp" // lalr1.cc:1167
+#line 280 "DDIParser.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 
 void wasp::DDIParser::error(const DDIParser::location_type& l,
