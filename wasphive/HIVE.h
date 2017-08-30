@@ -257,7 +257,7 @@ public:
             const std::string child_view_name = child_view.name();
             if( child_view_name == "InputAliases" )
             {
-                for( size_t a = 0; i < child_view.child_count(); ++a)
+                for( size_t a = 0; a < child_view.child_count(); ++a)
                 {
                     const auto & alias_view = child_view.child_at(a);
                     if( alias_view.is_decorative() ) continue;
