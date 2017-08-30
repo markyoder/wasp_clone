@@ -140,8 +140,8 @@ public:
     virtual std::string& stream_name()=0;
     virtual std::ostream & error_stream()=0;    
 
-    virtual const Definition* definition()const{wasp_not_implemented("definition");}
-    virtual Definition* definition(){wasp_not_implemented("definition");}
+    virtual const AbstractDefinition* definition()const{wasp_not_implemented("definition");}
+    virtual AbstractDefinition* definition(){wasp_not_implemented("definition");}
 
     virtual bool single_parse()const=0;
 

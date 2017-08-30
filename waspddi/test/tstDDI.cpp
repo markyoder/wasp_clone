@@ -192,6 +192,35 @@ expected<<R"I(/
     ddi.root().paths(paths);
 }
 
+TEST(DDInterpreter,passing_sections_aliased)
+{
+    std::stringstream input;
+    input <<R"I( sect1 1 blurgity_blarg
+blergity_blerg 2
+    sect2.2 2.2
+)I"<<std::endl;
+    DDInterpreter<> ddi;
+    auto sect = ddi.definition()->create("sect1")->create("sect1.1");
+    sect->parent()->create_aliased("blurgity_blarg",sect);
+    ddi.definition()->create("sect2")->create("sect2.2");
+    ddi.definition()->create_aliased("blergity_blerg",ddi.definition()->get("sect2"));
+    ASSERT_TRUE( ddi.parse(input) );
+    std::stringstream expected;
+expected<<R"I(/
+/sect1
+/sect1/decl (sect1)
+/sect2/value (1)
+/sect2
+/sect2/decl (sect2)
+/sect2/value (2)
+/sect2/sec2.2
+/sect2/sect2.2/decl (sect2.2)
+/sect2/sect2.2/value (2.2)
+)I";
+    std::stringstream paths;
+    ddi.root().paths(paths);
+}
+
 /**
  * @brief TEST ensures that an unknown section produces an expected error
  * Specifically tests unknown in 'decl values' logic

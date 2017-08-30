@@ -63,13 +63,13 @@ bool DDInterpreter<S>::parseString(const std::string &input, const std::string& 
 }
 
 template<class S>
-const Definition* DDInterpreter<S>::definition()const
+const AbstractDefinition* DDInterpreter<S>::definition()const
 {
     wasp_require( m_current != nullptr );
     return m_current;
 }
 template<class S>
-Definition* DDInterpreter<S>::definition()
+AbstractDefinition* DDInterpreter<S>::definition()
 {
     if( m_current == nullptr ){
         m_definition = std::make_shared<Definition>();

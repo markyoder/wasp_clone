@@ -108,10 +108,11 @@
  * the current or ancenstral stage.
  */
 bool adjust_interpreter_stages( wasp::AbstractInterpreter & interpreter
-                               , const std::string & definition_name)
+                               , const std::string & definition_name
+                                , std::string & actual_name)
 {
     wasp_check(interpreter.definition());
-    int delta = interpreter.definition()->delta(definition_name);
+    int delta = interpreter.definition()->delta(definition_name, actual_name);
     if( -1 == delta )
     {
         return false;
@@ -185,9 +186,9 @@ definition_section : decl  value_list
         quote_less_data = wasp::strip_quotes(quote_less_data);
 
         wasp_check(interpreter.definition());
-        int delta = interpreter.definition()->delta(quote_less_data);
 
-        if( false == adjust_interpreter_stages(interpreter, quote_less_data ) )
+        if( false == adjust_interpreter_stages(interpreter, quote_less_data
+                                               , quote_less_data) )
         {
             error(@1, "'"+quote_less_data+"' is unknown.");
             delete $2;
@@ -199,7 +200,7 @@ definition_section : decl  value_list
                                      // data
                                      //  |_ decl (data)
                                      //  |_ value (1.2..blah)
-                                    ,quote_less_data
+                                    ,quote_less_data.c_str()
                                     ,*$2);
         delete $2;
     }
@@ -211,7 +212,8 @@ definition_section : decl  value_list
 
         std::string quote_less_data = interpreter.data($1);
         quote_less_data = wasp::strip_quotes(quote_less_data);
-        if( false == adjust_interpreter_stages(interpreter, quote_less_data ) )
+        if( false == adjust_interpreter_stages(interpreter, quote_less_data
+                                               , quote_less_data) )
         {
             error(@1, "'"+quote_less_data+"' is unknown.");
             delete $3;
@@ -234,28 +236,30 @@ definition_section : decl  value_list
 
         std::string quote_less_data = interpreter.data($1);
         quote_less_data = wasp::strip_quotes(quote_less_data);
-        if( false == adjust_interpreter_stages(interpreter, quote_less_data ) )
+        if( false == adjust_interpreter_stages(interpreter, quote_less_data
+                                               , quote_less_data) )
         {
             error(@1, "'"+quote_less_data+"' is unknown.");
             YYERROR; // returns
         }
         std::vector<size_t> child_indices = {$decl};
         $$ = interpreter.push_staged(wasp::OBJECT
-                                    ,interpreter.data($decl).c_str()
+                                    ,quote_less_data.c_str()
                                     ,child_indices);
     }
     | decl comma {
 
         std::string quote_less_data = interpreter.data($1);
         quote_less_data = wasp::strip_quotes(quote_less_data);
-        if( false == adjust_interpreter_stages(interpreter, quote_less_data ) )
+        if( false == adjust_interpreter_stages(interpreter, quote_less_data
+                                               , quote_less_data) )
         {
             error(@1, "'"+quote_less_data+"' is unknown.");
             YYERROR; // returns
         }
         std::vector<size_t> child_indices = {$decl,$comma};
         $$ = interpreter.push_staged(wasp::OBJECT
-                                    ,interpreter.data($decl).c_str()
+                                    ,quote_less_data.c_str()
                                     ,child_indices);
     }
 
