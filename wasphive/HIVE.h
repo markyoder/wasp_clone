@@ -85,8 +85,8 @@ private:
     // TODO document these attributes
     const static float SUMERROR;
     const static float PRODERROR;
-    const static float MAXERRORS;
-    const static float MAXENUMERRORCOUNT;
+    const static int   MAXERRORS;
+    const static int MAXENUMERRORCOUNT;
 
 
     std::map< std::string, std::set<std::string> > enumRef;

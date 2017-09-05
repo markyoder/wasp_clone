@@ -4,6 +4,7 @@ TRIBITS_SUBPACKAGE(getpot)
 
 WASP_ADD_CXX_FLAGS(
   "-Wno-deprecated-register"
+  "-wd4018"
 )
 
 WASP_FLEX_AND_BISON(
