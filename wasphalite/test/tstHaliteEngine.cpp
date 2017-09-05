@@ -33,7 +33,7 @@ TEST( Halite, single_attribute)
     }
     {
         std::stringstream input;
-        input<< R"INPUT(<attribute:fmt=%-10.0e>)INPUT";
+        input<< R"INPUT(<attribute:fmt=%-10.1e>)INPUT";
         HaliteInterpreter<> interpreter;
         ASSERT_TRUE( interpreter.parse(input) );
         std::stringstream out;
@@ -41,7 +41,7 @@ TEST( Halite, single_attribute)
         data.store("attribute", 1e10);
         ASSERT_EQ( Context::Type::REAL, data.type("attribute") );
         ASSERT_TRUE( interpreter.evaluate(out,data) );
-        ASSERT_EQ( "1e+10     ", out.str() );
+        ASSERT_EQ( "1.0e+10   ", out.str() );
     }
 }
 TEST( Halite, single_quoted_attribute)
@@ -759,7 +759,7 @@ TEST( Halite, file_import_using_object_by_copy)
     std::ofstream import("import_by_name_template.tmpl");
     std::stringstream content;
     content<<"this is"<<std::endl
-         <<"nested files using ted's foo (<foo:fmt=%-10.0e>)"<<std::endl
+         <<"nested files using ted's foo (<foo:fmt=%-10.1e>)"<<std::endl
         <<std::endl // empty line
        <<"and assigning foo to < foo = 9 >";
     import<<content.str();
@@ -786,7 +786,7 @@ TEST( Halite, file_import_using_object_by_copy)
     expected<< R"INPUT(
     text prior
 this is
-nested files using ted's foo (1e+10     )
+nested files using ted's foo (1.0e+10   )
 
 and assigning foo to 9
  text after)INPUT";
