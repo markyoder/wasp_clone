@@ -19,8 +19,8 @@ namespace wasp
 {
 const float HIVE::SUMERROR=.01;
 const float HIVE::PRODERROR=.01;
-const float HIVE::MAXERRORS=100;
-const float HIVE::MAXENUMERRORCOUNT=6;
+const int   HIVE::MAXERRORS=100;
+const int   HIVE::MAXENUMERRORCOUNT=6;
 
 HIVE::HIVE() : stop( GLOBAL_STOP ) {
 }

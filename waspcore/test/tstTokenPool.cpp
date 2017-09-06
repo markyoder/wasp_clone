@@ -290,6 +290,11 @@ TEST(TokenPool, multiple_line_column)
         std::size_t column;
         std::size_t last_line;
         std::size_t last_column;
+
+		Info(const std::string & d, char t, size_t o, size_t l, size_t c, size_t ll, size_t lc)
+			: data(d), type(t), offset(o), line(l), column(c), last_line(ll), last_column(lc)
+		{
+		}
     };
 
     // key1 = "multi-line\n    string"
@@ -325,8 +330,8 @@ TEST(TokenPool, multiple_line_column)
 
             // current info
             const auto &ci = line[j];
+            tp.push(ci.data.c_str(), ci.type, ci.offset);
 
-            tp.push(ci.data.data(), ci.type, ci.offset);
             ASSERT_EQ(index + 1, tp.size());
 
             // verify token data are correct
