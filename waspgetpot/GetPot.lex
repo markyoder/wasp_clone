@@ -223,7 +223,7 @@ DOT_SLASH \.\/
 }
 
  /* pass all other characters up to GetPot*/
-. {
+<*>. {
     return static_cast<token_type>(*yytext);
 }
 
