@@ -75,6 +75,11 @@ public:
 
 
     Value::Type type()const;
+    /**
+     * @brief categoryString
+     * @return Returns a string for type display (object, array, number, boolean, null)
+     */
+    std::string categoryString() const;
 
     bool is_null()const{return m_type == TYPE_NULL;}
     bool is_int()const{return m_type == TYPE_INTEGER;}

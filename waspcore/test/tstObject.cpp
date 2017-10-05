@@ -6,10 +6,35 @@ using namespace wasp;
 
 TEST(Object, merge)
 {
-    {
-
+    { // basic merge
+        DataObject obj1, obj2;
+        obj1["basic_merge"] = 1;
+        obj2["basic_merge"] = 2;
+        obj2["f2"] = 23;
+        obj1.merge(obj2);
+        EXPECT_EQ(obj1["basic_merge"].to_int(), 1);
+        EXPECT_TRUE(obj1.contains("f2"));
     }
 }
+
+TEST(Object, merge_assertions)
+{
+    // check assertion type mismatch lhs(object) and rhs(array)
+    DataObject obj1, obj2;
+    DataObject obj1_obj;
+    obj1_obj["child"] = 1;
+    DataArray obj2_array;
+    obj2_array.push_back(2);
+    obj1["assert_type"] = obj1_obj;
+    obj2["assert_type"] = obj2_array;
+    ASSERT_ANY_THROW(obj1.merge(obj2));
+    // reverse
+    // check assertion type mismath lhs(array) and rhs(obj)
+    obj1["assert_type"] = obj2_array;
+    obj2["assert_type"] = obj1_obj;
+    ASSERT_ANY_THROW(obj1.merge(obj2));
+}
+
 TEST( Value, constructors )
 {
     {

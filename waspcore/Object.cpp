@@ -3,6 +3,8 @@
 #include "waspcore/wasp_bug.h"
 #include <string.h> // strdup, free
 #include <cstdlib> // atoi/atof, etc
+#include <sstream>
+#include <cassert>
 
 namespace wasp{
 
@@ -88,6 +90,25 @@ void Value::copy_from(const Value &orig)
 }
 
 Value::Type Value::type()const{return m_type;}
+
+std::string Value::categoryString() const
+{
+    switch (m_type) {
+    case Type::TYPE_INTEGER:
+    case Type::TYPE_DOUBLE:
+        return "number";
+    case Type::TYPE_STRING:
+        return "string";
+    case Type::TYPE_OBJECT:
+        return "object";
+    case Type::TYPE_ARRAY:
+        return "array";
+    case Type::TYPE_BOOLEAN:
+        return "boolean";
+    default:
+        return "null";
+    }
+}
 
 Value& Value::operator=(const Value& orig)
 {
@@ -676,9 +697,50 @@ void DataObject::merge(const DataObject &obj)
 {
     // merge every Value, Object and Array from 'obj'
     // that does not exist in 'this'
-    for(auto item : obj)
+    for(auto& item : obj)
     {
         wasp_line("Checking inbound " << item.first);
+        if(contains(item.first))
+        {
+            wasp_line("Destination contains " << item.first);
+            Value& child = m_data.at(item.first);
+            // if Value is an object do a depth-first merge
+            if(child.is_object())
+            {
+                // check that my object is indeed an object
+                wasp_ensure(this->operator[](item.first).is_object());
+                if(!item.second.is_object())
+                {
+                    std::stringstream ss;
+                    ss << "Attempting to merge data objects where member("
+                       << item.first << ") differs in type." << std::endl
+                       << "Left-hand side type(object) differs from right-hand side type("
+                       << item.second.categoryString() << ")";
+                    throw std::logic_error(ss.str());
+                }
+                // merge objects
+                child.to_object()->merge(item.second.as_object());
+            } else if(child.is_array())
+            {// if Value is an array do a depth-first merge
+                wasp_ensure(this->operator[](item.first).is_array());
+                if(!item.second.is_array())
+                {
+                    std::stringstream ss;
+                    ss << "Attempting to merge data objects where member("
+                       << item.first << " differs in type."
+                       << "Left-hand side type(array) differs from right-hand side type("
+                       << item.second.categoryString() << ")";
+                    throw std::logic_error(ss.str());
+                }
+                // merge array
+                //child.to_array()->merge(item.second.as_array());
+            }
+        }else
+        { // no destination to merge so we can simply copy
+            wasp_line("Destination does not contain " << item.first << ". Copying...");
+            this->insert(item);
+        }
+
     }
 }
 } // end of namespace wasp
