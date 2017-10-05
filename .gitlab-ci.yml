@@ -22,13 +22,13 @@ mac_clang_testing:
     - which git
     - git --version
     - git clone https://github.com/lefebvre/TriBITS.git TriBITS
+    - module load cmake
+    - which cmake
     - which python
     - python --version
     - python TriBITS/tribits/ci_support/clone_extra_repos.py
     - mkdir build
     - cd build
-    - module load cmake
-    - which cmake
     - cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Debug-${CI_BUILD_REF_NAME}" -DCMAKE_BUILD_TYPE=DEBUG -Dwasp_ENABLE_TESTS=ON -Dwasp_ENABLE_ALL_PACKAGES=ON ..
     - ctest -D ExperimentalStart -D ExperimentalBuild -D ExperimentalTest -D ExperimentalSubmit
 
@@ -39,13 +39,13 @@ linux_gcc_testing:
     - which git
     - git --version
     - git clone https://github.com/lefebvre/TriBITS.git TriBITS
+    - module load cmake
+    - which cmake
     - which python
     - python --version
     - python TriBITS/tribits/ci_support/clone_extra_repos.py
     - mkdir build
     - cd build
-    - module load cmake
-    - which cmake
     - module load valgrind
     - cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Release-${CI_BUILD_REF_NAME}" -DCMAKE_BUILD_TYPE=RELEASE -Dwasp_ENABLE_TESTS=ON -Dwasp_ENABLE_ALL_PACKAGES=ON ..
     - ctest -D ExperimentalStart -D ExperimentalBuild -D ExperimentalTest -D ExperimentalSubmit
@@ -58,13 +58,13 @@ linux_gcc_analysis:
     - which git
     - git --version
     - git clone https://github.com/lefebvre/TriBITS.git TriBITS
+    - module load cmake
+    - which cmake
     - which python
     - python --version
     - python TriBITS/tribits/ci_support/clone_extra_repos.py
     - mkdir build
     - cd build
-    - module load cmake
-    - which cmake
     - module load valgrind
     - ls -l ${CI_PROJECT_DIR}/googletest
     - cmake -MEMCHECK_COMMAND="$(which valgrind)" -DBUILDNAME="$(uname -s)-GCC-4.8.5-Debug-${CI_BUILD_REF_NAME}" -DCMAKE_BUILD_TYPE=DEBUG -Dwasp_ENABLE_COVERAGE_TESTING=ON -D COVERAGE_EXTRA_FLAGS="-s ${CI_PROJECT_DIR}/googletest -d"-Dwasp_ENABLE_TESTS=ON -Dwasp_ENABLE_ALL_PACKAGES=ON ..
