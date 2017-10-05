@@ -607,6 +607,15 @@ bool DataArray::pack_json(std::ostream & out)const
     out<<"]";
     return out.good();
 }
+
+void DataArray::merge(const DataArray &rhs)
+{
+    // loop over every item in rhs array
+    for(auto item : rhs)
+    {
+
+    }
+}
 DataObject::DataObject()
 {
 }
@@ -693,11 +702,11 @@ bool DataObject::pack_json(std::ostream & out)const
     return out.good();
 }
 
-void DataObject::merge(const DataObject &obj)
+void DataObject::merge(const DataObject &rhs)
 {
     // merge every Value, Object and Array from 'obj'
     // that does not exist in 'this'
-    for(auto& item : obj)
+    for(auto& item : rhs)
     {
         wasp_line("Checking inbound " << item.first);
         if(contains(item.first))
@@ -733,14 +742,13 @@ void DataObject::merge(const DataObject &obj)
                     throw std::logic_error(ss.str());
                 }
                 // merge array
-                //child.to_array()->merge(item.second.as_array());
+                child.to_array()->merge(item.second.as_array());
             }
         }else
         { // no destination to merge so we can simply copy
             wasp_line("Destination does not contain " << item.first << ". Copying...");
             this->insert(item);
         }
-
     }
 }
 } // end of namespace wasp

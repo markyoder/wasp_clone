@@ -125,6 +125,7 @@ public:
 
     bool format_json(std::ostream & out, int indent_level=2, int level=0)const;
     bool pack_json(std::ostream & out)const;
+
 private:
     friend class JSONObjectParser;
     void assign(DataObject * obj);
@@ -175,6 +176,7 @@ public:
 
     bool format_json(std::ostream & out, int indent_level=2, int level=0)const;
     bool pack_json(std::ostream & out)const;
+    void merge(const DataArray& rhs);
 };
 
 class DataObject
@@ -219,7 +221,7 @@ public:
     bool format_json(std::ostream & out, int indent_level=2, int level=0)const;
     bool pack_json(std::ostream & out)const;
 
-    void merge(const DataObject& obj);
+    void merge(const DataObject& rhs);
 
 };
 
