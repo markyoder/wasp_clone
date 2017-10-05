@@ -103,8 +103,11 @@ sect4 1.1
 sect5 = 1.e29
 sect6 "ted"
 sect7 = "ted"
-sect8 = 1 2 3.4 "five"
-sect9  1 2 3.4 "five"
+sect8 = 1 2       # comment about sect8 list line 1
+        3.4       # comment about sect8 list line 2
+        "five"    # comment about sect8 list line 3
+sect9  1 2        # comment about sect9 list line 1
+       3.4 "five" # comment about sect9 list line 2
 )I"<<std::endl;
     DDInterpreter<> ddi;
     ddi.definition()->create("sect1");
@@ -147,14 +150,19 @@ expected<<R"I(/
 /sect8/= (=)
 /sect8/value (1)
 /sect8/value (2)
+/sect8/comment (# comment about sect8 list line 1)
 /sect8/value (3.4)
+/sect8/comment (# comment about sect8 list line 2)
 /sect8/value ("five")
+/sect8/comment (# comment about sect8 list line 3)
 /sect9
 /sect9/decl (sect9)
 /sect9/value (1)
 /sect9/value (2)
+/sect9/comment (# comment about sect9 list line 1)
 /sect9/value (3.4)
 /sect9/value ("five")
+/sect9/comment (# comment about sect9 list line 2)
 )I";
     std::stringstream paths;
     DDINodeView<decltype(ddi.root())> root = ddi.root();
