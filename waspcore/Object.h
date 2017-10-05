@@ -214,6 +214,8 @@ public:
     bool format_json(std::ostream & out, int indent_level=2, int level=0)const;
     bool pack_json(std::ostream & out)const;
 
+    void merge(const DataObject& obj);
+
 };
 
 

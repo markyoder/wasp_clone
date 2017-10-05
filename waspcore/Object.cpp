@@ -671,4 +671,14 @@ bool DataObject::pack_json(std::ostream & out)const
     out<<"}";
     return out.good();
 }
+
+void DataObject::merge(const DataObject &obj)
+{
+    // merge every Value, Object and Array from 'obj'
+    // that does not exist in 'this'
+    for(auto item : obj)
+    {
+        wasp_line("Checking inbound " << item.first);
+    }
+}
 } // end of namespace wasp

@@ -4,6 +4,12 @@
 #include "waspcore/wasp_bug.h"
 using namespace wasp;
 
+TEST(Object, merge)
+{
+    {
+
+    }
+}
 TEST( Value, constructors )
 {
     {
