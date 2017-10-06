@@ -4,7 +4,7 @@
 #include "waspcore/wasp_bug.h"
 using namespace wasp;
 
-TEST(Object, merge)
+TEST(Object, merge_basic)
 {
     { // basic merge
         DataObject obj1, obj2;
@@ -20,19 +20,88 @@ TEST(Object, merge)
 TEST(Object, merge_assertions)
 {
     // check assertion type mismatch lhs(object) and rhs(array)
-    DataObject obj1, obj2;
-    DataObject obj1_obj;
-    obj1_obj["child"] = 1;
-    DataArray obj2_array;
-    obj2_array.push_back(2);
-    obj1["assert_type"] = obj1_obj;
-    obj2["assert_type"] = obj2_array;
-    ASSERT_ANY_THROW(obj1.merge(obj2));
-    // reverse
-    // check assertion type mismath lhs(array) and rhs(obj)
-    obj1["assert_type"] = obj2_array;
-    obj2["assert_type"] = obj1_obj;
-    ASSERT_ANY_THROW(obj1.merge(obj2));
+    {
+        DataObject obj1, obj2;
+        DataObject obj1_obj;
+        obj1_obj["child"] = 1;
+        DataArray obj2_array;
+        obj2_array.push_back(2);
+        obj1["assert_type"] = obj1_obj;
+        obj2["assert_type"] = obj2_array;
+        ASSERT_ANY_THROW(obj1.merge(obj2));
+        // reverse
+        // check assertion type mismatch lhs(array) and rhs(obj)
+        obj1["assert_type"] = obj2_array;
+        obj2["assert_type"] = obj1_obj;
+        ASSERT_ANY_THROW(obj1.merge(obj2));
+    }
+    // check assertion type mismatch of index in array
+    {
+        DataArray a1, a2;
+
+        DataArray ca1; DataObject co1;
+        a1.push_back(ca1);
+        a2.push_back(co1);
+        // check assertion is thrown for attempting to merge object into array
+        ASSERT_ANY_THROW(a1.merge(a2));
+
+        // reverse
+        a1[0] = co1;
+        a2[0] = ca1;
+        // check assert is thrown for attempting to merge array into object
+        ASSERT_ANY_THROW(a1.merge(a2));
+    }
+}
+TEST(Object, merge_array)
+{
+    // lhs has less elements
+    {
+        DataArray a1;
+        DataArray a2;
+
+        a1.push_back(1); a1.push_back(2); a1.push_back(3);
+        a2.push_back(10); a2.push_back(20); a2.push_back(30);a2.push_back(40);
+
+        a1.merge(a2);
+        EXPECT_EQ(a1.size(), a2.size());
+        EXPECT_EQ(a1.back().to_int(), 40);
+    }
+
+    // rhs has less elements
+    {
+        DataArray a1;
+        DataArray a2;
+
+        a1.push_back(1); a1.push_back(2); a1.push_back(3);a1.push_back(40);
+        a2.push_back(10); a2.push_back(20); a2.push_back(30);
+
+        a1.merge(a2);
+        EXPECT_NE(a1.size(), a2.size());
+        EXPECT_EQ(a1.back().to_int(), 40);
+    }
+
+    // array containing object member merger
+    {
+        DataArray a1; DataObject o1;
+        DataArray a2; DataObject o2;
+
+        o1["obj1 number"] = 1;
+        o2["obj2 number"] = 2;
+        o2["obj1 number"] = 2;
+
+        a1.push_back(o1);
+        a2.push_back(o2);
+
+        a1.merge(a2);
+        EXPECT_EQ(a1.size(), a2.size());
+        EXPECT_EQ(a1.size(), 1);
+        EXPECT_EQ(a1[0].size(), 2);
+        ASSERT_TRUE(a1[0].is_object());
+        ASSERT_TRUE(a1[0].as_object().contains("obj1 number"));
+        ASSERT_TRUE(a1[0].as_object().contains("obj2 number"));
+        EXPECT_EQ(a1[0]["obj1 number"].to_int(), 1);
+        EXPECT_EQ(a1[0]["obj2 number"].to_int(), 2);
+    }
 }
 
 TEST( Value, constructors )

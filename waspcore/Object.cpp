@@ -611,9 +611,49 @@ bool DataArray::pack_json(std::ostream & out)const
 void DataArray::merge(const DataArray &rhs)
 {
     // loop over every item in rhs array
+    size_t index = 0;
     for(auto item : rhs)
     {
-
+        wasp_line("Checking inbound array index(" << index <<")");
+        if(size() <= index)
+        {
+            wasp_line("lhs doesn't have index. adding rhs index to lhs");
+            this->push_back(item);
+        } else
+        {
+            // must check the type of lhs[index] against that of rhs[index]
+            Value& child = m_data.at(index);
+            // if Value is an object do a depth-first merge
+            if(child.is_object())
+            {
+                // check that my object is indeed an object
+                if(!item.is_object())
+                {
+                    std::stringstream ss;
+                    ss << "Attempting to merge data arrary where member index("
+                       << index << ") differs in type." << std::endl
+                       << "Left-hand side type(object) differs from right-hand side type("
+                       << item.categoryString() << ")";
+                    throw std::logic_error(ss.str());
+                }
+                // merge objects
+                child.to_object()->merge(item.as_object());
+            } else if(child.is_array())
+            {// if Value is an array do a depth-first merge
+                if(!item.is_array())
+                {
+                    std::stringstream ss;
+                    ss << "Attempting to merge data array where member index("
+                       << index << " differs in type."
+                       << "Left-hand side type(array) differs from right-hand side type("
+                       << item.categoryString() << ")";
+                    throw std::logic_error(ss.str());
+                }
+                // merge array
+                child.to_array()->merge(item.as_array());
+            }
+        }
+        ++index;
     }
 }
 DataObject::DataObject()
@@ -717,7 +757,6 @@ void DataObject::merge(const DataObject &rhs)
             if(child.is_object())
             {
                 // check that my object is indeed an object
-                wasp_ensure(this->operator[](item.first).is_object());
                 if(!item.second.is_object())
                 {
                     std::stringstream ss;
@@ -731,7 +770,6 @@ void DataObject::merge(const DataObject &rhs)
                 child.to_object()->merge(item.second.as_object());
             } else if(child.is_array())
             {// if Value is an array do a depth-first merge
-                wasp_ensure(this->operator[](item.first).is_array());
                 if(!item.second.is_array())
                 {
                     std::stringstream ss;
