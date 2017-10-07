@@ -35,6 +35,7 @@ FILE(GLOB HEADERS *.h *.hh *.hpp
 SET(SOURCES
 DataAccessor.cpp
 SubStringIndexer.cpp
+HaliteWorkflow.cpp
 )
 
 ##---------------------------------------------------------------------------##
