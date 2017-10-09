@@ -268,4 +268,38 @@ TEST( JSON, simple_array )
     ASSERT_EQ(input.str(), printed_document.str());
     ASSERT_EQ( input.str(), document.data() );
 }
+
+TEST( JSON, simple_nulls)
+{
+
+    DataObject::SP json;
+    std::stringstream json_formatted;
+    json_formatted<<R"INPUT({
+    "array" : [null, null, null]
+    ,"key" : null
+    ,"object" : {key=null}
+    })INPUT";
+    std::stringstream unpack_errors;
+    bool readNull = wasp::generate_object<JSONObjectParser>(json, json_formatted, unpack_errors);
+
+    if(!readNull)
+    {
+        std::cerr << unpack_errors.str() << std::endl;
+    }
+    ASSERT_TRUE(readNull);
+
+    std::stringstream expected_json_packed;
+    expected_json_packed<<R"INPUT({"array":[null,null,null],"key":null,"object:"{"key"=null}})INPUT";
+    std::stringstream packed;
+    json->pack_json(packed);
+    ASSERT_EQ(expected_json_packed.str(), packed.str());
+    // test writting
+    DataObject::SP json_copy;
+    ASSERT_TRUE( wasp::generate_object<JSONObjectParser>(json_copy, packed, unpack_errors) );
+    json_formatted.str("");// clear old results
+    ASSERT_EQ("",json_formatted.str());
+    json_copy->pack_json(json_formatted);
+    // check round-tripped formatted json
+    ASSERT_EQ( expected_json_packed.str(), json_formatted.str() );
+}
 // TODO - add test for each potential fail scenario and verify expected message
