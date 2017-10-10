@@ -53,7 +53,7 @@ The default variables are available for use in expression evaluations:
 |----------------|---------------------|
 | `pi`    | $`3.14159265359 \approx \pi`$| 
 | `e`    | $`2.7182818284590452353602874713527 \approx e`$| 
-| `nl`       | '\n' | 
+| `nl`       | '\\n' | 
 
 
 ### Default Functions
@@ -110,3 +110,4 @@ The Expr engine has a few special functions that are always available.
 
 ### Array Access
 The Expr engine supports accessing array elements by recognizing `array[index]` patterns. Only rank 1 arrays are supported.
+
