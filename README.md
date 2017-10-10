@@ -44,9 +44,11 @@ WASP is composed of the following primary components:
     * Select - allows using SIREN expression to select pieces of input.
     * Valid - validates a given text file with a given document definition/schema.
     * XML - translates a given text file into XML with data and location information.
-    * TODO - not all grammars support all utilities yet.
+  
  
 # Getting Started    
+For individuals wanting compile the code from source, below are the tested requirements and configurations.
+
 
 ## Requirements
 * C/CXX compiler (See [.gitlab-ci.yml](/.gitlab-ci.yml) for build configurations)  
