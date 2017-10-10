@@ -56,7 +56,6 @@ The document layout is as follows:
 
  - In this document, the term ***input*** is used when referring to a file is to be validated, and ***schema*** is used when referring to the file that describes the definition and rules against which the input is validated. Currently, schema files must be written in the SON syntax. We will be using the SON syntax for example input files in this document as well.
 
-<a href="#top">Back to top</a>
 
 ---
 
@@ -82,7 +81,6 @@ The document layout is as follows:
 * [***ChildCountEqual***](#childcountequal-details-and-examples) - describes one or more lists of lookup paths into relative sections of the input file where the number of values must be equal.
 * [***ChildUniqueness***](#childuniqueness-details-and-examples) - describes one or more lists of lookup paths into relative sections of the input file where the values at all of these paths must be unique.
 
-<a href="#top">Back to top</a>
 
 ---
 
@@ -165,7 +163,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because (as described above) neither `/test/should_not_exist_one` nor `/test/should_not_exist_two` exist in the schema.  Also, an element exists in the input that has an invalid rule named `BadRuleName` in the schema.
 
-<a href="#top">Back to top</a>
 
 ### MinOccurs Details and Examples
 
@@ -319,7 +316,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because `valueone` only occurs 9 times under its parent context when its `MinOccurs` rule in the schema denotes that it should occur at least 10 times. `valuetwo` should occur at least 15 times under its parent context, because its `MinOccurs` rules in the schema contains a path to `"../control"`. A relative lookup from `valuetwo` to `"../control"` yields one integer with the value `15`.  However, `valuetwo` only occurs 14 times under its parent.  The second `test` element in the input has zero `valueone` elements, when there should be at least 10 as previously described ... FINISH - TODO
 
-<a href="#top">Back to top</a>
 
 ### MaxOccurs Details and Examples
 
@@ -493,7 +489,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### ValType Details and Examples
 
@@ -588,7 +583,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### ValEnums Details and Examples
 
@@ -668,7 +662,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### MinValInc Details and Examples
 
@@ -819,7 +812,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### MaxValInc Details and Examples
 
@@ -964,7 +956,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### MinValExc Details and Examples
 
@@ -1120,7 +1111,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### MaxValExc Details and Examples
 
@@ -1270,7 +1260,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### ExistsIn Details and Examples
 
@@ -1569,7 +1558,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### NotExistsIn Details and Examples
 
@@ -1792,7 +1780,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### SumOver Details and Examples
 
@@ -1871,7 +1858,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### SumOverGroup Details and Examples
 
@@ -2089,7 +2075,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### IncreaseOver Details and Examples
 
@@ -2188,7 +2173,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### DecreaseOver Details and Examples
 
@@ -2287,7 +2271,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### ChildAtMostOne Details and Examples
 
@@ -2408,7 +2391,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### ChildExactlyOne Details and Examples
 
@@ -2517,7 +2499,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### ChildAtLeastOne Details and Examples
 
@@ -2614,7 +2595,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### ChildCountEqual Details and Examples
 
@@ -2734,7 +2714,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ### ChildUniqueness Details and Examples
 
@@ -2875,7 +2854,6 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
-<a href="#top">Back to top</a>
 
 ---
 
@@ -2959,6 +2937,5 @@ The document layout is as follows:
 
  -  The ***Input Description*** rule is just used by the NEAMS Workbench to give a short one line description in the autocompletion dropdown list via `Description = 'autocomplete dropdown description'` . These descriptions can be very useful to novice users unfamiliar with all of the parameters at a given context. These descriptions are not used by the templates for any further autocompletion logic.
 
-<a href="#top">Back to top</a>
 
 ---
