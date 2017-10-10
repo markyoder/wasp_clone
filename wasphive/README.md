@@ -2,7 +2,7 @@
 
 ## **Table of Contents**
 
-1. [Introduction](#introduction)
+1. [Overview](#hive-overview)
 
 2. [Input Validation Rules Summary](#input-validation-rules-summary)
 3. [Input Validation Details and Examples](#input-validation-details-and-examples)
@@ -42,7 +42,7 @@
 
 ---
 
-## **Introduction**
+## **HIVE Overview**
 
 The Hierarchical Input Validation Engine (**HIVE**) uses a set of rules to describe the schema of an application's input. These rules describe scalar and relational input restrictions. They can use [***Sequence Input Retrieval ENgine (SIREN) Expression***](/waspsiren/README.md) paths to define restrictions related to relative sets of input elements. Schema files for HIVE are written using the [***Standard Object Notation (SON) Syntax***](/waspson/README.md). Applications, such as the **NEAMS Workbench**, use HIVE and schema files to facilitate input validation, introspection, and assistance by using ***Grammar Files*** to associate an application with a schema file and a directory containing ***Template Files***. ***SIREN Expressions***, ***SON Syntax***, ***Grammar Files***, and ***Template Files*** are beyond the scope of this document, but they can all be referenced in their own documentation.
 
