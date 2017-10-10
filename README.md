@@ -6,7 +6,103 @@ Nodes that have no children are known as terminal or leaf nodes and represent To
 
 The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) and GNU Bison parser generator (https://www.gnu.org/software/bison/) are extensively used for lexing and parsing.
 
-## Components
+## Table of Contents
+
+1. [Components](#components) - the primary packages in WASP
+  * [Core](/waspcore/README.md)
+  * [Expr](/waspexpr/README.md)
+  * [HIVE](/wasphive/README.md)
+  * [SIREN](/waspsiren/README.md)
+  * [SON](/waspson/README.md)
+  * [DDI](waspddi/README.md)
+  * [HALITE](/wasphalite/README.md)
+  * [Utils](/wasputils/README.md)
+2. [Getting Started](#getting-started) - code compilation requirements and instructions
+  * [Requirements](#requirements)
+  * [Code Configuration and Compilation](#code-configuration-and-compilation)
+3. [Core](/waspcore/README.md) - core datastructures
+  * [String Pool](/waspcore/README.md#string-pool)
+  * [Token Pool](/waspcore/README.md#token-pool)
+  * [Tree Node Pool](/waspcore/README.md#tree-node-pool)
+  * [Interpreter](/waspcore/README.md#interpreter)
+4. [Expr](/waspexpr/README.md) - expression engine
+  * [Arithmetic and Algabraic Operators](/waspexpr/README.md#arithmetic-and-algabraic-operators)
+  * [Relational Operators](/waspexpr/README.md#relational-operators)
+  * [Default Variables](/waspexpr/README.md#default-variables)
+  * [Default Functions](/waspexpr/README.md#default-functions)
+  * [Special Functions](/waspexpr/README.md#special-functions)
+  * [Array Access](/waspexpr/README.md#array-access)
+5. [HIVE](/wasphive/README.md) - HierarchicAL Input Validation Engine 
+  * [Overview](/wasphive/README.md#hive-overview)
+  * [Input Validation Rules Summary](/wasphive/README.md#input-validation-rules-summary)
+  * [Input Validation Details and Examples](/wasphive/README.md#input-validation-details-and-examples)
+    * [Miscellaneous Details and Examples](/wasphive/README.md#miscellaneous-details-and-examples)
+    * [MinOccurs Details and Examples](/wasphive/README.md#minoccurs-details-and-examples)
+    * [MaxOccurs Details and Examples](/wasphive/README.md#maxoccurs-details-and-examples)
+    * [ValType Details and Examples](/wasphive/README.md#valtype-details-and-examples)
+    * [ValEnums Details and Examples](/wasphive/README.md#valenums-details-and-examples)
+    * [MinValInc Details and Examples](/wasphive/README.md#minvalInc-details-and-examples)
+    * [MaxValInc Details and Examples](/wasphive/README.md#maxvalinc-details-and-examples)
+    * [MinValExc Details and Examples](/wasphive/README.md#minvalexc-details-and-examples)
+    * [MaxValExc Details and Examples](/wasphive/README.md#maxvalexc-details-and-examples)
+    * [ExistsIn Details and Examples](/wasphive/README.md#existsin-details-and-examples)
+    * [NotExistsIn Details and Examples](/wasphive/README.md#notexistsin-details-and-examples)
+    * [SumOver Details and Examples](/wasphive/README.md#sumover-details-and-examples)
+    * [SumOverGroup Details and Examples](/wasphive/README.md#sumovergroup-details-and-examples)
+    * [IncreaseOver Details and Examples](/wasphive/README.md#increaseover-details-and-examples)
+    * [DecreaseOver Details and Examples](/wasphive/README.md#decreaseover-details-and-examples)
+    * [ChildAtMostOne Details and Examples](/wasphive/README.md#childatmostone-details-and-examples)
+    * [ChildExactlyOne Details and Examples](/wasphive/README.md#childexactlyone-details-and-examples)
+    * [ChildAtLeastOne Details and Examples](/wasphive/README.md#childatleastone-details-and-examples)
+    * [ChildCountEqual Details and Examples](/wasphive/README.md#childcountequal-details-and-examples)
+    * [ChildUniqueness Details and Examples](/wasphive/README.md#childuniqueness-details-and-examples)
+  * [Input Assistance Details](/wasphive/README.md#input-assistance-details)
+    * [MaxOccurs Assistance Details](/wasphive/README.md#maxoccurs-assistance-details)
+    * [ChildAtMostOne Assistance Details](/wasphive/README.md#childatmostone-assistance-details)
+    * [ChildExactlyOne Assistance Details](/wasphive/README.md#childexactlyone-assistance-details)
+    * [ValEnums Assistance Details](/wasphive/README.md#valenums-assistance-details)
+    * [ValType Assistance Details](/wasphive/README.md#valtype-assistance-details)
+    * [ExistsIn Assistance Details](/wasphive/README.md#existsin-assistance-details)
+    * [InputTmpl Assistance Details](/wasphive/README.md#inputtmpl-assistance-details)
+    * [InputName Assistance Details](/wasphive/README.md#inputname-assistance-details)
+    * [InputType Assistance Details](/wasphive/README.md#inputtype-assistance-details)
+    * [InputVariants Assistance Details](/wasphive/README.md#inputvariants-assistance-details)
+    * [InputDefault Assistance Details](/wasphive/README.md#inputdefault-assistance-details)
+    * [Description Assistance Details](/wasphive/README.md#description-assistance-details) 
+6. [SIREN](/waspsiren/README.md) - Simple Input Retrieval ENgine (SIREN) 
+  * [Selecting Nodes](/waspsiren/README.md#selecting-nodes)
+  * [Selection Predicates](/waspsiren/README.md#predicates)
+  * [Selecting Unknown Nodes](/waspsiren/README.md#selecting-unknown-nodes)
+7. [DDI](/waspddi/README.md) - Definition Driven Interpreter (DDI) 
+8. [HALITE](/wasphalite/README.md) - HierarchicAL Input Template Engine (HALITE) 
+  * [Template Evaluation Summary](/wasphalite/README.md#template-evaluation-summary)
+  * [Attributes and Expressions](/wasphalite/README.md#attributes-and-expressions)
+    * [Silent Attributes](/wasphalite/README.md#silent-attributes)
+    * [Optional Attributes](/wasphalite/README.md#optional-attributes)
+    * [Attribute Patterns](/wasphalite/README.md#attribute-patterns)
+    * [Expressions](/wasphalite/README.md#expressions)
+    * [Formatting](/wasphalite/README.md#formatting)
+      * [Format Flags](/wasphalite/README.md#format-flags)
+      * [Format Width](/wasphalite/README.md#format-width)
+      * [Format Precision](/wasphalite/README.md#format-precision)
+  * [Scoped Attribute](/wasphalite/README.md#scoped-attribute)
+    * [Object Scoped Attribute](/wasphalite/README.md#object-scoped-attribute)
+    * [Array Scoped Attribute](/wasphalite/README.md#object-scoped-attribute)
+  * [File Imports](/wasphalite/README.md#file-imports)
+    * [Parameterized File Imports](/wasphalite/README.md#parameterized-file-import)
+      * [File Import using an Object](/wasphalite/README.md#file-import-using-an-object)
+      * [Iterative File Import using an Array](/wasphalite/README.md#iterative-file-import-using-an-array-or-ranges)
+  * [Conditional Blocks](/wasphalite/README.md#conditinoal-blocks)
+9. [__Utils__](/wasputils/README.md) - utilities for command line file interaction (listing, validating, selecting, etc.)
+  * [File Listing Utilities](/wasputils/README.md#file-listing-utilities)
+  * [File Component Selection Utilities](/wasputils/README.md#file-component-selection-utilities)
+  * [XML Utilities](/wasputils/README.md#xml-utilities)
+  * [File Validation](/wasputils/README.md#file-validation)
+  * [HALITE](/wasputils/README.md#the-hierarchal-input-template-expansion-halite-engine)
+  * [Schema Skeleton Creation Utility](/wasputils/README.md#schema-skeleton-creation-utility)
+
+
+# Components
 WASP is composed of the following primary components:
 
 1. [__Core__](/waspcore/README.md) - the waspcore package contains most necessary data structures and interface classes needed to interact with text files. 
@@ -47,7 +143,7 @@ WASP is composed of the following primary components:
   
  
 # Getting Started    
-For individuals wanting compile the code from source, below are the tested requirements and configurations.
+For individuals wanting to compile the code from source, below are the tested requirements and configurations.
 
 
 ## Requirements
