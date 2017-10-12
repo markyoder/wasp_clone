@@ -1,49 +1,5 @@
 # ***Hierarchical Input Validation Engine (HIVE)***
 
-## **Table of Contents**
-
-1. [Overview](#hive-overview)
-
-2. [Input Validation Rules Summary](#input-validation-rules-summary)
-3. [Input Validation Details and Examples](#input-validation-details-and-examples)
- - [Miscellaneous Details and Examples](#miscellaneous-details-and-examples)
- - [MinOccurs Details and Examples](#minoccurs-details-and-examples)
- - [MaxOccurs Details and Examples](#maxoccurs-details-and-examples)
- - [ValType Details and Examples](#valtype-details-and-examples)
- - [ValEnums Details and Examples](#valenums-details-and-examples)
- - [MinValInc Details and Examples](#minvalInc-details-and-examples)
- - [MaxValInc Details and Examples](#maxvalinc-details-and-examples)
- - [MinValExc Details and Examples](#minvalexc-details-and-examples)
- - [MaxValExc Details and Examples](#maxvalexc-details-and-examples)
- - [ExistsIn Details and Examples](#existsin-details-and-examples)
- - [NotExistsIn Details and Examples](#notexistsin-details-and-examples)
- - [SumOver Details and Examples](#sumover-details-and-examples)
- - [SumOverGroup Details and Examples](#sumovergroup-details-and-examples)
- - [IncreaseOver Details and Examples](#increaseover-details-and-examples)
- - [DecreaseOver Details and Examples](#decreaseover-details-and-examples)
- - [ChildAtMostOne Details and Examples](#childatmostone-details-and-examples)
- - [ChildExactlyOne Details and Examples](#childexactlyone-details-and-examples)
- - [ChildAtLeastOne Details and Examples](#childatleastone-details-and-examples)
- - [ChildCountEqual Details and Examples](#childcountequal-details-and-examples)
- - [ChildUniqueness Details and Examples](#childuniqueness-details-and-examples)
-4. [Input Assistance Details](#input-assistance-details)
- - [MaxOccurs Assistance Details](#maxoccurs-assistance-details)
- - [ChildAtMostOne Assistance Details](#childatmostone-assistance-details)
- - [ChildExactlyOne Assistance Details](#childexactlyone-assistance-details)
- - [ValEnums Assistance Details](#valenums-assistance-details)
- - [ValType Assistance Details](#valtype-assistance-details)
- - [ExistsIn Assistance Details](#existsin-assistance-details)
- - [InputTmpl Assistance Details](#inputtmpl-assistance-details)
- - [InputName Assistance Details](#inputname-assistance-details)
- - [InputType Assistance Details](#inputtype-assistance-details)
- - [InputVariants Assistance Details](#inputvariants-assistance-details)
- - [InputDefault Assistance Details](#inputdefault-assistance-details)
- - [Description Assistance Details](#description-assistance-details) 
-
----
-
-## **HIVE Overview**
-
 The Hierarchical Input Validation Engine (**HIVE**) uses a set of rules to describe the schema of an application's input. These rules describe scalar and relational input restrictions. They can use [***Sequence Input Retrieval ENgine (SIREN) Expression***](/waspsiren/README.md) paths to define restrictions related to relative sets of input elements. Schema files for HIVE are written using the [***Standard Object Notation (SON) Syntax***](/waspson/README.md). Applications, such as the **NEAMS Workbench**, use HIVE and schema files to facilitate input validation, introspection, and assistance by using ***Grammar Files*** to associate an application with a schema file and a directory containing ***Template Files***. ***SIREN Expressions***, ***SON Syntax***, ***Grammar Files***, and ***Template Files*** are beyond the scope of this document, but they can all be referenced in their own documentation.
 
 The document layout is as follows:
@@ -314,7 +270,7 @@ The document layout is as follows:
     line:43 column:5 - Validation Error: inside minimum occurrence checks against "../../bad_string" which does not return a valid number
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because `valueone` only occurs 9 times under its parent context when its `MinOccurs` rule in the schema denotes that it should occur at least 10 times. `valuetwo` should occur at least 15 times under its parent context, because its `MinOccurs` rules in the schema contains a path to `"../control"`. A relative lookup from `valuetwo` to `"../control"` yields one integer with the value `15`.  However, `valuetwo` only occurs 14 times under its parent.  The second `test` element in the input has zero `valueone` elements, when there should be at least 10 as previously described ... FINISH - TODO
+  - ***Notes:*** This input fails to validate against the provided schema because `valueone` only occurs 9 times under its parent context when its `MinOccurs` rule in the schema denotes that it should occur at least 10 times. `valuetwo` should occur at least 15 times under its parent context, because its `MinOccurs` rules in the schema contains a path to `"../control"`. A relative lookup from `valuetwo` to `"../control"` yields one integer with the value `15`.  However, `valuetwo` only occurs 14 times under its parent.  The second `test` element in the input has zero `valueone` elements, when there should be at least 10 as previously described.
 
 
 ### MaxOccurs Details and Examples
@@ -395,7 +351,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -487,8 +442,6 @@ The document layout is as follows:
     line:67 column:5 - Validation Error: inside minimum occurrence checks against "../../bad_string" which does not return a valid number
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
 
 ### ValType Details and Examples
 
@@ -547,8 +500,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
  - Input example that **FAILS** validation on schema above:
 ```javascript
     test{
@@ -580,8 +531,6 @@ The document layout is as follows:
 
     line:7 column:5 - Validation Error: six value "another string here" is not of type Real
 ```
-
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 
 ### ValEnums Details and Examples
@@ -631,8 +580,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
  - Input example that **FAILS** validation on schema above:
 ```javascript
     test{
@@ -659,8 +606,6 @@ The document layout is as follows:
 
     line:6 column:5 - Validation Error: five value "7" is not one of the allowed values: [ ... "3" "4" "5" "blue" "green" "indigo" ... ]
 ```
-
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 
 ### MinValInc Details and Examples
@@ -741,8 +686,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
  - Input example that **FAILS** validation on schema above:
 ```javascript
     test{
@@ -809,8 +752,6 @@ The document layout is as follows:
 
     line:21 column:5 - Validation Error: valueone value "a-string" is wrong value type for minimum inclusive value
 ```
-
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 
 ### MaxValInc Details and Examples
@@ -891,8 +832,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
  - Input example that **FAILS** validation on schema above:
 ```javascript
     test{
@@ -953,8 +892,6 @@ The document layout is as follows:
 
     line:21 column:5 - Validation Error: valueone value "a-string" is wrong value type for maximum inclusive value
 ```
-
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 
 ### MinValExc Details and Examples
@@ -1039,7 +976,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -1108,8 +1044,6 @@ The document layout is as follows:
 
     line:22 column:5 - Validation Error: valueone value "a-string" is wrong value type for minimum exclusive value
 ```
-
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 
 ### MaxValExc Details and Examples
@@ -1194,8 +1128,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
  - Input example that **FAILS** validation on schema above:
 ```javascript
     test{
@@ -1257,8 +1189,6 @@ The document layout is as follows:
 
     line:22 column:5 - Validation Error: valueone value "a-string" is wrong value type for maximum exclusive value
 ```
-
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 
 ### ExistsIn Details and Examples
@@ -1434,8 +1364,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
  - Input example that **FAILS** validation on schema above:
 ```javascript
     test{
@@ -1556,8 +1484,6 @@ The document layout is as follows:
     line:42 column:24 - Validation Error: usefive_reg value "-3" does not exist in set: [ ../../definetwo/value ../../definethree/value ]
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
 
 ### NotExistsIn Details and Examples
 
@@ -1657,8 +1583,6 @@ The document layout is as follows:
     
     }
 ```
-
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -1778,8 +1702,6 @@ The document layout is as follows:
     line:39 column:30 - Validation Error: usefive value "geography" also exists at "../../definethree/value" on line:15 column:19
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
 
 ### SumOver Details and Examples
 
@@ -1826,8 +1748,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
  - Input example that **FAILS** validation on schema above:
 ```javascript
     test{
@@ -1855,8 +1775,6 @@ The document layout is as follows:
 
     line:13 column:30 - Validation Error: invalid_array value "something" is wrong value type for sum over
 ```
-
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 
 ### SumOverGroup Details and Examples
@@ -1980,8 +1898,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
  - Input example that **FAILS** validation on schema above:
 ```javascript
     test{
@@ -2073,8 +1989,6 @@ The document layout is as follows:
     line:63 column:34 - Validation Error: invalid_array value "something" is wrong value type for sum over group
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
 
 ### IncreaseOver Details and Examples
 
@@ -2129,8 +2043,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
  - Input example that **FAILS** validation on schema above:
 ```javascript
     test{
@@ -2170,8 +2082,6 @@ The document layout is as follows:
 
     line:19 column:30 - Validation Error: another_array value "something" is wrong value type for increasing
 ```
-
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 
 ### DecreaseOver Details and Examples
@@ -2227,8 +2137,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
  - Input example that **FAILS** validation on schema above:
 ```javascript
     test{
@@ -2268,8 +2176,6 @@ The document layout is as follows:
 
     line:19 column:33 - Validation Error: another_array value "something" is wrong value type for decreasing
 ```
-
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 
 ### ChildAtMostOne Details and Examples
@@ -2354,8 +2260,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
  - Input example that **FAILS** validation on schema above:
 ```javascript
     test{
@@ -2388,8 +2292,6 @@ The document layout is as follows:
 
     line:17 column:5 - Validation Error: five has more than one of: [ "../four" "../two" ] - at most one must occur
 ```
-
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 
 ### ChildExactlyOne Details and Examples
@@ -2450,7 +2352,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -2496,8 +2397,6 @@ The document layout is as follows:
 
     line:25 column:5 - Validation Error: seven has zero of: [ "../six" ] - exactly one must occur
 ```
-
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 
 ### ChildAtLeastOne Details and Examples
@@ -2565,8 +2464,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
  - Input example that **FAILS** validation on schema above:
 ```javascript
     test{
@@ -2592,8 +2489,6 @@ The document layout is as follows:
 
     line:12 column:5 - Validation Error: seven has zero of: [ "../six/value" ] - at least one must occur
 ```
-
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 
 ### ChildCountEqual Details and Examples
@@ -2669,7 +2564,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -2711,8 +2605,6 @@ The document layout is as follows:
 
     line:1 column:1 - Validation Error: test does not have an equal number of: [ four/value five/value six/value ]
 ```
-
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 
 ### ChildUniqueness Details and Examples
@@ -2774,7 +2666,6 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
  - Input example that **FAILS** validation on schema above:
 ```javascript
@@ -2851,8 +2742,6 @@ The document layout is as follows:
     
     line:16 column:24 - Validation Error: three/value value "*" also exists at "two/value" on line:10 column:9
 ```
-
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
 
 
 ---

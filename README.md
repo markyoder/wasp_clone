@@ -32,7 +32,7 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
     * [Default Functions](/waspexpr/README.md#default-functions)
     * [Special Functions](/waspexpr/README.md#special-functions)
     * [Array Access](/waspexpr/README.md#array-access)
-5. [HIVE](/wasphive/README.md) - HierarchicAL Input Validation Engine 
+5. [HIVE](/wasphive/README.md) - HierarchicAL Input Validation Engine (HIVE)
     * [Overview](/wasphive/README.md#hive-overview)
     * [Input Validation Rules Summary](/wasphive/README.md#input-validation-rules-summary)
         * [Input Validation Details and Examples](/wasphive/README.md#input-validation-details-and-examples)
