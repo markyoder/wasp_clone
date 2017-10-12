@@ -27,7 +27,7 @@ The primary parts of wasp core:
     * Uses TokenPool to store all leaf node token information.
 4. Interpreter - base class providing boilerplate lex and parse logic
     * Contains core token and node construction logic for lexer and parser to use.
-5. Format - utility methods for formatting values - safe printf to facilitate [expression engine](/waspexpr/README.md) and [halite](/wasphalite/README.md).
+5. Format - utility methods for formatting values - safe printf to facilitate [expression engine](/waspexpr/README.md#expression-engine) and [halite](/wasphalite/README.md#hierarchical-input-validation-engine-hive).
 6. wasp_node - central location for node and token type enumeration.
 7. Object - generic type data structure to facilitate typed-data access to hierarchical data. 
     * Facilitates Halite data-driven capabilities.
@@ -89,10 +89,10 @@ Additional meta data for parent/inner nodes consists of:
 There is a convenient TreeNodeView class that provides consilidated per-node data access.
 
 ## Interpreter
-The interpreter is the base class to facilitate all syntax specific interpreters ([DDI](/waspddi/README.md), [SON](/waspson/README.md), etc.). 
+The interpreter is the base class to facilitate all syntax specific interpreters ([DDI](/waspddi/README.md#definition-driven-interpreter), [SON](/waspson/README.md#standard-object-notation-son), etc.). 
 The interpreter brokers transactions between the lexer and parser and stages and stores the parse tree for future access.
 
 The interpreter manages the TreeNodePool and tracks the root of the parse tree. 
-It also provides a stage construct to facilitate text syntax where hierarchy is ambiguous and sub-trees may not exist to immediate parent (E.g., see [DDI](/waspddi/README.md) for active use).
+It also provides a stage construct to facilitate text syntax where hierarchy is ambiguous and sub-trees may not exist to immediate parent (E.g., see [DDI](/waspddi/README.md#definition-driven-interpreter) for active use).
 
 
