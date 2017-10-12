@@ -14,7 +14,7 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
     * [HIVE](/wasphive/README.md#hierarchical-input-validation-engine-hive)
     * [SIREN](/waspsiren/README.md#sequence-input-retrieval-engine-siren)
     * [SON](/waspson/README.md#standard-object-notation-son)
-    * [DDI](waspddi/README.md#definition-driven-interpreter)
+    * [DDI](/waspddi/README.md#definition-driven-interpreter)
     * [HALITE](/wasphalite/README.md#hierarchial-input-template-expansion-engine-halite)
     * [Utils](/wasputils/README.md#command-line-utilities)
 2. [Getting Started](#getting-started) - code compilation requirements and instructions

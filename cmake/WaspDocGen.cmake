@@ -58,7 +58,7 @@ FUNCTION(WASP_DOC_GEN)
                      COMMAND ${CMAKE_COMMAND} -E
                          copy \"${wasp_SOURCE_DIR}/${md_file}\" \"${wasp_BINARY_DIR}/${md_file}\"
                      COMMAND ${SED_EXE_PATH} 
-                          -i \"\" \"s@wasp.*\#\@\#\@g\" \"${wasp_BINARY_DIR}/${md_file}\"
+                          -i \"\" \"s@/wasp.*\#\@\#\@g\" \"${wasp_BINARY_DIR}/${md_file}\"
                          )
   ENDFOREACH()
   MESSAGE( "CUSTOM_COPY_LOGIC : ${CUSTOM_COPY_LOGIC}")
