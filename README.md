@@ -106,7 +106,7 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
 # Components
 WASP is composed of the following primary components:
 
-1. [__Core__](/waspcore/README.md) - the waspcore package contains most necessary data structures and interface classes needed to interact with text files. 
+1. [__Core__](/waspcore/README.md#core-package) - the waspcore package contains most necessary data structures and interface classes needed to interact with text files. 
     * StringPool - a string storage optimization class where ascii data are stored in a contiguous memory block where each string is null terminated and indexed.
     * TokenPool - a token/word storage optimization class where Token information (string data via StringPool, file location) are stored. Line and column are calculated on-the-fly via token file offset and file line offset.
     * TreeNodePool - a TreeNode storage class where TreeNode information (token, name, parent, type, children, etc) are stored. 
@@ -117,26 +117,26 @@ WASP is composed of the following primary components:
         * design by contract - insist, require, ensure, assert, check, remember.
         * timing - 3 levels of timers for code performance monitoring. 1-3, highest to lowest.
         * debug lines - set of macros that allow printing debug information to screen.
-2. [__Expr__](/waspexpr/README.md) - the waspexpr package contains lexer, parser, and evaluation logic for mathematical expressions.
+2. [__Expr__](/waspexpr/README.md#expression-engine) - the waspexpr package contains lexer, parser, and evaluation logic for mathematical expressions.
     * Basic mathematical operators - multiplication '*', division '/', addition '+', subtraction '-', boolean ('<','<=','==','!=', etc), and exponentiation '\^'.
     * Scalar variable assignment, reference, and creation - known variable can be referenced and updated, or new variables created during expression evaluation.
     * Functions. 
 3. [__GetPot__](http://getpot.sourceforge.net/documentation-index.html) - the waspgetpot package contains lexer, parser, and tree node view for the getpot grammar (http://getpot.sourceforge.net/) as needed by MOOSE
-4. [__HIVE__](/wasphive/README.md) - the Hierarchical Input Validation Engine contains algorithms for validating a parse tree using a document schema/definition file.
+4. [__HIVE__](/wasphive/README.md#hierarchical-input-validation-engine-hive) - the Hierarchical Input Validation Engine contains algorithms for validating a parse tree using a document schema/definition file.
     * Flexible scalar and referential rules - supports element occurrence, value, child uniqueness and choice, existence, sum, predicated sum, etc.  
 5. [__JSON__](http://www.json.org/) - the waspjson package contains lexer, and parser for the JSON grammar (http://www.json.org/) 
-6. [__SIREN__](/waspsiren/README.md) - the Sequence Input Retrieval ENgine (SIREN) contains lexer, parser, and evaluation logic for tree node lookup.
+6. [__SIREN__](/waspsiren/README.md#sequence-input-retrieval-engine-siren) - the Sequence Input Retrieval ENgine (SIREN) contains lexer, parser, and evaluation logic for tree node lookup.
     * Flexible tree node lookup mechanism - supports absolute and relative wild-carded named and value or index -predicated node path lookup.
-7. [__SON__](/waspson/README.md) - the Standard Object Notation (SON) - waspson package contains the lexer, parser, and tree node view for the son grammar.
+7. [__SON__](/waspson/README.md#standard-object-notation-son) - the Standard Object Notation (SON) - waspson package contains the lexer, parser, and tree node view for the son grammar.
     * Flexible, structured, input entry mechanism - supports Objects, Arrays, and keyed values. Also supports identified objects, arrays, and keyed values.
-8. [__DDI__](waspddi/README.md) - the Definition-Driven Interpreter (DDI) contains lexer, parser, and interpreter for lightweight input format. 
+8. [__DDI__](waspddi/README.md#definition-driven-interpreter) - the Definition-Driven Interpreter (DDI) contains lexer, parser, and interpreter for lightweight input format. 
     * Hierarchical Input format with very little syntax.
     * Supports the [Dakota UQ](https://dakota.sandia.gov/) input format.
-9. [__HALITE__](/wasphalite/README.md) - the HierarchicAL Input Template Expansion engine provides a data-driven means of expanding patterned input.
+9. [__HALITE__](/wasphalite/README.md#hierarchial-input-template-expansion-engine-halite) - the HierarchicAL Input Template Expansion engine provides a data-driven means of expanding patterned input.
     * Supports attribute and expression evaluations.
     * Supports template imports.
     * Supports conditional action blocks.
-10. [__Utils__](/wasputils/README.md) - the wasputils package contains executable utilities for listing/viewing, selecting, validating, and transforming WASP supported grammars.
+10. [__Utils__](/wasputils/README.md#command-line-utilities) - the wasputils package contains executable utilities for listing/viewing, selecting, validating, and transforming WASP supported grammars.
     * List - lists paths to each file element.
     * Select - allows using SIREN expression to select pieces of input.
     * Valid - validates a given text file with a given document definition/schema.
