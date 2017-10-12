@@ -170,7 +170,7 @@ The attribute `loc="line.column"` indicates the input components location in the
 The element's name indicates the name of the input component. The leaf element's data is the data of interest that is stored in the parse tree.
 
 ## File Validation Utilities
-The SON, DDI, and GetPot interpreters have Hierarchical Input Validation Engine ([HIVE](/wasphive/README.md)) adapters allowing them to be validated. 
+The SON, DDI, and GetPot interpreters have Hierarchical Input Validation Engine ([HIVE](/wasphive/README.md#hierarchical-input-validation-engine-hive)) adapters allowing them to be validated. 
 As such, there are sonvalid, ddivalid, and getpotvalid utilities. 
 
 Invocation of the validation utilities requires a schema, and an input:
@@ -180,11 +180,11 @@ sonvalid /path/to/schema.sch /path/to/input.inp
 ```
 
 The schema's contents are beyond the scope of this readme. The product of *valid will be a return code of 0 only if no validation errors occur in the input. 
-If an error occurs, a non-zero return code is produced and validation errors emitted. See the [HIVE](/wasphive/README.md) documentation of types of validation errors.
+If an error occurs, a non-zero return code is produced and validation errors emitted. See the [HIVE](/wasphive/README.md#hierarchical-input-validation-engine-hive) documentation of types of validation errors.
 
  
 ## The HierarchAL Input Template Expansion (HALITE) Engine 
-The [HALITE](/wasphalite/README.md) engine has the corresponding `halite` command line utility. 
+The [HALITE](/wasphalite/README.md#hierarchial-input-template-expansion-engine-halite) engine has the corresponding `halite` command line utility. 
 
 HALITE provides a data-driven template expansion capability and has sizable feature set for templating text data for input or other needs. 
 
@@ -210,6 +210,6 @@ So, if a user has multiple SON formatted input files that they know to be valid,
 
     sonschemaskel path/to/valid/input1.son path/to/valid/input2.son ...
 
-and the resulting output will be a schema skeleton that they can use with the Hierarchical Input Validation Engine to validate their inputs.  These schema skeletons have actual rule stubs for each input node commented out.  These rules can be learned about in more detail in the [HIVE README](/wasphive/README.md) and should be modified for each piece of input.
+and the resulting output will be a schema skeleton that they can use with the Hierarchical Input Validation Engine to validate their inputs.  These schema skeletons have actual rule stubs for each input node commented out.  These rules can be learned about in more detail in the [HIVE README](/wasphive/README.md#hierarchical-input-validation-engine-hive) and should be modified for each piece of input.
 
 
