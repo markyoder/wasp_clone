@@ -46,11 +46,10 @@ doc_gen:
     - mkdir build
     - cd build
     - cmake -DBUILDNAME="$(uname -s)-DocGen-${CI_BUILD_REF_NAME}" -DCMAKE_BUILD_TYPE=DEBUG -Dwasp_ENABLE_ALL_PACKAGES=ON ..
-    - make doc_gen
+    - make doc_docx_gen
   artifacts:
     paths:
       - WorkbenchAnalysisSequenceProcessor.docx
-      - WorkbenchAnalysisSequenceProcessor.pdf
 
 linux_gcc_testing:
   tags:
