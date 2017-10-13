@@ -61,7 +61,6 @@ FUNCTION(WASP_DOC_GEN)
                           -i \"\" \"s@/wasp.*\#\@\#\@g\" \"${wasp_BINARY_DIR}/${md_file}\"
                          )
   ENDFOREACH()
-  MESSAGE( "CUSTOM_COPY_LOGIC : ${CUSTOM_COPY_LOGIC}")
   add_custom_target(copy_md 
                      WORKING_DIRECTORY "${wasp_BINARY_DIR}"
                     ${CUSTOM_COPY_LOGIC}
