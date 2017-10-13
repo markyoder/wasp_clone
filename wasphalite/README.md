@@ -69,14 +69,11 @@ Where :
 9. `close_delim` is configurable, default of '>'
 
 
-
 ### Silent Attributes
 Attributes and expressions that need to be evaluated but not placed into the evaluation stream can be specified using the silent expression indicator:
 ```
 <attr:|>
 ```
-TODO provide use scenario.
-
 
 ### Optional Attributes
 Attributes may not be specified and as such must be considered optional by the template. Optional attribute look as follow:
