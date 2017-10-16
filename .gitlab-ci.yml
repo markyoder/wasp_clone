@@ -50,8 +50,8 @@ doc_gen:
     - make doc_gen
   artifacts:
     paths:
-      - WorkbenchAnalysisSequenceProcessor.docx
-      - WorkbenchAnalysisSequenceProcessor.pdf
+      - build/WorkbenchAnalysisSequenceProcessor.docx
+      - build/WorkbenchAnalysisSequenceProcessor.pdf
 
 linux_gcc_testing:
   tags:
