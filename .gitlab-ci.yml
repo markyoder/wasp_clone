@@ -52,5 +52,6 @@ windows_intel15_testing:
   tags:
     - intel15
     - ninja
+    - nsis
   script:
     - .\ci\windows_intel15_test.bat 
