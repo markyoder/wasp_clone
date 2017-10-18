@@ -6,7 +6,7 @@
 IF (wasp_SOURCE_DIR)
   # We need to inject the wasp/cmake directory to find several wasp-specific
   # macros
-  SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH} "${wasp_SOURCE_DIR}/cmake")
+  SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH} "${wasp_SOURCE_DIR}/cmake" "${wasp_SOURCE_DIR}/modules" )
 ENDIF()
 
 ##---------------------------------------------------------------------------##
