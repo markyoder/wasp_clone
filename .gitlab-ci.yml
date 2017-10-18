@@ -54,4 +54,3 @@ windows_intel15_testing:
     - ninja
   script:
     - .\ci\windows_intel15_test.bat 
-
