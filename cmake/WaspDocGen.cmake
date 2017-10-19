@@ -58,9 +58,10 @@ FUNCTION(WASP_DOC_GEN)
                      COMMAND ${CMAKE_COMMAND} -E
                          copy \"${wasp_SOURCE_DIR}/${md_file}\" \"${wasp_BINARY_DIR}/${md_file}\"
                      COMMAND ${SED_EXE_PATH} 
-                          -i \"\" \"s@/wasp.*\#\@\#\@g\" \"${wasp_BINARY_DIR}/${md_file}\"
+                          -i \"\" \"s@/wasp[^\#]*\#\@\#\@g\" \"${wasp_BINARY_DIR}/${md_file}\"
                          )
   ENDFOREACH()
+  MESSAGE( STATUS "Transformation copy logic : ${CUSTOM_COPY_LOGIC}" )
   add_custom_target(copy_md 
                      WORKING_DIRECTORY "${wasp_BINARY_DIR}"
                     ${CUSTOM_COPY_LOGIC}
