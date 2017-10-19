@@ -1,4 +1,4 @@
-# ***Hierarchical Input Validation Engine (HIVE)***
+# HIVE
 
 The Hierarchical Input Validation Engine (**HIVE**) uses a set of rules to describe the schema of an application's input. These rules describe scalar and relational input restrictions. They can use [***Sequence Input Retrieval ENgine (SIREN) Expression***](/waspsiren/README.md#sequence-input-retrieval-engine-siren) paths to define restrictions related to relative sets of input elements. Schema files for HIVE are written using the [***Standard Object Notation (SON) Syntax***](/waspson/README.md#standard-object-notation-son). Applications, such as the **NEAMS Workbench**, use HIVE and schema files to facilitate input validation, introspection, and assistance by using ***Grammar Files*** to associate an application with a schema file and a directory containing ***Template Files***. ***SIREN Expressions***, ***SON Syntax***, ***Grammar Files***, and ***Template Files*** are beyond the scope of this document, but they can all be referenced in their own documentation.
 
@@ -13,7 +13,6 @@ The document layout is as follows:
  - In this document, the term ***input*** is used when referring to a file is to be validated, and ***schema*** is used when referring to the file that describes the definition and rules against which the input is validated. Currently, schema files must be written in the SON syntax. We will be using the SON syntax for example input files in this document as well.
 
 
----
 
 ## **Input Validation Rules Summary**
 
@@ -38,7 +37,6 @@ The document layout is as follows:
 * [***ChildUniqueness***](#childuniqueness-details-and-examples) - describes one or more lists of lookup paths into relative sections of the input file where the values at all of these paths must be unique.
 
 
----
 
 ## **Input Validation Details and Examples**
 
@@ -2744,8 +2742,6 @@ The document layout is as follows:
 ```
 
 
----
-
 ## **Input Assistance Details**
 
  - Six of the previously described validation rules (`MaxOccurs`, `ChildAtMostOne`, `ChildExactlyOne`, `ValEnums`, `ExistsIn`, and `ValType`) and six new rules (`InputTmpl`, `InputName`, `InputType`, `InputVariants`, `InputDefault`, and `Description`) may also be used by graphical user interfaces to aid with input creation. They may be use for autocompletion assistance or input introspection.
@@ -2826,5 +2822,3 @@ The document layout is as follows:
 
  -  The ***Input Description*** rule is just used by the NEAMS Workbench to give a short one line description in the autocompletion dropdown list via `Description = 'autocomplete dropdown description'` . These descriptions can be very useful to novice users unfamiliar with all of the parameters at a given context. These descriptions are not used by the templates for any further autocompletion logic.
 
-
----

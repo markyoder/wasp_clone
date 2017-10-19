@@ -1,5 +1,5 @@
-# HierarchiAL Input Template Expansion engine (HALITE)
-The HALITE engine is a data-driven input template expansion engine intended to facilitate application input or data generation. 
+# HALITE engine 
+The HierarchicAL Input Template Expansion engine (HALITE) engine is a data-driven input template expansion engine intended to facilitate application input or data generation. 
 
 When it comes to text creation there are typically two approaches, 
 1) write a program to generate the needed text, 

@@ -11,11 +11,11 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
 1. [Components](#components) - the primary packages in WASP
     * [Core](/waspcore/README.md#core-package)
     * [Expr](/waspexpr/README.md#expression-engine)
-    * [HIVE](/wasphive/README.md#hierarchical-input-validation-engine-hive)
+    * [HIVE](/wasphive/README.md#hive) 
     * [SIREN](/waspsiren/README.md#sequence-input-retrieval-engine-siren)
     * [SON](/waspson/README.md#standard-object-notation-son)
     * [DDI](/waspddi/README.md#definition-driven-interpreter)
-    * [HALITE](/wasphalite/README.md#hierarchial-input-template-expansion-engine-halite)
+    * [HALITE](/wasphalite/README.md#halite-engine)
     * [Utils](/wasputils/README.md#command-line-utilities)
 2. [Getting Started](#getting-started) - code compilation requirements and instructions
     * [Requirements](#requirements)
@@ -32,8 +32,8 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
     * [Default Functions](/waspexpr/README.md#default-functions)
     * [Special Functions](/waspexpr/README.md#special-functions)
     * [Array Access](/waspexpr/README.md#array-access)
-5. [HIVE](/wasphive/README.md#hierarchical-input-validation-engine-hive) - HierarchicAL Input Validation Engine (HIVE)
-    * [Overview](/wasphive/README.md#hierarchical-input-validation-engine-hive)
+5. [HIVE](/wasphive/README.md#hive) - HierarchicAL Input Validation Engine (HIVE)
+    * [Overview](/wasphive/README.md#hive)
     * [Input Validation Rules Summary](/wasphive/README.md#input-validation-rules-summary)
         * [Input Validation Details and Examples](/wasphive/README.md#input-validation-details-and-examples)
         * [Miscellaneous Details and Examples](/wasphive/README.md#miscellaneous-details-and-examples)
@@ -75,7 +75,7 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
     * [Selecting Unknown Nodes](/waspsiren/README.md#selecting-unknown-nodes)
 7. [SON](/waspson/README.md#standard-object-notation-son) - Standard Object Notation (SON) for general input data entry
 8. [DDI](/waspddi/README.md#definition-driven-interpreter) - Definition Driven Interpreter (DDI) for reduced input data entry  
-9. [HALITE](/wasphalite/README.md#hierarchial-input-template-expansion-engine-halite) - HierarchicAL Input Template Engine (HALITE) 
+9. [HALITE](/wasphalite/README.md#halite-engine) - HierarchicAL Input Template Engine (HALITE) 
     * [Template Evaluation Summary](/wasphalite/README.md#template-evaluation-summary)
     * [Attributes and Expressions](/wasphalite/README.md#attributes-and-expressions)
         * [Silent Attributes](/wasphalite/README.md#silent-attributes)
@@ -99,7 +99,7 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
     * [File Component Selection Utilities](/wasputils/README.md#file-component-selection-utilities)
     * [XML Utilities](/wasputils/README.md#xml-utilities)
     * [File Validation](/wasputils/README.md#file-validation-utilities)
-    * [HALITE](/wasputils/README.md#the-hierarchal-input-template-expansion-halite-engine)
+    * [HALITE](/wasputils/README.md#the-hierarchal-input-template-expansion-engine)
     * [Schema Skeleton Creation Utility](/wasputils/README.md#schema-skeleton-creation-utility)
 
 
@@ -122,7 +122,7 @@ WASP is composed of the following primary components:
     * Scalar variable assignment, reference, and creation - known variable can be referenced and updated, or new variables created during expression evaluation.
     * Functions. 
 3. [__GetPot__](http://getpot.sourceforge.net/documentation-index.html) - the waspgetpot package contains lexer, parser, and tree node view for the getpot grammar (http://getpot.sourceforge.net/) as needed by MOOSE
-4. [__HIVE__](/wasphive/README.md#hierarchical-input-validation-engine-hive) - the Hierarchical Input Validation Engine contains algorithms for validating a parse tree using a document schema/definition file.
+4. [__HIVE__](/wasphive/README.md#hive) - the Hierarchical Input Validation Engine contains algorithms for validating a parse tree using a document schema/definition file.
     * Flexible scalar and referential rules - supports element occurrence, value, child uniqueness and choice, existence, sum, predicated sum, etc.  
 5. [__JSON__](http://www.json.org/) - the waspjson package contains lexer, and parser for the JSON grammar (http://www.json.org/) 
 6. [__SIREN__](/waspsiren/README.md#sequence-input-retrieval-engine-siren) - the Sequence Input Retrieval ENgine (SIREN) contains lexer, parser, and evaluation logic for tree node lookup.
@@ -132,7 +132,7 @@ WASP is composed of the following primary components:
 8. [__DDI__](waspddi/README.md#definition-driven-interpreter) - the Definition-Driven Interpreter (DDI) contains lexer, parser, and interpreter for lightweight input format. 
     * Hierarchical Input format with very little syntax.
     * Supports the [Dakota UQ](https://dakota.sandia.gov/) input format.
-9. [__HALITE__](/wasphalite/README.md#hierarchial-input-template-expansion-engine-halite) - the HierarchicAL Input Template Expansion engine provides a data-driven means of expanding patterned input.
+9. [__HALITE__](/wasphalite/README.md#halite-engine) - the HierarchicAL Input Template Expansion engine provides a data-driven means of expanding patterned input.
     * Supports attribute and expression evaluations.
     * Supports template imports.
     * Supports conditional action blocks.
