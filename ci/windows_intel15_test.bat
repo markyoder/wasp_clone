@@ -34,6 +34,7 @@ cmake -DCPACK_GENERATOR=STGZ ^
 	  -G "Ninja" ^
 	  ..
 REM need to fix the install
+ninja install
 copy /Y waspConfig_install.cmake install\lib\cmake\wasp\waspConfig.cmake
 ninja package
 dir 
