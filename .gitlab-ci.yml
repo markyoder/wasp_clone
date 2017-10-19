@@ -30,6 +30,10 @@ linux_gcc_testing:
     - linux
   script:
     - ci/linux_gcc_test.sh
+  artifacts:
+    paths:
+      - "WASP*Linux.sh"
+      - waspConfig_install.cmake
 
 linux_gcc_analysis:
   stage: analysis
