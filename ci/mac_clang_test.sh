@@ -32,5 +32,5 @@ ls -l ./
 # Copy bundle parts up to parent directory to avoid artifact
 # having build directory
 cp WASP-*-Darwin.sh ../
-cp waspConfig_install.cmake
+cp waspConfig_install.cmake ../
 
