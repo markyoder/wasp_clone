@@ -58,3 +58,4 @@ windows_intel15_testing:
   artifacts:
     paths:
       - "WASP*.exe"
+      - waspConfig_install.cmake

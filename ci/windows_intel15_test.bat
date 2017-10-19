@@ -34,9 +34,10 @@ cmake -DCPACK_GENERATOR=STGZ ^
 	  -G "Ninja" ^
 	  ..
 REM need to fix the install
-copy /Y waspConfig_install.cmake install\lib\cmake\wasp\waspConfig.cmake
 ninja package
+copy /Y waspConfig_install.cmake install\lib\cmake\wasp\waspConfig.cmake
 dir 
 REM Copy out of build directory so artifact logic will not have 
 REM build directory in ZIP
 copy /Y WASP*.exe ..\
+copy /Y waspConfig_install.cmake ..\
