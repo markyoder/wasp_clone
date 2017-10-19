@@ -20,6 +20,10 @@ mac_clang_testing:
     - mac
   script:
     - . ci/mac_clang_test.sh
+  artifacts:
+    paths:
+      - "WASP*Darwin.sh"
+      - waspConfig_install.cmake
 
 linux_gcc_testing:
   tags:
