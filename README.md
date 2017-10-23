@@ -120,18 +120,17 @@ WASP is composed of the following primary components:
 2. [__Expr__](/waspexpr/README.md#expression-engine) - the waspexpr package contains lexer, parser, and evaluation logic for mathematical expressions.
     * Basic mathematical operators - multiplication '*', division '/', addition '+', subtraction '-', boolean ('<','<=','==','!=', etc), and exponentiation '\^'.
     * Scalar variable assignment, reference, and creation - known variable can be referenced and updated, or new variables created during expression evaluation.
-    * Functions. 
-3. [__GetPot__](http://getpot.sourceforge.net/documentation-index.html) - the waspgetpot package contains lexer, parser, and tree node view for the getpot grammar (http://getpot.sourceforge.net/) as needed by MOOSE
+    * Mathematical functions. 
+3. [__GetPot__](http://getpot.sourceforge.net/documentation-index.html) - the waspgetpot package contains lexer, parser, and tree node view for the getpot grammar (http://getpot.sourceforge.net/).
 4. [__HIVE__](/wasphive/README.md#hive) - the Hierarchical Input Validation Engine contains algorithms for validating a parse tree using a document schema/definition file.
     * Flexible scalar and referential rules - supports element occurrence, value, child uniqueness and choice, existence, sum, predicated sum, etc.  
-5. [__JSON__](http://www.json.org/) - the waspjson package contains lexer, and parser for the JSON grammar (http://www.json.org/) 
+5. [__JSON__](http://www.json.org/) - the waspjson package contains a lexer, and a parser for the JSON grammar (http://www.json.org/).
 6. [__SIREN__](/waspsiren/README.md#sequence-input-retrieval-engine-siren) - the Sequence Input Retrieval ENgine (SIREN) contains lexer, parser, and evaluation logic for tree node lookup.
-    * Flexible tree node lookup mechanism - supports absolute and relative wild-carded named and value or index -predicated node path lookup.
-7. [__SON__](/waspson/README.md#standard-object-notation-son) - the Standard Object Notation (SON) - waspson package contains the lexer, parser, and tree node view for the son grammar.
-    * Flexible, structured, input entry mechanism - supports Objects, Arrays, and keyed values. Also supports identified objects, arrays, and keyed values.
-8. [__DDI__](waspddi/README.md#definition-driven-interpreter) - the Definition-Driven Interpreter (DDI) contains lexer, parser, and interpreter for lightweight input format. 
+    * Flexible tree node lookup mechanism - supports absolute and relative wild-carded names and value or index -predicated node path lookup.
+7. [__SON__](/waspson/README.md#standard-object-notation-son) - the Standard Object Notation (SON) - waspson package contains the lexer, parser, and tree node view for the SON grammar.
+    * Flexible, structured, input entry mechanism - supports objects, arrays, and keyed values. Also supports identified objects, arrays, and keyed values.
+8. [__DDI__](waspddi/README.md#definition-driven-interpreter) - the Definition-Driven Interpreter (DDI) contains a lexer, a parser, and an interpreter for the lightweight input format. 
     * Hierarchical Input format with very little syntax.
-    * Supports the [Dakota UQ](https://dakota.sandia.gov/) input format.
 9. [__HALITE__](/wasphalite/README.md#halite-engine) - the HierarchicAL Input Template Expansion engine provides a data-driven means of expanding patterned input.
     * Supports attribute and expression evaluations.
     * Supports template imports.
@@ -141,20 +140,19 @@ WASP is composed of the following primary components:
     * Select - allows using SIREN expression to select pieces of input.
     * Valid - validates a given text file with a given document definition/schema.
     * XML - translates a given text file into XML with data and location information.
-  
- 
+
 # Getting Started    
 For individuals wanting to compile the code from source, below are the tested requirements and configurations.
 
 
 ## Requirements
-* C/CXX compiler (See [.gitlab-ci.yml](/.gitlab-ci.yml) for build configurations)  
+* C/CXX compiler (See repository .gitlab-ci.yml for build configurations)  
   * GCC-4.8 tested on Linux or Mac OS
   * LLVM-7.0.2 tested on Mac OS
   * Visual Studio 2012 for Windows
   * Intel 15 for Windows
   * MinGW 4.8.5 for Windows
-* Git
+* Git 1.7+
 * CMake-2.8.12.2, 3.5, 3.8
 * Python-2.7
 
@@ -166,7 +164,7 @@ For individuals wanting to compile the code from source, below are the tested re
 * Clone extra repos `./TriBITS/tribits/ci_support/clone_extra_repos.py`
 * Create a build directory `mkdir -p ~/build/wasp`
 * Change into the build `cd ~/build/wasp`
-* Create a configuration script in ~/build/. Lets call is ../configure.sh(linux)
+* Create a configuration script in ~/build/. Let's call it ../configure.sh(linux)
 
 ```
 #!/bin/bash
