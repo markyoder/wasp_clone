@@ -40,7 +40,9 @@ E.g., if your application needs to interpreter files that will never be more tha
 The string pool consists of two members, 1) a vector of chars, 2) a vector of indices indicating string starts. In this way, the string data that is consumed from a text file is reasonably maintained and storage size not inflated. 
 
 In a benchmark of one application's input consisting of 300MB in which the document tokens' mathematical mode was 3 characters, with a mean of 4, 
-using std::string produces on average ~28+ byte overhead per token. Specifically 8 byte heap pointer, 8 byte size, 8 byte heap page header, and 8 byte heap memory page. In contrast, the StringPool only requires a 5 byte overhead per token. Specifically, a 4 byte index and a null terminating character stored in a contiguous heap memory page. Using the StringPool facilitates a significant memory consolidation.
+using std::string produces on average ~28+ byte overhead per token. Specifically 8 byte heap pointer, 8 byte size, 8 byte heap page header, and 8 byte heap memory page. 
+
+In contrast, the StringPool only requires a 5 byte overhead per token. Specifically, a 4-byte index and a null terminating character. Using the StringPool facilitates a significant memory consolidation.
 
 
 ## Token Pool
