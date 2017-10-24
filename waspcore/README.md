@@ -44,7 +44,7 @@ using std::string produces on average ~28+ byte overhead per token. Specifically
 
 
 ## Token Pool
-Token pool associates a token type and file byte offset with the text that resides in the String Pool. New lines are a special piece of meta data that is captured for text location deduction.
+Token pool associates a token type and file byte offset with the text that resides in the StringPool. New lines are a special piece of meta data that is captured for text location deduction.
 
 The type information indicates whether it is an integer, real, word, declarator, terminator, etc. and can be used to deduce context or perform operations on a class of data.
 
@@ -84,11 +84,11 @@ Additional meta data for parent/inner nodes consists of:
 1. First child pool index - the index of the first child.
 2. The number of children.
 
-There is a convenient TreeNodeView class that provides consilidated per-node data access.
+There is a convenient TreeNodeView class that provides consolidated per-node data access.
 
 ## Interpreter
 The interpreter is the base class to facilitate all syntax specific interpreters ([DDI](/waspddi/README.md#definition-driven-interpreter), [SON](/waspson/README.md#standard-object-notation-son), etc.). 
-The interpreter brokers transactions between the lexer and parser and stages and stores the parse tree for future access.
+The interpreter brokers transactions between the lexer and parser and also stages and stores the parse tree for future access.
 
 The interpreter manages the TreeNodePool and tracks the root of the parse tree. 
 It also provides a stage construct to facilitate text syntax where hierarchy is ambiguous and sub-trees may not exist to immediate parent (E.g., see [DDI](/waspddi/README.md#definition-driven-interpreter) for active use).

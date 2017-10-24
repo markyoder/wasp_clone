@@ -1,8 +1,8 @@
 # HIVE
 
-The Hierarchical Input Validation Engine (HIVE) uses a set of rules to describe the schema of an application's input. These rules describe scalar and relational input restrictions. They can use a [Sequence Input Retrieval ENgine (SIREN) Expression](/waspsiren/README.md#sequence-input-retrieval-engine-siren) paths to define restrictions related to relative sets of input elements. Schema files for HIVE are written using the [Standard Object Notation (SON) Syntax](/waspson/README.md#standard-object-notation-son). Applications use HIVE and schema files to facilitate input validation, introspection, and assistance by using Grammar Files to associate an application with a schema file and a directory containing Template Files. SIREN Expressions, SON Syntax, Grammar Files, and Template Files are beyond the scope of this document, but they can all be referenced in their own documentation.
+The Hierarchical Input Validation Engine (HIVE) uses a set of rules to describe the schema of an application's input. These rules describe scalar and relational input restrictions. They can use a [Sequence Input Retrieval ENgine (SIREN) Expression](/waspsiren/README.md#sequence-input-retrieval-engine-siren) paths to define restrictions related to relative sets of input elements. Schema files for HIVE are written using the [Standard Object Notation (SON) Syntax](/waspson/README.md#standard-object-notation-son). Applications use HIVE and schema files to facilitate input validation, introspection, and input creation assistance. SIREN Expressions, SON Syntax, and Template Files are beyond the scope of this section.
 
-The document layout is as follows:
+The section layout is as follows:
 
 The [Input Validation Rules Summary](#input-validation-rules-summary) section provides a very brief description of each input validation rule.
 
@@ -10,7 +10,7 @@ The [Input Validation Details and Examples](#input-validation-details-and-exampl
 
 The [Input Assistance Details](#input-assistance-details) section provides descriptions and details of the rules that can be used by NEAMS Workbench for input assistance and autocompletion.
 
-In this document, the term ***input*** is used when referring to a file is to be validated, and ***schema*** is used when referring to the file that describes the definition and rules against which the input is validated. Currently, schema files must be written in the SON syntax. We will be using the SON syntax for example input files in this document as well.
+In this document, the term ***input*** is used when referring to a file that is to be validated, and ***schema*** is used when referring to the file that describes the definition and rules against which the input is validated. Currently, schema files must be written in the SON syntax. We will be using the SON syntax for example input files in this document as well.
 
 
 

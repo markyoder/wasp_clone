@@ -108,5 +108,5 @@ The Expr engine has a few special functions that are always available.
 
 
 ### Array Access
-The Expr engine supports accessing array elements by recognizing `array[index]` patterns. Only rank 1 arrays are supported.
+The Expr engine supports accessing array elements by recognizing `array[index]` patterns. Only zero-based rank 1 arrays are supported.
 
