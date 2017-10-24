@@ -886,3 +886,47 @@ TEST(ExprInterpreter, variable_indexing)
         ASSERT_EQ(wasp::OBJECT, document.child_at(0).type());
     }
 }
+
+TEST(ExprInterpreter,if_real_gt_size)
+{
+    std::stringstream input;
+    input <<"if(i+7.gt.size('something')-1,i+7,size('something')-1)"<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(33, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count() );
+    auto op = document.child_at(0);
+    ASSERT_EQ(wasp::FUNCTION, op.type());
+    ASSERT_EQ(8, op.child_count());
+    ASSERT_EQ(wasp::DECL,       op.child_at(0).type());
+    ASSERT_EQ(wasp::LPAREN,     op.child_at(1).type());
+    ASSERT_EQ(wasp::GT,         op.child_at(2).type());
+    ASSERT_EQ(wasp::WASP_COMMA, op.child_at(3).type());
+    ASSERT_EQ(wasp::PLUS,       op.child_at(4).type());
+    ASSERT_EQ(wasp::WASP_COMMA, op.child_at(5).type());
+    ASSERT_EQ(wasp::MINUS,      op.child_at(6).type());
+    ASSERT_EQ(wasp::RPAREN,     op.child_at(7).type());
+}
+
+TEST(ExprInterpreter,if_real_eq_size)
+{
+    std::stringstream input;
+    input <<"if(i+7.eq.size('something')-1,i+7,size('something')-1)"<<std::endl;
+    ExprInterpreter<> interpreter;
+    ASSERT_EQ( true, interpreter.parse(input) );
+    ASSERT_EQ(33, interpreter.node_count() );
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count() );
+    auto op = document.child_at(0);
+    ASSERT_EQ(wasp::FUNCTION, op.type());
+    ASSERT_EQ(8, op.child_count());
+    ASSERT_EQ(wasp::DECL,       op.child_at(0).type());
+    ASSERT_EQ(wasp::LPAREN,     op.child_at(1).type());
+    ASSERT_EQ(wasp::EQ,         op.child_at(2).type());
+    ASSERT_EQ(wasp::WASP_COMMA, op.child_at(3).type());
+    ASSERT_EQ(wasp::PLUS,       op.child_at(4).type());
+    ASSERT_EQ(wasp::WASP_COMMA, op.child_at(5).type());
+    ASSERT_EQ(wasp::MINUS,      op.child_at(6).type());
+    ASSERT_EQ(wasp::RPAREN,     op.child_at(7).type());
+}
