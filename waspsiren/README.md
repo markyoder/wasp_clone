@@ -20,15 +20,15 @@ An empty result set will be produced if no elements in the document match the gi
 
 |Expression | Description |
 | --------- | ----------- |
-|_value_ | Selects all nodes with the name "_value_" that are children of the current node |
-|/_value_   | Selects all nodes with the name "_value_" that are children of the root of the document|
-|./_value_  | Selects all nodes with the name "_value_" from the current node|
-|../_value_ | selects all nodes with the name "_value_" that are children of the parent of the current node|
+|_value_    | Selects all nodes with the name "_value_" that are children of the current node |
+|/_value_   | Selects all nodes with the name "_value_" that are children of the root of the document |
+|./_value_  | Selects all nodes with the name "_value_" from the current node |
+|../_value_ | selects all nodes with the name "_value_" that are children of the parent of the current node |
 
 ### Predicates
 Selection of document elements may require predicated search patterns that evaluate the position of value of the element.
 
-Predicates can be used at all level of the path expression.
+Predicates can be used at all level of the path expression and are expressed as 1-base array indices, ranges, or strides, or token value equality.
 
 |Expression | Description |
 | --------- | ----------- |
@@ -41,14 +41,14 @@ Predicates can be used at all level of the path expression.
 
 
 ### Selecting Unknown Nodes
-Certain parts of the document may not be known. For this reason wildcards are supported in the expression path.
+Certain parts of the document may not be known. For this reason, wildcards are supported in the expression path.
 
 |Expression | Description |
 | --------- | ----------- |
-|* | Selects all nodes that are children of the current node, regardless of name |
-|*less | Selects all nodes that are children of the current node, where the node name is '_less_' or ends with '_less_' |
-|less* | Selects all nodes that are children of the current node, where the node name is '_less_' or starts with '_less_' |
-|l*s | Selects all nodes that are children of the current node, where the node name is '_ls_', or starts with '_l_' and ends with '_s_' with any character between|
+|\* | Selects all nodes that are children of the current node, regardless of name |
+|\*less | Selects all nodes that are children of the current node, where the node name is '_less_' or ends with '_less_' |
+|less\* | Selects all nodes that are children of the current node, where the node name is '_less_' or starts with '_less_' |
+|l\*s | Selects all nodes that are children of the current node, where the node name is '_ls_', or starts with '_l_' and ends with '_s_' with any character between|
 
 
 
