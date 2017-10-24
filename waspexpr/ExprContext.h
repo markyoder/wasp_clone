@@ -11,6 +11,7 @@
 #include <type_traits>
 #include "waspcore/utils.h"
 #include "waspcore/wasp_node.h"
+#include <algorithm>
 
 namespace wasp {
 
