@@ -11,6 +11,7 @@
 #include <type_traits>
 #include "waspcore/utils.h"
 #include "waspcore/wasp_node.h"
+#include <algorithm>
 
 namespace wasp {
 
@@ -1363,6 +1364,8 @@ public: \
 WASP_REAL_FUNCTION_2ARG(FATan2, RealFunction, std::atan2(a1.number(),a2.number()))
 WASP_REAL_FUNCTION_2ARG(FPow, RealFunction, std::pow(a1.number(),a2.number()))
 WASP_REAL_FUNCTION_2ARG(FRoundn, RealFunction, std::floor((a1.number()*std::pow(10,std::floor(a2.number())) + 0.5)) / std::pow(10,std::floor(a2.number())))
+WASP_REAL_FUNCTION_2ARG(FMin, RealFunction, std::min(a1.number(),a2.number()))
+WASP_REAL_FUNCTION_2ARG(FMax, RealFunction, std::max(a1.number(),a2.number()))
 
 #define WASP_INTEGER_FUNCTION_2ARG(NAME, XTENS, CALL) \
 class NAME: public XTENS \

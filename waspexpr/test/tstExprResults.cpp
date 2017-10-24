@@ -413,6 +413,12 @@ TEST(ExprInterpreter, default_real_functions)
         {"roundn(pi,1)",3.1},
         {"roundn(pi,3)",3.142},
         {"roundn(pi,4)",3.1416},
+        {"min(1.1, 2)",1.1},
+        {"min(-1.1, -2)",-2},
+        {"min(-1.1, -1.1)",-1.1},
+        {"max(1.1, 2)",2},
+        {"max(-1.1, -2)",-1.1},
+        {"max(1.1, 1.1)",1.1},
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )
