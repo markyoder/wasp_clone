@@ -15,19 +15,20 @@ Typically, all whitespace are not captured in the parse tree as they can be dedu
 
 ## Core Parts
 
-The primary parts of wasp core:
+The primary components of wasp core are:
 
 1. StringPool - provides contiguous string storage. All strings are stored, null-terminated, in a single data container.
 2. TokenPool - provides contiguous token storage. Tokens consist of string data, a token type, and a file byte offset. 
     * An index is used that identifies the location in the StringPool at which the data resides. 
     * The token pool stores new line offsets.
     * The file byte offset is used to compute line and column with the assistance of the new line offset.
-3. TreeNodePool - manages TreeNodes which consist of a node name, type, and child indicates. 
+3. TreeNodePool - manages TreeNodes which consist of a node name, type, and child indices. 
     * Uses StringPool for contiguous node name storage.
     * Uses TokenPool to store all leaf node token information.
-4. Interpreter - base class providing boilerplate lex and parse logic
+4. Interpreter - base class providing boilerplate lexing and parsing logic.
     * Contains core token and node construction logic for lexer and parser to use.
-5. Format - utility methods for formatting values - safe printf to facilitate [expression engine](/waspexpr/README.md#expression-engine) and [halite](/wasphalite/README.md#hierarchical-input-validation-engine-hive).
+5. Format - utility methods for formatting values 
+    * Provides a type safe printf as needed by [expression engine](/waspexpr/README.md#expression-engine) and [HALITE](/wasphalite/README.md#hierarchical-input-validation-engine-hive).
 6. wasp_node - central location for node and token type enumeration.
 7. Object - generic type data structure to facilitate typed-data access to hierarchical data. 
     * Facilitates Halite data-driven capabilities.
@@ -36,12 +37,10 @@ It is important to note that each Pool, and subsequently the Interpreter, are te
 E.g., if your application needs to interpreter files that will never be more than 65KiB, you can use an `unsigned short` as the template type.
 
 ## String Pool
-The string pool consists of two members, 1) a vector of chars, 2) a vector of indices indicating string starts.
+The string pool consists of two members, 1) a vector of chars, 2) a vector of indices indicating string starts. In this way, the string data that is consumed from a text file is reasonably maintained and storage size not inflated. 
 
-In this way, the string data that is consumed from a text file is reasonably maintained and size not inflated. 
-
-In a benchmark of one application's input where the token's mathematical mode was 3 characters, with a mean of 4, 
-using std::string produces on average ~28+ byte overhead per token. Using the StringPool facilitated the memory consolidation. 
+In a benchmark of one application's input consisting of 300MB in which the document tokens' mathematical mode was 3 characters, with a mean of 4, 
+using std::string produces on average ~28+ byte overhead per token. Specifically 8 byte heap pointer, 8 byte size, 8 byte heap page header, and 8 byte heap memory page. In contrast, the StringPool only requires a 5 byte overhead per token. Specifically, a 4 byte index and a null terminating character stored in a contiguous heap memory page. Using the StringPool facilitates a significant memory consolidation.
 
 
 ## Token Pool
@@ -62,9 +61,7 @@ $` column = \lceil token\_index \rceil_{line\_offsets} - token\_index `$
 
 ## Tree Node Pool
 The tree node pool coordinates access and storage to nodes. Nodes can be classified as inner and leaf nodes. 
-Inner nodes can have children and represent a set of input. Leaf nodes always represent a token. 
-
-E.g.,` key = 3.14159 `
+Inner nodes can have children and represent a set of input. Leaf nodes always represent a token, e.g., `key = 3.14159`
 
 has the following hierarchy
 ```
@@ -77,6 +74,7 @@ document
 Here the inner node is 'keyed_value' with leaf child nodes `declarator`, `assign`, and `value`. 
 
 All nodes have associated meta data:
+
 1. Node type - declarator, terminator, value, name, etc.
 2. Node name - user familiar name.
 3. Parent node pool index - the location in the tree node pool that the parent of the node resides.
