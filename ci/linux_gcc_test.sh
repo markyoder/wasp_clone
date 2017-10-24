@@ -17,7 +17,7 @@ ctest -D ExperimentalStart \
 # clean up prior config for the next bundle config
 rm -rf CMake*
 module avail
-module load gcc-4.8.5-static
+module load gcc/4.8.5-static
 cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Bundle-${CI_BUILD_REF_NAME}" \
       -DCPACK_PACKAGE_NAME=WASP \
       -DBUILD_SHARED_LIBS:BOOL=ON \
