@@ -369,8 +369,8 @@ A file import using an object or array facilitates more complex hierarchical dat
 
 
 ## File Imports
-The HALITE engine support file import where files consist of all template constructs describes in this readme.
-File imports can be parameterized and implicitly and explicitly iterative. 
+The HALITE engine support file import where files consist of all template constructs described in this section.
+File imports can be parameterized and both implicitly and explicitly iterative. 
 
 The simplest file format looks as follows:
 
@@ -385,7 +385,7 @@ The path can also be templated on any available attribute. The subtemplate has i
 the current data level. 
 
 ### Example Data
-E.g., the given data :
+E.g., the given data:
 ```
 {
     "x" : "blurg"
@@ -416,8 +416,7 @@ must be used.
 Parameterized file imports facilitate access to data hierarchy and repetition of templates.
 
 #### File Import Using an Object
-The [example data](#example-data) contains the `obj` data layer which contains nested object `sarg` and other imaginary data `...`. To access all this data
-a subtemplate can be imported 'using' `obj` as follows:
+The [example data](#example-data) contains the `obj` data layer which contains nested object `sarg` and other imaginary data `...`. To access all this data, a subtemplate can be imported 'using' `obj` as follows:
 
 ```
 #import some/file.tmpl using obj
@@ -430,7 +429,7 @@ The template `some/file.tmpl` can now access all attributes within `obj`. Additi
 This is a nested template with access to obj's context
 variable a=<a>, e=<e>
 
-Variables till accessible from parent data are x:<x>, and y:<y>, etc.
+Variables still accessible from parent data are x:<x>, and y:<y>, etc.
 ```
 
 #### Iterative File Import Using an Array or Ranges
