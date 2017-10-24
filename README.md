@@ -147,11 +147,11 @@ For individuals wanting to compile the code from source, below are the tested re
 
 ## Requirements
 * C/CXX compiler (See repository .gitlab-ci.yml for build configurations)  
-  * GCC-4.8 tested on Linux or Mac OS
-  * LLVM-7.0.2 tested on Mac OS
-  * Visual Studio 2012 for Windows
-  * Intel 15 for Windows
-  * MinGW 4.8.5 for Windows
+    * GCC-4.8 tested on Linux or Mac OS
+    * LLVM-7.0.2 tested on Mac OS
+    * Visual Studio 2012 for Windows
+    * Intel 15 for Windows
+    * MinGW 4.8.5 for Windows
 * Git 1.7+
 * CMake-2.8.12.2, 3.5, 3.8
 * Python-2.7
@@ -194,8 +194,8 @@ cmake \
 
 * Invoke configure script in the build directory.
 `../configure.sh or ..\configure.bat`
-  * I place the configure script in the build directory as opposed to the build/wasp directory because it allows me to delete the build/wasp
-directory without removing my script.
+  * It is recommended to place the configure script in the build directory as opposed to the build/wasp directory because it allows the deletion of the build/wasp
+directory without removing the configuration script.
 
 Additionally, a script to enable a third part library (TPL) plugin, configure_tpl.sh :
 
