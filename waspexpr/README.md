@@ -1,9 +1,9 @@
 # Expression Engine
-The expression engine facilitate numerical and string expression evaluations that are integrated into other Workbench Analysis Sequence Processor components.
+The expression engine facilitates numerical and string expression evaluations that are integrated into other Workbench Analysis Sequence Processor components.
 
 
-### Arithmetic and Algabraic Operators
-The Expr engine supports regular arithmetic and algabraic operations.
+### Arithmetic and Algebraic Operators
+The Expr engine supports regular arithmetic and algebraic operations.
 
 | Operation      | Result              | 
 |----------------|---------------------|
@@ -65,18 +65,18 @@ The Expr engine also has the following functions available for use in expression
 | $`sinh(x)`$    | hyperbolic sine of x |
 | $`asin(x)`$    | arc sine of x |
 | $`asinh(x)`$    | inverse hyperbolic sine of x |
-| $`cos(theta)`$    | cosine of theta : $` \frac{adjecent}{hypotenuse} `$ |
+| $`cos(theta)`$    | cosine of theta : $` \frac{adjacent}{hypotenuse} `$ |
 | $`cosh(x)`$    | hyperbolic cosine of x |
 | $`acos(x)`$    | arc cosine of x |
 | $`acosh(x)`$    | inverse hyperbolic cosine of x |
-| $`tan(theta)`$    | tangent of theta : $` \frac{opposite}{adjecent} `$ |
+| $`tan(theta)`$    | tangent of theta : $` \frac{opposite}{adjacent} `$ |
 | $`tanh(x)`$    | hyperbolic tangent of x |
 | $`atan(x)`$    | arc tangent of x |
 | $`atan2(x,y)`$    | arc tangent of x/y |
 | $`atanh(x)`$    | inverse hyperbolic tangent of x |
-| $`sec(theta)`$    | secant of theta : $` \frac{hypotenuse}{adjecent} `$ |
+| $`sec(theta)`$    | secant of theta : $` \frac{hypotenuse}{adjacent} `$ |
 | $`csc(theta)`$    | cosecant of theta : $` \frac{hypotenuse}{opposite} `$ |
-| $`cot(theta)`$    | cotangent of theta : $` \frac{adjecent}{hypotenuse} `$ |
+| $`cot(theta)`$    | cotangent of theta : $` \frac{adjacent}{opposite} `$ |
 | $`floor(x)`$    | closest integer value below x |
 | $`ceil(x)`$    | closest integer value above x |
 | $`exp(x)`$    | e raised to x |
@@ -88,7 +88,6 @@ The Expr engine also has the following functions available for use in expression
 | $`rad2deg(x)`$    | converts x radians into degrees |
 | $`deg2grad(x)`$    | converts x degrees into gradians |
 | $`grad2deg(x)`$    | converts x gradians into degrees |
-| $`deg2rad(x)`$    | converts x degrees into radians |
 | $`round(x)`$    | rounds x to the closest integer |
 | $`round(x,p)`$    | rounds x to the p decimal point |
 | $`abs(x)`$    | absolute value of x |
@@ -103,7 +102,7 @@ The Expr engine has a few special functions that are always available.
 
 | Function                              | Description                                | 
 |---------------------------------------|---------------------|
-| $`if(condition,if true,if false)`$   | if the `condition` evaluates to true, the `if true` value is returned, else `if false` is returned | 
+| $`if(condition,if-true,if-false)`$   | if the `condition` evaluates to true, the `if-true` value is returned, else `if-false` is returned | 
 | $`defined('name')`$       | return true, if and only if a variable with name `name` exists. Note the argument is quoted | 
 | $`size(array)`$       | acquires the size (element count) of the given array | 
 
