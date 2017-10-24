@@ -157,6 +157,8 @@ TEST(ExprInterpreter, vector_quoted_name)
         {"if(size('my data')!=3,10,49)",49},
         {"if(size('my data')==4,10,50)",50},
         {"if(size('my data')==4,'my data'[0]=10,'my data'[0]+3)",4}, // if_true never evaluated
+        {"if(3.gt.size('my data')-1,size('my data')-1,99)",2},
+        {"if(2.gt.size('my data')-1,size('my data')-1,99)",99}
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )
@@ -195,6 +197,8 @@ TEST(ExprInterpreter, vector_int_variables)
         {"if(size(data)!=3,10,49)",49},
         {"if(size(data)==4,10,50)",50},
         {"if(size(data)==4,data[0]=10,data[0]+3)",4}, // if_true never evaluated
+        {"if(3.gt.size(data)-1,size(data)-1,99)",2},
+        {"if(2.gt.size(data)-1,size(data)-1,99)",99}
     };
     ASSERT_FALSE( tests.empty() );
     for( auto & t : tests )

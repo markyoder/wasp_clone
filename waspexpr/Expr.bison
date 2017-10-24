@@ -156,7 +156,7 @@ comma    : COMMA    {size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::
 
 function_name : DECL {
         size_t token_index = ($1);
-        $$ = interpreter.push_leaf(wasp::VALUE,"name"
+        $$ = interpreter.push_leaf(wasp::DECL,"name"
                          ,token_index);
     }
 function_args : /*EMPTY*/ { $$ = nullptr;}

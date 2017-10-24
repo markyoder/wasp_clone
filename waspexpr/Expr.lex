@@ -41,8 +41,7 @@ typedef wasp::ExprParser::token_type token_type;
 
 INT [0-9]+
 EXPONENT [eE][\+\-]?{INT}
-REAL {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}{EXPONENT}
-
+REAL {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)|{INT}\.[^lgenao]|{INT}{EXPONENT}
 STRING [A-Za-z_]([A-Za-z0-9\._])*
 
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
