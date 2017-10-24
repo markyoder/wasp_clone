@@ -1,7 +1,7 @@
 # Sequence Input Retrieval Engine (SIREN) 
 SIREN is a syntax for navigating and selecting document elements. It is heavily influenced by the XML XPath [https://www.w3schools.com/xml/xpath_syntax.asp] component within the XSLT standard.
 
-For code examples using SIREN see [SIREN Interpreter Tests](/waspsiren/test/tstSIRENInterpreter.cpp)
+For code examples using SIREN see the SIREN interpreter tests in the code repository.
 
 ## Selecting Nodes
 The selection of nodes is performed via a path expression. Path expressions can be relative to a current node or absolute to the document.
