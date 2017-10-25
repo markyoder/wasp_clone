@@ -463,7 +463,7 @@ bool HIVE::validateValType(SchemaAdapter& schema_node, InputAdapter& input_node
             }
 
             if (ruleValue == "Real") {
-                float ftest;
+                double ftest;
                 iss >> std::noskipws >> ftest;
             }
 

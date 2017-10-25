@@ -183,6 +183,11 @@ value_list : value
             $$ = $1;
             $$->push_back($2);
         }
+        | value_list comma
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
 definition_section : decl  value_list
     {
         bool is_array = $2->size() > 1;
