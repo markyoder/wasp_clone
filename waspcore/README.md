@@ -40,7 +40,7 @@ E.g., if your application needs to interpreter files that will never be more tha
 The string pool consists of two members, 1) a vector of chars, 2) a vector of indices indicating string starts. In this way, the string data that is consumed from a text file is reasonably maintained and storage size not inflated. 
 
 In a benchmark of one application's input consisting of 300MB in which the document tokens' mathematical mode was 3 characters, with a mean of 4, 
-using std::string produces on average ~28+ byte overhead per token. Specifically 8 byte heap pointer, 8 byte size, 8 byte heap page header, and 8 byte heap memory page. 
+using std::string produces on average ~28+ byte overhead per token. Specifically, 8 byte heap pointer, 8 byte size, 8 byte heap page header, and 8 byte heap memory page. 
 
 In contrast, the StringPool only requires a 5 byte overhead per token. Specifically, a 4-byte index and a null terminating character. Using the StringPool facilitates a significant memory consolidation.
 
@@ -52,13 +52,14 @@ The type information indicates whether it is an integer, real, word, declarator,
 
 The file byte offset is the absolute location in the file at which the text begins. This is not intuitive in and of itself to a user, but when combined with new line offset text location, line and column, can be deduced.
 
-Specifically, the line can be computed as the distance from the upper_bound of token_index into line_offsets.
+Specifically, the line can be computed as the distance from the upper bound of the token's file offset in the list of line file offsets and the line offset.
 
-$` line = distance( \lceil token\_index \rceil_{line\_offsets} )`$
+`line = distance( line_file_offsets.begin(), line_file_offsets.upperbound( token_file_offset ) )`
 
-The column can be computed as the difference of the token_index and the upper_bound of the token_index into line_offsets.
 
-$` column = \lceil token\_index \rceil_{line\_offsets} - token\_index `$
+The column can be computed as the difference of the token's file offset and the upper bound, minus 1, of the token index into the list of line file offsets.
+
+`column = token_file_offset - ( line_file_offsets.upperbound(token_file_offset) - 1)`
 
 
 ## Tree Node Pool
