@@ -20,7 +20,7 @@ module avail
 module load gcc/4.8.5-static
 cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Bundle-${CI_BUILD_REF_NAME}" \
       -DCPACK_PACKAGE_NAME=WASP \
-      -DBUILD_SHARED_LIBS:BOOL=OFF \
+      -DBUILD_SHARED_LIBS:BOOL=ON \
        -DCMAKE_BUILD_TYPE=RELEASE \
        -Dwasp_ENABLE_ALL_PACKAGES=ON \
 	  -Dwasp_ENABLE_TESTS:BOOL=OFF \
