@@ -75,7 +75,6 @@ FUNCTION(WASP_DOC_GEN)
                     ${CUSTOM_COPY_LOGIC}
                       )
   add_custom_target(sed_md 
-                     ALL
                      WORKING_DIRECTORY "${wasp_BINARY_DIR}"
                     ${CUSTOM_SED_LOGIC}
                     DEPENDS copy_md
@@ -97,11 +96,11 @@ FUNCTION(WASP_DOC_GEN)
                       )
 
   set(WASP_README "WASP_README.md")
-  MESSAGE( STATUS "CMAKE_HOST_SYSTEM_NAME : '${CMAKE_HOST_SYSTEM_NAME}'")
   if( "${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Windows" )
       # Change file separator and add whitespace separator
       string( REPLACE "/README.md" "\\README.md " WIN_PARSE_MD_FILES "${PARSE_MD_FILES}" )
-	  MESSAGE(STATUS "The files to concatenate are : ${MD_FILES}")
+	  MESSAGE(STATUS "The files to concatenate are : ${WIN_PARSE_MD_FILES}")
+
       add_custom_target(combine_md 
                      ALL
                      COMMENT "Combining ${WIN_PARSE_MD_FILES} into ${WASP_README}"
