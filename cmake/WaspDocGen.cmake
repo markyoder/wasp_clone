@@ -53,7 +53,7 @@ FUNCTION(WASP_DOC_GEN)
   SET(CUSTOM_COPY_LOGIC)
   SET(CUSTOM_SED_LOGIC)
   SET(SED_INPLACE_OPTION "") # on Linux sed -i 's/foo/bar/'
-  if( ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin" )
+  if( ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin" )
     set(SED_INPLACE_OPTION "''") # on Darwin sed -i '' 's/foo/bar/'
   endif()
   # waspcore/README.md -> buildtree/waspcore/README.md
@@ -97,7 +97,7 @@ FUNCTION(WASP_DOC_GEN)
                       )
 
   set(WASP_README "WASP_README.md")
-  if( "${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" )
+  if( "${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Windows" )
       # Change file separator and add whitespace separator
       string( REPLACE "/README.md" "\\README.md " WIN_PARSE_MD_FILES "${PARSE_MD_FILES}" )
 	  MESSAGE(STATUS "The files to concatenate are : ${MD_FILES}")
