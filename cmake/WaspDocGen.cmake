@@ -97,7 +97,7 @@ FUNCTION(WASP_DOC_GEN)
                       )
 
   set(WASP_README "WASP_README.md")
-  if( WIN32 )
+  if( WIN32 or MSVC or MINGW )
       # Change file separator and add whitespace separator
       string( REPLACE "/README.md" "\\README.md " WIN_PARSE_MD_FILES "${PARSE_MD_FILES}" )
 	  MESSAGE(STATUS "The files to concatenate are : ${MD_FILES}")
