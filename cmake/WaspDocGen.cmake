@@ -51,14 +51,17 @@ FUNCTION(WASP_DOC_GEN)
   ENDIF()
   # Create make target to copy README.md files to build directory
   SET(CUSTOM_COPY_LOGIC)
+  SET(CUSTOM_SED_LOGIC)
   # waspcore/README.md -> buildtree/waspcore/README.md
   FOREACH(md_file ${PARSE_MD_FILES})
     MESSAGE( STATUS "Adding MD copy target for '${md_file}'")
     SET( CUSTOM_COPY_LOGIC ${CUSTOM_COPY_LOGIC}
                      COMMAND ${CMAKE_COMMAND} -E
                          copy \"${wasp_SOURCE_DIR}/${md_file}\" \"${wasp_BINARY_DIR}/${md_file}\"
+                         )
+    SET( CUSTOM_SED_LOGIC ${CUSTOM_SED_LOGIC}
                      COMMAND ${SED_EXE_PATH} 
-                          -i \"\" \"s@/wasp[^\#]*\#\@\#\@g\" \"${wasp_BINARY_DIR}/${md_file}\"
+                          -i '' \"s@/wasp[^\#]*\#\@\#\@g\" \"${wasp_BINARY_DIR}/${md_file}\"
                          )
   ENDFOREACH()
   MESSAGE( STATUS "Transformation copy logic : ${CUSTOM_COPY_LOGIC}" )
@@ -67,17 +70,23 @@ FUNCTION(WASP_DOC_GEN)
                      WORKING_DIRECTORY "${wasp_BINARY_DIR}"
                     ${CUSTOM_COPY_LOGIC}
                       )
+  add_custom_target(sed_md 
+                     ALL
+                     WORKING_DIRECTORY "${wasp_BINARY_DIR}"
+                    ${CUSTOM_SED_LOGIC}
+                    DEPENDS copy_md
+                      )
   add_custom_target(doc_docx_gen 
                      WORKING_DIRECTORY "${wasp_BINARY_DIR}"
                      COMMAND ${PANDOC_EXE_PATH} ${PARSE_MD_FILES} 
                      -o ${PARSE_DOCX_FILE} 
-                     DEPENDS copy_md
+                     DEPENDS sed_md
                       )
   add_custom_target(doc_pdf_gen 
                      WORKING_DIRECTORY "${wasp_BINARY_DIR}"
                      COMMAND ${PANDOC_EXE_PATH} ${PARSE_MD_FILES} 
                      -o ${PARSE_PDF_FILE} 
-                     DEPENDS copy_md
+                     DEPENDS sed_md
                       )
   add_custom_target(doc_gen 
                      DEPENDS doc_pdf_gen doc_docx_gen
@@ -96,7 +105,7 @@ FUNCTION(WASP_DOC_GEN)
       add_custom_target(combine_md 
                      ALL
                      COMMENT "Combining ${PARSE_MD_FILES} into ${WASP_README}"
-                     DEPENDS copy_md
+                     DEPENDS sed_md
                      WORKING_DIRECTORY "${wasp_BINARY_DIR}"
                      COMMAND cat ${PARSE_MD_FILES} > ${WASP_README}
                       )
