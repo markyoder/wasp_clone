@@ -101,6 +101,6 @@ FUNCTION(WASP_DOC_GEN)
                      COMMAND cat ${PARSE_MD_FILES} > ${WASP_README}
                       )
   endif()
-  install(FILES "${wasp_BINARY_DIR}/${WASP_README}" DESTINATION "${CMAKE_INSTALL_PREFIX}")
+  install(FILES "${wasp_BINARY_DIR}/${WASP_README}" DESTINATION .)
  
 ENDFUNCTION()
