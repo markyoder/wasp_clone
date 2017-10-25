@@ -98,12 +98,15 @@ FUNCTION(WASP_DOC_GEN)
 
   set(WASP_README "WASP_README.md")
   if( WIN32 )
+      # Change file separator and add whitespace separator
+      string( REPLACE "/README.md" "\\README.md " WIN_PARSE_MD_FILES "${PARSE_MD_FILES}" )
+	  MESSAGE(STATUS "The files to concatenate are : ${MD_FILES}")
       add_custom_target(combine_md 
                      ALL
-                     COMMENT "Combining ${PARSE_MD_FILES} into ${WASP_README}"
+                     COMMENT "Combining ${WIN_PARSE_MD_FILES} into ${WASP_README}"
                      DEPENDS copy_md
                      WORKING_DIRECTORY "${wasp_BINARY_DIR}"
-                     COMMAND type ${PARSE_MD_FILES} > ${WASP_README}
+                     COMMAND type ${WIN_PARSE_MD_FILES} > ${WASP_README}					 
                       )
   else()
       add_custom_target(combine_md 
