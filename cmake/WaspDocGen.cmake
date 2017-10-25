@@ -52,6 +52,10 @@ FUNCTION(WASP_DOC_GEN)
   # Create make target to copy README.md files to build directory
   SET(CUSTOM_COPY_LOGIC)
   SET(CUSTOM_SED_LOGIC)
+  SET(SED_INPLACE_OPTION "") # on Linux sed -i 's/foo/bar/'
+  if( ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin" )
+    set(SED_INPLACE_OPTION "''") # on Darwin sed -i '' 's/foo/bar/'
+  endif()
   # waspcore/README.md -> buildtree/waspcore/README.md
   FOREACH(md_file ${PARSE_MD_FILES})
     MESSAGE( STATUS "Adding MD copy target for '${md_file}'")
@@ -61,7 +65,7 @@ FUNCTION(WASP_DOC_GEN)
                          )
     SET( CUSTOM_SED_LOGIC ${CUSTOM_SED_LOGIC}
                      COMMAND ${SED_EXE_PATH} 
-                          -i '' \"s@/wasp[^\#]*\#\@\#\@g\" \"${wasp_BINARY_DIR}/${md_file}\"
+                          -i ${SED_INPLACE_OPTION} \"s@/wasp[^\#]*\#\@\#\@g\" \"${wasp_BINARY_DIR}/${md_file}\"
                          )
   ENDFOREACH()
   MESSAGE( STATUS "Transformation copy logic : ${CUSTOM_COPY_LOGIC}" )
