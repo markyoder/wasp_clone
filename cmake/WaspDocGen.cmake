@@ -63,6 +63,7 @@ FUNCTION(WASP_DOC_GEN)
   ENDFOREACH()
   MESSAGE( STATUS "Transformation copy logic : ${CUSTOM_COPY_LOGIC}" )
   add_custom_target(copy_md 
+                     ALL
                      WORKING_DIRECTORY "${wasp_BINARY_DIR}"
                     ${CUSTOM_COPY_LOGIC}
                       )
@@ -81,5 +82,25 @@ FUNCTION(WASP_DOC_GEN)
   add_custom_target(doc_gen 
                      DEPENDS doc_pdf_gen doc_docx_gen
                       )
+
+  set(WASP_README "WASP_README.md")
+  if( WIN32 )
+      add_custom_target(combine_md 
+                     ALL
+                     COMMENT "Combining ${PARSE_MD_FILES} into ${WASP_README}"
+                     DEPENDS copy_md
+                     WORKING_DIRECTORY "${wasp_BINARY_DIR}"
+                     COMMAND type ${PARSE_MD_FILES} > ${WASP_README}
+                      )
+  else()
+      add_custom_target(combine_md 
+                     ALL
+                     COMMENT "Combining ${PARSE_MD_FILES} into ${WASP_README}"
+                     DEPENDS copy_md
+                     WORKING_DIRECTORY "${wasp_BINARY_DIR}"
+                     COMMAND cat ${PARSE_MD_FILES} > ${WASP_README}
+                      )
+  endif()
+  install(FILES "${wasp_BINARY_DIR}/${WASP_README}" DESTINATION "${CMAKE_INSTALL_PREFIX}")
  
 ENDFUNCTION()
