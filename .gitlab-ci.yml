@@ -109,7 +109,7 @@ windows_mingw_testing:
    - mkdir build
    - cd build
    - cmake -DBUILDNAME="Windows-MinGW-GCC-4.8.5-Debug-%CI_BUILD_REF_NAME%" -DCMAKE_BUILD_TYPE=DEBUG -Dwasp_ENABLE_TESTS=ON -Dwasp_ENABLE_ALL_PACKAGES=ON -G "MinGW Makefiles" ..
-   - ctest -D ExperimentalStart -D ExperimentalBuild -D ExperimentalTest -D ExperimentalSubmit
+   - ctest -D ExperimentalStart -D ExperimentalBuild -V -D ExperimentalTest -D ExperimentalSubmit
 
 windows_vs2013_testing:
   tags:
@@ -149,5 +149,5 @@ windows_intel15_testing:
     - cd build
     - call "C:\Program Files (x86)\Intel\Composer XE 2015\bin\ipsxe-comp-vars.bat" intel64 vs2013
     - cmake -DCMAKE_C_COMPILER=icl -D CMAKE_CXX_COMPILER=icl -DBUILDNAME="Windows-Intel-15.0-Release-%CI_BUILD_REF_NAME%" -DCMAKE_BUILD_TYPE:STRING=RELEASE -Dwasp_ENABLE_TESTS:BOOL=ON -Dwasp_ENABLE_ALL_PACKAGES:BOOL=ON -G "Ninja" ..
-    - ctest -D ExperimentalStart -D ExperimentalBuild -D ExperimentalTest -D ExperimentalSubmit
+    - ctest -D ExperimentalStart -D ExperimentalBuild -V -D ExperimentalTest -D ExperimentalSubmit
 

@@ -97,6 +97,7 @@ FUNCTION(WASP_DOC_GEN)
                       )
 
   set(WASP_README "WASP_README.md")
+  MESSAGE( STATUS "CMAKE_HOST_SYSTEM_NAME : '${CMAKE_HOST_SYSTEM_NAME}'")
   if( "${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Windows" )
       # Change file separator and add whitespace separator
       string( REPLACE "/README.md" "\\README.md " WIN_PARSE_MD_FILES "${PARSE_MD_FILES}" )
