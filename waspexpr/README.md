@@ -17,6 +17,7 @@ The Expr engine supports regular arithmetic and algebraic operations.
 ### Relational Operators
 Relational operations are also supported.
 
+
 | Operation      | Result              | 
 |----------------|---------------------|
 | Equal    | $`3==3 \equiv true`$| 
@@ -26,7 +27,9 @@ Relational operations are also supported.
 | Greater Than       | $`9 > 8 \equiv  true`$ | 
 | Greater Than or Equal      | $`9 \geq 8 \equiv  true`$ | 
 
+
 Syntactic alternatives exist.
+
 
 | Operation      | Result              | 
 |----------------|---------------------|
@@ -93,6 +96,8 @@ The Expr engine also has the following functions available for use in expression
 | $`abs(x)`$    | absolute value of x |
 | $`pow(x,y)`$    | x raised to the power of y : $`x^y`$ |
 | $`mod(x,y)`$    | modulo of x given y |
+| $`max(x,y)`$    | maximum of x or y |
+| $`min(x,y)`$    | minimum of x or y |
 | $`fmt(x,format)`$    | format the variable x with the desired [format](/wasphalite/README.md#formatting) |
 
 

@@ -4,7 +4,7 @@ The Hierarchical Input Validation Engine (HIVE) uses a set of rules to describe 
 
 The section layout is as follows:
 
-The [Input Validation Rules Summary](#input-validation-rules-summary) section provides a very brief description of each input validation rule.
+The [Input Validation Rules Summary](#input-validation-rules-summary) section provides a very brief description of each input validation rule. These rules do not contain defaults. The rule is only used when it has been specified.
 
 The [Input Validation Details and Examples](#input-validation-details-and-examples) section provides a more detailed description, examples, and exact syntax of each input validation rule. This section supplies an example schema, an example input that will pass validation against the schema, an example input that will fail validation against the schema, and the validation messages that HIVE produces when validating the failing input against the provided schema. If incorporating a specific rule in the integration of an application into the NEAMS Workbench, then the examples section for that particular rule should be fully understood syntactically and semantically.
 
