@@ -18,6 +18,7 @@ ctest -D ExperimentalStart \
 rm -rf CMake*
 module avail
 #module load gcc/4.8.5-static
+#      -DCMAKE_EXE_LINKER_FLAGS=-static-libstdc++ -static-libgcc \
 cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Bundle-${CI_BUILD_REF_NAME}" \
       -DCPACK_PACKAGE_NAME=WASP \
       -DBUILD_SHARED_LIBS:BOOL=ON \
@@ -31,7 +32,6 @@ cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Bundle-${CI_BUILD_REF_NAME}" \
 	  -Dwasp_ENABLE_INSTALL_CMAKE_CONFIG_FILES:BOOL=ON \
 	  -Dwasp_GENERATE_EXPORT_FILE_DEPENDENCIES:BOOL=ON \
 	  -Dwasp_ENABLE_CPACK_PACKAGING:BOOL=ON \
-      -DCMAKE_EXE_LINKER_FLAGS=-static-libstdc++ -static-libgcc \
       ..
 
 make -j 8 package
