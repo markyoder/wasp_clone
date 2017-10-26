@@ -1678,6 +1678,6 @@ namespace wasp{
 void GetPotParser::error(const GetPotParser::location_type& l,
                            const std::string& m)
 {
-    interpreter.error_stream()<<l<<": "<<m;
+    interpreter.error_stream()<<l<<": "<<m<<std::endl;
 }
 } // end of namespace

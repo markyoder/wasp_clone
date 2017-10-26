@@ -17,7 +17,7 @@ disp_z = disp_z
     std::stringstream error;
     GetPotInterpreter<> interpreter(error);
     ASSERT_FALSE( interpreter.parse(input) );
-    ASSERT_EQ("stream input:5.1-5: syntax error, unexpected subblock terminator"
+    ASSERT_EQ("stream input:5.1-5: syntax error, unexpected subblock terminator\n"
               ,error.str());
     std::stringstream tree_print;
     auto root_view = interpreter.root();

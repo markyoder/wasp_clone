@@ -371,5 +371,5 @@ start   : /** empty **/
 void wasp::JSONParser::error(const JSONParser::location_type& l,
                            const std::string& m)
 {
-    interpreter.error_stream()<<l<<": "<<m;
+    interpreter.error_stream()<<l<<": "<<m<<std::endl;
 }

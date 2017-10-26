@@ -246,7 +246,7 @@ sect_eek 1
     ddi.definition()->create("sect1");
 
     EXPECT_FALSE( ddi.parse(input) );
-    std::string msg = "stream input:2.1-8: 'sect_eek' is unknown.";
+    std::string msg = "stream input:2.1-8: 'sect_eek' is unknown.\n";
     ASSERT_EQ(msg, errors.str());
 
 }
@@ -265,7 +265,7 @@ TEST(DDInterpreter,failing_decl)
     ddi.definition()->create("sect1");
 
     EXPECT_FALSE( ddi.parse(input) );
-    std::string msg = "stream input:2.2-9: 'sect_eek' is unknown.";
+    std::string msg = "stream input:2.2-9: 'sect_eek' is unknown.\n";
     ASSERT_EQ(msg, errors.str());
 
 }
@@ -284,7 +284,7 @@ TEST(DDInterpreter,failing_decl_assign_values)
     ddi.definition()->create("sect1");
 
     EXPECT_FALSE( ddi.parse(input) );
-    std::string msg = "stream input:2.3-6: 'boom' is unknown.";
+    std::string msg = "stream input:2.3-6: 'boom' is unknown.\n";
     ASSERT_EQ(msg, errors.str());
 
 }
