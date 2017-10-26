@@ -49,7 +49,7 @@ TEST(DDInterpreter,comment_placement)
     sect1_2->create("sect1.2.1");
     sect1_2->create("sect1.2.2");
     sect1_2->create("sect1.2.3");
-    auto * sect1_3 = sect1->create("sect1.3");
+    sect1->create("sect1.3");
     ddi.definition()->create("sect2");
     EXPECT_TRUE( ddi.parse(input) );
     std::stringstream paths;

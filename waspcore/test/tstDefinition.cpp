@@ -53,9 +53,9 @@ TEST( Definition, parent_section)
 {
     Definition definition;
     AbstractDefinition * child = definition.create("child");
-    AbstractDefinition * achild = definition.create_aliased("achild", child);
+    definition.create_aliased("achild", child);
     AbstractDefinition * grandchild1 = child->create("grandchild1");
-    AbstractDefinition * agrandchild1 = child->create_aliased("agrandchild1",grandchild1);
+    child->create_aliased("agrandchild1",grandchild1);
     AbstractDefinition * grandchild2 = child->create("grandchild2");
     std::string aname;
     ASSERT_TRUE( child->has( "grandchild1" ) );

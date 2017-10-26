@@ -141,7 +141,6 @@ TEST(TreeNodePool,push_test)
         ASSERT_EQ(1,tp.column(tp.size()-1));
     }
     std::string root_name = "root";
-    size_t root_index = tp.size();
     tp.push_parent(root,root_name.c_str(),root_child_indices);
     ASSERT_EQ(root_name,tp.name(tp.size()-1));
     ASSERT_EQ(root, tp.type(tp.size()-1));
