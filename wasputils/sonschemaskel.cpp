@@ -87,7 +87,7 @@ int main (int argc, char *argv[])
         return 1;
     }
     std::stringstream errors;
-    for( size_t j = 1; j < argc; ++j)
+    for( int j = 1; j < argc; ++j)
     {  
         std::ifstream input(argv[j]);
         if (input.fail() || input.bad()) {

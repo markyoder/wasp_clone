@@ -29,7 +29,7 @@ int main (int argc, char *argv[])
         std::cout<<" Usage : "<<argv[0]<<" --version\t(print version info)"<<std::endl;
         return 1;
     }
-    for( std::size_t j = 1; j < argc; ++j)
+    for( int j = 1; j < argc; ++j)
     {
         std::ifstream input(argv[j]);
         if (input.fail() || input.bad()) {
