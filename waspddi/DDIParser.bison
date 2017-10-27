@@ -183,6 +183,11 @@ value_list : value
             $$ = $1;
             $$->push_back($2);
         }
+        | value_list comma
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
 definition_section : decl  value_list
     {
         bool is_array = $2->size() > 1;
@@ -292,5 +297,5 @@ start   : /** empty **/
 void wasp::DDIParser::error(const DDIParser::location_type& l,
                            const std::string& m)
 {
-    interpreter.error_stream()<<l<<": "<<m;
+    interpreter.error_stream()<<l<<": "<<m<<std::endl;
 }

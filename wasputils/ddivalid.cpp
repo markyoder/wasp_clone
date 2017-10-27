@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
         return 1;
     }
     int return_code = 0;
-    for( size_t i = 2; i < argcount; ++i)
+    for( int i = 2; i < argcount; ++i)
     {
         DDInterpreter<TreeNodePool<unsigned int, unsigned int
                 ,TokenPool<unsigned int,unsigned int, unsigned int>>> parser;

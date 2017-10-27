@@ -59,7 +59,7 @@ int main (int argc, char *argv[])
     }
     std::vector<decltype(interpreter.root())> select_from_node;
     select_from_node.push_back(interpreter.root());
-    for( size_t j = 2; j < argc; ++j)
+    for( int j = 2; j < argc; ++j)
     {
         std::stringstream select_statement_errors;
         std::string select_statement = argv[j];

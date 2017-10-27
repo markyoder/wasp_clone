@@ -1840,5 +1840,5 @@ namespace wasp {
 void wasp::SIRENParser::error(const SIRENParser::location_type& l,
                            const std::string& m)
 {
-    interpreter.error_stream()<<l<<": "<<m;
+    interpreter.error_stream()<<l<<": "<<m<<std::endl;
 }

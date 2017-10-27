@@ -64,7 +64,7 @@ int main (int argc, char *argv[])
         return -1;
     }
 
-    for( size_t j = 2; j < argcount; ++j)
+    for( int j = 2; j < argcount; ++j)
     {
         std::ifstream input(argv[j]);
         if (input.fail() || input.bad()) {

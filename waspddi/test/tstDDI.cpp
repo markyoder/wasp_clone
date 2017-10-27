@@ -49,7 +49,7 @@ TEST(DDInterpreter,comment_placement)
     sect1_2->create("sect1.2.1");
     sect1_2->create("sect1.2.2");
     sect1_2->create("sect1.2.3");
-    auto * sect1_3 = sect1->create("sect1.3");
+    sect1->create("sect1.3");
     ddi.definition()->create("sect2");
     EXPECT_TRUE( ddi.parse(input) );
     std::stringstream paths;
@@ -100,12 +100,12 @@ TEST(DDInterpreter,passing_flat)
 sect2 1
 sect3 = 1
 sect4 1.1
-sect5 = 1.e29
+sect5 = 1.e29,
 sect6 "ted"
 sect7 = "ted"
 sect8 = 1 2       # comment about sect8 list line 1
         3.4       # comment about sect8 list line 2
-        "five"    # comment about sect8 list line 3
+        "five" ,  # comment about sect8 list line 3
 sect9  1 2        # comment about sect9 list line 1
        3.4 "five" # comment about sect9 list line 2
 )I"<<std::endl;
@@ -138,6 +138,7 @@ expected<<R"I(/
 /sect5/decl (sect5)
 /sect5/= (=)
 /sect5/value (1.e29)
+/sect5/, (,)
 /sect6
 /sect6/decl (sect6)
 /sect6/value ("ted")
@@ -154,6 +155,7 @@ expected<<R"I(/
 /sect8/value (3.4)
 /sect8/comment (# comment about sect8 list line 2)
 /sect8/value ("five")
+/sect8/, (,)
 /sect8/comment (# comment about sect8 list line 3)
 /sect9
 /sect9/decl (sect9)
@@ -244,7 +246,7 @@ sect_eek 1
     ddi.definition()->create("sect1");
 
     EXPECT_FALSE( ddi.parse(input) );
-    std::string msg = "stream input:2.1-8: 'sect_eek' is unknown.";
+    std::string msg = "stream input:2.1-8: 'sect_eek' is unknown.\n";
     ASSERT_EQ(msg, errors.str());
 
 }
@@ -263,7 +265,7 @@ TEST(DDInterpreter,failing_decl)
     ddi.definition()->create("sect1");
 
     EXPECT_FALSE( ddi.parse(input) );
-    std::string msg = "stream input:2.2-9: 'sect_eek' is unknown.";
+    std::string msg = "stream input:2.2-9: 'sect_eek' is unknown.\n";
     ASSERT_EQ(msg, errors.str());
 
 }
@@ -282,7 +284,7 @@ TEST(DDInterpreter,failing_decl_assign_values)
     ddi.definition()->create("sect1");
 
     EXPECT_FALSE( ddi.parse(input) );
-    std::string msg = "stream input:2.3-6: 'boom' is unknown.";
+    std::string msg = "stream input:2.3-6: 'boom' is unknown.\n";
     ASSERT_EQ(msg, errors.str());
 
 }

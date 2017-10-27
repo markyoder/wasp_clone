@@ -1404,5 +1404,5 @@ namespace wasp {
 void wasp::JSONObjectParser::error(const JSONObjectParser::location_type& l,
                            const std::string& m)
 {
-    error_stream<<l<<": "<<m;
+    error_stream<<l<<": "<<m<<std::endl;
 }
