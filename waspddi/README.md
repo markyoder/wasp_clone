@@ -1,5 +1,5 @@
 # Definition Driven Interpreter 
-The definition driven interperter (DDI) provides a capability with very little syntax.
+The definition driven interpreter (DDI) provides a input processing capability which requires very little syntax.
 
 Specifically, DDI supports data hierarchy, arrays, and scalar values. 
 
@@ -34,28 +34,29 @@ The above example illustrates arbitrary hierarchy.
 
 Note that the section indentation is recommended for clarity, but is not required. All content, except comments, could occur on the same line.
 
-It is also clear to see that there is an ambiguity in the grammar. Specifically, how does one know whether a subsequent section is a subsection or sibling section?
+It is also evident to see that there is an ambiguity in the grammar. Specifically, how does one know whether a subsequent section is a subsection or sibling section? Having two sections such as
 
 ```
 section1
 section2
 ```
-syntactially look the same as
+is syntactially the same as having a subsection such as
 
 ```
 section1
 section1.1
 ```
+which presents hurdles for user and program interpretation.
 
-This is where and why the definition is important and required in driving the interpretation of these files. 
+This is where and why the definition is important and required in driving the interpretation of these files.
 
 The definition driven algorithm is straight forward.
 
 
-1. Read a section name and perform the follow
-2. If the section name is legal for existing context, capture section name and push section context. Repeat steps.
-3. If the section name is not legal, pop current context and repeat steps 2,3,4 inquiries on new/parent context. 
-4. If no context available, i.e. exhausted, ERROR.
+1. Read a section name and perform the following
+    1. If the section name is legal for the existing context, capture section name and push section context. Go to Step 1.
+    2. If the section name is not legal, pop current context and repeat steps 1.1,1.2,1.3 inquiries on new/parent context. 
+    3. If no context available, i.e. exhausted, ERROR.
 
 The result is a parse tree where node names are section names. 
 

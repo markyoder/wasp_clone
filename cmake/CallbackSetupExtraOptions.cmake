@@ -3,10 +3,12 @@
 ## Jordan Lefebvre, lefebvrejp@ornl.gov
 ##---------------------------------------------------------------------------##
 
+include( "${wasp_SOURCE_DIR}/cmake/WaspDocGen.cmake" )
+
 IF (wasp_SOURCE_DIR)
   # We need to inject the wasp/cmake directory to find several wasp-specific
   # macros
-  SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH} "${wasp_SOURCE_DIR}/cmake")
+  SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH} "${wasp_SOURCE_DIR}/cmake" "${wasp_SOURCE_DIR}/modules" )
 ENDIF()
 
 ##---------------------------------------------------------------------------##
@@ -69,6 +71,16 @@ MACRO(TRIBITS_REPOSITORY_SETUP_EXTRA_OPTIONS)
   ENDIF()
   # Set up wasp cmake directory, used by default option scripts
   SET(wasp_CMAKE_DIR "${wasp_SOURCE_DIR}/cmake" CACHE PATH "")
+
+  # Setup documentation generation, if pandoc is available
+  WASP_DOC_GEN( 
+    DOCX_FILE "${wasp_BINARY_DIR}/WorkbenchAnalysisSequenceProcessor.docx"
+    PDF_FILE "${wasp_BINARY_DIR}/WorkbenchAnalysisSequenceProcessor.pdf"
+    MD_FILES README.md waspcore/README.md waspexpr/README.md 
+             wasphive/README.md waspsiren/README.md
+              waspson/README.md waspddi/README.md
+               wasphalite/README.md wasputils/README.md
+  )
 
   ########################################
   # INCLUDE DIRECTORY SETUP

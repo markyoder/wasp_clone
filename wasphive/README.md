@@ -1,64 +1,18 @@
-# ***Hierarchical Input Validation Engine (HIVE)***
+# HIVE
 
-## **Table of Contents**
+The Hierarchical Input Validation Engine (HIVE) uses a set of rules to describe the schema of an application's input. These rules describe scalar and relational input restrictions. They can use a [Sequence Input Retrieval ENgine (SIREN) Expression](/waspsiren/README.md#sequence-input-retrieval-engine-siren) paths to define restrictions related to relative sets of input elements. Schema files for HIVE are written using the [Standard Object Notation (SON) Syntax](/waspson/README.md#standard-object-notation-son). Applications use HIVE and schema files to facilitate input validation, introspection, and input creation assistance. SIREN Expressions, SON Syntax, and Template Files are beyond the scope of this section.
 
-1. [Introduction](#introduction)
+The section layout is as follows:
 
-2. [Input Validation Rules Summary](#input-validation-rules-summary)
-3. [Input Validation Details and Examples](#input-validation-details-and-examples)
- - [Miscellaneous Details and Examples](#miscellaneous-details-and-examples)
- - [MinOccurs Details and Examples](#minoccurs-details-and-examples)
- - [MaxOccurs Details and Examples](#maxoccurs-details-and-examples)
- - [ValType Details and Examples](#valtype-details-and-examples)
- - [ValEnums Details and Examples](#valenums-details-and-examples)
- - [MinValInc Details and Examples](#minvalInc-details-and-examples)
- - [MaxValInc Details and Examples](#maxvalinc-details-and-examples)
- - [MinValExc Details and Examples](#minvalexc-details-and-examples)
- - [MaxValExc Details and Examples](#maxvalexc-details-and-examples)
- - [ExistsIn Details and Examples](#existsin-details-and-examples)
- - [NotExistsIn Details and Examples](#notexistsin-details-and-examples)
- - [SumOver Details and Examples](#sumover-details-and-examples)
- - [SumOverGroup Details and Examples](#sumovergroup-details-and-examples)
- - [IncreaseOver Details and Examples](#increaseover-details-and-examples)
- - [DecreaseOver Details and Examples](#decreaseover-details-and-examples)
- - [ChildAtMostOne Details and Examples](#childatmostone-details-and-examples)
- - [ChildExactlyOne Details and Examples](#childexactlyone-details-and-examples)
- - [ChildAtLeastOne Details and Examples](#childatleastone-details-and-examples)
- - [ChildCountEqual Details and Examples](#childcountequal-details-and-examples)
- - [ChildUniqueness Details and Examples](#childuniqueness-details-and-examples)
-4. [Input Assistance Details](#input-assistance-details)
- - [MaxOccurs Assistance Details](#maxoccurs-assistance-details)
- - [ChildAtMostOne Assistance Details](#childatmostone-assistance-details)
- - [ChildExactlyOne Assistance Details](#childexactlyone-assistance-details)
- - [ValEnums Assistance Details](#valenums-assistance-details)
- - [ValType Assistance Details](#valtype-assistance-details)
- - [ExistsIn Assistance Details](#existsin-assistance-details)
- - [InputTmpl Assistance Details](#inputtmpl-assistance-details)
- - [InputName Assistance Details](#inputname-assistance-details)
- - [InputType Assistance Details](#inputtype-assistance-details)
- - [InputVariants Assistance Details](#inputvariants-assistance-details)
- - [InputDefault Assistance Details](#inputdefault-assistance-details)
- - [Description Assistance Details](#description-assistance-details) 
+The [Input Validation Rules Summary](#input-validation-rules-summary) section provides a very brief description of each input validation rule. These rules do not contain defaults. The rule is only used when it has been specified.
 
----
+The [Input Validation Details and Examples](#input-validation-details-and-examples) section provides a more detailed description, examples, and exact syntax of each input validation rule. This section supplies an example schema, an example input that will pass validation against the schema, an example input that will fail validation against the schema, and the validation messages that HIVE produces when validating the failing input against the provided schema. If incorporating a specific rule in the integration of an application into the NEAMS Workbench, then the examples section for that particular rule should be fully understood syntactically and semantically.
 
-## **Introduction**
+The [Input Assistance Details](#input-assistance-details) section provides descriptions and details of the rules that can be used by NEAMS Workbench for input assistance and autocompletion.
 
-The Hierarchical Input Validation Engine (**HIVE**) uses a set of rules to describe the schema of an application's input. These rules describe scalar and relational input restrictions. They can use [***Sequence Input Retrieval ENgine (SIREN) Expression***](/waspsiren/README.md) paths to define restrictions related to relative sets of input elements. Schema files for HIVE are written using the [***Standard Object Notation (SON) Syntax***](/waspson/README.md). Applications, such as the **NEAMS Workbench**, use HIVE and schema files to facilitate input validation, introspection, and assistance by using ***Grammar Files*** to associate an application with a schema file and a directory containing ***Template Files***. ***SIREN Expressions***, ***SON Syntax***, ***Grammar Files***, and ***Template Files*** are beyond the scope of this document, but they can all be referenced in their own documentation.
+In this document, the term ***input*** is used when referring to a file that is to be validated, and ***schema*** is used when referring to the file that describes the definition and rules against which the input is validated. Currently, schema files must be written in the SON syntax. We will be using the SON syntax for example input files in this document as well.
 
-The document layout is as follows:
 
- - The [Input Validation Rules Summary](#input-validation-rules-summary) section provides a very brief description of each input validation rule.
-
- - The [Input Validation Details and Examples](#input-validation-details-and-examples) section provides a more detailed description, examples, and exact syntax of each input validation rule. This section supplies an example schema, an example input that will pass validation against the schema, an example input that will fail validation against the schema, and the validation messages that HIVE produces when validating the failing input against the provided schema. If incorporating a specific rule in the integration of an application into the NEAMS Workbench, then the examples section for that particular rule should be fully understood syntactically and semantically.
-
- - The [Input Assistance Details](#input-assistance-details) section provides descriptions and details of the rules that can be used by NEAMS Workbench for input assistance and autocompletion.
-
- - In this document, the term ***input*** is used when referring to a file is to be validated, and ***schema*** is used when referring to the file that describes the definition and rules against which the input is validated. Currently, schema files must be written in the SON syntax. We will be using the SON syntax for example input files in this document as well.
-
-<a href="#top">Back to top</a>
-
----
 
 ## **Input Validation Rules Summary**
 
@@ -68,8 +22,8 @@ The document layout is as follows:
 * [***ValEnums***](#valenums-details-and-examples) - describes a list of allowed value choices for the element.
 * [***MinValInc***](#minvalinc-details-and-examples) - describes the minimum inclusive value that this element is allowed to have if it is a number (i.e. the provided input value must be greater than or equal to this).
 * [***MaxValInc***](#maxvalinc-details-and-examples) - describes the maximum inclusive value that this element is allowed to have if it is a number (i.e. the provided input value must be less than or equal to this).
-* [***MinValExc***](#minvalexc-details-and-examples) - describes the minimum exclusive value of the element in the input if it is a number (i.e. the provided input value must be greater than this).
-* [***MaxValExc***](#maxvalexc-details-and-examples) - describes the maximum exclusive value of the element in the input if it is a number (i.e. the provided input value must be less than this).
+* [***MinValExc***](#minvalexc-details-and-examples) - describes the minimum exclusive value of the element in the input if it is a number (i.e. the provided input value must be strictly greater than this).
+* [***MaxValExc***](#maxvalexc-details-and-examples) - describes the maximum exclusive value of the element in the input if it is a number (i.e. the provided input value must be strictly less than this).
 * [***ExistsIn***](#existsin-details-and-examples) - describes a set of lookup paths into relative sections of the input file and possible constant values where the value of the element being validated must exist.
 * [***NotExistsIn***](#notexistsin-details-and-examples) - describes a set of lookup paths into relative sections of the input file where the value of the element being validated must not exist.
 * [***SumOver***](#sumover-details-and-examples) - describes what sum the values must add to under a given context.
@@ -82,19 +36,17 @@ The document layout is as follows:
 * [***ChildCountEqual***](#childcountequal-details-and-examples) - describes one or more lists of lookup paths into relative sections of the input file where the number of values must be equal.
 * [***ChildUniqueness***](#childuniqueness-details-and-examples) - describes one or more lists of lookup paths into relative sections of the input file where the values at all of these paths must be unique.
 
-<a href="#top">Back to top</a>
 
----
 
 ## **Input Validation Details and Examples**
 
 ### Miscellaneous Details and Examples
 
- - Before exploring the details of all of the validation rules, the first thing to note is that the hierarchy of a schema file must represent a union of all possible input hierarchies. This is just to say that every hierarchical node in an input file that is to be validated, must have an exact mapping to a node at the same hierarchical path in the schema. If there is an element in an input file that does not have an exact mapping to an associated node in the schema, then that element is said to be invalid. Once the hierarchy of the schema is built, then rules can be added to every element for validation. Every element in the input document is represented by a SON object in the schema.  All rules for an element at a given context are represented by either SON flag-values or SON flag-arrays.
+Before exploring the details of all of the validation rules, the first thing to note is that the hierarchy of a schema file must represent a union of all possible input hierarchies. This is just to say that every hierarchical node in an input file that is to be validated, must have an exact mapping to a node at the same hierarchical path in the schema. If there is an element in an input file that does not have an exact mapping to an associated node in the schema, then that element is said to be invalid. Once the hierarchy of the schema is built, then rules can be added to every element for validation. Every element in the input document is represented by a SON object in the schema.  All rules for an element at a given context are represented by either SON flag-values or SON flag-arrays.
 
- - Hierarchical nodes in the schema that do not have an associated node in the input are not traversed further.  For example if a schema defines nodes **A**, **B**, and **C** at the root level, but a given input only contains nodes **A** and **C** at its root level, then the rules directly inside of node **B** are examined to check if **B** is a required in the input, however the children of node **B** are not traversed further because we already know those children are not in the input.
+Hierarchical nodes in the schema that do not have an associated node in the input are not traversed further. For example, if a schema defines nodes **A**, **B**, and **C** at the root level, but a given input only contains nodes **A** and **C** at its root level, then the rules directly inside of node **B** are examined to check if **B** is a required portion in the input, however the children of node **B** are not traversed further because we already know those children are not in the input.
 
- - At the basic level, there are two types of validation messages that may be reported by HIVE.
+At the basic level, there are two types of validation messages that may be reported by HIVE.
 
 1. Problems with the ***input*** file are reported in the form:
 ```javascript
@@ -110,7 +62,7 @@ The document layout is as follows:
 
 	*This message example denotes an actual error in the schema file (not the input) at the provided line and column number.*
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -129,7 +81,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
     
@@ -141,7 +93,7 @@ The document layout is as follows:
 
   - ***Notes:*** This input passes validation against the provided schema because both input elements (i.e. `test/should_exist_one` and `test/should_exist_two` exist in the schema and no schema validation rules are broken (no other rules exist for the input elements provided in the input).
 
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
     
@@ -154,7 +106,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     Validation Error: Invalid Schema Rule: "BadRuleName" line:11 column:13
     
@@ -165,13 +117,12 @@ The document layout is as follows:
 
   - ***Notes:*** This input fails to validate against the provided schema because (as described above) neither `/test/should_not_exist_one` nor `/test/should_not_exist_two` exist in the schema.  Also, an element exists in the input that has an invalid rule named `BadRuleName` in the schema.
 
-<a href="#top">Back to top</a>
 
 ### MinOccurs Details and Examples
 
- - The ***Minimum Occurrence*** rule describes the minimum number of times that an element must occur under its parent context. It is used mostly to denote if a piece of input is required or optional. Most often, this rule will have a literal constant for minimum allowances. The value must be an integer. For example, `MinOccurs = 0` denotes that this element is optional under its parent context, and `MinOccurs = 1` denotes that this element is required to occur at least once under its parent. This rule may also contain a relative input lookup path from the element being validated. The syntax for this usages is `MinOccurs = "../../some/relative/input/path"` If the lookup path describes a set containing a single value, and if that value is an integer, then that value will be used to determine the minimum allowed occurrences of the element being validated.
+The ***Minimum Occurrence*** rule describes the minimum number of times that an element must occur under its parent context. It is used mostly to denote if a piece of input is required or optional. Most often, this rule will have a literal constant for minimum allowances. The value must be an integer. For example, `MinOccurs = 0` denotes that this element is optional under its parent context, and `MinOccurs = 1` denotes that this element is required to occur at least once under its parent. This rule may also contain a relative input lookup path from the element being validated. The syntax for this usages is `MinOccurs = "../../some/relative/input/path"` If the lookup path describes a set containing a single value, and if that value is an integer, then that value will be used to determine the minimum allowed occurrences of the element being validated.
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -213,7 +164,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
     
@@ -251,7 +202,7 @@ The document layout is as follows:
 
   - ***Notes:*** This input passes validation against the provided schema because `valueone` must occur at least 10 times under its parent context, and it does.  Also, `valuetwo` must occur at least a number of times equal to whatever integer is location at a relative location of  `"../control"`.  A relative lookup from `valuetwo` to `"../control"` yields one integer with the value `15`.  `valuetwo` exists under its parent context at least `15` times, so all is well.
 
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
     
@@ -300,7 +251,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     line:1 column:1 - Validation Error: test has 9 "valueone" occurrences - when there should be a minimum occurrence of 10
 
@@ -317,15 +268,14 @@ The document layout is as follows:
     line:43 column:5 - Validation Error: inside minimum occurrence checks against "../../bad_string" which does not return a valid number
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because `valueone` only occurs 9 times under its parent context when its `MinOccurs` rule in the schema denotes that it should occur at least 10 times. `valuetwo` should occur at least 15 times under its parent context, because its `MinOccurs` rules in the schema contains a path to `"../control"`. A relative lookup from `valuetwo` to `"../control"` yields one integer with the value `15`.  However, `valuetwo` only occurs 14 times under its parent.  The second `test` element in the input has zero `valueone` elements, when there should be at least 10 as previously described ... FINISH - TODO
+  - ***Notes:*** This input fails to validate against the provided schema because `valueone` only occurs 9 times under its parent context when its `MinOccurs` rule in the schema denotes that it should occur at least 10 times. `valuetwo` should occur at least 15 times under its parent context, because its `MinOccurs` rules in the schema contains a path to `"../control"`. A relative lookup from `valuetwo` to `"../control"` yields one integer with the value `15`.  However, `valuetwo` only occurs 14 times under its parent.  The second `test` element in the input has zero `valueone` elements, when there should be at least 10 as previously described.
 
-<a href="#top">Back to top</a>
 
 ### MaxOccurs Details and Examples
 
- - The ***Maximum Occurrence*** rule describes the maximum number of times that an element is allowed to occur under its parent context. Most often, this element will have a literal constant value to describe a number of maximum allowances. The value must be integer or '**NoLimit**' (indicating that there is no upper limit on the number of times this element can occur). This rule may also have a relative input lookup path from the element being validated. If the lookup path describes a set containing a single value, and if that value is an integer, then that value will be used to determine the maximum allowed occurrences of the element being validated.
+The ***Maximum Occurrence*** rule describes the maximum number of times that an element is allowed to occur under its parent context. Most often, this element will have a literal constant value to describe a number of maximum allowances. The value must be integer or '**NoLimit**' (indicating that there is no upper limit on the number of times this element can occur). This rule may also have a relative input lookup path from the element being validated. If the lookup path describes a set containing a single value, and if that value is an integer, then that value will be used to determine the maximum allowed occurrences of the element being validated.
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -363,7 +313,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
     
@@ -399,9 +349,8 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
     
@@ -474,7 +423,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     line:1 column:1 - Validation Error: test has 11 "valueone" occurrences - when there should be a maximum occurrence of 10
 
@@ -491,18 +440,15 @@ The document layout is as follows:
     line:67 column:5 - Validation Error: inside minimum occurrence checks against "../../bad_string" which does not return a valid number
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### ValType Details and Examples
 
- - The ***Value Type*** rule checks the type of the element value in the input. This can be one of the following: 
+The ***Value Type*** rule checks the type of the element value in the input. This can be one of the following: 
 * `Int` - meaning a negative or positive integer
 * `Real` - meaning a negative or positive floating point value (or integer)
 * `String` - meaning a literal string of text
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -538,7 +484,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
         one=-8
@@ -552,9 +498,7 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
         one=-8.3
@@ -569,7 +513,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     Validation Error: Invalid Schema Rule: Bad ValType Option "BadType" at line:29 column:21 - Expected [ Int Real String ]
 
@@ -586,15 +530,12 @@ The document layout is as follows:
     line:7 column:5 - Validation Error: six value "another string here" is not of type Real
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### ValEnums Details and Examples
 
- - The ***Value Enumerations*** rule contains a static list of values choices. It compares the element's input value with the provided choices. If the element's value is not in the schema's list of allowed enumerations, then this check will fail. Also, a `REF:` construct may be used to reference a SON array of values that must exist in the schema after an  `EndOfSchema{}` declaration.  These referenced SON arrays can be conveniently defined in one place, but be used by `ValEnums` rules on many different elements. Note: This check is case insensitive and if the value being checked is an integer, then leading zeros are ignored.
+The ***Value Enumerations*** rule contains a static list of values choices. It compares the element's input value with the provided choices. If the element's value is not in the schema's list of allowed enumerations, then this check will fail. Also, a `REF:` construct may be used to reference a SON array of values that must exist in the schema after an  `EndOfSchema{}` declaration.  These referenced SON arrays can be conveniently defined in one place, but be used by `ValEnums` rules on many different elements. Note: This check is case insensitive and if the value being checked is an integer, then leading zeros are ignored.
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -625,7 +566,7 @@ The document layout is as follows:
     ReferencedNumbers=[ 1 2 3 4 5 ]
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
         one="yes"
@@ -637,9 +578,7 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
         one=red
@@ -651,7 +590,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     Validation Error: Invalid Schema Rule: Enum Reference "BadReference" at line:19 column:20 not found in schema
 
@@ -666,15 +605,12 @@ The document layout is as follows:
     line:6 column:5 - Validation Error: five value "7" is not one of the allowed values: [ ... "3" "4" "5" "blue" "green" "indigo" ... ]
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### MinValInc Details and Examples
 
- - The ***Minimum Value Inclusive*** rule provides a number (real or integer) to which the associated input value must be greater than or equal. Most often, this rule will contain a constant number defining the minimum value that this element is allowed to be. For example, *MinValInc = 0.0* denotes that this element's value must be zero or greater. This rule may also have a relative input lookup path from the element being validated. If the set in the input represented by the relative path is a single value, and if that value is a number, then that value will be used to determine the lowest allowed value for the element being validated. If an element at this relative lookup path exists in the input and it is not a number, then it will fail this check. However, if this element does not exist at all in the input, then this validation check will not fail - that is delegated to the `MinOccurs` check.
+The ***Minimum Value Inclusive*** rule provides a number (real or integer) to which the associated input value must be greater than or equal. Most often, this rule will contain a constant number defining the minimum value that this element is allowed to be. For example, *MinValInc = 0.0* denotes that this element's value must be zero or greater. This rule may also have a relative input lookup path from the element being validated. If the set in the input represented by the relative path is a single value, and if that value is a number, then that value will be used to determine the lowest allowed value for the element being validated. If an element at this relative lookup path exists in the input and it is not a number, then it will fail this check. However, if this element does not exist at all in the input, then this validation check will not fail - that is delegated to the `MinOccurs` check.
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -732,7 +668,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
         controlone=15
@@ -748,9 +684,7 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
         controlone=15
@@ -776,7 +710,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     line:7 column:5 - Validation Error: valueone value "58.6" is less than the allowed minimum inclusive value of 58.7
 
@@ -817,15 +751,12 @@ The document layout is as follows:
     line:21 column:5 - Validation Error: valueone value "a-string" is wrong value type for minimum inclusive value
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### MaxValInc Details and Examples
 
- - The ***Maximum Value Inclusive*** rule provides a number (real or integer) to which the associated input value must be less than or equal. Most often, this rule will contain a constant number defining the maximum value that this element is allowed to be. For example, *MaxValInc = 0.0* denotes that this element's value must be zero or less. This rule may also have a relative input lookup path from the element being validated. If the set in the input represented by the relative path is a single value, and if that value is a number, then that value will be used to determine the highest allowed value for the element being validated. If an element at this relative lookup path exists in the input and it is not a number, then it will fail this check. However, if this element does not exist at all in the input, then this validation check will not fail - that is delegated to the `MinOccurs` check.
+The ***Maximum Value Inclusive*** rule provides a number (real or integer) to which the associated input value must be less than or equal. Most often, this rule will contain a constant number defining the maximum value that this element is allowed to be. For example, *MaxValInc = 0.0* denotes that this element's value must be zero or less. This rule may also have a relative input lookup path from the element being validated. If the set in the input represented by the relative path is a single value, and if that value is a number, then that value will be used to determine the highest allowed value for the element being validated. If an element at this relative lookup path exists in the input and it is not a number, then it will fail this check. However, if this element does not exist at all in the input, then this validation check will not fail - that is delegated to the `MinOccurs` check.
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -883,7 +814,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
         controlone=15
@@ -899,9 +830,7 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
         controlone=15
@@ -927,7 +856,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     line:7 column:5 - Validation Error: valueone value "58.8" is greater than the allowed maximum inclusive value of 58.7
 
@@ -962,15 +891,12 @@ The document layout is as follows:
     line:21 column:5 - Validation Error: valueone value "a-string" is wrong value type for maximum inclusive value
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### MinValExc Details and Examples
 
- - The ***Minimum Value Exclusive*** rule provides a number (real or integer) to which the associated input value must be greater. Most often, this rule will contain a constant number, and the associated input value must be greater than this number. For example, *MinValExc = 0.0* denotes that this element value must be greater than zero (not equal). This rule may also have a relative input lookup path from the element being validated. If the set in the input represented by the relative path is a single value, and if that value is a number, then that value will be used to determine the minimum exclusive allowed input value. If an element at this relative lookup path exists in the input and it is not a number, then it will fail this check. However, if this element does not exist at all in the input, then this validation check will not fail - that is delegated to the `MinOccurs` check..
+The ***Minimum Value Exclusive*** rule provides a number (real or integer) to which the associated input value must be greater. Most often, this rule will contain a constant number, and the associated input value must be greater than this number. For example, *MinValExc = 0.0* denotes that this element value must be greater than zero (not equal). This rule may also have a relative input lookup path from the element being validated. If the set in the input represented by the relative path is a single value, and if that value is a number, then that value will be used to determine the minimum exclusive allowed input value. If an element at this relative lookup path exists in the input and it is not a number, then it will fail this check. However, if this element does not exist at all in the input, then this validation check will not fail - that is delegated to the `MinOccurs` check..
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -1031,7 +957,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
         controlone=15
@@ -1048,9 +974,8 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
         controlone=15
@@ -1077,7 +1002,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     line:7 column:5 - Validation Error: valueone value "58.7" is less than or equal to the allowed minimum exclusive value of 58.7
 
@@ -1118,15 +1043,12 @@ The document layout is as follows:
     line:22 column:5 - Validation Error: valueone value "a-string" is wrong value type for minimum exclusive value
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### MaxValExc Details and Examples
 
- - The ***Maximum Value Exclusive*** rule provides a number (real or integer) to which the associated input value must be less. Most often, this rule will contain a constant number, and the associated input value must be less than this number. For example, *MaxValExc = 0.0* denotes that this element value must be less than zero (not equal). This rule may also have a relative input lookup path from the element being validated. If the set in the input represented by the relative path is a single value, and if that value is a number, then that value will be used to determine the maximum exclusive allowed input value. If an element at this relative lookup path exists in the input and it is not a number, then it will fail this check. However, if this element does not exist at all in the input, then this validation check will not fail - that is delegated to the `MinOccurs` check.
+The ***Maximum Value Exclusive*** rule provides a number (real or integer) to which the associated input value must be less. Most often, this rule will contain a constant number, and the associated input value must be less than this number. For example, *MaxValExc = 0.0* denotes that this element value must be less than zero (not equal). This rule may also have a relative input lookup path from the element being validated. If the set in the input represented by the relative path is a single value, and if that value is a number, then that value will be used to determine the maximum exclusive allowed input value. If an element at this relative lookup path exists in the input and it is not a number, then it will fail this check. However, if this element does not exist at all in the input, then this validation check will not fail - that is delegated to the `MinOccurs` check.
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -1187,7 +1109,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
         controlone=15.1
@@ -1204,9 +1126,7 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
         controlone=15
@@ -1233,7 +1153,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     line:7 column:5 - Validation Error: valueone value "58.7" is greater than or equal to the allowed maximum exclusive value of 58.7
 
@@ -1268,15 +1188,12 @@ The document layout is as follows:
     line:22 column:5 - Validation Error: valueone value "a-string" is wrong value type for maximum exclusive value
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### ExistsIn Details and Examples
 
- - The ***Exists In*** rule is used as a key to say that an element in the input must be defined somewhere else in the input. This rule will always contain one or more relative input lookup paths from the element being validated. The pieces of input at these paths will be collected into a set. This rule also may contain one or more optional constant values. If these exist, then the constant values will also be added to the set. Then, all of the values in the input being validated by this rule must exist in the set built from the lookup paths and the constant values in order to pass the validation. If any element does not exist in this set, then the validation check fails. This rule may use an optional `Abs` modifier flag that can occur as a parenthetical identifier. The `Abs` modifier flag indicates that the absolute value of all numbers added to the set checked for existence are used. Then, even if the value of the element being validated is negative and a value at one of the rule's relative input lookup paths is positive, but they have the same absolute value, this validation check will pass. `EXTRA:` may be used within an `ExistsIn` to specify constant values that are allowed. An `EXTRAREF:` construct may be used to reference a SON array of values that must exist in the schema after an  `EndOfSchema{}` declaration.  The values are also allowed by the `ExistsIn` rule.  These referenced SON arrays can be conveniently defined in one place, but be used by `ExistsIn` rules on many different elements. If the allowed `EXTRA` values are actually a contiguous range of integer values, then a `RANGE:[ start end ]` construct may be used for convenience instead of writing a separate `EXTRA:` for every element. These are all shown in the syntax example below. Note: this check is case insensitive, and if the value being checked is an integer, then leading zeros are ignored.
+The ***Exists In*** rule is used as a key to say that an element in the input must be defined somewhere else in the input. This rule will always contain one or more relative input lookup paths from the element being validated. The pieces of input at these paths will be collected into a set. This rule may also contain one or more optional constant values. If these exist, then the constant values will also be added to the set. Then, all of the values in the input being validated by this rule must exist in the set built from the lookup paths and the constant values in order to pass the validation. If any element does not exist in this set, then the validation check fails. This rule may use an optional `Abs` modifier flag that can occur as a parenthetical identifier. The `Abs` modifier flag indicates that the absolute value of all numbers added to the set checked for existence are used. Then, even if the value of the element being validated is negative and a value at one of the rule's relative input lookup paths is positive, but they have the same absolute value, this validation check will pass. `EXTRA:` may be used within an `ExistsIn` to specify constant values that are allowed. An `EXTRAREF:` construct may be used to reference a SON array of values that must exist in the schema after an  `EndOfSchema{}` declaration.  The values are also allowed by the `ExistsIn` rule.  These referenced SON arrays can be conveniently defined in one place, but be used by `ExistsIn` rules on many different elements. If the allowed `EXTRA` values are actually a contiguous range of integer values, then a `RANGE:[ start end ]` construct may be used for convenience instead of writing a separate `EXTRA:` for every element. These are all shown in the syntax example below. Note: this check is case insensitive, and if the value being checked is an integer, then leading zeros are ignored.
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -1396,7 +1313,7 @@ The document layout is as follows:
     ReferencedNumbers=[ 1 2 3 4 5 ]
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
     
@@ -1445,9 +1362,7 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
     
@@ -1502,7 +1417,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     Validation Error: Invalid Schema Rule: "50" start of range is greater than or equal to "25" end of range at line:92 column:32
 
@@ -1567,15 +1482,12 @@ The document layout is as follows:
     line:42 column:24 - Validation Error: usefive_reg value "-3" does not exist in set: [ ../../definetwo/value ../../definethree/value ]
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### NotExistsIn Details and Examples
 
- - The ***Not Exists In*** rule will always contain one or more relative input lookup paths from the element being validated. The pieces of input at these paths will be collected into a set. If the value of the element being validated exists in this set, then this validation check fails. If it does not exist, then the validation check passes. This rule may use an optional `Abs` modifier flag that can occur as a parenthetical identifier. The `Abs` modifier flag indicates that the absolute value of all numbers added to the set checked for existence are used. Then, even if the value of the element being validated is negative and a value at one of the rule's relative input lookup paths is positive, but they have the same absolute value, this validation check will fail. Note: this check is case insensitive, and if the value being checked is an integer, then leading zeros are ignored.
+The ***Not Exists In*** rule will always contain one or more relative input lookup paths from the element being validated. The pieces of input at these paths will be collected into a set. If the value of the element being validated exists in this set, then this validation check fails. If it does not exist, then the validation check passes. This rule may use an optional `Abs` modifier flag that can occur as a parenthetical identifier. The `Abs` modifier flag indicates that the absolute value of all numbers added to the set checked for existence are used. Then, even if the value of the element being validated is negative and a value at one of the rule's relative input lookup paths is positive, but they have the same absolute value, this validation check will fail. Note: this check is case insensitive, and if the value being checked is an integer, then leading zeros are ignored.
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -1624,7 +1536,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
     
@@ -1670,9 +1582,7 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
     
@@ -1719,7 +1629,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     Validation Error: Invalid Schema Rule: Bad NotExistsIn Option "BadFlag" at line:41 column:25 - Expected [ Abs ]
     
@@ -1790,15 +1700,12 @@ The document layout is as follows:
     line:39 column:30 - Validation Error: usefive value "geography" also exists at "../../definethree/value" on line:15 column:19
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### SumOver Details and Examples
 
- - The ***Sum Over*** rule must always contain a **context expression** and an **expected sum value**. The expected sum value is the desired sum when all of the elements in the given context are summed. The context contains a relative ancestry path in the input hierarchy that the values will be summed over. For a simple array, this will usually be "**..**", however it may go back further in lineage if needed (e.g. "**../../..**").
+The ***Sum Over*** rule must always contain a **context expression** and an **expected sum value**. The expected sum value is the desired sum when all of the elements in the given context are summed. The context contains a relative ancestry path in the input hierarchy that the values will be summed over. For a simple array, this will usually be "**..**", however it may go back further in lineage if needed (e.g. "**../../..**").
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -1821,7 +1728,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
     
@@ -1839,9 +1746,7 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
     
@@ -1860,7 +1765,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     line:1 column:1 - Validation Error: test children "inside" sum to 111.6 - instead of the required sum of 107.6
 
@@ -1869,15 +1774,12 @@ The document layout is as follows:
     line:13 column:30 - Validation Error: invalid_array value "something" is wrong value type for sum over
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### SumOverGroup Details and Examples
 
- - The ***Sum Over Group*** rule must always contain a **context path**, a **group sum value**, a **compare path**, and a **group divide value**. The compare path is used to acquire another element in the input hierarchy relative to the current element being validated. This value must exist in the input and be a number. Then, this value is divided by the group divide value. This does integer division to split the input element that will be added into groups. Then, each group must successfully add to the group sum value. If any group does not add to the group sum value, then this validation check fails. If every group (when split by performing an integer division on the value at the compare path relative location by the group divide value) adds to the same desired group sum, then this validation check passes.
+The ***Sum Over Group*** rule must always contain a **context path**, a **group sum value**, a **compare path**, and a **group divide value**. The compare path is used to acquire another element in the input hierarchy relative to the current element being validated. This value must exist in the input and be a number. Then, this value is divided by the group divide value. This does integer division to split the input element that will be added into groups. Then, each group must successfully add to the group sum value. If any group does not add to the group sum value, then this validation check fails. If every group (when split by performing an integer division on the value at the compare path relative location by the group divide value) adds to the same desired group sum, then this validation check passes.
 
- - Schema example:
+Schema example:
 ```javascript
     test{
         inside{
@@ -1927,7 +1829,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
     
@@ -1994,9 +1896,7 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
     
@@ -2066,7 +1966,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     Validation Error: Invalid Schema Rule: SumOverGroup missing ComparePath at line:15 column:21
 
@@ -2087,15 +1987,12 @@ The document layout is as follows:
     line:63 column:34 - Validation Error: invalid_array value "something" is wrong value type for sum over group
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### IncreaseOver Details and Examples
 
- - The ***Increase Over*** rule must contain a required modifier flag that occurs as a parenthetical identifier and indicates the monotonicity. The flag must either be `Strict`, meaning that the values must be strictly increasing in the order that they are read (no two values are the same), or `Mono`, meaning that multiple value are allowed to be the same as long as they never decrease. For example *3 4 5 5 6 7* would pass a `Mono` check, but fail a `Strict` check due to two value being the same. This rule also contains a context path that describes the relative ancestry in the input hierarchy under which the values must increase. For a simple array, this will usually be "**..**". However, it may go back further in lineage if needed (e.g. "**../../..**").
+The ***Increase Over*** rule must contain a required modifier flag that occurs as a parenthetical identifier and indicates the monotonicity. The flag must either be `Strict`, meaning that the values must be strictly increasing in the order that they are read (no two values are the same), or `Mono`, meaning that multiple value are allowed to be the same as long as they never decrease. For example *3 4 5 5 6 7* would pass a `Mono` check, but fail a `Strict` check due to two value being the same. This rule also contains a context path that describes the relative ancestry in the input hierarchy under which the values must increase. For a simple array, this will usually be "**..**". However, it may go back further in lineage if needed (e.g. "**../../..**").
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -2123,7 +2020,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
     
@@ -2144,9 +2041,7 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
     
@@ -2171,7 +2066,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     Validation Error: Invalid Schema Rule: Bad IncreaseOver Option "Neither" at line:9 column:39 - Expected [ Mono Strict ]
 
@@ -2186,15 +2081,12 @@ The document layout is as follows:
     line:19 column:30 - Validation Error: another_array value "something" is wrong value type for increasing
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### DecreaseOver Details and Examples
 
- - The ***Decrease Over*** rule must contain a required modifier flag that occurs as a parenthetical identifier and indicates the monotonicity. The flag must either be `Strict`, meaning that the values must be strictly decreasing in the order that they are read (no two values are the same), or `Mono`, meaning that multiple value are allowed to be the same as long as they never increase. For example *7 6 5 5 4 3* would pass a `Mono` check, but fail a `Strict` check due to two value being the same. This rule also contains a context path that describes the relative ancestry in the input hierarchy under which the values must decrease. For a simple array, this will usually be "**..**". However, it may go back further in lineage if needed (e.g. "**../../..**").
+The ***Decrease Over*** rule must contain a required modifier flag that occurs as a parenthetical identifier and indicates the monotonicity. The flag must either be `Strict`, meaning that the values must be strictly decreasing in the order that they are read (no two values are the same), or `Mono`, meaning that multiple value are allowed to be the same as long as they never increase. For example *7 6 5 5 4 3* would pass a `Mono` check, but fail a `Strict` check due to two value being the same. This rule also contains a context path that describes the relative ancestry in the input hierarchy under which the values must decrease. For a simple array, this will usually be "**..**". However, it may go back further in lineage if needed (e.g. "**../../..**").
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -2222,7 +2114,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
     
@@ -2243,9 +2135,7 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
     
@@ -2270,7 +2160,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     Validation Error: Invalid Schema Rule: Bad DecreaseOver Option "Neither" at line:9 column:39 - Expected [ Mono Strict ]
 
@@ -2285,15 +2175,12 @@ The document layout is as follows:
     line:19 column:33 - Validation Error: another_array value "something" is wrong value type for decreasing
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### ChildAtMostOne Details and Examples
 
- - The ***Child At Most One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be multiple of these rules for any given element in the schema. Of the given list of elements, *at most one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to what is provided in the schema in order for that element to count towards existence.
+The ***Child At Most One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be multiple of these rules for any given element in the schema. Of the given list of elements, *at most one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to what is provided in the schema in order for that element to count towards existence.
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -2319,7 +2206,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
         one=1
@@ -2371,9 +2258,7 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
         one=1
@@ -2395,7 +2280,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     line:1 column:1 - Validation Error: test has more than one of: [ one two three ] - at most one must occur
 
@@ -2406,15 +2291,12 @@ The document layout is as follows:
     line:17 column:5 - Validation Error: five has more than one of: [ "../four" "../two" ] - at most one must occur
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### ChildExactlyOne Details and Examples
 
- - The ***Child Exactly One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be multiple of these rules for any given element in the schema. Of the given list of elements, *exactly one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to what is provided in the schema in order for that element to count towards existence.
+The ***Child Exactly One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be multiple of these rules for any given element in the schema. Of the given list of elements, *exactly one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to what is provided in the schema in order for that element to count towards existence.
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -2440,7 +2322,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
         one=1
@@ -2468,9 +2350,8 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
         four=5
@@ -2500,7 +2381,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     line:1 column:1 - Validation Error: test has zero of: [ one two three ] - exactly one must occur
 
@@ -2515,15 +2396,12 @@ The document layout is as follows:
     line:25 column:5 - Validation Error: seven has zero of: [ "../six" ] - exactly one must occur
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### ChildAtLeastOne Details and Examples
 
- - The ***Child At Least One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be multiple of these rules for any given element in the schema. Of the given list of elements, *at least one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to what is provided in the schema in order for that element to count towards existence.
+The ***Child At Least One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be multiple of these rules for any given element in the schema. Of the given list of elements, *at least one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to what is provided in the schema in order for that element to count towards existence.
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -2555,7 +2433,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
         one=1
@@ -2584,9 +2462,7 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
-
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
         four=5
@@ -2603,7 +2479,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     line:1 column:1 - Validation Error: test has zero of: [ one 'two/value' 'three/value' ] - at least one must occur
 
@@ -2612,15 +2488,12 @@ The document layout is as follows:
     line:12 column:5 - Validation Error: seven has zero of: [ "../six/value" ] - at least one must occur
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### ChildCountEqual Details and Examples
 
- - The ***Child Count Equal*** rule is usually used to ensure that arrays in the input have an equal number of value members. There may be multiple of these rules on any given element. This rule contains multiple relative input look paths and a required modifier flag that occurs as a parenthetical identifier. This modifier flag can be either `IfExists` or `EvenNone`. If the modifier flag is `IfExists`, then it means that the pieces of input in the relative lookup paths must be equal only if they actually exist. However, If the modifier flag is `EvenNone`, then this is a stricter rule that denotes that the relative input lookup path nodes in the input must be equal regardless if they exist or not.
+The ***Child Count Equal*** rule is usually used to ensure that arrays in the input have an equal number of value members. There may be multiple of these rules on any given element. This rule contains multiple relative input look paths and a required modifier flag that occurs as a parenthetical identifier. This modifier flag can be either `IfExists` or `EvenNone`. If the modifier flag is `IfExists`, then it means that the pieces of input in the relative lookup paths must be equal only if they actually exist. However, If the modifier flag is `EvenNone`, then this is a stricter rule that denotes that the relative input lookup path nodes in the input must be equal regardless if they exist or not.
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -2662,7 +2535,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
     
@@ -2689,9 +2562,8 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
     
@@ -2721,7 +2593,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     Validation Error: Invalid Schema Rule: Bad ChildCountEqual Option "" at line:8 column:43 - Expected [ IfExists EvenNone ]
 
@@ -2732,15 +2604,12 @@ The document layout is as follows:
     line:1 column:1 - Validation Error: test does not have an equal number of: [ four/value five/value six/value ]
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
 
 ### ChildUniqueness Details and Examples
 
- - The ***Child Uniqueness*** rule is used quite often. Every value in this set has to occur once and only once among all other values, at all other paths. There may be multiple of these rules on any given element. This rule may use an optional `Abs` modifier flag that can occur as a parenthetical identifier. The `Abs` modifier flag indicates that the absolute value of all numbers added to the set checked for uniqueness are used. Then, even if one value is negative and the other is positive, but they have the same absolute value, this validation check will fail. For example, if one ChildUniqueness relative input lookup path contains "*-5*" and another relative lookup input path contains "*5*", this validation check will fail if the `Abs` modifier flag is used.
+The ***Child Uniqueness*** rule is used quite often. Every value in this set has to occur once and only once among all other values, at all other paths. There may be multiple of these rules on any given element. This rule may use an optional `Abs` modifier flag that can occur as a parenthetical identifier. The `Abs` modifier flag indicates that the absolute value of all numbers added to the set checked for uniqueness are used. Then, even if one value is negative and the other is positive, but they have the same absolute value, this validation check will fail. For example, if one ChildUniqueness relative input lookup path contains "*-5*" and another relative lookup input path contains "*5*", this validation check will fail if the `Abs` modifier flag is used.
 
- - Schema example:
+Schema example:
 ```javascript
     test{
     
@@ -2773,7 +2642,7 @@ The document layout is as follows:
     }
 ```
 
- - Input example that **PASSES** validation on schema above:
+Input example that **PASSES** validation on schema above:
 ```javascript
     test{
     
@@ -2795,9 +2664,8 @@ The document layout is as follows:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because ... TODO
 
- - Input example that **FAILS** validation on schema above:
+Input example that **FAILS** validation on schema above:
 ```javascript
     test{
     
@@ -2822,7 +2690,7 @@ The document layout is as follows:
     }
 ```
 
- - HIVE validation messages when validating the failing input shown above against the schema above:
+HIVE validation messages when validating the failing input shown above against the schema above:
 ```javascript
     Validation Error: Invalid Schema Rule: Bad ChildUniqueness Option "BadFlag" at line:8 column:29 - Expected [ Abs ]
     
@@ -2873,53 +2741,48 @@ The document layout is as follows:
     line:16 column:24 - Validation Error: three/value value "*" also exists at "two/value" on line:10 column:9
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because ... TODO
-
-<a href="#top">Back to top</a>
-
----
 
 ## **Input Assistance Details**
 
- - Six of the previously described validation rules (`MaxOccurs`, `ChildAtMostOne`, `ChildExactlyOne`, `ValEnums`, `ExistsIn`, and `ValType`) and six new rules (`InputTmpl`, `InputName`, `InputType`, `InputVariants`, `InputDefault`, and `Description`) may also be used by graphical user interfaces to aid with input creation. They may be use for autocompletion assistance or input introspection.
+Six of the previously described validation rules (`MaxOccurs`, `ChildAtMostOne`, `ChildExactlyOne`, `ValEnums`, `ExistsIn`, and `ValType`) and six new rules (`InputTmpl`, `InputName`, `InputType`, `InputVariants`, `InputDefault`, and `Description`) may also be used by graphical user interfaces to aid with input creation. They may be use for autocompletion assistance or input introspection.
 
 ### MaxOccurs Assistance Details
 
- - The ***Maximum Occurrence*** rule is used by the NEAMS Workbench logic for filtering options as needed from the autocompletion list. An element can only be added up to MaxOccurs times via autocomplete. For example, if an element has `MaxOccurs = 1`, it can only be added once to the document. After is it added once, it is filtered from the autocompletion list.
+The ***Maximum Occurrence*** rule is used by the NEAMS Workbench logic for filtering options as needed from the autocompletion list. An element can only be added up to MaxOccurs times via autocomplete. For example, if an element has `MaxOccurs = 1`, it can only be added once to the document. After is it added once, it is filtered from the autocompletion list.
 
 ### ChildAtMostOne Assistance Details
 
- - The ***Child At Most One*** rule is used by the NEAMS Workbench logic for filtering options as needed from the autocompletion list. If at most one of multiple choices are allowed at any context, then as soon as one of those choices are added to the document, the others are filtered from the autocompletion list. For example, if an element has `ChildAtMostOne = [ choice1 choice2 choice3]`, and `choice2` is added, then `choice1` and `choice3` will not be available on the next autocomplete.
+The ***Child At Most One*** rule is used by the NEAMS Workbench logic for filtering options as needed from the autocompletion list. If at most one of multiple choices are allowed at any context, then as soon as one of those choices are added to the document, the others are filtered from the autocompletion list. For example, if an element has `ChildAtMostOne = [ choice1 choice2 choice3]`, and `choice2` is added, then `choice1` and `choice3` will not be available on the next autocomplete.
 
 ### ChildExactlyOne Assistance Details
 
- - The ***Child Exactly One*** rule is used by the NEAMS Workbench logic for filtering options as needed from the autocompletion list. If exactly one of multiple choices are allowed at any context, then as soon as one of those choices are added to the document, the others are filtered from the autocompletion list. For example, if an element has `ChildExactlyOne = [ choice1 choice2 choice3]`, and `choice2` is added, then `choice1` and `choice3` will not be available on the next autocomplete.
+The ***Child Exactly One*** rule is used by the NEAMS Workbench logic for filtering options as needed from the autocompletion list. If exactly one of multiple choices are allowed at any context, then as soon as one of those choices are added to the document, the others are filtered from the autocompletion list. For example, if an element has `ChildExactlyOne = [ choice1 choice2 choice3]`, and `choice2` is added, then `choice1` and `choice3` will not be available on the next autocomplete.
 
 ### ValEnums Assistance Details
 
- - The ***Value Enumerations*** rule is used by the NEAMS Workbench autocompletion logic to provide a set of choices that are legal at a given context based on a static set of values supplied in the schema. For example, if an element has `ValEnums = [ "a" "b" "c" "d" ]`,  then those values will be provided as autocompletion options.
+The ***Value Enumerations*** rule is used by the NEAMS Workbench autocompletion logic to provide a set of choices that are legal at a given context based on a static set of values supplied in the schema. For example, if an element has `ValEnums = [ "a" "b" "c" "d" ]`,  then those values will be provided as autocompletion options.
 
 ### ExistsIn Assistance Details
 
- - The ***Exists In*** rule is used by the NEAMS Workbench autocompletion logic to provide a set of choices that are legal at a given context based on values supplied elsewhere in the input. For example, if an element has `ExistsIn = [ "../../some/context1" "../../some/context2" ]`, and the values `1`, `2`, `3`, and `4` exist in the input at that relative context, then those values will be provided as autocompletion options.
+The ***Exists In*** rule is used by the NEAMS Workbench autocompletion logic to provide a set of choices that are legal at a given context based on values supplied elsewhere in the input. For example, if an element has `ExistsIn = [ "../../some/context1" "../../some/context2" ]`, and the values `1`, `2`, `3`, and `4` exist in the input at that relative context, then those values will be provided as autocompletion options.
 
 ### ValType Assistance Details
 
- - The ***Value Type*** rule is used by the NEAMS Workbench autocompletion logic to drop in a legitimate default value of the correct type for flag-values and flag-arrays if no `InputDefault` is provided in the schema.
+The ***Value Type*** rule is used by the NEAMS Workbench autocompletion logic to drop in a legitimate default value of the correct type for flag-values and flag-arrays if no `InputDefault` is provided in the schema. For example, the following defaults are used:
 
- - For an element with a `ValType = Int` rule, `1` will be inserted.
- - For an element with a `ValType = Real` rule, `0.0` will be inserted.
- - For an element with a `ValType = String` rule, `'insert-string-here'` will be inserted.
+    * For an element with a `ValType = Int` rule, `1` will be inserted.
+    * For an element with a `ValType = Real` rule, `0.0` will be inserted.
+    * For an element with a `ValType = String` rule, `'insert-string-here'` will be inserted.
  
- - To override this behavior, please see [InputDefault Assistance Details](#inputdefault-assistance-details).
+To override this behavior, please see [InputDefault Assistance Details](#inputdefault-assistance-details).
 
 ### InputTmpl Assistance Details
 
- - The ***Input Template*** rule is used by the NEAMS Workbench to pick which ***Template File*** to use for autocompletion. For example, if a context has `InputTmpl = MyCustomTemplate` then a template named `MyCustomTemplate.tmpl` in the template directory provided by a NEAMS Workbench ***Grammar File*** will be used for autocompletion. ***Template Files*** and ***Grammars Files*** are beyond the scope of this document, but they can be referenced in their own documentation.
+The ***Input Template*** rule is used by the NEAMS Workbench to pick which ***Template File*** to use for autocompletion. For example, if a context has `InputTmpl = MyCustomTemplate` then a template named `MyCustomTemplate.tmpl` in the template directory provided by a NEAMS Workbench ***Grammar File*** will be used for autocompletion. ***Template Files*** and ***Grammars Files*** are beyond the scope of this document, but they can be referenced in their own documentation.
 
 ### InputName Assistance Details
 
- - The ***Input Name*** rule is used by the NEAMS Workbench to override the name of the actual node that the template provided by `InputTmpl` uses for autocompletion, if desired. For example, if the name of an element in the input hierarchy is `something_one` (therefore the name in the schema must be the same), but a template named `MySomething.tmpl` should use the name `something_two` instead for autocompletion, then `something_one` can be overridden via:
+The ***Input Name*** rule is used by the NEAMS Workbench to override the name of the actual node that the template provided by `InputTmpl` uses for autocompletion, if desired. For example, if the name of an element in the input hierarchy is `something_one` (therefore the name in the schema must be the same), but a template named `MySomething.tmpl` should use the name `something_two` instead for autocompletion, then `something_one` can be overridden via:
 ```javascript
     something_one{
 	    InputName = "something_two"
@@ -2927,11 +2790,11 @@ The document layout is as follows:
     }
 ```
 
- - Template files receives the 'InputName' parameter, and the default is the node name if not explicitly provided.
+Template files receives the 'InputName' parameter, and the default is the node name if not explicitly provided.
 
 ### InputType Assistance Details
 
- - The ***Input Type*** rule is used by the NEAMS Workbench to let the template provided by `InputTmpl` for autocompletion know what type to switch on, if desired. If a template can handle multiple situations in different ways depending on what type it is dealing with, then Workbench will let the template know the type of the current autocompletion context is with this rule. For example, if there is a template named `FlagTypes.tmpl` that can handle the types `FlagValue` and `FlagArray` differently, then Workbench can let the template know it is dealing with a `FlagValue` via:
+The ***Input Type*** rule is used by the NEAMS Workbench to let the template provided by `InputTmpl` for autocompletion know what type to switch on, if desired. If a template can handle multiple situations in different ways depending on what type it is dealing with, then Workbench will let the template know the type of the current autocompletion context is with this rule. For example, if there is a template named `FlagTypes.tmpl` that can handle the types `FlagValue` and `FlagArray` differently, then Workbench can let the template know it is dealing with a `FlagValue` via:
 ```javascript
     flag_value_node{
         InputType = "FlagValue"
@@ -2939,7 +2802,7 @@ The document layout is as follows:
     }
 ```
 
- - Or, Workbench can let the same template know it is dealing, instead, with a `FlagArray` via:
+Or, Workbench can let the same template know it is dealing, instead, with a `FlagArray` via:
 ```javascript
     flag_array_node{
         InputType = "FlagArray"
@@ -2949,16 +2812,13 @@ The document layout is as follows:
 
 ### InputVariants Assistance Details
 
- - The ***Input Variants*** rule is used by the NEAMS Workbench to provide multiple choices of autocompletion templates for a single context. For example, if an element has `InputVariants = [ 'simple_version' 'middle_version' 'complex_version' ]` **AND** `simple_version.tmpl`, `middle_version.tmpl,` and `complex_version.tmpl` exist in the template directory provided by application's grammar, then all three of those choices will be available at that context via autocomplete and use their associate templates.
+The ***Input Variants*** rule is used by the NEAMS Workbench to provide multiple choices of autocompletion templates for a single context. For example, if an element has `InputVariants = [ 'simple_version' 'middle_version' 'complex_version' ]` **AND** `simple_version.tmpl`, `middle_version.tmpl,` and `complex_version.tmpl` exist in the template directory provided by application's grammar, then all three of those choices will be available at that context via autocomplete and use their associate templates.
 
 ### InputDefault Assistance Details
 
- - The ***Input Default*** rule is used by the NEAMS Workbench to explicitly tell a template what value should be dropped in for flag-values and flag-arrays via `InputDefault = 'explicit_default_value'`. This overrides the `ValType` logic described in [ValType Assistance Details](#valtype-assistance-details).
+The ***Input Default*** rule is used by the NEAMS Workbench to explicitly tell a template what value should be dropped in for flag-values and flag-arrays via `InputDefault = 'explicit_default_value'`. This overrides the `ValType` logic described in [ValType Assistance Details](#valtype-assistance-details).
 
 ### Description Assistance Details
 
- -  The ***Input Description*** rule is just used by the NEAMS Workbench to give a short one line description in the autocompletion dropdown list via `Description = 'autocomplete dropdown description'` . These descriptions can be very useful to novice users unfamiliar with all of the parameters at a given context. These descriptions are not used by the templates for any further autocompletion logic.
+The ***Input Description*** rule is just used by the NEAMS Workbench to give a short one line description in the autocompletion dropdown list via `Description = 'autocomplete dropdown description'` . These descriptions can be very useful to novice users unfamiliar with all of the parameters at a given context. These descriptions are not used by the templates for any further autocompletion logic.
 
-<a href="#top">Back to top</a>
-
----

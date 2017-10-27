@@ -1,16 +1,18 @@
-# HierarchiAL Input Template Expansion engine (HALITE)
-The HALITE engine is a data-driven input template expansion engine intended to facilitate application input or data generation. 
+# HALITE engine 
+The HierarchicAL Input Template Expansion engine (HALITE) engine is a data-driven input template expansion engine intended to facilitate application input or data generation. 
 
 When it comes to text creation there are typically two approaches, 
-1) write a program to generate the needed text, 
-or 2) create templates and some program glue logic to read the templates and substitute attributes. 
+
+1. write a program to generate the needed text, or
+2. create templates and some program glue logic to read the templates and substitute attributes. 
 
 
 The HALITE engine attempts to bridge these approaches by providing standard glue logic. In this way, 
-1) the templates preserve clarity of intended text, 
-2) templates facilitate reuse,
-3) development is streamlined by eliminating the developer and only requiring a template designer, and most importantly
-4) templates are interchangeable which allows using the same data to create a different 'look', perhaps, for a different application to consume.
+
+1. the templates preserve clarity of intended text, 
+2. templates facilitate reuse,
+3. development is streamlined by eliminating the developer and only requiring a template designer, and most importantly
+4. templates are interchangeable which allows using the same data to create a different 'look', perhaps, for a different application to consume.
 
 In addition to the above, the HALITE engine provides a single point, data-driven, expansion capability that removes the need for application-specific glue logic.
 
@@ -24,28 +26,31 @@ The expression evaluation support scalar and vector variable reference and mathe
 This section describes the general approach used by the HALITE engine when evaluating a template and constructing the resulting text. 
 
 There are 3 primary components:
-1) The template, consisting of constructs discussed below.
-2) The optional data, described in hierarchal object notation.
-3) The evaluation stream which is the destination of evaluating template constructs.
+
+1. The template, consisting of constructs discussed below.
+2. The optional data, described in hierarchal object notation.
+3. The evaluation stream which is the destination of evaluating template constructs.
 
 
 
 Template constructs available are:
-1. Static text - plain text to be emitted to the expanded result. Contains no attributes or expression evaluation.
+
+1. Static text - plain text to be emitted to the expanded result, which contains no attributes or expression evaluation.
 2. Attributes - parameters or expressions to be evaluated, optionally formatted, and substituted into the expanded result.
 3. Optional Attributes - parameters expressions that when only present are emitted to the expanded result.
 4. Silent Attributes - parameters or expressions that when evaluated are NOT emitted to the expanded result. Useful for intermediate or cached attribute evaluations to be used later.
 5. Iterative Attributes - expressions which are evaluated iteratively for a specified range(s) with optional separator and format.
 6. Template imports - import a template into the existing template with optional use of data object.
 7. Iterative template imports - import a template for each element of an array via 'using' an array or repeatedly via range variables.
-8. Conditional blocks - support pre-processor style #if/ifdef/ifndef - #elseif/else - #endif conditional blocks which will only be emitted when the appropriate condition is true.
+8. Conditional blocks - support pre-processor style `#if/ifdef/ifndef` - `#elseif/else` - `#endif` conditional blocks which will only be emitted when the appropriate condition is true.
 
-Each construct is evaluated and emitted into the evaluation stream which can be redirected to a file when using the HALITE utility, or c++ std::ostream when using the wasphalite api.
+Each construct is evaluated and emitted into the evaluation stream which can be redirected to a file when using the HALITE utility, or c++ `std::ostream` when using the wasphalite api.
 
 ## Attributes and Expressions
 Attributes and expressions are delimited by an opening and closing delimiter. By default these delimiters are '<' and '>' respectively. These are configurable via corresponding HaliteInterpreter class methods.
 
 Example template attribute statements are :
+
 1. `<attr>` - default delimiters, '<','>'
 2. `{attr}` - custom '{' and '}'
 3. `${attr}` - custom '${' and '}'
@@ -57,17 +62,17 @@ Formal attribute expression syntax looks as follows:
 
 ` open_delim (name|expression) (':'['?''|'] format? separator? range* use? )? close_delim`
 
-Where :
-1. `open_delim` is configurable, default of '<'
-2. `?` indicates optional attribute evaluation - allows undefined variables to silently fail - MUST OCCUR immediately after the attribute options delimiter, ':'.  
-3. `|` indicates [silent attribute](#silent-attributes) evaluation - conducts computation/variable creation without emitting the result to the evaluation stream - MUST OCCUR immediately after the attribute options delimiter, ':'.
-4. 1 and 2 are optional and mutually exclusive.
+where 
+
+1. `open_delim` is configurable, with a default value of '<'
+2. A `?` indicates an optional attribute evaluation, which allows undefined variables to silently fail. This question mark MUST OCCUR immediately after the attribute options delimiter, `:`.  
+3. A `|` indicates [silent attribute](#silent-attributes) evaluation, which conducts computation/variable creation without emitting the result to the evaluation stream. This MUST OCCUR immediately after the attribute options delimiter, `:`.
+4. 2 and 3 are optional and mutually exclusive.
 5. optional `format` is `'fmt=' format ';'`, and `format` is described in the [section](formatting) below.
 6. optional `separator` is `'sep=' separator ';'`, and `separator` is emitted for all but the last evaluation iteration.
 7. zero or more `range` specifications where a range looks like `range_variable '=' start[,end[,stride]];`. Start, optional end and stride must be integers or attributes convertable to integers. 
-8. The optional `use`  statement facilitates scoped attribute access as depicted in [scoped attribute](#scoped-attribute) sections below.
+8. The optional `use` statement facilitates scoped attribute access as depicted in [scoped attribute](#scoped-attribute) sections below.
 9. `close_delim` is configurable, default of '>'
-
 
 
 ### Silent Attributes
@@ -75,8 +80,6 @@ Attributes and expressions that need to be evaluated but not placed into the eva
 ```
 <attr:|>
 ```
-TODO provide use scenario.
-
 
 ### Optional Attributes
 Attributes may not be specified and as such must be considered optional by the template. Optional attribute look as follow:
@@ -93,6 +96,7 @@ Here the `comment` is optional data, but when present requires a 'com="`comment`
 
 ### Attribute Patterns
 Attribute names are defined as the regular expression `[A-Za-z_]([A-Za-z0-9\._])*`. Examples of these are: 
+
 1. `var`
 2. `var_name`
 3. `var.name`
@@ -101,6 +105,7 @@ Attribute names are defined as the regular expression `[A-Za-z_]([A-Za-z0-9\._])
 6. etc.
 
 If an attribute name contains character(s) that violate the regular expression, the variable name can be quoted. Examples of these are:
+
 1. `'var(name)'`
 2. `'my var(name)'`
 3. etc.
@@ -111,6 +116,7 @@ Given data of :
 'array':["ted","fred",7, 3.14159 ]
 ```
 The following attribute patterns are legal:
+
 1. `array[0]` - "ted"
 2. `array[1]` - "fred"
 3. `array[2]` - 7
@@ -174,19 +180,19 @@ Specifically, the following constructs are provided:
 `%[flags][width][.precision]specifier` 
  
 #### Format Specifiers 
- The available specifiers are :
- 
+The available specifiers are:
+
 | Specifier | Description                                        | Example   |
 |-----------|----------------------------------------------------|-----------|
 | f         | Decimal floating point                             | 3.14159   |
 | e         | Scientific notation (mantissa/exponent), lowercase | 3.9265e+2 |
 | s         | String of characters                               | sample    |
 | d         | Signed decimal value                               | 300       |
- 
+
 The format declarator percent `%` can be escaped with a double  percent specified, `%%`
 
 #### Format Flags
-The available flags are :
+The available flags are:
 
 | flag | Description                                                 | Example             |
 |------|-------------------------------------------------------------|---------------------|
@@ -201,8 +207,8 @@ The width is the minimum number of characters to be written to the output. Most 
 
 #### Format Precision
 For general argument types the precision is the maximum number of characters to be written to the output. 
-For floating-point types (specifier = 'e','f') the precision is the number of digits after the decimal point. 
- 
+For floating-point types (specifier = 'e','f'), the precision is the number of digits after the decimal point. 
+
 
 #### Format Examples
 
@@ -228,7 +234,7 @@ Integer examples:
 | '\<30:fmt=% d\>'          | `' 30'`          | Print the integer 30 with a leading space due to positive value  |
 | '\<x=-30:fmt=% d\>'       | `'-30'`          | Print the variable x (-30) and if x > 0 include a leading space |
 | '\<30:fmt=%+d\>'          | `'+30'`          | Print the integer 30 with its sign |
-| '\<x=-30:fmt=%(d\>'       | `'(30)'`         | Print the varaible x (-30) with parenthesis if x < 0 |
+| '\<x=-30:fmt=%(d\>'       | `'(30)'`         | Print the variable x (-30) with parenthesis if x < 0 |
 | '\<3.14159:fmt=%d\>'      | `'3'`            | Print the floating point value as an integer |
 
 Float-Point examples:
@@ -363,8 +369,8 @@ A file import using an object or array facilitates more complex hierarchical dat
 
 
 ## File Imports
-The HALITE engine support file import where files consist of all template constructs describes in this readme.
-File imports can be parameterized and implicitly and explicitly iterative. 
+The HALITE engine support file import where files consist of all template constructs described in this section.
+File imports can be parameterized and both implicitly and explicitly iterative. 
 
 The simplest file format looks as follows:
 
@@ -379,7 +385,7 @@ The path can also be templated on any available attribute. The subtemplate has i
 the current data level. 
 
 ### Example Data
-E.g., the given data :
+E.g., the given data:
 ```
 {
     "x" : "blurg"
@@ -410,8 +416,7 @@ must be used.
 Parameterized file imports facilitate access to data hierarchy and repetition of templates.
 
 #### File Import Using an Object
-The [example data](#example-data) contains the `obj` data layer which contains nested object `sarg` and other imaginary data `...`. To access all this data
-a subtemplate can be imported 'using' `obj` as follows:
+The [example data](#example-data) contains the `obj` data layer which contains nested object `sarg` and other imaginary data `...`. To access all this data, a subtemplate can be imported 'using' `obj` as follows:
 
 ```
 #import some/file.tmpl using obj
@@ -424,7 +429,7 @@ The template `some/file.tmpl` can now access all attributes within `obj`. Additi
 This is a nested template with access to obj's context
 variable a=<a>, e=<e>
 
-Variables till accessible from parent data are x:<x>, and y:<y>, etc.
+Variables still accessible from parent data are x:<x>, and y:<y>, etc.
 ```
 
 #### Iterative File Import Using an Array or Ranges

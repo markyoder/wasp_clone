@@ -15,19 +15,20 @@ Typically, all whitespace are not captured in the parse tree as they can be dedu
 
 ## Core Parts
 
-The primary parts of wasp core:
+The primary components of wasp core are:
 
 1. StringPool - provides contiguous string storage. All strings are stored, null-terminated, in a single data container.
 2. TokenPool - provides contiguous token storage. Tokens consist of string data, a token type, and a file byte offset. 
     * An index is used that identifies the location in the StringPool at which the data resides. 
     * The token pool stores new line offsets.
     * The file byte offset is used to compute line and column with the assistance of the new line offset.
-3. TreeNodePool - manages TreeNodes which consist of a node name, type, and child indicates. 
+3. TreeNodePool - manages TreeNodes which consist of a node name, type, and child indices. 
     * Uses StringPool for contiguous node name storage.
     * Uses TokenPool to store all leaf node token information.
-4. Interpreter - base class providing boilerplate lex and parse logic
+4. Interpreter - base class providing boilerplate lexing and parsing logic.
     * Contains core token and node construction logic for lexer and parser to use.
-5. Format - utility methods for formatting values - safe printf to facilitate [expression engine](/waspexpr/README.md) and [halite](/wasphalite/README.md).
+5. Format - utility methods for formatting values 
+    * Provides a type safe printf as needed by [expression engine](/waspexpr/README.md#expression-engine) and [HALITE](/wasphalite/README.md#hierarchical-input-validation-engine-hive).
 6. wasp_node - central location for node and token type enumeration.
 7. Object - generic type data structure to facilitate typed-data access to hierarchical data. 
     * Facilitates Halite data-driven capabilities.
@@ -36,35 +37,34 @@ It is important to note that each Pool, and subsequently the Interpreter, are te
 E.g., if your application needs to interpreter files that will never be more than 65KiB, you can use an `unsigned short` as the template type.
 
 ## String Pool
-The string pool consists of two members, 1) a vector of chars, 2) a vector of indices indicating string starts.
+The string pool consists of two members, 1) a vector of chars, 2) a vector of indices indicating string starts. In this way, the string data that is consumed from a text file is reasonably maintained and storage size not inflated. 
 
-In this way, the string data that is consumed from a text file is reasonably maintained and size not inflated. 
+In a benchmark of one application's input consisting of 300MB in which the document tokens' mathematical mode was 3 characters, with a mean of 4, 
+using std::string produces on average ~28+ byte overhead per token. Specifically, 8 byte heap pointer, 8 byte size, 8 byte heap page header, and 8 byte heap memory page. 
 
-In a benchmark of one application's input where the token's mathematical mode was 3 characters, with a mean of 4, 
-using std::string produces on average ~28+ byte overhead per token. Using the StringPool facilitated the memory consolidation. 
+In contrast, the StringPool only requires a 5 byte overhead per token. Specifically, a 4-byte index and a null terminating character. Using the StringPool facilitates a significant memory consolidation.
 
 
 ## Token Pool
-Token pool associates a token type and file byte offset with the text that resides in the String Pool. New lines are a special piece of meta data that is captured for text location deduction.
+Token pool associates a token type and file byte offset with the text that resides in the StringPool. New lines are a special piece of meta data that is captured for text location deduction.
 
 The type information indicates whether it is an integer, real, word, declarator, terminator, etc. and can be used to deduce context or perform operations on a class of data.
 
 The file byte offset is the absolute location in the file at which the text begins. This is not intuitive in and of itself to a user, but when combined with new line offset text location, line and column, can be deduced.
 
-Specifically, the line can be computed as the distance from the upper_bound of token_index into line_offsets.
+Specifically, the line can be computed as the distance from the upper bound of the token's file offset in the list of line file offsets and the line offset.
 
-$` line = distance( \lceil token\_index \rceil_{line\_offsets} )`$
+`line = distance( line_file_offsets.begin(), line_file_offsets.upperbound( token_file_offset ) )`
 
-The column can be computed as the difference of the token_index and the upper_bound of the token_index into line_offsets.
 
-$` column = \lceil token\_index \rceil_{line\_offsets} - token\_index `$
+The column can be computed as the difference of the token's file offset and the upper bound, minus 1, of the token index into the list of line file offsets.
+
+`column = token_file_offset - ( line_file_offsets.upperbound(token_file_offset) - 1)`
 
 
 ## Tree Node Pool
 The tree node pool coordinates access and storage to nodes. Nodes can be classified as inner and leaf nodes. 
-Inner nodes can have children and represent a set of input. Leaf nodes always represent a token. 
-
-E.g.,` key = 3.14159 `
+Inner nodes can have children and represent a set of input. Leaf nodes always represent a token, e.g., `key = 3.14159`
 
 has the following hierarchy
 ```
@@ -77,6 +77,7 @@ document
 Here the inner node is 'keyed_value' with leaf child nodes `declarator`, `assign`, and `value`. 
 
 All nodes have associated meta data:
+
 1. Node type - declarator, terminator, value, name, etc.
 2. Node name - user familiar name.
 3. Parent node pool index - the location in the tree node pool that the parent of the node resides.
@@ -86,13 +87,13 @@ Additional meta data for parent/inner nodes consists of:
 1. First child pool index - the index of the first child.
 2. The number of children.
 
-There is a convenient TreeNodeView class that provides consilidated per-node data access.
+There is a convenient TreeNodeView class that provides consolidated per-node data access.
 
 ## Interpreter
-The interpreter is the base class to facilitate all syntax specific interpreters ([DDI](/waspddi/README.md), [SON](/waspson/README.md), etc.). 
-The interpreter brokers transactions between the lexer and parser and stages and stores the parse tree for future access.
+The interpreter is the base class to facilitate all syntax specific interpreters ([DDI](/waspddi/README.md#definition-driven-interpreter), [SON](/waspson/README.md#standard-object-notation-son), etc.). 
+The interpreter brokers transactions between the lexer and parser and also stages and stores the parse tree for future access.
 
 The interpreter manages the TreeNodePool and tracks the root of the parse tree. 
-It also provides a stage construct to facilitate text syntax where hierarchy is ambiguous and sub-trees may not exist to immediate parent (E.g., see [DDI](/waspddi/README.md) for active use).
+It also provides a stage construct to facilitate text syntax where hierarchy is ambiguous and sub-trees may not exist to immediate parent (E.g., see [DDI](/waspddi/README.md#definition-driven-interpreter) for active use).
 
 
