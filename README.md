@@ -170,7 +170,7 @@ For individuals wanting to compile the code from source, below are the tested re
 * Python-2.7
 
 ## Code Configuration and Compilation
-* You will need to save your ssh-key in [code-int.ornl.gov](https://code-int.ornl.gov/profile/keys).
+* Save the ssh-key in [code-int.ornl.gov](https://code-int.ornl.gov/profile/keys).
 * Clone wasp `git clone git@code-int.ornl.gov:lefebvre/wasp.git ~/wasp`
 * Change directory into wasp `cd ~/wasp`
 * Clone TriBITS `git clone https://github.com/lefebvre/TriBITS.git TriBITS` [TriBITS documentation](https://tribits.org/doc/TribitsDevelopersGuide.html)
@@ -191,7 +191,7 @@ cmake \
  -G "Unix Makefiles" \
  ~/wasp
 ```
-E.g., to a script that will enable getpot
+for example, to a script that will enable getpot
 ```
 #!/bin/bash
 # Linux bash file example
@@ -207,7 +207,7 @@ cmake \
 
 * Invoke configure script in the build directory.
 `../configure.sh or ..\configure.bat`
-  * It is recommended to place the configure script in the build directory as opposed to the build/wasp directory because it allows the deletion of the build/wasp
+  * It is recommended that the configure script in the build directory as opposed to the build/wasp directory because it allows the deletion of the build/wasp
 directory without removing the configuration script.
 
 Additionally, a script to enable a third part library (TPL) plugin, configure_tpl.sh :
@@ -231,10 +231,13 @@ cmake \
 ```
 
 Subsequently, invoke the script with a path to the root source:
+
 ```
 ../configure_tpl.sh /path/to/source
 ```
+
 Lastly, due to an issue in cmake install file creation, a manual copy of the `waspConfig_install.cmake` is needed:
+
 ```
 cp waspConfig_install.cmake install/lib/cmake/wasp/waspConfig.cmake
 ```
