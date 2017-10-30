@@ -31,17 +31,17 @@ For example, if the application is to interpreter files that will never be more 
 The string pool consists of two members: (1) a vector of chars and (2) a vector of indices indicating string starts. This ensures that the string data that is consumed from a text file are reasonably maintained and that storage size is not inflated. 
 
 In a benchmark of one application's input - consisting of 300MB in which the document tokens' mathematical mode was 3 characters, with a mean of 4, 
-using `std::string` produces on average ~28+ byte overhead per token. Specifically, 8 byte heap pointer, 8 byte size, 8 byte heap page header, and 8 byte heap memory page. 
+using `std::string` produces on average ~28+ byte overhead per token, or, specifically, 8 byte heap pointer, 8 byte size, 8 byte heap page header, and 8 byte heap memory page. 
 
-In contrast, the StringPool only requires a 5 byte overhead per token. Specifically, a 4-byte index and a null terminating character. Using the StringPool facilitates a significant memory consolidation.
+In contrast, the StringPool only requires a 5 byte overhead per token, or, specifically, a 4-byte index and a null terminating character. Using the StringPool facilitates a significant memory consolidation.
 
 
 ## Token Pool
-Token pool associates a token type and file byte offset with the text that resides in the StringPool. New lines are a special piece of meta data that is captured for text location deduction.
+Token pool associates a token type and a file byte offset with the text that resides in the StringPool. New lines are a special piece of meta data that is captured for text location deduction.
 
-The type information indicates whether it is an integer, real, word, declarator, terminator, etc. and can be used to deduce context or perform operations on a class of data.
+The type information indicates whether it is an integer, real, word, declarator, terminator, etc. This information can be used to deduce context or perform operations on a class of data.
 
-The file byte offset is the absolute location in the file at which the text begins. This is not intuitive in and of itself to a user, but when combined with new line offset text location, line and column, can be deduced.
+The file byte offset is the absolute location in the file at which the text begins. This is not intuitive to a user, but when combined with new line offset text location, line and column, can be deduced.
 
 Specifically, the line can be computed as the distance from the upper bound of the token's file offset in the list of line file offsets and the line offset.
 
@@ -55,9 +55,7 @@ The column can be computed as the difference of the token's file offset and the 
 
 ## Tree Node Pool
 The tree node pool coordinates access and storage to nodes. Nodes can be classified as inner and leaf nodes. 
-Inner nodes can have children and represent a set of input. Leaf nodes always represent a token, e.g., `key = 3.14159`
-
-has the following hierarchy
+Inner nodes can have children and represent a set of input. Leaf nodes always represent a token. For example, `key = 3.14159` has the following hierarchy:
 ```
 document 
 |_keyed_value 
@@ -65,17 +63,17 @@ document
   |_ assign ('=')
   |_ value  (3.14159)
 ```
-Here the inner node is 'keyed_value' with leaf child nodes `declarator`, `assign`, and `value`. 
+Here, the inner node is 'keyed_value' with leaf child nodes `declarator`, `assign`, and `value`. 
 
 All nodes have associated meta data:
 
-1. Node type - declarator, terminator, value, name, etc.
-2. Node name - user familiar name.
-3. Parent node pool index - the location in the tree node pool that the parent of the node resides.
+1. Node type: declarator, terminator, value, name, etc.
+2. Node name: user familiar name.
+3. Parent node pool index: the location in the tree node pool that the parent of the node resides.
 
 Additional meta data for parent/inner nodes consists of:
 
-1. First child pool index - the index of the first child.
+1. First child pool index: which is the index of the first child.
 2. The number of children.
 
 There is a convenient TreeNodeView class that provides consolidated per-node data access.
@@ -85,6 +83,6 @@ The interpreter is the base class to facilitate all syntax specific interpreters
 The interpreter brokers transactions between the lexer and parser and also stages and stores the parse tree for future access.
 
 The interpreter manages the TreeNodePool and tracks the root of the parse tree. 
-It also provides a stage construct to facilitate text syntax where hierarchy is ambiguous and sub-trees may not exist to immediate parent (E.g., see [DDI](/waspddi/README.md#definition-driven-interpreter) for active use).
+It also provides a stage construct to facilitate text syntax where hierarchy is ambiguous and sub-trees may not exist to immediate parent (see [DDI](/waspddi/README.md#definition-driven-interpreter) for active use).
 
 
