@@ -128,20 +128,27 @@ WASP is composed of the following primary components:
     * Scalar variable assignment, reference, and creation: known variable can be referenced and updated, or new variables created during expression evaluation.
     * Mathematical functions
 3. [__GetPot__](http://getpot.sourceforge.net/documentation-index.html): the waspgetpot package contains lexer, parser, and tree node view for the getpot grammar (http://getpot.sourceforge.net/).
-4. [__HIVE__](/wasphive/README.md#hive): the Hierarchical Input Validation Engine contains algorithms for validating a parse tree using a document schema/definition file.
-    * Flexible scalar and referential rules: supports element occurrence, value, child uniqueness and choice, existence, sum, predicated sum, etc.  
-5. [__JSON__](http://www.json.org/): the waspjson package contains a lexer, and a parser for the JSON grammar (http://www.json.org/).
-6. [__SIREN__](/waspsiren/README.md#sequence-input-retrieval-engine-siren): the Sequence Input Retrieval ENgine (SIREN) contains lexer, parser, and evaluation logic for tree node lookup.
-    * Flexible tree node lookup mechanism: supports absolute and relative wild-carded names and value or index -predicated node path lookup.
-7. [__SON__](/waspson/README.md#standard-object-notation-son): the Standard Object Notation (SON) - waspson package contains the lexer, parser, and tree node view for the SON grammar.
-    * Flexible, structured, input entry mechanism: supports objects, arrays, and keyed values. Also supports identified objects, arrays, and keyed values.
+4. [__HIVE__](/wasphive/README.md#hive): the Hierarchical Input Validation Engine contains algorithms for validating a parse tree using a document schema/definition file, the flexible scalar and referential rules - supporting 
+    * element occurrence,
+    * value,
+    * child uniqueness and choice,
+    * existence,
+    * sum,
+    * predicated sum, etc.  
+5. [__JSON__](http://www.json.org/): the waspjson package contains a lexer, as well as a parser for the JSON grammar (http://www.json.org/).
+6. [__SIREN__](/waspsiren/README.md#sequence-input-retrieval-engine-siren): the Sequence Input Retrieval Engine (SIREN) contains a lexer, parser, and evaluation logic for tree node lookup; the flexible tree node lookup mechanism supports
+    * absolute and relative wild-carded names and value, or
+    * index-predicated node path lookup
+7. [__SON__](/waspson/README.md#standard-object-notation-son): the Standard Object Notation (SON) - waspson package contains the lexer, parser, and tree node view for the SON grammar; the flexible, structured, input entry mechanism supports
+    * objects, arrays, and keyed values, as well as
+    * identified objects, arrays, and keyed values.
 8. [__DDI__](waspddi/README.md#definition-driven-interpreter): the Definition-Driven Interpreter (DDI) contains a lexer, a parser, and an interpreter for the lightweight input format. 
     * Hierarchical Input format with very little syntax.
-9. [__HALITE__](/wasphalite/README.md#halite-engine): the HierarchicAL Input Template Expansion engine provides a data-driven means of expanding patterned input.
+9. [__HALITE__](/wasphalite/README.md#halite-engine): the Hierarchical Input Template Expansion engine provides a data-driven means of expanding patterned input.
     * Supports attribute and expression evaluations.
     * Supports template imports.
     * Supports conditional action blocks.
-10. [__Utils__](/wasputils/README.md#command-line-utilities) - the wasputils package contains executable utilities for listing/viewing, selecting, validating, and transforming WASP supported grammars.
+10. [__Utils__](/wasputils/README.md#command-line-utilities) - the wasputils package contains executable utilities for listing/viewing, selecting, validating, and transforming WASP-supported grammars.
     * List: lists paths to each file element.
     * Select: allows using SIREN expression to select pieces of input.
     * Valid: validates a given text file with a given document definition/schema.
