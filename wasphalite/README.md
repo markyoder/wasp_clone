@@ -42,7 +42,7 @@ Each construct is evaluated and emitted into the evaluation stream which can be 
 ## Attributes and Expressions
 Attributes and expressions are delimited by an opening and closing delimiter. By default these delimiters are '<' and '>' respectively. These are configurable via corresponding HaliteInterpreter class methods.
 
-Example template attribute statements are :
+Example template attribute statements are:
 
 1. `<attr>` - default delimiters, '<','>'
 2. `{attr}` - custom '{' and '}'
@@ -51,31 +51,31 @@ Example template attribute statements are :
 5. `[:attr:]` - custom '[:' and ':]'
 6. etc.
 
-Formal attribute expression syntax looks as follows:
+Formal attribute expression syntax appears as follows:
 
 ` open_delim (name|expression) (':'['?''|'] format? separator? range* use? )? close_delim`
 
 where 
 
 1. `open_delim` is configurable, with a default value of '<'
-2. A `?` indicates an optional attribute evaluation, which allows undefined variables to silently fail. This question mark MUST OCCUR immediately after the attribute options delimiter, `:`.  
-3. A `|` indicates [silent attribute](#silent-attributes) evaluation, which conducts computation/variable creation without emitting the result to the evaluation stream. This MUST OCCUR immediately after the attribute options delimiter, `:`.
-4. 2 and 3 are optional and mutually exclusive.
-5. optional `format` is `'fmt=' format ';'`, and `format` is described in the [section](formatting) below.
-6. optional `separator` is `'sep=' separator ';'`, and `separator` is emitted for all but the last evaluation iteration.
-7. zero or more `range` specifications where a range looks like `range_variable '=' start[,end[,stride]];`. Start, optional end and stride must be integers or attributes convertable to integers. 
-8. The optional `use` statement facilitates scoped attribute access as depicted in [scoped attribute](#scoped-attribute) sections below.
+2. `?` indicates an optional attribute evaluation, which allows undefined variables to silently fail; ? MUST OCCUR immediately after the attribute options delimiter `:` 
+3. `|` indicates [silent attribute](#silent-attributes) evaluation; conducts computation/variable creation without emitting the result to the evaluation stream; MUST OCCUR immediately after the attribute options delimiter `:`
+4. 2 and 3 are optional and mutually exclusive
+5. optional `format` is `'fmt=' format ';'`, and `format` is described in the [section](formatting) below
+6. optional `separator` is `'sep=' separator ';'`, and `separator` is emitted for all but the last evaluation iteration
+7. zero or more `range` specifications where a range looks like `range_variable '=' start[,end[,stride]];`. Start, optional end and stride must be integers or attributes convertable to integers
+8. the optional `use` statement facilitates scoped attribute access as depicted in [scoped attribute](#scoped-attribute) sections below
 9. `close_delim` is configurable, default of '>'
 
 
 ### Silent Attributes
-Attributes and expressions that need to be evaluated but not placed into the evaluation stream can be specified using the silent expression indicator:
+Attributes and expressions that must be evaluated but not placed into the evaluation stream can be specified using the silent expression indicator:
 ```
 <attr:|>
 ```
 
 ### Optional Attributes
-Attributes may not be specified and as such must be considered optional by the template. Optional attribute look as follow:
+Attributes may not be specified, and as such they must be considered optional by the template. Optional attributes appear as follows:
 ```
 <attr:?>
 ```
