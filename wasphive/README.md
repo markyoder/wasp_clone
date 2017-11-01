@@ -90,7 +90,7 @@ Input example that **PASSES** validation on schema above:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because both input elements (i.e. `test/should_exist_one` and `test/should_exist_two` exist in the schema and no schema validation rules are broken, as no other rules exist for the input elements provided in the input.
+  - ***Notes:*** This input passes validation against the provided schema because both input elements (i.e., `test/should_exist_one` and `test/should_exist_two`) exist in the schema, and no schema validation rules are broken, as no other rules exist for the input elements provided in the input.
 
 Input example that **FAILS** validation on schema above:
 ```javascript
@@ -114,12 +114,12 @@ HIVE validation messages that occur when validating the failing input shown abov
     line:4 column:5 - Validation Error: /test/should_not_exist_two is not a valid piece of input
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because as described above neither `/test/should_not_exist_one` nor `/test/should_not_exist_two` exist in the schema.  Also, an element exists in the input that has an invalid rule named `BadRuleName` in the schema.
+  - ***Notes:*** This input fails to validate against the provided schema because, as described above, neither `/test/should_not_exist_one` nor `/test/should_not_exist_two` exist in the schema.  Also, an element exists in the input that has an invalid rule, named `BadRuleName` in the schema.
 
 
 ### MinOccurs Details and Examples
 
-The ***Minimum Occurrence*** rule describes the minimum number of times that an element must occur under its parent context. It is used mostly to denote whether a piece of input is required or optional. Most often, this rule will have a literal constant for minimum allowances. The value must be an integer. For example, `MinOccurs = 0` denotes that this element is optional under its parent context, and `MinOccurs = 1` denotes that this element is required to occur at least once under its parent. This rule may also contain a relative input lookup path from the element being validated. The syntax for this usage is `MinOccurs = "../../some/relative/input/path"`. If the lookup path describes a set containing a single value, and if that value is an integer, then that value will be used to determine the minimum allowed occurrences of the element being validated.
+The ***Minimum Occurrence*** rule describes the minimum number of times that an element must occur under its parent context. It is used mostly to denote whether a piece of input is required or optional. Most often, this rule will have a literal constant for minimum allowances. The value must be an integer. For example, `MinOccurs = 0` denotes that this element is optional under its parent context, and `MinOccurs = 1` denotes that this element is required to occur at least once under its parent. If a negative number is specified for the value of this rule, then it is treated the same as `MinOccurs = 0`. This rule may also contain a relative input lookup path from the element being validated. The syntax for this usage is `MinOccurs = "../../some/relative/input/path"`. If the lookup path describes a set containing a single value, and if that value is an integer, then that value will be used to determine the minimum allowed occurrences of the element being validated.
 
 Schema example:
 ```javascript
@@ -267,7 +267,7 @@ HIVE validation messages that occur when validating the failing input shown abov
     line:43 column:5 - Validation Error: inside minimum occurrence checks against "../../bad_string" which does not return a valid number
 ```
 
-  - ***Notes:*** This input fails to validate against the provided schema because `valueone` only occurs 9 times under its parent context when its `MinOccurs` rule in the schema denotes that it should occur at least 10 times. `valuetwo` should occur at least 15 times under its parent context, because its `MinOccurs` rules in the schema contains a path to `"../control"`. A relative lookup from `valuetwo` to `"../control"` yields one integer with the value `15`.  However, `valuetwo` only occurs 14 times under its parent.  The second `test` element in the input has zero `valueone` elements when there should be at least 10 as previously described.
+  - ***Notes:*** This input fails to validate against the provided schema because `valueone` only occurs 9 times under its parent context, when its `MinOccurs` rule in the schema denotes that it should occur at least 10 times. `valuetwo` should occur at least 15 times under its parent context, because its `MinOccurs` rules in the schema contains a path to `"../control"`. A relative lookup from `valuetwo` to `"../control"` yields one integer with the value `15`.  However, `valuetwo` only occurs 14 times under its parent.  The second `test` element in the input has zero `valueone` elements when there should be at least 10 as previously described.
 
 
 ### MaxOccurs Details and Examples
@@ -532,7 +532,7 @@ HIVE validation messages that occur when validating the failing input shown abov
 
 ### ValEnums Details and Examples
 
-The ***Value Enumerations*** rule contains a static list of values choices. It compares the element's input value with the provided choices. If the element's value is not in the schema's list of allowed enumerations, then this check will fail. Also, a `REF:` construct may be used to reference a SON array of values that must exist in the schema after an  `EndOfSchema{}` declaration.  These referenced SON arrays can be conveniently defined in one place but be used by `ValEnums` rules on many different elements. Note that this check is case insensitive, and if the value that is being checked is an integer, then leading zeros are ignored.
+The ***Value Enumerations*** rule contains a static list of values choices. It compares the element's input value with the provided choices. If the element's value is not in the schema's list of allowed enumerations, then this check will fail. Also, a `REF:` construct may be used to reference a SON array of values that must exist in the schema after an  `EndOfSchema{}` declaration.  These referenced SON arrays can be conveniently defined in one place but be used by `ValEnums` rules on many different elements. If a validation message is produced, then a short list of closest matches is provided to the user alphabetically. Note that this check is case insensitive, and if the value that is being checked is an integer, then leading zeros are ignored.
 
 Schema example:
 ```javascript
@@ -1989,7 +1989,7 @@ HIVE validation messages that occur when validating the failing input shown abov
 
 ### IncreaseOver Details and Examples
 
-The ***Increase Over*** rule must contain a required modifier flag that occurs as a parenthetical identifier and indicates the monotonicity. The flag must either be `Strict`, meaning that the values must be strictly increasing in the order that they are read (no two values are the same), or `Mono`, meaning that multiple value are allowed to be the same as long as they never decrease. For example *3 4 5 5 6 7* would pass a `Mono` check but would fail a `Strict` check due to two of the values being the same. This rule also contains a context path that describes the relative ancestry in the input hierarchy under which the values must increase. For a simple array, this will usually be "**..**" but may go back further in lineage if needed (e.g., "**../../..**").
+The ***Increase Over*** rule must contain a required modifier flag that occurs as a parenthetical identifier and indicates the monotonicity. The flag must either be `Strict`, meaning that the values must be strictly increasing in the order that they are read (no two values are the same), or `Mono`, meaning that multiple values are allowed to be the same as long as they never decrease. For example *3 4 5 5 6 7* would pass a `Mono` check but would fail a `Strict` check due to two of the values being the same. This rule also contains a context path that describes the relative ancestry in the input hierarchy under which the values must increase. For a simple array, this will usually be "**..**" but may go back further in lineage if needed (e.g., "**../../..**").
 
 Schema example:
 ```javascript
@@ -2083,7 +2083,7 @@ HIVE validation messages that occur when validating the failing input shown abov
 
 ### DecreaseOver Details and Examples
 
-The ***Decrease Over*** rule must contain a required modifier flag that occurs as a parenthetical identifier and indicates the monotonicity. The flag must either be `Strict`, meaning that the values must be strictly decreasing in the order that they are read (no two values are the same), or `Mono`, meaning that multiple value are allowed to be the same as long as they never increase. For example *7 6 5 5 4 3* would pass a `Mono` check but would fail a `Strict` check due to two of the values being the same. This rule also contains a context path that describes the relative ancestry in the input hierarchy under which the values must decrease. For a simple array, this will usually be "**..**" but may go back further in lineage if needed (e.g., "**../../..**").
+The ***Decrease Over*** rule must contain a required modifier flag that occurs as a parenthetical identifier and indicates the monotonicity. The flag must either be `Strict`, meaning that the values must be strictly decreasing in the order that they are read (no two values are the same), or `Mono`, meaning that multiple values are allowed to be the same as long as they never increase. For example *7 6 5 5 4 3* would pass a `Mono` check but would fail a `Strict` check due to two of the values being the same. This rule also contains a context path that describes the relative ancestry in the input hierarchy under which the values must decrease. For a simple array, this will usually be "**..**" but may go back further in lineage if needed (e.g., "**../../..**").
 
 Schema example:
 ```javascript
