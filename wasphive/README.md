@@ -19,10 +19,10 @@ In this document, the term ***input*** is used when referring to a file that is 
 * [***MaxOccurs***](#maxoccurs-details-and-examples): describes the maximum number of times that an element is allowed to appear under its parent context.
 * [***ValType***](#valtype-details-and-examples): describes the allowed value type for the element (Int, Real, String).
 * [***ValEnums***](#valenums-details-and-examples): describes a list of allowed value choices for the element.
-* [***MinValInc***](#minvalinc-details-and-examples): describes the minimum inclusive value that this element is allowed to have if it is a number (i.e. the provided input value must be greater than or equal to this).
-* [***MaxValInc***](#maxvalinc-details-and-examples): describes the maximum inclusive value that this element is allowed to have if it is a number (i.e. the provided input value must be less than or equal to this).
-* [***MinValExc***](#minvalexc-details-and-examples): describes the minimum exclusive value of the element in the input if it is a number (i.e. the provided input value must be strictly greater than this).
-* [***MaxValExc***](#maxvalexc-details-and-examples): describes the maximum exclusive value of the element in the input if it is a number (i.e. the provided input value must be strictly less than this).
+* [***MinValInc***](#minvalinc-details-and-examples): describes the minimum inclusive value that this element is allowed to have if it is a number (the provided input value must be greater than or equal to this).
+* [***MaxValInc***](#maxvalinc-details-and-examples): describes the maximum inclusive value that this element is allowed to have if it is a number (the provided input value must be less than or equal to this).
+* [***MinValExc***](#minvalexc-details-and-examples): describes the minimum exclusive value of the element in the input if it is a number (the provided input value must be strictly greater than this).
+* [***MaxValExc***](#maxvalexc-details-and-examples): describes the maximum exclusive value of the element in the input if it is a number (the provided input value must be strictly less than this).
 * [***ExistsIn***](#existsin-details-and-examples): describes a set of lookup paths into relative sections of the input file and possible constant values where the value of the element being validated must exist.
 * [***NotExistsIn***](#notexistsin-details-and-examples): describes a set of lookup paths into relative sections of the input file where the value of the element being validated must not exist.
 * [***SumOver***](#sumover-details-and-examples): describes what sum the values must add to under a given context.
@@ -43,7 +43,7 @@ In this document, the term ***input*** is used when referring to a file that is 
 
 Before exploring the details of all of the validation rules, the first thing to note is that the hierarchy of a schema file must represent a union of all possible input hierarchies. This is just to say that every hierarchical node in an input file that is to be validated, must have an exact mapping to a node at the same hierarchical path in the schema. If there is an element in an input file that does not have an exact mapping to an associated node in the schema, then that element is said to be invalid. Once the hierarchy of the schema is built, then rules can be added to every element for validation. Every element in the input document is represented by a SON object in the schema.  All rules for an element at a given context are represented by either SON flag-values or SON flag-arrays.
 
-Hierarchical nodes in the schema that do not have an associated node in the input are not traversed further. For example, if a schema defines nodes **A**, **B**, and **C** at the root level, but a given input only contains nodes **A** and **C** at its root level, then the rules directly inside of node **B** are examined to check if **B** is a required portion in the input, however the children of node **B** are not traversed further because we already know those children are not in the input.
+Hierarchical nodes in the schema that do not have an associated node in the input are not traversed further. For example, if a schema defines nodes **A**, **B**, and **C** at the root level, but a given input only contains nodes **A** and **C** at its root level, then the rules directly inside of node **B** are examined to check if **B** is a required portion in the input. However the children of node **B** are not traversed further, because it has been verified that those children are not in the input.
 
 At the basic level, there are two types of validation messages that may be reported by HIVE.
 
@@ -90,7 +90,7 @@ Input example that **PASSES** validation on schema above:
     }
 ```
 
-  - ***Notes:*** This input passes validation against the provided schema because both input elements (i.e. `test/should_exist_one` and `test/should_exist_two` exist in the schema and no schema validation rules are broken (no other rules exist for the input elements provided in the input).
+  - ***Notes:*** This input passes validation against the provided schema because both input elements (i.e. `test/should_exist_one` and `test/should_exist_two` exist in the schema and no schema validation rules are broken, as no other rules exist for the input elements provided in the input.
 
 Input example that **FAILS** validation on schema above:
 ```javascript
