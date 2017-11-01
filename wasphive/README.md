@@ -4,37 +4,36 @@ The Hierarchical Input Validation Engine (HIVE) uses a set of rules to describe 
 
 The section layout is as follows:
 
-The [Input Validation Rules Summary](#input-validation-rules-summary) section provides a very brief description of each input validation rule. These rules do not contain defaults. The rule is only used when it has been specified.
+* The [Input Validation Rules Summary](#input-validation-rules-summary) section provides brief descriptions of each input validation rule. These rules do not contain defaults. The rules are only used when they have been specified.
 
-The [Input Validation Details and Examples](#input-validation-details-and-examples) section provides a more detailed description, examples, and exact syntax of each input validation rule. This section supplies an example schema, an example input that will pass validation against the schema, an example input that will fail validation against the schema, and the validation messages that HIVE produces when validating the failing input against the provided schema. If incorporating a specific rule in the integration of an application into the NEAMS Workbench, then the examples section for that particular rule should be fully understood syntactically and semantically.
+* The [Input Validation Details and Examples](#input-validation-details-and-examples) section provides a more detailed description, examples, and exact syntax of input validation rule. This section supplies an example schema, an example input that will pass validation against the schema, an example input that will fail validation against the schema, and the validation messages that HIVE produces when validating the failing input against the provided schema. If the user is incorporating a specific rule for an application, then the examples section for that particular rule should be fully understood syntactically and semantically.
 
-The [Input Assistance Details](#input-assistance-details) section provides descriptions and details of the rules that can be used by NEAMS Workbench for input assistance and autocompletion.
+* The [Input Assistance Details](#input-assistance-details) section provides descriptions and details of the rules that can be used by NEAMS Workbench for input assistance and autocompletion.
 
-In this document, the term ***input*** is used when referring to a file that is to be validated, and ***schema*** is used when referring to the file that describes the definition and rules against which the input is validated. Currently, schema files must be written in the SON syntax. We will be using the SON syntax for example input files in this document as well.
-
+In this document, the term ***input*** is used when referring to a file that is to be validated, and ***schema*** is used when referring to the file that describes the definition and rules against which the input is validated. Currently, schema files must be written in the SON syntax, which is used herin for example input files.
 
 
 ## **Input Validation Rules Summary**
 
-* [***MinOccurs***](#minoccurs-details-and-examples) - describes the minimum number of times that an element is allowed to appear under its parent context.
-* [***MaxOccurs***](#maxoccurs-details-and-examples) - describes the maximum number of times that an element is allowed to appear under its parent context.
-* [***ValType***](#valtype-details-and-examples) - describes the allowed value type for the element (Int, Real, String).
-* [***ValEnums***](#valenums-details-and-examples) - describes a list of allowed value choices for the element.
-* [***MinValInc***](#minvalinc-details-and-examples) - describes the minimum inclusive value that this element is allowed to have if it is a number (i.e. the provided input value must be greater than or equal to this).
-* [***MaxValInc***](#maxvalinc-details-and-examples) - describes the maximum inclusive value that this element is allowed to have if it is a number (i.e. the provided input value must be less than or equal to this).
-* [***MinValExc***](#minvalexc-details-and-examples) - describes the minimum exclusive value of the element in the input if it is a number (i.e. the provided input value must be strictly greater than this).
-* [***MaxValExc***](#maxvalexc-details-and-examples) - describes the maximum exclusive value of the element in the input if it is a number (i.e. the provided input value must be strictly less than this).
-* [***ExistsIn***](#existsin-details-and-examples) - describes a set of lookup paths into relative sections of the input file and possible constant values where the value of the element being validated must exist.
-* [***NotExistsIn***](#notexistsin-details-and-examples) - describes a set of lookup paths into relative sections of the input file where the value of the element being validated must not exist.
-* [***SumOver***](#sumover-details-and-examples) - describes what sum the values must add to under a given context.
-* [***SumOverGroup***](#sumovergroup-details-and-examples) - describes what sum the values must add to under a given context when grouped by dividing another input element's value by a given value.
-* [***IncreaseOver***](#increaseover-details-and-examples) - describes that the values under the element must be increasing in the order that they are read.
-* [***DecreaseOver***](#decreaseover-details-and-examples) - describes that the values under the element must be decreasing in the order that they are read.
-* [***ChildAtMostOne***](#childatmostone-details-and-examples) - describes one or more lists of lookup paths into relative sections of the input file (and possible values) where at most one is allowed to exist.
-* [***ChildExactlyOne***](#childexactlyone-details-and-examples) - describes one or more lists of lookup paths into relative sections of the input file (and possible values) where at exactly one is allowed to exist.
-* [***ChildAtLeastOne***](#childatleastone-details-and-examples) - describes one or more lists of lookup paths into relative sections of the input file (and possible values) where at least one must exist.
-* [***ChildCountEqual***](#childcountequal-details-and-examples) - describes one or more lists of lookup paths into relative sections of the input file where the number of values must be equal.
-* [***ChildUniqueness***](#childuniqueness-details-and-examples) - describes one or more lists of lookup paths into relative sections of the input file where the values at all of these paths must be unique.
+* [***MinOccurs***](#minoccurs-details-and-examples): describes the minimum number of times that an element is allowed to appear under its parent context.
+* [***MaxOccurs***](#maxoccurs-details-and-examples): describes the maximum number of times that an element is allowed to appear under its parent context.
+* [***ValType***](#valtype-details-and-examples): describes the allowed value type for the element (Int, Real, String).
+* [***ValEnums***](#valenums-details-and-examples): describes a list of allowed value choices for the element.
+* [***MinValInc***](#minvalinc-details-and-examples): describes the minimum inclusive value that this element is allowed to have if it is a number (i.e. the provided input value must be greater than or equal to this).
+* [***MaxValInc***](#maxvalinc-details-and-examples): describes the maximum inclusive value that this element is allowed to have if it is a number (i.e. the provided input value must be less than or equal to this).
+* [***MinValExc***](#minvalexc-details-and-examples): describes the minimum exclusive value of the element in the input if it is a number (i.e. the provided input value must be strictly greater than this).
+* [***MaxValExc***](#maxvalexc-details-and-examples): describes the maximum exclusive value of the element in the input if it is a number (i.e. the provided input value must be strictly less than this).
+* [***ExistsIn***](#existsin-details-and-examples): describes a set of lookup paths into relative sections of the input file and possible constant values where the value of the element being validated must exist.
+* [***NotExistsIn***](#notexistsin-details-and-examples): describes a set of lookup paths into relative sections of the input file where the value of the element being validated must not exist.
+* [***SumOver***](#sumover-details-and-examples): describes what sum the values must add to under a given context.
+* [***SumOverGroup***](#sumovergroup-details-and-examples): describes what sum the values must add to under a given context when grouped by dividing another input element's value by a given value.
+* [***IncreaseOver***](#increaseover-details-and-examples): describes that the values under the element must be increasing in the order that they are read.
+* [***DecreaseOver***](#decreaseover-details-and-examples): describes that the values under the element must be decreasing in the order that they are read.
+* [***ChildAtMostOne***](#childatmostone-details-and-examples): describes one or more lists of lookup paths into relative sections of the input file (and possible values) where at most one is allowed to exist.
+* [***ChildExactlyOne***](#childexactlyone-details-and-examples): describes one or more lists of lookup paths into relative sections of the input file (and possible values) where at exactly one is allowed to exist.
+* [***ChildAtLeastOne***](#childatleastone-details-and-examples): describes one or more lists of lookup paths into relative sections of the input file (and possible values) where at least one must exist.
+* [***ChildCountEqual***](#childcountequal-details-and-examples): describes one or more lists of lookup paths into relative sections of the input file where the number of values must be equal.
+* [***ChildUniqueness***](#childuniqueness-details-and-examples): describes one or more lists of lookup paths into relative sections of the input file where the values at all of these paths must be unique.
 
 
 
