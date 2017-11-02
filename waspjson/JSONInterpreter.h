@@ -18,6 +18,7 @@
 #include "waspjson/JSONParser.hpp"
 #include "waspcore/Interpreter.h"
 #include "waspcore/wasp_node.h"
+#include "waspcore/decl.h"
 
 /** The wasp namespace is used to encapsulate the three parser classes
  * wasp::JSONParser, wasp::JSONLexerImpl and wasp::JSONInterpreter */
@@ -35,7 +36,7 @@ namespace wasp {
      */
     template<class S = TreeNodePool<unsigned short, unsigned short
                                     ,TokenPool<unsigned short,unsigned short, unsigned short>> >
-    class JSONInterpreter : public Interpreter<S> {
+    class WASP_PUBLIC JSONInterpreter : public Interpreter<S> {
     public:
         typedef S Storage_type;
         typedef std::shared_ptr<JSONInterpreter> SharedPtr;

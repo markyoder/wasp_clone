@@ -20,6 +20,8 @@
 
 #include "JSONObjectParser.hpp"
 #include "waspcore/wasp_node.h"
+#include "waspcore/decl.h"
+
 namespace wasp {
 
 /** JSONObjectLexerImpl is a derived class to add some extra function to the scanner
@@ -27,7 +29,7 @@ namespace wasp {
  * macros to JSONObjectLexer. However we change the context of the generated
  * yylex() function to be contained within the JSONObjectLexerImpl class. This is required
  * because the yylex() defined in JSONObjectLexer has no parameters. */
-class JSONObjectLexerImpl : public JSONObjectFlexLexer
+class WASP_PUBLIC JSONObjectLexerImpl : public JSONObjectFlexLexer
 {
 public:
     /** Create a new scanner object. The streams arg_yyin and arg_yyout default

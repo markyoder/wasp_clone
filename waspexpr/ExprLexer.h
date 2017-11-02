@@ -20,6 +20,7 @@
 #endif
 
 #include "ExprParser.hpp"
+#include "waspcore/decl.h"
 #include "waspcore/wasp_node.h"
 namespace wasp {
 
@@ -28,7 +29,7 @@ namespace wasp {
  * macros to ExprLexer. However we change the context of the generated
  * yylex() function to be contained within the ExprLexerImpl class. This is required
  * because the yylex() defined in ExprLexer has no parameters. */
-class ExprLexerImpl : public ExprFlexLexer
+class WASP_PUBLIC ExprLexerImpl : public ExprFlexLexer
 {
 public:
     /** Create a new scanner object. The streams arg_yyin and arg_yyout default
