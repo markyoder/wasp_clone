@@ -8,7 +8,7 @@ The section layout is as follows:
 
 * The [Input Validation Details and Examples](#input-validation-details-and-examples) section provides a more detailed description, examples, and exact syntax of input validation rule. This section supplies an example schema, an example input that will pass validation against the schema, an example input that will fail validation against the schema, and the validation messages that HIVE produces when validating the failing input against the provided schema. If the user is incorporating a specific rule for an application, then the examples section for that particular rule should be fully understood syntactically and semantically.
 
-* The [Input Assistance Details](#input-assistance-details) section provides descriptions and details of the rules that can be used by NEAMS Workbench for input assistance and autocompletion.
+* The [Input Assistance Details](#input-assistance-details) section provides descriptions and details of the rules that may be used by input generation applications for input assistance and autocompletion.
 
 In this document, the term ***input*** is used when referring to a file that is to be validated, and ***schema*** is used when referring to the file that describes the definition and rules against which the input is validated. Currently, schema files must be written in the SON syntax, which is used herein for example input files.
 
@@ -52,7 +52,7 @@ At the basic level, there are two types of validation messages that may be repor
     line:X column:Y - Validation Error: MESSAGE
 ```
 
-	*The NEAMS Workbench captures the line and column reported so that the offending input elements can be navigated to simply by clicking on the message.*
+	*Input validation applications may capture the line and column reported so that the offending input elements can be navigated to simply by clicking on the message.*
 
 2. Problems with the ***schema*** file are reported in the following form:
 ```javascript
@@ -2747,41 +2747,41 @@ Six of the previously described validation rules (`MaxOccurs`, `ChildAtMostOne`,
 
 ### MaxOccurs Assistance Details
 
-The ***Maximum Occurrence*** rule is used by the NEAMS Workbench logic for filtering options as needed from the autocompletion list. An element can only be added up to MaxOccurs times via autocomplete. For example, if an element has `MaxOccurs = 1`, it can only be added once to the document. After is it added once, it is filtered from the autocompletion list.
+The ***Maximum Occurrence*** rule may be used by input assistance application logic for filtering options as needed from the autocompletion list. An element should only be added up to MaxOccurs times via autocomplete. For example, if an element has `MaxOccurs = 1`, it can only be added once to the document. After is it added once, it is filtered from the autocompletion list.
 
 ### ChildAtMostOne Assistance Details
 
-The ***Child At Most One*** rule is used by the NEAMS Workbench logic for filtering options as needed from the autocompletion list. If at most one of multiple choices is allowed at any context, then as soon as one of those choices is added to the document, the others are filtered from the autocompletion list. For example, if an element has `ChildAtMostOne = [ choice1 choice2 choice3 ]` and `choice2` is added, then `choice1` and `choice3` will not be available on the next autocomplete.
+The ***Child At Most One*** rule may be used by input assistance application logic for filtering options as needed from the autocompletion list. If at most one of multiple choices is allowed at any context, then as soon as one of those choices is added to the document, the others could be filtered from the autocompletion list. For example, if an element has `ChildAtMostOne = [ choice1 choice2 choice3 ]` and `choice2` is added, then `choice1` and `choice3` will not be available on the next autocomplete.
 
 ### ChildExactlyOne Assistance Details
 
-The ***Child Exactly One*** rule is used by the NEAMS Workbench logic for filtering options as needed from the autocompletion list. If exactly one of multiple choices is allowed at any context, then as soon as one of those choices is added to the document, the others are filtered from the autocompletion list. For example, if an element has `ChildExactlyOne = [ choice1 choice2 choice3 ]` and `choice2` is added, then `choice1` and `choice3` will not be available on the next autocomplete.
+The ***Child Exactly One*** rule may be used by input assistance application logic for filtering options as needed from the autocompletion list. If exactly one of multiple choices is allowed at any context, then as soon as one of those choices is added to the document, the others could be filtered from the autocompletion list. For example, if an element has `ChildExactlyOne = [ choice1 choice2 choice3 ]` and `choice2` is added, then `choice1` and `choice3` will not be available on the next autocomplete.
 
 ### ValEnums Assistance Details
 
-The ***Value Enumerations*** rule is used by the NEAMS Workbench autocompletion logic to provide a set of choices that are legal at a given context based on a static set of values supplied in the schema. For example, if an element has `ValEnums = [ "a" "b" "c" "d" ]`, then those values will be provided as autocompletion options.
+The ***Value Enumerations*** rule may be used by input assistance application logic to provide a set of choices that are legal at a given context based on a static set of values supplied in the schema. For example, if an element has `ValEnums = [ "a" "b" "c" "d" ]`, then those values could be provided as autocompletion options.
 
 ### ExistsIn Assistance Details
 
-The ***Exists In*** rule is used by the NEAMS Workbench autocompletion logic to provide a set of choices that are legal at a given context based on values supplied elsewhere in the input. For example, if an element has `ExistsIn = [ "../../some/context1" "../../some/context2" ]`, and the values `1`, `2`, `3`, and `4` exist in the input at that relative context, then those values will be provided as autocompletion options.
+The ***Exists In*** rule may be used by input assistance application logic to provide a set of choices that are legal at a given context based on values supplied elsewhere in the input. For example, if an element has `ExistsIn = [ "../../some/context1" "../../some/context2" ]`, and the values `1`, `2`, `3`, and `4` exist in the input at that relative context, then those values could be provided as autocompletion options.
 
 ### ValType Assistance Details
 
-The ***Value Type*** rule is used by the NEAMS Workbench autocompletion logic to drop in a legitimate default value of the correct type for flag-values and flag-arrays if no `InputDefault` is provided in the schema. For example, the following defaults are used:
+The ***Value Type*** rule may be used by input assistance application logic to drop in a legitimate default value of the correct type for flag-values and flag-arrays if no `InputDefault` is provided in the schema. For example, the following defaults could be used:
 
-    * For an element with a `ValType = Int` rule, `1` will be inserted.
-    * For an element with a `ValType = Real` rule, `0.0` will be inserted.
-    * For an element with a `ValType = String` rule, `'insert-string-here'` will be inserted.
+    * For an element with a `ValType = Int` rule, `1` may be inserted.
+    * For an element with a `ValType = Real` rule, `0.0` may be inserted.
+    * For an element with a `ValType = String` rule, `'insert-string-here'` may be inserted.
  
 To override this behavior, please see [InputDefault Assistance Details](#inputdefault-assistance-details).
 
 ### InputTmpl Assistance Details
 
-The ***Input Template*** rule may be used by an input generation application to pick which ***Template File*** to use for autocompletion. For example, if a context has `InputTmpl = MyCustomTemplate` then a template named `MyCustomTemplate.tmpl` may be used by the application for autocompletion.
+The ***Input Template*** rule may be used by input assistance application logic to pick which ***Template File*** to use for autocompletion. For example, if a context has `InputTmpl = MyCustomTemplate` then a template named `MyCustomTemplate.tmpl` may be used by the application for autocompletion.
 
 ### InputName Assistance Details
 
-The ***Input Name*** rule is used by the NEAMS Workbench to override the name of the actual node that the template provided by `InputTmpl` uses for autocompletion, if desired. For example, if the name of an element in the input hierarchy is `something_one`, then the name in the schema must be the same, but a template named `MySomething.tmpl` should use the name `something_two` instead for autocompletion, then `something_one` can be overridden via:
+The ***Input Name*** rule may be used by input assistance application logic to override the name of the actual node that the template provided by `InputTmpl` uses for autocompletion, if desired. For example, if the name of an element in the input hierarchy is `something_one`, then the name in the schema must be the same, but a template named `MySomething.tmpl` should use the name `something_two` instead for autocompletion, then `something_one` can be overridden via:
 ```javascript
     something_one{
 	    InputName = "something_two"
@@ -2789,11 +2789,9 @@ The ***Input Name*** rule is used by the NEAMS Workbench to override the name of
     }
 ```
 
-Template files receives the 'InputName' parameter, and the default is the node name if not explicitly provided.
-
 ### InputType Assistance Details
 
-The ***Input Type*** rule is used by the NEAMS Workbench to let the template provided by `InputTmpl` for autocompletion know what type to switch on, if desired. If a template can handle multiple situations in different ways, depending on the type it is dealing with, then Workbench will let the template know what the type of the current autocompletion context is with this rule. For example, if there is a template named `FlagTypes.tmpl` that can handle the types `FlagValue` and `FlagArray` differently, then Workbench can let the template know it is dealing with a `FlagValue` via:
+The ***Input Type*** rule may be used by input assistance application logic to let the template provided by `InputTmpl` for autocompletion know what type to switch on, if desired. If a template can handle multiple situations in different ways, depending on the type it is dealing with, then the application can let the template know what the type of the current autocompletion context is with this rule. For example, if there is a template named `FlagTypes.tmpl` that can handle the types `FlagValue` and `FlagArray` differently, then the application can let the template know it is dealing with a `FlagValue` via:
 ```javascript
     flag_value_node{
         InputType = "FlagValue"
@@ -2801,7 +2799,7 @@ The ***Input Type*** rule is used by the NEAMS Workbench to let the template pro
     }
 ```
 
-Alternately, Workbench can let the same template know it is dealing, instead, with a `FlagArray` via:
+Alternately, the application can let the same template know it is dealing, instead, with a `FlagArray` via:
 ```javascript
     flag_array_node{
         InputType = "FlagArray"
@@ -2811,13 +2809,13 @@ Alternately, Workbench can let the same template know it is dealing, instead, wi
 
 ### InputVariants Assistance Details
 
-The ***Input Variants*** rule is used by the NEAMS Workbench to provide multiple choices of autocompletion templates for a single context. For example, if an element has `InputVariants = [ 'simple_version' 'middle_version' 'complex_version' ]` and `simple_version.tmpl`, `middle_version.tmpl,` and `complex_version.tmpl` exist in the template directory provided by application's grammar, then all three of those choices will be available at that context via autocomplete and use their associate templates.
+The ***Input Variants*** rule may be used by input assistance application logic to provide multiple choices of autocompletion templates for a single context. For example, if an element has `InputVariants = [ 'simple_version' 'middle_version' 'complex_version' ]` and `simple_version.tmpl`, `middle_version.tmpl,` and `complex_version.tmpl` exist in the template directory provided by application's grammar, then all three of those choices will be available at that context via autocomplete and use their associate templates.
 
 ### InputDefault Assistance Details
 
-The ***Input Default*** rule is used by the NEAMS Workbench to explicitly tell a template what value should be dropped in for flag-values and flag-arrays via `InputDefault = 'explicit_default_value'`. This overrides the `ValType` logic described in [ValType Assistance Details](#valtype-assistance-details).
+The ***Input Default*** rule may be used by input assistance application logic to explicitly tell a template what value should be dropped in for flag-values and flag-arrays via `InputDefault = 'explicit_default_value'`. This should override the `ValType` logic described in [ValType Assistance Details](#valtype-assistance-details).
 
 ### Description Assistance Details
 
-The ***Input Description*** rule is just used by the NEAMS Workbench to give a short one line description in the autocompletion dropdown list via `Description = 'autocomplete dropdown description'`. These descriptions can be very useful to novice users unfamiliar with all of the parameters at a given context. These descriptions are not used by the templates for any further autocompletion logic.
+The ***Input Description*** rule may be used by input assistance application logic to give a short one line description in the autocompletion dropdown list via `Description = 'autocomplete dropdown description'`. These descriptions can be very useful to novice users unfamiliar with all of the parameters at a given context.
 
