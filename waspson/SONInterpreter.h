@@ -18,6 +18,8 @@
 #include "waspson/SONParser.hpp"
 #include "waspcore/Interpreter.h"
 
+#include "waspcore/decl.h"
+
 /** The wasp namespace is used to encapsulate the three parser classes
  * wasp::SONParser, wasp::SONLexerImpl and wasp::SONInterpreter */
 namespace wasp {
@@ -43,7 +45,7 @@ namespace wasp {
      */
     template<class S = TreeNodePool<unsigned short, unsigned short
                                     ,TokenPool<unsigned short,unsigned short, unsigned short>> >
-    class SONInterpreter : public Interpreter<S> {
+    class WASP_PUBLIC SONInterpreter : public Interpreter<S> {
     public:
         typedef S Storage_type;
         typedef std::shared_ptr<SONInterpreter> SharedPtr;

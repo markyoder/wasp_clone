@@ -6,6 +6,7 @@
 #include <ostream>
 #include <iostream>
 #include "waspcore/TreeNodePool.h" // for Default TreeNodeView
+#include "waspcore/decl.h"
 namespace wasp{
 
 /**
@@ -13,7 +14,7 @@ namespace wasp{
  * Allows traversing child nodes and parent as well as acquire node information *
  */
 template< class TNV = TreeNodeView<> >
-class SONNodeView{
+class WASP_PUBLIC SONNodeView{
 public:
     using Collection = std::vector<SONNodeView>;
     typedef TNV TreeNodeView_type;
