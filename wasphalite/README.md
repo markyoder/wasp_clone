@@ -1,20 +1,13 @@
 # HALITE engine 
 The HierarchicAL Input Template Expansion engine (HALITE) engine is a data-driven input template expansion engine intended to facilitate application input or data generation. 
 
-When it comes to text creation there are typically two approaches, 
-
-1. write a program to generate the needed text, or
-2. create templates and some program glue logic to read the templates and substitute attributes. 
+When it comes to text creation there are typically two approaches: (1) write a program to generate the needed text, or (2) create templates and some program glue logic to read the templates and substitute attributes. 
 
 
-The HALITE engine attempts to bridge these approaches by providing standard glue logic. In this way, 
+The HALITE engine attempts to bridge these approaches by providing standard glue logic. In this way the templates preserve clarity of intended text, the templates facilitate reuse,
+development is streamlined by eliminating the developer and only requiring a template designer, and most importantly templates are interchangeable, allowing the same data to be used to create a different look, perhaps for a different application to consume.
 
-1. the templates preserve clarity of intended text, 
-2. templates facilitate reuse,
-3. development is streamlined by eliminating the developer and only requiring a template designer, and most importantly
-4. templates are interchangeable which allows using the same data to create a different 'look', perhaps, for a different application to consume.
-
-In addition to the above, the HALITE engine provides a single point, data-driven, expansion capability that removes the need for application-specific glue logic.
+The HALITE engine provides a single point, data-driven expansion capability that eliminates the need for application-specific glue logic.
 
 A template and an optional hierarchical data set is all that is needed to expand templates into text usable by the end consumer.
 
@@ -27,29 +20,29 @@ This section describes the general approach used by the HALITE engine when evalu
 
 There are 3 primary components:
 
-1. The template, consisting of constructs discussed below.
-2. The optional data, described in hierarchal object notation.
-3. The evaluation stream which is the destination of evaluating template constructs.
+1. the template, consisting of constructs discussed below,
+2. the optional data, described in hierarchal object notation, and
+3. the evaluation stream, which is the destination of evaluating template constructs.
 
 
 
-Template constructs available are:
+Available template constructs are as follows:
 
-1. Static text - plain text to be emitted to the expanded result, which contains no attributes or expression evaluation.
-2. Attributes - parameters or expressions to be evaluated, optionally formatted, and substituted into the expanded result.
-3. Optional Attributes - parameters expressions that when only present are emitted to the expanded result.
-4. Silent Attributes - parameters or expressions that when evaluated are NOT emitted to the expanded result. Useful for intermediate or cached attribute evaluations to be used later.
-5. Iterative Attributes - expressions which are evaluated iteratively for a specified range(s) with optional separator and format.
-6. Template imports - import a template into the existing template with optional use of data object.
-7. Iterative template imports - import a template for each element of an array via 'using' an array or repeatedly via range variables.
-8. Conditional blocks - support pre-processor style `#if/ifdef/ifndef` - `#elseif/else` - `#endif` conditional blocks which will only be emitted when the appropriate condition is true.
+1. Static text: plain text to be emitted to the expanded result which contains no attributes or expression evaluation
+2. Attributes: parameters or expressions to be evaluated, optionally formatted, and substituted into the expanded result
+3. Optional Attributes: parameters' expressions that when only present are emitted to the expanded result
+4. Silent Attributes: parameters' or expressions that, when evaluated, are NOT emitted to the expanded result; useful for intermediate or cached attribute evaluations to be used later
+5. Iterative Attributes: expressions that are evaluated iteratively for a specified range(s) with optional separator and format
+6. Template imports: import a template into the existing template with optional use of data object
+7. Iterative template imports: construct that imports a template for each element of an array via 'using' an array or repeatedly via range variables
+8. Conditional blocks: support pre-processor style `#if/ifdef/ifndef` - `#elseif/else` - `#endif` conditional blocks which will only be emitted when the appropriate condition is true
 
 Each construct is evaluated and emitted into the evaluation stream which can be redirected to a file when using the HALITE utility, or c++ `std::ostream` when using the wasphalite api.
 
 ## Attributes and Expressions
 Attributes and expressions are delimited by an opening and closing delimiter. By default these delimiters are '<' and '>' respectively. These are configurable via corresponding HaliteInterpreter class methods.
 
-Example template attribute statements are :
+Example template attribute statements are:
 
 1. `<attr>` - default delimiters, '<','>'
 2. `{attr}` - custom '{' and '}'
@@ -58,31 +51,31 @@ Example template attribute statements are :
 5. `[:attr:]` - custom '[:' and ':]'
 6. etc.
 
-Formal attribute expression syntax looks as follows:
+Formal attribute expression syntax appears as follows:
 
 ` open_delim (name|expression) (':'['?''|'] format? separator? range* use? )? close_delim`
 
 where 
 
 1. `open_delim` is configurable, with a default value of '<'
-2. A `?` indicates an optional attribute evaluation, which allows undefined variables to silently fail. This question mark MUST OCCUR immediately after the attribute options delimiter, `:`.  
-3. A `|` indicates [silent attribute](#silent-attributes) evaluation, which conducts computation/variable creation without emitting the result to the evaluation stream. This MUST OCCUR immediately after the attribute options delimiter, `:`.
-4. 2 and 3 are optional and mutually exclusive.
-5. optional `format` is `'fmt=' format ';'`, and `format` is described in the [section](formatting) below.
-6. optional `separator` is `'sep=' separator ';'`, and `separator` is emitted for all but the last evaluation iteration.
-7. zero or more `range` specifications where a range looks like `range_variable '=' start[,end[,stride]];`. Start, optional end and stride must be integers or attributes convertable to integers. 
-8. The optional `use` statement facilitates scoped attribute access as depicted in [scoped attribute](#scoped-attribute) sections below.
+2. `?` indicates an optional attribute evaluation, which allows undefined variables to silently fail; ? MUST OCCUR immediately after the attribute options delimiter `:` 
+3. `|` indicates [silent attribute](#silent-attributes) evaluation; conducts computation/variable creation without emitting the result to the evaluation stream; MUST OCCUR immediately after the attribute options delimiter `:`
+4. 2 and 3 are optional and mutually exclusive
+5. optional `format` is `'fmt=' format ';'`, and `format` is described in the [section](formatting) below
+6. optional `separator` is `'sep=' separator ';'`, and `separator` is emitted for all but the last evaluation iteration
+7. zero or more `range` specifications where a range looks like `range_variable '=' start[,end[,stride]];`. Start, optional end and stride must be integers or attributes convertable to integers
+8. the optional `use` statement facilitates scoped attribute access as depicted in [scoped attribute](#scoped-attribute) sections below
 9. `close_delim` is configurable, default of '>'
 
 
 ### Silent Attributes
-Attributes and expressions that need to be evaluated but not placed into the evaluation stream can be specified using the silent expression indicator:
+Attributes and expressions that must be evaluated but not placed into the evaluation stream can be specified using the silent expression indicator:
 ```
 <attr:|>
 ```
 
 ### Optional Attributes
-Attributes may not be specified and as such must be considered optional by the template. Optional attribute look as follow:
+Attributes may not be specified, and as such they must be considered optional by the template. Optional attributes appear as follows:
 ```
 <attr:?>
 ```
@@ -111,11 +104,11 @@ If an attribute name contains character(s) that violate the regular expression, 
 3. etc.
 
 If an attribute is an array of data, a 0-based index can be used to access the data element. 
-Given data of :
+Given data of
 ```
 'array':["ted","fred",7, 3.14159 ]
 ```
-The following attribute patterns are legal:
+the following attribute patterns are legal:
 
 1. `array[0]` - "ted"
 2. `array[1]` - "fred"
@@ -125,7 +118,7 @@ The following attribute patterns are legal:
 
 
 ### Example Attribute Pattern
-An example attribute substitution looks like:
+An example attribute substitution appears as follows:
 ```
 the <FoxSpeed> <FoxColor> fox jumped over the <DogColor> dog.
 ```
@@ -140,8 +133,7 @@ The HALITE Engine uses the WASP [expression engine](/waspexpr) for expression ev
 multiplication '*', division '/', addition '+', subtraction '-', less than '.lt.', less than or equal '.lte.', greater than '.gt.',
 greater than or equal '.gte', equal '==', not equal '!=', and precedence '(',')'
 
-* regular trig functions - sin(x),cos(x),tan(x),asin(x),acos(x),atan(x)
-        ,atan2(y, x),sec(x),cosec(x),cot(x),sinh(x),cosh(x),tanh(x),asinh(x),acosh(x),atanh(x)
+* regular trig functions - sin(x),cos(x),tan(x),asin(x),acos(x),atan(x),atan2(y, x),sec(x),cosec(x),cot(x),sinh(x),cosh(x),tanh(x),asinh(x),acosh(x),atanh(x)
 * logarithmic functions - ln(x),log(x),lg(x)
 * exp(x)
 * pow(x)
@@ -150,12 +142,13 @@ greater than or equal '.gte', equal '==', not equal '!=', and precedence '(',')'
 * if(cond, trueval, falseval)
 * abs(x)
 * modulo - mod(x,y),
+* min(x,y), max(x,y)
 * sqrt(x)
 * defined('x') - indicates if the variable named x is defined
 
 
 ### Example Expression Patterns
-An example attribute substitution looks like:
+An example attribute substitution appears as follows:
 ```
 the quick red fox jumped over the brown dog going <miles/hour>mph fast.
 ```
@@ -164,13 +157,11 @@ or
 the quick red fox jumped over the brown dog going <velocity_mph*1.60934>kph fast.
 ```
 
-In addition to integer and double precision math operations, string concatenation is also available.
-
-E.g., 
+In addition to integer and double precision math operations, string concatenation is also available, such as
 ```
 <"My result is "+numeric_result>
 ```
-Here the `numeric_result` is concatenated to the string `My result is ` producing a final result that is string typed.
+Here the `numeric_result` is concatenated to the string `My result is ` thus producing a final result that is string typed.
 
 ## Formatting 
 Attribute and expressions can be formatted prior to insertion into the evaluation stream. This is influenced by the [C printf](http://www.cplusplus.com/reference/cstdio/printf) and  [Java.Format](https://docs.oracle.com/javase/7/docs/api/java/util/Formatter.html) capability.
@@ -192,14 +183,14 @@ The available specifiers are:
 The format declarator percent `%` can be escaped with a double  percent specified, `%%`
 
 #### Format Flags
-The available flags are:
+The available flags are presented below
 
 | flag | Description                                                 | Example             |
 |------|-------------------------------------------------------------|---------------------|
-| -    | The result will be left-justified                           | 'left       '       |
+| -    | The result will be left justified                           | 'left       '       |
 | +    | The result will always include a sign                       | '+result'           |
 | ' '  | The result will include a leading space for positive values | ' result'           |
-| 0    | The result will be zero-padded                              | '0result'           |
+| 0    | The result will be zero padded                              | '0result'           |
 | (    | The result will enclose negative numbers in parentheses     | '(negative result)' |
 
 #### Format Width
@@ -307,7 +298,7 @@ Float-Point examples:
 |'\<1e2:fmt=%10.7e\>'|`'1.0000000e+02'`|
 
 #### Format Error Examples
-Some flag specifiers are not legal with given specifiers. Here are examples of common scenarios:
+Some flag specifiers are not legal with given specifiers. The following are examples of common scenarios:
 
 | Format                    | Error         |
 |---------------------------|----------------|
@@ -316,11 +307,11 @@ Some flag specifiers are not legal with given specifiers. Here are examples of c
 | '\<"some string":fmt=% s\>'   | `malformed format string: flag ' ' does not match the conversion 's'`     |
 
 ## Scoped Attribute
-Because the data is hierarchical access to lower levels of the data hierarchy can be needed. 
+Because the data is hierarchical, access to lower levels of the data hierarchy can be required. 
 Common single-level access is facilitated by scoping an attribute access via a 'use' statement.
 
 ### Object Scoped Attribute
-Given hierarchical data of :
+Given hierarchical data of
 
 ```
 {
@@ -328,7 +319,7 @@ Given hierarchical data of :
    ,'dog color' : 'brown'
 }
 ``` 
-the following template uses a scoped attributes of `fox` `color` and `speed` to emit the desired result:
+the following template uses scoped attributes of `fox` `color` and `speed` to emit the desired result:
 
 ```
 the <speed:use=fox> <color:use=fox> fox jumped over the <'dog color'> dog. 
@@ -359,7 +350,7 @@ the following template uses the scoped attributes as follows:
 <"The "+what+" "+action+" the "+'dog state'+" dog.":use=parts> 
 ```
 
-The result is a whitespace separated evaluation of the template using each element in the array:
+The result is a whitespace-separated evaluation of the template using each element in the array:
 
 ```
 The quick red fox jumped over the brown dog. The honey badger didn't care about the big angry dog. The weasel slunk by the sleeping dog.
@@ -372,7 +363,7 @@ A file import using an object or array facilitates more complex hierarchical dat
 The HALITE engine support file import where files consist of all template constructs described in this section.
 File imports can be parameterized and both implicitly and explicitly iterative. 
 
-The simplest file format looks as follows:
+The simplest file format appears as shown below:
 
 ```
 #import relative/or/absolute/file/path.tmpl
@@ -385,7 +376,7 @@ The path can also be templated on any available attribute. The subtemplate has i
 the current data level. 
 
 ### Example Data
-E.g., the given data:
+The given data are presented below:
 ```
 {
     "x" : "blurg"
@@ -416,7 +407,7 @@ must be used.
 Parameterized file imports facilitate access to data hierarchy and repetition of templates.
 
 #### File Import Using an Object
-The [example data](#example-data) contains the `obj` data layer which contains nested object `sarg` and other imaginary data `...`. To access all this data, a subtemplate can be imported 'using' `obj` as follows:
+The [example data](#example-data) contains the `obj` data layer which contains nested object `sarg` and other imaginary data `...`. To access all of the data, a subtemplate can be imported 'using' `obj` as follows:
 
 ```
 #import some/file.tmpl using obj
@@ -433,9 +424,9 @@ Variables still accessible from parent data are x:<x>, and y:<y>, etc.
 ```
 
 #### Iterative File Import Using an Array or Ranges
-The import of files can be repeated using 2 constructs, 1) implicit iteration via use of an array, or 2) explicit iteration using repeated ranges.
+The import of files can be repeated using 2 constructs: (1) implicit iteration via use of an array, or (2) explicit iteration using repeated ranges.
 
-The implicit iteration via use of an array is syntactically identical to [import using an object](#file-import-using-an-object) :
+The implicit iteration via use of an array is syntactically identical to [import using an object](#file-import-using-an-object):
 
 ```
 #import path/to/file.tmpl using my_array
@@ -446,7 +437,7 @@ The explict iteration via ranges is syntactically different to disambiguate and 
 ```
 #repeat path/to/file.tmpl using (var=start[,end[,stride]];)+
 ```
-Notice the statement starts with `#repeat` and not the regular `#import`. The range (`var`) can be specified, semicolon ';' delimited to produce embedded loops.
+Note that the statement starts with `#repeat` and not the regular `#import`. The range (`var`) can be specified as semicolon ';' delimited to produce embedded loops.
 
 ```
 #repeat path/to/file.tmpl using i=1,5; j=2,6,2;
@@ -459,14 +450,14 @@ Conditional blocks facilitate alternative paths through templates.
 Conditional blocks can be activated with a defined or undefined variable or an expression that evaluates to true or false.
 
 `#if`, `#ifdef` and `#ifndef` indicate the start of a conditional block. Subsequently, an additional condition can be indicated
-by a `#elseif`, or `#else`, and finally terminated by a `#endif`.
+by `#elseif` or `#else`, and then finally terminated by a `#endif`.
 
 ```
 #if condition
 block
 #endif
 ```
-The above block will be emitted if the `condition` evaluates to true. The `condition` could be a variable name referencing a value that is true, or an attribute expression.
+The above block will be emitted if the `condition` evaluates to true. The `condition` could be a variable name referencing a value that is true, or it could be an attribute expression.
 ```
 #if ted_present
 hello ted
@@ -482,7 +473,7 @@ some logic pertaining to i > 0
 The use of `#elseif` and `#else` allow for alternative logic if the initial or prior condition evaluate to false.
 ```
 #if < ted_present && bill_present >
-Bill and  Ted's excellent adventure!
+Bill and Ted's excellent adventure!
 #elseif ted_present 
 Where is Bill?
 #elseif bill_present

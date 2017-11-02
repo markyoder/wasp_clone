@@ -41,7 +41,7 @@ width (settings) = 120 height(settings) = 120
 ```
 
 ## Hierarchy via Objects
-Hierarchy or grouping can be added using the Object construct. Objects are useful in exhuming common context a succinct handle. 
+Hierarchy or grouping can be added using the Object construct. Objects are useful in exhuming common context with a succinct handle. 
 
 Objects can have nested objects, keyed-values, and arrays in any order. 
 
@@ -81,7 +81,7 @@ settings{
 Objects support the same identifier scheme as keyed-values. 
  
 ## Arrays of Data
- SON supports 1d arrays of data. This data can be scalar values, keyed-values, and nested-objects or arrays. 
+ SON supports 1d arrays of data that data can be scalar values, keyed-values, and nested-objects or arrays. 
  Multi-dimensional data can be flattened to 1d and application specific context provided in associated keyed-value elements.
  
  Arrays have the following syntax.
@@ -114,4 +114,4 @@ The example property store file above illustrates potential array use as follows
  
 ```
  
-Arrays support the same identifier scheme as keyed-values with one exception of nested arrays cannot have identifiers.
+Arrays support the same identifier scheme as keyed-values with the one exception that nested arrays cannot have identifiers.

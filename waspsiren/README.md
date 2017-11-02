@@ -1,7 +1,7 @@
 # Sequence Input Retrieval Engine (SIREN) 
 SIREN is a syntax for navigating and selecting document elements. It is heavily influenced by the XML XPath [https://www.w3schools.com/xml/xpath_syntax.asp] component within the XSLT standard.
 
-For code examples using SIREN see the SIREN interpreter tests in the code repository.
+For code examples using SIREN, see the SIREN interpreter tests in the code repository.
 
 ## Selecting Nodes
 The selection of nodes is performed via a path expression. Path expressions can be relative to a current node or absolute to the document.
@@ -37,7 +37,7 @@ Predicates can be used at all level of the path expression and are expressed as 
 |_value_[1:10:2] | Selects every other node (stride of 2) with the name "_value_" that are children of the current node |
 |_child_[_value_ = 3.14] | Selects all nodes with the name "_child_" of the current node where the _child_'s _value_ is equal to 3.14  |
 |_child_[_name_ = 'fred']/_ear_ | Selects all nodes with the name "_ear_" which are children of _child_ of the current node, only when _child_'s name is 'fred' |
-|_child_[_name_ = 'fred']/_ear_[hairy='true'] | Selects all nodes with the name "_ear_" which are children of _child_ of the current node, only when _child_'s name is 'fred' and the ear is hair |
+|_child_[_name_ = 'fred']/_ear_[hairy='true'] | Selects all nodes with the name "_ear_" which are children of _child_ of the current node, only when _child_'s name is 'fred' and the ear is hairy |
 
 
 ### Selecting Unknown Nodes
@@ -48,7 +48,7 @@ Certain parts of the document may not be known. For this reason, wildcards are s
 |\* | Selects all nodes that are children of the current node, regardless of name |
 |\*less | Selects all nodes that are children of the current node, where the node name is '_less_' or ends with '_less_' |
 |less\* | Selects all nodes that are children of the current node, where the node name is '_less_' or starts with '_less_' |
-|l\*s | Selects all nodes that are children of the current node, where the node name is '_ls_', or starts with '_l_' and ends with '_s_' with any character between|
+|l\*s | Selects all nodes that are children of the current node, where the node name is '_ls_' or starts with '_l_' and ends with '_s_' with any character between|
 
 
 

@@ -1,7 +1,7 @@
 # Command Line Utilities 
 The Workbench Analysis Sequence Processor package provides a set of command line utilities to aid in sequence processing and processor development.
 
-The sequence processor construct parse trees from which two primary functions are typically desired.
+The sequence processor construct parse trees from which two primary functions are typically desired:
 
 1. the listing of the parse tree
 2. the selection of input given a select statement.
@@ -13,7 +13,7 @@ SON, GetPot, DDI, and JSON have corresponding sonlist, getpotlist, ddilist, and 
 
 These utilities produce an ordered directory-style listing of each parsed input component.
 
-E.g., for the given example SON data file `example.son`:
+For the given example SON data file `example.son`:
 
 ```
 object(identifier){
@@ -25,12 +25,12 @@ object(identifier){
 array [ 1 2 3 ]
 ```
 
-An invocation of the `sonlist` utility:
+an invocation of the `sonlist` utility:
 
 ```
 sonlist example.son
 ```
-Produces a directory-style listing of each component in the file:
+produces a directory-style listing of each component in the file:
 
 ```
 /
@@ -66,10 +66,10 @@ Produces a directory-style listing of each component in the file:
 
 ```
 
-These listings describe the interpreted hierachy and value.
+These lists describe the interpreted hierachy and value.
 
 
-Note: The Definition-Driven Interpreter (DDI) is different from the others as it requires a schema (definition) in order to parse.
+Note that the Definition-Driven Interpreter (DDI) is different from the others as it requires a schema (definition) in order to parse.
 
 ```
 ddilist /path/to/schema.sch /path/to/input.inp
@@ -167,7 +167,7 @@ Any xml element with the attribute `dec="true"`  indicates a 'decorative' input 
 
 The attribute `loc="line.column"` indicates the input components location in the file. 
 
-The element's name indicates the name of the input component. The leaf element's data is the data of interest that is stored in the parse tree.
+The element's name indicates the name of the input component. The leaf element's data are the data of interest stored in the parse tree.
 
 ## File Validation Utilities
 The SON, DDI, and GetPot interpreters have Hierarchical Input Validation Engine ([HIVE](/wasphive/README.md#hierarchical-input-validation-engine-hive)) adapters allowing them to be validated. 
@@ -204,12 +204,12 @@ The expanded template emitted on stdout, and errors/log information is emitted o
 
 ## Schema Skeleton Creation Utility
 
-The ability to take multiple input files that are known to be valid and to create a schema skeleton from these can be a very useful starting point for schema creation.  Currently, a utility exists that allows this to be done with a series of SON input files.
+The ability to take multiple input files known to be valid and to create a schema skeleton from these can be a very useful starting point for schema creation.  Currently, a utility exists that allows this to be done with a series of SON input files.
 
-So, if a user has multiple SON formatted input files that they know to be valid, and they wish to begin creating a schema for these files, they may first run
+Therefore, if a user has multiple SON formatted input files that are known to be valid, and the objectibve is to begin creating a schema for these files, the first step is to run
 
     sonschemaskel path/to/valid/input1.son path/to/valid/input2.son ...
 
-and the resulting output will be a schema skeleton that they can use with the Hierarchical Input Validation Engine to validate their inputs.  These schema skeletons have actual rule stubs for each input node commented out.  These rules can be learned about in more detail in the [HIVE section](/wasphive/README.md#hierarchical-input-validation-engine-hive) and should be modified for each piece of input.
+and the resulting output will be a schema skeleton that can be used with the Hierarchical Input Validation Engine to validate the inputs.  These schema skeletons have actual rule stubs for each input node commented out.  These rules can reviewed in more detail in the [HIVE section](/wasphive/README.md#hierarchical-input-validation-engine-hive) and should be modified for each piece of input.
 
 

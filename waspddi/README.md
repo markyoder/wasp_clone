@@ -32,7 +32,7 @@ section_name1
 
 The above example illustrates arbitrary hierarchy. 
 
-Note that the section indentation is recommended for clarity, but is not required. All content, except comments, could occur on the same line.
+Note that the section indentation is recommended for clarity but is not required. All content except for comments could occur on the same line.
 
 It is also evident to see that there is an ambiguity in the grammar. Specifically, how does one know whether a subsequent section is a subsection or sibling section? Having two sections such as
 
@@ -50,13 +50,13 @@ which presents hurdles for user and program interpretation.
 
 This is where and why the definition is important and required in driving the interpretation of these files.
 
-The definition driven algorithm is straight forward.
+The definition driven algorithm is straightforward.
 
 
 1. Read a section name and perform the following
-    1. If the section name is legal for the existing context, capture section name and push section context. Go to Step 1.
-    2. If the section name is not legal, pop current context and repeat steps 1.1,1.2,1.3 inquiries on new/parent context. 
-    3. If no context available, i.e. exhausted, ERROR.
+    1. If the section name is legal for the existing context, than capture the section name and push section context. Go to Step 1.
+    2. If the section name is not legal, pop the current context and repeat steps 1.1,1.2, and 1.3 inquiries on new/parent context. 
+    3. If no context available, i.e., exhausted, ERROR.
 
 The result is a parse tree where node names are section names. 
 
