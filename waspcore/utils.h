@@ -105,7 +105,7 @@ namespace wasp{
     }
 
     template<typename T>
-    static WASP_PUBLIC std::string to_string(T v, bool * ok=nullptr){
+    static std::string to_string(T v, bool * ok=nullptr){
         std::stringstream s;
         s<<v;
         if( ok ) *ok = !(s.bad() || s.fail());
