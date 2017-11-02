@@ -1142,7 +1142,7 @@ public:
         wasp_not_implemented("Function::string");
     }
 };
-class RealFunction : public Function
+class WASP_PUBLIC RealFunction : public Function
 {
 public:
     typedef std::vector<Result> Args;
