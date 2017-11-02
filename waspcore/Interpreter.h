@@ -4,6 +4,7 @@
 #include <string>
 #include <cstddef> // size_t
 #include <iostream>
+#include "waspcore/decl.h"
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h" // for UNKNOWN, DOCUMENT_ROOT NODE types
 #include "waspcore/wasp_bug.h"
@@ -15,7 +16,7 @@ namespace wasp{
 /**
  * @brief The AbstractInterpreter class to fulfill design req for parser interaction
  */
-class AbstractInterpreter{
+class WASP_PUBLIC AbstractInterpreter{
 public:
     /**
      * @brief token_count acquires the number of tokens so far interpreted
@@ -149,7 +150,7 @@ public:
 };
 
 template< class TNS = TreeNodePool<> >
-class Interpreter : public AbstractInterpreter {
+class WASP_PUBLIC Interpreter : public AbstractInterpreter {
 public:
     typedef TNS TreeNodePool_type;
     typedef typename TNS::node_index_size node_index_size;

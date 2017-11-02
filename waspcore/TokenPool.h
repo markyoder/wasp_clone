@@ -4,6 +4,8 @@
 #include <cstring>
 #include <vector>
 #include "waspcore/StringPool.h"
+#include "waspcore/decl.h"
+
 namespace wasp{
 
 /**
@@ -29,7 +31,7 @@ template<
     // size type describing the maximum byte file offset
     ,typename fots = default_file_offset_type_size
 >
-struct TokenPool{
+struct WASP_PUBLIC TokenPool{
 public:
 
     typedef tts token_type_size;

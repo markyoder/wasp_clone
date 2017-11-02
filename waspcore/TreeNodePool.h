@@ -9,6 +9,8 @@
 #include "waspcore/TokenPool.h"
 #include "waspcore/wasp_node.h" // for UNKNOWN node/token types
 #include "waspcore/utils.h" // string quote trimming, to_type
+#include "waspcore/decl.h"
+
 namespace wasp{
 typedef unsigned short default_node_type_size;
 typedef unsigned int default_node_index_size;
@@ -23,7 +25,7 @@ template<
     // Token Pool storage type
     ,class TP = TokenPool<>
 >
-class TreeNodePool{
+class WASP_PUBLIC TreeNodePool{
 public:
     typedef nts node_type_size;
     typedef nis node_index_size;
@@ -330,7 +332,7 @@ private:
  * Allows traversing child nodes and parent as well as acquire node information *
  */
 template<class TreeNodePool_T = TreeNodePool<> >
-class TreeNodeView{
+class WASP_PUBLIC TreeNodeView{
 public:
     using Collection = std::vector<TreeNodeView>;
     typedef TreeNodePool_T TreeNodePool_type;
@@ -524,11 +526,11 @@ private:
 
 
 template<class TAdapter>
-void print_from(std::ostream & out, const TAdapter& tree_node
+WASP_PUBLIC void print_from(std::ostream & out, const TAdapter& tree_node
                 , size_t& last_line, size_t& last_col);
 
 template<class TAdapter>
-void print(std::ostream & out, const TAdapter& tree_node)
+WASP_PUBLIC void print(std::ostream & out, const TAdapter& tree_node)
 {
     size_t l=tree_node.line(),c=tree_node.column();
     print_from(out, tree_node, l, c);

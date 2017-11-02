@@ -6,13 +6,15 @@
 #include <string>
 #include <vector>
 
+#include "waspcore/decl.h"
+
 namespace wasp{
 
 
 /**
  * @brief The Value class represents values of objects (null, integer, double, string, array, or object)
  */
-class Value
+class WASP_PUBLIC Value
 {
 public:
     typedef std::shared_ptr<Value> SP;
@@ -142,7 +144,7 @@ private:
     void copy_from(const Value & orig);
 };
 
-class DataArray{
+class WASP_PUBLIC DataArray{
 public:
     typedef std::shared_ptr<DataArray> SP;
     typedef std::vector<Value> storage_type;
@@ -179,7 +181,7 @@ public:
     void merge(const DataArray& rhs);
 };
 
-class DataObject
+class WASP_PUBLIC DataObject
 {
 public:
     typedef std::shared_ptr<DataObject> SP;
@@ -227,7 +229,7 @@ public:
 
 
 template<class Interp>
-bool generate_object(DataObject::SP & obj, std::istream& input, std::ostream & errors)
+WASP_PUBLIC bool generate_object(DataObject::SP & obj, std::istream& input, std::ostream & errors)
 {
     Interp interpreter(obj,input, errors, nullptr);
     bool parsed = interpreter.parse() == 0;
