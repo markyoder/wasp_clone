@@ -45,6 +45,7 @@
 #include <memory>
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h"
+#include "waspcore/decl.h"
 
 #line 50 "GetPotParser.hpp" // lalr1.cc:377
 
@@ -125,7 +126,7 @@ namespace wasp {
 
 
   /// A Bison parser.
-  class GetPotParser
+  class WASP_PUBLIC GetPotParser
   {
   public:
 #ifndef YYSTYPE

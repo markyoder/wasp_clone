@@ -12,6 +12,7 @@
 #include <utility>
 #include "waspcore/utils.h"
 #include "waspcore/Object.h"
+#include "waspcore/decl.h"
 }
 
 /* Require bison 3 or later */

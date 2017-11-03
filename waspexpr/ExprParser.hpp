@@ -45,6 +45,7 @@
 #include <memory>
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h"
+#include "waspcore/decl.h"
 
 #line 50 "ExprParser.hpp" // lalr1.cc:377
 
@@ -125,7 +126,7 @@ namespace wasp {
 
 
   /// A Bison parser.
-  class ExprParser
+  class WASP_PUBLIC ExprParser
   {
   public:
 #ifndef YYSTYPE

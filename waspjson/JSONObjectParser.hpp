@@ -46,6 +46,7 @@
 #include <utility>
 #include "waspcore/utils.h"
 #include "waspcore/Object.h"
+#include "waspcore/decl.h"
 
 #line 51 "JSONObjectParser.hpp" // lalr1.cc:377
 
@@ -126,7 +127,7 @@ namespace wasp {
 
 
   /// A Bison parser.
-  class JSONObjectParser
+  class WASP_PUBLIC JSONObjectParser
   {
   public:
 #ifndef YYSTYPE

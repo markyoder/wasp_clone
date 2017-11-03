@@ -44,6 +44,7 @@
 
 #include <memory>
 #include "waspcore/utils.h"
+#include "waspcore/decl.h"
 
 #line 49 "SIRENParser.hpp" // lalr1.cc:377
 
@@ -124,7 +125,7 @@ namespace wasp {
 
 
   /// A Bison parser.
-  class SIRENParser
+  class WASP_PUBLIC SIRENParser
   {
   public:
 #ifndef YYSTYPE

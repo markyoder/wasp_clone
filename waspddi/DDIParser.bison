@@ -11,6 +11,7 @@
 %code requires{
 #include <memory>
 #include "waspcore/utils.h"
+#include "waspcore/decl.h"
 }
 
 /* Require bison 3 or later */

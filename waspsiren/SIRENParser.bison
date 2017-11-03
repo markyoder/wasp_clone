@@ -10,6 +10,7 @@
 %code requires{
 #include <memory>
 #include "waspcore/utils.h"
+#include "waspcore/decl.h"
 }
 
 /* Require BISON 3 or later */

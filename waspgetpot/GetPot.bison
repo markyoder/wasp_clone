@@ -11,6 +11,7 @@
 #include <memory>
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h"
+#include "waspcore/decl.h"
 }
 
 /* Require biGetPot 3 or later */
