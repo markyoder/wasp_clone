@@ -37,8 +37,8 @@
 
 // C++ LALR(1) parser skeleton written by Akim Demaille.
 
-#ifndef YY_WASP_DDIPARSER_HPP_INCLUDED
-# define YY_WASP_DDIPARSER_HPP_INCLUDED
+#ifndef YY_YY_DDIPARSER_HPP_INCLUDED
+# define YY_YY_DDIPARSER_HPP_INCLUDED
 // //                    "%code requires" blocks.
 #line 11 "DDIParser.bison" // lalr1.cc:377
 
@@ -115,7 +115,7 @@
 # define YYDEBUG 0
 #endif
 
-
+#line 34 "DDIParser.bison" // lalr1.cc:377
 namespace wasp {
 #line 121 "DDIParser.hpp" // lalr1.cc:377
 
@@ -131,7 +131,7 @@ namespace wasp {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 61 "DDIParser.bison" // lalr1.cc:377
+    #line 62 "DDIParser.bison" // lalr1.cc:377
 
         std::size_t token_index;
         std::size_t node_index;
@@ -490,11 +490,11 @@ namespace wasp {
   };
 
 
-
+#line 34 "DDIParser.bison" // lalr1.cc:377
 } // wasp
 #line 496 "DDIParser.hpp" // lalr1.cc:377
 
 
 
 
-#endif // !YY_WASP_DDIPARSER_HPP_INCLUDED
+#endif // !YY_YY_DDIPARSER_HPP_INCLUDED

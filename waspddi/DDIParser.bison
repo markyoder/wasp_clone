@@ -30,7 +30,8 @@
 %skeleton "lalr1.cc"
 
 /* namespace to enclose parser in */
-%name-prefix "wasp"
+/* %name-prefix "wasp" */
+%define api.namespace {wasp}
 
 /* set the parser's class identifier */
 %define parser_class_name {DDIParser}
@@ -280,7 +281,7 @@ comment : COMMENT
             $$ = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
 start   : /** empty **/
-        | start comment{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}        
+        | start comment{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
         | start definition_section{
             if(interpreter.single_parse() )
             {
