@@ -26,6 +26,8 @@
 #include "waspsiren/SIRENInterpreter.h"
 #include "waspsiren/SIRENResultSet.h"
 
+#include "waspcore/decl.h"
+
 namespace wasp
 {
 
@@ -59,7 +61,7 @@ namespace wasp
  * std::string TAdapter::id()const - acquire the id as a quoteless string
  * TAdapter TAdapter::id_child()const - acquire the child tree node deemed the current node's identifier
  */
-class HIVE{
+class WASP_PUBLIC HIVE{
 
 public:
 
@@ -329,12 +331,12 @@ public:
     }
 
     static std::string BadSchemaRule(const std::string & ruleName, int line, int col){
-        return "Validation Error: Invalid Schema Rule: \"" + ruleName + "\" line:" + 
+        return "Validation Error: Invalid Schema Rule: \"" + ruleName + "\" line:" +
                 std::to_string(line) + " column:" + std::to_string(col);
     }
 
     static std::string BadSchemaPath(const std::string & ruleName, const std::string & lookupPath, int line, int col){
-        return "Validation Error: Invalid Schema Rule: Bad " + ruleName + " Path \"" + 
+        return "Validation Error: Invalid Schema Rule: Bad " + ruleName + " Path \"" +
                 lookupPath + "\" at line:" + std::to_string(line) + " column:" + std::to_string(col);
     }
 
@@ -456,7 +458,7 @@ public:
                 nodeName + " value \"" +
                 value + "\" does not exist in set: [ " + lookupPaths + " ]";
     }
-    
+
     static std::string AlsoExistsAt(int line, int col, const std::string & nodeName, const std::string & value,
                                     const std::string & lookupPath, int breakline, int breakcol, const std::string & ruleName){
         return "line:" + std::to_string(line) + " column:" + std::to_string(col) +
@@ -488,7 +490,7 @@ public:
                 nodeName + " children \"" +
                 childName + "\" " +
                 (ruleName=="sum over group"?"sum":"") + (ruleName=="product over group"?"multiply":"") +
-                " to " + actualValue + " for " + std::to_string(groupDivide * groupDivideValue) + 
+                " to " + actualValue + " for " + std::to_string(groupDivide * groupDivideValue) +
                 " group - instead of the required " + (ruleName=="sum over group"?"sum":"") +
                 (ruleName=="product over group"?"product":"") + " of " + expectedValue;
     }

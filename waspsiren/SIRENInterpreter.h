@@ -17,11 +17,13 @@
 #include "waspcore/Interpreter.h"
 #include "waspsiren/SIRENResultSet.h"
 
+#include "waspcore/decl.h"
+
 /** The wasp namespace is used to encapsulate the three parser classes
  * wasp::SIRENParser, wasp::SIRENLexerImpl and wasp::SIRENInterpreter */
 namespace wasp {
     template<class S = TreeNodePool<> >
-    class SIRENInterpreter : public Interpreter<S> {
+    class WASP_PUBLIC SIRENInterpreter : public Interpreter<S> {
     public:
         typedef std::shared_ptr<SIRENInterpreter> SharedPtr;
         typedef S Storage_type;
@@ -56,7 +58,7 @@ namespace wasp {
          * @brief traceParsing - variable available for verbosely debugging parsing logic
          * @note '%debug' must be specified in the '.bison' grammar file
          */
-        bool traceParsing;       
+        bool traceParsing;
 
 
         /**
@@ -128,7 +130,7 @@ namespace wasp {
         template<typename TAdapter>
         void recursive_child_select(const TreeNodeView<Storage_type> & context
                                                  , std::vector<TAdapter> & stage)const;
-    }; // end of SIRENInterpreter class    
+    }; // end of SIRENInterpreter class
 
 #include "waspsiren/SIRENInterpreter.i.h"
 } // namespace wasp
