@@ -1395,7 +1395,7 @@ public: \
 WASP_INTEGER_FUNCTION_2ARG(FMod, IntegerFunction, a1.integer()%a2.integer())
 
 template<class T>
-inline WASP_PUBLIC Result &
+inline Result &
 Result::evaluate( const T & tree_view
                   , Context & context)
 {
