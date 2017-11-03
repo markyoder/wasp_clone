@@ -30,7 +30,8 @@
 %skeleton "lalr1.cc"
 
 /* namespace to enclose parser in */
-%name-prefix "wasp"
+/* %name-prefix "wasp" */
+%define api.namespace {wasp}
 
 /* set the parser's class identifier */
 %define parser_class_name {GetPotParser}
