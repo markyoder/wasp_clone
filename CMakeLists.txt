@@ -23,6 +23,9 @@ ENDIF()
 IF(WASP_DBC)
    ADD_DEFINITIONS("-DWASP_DBC=${WASP_DBC}")
 ENDIF()
+IF(BUILD_SHARED_LIBS)
+   ADD_DEFINITIONS("-DBUILD_SHARED")
+ENDIF()
 
 IF (NOT TRIBITS_PROCESSING_PACKAGE)
   # This CMakeLists.txt file is being processed as the wasp TriBITS projects's base

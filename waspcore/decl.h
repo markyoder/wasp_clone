@@ -1,6 +1,6 @@
 #ifndef WASP_WASPCORE_DECL_HH_
 #define WASP_WASPCORE_DECL_HH_
-#ifdef waspcore_EXPORTS
+#ifdef BUILD_SHARED
 #if defined _WIN32 || defined __CYGWIN__
   #define WASP_PUBLIC __declspec(dllexport)
   #define WASP_LOCAL
