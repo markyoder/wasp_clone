@@ -11,9 +11,11 @@
 #include <sstream>
 #include <map>
 
+#include "waspcore/decl.h"
+
 namespace wasp{
 template<class S = TreeNodePool<> >
-class ExprInterpreter : public Interpreter<S>
+class WASP_PUBLIC ExprInterpreter : public Interpreter<S>
 {
 public:
     ExprInterpreter(std::ostream & error_stream=std::cerr);
