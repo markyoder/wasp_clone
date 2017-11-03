@@ -37,8 +37,8 @@
 
 // C++ LALR(1) parser skeleton written by Akim Demaille.
 
-#ifndef YY_WASP_JSONPARSER_HPP_INCLUDED
-# define YY_WASP_JSONPARSER_HPP_INCLUDED
+#ifndef YY_YY_JSONPARSER_HPP_INCLUDED
+# define YY_YY_JSONPARSER_HPP_INCLUDED
 // //                    "%code requires" blocks.
 #line 10 "JSONParser.bison" // lalr1.cc:377
 
@@ -115,7 +115,7 @@
 # define YYDEBUG 0
 #endif
 
-
+#line 33 "JSONParser.bison" // lalr1.cc:377
 namespace wasp {
 #line 121 "JSONParser.hpp" // lalr1.cc:377
 
@@ -131,7 +131,7 @@ namespace wasp {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 60 "JSONParser.bison" // lalr1.cc:377
+    #line 62 "JSONParser.bison" // lalr1.cc:377
 
         std::size_t token_index;
         std::size_t node_index;
@@ -494,11 +494,11 @@ namespace wasp {
   };
 
 
-
+#line 33 "JSONParser.bison" // lalr1.cc:377
 } // wasp
 #line 500 "JSONParser.hpp" // lalr1.cc:377
 
 
 
 
-#endif // !YY_WASP_JSONPARSER_HPP_INCLUDED
+#endif // !YY_YY_JSONPARSER_HPP_INCLUDED

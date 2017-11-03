@@ -35,12 +35,12 @@
  ** Define the wasp::stack class.
  */
 
-#ifndef YY_WASP_STACK_HH_INCLUDED
-# define YY_WASP_STACK_HH_INCLUDED
+#ifndef YY_YY_STACK_HH_INCLUDED
+# define YY_YY_STACK_HH_INCLUDED
 
 # include <vector>
 
-
+#line 35 "JSONObjectParser.bison" // stack.hh:132
 namespace wasp {
 #line 46 "stack.hh" // stack.hh:132
   template <class T, class S = std::vector<T> >
@@ -150,8 +150,8 @@ namespace wasp {
     unsigned int range_;
   };
 
-
+#line 35 "JSONObjectParser.bison" // stack.hh:132
 } // wasp
 #line 156 "stack.hh" // stack.hh:132
 
-#endif // !YY_WASP_STACK_HH_INCLUDED
+#endif // !YY_YY_STACK_HH_INCLUDED
