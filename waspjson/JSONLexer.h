@@ -20,6 +20,8 @@
 
 #include "JSONParser.hpp"
 #include "waspcore/wasp_node.h"
+#include "waspcore/decl.h"
+
 namespace wasp {
 
 /** JSONLexerImpl is a derived class to add some extra function to the scanner
@@ -27,7 +29,7 @@ namespace wasp {
  * macros to JSONLexer. However we change the context of the generated
  * yylex() function to be contained within the JSONLexerImpl class. This is required
  * because the yylex() defined in JSONLexer has no parameters. */
-class JSONLexerImpl : public JSONFlexLexer
+class WASP_PUBLIC JSONLexerImpl : public JSONFlexLexer
 {
 public:
     /** Create a new scanner object. The streams arg_yyin and arg_yyout default
@@ -47,7 +49,7 @@ public:
        JSONParser::semantic_type* yylval,
        JSONParser::location_type* yylloc
        );
-    
+
     /** Enable debug output (via arg_yyout) if compiled into the scanner. */
     void set_debug(bool b);
     /**
