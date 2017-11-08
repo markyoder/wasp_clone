@@ -27,7 +27,7 @@ public:
         ,INTEGER
         ,REAL
         ,STRING
-        ,ERROR
+        ,WEC_ERROR
         ,UNDEFINED
     };
    Context(){}
@@ -488,7 +488,7 @@ private:
         }
         right_op.evaluate(right,context);
         if( right_op.is_error() ){
-            m_type = Context::Type::ERROR;
+            m_type = Context::Type::WEC_ERROR;
             string()=right_op.string();
             return false;
         }
@@ -1031,7 +1031,7 @@ public:
             return number() != 0.0;
         case Context::Type::STRING:
             return string()!="false";
-        case Context::Type::ERROR:
+        case Context::Type::WEC_ERROR:
             return false;
         default:
         case Context::Type::UNDEFINED:
@@ -1054,7 +1054,7 @@ public:
             return std::to_string(real());
         case Context::Type::STRING:
             return string();
-        case Context::Type::ERROR:
+        case Context::Type::WEC_ERROR:
             if( ok ) *ok = false;
             return "";
         default:
@@ -1078,7 +1078,7 @@ public:
                 || m_type == Context::Type::REAL;
     }
     bool is_error()const{
-        return m_type == Context::Type::ERROR;
+        return m_type == Context::Type::WEC_ERROR;
     }
     bool is_string()const{
         return m_type == Context::Type::STRING;
@@ -1405,12 +1405,12 @@ Result::evaluate( const T & tree_view
    if( type == wasp::VALUE ) type = tree_view.token_type();
 
     // TODO - capture OK values from to_type conversions
-    // and present the RESULT as an ERROR if OK=false
+    // and present the RESULT as an WEC_ERROR if OK=false
    switch ( type )
    {
    default:
    case wasp::UNKNOWN:
-           m_type = Context::Type::ERROR;
+           m_type = Context::Type::WEC_ERROR;
            string() = error_msg(tree_view, "unable to interpret");
            break;
    case wasp::INT:
@@ -1592,7 +1592,7 @@ Result::evaluate( const T & tree_view
        if( var_type == Context::Type::UNDEFINED )
        {
            wasp_tagged_line("undefined type error");
-           m_type = Context::Type::ERROR;
+           m_type = Context::Type::WEC_ERROR;
            string() = error_msg(tree_view,"is not a known variable.");
 
        }else{
@@ -1623,19 +1623,19 @@ Result::evaluate( const T & tree_view
         if( !context.exists(var_name) )
         {
             wasp_tagged_line("undefined type error");
-            m_type = Context::Type::ERROR;
+            m_type = Context::Type::WEC_ERROR;
             string() = error_msg(tree_view,"is not a known variable.");
         }
         wasp_check(tree_view.child_count() > 2);
         const auto & index_view = tree_view.child_at(2);
-        if( evaluate(index_view, context).m_type == Context::Type::ERROR )
+        if( evaluate(index_view, context).m_type == Context::Type::WEC_ERROR )
         {
             break;
         }
         if( !is_number() )
         {
             wasp_tagged_line("illegal index type error");
-            m_type = Context::Type::ERROR;
+            m_type = Context::Type::WEC_ERROR;
             string() = error_msg(index_view,"is not an integral value so it cannot be used as an index.");
             break;
         }
@@ -1644,7 +1644,7 @@ Result::evaluate( const T & tree_view
         if( var_type == Context::Type::UNDEFINED )
         {
             wasp_tagged_line("undefined type error");
-            m_type = Context::Type::ERROR;
+            m_type = Context::Type::WEC_ERROR;
             string() = error_msg(tree_view,"is undefined at index "+std::to_string(index)+".");
         }
         // name [ index ]  - 4 children
@@ -1698,19 +1698,19 @@ Result::evaluate( const T & tree_view
                 string() = value.string();
                 context.store(var_name,index,string());
                 break;
-            case Context::Type::ERROR:
+            case Context::Type::WEC_ERROR:
                 m_type = value.m_type;
                 string() = value.string();
                 break;
             default:
                 wasp_tagged_line("unknown object error");
-                m_type = Context::Type::ERROR;
+                m_type = Context::Type::WEC_ERROR;
                 string() = error_msg(tree_view,"is an unknown object scenario.");
                 break;
             }
         }else{
             wasp_tagged_line("unknown object reference pattern");
-            m_type = Context::Type::ERROR;
+            m_type = Context::Type::WEC_ERROR;
             string() = error_msg(tree_view,"is not a known object reference pattern.");
             break;
         }
@@ -1727,7 +1727,7 @@ Result::evaluate( const T & tree_view
        {
            if( tree_view.child_count() < 4 )
            {
-               m_type = Context::Type::ERROR;
+               m_type = Context::Type::WEC_ERROR;
                string() = error_msg(tree_view,"reserved function 'defined' requires an argument!");
                break;
            }
@@ -1752,7 +1752,7 @@ Result::evaluate( const T & tree_view
        {
            if( tree_view.child_count() != 4 )
            {
-               m_type = Context::Type::ERROR;
+               m_type = Context::Type::WEC_ERROR;
                string() = error_msg(tree_view,"reserved function 'size' requires a single argument!");
                break;
            }
@@ -1765,7 +1765,7 @@ Result::evaluate( const T & tree_view
            // 'if' '(' a1 ',' a2 ',' a3 ')'
            if( tree_view.child_count() != 8 )
            {
-               m_type = Context::Type::ERROR;
+               m_type = Context::Type::WEC_ERROR;
                string() = error_msg(tree_view,"reserved function 'if' requires a 3 argument. if ( condition, if true, if false).");
                break;
            }
@@ -1801,7 +1801,7 @@ Result::evaluate( const T & tree_view
            if( function_args.back().is_error() )
            {
                function_args_error = true;
-               m_type = Context::Type::ERROR;
+               m_type = Context::Type::WEC_ERROR;
                string() = function_args.back().string();
                break;
            }
@@ -1814,7 +1814,7 @@ Result::evaluate( const T & tree_view
        Function * function = context.function(function_name);
        if ( function == nullptr )
        {
-           m_type = Context::Type::ERROR;
+           m_type = Context::Type::WEC_ERROR;
            string() = error_msg(tree_view,"function " + function_name + " does not exist");
            break;
        }
@@ -1842,7 +1842,7 @@ Result::evaluate( const T & tree_view
 
        if( eval_ok == false )
        {
-           m_type = Context::Type::ERROR;
+           m_type = Context::Type::WEC_ERROR;
            string() = error_msg(tree_view, "unable to interpret, "+errs.str());
        }
        break;
