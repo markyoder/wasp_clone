@@ -35,8 +35,8 @@
  ** Define the wasp::position class.
  */
 
-#ifndef YY_WASP_POSITION_HH_INCLUDED
-# define YY_WASP_POSITION_HH_INCLUDED
+#ifndef YY_YY_POSITION_HH_INCLUDED
+# define YY_YY_POSITION_HH_INCLUDED
 
 # include <algorithm> // std::max
 # include <iostream>
@@ -50,7 +50,7 @@
 #  endif
 # endif
 
-
+#line 35 "JSONObjectParser.bison" // location.cc:296
 namespace wasp {
 #line 56 "position.hh" // location.cc:296
   /// Abstract a position.
@@ -174,7 +174,7 @@ namespace wasp {
     return ostr << pos.line << '.' << pos.column;
   }
 
-
+#line 35 "JSONObjectParser.bison" // location.cc:296
 } // wasp
 #line 180 "position.hh" // location.cc:296
-#endif // !YY_WASP_POSITION_HH_INCLUDED
+#endif // !YY_YY_POSITION_HH_INCLUDED

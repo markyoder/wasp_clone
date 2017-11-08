@@ -15,6 +15,7 @@
 #include "waspjson/JSONObjectParser.hpp"
 #include "wasphalite/DataAccessor.h"
 #include "waspcore/wasp_bug.h"
+#include "waspcore/decl.h"
 
 namespace wasp {
     /**
@@ -28,7 +29,7 @@ namespace wasp {
      * @param defaultFuncs include default functions (sin, cos, tang,...)
      * @return true, iff the template expansion functions
      */
-    bool expand_template(std::ostream& result, std::ostream& elog, std::ostream& alog
+    WASP_PUBLIC bool expand_template(std::ostream& result, std::ostream& elog, std::ostream& alog
                          , const std::string & template_file
                          , const std::string & json_parameter_file = ""
             , bool defaultVars = false
@@ -36,7 +37,7 @@ namespace wasp {
 
     template<class S = TreeNodePool<unsigned short, unsigned short
                                     ,TokenPool<unsigned short,unsigned short, unsigned short>> >
-    class HaliteInterpreter : public Interpreter<S> {
+    class WASP_PUBLIC HaliteInterpreter : public Interpreter<S> {
     public:
         typedef S Storage_type;
         typedef std::shared_ptr<HaliteInterpreter> SharedPtr;
@@ -372,7 +373,7 @@ namespace wasp {
     }; // end of HaliteInterpreter class
 #include "wasphalite/HaliteInterpreter.i.h"
 
-    inline bool expand_template(std::ostream &result, std::ostream &elog
+    inline WASP_PUBLIC bool expand_template(std::ostream &result, std::ostream &elog
                          , std::ostream &alog, const std::string &template_file
                          , const std::string &json_parameter_file
                                 , bool defaultVars

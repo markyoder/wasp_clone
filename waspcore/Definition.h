@@ -2,6 +2,7 @@
 #define WASP_DEFINITION_H
 
 #include "waspcore/wasp_bug.h"
+#include "waspcore/decl.h"
 #include <set>
 #include <string>
 #include <memory>
@@ -18,7 +19,7 @@ struct def_compare {
         return lhs->name() < rhs->name();
     }
 };
-class AbstractDefinition{
+class WASP_PUBLIC AbstractDefinition{
 public:
     typedef std::shared_ptr<AbstractDefinition> SP;
     virtual ~AbstractDefinition(){}
@@ -34,7 +35,7 @@ public:
     virtual const std::string &        actual_name()const=0;
 };
 
-class Definition : public AbstractDefinition{
+class WASP_PUBLIC Definition : public AbstractDefinition{
 public:
     Definition(const std::string& name="");
     ~Definition();   
@@ -111,7 +112,7 @@ private:
     std::set<AbstractDefinition*, def_compare<AbstractDefinition>> m_children;
 
 };
-class AliasedDefinition : public AbstractDefinition{
+class WASP_PUBLIC AliasedDefinition : public AbstractDefinition{
 public:
     AliasedDefinition(const std::string & name, AbstractDefinition * definition)
         : AbstractDefinition(), m_definition(definition), m_name(name)

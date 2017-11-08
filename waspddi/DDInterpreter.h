@@ -19,13 +19,15 @@
 #include "waspcore/Interpreter.h"
 #include "waspcore/Definition.h"
 
+#include "waspcore/decl.h"
+
 /** The wasp namespace is used to encapsulate the three parser classes
  * wasp::DDIParser, wasp::DDILexerImpl and wasp::DDIInterpreter */
 namespace wasp {
 
     template<class S = TreeNodePool<unsigned short, unsigned short
                                     ,TokenPool<unsigned short,unsigned short, unsigned short>> >
-    class DDInterpreter : public Interpreter<S> {
+    class WASP_PUBLIC DDInterpreter : public Interpreter<S> {
     public:
         typedef S Storage_type;
         typedef std::shared_ptr<DDInterpreter> SharedPtr;
@@ -76,7 +78,7 @@ namespace wasp {
          * @brief traceParsing - variable available for verbosely debugging parsing logic
          * @note '%debug' must be specified in the '.bison' grammar file
          */
-        bool traceParsing;       
+        bool traceParsing;
 
         /**
          * @brief hasFile indicates whether this parser's stream name is a file path

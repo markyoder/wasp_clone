@@ -37,14 +37,15 @@
 
 // C++ LALR(1) parser skeleton written by Akim Demaille.
 
-#ifndef YY_WASP_EXPRPARSER_HPP_INCLUDED
-# define YY_WASP_EXPRPARSER_HPP_INCLUDED
+#ifndef YY_YY_EXPRPARSER_HPP_INCLUDED
+# define YY_YY_EXPRPARSER_HPP_INCLUDED
 // //                    "%code requires" blocks.
 #line 9 "Expr.bison" // lalr1.cc:377
 
 #include <memory>
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h"
+#include "waspcore/decl.h"
 
 #line 50 "ExprParser.hpp" // lalr1.cc:377
 
@@ -116,7 +117,7 @@
 # define YYDEBUG 0
 #endif
 
-
+#line 33 "Expr.bison" // lalr1.cc:377
 namespace wasp {
 #line 122 "ExprParser.hpp" // lalr1.cc:377
 
@@ -125,14 +126,14 @@ namespace wasp {
 
 
   /// A Bison parser.
-  class ExprParser
+  class WASP_PUBLIC ExprParser
   {
   public:
 #ifndef YYSTYPE
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 60 "Expr.bison" // lalr1.cc:377
+    #line 61 "Expr.bison" // lalr1.cc:377
 
     std::size_t token_index;
     std::size_t node_index;
@@ -510,11 +511,11 @@ namespace wasp {
   };
 
 
-
+#line 33 "Expr.bison" // lalr1.cc:377
 } // wasp
 #line 516 "ExprParser.hpp" // lalr1.cc:377
 
 
 
 
-#endif // !YY_WASP_EXPRPARSER_HPP_INCLUDED
+#endif // !YY_YY_EXPRPARSER_HPP_INCLUDED

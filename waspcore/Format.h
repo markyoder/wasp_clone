@@ -1,6 +1,7 @@
 #ifndef WASPCORE_FORMAT_H
 #define WASPCORE_FORMAT_H
 #include "waspcore/wasp_bug.h"
+#include "waspcore/decl.h"
 #include <ctype.h>
 #include <cmath>
 #include <string>
@@ -14,7 +15,7 @@ namespace wasp{
     /**
      * @brief The Format class is a static class to privatize implementation details
      */
-    class Format{
+    class WASP_PUBLIC Format{
 
     public:
 

@@ -37,8 +37,8 @@
 
 // C++ LALR(1) parser skeleton written by Akim Demaille.
 
-#ifndef YY_WASP_JSONOBJECTPARSER_HPP_INCLUDED
-# define YY_WASP_JSONOBJECTPARSER_HPP_INCLUDED
+#ifndef YY_YY_JSONOBJECTPARSER_HPP_INCLUDED
+# define YY_YY_JSONOBJECTPARSER_HPP_INCLUDED
 // //                    "%code requires" blocks.
 #line 10 "JSONObjectParser.bison" // lalr1.cc:377
 
@@ -46,6 +46,7 @@
 #include <utility>
 #include "waspcore/utils.h"
 #include "waspcore/Object.h"
+#include "waspcore/decl.h"
 
 #line 51 "JSONObjectParser.hpp" // lalr1.cc:377
 
@@ -117,7 +118,7 @@
 # define YYDEBUG 0
 #endif
 
-
+#line 35 "JSONObjectParser.bison" // lalr1.cc:377
 namespace wasp {
 #line 123 "JSONObjectParser.hpp" // lalr1.cc:377
 
@@ -126,14 +127,14 @@ namespace wasp {
 
 
   /// A Bison parser.
-  class JSONObjectParser
+  class WASP_PUBLIC JSONObjectParser
   {
   public:
 #ifndef YYSTYPE
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 62 "JSONObjectParser.bison" // lalr1.cc:377
+    #line 63 "JSONObjectParser.bison" // lalr1.cc:377
 
     bool boolean;
     int integer;
@@ -495,11 +496,11 @@ namespace wasp {
   };
 
 
-
+#line 35 "JSONObjectParser.bison" // lalr1.cc:377
 } // wasp
 #line 501 "JSONObjectParser.hpp" // lalr1.cc:377
 
 
 
 
-#endif // !YY_WASP_JSONOBJECTPARSER_HPP_INCLUDED
+#endif // !YY_YY_JSONOBJECTPARSER_HPP_INCLUDED

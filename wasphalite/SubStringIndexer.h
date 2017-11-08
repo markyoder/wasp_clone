@@ -5,9 +5,11 @@
 #include <string>
 #include <utility>
 
+#include "waspcore/decl.h"
+
 namespace wasp{
 
-class SubStringIndexer{
+class WASP_PUBLIC SubStringIndexer{
 
 public:
     typedef std::vector<size_t> Index_type;

@@ -19,6 +19,7 @@
 #endif
 
 #include "SONParser.hpp"
+#include "waspcore/decl.h"
 #include "waspcore/wasp_node.h"
 namespace wasp {
 
@@ -27,7 +28,7 @@ namespace wasp {
  * macros to SONLexer. However we change the context of the generated
  * yylex() function to be contained within the SONLexerImpl class. This is required
  * because the yylex() defined in SONLexer has no parameters. */
-class SONLexerImpl : public SONFlexLexer
+class WASP_PUBLIC SONLexerImpl : public SONFlexLexer
 {
 public:
     /** Create a new scanner object. The streams arg_yyin and arg_yyout default

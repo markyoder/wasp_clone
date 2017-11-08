@@ -10,6 +10,7 @@
 %code requires{
 #include <memory>
 #include "waspcore/utils.h"
+#include "waspcore/decl.h"
 }
 
 /* Require BISON 3 or later */
@@ -29,7 +30,8 @@
 %skeleton "lalr1.cc"
 
 /* namespace to enclose parser in */
-%name-prefix "wasp"
+%define api.namespace  {wasp}
+/* %name-prefix "wasp" */
 
 /* set the parser's class identifier */
 %define parser_class_name {SIRENParser}
@@ -379,7 +381,7 @@ exp : component
         $$ = interpreter.push_parent(interpreter.type(op_i)
                                         ,"value"
                                         ,child_indices);
-    }    
+    }
     | lparen exp rparen %prec "exp"
     {
         size_t left_i = ($1);

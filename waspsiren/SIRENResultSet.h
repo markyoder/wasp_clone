@@ -2,6 +2,7 @@
 #define SIREN_SIRENRESULTSET_H
 #include <string>
 #include <vector>
+#include "waspcore/decl.h"
 namespace wasp{
 
 /**
@@ -9,7 +10,7 @@ namespace wasp{
  *
  */
 template< typename TAdapter >
-class SIRENResultSet{
+class WASP_PUBLIC SIRENResultSet{
 public:
     typedef std::pair<std::string,std::string> ScalarResult;
     SIRENResultSet();

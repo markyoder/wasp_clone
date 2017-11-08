@@ -6,10 +6,11 @@
 #include "waspcore/Object.h"
 #include "waspcore/TokenPool.h"
 #include "wasphalite/HaliteInterpreter.h"
+#include "waspcore/decl.h"
 
 namespace wasp {
 
-class HaliteWorkflow
+class WASP_PUBLIC HaliteWorkflow
 {
 private:
     bool m_use_default_variables = false;

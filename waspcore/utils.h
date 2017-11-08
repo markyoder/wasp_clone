@@ -8,6 +8,7 @@
 #include <iostream>
 #include <iomanip>
 #include <stdio.h> // windows exponent configure
+#include "waspcore/decl.h"
 
 namespace wasp{
     /**
@@ -15,7 +16,7 @@ namespace wasp{
      * @param s the string to have the quotes removes from.
      * @return a string with 1 set of single or double quotes removed
      */
-    std::string strip_quotes( const std::string & s);
+    WASP_PUBLIC std::string strip_quotes( const std::string & s);
 
     /**
      * @brief trim removes the given character set leading and trailing from the given string
@@ -23,14 +24,14 @@ namespace wasp{
      * @param char_set the set of characters to be remove
      * @return the string with all leading and trailing character set removed
      */
-    std::string trim(  std::string s, const std::string& char_set);
+    WASP_PUBLIC std::string trim(  std::string s, const std::string& char_set);
 
     /**
      * @brief dir_name convenience method to acquire the directory name for the given path
      * @param path the path from which the directory name will be acquired
      * @return path minus the last '/name' or \\name
      */
-    std::string dir_name(const std::string& path);
+    WASP_PUBLIC std::string dir_name(const std::string& path);
     /**
      * @brief xml_escape_data replaces string with escaped versions of the five
      * characters that must be escaped in XML document data ( &, \, ", <, > )
@@ -38,7 +39,7 @@ namespace wasp{
      * @param src the string in which to have the characters escaped
      * @return a string with characters escaped
      */
-    std::string xml_escape_data(const std::string& src);
+    WASP_PUBLIC std::string xml_escape_data(const std::string& src);
     /**
      * @brief xml_escape_name replaces string with versions that will parse
      * as node names in xml
@@ -46,7 +47,7 @@ namespace wasp{
      * @param src the string in which to have the characters replaced
      * @return a string with characters replaced
      */
-    std::string xml_escape_name(const std::string& src);
+    WASP_PUBLIC std::string xml_escape_name(const std::string& src);
 
     /**
      * @brief to_type acquire the data typed as the requested type
@@ -54,7 +55,7 @@ namespace wasp{
      * @param ok optional boolean return value indicating if conversion was successful.
      */
     template<typename T>
-    void to_type(T & result
+    WASP_PUBLIC void to_type(T & result
                  , const std::string & data
                  , bool * ok=nullptr)
     {
@@ -67,7 +68,7 @@ namespace wasp{
      *Specialization on string so as to avoid whitespace issues in stream operator>>
      */
     template<>
-    inline void to_type<std::string>(std::string & result
+    inline WASP_PUBLIC void to_type<std::string>(std::string & result
                               ,const std::string & data
                               , bool * ok)
     {
@@ -75,7 +76,7 @@ namespace wasp{
         if( ok ) *ok = true;
     }
     template<>
-    inline void to_type<int>(int & result
+    inline WASP_PUBLIC void to_type<int>(int & result
                               , const std::string& data
                               , bool * ok)
     {
@@ -89,7 +90,7 @@ namespace wasp{
         }
     }
     template<>
-    inline void to_type<double>(double& result
+    inline WASP_PUBLIC void to_type<double>(double& result
                               , const std::string& data
                               , bool * ok)
     {
@@ -119,7 +120,7 @@ namespace wasp{
      * @param space amount of whitespace to prefix to a line
      */
     template<class TAdapter>
-    inline void to_xml(const TAdapter& node, std::ostream & out, bool emit_decorative=true, std::string space="")
+    inline WASP_PUBLIC void to_xml(const TAdapter& node, std::ostream & out, bool emit_decorative=true, std::string space="")
     {
         bool decorative = node.is_decorative();
         if( decorative && !emit_decorative ) return;
@@ -151,7 +152,7 @@ namespace wasp{
      * NOTE: gratefully acquired from :
      * http://www.geeksforgeeks.org/wildcard-character-matching/
      */
-    inline bool wildcard_string_match(const char *first, const char * second)
+    inline WASP_PUBLIC bool wildcard_string_match(const char *first, const char * second)
     {
         // If we reach at the end of both strings, we are done
         if (*first == '\0' && *second == '\0')
@@ -177,7 +178,7 @@ namespace wasp{
         return false;
     }
     template<class TV>
-    std::string info( const TV & view )
+    WASP_PUBLIC std::string info( const TV & view )
     {
         if( view.is_null() ) return "@TreeView(null)";
         else return "@TreeView(l="+std::to_string(view.line())

@@ -12,6 +12,7 @@
 #include <utility>
 #include "waspcore/utils.h"
 #include "waspcore/Object.h"
+#include "waspcore/decl.h"
 }
 
 /* Require bison 3 or later */
@@ -31,7 +32,8 @@
 %skeleton "lalr1.cc"
 
 /* namespace to enclose parser in */
-%name-prefix "wasp"
+/* %name-prefix "wasp" */
+%define api.namespace {wasp}
 
 /* set the parser's class identifier */
 %define parser_class_name {JSONObjectParser}
@@ -170,9 +172,9 @@ array :
 object : '{' '}'
     {
         $$ = new Value(DataObject());
-    }    
+    }
     |  '{' END
-    {        
+    {
         error(@2, "is an unmatched left brace!");
         YYERROR;
         $$ = nullptr;
@@ -184,7 +186,7 @@ object : '{' '}'
         delete $2;
         YYERROR;
         $$ = nullptr;
-    }    
+    }
     | '{' object_members '}'
     {
         $$ = new Value();
@@ -253,7 +255,7 @@ object_members : keyed_member
             $$->push_back($3->front());
             delete $3;
         }
-start   : /** empty **/        
+start   : /** empty **/
         | object{
             wasp_check( $1->is_object() );
             root.reset($1->to_object());

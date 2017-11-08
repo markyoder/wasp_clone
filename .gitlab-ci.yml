@@ -77,13 +77,19 @@ windows_vs2013_testing:
   script:
     - .\ci\vs2013_test.bat
 
+windows_shared_vs2013_testing:
+  tags:
+    - vs2013
+  script:
+    - .\ci\vs2013_shared_test.bat
+
 windows_intel15_testing:
   tags:
     - intel15
     - ninja
     - nsis
   script:
-    - .\ci\windows_intel15_test.bat 
+    - .\ci\windows_intel15_test.bat
   artifacts:
     paths:
       - "WASP*.exe"

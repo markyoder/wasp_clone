@@ -10,6 +10,7 @@
 %code requires{
 #include <memory>
 #include "waspcore/utils.h"
+#include "waspcore/decl.h"
 }
 
 /* Require bison 3 or later */
@@ -29,7 +30,8 @@
 %skeleton "lalr1.cc"
 
 /* namespace to enclose parser in */
-%name-prefix "wasp"
+/* %name-prefix "wasp" */
+%define api.namespace {wasp}
 
 /* set the parser's class identifier */
 %define parser_class_name {SONParser}
@@ -378,7 +380,7 @@ exp : component
         $$ = interpreter.push_parent(interpreter.type(op_i)
                                         ,"value"
                                         ,child_indices);
-    }    
+    }
     | lparen exp rparen %prec "exp"
     {
         size_t left_i = ($1);
@@ -547,7 +549,7 @@ object : declaration lbrace rbrace
             ,wasp::strip_quotes(interpreter.data($1->front())).c_str()
             ,*$1);
         delete $1;
-    }    
+    }
     | declaration lbrace END
     {
         $1->push_back($2);
@@ -684,8 +686,8 @@ members :
             $$ = $1;
             $$->push_back($2);
         }
-     
-array_members : 
+
+array_members :
         exp
         {
             $$ = new std::vector<size_t>();

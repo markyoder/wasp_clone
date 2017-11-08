@@ -37,14 +37,15 @@
 
 // C++ LALR(1) parser skeleton written by Akim Demaille.
 
-#ifndef YY_WASP_GETPOTPARSER_HPP_INCLUDED
-# define YY_WASP_GETPOTPARSER_HPP_INCLUDED
+#ifndef YY_YY_GETPOTPARSER_HPP_INCLUDED
+# define YY_YY_GETPOTPARSER_HPP_INCLUDED
 // //                    "%code requires" blocks.
 #line 10 "GetPot.bison" // lalr1.cc:377
 
 #include <memory>
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h"
+#include "waspcore/decl.h"
 
 #line 50 "GetPotParser.hpp" // lalr1.cc:377
 
@@ -116,7 +117,7 @@
 # define YYDEBUG 0
 #endif
 
-
+#line 34 "GetPot.bison" // lalr1.cc:377
 namespace wasp {
 #line 122 "GetPotParser.hpp" // lalr1.cc:377
 
@@ -125,14 +126,14 @@ namespace wasp {
 
 
   /// A Bison parser.
-  class GetPotParser
+  class WASP_PUBLIC GetPotParser
   {
   public:
 #ifndef YYSTYPE
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 61 "GetPot.bison" // lalr1.cc:377
+    #line 62 "GetPot.bison" // lalr1.cc:377
 
     std::size_t token_index;
     std::size_t node_index;
@@ -503,11 +504,11 @@ namespace wasp {
   };
 
 
-
+#line 34 "GetPot.bison" // lalr1.cc:377
 } // wasp
 #line 509 "GetPotParser.hpp" // lalr1.cc:377
 
 
 
 
-#endif // !YY_WASP_GETPOTPARSER_HPP_INCLUDED
+#endif // !YY_YY_GETPOTPARSER_HPP_INCLUDED

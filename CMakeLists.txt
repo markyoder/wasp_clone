@@ -23,6 +23,9 @@ ENDIF()
 IF(WASP_DBC)
    ADD_DEFINITIONS("-DWASP_DBC=${WASP_DBC}")
 ENDIF()
+IF(BUILD_SHARED_LIBS)
+   ADD_DEFINITIONS("-DBUILD_SHARED")
+ENDIF()
 
 IF (NOT TRIBITS_PROCESSING_PACKAGE)
   # This CMakeLists.txt file is being processed as the wasp TriBITS projects's base
@@ -47,6 +50,14 @@ IF (NOT TRIBITS_PROCESSING_PACKAGE)
   # default MPI support off
   IF(NOT TPL_ENABLE_MPI)
     SET(TPL_ENABLE_MPI OFF CACHE BOOL "Enable MPI support")
+  ENDIF()
+  #
+  # For windows with BUILD_SHARED_LIBS we must use CMAKE_RUNTIME_OUTPUT_DIRECTORY
+  # to place all *dll and *exe in the same directory so unit tests will work
+  IF("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" AND BUILD_SHARED_LIBS)
+    IF(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+      SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/cmake_runtime_output" CACHE STRING "")
+    ENDIF()
   ENDIF()
 
   TRIBITS_PROJECT_ENABLE_ALL()

@@ -20,6 +20,8 @@
 
 #include "DDIParser.hpp"
 #include "waspcore/wasp_node.h"
+
+#include "waspcore/decl.h"
 namespace wasp {
 
 /** DDILexerImpl is a derived class to add some extra function to the scanner
@@ -27,7 +29,7 @@ namespace wasp {
  * macros to DDILexer. However we change the context of the generated
  * yylex() function to be contained within the DDILexerImpl class. This is required
  * because the yylex() defined in DDILexer has no parameters. */
-class DDILexerImpl : public DDIFlexLexer
+class WASP_PUBLIC DDILexerImpl : public DDIFlexLexer
 {
 public:
     /** Create a new scanner object. The streams arg_yyin and arg_yyout default
@@ -47,7 +49,7 @@ public:
        DDIParser::semantic_type* yylval,
        DDIParser::location_type* yylloc
        );
-    
+
     /** Enable debug output (via arg_yyout) if compiled into the scanner. */
     void set_debug(bool b);
     /**

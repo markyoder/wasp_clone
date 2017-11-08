@@ -2,6 +2,8 @@
 #define WASP_STRINGPOOL_H
 #include <vector>
 #include <iostream>
+#include "waspcore/decl.h"
+
 namespace wasp{
 /**
  * @brief default_token_index_type_size
@@ -12,7 +14,7 @@ typedef unsigned int default_token_index_type_size;
  * This data consists of indexed null terminated character array data. 
  */ 
 template<typename token_index_type_size = default_token_index_type_size>
-class StringPool{
+class WASP_PUBLIC StringPool{
   public:    
     typedef token_index_type_size index_type_size;
     StringPool();

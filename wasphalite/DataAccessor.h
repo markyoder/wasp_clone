@@ -3,13 +3,14 @@
 
 #include "waspcore/Object.h"
 #include "waspexpr/ExprContext.h"
+#include "waspcore/decl.h"
 
 namespace wasp{
 
 /**
  * @brief The DataAccessor class is design as the intersection of data, the halite engine, and the expression engine
  */
-class DataAccessor : public Context {
+class WASP_PUBLIC DataAccessor : public Context {
 
 public:
     DataAccessor(DataObject * data=nullptr, DataAccessor * parent = nullptr);

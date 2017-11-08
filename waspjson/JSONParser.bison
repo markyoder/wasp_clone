@@ -10,6 +10,7 @@
 %code requires{
 #include <memory>
 #include "waspcore/utils.h"
+#include "waspcore/decl.h"
 }
 
 /* Require bison 3 or later */
@@ -29,7 +30,9 @@
 %skeleton "lalr1.cc"
 
 /* namespace to enclose parser in */
-%name-prefix "wasp"
+/* %name-prefix "wasp" */
+%define api.namespace {wasp}
+
 
 /* set the parser's class identifier */
 %define parser_class_name {JSONParser}
@@ -193,7 +196,7 @@ array :
         $$ = nullptr;
     }
     | lbracket array_members rbracket
-    {            
+    {
             $array_members->insert($array_members->begin(),$1);
             $array_members->push_back($3);
             $$ = $array_members;
@@ -203,9 +206,9 @@ object : lbrace rbrace
         $$ = new std::vector<size_t>();
         $$->push_back($1);
         $$->push_back($2);
-    }    
+    }
     |  lbrace END
-    {        
+    {
         error(@2, "object has unmatched left brace!");
         YYERROR;
         $$ = nullptr;
@@ -221,7 +224,7 @@ object : lbrace rbrace
         delete $2;
         YYERROR;
         $$ = nullptr;
-    }    
+    }
     | lbrace object_members rbrace
     {
         $object_members->insert($object_members->begin(),$1);
@@ -350,7 +353,7 @@ object_members : keyed_object
             $$->push_back($2);
             $$->push_back($3);
         }
-start   : /** empty **/        
+start   : /** empty **/
         | object{
             interpreter.staged_type(0) = wasp::OBJECT;
             interpreter.push_staged_child(*$object);

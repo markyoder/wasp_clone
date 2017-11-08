@@ -10,6 +10,7 @@
 #include <map>
 #include <type_traits>
 #include "waspcore/utils.h"
+#include "waspcore/decl.h"
 #include "waspcore/wasp_node.h"
 #include <algorithm>
 
@@ -18,7 +19,7 @@ namespace wasp {
 /**
  * @brief The Context class provides variable capability
  */
-class Context{
+class WASP_PUBLIC Context{
 public:
     // type of the context
     enum Type : unsigned char{
@@ -446,7 +447,7 @@ private:
 /**
  * @brief The Result class simple class for evaluating an expression
  */
-class Result{
+class WASP_PUBLIC Result{
 public:
     Result():m_type(Context::Type::UNDEFINED){}
     Result(const Result& orig)
@@ -1111,7 +1112,7 @@ private:
 /**
  * @brief The Function class wraps Context accessible functions
  */
-class Function{
+class WASP_PUBLIC Function{
 public:
     typedef std::vector<Result> Args;
     virtual Context::Type type()const=0;
@@ -1141,7 +1142,7 @@ public:
         wasp_not_implemented("Function::string");
     }
 };
-class RealFunction : public Function
+class WASP_PUBLIC RealFunction : public Function
 {
 public:
     typedef std::vector<Result> Args;
@@ -1165,7 +1166,7 @@ public:
         return to_string(real(args,err,ok));
     }
 };
-class IntegerFunction : public Function
+class WASP_PUBLIC IntegerFunction : public Function
 {
 public:
     typedef std::vector<Result> Args;
@@ -1189,7 +1190,7 @@ public:
         return to_string(integer(args,err,ok));
     }
 };
-class StringFunction : public Function
+class WASP_PUBLIC StringFunction : public Function
 {
 public:
     typedef std::vector<Result> Args;
@@ -1216,7 +1217,7 @@ public:
                                , std::ostream & err
                                , bool * ok=nullptr)const=0;
 };
-class FFmt : public StringFunction
+class WASP_PUBLIC FFmt : public StringFunction
 {
 public:
     typedef std::vector<Result> Args;
@@ -1251,7 +1252,7 @@ public:
     }
 };
 #define WASP_INTEGER_FUNCTION_1ARG(NAME, XTENS, CALL) \
-class NAME: public XTENS \
+class WASP_PUBLIC NAME: public XTENS \
 {  \
 public: \
     typedef std::vector<Result> Args; \
@@ -1278,7 +1279,7 @@ public: \
 };
 
 #define WASP_REAL_FUNCTION_1ARG(NAME, XTENS, CALL) \
-class NAME: public XTENS \
+class WASP_PUBLIC NAME: public XTENS \
 {  \
 public: \
     typedef std::vector<Result> Args; \
@@ -1337,7 +1338,7 @@ WASP_REAL_FUNCTION_1ARG(FRound, RealFunction, std::floor(0.5+a.number()))
 WASP_REAL_FUNCTION_1ARG(FAbs, RealFunction, std::abs(a.number()))
 
 #define WASP_REAL_FUNCTION_2ARG(NAME, XTENS, CALL) \
-class NAME: public XTENS \
+class WASP_PUBLIC NAME: public XTENS \
 {  \
 public: \
     typedef std::vector<Result> Args; \
@@ -1368,7 +1369,7 @@ WASP_REAL_FUNCTION_2ARG(FMin, RealFunction, std::min(a1.number(),a2.number()))
 WASP_REAL_FUNCTION_2ARG(FMax, RealFunction, std::max(a1.number(),a2.number()))
 
 #define WASP_INTEGER_FUNCTION_2ARG(NAME, XTENS, CALL) \
-class NAME: public XTENS \
+class WASP_PUBLIC NAME: public XTENS \
 {  \
 public: \
     typedef std::vector<Result> Args; \
