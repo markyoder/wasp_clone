@@ -33,6 +33,8 @@ public:
 
     bool parseTemplate(std::istream& template_stream
                        , std::ostream& error_stream);
+    bool parseTemplateFile(const std::string& template_file
+                       , std::ostream& error_stream);
 
     bool renderTemplate(const DataObject::SP& parameters
                         , std::ostream& output_stream

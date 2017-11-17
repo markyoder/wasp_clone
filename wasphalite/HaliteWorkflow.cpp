@@ -38,6 +38,18 @@ bool HaliteWorkflow::parseTemplate(std::istream& template_stream
                      << m_template_parse_result);
     return m_template_parse_result;
 }
+bool HaliteWorkflow::parseTemplateFile(const std::string& template_file
+                                   , std::ostream& error_stream)
+{
+    wasp_tagged_line("parsing template stream...");
+    m_halite_interpreter = std::make_shared<halite_interp_type>(error_stream);
+
+    m_template_parse_result = m_halite_interpreter->parseFile(template_file);
+    wasp_tagged_line("\ttemplate parse result "
+                     << std::boolalpha
+                     << m_template_parse_result);
+    return m_template_parse_result;
+}
 
 bool HaliteWorkflow::renderTemplate(const DataObject::SP& parameters
                                     , std::ostream& output_stream
