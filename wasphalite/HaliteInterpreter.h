@@ -159,10 +159,11 @@ namespace wasp {
 
         class SubstitutionOptions{
         public:
-            SubstitutionOptions():m_separator(" ")
+            SubstitutionOptions():m_emit({"",0}), m_separator(" ")
               ,m_optional(false), m_silent(false){}
             SubstitutionOptions(const SubstitutionOptions&orig)
-                :m_format(orig.m_format)
+                :m_emit(orig.m_emit)
+                ,m_format(orig.m_format)
                 ,m_use(orig.m_use)
                 ,m_separator(orig.m_separator)
                 ,m_optional(orig.m_optional)
@@ -172,6 +173,13 @@ namespace wasp {
             bool has_format()const{return m_format.empty() == false;}
             const std::string& format()const{return m_format;}
             std::string& format(){return m_format;}
+
+            bool has_emit()const{return m_emit.second != 0; }
+            int& emit_stride(){return m_emit.second;}
+            const int& emit_stride() const {return m_emit.second;}
+            std::string& emit_delim(){return m_emit.first;}
+            const std::string& emit_delim() const {return m_emit.first;}
+
 
             /**
              * @brief has_use determine whether the substitution has an object scope to use
@@ -193,8 +201,25 @@ namespace wasp {
             const std::vector<Range> & ranges()const{return m_ranges;}
             std::vector<Range> & ranges(){return m_ranges;}
 
+            void reset_emit_count_down()
+            {
+
+                m_emit_count_down = emit_stride();
+
+            }
+            /**
+             * @brief emit determine if the emit delimiter should be emitted
+             * @return true, iff emit is present and has iterated sufficiently
+             */
+            bool emit()const{ return has_emit() && m_emit_count_down == 0; }
             void initialize(DataAccessor& d)
             {
+                // if delimiter emission is present
+                // initialize the iterator
+                if( has_emit() )
+                {
+                    reset_emit_count_down();
+                }
                 m_index.resize(m_ranges.size());
                 for( size_t i = 0; i < m_ranges.size(); ++i)
                 {
@@ -226,6 +251,15 @@ namespace wasp {
                     {
                         m_index[i]+=m_ranges[i].stride;
                         d.store(m_ranges[i].name,m_index[i]);
+                        if( has_emit() )
+                        {
+                            if( m_emit_count_down == 0 )
+                            {
+                                reset_emit_count_down();
+                            }
+                            --m_emit_count_down;
+                            wasp_tagged_line("next  delimiter emission count down of "<<m_emit_count_down );
+                        }
                         wasp_tagged_line("next "<<m_ranges[i].name<<"="<<m_index[i]);
                         return true;
                     }
@@ -245,6 +279,11 @@ namespace wasp {
             }
 
           private:
+            // The delimiter to emit and the stride at which to emit
+            // delim='\n' and stride=5 will emit '\n' every 5th iteration
+            std::pair<std::string, int> m_emit;
+            // The current emit iterator, counting down to zero
+            int m_emit_count_down;
             // format of the substitution
             std::string m_format;
             std::string m_use;

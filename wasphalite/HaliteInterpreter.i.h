@@ -743,7 +743,16 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
             auto result = expr.evaluate(layer);
             if( !process_result(result, options, line, out) ) return false;
             if( !options.next(layer) ) break;
-            out<<options.separator();
+            // if delimiter is not to be emitted (the common case)
+            // emit the separator
+            if( !options.emit() )
+            {
+                out<<options.separator();
+            }
+            else{ // else emit the delimiter
+                wasp_tagged_line("Emitting stride delimiter...");
+                out<<options.emit_delim();
+            }
         }
     }
     auto last_attr_component = attr_view.child_at(attr_view.child_count()-1);
@@ -1496,10 +1505,11 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
         ,size_t line)
 {
     wasp_tagged_line("getting options for '"<<data<<"'");
-    static std::string fmt = "fmt=", sep="sep=", use="use=";
+    static std::string fmt = "fmt=", sep="sep=", use="use=", emit="emit=";
     size_t format_i = data.find(fmt);
     size_t separator_i = data.find(sep);
     size_t use_i = data.find(use);
+    size_t emit_i = data.find(emit);
     std::stringstream iterative_options_str;
     size_t start_i=1;
     if( data.size() > 1 )
@@ -1559,7 +1569,53 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
         options.use() = trim(data.substr(use_i+use.size(),length)," ");
         wasp_tagged_line("use of '"<<options.use()<<"' captured");
         // capture the use text
-        intervals.insert(std::make_pair(use_i,use_i+sep.size()+length+delim_s));
+        intervals.insert(std::make_pair(use_i,use_i+use.size()+length+delim_s));
+    }
+    if( emit_i != std::string::npos )
+    {
+        size_t term_i = data.find(';',emit_i);
+        size_t length = data.size() - (emit_i+emit.size());
+        size_t delim_s = 0;
+        if( term_i != std::string::npos )
+        {
+            length = term_i - (emit_i+emit.size());
+            delim_s = 1;
+        }
+        // emit is of the form emit=delim , stride
+        // delim is captured as a string
+        // stride must be a non-negative integer
+
+        options.emit_delim() = trim(data.substr(emit_i+emit.size(),length)," ");
+        wasp_tagged_line("emit of '"<<options.emit_delim()<<"' captured");
+        // TODO - what if emit_delim is a comma itself?
+        size_t comma_i = options.emit_delim().find(',');
+        if( comma_i != std::string::npos )
+        {
+            std::stringstream s_stride;
+            s_stride << options.emit_delim().substr(comma_i+1);
+            wasp_tagged_line("Emit stride identified as '"<<s_stride.str()<<"'");
+            options.emit_delim().erase(comma_i);
+            s_stride >> options.emit_stride();
+            if( s_stride.fail() )
+            {
+                Interpreter<S>::error_stream()
+                        <<"***Error : the emit stride failed to be processed on line "<<line
+                       <<". Looking for a non-negative integer, found '"<<s_stride.str()<<"'."<<std::endl;
+                return false;
+            }
+            else if( options.emit_stride() < 0 )
+            {
+                Interpreter<S>::error_stream()
+                        <<"***Error : the emit stride on line "<<line
+                       <<" must be a non-negative integer."
+                         " Found '"<<s_stride.str()<<"' processed as '"<<options.emit_stride()<<"'."<<std::endl;
+                return false;
+            }
+            wasp_tagged_line("Processed emit with delim='"<<options.emit_delim()<<"'"
+                             <<" and stride='"<<options.emit_stride()<<"'");
+        }
+        // capture the emit text
+        intervals.insert(std::make_pair(emit_i,emit_i+emit.size()+length+delim_s));
     }
     size_t last_i = start_i;    
     for( auto itr = intervals.begin(); itr != intervals.end(); itr++ )
