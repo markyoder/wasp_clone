@@ -610,7 +610,11 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
             // plain text to be printed for variable substitution
             case wasp::STRING:
             {
-                if( !has_options ) attr_str<<child_view.data();
+                if( !has_options ){
+                    wasp_tagged_line("capturing static attribute text of '"<<child_view.data()<<"'");
+                    line = new_line;
+                    attr_str<<child_view.data();
+                }
                 else options_str<<child_view.data();
             break;
             }

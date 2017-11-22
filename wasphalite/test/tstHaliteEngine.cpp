@@ -339,6 +339,38 @@ TEST( Halite, indirect_attribute_delim)
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "obj 3.14159", out.str() );
 }
+TEST( Halite, indirect_attribute_preceeding_static)
+{
+    std::stringstream input;
+    input<< R"INPUT(line1
+<jumperof<what>>
+line3)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["jumperofhurdles"]=std::string("olympian");
+    o["what"]=std::string("hurdles");
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "line1\nolympian\nline3", out.str() );
+}
+TEST( Halite, indirect_attribute_preceeding_static2)
+{
+    std::stringstream input;
+    input<< R"INPUT(line1
+line2<jumperof<what>>
+line3)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["jumperofhurdles"]=std::string("olympian");
+    o["what"]=std::string("hurdles");
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "line1\nline2olympian\nline3", out.str() );
+}
 TEST( Halite, indirect_attribute_non_uniform_delim)
 {
     std::stringstream input;
