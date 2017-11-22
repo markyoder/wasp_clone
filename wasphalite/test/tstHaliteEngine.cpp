@@ -1196,3 +1196,131 @@ action3
         ASSERT_EQ( expected.str(), out.str() );
     }
 }
+
+/**
+ * @brief TEST test that the emission of a configurable delimiter functions as expected
+ * The configurable delimiter allows for fixed width situations where
+ * at a given index stride a delimiter must be emitted, typically a newline.
+ */
+TEST( Halite, iterative_configurable_delimiter_emission)
+{
+    DataObject o;
+    DataAccessor data(&o);
+    data.add_default_variables(); // newline
+    o["times"] = DataArray();
+    o["times"][0] = 1;
+    o["times"][1] = 2;
+    o["times"][2] = 3;
+    o["times"][3] = 4;
+    o["times"][4] = 5;
+    { // test 5th element emission. No emission occurs
+        std::stringstream input;
+        input<< R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=<nl>,5>)INPUT";
+        HaliteInterpreter<> interpreter;
+        ASSERT_TRUE( interpreter.parse(input) );
+        std::stringstream out;
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        std::stringstream expected;
+        expected<<"1 2 3 4 5";
+        ASSERT_EQ( expected.str(), out.str() );
+    }
+//    { // test 5th element emission where line has newline. No emission occurs
+//        std::stringstream input;
+//        input<< R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=<nl>,5>
+//)INPUT";
+//        HaliteInterpreter<> interpreter;
+//        ASSERT_TRUE( interpreter.parse(input) );
+//        std::stringstream out;
+//        ASSERT_TRUE( interpreter.evaluate(out,data) );
+//        std::stringstream expected;
+//        expected<<"1 2 3 4 5"<<std::endl;
+//        ASSERT_EQ( expected.str(), out.str() );
+//    }
+    { // test 4th element emission. Emission occurs with an additional newline and no separator on new line
+        std::stringstream input;
+        input<< R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=<nl>,4>)INPUT";
+        HaliteInterpreter<> interpreter;
+        ASSERT_TRUE( interpreter.parse(input) );
+        std::stringstream out;
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        std::stringstream expected;
+        expected<<"1 2 3 4"<<std::endl<<"5";
+        EXPECT_EQ( expected.str(), out.str() );
+    }
+//    { // test 4th element emission where line has newline. Emission occurs with an additional newline and no separator on new line
+//        std::stringstream input;
+//        input<< R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=<nl>,4>
+//)INPUT";
+//        HaliteInterpreter<> interpreter;
+//        ASSERT_TRUE( interpreter.parse(input) );
+//        std::stringstream out;
+//        ASSERT_TRUE( interpreter.evaluate(out,data) );
+//        std::stringstream expected;
+//        expected<<"1 2 3 4"<<std::endl<<"5"<<std::endl;
+//        EXPECT_EQ( expected.str(), out.str() );
+//    }
+    { // test 6th element emission. No emission occurs
+        std::stringstream input;
+        input<< R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=<nl>,6>)INPUT";
+        HaliteInterpreter<> interpreter;
+        ASSERT_TRUE( interpreter.parse(input) );
+        std::stringstream out;
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        std::stringstream expected;
+        expected<<"1 2 3 4 5";
+        ASSERT_EQ( expected.str(), out.str() );
+    }
+    { // test fixed column block
+        std::stringstream input;
+        input<< R"INPUT(<j:j=10,0,-1;fmt=%2d;sep=;emit=# comment<nl>,2>)INPUT";
+        HaliteInterpreter<> interpreter;
+        ASSERT_TRUE( interpreter.parse(input) );
+        std::stringstream out;
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        std::stringstream expected;
+        expected<<"10 9# comment"<<std::endl
+                <<" 8 7# comment"<<std::endl
+                <<" 6 5# comment"<<std::endl
+                <<" 4 3# comment"<<std::endl
+                <<" 2 1# comment"<<std::endl
+                <<" 0";
+        ASSERT_EQ( expected.str(), out.str() );
+    }
+//    { // test 6th element emission where line has newline. No emission occurs
+//        std::stringstream input;
+//        input<< R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=<nl>,6>
+//)INPUT";
+//        HaliteInterpreter<> interpreter;
+//        ASSERT_TRUE( interpreter.parse(input) );
+//        std::stringstream out;
+//        ASSERT_TRUE( interpreter.evaluate(out,data) );
+//        std::stringstream expected;
+//        expected<<"1 2 3 4 5"<<std::endl;
+//        ASSERT_EQ( expected.str(), out.str() );
+//    }
+
+    { // test error of invalid range
+        std::stringstream input;
+        input<< R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=<nl>,-5>)INPUT";
+        std::stringstream errors;
+        HaliteInterpreter<> interpreter(errors);
+        ASSERT_TRUE( interpreter.parse(input) );
+        std::stringstream out;
+        ASSERT_FALSE( interpreter.evaluate(out,data) );
+        std::stringstream expected;
+        expected<<"***Error : the emit stride on line 1 must be a non-negative integer. Found '-5' processed as '-5'."<<std::endl;
+        ASSERT_EQ( expected.str(), errors.str() );
+    }
+    { // test error of fliped args
+        std::stringstream input;
+        input<< R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=5,ted>)INPUT";
+        std::stringstream errors;
+        HaliteInterpreter<> interpreter(errors);
+        ASSERT_TRUE( interpreter.parse(input) );
+        std::stringstream out;
+        ASSERT_FALSE( interpreter.evaluate(out,data) );
+        std::stringstream expected;
+        expected<<"***Error : the emit stride failed to be processed on line 1. Looking for a non-negative integer, found 'ted'."<<std::endl;
+        ASSERT_EQ( expected.str(), errors.str() );
+    }
+}
