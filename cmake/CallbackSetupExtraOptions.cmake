@@ -99,6 +99,7 @@ MACRO(TRIBITS_REPOSITORY_SETUP_EXTRA_OPTIONS)
   ########################################
   # INSTALLATION SETUP
   ########################################
+  install(FILES "${wasp_SOURCE_DIR}/LICENSE" DESTINATION .)
 
 ENDMACRO()
 
