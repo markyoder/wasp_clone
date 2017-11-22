@@ -176,7 +176,7 @@ namespace wasp {
 
             bool has_emit()const{return m_emit.second != 0; }
             int& emit_stride(){return m_emit.second;}
-            const int& emit_stride() const {return m_emit.second;}
+            int emit_stride() const {return m_emit.second;}
             std::string& emit_delim(){return m_emit.first;}
             const std::string& emit_delim() const {return m_emit.first;}
 
@@ -203,9 +203,7 @@ namespace wasp {
 
             void reset_emit_count_down()
             {
-
                 m_emit_count_down = emit_stride();
-
             }
             /**
              * @brief emit determine if the emit delimiter should be emitted
