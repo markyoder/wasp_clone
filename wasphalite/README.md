@@ -53,7 +53,7 @@ Example template attribute statements are:
 
 Formal attribute expression syntax appears as follows:
 
-` open_delim (name|expression) (':'['?''|'] format? separator? range* use? )? close_delim`
+` open_delim (name|expression) (':'['?''|'] format? separator? range* use? emit?)? close_delim`
 
 where 
 
@@ -63,9 +63,10 @@ where
 4. 2 and 3 are optional and mutually exclusive
 5. optional `format` is `'fmt=' format ';'`, and `format` is described in the [section](formatting) below
 6. optional `separator` is `'sep=' separator ';'`, and `separator` is emitted for all but the last evaluation iteration
-7. zero or more `range` specifications where a range looks like `range_variable '=' start[,end[,stride]];`. Start, optional end and stride must be integers or attributes convertable to integers
+7. zero or more `range` specifications where a range looks like `range_variable '=' start[,end[,stride]];`. Start, optional end and stride must be integers or attributes convertable to integers. See [Iterative Attributes](#iterative-attributes).
 8. the optional `use` statement facilitates scoped attribute access as depicted in [scoped attribute](#scoped-attribute) sections below
-9. `close_delim` is configurable, default of '>'
+9. the optional `emit` statement facilitates emission of a delimiter at a given iteration stride as depicted in [Iterative Attributes](#iterative-attributes) sections below.
+10. `close_delim` is configurable, default of '>'
 
 
 ### Silent Attributes
@@ -115,8 +116,6 @@ the following attribute patterns are legal:
 3. `array[2]` - 7
 4. `size(array)` - 4
 
-
-
 ### Example Attribute Pattern
 An example attribute substitution appears as follows:
 ```
@@ -127,6 +126,70 @@ or
 the <'fox speed'> <'fox color'> fox jumped over the <'dog color'> dog.
 ```
 Here the `FoxSpeed` or `'fox speed'` attributes might be 'quick' or 'fast', the `FoxColor` be 'red', and the `DogColor` or `'dog color'` be 'brown' or 'black.'
+
+### Iterative Attributes
+When an attribute is an array it can be iterated. This is facilitated by the `range`, `emit`, and `sep` attribute options.
+
+By default the `sep` is a single whitespace.
+
+The `range` construct appears as follows:
+
+```
+<array[i]: i=0,5> 
+```
+The `i` attribute iterates from 0 through 5 emitting the ith element of the `array` attribute.
+
+The range can also use a stride to skip elements:
+
+```
+<array[i]: i=0,5,2> 
+```
+
+Separating the elements by a comma is accomplished by adding the `sep` attribute option with the desired comma separator:
+
+
+```
+<array[i]: i=0,5;sep=,> 
+```
+
+In the special case that a newline is the separator, the intrinsic HALITE attribute `nl` can be used:
+
+```
+<array[i]: i=0,5;sep=<nl>> 
+```
+
+On occassion, the target application input is fixed width or contains a restricting column limit. In this situation the `emit` attribute option allows the emission of
+a configurable delimiter based on the iteration stride:
+
+```
+<array[i]: i=0,5;emit=<nl>,3> 
+```
+
+#### Fixed Width Iterative Attribute Example
+An example of a 72-column fixed-width text block is as follows:
+
+```
+<i: i=0,50; fmt=%8d; emit=# Comment<nl>,9; sep=; >
+```
+
+Which produces:
+
+```
+       0       1       2       3       4       5       6       7       8# Comment
+       9      10      11      12      13      14      15      16      17# Comment
+      18      19      20      21      22      23      24      25      26# Comment
+      27      28      29      30      31      32      33      34      35# Comment
+      36      37      38      39      40      41      42      43      44# Comment
+      45      46      47      48      49      50
+```
+
+Items to note are:
+1. The format statement indicates 8-column fixed attribute substitution.
+2. A delimiter of `# comment \n` is emitted every 9ths item.
+3. The separator has been specified as empty space to preserve the 72 column limit (9*8).
+
+
+
 
 ### Expressions
 The HALITE Engine uses the WASP [expression engine](/waspexpr) for expression evaluation which supports all regular math operators of 
