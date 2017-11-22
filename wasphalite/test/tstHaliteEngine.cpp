@@ -1270,6 +1270,22 @@ TEST( Halite, iterative_configurable_delimiter_emission)
         expected<<"1 2 3 4 5";
         ASSERT_EQ( expected.str(), out.str() );
     }
+    { // test fixed column block
+        std::stringstream input;
+        input<< R"INPUT(<j:j=10,0,-1;fmt=%2d;sep=;emit=# comment<nl>,2>)INPUT";
+        HaliteInterpreter<> interpreter;
+        ASSERT_TRUE( interpreter.parse(input) );
+        std::stringstream out;
+        ASSERT_TRUE( interpreter.evaluate(out,data) );
+        std::stringstream expected;
+        expected<<"10 9# comment"<<std::endl
+                <<" 8 7# comment"<<std::endl
+                <<" 6 5# comment"<<std::endl
+                <<" 4 3# comment"<<std::endl
+                <<" 2 1# comment"<<std::endl
+                <<" 0";
+        ASSERT_EQ( expected.str(), out.str() );
+    }
 //    { // test 6th element emission where line has newline. No emission occurs
 //        std::stringstream input;
 //        input<< R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=<nl>,6>

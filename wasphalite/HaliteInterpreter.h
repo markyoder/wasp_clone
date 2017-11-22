@@ -230,22 +230,43 @@ namespace wasp {
                 wasp_check( m_index.size() == m_ranges.size() );
                 for( int i = m_index.size()-1; i >= 0; --i )
                 {
-                    wasp_tagged_line("checking range of "<<m_ranges[i].name
-                    <<" "<<m_index[i]+m_ranges[i].stride<<"<="<<m_ranges[i].end);
-                    if( m_index[i]+m_ranges[i].stride <= m_ranges[i].end )
-                    {
-                        wasp_tagged_line("has next true");
-                        return true;
-                    }
+                    if( has_next(i) ) return true;
                 }
                 wasp_tagged_line("has next false");
                 return false;
             }
-            bool next(DataAccessor & d)
-            {
-                for( int i = m_index.size()-1; i >= 0; --i )
+            /**
+             * @brief has_next determine if the ith loop has another iteration
+             * @param i the loop index
+             * @return true, iff the ith loop has another iteration available
+             */
+            bool has_next(int i)const{
+                wasp_require( i >= 0 && i < static_cast<int>(m_ranges.size()));
+                wasp_require( i >= 0 && i < static_cast<int>(m_index.size()));
+                wasp_tagged_line("checking range of "<<m_ranges[i].name
+                <<" "<<m_index[i]+m_ranges[i].stride<<" past "<<m_ranges[i].end);
+                if( m_ranges[i].stride > 0 )
                 {
                     if( m_index[i]+m_ranges[i].stride <= m_ranges[i].end )
+                    {
+                        wasp_tagged_line("has next true with positive stride");
+                        return true;
+                    }
+                }else{
+                    if( m_index[i]+m_ranges[i].stride >= m_ranges[i].end )
+                    {
+                        wasp_tagged_line("has next true with negative stride");
+                        return true;
+                    }
+                }
+                return false;
+            }
+            bool next(DataAccessor & d)
+            {
+                // Iterate over loops inner-most to outer
+                for( int i = m_index.size()-1; i >= 0; --i )
+                {
+                    if( has_next(i) )
                     {
                         m_index[i]+=m_ranges[i].stride;
                         d.store(m_ranges[i].name,m_index[i]);
