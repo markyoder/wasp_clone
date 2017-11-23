@@ -209,7 +209,7 @@ namespace wasp {
              * @brief emit determine if the emit delimiter should be emitted
              * @return true, iff emit is present and has iterated sufficiently
              */
-            bool emit()const{ return has_emit() && m_emit_count_down == 0; }
+            bool emit_now()const{ return (has_emit() && m_emit_count_down == 0); }
             void initialize(DataAccessor& d)
             {
                 // if delimiter emission is present
