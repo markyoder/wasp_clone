@@ -749,7 +749,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor & data
             if( !options.next(layer) ) break;
             // if delimiter is not to be emitted (the common case)
             // emit the separator
-            if( !options.emit() )
+            if( !options.emit_now() )
             {
                 out<<options.separator();
             }
@@ -1509,11 +1509,11 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
         ,size_t line)
 {
     wasp_tagged_line("getting options for '"<<data<<"'");
-    static std::string fmt = "fmt=", sep="sep=", use="use=", emit="emit=";
+    static std::string fmt = "fmt=", sep="sep=", use="use=", emits="emit=";
     size_t format_i = data.find(fmt);
     size_t separator_i = data.find(sep);
     size_t use_i = data.find(use);
-    size_t emit_i = data.find(emit);
+    size_t emit_i = data.find(emits);
     std::stringstream iterative_options_str;
     size_t start_i=1;
     if( data.size() > 1 )
@@ -1578,18 +1578,18 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
     if( emit_i != std::string::npos )
     {
         size_t term_i = data.find(';',emit_i);
-        size_t length = data.size() - (emit_i+emit.size());
+        size_t length = data.size() - (emit_i+emits.size());
         size_t delim_s = 0;
         if( term_i != std::string::npos )
         {
-            length = term_i - (emit_i+emit.size());
+            length = term_i - (emit_i+emits.size());
             delim_s = 1;
         }
         // emit is of the form emit=delim , stride
         // delim is captured as a string
         // stride must be a non-negative integer
 
-        options.emit_delim() = trim(data.substr(emit_i+emit.size(),length)," ");
+        options.emit_delim() = trim(data.substr(emit_i+emits.size(),length)," ");
         wasp_tagged_line("emit of '"<<options.emit_delim()<<"' captured");
         // TODO - what if emit_delim is a comma itself?
         size_t comma_i = options.emit_delim().find(',');
@@ -1619,7 +1619,7 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions & options
                              <<" and stride='"<<options.emit_stride()<<"'");
         }
         // capture the emit text
-        intervals.insert(std::make_pair(emit_i,emit_i+emit.size()+length+delim_s));
+        intervals.insert(std::make_pair(emit_i,emit_i+emits.size()+length+delim_s));
     }
     size_t last_i = start_i;    
     for( auto itr = intervals.begin(); itr != intervals.end(); itr++ )
