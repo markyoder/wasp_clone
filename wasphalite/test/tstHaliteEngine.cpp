@@ -321,6 +321,22 @@ TEST( Halite, indirect_attribute)
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "obj 3.14159", out.str() );
 }
+TEST( Halite, indirect_attribute_delim_output)
+{
+    std::stringstream input;
+    input<< R"INPUT(<<attr>> <_E_><_S_> <<what>.<member>>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["attr"]=std::string("what");
+    o["what"]=std::string("obj");
+    o["member"]=std::string("x");
+    o["obj.x"]=3.14159;
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "obj >< 3.14159", out.str() );
+}
 TEST( Halite, indirect_attribute_delim)
 {
     std::stringstream input;
@@ -389,6 +405,28 @@ TEST( Halite, indirect_attribute_non_uniform_delim)
     o["value"] = o["obj.x"];
     ASSERT_TRUE( interpreter.evaluate(out,data) );
     ASSERT_EQ( "obj 3.14159 3", out.str() );
+}
+/**
+ * @brief TEST that non-uniform delimiters are output
+ */
+TEST( Halite, indirect_attribute_non_uniform_delim_output)
+{
+    std::stringstream input;
+    input<< R"INPUT(${${attr}} ${${what}.${member}} ${_S_}${_E_} ${value:fmt=%d})INPUT";
+    HaliteInterpreter<> interpreter;
+    interpreter.attr_start_delim() = "${";
+    interpreter.attr_end_delim() = "}";
+    ASSERT_TRUE( interpreter.parse(input) );
+    std::stringstream out;
+    DataObject o;
+    DataAccessor data(&o);
+    o["attr"] = "what";
+    o["what"] = "obj";
+    o["member"] = "x";
+    o["obj.x"]=3.14159;
+    o["value"] = o["obj.x"];
+    ASSERT_TRUE( interpreter.evaluate(out,data) );
+    ASSERT_EQ( "obj 3.14159 ${} 3", out.str() );
 }
 TEST( Halite, static_text)
 {
