@@ -6,6 +6,8 @@ HaliteInterpreter<S>::HaliteInterpreter()
     :Interpreter<S>(),        
     m_attribute_start_delim("<"),
     m_attribute_end_delim(">"),
+    m_attribute_start_name("_S_"),
+    m_attribute_end_name("_E_"),
     m_attribute_options_delim(":"),
     m_current_line_count(0),
     m_file_offset(0),
@@ -17,6 +19,8 @@ HaliteInterpreter<S>::HaliteInterpreter(std::ostream & err)
     : Interpreter<S>(err),    
     m_attribute_start_delim("<"),
     m_attribute_end_delim(">"),
+    m_attribute_start_name("_S_"),
+    m_attribute_end_name("_E_"),
     m_attribute_options_delim(":"),
     m_current_line_count(0),
     m_file_offset(0),
@@ -496,7 +500,8 @@ bool HaliteInterpreter<S>::evaluate(std::ostream & out
 {
     auto tree_view = Interpreter<S>::root();
     size_t line = 1, column = 1;
-
+    data.store(attr_start_name(),attr_start_delim());
+    data.store(attr_end_name(),attr_end_delim());
     bool result = evaluate(data,tree_view,out,line,column);
 
     int remaining_lines = m_current_line_count - line;

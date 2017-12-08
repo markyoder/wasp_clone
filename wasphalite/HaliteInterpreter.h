@@ -395,6 +395,12 @@ namespace wasp {
         const std::string& attr_end_delim()const{return m_attribute_end_delim;}
         std::string& attr_end_delim(){return m_attribute_end_delim;}
 
+        const std::string& attr_start_name()const{return m_attribute_start_name;}
+        std::string& attr_start_name(){return m_attribute_start_name;}
+
+        const std::string& attr_end_name()const{return m_attribute_end_name;}
+        std::string& attr_end_name(){return m_attribute_end_name;}
+
     private: // private variables
         //
         // Attribute are delimited by 3 components.
@@ -408,11 +414,20 @@ namespace wasp {
         /**
          * @brief attribute_start_delim attribute substitution declarator
          */
-        std::string m_attribute_start_delim;
+        std::string m_attribute_start_delim;        
         /**
          * @brief attribute_end_delim attribute substitution terminator
          */
         std::string m_attribute_end_delim;
+
+        /**
+         * @brief m_attribute_start_name the referenceable variable name for start delim
+         */
+        std::string m_attribute_start_name;
+        /**
+         * @brief m_attribute_end_name the referenceable variable name for end delim
+         */
+        std::string m_attribute_end_name;
 
         /**
          * @brief m_attribute_options_delim attribute substitution options indicator

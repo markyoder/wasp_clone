@@ -68,6 +68,18 @@ where
 9. the optional `emit` statement facilitates emission of a delimiter at a given iteration stride as depicted in [Iterative Attributes](#iterative-attributes) sections below.
 10. `close_delim` is configurable, default of '>'
 
+### Intrinsic Attributes
+There are several intrinsic attributes that can be useful.
+
+| Name           | Value               | comment             |
+|----------------|---------------------|---------------------|
+| `pi`           | `3.14159265359`     |approximately `pi`| 
+| `e`            | `2.7182818284590452353602874713527` | approximately `e`| 
+| `nl`           | '\\n' | a newline character; useful for generating newlines |
+| `_S_`           | '<' | the delimiter for the start of an attribute; useful for emitting it as a literal |
+| `_E_`           | '>' | the delimiter for the end of an attribute; useful for emitting it as a literal |
+
+The delimiter attribute default values of `<`, and `>', but can be changed. 
 
 ### Silent Attributes
 Attributes and expressions that must be evaluated but not placed into the evaluation stream can be specified using the silent expression indicator:
