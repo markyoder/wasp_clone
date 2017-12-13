@@ -33,8 +33,10 @@ namespace wasp{
     {
         //if Windows, only output two-digits of exponent if possible like linux
     #ifdef _WIN32
-        unsigned int old_exponent_format;
-        old_exponent_format = _set_output_format(_TWO_DIGIT_EXPONENT);
+        #if (defined(_MSC_VER) && _MSC_VER < 1900) || (defined(__GNUC__))
+            unsigned int old_exponent_format;
+            old_exponent_format = _set_output_format(_TWO_DIGIT_EXPONENT);
+        #endif
     #endif
         int width = out.width();
         int prec  = out.precision();
@@ -167,7 +169,9 @@ namespace wasp{
             }
         } // eo while loop
 #ifdef _WIN32
-    _set_output_format( old_exponent_format );
+    #if (defined(_MSC_VER) && _MSC_VER < 1900) || (defined(__GNUC__))
+        _set_output_format( old_exponent_format );
+    #endif
 #endif
         return error_occurred == false;
     } // end of format
