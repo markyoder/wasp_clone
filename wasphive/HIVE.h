@@ -320,6 +320,193 @@ public:
         }
         return true;
     }
+
+    // check if this node could occur just a single time ( true )
+    // or occur more than once ( false ) according to the schema
+    template<class SR, class CN>
+    static bool is_singleton(SR schema_root, const CN & current_node)
+    {
+        // if this is the document_root - then it is a singleton
+        if (current_node.type() == wasp::DOCUMENT_ROOT) return true;
+
+        // look up this current node's path in the schema
+        SIRENInterpreter<> selector(std::cerr);
+        if (!selector.parseString(current_node.path())) exit(1);
+        SIRENResultSet<SR> results;
+        selector.evaluate(schema_root, results);
+
+        // error if there are more than one of these nodes in the schema
+        if (results.size() > 1)
+        {
+            std::cerr<<"***ERROR: "<<current_node.path()<<" exists multiple times in schema."<< std::endl;
+            exit(1);
+        }
+        
+        // error if this does not exist in the schema and not a value node
+        else if (results.size() == 0)
+        {
+            if (current_node.type() == wasp::VALUE)
+            {
+                return true;
+            }
+            else
+            {
+                std::cerr<<"***ERROR: "<<current_node.path()<<" does not exist in schema."<<std::endl;
+                exit(1);
+            }
+        }
+        
+        // if maxoccurs=1 - then singleton, otherwise it can occur more than once
+        else
+        {
+            if (!results.adapted(0).first_child_by_name("MaxOccurs").is_null() &&
+                 results.adapted(0).first_child_by_name("MaxOccurs").to_string() == "1")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+    // recursive method to traverse dom and save json conversion to out stream
+    // uses schema to determine if components should be objects or arrays
+    template<class SR, class CN>
+    static int to_json(const SR & schema_root, const CN & current_node, int level, int last_level_printed, std::ostream & out)
+    {
+        // deterime if this is a "value" node and if a singleton or array
+        const bool value = ( current_node.type() == wasp::VALUE );
+        const bool singleton = is_singleton(schema_root, current_node);
+        
+        // lambda returning the indentation spaces string depending on the level
+        auto spaces = [](int level)
+        {
+            int tabsize = 2;
+            return std::string(tabsize*level, ' ');
+        };
+
+        // if single value node - print as "value":"123"
+        if (value && singleton)
+        {
+            if (level == last_level_printed) out << "," << std::endl;
+
+            out << spaces(level) << "\"" << current_node.name() << "\":\"" << current_node.last_as_string() << "\"";
+
+            last_level_printed = level;
+
+        }
+
+        // if value array print as "value":[ "123", "456", "789" ]
+        else if (value && !singleton)
+        {
+            auto parent = current_node.parent();
+            auto children_by_name = parent.child_by_name(current_node.name());
+
+            if (children_by_name[0] == current_node)
+            {
+                if (level == last_level_printed) out << "," << std::endl;
+
+                out << spaces(level) << "\"" << current_node.name() << "\":[";
+
+                for (size_t i = 0, count = children_by_name.size(); i < count; i++) {
+                    out << " \"" << children_by_name[i].last_as_string() << "\"";
+                    if (i+1 != count) out << ",";
+                }
+
+                out << " ]";
+
+                last_level_printed = level;
+            }
+        }
+
+        // if an object that can occur once - print json object decl and recurse
+        else if (!value && singleton)
+        {
+            if (level == last_level_printed) out << "," << std::endl;
+
+            if (current_node.type() == wasp::DOCUMENT_ROOT)
+            {
+                out << std::endl << spaces(level) << "{" << std::endl;
+            }
+            else
+            {
+                out << spaces(level) << "\"" << current_node.name() << "\":{" << std::endl;
+            }
+
+            level++;
+
+            if (!current_node.id().empty())
+            {
+                out << spaces(level) << "\"_id\":\"" << current_node.id() << "\"," << std::endl;
+            }
+
+            auto children = current_node.non_decorative_children();
+            for (size_t i = 0, count = children.size(); i < count; i++)
+            {
+                last_level_printed = to_json(schema_root, children[i], level, last_level_printed, out);
+            }
+
+            level--;
+
+            out << std::endl << spaces(level) << "}";
+
+            if (current_node.type() == wasp::DOCUMENT_ROOT) out << std::endl;
+
+            last_level_printed = level;
+        }
+
+        // if an object that can occur more than once - print json array decl and recurse
+        else if (!value && !singleton)
+        {
+            auto parent = !current_node.parent().is_null() ? current_node.parent() : current_node;
+
+            auto children_by_name = parent.child_by_name(current_node.name());
+
+            if (current_node == children_by_name[0])
+            {
+                if (level == last_level_printed) out << "," << std::endl;
+
+                out << spaces(level) << "\"" << current_node.name() << "\":[" << std::endl;
+
+                level++;
+
+                for (size_t i = 0, out_count = children_by_name.size(); i < out_count; i++)
+                {
+                    out << spaces(level) << "{" << std::endl;
+
+                    level++;
+
+                    auto children = children_by_name[i].non_decorative_children();
+                    for (size_t j = 0, in_count = children.size(); j < in_count; j++)
+                    {
+                        if (!children_by_name[i].id().empty() && j == 0)
+                        {
+                            out << spaces(level) << "\"_id\":\"" << children_by_name[i].id() << "\"," << std::endl;
+                        }
+                        last_level_printed = to_json(schema_root, children[j], level, last_level_printed, out);
+                    }
+
+                    level--;
+
+                    out << std::endl << spaces(level) << "}";
+                    if (i+1 != out_count) out << "," << std::endl;
+                    last_level_printed = level;
+                }
+
+                level--;
+
+                out << std::endl << spaces(level) << "]";
+
+                last_level_printed = level;
+            }
+
+        }
+
+        return last_level_printed;
+    }
+
     class Error{
 
     public:
