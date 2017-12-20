@@ -395,7 +395,12 @@ case(1) {
 
     // covert to json save in actual_json
     std::stringstream actual_json;
-    HIVE::to_json(schema_root, input_root, 0, -1, actual_json);
+    std::stringstream actual_errors;
+    int root_level = 0;
+    int last_level_printed = -1;
+    ASSERT_TRUE( HIVE::input_to_json(schema_root, input_root, root_level, last_level_printed, actual_json, actual_errors) );
+
+    EXPECT_TRUE(actual_errors.str() == "");
 
     EXPECT_JSON(expected_json.str(), actual_json.str());
 
@@ -615,7 +620,12 @@ singleflag3(sf3_id)=[ val3 val4 ]
 
     // covert to json save in actual_json
     std::stringstream actual_json;
-    HIVE::to_json(schema_root, input_root, 0, -1, actual_json);
+    std::stringstream actual_errors;
+    int root_level = 0;
+    int last_level_printed = -1;
+    ASSERT_TRUE( HIVE::input_to_json(schema_root, input_root, root_level, last_level_printed, actual_json, actual_errors) );
+
+    EXPECT_TRUE(actual_errors.str() == "");
 
     EXPECT_JSON(expected_json.str(), actual_json.str());
 
@@ -854,8 +864,132 @@ outer_two{
 
     // covert to json save in actual_json
     std::stringstream actual_json;
-    HIVE::to_json(schema_root, input_root, 0, -1, actual_json);
+    std::stringstream actual_errors;
+    int root_level = 0;
+    int last_level_printed = -1;
+    ASSERT_TRUE( HIVE::input_to_json(schema_root, input_root, root_level, last_level_printed, actual_json, actual_errors) );
+
+    EXPECT_TRUE(actual_errors.str() == "");
 
     EXPECT_JSON(expected_json.str(), actual_json.str());
+
+}
+
+TEST(SON2JSON, error_001){
+
+    std::stringstream son_schema;
+    std::stringstream son_input;
+    std::stringstream expected_errors;
+
+    son_schema << R"INPUT(
+
+object{
+    MaxOccurs=1
+    level{
+        MaxOccurs=1
+        parameter{
+            MaxOccurs=1
+        }
+        parameter{
+            MaxOccurs=NoLimit
+        }
+    }
+}
+
+)INPUT";
+
+    son_input << R"INPUT(
+
+object{
+    level{
+        parameter=123
+    }
+}
+
+)INPUT";
+
+    expected_errors << R"INPUT(***ERROR: /object/level/parameter exists multiple times in schema.
+)INPUT";
+
+    // parse schema
+    SONInterp schema_interp(std::cerr);
+    ASSERT_TRUE( schema_interp.parse(son_schema) );
+
+    // save schema root
+    SONNV schema_root = schema_interp.root();
+
+    // parse input
+    SONInterp input_interp(std::cerr);
+    ASSERT_TRUE( input_interp.parse(son_input) );
+
+    // save input root
+    SONNV input_root  = input_interp.root();
+
+    // covert to json save in actual_json
+    std::stringstream actual_json;
+    std::stringstream actual_errors;
+    int root_level = 0;
+    int last_level_printed = -1;
+    ASSERT_FALSE( HIVE::input_to_json(schema_root, input_root, root_level, last_level_printed, actual_json, actual_errors) );
+
+    EXPECT_TRUE( expected_errors.str() == actual_errors.str() );
+
+}
+
+TEST(SON2JSON, error_002){
+
+    std::stringstream son_schema;
+    std::stringstream son_input;
+    std::stringstream expected_errors;
+
+    son_schema << R"INPUT(
+
+object{
+    MaxOccurs=1
+    level{
+        MaxOccurs=1
+        parameter{
+            MaxOccurs=1
+        }
+    }
+}
+
+)INPUT";
+
+    son_input << R"INPUT(
+
+object{
+    level{
+        not_in_schema=123
+    }
+}
+
+)INPUT";
+
+    expected_errors << R"INPUT(***ERROR: /object/level/not_in_schema does not exist in schema.
+)INPUT";
+
+    // parse schema
+    SONInterp schema_interp(std::cerr);
+    ASSERT_TRUE( schema_interp.parse(son_schema) );
+
+    // save schema root
+    SONNV schema_root = schema_interp.root();
+
+    // parse input
+    SONInterp input_interp(std::cerr);
+    ASSERT_TRUE( input_interp.parse(son_input) );
+
+    // save input root
+    SONNV input_root  = input_interp.root();
+
+    // covert to json save in actual_json
+    std::stringstream actual_json;
+    std::stringstream actual_errors;
+    int root_level = 0;
+    int last_level_printed = -1;
+    ASSERT_FALSE( HIVE::input_to_json(schema_root, input_root, root_level, last_level_printed, actual_json, actual_errors) );
+
+    EXPECT_TRUE( expected_errors.str() == actual_errors.str() );
 
 }

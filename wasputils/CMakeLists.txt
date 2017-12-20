@@ -159,12 +159,6 @@ IF ( wasp_ENABLE_waspjson )
       NOEXESUFFIX
       INSTALLABLE
     )
-    TRIBITS_ADD_EXECUTABLE(oldsonjson
-      SOURCES oldsonjson.cpp
-      NOEXEPREFIX
-      NOEXESUFFIX
-      INSTALLABLE
-    )
 ENDIF()
 ##---------------------------------------------------------------------------##
 ##                   end of utils/CMakeLists.txt

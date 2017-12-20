@@ -321,25 +321,32 @@ public:
         return true;
     }
 
-    // check if this node could occur just a single time ( true )
-    // or occur more than once ( false ) according to the schema
+    // json type of singleton or array to switch on
+    enum class JsonType{ SINGLETON, ARRAY };
+
+    // check if this node could occur just one time ( singleton )
+    // or occur multiple times ( array ) according to the schema
     template<class SR, class CN>
-    static bool is_singleton(SR schema_root, const CN & current_node)
+    static bool get_json_type(SR schema_root, const CN & current_node, JsonType & type, std::ostream & err)
     {
         // if this is the document_root - then it is a singleton
-        if (current_node.type() == wasp::DOCUMENT_ROOT) return true;
+        if (current_node.type() == wasp::DOCUMENT_ROOT)
+        {
+            type = JsonType::SINGLETON;
+            return true;
+        }
 
         // look up this current node's path in the schema
-        SIRENInterpreter<> selector(std::cerr);
-        if (!selector.parseString(current_node.path())) exit(1);
+        SIRENInterpreter<> selector(err);
+        selector.parseString(current_node.path());
         SIRENResultSet<SR> results;
         selector.evaluate(schema_root, results);
 
         // error if there are more than one of these nodes in the schema
         if (results.size() > 1)
         {
-            std::cerr<<"***ERROR: "<<current_node.path()<<" exists multiple times in schema."<< std::endl;
-            exit(1);
+            err<<"***ERROR: "<<current_node.path()<<" exists multiple times in schema."<< std::endl;
+            return false;
         }
         
         // error if this does not exist in the schema and not a value node
@@ -347,12 +354,12 @@ public:
         {
             if (current_node.type() == wasp::VALUE)
             {
-                return true;
+                type = JsonType::SINGLETON;
             }
             else
             {
-                std::cerr<<"***ERROR: "<<current_node.path()<<" does not exist in schema."<<std::endl;
-                exit(1);
+                err<<"***ERROR: "<<current_node.path()<<" does not exist in schema."<<std::endl;
+                return false;
             }
         }
         
@@ -362,23 +369,28 @@ public:
             if (!results.adapted(0).first_child_by_name("MaxOccurs").is_null() &&
                  results.adapted(0).first_child_by_name("MaxOccurs").to_string() == "1")
             {
-                return true;
+                type = JsonType::SINGLETON;
             }
             else
             {
-                return false;
+                type = JsonType::ARRAY;
             }
         }
+
+        return true;
     }
 
     // recursive method to traverse dom and save json conversion to out stream
     // uses schema to determine if components should be objects or arrays
     template<class SR, class CN>
-    static int to_json(const SR & schema_root, const CN & current_node, int level, int last_level_printed, std::ostream & out)
+    static bool input_to_json(const SR & schema_root, const CN & current_node, int level, int & last_level_printed, std::ostream & out, std::ostream & err)
     {
-        // deterime if this is a "value" node and if a singleton or array
+        // deterime if this is a json object or array and if it is a "value" node
+        JsonType json_type;
+        if (!get_json_type(schema_root, current_node, json_type, err)){
+            return false;
+        }
         const bool value = ( current_node.type() == wasp::VALUE );
-        const bool singleton = is_singleton(schema_root, current_node);
         
         // lambda returning the indentation spaces string depending on the level
         auto spaces = [](int level)
@@ -388,7 +400,7 @@ public:
         };
 
         // if single value node - print as "value":"123"
-        if (value && singleton)
+        if (value && json_type == JsonType::SINGLETON)
         {
             if (level == last_level_printed) out << "," << std::endl;
 
@@ -399,7 +411,7 @@ public:
         }
 
         // if value array print as "value":[ "123", "456", "789" ]
-        else if (value && !singleton)
+        else if (value && json_type == JsonType::ARRAY)
         {
             auto parent = current_node.parent();
             auto children_by_name = parent.child_by_name(current_node.name());
@@ -422,7 +434,7 @@ public:
         }
 
         // if an object that can occur once - print json object decl and recurse
-        else if (!value && singleton)
+        else if (!value && json_type == JsonType::SINGLETON)
         {
             if (level == last_level_printed) out << "," << std::endl;
 
@@ -445,7 +457,10 @@ public:
             auto children = current_node.non_decorative_children();
             for (size_t i = 0, count = children.size(); i < count; i++)
             {
-                last_level_printed = to_json(schema_root, children[i], level, last_level_printed, out);
+                if (!input_to_json(schema_root, children[i], level, last_level_printed, out, err))
+                {
+                    return false;
+                }
             }
 
             level--;
@@ -458,7 +473,7 @@ public:
         }
 
         // if an object that can occur more than once - print json array decl and recurse
-        else if (!value && !singleton)
+        else if (!value && json_type == JsonType::ARRAY)
         {
             auto parent = !current_node.parent().is_null() ? current_node.parent() : current_node;
 
@@ -485,7 +500,10 @@ public:
                         {
                             out << spaces(level) << "\"_id\":\"" << children_by_name[i].id() << "\"," << std::endl;
                         }
-                        last_level_printed = to_json(schema_root, children[j], level, last_level_printed, out);
+                        if (!input_to_json(schema_root, children[j], level, last_level_printed, out, err))
+                        {
+                            return false;
+                        }
                     }
 
                     level--;
@@ -504,7 +522,7 @@ public:
 
         }
 
-        return last_level_printed;
+        return true;
     }
 
     class Error{

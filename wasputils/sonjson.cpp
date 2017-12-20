@@ -80,8 +80,10 @@ int main(int argc, char** argv)
     // save input root
     SONNV input_root  = input_interp.root();
 
-    // covert to json with results on std::cout
-    HIVE::to_json(schema_root, input_root, 0, -1, std::cout);
+    // covert to json with results on std::cout and errors on std::cerr
+    int root_level = 0;
+    int last_level_printed = -1;
+    bool pass = HIVE::input_to_json(schema_root, input_root, root_level, last_level_printed, std::cout, std::cerr);
 
-    return 0;
+    return pass;
 }
