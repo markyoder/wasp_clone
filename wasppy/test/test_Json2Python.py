@@ -5,12 +5,12 @@ import unittest
 
 
 ### convert son file to json stream and create python data structure
-son2json = os.path.dirname(__file__)+"/../wasputils/sonvalidjson"
+sonvalidjson = os.path.dirname(__file__)+"/../wasputils/sonvalidjson"
 if os.name == 'nt':
-    sonjson=sonjson+'.exe'
+    sonvalidjson=sonvalidjson+'.exe'
 schema = os.path.dirname(__file__)+"/schema.sch"
 input_file = os.path.dirname(__file__)+"/input.son"
-cmd = son2json+' '+schema+' '+input_file+" --json"
+cmd = sonvalidjson+' '+schema+' '+input_file+" --json"
 json_result = subprocess.check_output(cmd, shell=True)
 
 ### obtain pieces of input by name for convenience
