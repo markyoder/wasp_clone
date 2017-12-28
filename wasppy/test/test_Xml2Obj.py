@@ -5,11 +5,14 @@ import xml2obj
 import unittest
 
 ### convert son file to xml stream and create python data structure
-sonvalidxml = os.path.dirname(__file__)+"/../wasputils/sonvalidxml"
 if os.name == 'nt':
-   sonvalidxml=sonvalidxml+'.exe'
-schema = os.path.dirname(__file__)+"/schema.sch"
-input_file = os.path.dirname(__file__)+"/input.son"
+    sonvalidxml = os.path.dirname(__file__)+"\\..\\wasputils\\sonvalidxml.exe"
+    schema = os.path.dirname(__file__)+"\\schema.sch"
+    input_file = os.path.dirname(__file__)+"\\input.son"
+else:
+    sonvalidxml = os.path.dirname(__file__)+"/../wasputils/sonvalidxml"
+    schema = os.path.dirname(__file__)+"/schema.sch"
+    input_file = os.path.dirname(__file__)+"/input.son"
 cmd = sonvalidxml+' '+schema+' '+input_file+" --xml"
 xmlresult = subprocess.check_output(cmd, shell=True)
 

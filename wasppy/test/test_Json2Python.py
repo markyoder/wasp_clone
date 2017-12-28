@@ -1,20 +1,23 @@
-import subprocess, os
-import json
-import unittest
+import os, unittest, son2py
 
 
 
-### convert son file to json stream and create python data structure
-sonvalidjson = os.path.dirname(__file__)+"/../wasputils/sonvalidjson"
-if os.name == 'nt':
-    sonvalidjson=sonvalidjson+'.exe'
-schema = os.path.dirname(__file__)+"/schema.sch"
-input_file = os.path.dirname(__file__)+"/input.son"
-cmd = sonvalidjson+' '+schema+' '+input_file+" --json"
-json_result = subprocess.check_output(cmd, shell=True)
+
+
+
+if os.name == 'nt' :
+    schema_filepath = os.path.dirname(__file__)+"\\schema.sch"
+    input_filepath = os.path.dirname(__file__)+"\\input.son"
+else:
+    schema_filepath = os.path.dirname(__file__)+"/schema.sch"
+    input_filepath = os.path.dirname(__file__)+"/input.son"
+
+
+
+
 
 ### obtain pieces of input by name for convenience
-document = json.loads(json_result)
+document = son2py.get_json_dict(schema_filepath,input_filepath)
 pytest = document['pytest']
 object_one = pytest['object_one']
 color = object_one['color']
