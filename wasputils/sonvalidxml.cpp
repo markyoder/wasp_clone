@@ -37,10 +37,10 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    bool xml_output = false;
+    HIVE::MessagePrintType msgType = HIVE::MessagePrintType::NORMAL;
     if (argc == 4 && std::string( argv[3] ) == "--xml")
     {
-        xml_output = true;
+        msgType = HIVE::MessagePrintType::XML;
     }  
 
     std::ifstream schema(argv[1]);
@@ -82,11 +82,6 @@ int main(int argc, char** argv) {
     HIVE validation_engine;
     std::vector<std::string> validation_errors;
     bool valid = validation_engine.validate(schema_root,input_root, validation_errors);
-    if( !valid )
-    {
-        validation_engine.printMessages(valid, validation_errors, xml_output, argv[2],std::cerr);
-        return 1;
-    }
     
     SONInterpreter<TreeNodePool<unsigned int, unsigned int
             ,TokenPool<unsigned int,unsigned int, unsigned int>>> parser;
@@ -96,6 +91,12 @@ int main(int argc, char** argv) {
         return 1;
     }
     wasp::to_xml(input_root,std::cout);
+
+    if ( !valid ){
+        validation_engine.printMessages(valid, validation_errors, msgType, argv[2], std::cerr);
+        return 1;
+    }
+
     return 0;
 }
 

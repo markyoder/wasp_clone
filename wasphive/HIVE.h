@@ -70,8 +70,9 @@ public:
     ~HIVE();
     template<class SchemaAdapter, class InputAdapter>
     bool validate(SchemaAdapter & schema_node, InputAdapter & input_node, std::vector<std::string>&errors);
+    enum class MessagePrintType{ NORMAL, XML, JSON };
     void printMessages(bool pass, std::vector<std::string>&errors,
-                       bool xmloutput=false, std::string file="", std::ostream&output=std::cout);
+           MessagePrintType msgType=MessagePrintType::NORMAL, std::string file="", std::ostream&output=std::cout);
 
     static void sort_errors(std::vector<std::string> & errors);
     static std::string combine(std::vector<std::string> & errors){
@@ -404,7 +405,9 @@ public:
         {
             if (level == last_level_printed) out << "," << std::endl;
 
-            out << spaces(level) << "\"" << current_node.name() << "\":\"" << current_node.last_as_string() << "\"";
+            std::string escape_string = current_node.last_as_string();
+            std::replace( escape_string.begin(), escape_string.end(), '"', '\'');
+            out << spaces(level) << "\"" << current_node.name() << "\":\"" << escape_string << "\"";
 
             last_level_printed = level;
 
@@ -422,8 +425,11 @@ public:
 
                 out << spaces(level) << "\"" << current_node.name() << "\":[";
 
-                for (size_t i = 0, count = children_by_name.size(); i < count; i++) {
-                    out << " \"" << children_by_name[i].last_as_string() << "\"";
+                for (size_t i = 0, count = children_by_name.size(); i < count; i++)
+                {
+                    std::string escape_string = children_by_name[i].last_as_string();
+                    std::replace( escape_string.begin(), escape_string.end(), '"', '\'');
+                    out << " \"" << escape_string << "\"";
                     if (i+1 != count) out << ",";
                 }
 

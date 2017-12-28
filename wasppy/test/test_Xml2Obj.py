@@ -10,7 +10,7 @@ if os.name == 'nt':
    sonvalidxml=sonvalidxml+'.exe'
 schema = os.path.dirname(__file__)+"/schema.sch"
 input_file = os.path.dirname(__file__)+"/input.son"
-cmd = sonvalidxml+' '+schema+' '+input_file
+cmd = sonvalidxml+' '+schema+' '+input_file+" --xml"
 xmlresult = subprocess.check_output(cmd, shell=True)
 
 ### obtain pieces of input by name for convenience

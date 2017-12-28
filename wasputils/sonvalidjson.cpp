@@ -29,12 +29,18 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    if ( argc != 3 )
+     if ( argc != 3 && ( argc != 4 || std::string(argv[3]) != "--json") )
     {
         std::cerr<<"Workbench Analysis Sequence Processor - SON to JSON Converter"<<std::endl<<
-                   " Usage: "<<argv[0]<<" path/to/SON/formatted/schema path/to/SON/formatted/input"<<std::endl<<
+                   " Usage: "<<argv[0]<<" path/to/SON/formatted/schema path/to/SON/formatted/input  [--json]"<<std::endl<<
                    " Usage: "<<argv[0]<<" --version\t(print version info)"<<std::endl;
         return 1;
+    }
+
+    HIVE::MessagePrintType msgType = HIVE::MessagePrintType::NORMAL;
+    if (argc == 4 && std::string( argv[3] ) == "--json")
+    {
+        msgType = HIVE::MessagePrintType::JSON;
     }
 
     // open schema
@@ -80,16 +86,20 @@ int main(int argc, char** argv)
     // save input root
     SONNV input_root  = input_interp.root();
 
+    // validate input
+    HIVE validation_engine;
+    std::vector<std::string> validation_errors;
+    bool valid = validation_engine.validate(schema_root, input_root, validation_errors);
+    
     // covert to json with results on std::cout and errors on std::cerr
     int root_level = 0;
     int last_level_printed = -1;
     std::stringstream out;
     bool json_pass = HIVE::input_to_json(schema_root, input_root, root_level, last_level_printed, out, std::cerr);
+    
+    if ( json_pass ) std::cout << out.str();
+    if ( !valid )    validation_engine.printMessages(valid, validation_errors, msgType, argv[2], std::cerr);
+    if ( valid && json_pass) return 0;
+    else                     return 1;
 
-    if ( json_pass ) {
-        std::cout << out.str();
-        return 0;
-    }
-
-    return 1;
 }

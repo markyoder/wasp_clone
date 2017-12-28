@@ -1,5 +1,8 @@
 pytest{
 
+    MinOccurs=1
+    MaxOccurs=1
+
     object_one{
         
         MinOccurs=1
@@ -182,11 +185,13 @@ pytest{
 
                         id{
                             MinOccurs=1
-                            MaxOccurs=NoLimit
+                            MaxOccurs=1
                             ValType=String
                             ValEnums=[ REF:EnumList ]
                         }
                         value{
+                            MinOccurs=1
+                            MaxOccurs=1
                             ValType=Real
                             MinValInc=0
                             MaxValInc=1
@@ -385,7 +390,7 @@ pytest{
             pentagon{
                 
                 MinOccurs=0
-                MaxOccurs=NoLimit
+                MaxOccurs=1
                  
                 rise{
                      MinOccurs=1

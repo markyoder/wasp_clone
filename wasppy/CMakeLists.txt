@@ -5,7 +5,7 @@ file(GLOB_RECURSE MODULE  ${CMAKE_CURRENT_SOURCE_DIR}/* )
 file(COPY ${MODULE}  DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 IF(PYTHON_EXECUTABLE)
-  #ADD_TEST( tstWaspPy python -m unittest discover -v )
+  ADD_TEST( tstWaspPy python -m unittest discover -v )
 ENDIF()
 
 #

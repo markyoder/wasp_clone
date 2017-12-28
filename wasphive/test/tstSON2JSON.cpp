@@ -875,6 +875,134 @@ outer_two{
 
 }
 
+TEST(SON2JSON, 004){
+
+    std::stringstream son_schema;
+    std::stringstream son_input;
+    std::stringstream expected_json;
+
+    son_schema << R"INPUT(
+
+mixed_one{
+    MaxOccurs=1
+    value{
+        MaxOccurs=NoLimit
+    }
+    three{
+        MaxOccurs=1
+        value{
+            MaxOccurs=1
+        }
+    }
+}
+
+mixed_two{
+    MaxOccurs=1
+    value{
+        MaxOccurs=NoLimit
+    }
+    three{
+        MaxOccurs=NoLimit
+        value{
+            MaxOccurs=1
+        }
+    }
+}
+
+mixed_three{
+    MaxOccurs=1
+    value{
+        MaxOccurs=NoLimit
+    }
+    three{
+        MaxOccurs=NoLimit
+        value{
+            MaxOccurs=NoLimit
+        }
+        seven{
+            MaxOccurs=1
+            value{
+                MaxOccurs=NoLimit
+            }
+        }
+    }
+}
+
+)INPUT";
+
+    son_input << R"INPUT(
+
+mixed_one   = [ 1 2 three=four 5 ]
+
+mixed_two   = [ 1 2 three=four three='a "sentence" with "quotes" here' 6 ]
+
+mixed_three = [ 1 2 three="four" three=[ five six seven=[ 8 9 ] ] 10 ]
+
+)INPUT";
+
+    expected_json << R"INPUT(
+{
+  "mixed_one":{
+    "value":[ "1", "2", "5" ],
+    "three":{
+      "value":"four"
+    }
+  },
+  "mixed_two":{
+    "value":[ "1", "2", "6" ],
+    "three":[
+      {
+        "value":"four"
+      },
+      {
+        "value":"a 'sentence' with 'quotes' here"
+      }
+    ]
+  },
+  "mixed_three":{
+    "value":[ "1", "2", "10" ],
+    "three":[
+      {
+        "value":[ "four" ]
+      },
+      {
+        "value":[ "five", "six" ],
+        "seven":{
+          "value":[ "8", "9" ]
+        }
+      }
+    ]
+  }
+}
+)INPUT";
+
+    // parse schema
+    SONInterp schema_interp(std::cerr);
+    ASSERT_TRUE( schema_interp.parse(son_schema) );
+
+    // save schema root
+    SONNV schema_root = schema_interp.root();
+
+    // parse input
+    SONInterp input_interp(std::cerr);
+    ASSERT_TRUE( input_interp.parse(son_input) );
+
+    // save input root
+    SONNV input_root  = input_interp.root();
+
+    // covert to json save in actual_json
+    std::stringstream actual_json;
+    std::stringstream actual_errors;
+    int root_level = 0;
+    int last_level_printed = -1;
+    ASSERT_TRUE( HIVE::input_to_json(schema_root, input_root, root_level, last_level_printed, actual_json, actual_errors) );
+
+    EXPECT_TRUE(actual_errors.str() == "");
+
+    EXPECT_JSON(expected_json.str(), actual_json.str());
+
+}
+
 TEST(SON2JSON, error_001){
 
     std::stringstream son_schema;
