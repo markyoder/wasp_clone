@@ -388,11 +388,9 @@ public:
     {
         // deterime if this is a json object or array and if it is a "value" node
         JsonType json_type;
-        if (!get_json_type(schema_root, current_node, json_type, err)){
-            return false;
-        }
-        const bool value = ( current_node.type() == wasp::VALUE );
-        
+        if (!get_json_type(schema_root, current_node, json_type, err)) return false;
+        const bool is_value = ( current_node.type() == wasp::VALUE );
+
         // lambda returning the indentation spaces string depending on the level
         auto spaces = [](int level)
         {
@@ -400,129 +398,141 @@ public:
             return std::string(tabsize*level, ' ');
         };
 
-        // if single value node - print as "value":"123"
-        if (value && json_type == JsonType::SINGLETON)
+        // if this component can occur just a single time
+        if (json_type == JsonType::SINGLETON)
         {
+            // print a comma if needed
             if (level == last_level_printed) out << "," << std::endl;
 
-            std::string escape_string = current_node.last_as_string();
-            std::replace( escape_string.begin(), escape_string.end(), '"', '\'');
-            out << spaces(level) << "\"" << current_node.name() << "\":\"" << escape_string << "\"";
-
-            last_level_printed = level;
-
-        }
-
-        // if value array print as "value":[ "123", "456", "789" ]
-        else if (value && json_type == JsonType::ARRAY)
-        {
-            auto parent = current_node.parent();
-            auto children_by_name = parent.child_by_name(current_node.name());
-
-            if (children_by_name[0] == current_node)
+            // if this is a value node, then print simple
+            if (is_value)
             {
-                if (level == last_level_printed) out << "," << std::endl;
-
-                out << spaces(level) << "\"" << current_node.name() << "\":[";
-
-                for (size_t i = 0, count = children_by_name.size(); i < count; i++)
-                {
-                    std::string escape_string = children_by_name[i].last_as_string();
-                    std::replace( escape_string.begin(), escape_string.end(), '"', '\'');
-                    out << " \"" << escape_string << "\"";
-                    if (i+1 != count) out << ",";
-                }
-
-                out << " ]";
-
-                last_level_printed = level;
+                std::string escape_string = current_node.last_as_string();
+                std::replace( escape_string.begin(), escape_string.end(), '"', '\'');
+                out << spaces(level) << "\"" << current_node.name() << "\":\"" << escape_string << "\"";
             }
-        }
 
-        // if an object that can occur once - print json object decl and recurse
-        else if (!value && json_type == JsonType::SINGLETON)
-        {
-            if (level == last_level_printed) out << "," << std::endl;
-
-            if (current_node.type() == wasp::DOCUMENT_ROOT)
-            {
-                out << std::endl << spaces(level) << "{" << std::endl;
-            }
+            // if this is not a value node, then print json object and recurse
             else
             {
-                out << spaces(level) << "\"" << current_node.name() << "\":{" << std::endl;
-            }
-
-            level++;
-
-            if (!current_node.id().empty())
-            {
-                out << spaces(level) << "\"_id\":\"" << current_node.id() << "\"," << std::endl;
-            }
-
-            auto children = current_node.non_decorative_children();
-            for (size_t i = 0, count = children.size(); i < count; i++)
-            {
-                if (!input_to_json(schema_root, children[i], level, last_level_printed, out, err))
+                // if this is the document root, do not print the node name - otherwise do
+                if (current_node.type() == wasp::DOCUMENT_ROOT)
                 {
-                    return false;
+                    out << std::endl << spaces(level) << "{" << std::endl;
+                }
+                else
+                {
+                    out << spaces(level) << "\"" << current_node.name() << "\":{" << std::endl;
+                }
+
+                // increment level
+                level++;
+
+                // print id tag if present
+                if (!current_node.id().empty())
+                {
+                    out << spaces(level) << "\"_id\":\"" << current_node.id() << "\"," << std::endl;
+                }
+
+                // get the non decorative children and recurse further
+                auto children = current_node.non_decorative_children();
+                for (size_t i = 0, count = children.size(); i < count; i++)
+                {
+                    if (!input_to_json(schema_root, children[i], level, last_level_printed, out, err)) return false;
+                }
+
+                // decrement level
+                level--;
+
+                // print close of this json object
+                out << std::endl << spaces(level) << "}";
+
+                // if this closes the document root, then print an extra newline
+                if (current_node.type() == wasp::DOCUMENT_ROOT)
+                {
+                    out << std::endl;
                 }
             }
 
-            level--;
-
-            out << std::endl << spaces(level) << "}";
-
-            if (current_node.type() == wasp::DOCUMENT_ROOT) out << std::endl;
-
+            // save the last level printed to know if commas need to be printed later
             last_level_printed = level;
         }
 
-        // if an object that can occur more than once - print json array decl and recurse
-        else if (!value && json_type == JsonType::ARRAY)
+        // if this component can occur multiple times
+        else if (json_type == JsonType::ARRAY)
         {
+            // get the parent and all children of the same name
             auto parent = !current_node.parent().is_null() ? current_node.parent() : current_node;
-
             auto children_by_name = parent.child_by_name(current_node.name());
 
+            // only operate on all of the same named children one time
             if (current_node == children_by_name[0])
             {
+                // print a comma if needed
                 if (level == last_level_printed) out << "," << std::endl;
 
-                out << spaces(level) << "\"" << current_node.name() << "\":[" << std::endl;
+                // print name and beginning of json array
+                out << spaces(level) << "\"" << current_node.name() << "\":[" << (is_value?"":"\n");
 
+                // increment level
                 level++;
 
+                // loop over all collected children of the same name
                 for (size_t i = 0, out_count = children_by_name.size(); i < out_count; i++)
                 {
-                    out << spaces(level) << "{" << std::endl;
 
-                    level++;
-
-                    auto children = children_by_name[i].non_decorative_children();
-                    for (size_t j = 0, in_count = children.size(); j < in_count; j++)
+                    // if this is a value node, then print simple
+                    if (is_value)
                     {
-                        if (!children_by_name[i].id().empty() && j == 0)
+                        std::string escape_string = children_by_name[i].last_as_string();
+                        std::replace( escape_string.begin(), escape_string.end(), '"', '\'');
+                        out << " \"" << escape_string << "\"";
+                    }
+
+                    // if this is not a value node, then print json object and recurse
+                    else
+                    {
+                        // print start of this json object
+                        out << spaces(level) << "{" << std::endl;
+
+                        // increment level
+                        level++;
+
+                        // print id tag if present
+                        if ( !children_by_name[i].id().empty() )
                         {
                             out << spaces(level) << "\"_id\":\"" << children_by_name[i].id() << "\"," << std::endl;
                         }
-                        if (!input_to_json(schema_root, children[j], level, last_level_printed, out, err))
+
+                        // get the non decorative children and recurse further
+                        auto children = children_by_name[i].non_decorative_children();
+                        for (size_t j = 0, in_count = children.size(); j < in_count; j++)
                         {
-                            return false;
+                            if (!input_to_json(schema_root, children[j], level, last_level_printed, out, err)) return false;
                         }
+
+                        // decrement level
+                        level--;
+
+                        // print close of this json object
+                        out << std::endl << spaces(level) << "}";
+
+                        // save the last level printed to know if commas need to be printed later
+                        last_level_printed = level;
                     }
 
-                    level--;
+                    // print a comma if needed
+                    if (i+1 != out_count) out << "," << (is_value?"":"\n");
 
-                    out << std::endl << spaces(level) << "}";
-                    if (i+1 != out_count) out << "," << std::endl;
-                    last_level_printed = level;
                 }
 
+                // decrement level
                 level--;
 
-                out << std::endl << spaces(level) << "]";
+                // print close of this json array
+                out << (is_value?" ":"\n"+spaces(level)) << "]";
 
+                // save the last level printed to know if commas need to be printed later
                 last_level_printed = level;
             }
 
