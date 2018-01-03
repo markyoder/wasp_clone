@@ -7,17 +7,17 @@ import os, unittest, son2py
 
 if os.name == 'nt' :
     schema_filepath = os.path.dirname(__file__)+"\\schema.sch"
-    input_filepath = os.path.dirname(__file__)+"\\input.son"
+    son_input_filepath = os.path.dirname(__file__)+"\\input.son"
 else:
     schema_filepath = os.path.dirname(__file__)+"/schema.sch"
-    input_filepath = os.path.dirname(__file__)+"/input.son"
+    son_input_filepath = os.path.dirname(__file__)+"/input.son"
 
 
 
 
 
 ### obtain pieces of input by name for convenience
-document = son2py.get_json_dict(schema_filepath,input_filepath)
+document = son2py.get_json_dict(schema_filepath,son_input_filepath)
 pytest = document['pytest']
 object_one = pytest['object_one']
 color = object_one['color']

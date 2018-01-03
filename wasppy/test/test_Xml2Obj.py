@@ -7,13 +7,13 @@ import unittest
 ### convert son file to xml stream and create python data structure
 if os.name == 'nt':
     sonvalidxml = os.path.dirname(__file__)+"\\..\\wasputils\\sonvalidxml.exe"
-    schema = os.path.dirname(__file__)+"\\schema.sch"
-    input_file = os.path.dirname(__file__)+"\\input.son"
+    schema_filepath = os.path.dirname(__file__)+"\\schema.sch"
+    son_input_filepath = os.path.dirname(__file__)+"\\input.son"
 else:
     sonvalidxml = os.path.dirname(__file__)+"/../wasputils/sonvalidxml"
-    schema = os.path.dirname(__file__)+"/schema.sch"
-    input_file = os.path.dirname(__file__)+"/input.son"
-cmd = sonvalidxml+' '+schema+' '+input_file+" --xml"
+    schema_filepath = os.path.dirname(__file__)+"/schema.sch"
+    son_input_filepath = os.path.dirname(__file__)+"/input.son"
+cmd = sonvalidxml+' '+schema_filepath+' '+son_input_filepath+" --xml"
 xmlresult = subprocess.check_output(cmd, shell=True)
 
 ### obtain pieces of input by name for convenience
