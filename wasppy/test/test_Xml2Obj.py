@@ -6,7 +6,14 @@ import unittest
 
 ### convert son file to xml stream and create python data structure
 if os.name == 'nt':
+    ### for windows intel
     sonvalidxml = os.path.dirname(__file__)+"\\..\\wasputils\\sonvalidxml.exe"
+    if not os.path.isfile(sonvalidxml) :
+        ### for windows visual studio
+        sonvalidxml = os.path.dirname(__file__) + "\\..\\wasputils\\Release\\sonvalidxml.exe"
+        if not os.path.isfile(sonvalidxml) :
+            ### for windows visual studio shared with CMAKE_RUNTIME_OUTPUT_DIRECTORY fixup
+            sonvalidxml = os.path.dirname(__file__) + "\\..\\cmake_runtime_output\\Release\\sonvalidxml.exe"
     schema_filepath = os.path.dirname(__file__)+"\\schema.sch"
     son_input_filepath = os.path.dirname(__file__)+"\\input.son"
 else:
