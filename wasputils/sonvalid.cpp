@@ -30,11 +30,11 @@ int main (int argc, char *argv[])
         return 1;
     }
 
-    bool xml_output = false;
+    HIVE::MessagePrintType msgType = HIVE::MessagePrintType::NORMAL;
     int argcount = argc;
     if (argc > 3 && std::string( argv[argc-1] ) == "--xml")
     {
-        xml_output = true;
+        msgType = HIVE::MessagePrintType::XML;
         argcount = argc - 1;
     }  
 
@@ -97,7 +97,7 @@ int main (int argc, char *argv[])
         bool valid = validation_engine.validate(schema_root,input_root, validation_errors);
         if( !valid )
         {
-            validation_engine.printMessages(valid, validation_errors, xml_output, argv[j],std::cout);
+            validation_engine.printMessages(valid, validation_errors, msgType, argv[j],std::cout);
         }
     }
 

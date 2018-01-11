@@ -32,9 +32,9 @@ void HIVE::sort_errors(std::vector<string> &errors)
 }
 
 void HIVE::printMessages(bool pass, vector<string>&errors,
-                                        bool xmloutput, string file, std::ostream&output){
+                                        MessagePrintType msgType, string file, std::ostream&output){
 
-    if (!xmloutput){
+    if (msgType == MessagePrintType::NORMAL){
         output << endl << (file!=""?file:"N/A") << " - " << (pass?"PASS":"FAIL")  << endl;
         output << "-------------------------------------------------------------" << endl;
         for (size_t i = 0; i < errors.size(); i++){
@@ -42,7 +42,7 @@ void HIVE::printMessages(bool pass, vector<string>&errors,
         }
     }
 
-    else{
+    else if (msgType == MessagePrintType::XML){
         output << "  <file name=\"" << (file!=""?file:"N/A") << "\"";
         output <<        " pass=\"" << (pass?"true":"false") << "\"";
         output <<        " errors=\"" << errors.size();
@@ -77,6 +77,49 @@ void HIVE::printMessages(bool pass, vector<string>&errors,
             output << "    </error>" << endl;
             if (i+1 == errors.size()) output << "  </file>" << endl;
         }
+    }
+
+    else if (msgType == MessagePrintType::JSON){
+        output << "{"                                                   << endl;
+        output << "  \"file\":\""   << (file!=""?file:"N/A") << "\"," << endl;
+        output << "  \"pass\":\""   << (pass?"true":"false") << "\"," << endl;
+        output << "  \"count\":\"" << errors.size()          << "\"";
+        if (errors.size() != 0) output << "," << endl;
+        else                    output << endl;
+        for (size_t i = 0; i < errors.size(); i++){
+            if (i == 0) output << "  \"errors\":[" << endl;
+            std::size_t foundline;
+            std::size_t foundcolumn;
+            std::size_t founddash;
+            string line;
+            string column;
+            string message;
+            foundline = errors[i].find("line:");
+            foundcolumn = errors[i].find(" column:");
+            founddash = errors[i].find(" - ");
+            if (foundline   == string::npos ||
+                foundcolumn == string::npos ||
+                founddash   == string::npos ||
+                foundline   != 0            ){
+                line = "N/A";
+                column = "N/A";
+                message = errors[i];
+            }
+            else{
+                line = errors[i].substr(foundline+5, foundcolumn-(foundline+5));
+                column = errors[i].substr(foundcolumn+8, founddash-(foundcolumn+8));
+                message = errors[i].substr(founddash+3);
+            }
+            std::replace( message.begin(), message.end(), '"', '\'' );
+            output << "    {" << endl;
+            output << "      \"line\":\"" << line << "\"," << std::endl;
+            output << "      \"column\":\"" << column << "\"," << std::endl;
+            output << "      \"message\":\"" << message << "\"" << std::endl;
+            output << "    }";
+            if (i+1 != errors.size()) output << "," << endl;
+            else                      output << endl <<"  ]" << endl;
+        }
+        output << "}" << endl;
     }
 
 }
