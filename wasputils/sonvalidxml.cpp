@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   sonvalidxml.cpp
  * Author: orl
  */
@@ -14,90 +14,112 @@ using namespace std;
 using namespace wasp;
 
 /*
- * 
+ *
  */
-int main(int argc, char** argv) {
-
-    if (argc == 2 && (std::string(argv[1]) == "-v"
-                  ||  std::string(argv[1]) == "--version"))
+int main(int argc, char **argv)
+{
+    if (argc == 2 &&
+        (std::string(argv[1]) == "-v" || std::string(argv[1]) == "--version"))
     {
         std::cout << wasp_version_info::name << " "
                   << wasp_version_info::full_version << std::endl;
         return 0;
     }
 
-    if ( argc != 3 && ( argc != 4 || std::string(argv[3]) != "--xml") )
+    if (argc != 3 && (argc != 4 || std::string(argv[3]) != "--xml"))
     {
-        std::cerr<<"Workbench Analysis Sequence Processor (SON) Validator and XML printer"<<std::endl
-                << argv[0]<<" : An application for validating SON formatted input"<<std::endl
-                << "            : and transforming into xml and printing"<<std::endl
-                << "      Usage : "<<argv[0]<<" path/to/SON/formatted/schema path/to/SON/formatted/input [--xml]"
-                <<std::endl;
-        std::cout<<" Usage : "<<argv[0]<<" --version\t(print version info)"<<std::endl;
+        std::cerr << "Workbench Analysis Sequence Processor (SON) Validator "
+                     "and XML printer"
+                  << std::endl
+                  << argv[0]
+                  << " : An application for validating SON formatted input"
+                  << std::endl
+                  << "            : and transforming into xml and printing"
+                  << std::endl
+                  << "      Usage : " << argv[0]
+                  << " path/to/SON/formatted/schema "
+                     "path/to/SON/formatted/input [--xml]"
+                  << std::endl;
+        std::cout << " Usage : " << argv[0]
+                  << " --version\t(print version info)" << std::endl;
         return 1;
     }
 
     HIVE::MessagePrintType msgType = HIVE::MessagePrintType::NORMAL;
-    if (argc == 4 && std::string( argv[3] ) == "--xml")
+    if (argc == 4 && std::string(argv[3]) == "--xml")
     {
         msgType = HIVE::MessagePrintType::XML;
-    }  
+    }
 
     std::ifstream schema(argv[1]);
-    if (schema.fail() || schema.bad()) {
+    if (schema.fail() || schema.bad())
+    {
         std::cerr << "Failed to open/read " << argv[1] << std::endl;
         schema.close();
         return 1;
     }
     std::stringstream errors;
     // TODO - adjust file offset size based on file size
-    SONInterpreter<TreeNodePool<unsigned int, unsigned int
-            , TokenPool<unsigned int,unsigned int, unsigned int>>> schema_interp(errors);
+    SONInterpreter<
+        TreeNodePool<unsigned int, unsigned int,
+                     TokenPool<unsigned int, unsigned int, unsigned int>>>
+         schema_interp(errors);
     bool parsed_schema = schema_interp.parse(schema);
-    if( !parsed_schema )
+    if (!parsed_schema)
     {
-        std::cerr<<"Failed to process schema file '"<<argv[1]<<"'"<<std::endl;
-        std::cerr<<errors.str()<<std::endl;
+        std::cerr << "Failed to process schema file '" << argv[1] << "'"
+                  << std::endl;
+        std::cerr << errors.str() << std::endl;
         return -1;
     }
-    
+
     std::ifstream input(argv[2]);
-    if (input.fail() || input.bad()) {
+    if (input.fail() || input.bad())
+    {
         std::cerr << "Failed to open/read " << argv[2] << std::endl;
         input.close();
         return 2;
     }
     // TODO - adjust file offset size based on file size
-    SONInterpreter<TreeNodePool<unsigned int, unsigned int
-            , TokenPool<unsigned int,unsigned int, unsigned int>>> input_interp(errors);
+    SONInterpreter<
+        TreeNodePool<unsigned int, unsigned int,
+                     TokenPool<unsigned int, unsigned int, unsigned int>>>
+         input_interp(errors);
     bool parsed_input = input_interp.parse(input);
-    if( !parsed_input )
+    if (!parsed_input)
     {
-        std::cerr<<"Failed to process input file '"<<argv[2]<<"'"<<std::endl;
-        std::cerr<<errors.str()<<std::endl;
+        std::cerr << "Failed to process input file '" << argv[2] << "'"
+                  << std::endl;
+        std::cerr << errors.str() << std::endl;
         return -1;
     }
     SONNodeView<decltype(input_interp.root())> input_root = input_interp.root();
-    SONNodeView<decltype(schema_interp.root())> schema_root = schema_interp.root();
-    HIVE validation_engine;
+    SONNodeView<decltype(schema_interp.root())> schema_root =
+        schema_interp.root();
+    HIVE                     validation_engine;
     std::vector<std::string> validation_errors;
-    bool valid = validation_engine.validate(schema_root,input_root, validation_errors);
-    
-    SONInterpreter<TreeNodePool<unsigned int, unsigned int
-            ,TokenPool<unsigned int,unsigned int, unsigned int>>> parser;
+    bool                     valid =
+        validation_engine.validate(schema_root, input_root, validation_errors);
+
+    SONInterpreter<
+        TreeNodePool<unsigned int, unsigned int,
+                     TokenPool<unsigned int, unsigned int, unsigned int>>>
+         parser;
     bool failed = !parser.parseFile(argv[1]);
-    if( failed ){
-        std::cerr<<"***Error : Parsing of "<<argv[1]<<" failed!"<<std::endl;
+    if (failed)
+    {
+        std::cerr << "***Error : Parsing of " << argv[1] << " failed!"
+                  << std::endl;
         return 1;
     }
-    wasp::to_xml(input_root,std::cout);
+    wasp::to_xml(input_root, std::cout);
 
-    if ( !valid ){
-        validation_engine.printMessages(valid, validation_errors, msgType, argv[2], std::cerr);
+    if (!valid)
+    {
+        validation_engine.printMessages(valid, validation_errors, msgType,
+                                        argv[2], std::cerr);
         return 1;
     }
 
     return 0;
 }
-
-

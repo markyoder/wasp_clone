@@ -3,8 +3,6 @@
 #include <sstream>
 #include <ostream>
 
-
-namespace wasp {
-
-
-} // namespace wasp
+namespace wasp
+{
+}  // namespace wasp

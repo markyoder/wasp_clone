@@ -15,37 +15,43 @@
 using namespace wasp;
 
 typedef TokenPool<unsigned int, unsigned int, unsigned int> TP;
-typedef TreeNodePool<unsigned int, unsigned int, TP> TNP;
-typedef SONInterpreter<TNP> SONInterp;
+typedef TreeNodePool<unsigned int, unsigned int, TP>        TNP;
+typedef SONInterpreter<TNP>            SONInterp;
 typedef SONNodeView<TreeNodeView<TNP>> SONNV;
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-    if (argc == 2 && (std::string(argv[1]) == "-v"
-                  ||  std::string(argv[1]) == "--version"))
+    if (argc == 2 &&
+        (std::string(argv[1]) == "-v" || std::string(argv[1]) == "--version"))
     {
         std::cout << wasp_version_info::name << " "
                   << wasp_version_info::full_version << std::endl;
         return 0;
     }
 
-     if ( argc != 3 && ( argc != 4 || std::string(argv[3]) != "--json") )
+    if (argc != 3 && (argc != 4 || std::string(argv[3]) != "--json"))
     {
-        std::cerr<<"Workbench Analysis Sequence Processor - SON to JSON Converter"<<std::endl<<
-                   " Usage: "<<argv[0]<<" path/to/SON/formatted/schema path/to/SON/formatted/input  [--json]"<<std::endl<<
-                   " Usage: "<<argv[0]<<" --version\t(print version info)"<<std::endl;
+        std::cerr
+            << "Workbench Analysis Sequence Processor - SON to JSON Converter"
+            << std::endl
+            << " Usage: " << argv[0] << " path/to/SON/formatted/schema "
+                                        "path/to/SON/formatted/input  [--json]"
+            << std::endl
+            << " Usage: " << argv[0] << " --version\t(print version info)"
+            << std::endl;
         return 1;
     }
 
     HIVE::MessagePrintType msgType = HIVE::MessagePrintType::NORMAL;
-    if (argc == 4 && std::string( argv[3] ) == "--json")
+    if (argc == 4 && std::string(argv[3]) == "--json")
     {
         msgType = HIVE::MessagePrintType::JSON;
     }
 
     // open schema
     std::ifstream schema(argv[1]);
-    if (schema.fail() || schema.bad()) {
+    if (schema.fail() || schema.bad())
+    {
         std::cerr << "Failed to open/read " << argv[1] << std::endl;
         schema.close();
         return 1;
@@ -53,12 +59,13 @@ int main(int argc, char** argv)
 
     // parse schema
     std::stringstream errors;
-    SONInterp schema_interp(errors);
-    bool parsed_schema = schema_interp.parse(schema);
-    if( !parsed_schema )
+    SONInterp         schema_interp(errors);
+    bool              parsed_schema = schema_interp.parse(schema);
+    if (!parsed_schema)
     {
-        std::cerr<<"Failed to process schema file '"<<argv[1]<<"'"<<std::endl;
-        std::cerr<<errors.str()<<std::endl;
+        std::cerr << "Failed to process schema file '" << argv[1] << "'"
+                  << std::endl;
+        std::cerr << errors.str() << std::endl;
         return 1;
     }
 
@@ -67,7 +74,8 @@ int main(int argc, char** argv)
 
     // open input
     std::ifstream input(argv[2]);
-    if (input.fail() || input.bad()) {
+    if (input.fail() || input.bad())
+    {
         std::cerr << "Failed to open/read " << argv[2] << std::endl;
         input.close();
         return 1;
@@ -75,31 +83,38 @@ int main(int argc, char** argv)
 
     // parse input
     SONInterp input_interp(errors);
-    bool parsed_input = input_interp.parse(input);
-    if( !parsed_input )
+    bool      parsed_input = input_interp.parse(input);
+    if (!parsed_input)
     {
-        std::cerr<<"Failed to process input file '"<<argv[2]<<"'"<<std::endl;
-        std::cerr<<errors.str()<<std::endl;
+        std::cerr << "Failed to process input file '" << argv[2] << "'"
+                  << std::endl;
+        std::cerr << errors.str() << std::endl;
         return 1;
     }
 
     // save input root
-    SONNV input_root  = input_interp.root();
+    SONNV input_root = input_interp.root();
 
     // validate input
-    HIVE validation_engine;
+    HIVE                     validation_engine;
     std::vector<std::string> validation_errors;
-    bool valid = validation_engine.validate(schema_root, input_root, validation_errors);
-    
-    // covert to json with results on std::cout and errors on std::cerr
-    int root_level = 0;
-    int last_level_printed = -1;
-    std::stringstream out;
-    bool json_pass = HIVE::input_to_json(schema_root, input_root, root_level, last_level_printed, out, std::cerr);
-    
-    if ( json_pass ) std::cout << out.str();
-    if ( !valid )    validation_engine.printMessages(valid, validation_errors, msgType, argv[2], std::cerr);
-    if ( valid && json_pass) return 0;
-    else                     return 1;
+    bool                     valid =
+        validation_engine.validate(schema_root, input_root, validation_errors);
 
+    // covert to json with results on std::cout and errors on std::cerr
+    int               root_level         = 0;
+    int               last_level_printed = -1;
+    std::stringstream out;
+    bool json_pass = HIVE::input_to_json(schema_root, input_root, root_level,
+                                         last_level_printed, out, std::cerr);
+
+    if (json_pass)
+        std::cout << out.str();
+    if (!valid)
+        validation_engine.printMessages(valid, validation_errors, msgType,
+                                        argv[2], std::cerr);
+    if (valid && json_pass)
+        return 0;
+    else
+        return 1;
 }
