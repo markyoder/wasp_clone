@@ -346,7 +346,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string &line)
     bool condition_captured = false;
     if (attribute_indices.empty() == false)
     {  // in addition to the attributes, capture the components before, between,
-       // and after
+        // and after
         // capture the condition
         bool is_condition  = is_ifdef || is_ifndef || is_if || is_elseif;
         condition_captured = is_condition;

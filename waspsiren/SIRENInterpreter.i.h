@@ -313,8 +313,8 @@ void SIRENInterpreter<S>::search_index_predicated_child(
         TreeNodeView<Storage_type> stride_node = predicate_context.child_at(4);
         stride = stride_node.to_int() - 1;  // remove 1 because 1-based
     }
-    int         stride_remainder = 1;  // always start at 1 to capture first node
-    std::size_t stage_size       = stage.size();
+    int stride_remainder   = 1;  // always start at 1 to capture first node
+    std::size_t stage_size = stage.size();
     for (std::size_t index = 0; index < stage_size; ++index)
     {
         TAdapter node = stage[index];

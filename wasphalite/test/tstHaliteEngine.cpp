@@ -1287,8 +1287,8 @@ TEST(Halite, iterative_configurable_delimiter_emission)
     //        expected<<"1 2 3 4 5"<<std::endl;
     //        ASSERT_EQ( expected.str(), out.str() );
     //    }
-    {  // test 4th element emission. Emission occurs with an additional newline
-       // and no separator on new line
+    {   // test 4th element emission. Emission occurs with an additional newline
+        // and no separator on new line
         std::stringstream input;
         input
             << R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=<nl>,4>)INPUT";
