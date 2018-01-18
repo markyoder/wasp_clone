@@ -5,12 +5,22 @@ import xml2obj
 import unittest
 
 ### convert son file to xml stream and create python data structure
-sonvalidxml = os.path.dirname(__file__)+"/../wasputils/sonvalidxml"
 if os.name == 'nt':
-   sonvalidxml=sonvalidxml+'.exe'
-schema = os.path.dirname(__file__)+"/schema.sch"
-input_file = os.path.dirname(__file__)+"/input.son"
-cmd = sonvalidxml+' '+schema+' '+input_file
+    ### for windows intel
+    sonvalidxml = os.path.dirname(__file__)+"\\..\\wasputils\\sonvalidxml.exe"
+    if not os.path.isfile(sonvalidxml) :
+        ### for windows visual studio
+        sonvalidxml = os.path.dirname(__file__) + "\\..\\wasputils\\Release\\sonvalidxml.exe"
+        if not os.path.isfile(sonvalidxml) :
+            ### for windows visual studio shared with CMAKE_RUNTIME_OUTPUT_DIRECTORY fixup
+            sonvalidxml = os.path.dirname(__file__) + "\\..\\cmake_runtime_output\\Release\\sonvalidxml.exe"
+    schema_filepath = os.path.dirname(__file__)+"\\schema.sch"
+    son_input_filepath = os.path.dirname(__file__)+"\\input.son"
+else:
+    sonvalidxml = os.path.dirname(__file__)+"/../wasputils/sonvalidxml"
+    schema_filepath = os.path.dirname(__file__)+"/schema.sch"
+    son_input_filepath = os.path.dirname(__file__)+"/input.son"
+cmd = sonvalidxml+' '+schema_filepath+' '+son_input_filepath+" --xml"
 xmlresult = subprocess.check_output(cmd, shell=True)
 
 ### obtain pieces of input by name for convenience
