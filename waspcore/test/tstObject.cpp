@@ -221,7 +221,7 @@ TEST(DataArray, methods)
     }
     {
         ASSERT_EQ(3, a.size());
-        const DataObject &obj = a[2].as_object();
+        const DataObject& obj = a[2].as_object();
         EXPECT_EQ(Value::TYPE_INTEGER, obj["int"].type());
         EXPECT_EQ(obj["int"].to_int(), 1);
         EXPECT_EQ(Value::TYPE_DOUBLE, obj["float"].type());
@@ -229,13 +229,13 @@ TEST(DataArray, methods)
         EXPECT_EQ(Value::TYPE_DOUBLE, obj["double"].type());
         EXPECT_DOUBLE_EQ(obj["double"].to_double(), 3.);
         // check editing reference
-        DataObject &o = a[2].as_object();
+        DataObject& o = a[2].as_object();
         o["int"]      = 1.0;
         o["float"]    = 1;
         o["double"]   = 20.;
     }
     {
-        const DataObject &obj = a[2].as_object();
+        const DataObject& obj = a[2].as_object();
         EXPECT_EQ(Value::TYPE_DOUBLE, obj["int"].type());
         EXPECT_DOUBLE_EQ(obj["int"].to_double(), 1.);
         EXPECT_EQ(Value::TYPE_INTEGER, obj["float"].type());
@@ -287,8 +287,8 @@ TEST(DataObject, methods)
     }
     ASSERT_TRUE(o["ted"].to_object()->contains("arabic numbers"));
     ASSERT_TRUE(o["ted"].as_object().contains("arabic numbers"));
-    DataArray *a    = o["ted"]["arabic numbers"].to_array();
-    DataArray &aref = o["ted"]["arabic numbers"].as_array();
+    DataArray* a    = o["ted"]["arabic numbers"].to_array();
+    DataArray& aref = o["ted"]["arabic numbers"].as_array();
     ASSERT_TRUE(a != nullptr);
     ASSERT_EQ(10, a->size());
     ASSERT_EQ(10, aref.size());
@@ -322,7 +322,7 @@ TEST(DataObject, methods)
             moved["ted"]["arabic numbers"] = a;
         }
         ASSERT_TRUE(moved["ted"].to_object()->contains("arabic numbers"));
-        DataArray *a = moved["ted"]["arabic numbers"].to_array();
+        DataArray* a = moved["ted"]["arabic numbers"].to_array();
         ASSERT_TRUE(a != nullptr);
         ASSERT_EQ(10, a->size());
         for (size_t i = 0; i < a->size(); ++i)

@@ -15,7 +15,7 @@ HaliteInterpreter<S>::HaliteInterpreter()
 {
 }
 template<class S>
-HaliteInterpreter<S>::HaliteInterpreter(std::ostream &err)
+HaliteInterpreter<S>::HaliteInterpreter(std::ostream& err)
     : Interpreter<S>(err)
     , m_attribute_start_delim("<")
     , m_attribute_end_delim(">")
@@ -32,7 +32,7 @@ HaliteInterpreter<S>::~HaliteInterpreter()
 {
 }
 template<class S>
-bool HaliteInterpreter<S>::parse(std::istream &in,
+bool HaliteInterpreter<S>::parse(std::istream& in,
                                  size_t        startLine,
                                  size_t        startColumn)
 {
@@ -41,8 +41,8 @@ bool HaliteInterpreter<S>::parse(std::istream &in,
         startLine, startColumn);
 }
 template<class S>
-bool HaliteInterpreter<S>::parseStream(std::istream &     in,
-                                       const std::string &sname,
+bool HaliteInterpreter<S>::parseStream(std::istream&      in,
+                                       const std::string& sname,
                                        size_t             start_line,
                                        size_t             start_column)
 {
@@ -57,7 +57,7 @@ bool HaliteInterpreter<S>::parseStream(std::istream &     in,
     return parsed;
 }
 template<class S>
-bool HaliteInterpreter<S>::parseFile(const std::string &filename, size_t line)
+bool HaliteInterpreter<S>::parseFile(const std::string& filename, size_t line)
 {
     std::ifstream in(filename.c_str());
     if (!in.good())
@@ -73,8 +73,8 @@ bool HaliteInterpreter<S>::parseFile(const std::string &filename, size_t line)
     return parseStream(in, filename, line);
 }
 template<class S>
-bool HaliteInterpreter<S>::parseString(const std::string &input,
-                                       const std::string &sname,
+bool HaliteInterpreter<S>::parseString(const std::string& input,
+                                       const std::string& sname,
                                        size_t             startLine,
                                        size_t             startColumn)
 {
@@ -82,7 +82,7 @@ bool HaliteInterpreter<S>::parseString(const std::string &input,
     return parseStream(iss, sname, startLine, startColumn);
 }
 template<class S>
-bool HaliteInterpreter<S>::parse_content(std::istream &in)
+bool HaliteInterpreter<S>::parse_content(std::istream& in)
 {
     // process all lines of the file
     while (!in.eof() && in.good())
@@ -115,9 +115,9 @@ bool HaliteInterpreter<S>::parse_content(std::istream &in)
     return true;
 }
 template<class S>
-void HaliteInterpreter<S>::capture_leaf(const std::string &node_name,
+void HaliteInterpreter<S>::capture_leaf(const std::string& node_name,
                                         size_t             node_type,
-                                        const std::string &data,
+                                        const std::string& data,
                                         size_t             token_type,
                                         size_t             file_offset)
 {
@@ -137,7 +137,7 @@ void HaliteInterpreter<S>::capture_leaf(const std::string &node_name,
 }
 
 template<class S>
-bool HaliteInterpreter<S>::parse_line(const std::string &line)
+bool HaliteInterpreter<S>::parse_line(const std::string& line)
 {
     //
     // A line could be the following
@@ -418,10 +418,10 @@ bool HaliteInterpreter<S>::parse_line(const std::string &line)
 }
 template<class S>
 void HaliteInterpreter<S>::capture(
-    const std::string &                      data,
-    size_t &                                 current_column_index,
-    size_t &                                 current_attribute_index,
-    const SubStringIndexer::IndexPairs_type &attribute_indices,
+    const std::string&                       data,
+    size_t&                                  current_column_index,
+    size_t&                                  current_attribute_index,
+    const SubStringIndexer::IndexPairs_type& attribute_indices,
     size_t                                   limit)
 {
     wasp_require(limit <= attribute_indices.size());
@@ -436,14 +436,14 @@ void HaliteInterpreter<S>::capture(
 
     for (size_t i = current_attribute_index; i < limit; ++i)
     {
-        const SubStringIndexer::IndexPair_type &attribute_index =
+        const SubStringIndexer::IndexPair_type& attribute_index =
             attribute_indices[i];
         // check for preceding text/name that needs to be put into tree
         if (attribute_index.first > current_column_index)
         {
             size_t length      = attribute_index.first - current_column_index;
             size_t file_offset = m_file_offset + current_column_index;
-            const std::string &prefixed =
+            const std::string& prefixed =
                 data.substr(current_column_index, length);
             capture_attribute_text(prefixed, file_offset, !open_tree.empty());
         }
@@ -482,7 +482,7 @@ void HaliteInterpreter<S>::capture(
         {
             while (depth_delta != 0)
             {
-                const auto &prev = open_tree.back();
+                const auto& prev = open_tree.back();
                 capture_attribute_delim(data, current_column_index,
                                         prev.second);
                 ++depth_delta;
@@ -499,9 +499,9 @@ void HaliteInterpreter<S>::capture(
 }
 
 template<class S>
-bool HaliteInterpreter<S>::evaluate(std::ostream &out,
-                                    DataAccessor &data,
-                                    std::ostream *activity_log)
+bool HaliteInterpreter<S>::evaluate(std::ostream& out,
+                                    DataAccessor& data,
+                                    std::ostream* activity_log)
 {
     auto   tree_view = Interpreter<S>::root();
     size_t line = 1, column = 1;
@@ -530,15 +530,15 @@ bool HaliteInterpreter<S>::evaluate(std::ostream &out,
 }
 
 template<class S>
-bool HaliteInterpreter<S>::evaluate(DataAccessor &         data,
-                                    const TreeNodeView<S> &tree_view,
-                                    std::ostream &         out,
-                                    size_t &               current_line,
-                                    size_t &               current_column)
+bool HaliteInterpreter<S>::evaluate(DataAccessor&          data,
+                                    const TreeNodeView<S>& tree_view,
+                                    std::ostream&          out,
+                                    size_t&                current_line,
+                                    size_t&                current_column)
 {
     for (size_t i = 0; i < tree_view.child_count(); ++i)
     {
-        const auto &child_view = tree_view.child_at(i);
+        const auto& child_view = tree_view.child_at(i);
         if (!evaluate_component(data, child_view, out, current_line,
                                 current_column))
         {
@@ -548,11 +548,11 @@ bool HaliteInterpreter<S>::evaluate(DataAccessor &         data,
     return true;
 }
 template<class S>
-bool HaliteInterpreter<S>::evaluate_component(DataAccessor &         data,
-                                              const TreeNodeView<S> &tree_view,
-                                              std::ostream &         out,
-                                              size_t &current_line,
-                                              size_t &current_column)
+bool HaliteInterpreter<S>::evaluate_component(DataAccessor&          data,
+                                              const TreeNodeView<S>& tree_view,
+                                              std::ostream&          out,
+                                              size_t& current_line,
+                                              size_t& current_column)
 {
     auto child_type = tree_view.type();
     switch (child_type)
@@ -598,11 +598,11 @@ bool HaliteInterpreter<S>::evaluate_component(DataAccessor &         data,
     return true;
 }
 template<class S>
-bool HaliteInterpreter<S>::print_attribute(DataAccessor &         data,
-                                           const TreeNodeView<S> &attr_view,
-                                           std::ostream &         out,
-                                           size_t &               line,
-                                           size_t &               column)
+bool HaliteInterpreter<S>::print_attribute(DataAccessor&          data,
+                                           const TreeNodeView<S>& attr_view,
+                                           std::ostream&          out,
+                                           size_t&                line,
+                                           size_t&                column)
 {
     // attributes must have '<' txt? '>'
     // e.g., < txt> or <>
@@ -707,19 +707,19 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor &         data,
         Result result;
         if (options.has_use())
         {
-            const std::string &scope_name = options.use();
+            const std::string& scope_name = options.use();
             wasp_tagged_line("Using options with name '" << scope_name << "'");
-            DataArray * use_array = data.array(scope_name);
-            DataObject *use_obj   = data.object(scope_name);
+            DataArray*  use_array = data.array(scope_name);
+            DataObject* use_obj   = data.object(scope_name);
             if (use_array != nullptr)
             {
                 for (size_t e = 0, array_size = use_array->size();
                      e < array_size; ++e)
                 {
-                    const Value &element = use_array->at(e);
+                    const Value& element = use_array->at(e);
                     if (!element.is_object())
                         continue;  // todo
-                    DataObject *use_object = element.to_object();
+                    DataObject* use_object = element.to_object();
                     wasp_check(use_object);
                     DataAccessor use(use_object, &data);
                     result = expr.evaluate(use);
@@ -763,8 +763,8 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor &         data,
         DataAccessor use = data;
         if (options.has_use())
         {
-            const std::string &obj_name = options.use();
-            DataObject *       use_obj  = data.object(obj_name);
+            const std::string& obj_name = options.use();
+            DataObject*        use_obj  = data.object(obj_name);
             if (use_obj == nullptr)
             {
                 Interpreter<S>::error_stream()
@@ -805,10 +805,10 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor &         data,
     return true;
 }
 template<class S>
-bool HaliteInterpreter<S>::process_result(const Result &             result,
-                                          const SubstitutionOptions &options,
+bool HaliteInterpreter<S>::process_result(const Result&              result,
+                                          const SubstitutionOptions& options,
                                           size_t                     line,
-                                          std::ostream &             out)
+                                          std::ostream&              out)
 {
     if (result.is_error() && !options.optional())
     {
@@ -849,17 +849,17 @@ bool HaliteInterpreter<S>::process_result(const Result &             result,
 }
 
 template<class S>
-bool HaliteInterpreter<S>::conditional(DataAccessor &         data,
-                                       const TreeNodeView<S> &action_view,
-                                       std::ostream &         out,
-                                       size_t &               line,
-                                       size_t &               column)
+bool HaliteInterpreter<S>::conditional(DataAccessor&          data,
+                                       const TreeNodeView<S>& action_view,
+                                       std::ostream&          out,
+                                       size_t&                line,
+                                       size_t&                column)
 {
     // action fields start with if,ifdef,ifndef
     size_t child_count = action_view.child_count();
     wasp_require(child_count > 0);
 
-    const auto &term_view   = action_view.child_at(child_count - 1);
+    const auto& term_view   = action_view.child_at(child_count - 1);
     size_t      action_line = action_view.line();
     int         delta       = action_line - line;
     if (delta > 0)
@@ -875,7 +875,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor &         data,
     size_t i = 0;
     for (; i < child_count; ++i)
     {
-        const auto &child_view = action_view.child_at(i);
+        const auto& child_view = action_view.child_at(i);
         if (child_view.type() == wasp::TERM)
             break;  // 'endif'
         std::string action_name = child_view.name();
@@ -917,7 +917,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor &         data,
 
                 ++line;  // account for #if, etc.
                 column                       = 1;
-                const auto &action_true_view = child_view.child_at(2);
+                const auto& action_true_view = child_view.child_at(2);
                 int         delta            = action_true_view.line() - line;
                 if (delta > 0)
                 {
@@ -943,7 +943,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor &         data,
                 size_t              ccol  = column;
                 for (size_t ci = 0; ci < cond_view.child_count(); ++ci)
                 {
-                    const auto &if_cond_view = cond_view.child_at(ci);
+                    const auto& if_cond_view = cond_view.child_at(ci);
 
                     auto type = if_cond_view.type();
                     switch (type)
@@ -991,7 +991,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor &         data,
                     (result.is_number() && result.number() != 0.0) ||
                     (result.is_string() && data.exists(result.string())))
                 {
-                    const auto &action_true_view = child_view.child_at(2);
+                    const auto& action_true_view = child_view.child_at(2);
                     line   = cline + 1;  // account for #if, etc.
                     column = 1;
                     if (!evaluate(data, action_true_view, out, line, column))
@@ -1022,7 +1022,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor &         data,
             // #else followed by template lines... eval the lines
             for (size_t j = 1, count = child_view.child_count(); j < count; ++j)
             {
-                const auto &else_child_view = child_view.child_at(j);
+                const auto& else_child_view = child_view.child_at(j);
                 if (!evaluate_component(data, else_child_view, out, line,
                                         column))
                 {
@@ -1038,7 +1038,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor &         data,
     if (i + 1 < child_count)
     {
         wasp_check(i + 1 <= action_view.child_count());
-        const auto &end_of_action = action_view.child_at(i + 1);
+        const auto& end_of_action = action_view.child_at(i + 1);
         int         delta         = end_of_action.line() - 1 - line;
         wasp_check(delta >= 0);
         wasp_tagged_line("conditional line delta " << delta << " for "
@@ -1055,11 +1055,11 @@ bool HaliteInterpreter<S>::conditional(DataAccessor &         data,
 }
 
 template<class S>
-bool HaliteInterpreter<S>::import_file(DataAccessor &         data,
-                                       const TreeNodeView<S> &import_view,
-                                       std::ostream &         out,
-                                       size_t &               line,
-                                       size_t &               column)
+bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
+                                       const TreeNodeView<S>& import_view,
+                                       std::ostream&          out,
+                                       size_t&                line,
+                                       size_t&                column)
 {
     // attributes must have '#import txt'
     // e.g., #import txt or #import txt<a1>txt<a2>...
@@ -1074,7 +1074,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor &         data,
     // accumulate an attribute string
     for (size_t i = 1, count = import_view.child_count(); i < count; ++i)
     {
-        const auto &child_view = import_view.child_at(i);
+        const auto& child_view = import_view.child_at(i);
         auto        type       = child_view.type();
         switch (type)
         {
@@ -1155,8 +1155,8 @@ bool HaliteInterpreter<S>::import_file(DataAccessor &         data,
     wasp_tagged_line("importing");
     if (using_reference)
     {
-        DataObject *obj   = nullptr;
-        DataArray * array = nullptr;
+        DataObject* obj   = nullptr;
+        DataArray*  array = nullptr;
         if ((obj = data.object(using_what)) != nullptr)
         {
             DataAccessor ref(obj, &data);
@@ -1168,7 +1168,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor &         data,
             wasp_tagged_line("importing " << array->size() << " times...");
             for (size_t array_i = 0; array_i < array->size(); ++array_i)
             {
-                const auto &variable_at_i = array->at(array_i);
+                const auto& variable_at_i = array->at(array_i);
                 if (variable_at_i.is_object())
                 {
                     DataAccessor ref(variable_at_i.to_object(), &data);
@@ -1239,11 +1239,11 @@ bool HaliteInterpreter<S>::import_file(DataAccessor &         data,
     return import;
 }
 template<class S>
-bool HaliteInterpreter<S>::repeat_file(DataAccessor &         data,
-                                       const TreeNodeView<S> &repeat_view,
-                                       std::ostream &         out,
-                                       size_t &               line,
-                                       size_t &               column)
+bool HaliteInterpreter<S>::repeat_file(DataAccessor&          data,
+                                       const TreeNodeView<S>& repeat_view,
+                                       std::ostream&          out,
+                                       size_t&                line,
+                                       size_t&                column)
 {
     // attributes must have '#repear txt'
     // e.g., #repeat txt or #repeat txt<a1>txt<a2>...
@@ -1258,7 +1258,7 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor &         data,
     // accumulate an attribute string
     for (size_t i = 1, count = repeat_view.child_count(); i < count; ++i)
     {
-        const auto &child_view = repeat_view.child_at(i);
+        const auto& child_view = repeat_view.child_at(i);
         auto        type       = child_view.type();
         switch (type)
         {
@@ -1352,8 +1352,8 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor &         data,
 
 template<class S>
 bool HaliteInterpreter<S>::extract_ranges(std::string         range_data,
-                                          std::vector<Range> &ranges,
-                                          std::string &       error)
+                                          std::vector<Range>& ranges,
+                                          std::string&        error)
 {
     size_t assign_i = range_data.find("=");
     if (assign_i == std::string::npos)
@@ -1392,7 +1392,7 @@ bool HaliteInterpreter<S>::extract_ranges(std::string         range_data,
     {
         bool               ok     = false;
         size_t             length = delim_i - 1 - assign_i;
-        const std::string &start_str =
+        const std::string& start_str =
             trim(range_data.substr(assign_i + 1, length), " ");
         to_type(start, start_str, &ok);
         wasp_tagged_line("start '" << start_str << "' - " << std::boolalpha
@@ -1422,7 +1422,7 @@ bool HaliteInterpreter<S>::extract_ranges(std::string         range_data,
                 return false;
             }
             bool               ok        = false;
-            const std::string &range_end = range_data.substr(start_delim_i + 1);
+            const std::string& range_end = range_data.substr(start_delim_i + 1);
             wasp_tagged_line("range end is '" << range_end << "'");
             to_type(end, range_end, &ok);
             if (!ok)
@@ -1437,7 +1437,7 @@ bool HaliteInterpreter<S>::extract_ranges(std::string         range_data,
         {
             bool               ok     = false;
             size_t             length = delim_i - 1 - start_delim_i;
-            const std::string &range_end =
+            const std::string& range_end =
                 range_data.substr(start_delim_i + 1, length);
             wasp_tagged_line("range end '" << range_end << "'");
             to_type(end, range_end, &ok);
@@ -1467,7 +1467,7 @@ bool HaliteInterpreter<S>::extract_ranges(std::string         range_data,
                     return false;
                 }
                 bool               ok = false;
-                const std::string &range_stride =
+                const std::string& range_stride =
                     range_data.substr(end_delim_i + 1);
                 wasp_tagged_line("range stride is '" << range_stride << "'");
                 to_type(stride, range_stride, &ok);
@@ -1517,11 +1517,11 @@ bool HaliteInterpreter<S>::extract_ranges(std::string         range_data,
 }
 
 template<class S>
-bool HaliteInterpreter<S>::import_range(DataAccessor &        data,
-                                        HaliteInterpreter<S> &file_interpreter,
-                                        const std::vector<Range> &imports,
+bool HaliteInterpreter<S>::import_range(DataAccessor&         data,
+                                        HaliteInterpreter<S>& file_interpreter,
+                                        const std::vector<Range>& imports,
                                         size_t                    i,
-                                        std::ostream &            out)
+                                        std::ostream&             out)
 {
     wasp_require(i < imports.size());
     wasp_tagged_line("looping " << imports[i].name);
@@ -1557,7 +1557,7 @@ bool HaliteInterpreter<S>::import_range(DataAccessor &        data,
 }
 
 template<class S>
-void HaliteInterpreter<S>::capture_attribute_text(const std::string &text,
+void HaliteInterpreter<S>::capture_attribute_text(const std::string& text,
                                                   size_t             offset,
                                                   bool extract_options)
 {
@@ -1582,8 +1582,8 @@ void HaliteInterpreter<S>::capture_attribute_text(const std::string &text,
 }
 
 template<class S>
-void HaliteInterpreter<S>::capture_attribute_delim(const std::string &data,
-                                                   size_t &current_column_index,
+void HaliteInterpreter<S>::capture_attribute_delim(const std::string& data,
+                                                   size_t& current_column_index,
                                                    size_t  attribute_end_index)
 {
     wasp_require(attribute_end_index >= current_column_index);
@@ -1607,8 +1607,8 @@ void HaliteInterpreter<S>::capture_attribute_delim(const std::string &data,
     current_column_index = attribute_end_index + m_attribute_end_delim.size();
 }
 template<class S>
-bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions &options,
-                                             const std::string &  data,
+bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions& options,
+                                             const std::string&   data,
                                              size_t               line)
 {
     wasp_tagged_line("getting options for '" << data << "'");
@@ -1751,7 +1751,7 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions &options,
         }
         if (last_i < itr->first)
         {
-            const std::string &extra = data.substr(last_i, itr->first - last_i);
+            const std::string& extra = data.substr(last_i, itr->first - last_i);
             wasp_tagged_line("found extra '" << extra << "'");
             iterative_options_str << extra;
         }
@@ -1760,7 +1760,7 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions &options,
     // capture trailing
     if (last_i < data.size())
     {
-        const std::string &extra = data.substr(last_i, data.size() - last_i);
+        const std::string& extra = data.substr(last_i, data.size() - last_i);
         wasp_tagged_line("found extra '" << extra << "'");
         iterative_options_str << extra;
     }

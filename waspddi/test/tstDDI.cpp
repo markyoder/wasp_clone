@@ -41,11 +41,11 @@ TEST(DDInterpreter, comment_placement)
  sect2
 )I" << std::endl;
     DDInterpreter<> ddi;
-    auto *          sect1   = ddi.definition()->create("sect1");
-    auto *          sect1_1 = sect1->create("sect1.1");
+    auto*           sect1   = ddi.definition()->create("sect1");
+    auto*           sect1_1 = sect1->create("sect1.1");
     sect1_1->create("sect1.1.1");
     sect1_1->create("sect1.1.2");
-    auto *sect1_2 = sect1->create("sect1.2");
+    auto* sect1_2 = sect1->create("sect1.2");
     sect1_2->create("sect1.2.1");
     sect1_2->create("sect1.2.2");
     sect1_2->create("sect1.2.3");

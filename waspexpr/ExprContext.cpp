@@ -2,7 +2,7 @@
 
 namespace wasp
 {
-bool Result::format(std::ostream &out) const
+bool Result::format(std::ostream& out) const
 {
     if (is_real())
     {
@@ -27,9 +27,9 @@ bool Result::format(std::ostream &out) const
     return true;
 }
 
-bool Result::format(std::ostream &     out,
-                    const std::string &fmt,
-                    std::ostream &     err) const
+bool Result::format(std::ostream&      out,
+                    const std::string& fmt,
+                    std::ostream&      err) const
 {
     bool result = true;
     if (is_real())
@@ -65,7 +65,7 @@ void Context::clear()
     m_functions.clear();
 }
 
-Context &Context::add_default_variables()
+Context& Context::add_default_variables()
 {
     store("e", 2.7182818284590452353602874713527);
     store("pi", 3.14159265359);
@@ -73,7 +73,7 @@ Context &Context::add_default_variables()
     return *this;
 }
 
-Context &Context::add_default_functions()
+Context& Context::add_default_functions()
 {
     wasp_check(function_exists("sin") == false);
     add_function("sin", new FSin());
@@ -158,7 +158,7 @@ Context &Context::add_default_functions()
     return *this;
 }
 
-bool Context::function_exists(const std::string &name) const
+bool Context::function_exists(const std::string& name) const
 {
     return m_functions.find(name) != m_functions.end();
 }

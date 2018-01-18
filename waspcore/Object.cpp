@@ -11,11 +11,11 @@ namespace wasp
 Value::Value() : m_allocated(false), m_type(TYPE_NULL)
 {
 }
-Value::Value(const Value &orig)
+Value::Value(const Value& orig)
 {
     this->copy_from(orig);
 }
-Value::Value(Value &&orig)
+Value::Value(Value&& orig)
     : m_allocated(orig.m_allocated), m_type(orig.m_type), m_data(orig.m_data)
 {
     orig.m_allocated = false;
@@ -36,32 +36,32 @@ Value::Value(double v)
     m_data.m_double = v;
     m_type          = TYPE_DOUBLE;
 }
-Value::Value(const char *v)
+Value::Value(const char* v)
 {
     wasp_require(v);
     m_data.m_string = strdup(v);
     m_type          = TYPE_STRING;
     m_allocated     = true;
 }
-Value::Value(const std::string &v)
+Value::Value(const std::string& v)
 {
     m_data.m_string = strdup(v.c_str());
     m_type          = TYPE_STRING;
     m_allocated     = true;
 }
-Value::Value(const DataArray &v)
+Value::Value(const DataArray& v)
 {
     m_data.m_array = new DataArray(v);
     m_type         = TYPE_ARRAY;
     m_allocated    = true;
 }
-Value::Value(const DataObject &v)
+Value::Value(const DataObject& v)
 {
     m_data.m_object = new DataObject(v);
     m_type          = TYPE_OBJECT;
     m_allocated     = true;
 }
-void Value::copy_from(const Value &orig)
+void Value::copy_from(const Value& orig)
 {
     m_allocated = orig.m_allocated;
     m_type      = orig.m_type;
@@ -120,7 +120,7 @@ std::string Value::categoryString() const
     }
 }
 
-Value &Value::operator=(const Value &orig)
+Value& Value::operator=(const Value& orig)
 {
     // release any allocated memory
     nullify();
@@ -128,7 +128,7 @@ Value &Value::operator=(const Value &orig)
     copy_from(orig);
     return *this;
 }
-Value &Value::operator=(Value &&orig)
+Value& Value::operator=(Value&& orig)
 {
     // release any allocated memory
     nullify();
@@ -141,28 +141,28 @@ Value &Value::operator=(Value &&orig)
 
     return *this;
 }
-Value &Value::operator=(bool v)
+Value& Value::operator=(bool v)
 {
     nullify();
     m_type        = TYPE_BOOLEAN;
     m_data.m_bool = v;
     return *this;
 }
-Value &Value::operator=(int v)
+Value& Value::operator=(int v)
 {
     nullify();
     m_type       = TYPE_INTEGER;
     m_data.m_int = v;
     return *this;
 }
-Value &Value::operator=(double v)
+Value& Value::operator=(double v)
 {
     nullify();
     m_type          = TYPE_DOUBLE;
     m_data.m_double = v;
     return *this;
 }
-Value &Value::operator=(const char *v)
+Value& Value::operator=(const char* v)
 {
     nullify();
     wasp_require(v);
@@ -171,7 +171,7 @@ Value &Value::operator=(const char *v)
     m_allocated     = true;
     return *this;
 }
-Value &Value::operator=(const std::string &v)
+Value& Value::operator=(const std::string& v)
 {
     nullify();
     m_data.m_string = strdup(v.c_str());
@@ -179,7 +179,7 @@ Value &Value::operator=(const std::string &v)
     m_allocated     = true;
     return *this;
 }
-Value &Value::operator=(const DataArray &v)
+Value& Value::operator=(const DataArray& v)
 {
     nullify();
     m_data.m_array = new DataArray(v);
@@ -187,7 +187,7 @@ Value &Value::operator=(const DataArray &v)
     m_allocated    = true;
     return *this;
 }
-Value &Value::operator=(const DataObject &v)
+Value& Value::operator=(const DataObject& v)
 {
     nullify();
     m_data.m_object = new DataObject(v);
@@ -196,7 +196,7 @@ Value &Value::operator=(const DataObject &v)
     return *this;
 }
 
-void Value::assign(DataObject *obj)
+void Value::assign(DataObject* obj)
 {
     if (obj == nullptr)
     {
@@ -209,7 +209,7 @@ void Value::assign(DataObject *obj)
     m_allocated     = true;
     m_data.m_object = obj;
 }
-void Value::assign(DataArray *array)
+void Value::assign(DataArray* array)
 {
     if (array == nullptr)
     {
@@ -341,7 +341,7 @@ bool Value::to_bool() const
     }
     wasp_not_implemented("unknown type conversion to bool");
 }
-const char *Value::to_cstring() const
+const char* Value::to_cstring() const
 {
     switch (m_type)
     {
@@ -389,41 +389,41 @@ std::string Value::to_string() const
     wasp_not_implemented("unknown type conversion to string");
 }
 
-DataArray *Value::to_array() const
+DataArray* Value::to_array() const
 {
     wasp_insist(convertable(TYPE_ARRAY),
                 "Value object must be convertable to an array");
     return m_data.m_array;
 }
-DataObject *Value::to_object() const
+DataObject* Value::to_object() const
 {
     wasp_insist(convertable(TYPE_OBJECT),
                 "Value object must be convertable to an object");
     return m_data.m_object;
 }
 
-const DataArray &Value::as_array() const
+const DataArray& Value::as_array() const
 {
     wasp_insist(convertable(TYPE_ARRAY),
                 "Value object must be convertable to an array");
     return *(m_data.m_array);
 }
 
-DataArray &Value::as_array()
+DataArray& Value::as_array()
 {
     wasp_insist(convertable(TYPE_ARRAY),
                 "Value object must be convertable to an array");
     return *(m_data.m_array);
 }
 
-const DataObject &Value::as_object() const
+const DataObject& Value::as_object() const
 {
     wasp_insist(convertable(TYPE_OBJECT),
                 "Value object must be convertable to an object");
     return *(m_data.m_object);
 }
 
-DataObject &Value::as_object()
+DataObject& Value::as_object()
 {
     wasp_insist(convertable(TYPE_OBJECT),
                 "Value object must be convertable to an object");
@@ -449,28 +449,28 @@ bool Value::convertable(Value::Type to) const
     wasp_not_implemented("unknown type conversion");
 }
 
-Value &Value::operator[](const std::string &name)
+Value& Value::operator[](const std::string& name)
 {
     wasp_check(is_object());
-    DataObject *o = to_object();
+    DataObject* o = to_object();
     return o->operator[](name);
 }
-Value Value::operator[](const std::string &name) const
+Value Value::operator[](const std::string& name) const
 {
     wasp_check(is_object());
-    const DataObject *o = to_object();
+    const DataObject* o = to_object();
     return o->operator[](name);
 }
-Value &Value::operator[](size_t i)
+Value& Value::operator[](size_t i)
 {
     wasp_check(is_array());
-    DataArray *a = to_array();
+    DataArray* a = to_array();
     return a->operator[](i);
 }
 Value Value::operator[](size_t i) const
 {
     wasp_check(is_array());
-    DataArray *a = to_array();
+    DataArray* a = to_array();
     return a->operator[](i);
 }
 bool Value::empty() const
@@ -502,7 +502,7 @@ size_t Value::size() const
     return 0;
 }
 
-bool Value::format_json(std::ostream &out, int indent_level, int level) const
+bool Value::format_json(std::ostream& out, int indent_level, int level) const
 {
     if (is_object())
     {
@@ -538,7 +538,7 @@ bool Value::format_json(std::ostream &out, int indent_level, int level) const
     }
     return out.good();
 }
-bool Value::pack_json(std::ostream &out) const
+bool Value::pack_json(std::ostream& out) const
 {
     if (is_object())
     {
@@ -580,7 +580,7 @@ DataArray::DataArray()
 DataArray::~DataArray()
 {
 }
-DataArray::DataArray(const DataArray &orig) : m_data(orig.m_data)
+DataArray::DataArray(const DataArray& orig) : m_data(orig.m_data)
 {
 }
 size_t DataArray::size() const
@@ -591,7 +591,7 @@ bool DataArray::empty() const
 {
     return m_data.empty();
 }
-bool DataArray::format_json(std::ostream &out,
+bool DataArray::format_json(std::ostream& out,
                             int           indent_level,
                             int           level) const
 {
@@ -618,7 +618,7 @@ bool DataArray::format_json(std::ostream &out,
     out << std::string(indent_level * (level), ' ') << "]";
     return out.good();
 }
-bool DataArray::pack_json(std::ostream &out) const
+bool DataArray::pack_json(std::ostream& out) const
 {
     if (empty())
     {
@@ -638,7 +638,7 @@ bool DataArray::pack_json(std::ostream &out) const
     return out.good();
 }
 
-void DataArray::merge(const DataArray &rhs)
+void DataArray::merge(const DataArray& rhs)
 {
     // loop over every item in rhs array
     size_t index = 0;
@@ -653,7 +653,7 @@ void DataArray::merge(const DataArray &rhs)
         else
         {
             // must check the type of lhs[index] against that of rhs[index]
-            Value &child = m_data.at(index);
+            Value& child = m_data.at(index);
             // if Value is an object do a depth-first merge
             if (child.is_object())
             {
@@ -693,7 +693,7 @@ void DataArray::merge(const DataArray &rhs)
 DataObject::DataObject()
 {
 }
-DataObject::DataObject(const DataObject &orig) : m_data(orig.m_data)
+DataObject::DataObject(const DataObject& orig) : m_data(orig.m_data)
 {
 }
 
@@ -709,12 +709,12 @@ bool DataObject::empty() const
     return m_data.empty();
 }
 
-Value &DataObject::operator[](const std::string &name)
+Value& DataObject::operator[](const std::string& name)
 {
     // since c++11 std::map<>[] does insertion if key doesn't exist
     return m_data[name];
 }
-Value DataObject::operator[](const std::string &name) const
+Value DataObject::operator[](const std::string& name) const
 {
     auto itr = m_data.find(name);
 
@@ -724,7 +724,7 @@ Value DataObject::operator[](const std::string &name) const
     }
     return itr->second;
 }
-bool DataObject::format_json(std::ostream &out,
+bool DataObject::format_json(std::ostream& out,
                              int           indent_level,
                              int           level) const
 {
@@ -756,7 +756,7 @@ bool DataObject::format_json(std::ostream &out,
     out << std::string(indent_level * (level), ' ') << "}";
     return out.good();
 }
-bool DataObject::pack_json(std::ostream &out) const
+bool DataObject::pack_json(std::ostream& out) const
 {
     if (empty())
     {
@@ -781,17 +781,17 @@ bool DataObject::pack_json(std::ostream &out) const
     return out.good();
 }
 
-void DataObject::merge(const DataObject &rhs)
+void DataObject::merge(const DataObject& rhs)
 {
     // merge every Value, Object and Array from 'obj'
     // that does not exist in 'this'
-    for (auto &item : rhs)
+    for (auto& item : rhs)
     {
         wasp_line("Checking inbound " << item.first);
         if (contains(item.first))
         {
             wasp_line("Destination contains " << item.first);
-            Value &child = m_data.at(item.first);
+            Value& child = m_data.at(item.first);
             // if Value is an object do a depth-first merge
             if (child.is_object())
             {

@@ -31,7 +31,7 @@ class WASP_PUBLIC Format
      */
     template<typename T>
     static bool
-    fmt(std::ostream &out, std::ostream &err, const char *s, const T &value)
+    fmt(std::ostream& out, std::ostream& err, const char* s, const T& value)
     {
 // if Windows, only output two-digits of exponent if possible like linux
 #ifdef _WIN32
@@ -61,7 +61,7 @@ class WASP_PUBLIC Format
             if (*s == '%')
             {
                 // Check for escaped formatting '%%'
-                const char *sl = s + 1;  // string lookahead char
+                const char* sl = s + 1;  // string lookahead char
                 if (*sl == '%')
                 {
                     out << *sl;  // emit escaped '%'
@@ -100,7 +100,7 @@ class WASP_PUBLIC Format
                     else if (*sl == '.')  // check for %.'precision''conversion'
                     {                     // no width, just precision
                         ++sl;             // move beyond '.'
-                        const char *p =
+                        const char* p =
                             sl;  // cache location of the start of the precision
                         // isdigit returns non-zero when character is a digit
                         while (sl && isdigit(*sl))
@@ -136,7 +136,7 @@ class WASP_PUBLIC Format
                     }
                     else if (isdigit(*sl))  // check for width
                     {
-                        const char *w = sl;  // cache beginning of width substr
+                        const char* w = sl;  // cache beginning of width substr
                         ++sl;
                         while (isdigit(*sl))
                         {
@@ -189,10 +189,10 @@ class WASP_PUBLIC Format
 
   private:
     template<typename T>
-    static bool fmt_emit(std::ostream &out,
-                         std::ostream &err,
+    static bool fmt_emit(std::ostream& out,
+                         std::ostream& err,
                          char          format,
-                         const T &     value,
+                         const T&      value,
                          int           width,
                          int           prec,
                          bool          include_parenthesis_for_negative,
@@ -279,10 +279,10 @@ class WASP_PUBLIC Format
 
 template<>
 // string specialization
-inline bool Format::fmt_emit<std::string>(std::ostream &     out,
-                                          std::ostream &     err,
+inline bool Format::fmt_emit<std::string>(std::ostream&      out,
+                                          std::ostream&      err,
                                           char               format,
-                                          const std::string &value,
+                                          const std::string& value,
                                           int                width,
                                           int                prec,
                                           bool include_parenthesis_for_negative,

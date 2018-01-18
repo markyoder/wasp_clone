@@ -2,7 +2,7 @@
 
 using namespace wasp;
 
-Definition::Definition(const std::string &name)
+Definition::Definition(const std::string& name)
     : AbstractDefinition(), m_name(name), m_parent(nullptr)
 {
 }
@@ -13,9 +13,9 @@ Definition::~Definition()
         delete pair;
 }
 
-AbstractDefinition *Definition::create(const std::string &name)
+AbstractDefinition* Definition::create(const std::string& name)
 {
-    Definition *definition = new Definition(name);
+    Definition* definition = new Definition(name);
     wasp_ensure(definition);
     definition->m_parent = this;
     auto success         = m_children.insert(definition);
@@ -27,13 +27,13 @@ AbstractDefinition *Definition::create(const std::string &name)
     return definition;
 }
 
-AbstractDefinition *Definition::create_aliased(const std::string & name,
-                                               AbstractDefinition *definition)
+AbstractDefinition* Definition::create_aliased(const std::string&  name,
+                                               AbstractDefinition* definition)
 {
     wasp_require(definition);
     // Aliased node must have the same parent as the aliasee
     wasp_require(definition->parent() == this);
-    auto *aliased = new AliasedDefinition(name, definition);
+    auto* aliased = new AliasedDefinition(name, definition);
     wasp_ensure(aliased);
     auto success = m_children.insert(aliased);
     if (!success.second)
@@ -44,17 +44,17 @@ AbstractDefinition *Definition::create_aliased(const std::string & name,
     return aliased;
 }
 
-bool Definition::has(const std::string &name) const
+bool Definition::has(const std::string& name) const
 {
     Definition def(name);
     return m_children.find(&def) != m_children.end();
 }
 
-int Definition::delta(const std::string &name, std::string &actual_name) const
+int Definition::delta(const std::string& name, std::string& actual_name) const
 {
     int level = 0;
 
-    const Definition *def = this;
+    const Definition* def = this;
 
     while (def != nullptr)
     {
@@ -70,7 +70,7 @@ int Definition::delta(const std::string &name, std::string &actual_name) const
     return -1;  // couldn't find
 }
 
-AbstractDefinition *Definition::get(const std::string &name) const
+AbstractDefinition* Definition::get(const std::string& name) const
 {
     Definition def(name);
     auto       itr = m_children.find(&def);
@@ -79,7 +79,7 @@ AbstractDefinition *Definition::get(const std::string &name) const
     return *itr;
 }
 
-Definition *Definition::parent() const
+Definition* Definition::parent() const
 {
     return m_parent;
 }

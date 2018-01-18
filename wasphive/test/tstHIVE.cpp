@@ -33,8 +33,8 @@ struct HIVETest
     std::shared_ptr<std::stringstream> output_data;  // expected output
 };
 
-bool load_file_as_string(std::ifstream &                     f,
-                         std::shared_ptr<std::stringstream> &s)
+bool load_file_as_string(std::ifstream&                      f,
+                         std::shared_ptr<std::stringstream>& s)
 {
     bool first = true;
     while (!f.eof() && f.good())
@@ -51,11 +51,11 @@ bool load_file_as_string(std::ifstream &                     f,
     return f.eof() && !f.bad();
 }
 
-bool load_streams(HIVETest &         t,
-                  const std::string &fname,
-                  const std::string &pname,
-                  const std::string &oname,
-                  const std::string &sname)
+bool load_streams(HIVETest&          t,
+                  const std::string& fname,
+                  const std::string& pname,
+                  const std::string& oname,
+                  const std::string& sname)
 {
     t.input_fail_path = test_dir + "/inputs/" + fname;
     t.input_fail      = std::make_shared<std::ifstream>(t.input_fail_path);
@@ -87,7 +87,7 @@ bool load_streams(HIVETest &         t,
     return !file_bad;
 }
 // load abstract syntax trees (dom)
-bool load_ast(HIVETest &t)
+bool load_ast(HIVETest& t)
 {
     t.input_fail_interpreter = std::make_shared<SONInterpreter<>>();
     bool input_fail_good =
@@ -108,7 +108,7 @@ bool load_ast(HIVETest &t)
     return schema_good && input_fail_good && input_pass_good;
 }
 
-void do_test(const std::string &name)
+void do_test(const std::string& name)
 {
     SCOPED_TRACE(name);
     HIVE     hive;

@@ -40,7 +40,7 @@ TEST(JSON, simple_object)
         ASSERT_EQ(0, generator.parse());
     }
     ASSERT_TRUE(json_ptr != nullptr);
-    DataObject &json = *(json_ptr.get());
+    DataObject& json = *(json_ptr.get());
 
     ASSERT_EQ(10, json.size());
 

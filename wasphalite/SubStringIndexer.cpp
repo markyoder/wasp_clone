@@ -8,7 +8,7 @@ SubStringIndexer::SubStringIndexer()
 {
 }
 
-SubStringIndexer::SubStringIndexer(const SubStringIndexer &orig)
+SubStringIndexer::SubStringIndexer(const SubStringIndexer& orig)
     : m_indices(orig.m_indices)
 {
 }
@@ -17,13 +17,13 @@ SubStringIndexer::~SubStringIndexer()
 {
 }
 
-SubStringIndexer::SubStringIndexer(const std::string &str,
-                                   const std::string &substr)
+SubStringIndexer::SubStringIndexer(const std::string& str,
+                                   const std::string& substr)
 {
     index(str, substr);
 }
 
-bool SubStringIndexer::index(const std::string &str, const std::string &substr)
+bool SubStringIndexer::index(const std::string& str, const std::string& substr)
 {
     if (str.empty())
         return false;
@@ -42,7 +42,7 @@ bool SubStringIndexer::index(const std::string &str, const std::string &substr)
 }
 
 SubStringIndexer::IndexPairs_type
-SubStringIndexer::merge(const SubStringIndexer &o) const
+SubStringIndexer::merge(const SubStringIndexer& o) const
 {
     IndexPairs_type pairs;
     if (o.data().empty())
@@ -53,7 +53,7 @@ SubStringIndexer::merge(const SubStringIndexer &o) const
     // working copy of the data
     Index_type opening = data();
 
-    const Index_type &closing = o.data();
+    const Index_type& closing = o.data();
 
     for (size_t i : closing)
     {
@@ -79,7 +79,7 @@ SubStringIndexer::merge(const SubStringIndexer &o) const
     return pairs;
 }
 
-std::vector<size_t> SubStringIndexer::depths(const IndexPairs_type &indices)
+std::vector<size_t> SubStringIndexer::depths(const IndexPairs_type& indices)
 {
     wasp_require(std::is_sorted(indices.begin(), indices.end()));
 
@@ -95,7 +95,7 @@ std::vector<size_t> SubStringIndexer::depths(const IndexPairs_type &indices)
 
     for (size_t i = 0; i < indices.size(); ++i)
     {
-        const auto &index = indices[i];
+        const auto& index = indices[i];
 
         while (!prev.empty() && prev.back() < index.second)
         {

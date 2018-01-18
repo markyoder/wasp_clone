@@ -37,18 +37,18 @@ class WASP_PUBLIC Value
         bool              m_bool;
         double            m_double;
         int               m_int;
-        char *            m_string;
-        class DataArray * m_array;
-        class DataObject *m_object;
+        char*             m_string;
+        class DataArray*  m_array;
+        class DataObject* m_object;
     } m_data;
 
   public:
     /// null constructor
     Value();
     /// copy constructor
-    Value(const Value &orig);
+    Value(const Value& orig);
     // move constructor
-    Value(Value &&orig);
+    Value(Value&& orig);
 
     // boolean
     Value(bool v);
@@ -57,25 +57,25 @@ class WASP_PUBLIC Value
     // double
     Value(double v);
     // const char *
-    Value(const char *v);
+    Value(const char* v);
     // string
-    Value(const std::string &v);
+    Value(const std::string& v);
     // data array
-    Value(const DataArray &d);
+    Value(const DataArray& d);
     // data object
-    Value(const DataObject &d);
+    Value(const DataObject& d);
     ~Value();
 
     // assignment operators
-    Value &operator=(const Value &v);
-    Value &operator=(Value &&v);
-    Value &operator=(bool v);
-    Value &operator=(int v);
-    Value &operator=(double v);
-    Value &operator=(const char *v);
-    Value &operator=(const std::string &v);
-    Value &operator=(const DataArray &v);
-    Value &operator=(const DataObject &v);
+    Value& operator=(const Value& v);
+    Value& operator=(Value&& v);
+    Value& operator=(bool v);
+    Value& operator=(int v);
+    Value& operator=(double v);
+    Value& operator=(const char* v);
+    Value& operator=(const std::string& v);
+    Value& operator=(const DataArray& v);
+    Value& operator=(const DataObject& v);
 
     Value::Type type() const;
     /**
@@ -100,19 +100,19 @@ class WASP_PUBLIC Value
     int         to_int() const;
     double      to_double() const;
     bool        to_bool() const;
-    const char *to_cstring() const;
+    const char* to_cstring() const;
     std::string to_string() const;
-    DataArray * to_array() const;
-    DataObject *to_object() const;
+    DataArray*  to_array() const;
+    DataObject* to_object() const;
 
-    const DataArray & as_array() const;
-    DataArray &       as_array();
-    const DataObject &as_object() const;
-    DataObject &      as_object();
+    const DataArray&  as_array() const;
+    DataArray&        as_array();
+    const DataObject& as_object() const;
+    DataObject&       as_object();
 
-    Value &operator[](const std::string &name);
-    Value operator[](const std::string &name) const;
-    Value &operator[](size_t i);
+    Value& operator[](const std::string& name);
+    Value operator[](const std::string& name) const;
+    Value& operator[](size_t i);
     Value operator[](size_t i) const;
 
     /**
@@ -128,13 +128,13 @@ class WASP_PUBLIC Value
     size_t size() const;
 
     bool
-    format_json(std::ostream &out, int indent_level = 2, int level = 0) const;
-    bool pack_json(std::ostream &out) const;
+    format_json(std::ostream& out, int indent_level = 2, int level = 0) const;
+    bool pack_json(std::ostream& out) const;
 
   private:
     friend class JSONObjectParser;
-    void assign(DataObject *obj);
-    void assign(DataArray *array);
+    void assign(DataObject* obj);
+    void assign(DataArray* array);
     /**
      * @brief nullify deletes and nullifies this object
      */
@@ -144,7 +144,7 @@ class WASP_PUBLIC Value
      * @brief copy_from copies the given value to this value
      * @param orig the value from which data will be copied
      */
-    void copy_from(const Value &orig);
+    void copy_from(const Value& orig);
 };
 
 class WASP_PUBLIC DataArray
@@ -158,7 +158,7 @@ class WASP_PUBLIC DataArray
 
   public:
     DataArray();
-    DataArray(const DataArray &orig);
+    DataArray(const DataArray& orig);
     ~DataArray();
 
     size_t size() const;
@@ -169,30 +169,30 @@ class WASP_PUBLIC DataArray
     storage_type::iterator       begin() { return m_data.begin(); }
     storage_type::iterator       end() { return m_data.end(); }
 
-    const Value &operator[](size_t i) const
+    const Value& operator[](size_t i) const
     {
         return m_data.at(i);
     }  // at(i) for exception
-    Value &operator[](size_t i)
+    Value& operator[](size_t i)
     {
         if (size() <= i)
             resize(i + 1);
         return m_data[i];
     }
 
-    const Value &front() const { return m_data.front(); }
-    Value &      front() { return m_data.front(); }
-    const Value &back() const { return m_data.back(); }
-    Value &      back() { return m_data.back(); }
-    Value &at(size_t i) { return m_data.at(i); }
-    const Value &at(size_t i) const { return m_data.at(i); }
-    void push_back(const Value &n) { m_data.push_back(n); }
+    const Value& front() const { return m_data.front(); }
+    Value&       front() { return m_data.front(); }
+    const Value& back() const { return m_data.back(); }
+    Value&       back() { return m_data.back(); }
+    Value& at(size_t i) { return m_data.at(i); }
+    const Value& at(size_t i) const { return m_data.at(i); }
+    void push_back(const Value& n) { m_data.push_back(n); }
     void resize(size_t nsize) { m_data.resize(nsize); }
 
     bool
-    format_json(std::ostream &out, int indent_level = 2, int level = 0) const;
-    bool pack_json(std::ostream &out) const;
-    void merge(const DataArray &rhs);
+    format_json(std::ostream& out, int indent_level = 2, int level = 0) const;
+    bool pack_json(std::ostream& out) const;
+    void merge(const DataArray& rhs);
 };
 
 class WASP_PUBLIC DataObject
@@ -206,17 +206,17 @@ class WASP_PUBLIC DataObject
 
   public:
     DataObject();
-    DataObject(const DataObject &orig);
+    DataObject(const DataObject& orig);
     ~DataObject();
 
     size_t size() const;
     bool   empty() const;
 
-    storage_type::const_iterator find(const std::string &name) const
+    storage_type::const_iterator find(const std::string& name) const
     {
         return m_data.find(name);
     }
-    storage_type::iterator find(const std::string &name)
+    storage_type::iterator find(const std::string& name)
     {
         return m_data.find(name);
     }
@@ -227,29 +227,29 @@ class WASP_PUBLIC DataObject
     storage_type::iterator begin() { return m_data.begin(); }
     storage_type::iterator end() { return m_data.end(); }
 
-    Value &operator[](const std::string &name);
-    Value operator[](const std::string &name) const;
+    Value& operator[](const std::string& name);
+    Value operator[](const std::string& name) const;
 
-    bool contains(const std::string &name) const
+    bool contains(const std::string& name) const
     {
         return m_data.find(name) != end();
     }
     std::pair<storage_type::iterator, bool>
-    insert(const std::pair<std::string, Value> &v)
+    insert(const std::pair<std::string, Value>& v)
     {
         return m_data.insert(v);
     }
 
     bool
-    format_json(std::ostream &out, int indent_level = 2, int level = 0) const;
-    bool pack_json(std::ostream &out) const;
+    format_json(std::ostream& out, int indent_level = 2, int level = 0) const;
+    bool pack_json(std::ostream& out) const;
 
-    void merge(const DataObject &rhs);
+    void merge(const DataObject& rhs);
 };
 
 template<class Interp>
 WASP_PUBLIC bool
-generate_object(DataObject::SP &obj, std::istream &input, std::ostream &errors)
+generate_object(DataObject::SP& obj, std::istream& input, std::ostream& errors)
 {
     Interp interpreter(obj, input, errors, nullptr);
     bool   parsed = interpreter.parse() == 0;

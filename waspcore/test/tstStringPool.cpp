@@ -116,7 +116,7 @@ TEST(StringPool, self_copy_test)
     // make 10 copies of the first string already in the pool
     for (size_t i = 0; i < 10; ++i)
     {
-        const char *data = sp.data(0);
+        const char* data = sp.data(0);
         std::string data_copy =
             data;  // need a copy as the push could leave hanging
         sp.push(data);
@@ -128,7 +128,7 @@ TEST(StringPool, self_copy_test)
     // make 10 copies of a string already in the pool
     for (size_t i = 0; i < 10; ++i)
     {
-        const char *data = sp.data(1);
+        const char* data = sp.data(1);
         std::string data_copy =
             data;  // need a copy as the push could leave hanging
         sp.push(data);

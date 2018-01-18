@@ -6,7 +6,7 @@ SIRENInterpreter<S>::SIRENInterpreter()
 {
 }
 template<class S>
-SIRENInterpreter<S>::SIRENInterpreter(std::ostream &err)
+SIRENInterpreter<S>::SIRENInterpreter(std::ostream& err)
     : Interpreter<S>(err), traceLexing(false), traceParsing(false)
 {
 }
@@ -15,15 +15,15 @@ SIRENInterpreter<S>::~SIRENInterpreter()
 {
 }
 template<class S>
-bool SIRENInterpreter<S>::parse(std::istream &in,
+bool SIRENInterpreter<S>::parse(std::istream& in,
                                 std::size_t   startLine,
                                 std::size_t   startColumn)
 {
     return parseStream(in, "selection statement", startLine, startColumn);
 }
 template<class S>
-bool SIRENInterpreter<S>::parseStream(std::istream &     in,
-                                      const std::string &sname,
+bool SIRENInterpreter<S>::parseStream(std::istream&      in,
+                                      const std::string& sname,
                                       std::size_t        start_line,
                                       std::size_t        start_column)
 {
@@ -31,8 +31,8 @@ bool SIRENInterpreter<S>::parseStream(std::istream &     in,
         in, sname, start_line, start_column);
 }
 template<class S>
-bool SIRENInterpreter<S>::parseString(const std::string &input,
-                                      const std::string &sname,
+bool SIRENInterpreter<S>::parseString(const std::string& input,
+                                      const std::string& sname,
                                       std::size_t        startLine,
                                       std::size_t        startColumn)
 {
@@ -43,8 +43,8 @@ bool SIRENInterpreter<S>::parseString(const std::string &input,
 template<class S>
 template<typename TAdapter>
 std::size_t
-SIRENInterpreter<S>::evaluate(TAdapter &                node,
-                              SIRENResultSet<TAdapter> &result) const
+SIRENInterpreter<S>::evaluate(TAdapter&                 node,
+                              SIRENResultSet<TAdapter>& result) const
 {
     // the first selection
     // is either a document root-based selection
@@ -98,9 +98,9 @@ SIRENInterpreter<S>::evaluate(TAdapter &                node,
 template<class S>
 template<typename TAdapter>
 std::size_t
-SIRENInterpreter<S>::evaluate(const TreeNodeView<Storage_type> &context,
-                              SIRENResultSet<TAdapter> &        result,
-                              std::vector<TAdapter> &           stage) const
+SIRENInterpreter<S>::evaluate(const TreeNodeView<Storage_type>& context,
+                              SIRENResultSet<TAdapter>&         result,
+                              std::vector<TAdapter>&            stage) const
 {
     switch (context.type())
     {
@@ -124,7 +124,7 @@ SIRENInterpreter<S>::evaluate(const TreeNodeView<Storage_type> &context,
             std::size_t count = stage.size();
             for (std::size_t i = 0; i < count; ++i)
             {
-                const TAdapter &node = stage[i];
+                const TAdapter& node = stage[i];
                 if (node.has_parent())
                     stage.push_back(node.parent());
             }
@@ -166,20 +166,20 @@ SIRENInterpreter<S>::evaluate(const TreeNodeView<Storage_type> &context,
 template<class S>
 template<typename TAdapter>
 void SIRENInterpreter<S>::search_child_name(
-    const TreeNodeView<Storage_type> &context,
-    std::vector<TAdapter> &           stage) const
+    const TreeNodeView<Storage_type>& context,
+    std::vector<TAdapter>&            stage) const
 {
     if (stage.empty())
         return;
     // the name for which to search
-    const char *name       = context.name();
+    const char* name       = context.name();
     std::size_t stage_size = stage.size();
     for (std::size_t index = 0; index < stage_size; ++index)
     {
         TAdapter node = stage[index];
         for (std::size_t c = 0; c < node.child_count(); ++c)
         {
-            const TAdapter &child_node = node.child_at(c);
+            const TAdapter& child_node = node.child_at(c);
             // if child is a match, push back onto stage
             if (wildcard_string_match(name, child_node.name()))
             {
@@ -192,8 +192,8 @@ void SIRENInterpreter<S>::search_child_name(
 template<class S>
 template<typename TAdapter>
 void SIRENInterpreter<S>::search_conditional_predicated_child(
-    const TreeNodeView<Storage_type> &context,
-    std::vector<TAdapter> &           stage) const
+    const TreeNodeView<Storage_type>& context,
+    std::vector<TAdapter>&            stage) const
 {
     // context should be something like
     // obj [ id=value ]
@@ -216,16 +216,16 @@ void SIRENInterpreter<S>::search_conditional_predicated_child(
         predicate_context.child_at(2);
 
     // the names for which to search
-    const char *       name            = child_name_context.name();
-    const char *       predicate_name  = predicate_name_context.name();
-    const std::string &predicate_value = predicate_value_context.data();
+    const char*        name            = child_name_context.name();
+    const char*        predicate_name  = predicate_name_context.name();
+    const std::string& predicate_value = predicate_value_context.data();
     std::size_t        stage_size      = stage.size();
     for (std::size_t index = 0; index < stage_size; ++index)
     {
         TAdapter node = stage[index];
         for (std::size_t c = 0; c < node.child_count(); ++c)
         {
-            const TAdapter &child_node = node.child_at(c);
+            const TAdapter& child_node = node.child_at(c);
             // if child is a match, push back onto stage
             if (wildcard_string_match(name, child_node.name()))
             {
@@ -239,13 +239,13 @@ void SIRENInterpreter<S>::search_conditional_predicated_child(
                 for (std::size_t gc = 0, gc_count = child_node.child_count();
                      gc < gc_count; ++gc)
                 {
-                    const TAdapter &g_child_node = child_node.child_at(gc);
+                    const TAdapter& g_child_node = child_node.child_at(gc);
                     // if grand child name is a match, need to determine
                     // if value matches
                     if (wildcard_string_match(predicate_name,
                                               g_child_node.name()))
                     {
-                        const std::string &g_child_node_value =
+                        const std::string& g_child_node_value =
                             g_child_node.data();
                         predicate_accepted =
                             predicate_value == g_child_node_value;
@@ -267,8 +267,8 @@ void SIRENInterpreter<S>::search_conditional_predicated_child(
 template<class S>
 template<typename TAdapter>
 void SIRENInterpreter<S>::search_index_predicated_child(
-    const TreeNodeView<Storage_type> &context,
-    std::vector<TAdapter> &           stage) const
+    const TreeNodeView<Storage_type>& context,
+    std::vector<TAdapter>&            stage) const
 {
     // context should be something like
     // obj [ 1 ] | obj [ 1:10 ] | obj [ 1:10:2 ]
@@ -288,7 +288,7 @@ void SIRENInterpreter<S>::search_index_predicated_child(
     std::size_t incident_count = 0;
 
     // the names for which to search
-    const char *name = child_name_context.name();
+    const char* name = child_name_context.name();
 
     // single index selection - start = end, stride =1
     if (predicate_context.child_count() == 1)
@@ -320,7 +320,7 @@ void SIRENInterpreter<S>::search_index_predicated_child(
         TAdapter node = stage[index];
         for (std::size_t c = 0; c < node.child_count(); ++c)
         {
-            const TAdapter &child_node = node.child_at(c);
+            const TAdapter& child_node = node.child_at(c);
             // if child is a match, push back onto stage
             if (strcmp(name, child_node.name()) == 0)
             {

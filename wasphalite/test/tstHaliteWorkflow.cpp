@@ -23,7 +23,7 @@ TEST(Halite, Workflow)
         template_stream << R"INPUT(<attribute>)INPUT";
         std::stringstream output_stream;
         DataObject::SP    parameters = std::make_shared<DataObject>();
-        DataObject &      ref        = *(parameters.get());
+        DataObject&       ref        = *(parameters.get());
         ref["attribute"]             = "value";
 
         HaliteWorkflow workflow;
@@ -40,7 +40,7 @@ TEST(Halite, Workflow)
         template_stream << R"INPUT(<'attribute'*pi>)INPUT";
         std::stringstream output_stream;
         DataObject::SP    parameters = std::make_shared<DataObject>();
-        DataObject &      ref        = *(parameters.get());
+        DataObject&       ref        = *(parameters.get());
         ref["attribute"]             = 1.;
 
         HaliteWorkflow workflow;
@@ -59,7 +59,7 @@ TEST(Halite, Workflow)
         template_stream << R"INPUT(<'attribute'*e>)INPUT";
         std::stringstream output_stream;
         DataObject::SP    parameters = std::make_shared<DataObject>();
-        DataObject &      ref        = *(parameters.get());
+        DataObject&       ref        = *(parameters.get());
         ref["attribute"]             = 1.;
 
         HaliteWorkflow workflow;
@@ -78,7 +78,7 @@ TEST(Halite, Workflow)
         template_stream << R"INPUT(<cos('attribute')>)INPUT";
         std::stringstream output_stream;
         DataObject::SP    parameters = std::make_shared<DataObject>();
-        DataObject &      ref        = *(parameters.get());
+        DataObject&       ref        = *(parameters.get());
         ref["attribute"]             = 0.;
 
         HaliteWorkflow workflow;

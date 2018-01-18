@@ -22,28 +22,28 @@ class GetPotNodeView
     typedef TNV                             TreeNodeView_type;
     typedef typename TNV::TreeNodePool_type TreeNodePool_type;
     GetPotNodeView() : m_tree_node_index(-1), m_tree_data(nullptr) {}
-    GetPotNodeView(std::size_t node_index, const TreeNodePool_type &nodes);
-    GetPotNodeView(const TNV &orig);
-    GetPotNodeView(const GetPotNodeView &orig);
+    GetPotNodeView(std::size_t node_index, const TreeNodePool_type& nodes);
+    GetPotNodeView(const TNV& orig);
+    GetPotNodeView(const GetPotNodeView& orig);
 
     ~GetPotNodeView();
 
-    GetPotNodeView &operator=(const GetPotNodeView &b);
-    GetPotNodeView &operator=(const TreeNodeView_type &b);
+    GetPotNodeView& operator=(const GetPotNodeView& b);
+    GetPotNodeView& operator=(const TreeNodeView_type& b);
 
-    bool operator==(const GetPotNodeView &b) const;
-    bool operator!=(const GetPotNodeView &b) const { return !(*this == b); }
+    bool operator==(const GetPotNodeView& b) const;
+    bool operator!=(const GetPotNodeView& b) const { return !(*this == b); }
     /**
      * @brief operator < orders by pool index
      * @param b the node to compare pool index
      * @return true, iff this views index is strictly less than b.index
      */
-    bool operator<(const GetPotNodeView &b) const;
+    bool operator<(const GetPotNodeView& b) const;
     /**
      * @brief equal determines if this is equal to the provides GetPotNodeView
      * @return true, iff and only if the nodes are the same
      */
-    bool equal(const GetPotNodeView &b) const { return *this == b; }
+    bool equal(const GetPotNodeView& b) const { return *this == b; }
 
     /**
      * @brief data acquire the node's data
@@ -93,7 +93,7 @@ class GetPotNodeView
      * @return GetPotNodeView - need to check is_null to ensure valid node
      */
     GetPotNodeView
-    first_non_decorative_child_by_name(const std::string &name) const;
+    first_non_decorative_child_by_name(const std::string& name) const;
     /**
      * @brief non_decorative_children_count convenience to determine number of
      * decorative
@@ -121,7 +121,7 @@ class GetPotNodeView
      * @param out the output stream to capture the node paths
      * The node paths are written, new line delimited
      */
-    void paths(std::ostream &out) const;
+    void paths(std::ostream& out) const;
     /**
      * @brief child_count acquire the number of nodes for which this node is a
      * parent
@@ -136,7 +136,7 @@ class GetPotNodeView
      * optimize determination of named children
      * @return the number of children with the given name
      */
-    std::size_t child_count_by_name(const std::string &name,
+    std::size_t child_count_by_name(const std::string& name,
                                     size_t             limit = 0) const;
 
     /**
@@ -152,7 +152,7 @@ class GetPotNodeView
      * @param limit the limit on the number of children ( 0 := no limit )
      * @return A collection of views. Empty if no match occurrs
      */
-    typename GetPotNodeView::Collection child_by_name(const std::string &name,
+    typename GetPotNodeView::Collection child_by_name(const std::string& name,
                                                       size_t limit = 0) const;
     /**
      * @brief first_child_by_name acquires the first child with the given name
@@ -160,7 +160,7 @@ class GetPotNodeView
      * @return Named TreeNodeView as requestd. is_null indicates if none was
      * found
      */
-    GetPotNodeView first_child_by_name(const std::string &name) const;
+    GetPotNodeView first_child_by_name(const std::string& name) const;
     /**
      * @brief type acquire the type of the node
      * @return the node's type
@@ -170,7 +170,7 @@ class GetPotNodeView
      * @brief name acquire the name of the node
      * @return the node's name
      */
-    const char *name() const;
+    const char* name() const;
 
     /**
      * @brief line acquire the node's starting line
@@ -205,33 +205,33 @@ class GetPotNodeView
      * @brief tree_node_pool acquire the pointer to the backend storage
      * @return the TreeNodePool that backs this view
      */
-    const TreeNodePool_type *tree_node_pool() const { return m_tree_data; }
+    const TreeNodePool_type* tree_node_pool() const { return m_tree_data; }
 
     // !> Type operators
     /**
      * @brief to_bool converts the data to a bool
      * @return the data as a bool
      */
-    bool to_bool(bool *ok = nullptr) const;
+    bool to_bool(bool* ok = nullptr) const;
 
     /**
      * @brief to_int converts the data to an integer
      * @return the data as an integer
      */
-    int to_int(bool *ok = nullptr) const;
+    int to_int(bool* ok = nullptr) const;
 
     /**
      * @brief to_double converts the data to a double
      * @return the data as a double
      */
-    double to_double(bool *ok = nullptr) const;
+    double to_double(bool* ok = nullptr) const;
 
     /**
      * @brief to_string converts the data to a string
      * @return the data as a string (single and double quotes are removed from
      * front and back).
      */
-    std::string to_string(bool *ok = nullptr) const;
+    std::string to_string(bool* ok = nullptr) const;
 
     /**
      * @brief last_as_string acquires this node or last child's node as string
@@ -239,11 +239,11 @@ class GetPotNodeView
      * @return the last child's data as a string, or this node's data as a
      * string if no children
      */
-    std::string last_as_string(bool *ok = nullptr) const;
+    std::string last_as_string(bool* ok = nullptr) const;
 
     // Friendly stream operator
-    friend std::ostream &operator<<(std::ostream &                   str,
-                                    const wasp::GetPotNodeView<TNV> &view)
+    friend std::ostream& operator<<(std::ostream&                    str,
+                                    const wasp::GetPotNodeView<TNV>& view)
     {
         str << "GetPotNodeView(tree_node_index=" << view.m_tree_node_index
             << ", &pool=" << view.m_tree_data << ")";
@@ -252,7 +252,7 @@ class GetPotNodeView
 
   private:
     size_t                   m_tree_node_index;
-    const TreeNodePool_type *m_tree_data;
+    const TreeNodePool_type* m_tree_data;
 
     /**
      * @brief value_tree_node_index when the value is requested (to_int, string,

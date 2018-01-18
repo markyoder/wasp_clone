@@ -31,14 +31,14 @@ class WASP_PUBLIC HaliteWorkflow
     bool useDefaultFunctions() const;
     void setUseDefaultFunctions(bool use_default_functions);
 
-    bool parseTemplate(std::istream &template_stream,
-                       std::ostream &error_stream);
-    bool parseTemplateFile(const std::string &template_file,
-                           std::ostream &     error_stream);
+    bool parseTemplate(std::istream& template_stream,
+                       std::ostream& error_stream);
+    bool parseTemplateFile(const std::string& template_file,
+                           std::ostream&      error_stream);
 
-    bool renderTemplate(const DataObject::SP &parameters,
-                        std::ostream &        output_stream,
-                        std::ostream &        message_stream) const;
+    bool renderTemplate(const DataObject::SP& parameters,
+                        std::ostream&         output_stream,
+                        std::ostream&         message_stream) const;
 };  // class
 
 }  // namespace

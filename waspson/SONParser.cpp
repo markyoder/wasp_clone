@@ -162,12 +162,12 @@ namespace wasp
    that double-quoting is unnecessary unless the string contains an
    apostrophe, a comma, or backslash (other than backslash-backslash).
    YYSTR is taken from yytname.  */
-std::string SONParser::yytnamerr_(const char *yystr)
+std::string SONParser::yytnamerr_(const char* yystr)
 {
     if (*yystr == '"')
     {
         std::string yyr = "";
-        char const *yyp = yystr;
+        char const* yyp = yystr;
 
         for (;;)
             switch (*++yyp)
@@ -194,8 +194,8 @@ std::string SONParser::yytnamerr_(const char *yystr)
 }
 
 /// Build a parser object.
-SONParser::SONParser(class AbstractInterpreter &         interpreter_yyarg,
-                     std::istream &                      input_stream_yyarg,
+SONParser::SONParser(class AbstractInterpreter&          interpreter_yyarg,
+                     std::istream&                       input_stream_yyarg,
                      std::shared_ptr<class SONLexerImpl> lexer_yyarg)
     :
 #if YYDEBUG
@@ -217,8 +217,8 @@ SONParser::~SONParser()
 | Symbol types.  |
 `---------------*/
 
-inline SONParser::syntax_error::syntax_error(const location_type &l,
-                                             const std::string &  m)
+inline SONParser::syntax_error::syntax_error(const location_type& l,
+                                             const std::string&   m)
     : std::runtime_error(m), location(l)
 {
 }
@@ -230,7 +230,7 @@ inline SONParser::basic_symbol<Base>::basic_symbol() : value()
 }
 
 template<typename Base>
-inline SONParser::basic_symbol<Base>::basic_symbol(const basic_symbol &other)
+inline SONParser::basic_symbol<Base>::basic_symbol(const basic_symbol& other)
     : Base(other), value(), location(other.location)
 {
     value = other.value;
@@ -238,8 +238,8 @@ inline SONParser::basic_symbol<Base>::basic_symbol(const basic_symbol &other)
 
 template<typename Base>
 inline SONParser::basic_symbol<Base>::basic_symbol(typename Base::kind_type t,
-                                                   const semantic_type &    v,
-                                                   const location_type &    l)
+                                                   const semantic_type&     v,
+                                                   const location_type&     l)
     : Base(t), value(v), location(l)
 {
 }
@@ -247,7 +247,7 @@ inline SONParser::basic_symbol<Base>::basic_symbol(typename Base::kind_type t,
 /// Constructor for valueless symbols.
 template<typename Base>
 inline SONParser::basic_symbol<Base>::basic_symbol(typename Base::kind_type t,
-                                                   const location_type &    l)
+                                                   const location_type&     l)
     : Base(t), value(), location(l)
 {
 }
@@ -271,7 +271,7 @@ inline bool SONParser::basic_symbol<Base>::empty() const
 }
 
 template<typename Base>
-inline void SONParser::basic_symbol<Base>::move(basic_symbol &s)
+inline void SONParser::basic_symbol<Base>::move(basic_symbol& s)
 {
     super_type::move(s);
     value    = s.value;
@@ -283,7 +283,7 @@ inline SONParser::by_type::by_type() : type(empty_symbol)
 {
 }
 
-inline SONParser::by_type::by_type(const by_type &other) : type(other.type)
+inline SONParser::by_type::by_type(const by_type& other) : type(other.type)
 {
 }
 
@@ -296,7 +296,7 @@ inline void SONParser::by_type::clear()
     type = empty_symbol;
 }
 
-inline void SONParser::by_type::move(by_type &that)
+inline void SONParser::by_type::move(by_type& that)
 {
     type = that.type;
     that.clear();
@@ -312,7 +312,7 @@ inline SONParser::by_state::by_state() : state(empty_state)
 {
 }
 
-inline SONParser::by_state::by_state(const by_state &other) : state(other.state)
+inline SONParser::by_state::by_state(const by_state& other) : state(other.state)
 {
 }
 
@@ -321,7 +321,7 @@ inline void SONParser::by_state::clear()
     state = empty_state;
 }
 
-inline void SONParser::by_state::move(by_state &that)
+inline void SONParser::by_state::move(by_state& that)
 {
     state = that.state;
     that.clear();
@@ -344,7 +344,7 @@ inline SONParser::stack_symbol_type::stack_symbol_type()
 }
 
 inline SONParser::stack_symbol_type::stack_symbol_type(state_type   s,
-                                                       symbol_type &that)
+                                                       symbol_type& that)
     : super_type(s, that.location)
 {
     value = that.value;
@@ -352,8 +352,8 @@ inline SONParser::stack_symbol_type::stack_symbol_type(state_type   s,
     that.type = empty_symbol;
 }
 
-inline SONParser::stack_symbol_type &SONParser::stack_symbol_type::
-operator=(const stack_symbol_type &that)
+inline SONParser::stack_symbol_type& SONParser::stack_symbol_type::
+operator=(const stack_symbol_type& that)
 {
     state    = that.state;
     value    = that.value;
@@ -362,8 +362,8 @@ operator=(const stack_symbol_type &that)
 }
 
 template<typename Base>
-inline void SONParser::yy_destroy_(const char *        yymsg,
-                                   basic_symbol<Base> &yysym) const
+inline void SONParser::yy_destroy_(const char*         yymsg,
+                                   basic_symbol<Base>& yysym) const
 {
     if (yymsg)
         YY_SYMBOL_PRINT(yymsg, yysym);
@@ -423,10 +423,10 @@ inline void SONParser::yy_destroy_(const char *        yymsg,
 
 #if YYDEBUG
 template<typename Base>
-void SONParser::yy_print_(std::ostream &            yyo,
-                          const basic_symbol<Base> &yysym) const
+void SONParser::yy_print_(std::ostream&             yyo,
+                          const basic_symbol<Base>& yysym) const
 {
-    std::ostream &yyoutput = yyo;
+    std::ostream& yyoutput = yyo;
     YYUSE(yyoutput);
     symbol_number_type yytype = yysym.type_get();
     // Avoid a (spurious) G++ 4.8 warning about "array subscript is
@@ -440,13 +440,13 @@ void SONParser::yy_print_(std::ostream &            yyo,
 }
 #endif
 
-inline void SONParser::yypush_(const char *m, state_type s, symbol_type &sym)
+inline void SONParser::yypush_(const char* m, state_type s, symbol_type& sym)
 {
     stack_symbol_type t(s, sym);
     yypush_(m, t);
 }
 
-inline void SONParser::yypush_(const char *m, stack_symbol_type &s)
+inline void SONParser::yypush_(const char* m, stack_symbol_type& s)
 {
     if (m)
         YY_SYMBOL_PRINT(m, s);
@@ -459,12 +459,12 @@ inline void SONParser::yypop_(unsigned int n)
 }
 
 #if YYDEBUG
-std::ostream &SONParser::debug_stream() const
+std::ostream& SONParser::debug_stream() const
 {
     return *yycdebug_;
 }
 
-void SONParser::set_debug_stream(std::ostream &o)
+void SONParser::set_debug_stream(std::ostream& o)
 {
     yycdebug_ = &o;
 }
@@ -574,7 +574,7 @@ int SONParser::parse()
             {
                 yyla.type = yytranslate_(yylex(&yyla.value, &yyla.location));
             }
-            catch (const syntax_error &yyexc)
+            catch (const syntax_error& yyexc)
             {
                 error(yyexc);
                 goto yyerrlab1;
@@ -1777,7 +1777,7 @@ int SONParser::parse()
                         break;
                 }
             }
-            catch (const syntax_error &yyexc)
+            catch (const syntax_error& yyexc)
             {
                 error(yyexc);
                 YYERROR;
@@ -1925,14 +1925,14 @@ int SONParser::parse()
     }
 }
 
-void SONParser::error(const syntax_error &yyexc)
+void SONParser::error(const syntax_error& yyexc)
 {
     error(yyexc.location, yyexc.what());
 }
 
 // Generate an error message.
 std::string SONParser::yysyntax_error_(state_type         yystate,
-                                       const symbol_type &yyla) const
+                                       const symbol_type& yyla) const
 {
     // Number of reported tokens (one for the "unexpected", one per
     // "expected").
@@ -1943,7 +1943,7 @@ std::string SONParser::yysyntax_error_(state_type         yystate,
         YYERROR_VERBOSE_ARGS_MAXIMUM = 5
     };
     // Arguments of yyformat.
-    char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
+    char const* yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
 
     /* There are many possibilities here to consider:
        - If this state is a consistent state with a default action, then
@@ -1999,7 +1999,7 @@ std::string SONParser::yysyntax_error_(state_type         yystate,
         }
     }
 
-    char const *yyformat = YY_NULLPTR;
+    char const* yyformat = YY_NULLPTR;
     switch (yycount)
     {
 #define YYCASE_(N, S) \
@@ -2021,7 +2021,7 @@ std::string SONParser::yysyntax_error_(state_type         yystate,
     std::string yyres;
     // Argument number.
     size_t yyi = 0;
-    for (char const *yyp = yyformat; *yyp; ++yyp)
+    for (char const* yyp = yyformat; *yyp; ++yyp)
         if (yyp[0] == '%' && yyp[1] == 's' && yyi < yycount)
         {
             yyres += yytnamerr_(yyarg[yyi++]);
@@ -2138,7 +2138,7 @@ const unsigned char SONParser::yyr2_[] = {
 
 // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
 // First, the terminals, then, starting at \a yyntokens_, nonterminals.
-const char *const SONParser::yytname_[] = {"\"end of file\"",
+const char* const SONParser::yytname_[] = {"\"end of file\"",
                                            "error",
                                            "$undefined",
                                            "\"end of line\"",
@@ -2308,8 +2308,8 @@ inline SONParser::token_number_type SONParser::yytranslate_(int t)
 #line 808 "SONParser.bison"  // lalr1.cc:1168
                              /*** Additional Code ***/
 
-void wasp::SONParser::error(const SONParser::location_type &l,
-                            const std::string &             m)
+void wasp::SONParser::error(const SONParser::location_type& l,
+                            const std::string&              m)
 {
     interpreter.error_stream() << l << ": " << m << std::endl;
 }

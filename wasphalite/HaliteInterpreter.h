@@ -31,11 +31,11 @@ namespace wasp
  * @param defaultFuncs include default functions (sin, cos, tang,...)
  * @return true, iff the template expansion functions
  */
-WASP_PUBLIC bool expand_template(std::ostream &     result,
-                                 std::ostream &     elog,
-                                 std::ostream &     alog,
-                                 const std::string &template_file,
-                                 const std::string &json_parameter_file = "",
+WASP_PUBLIC bool expand_template(std::ostream&      result,
+                                 std::ostream&      elog,
+                                 std::ostream&      alog,
+                                 const std::string& template_file,
+                                 const std::string& json_parameter_file = "",
                                  bool               defaultVars         = false,
                                  bool               defaultFuncs = false);
 
@@ -49,7 +49,7 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
     typedef S                                  Storage_type;
     typedef std::shared_ptr<HaliteInterpreter> SharedPtr;
     HaliteInterpreter();
-    HaliteInterpreter(std::ostream &err);
+    HaliteInterpreter(std::ostream& err);
     virtual ~HaliteInterpreter();
 
     /** Invoke the lexer and parser for a stream.
@@ -57,19 +57,19 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @param sname     stream name for error messages
      * @return          true if successfully parsed
      */
-    bool parseStream(std::istream &     in,
-                     const std::string &sname       = "stream input",
+    bool parseStream(std::istream&      in,
+                     const std::string& sname       = "stream input",
                      size_t             startLine   = 1u,
                      size_t             startColumn = 1u);
     bool
-    parse(std::istream &input, size_t startLine = 1u, size_t startColumn = 1u);
+    parse(std::istream& input, size_t startLine = 1u, size_t startColumn = 1u);
     /** Invoke the lexer and parser on an input string.
      * @param input     input string
      * @param sname     stream name for error messages
      * @return          true if successfully parsed
      */
-    bool parseString(const std::string &input,
-                     const std::string &sname       = "string stream",
+    bool parseString(const std::string& input,
+                     const std::string& sname       = "string stream",
                      size_t             startLine   = 1u,
                      size_t             startColumn = 1u);
     /** Invoke the lexer and parser on a file. Use parse_stream with a
@@ -77,7 +77,7 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @param filename  input file name
      * @return          true if successfully parsed
      */
-    bool parseFile(const std::string &filename, size_t startLine = 1u);
+    bool parseFile(const std::string& filename, size_t startLine = 1u);
 
     /**
      * @brief evaluate evaluates the template emitting the expansion into out
@@ -87,9 +87,9 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @param activity_log an optional activity log to emit template activity on
      * @return true, iff the template expanded with no errors.
      */
-    bool evaluate(std::ostream &out,
-                  DataAccessor &data,
-                  std::ostream *activity_log = nullptr);
+    bool evaluate(std::ostream& out,
+                  DataAccessor& data,
+                  std::ostream* activity_log = nullptr);
 
   public:
     struct Range
@@ -98,29 +98,29 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
         int         start;
         int         end;
         int         stride;
-        Range(const std::string &name, int start, int end, int stride)
+        Range(const std::string& name, int start, int end, int stride)
             : name(name), start(start), end(end), stride(stride)
         {
         }
-        Range(const Range &o)
+        Range(const Range& o)
             : name(o.name), start(o.start), end(o.end), stride(o.stride)
         {
         }
     };
 
-    bool import_range(DataAccessor &            data,
-                      HaliteInterpreter<S> &    file_interpreter,
-                      const std::vector<Range> &imports,
+    bool import_range(DataAccessor&             data,
+                      HaliteInterpreter<S>&     file_interpreter,
+                      const std::vector<Range>& imports,
                       size_t                    index,
-                      std::ostream &            out);
+                      std::ostream&             out);
     static bool extract_ranges(std::string         range_data,
-                               std::vector<Range> &ranges,
-                               std::string &       error);
+                               std::vector<Range>& ranges,
+                               std::string&        error);
 
   private:
-    bool parse_content(std::istream &in);
+    bool parse_content(std::istream& in);
 
-    bool parse_line(const std::string &line);
+    bool parse_line(const std::string& line);
 
     /**
      * @brief capture_attribute_text processes attribute text and constructs
@@ -132,7 +132,7 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * the given text
      * This will call capture_leaf as needed.
      */
-    void capture_attribute_text(const std::string &txt,
+    void capture_attribute_text(const std::string& txt,
                                 size_t             offset,
                                 bool               extract_options);
     /**
@@ -144,12 +144,12 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * updated upon capture
      * @param attribute_end_index the terminating index of the attribute
      */
-    void capture_attribute_delim(const std::string &data,
-                                 size_t &           current_column_index,
+    void capture_attribute_delim(const std::string& data,
+                                 size_t&            current_column_index,
                                  size_t             attribute_end_index);
-    void capture_leaf(const std::string &node_name,
+    void capture_leaf(const std::string& node_name,
                       size_t             node_type,
-                      const std::string &data,
+                      const std::string& data,
                       size_t             token_type,
                       size_t             file_offset);
 
@@ -160,10 +160,10 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @param attribute_indices
      * @param limit default of 0, meaning no limit.
      */
-    void capture(const std::string &data,
-                 size_t &           current_column_index,
-                 size_t &           current_attribute_index,
-                 const SubStringIndexer::IndexPairs_type &attribute_indices,
+    void capture(const std::string& data,
+                 size_t&            current_column_index,
+                 size_t&            current_attribute_index,
+                 const SubStringIndexer::IndexPairs_type& attribute_indices,
                  size_t                                   limit = 0);
 
     /**
@@ -176,11 +176,11 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @return true, iff no errors occurred during the substitution/printing of
      * the attribute
      */
-    bool print_attribute(DataAccessor &         data,
-                         const TreeNodeView<S> &attr_view,
-                         std::ostream &         out,
-                         size_t &               line,
-                         size_t &               column);
+    bool print_attribute(DataAccessor&          data,
+                         const TreeNodeView<S>& attr_view,
+                         std::ostream&          out,
+                         size_t&                line,
+                         size_t&                column);
 
     class SubstitutionOptions
     {
@@ -192,7 +192,7 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
             , m_silent(false)
         {
         }
-        SubstitutionOptions(const SubstitutionOptions &orig)
+        SubstitutionOptions(const SubstitutionOptions& orig)
             : m_emit(orig.m_emit)
             , m_format(orig.m_format)
             , m_use(orig.m_use)
@@ -204,14 +204,14 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
         {
         }
         bool has_format() const { return m_format.empty() == false; }
-        const std::string &format() const { return m_format; }
-        std::string &      format() { return m_format; }
+        const std::string& format() const { return m_format; }
+        std::string&       format() { return m_format; }
 
         bool               has_emit() const { return m_emit.second != 0; }
-        int &              emit_stride() { return m_emit.second; }
+        int&               emit_stride() { return m_emit.second; }
         int                emit_stride() const { return m_emit.second; }
-        std::string &      emit_delim() { return m_emit.first; }
-        const std::string &emit_delim() const { return m_emit.first; }
+        std::string&       emit_delim() { return m_emit.first; }
+        const std::string& emit_delim() const { return m_emit.first; }
 
         /**
          * @brief has_use determine whether the substitution has an object scope
@@ -219,20 +219,20 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
          * @return true, iff the user has specified 'use=object_name'
          */
         bool               has_use() const { return m_use.empty() == false; }
-        const std::string &use() const { return m_use; }
-        std::string &      use() { return m_use; }
+        const std::string& use() const { return m_use; }
+        std::string&       use() { return m_use; }
 
         bool  optional() const { return m_optional; }
-        bool &optional() { return m_optional; }
+        bool& optional() { return m_optional; }
 
-        const std::string &separator() const { return m_separator; }
-        std::string &      separator() { return m_separator; }
+        const std::string& separator() const { return m_separator; }
+        std::string&       separator() { return m_separator; }
 
         bool  silent() const { return m_silent; }
-        bool &silent() { return m_silent; }
+        bool& silent() { return m_silent; }
 
-        const std::vector<Range> &ranges() const { return m_ranges; }
-        std::vector<Range> &      ranges() { return m_ranges; }
+        const std::vector<Range>& ranges() const { return m_ranges; }
+        std::vector<Range>&       ranges() { return m_ranges; }
 
         void reset_emit_count_down() { m_emit_count_down = emit_stride(); }
         /**
@@ -240,7 +240,7 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
          * @return true, iff emit is present and has iterated sufficiently
          */
         bool emit_now() const { return (has_emit() && m_emit_count_down == 0); }
-        void initialize(DataAccessor &d)
+        void initialize(DataAccessor& d)
         {
             // if delimiter emission is present
             // initialize the iterator
@@ -299,7 +299,7 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
             }
             return false;
         }
-        bool next(DataAccessor &d)
+        bool next(DataAccessor& d)
         {
             // Iterate over loops inner-most to outer
             for (int i = m_index.size() - 1; i >= 0; --i)
@@ -362,15 +362,15 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @param data the data containing the text representation of options
      * @return true, iff no issues arose in option extract
      */
-    bool attribute_options(SubstitutionOptions &options,
-                           const std::string &  data,
+    bool attribute_options(SubstitutionOptions& options,
+                           const std::string&   data,
                            size_t               line);
 
-    bool accumulate_attribute(DataAccessor &         data,
-                              const TreeNodeView<S> &attr_view,
-                              std::ostream &         out,
-                              size_t &               line,
-                              size_t &               column) const;
+    bool accumulate_attribute(DataAccessor&          data,
+                              const TreeNodeView<S>& attr_view,
+                              std::ostream&          out,
+                              size_t&                line,
+                              size_t&                column) const;
     /**
      * @brief conditional handles actioned conditional blocks
      * @param data the data accessor
@@ -380,21 +380,21 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @param column the column from which the field begins
      * @return
      */
-    bool conditional(DataAccessor &         data,
-                     const TreeNodeView<S> &action_view,
-                     std::ostream &         out,
-                     size_t &               line,
-                     size_t &               column);
-    bool evaluate(DataAccessor &         data,
-                  const TreeNodeView<S> &action_view,
-                  std::ostream &         out,
-                  size_t &               line,
-                  size_t &               column);
-    bool evaluate_component(DataAccessor &         data,
-                            const TreeNodeView<S> &action_view,
-                            std::ostream &         out,
-                            size_t &               line,
-                            size_t &               column);
+    bool conditional(DataAccessor&          data,
+                     const TreeNodeView<S>& action_view,
+                     std::ostream&          out,
+                     size_t&                line,
+                     size_t&                column);
+    bool evaluate(DataAccessor&          data,
+                  const TreeNodeView<S>& action_view,
+                  std::ostream&          out,
+                  size_t&                line,
+                  size_t&                column);
+    bool evaluate_component(DataAccessor&          data,
+                            const TreeNodeView<S>& action_view,
+                            std::ostream&          out,
+                            size_t&                line,
+                            size_t&                column);
 
     /**
      * @brief import_file imports the file represented by the given tree view
@@ -406,16 +406,16 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @return true, iff the file and its contents were successfully imported
      * and emitted
      */
-    bool import_file(DataAccessor &         data,
-                     const TreeNodeView<S> &import_view,
-                     std::ostream &         out,
-                     size_t &               line,
-                     size_t &               column);
-    bool repeat_file(DataAccessor &         data,
-                     const TreeNodeView<S> &import_view,
-                     std::ostream &         out,
-                     size_t &               line,
-                     size_t &               column);
+    bool import_file(DataAccessor&          data,
+                     const TreeNodeView<S>& import_view,
+                     std::ostream&          out,
+                     size_t&                line,
+                     size_t&                column);
+    bool repeat_file(DataAccessor&          data,
+                     const TreeNodeView<S>& import_view,
+                     std::ostream&          out,
+                     size_t&                line,
+                     size_t&                column);
     /**
      * @brief process_result conduct formatting, error checking of the result
      * @param result the result to be emitted to the output stream
@@ -424,10 +424,10 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @param out the output stream to write the result
      * @return true, iff no error occurred.
      */
-    bool process_result(const Result &             result,
-                        const SubstitutionOptions &options,
+    bool process_result(const Result&              result,
+                        const SubstitutionOptions& options,
                         size_t                     line,
-                        std::ostream &             out);
+                        std::ostream&              out);
 
   public:  // public variables
     /**
@@ -436,7 +436,7 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @param name the name of the stream or file[path]
      * @param isFile [default=false] indicates whether the name is a file path
      */
-    void setStreamName(const std::string &name, bool isFile = false)
+    void setStreamName(const std::string& name, bool isFile = false)
     {
         Interpreter<S>::stream_name() = name;
         m_has_file                    = isFile;
@@ -448,23 +448,23 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      */
     bool hasFile() const { return m_has_file; }
 
-    const std::string &attr_start_delim() const
+    const std::string& attr_start_delim() const
     {
         return m_attribute_start_delim;
     }
-    std::string &attr_start_delim() { return m_attribute_start_delim; }
+    std::string& attr_start_delim() { return m_attribute_start_delim; }
 
-    const std::string &attr_end_delim() const { return m_attribute_end_delim; }
-    std::string &      attr_end_delim() { return m_attribute_end_delim; }
+    const std::string& attr_end_delim() const { return m_attribute_end_delim; }
+    std::string&       attr_end_delim() { return m_attribute_end_delim; }
 
-    const std::string &attr_start_name() const
+    const std::string& attr_start_name() const
     {
         return m_attribute_start_name;
     }
-    std::string &attr_start_name() { return m_attribute_start_name; }
+    std::string& attr_start_name() { return m_attribute_start_name; }
 
-    const std::string &attr_end_name() const { return m_attribute_end_name; }
-    std::string &      attr_end_name() { return m_attribute_end_name; }
+    const std::string& attr_end_name() const { return m_attribute_end_name; }
+    std::string&       attr_end_name() { return m_attribute_end_name; }
 
   private:  // private variables
     //
@@ -511,11 +511,11 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
 };  // end of HaliteInterpreter class
 #include "wasphalite/HaliteInterpreter.i.h"
 
-inline WASP_PUBLIC bool expand_template(std::ostream &     result,
-                                        std::ostream &     elog,
-                                        std::ostream &     alog,
-                                        const std::string &template_file,
-                                        const std::string &json_parameter_file,
+inline WASP_PUBLIC bool expand_template(std::ostream&      result,
+                                        std::ostream&      elog,
+                                        std::ostream&      alog,
+                                        const std::string& template_file,
+                                        const std::string& json_parameter_file,
                                         bool               defaultVars,
                                         bool               defaultFuncs)
 {

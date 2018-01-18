@@ -8,7 +8,7 @@ TokenPool<TTS, TITS, FOTS>::TokenPool()
 }
 // copy constructor
 template<typename TTS, typename TITS, typename FOTS>
-TokenPool<TTS, TITS, FOTS>::TokenPool(const TokenPool<TTS, TITS, FOTS> &orig)
+TokenPool<TTS, TITS, FOTS>::TokenPool(const TokenPool<TTS, TITS, FOTS>& orig)
     : m_strings(orig.m_strings)
     , m_tokens(orig.m_tokens)
     , m_line_offsets(orig.m_line_offsets)
@@ -21,7 +21,7 @@ TokenPool<TTS, TITS, FOTS>::~TokenPool()
 }
 // GET THE TOKEN'S STRING DATA
 template<typename TTS, typename TITS, typename FOTS>
-const char *TokenPool<TTS, TITS, FOTS>::str(TITS index) const
+const char* TokenPool<TTS, TITS, FOTS>::str(TITS index) const
 {
     return m_strings.data(index);
 }
@@ -118,7 +118,7 @@ FOTS TokenPool<TTS, TITS, FOTS>::offset(TITS token_index) const
 }
 // PUSH A NEW TOKEN
 template<typename TTS, typename TITS, typename FOTS>
-void TokenPool<TTS, TITS, FOTS>::push(const char *str,
+void TokenPool<TTS, TITS, FOTS>::push(const char* str,
                                       TTS  type,
                                       FOTS token_file_offset)
 {

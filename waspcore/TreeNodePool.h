@@ -35,7 +35,7 @@ class WASP_PUBLIC TreeNodePool
     typedef nis node_index_size;
     typedef TP  TokenPool_type;
     TreeNodePool();
-    TreeNodePool(const TreeNodePool<node_type_size, node_index_size, TP> &orig);
+    TreeNodePool(const TreeNodePool<node_type_size, node_index_size, TP>& orig);
     ~TreeNodePool();
 
     /**
@@ -46,8 +46,8 @@ class WASP_PUBLIC TreeNodePool
      * @param child_count
      */
     void push_parent(node_type_size             type,
-                     const char *               name,
-                     const std::vector<size_t> &child_indices);
+                     const char*                name,
+                     const std::vector<size_t>& child_indices);
     /**
      * @brief push_leaf create a leaf node with the given attributes
      * @param node_type the type of the leaf node (value, decl, term, etc.)
@@ -57,10 +57,10 @@ class WASP_PUBLIC TreeNodePool
      * @param token_data the token's string data (1.234, 10, ted, etc.)
      */
     void push_leaf(node_type_size                     node_type,
-                   const char *                       node_name,
+                   const char*                        node_name,
                    typename TP::token_type_size       token_type,
                    typename TP::file_offset_type_size token_offset,
-                   const char *                       token_data);
+                   const char*                        token_data);
     /**
      * @brief push_leaf create a leaf node with the given attributes and
      * existing token
@@ -69,7 +69,7 @@ class WASP_PUBLIC TreeNodePool
      * @param token_index the index of the existing token
      */
     void push_leaf(node_type_size                     node_type,
-                   const char *                       node_name,
+                   const char*                        node_name,
                    typename TP::token_index_type_size token_index);
 
     bool is_leaf(size_t node_index) const
@@ -101,7 +101,7 @@ class WASP_PUBLIC TreeNodePool
      * @param type the token's type (enumeration)
      * @param token_file_offset the token's offset into the file/stream
      */
-    void push_token(const char *                 str,
+    void push_token(const char*                  str,
                     typename TP::token_type_size type,
                     size_t                       token_file_offset)
     {
@@ -156,20 +156,20 @@ class WASP_PUBLIC TreeNodePool
      * @param node_index the index of the node for which the path is requested
      * @param out the output stream in which to capture the path
      */
-    void node_path(node_index_size node_index, std::ostream &out) const;
+    void node_path(node_index_size node_index, std::ostream& out) const;
     /**
      * @brief node_paths acquires the paths of the given node and its children
      * @param node_index the node for which it and its descendents' paths are
      * desired
      * @param out the output stream in which to capture the paths
      */
-    void node_paths(node_index_size node_index, std::ostream &out) const;
+    void node_paths(node_index_size node_index, std::ostream& out) const;
     /**
      * @brief name acquire the name of the node
      * @param node_index the index of the node to acquire the name
      * @return the node's name
      */
-    const char *name(node_index_size node_index) const
+    const char* name(node_index_size node_index) const
     {
         return m_node_names.data(node_index);
     }
@@ -187,7 +187,7 @@ class WASP_PUBLIC TreeNodePool
      *         is simplest as no reordering needs to take place as there are no
      *         subsequent nodes to adjust.
      */
-    bool set_name(node_index_size node_index, const char *name);
+    bool set_name(node_index_size node_index, const char* name);
 
     node_type_size type(node_index_size node_index) const
     {
@@ -213,7 +213,7 @@ class WASP_PUBLIC TreeNodePool
      * @return the node's data
      */
     std::string data(node_index_size node_index) const;
-    void data(node_index_size node_index, std::ostream &out) const;
+    void data(node_index_size node_index, std::ostream& out) const;
 
     /**
      * @brief line acquire the line the node starts on
@@ -275,7 +275,7 @@ class WASP_PUBLIC TreeNodePool
      */
     TokenPool<typename TP::token_type_size,
               typename TP::token_index_type_size,
-              typename TP::file_offset_type_size> &
+              typename TP::file_offset_type_size>&
     token_data()
     {
         return m_token_data;
@@ -283,7 +283,7 @@ class WASP_PUBLIC TreeNodePool
 
     const TokenPool<typename TP::token_type_size,
                     typename TP::token_index_type_size,
-                    typename TP::file_offset_type_size> &
+                    typename TP::file_offset_type_size>&
     token_data() const
     {
         return m_token_data;
@@ -388,19 +388,19 @@ class WASP_PUBLIC TreeNodeView
     using Collection = std::vector<TreeNodeView>;
     typedef TreeNodePool_T TreeNodePool_type;
     TreeNodeView() : m_tree_node_index(-1), m_tree_data(nullptr) {}
-    TreeNodeView(std::size_t node_index, const TreeNodePool_T &nodes);
-    TreeNodeView(const TreeNodeView &orig);
+    TreeNodeView(std::size_t node_index, const TreeNodePool_T& nodes);
+    TreeNodeView(const TreeNodeView& orig);
     ~TreeNodeView();
 
-    TreeNodeView &operator=(const TreeNodeView &b);
+    TreeNodeView& operator=(const TreeNodeView& b);
 
-    bool operator==(const TreeNodeView &b) const;
-    bool operator!=(const TreeNodeView &b) const { return !(*this == b); }
+    bool operator==(const TreeNodeView& b) const;
+    bool operator!=(const TreeNodeView& b) const { return !(*this == b); }
     /**
      * @brief equal determines if this is equal to the provides TreeNodeView
      * @return true, iff and only if the nodes are the same
      */
-    bool equal(const TreeNodeView &b) const { return *this == b; }
+    bool equal(const TreeNodeView& b) const { return *this == b; }
 
     /**
      * @brief data acquire the node's data
@@ -457,7 +457,7 @@ class WASP_PUBLIC TreeNodeView
      * @param out the output stream to capture the node paths
      * The node paths are written, new line delimited
      */
-    void paths(std::ostream &out) const;
+    void paths(std::ostream& out) const;
     /**
      * @brief child_count acquire the number of nodes for which this node is a
      * parent
@@ -472,7 +472,7 @@ class WASP_PUBLIC TreeNodeView
      * optimize determination of named children
      * @return the number of children with the given name
      */
-    std::size_t child_count_by_name(const std::string &name,
+    std::size_t child_count_by_name(const std::string& name,
                                     size_t             limit = 0) const;
 
     /**
@@ -488,7 +488,7 @@ class WASP_PUBLIC TreeNodeView
      * @param limit the limit on the number of children ( 0 := no limit )
      * @return A collection of views. Empty if no match occurrs
      */
-    typename TreeNodeView::Collection child_by_name(const std::string &name,
+    typename TreeNodeView::Collection child_by_name(const std::string& name,
                                                     size_t limit = 0) const;
     /**
      * @brief first_child_by_name acquires the first child with the given name
@@ -496,7 +496,7 @@ class WASP_PUBLIC TreeNodeView
      * @return Named TreeNodeView as requestd. is_null indicates if none was
      * found
      */
-    TreeNodeView first_child_by_name(const std::string &name) const;
+    TreeNodeView first_child_by_name(const std::string& name) const;
     /**
      * @brief type acquire the type of the node
      * @return the node's type
@@ -512,7 +512,7 @@ class WASP_PUBLIC TreeNodeView
      * @brief name acquire the name of the node
      * @return the node's name
      */
-    const char *name() const;
+    const char* name() const;
 
     /**
      * @brief line acquire the node's starting line
@@ -547,33 +547,33 @@ class WASP_PUBLIC TreeNodeView
      * @brief tree_node_pool acquire the pointer to the backend storage
      * @return the TreeNodePool that backs this view
      */
-    const TreeNodePool_T *tree_node_pool() const { return m_tree_data; }
+    const TreeNodePool_T* tree_node_pool() const { return m_tree_data; }
 
     // !> Type operators
-    bool to_bool(bool *ok = nullptr) const;
+    bool to_bool(bool* ok = nullptr) const;
     /**
      * @brief to_int converts the data to an integer
      * @return the data as an integer
      */
-    int to_int(bool *ok = nullptr) const;
+    int to_int(bool* ok = nullptr) const;
 
     /**
      * @brief to_double converts the data to a double
      * @return the data as a double
      */
-    double to_double(bool *ok = nullptr) const;
+    double to_double(bool* ok = nullptr) const;
 
     /**
      * @brief to_string converts the data to a string
      * @return the data as a string (single and double quotes are removed from
      * front and back).
      */
-    std::string to_string(bool *ok = nullptr) const;
+    std::string to_string(bool* ok = nullptr) const;
 
     // Friendly stream operator
-    friend std::ostream &
-    operator<<(std::ostream &                            str,
-               const wasp::TreeNodeView<TreeNodePool_T> &view)
+    friend std::ostream&
+    operator<<(std::ostream&                             str,
+               const wasp::TreeNodeView<TreeNodePool_T>& view)
     {
         str << "TreeNodeView(tree_node_index=" << view.m_tree_node_index
             << ", &pool=" << view.m_tree_data << ")";
@@ -582,17 +582,17 @@ class WASP_PUBLIC TreeNodeView
 
   private:
     std::size_t           m_tree_node_index;
-    const TreeNodePool_T *m_tree_data;
+    const TreeNodePool_T* m_tree_data;
 };
 
 template<class TAdapter>
-WASP_PUBLIC void print_from(std::ostream &  out,
-                            const TAdapter &tree_node,
-                            size_t &        last_line,
-                            size_t &        last_col);
+WASP_PUBLIC void print_from(std::ostream&   out,
+                            const TAdapter& tree_node,
+                            size_t&         last_line,
+                            size_t&         last_col);
 
 template<class TAdapter>
-WASP_PUBLIC void print(std::ostream &out, const TAdapter &tree_node)
+WASP_PUBLIC void print(std::ostream& out, const TAdapter& tree_node)
 {
     size_t l = tree_node.line(), c = tree_node.column();
     print_from(out, tree_node, l, c);

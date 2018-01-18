@@ -19,7 +19,7 @@ typedef TreeNodePool<unsigned int, unsigned int, TP>        TNP;
 typedef SONInterpreter<TNP>            SONInterp;
 typedef SONNodeView<TreeNodeView<TNP>> SONNV;
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     if (argc == 2 &&
         (std::string(argv[1]) == "-v" || std::string(argv[1]) == "--version"))

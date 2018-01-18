@@ -4,18 +4,18 @@
 template<class TNV>
 GetPotNodeView<TNV>::GetPotNodeView(
     std::size_t                                            node_index,
-    const typename GetPotNodeView<TNV>::TreeNodePool_type &nodes)
+    const typename GetPotNodeView<TNV>::TreeNodePool_type& nodes)
     : m_tree_node_index(node_index), m_tree_data(&nodes)
 {
     wasp_require(!this->is_null());
 }
 template<class TNV>
-GetPotNodeView<TNV>::GetPotNodeView(const GetPotNodeView &orig)
+GetPotNodeView<TNV>::GetPotNodeView(const GetPotNodeView& orig)
     : m_tree_node_index(orig.m_tree_node_index), m_tree_data(orig.m_tree_data)
 {
 }
 template<class TNV>
-GetPotNodeView<TNV>::GetPotNodeView(const TNV &orig)
+GetPotNodeView<TNV>::GetPotNodeView(const TNV& orig)
     : m_tree_node_index(orig.tree_node_index())
     , m_tree_data(orig.tree_node_pool())
 {
@@ -25,27 +25,27 @@ GetPotNodeView<TNV>::~GetPotNodeView()
 {
 }
 template<class TNV>
-GetPotNodeView<TNV> &GetPotNodeView<TNV>::operator=(const GetPotNodeView &b)
+GetPotNodeView<TNV>& GetPotNodeView<TNV>::operator=(const GetPotNodeView& b)
 {
     m_tree_node_index = b.tree_node_index();
     m_tree_data       = b.tree_node_pool();
     return *this;
 }
 template<class TNV>
-GetPotNodeView<TNV> &GetPotNodeView<TNV>::operator=(const TNV &b)
+GetPotNodeView<TNV>& GetPotNodeView<TNV>::operator=(const TNV& b)
 {
     m_tree_node_index = b.tree_node_index();
     m_tree_data       = b.tree_node_pool();
     return *this;
 }
 template<class TNV>
-bool GetPotNodeView<TNV>::operator==(const GetPotNodeView &b) const
+bool GetPotNodeView<TNV>::operator==(const GetPotNodeView& b) const
 {
     return m_tree_data == b.m_tree_data &&
            m_tree_node_index == b.m_tree_node_index;
 }
 template<class TNV>
-bool GetPotNodeView<TNV>::operator<(const GetPotNodeView &b) const
+bool GetPotNodeView<TNV>::operator<(const GetPotNodeView& b) const
 {
     return m_tree_node_index < b.m_tree_node_index;
 }
@@ -118,7 +118,7 @@ GetPotNodeView<TNV>::non_decorative_children() const
     Collection results;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
     {
-        const auto &child = child_at(i);
+        const auto& child = child_at(i);
         if (!child.is_decorative())
             results.push_back(child);
     }
@@ -126,11 +126,11 @@ GetPotNodeView<TNV>::non_decorative_children() const
 }
 template<class TNV>
 GetPotNodeView<TNV> GetPotNodeView<TNV>::first_non_decorative_child_by_name(
-    const std::string &name) const
+    const std::string& name) const
 {
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
     {
-        const auto &child = child_at(i);
+        const auto& child = child_at(i);
         if (!child.is_decorative())
         {
             if (name == child.name())
@@ -147,7 +147,7 @@ size_t GetPotNodeView<TNV>::non_decorative_children_count() const
     size_t result = 0;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
     {
-        const auto &child = child_at(i);
+        const auto& child = child_at(i);
         if (!child.is_decorative())
             ++result;
     }
@@ -168,7 +168,7 @@ std::string GetPotNodeView<TNV>::path() const
     return str.str();
 }
 template<class TNV>
-void GetPotNodeView<TNV>::paths(std::ostream &out) const
+void GetPotNodeView<TNV>::paths(std::ostream& out) const
 {
     m_tree_data->node_paths(m_tree_node_index, out);
 }
@@ -179,7 +179,7 @@ std::size_t GetPotNodeView<TNV>::child_count() const
 }
 template<class TNV>  // template type
 std::size_t          // return type
-    GetPotNodeView<TNV>::child_count_by_name(const std::string &name,
+    GetPotNodeView<TNV>::child_count_by_name(const std::string& name,
                                              std::size_t        limit) const
 {
     TNV view(tree_node_index(), *tree_node_pool());
@@ -194,7 +194,7 @@ GetPotNodeView<TNV> GetPotNodeView<TNV>::child_at(std::size_t index) const
 }
 template<class TNV>                       // template type
 typename GetPotNodeView<TNV>::Collection  // return type
-    GetPotNodeView<TNV>::child_by_name(const std::string &name,
+    GetPotNodeView<TNV>::child_by_name(const std::string& name,
                                        std::size_t        limit) const
 {
     Collection results;
@@ -214,7 +214,7 @@ typename GetPotNodeView<TNV>::Collection  // return type
 }
 template<class TNV>  // template type
 GetPotNodeView<TNV>  // return type
-    GetPotNodeView<TNV>::first_child_by_name(const std::string &name) const
+    GetPotNodeView<TNV>::first_child_by_name(const std::string& name) const
 {
     TNV view(tree_node_index(), *tree_node_pool());
     return view.first_child_by_name(name);
@@ -225,7 +225,7 @@ std::size_t GetPotNodeView<TNV>::type() const
     return m_tree_data->type(m_tree_node_index);
 }
 template<class TNV>
-const char *GetPotNodeView<TNV>::name() const
+const char* GetPotNodeView<TNV>::name() const
 {
     return m_tree_data->name(m_tree_node_index);
 }
@@ -253,32 +253,32 @@ std::size_t GetPotNodeView<TNV>::last_column() const
 }
 
 template<class TNV>
-bool GetPotNodeView<TNV>::to_bool(bool *ok) const
+bool GetPotNodeView<TNV>::to_bool(bool* ok) const
 {
     TNV view(value_tree_node_index(), *tree_node_pool());
     return view.to_bool(ok);
 }
 
 template<class TNV>
-int GetPotNodeView<TNV>::to_int(bool *ok) const
+int GetPotNodeView<TNV>::to_int(bool* ok) const
 {
     TNV view(value_tree_node_index(), *tree_node_pool());
     return view.to_int(ok);
 }
 template<class TNV>
-double GetPotNodeView<TNV>::to_double(bool *ok) const
+double GetPotNodeView<TNV>::to_double(bool* ok) const
 {
     TNV view(value_tree_node_index(), *tree_node_pool());
     return view.to_double(ok);
 }
 template<class TNV>
-std::string GetPotNodeView<TNV>::to_string(bool *ok) const
+std::string GetPotNodeView<TNV>::to_string(bool* ok) const
 {
     TNV view(value_tree_node_index(), *tree_node_pool());
     return view.to_string(ok);
 }
 template<class TNV>
-std::string GetPotNodeView<TNV>::last_as_string(bool *ok) const
+std::string GetPotNodeView<TNV>::last_as_string(bool* ok) const
 {
     size_t count = child_count();
     if (count > 0)

@@ -22,28 +22,28 @@ class WASP_PUBLIC SONNodeView
     typedef TNV                             TreeNodeView_type;
     typedef typename TNV::TreeNodePool_type TreeNodePool_type;
     SONNodeView() : m_tree_node_index(-1), m_tree_data(nullptr) {}
-    SONNodeView(std::size_t node_index, const TreeNodePool_type &nodes);
-    SONNodeView(const TNV &orig);
-    SONNodeView(const SONNodeView &orig);
+    SONNodeView(std::size_t node_index, const TreeNodePool_type& nodes);
+    SONNodeView(const TNV& orig);
+    SONNodeView(const SONNodeView& orig);
 
     ~SONNodeView();
 
-    SONNodeView &operator=(const SONNodeView &b);
-    SONNodeView &operator=(const TreeNodeView_type &b);
+    SONNodeView& operator=(const SONNodeView& b);
+    SONNodeView& operator=(const TreeNodeView_type& b);
 
-    bool operator==(const SONNodeView &b) const;
-    bool operator!=(const SONNodeView &b) const { return !(*this == b); }
+    bool operator==(const SONNodeView& b) const;
+    bool operator!=(const SONNodeView& b) const { return !(*this == b); }
     /**
      * @brief operator < orders by pool index
      * @param b the node to compare pool index
      * @return true, iff this views index is strictly less than b.index
      */
-    bool operator<(const SONNodeView &b) const;
+    bool operator<(const SONNodeView& b) const;
     /**
      * @brief equal determines if this is equal to the provides SONNodeView
      * @return true, iff and only if the nodes are the same
      */
-    bool equal(const SONNodeView &b) const { return *this == b; }
+    bool equal(const SONNodeView& b) const { return *this == b; }
 
     /**
      * @brief data acquire the node's data
@@ -106,7 +106,7 @@ class WASP_PUBLIC SONNodeView
      * @return SONNodeView - need to check is_null to ensure valid node
      */
     SONNodeView
-    first_non_decorative_child_by_name(const std::string &name) const;
+    first_non_decorative_child_by_name(const std::string& name) const;
     /**
      * @brief non_decorative_children_count convenience to determine number of
      * decorative
@@ -134,7 +134,7 @@ class WASP_PUBLIC SONNodeView
      * @param out the output stream to capture the node paths
      * The node paths are written, new line delimited
      */
-    void paths(std::ostream &out) const;
+    void paths(std::ostream& out) const;
     /**
      * @brief child_count acquire the number of nodes for which this node is a
      * parent
@@ -149,7 +149,7 @@ class WASP_PUBLIC SONNodeView
      * optimize determination of named children
      * @return the number of children with the given name
      */
-    std::size_t child_count_by_name(const std::string &name,
+    std::size_t child_count_by_name(const std::string& name,
                                     size_t             limit = 0) const;
 
     /**
@@ -165,7 +165,7 @@ class WASP_PUBLIC SONNodeView
      * @param limit the limit on the number of children ( 0 := no limit )
      * @return A collection of views. Empty if no match occurrs
      */
-    typename SONNodeView::Collection child_by_name(const std::string &name,
+    typename SONNodeView::Collection child_by_name(const std::string& name,
                                                    size_t limit = 0) const;
     /**
      * @brief first_child_by_name acquires the first child with the given name
@@ -173,7 +173,7 @@ class WASP_PUBLIC SONNodeView
      * @return Named TreeNodeView as requestd. is_null indicates if none was
      * found
      */
-    SONNodeView first_child_by_name(const std::string &name) const;
+    SONNodeView first_child_by_name(const std::string& name) const;
     /**
      * @brief type acquire the type of the node
      * @return the node's type
@@ -183,7 +183,7 @@ class WASP_PUBLIC SONNodeView
      * @brief name acquire the name of the node
      * @return the node's name
      */
-    const char *name() const;
+    const char* name() const;
 
     /**
      * @brief line acquire the node's starting line
@@ -218,33 +218,33 @@ class WASP_PUBLIC SONNodeView
      * @brief tree_node_pool acquire the pointer to the backend storage
      * @return the TreeNodePool that backs this view
      */
-    const TreeNodePool_type *tree_node_pool() const { return m_tree_data; }
+    const TreeNodePool_type* tree_node_pool() const { return m_tree_data; }
 
     // !> Type operators
     /**
      * @brief to_bool converts the data to a bool
      * @return the data as a bool
      */
-    bool to_bool(bool *ok = nullptr) const;
+    bool to_bool(bool* ok = nullptr) const;
 
     /**
      * @brief to_int converts the data to an integer
      * @return the data as an integer
      */
-    int to_int(bool *ok = nullptr) const;
+    int to_int(bool* ok = nullptr) const;
 
     /**
      * @brief to_double converts the data to a double
      * @return the data as a double
      */
-    double to_double(bool *ok = nullptr) const;
+    double to_double(bool* ok = nullptr) const;
 
     /**
      * @brief to_string converts the data to a string
      * @return the data as a string (single and double quotes are removed from
      * front and back).
      */
-    std::string to_string(bool *ok = nullptr) const;
+    std::string to_string(bool* ok = nullptr) const;
 
     /**
      * @brief last_as_string acquires this node or last child's node as string
@@ -252,11 +252,11 @@ class WASP_PUBLIC SONNodeView
      * @return the last child's data as a string, or this node's data as a
      * string if no children
      */
-    std::string last_as_string(bool *ok = nullptr) const;
+    std::string last_as_string(bool* ok = nullptr) const;
 
     // Friendly stream operator
-    friend std::ostream &operator<<(std::ostream &                str,
-                                    const wasp::SONNodeView<TNV> &view)
+    friend std::ostream& operator<<(std::ostream&                 str,
+                                    const wasp::SONNodeView<TNV>& view)
     {
         str << "SONNodeView(tree_node_index=" << view.m_tree_node_index
             << ", &pool=" << view.m_tree_data << ")";
@@ -265,7 +265,7 @@ class WASP_PUBLIC SONNodeView
 
   private:
     size_t                   m_tree_node_index;
-    const TreeNodePool_type *m_tree_data;
+    const TreeNodePool_type* m_tree_data;
 
     /**
      * @brief value_tree_node_index when the value is requested (to_int, string,

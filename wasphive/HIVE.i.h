@@ -6,10 +6,10 @@
  */
 
 template<class InputAdapter>
-bool HIVE::select_nodes(SIRENResultSet<InputAdapter> &results,
-                        InputAdapter &                input_node,
-                        const std::string &           selection_path,
-                        std::vector<std::string> &    errors)
+bool HIVE::select_nodes(SIRENResultSet<InputAdapter>& results,
+                        InputAdapter&                 input_node,
+                        const std::string&            selection_path,
+                        std::vector<std::string>&     errors)
 {
     std::stringstream look_up_error;
 
@@ -25,9 +25,9 @@ bool HIVE::select_nodes(SIRENResultSet<InputAdapter> &results,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validate(SchemaAdapter &           schema_node,
-                    InputAdapter &            input_node,
-                    std::vector<std::string> &errors)
+bool HIVE::validate(SchemaAdapter&            schema_node,
+                    InputAdapter&             input_node,
+                    std::vector<std::string>& errors)
 {
     if (schema_node.is_null() || input_node.is_null())
     {
@@ -42,9 +42,9 @@ bool HIVE::validate(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::traverse_schema(SchemaAdapter &           schema_node,
-                           InputAdapter &            input_node,
-                           std::vector<std::string> &errors)
+bool HIVE::traverse_schema(SchemaAdapter&            schema_node,
+                           InputAdapter&             input_node,
+                           std::vector<std::string>& errors)
 {
     if (stop)
         return true;
@@ -58,7 +58,7 @@ bool HIVE::traverse_schema(SchemaAdapter &           schema_node,
     {
         return false;
     }
-    const typename SchemaAdapter::Collection &children =
+    const typename SchemaAdapter::Collection& children =
         schema_node.non_decorative_children();
     bool                  hasToDo = false;
     bool                  isAny   = false;
@@ -67,7 +67,7 @@ bool HIVE::traverse_schema(SchemaAdapter &           schema_node,
     for (size_t i = 0, count = children.size(); i < count; i++)
     {
         SchemaAdapter      tmpNode     = children[i];
-        const std::string &tmpNodeName = tmpNode.name();
+        const std::string& tmpNodeName = tmpNode.name();
         bool               isToDo      = tmpNodeName == "ToDo";
 
         // This shortcut to stop processing schema allows one to use
@@ -223,7 +223,7 @@ bool HIVE::traverse_schema(SchemaAdapter &           schema_node,
             {
                 continue;
             }
-            const typename InputAdapter::Collection &children =
+            const typename InputAdapter::Collection& children =
                 selection.adapted(i).non_decorative_children();
 
             for (size_t j = 0; j < children.size(); j++)
@@ -249,9 +249,9 @@ bool HIVE::traverse_schema(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateMinOccurs(SchemaAdapter &           schema_node,
-                             InputAdapter &            input_node,
-                             std::vector<std::string> &errors)
+bool HIVE::validateMinOccurs(SchemaAdapter&            schema_node,
+                             InputAdapter&             input_node,
+                             std::vector<std::string>& errors)
 {
     if (schema_node.to_string() == "0")
         return true;
@@ -347,9 +347,9 @@ bool HIVE::validateMinOccurs(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateMaxOccurs(SchemaAdapter &           schema_node,
-                             InputAdapter &            input_node,
-                             std::vector<std::string> &errors)
+bool HIVE::validateMaxOccurs(SchemaAdapter&            schema_node,
+                             InputAdapter&             input_node,
+                             std::vector<std::string>& errors)
 {
     if (schema_node.to_string() == "NoLimit")
         return true;
@@ -451,9 +451,9 @@ bool HIVE::validateMaxOccurs(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateValType(SchemaAdapter &           schema_node,
-                           InputAdapter &            input_node,
-                           std::vector<std::string> &errors)
+bool HIVE::validateValType(SchemaAdapter&            schema_node,
+                           InputAdapter&             input_node,
+                           std::vector<std::string>& errors)
 {
     std::string nodePath  = schema_node.parent().path();
     std::string ruleName  = getFullRuleName(schema_node.name());
@@ -638,9 +638,9 @@ bool HIVE::validateValType(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateValEnums(SchemaAdapter &           schema_node,
-                            InputAdapter &            input_node,
-                            std::vector<std::string> &errors)
+bool HIVE::validateValEnums(SchemaAdapter&            schema_node,
+                            InputAdapter&             input_node,
+                            std::vector<std::string>& errors)
 {
     std::string nodePath = schema_node.parent().path();
     bool        pass     = true;
@@ -660,11 +660,11 @@ bool HIVE::validateValEnums(SchemaAdapter &           schema_node,
 
     // CREATE ENUM UNORDERED SET
     std::set<std::string>  enumSet;
-    std::set<std::string> *enumSetPtr = NULL;
+    std::set<std::string>* enumSetPtr = NULL;
 
     if (selection.size() != 0)
     {
-        const typename SchemaAdapter::Collection &refNodes =
+        const typename SchemaAdapter::Collection& refNodes =
             schema_node.child_by_name("REF");
         std::vector<std::string> refNames;
 
@@ -709,7 +709,7 @@ bool HIVE::validateValEnums(SchemaAdapter &           schema_node,
                         return false;
                     }
 
-                    const typename SchemaAdapter::Collection &children =
+                    const typename SchemaAdapter::Collection& children =
                         tmpschema_node.non_decorative_children();
 
                     for (int ic = children.size() - 1; ic >= 0; ic--)
@@ -726,7 +726,7 @@ bool HIVE::validateValEnums(SchemaAdapter &           schema_node,
         }
         else
         {
-            const typename SchemaAdapter::Collection &children =
+            const typename SchemaAdapter::Collection& children =
                 schema_node.non_decorative_children();
 
             for (int i = children.size() - 1; i >= 0; i--)
@@ -875,9 +875,9 @@ bool HIVE::validateValEnums(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateMinValInc(SchemaAdapter &           schema_node,
-                             InputAdapter &            input_node,
-                             std::vector<std::string> &errors)
+bool HIVE::validateMinValInc(SchemaAdapter&            schema_node,
+                             InputAdapter&             input_node,
+                             std::vector<std::string>& errors)
 {
     if (schema_node.to_string() == "NoLimit")
         return true;
@@ -1018,9 +1018,9 @@ bool HIVE::validateMinValInc(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateMaxValInc(SchemaAdapter &           schema_node,
-                             InputAdapter &            input_node,
-                             std::vector<std::string> &errors)
+bool HIVE::validateMaxValInc(SchemaAdapter&            schema_node,
+                             InputAdapter&             input_node,
+                             std::vector<std::string>& errors)
 {
     if (schema_node.to_string() == "NoLimit")
         return true;
@@ -1162,9 +1162,9 @@ bool HIVE::validateMaxValInc(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateMinValExc(SchemaAdapter &           schema_node,
-                             InputAdapter &            input_node,
-                             std::vector<std::string> &errors)
+bool HIVE::validateMinValExc(SchemaAdapter&            schema_node,
+                             InputAdapter&             input_node,
+                             std::vector<std::string>& errors)
 {
     if (schema_node.to_string() == "NoLimit")
         return true;
@@ -1306,9 +1306,9 @@ bool HIVE::validateMinValExc(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateMaxValExc(SchemaAdapter &           schema_node,
-                             InputAdapter &            input_node,
-                             std::vector<std::string> &errors)
+bool HIVE::validateMaxValExc(SchemaAdapter&            schema_node,
+                             InputAdapter&             input_node,
+                             std::vector<std::string>& errors)
 {
     if (schema_node.to_string() == "NoLimit")
         return true;
@@ -1450,9 +1450,9 @@ bool HIVE::validateMaxValExc(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateExistsIn(SchemaAdapter &           schema_node,
-                            InputAdapter &            input_node,
-                            std::vector<std::string> &errors)
+bool HIVE::validateExistsIn(SchemaAdapter&            schema_node,
+                            InputAdapter&             input_node,
+                            std::vector<std::string>& errors)
 {
     std::string nodePath         = schema_node.parent().path();
     std::string ruleName         = getFullRuleName(schema_node.name());
@@ -1490,7 +1490,7 @@ bool HIVE::validateExistsIn(SchemaAdapter &           schema_node,
 
     // CREATE LOOKUP UNORDERED SET
     std::unordered_set<std::string> lookupSet;
-    std::set<std::string> *         refSetPtr = NULL;
+    std::set<std::string>*          refSetPtr = NULL;
     std::set<std::string>           aliasNamesFound;
     InputAdapter                    savedParentInputNode;
     InputAdapter                    tmpParentInputNode;
@@ -1499,7 +1499,7 @@ bool HIVE::validateExistsIn(SchemaAdapter &           schema_node,
 
     bool expressionsAreOkay = false;
 
-    const typename SchemaAdapter::Collection &refNodes =
+    const typename SchemaAdapter::Collection& refNodes =
         schema_node.child_by_name("EXTRAREF");
     std::vector<std::string> refNames;
     for (int i = 0; i < refNodes.size(); i++)
@@ -1540,7 +1540,7 @@ bool HIVE::validateExistsIn(SchemaAdapter &           schema_node,
                     return false;
                 }
 
-                const typename SchemaAdapter::Collection &children =
+                const typename SchemaAdapter::Collection& children =
                     tmpschema_node.non_decorative_children();
                 for (int ic = children.size() - 1; ic >= 0; ic--)
                 {
@@ -1553,7 +1553,7 @@ bool HIVE::validateExistsIn(SchemaAdapter &           schema_node,
         }
         refSetPtr = &enumRefIter->second;
     }
-    const typename SchemaAdapter::Collection &children =
+    const typename SchemaAdapter::Collection& children =
         schema_node.non_decorative_children();
     std::map<int, typename SIRENInterpreter<>::SharedPtr> childrenSelectors;
     for (size_t i = 0; i < selection.size(); i++)
@@ -1578,7 +1578,7 @@ bool HIVE::validateExistsIn(SchemaAdapter &           schema_node,
 
             if (std::strcmp(children[loop].name(), "RANGE") == 0)
             {
-                const typename SchemaAdapter::Collection &rangeChildren =
+                const typename SchemaAdapter::Collection& rangeChildren =
                     children[loop].non_decorative_children();
                 if (rangeChildren.size() != 2)
                 {
@@ -1777,7 +1777,7 @@ bool HIVE::validateExistsIn(SchemaAdapter &           schema_node,
                 valueNodeName = selection.adapted(i).name();
             }
 
-            const typename SchemaAdapter::Collection &childrenErr =
+            const typename SchemaAdapter::Collection& childrenErr =
                 schema_node.non_decorative_children();
             std::string lookupPaths;
             for (int loop = 0, count = childrenErr.size(); loop < count; loop++)
@@ -1811,9 +1811,9 @@ bool HIVE::validateExistsIn(SchemaAdapter &           schema_node,
     return pass;
 }
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateNotExistsIn(SchemaAdapter &           schema_node,
-                               InputAdapter &            input_node,
-                               std::vector<std::string> &errors)
+bool HIVE::validateNotExistsIn(SchemaAdapter&            schema_node,
+                               InputAdapter&             input_node,
+                               std::vector<std::string>& errors)
 {
     std::string nodePath   = schema_node.parent().path();
     std::string ruleName   = getFullRuleName(schema_node.name());
@@ -1856,7 +1856,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter &           schema_node,
     inputSelector.evaluate(input_node, selection);
 
     // gather all of the lookup paths for this rule
-    const typename SchemaAdapter::Collection &lookupPaths =
+    const typename SchemaAdapter::Collection& lookupPaths =
         schema_node.non_decorative_children();
 
     // loop through all of the lookup paths for this rule
@@ -2053,9 +2053,9 @@ bool HIVE::validateNotExistsIn(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateSumOver(SchemaAdapter &           schema_node,
-                           InputAdapter &            input_node,
-                           std::vector<std::string> &errors)
+bool HIVE::validateSumOver(SchemaAdapter&            schema_node,
+                           InputAdapter&             input_node,
+                           std::vector<std::string>& errors)
 {
     std::string nodeName  = schema_node.parent().name();
     std::string nodePath  = schema_node.parent().path();
@@ -2166,9 +2166,9 @@ bool HIVE::validateSumOver(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateSumOverGroup(SchemaAdapter &           schema_node,
-                                InputAdapter &            input_node,
-                                std::vector<std::string> &errors)
+bool HIVE::validateSumOverGroup(SchemaAdapter&            schema_node,
+                                InputAdapter&             input_node,
+                                std::vector<std::string>& errors)
 {
     bool          pass     = true;
     std::string   nodeName = schema_node.parent().name();
@@ -2362,9 +2362,9 @@ bool HIVE::validateSumOverGroup(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateIncreaseOver(SchemaAdapter &           schema_node,
-                                InputAdapter &            input_node,
-                                std::vector<std::string> &errors)
+bool HIVE::validateIncreaseOver(SchemaAdapter&            schema_node,
+                                InputAdapter&             input_node,
+                                std::vector<std::string>& errors)
 {
     std::string nodeName  = schema_node.parent().name();
     std::string nodePath  = schema_node.parent().path();
@@ -2518,9 +2518,9 @@ bool HIVE::validateIncreaseOver(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateDecreaseOver(SchemaAdapter &           schema_node,
-                                InputAdapter &            input_node,
-                                std::vector<std::string> &errors)
+bool HIVE::validateDecreaseOver(SchemaAdapter&            schema_node,
+                                InputAdapter&             input_node,
+                                std::vector<std::string>& errors)
 {
     std::string nodeName  = schema_node.parent().name();
     std::string nodePath  = schema_node.parent().path();
@@ -2673,9 +2673,9 @@ bool HIVE::validateDecreaseOver(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateChildAtMostOne(SchemaAdapter &           schema_node,
-                                  InputAdapter &            input_node,
-                                  std::vector<std::string> &errors)
+bool HIVE::validateChildAtMostOne(SchemaAdapter&            schema_node,
+                                  InputAdapter&             input_node,
+                                  std::vector<std::string>& errors)
 {
     std::string nodePath = schema_node.parent().path();
     std::string ruleName = getFullRuleName(schema_node.name());
@@ -2693,7 +2693,7 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter &           schema_node,
     SIRENResultSet<InputAdapter> selection;
     inputSelector.evaluate(input_node, selection);
 
-    const typename SchemaAdapter::Collection &children =
+    const typename SchemaAdapter::Collection& children =
         schema_node.non_decorative_children();
     std::vector<int> selectedChildrenCount(selection.size(), 0);
 
@@ -2750,7 +2750,7 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter &           schema_node,
     {
         if (selectedChildrenCount[i] > 1)
         {
-            const typename SchemaAdapter::Collection &choices = children;
+            const typename SchemaAdapter::Collection& choices = children;
             std::string                               childNames;
 
             for (int js = 0; js < choices.size(); js++)
@@ -2771,9 +2771,9 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateChildExactlyOne(SchemaAdapter &           schema_node,
-                                   InputAdapter &            input_node,
-                                   std::vector<std::string> &errors)
+bool HIVE::validateChildExactlyOne(SchemaAdapter&            schema_node,
+                                   InputAdapter&             input_node,
+                                   std::vector<std::string>& errors)
 {
     std::string nodePath = schema_node.parent().path();
     std::string ruleName = getFullRuleName(schema_node.name());
@@ -2787,7 +2787,7 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter &           schema_node,
     }
 
     std::vector<int> selectionChildrenFound(selection.size(), 0);
-    const typename SchemaAdapter::Collection &children =
+    const typename SchemaAdapter::Collection& children =
         schema_node.non_decorative_children();
 
     for (int j = 0; j < children.size(); j++)
@@ -2843,7 +2843,7 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter &           schema_node,
     {
         if (selectionChildrenFound[i] > 1)
         {
-            const typename SchemaAdapter::Collection &choices = children;
+            const typename SchemaAdapter::Collection& choices = children;
             std::string                               childNames;
 
             for (int js = 0; js < choices.size(); js++)
@@ -2861,7 +2861,7 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter &           schema_node,
         }
         else if (selectionChildrenFound[i] < 1)
         {
-            const typename SchemaAdapter::Collection &choices = children;
+            const typename SchemaAdapter::Collection& choices = children;
             std::string                               childNames;
 
             for (int js = 0; js < choices.size(); js++)
@@ -2882,9 +2882,9 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateChildAtLeastOne(SchemaAdapter &           schema_node,
-                                   InputAdapter &            input_node,
-                                   std::vector<std::string> &errors)
+bool HIVE::validateChildAtLeastOne(SchemaAdapter&            schema_node,
+                                   InputAdapter&             input_node,
+                                   std::vector<std::string>& errors)
 {
     std::string nodePath = schema_node.parent().path();
     std::string ruleName = getFullRuleName(schema_node.name());
@@ -2898,7 +2898,7 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter &           schema_node,
     }
 
     std::vector<int> selectedChildCounts(selection.size(), 0);
-    const typename SchemaAdapter::Collection &children =
+    const typename SchemaAdapter::Collection& children =
         schema_node.non_decorative_children();
 
     for (int j = 0; j < children.size(); j++)
@@ -2959,7 +2959,7 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter &           schema_node,
             continue;
         if (selectedChildCounts[i] < 1)
         {
-            const typename SchemaAdapter::Collection &choices = children;
+            const typename SchemaAdapter::Collection& choices = children;
             std::string                               childNames;
 
             for (int js = 0; js < choices.size(); js++)
@@ -2980,9 +2980,9 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateChildCountEqual(SchemaAdapter &           schema_node,
-                                   InputAdapter &            input_node,
-                                   std::vector<std::string> &errors)
+bool HIVE::validateChildCountEqual(SchemaAdapter&            schema_node,
+                                   InputAdapter&             input_node,
+                                   std::vector<std::string>& errors)
 {
     std::string nodePath = schema_node.parent().path();
     std::string ruleName = getFullRuleName(schema_node.name());
@@ -3013,7 +3013,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter &           schema_node,
     for (size_t i = 0; i < selection.size(); i++)
     {
         int                                       tallyChildCount = 0;
-        const typename SchemaAdapter::Collection &children =
+        const typename SchemaAdapter::Collection& children =
             schema_node.non_decorative_children();
         bool gotTally   = false;
         bool foundError = false;
@@ -3037,7 +3037,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter &           schema_node,
                 ((ruleId == "EvenNone") ||
                  ((ruleId == "IfExists") && (localSumCount != 0))))
             {
-                const typename SchemaAdapter::Collection &choices =
+                const typename SchemaAdapter::Collection& choices =
                     schema_node.non_decorative_children();
                 std::string childNames;
 
@@ -3068,9 +3068,9 @@ bool HIVE::validateChildCountEqual(SchemaAdapter &           schema_node,
 }
 
 template<class SchemaAdapter, class InputAdapter>
-bool HIVE::validateChildUniqueness(SchemaAdapter &           schema_node,
-                                   InputAdapter &            input_node,
-                                   std::vector<std::string> &errors)
+bool HIVE::validateChildUniqueness(SchemaAdapter&            schema_node,
+                                   InputAdapter&             input_node,
+                                   std::vector<std::string>& errors)
 {
     std::string nodePath   = schema_node.parent().path();
     std::string ruleName   = getFullRuleName(schema_node.name());
@@ -3113,7 +3113,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter &           schema_node,
     inputSelector.evaluate(input_node, selection);
 
     // gather all of the lookup paths for this rule
-    const typename SchemaAdapter::Collection &lookupPaths =
+    const typename SchemaAdapter::Collection& lookupPaths =
         schema_node.non_decorative_children();
 
     // loop over all of the nodes for which this rule applies

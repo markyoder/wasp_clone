@@ -20,15 +20,15 @@ class WASP_PUBLIC StringPool
   public:
     typedef token_index_type_size index_type_size;
     StringPool();
-    StringPool(const StringPool<index_type_size> &orig);
+    StringPool(const StringPool<index_type_size>& orig);
     ~StringPool();
     // acquire the string data for the token at the given index
-    const char *data(index_type_size index) const;
+    const char* data(index_type_size index) const;
     /**
      * @brief push push a new string into the pool
      * @param str the new string to place into the pool
      */
-    void push(const char *str);
+    void push(const char* str);
     /**
      * @brief pop remove the last data inserted
      */
@@ -53,7 +53,7 @@ class WASP_PUBLIC StringPool
      * NOTE : current implementation only allows for setting the str
      * for the last inserted string.
      */
-    bool set(index_type_size data_index, const char *str);
+    bool set(index_type_size data_index, const char* str);
 
   private:
     /**

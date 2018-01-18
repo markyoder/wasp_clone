@@ -287,7 +287,7 @@ TEST(TokenPool, multiple_line_column)
         std::size_t last_line;
         std::size_t last_column;
 
-        Info(const std::string &d,
+        Info(const std::string& d,
              char               t,
              size_t             o,
              size_t             l,
@@ -324,14 +324,14 @@ TEST(TokenPool, multiple_line_column)
     for (std::size_t i = 0, ie = info.size(); i < ie; i++)
     {
         SCOPED_TRACE(i);
-        const auto &line = info[i];
+        const auto& line = info[i];
 
         for (std::size_t j = 0, je = line.size(); j < je; j++, index++)
         {
             SCOPED_TRACE(j);
 
             // current info
-            const auto &ci = line[j];
+            const auto& ci = line[j];
             tp.push(ci.data.c_str(), ci.type, ci.offset);
 
             ASSERT_EQ(index + 1, tp.size());

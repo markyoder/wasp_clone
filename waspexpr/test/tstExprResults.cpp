@@ -11,7 +11,7 @@ struct ScalarExprTest
 {
     std::string tst;
     T           expected;
-    ScalarExprTest(const std::string &tst, T expected)
+    ScalarExprTest(const std::string& tst, T expected)
         : tst(tst), expected(expected)
     {
     }
@@ -23,7 +23,7 @@ struct VariableExprTest
     V1          v1;
     V2          v2;
     T           expected;
-    VariableExprTest(const std::string &tst, V1 v1, V2 v2, T expected)
+    VariableExprTest(const std::string& tst, V1 v1, V2 v2, T expected)
         : tst(tst), v1(v1), v2(v2), expected(expected)
     {
     }
@@ -37,7 +37,7 @@ TEST(ExprInterpreter, defined_variables)
         {"defined(ted)", false},
     };
     ASSERT_FALSE(tests.empty());
-    for (auto &t : tests)
+    for (auto& t : tests)
     {
         SCOPED_TRACE(t.tst);
         std::stringstream input;
@@ -90,7 +90,7 @@ TEST(ExprInterpreter, test_div_string)
         {"'10.5'/1.0", 10.5},
     };
     ASSERT_FALSE(tests.empty());
-    for (auto &t : tests)
+    for (auto& t : tests)
     {
         SCOPED_TRACE(t.tst);
         std::stringstream input;
@@ -170,7 +170,7 @@ TEST(ExprInterpreter, vector_quoted_name)
         {"if(3.gt.size('my data')-1,size('my data')-1,99)", 2},
         {"if(2.gt.size('my data')-1,size('my data')-1,99)", 99}};
     ASSERT_FALSE(tests.empty());
-    for (auto &t : tests)
+    for (auto& t : tests)
     {
         SCOPED_TRACE(t.tst);
         std::stringstream input;
@@ -210,7 +210,7 @@ TEST(ExprInterpreter, vector_int_variables)
         {"if(3.gt.size(data)-1,size(data)-1,99)", 2},
         {"if(2.gt.size(data)-1,size(data)-1,99)", 99}};
     ASSERT_FALSE(tests.empty());
-    for (auto &t : tests)
+    for (auto& t : tests)
     {
         SCOPED_TRACE(t.tst);
         std::stringstream input;
@@ -240,7 +240,7 @@ TEST(ExprInterpreter, vector_real_variables)
         {"data[2]=7.8", 7.8}, {"data[2]=7.0", 7}, {"data[0]=pi", 3.14159265359},
     };
     ASSERT_FALSE(tests.empty());
-    for (auto &t : tests)
+    for (auto& t : tests)
     {
         SCOPED_TRACE(t.tst);
         std::stringstream input;
@@ -308,7 +308,7 @@ TEST(ExprInterpreter, default_variables)
         std::vector<ScalarExprTest<double>> tests = {{"pi", 3.14159265359},
                                                      {"e", 2.718281828459}};
         ASSERT_FALSE(tests.empty());
-        for (auto &t : tests)
+        for (auto& t : tests)
         {
             SCOPED_TRACE(t.tst);
             std::stringstream input;
@@ -330,7 +330,7 @@ TEST(ExprInterpreter, default_variables)
     {
         std::vector<ScalarExprTest<std::string>> tests = {{"nl", "\n"}};
         ASSERT_FALSE(tests.empty());
-        for (auto &t : tests)
+        for (auto& t : tests)
         {
             SCOPED_TRACE(t.tst);
             std::stringstream input;
@@ -426,7 +426,7 @@ TEST(ExprInterpreter, default_real_functions)
         {"max(1.1, 1.1)", 1.1},
     };
     ASSERT_FALSE(tests.empty());
-    for (auto &t : tests)
+    for (auto& t : tests)
     {
         SCOPED_TRACE(t.tst);
         std::stringstream input;
@@ -454,7 +454,7 @@ TEST(ExprInterpreter, default_integer_functions)
         {"mod(12,3)", 0}, {"mod(12,5)", 2},
     };
     ASSERT_FALSE(tests.empty());
-    for (auto &t : tests)
+    for (auto& t : tests)
     {
         SCOPED_TRACE(t.tst);
         std::stringstream input;
@@ -618,7 +618,7 @@ TEST(ExprInterpreter, scalar_boolean)
     };
 
     ASSERT_FALSE(tests.empty());
-    for (auto &t : tests)
+    for (auto& t : tests)
     {
         SCOPED_TRACE(t.tst);
         std::stringstream input;
@@ -720,7 +720,7 @@ TEST(ExprInterpreter, integer_variable_boolean)
         {"x==y || y==y", 1, 2, true}};
 
     ASSERT_FALSE(tests.empty());
-    for (auto &t : tests)
+    for (auto& t : tests)
     {
         SCOPED_TRACE(t.tst);
         std::stringstream input;
@@ -798,7 +798,7 @@ TEST(ExprInterpreter, real_variable_boolean)
         {"x || y", -0.33, -3.33, true},
         {"x && y", -0.33, -3.33, true}};
     ASSERT_FALSE(tests.empty());
-    for (auto &t : tests)
+    for (auto& t : tests)
     {
         SCOPED_TRACE(t.tst);
         std::stringstream input;
@@ -879,7 +879,7 @@ TEST(ExprInterpreter, mixed_numeric_variable_boolean)
         ,
         {"x/2.0 == y", 1, 0.5, true}};
     ASSERT_FALSE(tests.empty());
-    for (auto &t : tests)
+    for (auto& t : tests)
     {
         SCOPED_TRACE(t.tst);
         std::stringstream input;
@@ -985,9 +985,9 @@ struct ScalarExprFmtTest
     std::string tst;
     std::string expected;
     std::string fmt;
-    ScalarExprFmtTest(const std::string &tst,
-                      const std::string &expected,
-                      const std::string &fmt)
+    ScalarExprFmtTest(const std::string& tst,
+                      const std::string& expected,
+                      const std::string& fmt)
         : tst(tst), expected(expected), fmt(fmt)
     {
     }
@@ -1005,7 +1005,7 @@ TEST(ExprInterpreter, format)
         {"'fred'", "result=fred    ", "result=%-8s"},
     };
     ASSERT_FALSE(tests.empty());
-    for (auto &t : tests)
+    for (auto& t : tests)
     {
         SCOPED_TRACE(t.tst);
         std::stringstream input;
@@ -1040,7 +1040,7 @@ TEST(ExprInterpreter, format_statements)
         {"fmt('fred','result=%8s')", 0, "result=    fred", true},
         {"fmt('fred','result=%-8s')", 0, "result=fred    ", true}};
     ASSERT_FALSE(tests.empty());
-    for (auto &t : tests)
+    for (auto& t : tests)
     {
         SCOPED_TRACE(t.tst);
         std::stringstream input;

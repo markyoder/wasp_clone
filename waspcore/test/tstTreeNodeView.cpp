@@ -121,7 +121,7 @@ TEST(TreeNodeView, child_by_name)
             // t iterates the token_data value information
             for (size_t t = 4, i = 0; i < children.size(); ++i, ++t)
             {
-                const auto &child_view = children[i];
+                const auto& child_view = children[i];
                 std::string child_name = child_view.name();
                 ASSERT_EQ(expected_child_name, "value");
                 ASSERT_EQ(node_name[t], child_name);
@@ -130,7 +130,7 @@ TEST(TreeNodeView, child_by_name)
         }
         {  // first child
             const std::string child_name = "value";
-            const auto &child_view = data_view.first_child_by_name(child_name);
+            const auto& child_view = data_view.first_child_by_name(child_name);
             ASSERT_FALSE(child_view.is_null());
             std::string child_data = child_view.data();
             ASSERT_EQ("234", child_data);

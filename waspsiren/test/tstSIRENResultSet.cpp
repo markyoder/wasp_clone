@@ -9,12 +9,12 @@ using namespace wasp;
 class FakeAdapter
 {
   public:
-    FakeAdapter(const std::string &name = "fake",
-                const std::string &data = "adapter")
+    FakeAdapter(const std::string& name = "fake",
+                const std::string& data = "adapter")
         : name(name), data(data)
     {
     }
-    FakeAdapter(const FakeAdapter &orig)
+    FakeAdapter(const FakeAdapter& orig)
         : name(orig.name), data(orig.data), children(orig.children)
     {
     }

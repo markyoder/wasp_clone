@@ -33,7 +33,7 @@ class WASP_PUBLIC Context
         UNDEFINED
     };
     Context() {}
-    Context(const Context &orig) {}
+    Context(const Context& orig) {}
     virtual ~Context() { clear(); }
 
     /**
@@ -43,22 +43,22 @@ class WASP_PUBLIC Context
      * 'pi' - pi ~3.14 or (2 * std::acos(0.0))
      * 'e' - 2.7182818284590452353602874713527
      */
-    Context &add_default_variables();
+    Context& add_default_variables();
     /**
      * @brief add_default_variables add set of default functions
      * @return this Context with addition of functions
      * Default functions are :
      * sin(x) - the sine is a trigonometric function of an angle (radians)
      */
-    Context &add_default_functions();
+    Context& add_default_functions();
     /**
      * @brief clear deletes all associated variables and function
      */
     void clear();
 
-    virtual Context::Type type(const std::string &name) const
+    virtual Context::Type type(const std::string& name) const
     {
-        auto *v = variable(name);
+        auto* v = variable(name);
         if (v == nullptr)
             return Context::Type::UNDEFINED;
         return v->type();
@@ -72,153 +72,153 @@ class WASP_PUBLIC Context
      * This interface allows subclasses of Context to work with heterogenously
      * typed elements
      */
-    virtual Context::Type type(const std::string &name, size_t index) const
+    virtual Context::Type type(const std::string& name, size_t index) const
     {
-        auto *v = variable(name);
+        auto* v = variable(name);
         if (v == nullptr)
             return Context::Type::UNDEFINED;
         return v->type();  // base vectors are always homogeneously typed
     }
 
-    virtual int size(const std::string &name) const
+    virtual int size(const std::string& name) const
     {
-        auto *v = variable(name);
+        auto* v = variable(name);
         if (v)
             return v->size();
         return 0;
     }
 
     virtual bool
-    boolean(const std::string &name, size_t index, bool *ok = nullptr) const
+    boolean(const std::string& name, size_t index, bool* ok = nullptr) const
     {
-        auto *var = variable(name);
+        auto* var = variable(name);
         wasp_require(var);
         return var->boolean(index, ok);
     }
-    virtual bool boolean(const std::string &name, bool *ok = nullptr) const
+    virtual bool boolean(const std::string& name, bool* ok = nullptr) const
     {
-        auto *var = variable(name);
+        auto* var = variable(name);
         wasp_require(var);
         return var->boolean(ok);
     }
     virtual int
-    integer(const std::string &name, size_t index, bool *ok = nullptr) const
+    integer(const std::string& name, size_t index, bool* ok = nullptr) const
     {
-        auto *var = variable(name);
+        auto* var = variable(name);
         wasp_require(var);
         return var->integer(index, ok);
     }
-    virtual int integer(const std::string &name, bool *ok = nullptr) const
+    virtual int integer(const std::string& name, bool* ok = nullptr) const
     {
-        auto *var = variable(name);
+        auto* var = variable(name);
         wasp_require(var);
         return var->integer(ok);
     }
     virtual double
-    real(const std::string &name, size_t index, bool *ok = nullptr) const
+    real(const std::string& name, size_t index, bool* ok = nullptr) const
     {
-        auto *var = variable(name);
+        auto* var = variable(name);
         wasp_require(var);
         return var->real(index, ok);
     }
-    virtual double real(const std::string &name, bool *ok = nullptr) const
+    virtual double real(const std::string& name, bool* ok = nullptr) const
     {
-        auto *var = variable(name);
+        auto* var = variable(name);
         wasp_require(var);
         return var->real(ok);
     }
     virtual std::string
-    string(const std::string &name, size_t index, bool *ok = nullptr) const
+    string(const std::string& name, size_t index, bool* ok = nullptr) const
     {
-        auto *var = variable(name);
+        auto* var = variable(name);
         wasp_require(var);
         return var->string(index, ok);
     }
-    virtual std::string string(const std::string &name,
-                               bool *             ok = nullptr) const
+    virtual std::string string(const std::string& name,
+                               bool*              ok = nullptr) const
     {
-        auto *var = variable(name);
+        auto* var = variable(name);
         wasp_require(var);
         return var->string(ok);
     }
 
-    virtual bool store(const std::string &name, size_t index, int v) const
+    virtual bool store(const std::string& name, size_t index, int v) const
     {
-        auto *var = variable(name);
+        auto* var = variable(name);
         wasp_require(var);
         return var->store(index, v);
     }
-    virtual bool store(const std::string &name, size_t index, double v) const
+    virtual bool store(const std::string& name, size_t index, double v) const
     {
-        auto *var = variable(name);
+        auto* var = variable(name);
         wasp_require(var);
         return var->store(index, v);
     }
-    virtual bool store(const std::string &name, size_t index, bool v) const
+    virtual bool store(const std::string& name, size_t index, bool v) const
     {
-        auto *var = variable(name);
+        auto* var = variable(name);
         wasp_require(var);
         return var->store(index, v);
     }
     virtual bool
-    store(const std::string &name, size_t index, const std::string &v) const
+    store(const std::string& name, size_t index, const std::string& v) const
     {
-        auto *var = variable(name);
+        auto* var = variable(name);
         wasp_require(var);
         return var->store(index, v);
     }
-    virtual bool exists(const std::string &name) const
+    virtual bool exists(const std::string& name) const
     {
         // TODO - ensure it is not nullptr
         return m_variables.find(name) != m_variables.end();
     }
-    bool store_ref(const std::string &name, bool &v)
+    bool store_ref(const std::string& name, bool& v)
     {
         return store_ref<VarRefBool>(name, v);
     }
-    bool store_ref(const std::string &name, int &v)
+    bool store_ref(const std::string& name, int& v)
     {
         return store_ref<VarRefInt>(name, v);
     }
-    bool store_ref(const std::string &name, double &v)
+    bool store_ref(const std::string& name, double& v)
     {
         return store_ref<VarRefReal>(name, v);
     }
-    bool store_ref(const std::string &name, std::string &v)
+    bool store_ref(const std::string& name, std::string& v)
     {
         return store_ref<VarRefString>(name, v);
     }
     template<typename DT>
-    bool store_ref(const std::string &name, std::vector<DT> &v)
+    bool store_ref(const std::string& name, std::vector<DT>& v)
     {
         return store_ref<VarRefVector<DT>>(name, v);
     }
-    virtual bool store(const std::string &name, const bool &v)
+    virtual bool store(const std::string& name, const bool& v)
     {
         return store_ref<VarBool>(name, v);
     }
-    virtual bool store(const std::string &name, const int &v)
+    virtual bool store(const std::string& name, const int& v)
     {
         return store_ref<VarInt>(name, v);
     }
-    virtual bool store(const std::string &name, const double &v)
+    virtual bool store(const std::string& name, const double& v)
     {
         return store_ref<VarReal>(name, v);
     }
-    virtual bool store(const std::string &name, const char *v)
+    virtual bool store(const std::string& name, const char* v)
     {
         return store_ref<VarString>(name, v);
     }
-    virtual bool store(const std::string &name, const std::string &v)
+    virtual bool store(const std::string& name, const std::string& v)
     {
         return store_ref<VarString>(name, v);
     }
     template<typename DT>
-    bool store(const std::string &name, const std::vector<DT> &v)
+    bool store(const std::string& name, const std::vector<DT>& v)
     {
         return store_ref<VarVector<DT>>(name, v);
     }
-    bool function_exists(const std::string &name) const;
+    bool function_exists(const std::string& name) const;
 
     /**
      * @brief add_function adds the given function to this context
@@ -227,14 +227,14 @@ class WASP_PUBLIC Context
      * @return this context with addition of function
      * If the function f already exists the
      */
-    Context &add_function(const std::string &name, class Function *f)
+    Context& add_function(const std::string& name, class Function* f)
     {
         wasp_require(function_exists(name) == false);
         m_functions[name] = f;
         return *this;
     }
 
-    class Function *function(const std::string &name) const
+    class Function* function(const std::string& name) const
     {
         auto itr = m_functions.find(name);
         if (itr == m_functions.end())
@@ -252,49 +252,49 @@ class WASP_PUBLIC Context
         virtual Context::Type type() const = 0;
         virtual int           size() const { return 0; }
         virtual ~Variable() {}
-        virtual int integer(bool *ok = nullptr) const
+        virtual int integer(bool* ok = nullptr) const
         {
             if (ok != nullptr)
                 *ok = false;
             wasp_not_implemented("acquiring integer value");
         }
-        virtual double real(bool *ok = nullptr) const
+        virtual double real(bool* ok = nullptr) const
         {
             if (ok != nullptr)
                 *ok = false;
             wasp_not_implemented("acquiring double precision value");
         }
-        virtual bool boolean(bool *ok = nullptr) const
+        virtual bool boolean(bool* ok = nullptr) const
         {
             if (ok != nullptr)
                 *ok = false;
             wasp_not_implemented("acquiring boolean value");
         }
-        virtual std::string string(bool *ok = nullptr) const
+        virtual std::string string(bool* ok = nullptr) const
         {
             if (ok != nullptr)
                 *ok = false;
             wasp_not_implemented("acquiring string value");
         }
-        virtual int integer(size_t i, bool *ok = nullptr) const
+        virtual int integer(size_t i, bool* ok = nullptr) const
         {
             if (ok != nullptr)
                 *ok = false;
             wasp_not_implemented("acquiring integer value at index");
         }
-        virtual double real(size_t i, bool *ok = nullptr) const
+        virtual double real(size_t i, bool* ok = nullptr) const
         {
             if (ok != nullptr)
                 *ok = false;
             wasp_not_implemented("acquiring double precision value at index");
         }
-        virtual bool boolean(size_t i, bool *ok = nullptr) const
+        virtual bool boolean(size_t i, bool* ok = nullptr) const
         {
             if (ok != nullptr)
                 *ok = false;
             wasp_not_implemented("acquiring boolean value at index");
         }
-        virtual std::string string(size_t i, bool *ok = nullptr) const
+        virtual std::string string(size_t i, bool* ok = nullptr) const
         {
             if (ok != nullptr)
                 *ok = false;
@@ -303,36 +303,36 @@ class WASP_PUBLIC Context
         virtual bool store(bool v) { return false; }
         virtual bool store(int v) { return false; }
         virtual bool store(double v) { return false; }
-        virtual bool store(const std::string &v) { return false; }
+        virtual bool store(const std::string& v) { return false; }
         virtual bool store(size_t i, bool v) { return false; }
         virtual bool store(size_t i, int v) { return false; }
         virtual bool store(size_t i, double v) { return false; }
-        virtual bool store(size_t i, const std::string &v) { return false; }
+        virtual bool store(size_t i, const std::string& v) { return false; }
     };
     class VarRefInt : public Variable
     {
       public:
-        VarRefInt(int &i) : v(i) {}
+        VarRefInt(int& i) : v(i) {}
         Context::Type  type() const { return Context::Type::INTEGER; }
-        bool boolean(bool *ok) const
+        bool boolean(bool* ok) const
         {
             if (ok)
                 *ok = true;
             return bool(v);
         }
-        int integer(bool *ok) const
+        int integer(bool* ok) const
         {
             if (ok)
                 *ok = true;
             return v;
         }
-        double real(bool *ok) const
+        double real(bool* ok) const
         {
             if (ok)
                 *ok = true;
             return double(v);
         }
-        std::string string(bool *ok) const { return to_string(v, ok); }
+        std::string string(bool* ok) const { return to_string(v, ok); }
 
         bool store(bool v)
         {
@@ -351,7 +351,7 @@ class WASP_PUBLIC Context
         }
 
       private:
-        int &v;
+        int& v;
     };
     class VarInt : public VarRefInt
     {
@@ -365,27 +365,27 @@ class WASP_PUBLIC Context
     class VarRefBool : public Variable
     {
       public:
-        VarRefBool(bool &b) : v(b) {}
+        VarRefBool(bool& b) : v(b) {}
         Context::Type    type() const { return Context::Type::BOOLEAN; }
-        bool boolean(bool *ok) const
+        bool boolean(bool* ok) const
         {
             if (ok)
                 *ok = true;
             return bool(v);
         }
-        int integer(bool *ok) const
+        int integer(bool* ok) const
         {
             if (ok)
                 *ok = true;
             return v;
         }
-        double real(bool *ok) const
+        double real(bool* ok) const
         {
             if (ok)
                 *ok = true;
             return double(v);
         }
-        std::string string(bool *ok) const { return to_string(v, ok); }
+        std::string string(bool* ok) const { return to_string(v, ok); }
 
         bool store(bool v)
         {
@@ -404,7 +404,7 @@ class WASP_PUBLIC Context
         }
 
       private:
-        bool &v;
+        bool& v;
     };
     class VarBool : public VarRefBool
     {
@@ -417,27 +417,27 @@ class WASP_PUBLIC Context
     class VarRefReal : public Variable
     {
       public:
-        VarRefReal(double &d) : v(d) {}
+        VarRefReal(double& d) : v(d) {}
         Context::Type      type() const { return Context::Type::REAL; }
-        bool boolean(bool *ok) const
+        bool boolean(bool* ok) const
         {
             if (ok)
                 *ok = true;
             return bool(v);
         }
-        int integer(bool *ok) const
+        int integer(bool* ok) const
         {
             if (ok)
                 *ok = true;
             return int(v);
         }
-        double real(bool *ok) const
+        double real(bool* ok) const
         {
             if (ok)
                 *ok = true;
             return double(v);
         }
-        std::string string(bool *ok) const { return to_string(v, ok); }
+        std::string string(bool* ok) const { return to_string(v, ok); }
 
         bool store(bool v)
         {
@@ -456,7 +456,7 @@ class WASP_PUBLIC Context
         }
 
       private:
-        double &v;
+        double& v;
     };
     class VarReal : public VarRefReal
     {
@@ -469,9 +469,9 @@ class WASP_PUBLIC Context
     class VarRefString : public Variable
     {
       public:
-        VarRefString(std::string &s) : v(s) {}
+        VarRefString(std::string& s) : v(s) {}
         Context::Type             type() const { return Context::Type::STRING; }
-        std::string string(bool *ok) const
+        std::string string(bool* ok) const
         {
             if (ok)
                 *ok = true;
@@ -496,19 +496,19 @@ class WASP_PUBLIC Context
             this->v = to_string(v, &k);
             return k;
         }
-        bool store(const std::string &v)
+        bool store(const std::string& v)
         {
             this->v = v;
             return true;
         }
 
       private:
-        std::string &v;
+        std::string& v;
     };
     class VarString : public VarRefString
     {
       public:
-        VarString(const std::string &s) : VarRefString(v), v(s) {}
+        VarString(const std::string& s) : VarRefString(v), v(s) {}
 
       private:
         std::string v;
@@ -517,50 +517,50 @@ class WASP_PUBLIC Context
     class VarRefVector : public Variable
     {
       public:
-        VarRefVector(std::vector<T> &v) : v(v) {}
+        VarRefVector(std::vector<T>& v) : v(v) {}
         int                          size() const { return v.size(); }
         Context::Type                type() const { return type(v); }
-        Context::Type                type(const std::vector<int> &) const
+        Context::Type                type(const std::vector<int>&) const
         {
             return Context::Type::INTEGER;
         }
-        Context::Type type(const std::vector<double> &) const
+        Context::Type type(const std::vector<double>&) const
         {
             return Context::Type::REAL;
         }
-        Context::Type type(const std::vector<std::string> &) const
+        Context::Type type(const std::vector<std::string>&) const
         {
             return Context::Type::STRING;
         }
 
-        int integer(size_t i, bool *ok) const
+        int integer(size_t i, bool* ok) const
         {
             if (ok)
                 *ok = true;
             return get(i, v);
         }
-        double real(size_t i, bool *ok) const
+        double real(size_t i, bool* ok) const
         {
             if (ok)
                 *ok = true;
             return get(i, v);
         }
-        std::string string(size_t i, bool *ok) const
+        std::string string(size_t i, bool* ok) const
         {
             return to_string(get(i, v), ok);
         }
 
-        int get(size_t i, const std::vector<int> &d) const
+        int get(size_t i, const std::vector<int>& d) const
         {
             wasp_require(i < d.size());
             return d[i];
         }
-        double get(size_t i, const std::vector<double> &d) const
+        double get(size_t i, const std::vector<double>& d) const
         {
             wasp_require(i < d.size());
             return d[i];
         }
-        std::string get(size_t i, const std::vector<std::string> &d) const
+        std::string get(size_t i, const std::vector<std::string>& d) const
         {
             wasp_require(i < d.size());
             return d[i];
@@ -570,7 +570,7 @@ class WASP_PUBLIC Context
         //            void store(size_t i, const std::string& vv){
         //                store_t(i,vv);
         //            }
-        bool store_t(size_t i, const T &vv)
+        bool store_t(size_t i, const T& vv)
         {
             if (this->v.size() < i)
                 this->v.resize(i + 1);
@@ -579,23 +579,23 @@ class WASP_PUBLIC Context
         }
 
       private:
-        std::vector<T> &v;
+        std::vector<T>& v;
     };
     template<class T>
     class VarVector : public VarRefVector<T>
     {
       public:
-        VarVector(const T &d) : VarRefVector<T>(v), v(d) {}
+        VarVector(const T& d) : VarRefVector<T>(v), v(d) {}
         Context::Type      type() const { return type(v); }
-        Context::Type      type(const std::vector<int> &)
+        Context::Type      type(const std::vector<int>&)
         {
             return Context::Type::INTEGER;
         }
-        Context::Type type(const std::vector<double> &)
+        Context::Type type(const std::vector<double>&)
         {
             return Context::Type::REAL;
         }
-        Context::Type type(const std::vector<std::string> &)
+        Context::Type type(const std::vector<std::string>&)
         {
             return Context::Type::STRING;
         }
@@ -607,31 +607,31 @@ class WASP_PUBLIC Context
   private:
     template<class T, class V>
     typename std::enable_if<std::is_pod<V>::value, bool>::type
-    store_ref(const std::string &name, V &v)
+    store_ref(const std::string& name, V& v)
     {
-        auto *existing_var = variable(name);
+        auto* existing_var = variable(name);
         if (existing_var != nullptr)
         {  // check if new variable is compatible
             return existing_var->store(v);
         }
-        auto *ptr         = new T(v);
+        auto* ptr         = new T(v);
         m_variables[name] = ptr;
         return ptr != nullptr;
     }
     template<class T, class V>
     typename std::enable_if<!std::is_pod<V>::value, bool>::type
-    store_ref(const std::string &name, V &v)
+    store_ref(const std::string& name, V& v)
     {
-        auto *existing_var = variable(name);
+        auto* existing_var = variable(name);
         if (existing_var != nullptr)
         {
             return false;
         }  // cannot assign complex types (arrays, etc)
-        auto *ptr         = new T(v);
+        auto* ptr         = new T(v);
         m_variables[name] = ptr;
         return ptr != nullptr;
     }
-    Variable *variable(const std::string &name) const
+    Variable* variable(const std::string& name) const
     {
         auto itr = m_variables.find(name);
         if (itr == m_variables.end())
@@ -639,8 +639,8 @@ class WASP_PUBLIC Context
         return itr->second;
     }
     // variables
-    std::map<std::string, Variable *>       m_variables;
-    std::map<std::string, class Function *> m_functions;
+    std::map<std::string, Variable*>       m_variables;
+    std::map<std::string, class Function*> m_functions;
 
 };  // end of class Context
 
@@ -651,17 +651,17 @@ class WASP_PUBLIC Result
 {
   public:
     Result() : m_type(Context::Type::UNDEFINED) {}
-    Result(const Result &orig)
+    Result(const Result& orig)
         : m_type(orig.m_type), m_value(orig.m_value), m_string(orig.m_string)
     {
     }
     ~Result() {}
 
     template<class T>
-    Result &evaluate(const T &tree_view, Context &context);
-    bool format(std::ostream &out) const;
+    Result& evaluate(const T& tree_view, Context& context);
+    bool format(std::ostream& out) const;
     bool
-    format(std::ostream &out, const std::string &fmt, std::ostream &err) const;
+    format(std::ostream& out, const std::string& fmt, std::ostream& err) const;
     std::string as_string() const
     {
         if (is_bool())
@@ -679,10 +679,10 @@ class WASP_PUBLIC Result
 
   private:
     template<class TV>
-    bool binary_recurse(const TV &left,
-                        Result &  right_op,
-                        const TV &right,
-                        Context & context)
+    bool binary_recurse(const TV& left,
+                        Result&   right_op,
+                        const TV& right,
+                        Context&  context)
     {
         // evaluate this result as the left operation
         wasp_require(!left.is_null());
@@ -702,7 +702,7 @@ class WASP_PUBLIC Result
         return true;
     }
 
-    bool and_expr(const Result &a)
+    bool and_expr(const Result& a)
     {
         if (is_number() && a.is_number())
         {
@@ -720,7 +720,7 @@ class WASP_PUBLIC Result
         m_type = Context::Type::BOOLEAN;
         return m_value.m_bool;
     }
-    bool or_expr(const Result &a)
+    bool or_expr(const Result& a)
     {
         if (is_number() && a.is_number())
         {
@@ -738,13 +738,13 @@ class WASP_PUBLIC Result
         m_type = Context::Type::BOOLEAN;
         return m_value.m_bool;
     }
-    bool not_equal(const Result &a)
+    bool not_equal(const Result& a)
     {
         m_value.m_bool = !equal(a);
         m_type         = Context::Type::BOOLEAN;
         return m_value.m_bool;
     }
-    bool equal(const Result &a)
+    bool equal(const Result& a)
     {
         if (is_number() && a.is_number())
         {
@@ -766,7 +766,7 @@ class WASP_PUBLIC Result
         m_type = Context::Type::BOOLEAN;
         return m_value.m_bool;
     }
-    bool less(const Result &a)
+    bool less(const Result& a)
     {
         if (is_number() && a.is_number())
         {
@@ -783,7 +783,7 @@ class WASP_PUBLIC Result
 
         return false;
     }
-    bool less_or_equal(const Result &a)
+    bool less_or_equal(const Result& a)
     {
         if (is_number() && a.is_number())
         {
@@ -799,7 +799,7 @@ class WASP_PUBLIC Result
         }
         return false;
     }
-    bool greater(const Result &a)
+    bool greater(const Result& a)
     {
         if (is_number() && a.is_number())
         {
@@ -815,7 +815,7 @@ class WASP_PUBLIC Result
         }
         return false;
     }
-    bool greater_or_equal(const Result &a)
+    bool greater_or_equal(const Result& a)
     {
         if (is_number() && a.is_number())
         {
@@ -831,7 +831,7 @@ class WASP_PUBLIC Result
         }
         return false;
     }
-    Result &pow(const Result &a)
+    Result& pow(const Result& a)
     {
         if (is_integer())
         {
@@ -897,7 +897,7 @@ class WASP_PUBLIC Result
         return *this;
     }
 
-    Result &plus(const Result &a)
+    Result& plus(const Result& a)
     {
         if (is_integer())
         {
@@ -963,7 +963,7 @@ class WASP_PUBLIC Result
         return *this;
     }
 
-    Result &minus(const Result &a)
+    Result& minus(const Result& a)
     {
         if (is_integer())
         {
@@ -1028,7 +1028,7 @@ class WASP_PUBLIC Result
         }
         return *this;
     }
-    Result &div(const Result &a)
+    Result& div(const Result& a)
     {
         if (is_integer())
         {
@@ -1114,7 +1114,7 @@ class WASP_PUBLIC Result
         }
         return *this;
     }
-    Result &mult(const Result &a)
+    Result& mult(const Result& a)
     {
         if (is_integer())
         {
@@ -1180,7 +1180,7 @@ class WASP_PUBLIC Result
 
         return *this;
     }
-    Result &unary_not()
+    Result& unary_not()
     {
         if (is_bool())
         {
@@ -1205,7 +1205,7 @@ class WASP_PUBLIC Result
 
         return *this;
     }
-    Result &unary_minus()
+    Result& unary_minus()
     {
         if (is_integer())
         {
@@ -1240,7 +1240,7 @@ class WASP_PUBLIC Result
         }
         return std::numeric_limits<double>::quiet_NaN();
     }
-    double to_real(bool *ok = nullptr) const
+    double to_real(bool* ok = nullptr) const
     {
         double result = 1.0;
         if (is_string())
@@ -1278,11 +1278,11 @@ class WASP_PUBLIC Result
         }
         return false;
     }
-    const std::string &string() const { return (m_string); }
+    const std::string& string() const { return (m_string); }
 
-    std::string &string() { return (m_string); }
+    std::string& string() { return (m_string); }
 
-    std::string to_string(bool *ok = nullptr) const
+    std::string to_string(bool* ok = nullptr) const
     {
         if (ok)
             *ok = true;
@@ -1330,7 +1330,7 @@ class WASP_PUBLIC Result
     std::string m_string;
 
     template<class T>
-    std::string error_msg(const T &tree_view, const std::string &msg_str)
+    std::string error_msg(const T& tree_view, const std::string& msg_str)
     {
         std::stringstream msg;
         msg << "***Error : " << tree_view.name();
@@ -1355,28 +1355,28 @@ class WASP_PUBLIC Function
     virtual Context::Type       type() const = 0;
     virtual ~Function() {}
     virtual int
-    integer(const Args &args, std::ostream &err, bool *ok = nullptr) const
+    integer(const Args& args, std::ostream& err, bool* ok = nullptr) const
     {
         if (ok != nullptr)
             *ok = false;
         wasp_not_implemented("Function::integer");
     }
     virtual double
-    real(const Args &args, std::ostream &err, bool *ok = nullptr) const
+    real(const Args& args, std::ostream& err, bool* ok = nullptr) const
     {
         if (ok != nullptr)
             *ok = false;
         wasp_not_implemented("Function::real");
     }
     virtual bool
-    boolean(const Args &args, std::ostream &err, bool *ok = nullptr) const
+    boolean(const Args& args, std::ostream& err, bool* ok = nullptr) const
     {
         if (ok != nullptr)
             *ok = false;
         wasp_not_implemented("Function::boolean");
     }
     virtual std::string
-    string(const Args &args, std::ostream &err, bool *ok = nullptr) const
+    string(const Args& args, std::ostream& err, bool* ok = nullptr) const
     {
         if (ok != nullptr)
             *ok = false;
@@ -1389,19 +1389,19 @@ class WASP_PUBLIC RealFunction : public Function
     typedef std::vector<Result> Args;
     virtual Context::Type       type() const { return Context::Type::REAL; }
     virtual int
-    integer(const Args &args, std::ostream &err, bool *ok = nullptr) const
+    integer(const Args& args, std::ostream& err, bool* ok = nullptr) const
     {
         return real(args, err, ok);
     }
     virtual double
-    real(const Args &args, std::ostream &err, bool *ok = nullptr) const = 0;
+    real(const Args& args, std::ostream& err, bool* ok = nullptr) const = 0;
     virtual bool
-    boolean(const Args &args, std::ostream &err, bool *ok = nullptr) const
+    boolean(const Args& args, std::ostream& err, bool* ok = nullptr) const
     {
         return real(args, err, ok);
     }
     virtual std::string
-    string(const Args &args, std::ostream &err, bool *ok = nullptr) const
+    string(const Args& args, std::ostream& err, bool* ok = nullptr) const
     {
         return to_string(real(args, err, ok));
     }
@@ -1412,19 +1412,19 @@ class WASP_PUBLIC IntegerFunction : public Function
     typedef std::vector<Result> Args;
     virtual Context::Type       type() const { return Context::Type::INTEGER; }
     virtual int
-    integer(const Args &args, std::ostream &err, bool *ok = nullptr) const = 0;
+    integer(const Args& args, std::ostream& err, bool* ok = nullptr) const = 0;
     virtual double
-    real(const Args &args, std::ostream &err, bool *ok = nullptr) const
+    real(const Args& args, std::ostream& err, bool* ok = nullptr) const
     {
         return integer(args, err, ok);
     };
     virtual bool
-    boolean(const Args &args, std::ostream &err, bool *ok = nullptr) const
+    boolean(const Args& args, std::ostream& err, bool* ok = nullptr) const
     {
         return integer(args, err, ok);
     }
     virtual std::string
-    string(const Args &args, std::ostream &err, bool *ok = nullptr) const
+    string(const Args& args, std::ostream& err, bool* ok = nullptr) const
     {
         return to_string(integer(args, err, ok));
     }
@@ -1435,35 +1435,35 @@ class WASP_PUBLIC StringFunction : public Function
     typedef std::vector<Result> Args;
     virtual Context::Type       type() const { return Context::Type::STRING; }
     virtual int
-    integer(const Args &args, std::ostream &err, bool *ok = nullptr) const
+    integer(const Args& args, std::ostream& err, bool* ok = nullptr) const
     {
         if (ok != nullptr)
             *ok = false;
         wasp_not_implemented("Function::integer");
     }
     virtual double
-    real(const Args &args, std::ostream &err, bool *ok = nullptr) const
+    real(const Args& args, std::ostream& err, bool* ok = nullptr) const
     {
         if (ok != nullptr)
             *ok = false;
         wasp_not_implemented("Function::real");
     };
     virtual bool
-    boolean(const Args &args, std::ostream &err, bool *ok = nullptr) const
+    boolean(const Args& args, std::ostream& err, bool* ok = nullptr) const
     {
         if (ok != nullptr)
             *ok = false;
         wasp_not_implemented("Function::boolean");
     }
     virtual std::string
-    string(const Args &args, std::ostream &err, bool *ok = nullptr) const = 0;
+    string(const Args& args, std::ostream& err, bool* ok = nullptr) const = 0;
 };
 class WASP_PUBLIC FFmt : public StringFunction
 {
   public:
     typedef std::vector<Result> Args;
     std::string
-    string(const Args &args, std::ostream &err, bool *ok = nullptr) const
+    string(const Args& args, std::ostream& err, bool* ok = nullptr) const
     {
         // must have two arguments
         if (args.size() != 2)
@@ -1502,7 +1502,7 @@ class WASP_PUBLIC FFmt : public StringFunction
       public:                                                                  \
         typedef std::vector<Result> Args;                                      \
         virtual int                                                            \
-        integer(const Args &args, std::ostream &err, bool *ok = nullptr) const \
+        integer(const Args& args, std::ostream& err, bool* ok = nullptr) const \
         {                                                                      \
             bool l_ok = true;                                                  \
             if (args.size() != 1)                                              \
@@ -1518,7 +1518,7 @@ class WASP_PUBLIC FFmt : public StringFunction
             }                                                                  \
             if (ok != nullptr)                                                 \
                 *ok       = l_ok;                                              \
-            const auto &a = args.front();                                      \
+            const auto& a = args.front();                                      \
             if (a.is_number())                                                 \
             {                                                                  \
                 return CALL;                                                   \
@@ -1533,7 +1533,7 @@ class WASP_PUBLIC FFmt : public StringFunction
       public:                                                               \
         typedef std::vector<Result> Args;                                   \
         virtual double                                                      \
-        real(const Args &args, std::ostream &err, bool *ok = nullptr) const \
+        real(const Args& args, std::ostream& err, bool* ok = nullptr) const \
         {                                                                   \
             bool l_ok = true;                                               \
             if (args.size() != 1)                                           \
@@ -1549,7 +1549,7 @@ class WASP_PUBLIC FFmt : public StringFunction
             }                                                               \
             if (ok != nullptr)                                              \
                 *ok       = l_ok;                                           \
-            const auto &a = args.front();                                   \
+            const auto& a = args.front();                                   \
             if (a.is_number())                                              \
             {                                                               \
                 return CALL;                                                \
@@ -1600,7 +1600,7 @@ WASP_REAL_FUNCTION_1ARG(FAbs, RealFunction, std::abs(a.number()))
       public:                                                                \
         typedef std::vector<Result> Args;                                    \
         virtual double                                                       \
-        real(const Args &args, std::ostream &err, bool *ok = nullptr) const  \
+        real(const Args& args, std::ostream& err, bool* ok = nullptr) const  \
         {                                                                    \
             bool l_ok = true;                                                \
             if (args.size() != 2)                                            \
@@ -1616,8 +1616,8 @@ WASP_REAL_FUNCTION_1ARG(FAbs, RealFunction, std::abs(a.number()))
             }                                                                \
             if (ok != nullptr)                                               \
                 *ok        = l_ok;                                           \
-            const auto &a1 = args.front();                                   \
-            const auto &a2 = args.back();                                    \
+            const auto& a1 = args.front();                                   \
+            const auto& a2 = args.back();                                    \
             return CALL;                                                     \
         }                                                                    \
     };
@@ -1640,7 +1640,7 @@ WASP_REAL_FUNCTION_2ARG(FMax, RealFunction, std::max(a1.number(), a2.number()))
       public:                                                                  \
         typedef std::vector<Result> Args;                                      \
         virtual int                                                            \
-        integer(const Args &args, std::ostream &err, bool *ok = nullptr) const \
+        integer(const Args& args, std::ostream& err, bool* ok = nullptr) const \
         {                                                                      \
             bool l_ok = true;                                                  \
             if (args.size() != 2)                                              \
@@ -1656,15 +1656,15 @@ WASP_REAL_FUNCTION_2ARG(FMax, RealFunction, std::max(a1.number(), a2.number()))
             }                                                                  \
             if (ok != nullptr)                                                 \
                 *ok        = l_ok;                                             \
-            const auto &a1 = args.front();                                     \
-            const auto &a2 = args.back();                                      \
+            const auto& a1 = args.front();                                     \
+            const auto& a2 = args.back();                                      \
             return CALL;                                                       \
         }                                                                      \
     };
 WASP_INTEGER_FUNCTION_2ARG(FMod, IntegerFunction, a1.integer() % a2.integer())
 
 template<class T>
-inline Result &Result::evaluate(const T &tree_view, Context &context)
+inline Result& Result::evaluate(const T& tree_view, Context& context)
 {
     // if an ambiguous 'value' node
     // determine operation via the token's type
@@ -1889,7 +1889,7 @@ inline Result &Result::evaluate(const T &tree_view, Context &context)
                 string() = error_msg(tree_view, "is not a known variable.");
             }
             wasp_check(tree_view.child_count() > 2);
-            const auto &index_view = tree_view.child_at(2);
+            const auto& index_view = tree_view.child_at(2);
             if (evaluate(index_view, context).m_type ==
                 Context::Type::WEC_ERROR)
             {
@@ -1944,7 +1944,7 @@ inline Result &Result::evaluate(const T &tree_view, Context &context)
             else if (tree_view.child_count() == 6)
             {
                 Result      value;
-                const auto &value_view = tree_view.child_at(5);
+                const auto& value_view = tree_view.child_at(5);
                 value.evaluate(value_view, context);
 
                 m_type = var_type;
@@ -1992,7 +1992,7 @@ inline Result &Result::evaluate(const T &tree_view, Context &context)
         case wasp::FUNCTION:
         {
             wasp_check(tree_view.child_count() > 0);
-            const auto &name_view     = tree_view.child_at(0);
+            const auto& name_view     = tree_view.child_at(0);
             std::string function_name = name_view.data();
             wasp_check(tree_view.child_count() > 1);
             // reserved function with special
@@ -2010,7 +2010,7 @@ inline Result &Result::evaluate(const T &tree_view, Context &context)
                 for (size_t c = 2, count = tree_view.child_count() - 1;
                      c < count; ++c)
                 {
-                    const auto &child_view = tree_view.child_at(c);
+                    const auto& child_view = tree_view.child_at(c);
                     if (child_view.is_decorative() ||
                         child_view.type() == wasp::WASP_COMMA)
                         continue;
@@ -2035,7 +2035,7 @@ inline Result &Result::evaluate(const T &tree_view, Context &context)
                         "reserved function 'size' requires a single argument!");
                     break;
                 }
-                const auto &child_view = tree_view.child_at(2);
+                const auto& child_view = tree_view.child_at(2);
                 m_type                 = Context::Type::INTEGER;
                 m_value.m_int          = context.size(child_view.to_string());
                 break;
@@ -2052,19 +2052,19 @@ inline Result &Result::evaluate(const T &tree_view, Context &context)
                                              "true, if false).");
                     break;
                 }
-                const auto &a1 = tree_view.child_at(2);
+                const auto& a1 = tree_view.child_at(2);
                 if (evaluate(a1, context).is_error())
                 {
                     break;
                 }
                 if (to_bool())
                 {
-                    const auto &a2 = tree_view.child_at(4);
+                    const auto& a2 = tree_view.child_at(4);
                     evaluate(a2, context);
                 }
                 else
                 {
-                    const auto &a3 = tree_view.child_at(6);
+                    const auto& a3 = tree_view.child_at(6);
                     evaluate(a3, context);
                 }
                 break;
@@ -2077,7 +2077,7 @@ inline Result &Result::evaluate(const T &tree_view, Context &context)
             for (size_t c = 2, count = tree_view.child_count() - 1; c < count;
                  ++c)
             {
-                const auto &child_view = tree_view.child_at(c);
+                const auto& child_view = tree_view.child_at(c);
                 if (child_view.is_decorative() ||
                     child_view.type() == wasp::WASP_COMMA)
                     continue;
@@ -2096,7 +2096,7 @@ inline Result &Result::evaluate(const T &tree_view, Context &context)
             {
                 break;
             }
-            Function *function = context.function(function_name);
+            Function* function = context.function(function_name);
             if (function == nullptr)
             {
                 m_type   = Context::Type::WEC_ERROR;

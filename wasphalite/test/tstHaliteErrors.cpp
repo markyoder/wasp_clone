@@ -96,8 +96,8 @@ TEST(Halite, attribute_range_errors)
     ASSERT_EQ(expected_error.size(), ranges.size());
     for (size_t i = 0; i < ranges.size(); ++i)
     {
-        const std::string &t = ranges[i];
-        const std::string &e = expected_error[i];
+        const std::string& t = ranges[i];
+        const std::string& e = expected_error[i];
         SCOPED_TRACE(t);
         SCOPED_TRACE(e);
         std::stringstream input;
@@ -122,18 +122,18 @@ struct error_test
     std::string template_path;
     std::string json_path;
     std::string expected_path;
-    error_test(const std::string &t, const std::string &j, const std::string &e)
+    error_test(const std::string& t, const std::string& j, const std::string& e)
         : template_path(t), json_path(j), expected_path(e)
     {
     }
-    error_test(const error_test &orig)
+    error_test(const error_test& orig)
         : template_path(orig.template_path)
         , json_path(orig.json_path)
         , expected_path(orig.expected_path)
     {
     }
 };
-bool load_file(const std::string &path, std::stringstream &s)
+bool load_file(const std::string& path, std::stringstream& s)
 {
     std::ifstream f(path);
     bool          first = true;
@@ -150,7 +150,7 @@ bool load_file(const std::string &path, std::stringstream &s)
     }
     return f.eof() && !f.bad();
 }
-void test_template(const error_test &t)
+void test_template(const error_test& t)
 {
     std::string tp = SOURCE_DIR + "/data/" + t.template_path;
     std::string dd = SOURCE_DIR + "/data/";

@@ -13,7 +13,7 @@ DDInterpreter<S>::DDInterpreter()
     definition();  // create empty definition needed by interpreter
 }
 template<class S>
-DDInterpreter<S>::DDInterpreter(std::ostream &err)
+DDInterpreter<S>::DDInterpreter(std::ostream& err)
     : Interpreter<S>(err)
     , traceLexing(false)
     , traceParsing(false)
@@ -29,7 +29,7 @@ DDInterpreter<S>::~DDInterpreter()
     m_current = nullptr;
 }
 template<class S>
-bool DDInterpreter<S>::parse(std::istream &in,
+bool DDInterpreter<S>::parse(std::istream& in,
                              size_t        startLine,
                              size_t        startColumn)
 {
@@ -38,8 +38,8 @@ bool DDInterpreter<S>::parse(std::istream &in,
         startLine, startColumn);
 }
 template<class S>
-bool DDInterpreter<S>::parseStream(std::istream &     in,
-                                   const std::string &sname,
+bool DDInterpreter<S>::parseStream(std::istream&      in,
+                                   const std::string& sname,
                                    size_t             start_line,
                                    size_t             start_column)
 {
@@ -47,7 +47,7 @@ bool DDInterpreter<S>::parseStream(std::istream &     in,
                                                           start_column);
 }
 template<class S>
-bool DDInterpreter<S>::parseFile(const std::string &filename, size_t line)
+bool DDInterpreter<S>::parseFile(const std::string& filename, size_t line)
 {
     std::ifstream in(filename.c_str());
     if (!in.good())
@@ -62,8 +62,8 @@ bool DDInterpreter<S>::parseFile(const std::string &filename, size_t line)
     return parseStream(in, filename, line);
 }
 template<class S>
-bool DDInterpreter<S>::parseString(const std::string &input,
-                                   const std::string &sname,
+bool DDInterpreter<S>::parseString(const std::string& input,
+                                   const std::string& sname,
                                    size_t             startLine,
                                    size_t             startColumn)
 {
@@ -72,13 +72,13 @@ bool DDInterpreter<S>::parseString(const std::string &input,
 }
 
 template<class S>
-const AbstractDefinition *DDInterpreter<S>::definition() const
+const AbstractDefinition* DDInterpreter<S>::definition() const
 {
     wasp_require(m_current != nullptr);
     return m_current;
 }
 template<class S>
-AbstractDefinition *DDInterpreter<S>::definition()
+AbstractDefinition* DDInterpreter<S>::definition()
 {
     if (m_current == nullptr)
     {
@@ -89,8 +89,8 @@ AbstractDefinition *DDInterpreter<S>::definition()
 }
 template<class S>
 size_t DDInterpreter<S>::push_staged(size_t                     node_type,
-                                     const std::string &        node_name,
-                                     const std::vector<size_t> &child_indices)
+                                     const std::string&         node_name,
+                                     const std::vector<size_t>& child_indices)
 {
     auto stage_count =
         Interpreter<S>::push_staged(node_type, node_name, child_indices);

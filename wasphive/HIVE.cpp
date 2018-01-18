@@ -21,23 +21,23 @@ HIVE::HIVE() : stop(GLOBAL_STOP)
 {
 }
 
-HIVE::HIVE(const std::atomic<bool> &stop) : stop(stop)
+HIVE::HIVE(const std::atomic<bool>& stop) : stop(stop)
 {
 }
 
 HIVE::~HIVE()
 {
 }
-void HIVE::sort_errors(std::vector<string> &errors)
+void HIVE::sort_errors(std::vector<string>& errors)
 {
     std::sort(errors.begin(), errors.end(), alphanum_less<std::string>());
 }
 
 void HIVE::printMessages(bool             pass,
-                         vector<string> & errors,
+                         vector<string>&  errors,
                          MessagePrintType msgType,
                          string           file,
-                         std::ostream &   output)
+                         std::ostream&    output)
 {
     if (msgType == MessagePrintType::NORMAL)
     {

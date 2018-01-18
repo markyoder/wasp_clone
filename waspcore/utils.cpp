@@ -2,7 +2,7 @@
 
 namespace wasp
 {
-std::string strip_quotes(const std::string &src)
+std::string strip_quotes(const std::string& src)
 {
     std::string s = src;
     // remove single quotes
@@ -21,7 +21,7 @@ std::string strip_quotes(const std::string &src)
     return s;
 }  // strip_quotes
 
-std::string trim(std::string str, const std::string &char_seq)
+std::string trim(std::string str, const std::string& char_seq)
 {
     if (str.size() == char_seq.size() && str == char_seq)
         return "";
@@ -40,7 +40,7 @@ std::string trim(std::string str, const std::string &char_seq)
     return str;
 }
 
-std::string dir_name(const std::string &path)
+std::string dir_name(const std::string& path)
 {
     size_t sep_i = path.find_last_of("/\\");
     if (sep_i != std::string::npos)
@@ -48,7 +48,7 @@ std::string dir_name(const std::string &path)
     return path;
 }
 
-std::string xml_escape_data(const std::string &src)
+std::string xml_escape_data(const std::string& src)
 {
     std::stringstream dst;
     for (char ch : src)
@@ -78,7 +78,7 @@ std::string xml_escape_data(const std::string &src)
     return dst.str();
 }  // xml_escape_data
 
-std::string xml_escape_name(const std::string &src)
+std::string xml_escape_name(const std::string& src)
 {
     std::stringstream dst;
     if (src.at(0) >= '0' && src.at(0) <= '9')

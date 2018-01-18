@@ -2,13 +2,13 @@
 
 namespace wasp
 {
-ExprInterpreter::ExprInterpreter(std::ostream &err) : m_lexer(nullptr)
+ExprInterpreter::ExprInterpreter(std::ostream& err) : m_lexer(nullptr)
 {
 }
 ExprInterpreter::~ExprInterpreter()
 {
 }
-bool ExprInterpreter::parse(std::istream &in,
+bool ExprInterpreter::parse(std::istream& in,
                             std::size_t   startLine,
                             std::size_t   startColumn)
 {

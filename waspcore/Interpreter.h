@@ -32,7 +32,7 @@ class WASP_PUBLIC AbstractInterpreter
      * @param token_file_offset the token's offset into the file/stream
      */
     virtual void
-    push_token(const char *str, size_t type, size_t token_file_offset) = 0;
+    push_token(const char* str, size_t type, size_t token_file_offset) = 0;
     /**
      * @brief push_line appends a line to the new line buffer
      * @param line_file_offset byte offset into the file/stream for the newline
@@ -47,7 +47,7 @@ class WASP_PUBLIC AbstractInterpreter
      * @return the new leaf node's index in the TreeNodePool
      */
     virtual size_t
-    push_leaf(size_t node_type, const char *node_name, size_t token_index) = 0;
+    push_leaf(size_t node_type, const char* node_name, size_t token_index) = 0;
     /**
      * @brief push_parent create a parent node with the given type, node, and
      * child indices
@@ -57,8 +57,8 @@ class WASP_PUBLIC AbstractInterpreter
      * @return the new parent node's index in the TreeNodePool
      */
     virtual size_t push_parent(size_t                     node_type,
-                               const char *               node_name,
-                               const std::vector<size_t> &child_indices) = 0;
+                               const char*                node_name,
+                               const std::vector<size_t>& child_indices) = 0;
     /**
      * @brief type acquire the type of the node at the given index
      * @param node_index the node index
@@ -70,9 +70,9 @@ class WASP_PUBLIC AbstractInterpreter
      * @param node_index the node index
      * @return the name of the node
      */
-    virtual const char *name(size_t node_index) const = 0;
+    virtual const char* name(size_t node_index) const = 0;
 
-    virtual bool set_name(size_t node_index, const char *name) = 0;
+    virtual bool set_name(size_t node_index, const char* name) = 0;
     virtual void set_type(size_t node_index, size_t node_type) = 0;
     /**
      * @brief data acquire the data of the node at the given index
@@ -85,7 +85,7 @@ class WASP_PUBLIC AbstractInterpreter
      * @param token_index the index of the token for which the data is requested
      * @return the data of the token
      */
-    virtual const char *token_data(size_t token_index) const = 0;
+    virtual const char* token_data(size_t token_index) const = 0;
 
     /**
      * @brief child_count determines the number of children for the node
@@ -115,8 +115,8 @@ class WASP_PUBLIC AbstractInterpreter
      * have been processed and are staged.
      */
     virtual size_t push_staged(size_t                     node_type,
-                               const std::string &        node_name,
-                               const std::vector<size_t> &child_indices) = 0;
+                               const std::string&         node_name,
+                               const std::vector<size_t>& child_indices) = 0;
     /**
      * @brief push_staged_child adds the given child index to the currently
      * staged node
@@ -125,7 +125,7 @@ class WASP_PUBLIC AbstractInterpreter
      */
     virtual size_t push_staged_child(size_t child_index) = 0;
     virtual size_t
-    push_staged_child(const std::vector<size_t> &child_indices) = 0;
+    push_staged_child(const std::vector<size_t>& child_indices) = 0;
     /**
      * @brief commit_staged commits the staged tree node
      * @param stage_index the stage at which to commit to the tree
@@ -135,25 +135,25 @@ class WASP_PUBLIC AbstractInterpreter
      */
     virtual size_t commit_staged(size_t stage_index) = 0;
 
-    virtual const size_t &staged_type(size_t staged_index) const = 0;
-    virtual size_t &staged_type(size_t staged_index)             = 0;
+    virtual const size_t& staged_type(size_t staged_index) const = 0;
+    virtual size_t& staged_type(size_t staged_index)             = 0;
 
-    virtual const std::string &staged_name(size_t staged_index) const = 0;
-    virtual std::string &staged_name(size_t staged_index)             = 0;
+    virtual const std::string& staged_name(size_t staged_index) const = 0;
+    virtual std::string& staged_name(size_t staged_index)             = 0;
 
     virtual size_t staged_count() const = 0;
 
     virtual size_t             start_column() const = 0;
     virtual size_t             start_line() const   = 0;
-    virtual const std::string &stream_name() const  = 0;
-    virtual std::string &      stream_name()        = 0;
-    virtual std::ostream &     error_stream()       = 0;
+    virtual const std::string& stream_name() const  = 0;
+    virtual std::string&       stream_name()        = 0;
+    virtual std::ostream&      error_stream()       = 0;
 
-    virtual const AbstractDefinition *definition() const
+    virtual const AbstractDefinition* definition() const
     {
         wasp_not_implemented("definition");
     }
-    virtual AbstractDefinition *definition()
+    virtual AbstractDefinition* definition()
     {
         wasp_not_implemented("definition");
     }
@@ -173,7 +173,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
     typedef typename TNS::TokenPool_type::token_type_size token_type_size;
     typedef typename TNS::TokenPool_type::file_offset_type_size
         file_offset_type_size;
-    Interpreter(std::ostream &error_stream = std::cerr);
+    Interpreter(std::ostream& error_stream = std::cerr);
     virtual ~Interpreter();
 
     /**
@@ -198,7 +198,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @param startColumn the first column of the input stream
      * @return true, iff no input processing errors were encountered
      */
-    virtual bool parse(std::istream &input,
+    virtual bool parse(std::istream& input,
                        size_t        m_start_line   = 1u,
                        size_t        m_start_column = 1u) = 0;
     /**
@@ -212,7 +212,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @param type the token's type (enumeration)
      * @param token_file_offset the token's offset into the file/stream
      */
-    void push_token(const char *str, size_t type, size_t token_file_offset)
+    void push_token(const char* str, size_t type, size_t token_file_offset)
     {
         m_tree_nodes.push_token(str, type, token_file_offset);
     }
@@ -240,7 +240,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @return the new leaf node's index in the TreeNodePool
      */
     size_t
-    push_leaf(size_t node_type, const char *node_name, size_t token_index);
+    push_leaf(size_t node_type, const char* node_name, size_t token_index);
     /**
      * @brief push_parent create a parent node with the given type, node, and
      * child indices
@@ -250,8 +250,8 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @return the new parent node's index in the TreeNodePool
      */
     size_t push_parent(size_t                     node_type,
-                       const char *               node_name,
-                       const std::vector<size_t> &child_indices);
+                       const char*                node_name,
+                       const std::vector<size_t>& child_indices);
     /**
      * @brief type acquire the type of the node at the given index
      * @param node_index the node index
@@ -274,8 +274,8 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @param node_index the node index
      * @return the name of the node
      */
-    const char *name(size_t node_index) const;
-    bool set_name(size_t node_index, const char *name);
+    const char* name(size_t node_index) const;
+    bool set_name(size_t node_index, const char* name);
     void set_type(size_t node_index, size_t node_type);
     /**
      * @brief data acquire the data of the node at the given index
@@ -288,7 +288,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @param token_index the index of the token for which the data is requested
      * @return the data of the token
      */
-    const char *token_data(size_t token_index) const;
+    const char* token_data(size_t token_index) const;
     /**
      * @brief child_count determines the number of children for the node
      * @param node_index index of the node of which children count are requested
@@ -341,8 +341,8 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * have been processed and are staged.
      */
     virtual size_t push_staged(size_t                     node_type,
-                               const std::string &        node_name,
-                               const std::vector<size_t> &child_indices);
+                               const std::string&         node_name,
+                               const std::vector<size_t>& child_indices);
 
     /**
      * @brief push_staged_child adds the given child index to the currently
@@ -351,7 +351,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @return the number of children for the current stage
      */
     size_t push_staged_child(size_t child_index);
-    size_t push_staged_child(const std::vector<size_t> &child_indices)
+    size_t push_staged_child(const std::vector<size_t>& child_indices)
     {
         wasp_require(m_staged.empty() == false);
         size_t child_count = 0;
@@ -361,13 +361,13 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
         }
         return child_count;
     }
-    virtual const std::string &staged_name(size_t staged_index) const
+    virtual const std::string& staged_name(size_t staged_index) const
     {
         wasp_require(staged_index <
                      m_staged.size()) return m_staged[staged_index]
             .m_name;
     }
-    virtual std::string &staged_name(size_t staged_index)
+    virtual std::string& staged_name(size_t staged_index)
     {
         wasp_require(staged_index <
                      m_staged.size()) return m_staged[staged_index]
@@ -383,16 +383,16 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      */
     virtual size_t commit_staged(size_t stage_index);
 
-    const size_t &staged_type(size_t staged_index) const;
-    size_t &staged_type(size_t staged_index);
+    const size_t& staged_type(size_t staged_index) const;
+    size_t& staged_type(size_t staged_index);
 
     size_t       staged_count() const { return m_staged.size(); }
     virtual bool single_parse() const { return false; }
 
   protected:
     template<class PARSER_IMPL>
-    bool parse_impl(std::istream &     input,
-                    const std::string &stream_name,
+    bool parse_impl(std::istream&      input,
+                    const std::string& stream_name,
                     size_t             m_start_line,
                     size_t             m_start_column);
 
@@ -403,7 +403,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
             commit_staged(staged_count() - 1);
         }
         wasp_ensure(m_staged.size() == 1);
-        Stage &document = m_staged.front();
+        Stage& document = m_staged.front();
         if (document.m_child_indices.empty() && m_tree_nodes.size() > 0)
         {
             document.m_child_indices.push_back(m_tree_nodes.size() - 1);
@@ -422,34 +422,34 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      */
     size_t  m_start_column;
     size_t  start_column() const { return m_start_column; }
-    size_t &start_column() { return m_start_column; }
+    size_t& start_column() { return m_start_column; }
     /**
      * @brief m_start_line - the starting line to start parsing at (default 1)
      */
     size_t  m_start_line;
     size_t  start_line() const { return m_start_line; }
-    size_t &start_line() { return m_start_line; }
+    size_t& start_line() { return m_start_line; }
     /**
      * @brief m_stream_name - stream name (file or input stream) used for error
      * messages.
      */
     std::string        m_stream_name;
-    const std::string &stream_name() const { return m_stream_name; }
-    std::string &      stream_name() { return m_stream_name; }
-    std::ostream &     error_stream() { return m_error_stream; }
+    const std::string& stream_name() const { return m_stream_name; }
+    std::string&       stream_name() { return m_stream_name; }
+    std::ostream&      error_stream() { return m_error_stream; }
 
   private:
     /**
      * @brief err - the error stream to report on
      */
-    std::ostream &    m_error_stream;
+    std::ostream&     m_error_stream;
     TreeNodePool_type m_tree_nodes;
 
   protected:
     struct Stage
     {
         Stage() : m_type(wasp::UNKNOWN) {}
-        Stage(const Stage &orig)
+        Stage(const Stage& orig)
             : m_type(orig.m_type)
             , m_name(orig.m_name)
             , m_child_indices(orig.m_child_indices)

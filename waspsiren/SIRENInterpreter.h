@@ -30,7 +30,7 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
     typedef std::shared_ptr<SIRENInterpreter> SharedPtr;
     typedef S                                 Storage_type;
     SIRENInterpreter();
-    SIRENInterpreter(std::ostream &err);
+    SIRENInterpreter(std::ostream& err);
     virtual ~SIRENInterpreter();
 
     /** Invoke the lexer and parser for a stream.
@@ -38,19 +38,19 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      * @param sname     stream name for error messages
      * @return          true if successfully parsed
      */
-    bool parseStream(std::istream &     in,
-                     const std::string &sname       = "selection statement",
+    bool parseStream(std::istream&      in,
+                     const std::string& sname       = "selection statement",
                      size_t             startLine   = 1u,
                      size_t             startColumn = 1u);
     bool
-    parse(std::istream &input, size_t startLine = 1u, size_t startColumn = 1u);
+    parse(std::istream& input, size_t startLine = 1u, size_t startColumn = 1u);
     /** Invoke the lexer and parser on an input string.
      * @param input     input string
      * @param sname     stream name for error messages
      * @return          true if successfully parsed
      */
-    bool parseString(const std::string &input,
-                     const std::string &sname       = "selection statement",
+    bool parseString(const std::string& input,
+                     const std::string& sname       = "selection statement",
                      size_t             startLine   = 1u,
                      size_t             startColumn = 1u);
 
@@ -83,7 +83,7 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      * std::string TAdapter::data()const - acquires the data of the node.
      */
     template<typename TAdapter>
-    size_t evaluate(TAdapter &node, SIRENResultSet<TAdapter> &result) const;
+    size_t evaluate(TAdapter& node, SIRENResultSet<TAdapter>& result) const;
 
   private:
     /**
@@ -97,9 +97,9 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      * given context
      */
     template<typename TAdapter>
-    size_t evaluate(const TreeNodeView<Storage_type> &context,
-                    SIRENResultSet<TAdapter> &        result,
-                    std::vector<TAdapter> &           stage) const;
+    size_t evaluate(const TreeNodeView<Storage_type>& context,
+                    SIRENResultSet<TAdapter>&         result,
+                    std::vector<TAdapter>&            stage) const;
     //        template<typename TAdapter>
     //        size_t select_any(TreeNodeView & context
     //                        , TAdapter & node
@@ -114,8 +114,8 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      * named child nodes
      */
     template<typename TAdapter>
-    void search_child_name(const TreeNodeView<Storage_type> &context,
-                           std::vector<TAdapter> &           stage) const;
+    void search_child_name(const TreeNodeView<Storage_type>& context,
+                           std::vector<TAdapter>&            stage) const;
     /**
      * @brief search_conditional_predicated_child searches the staged node's
      * children for specifically named children with grandchild attributes
@@ -129,8 +129,8 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      */
     template<typename TAdapter>
     void search_conditional_predicated_child(
-        const TreeNodeView<Storage_type> &context,
-        std::vector<TAdapter> &           stage) const;
+        const TreeNodeView<Storage_type>& context,
+        std::vector<TAdapter>&            stage) const;
 
     /**
      * @brief search_index_predicated_child searches the staged node's children
@@ -145,11 +145,11 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      */
     template<typename TAdapter>
     void
-    search_index_predicated_child(const TreeNodeView<Storage_type> &context,
-                                  std::vector<TAdapter> &stage) const;
+    search_index_predicated_child(const TreeNodeView<Storage_type>& context,
+                                  std::vector<TAdapter>& stage) const;
     template<typename TAdapter>
-    void recursive_child_select(const TreeNodeView<Storage_type> &context,
-                                std::vector<TAdapter> &           stage) const;
+    void recursive_child_select(const TreeNodeView<Storage_type>& context,
+                                std::vector<TAdapter>&            stage) const;
 };  // end of SIRENInterpreter class
 
 #include "waspsiren/SIRENInterpreter.i.h"

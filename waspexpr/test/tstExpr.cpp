@@ -847,7 +847,7 @@ TEST(ExprInterpreter, functions)
                                                  "current_date()",
                                                  "date('mm-dd-yyyy')",
                                                  "binom(n, i)"};
-    for (const std::string &f : function_strings)
+    for (const std::string& f : function_strings)
     {
         SCOPED_TRACE(f);
         std::stringstream input;
@@ -865,7 +865,7 @@ TEST(ExprInterpreter, variable_indexing)
 {
     std::vector<std::string> variable_strings = {"array[i]", "obj['fred']",
                                                  "array[1]"};
-    for (const std::string &f : variable_strings)
+    for (const std::string& f : variable_strings)
     {
         SCOPED_TRACE(f);
         std::stringstream input;

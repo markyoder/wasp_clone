@@ -2,12 +2,12 @@
 
 namespace wasp
 {
-DataAccessor::DataAccessor(DataObject *data, DataAccessor *parent)
+DataAccessor::DataAccessor(DataObject* data, DataAccessor* parent)
     : Context(), m_parent(parent), m_current_data(data)
 {
 }
 
-DataAccessor::DataAccessor(const DataAccessor &orig)
+DataAccessor::DataAccessor(const DataAccessor& orig)
     : Context(orig)
     , m_parent(orig.m_parent)
     , m_current_data(orig.m_current_data)
@@ -18,7 +18,7 @@ DataAccessor::~DataAccessor()
 {
 }
 
-bool DataAccessor::exists(const std::string &name) const
+bool DataAccessor::exists(const std::string& name) const
 {
     bool current_data_exists =
         m_current_data != nullptr && m_current_data->contains(name);
@@ -30,7 +30,7 @@ bool DataAccessor::exists(const std::string &name) const
     }
     return current_data_exists || parent_data_exists;
 }
-Context::Type DataAccessor::type(const std::string &name) const
+Context::Type DataAccessor::type(const std::string& name) const
 {
     bool current_data_exists =
         m_current_data != nullptr && m_current_data->contains(name);
@@ -46,7 +46,7 @@ Context::Type DataAccessor::type(const std::string &name) const
         auto itr = m_current_data->find(name);
         if (itr == m_current_data->end())
             return Context::Type::UNDEFINED;
-        const wasp::Value &variable = itr->second;
+        const wasp::Value& variable = itr->second;
         if (variable.is_double())
             return Context::Type::REAL;
         if (variable.is_int())
@@ -65,7 +65,7 @@ Context::Type DataAccessor::type(const std::string &name) const
     }
     return Context::Type::UNDEFINED;
 }
-Context::Type DataAccessor::type(const std::string &name, size_t index) const
+Context::Type DataAccessor::type(const std::string& name, size_t index) const
 {
     bool current_data_exists =
         m_current_data != nullptr && m_current_data->contains(name);
@@ -81,16 +81,16 @@ Context::Type DataAccessor::type(const std::string &name, size_t index) const
         auto itr = m_current_data->find(name);
         if (itr == m_current_data->end())
             return Context::Type::UNDEFINED;
-        const wasp::Value &variable = itr->second;
+        const wasp::Value& variable = itr->second;
         if (variable.is_array())
         {
-            auto *array = variable.to_array();
+            auto* array = variable.to_array();
             wasp_check(array);
             if (array->size() <= index)
             {
                 return Context::Type::UNDEFINED;
             }
-            const wasp::Value &variable = array->at(index);
+            const wasp::Value& variable = array->at(index);
             if (variable.is_double())
                 return Context::Type::REAL;
             if (variable.is_int())
@@ -112,7 +112,7 @@ Context::Type DataAccessor::type(const std::string &name, size_t index) const
     return Context::Type::UNDEFINED;
 }
 
-int DataAccessor::size(const std::string &name) const
+int DataAccessor::size(const std::string& name) const
 {
     bool current_data_exists =
         m_current_data != nullptr && m_current_data->contains(name);
@@ -128,7 +128,7 @@ int DataAccessor::size(const std::string &name) const
         auto itr = m_current_data->find(name);
         if (itr == m_current_data->end())
             return 0;
-        const wasp::Value &variable = itr->second;
+        const wasp::Value& variable = itr->second;
         if (variable.is_array())
             return variable.to_array()->size();
         if (variable.is_object())
@@ -142,7 +142,7 @@ int DataAccessor::size(const std::string &name) const
     }
     return 0;
 }
-bool DataAccessor::store(const std::string &name, const bool &v)
+bool DataAccessor::store(const std::string& name, const bool& v)
 {
     if (m_current_data == nullptr)
     {
@@ -152,7 +152,7 @@ bool DataAccessor::store(const std::string &name, const bool &v)
     return true;
 }
 
-bool DataAccessor::store(const std::string &name, const int &v)
+bool DataAccessor::store(const std::string& name, const int& v)
 {
     if (m_current_data == nullptr)
     {
@@ -162,11 +162,11 @@ bool DataAccessor::store(const std::string &name, const int &v)
     return true;
 }
 
-bool DataAccessor::store(const std::string &name, const char *v)
+bool DataAccessor::store(const std::string& name, const char* v)
 {
     return store(name, std::string(v));
 }
-bool DataAccessor::store(const std::string &name, const std::string &v)
+bool DataAccessor::store(const std::string& name, const std::string& v)
 {
     if (m_current_data == nullptr)
     {
@@ -176,7 +176,7 @@ bool DataAccessor::store(const std::string &name, const std::string &v)
     return true;
 }
 
-bool DataAccessor::store(const std::string &name, const double &v)
+bool DataAccessor::store(const std::string& name, const double& v)
 {
     if (m_current_data == nullptr)
     {
@@ -186,9 +186,9 @@ bool DataAccessor::store(const std::string &name, const double &v)
     return true;
 }
 
-bool DataAccessor::boolean(const std::string &name,
+bool DataAccessor::boolean(const std::string& name,
                            size_t             index,
-                           bool *             ok) const
+                           bool*              ok) const
 {
     bool current_data_exists =
         m_current_data != nullptr && m_current_data->contains(name);
@@ -201,7 +201,7 @@ bool DataAccessor::boolean(const std::string &name,
     if (current_data_exists)
     {
         auto       itr   = m_current_data->find(name);
-        DataArray *array = nullptr;
+        DataArray* array = nullptr;
         if (ok && itr == m_current_data->end())
             *ok = false;
         else if (ok)
@@ -227,7 +227,7 @@ bool DataAccessor::boolean(const std::string &name,
     }
     return std::numeric_limits<bool>::quiet_NaN();
 }
-bool DataAccessor::boolean(const std::string &name, bool *ok) const
+bool DataAccessor::boolean(const std::string& name, bool* ok) const
 {
     bool current_data_exists =
         m_current_data != nullptr && m_current_data->contains(name);
@@ -255,7 +255,7 @@ bool DataAccessor::boolean(const std::string &name, bool *ok) const
     }
     return std::numeric_limits<bool>::quiet_NaN();
 }
-int DataAccessor::integer(const std::string &name, size_t index, bool *ok) const
+int DataAccessor::integer(const std::string& name, size_t index, bool* ok) const
 {
     bool current_data_exists =
         m_current_data != nullptr && m_current_data->contains(name);
@@ -268,7 +268,7 @@ int DataAccessor::integer(const std::string &name, size_t index, bool *ok) const
     if (current_data_exists)
     {
         auto       itr   = m_current_data->find(name);
-        DataArray *array = nullptr;
+        DataArray* array = nullptr;
         if (ok && itr == m_current_data->end())
             *ok = false;
         else if (ok)
@@ -294,7 +294,7 @@ int DataAccessor::integer(const std::string &name, size_t index, bool *ok) const
     }
     return std::numeric_limits<int>::quiet_NaN();
 }
-int DataAccessor::integer(const std::string &name, bool *ok) const
+int DataAccessor::integer(const std::string& name, bool* ok) const
 {
     bool current_data_exists =
         m_current_data != nullptr && m_current_data->contains(name);
@@ -323,7 +323,7 @@ int DataAccessor::integer(const std::string &name, bool *ok) const
     return std::numeric_limits<int>::quiet_NaN();
 }
 
-double DataAccessor::real(const std::string &name, size_t index, bool *ok) const
+double DataAccessor::real(const std::string& name, size_t index, bool* ok) const
 {
     bool current_data_exists =
         m_current_data != nullptr && m_current_data->contains(name);
@@ -336,7 +336,7 @@ double DataAccessor::real(const std::string &name, size_t index, bool *ok) const
     if (current_data_exists)
     {
         auto       itr   = m_current_data->find(name);
-        DataArray *array = nullptr;
+        DataArray* array = nullptr;
         if (ok && itr == m_current_data->end())
             *ok = false;
         else if (ok)
@@ -362,7 +362,7 @@ double DataAccessor::real(const std::string &name, size_t index, bool *ok) const
     }
     return std::numeric_limits<double>::quiet_NaN();
 }
-double DataAccessor::real(const std::string &name, bool *ok) const
+double DataAccessor::real(const std::string& name, bool* ok) const
 {
     bool current_data_exists =
         m_current_data != nullptr && m_current_data->contains(name);
@@ -392,7 +392,7 @@ double DataAccessor::real(const std::string &name, bool *ok) const
 }
 
 std::string
-DataAccessor::string(const std::string &name, size_t index, bool *ok) const
+DataAccessor::string(const std::string& name, size_t index, bool* ok) const
 {
     bool current_data_exists =
         m_current_data != nullptr && m_current_data->contains(name);
@@ -405,7 +405,7 @@ DataAccessor::string(const std::string &name, size_t index, bool *ok) const
     if (current_data_exists)
     {
         auto       itr   = m_current_data->find(name);
-        DataArray *array = nullptr;
+        DataArray* array = nullptr;
         if (ok && itr == m_current_data->end())
             *ok = false;
         else if (ok)
@@ -431,7 +431,7 @@ DataAccessor::string(const std::string &name, size_t index, bool *ok) const
     }
     return "";
 }
-std::string DataAccessor::string(const std::string &name, bool *ok) const
+std::string DataAccessor::string(const std::string& name, bool* ok) const
 {
     bool current_data_exists =
         m_current_data != nullptr && m_current_data->contains(name);
@@ -460,7 +460,7 @@ std::string DataAccessor::string(const std::string &name, bool *ok) const
     return "";
 }
 
-DataObject *DataAccessor::object(const std::string &name) const
+DataObject* DataAccessor::object(const std::string& name) const
 {
     bool current_data_exists =
         m_current_data != nullptr && m_current_data->contains(name);
@@ -488,7 +488,7 @@ DataObject *DataAccessor::object(const std::string &name) const
     }
     return nullptr;
 }
-DataArray *DataAccessor::array(const std::string &name) const
+DataArray* DataAccessor::array(const std::string& name) const
 {
     if (m_current_data == nullptr)
         return nullptr;

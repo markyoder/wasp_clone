@@ -8,8 +8,8 @@
 
 #define YY_DECL                                                        \
     wasp::JSONObjectParser::token_type wasp::JSONObjectLexerImpl::lex( \
-        wasp::JSONObjectParser::semantic_type *yylval,                 \
-        wasp::JSONObjectParser::location_type *yylloc)
+        wasp::JSONObjectParser::semantic_type* yylval,                 \
+        wasp::JSONObjectParser::location_type* yylloc)
 #endif
 
 #ifndef __FLEX_LEXER_H
@@ -37,8 +37,8 @@ class WASP_PUBLIC JSONObjectLexerImpl : public JSONObjectFlexLexer
     /** Create a new scanner object. The streams arg_yyin and arg_yyout default
      * to cin and cout, but that assignment is only made when initializing in
      * yylex(). */
-    JSONObjectLexerImpl(std::istream *arg_yyin  = 0,
-                        std::ostream *arg_yyout = 0);
+    JSONObjectLexerImpl(std::istream* arg_yyin  = 0,
+                        std::ostream* arg_yyout = 0);
 
     /** Required for virtual functions */
     virtual ~JSONObjectLexerImpl();
@@ -47,8 +47,8 @@ class WASP_PUBLIC JSONObjectLexerImpl : public JSONObjectFlexLexer
      * the macro declaration YY_DECL above. The generated bison parser then
      * calls this virtual function to fetch new tokens. */
     virtual JSONObjectParser::token_type
-    lex(JSONObjectParser::semantic_type *yylval,
-        JSONObjectParser::location_type *yylloc);
+    lex(JSONObjectParser::semantic_type* yylval,
+        JSONObjectParser::location_type* yylloc);
 
     /** Enable debug output (via arg_yyout) if compiled into the scanner. */
     void set_debug(bool b);

@@ -40,7 +40,7 @@ int HARD_FAIL = -1;
 #define TEST_END(CATEGORY, NAME)                                             \
     std::cout << " " << #CATEGORY << "." << #NAME << " PASSED" << std::endl; \
     }                                                                        \
-    catch (const std::domain_error &error)                                   \
+    catch (const std::domain_error& error)                                   \
     {                                                                        \
         std::cout << "!" << #CATEGORY << "." << #NAME << " FAILED"           \
                   << std::endl;                                              \

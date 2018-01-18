@@ -11,7 +11,7 @@ JSONInterpreter<S>::JSONInterpreter()
 {
 }
 template<class S>
-JSONInterpreter<S>::JSONInterpreter(std::ostream &err)
+JSONInterpreter<S>::JSONInterpreter(std::ostream& err)
     : Interpreter<S>(err)
     , traceLexing(false)
     , traceParsing(false)
@@ -24,7 +24,7 @@ JSONInterpreter<S>::~JSONInterpreter()
 {
 }
 template<class S>
-bool JSONInterpreter<S>::parse(std::istream &in,
+bool JSONInterpreter<S>::parse(std::istream& in,
                                size_t        startLine,
                                size_t        startColumn)
 {
@@ -33,8 +33,8 @@ bool JSONInterpreter<S>::parse(std::istream &in,
         startLine, startColumn);
 }
 template<class S>
-bool JSONInterpreter<S>::parseStream(std::istream &     in,
-                                     const std::string &sname,
+bool JSONInterpreter<S>::parseStream(std::istream&      in,
+                                     const std::string& sname,
                                      size_t             start_line,
                                      size_t             start_column)
 {
@@ -42,7 +42,7 @@ bool JSONInterpreter<S>::parseStream(std::istream &     in,
         in, sname, start_line, start_column);
 }
 template<class S>
-bool JSONInterpreter<S>::parseFile(const std::string &filename, size_t line)
+bool JSONInterpreter<S>::parseFile(const std::string& filename, size_t line)
 {
     std::ifstream in(filename.c_str());
     if (!in.good())
@@ -57,8 +57,8 @@ bool JSONInterpreter<S>::parseFile(const std::string &filename, size_t line)
     return parseStream(in, filename, line);
 }
 template<class S>
-bool JSONInterpreter<S>::parseString(const std::string &input,
-                                     const std::string &sname,
+bool JSONInterpreter<S>::parseString(const std::string& input,
+                                     const std::string& sname,
                                      size_t             startLine,
                                      size_t             startColumn)
 {
@@ -67,8 +67,8 @@ bool JSONInterpreter<S>::parseString(const std::string &input,
 }
 
 template<class S>
-bool JSONInterpreter<S>::generate_object(DataObject &  obj,
-                                         std::ostream &err) const
+bool JSONInterpreter<S>::generate_object(DataObject&   obj,
+                                         std::ostream& err) const
 {
     auto root_view = Interpreter<S>::root();
     if (root_view.is_null())
@@ -77,9 +77,9 @@ bool JSONInterpreter<S>::generate_object(DataObject &  obj,
 }
 
 template<class S>
-bool JSONInterpreter<S>::generate_object_internal(const TreeNodeView<S> &view,
-                                                  DataObject &           obj,
-                                                  std::ostream &err) const
+bool JSONInterpreter<S>::generate_object_internal(const TreeNodeView<S>& view,
+                                                  DataObject&            obj,
+                                                  std::ostream& err) const
 {
     wasp_require(view.is_null() == false);
     for (size_t i = 0, count = view.child_count(); i < count; ++i)
@@ -152,9 +152,9 @@ bool JSONInterpreter<S>::generate_object_internal(const TreeNodeView<S> &view,
 }
 
 template<class S>
-bool JSONInterpreter<S>::generate_array_internal(const TreeNodeView<S> &view,
-                                                 DataArray &            array,
-                                                 std::ostream &err) const
+bool JSONInterpreter<S>::generate_array_internal(const TreeNodeView<S>& view,
+                                                 DataArray&             array,
+                                                 std::ostream& err) const
 {
     wasp_require(view.is_null() == false);
     size_t child_index = 0;
@@ -217,9 +217,9 @@ bool JSONInterpreter<S>::generate_array_internal(const TreeNodeView<S> &view,
 }
 template<class S>
 bool JSONInterpreter<S>::generate_value_internal(
-    const TreeNodeView<S> &value_view,
-    wasp::Value &          value,
-    std::ostream &         err) const
+    const TreeNodeView<S>& value_view,
+    wasp::Value&           value,
+    std::ostream&          err) const
 {
     wasp_check(value_view.is_null() == false);
     auto value_type = value_view.token_type();

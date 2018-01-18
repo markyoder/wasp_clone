@@ -41,14 +41,14 @@ struct WASP_PUBLIC TokenPool
     TokenPool();
     TokenPool(const TokenPool<token_type_size,
                               token_index_type_size,
-                              file_offset_type_size> &orig);
+                              file_offset_type_size>& orig);
     ~TokenPool();
     /**
      * @brief str acquires the string data for the token at the given index
      * @param index the token's index for which to acquire the string data
      * @return char * of the token's string data
      */
-    const char *str(token_index_type_size index) const;
+    const char* str(token_index_type_size index) const;
     /**
      * @brief line acquires the line for the token at the given index
      * @return std::size_t the line number for which the token exists
@@ -85,7 +85,7 @@ struct WASP_PUBLIC TokenPool
      * @param type the token's type (enumeration)
      * @param token_file_offset the token's offset into the file/stream
      */
-    void push(const char *          str,
+    void push(const char*           str,
               token_type_size       type,
               file_offset_type_size token_file_offset);
     /**

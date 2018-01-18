@@ -21,7 +21,7 @@ TEST(Halite, sub_string_index)
     std::string      substr = "s";
     SubStringIndexer indicies;
     ASSERT_TRUE(indicies.index(str, substr));
-    const SubStringIndexer::Index_type &index = indicies.data();
+    const SubStringIndexer::Index_type& index = indicies.data();
     ASSERT_TRUE(index.empty() == false);
     SubStringIndexer::Index_type expected = {1, 2, 3, 4, 5};
     ASSERT_EQ(expected, index);
@@ -33,7 +33,7 @@ TEST(Halite, multichar_sub_string_index)
     std::string      substr = "ss";
     SubStringIndexer indicies;
     ASSERT_TRUE(indicies.index(str, substr));
-    const SubStringIndexer::Index_type &index = indicies.data();
+    const SubStringIndexer::Index_type& index = indicies.data();
     ASSERT_TRUE(index.empty() == false);
     SubStringIndexer::Index_type expected = {1, 3};
     ASSERT_EQ(expected, index);
@@ -48,7 +48,7 @@ TEST(Halite, sub_string_merge_simple)
     {
         std::string startstr = "<";
         ASSERT_TRUE(start_indices.index(str, startstr));
-        const SubStringIndexer::Index_type &index = start_indices.data();
+        const SubStringIndexer::Index_type& index = start_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {5};
         ASSERT_EQ(expected, index);
@@ -57,7 +57,7 @@ TEST(Halite, sub_string_merge_simple)
     {
         std::string endstr = ">";
         ASSERT_TRUE(end_indices.index(str, endstr));
-        const SubStringIndexer::Index_type &index = end_indices.data();
+        const SubStringIndexer::Index_type& index = end_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {9};
         ASSERT_EQ(expected, index);
@@ -83,7 +83,7 @@ TEST(Halite, sub_string_merge_nested)
     {
         std::string startstr = "<";
         ASSERT_TRUE(start_indices.index(str, startstr));
-        const SubStringIndexer::Index_type &index = start_indices.data();
+        const SubStringIndexer::Index_type& index = start_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {5, 6};
         ASSERT_EQ(expected, index);
@@ -92,7 +92,7 @@ TEST(Halite, sub_string_merge_nested)
     {
         std::string endstr = ">";
         ASSERT_TRUE(end_indices.index(str, endstr));
-        const SubStringIndexer::Index_type &index = end_indices.data();
+        const SubStringIndexer::Index_type& index = end_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {10, 15};
         ASSERT_EQ(expected, index);
@@ -118,7 +118,7 @@ TEST(Halite, sub_string_merge_nested_unmatched)
     {
         std::string startstr = "<";
         ASSERT_TRUE(start_indices.index(str, startstr));
-        const SubStringIndexer::Index_type &index = start_indices.data();
+        const SubStringIndexer::Index_type& index = start_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {0, 6, 7};
         ASSERT_EQ(expected, index);
@@ -127,7 +127,7 @@ TEST(Halite, sub_string_merge_nested_unmatched)
     {
         std::string endstr = ">";
         ASSERT_TRUE(end_indices.index(str, endstr));
-        const SubStringIndexer::Index_type &index = end_indices.data();
+        const SubStringIndexer::Index_type& index = end_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {11, 16};
         ASSERT_EQ(expected, index);
@@ -153,7 +153,7 @@ TEST(Halite, sub_string_merge_hanging)
     {
         std::string startstr = "<";
         ASSERT_TRUE(start_indices.index(str, startstr));
-        const SubStringIndexer::Index_type &index = start_indices.data();
+        const SubStringIndexer::Index_type& index = start_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {6, 11};
         ASSERT_EQ(expected, index);
@@ -162,7 +162,7 @@ TEST(Halite, sub_string_merge_hanging)
     {
         std::string endstr = ">";
         ASSERT_TRUE(end_indices.index(str, endstr));
-        const SubStringIndexer::Index_type &index = end_indices.data();
+        const SubStringIndexer::Index_type& index = end_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {5, 10};
         ASSERT_EQ(expected, index);
@@ -188,7 +188,7 @@ TEST(Halite, sub_string_merge_multiple)
     {
         std::string startstr = "<";
         ASSERT_TRUE(start_indices.index(str, startstr));
-        const SubStringIndexer::Index_type &index = start_indices.data();
+        const SubStringIndexer::Index_type& index = start_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {7, 12, 14};
         ASSERT_EQ(expected, index);
@@ -197,7 +197,7 @@ TEST(Halite, sub_string_merge_multiple)
     {
         std::string endstr = ">";
         ASSERT_TRUE(end_indices.index(str, endstr));
-        const SubStringIndexer::Index_type &index = end_indices.data();
+        const SubStringIndexer::Index_type& index = end_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {0, 6, 11, 18};
         ASSERT_EQ(expected, index);
@@ -223,7 +223,7 @@ TEST(Halite, multichar_sub_string_merge_multiple)
     {
         std::string startstr = "{{";
         ASSERT_TRUE(start_indices.index(str, startstr));
-        const SubStringIndexer::Index_type &index = start_indices.data();
+        const SubStringIndexer::Index_type& index = start_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {9, 16, 19};
         ASSERT_EQ(expected, index);
@@ -232,7 +232,7 @@ TEST(Halite, multichar_sub_string_merge_multiple)
     {
         std::string endstr = "}}";
         ASSERT_TRUE(end_indices.index(str, endstr));
-        const SubStringIndexer::Index_type &index = end_indices.data();
+        const SubStringIndexer::Index_type& index = end_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {0, 7, 14, 24};
         ASSERT_EQ(expected, index);
@@ -257,7 +257,7 @@ TEST(Halite, mulitchar_sub_string_merge_nested_unmatched)
     {
         std::string startstr = "{{";
         ASSERT_TRUE(start_indices.index(str, startstr));
-        const SubStringIndexer::Index_type &index = start_indices.data();
+        const SubStringIndexer::Index_type& index = start_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {0, 7, 9};
         ASSERT_EQ(expected, index);
@@ -266,7 +266,7 @@ TEST(Halite, mulitchar_sub_string_merge_nested_unmatched)
     {
         std::string endstr = "}}";
         ASSERT_TRUE(end_indices.index(str, endstr));
-        const SubStringIndexer::Index_type &index = end_indices.data();
+        const SubStringIndexer::Index_type& index = end_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {14, 20};
         ASSERT_EQ(expected, index);
@@ -288,7 +288,7 @@ TEST(Halite, sub_string_merge_nested2)
     {
         std::string startstr = "<";
         ASSERT_TRUE(start_indices.index(str, startstr));
-        const SubStringIndexer::Index_type &index = start_indices.data();
+        const SubStringIndexer::Index_type& index = start_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {0, 1, 6, 7, 8};
         ASSERT_EQ(expected, index);
@@ -297,7 +297,7 @@ TEST(Halite, sub_string_merge_nested2)
     {
         std::string endstr = ">";
         ASSERT_TRUE(end_indices.index(str, endstr));
-        const SubStringIndexer::Index_type &index = end_indices.data();
+        const SubStringIndexer::Index_type& index = end_indices.data();
         ASSERT_TRUE(index.empty() == false);
         SubStringIndexer::Index_type expected = {3, 5, 10, 12, 14};
         ASSERT_EQ(expected, index);

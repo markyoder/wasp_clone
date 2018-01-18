@@ -161,12 +161,12 @@ namespace wasp
    that double-quoting is unnecessary unless the string contains an
    apostrophe, a comma, or backslash (other than backslash-backslash).
    YYSTR is taken from yytname.  */
-std::string JSONObjectParser::yytnamerr_(const char *yystr)
+std::string JSONObjectParser::yytnamerr_(const char* yystr)
 {
     if (*yystr == '"')
     {
         std::string yyr = "";
-        char const *yyp = yystr;
+        char const* yyp = yystr;
 
         for (;;)
             switch (*++yyp)
@@ -194,9 +194,9 @@ std::string JSONObjectParser::yytnamerr_(const char *yystr)
 
 /// Build a parser object.
 JSONObjectParser::JSONObjectParser(
-    std::shared_ptr<wasp::DataObject> &        root_yyarg,
-    std::istream &                             input_stream_yyarg,
-    std::ostream &                             error_stream_yyarg,
+    std::shared_ptr<wasp::DataObject>&         root_yyarg,
+    std::istream&                              input_stream_yyarg,
+    std::ostream&                              error_stream_yyarg,
     std::shared_ptr<class JSONObjectLexerImpl> lexer_yyarg)
     :
 #if YYDEBUG
@@ -219,8 +219,8 @@ JSONObjectParser::~JSONObjectParser()
 | Symbol types.  |
 `---------------*/
 
-inline JSONObjectParser::syntax_error::syntax_error(const location_type &l,
-                                                    const std::string &  m)
+inline JSONObjectParser::syntax_error::syntax_error(const location_type& l,
+                                                    const std::string&   m)
     : std::runtime_error(m), location(l)
 {
 }
@@ -233,7 +233,7 @@ inline JSONObjectParser::basic_symbol<Base>::basic_symbol() : value()
 
 template<typename Base>
 inline JSONObjectParser::basic_symbol<Base>::basic_symbol(
-    const basic_symbol &other)
+    const basic_symbol& other)
     : Base(other), value(), location(other.location)
 {
     value = other.value;
@@ -241,7 +241,7 @@ inline JSONObjectParser::basic_symbol<Base>::basic_symbol(
 
 template<typename Base>
 inline JSONObjectParser::basic_symbol<Base>::basic_symbol(
-    typename Base::kind_type t, const semantic_type &v, const location_type &l)
+    typename Base::kind_type t, const semantic_type& v, const location_type& l)
     : Base(t), value(v), location(l)
 {
 }
@@ -249,7 +249,7 @@ inline JSONObjectParser::basic_symbol<Base>::basic_symbol(
 /// Constructor for valueless symbols.
 template<typename Base>
 inline JSONObjectParser::basic_symbol<Base>::basic_symbol(
-    typename Base::kind_type t, const location_type &l)
+    typename Base::kind_type t, const location_type& l)
     : Base(t), value(), location(l)
 {
 }
@@ -273,7 +273,7 @@ inline bool JSONObjectParser::basic_symbol<Base>::empty() const
 }
 
 template<typename Base>
-inline void JSONObjectParser::basic_symbol<Base>::move(basic_symbol &s)
+inline void JSONObjectParser::basic_symbol<Base>::move(basic_symbol& s)
 {
     super_type::move(s);
     value    = s.value;
@@ -285,7 +285,7 @@ inline JSONObjectParser::by_type::by_type() : type(empty_symbol)
 {
 }
 
-inline JSONObjectParser::by_type::by_type(const by_type &other)
+inline JSONObjectParser::by_type::by_type(const by_type& other)
     : type(other.type)
 {
 }
@@ -299,7 +299,7 @@ inline void JSONObjectParser::by_type::clear()
     type = empty_symbol;
 }
 
-inline void JSONObjectParser::by_type::move(by_type &that)
+inline void JSONObjectParser::by_type::move(by_type& that)
 {
     type = that.type;
     that.clear();
@@ -315,7 +315,7 @@ inline JSONObjectParser::by_state::by_state() : state(empty_state)
 {
 }
 
-inline JSONObjectParser::by_state::by_state(const by_state &other)
+inline JSONObjectParser::by_state::by_state(const by_state& other)
     : state(other.state)
 {
 }
@@ -325,7 +325,7 @@ inline void JSONObjectParser::by_state::clear()
     state = empty_state;
 }
 
-inline void JSONObjectParser::by_state::move(by_state &that)
+inline void JSONObjectParser::by_state::move(by_state& that)
 {
     state = that.state;
     that.clear();
@@ -349,7 +349,7 @@ inline JSONObjectParser::stack_symbol_type::stack_symbol_type()
 }
 
 inline JSONObjectParser::stack_symbol_type::stack_symbol_type(state_type   s,
-                                                              symbol_type &that)
+                                                              symbol_type& that)
     : super_type(s, that.location)
 {
     value = that.value;
@@ -357,8 +357,8 @@ inline JSONObjectParser::stack_symbol_type::stack_symbol_type(state_type   s,
     that.type = empty_symbol;
 }
 
-inline JSONObjectParser::stack_symbol_type &
-JSONObjectParser::stack_symbol_type::operator=(const stack_symbol_type &that)
+inline JSONObjectParser::stack_symbol_type&
+JSONObjectParser::stack_symbol_type::operator=(const stack_symbol_type& that)
 {
     state    = that.state;
     value    = that.value;
@@ -367,8 +367,8 @@ JSONObjectParser::stack_symbol_type::operator=(const stack_symbol_type &that)
 }
 
 template<typename Base>
-inline void JSONObjectParser::yy_destroy_(const char *        yymsg,
-                                          basic_symbol<Base> &yysym) const
+inline void JSONObjectParser::yy_destroy_(const char*         yymsg,
+                                          basic_symbol<Base>& yysym) const
 {
     if (yymsg)
         YY_SYMBOL_PRINT(yymsg, yysym);
@@ -452,10 +452,10 @@ inline void JSONObjectParser::yy_destroy_(const char *        yymsg,
 
 #if YYDEBUG
 template<typename Base>
-void JSONObjectParser::yy_print_(std::ostream &            yyo,
-                                 const basic_symbol<Base> &yysym) const
+void JSONObjectParser::yy_print_(std::ostream&             yyo,
+                                 const basic_symbol<Base>& yysym) const
 {
-    std::ostream &yyoutput = yyo;
+    std::ostream& yyoutput = yyo;
     YYUSE(yyoutput);
     symbol_number_type yytype = yysym.type_get();
     // Avoid a (spurious) G++ 4.8 warning about "array subscript is
@@ -470,13 +470,13 @@ void JSONObjectParser::yy_print_(std::ostream &            yyo,
 #endif
 
 inline void
-JSONObjectParser::yypush_(const char *m, state_type s, symbol_type &sym)
+JSONObjectParser::yypush_(const char* m, state_type s, symbol_type& sym)
 {
     stack_symbol_type t(s, sym);
     yypush_(m, t);
 }
 
-inline void JSONObjectParser::yypush_(const char *m, stack_symbol_type &s)
+inline void JSONObjectParser::yypush_(const char* m, stack_symbol_type& s)
 {
     if (m)
         YY_SYMBOL_PRINT(m, s);
@@ -489,12 +489,12 @@ inline void JSONObjectParser::yypop_(unsigned int n)
 }
 
 #if YYDEBUG
-std::ostream &JSONObjectParser::debug_stream() const
+std::ostream& JSONObjectParser::debug_stream() const
 {
     return *yycdebug_;
 }
 
-void JSONObjectParser::set_debug_stream(std::ostream &o)
+void JSONObjectParser::set_debug_stream(std::ostream& o)
 {
     yycdebug_ = &o;
 }
@@ -600,7 +600,7 @@ int JSONObjectParser::parse()
             {
                 yyla.type = yytranslate_(yylex(&yyla.value, &yyla.location));
             }
-            catch (const syntax_error &yyexc)
+            catch (const syntax_error& yyexc)
             {
                 error(yyexc);
                 goto yyerrlab1;
@@ -765,7 +765,7 @@ int JSONObjectParser::parse()
 #line 158 "JSONObjectParser.bison"  // lalr1.cc:859
                     {
                         (yylhs.value.value) = new Value();
-                        DataArray *array    = new DataArray();
+                        DataArray* array    = new DataArray();
                         array->resize((yystack_[1].value.values)->size());
                         for (size_t i = 0;
                              i < (yystack_[1].value.values)->size(); ++i)
@@ -822,7 +822,7 @@ int JSONObjectParser::parse()
 #line 190 "JSONObjectParser.bison"  // lalr1.cc:859
                     {
                         (yylhs.value.value) = new Value();
-                        DataObject *object  = new DataObject();
+                        DataObject* object  = new DataObject();
                         (yylhs.value.value)->assign(object);
                         for (size_t i = 0;
                              i < (yystack_[1].value.keyed_values)->size(); ++i)
@@ -846,7 +846,7 @@ int JSONObjectParser::parse()
                     case 17:
 #line 205 "JSONObjectParser.bison"  // lalr1.cc:859
                     {
-                        (yylhs.value.values) = new std::vector<Value *>();
+                        (yylhs.value.values) = new std::vector<Value*>();
                         (yylhs.value.values)
                             ->push_back((yystack_[0].value.value));
                     }
@@ -866,7 +866,7 @@ int JSONObjectParser::parse()
                     case 19:
 #line 215 "JSONObjectParser.bison"  // lalr1.cc:859
                     {
-                        (yylhs.value.values) = new std::vector<Value *>();
+                        (yylhs.value.values) = new std::vector<Value*>();
                         (yylhs.value.values)
                             ->push_back((yystack_[0].value.value));
                     }
@@ -886,7 +886,7 @@ int JSONObjectParser::parse()
                     case 21:
 #line 225 "JSONObjectParser.bison"  // lalr1.cc:859
                     {
-                        (yylhs.value.values) = new std::vector<Value *>();
+                        (yylhs.value.values) = new std::vector<Value*>();
                         (yylhs.value.values)
                             ->push_back((yystack_[0].value.value));
                     }
@@ -907,7 +907,7 @@ int JSONObjectParser::parse()
 #line 235 "JSONObjectParser.bison"  // lalr1.cc:859
                     {
                         (yylhs.value.keyed_values) =
-                            new std::vector<std::pair<std::string, Value *>>();
+                            new std::vector<std::pair<std::string, Value*>>();
                         (yylhs.value.keyed_values)
                             ->push_back(std::make_pair(
                                 wasp::strip_quotes(*(yystack_[2].value.string)),
@@ -921,7 +921,7 @@ int JSONObjectParser::parse()
 #line 240 "JSONObjectParser.bison"  // lalr1.cc:859
                     {
                         (yylhs.value.keyed_values) =
-                            new std::vector<std::pair<std::string, Value *>>();
+                            new std::vector<std::pair<std::string, Value*>>();
                         (yylhs.value.keyed_values)
                             ->push_back(std::make_pair(
                                 wasp::strip_quotes(*(yystack_[2].value.string)),
@@ -935,7 +935,7 @@ int JSONObjectParser::parse()
 #line 245 "JSONObjectParser.bison"  // lalr1.cc:859
                     {
                         (yylhs.value.keyed_values) =
-                            new std::vector<std::pair<std::string, Value *>>();
+                            new std::vector<std::pair<std::string, Value*>>();
                         (yylhs.value.keyed_values)
                             ->push_back(std::make_pair(
                                 wasp::strip_quotes(*(yystack_[2].value.string)),
@@ -963,8 +963,7 @@ int JSONObjectParser::parse()
                     {
                         wasp_check((yystack_[0].value.value)->is_object());
                         root.reset((yystack_[0].value.value)->to_object());
-                        (yystack_[0].value.value)
-                            ->assign((DataObject *)nullptr);
+                        (yystack_[0].value.value)->assign((DataObject*)nullptr);
                         delete (yystack_[0].value.value);
                     }
 #line 959 "JSONObjectParser.cpp"  // lalr1.cc:859
@@ -975,7 +974,7 @@ int JSONObjectParser::parse()
                         break;
                 }
             }
-            catch (const syntax_error &yyexc)
+            catch (const syntax_error& yyexc)
             {
                 error(yyexc);
                 YYERROR;
@@ -1123,14 +1122,14 @@ int JSONObjectParser::parse()
     }
 }
 
-void JSONObjectParser::error(const syntax_error &yyexc)
+void JSONObjectParser::error(const syntax_error& yyexc)
 {
     error(yyexc.location, yyexc.what());
 }
 
 // Generate an error message.
 std::string JSONObjectParser::yysyntax_error_(state_type         yystate,
-                                              const symbol_type &yyla) const
+                                              const symbol_type& yyla) const
 {
     // Number of reported tokens (one for the "unexpected", one per
     // "expected").
@@ -1141,7 +1140,7 @@ std::string JSONObjectParser::yysyntax_error_(state_type         yystate,
         YYERROR_VERBOSE_ARGS_MAXIMUM = 5
     };
     // Arguments of yyformat.
-    char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
+    char const* yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
 
     /* There are many possibilities here to consider:
        - If this state is a consistent state with a default action, then
@@ -1197,7 +1196,7 @@ std::string JSONObjectParser::yysyntax_error_(state_type         yystate,
         }
     }
 
-    char const *yyformat = YY_NULLPTR;
+    char const* yyformat = YY_NULLPTR;
     switch (yycount)
     {
 #define YYCASE_(N, S) \
@@ -1219,7 +1218,7 @@ std::string JSONObjectParser::yysyntax_error_(state_type         yystate,
     std::string yyres;
     // Argument number.
     size_t yyi = 0;
-    for (char const *yyp = yyformat; *yyp; ++yyp)
+    for (char const* yyp = yyformat; *yyp; ++yyp)
         if (yyp[0] == '%' && yyp[1] == 's' && yyi < yycount)
         {
             yyres += yytnamerr_(yyarg[yyi++]);
@@ -1273,7 +1272,7 @@ const unsigned char JSONObjectParser::yyr2_[] = {0, 2, 1, 1, 1, 1, 1, 1, 1, 2,
 
 // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
 // First, the terminals, then, starting at \a yyntokens_, nonterminals.
-const char *const JSONObjectParser::yytname_[] = {"\"end of file\"",
+const char* const JSONObjectParser::yytname_[] = {"\"end of file\"",
                                                   "error",
                                                   "$undefined",
                                                   "\"end of line\"",
@@ -1365,8 +1364,8 @@ inline JSONObjectParser::token_number_type JSONObjectParser::yytranslate_(int t)
 #line 267 "JSONObjectParser.bison"  // lalr1.cc:1168
                                     /*** Additional Code ***/
 
-void wasp::JSONObjectParser::error(const JSONObjectParser::location_type &l,
-                                   const std::string &                    m)
+void wasp::JSONObjectParser::error(const JSONObjectParser::location_type& l,
+                                   const std::string&                     m)
 {
     error_stream << l << ": " << m << std::endl;
 }

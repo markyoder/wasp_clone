@@ -14,49 +14,49 @@ namespace wasp
 class WASP_PUBLIC DataAccessor : public Context
 {
   public:
-    DataAccessor(DataObject *data = nullptr, DataAccessor *parent = nullptr);
-    DataAccessor(const DataAccessor &orig);
+    DataAccessor(DataObject* data = nullptr, DataAccessor* parent = nullptr);
+    DataAccessor(const DataAccessor& orig);
     virtual ~DataAccessor();
 
-    virtual bool exists(const std::string &name) const;
+    virtual bool exists(const std::string& name) const;
     /// type getters - note objects are returned as Context::Type::STRING
-    virtual Context::Type type(const std::string &name) const;
-    virtual Context::Type type(const std::string &name, size_t index) const;
+    virtual Context::Type type(const std::string& name) const;
+    virtual Context::Type type(const std::string& name, size_t index) const;
 
     /**
      * @brief size aquire the size of the given variable
      * @param name the variable for which the size is requested
      * @return the size of the variable... 0 if not a vector/map, etc.
      */
-    virtual int size(const std::string &name) const;
+    virtual int size(const std::string& name) const;
 
-    virtual bool store(const std::string &name, const bool &v);
-    virtual bool store(const std::string &name, const int &v);
-    virtual bool store(const std::string &name, const char *v);
-    virtual bool store(const std::string &name, const std::string &v);
-    virtual bool store(const std::string &name, const double &v);
+    virtual bool store(const std::string& name, const bool& v);
+    virtual bool store(const std::string& name, const int& v);
+    virtual bool store(const std::string& name, const char* v);
+    virtual bool store(const std::string& name, const std::string& v);
+    virtual bool store(const std::string& name, const double& v);
 
     /// Boolean data getters
     virtual bool
-    boolean(const std::string &name, size_t index, bool *ok = nullptr) const;
-    virtual bool boolean(const std::string &name, bool *ok = nullptr) const;
+    boolean(const std::string& name, size_t index, bool* ok = nullptr) const;
+    virtual bool boolean(const std::string& name, bool* ok = nullptr) const;
 
     /// integer data getters
     virtual int
-    integer(const std::string &name, size_t index, bool *ok = nullptr) const;
-    virtual int integer(const std::string &name, bool *ok = nullptr) const;
+    integer(const std::string& name, size_t index, bool* ok = nullptr) const;
+    virtual int integer(const std::string& name, bool* ok = nullptr) const;
 
     /// double data getters
     virtual double
-    real(const std::string &name, size_t index, bool *ok = nullptr) const;
-    virtual double real(const std::string &name, bool *ok = nullptr) const;
+    real(const std::string& name, size_t index, bool* ok = nullptr) const;
+    virtual double real(const std::string& name, bool* ok = nullptr) const;
 
     /// string data getters - note Objects are returned as a 'packed' json
     /// (single line representation)
     virtual std::string
-    string(const std::string &name, size_t index, bool *ok = nullptr) const;
-    virtual std::string string(const std::string &name,
-                               bool *             ok = nullptr) const;
+    string(const std::string& name, size_t index, bool* ok = nullptr) const;
+    virtual std::string string(const std::string& name,
+                               bool*              ok = nullptr) const;
 
     /**
      * @brief object acquire an object with the given name
@@ -64,7 +64,7 @@ class WASP_PUBLIC DataAccessor : public Context
      * @return the object, iff an object with the given name exists, nullptr
      * otherwise
      */
-    DataObject *object(const std::string &name) const;
+    DataObject* object(const std::string& name) const;
 
     /**
      * @brief array acquire an array with the given name
@@ -72,17 +72,17 @@ class WASP_PUBLIC DataAccessor : public Context
      * @return the array, iff an array with the given name exists, nullptr
      * otherwise
      */
-    DataArray *array(const std::string &name) const;
+    DataArray* array(const std::string& name) const;
 
   private:
     /**
      * @brief m_parent unmanaged data pointer to parent data layer
      */
-    DataAccessor *m_parent;
+    DataAccessor* m_parent;
     /**
      * @brief m_current_data unmanaged data pointer to current data hierarchy
      */
-    DataObject *m_current_data;
+    DataObject* m_current_data;
 };
 
 }  // wasp

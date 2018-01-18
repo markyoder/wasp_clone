@@ -15,7 +15,7 @@ class WASP_PUBLIC SIRENResultSet
   public:
     typedef std::pair<std::string, std::string> ScalarResult;
     SIRENResultSet();
-    SIRENResultSet(const SIRENResultSet &orig);
+    SIRENResultSet(const SIRENResultSet& orig);
     ~SIRENResultSet();
 
     /**
@@ -50,7 +50,7 @@ class WASP_PUBLIC SIRENResultSet
      * @param index the index of the adapted result
      * @return TAdapter the adapter to the node type
      */
-    const TAdapter &adapted(std::size_t index) const
+    const TAdapter& adapted(std::size_t index) const
     {
         return adapted_results[results[index].second];
     }
@@ -59,13 +59,13 @@ class WASP_PUBLIC SIRENResultSet
      * @param index the index of the scalar result.
      * @return ScalarResult is the named
      */
-    const ScalarResult &scalar(std::size_t index) const
+    const ScalarResult& scalar(std::size_t index) const
     {
         return scalar_results[results[index].second];
     }
 
-    void push(const TAdapter &node);
-    void push(const std::string &name, const std::string &data);
+    void push(const TAdapter& node);
+    void push(const std::string& name, const std::string& data);
 
   private:
     // a result could be an adapted result from a parse tree (TreeNodeView)

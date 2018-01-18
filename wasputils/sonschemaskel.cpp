@@ -14,10 +14,10 @@ typedef SONNodeView<TreeNodeView<TNP>> SONNV;
 struct skel_node
 {
     std::string skel_name;
-    std::map<std::string, skel_node *> skel_children;
+    std::map<std::string, skel_node*> skel_children;
 };
 
-void build_skeleton(SONNV *node, skel_node *current_node)
+void build_skeleton(SONNV* node, skel_node* current_node)
 {
     current_node->skel_name = node->name();
     auto children           = node->non_decorative_children();
@@ -32,7 +32,7 @@ void build_skeleton(SONNV *node, skel_node *current_node)
     }
 }
 
-void display_skeleton(skel_node *current_node, int level)
+void display_skeleton(skel_node* current_node, int level)
 {
     std::string out_spaces(TABSIZE * level, ' ');
     std::string inn_spaces(TABSIZE * (level + 1), ' ');
@@ -68,7 +68,7 @@ void display_skeleton(skel_node *current_node, int level)
               << std::endl;
 }
 
-void free_skeleton(skel_node *current_node)
+void free_skeleton(skel_node* current_node)
 {
     for (auto it = current_node->skel_children.begin();
          it != current_node->skel_children.end(); it++)
@@ -78,7 +78,7 @@ void free_skeleton(skel_node *current_node)
     delete current_node;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     if (argc == 2 &&
         (std::string(argv[1]) == "-v" || std::string(argv[1]) == "--version"))
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    skel_node *skel_root = new skel_node;
+    skel_node* skel_root = new skel_node;
 
     if (argc < 2)
     {

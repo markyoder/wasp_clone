@@ -1306,7 +1306,7 @@ obj(foo){
         for (size_t i = 0; i < names.size(); ++i)
         {
             SCOPED_TRACE(i);
-            const auto &view = document.child_at(i);
+            const auto& view = document.child_at(i);
             std::string name = view.name();
             ASSERT_EQ(names[i], name);
             std::string path = view.path();
@@ -1329,7 +1329,7 @@ obj(foo){
         for (size_t i = 0; i < data.size(); ++i)
         {
             SCOPED_TRACE(i);
-            const auto &view = comments[i];
+            const auto& view = comments[i];
             ASSERT_EQ(data[i], view.data());
             ASSERT_EQ(wasp::COMMENT, view.type());
             std::string name = view.name();
@@ -1341,11 +1341,11 @@ obj(foo){
     {  // test to_int
         auto int_arrays = document.child_by_name("int_array");
         ASSERT_EQ(1, int_arrays.size());
-        const auto &int_array = int_arrays.front();
+        const auto& int_array = int_arrays.front();
         ASSERT_EQ(7, int_array.child_count());
         std::vector<int> value = {1, 2, 3, 4};
         ASSERT_EQ(value.size(), int_array.child_count_by_name("value"));
-        const auto &ints = int_array.child_by_name("value");
+        const auto& ints = int_array.child_by_name("value");
         ASSERT_EQ(4, ints.size());
         for (size_t i = 0; i < ints.size(); ++i)
         {
@@ -1358,11 +1358,11 @@ obj(foo){
     {  // test to_double
         auto real_arrays = document.child_by_name("real_array");
         ASSERT_EQ(1, real_arrays.size());
-        const auto &real_array = real_arrays.front();
+        const auto& real_array = real_arrays.front();
         ASSERT_EQ(7, real_array.child_count());
         std::vector<double> value = {1.1, 2.2, 3.3, 4.4};
         ASSERT_EQ(value.size(), real_array.child_count_by_name("value"));
-        const auto &reals = real_array.child_by_name("value");
+        const auto& reals = real_array.child_by_name("value");
         ASSERT_EQ(4, reals.size());
         for (size_t i = 0; i < reals.size(); ++i)
         {
@@ -1374,11 +1374,11 @@ obj(foo){
     {  // test to_string
         auto string_arrays = document.child_by_name("string_array");
         ASSERT_EQ(1, string_arrays.size());
-        const auto &string_array = string_arrays.front();
+        const auto& string_array = string_arrays.front();
         ASSERT_EQ(7, string_array.child_count());
         std::vector<std::string> value = {"s", "t", " g ", "h"};
         ASSERT_EQ(value.size(), string_array.child_count_by_name("value"));
-        const auto &strings = string_array.child_by_name("value");
+        const auto& strings = string_array.child_by_name("value");
         ASSERT_EQ(4, strings.size());
         for (size_t i = 0; i < strings.size(); ++i)
         {
@@ -1390,7 +1390,7 @@ obj(foo){
     {  // test id methods
         auto objs = document.child_by_name("obj");
         ASSERT_EQ(1, objs.size());
-        const auto &obj_view = objs.front();
+        const auto& obj_view = objs.front();
         ASSERT_EQ("foo", obj_view.id());
         ASSERT_EQ("foo", obj_view.id_child().data());
         // 4 members + 1 (id is decorative) non decorative
@@ -1401,13 +1401,13 @@ obj(foo){
     {  // test last_as_string
         auto keys = document.child_by_name("key");
         ASSERT_EQ(2, keys.size());
-        const auto &key_view1 = keys.front();
+        const auto& key_view1 = keys.front();
         ASSERT_EQ("value1", key_view1.last_as_string());
         ASSERT_EQ("value1", key_view1.to_string());
         ASSERT_EQ("value1", key_view1.first_child_by_name("value").to_string());
         ASSERT_TRUE(
             key_view1.first_non_decorative_child_by_name("dead-ted").is_null());
-        const auto &key_view2 = keys.back();
+        const auto& key_view2 = keys.back();
         ASSERT_EQ("value2", key_view2.last_as_string());
         ASSERT_EQ("value2", key_view2.to_string());
         ASSERT_TRUE(key_view1 < key_view2);

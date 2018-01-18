@@ -92,7 +92,7 @@ bool alphanum_isdigit(const char c)
   @param r NULL-terminated C-style string
   @return negative if l<r, 0 if l equals r, positive if l>r
  */
-int alphanum_impl(const char *l, const char *r)
+int alphanum_impl(const char* l, const char* r)
 {
     enum mode_t
     {
@@ -136,7 +136,7 @@ int alphanum_impl(const char *l, const char *r)
         {
 #ifdef ALPHANUM_LOCALE
             // get the left number
-            char *        end;
+            char*         end;
             unsigned long l_int = strtoul(l, &end, 0);
             l                   = end;
 
@@ -191,7 +191,7 @@ int alphanum_impl(const char *l, const char *r)
   @return negative if left<right, 0 if left==right, positive if left>right.
  */
 template<typename lT, typename rT>
-int alphanum_comp(const lT &left, const rT &right)
+int alphanum_comp(const lT& left, const rT& right)
 {
 #ifdef DOJDEBUG
     std::clog << "alphanum_comp<" << typeid(left).name() << ","
@@ -213,7 +213,7 @@ int alphanum_comp(const lT &left, const rT &right)
   @return negative if l<r, 0 if l==r, positive if l>r.
  */
 template<>
-int alphanum_comp<std::string>(const std::string &l, const std::string &r)
+int alphanum_comp<std::string>(const std::string& l, const std::string& r)
 {
 #ifdef DOJDEBUG
     std::clog << "alphanum_comp<std::string,std::string> " << l << "," << r
@@ -235,7 +235,7 @@ int alphanum_comp<std::string>(const std::string &l, const std::string &r)
 
   @return negative if l<r, 0 if l==r, positive if l>r.
  */
-int alphanum_comp(char *l, char *r)
+int alphanum_comp(char* l, char* r)
 {
     assert(l);
     assert(r);
@@ -245,7 +245,7 @@ int alphanum_comp(char *l, char *r)
     return alphanum_impl(l, r);
 }
 
-int alphanum_comp(const char *l, const char *r)
+int alphanum_comp(const char* l, const char* r)
 {
     assert(l);
     assert(r);
@@ -256,7 +256,7 @@ int alphanum_comp(const char *l, const char *r)
     return alphanum_impl(l, r);
 }
 
-int alphanum_comp(char *l, const char *r)
+int alphanum_comp(char* l, const char* r)
 {
     assert(l);
     assert(r);
@@ -267,7 +267,7 @@ int alphanum_comp(char *l, const char *r)
     return alphanum_impl(l, r);
 }
 
-int alphanum_comp(const char *l, char *r)
+int alphanum_comp(const char* l, char* r)
 {
     assert(l);
     assert(r);
@@ -278,7 +278,7 @@ int alphanum_comp(const char *l, char *r)
     return alphanum_impl(l, r);
 }
 
-int alphanum_comp(const std::string &l, char *r)
+int alphanum_comp(const std::string& l, char* r)
 {
     assert(r);
 #ifdef DOJDEBUG
@@ -288,7 +288,7 @@ int alphanum_comp(const std::string &l, char *r)
     return alphanum_impl(l.c_str(), r);
 }
 
-int alphanum_comp(char *l, const std::string &r)
+int alphanum_comp(char* l, const std::string& r)
 {
     assert(l);
 #ifdef DOJDEBUG
@@ -298,7 +298,7 @@ int alphanum_comp(char *l, const std::string &r)
     return alphanum_impl(l, r.c_str());
 }
 
-int alphanum_comp(const std::string &l, const char *r)
+int alphanum_comp(const std::string& l, const char* r)
 {
     assert(r);
 #ifdef DOJDEBUG
@@ -308,7 +308,7 @@ int alphanum_comp(const std::string &l, const char *r)
     return alphanum_impl(l.c_str(), r);
 }
 
-int alphanum_comp(const char *l, const std::string &r)
+int alphanum_comp(const char* l, const std::string& r)
 {
     assert(l);
 #ifdef DOJDEBUG
@@ -328,7 +328,7 @@ int alphanum_comp(const char *l, const std::string &r)
 template<class Ty>
 struct alphanum_less : public std::binary_function<Ty, Ty, bool>
 {
-    bool operator()(const Ty &left, const Ty &right) const
+    bool operator()(const Ty& left, const Ty& right) const
     {
         return alphanum_comp(left, right) < 0;
     }

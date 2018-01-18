@@ -78,12 +78,12 @@ class WASP_PUBLIC HIVE
 {
   public:
     HIVE();
-    HIVE(const std::atomic<bool> &stop);
+    HIVE(const std::atomic<bool>& stop);
     ~HIVE();
     template<class SchemaAdapter, class InputAdapter>
-    bool validate(SchemaAdapter &           schema_node,
-                  InputAdapter &            input_node,
-                  std::vector<std::string> &errors);
+    bool validate(SchemaAdapter&            schema_node,
+                  InputAdapter&             input_node,
+                  std::vector<std::string>& errors);
     enum class MessagePrintType
     {
         NORMAL,
@@ -91,16 +91,16 @@ class WASP_PUBLIC HIVE
         JSON
     };
     void printMessages(bool                      pass,
-                       std::vector<std::string> &errors,
+                       std::vector<std::string>& errors,
                        MessagePrintType msgType = MessagePrintType::NORMAL,
                        std::string      file    = "",
-                       std::ostream &   output  = std::cout);
+                       std::ostream&    output  = std::cout);
 
-    static void sort_errors(std::vector<std::string> &errors);
-    static std::string combine(std::vector<std::string> &errors)
+    static void sort_errors(std::vector<std::string>& errors);
+    static std::string combine(std::vector<std::string>& errors)
     {
         std::stringstream str;
-        for (const std::string &s : errors)
+        for (const std::string& s : errors)
         {
             str << s << std::endl;
         }
@@ -124,93 +124,93 @@ class WASP_PUBLIC HIVE
      * An error message is placed on the error.
      */
     template<class InputAdapter>
-    bool select_nodes(SIRENResultSet<InputAdapter> &results,
-                      InputAdapter &                input_node,
-                      const std::string &           selection_path,
-                      std::vector<std::string> &    errors);
+    bool select_nodes(SIRENResultSet<InputAdapter>& results,
+                      InputAdapter&                 input_node,
+                      const std::string&            selection_path,
+                      std::vector<std::string>&     errors);
 
     // TODO document algorithm logic, runtime complexity, expected result
     template<class SchemaAdapter, class InputAdapter>
-    bool traverse_schema(SchemaAdapter &           schema_node,
-                         InputAdapter &            input_node,
-                         std::vector<std::string> &errors);
+    bool traverse_schema(SchemaAdapter&            schema_node,
+                         InputAdapter&             input_node,
+                         std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateMinOccurs(SchemaAdapter &           schema_node,
-                           InputAdapter &            input_node,
-                           std::vector<std::string> &errors);
+    bool validateMinOccurs(SchemaAdapter&            schema_node,
+                           InputAdapter&             input_node,
+                           std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateMaxOccurs(SchemaAdapter &           schema_node,
-                           InputAdapter &            input_node,
-                           std::vector<std::string> &errors);
+    bool validateMaxOccurs(SchemaAdapter&            schema_node,
+                           InputAdapter&             input_node,
+                           std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateValType(SchemaAdapter &           schema_node,
-                         InputAdapter &            input_node,
-                         std::vector<std::string> &errors);
+    bool validateValType(SchemaAdapter&            schema_node,
+                         InputAdapter&             input_node,
+                         std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateValEnums(SchemaAdapter &           schema_node,
-                          InputAdapter &            input_node,
-                          std::vector<std::string> &errors);
+    bool validateValEnums(SchemaAdapter&            schema_node,
+                          InputAdapter&             input_node,
+                          std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateMinValInc(SchemaAdapter &           schema_node,
-                           InputAdapter &            input_node,
-                           std::vector<std::string> &errors);
+    bool validateMinValInc(SchemaAdapter&            schema_node,
+                           InputAdapter&             input_node,
+                           std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateMaxValInc(SchemaAdapter &           schema_node,
-                           InputAdapter &            input_node,
-                           std::vector<std::string> &errors);
+    bool validateMaxValInc(SchemaAdapter&            schema_node,
+                           InputAdapter&             input_node,
+                           std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateMinValExc(SchemaAdapter &           schema_node,
-                           InputAdapter &            input_node,
-                           std::vector<std::string> &errors);
+    bool validateMinValExc(SchemaAdapter&            schema_node,
+                           InputAdapter&             input_node,
+                           std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateMaxValExc(SchemaAdapter &           schema_node,
-                           InputAdapter &            input_node,
-                           std::vector<std::string> &errors);
+    bool validateMaxValExc(SchemaAdapter&            schema_node,
+                           InputAdapter&             input_node,
+                           std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateExistsIn(SchemaAdapter &           schema_node,
-                          InputAdapter &            input_node,
-                          std::vector<std::string> &errors);
+    bool validateExistsIn(SchemaAdapter&            schema_node,
+                          InputAdapter&             input_node,
+                          std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateNotExistsIn(SchemaAdapter &           schema_node,
-                             InputAdapter &            input_node,
-                             std::vector<std::string> &errors);
+    bool validateNotExistsIn(SchemaAdapter&            schema_node,
+                             InputAdapter&             input_node,
+                             std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateSumOver(SchemaAdapter &           schema_node,
-                         InputAdapter &            input_node,
-                         std::vector<std::string> &errors);
+    bool validateSumOver(SchemaAdapter&            schema_node,
+                         InputAdapter&             input_node,
+                         std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateSumOverGroup(SchemaAdapter &           schema_node,
-                              InputAdapter &            input_node,
-                              std::vector<std::string> &errors);
+    bool validateSumOverGroup(SchemaAdapter&            schema_node,
+                              InputAdapter&             input_node,
+                              std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateIncreaseOver(SchemaAdapter &           schema_node,
-                              InputAdapter &            input_node,
-                              std::vector<std::string> &errors);
+    bool validateIncreaseOver(SchemaAdapter&            schema_node,
+                              InputAdapter&             input_node,
+                              std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateDecreaseOver(SchemaAdapter &           schema_node,
-                              InputAdapter &            input_node,
-                              std::vector<std::string> &errors);
+    bool validateDecreaseOver(SchemaAdapter&            schema_node,
+                              InputAdapter&             input_node,
+                              std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateChildAtMostOne(SchemaAdapter &           schema_node,
-                                InputAdapter &            input_node,
-                                std::vector<std::string> &errors);
+    bool validateChildAtMostOne(SchemaAdapter&            schema_node,
+                                InputAdapter&             input_node,
+                                std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateChildExactlyOne(SchemaAdapter &           schema_node,
-                                 InputAdapter &            input_node,
-                                 std::vector<std::string> &errors);
+    bool validateChildExactlyOne(SchemaAdapter&            schema_node,
+                                 InputAdapter&             input_node,
+                                 std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateChildAtLeastOne(SchemaAdapter &           schema_node,
-                                 InputAdapter &            input_node,
-                                 std::vector<std::string> &errors);
+    bool validateChildAtLeastOne(SchemaAdapter&            schema_node,
+                                 InputAdapter&             input_node,
+                                 std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateChildCountEqual(SchemaAdapter &           schema_node,
-                                 InputAdapter &            input_node,
-                                 std::vector<std::string> &errors);
+    bool validateChildCountEqual(SchemaAdapter&            schema_node,
+                                 InputAdapter&             input_node,
+                                 std::vector<std::string>& errors);
     template<class SchemaAdapter, class InputAdapter>
-    bool validateChildUniqueness(SchemaAdapter &           schema_node,
-                                 InputAdapter &            input_node,
-                                 std::vector<std::string> &errors);
-    std::string getFullRuleName(const std::string &shortName)
+    bool validateChildUniqueness(SchemaAdapter&            schema_node,
+                                 InputAdapter&             input_node,
+                                 std::vector<std::string>& errors);
+    std::string getFullRuleName(const std::string& shortName)
     {
         static std::map<std::string, std::string> fullNames = {
             {"MinOccurs", "minimum occurrence"},
@@ -240,7 +240,7 @@ class WASP_PUBLIC HIVE
         else
             return fullNamesIter->second;
     }
-    static bool schema_element(const std::string &name)
+    static bool schema_element(const std::string& name)
     {
         static std::set<std::string> element_names = {
             "MinOccurs",       "MaxOccurs",       "ValType",
@@ -264,7 +264,7 @@ class WASP_PUBLIC HIVE
             "min",   "polar", "pow",   "real", "sec",  "sin",   "sinh",
             "sqrt",  "tan",   "tanh",  "trunc"};
         std::string::size_type i;
-        for (auto &func : valid_function_names)
+        for (auto& func : valid_function_names)
         {
             if ((i = cpy.find(func)) != std::string::npos)
                 cpy.erase(i, func.size());
@@ -280,19 +280,19 @@ class WASP_PUBLIC HIVE
         return cpy.empty();
     }
 
-    const std::atomic<bool> &stop;
+    const std::atomic<bool>& stop;
 
   public:
     template<class D, class V>
-    static bool create_definition(D *           definition_model,
-                                  const V &     schema_view,
-                                  std::ostream &errors,
+    static bool create_definition(D*            definition_model,
+                                  const V&      schema_view,
+                                  std::ostream& errors,
                                   bool          ambig_error = true)
     {
         wasp_require(definition_model);
         for (size_t i = 0; i < schema_view.child_count(); ++i)
         {
-            const auto &child_view = schema_view.child_at(i);
+            const auto& child_view = schema_view.child_at(i);
             // skip decorative elements
             if (child_view.is_decorative())
                 continue;
@@ -301,12 +301,12 @@ class WASP_PUBLIC HIVE
             {
                 for (size_t a = 0; a < child_view.child_count(); ++a)
                 {
-                    const auto &alias_view = child_view.child_at(a);
+                    const auto& alias_view = child_view.child_at(a);
                     if (alias_view.is_decorative())
                         continue;
                     // must be a scalar value - i.e. a string
                     wasp_check(alias_view.child_count() == 0);
-                    const std::string &alias_name = alias_view.to_string();
+                    const std::string& alias_name = alias_view.to_string();
                     definition_model->parent()->create_aliased(
                         alias_name, definition_model);
                 }
@@ -315,7 +315,7 @@ class WASP_PUBLIC HIVE
             // skip schema elements
             else if (schema_element(child_view_name))
                 continue;
-            D *child_definition = definition_model->create(child_view_name);
+            D* child_definition = definition_model->create(child_view_name);
             //
             if (child_definition == nullptr &&
                 definition_model->has(child_view_name) && ambig_error)
@@ -348,9 +348,9 @@ class WASP_PUBLIC HIVE
     // or occur multiple times ( array ) according to the schema
     template<class SR, class CN>
     static bool get_json_type(SR            schema_root,
-                              const CN &    current_node,
-                              JsonType &    type,
-                              std::ostream &err)
+                              const CN&     current_node,
+                              JsonType&     type,
+                              std::ostream& err)
     {
         // if this is the document_root - then it is a singleton
         if (current_node.type() == wasp::DOCUMENT_ROOT)
@@ -413,12 +413,12 @@ class WASP_PUBLIC HIVE
     // recursive method to traverse dom and save json conversion to out stream
     // uses schema to determine if components should be objects or arrays
     template<class SR, class CN>
-    static bool input_to_json(const SR &    schema_root,
-                              const CN &    current_node,
+    static bool input_to_json(const SR&     schema_root,
+                              const CN&     current_node,
                               int           level,
-                              int &         last_level_printed,
-                              std::ostream &out,
-                              std::ostream &err)
+                              int&          last_level_printed,
+                              std::ostream& out,
+                              std::ostream& err)
     {
         // deterime if this is a json object or array and if it is a "value"
         // node
@@ -604,21 +604,21 @@ class WASP_PUBLIC HIVE
       public:
         //// Invalid Schema Rule Errors ////
 
-        static std::string SirenParseError(const std::string &message)
+        static std::string SirenParseError(const std::string& message)
         {
             return "Validation Error: Invalid Schema Rule: " + message;
         }
 
         static std::string
-        BadSchemaRule(const std::string &ruleName, int line, int col)
+        BadSchemaRule(const std::string& ruleName, int line, int col)
         {
             return "Validation Error: Invalid Schema Rule: \"" + ruleName +
                    "\" line:" + std::to_string(line) +
                    " column:" + std::to_string(col);
         }
 
-        static std::string BadSchemaPath(const std::string &ruleName,
-                                         const std::string &lookupPath,
+        static std::string BadSchemaPath(const std::string& ruleName,
+                                         const std::string& lookupPath,
                                          int                line,
                                          int                col)
         {
@@ -628,11 +628,11 @@ class WASP_PUBLIC HIVE
                    " column:" + std::to_string(col);
         }
 
-        static std::string BadOption(const std::string &ruleName,
-                                     const std::string &badOption,
+        static std::string BadOption(const std::string& ruleName,
+                                     const std::string& badOption,
                                      int                line,
                                      int                col,
-                                     const std::string &validOptions)
+                                     const std::string& validOptions)
         {
             return "Validation Error: Invalid Schema Rule: Bad " + ruleName +
                    " Option \"" + badOption +
@@ -641,8 +641,8 @@ class WASP_PUBLIC HIVE
                    validOptions + " ]";
         }
 
-        static std::string MissingArgument(const std::string &ruleName,
-                                           const std::string &argument,
+        static std::string MissingArgument(const std::string& ruleName,
+                                           const std::string& argument,
                                            int                line,
                                            int                col)
         {
@@ -652,7 +652,7 @@ class WASP_PUBLIC HIVE
         }
 
         static std::string
-        BadEnumReference(const std::string &refName, int line, int col)
+        BadEnumReference(const std::string& refName, int line, int col)
         {
             return "Validation Error: Invalid Schema Rule: Enum Reference \"" +
                    refName + "\" at line:" + std::to_string(line) +
@@ -667,15 +667,15 @@ class WASP_PUBLIC HIVE
         }
 
         static std::string
-        RangeNotValidNum(const std::string &value, int line, int col)
+        RangeNotValidNum(const std::string& value, int line, int col)
         {
             return "Validation Error: Invalid Schema Rule: " + value +
                    " range value not a valid number at line:" +
                    std::to_string(line) + " column:" + std::to_string(col);
         }
 
-        static std::string RangeInvalid(const std::string &startValue,
-                                        const std::string &endValue,
+        static std::string RangeInvalid(const std::string& startValue,
+                                        const std::string& endValue,
                                         int                line,
                                         int                col)
         {
@@ -689,7 +689,7 @@ class WASP_PUBLIC HIVE
         //// Input Errors ////
 
         static std::string
-        NotExistInSchema(int line, int col, const std::string &path)
+        NotExistInSchema(int line, int col, const std::string& path)
         {
             return "line:" + std::to_string(line) +
                    " column:" + std::to_string(col) +
@@ -699,9 +699,9 @@ class WASP_PUBLIC HIVE
 
         static std::string MoreThanOneValue(int                line,
                                             int                col,
-                                            const std::string &nodeName,
-                                            const std::string &ruleName,
-                                            const std::string &ruleValue)
+                                            const std::string& nodeName,
+                                            const std::string& ruleName,
+                                            const std::string& ruleValue)
         {
             return "line:" + std::to_string(line) +
                    " column:" + std::to_string(col) +
@@ -712,9 +712,9 @@ class WASP_PUBLIC HIVE
 
         static std::string NotAValidNumber(int                line,
                                            int                col,
-                                           const std::string &nodeName,
-                                           const std::string &ruleName,
-                                           const std::string &ruleValue)
+                                           const std::string& nodeName,
+                                           const std::string& ruleName,
+                                           const std::string& ruleValue)
         {
             return "line:" + std::to_string(line) +
                    " column:" + std::to_string(col) +
@@ -725,9 +725,9 @@ class WASP_PUBLIC HIVE
 
         static std::string WrongTypeForRule(int                line,
                                             int                col,
-                                            const std::string &nodeName,
-                                            const std::string &value,
-                                            const std::string &ruleName)
+                                            const std::string& nodeName,
+                                            const std::string& value,
+                                            const std::string& ruleName)
         {
             return "line:" + std::to_string(line) +
                    " column:" + std::to_string(col) +
@@ -737,8 +737,8 @@ class WASP_PUBLIC HIVE
 
         static std::string ErrorLimit(int                line,
                                       int                col,
-                                      const std::string &nodePath,
-                                      const std::string &ruleName,
+                                      const std::string& nodePath,
+                                      const std::string& ruleName,
                                       int                maxErrors)
         {
             return "line:" + std::to_string(line) +
@@ -750,12 +750,12 @@ class WASP_PUBLIC HIVE
 
         static std::string Occurance(int                line,
                                      int                col,
-                                     const std::string &nodeName,
+                                     const std::string& nodeName,
                                      int                realOccurs,
-                                     const std::string &childName,
-                                     const std::string &ruleName,
-                                     const std::string &expectedOccurs,
-                                     const std::string &lookupPath = "")
+                                     const std::string& childName,
+                                     const std::string& ruleName,
+                                     const std::string& expectedOccurs,
+                                     const std::string& lookupPath = "")
         {
             return "line:" + std::to_string(line) +
                    " column:" + std::to_string(col) +
@@ -770,9 +770,9 @@ class WASP_PUBLIC HIVE
 
         static std::string BadValType(int                line,
                                       int                col,
-                                      const std::string &nodeName,
-                                      const std::string &value,
-                                      const std::string &valType)
+                                      const std::string& nodeName,
+                                      const std::string& value,
+                                      const std::string& valType)
         {
             return "line:" + std::to_string(line) +
                    " column:" + std::to_string(col) +
@@ -782,9 +782,9 @@ class WASP_PUBLIC HIVE
 
         static std::string BadEnum(int                line,
                                    int                col,
-                                   const std::string &nodeName,
-                                   const std::string &value,
-                                   const std::string &closestEnums)
+                                   const std::string& nodeName,
+                                   const std::string& value,
+                                   const std::string& closestEnums)
         {
             return "line:" + std::to_string(line) +
                    " column:" + std::to_string(col) +
@@ -795,11 +795,11 @@ class WASP_PUBLIC HIVE
 
         static std::string MinMax(int                line,
                                   int                col,
-                                  const std::string &nodeName,
-                                  const std::string &value,
-                                  const std::string &ruleName,
-                                  const std::string &minMaxValue,
-                                  const std::string &lookupPath = "")
+                                  const std::string& nodeName,
+                                  const std::string& value,
+                                  const std::string& ruleName,
+                                  const std::string& minMaxValue,
+                                  const std::string& lookupPath = "")
         {
             return "line:" + std::to_string(line) +
                    " column:" + std::to_string(col) +
@@ -822,9 +822,9 @@ class WASP_PUBLIC HIVE
 
         static std::string NotExistsIn(int                line,
                                        int                col,
-                                       const std::string &nodeName,
-                                       const std::string &value,
-                                       const std::string &lookupPaths)
+                                       const std::string& nodeName,
+                                       const std::string& value,
+                                       const std::string& lookupPaths)
         {
             return "line:" + std::to_string(line) +
                    " column:" + std::to_string(col) +
@@ -834,12 +834,12 @@ class WASP_PUBLIC HIVE
 
         static std::string AlsoExistsAt(int                line,
                                         int                col,
-                                        const std::string &nodeName,
-                                        const std::string &value,
-                                        const std::string &lookupPath,
+                                        const std::string& nodeName,
+                                        const std::string& value,
+                                        const std::string& lookupPath,
                                         int                breakline,
                                         int                breakcol,
-                                        const std::string &ruleName)
+                                        const std::string& ruleName)
         {
             return "line:" + std::to_string(line) +
                    " column:" + std::to_string(col) +
@@ -851,12 +851,12 @@ class WASP_PUBLIC HIVE
 
         static std::string SumProd(int                line,
                                    int                col,
-                                   const std::string &nodeName,
-                                   const std::string &childName,
-                                   const std::string &actualValue,
-                                   const std::string &ruleName,
-                                   const std::string &expectedValue,
-                                   const std::string &contextPath)
+                                   const std::string& nodeName,
+                                   const std::string& childName,
+                                   const std::string& actualValue,
+                                   const std::string& ruleName,
+                                   const std::string& expectedValue,
+                                   const std::string& contextPath)
         {
             return "line:" + std::to_string(line) +
                    " column:" + std::to_string(col) +
@@ -871,15 +871,15 @@ class WASP_PUBLIC HIVE
 
         static std::string SumProdGroup(int                line,
                                         int                col,
-                                        const std::string &nodeName,
-                                        const std::string &childName,
-                                        const std::string &actualValue,
-                                        const std::string &comparePath,
+                                        const std::string& nodeName,
+                                        const std::string& childName,
+                                        const std::string& actualValue,
+                                        const std::string& comparePath,
                                         int                groupDivide,
                                         int                groupDivideValue,
-                                        const std::string &ruleName,
-                                        const std::string &expectedValue,
-                                        const std::string &contextPath)
+                                        const std::string& ruleName,
+                                        const std::string& expectedValue,
+                                        const std::string& contextPath)
         {
             return "line:" + std::to_string(line) +
                    " column:" + std::to_string(col) +
@@ -897,11 +897,11 @@ class WASP_PUBLIC HIVE
 
         static std::string IncreaseDecrease(int                line,
                                             int                col,
-                                            const std::string &nodeName,
-                                            const std::string &childName,
-                                            const std::string &type,
-                                            const std::string &ruleName,
-                                            const std::string &contextPath,
+                                            const std::string& nodeName,
+                                            const std::string& childName,
+                                            const std::string& type,
+                                            const std::string& ruleName,
+                                            const std::string& contextPath,
                                             int                breakline,
                                             int                breakcol)
         {
@@ -917,10 +917,10 @@ class WASP_PUBLIC HIVE
 
         static std::string ChildMostExactLeast(int                line,
                                                int                col,
-                                               const std::string &nodeName,
-                                               const std::string &childNames,
-                                               const std::string &ruleName,
-                                               const std::string &howMany = "")
+                                               const std::string& nodeName,
+                                               const std::string& childNames,
+                                               const std::string& ruleName,
+                                               const std::string& howMany = "")
         {
             return "line:" + std::to_string(line) +
                    " column:" + std::to_string(col) +
@@ -933,10 +933,10 @@ class WASP_PUBLIC HIVE
 
         static std::string ChildCountEqual(int                line,
                                            int                col,
-                                           const std::string &nodeName,
-                                           const std::string &ruleName,
-                                           const std::string &option,
-                                           const std::string &childNames)
+                                           const std::string& nodeName,
+                                           const std::string& ruleName,
+                                           const std::string& option,
+                                           const std::string& childNames)
         {
             return "line:" + std::to_string(line) +
                    " column:" + std::to_string(col) +

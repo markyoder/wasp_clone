@@ -14,13 +14,13 @@ TEST(Definition, current_section)
     ASSERT_EQ(-1, definition.delta("child", aname));
     ASSERT_EQ("", aname);  // no name found, unchanged
 
-    AbstractDefinition *child = definition.create("child");
+    AbstractDefinition* child = definition.create("child");
     ASSERT_EQ("child", child->name());
     ASSERT_TRUE(definition.has("child"));
     ASSERT_EQ(0, definition.delta("child", aname));
     ASSERT_EQ("child", aname);
     {
-        AbstractDefinition *alias_of_child =
+        AbstractDefinition* alias_of_child =
             definition.create_aliased("achild", child);
         ASSERT_EQ("achild", alias_of_child->name());
         ASSERT_EQ("child", alias_of_child->actual_name());
@@ -31,7 +31,7 @@ TEST(Definition, current_section)
         ASSERT_EQ("child", aname);
     }
     {
-        AbstractDefinition *alias_of_child =
+        AbstractDefinition* alias_of_child =
             definition.create_aliased("bchild", child);
         ASSERT_EQ("bchild", alias_of_child->name());
         ASSERT_EQ("child", alias_of_child->actual_name());
@@ -53,11 +53,11 @@ TEST(Definition, current_section)
 TEST(Definition, parent_section)
 {
     Definition          definition;
-    AbstractDefinition *child = definition.create("child");
+    AbstractDefinition* child = definition.create("child");
     definition.create_aliased("achild", child);
-    AbstractDefinition *grandchild1 = child->create("grandchild1");
+    AbstractDefinition* grandchild1 = child->create("grandchild1");
     child->create_aliased("agrandchild1", grandchild1);
-    AbstractDefinition *grandchild2 = child->create("grandchild2");
+    AbstractDefinition* grandchild2 = child->create("grandchild2");
     std::string         aname;
     ASSERT_TRUE(child->has("grandchild1"));
     ASSERT_TRUE(child->has("agrandchild1"));

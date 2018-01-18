@@ -4,18 +4,18 @@
 template<class TNV>
 DDINodeView<TNV>::DDINodeView(
     std::size_t                                         node_index,
-    const typename DDINodeView<TNV>::TreeNodePool_type &nodes)
+    const typename DDINodeView<TNV>::TreeNodePool_type& nodes)
     : m_tree_node_index(node_index), m_tree_data(&nodes)
 {
     wasp_require(!this->is_null());
 }
 template<class TNV>
-DDINodeView<TNV>::DDINodeView(const DDINodeView &orig)
+DDINodeView<TNV>::DDINodeView(const DDINodeView& orig)
     : m_tree_node_index(orig.m_tree_node_index), m_tree_data(orig.m_tree_data)
 {
 }
 template<class TNV>
-DDINodeView<TNV>::DDINodeView(const TNV &orig)
+DDINodeView<TNV>::DDINodeView(const TNV& orig)
     : m_tree_node_index(orig.tree_node_index())
     , m_tree_data(orig.tree_node_pool())
 {
@@ -25,27 +25,27 @@ DDINodeView<TNV>::~DDINodeView()
 {
 }
 template<class TNV>
-DDINodeView<TNV> &DDINodeView<TNV>::operator=(const DDINodeView &b)
+DDINodeView<TNV>& DDINodeView<TNV>::operator=(const DDINodeView& b)
 {
     m_tree_node_index = b.tree_node_index();
     m_tree_data       = b.tree_node_pool();
     return *this;
 }
 template<class TNV>
-DDINodeView<TNV> &DDINodeView<TNV>::operator=(const TNV &b)
+DDINodeView<TNV>& DDINodeView<TNV>::operator=(const TNV& b)
 {
     m_tree_node_index = b.tree_node_index();
     m_tree_data       = b.tree_node_pool();
     return *this;
 }
 template<class TNV>
-bool DDINodeView<TNV>::operator==(const DDINodeView &b) const
+bool DDINodeView<TNV>::operator==(const DDINodeView& b) const
 {
     return m_tree_data == b.m_tree_data &&
            m_tree_node_index == b.m_tree_node_index;
 }
 template<class TNV>
-bool DDINodeView<TNV>::operator<(const DDINodeView &b) const
+bool DDINodeView<TNV>::operator<(const DDINodeView& b) const
 {
     return m_tree_node_index < b.m_tree_node_index;
 }
@@ -107,7 +107,7 @@ DDINodeView<TNV>::non_decorative_children() const
     Collection results;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
     {
-        const auto &child = child_at(i);
+        const auto& child = child_at(i);
         if (!child.is_decorative())
             results.push_back(child);
     }
@@ -115,11 +115,11 @@ DDINodeView<TNV>::non_decorative_children() const
 }
 template<class TNV>
 DDINodeView<TNV> DDINodeView<TNV>::first_non_decorative_child_by_name(
-    const std::string &name) const
+    const std::string& name) const
 {
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
     {
-        const auto &child = child_at(i);
+        const auto& child = child_at(i);
         if (!child.is_decorative())
         {
             if (name == child.name())
@@ -136,7 +136,7 @@ size_t DDINodeView<TNV>::non_decorative_children_count() const
     size_t result = 0;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
     {
-        const auto &child = child_at(i);
+        const auto& child = child_at(i);
         if (!child.is_decorative())
             ++result;
     }
@@ -157,7 +157,7 @@ std::string DDINodeView<TNV>::path() const
     return str.str();
 }
 template<class TNV>
-void DDINodeView<TNV>::paths(std::ostream &out) const
+void DDINodeView<TNV>::paths(std::ostream& out) const
 {
     m_tree_data->node_paths(m_tree_node_index, out);
 }
@@ -168,7 +168,7 @@ std::size_t DDINodeView<TNV>::child_count() const
 }
 template<class TNV>  // template type
 std::size_t          // return type
-    DDINodeView<TNV>::child_count_by_name(const std::string &name,
+    DDINodeView<TNV>::child_count_by_name(const std::string& name,
                                           std::size_t        limit) const
 {
     TNV view(tree_node_index(), *tree_node_pool());
@@ -183,7 +183,7 @@ DDINodeView<TNV> DDINodeView<TNV>::child_at(std::size_t index) const
 }
 template<class TNV>                    // template type
 typename DDINodeView<TNV>::Collection  // return type
-    DDINodeView<TNV>::child_by_name(const std::string &name,
+    DDINodeView<TNV>::child_by_name(const std::string& name,
                                     std::size_t        limit) const
 {
     Collection results;
@@ -203,7 +203,7 @@ typename DDINodeView<TNV>::Collection  // return type
 }
 template<class TNV>  // template type
 DDINodeView<TNV>     // return type
-    DDINodeView<TNV>::first_child_by_name(const std::string &name) const
+    DDINodeView<TNV>::first_child_by_name(const std::string& name) const
 {
     TNV view(tree_node_index(), *tree_node_pool());
     return view.first_child_by_name(name);
@@ -214,7 +214,7 @@ std::size_t DDINodeView<TNV>::type() const
     return m_tree_data->type(m_tree_node_index);
 }
 template<class TNV>
-const char *DDINodeView<TNV>::name() const
+const char* DDINodeView<TNV>::name() const
 {
     return m_tree_data->name(m_tree_node_index);
 }
@@ -242,32 +242,32 @@ std::size_t DDINodeView<TNV>::last_column() const
 }
 
 template<class TNV>
-bool DDINodeView<TNV>::to_bool(bool *ok) const
+bool DDINodeView<TNV>::to_bool(bool* ok) const
 {
     TNV view(value_tree_node_index(), *tree_node_pool());
     return view.to_bool(ok);
 }
 
 template<class TNV>
-int DDINodeView<TNV>::to_int(bool *ok) const
+int DDINodeView<TNV>::to_int(bool* ok) const
 {
     TNV view(value_tree_node_index(), *tree_node_pool());
     return view.to_int(ok);
 }
 template<class TNV>
-double DDINodeView<TNV>::to_double(bool *ok) const
+double DDINodeView<TNV>::to_double(bool* ok) const
 {
     TNV view(value_tree_node_index(), *tree_node_pool());
     return view.to_double(ok);
 }
 template<class TNV>
-std::string DDINodeView<TNV>::to_string(bool *ok) const
+std::string DDINodeView<TNV>::to_string(bool* ok) const
 {
     TNV view(value_tree_node_index(), *tree_node_pool());
     return view.to_string(ok);
 }
 template<class TNV>
-std::string DDINodeView<TNV>::last_as_string(bool *ok) const
+std::string DDINodeView<TNV>::last_as_string(bool* ok) const
 {
     size_t count = child_count();
     if (count > 0)

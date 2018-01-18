@@ -19,7 +19,7 @@ template<class S = TreeNodePool<>>
 class WASP_PUBLIC ExprInterpreter : public Interpreter<S>
 {
   public:
-    ExprInterpreter(std::ostream &error_stream = std::cerr);
+    ExprInterpreter(std::ostream& error_stream = std::cerr);
     ~ExprInterpreter();
 
     /**
@@ -29,7 +29,7 @@ class WASP_PUBLIC ExprInterpreter : public Interpreter<S>
      * @param startColumn the first column of the input stream
      * @return true, iff no input processing errors were encountered
      */
-    bool parse(std::istream &input,
+    bool parse(std::istream& input,
                std::size_t   m_start_line   = 1u,
                std::size_t   m_start_column = 1u);
 
@@ -40,7 +40,7 @@ class WASP_PUBLIC ExprInterpreter : public Interpreter<S>
         return evaluate(context);
     }
 
-    Result evaluate(Context &context)
+    Result evaluate(Context& context)
     {
         Result r;
         auto   root_view = this->root();

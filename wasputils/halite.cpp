@@ -15,7 +15,7 @@ using namespace std;
 using namespace wasp;
 
 template<class S>
-bool evaluate_template(HaliteInterpreter<S> &halite, DataObject &object)
+bool evaluate_template(HaliteInterpreter<S>& halite, DataObject& object)
 {
     DataAccessor data(&object);
     return halite.evaluate(std::cout, data, &std::cerr);
@@ -24,7 +24,7 @@ bool evaluate_template(HaliteInterpreter<S> &halite, DataObject &object)
 /*
  *
  */
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     if (argc == 2 &&
         (std::string(argv[1]) == "-v" || std::string(argv[1]) == "--version"))

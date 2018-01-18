@@ -57,8 +57,8 @@
 #include "GetPotLexer.h"
 std::string
 getpot_get_name(size_t                     object_decl_i,
-                wasp::AbstractInterpreter &interpreter,
-                std::pair<size_t, std::vector<size_t> *> *object_members)
+                wasp::AbstractInterpreter& interpreter,
+                std::pair<size_t, std::vector<size_t>*>* object_members)
 {
     bool has_type = object_members->first != object_members->second->size();
     auto name_i   = object_decl_i;
@@ -186,12 +186,12 @@ namespace wasp
    that double-quoting is unnecessary unless the string contains an
    apostrophe, a comma, or backslash (other than backslash-backslash).
    YYSTR is taken from yytname.  */
-std::string GetPotParser::yytnamerr_(const char *yystr)
+std::string GetPotParser::yytnamerr_(const char* yystr)
 {
     if (*yystr == '"')
     {
         std::string yyr = "";
-        char const *yyp = yystr;
+        char const* yyp = yystr;
 
         for (;;)
             switch (*++yyp)
@@ -218,8 +218,8 @@ std::string GetPotParser::yytnamerr_(const char *yystr)
 }
 
 /// Build a parser object.
-GetPotParser::GetPotParser(class AbstractInterpreter &interpreter_yyarg,
-                           std::istream &             input_stream_yyarg,
+GetPotParser::GetPotParser(class AbstractInterpreter& interpreter_yyarg,
+                           std::istream&              input_stream_yyarg,
                            std::shared_ptr<class GetPotLexerImpl> lexer_yyarg)
     :
 #if YYDEBUG
@@ -241,8 +241,8 @@ GetPotParser::~GetPotParser()
 | Symbol types.  |
 `---------------*/
 
-inline GetPotParser::syntax_error::syntax_error(const location_type &l,
-                                                const std::string &  m)
+inline GetPotParser::syntax_error::syntax_error(const location_type& l,
+                                                const std::string&   m)
     : std::runtime_error(m), location(l)
 {
 }
@@ -254,7 +254,7 @@ inline GetPotParser::basic_symbol<Base>::basic_symbol() : value()
 }
 
 template<typename Base>
-inline GetPotParser::basic_symbol<Base>::basic_symbol(const basic_symbol &other)
+inline GetPotParser::basic_symbol<Base>::basic_symbol(const basic_symbol& other)
     : Base(other), value(), location(other.location)
 {
     value = other.value;
@@ -262,7 +262,7 @@ inline GetPotParser::basic_symbol<Base>::basic_symbol(const basic_symbol &other)
 
 template<typename Base>
 inline GetPotParser::basic_symbol<Base>::basic_symbol(
-    typename Base::kind_type t, const semantic_type &v, const location_type &l)
+    typename Base::kind_type t, const semantic_type& v, const location_type& l)
     : Base(t), value(v), location(l)
 {
 }
@@ -270,7 +270,7 @@ inline GetPotParser::basic_symbol<Base>::basic_symbol(
 /// Constructor for valueless symbols.
 template<typename Base>
 inline GetPotParser::basic_symbol<Base>::basic_symbol(
-    typename Base::kind_type t, const location_type &l)
+    typename Base::kind_type t, const location_type& l)
     : Base(t), value(), location(l)
 {
 }
@@ -294,7 +294,7 @@ inline bool GetPotParser::basic_symbol<Base>::empty() const
 }
 
 template<typename Base>
-inline void GetPotParser::basic_symbol<Base>::move(basic_symbol &s)
+inline void GetPotParser::basic_symbol<Base>::move(basic_symbol& s)
 {
     super_type::move(s);
     value    = s.value;
@@ -306,7 +306,7 @@ inline GetPotParser::by_type::by_type() : type(empty_symbol)
 {
 }
 
-inline GetPotParser::by_type::by_type(const by_type &other) : type(other.type)
+inline GetPotParser::by_type::by_type(const by_type& other) : type(other.type)
 {
 }
 
@@ -319,7 +319,7 @@ inline void GetPotParser::by_type::clear()
     type = empty_symbol;
 }
 
-inline void GetPotParser::by_type::move(by_type &that)
+inline void GetPotParser::by_type::move(by_type& that)
 {
     type = that.type;
     that.clear();
@@ -335,7 +335,7 @@ inline GetPotParser::by_state::by_state() : state(empty_state)
 {
 }
 
-inline GetPotParser::by_state::by_state(const by_state &other)
+inline GetPotParser::by_state::by_state(const by_state& other)
     : state(other.state)
 {
 }
@@ -345,7 +345,7 @@ inline void GetPotParser::by_state::clear()
     state = empty_state;
 }
 
-inline void GetPotParser::by_state::move(by_state &that)
+inline void GetPotParser::by_state::move(by_state& that)
 {
     state = that.state;
     that.clear();
@@ -368,7 +368,7 @@ inline GetPotParser::stack_symbol_type::stack_symbol_type()
 }
 
 inline GetPotParser::stack_symbol_type::stack_symbol_type(state_type   s,
-                                                          symbol_type &that)
+                                                          symbol_type& that)
     : super_type(s, that.location)
 {
     value = that.value;
@@ -376,8 +376,8 @@ inline GetPotParser::stack_symbol_type::stack_symbol_type(state_type   s,
     that.type = empty_symbol;
 }
 
-inline GetPotParser::stack_symbol_type &GetPotParser::stack_symbol_type::
-operator=(const stack_symbol_type &that)
+inline GetPotParser::stack_symbol_type& GetPotParser::stack_symbol_type::
+operator=(const stack_symbol_type& that)
 {
     state    = that.state;
     value    = that.value;
@@ -386,8 +386,8 @@ operator=(const stack_symbol_type &that)
 }
 
 template<typename Base>
-inline void GetPotParser::yy_destroy_(const char *        yymsg,
-                                      basic_symbol<Base> &yysym) const
+inline void GetPotParser::yy_destroy_(const char*         yymsg,
+                                      basic_symbol<Base>& yysym) const
 {
     if (yymsg)
         YY_SYMBOL_PRINT(yymsg, yysym);
@@ -458,10 +458,10 @@ inline void GetPotParser::yy_destroy_(const char *        yymsg,
 
 #if YYDEBUG
 template<typename Base>
-void GetPotParser::yy_print_(std::ostream &            yyo,
-                             const basic_symbol<Base> &yysym) const
+void GetPotParser::yy_print_(std::ostream&             yyo,
+                             const basic_symbol<Base>& yysym) const
 {
-    std::ostream &yyoutput = yyo;
+    std::ostream& yyoutput = yyo;
     YYUSE(yyoutput);
     symbol_number_type yytype = yysym.type_get();
     // Avoid a (spurious) G++ 4.8 warning about "array subscript is
@@ -475,13 +475,13 @@ void GetPotParser::yy_print_(std::ostream &            yyo,
 }
 #endif
 
-inline void GetPotParser::yypush_(const char *m, state_type s, symbol_type &sym)
+inline void GetPotParser::yypush_(const char* m, state_type s, symbol_type& sym)
 {
     stack_symbol_type t(s, sym);
     yypush_(m, t);
 }
 
-inline void GetPotParser::yypush_(const char *m, stack_symbol_type &s)
+inline void GetPotParser::yypush_(const char* m, stack_symbol_type& s)
 {
     if (m)
         YY_SYMBOL_PRINT(m, s);
@@ -494,12 +494,12 @@ inline void GetPotParser::yypop_(unsigned int n)
 }
 
 #if YYDEBUG
-std::ostream &GetPotParser::debug_stream() const
+std::ostream& GetPotParser::debug_stream() const
 {
     return *yycdebug_;
 }
 
-void GetPotParser::set_debug_stream(std::ostream &o)
+void GetPotParser::set_debug_stream(std::ostream& o)
 {
     yycdebug_ = &o;
 }
@@ -610,7 +610,7 @@ int GetPotParser::parse()
             {
                 yyla.type = yytranslate_(yylex(&yyla.value, &yyla.location));
             }
-            catch (const syntax_error &yyexc)
+            catch (const syntax_error& yyexc)
             {
                 error(yyexc);
                 goto yyerrlab1;
@@ -764,13 +764,13 @@ int GetPotParser::parse()
                         {
                             // -1 because we just pushed the 'type' node
                             (yylhs.value.object_children) =
-                                new std::pair<size_t, std::vector<size_t> *>(
+                                new std::pair<size_t, std::vector<size_t>*>(
                                     indices->size() - 1, indices);
                         }
                         else
                         {
                             (yylhs.value.object_children) =
-                                new std::pair<size_t, std::vector<size_t> *>(
+                                new std::pair<size_t, std::vector<size_t>*>(
                                     indices->size(), indices);
                         }
                     }
@@ -830,7 +830,7 @@ int GetPotParser::parse()
                     case 16:
 #line 239 "GetPot.bison"  // lalr1.cc:859
                     {     // empty object
-                        std::vector<size_t> &child_indices =
+                        std::vector<size_t>& child_indices =
                             *(yystack_[1].value.node_indices);
                         size_t object_decl_i = child_indices.at(2);
                         child_indices.push_back((yystack_[0].value.node_index));
@@ -847,14 +847,14 @@ int GetPotParser::parse()
                     case 17:
 #line 250 "GetPot.bison"  // lalr1.cc:859
                     {
-                        std::vector<size_t> &children =
+                        std::vector<size_t>& children =
                             *(yystack_[2].value.node_indices);
                         size_t object_decl_i = children.at(2);
                         for (size_t child_i :
                              *(yystack_[1].value.object_children)->second)
                             children.push_back(child_i);
                         children.push_back(((yystack_[0].value.node_index)));
-                        const std::string &name = getpot_get_name(
+                        const std::string& name = getpot_get_name(
                             object_decl_i, interpreter,
                             (yystack_[1].value.object_children));
                         delete (yystack_[1].value.object_children)->second;
@@ -869,13 +869,13 @@ int GetPotParser::parse()
                     case 18:
 #line 266 "GetPot.bison"  // lalr1.cc:859
                     {
-                        std::vector<size_t> &children =
+                        std::vector<size_t>& children =
                             *(yystack_[1].value.node_indices);
                         size_t object_decl_i = children.at(2);
                         for (size_t child_i :
                              *(yystack_[0].value.object_children)->second)
                             children.push_back(child_i);
-                        const std::string &name = getpot_get_name(
+                        const std::string& name = getpot_get_name(
                             object_decl_i, interpreter,
                             (yystack_[0].value.object_children));
                         delete (yystack_[0].value.object_children)->second;
@@ -912,13 +912,13 @@ int GetPotParser::parse()
                         {
                             // -1 because we just pushed the 'type' node
                             (yylhs.value.object_children) =
-                                new std::pair<size_t, std::vector<size_t> *>(
+                                new std::pair<size_t, std::vector<size_t>*>(
                                     indices->size() - 1, indices);
                         }
                         else
                         {
                             (yylhs.value.object_children) =
-                                new std::pair<size_t, std::vector<size_t> *>(
+                                new std::pair<size_t, std::vector<size_t>*>(
                                     indices->size(), indices);
                         }
                     }
@@ -960,7 +960,7 @@ int GetPotParser::parse()
                     case 26:
 #line 324 "GetPot.bison"  // lalr1.cc:859
                     {     // empty object
-                        std::vector<size_t> &child_indices =
+                        std::vector<size_t>& child_indices =
                             *(yystack_[1].value.node_indices);
                         size_t object_decl_i = child_indices.at(1);
                         size_t object_term_i = ((yystack_[0].value.node_index));
@@ -978,14 +978,14 @@ int GetPotParser::parse()
                     case 27:
 #line 336 "GetPot.bison"  // lalr1.cc:859
                     {
-                        std::vector<size_t> &children =
+                        std::vector<size_t>& children =
                             *(yystack_[2].value.node_indices);
                         size_t object_decl_i = children.at(1);
                         for (size_t child_i :
                              *(yystack_[1].value.object_children)->second)
                             children.push_back(child_i);
                         children.push_back(((yystack_[0].value.node_index)));
-                        const std::string &name = getpot_get_name(
+                        const std::string& name = getpot_get_name(
                             object_decl_i, interpreter,
                             (yystack_[1].value.object_children));
                         delete (yystack_[1].value.object_children)->second;
@@ -1000,14 +1000,14 @@ int GetPotParser::parse()
                     case 28:
 #line 353 "GetPot.bison"  // lalr1.cc:859
                     {
-                        std::vector<size_t> &children =
+                        std::vector<size_t>& children =
                             *(yystack_[2].value.node_indices);
                         size_t object_decl_i = children.at(1);
                         for (size_t child_i :
                              *(yystack_[1].value.object_children)->second)
                             children.push_back(child_i);
                         children.push_back(((yystack_[0].value.node_index)));
-                        const std::string &name = getpot_get_name(
+                        const std::string& name = getpot_get_name(
                             object_decl_i, interpreter,
                             (yystack_[1].value.object_children));
                         delete (yystack_[1].value.object_children)->second;
@@ -1203,14 +1203,14 @@ int GetPotParser::parse()
                     case 58:
 #line 486 "GetPot.bison"  // lalr1.cc:859
                     {
-                        std::vector<size_t> &children =
+                        std::vector<size_t>& children =
                             *(yystack_[2].value.node_indices);
                         // [0] = '[', [1] = 'name', [2] = ']'
                         size_t object_decl_i = children[1];
                         for (size_t child_i :
                              *(yystack_[1].value.object_children)->second)
                             children.push_back(child_i);
-                        const std::string &name = getpot_get_name(
+                        const std::string& name = getpot_get_name(
                             object_decl_i, interpreter,
                             (yystack_[1].value.object_children));
                         delete (yystack_[1].value.object_children)->second;
@@ -1231,7 +1231,7 @@ int GetPotParser::parse()
                         break;
                 }
             }
-            catch (const syntax_error &yyexc)
+            catch (const syntax_error& yyexc)
             {
                 error(yyexc);
                 YYERROR;
@@ -1379,14 +1379,14 @@ int GetPotParser::parse()
     }
 }
 
-void GetPotParser::error(const syntax_error &yyexc)
+void GetPotParser::error(const syntax_error& yyexc)
 {
     error(yyexc.location, yyexc.what());
 }
 
 // Generate an error message.
 std::string GetPotParser::yysyntax_error_(state_type         yystate,
-                                          const symbol_type &yyla) const
+                                          const symbol_type& yyla) const
 {
     // Number of reported tokens (one for the "unexpected", one per
     // "expected").
@@ -1397,7 +1397,7 @@ std::string GetPotParser::yysyntax_error_(state_type         yystate,
         YYERROR_VERBOSE_ARGS_MAXIMUM = 5
     };
     // Arguments of yyformat.
-    char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
+    char const* yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
 
     /* There are many possibilities here to consider:
        - If this state is a consistent state with a default action, then
@@ -1453,7 +1453,7 @@ std::string GetPotParser::yysyntax_error_(state_type         yystate,
         }
     }
 
-    char const *yyformat = YY_NULLPTR;
+    char const* yyformat = YY_NULLPTR;
     switch (yycount)
     {
 #define YYCASE_(N, S) \
@@ -1475,7 +1475,7 @@ std::string GetPotParser::yysyntax_error_(state_type         yystate,
     std::string yyres;
     // Argument number.
     size_t yyi = 0;
-    for (char const *yyp = yyformat; *yyp; ++yyp)
+    for (char const* yyp = yyformat; *yyp; ++yyp)
         if (yyp[0] == '%' && yyp[1] == 's' && yyi < yycount)
         {
             yyres += yytnamerr_(yyarg[yyi++]);
@@ -1545,7 +1545,7 @@ const unsigned char GetPotParser::yyr2_[] = {
 
 // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
 // First, the terminals, then, starting at \a yyntokens_, nonterminals.
-const char *const GetPotParser::yytname_[] = {"\"end of file\"",
+const char* const GetPotParser::yytname_[] = {"\"end of file\"",
                                               "error",
                                               "$undefined",
                                               "\"end of line\"",
@@ -1671,8 +1671,8 @@ inline GetPotParser::token_number_type GetPotParser::yytranslate_(int t)
                                /*** Additional Code ***/
 namespace wasp
 {
-void GetPotParser::error(const GetPotParser::location_type &l,
-                         const std::string &                m)
+void GetPotParser::error(const GetPotParser::location_type& l,
+                         const std::string&                 m)
 {
     interpreter.error_stream() << l << ": " << m << std::endl;
 }

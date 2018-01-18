@@ -26,8 +26,8 @@ void HaliteWorkflow::setUseDefaultFunctions(bool use_default_functions)
     m_use_default_functions = use_default_functions;
 }
 
-bool HaliteWorkflow::parseTemplate(std::istream &template_stream,
-                                   std::ostream &error_stream)
+bool HaliteWorkflow::parseTemplate(std::istream& template_stream,
+                                   std::ostream& error_stream)
 {
     wasp_tagged_line("parsing template stream...");
     m_halite_interpreter = std::make_shared<halite_interp_type>(error_stream);
@@ -38,8 +38,8 @@ bool HaliteWorkflow::parseTemplate(std::istream &template_stream,
                                                 << m_template_parse_result);
     return m_template_parse_result;
 }
-bool HaliteWorkflow::parseTemplateFile(const std::string &template_file,
-                                       std::ostream &     error_stream)
+bool HaliteWorkflow::parseTemplateFile(const std::string& template_file,
+                                       std::ostream&      error_stream)
 {
     wasp_tagged_line("parsing template stream...");
     m_halite_interpreter = std::make_shared<halite_interp_type>(error_stream);
@@ -50,9 +50,9 @@ bool HaliteWorkflow::parseTemplateFile(const std::string &template_file,
     return m_template_parse_result;
 }
 
-bool HaliteWorkflow::renderTemplate(const DataObject::SP &parameters,
-                                    std::ostream &        output_stream,
-                                    std::ostream &        message_stream) const
+bool HaliteWorkflow::renderTemplate(const DataObject::SP& parameters,
+                                    std::ostream&         output_stream,
+                                    std::ostream&         message_stream) const
 {
     wasp_tagged_line("rendering template...");
     wasp_tagged_line("\ttemplate parse result " << std::boolalpha

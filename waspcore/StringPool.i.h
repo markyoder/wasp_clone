@@ -1,13 +1,13 @@
 #ifndef WASP_STRINGPOOL_I_H
 #define WASP_STRINGPOOL_I_H
 template<typename T>
-const char *StringPool<T>::data(T index) const
+const char* StringPool<T>::data(T index) const
 {
     std::size_t data_index = m_token_data_indices[index];
     return &m_data[data_index];
 }
 template<typename T>
-void StringPool<T>::push(const char *str)
+void StringPool<T>::push(const char* str)
 {
     std::size_t string_index = m_data.size();
 
@@ -40,7 +40,7 @@ void StringPool<T>::push(const char *str)
     m_token_data_indices.push_back(static_cast<T>(string_index));
 }
 template<typename T>
-bool StringPool<T>::set(T data_index, const char *str)
+bool StringPool<T>::set(T data_index, const char* str)
 {
     std::size_t string_index = m_token_data_indices.size();
     // current implementation only supports
@@ -67,7 +67,7 @@ StringPool<T>::StringPool()
 }
 // copy constuctor
 template<typename T>
-StringPool<T>::StringPool(const StringPool<T> &orig)
+StringPool<T>::StringPool(const StringPool<T>& orig)
     : m_data(orig.m_data), m_token_data_indices(orig.m_token_data_indices)
 {
 }

@@ -2,7 +2,7 @@
 
 namespace wasp
 {
-GetPotInterpreter::GetPotInterpreter(std::ostream &err)
+GetPotInterpreter::GetPotInterpreter(std::ostream& err)
     : Interpreter(err), m_lexer(nullptr)
 {
 }
@@ -10,7 +10,7 @@ GetPotInterpreter::~GetPotInterpreter()
 {
 }
 
-bool GetPotInterpreter::parse(std::istream &in,
+bool GetPotInterpreter::parse(std::istream& in,
                               std::size_t   startLine,
                               std::size_t   startColumn)
 {

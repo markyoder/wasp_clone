@@ -9,7 +9,7 @@ struct format_test
     std::string format;
     T           arg;
     std::string expected;
-    format_test(const std::string &f, T a, const std::string &e)
+    format_test(const std::string& f, T a, const std::string& e)
     {
         format   = f;
         arg      = a;
@@ -39,7 +39,7 @@ TEST(utils, format_fixed_precision)
         {"|%04.8f|", 3.14159265, "|3.14159265|"},
         {"|%08.2f|", 3.14159265, "|00003.14|"},
         {"|%010.3f|", 3.14159265, "|000003.142|"}};
-    for (const auto &tst : tests)
+    for (const auto& tst : tests)
     {
         SCOPED_TRACE(tst.format);
         std::cout << "Testing fixed format of " << tst.format << std::endl;
@@ -82,7 +82,7 @@ TEST(utils, format_general_scientific_precision)
         {"|%10.7g|", 1e2, "|  100.0000|"}
 
     };
-    for (const auto &tst : tests)
+    for (const auto& tst : tests)
     {
         SCOPED_TRACE(tst.format);
         std::cout << "Testing general scientific format of " << tst.format
@@ -125,7 +125,7 @@ TEST(utils, format_scientific_precision)
         {"|%10.7e|", 1e-2, "|1.0000000e-02|"},
         {"|%10.7e|", 1e2, "|1.0000000e+02|"}};
 
-    for (const auto &tst : tests)
+    for (const auto& tst : tests)
     {
         SCOPED_TRACE(tst.format);
         std::cout << "Testing scientific format of " << tst.format << std::endl;
@@ -140,7 +140,7 @@ TEST(utils, format_double_as_integer)
     std::vector<format_test<double>> tests = {{"|%d|", 3.14159265, "|3|"},
                                               {"|%d|", 1e-4, "|0|"}};
 
-    for (const auto &tst : tests)
+    for (const auto& tst : tests)
     {
         SCOPED_TRACE(tst.format);
         std::cout << "Testing double as integer format of " << tst.format
@@ -169,7 +169,7 @@ TEST(utils, format_integer)
                                            {"|% 4d|", 30, "|  30|"},
                                            {"|% 10d|", 30, "|        30|"}};
 
-    for (const auto &tst : tests)
+    for (const auto& tst : tests)
     {
         SCOPED_TRACE(tst.format);
         std::cout << "Testing integer format of " << tst.format << std::endl;
@@ -190,7 +190,7 @@ TEST(utils, format_string)
         {"|%010s|", "30", "|0000000030|"},
         {"|%-10s|", "30", "|30        |"}};
 
-    for (const auto &tst : tests)
+    for (const auto& tst : tests)
     {
         SCOPED_TRACE(tst.format);
         std::cout << "Testing string format of " << tst.format << std::endl;
@@ -214,7 +214,7 @@ TEST(utils, format_string_error)
         {"|% 4s|", "30", "malformed format string: flag ' ' does not match the "
                          "conversion 's'"}};
 
-    for (const auto &tst : tests)
+    for (const auto& tst : tests)
     {
         SCOPED_TRACE(tst.format);
         std::cout << "Testing error string format of " << tst.format
