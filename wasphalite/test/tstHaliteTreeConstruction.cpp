@@ -14,36 +14,36 @@
 using namespace std;
 using namespace wasp;
 
-TEST( Halite, static_text)
+TEST(Halite, static_text)
 {
     std::stringstream input;
-    input<< R"INPUT(This is plain test
+    input << R"INPUT(This is plain test
 line2
  line3
    line
             )INPUT";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(6, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(6, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 5, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(5, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /txt (This is plain test)
 /txt (line2)
 /txt ( line3)
 /txt (   line)
 /txt (            )
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 
-TEST( Halite, all_but_constructs)
+TEST(Halite, all_but_constructs)
 {
     std::stringstream input;
-    input<< R"INPUT(`1234567890-=
+    input << R"INPUT(`1234567890-=
 ~!@#$%^&*()_+
     qwertyuiop[]\+_)(*&^%$#@!~
 QWERTYUIOP{}|=-0987654321
@@ -52,9 +52,9 @@ ASDFGHJKL:"';lkjhgfdsa'
 zxcvbnm,./  MNBVCXZ
 ZXCVBNM  ?.,mnbvcxz)INPUT";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    auto document = interpreter.root();
-    std::string expected_paths = R"INPUT(/
+    ASSERT_TRUE(interpreter.parse(input));
+    auto              document       = interpreter.root();
+    std::string       expected_paths = R"INPUT(/
 /txt (`1234567890-=)
 /txt (~!@#$%^&*()_+)
 /txt (    qwertyuiop[]\+_)(*&^%$#@!~)
@@ -64,24 +64,24 @@ ZXCVBNM  ?.,mnbvcxz)INPUT";
 /txt (zxcvbnm,./  MNBVCXZ)
 /txt (ZXCVBNM  ?.,mnbvcxz)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
-TEST( Halite, attribute_options_symbols)
+TEST(Halite, attribute_options_symbols)
 {
     std::stringstream input;
-    input<< R"INPUT(:<a>: options delimiter
+    input << R"INPUT(:<a>: options delimiter
 |<a>| options silent
 ?<a>? options optional
 use=<a>use= options use object scope
 fmt=<a>fmt= options format
 sep=<a>sep= options separator)INPUT";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    auto document = interpreter.root();
-    std::string expected_paths = R"INPUT(/
+    ASSERT_TRUE(interpreter.parse(input));
+    auto              document       = interpreter.root();
+    std::string       expected_paths = R"INPUT(/
 /txt (:)
 /attr
 /attr/< (<)
@@ -119,19 +119,19 @@ sep=<a>sep= options separator)INPUT";
 /attr/> (>)
 /txt (sep= options separator)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
-TEST( Halite, iterative_formatted_attribute_embedded_tree)
+TEST(Halite, iterative_formatted_attribute_embedded_tree)
 {
     std::stringstream input;
-    input<< R"INPUT(<i:fmt=%3d; i=1,<end>>)INPUT";
+    input << R"INPUT(<i:fmt=%3d; i=1,<end>>)INPUT";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    auto document = interpreter.root();
-    std::string expected_paths = R"INPUT(/
+    ASSERT_TRUE(interpreter.parse(input));
+    auto              document       = interpreter.root();
+    std::string       expected_paths = R"INPUT(/
 /attr
 /attr/< (<)
 /attr/txt (i)
@@ -142,23 +142,23 @@ TEST( Halite, iterative_formatted_attribute_embedded_tree)
 /attr/attr/> (>)
 /attr/> (>)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
-TEST( Halite, simple_parameterized_text)
+TEST(Halite, simple_parameterized_text)
 {
     std::stringstream input;
-    input<< R"INPUT(This is plain test
+    input << R"INPUT(This is plain test
 <attribute1><attr2><ted>
             )INPUT";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(15, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(15, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 5, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(5, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /txt (This is plain test)
 /attr
 /attr/< (<)
@@ -174,26 +174,26 @@ TEST( Halite, simple_parameterized_text)
 /attr/> (>)
 /txt (            )
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 /**
  * @brief TEST test attributes with whitespace separations
  */
-TEST( Halite, simple_parameterized_text_wss)
+TEST(Halite, simple_parameterized_text_wss)
 {
     std::stringstream input;
-    input<< R"INPUT(This is plain test
+    input << R"INPUT(This is plain test
  <attribute1>  <attr2>   <ted>
             )INPUT";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(18, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(18, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 8, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(8, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /txt (This is plain test)
 /txt ( )
 /attr
@@ -212,24 +212,24 @@ TEST( Halite, simple_parameterized_text_wss)
 /attr/> (>)
 /txt (            )
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 /**
  * @brief TEST test nested empty attribute
  */
-TEST( Halite, nested_attr_empty)
+TEST(Halite, nested_attr_empty)
 {
     std::stringstream input;
-    input<<"<><<>><<<>>>";
+    input << "<><<>><<<>>>";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(19, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(19, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 3, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(3, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /attr
 /attr/< (<)
 /attr/> (>)
@@ -249,24 +249,24 @@ TEST( Halite, nested_attr_empty)
 /attr/attr/> (>)
 /attr/> (>)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 /**
  * @brief TEST test nested attribute, suffixed text
  */
-TEST( Halite, nested_attr_suffix)
+TEST(Halite, nested_attr_suffix)
 {
     std::stringstream input;
-    input<<"<<a>b><<<c>d>e>";
+    input << "<<a>b><<<c>d>e>";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(21, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(21, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 2, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(2, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /attr
 /attr/< (<)
 /attr/attr
@@ -288,25 +288,25 @@ TEST( Halite, nested_attr_suffix)
 /attr/txt (e)
 /attr/> (>)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 
 /**
  * @brief TEST test nested attribute, prefixed text
  */
-TEST( Halite, nested_attr_prefix)
+TEST(Halite, nested_attr_prefix)
 {
     std::stringstream input;
-    input<<"<b<a>><e<d<c>>>";
+    input << "<b<a>><e<d<c>>>";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(21, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(21, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 2, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(2, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /attr
 /attr/< (<)
 /attr/txt (b)
@@ -328,24 +328,24 @@ TEST( Halite, nested_attr_prefix)
 /attr/attr/> (>)
 /attr/> (>)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 /**
  * @brief TEST test nested attribute, prefixed text
  */
-TEST( Halite, nested_attr_infix)
+TEST(Halite, nested_attr_infix)
 {
     std::stringstream input;
-    input<<"<b< a >b1><e<d<c>d1>e1>";
+    input << "<b< a >b1><e<d<c>d1>e1>";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(24, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(24, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 2, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(2, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /attr
 /attr/< (<)
 /attr/txt (b)
@@ -370,53 +370,53 @@ TEST( Halite, nested_attr_infix)
 /attr/txt (e1)
 /attr/> (>)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 
 /**
  * @brief TEST test attribute with surrounding text
  */
-TEST( Halite, nested_attr_surrounding)
+TEST(Halite, nested_attr_surrounding)
 {
     std::stringstream input;
-    input<<"prefix <> suffix ";
+    input << "prefix <> suffix ";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(6, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(6, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 3, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(3, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /txt (prefix )
 /attr
 /attr/< (<)
 /attr/> (>)
 /txt ( suffix )
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 /**
  * @brief TEST test attribute option of formatting
  */
-TEST( Halite, attr_options_surrounding)
+TEST(Halite, attr_options_surrounding)
 {
     std::stringstream input;
-    input<<"prefix <pi:fmt=%2.8f> suffix ";
+    input << "prefix <pi:fmt=%2.8f> suffix ";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(8, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(8, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 3, document.child_count() );
-    ASSERT_EQ( 3, document.child_count() );
+    ASSERT_EQ(3, document.child_count());
+    ASSERT_EQ(3, document.child_count());
     auto attr = document.child_at(1);
-    ASSERT_EQ( wasp::IDENTIFIER, attr.type() );
-    ASSERT_EQ( 4, attr.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(wasp::IDENTIFIER, attr.type());
+    ASSERT_EQ(4, attr.child_count());
+    std::string       expected_paths = R"INPUT(/
 /txt (prefix )
 /attr
 /attr/< (<)
@@ -425,71 +425,71 @@ TEST( Halite, attr_options_surrounding)
 /attr/> (>)
 /txt ( suffix )
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 
 /**
  * @brief TEST test import statement
  */
-TEST( Halite, import_basic)
+TEST(Halite, import_basic)
 {
     std::stringstream input;
-    input<<"#import some/path/to/some/file";
+    input << "#import some/path/to/some/file";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(4, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(4, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 1, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(1, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /import
 /import/decl (#import)
 /import/txt ( some/path/to/some/file)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 /**
  * @brief TEST test repeat statement
  */
-TEST( Halite, repeat_basic)
+TEST(Halite, repeat_basic)
 {
     std::stringstream input;
-    input<<"#repeat some/path/to/some/file";
+    input << "#repeat some/path/to/some/file";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(4, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(4, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 1, document.child_count() );
-    ASSERT_EQ( wasp::REPEAT, document.child_at(0).type());
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(1, document.child_count());
+    ASSERT_EQ(wasp::REPEAT, document.child_at(0).type());
+    std::string       expected_paths = R"INPUT(/
 /repeat
 /repeat/decl (#repeat)
 /repeat/txt ( some/path/to/some/file)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 
 /**
  * @brief TEST test parameterized import statement
  */
-TEST( Halite, import_parameterized)
+TEST(Halite, import_parameterized)
 {
     std::stringstream input;
-    input<<"#import <ned>/<ted>/to/some/<fred>";
+    input << "#import <ned>/<ted>/to/some/<fred>";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(18, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(18, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 1, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(1, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /import
 /import/decl (#import)
 /import/txt ( )
@@ -508,25 +508,25 @@ TEST( Halite, import_parameterized)
 /import/attr/txt (fred)
 /import/attr/> (>)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 
 /**
  * @brief TEST test parameterized import statement
  */
-TEST( Halite, import_parameterized_using)
+TEST(Halite, import_parameterized_using)
 {
     std::stringstream input;
-    input<<"#import <ned>/<ted>/to/some/file using <zed>";
+    input << "#import <ned>/<ted>/to/some/file using <zed>";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(18, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(18, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 1, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(1, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /import
 /import/decl (#import)
 /import/txt ( )
@@ -545,46 +545,47 @@ TEST( Halite, import_parameterized_using)
 /import/attr/txt (zed)
 /import/attr/> (>)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 
-TEST( Halite, import_parameterized_using_inline)
+TEST(Halite, import_parameterized_using_inline)
 {
     std::stringstream input;
-    input<<R"INPUT(#import ./import_by_name_inline.tmpl using {"foo":"bar"})INPUT";
+    input
+        << R"INPUT(#import ./import_by_name_inline.tmpl using {"foo":"bar"})INPUT";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-//    ASSERT_EQ(18, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    //    ASSERT_EQ(18, interpreter.node_count() );
     auto document = interpreter.root();
-    ASSERT_EQ( 1, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(1, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /import
 /import/decl (#import)
 /import/txt ( ./import_by_name_inline.tmpl using {"foo":"bar"})
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 /**
  * @brief TEST test parameterized import statement
  */
-TEST( Halite, multiple_import_parameterized_using)
+TEST(Halite, multiple_import_parameterized_using)
 {
     std::stringstream input;
-    input<<"#import <ned>/<ted>/to/some/file using <zed>"<<std::endl
-        <<"random text line"<<std::endl
-       <<"#import some/other/import using <fred>";
+    input << "#import <ned>/<ted>/to/some/file using <zed>" << std::endl
+          << "random text line" << std::endl
+          << "#import some/other/import using <fred>";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(26, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(26, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 3, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(3, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /import
 /import/decl (#import)
 /import/txt ( )
@@ -611,26 +612,25 @@ TEST( Halite, multiple_import_parameterized_using)
 /import/attr/txt (fred)
 /import/attr/> (>)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 
 /**
  * @brief TEST test ifdef
  */
-TEST( Halite, ifdef)
+TEST(Halite, ifdef)
 {
     std::stringstream input;
-    input<<"#ifdef something"<<std::endl
-       <<"#endif";
+    input << "#ifdef something" << std::endl << "#endif";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(8, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(8, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 1, document.child_count() );    
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(1, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /A
 /A/ifdef
 /A/ifdef/decl (#ifdef)
@@ -639,27 +639,27 @@ TEST( Halite, ifdef)
 /A/ifdef/T
 /A/endif (#endif)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 
 /**
  * @brief TEST test ifdef with parameter and body
  */
-TEST( Halite, ifdef_parameterized)
+TEST(Halite, ifdef_parameterized)
 {
     std::stringstream input;
-    input<<"#ifdef <x>"<<std::endl
-       <<" intermediate text "<<std::endl
-       <<"#endif";
+    input << "#ifdef <x>" << std::endl
+          << " intermediate text " << std::endl
+          << "#endif";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(13, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(13, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 1, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(1, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /A
 /A/ifdef
 /A/ifdef/decl (#ifdef)
@@ -673,26 +673,26 @@ TEST( Halite, ifdef_parameterized)
 /A/ifdef/T/txt ( intermediate text )
 /A/endif (#endif)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);        
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 /**
  * @brief TEST test ifndef with parameter and body
  */
-TEST( Halite, ifndef_parameterized)
+TEST(Halite, ifndef_parameterized)
 {
     std::stringstream input;
-    input<<"#ifndef <x>"<<std::endl
-       <<" intermediate text "<<std::endl
-       <<"#endif";
+    input << "#ifndef <x>" << std::endl
+          << " intermediate text " << std::endl
+          << "#endif";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(13, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(13, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 1, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(1, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /A
 /A/ifndef
 /A/ifndef/decl (#ifndef)
@@ -706,27 +706,27 @@ TEST( Halite, ifndef_parameterized)
 /A/ifndef/T/txt ( intermediate text )
 /A/endif (#endif)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 
 /**
  * @brief TEST test if with parameter and body
  */
-TEST( Halite, if_parameterized)
+TEST(Halite, if_parameterized)
 {
     std::stringstream input;
-    input<<"#if <x> < <y>"<<std::endl
-       <<" only if x is less than y "<<std::endl
-       <<"#endif";
+    input << "#if <x> < <y>" << std::endl
+          << " only if x is less than y " << std::endl
+          << "#endif";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(18, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(18, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 1, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(1, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /A
 /A/if
 /A/if/decl (#if)
@@ -745,29 +745,29 @@ TEST( Halite, if_parameterized)
 /A/if/T/txt ( only if x is less than y )
 /A/endif (#endif)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 
 /**
  * @brief TEST test if elseif with parameter and body
  */
-TEST( Halite, elseif_parameterized)
+TEST(Halite, elseif_parameterized)
 {
     std::stringstream input;
-    input<<"#if <x> < <y>"<<std::endl
-       <<" only if x is less than y "<<std::endl
-        <<"#elseif condition "<<std::endl
-        <<" only if x is not less than y and condition is true "<<std::endl
-       <<"#endif";
+    input << "#if <x> < <y>" << std::endl
+          << " only if x is less than y " << std::endl
+          << "#elseif condition " << std::endl
+          << " only if x is not less than y and condition is true " << std::endl
+          << "#endif";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(24, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(24, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 1, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(1, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /A
 /A/if
 /A/if/decl (#if)
@@ -792,30 +792,30 @@ TEST( Halite, elseif_parameterized)
 /A/elseif/T/txt ( only if x is not less than y and condition is true )
 /A/endif (#endif)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 /**
  * @brief TEST test if elseif else with parameter and body
  */
-TEST( Halite, if_elseif_else_parameterized)
+TEST(Halite, if_elseif_else_parameterized)
 {
     std::stringstream input;
-    input<<"#if <x> < <y>"<<std::endl
-       <<" only if x is less than y "<<std::endl
-        <<"#elseif condition "<<std::endl
-        <<" only if x is not less than y and condition is true "<<std::endl
-        <<"#else"<<std::endl
-        <<"last bastion"<<std::endl
-       <<"#endif";
+    input << "#if <x> < <y>" << std::endl
+          << " only if x is less than y " << std::endl
+          << "#elseif condition " << std::endl
+          << " only if x is not less than y and condition is true " << std::endl
+          << "#else" << std::endl
+          << "last bastion" << std::endl
+          << "#endif";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(27, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(27, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 1, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(1, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /A
 /A/if
 /A/if/decl (#if)
@@ -843,28 +843,28 @@ TEST( Halite, if_elseif_else_parameterized)
 /A/else/txt (last bastion)
 /A/endif (#endif)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 /**
  * @brief TEST test if elseif with parameter and body
  */
-TEST( Halite, else_parameterized)
+TEST(Halite, else_parameterized)
 {
     std::stringstream input;
-    input<<"#if <x> < <y>"<<std::endl
-       <<" only if x is less than y "<<std::endl
-        <<"#else"<<std::endl
-        <<" only if x is not less than y "<<std::endl
-       <<"#endif";
+    input << "#if <x> < <y>" << std::endl
+          << " only if x is less than y " << std::endl
+          << "#else" << std::endl
+          << " only if x is not less than y " << std::endl
+          << "#endif";
     HaliteInterpreter<> interpreter;
-    ASSERT_TRUE( interpreter.parse(input) );
-    ASSERT_EQ(21, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(21, interpreter.node_count());
     auto document = interpreter.root();
-    ASSERT_EQ( 1, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    ASSERT_EQ(1, document.child_count());
+    std::string       expected_paths = R"INPUT(/
 /A
 /A/if
 /A/if/decl (#if)
@@ -886,50 +886,53 @@ TEST( Halite, else_parameterized)
 /A/else/txt ( only if x is not less than y )
 /A/endif (#endif)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
 /**
  * @brief TEST test if conditionals with parameters, body, and nested conditions
  */
-TEST( Halite, conditionals)
+TEST(Halite, conditionals)
 {
     std::stringstream input;
-    input<<"conditional template"<<std::endl
-    <<"#if cond1"<<std::endl
-        <<" cond1 must be true"<<std::endl
-        <<"#ifdef cond2"<<std::endl
-        <<" cond1 must be true and 2 must be defined (eval to true)"<<std::endl
-        <<"#else"<<std::endl
-        <<" cond1 must be true and 2 must not be defined (eval to false)"<<std::endl
-        <<"#endif"<<std::endl
-    <<"#elseif cond3"<<std::endl
-        <<" cond1 is false and cond3 true"<<std::endl
-        <<"#ifndef cond4"<<std::endl
-            <<" cond1 must be false, 3 true and 4 not defined (evals to false)"<<std::endl
-        <<"#elseif cond5"<<std::endl
-            <<" cond1 is false, 3 is true, 4 not defined, 5 true"<<std::endl
-        <<"#else"<<std::endl
-            <<" cond1 is false, 3 is true, 4 not defined, 5 false"<<std::endl
-        <<"#endif"<<std::endl
-    <<"#else"<<std::endl
-        <<"cond1 and 3 are false"<<std::endl
-        <<"#if cond6"<<std::endl
-            <<" cond1 must be false, 3 false and 6 true"<<std::endl
-        <<"#elseif cond7"<<std::endl
-            <<" cond1 is false, 3 is false, 6 false, and 7 true"<<std::endl
-        <<"#else"<<std::endl
-            <<" cond1 is false, 3 is false, 6 false, and 7 false"<<std::endl
-        <<"#endif"<<std::endl
-    <<"#endif";
+    input << "conditional template" << std::endl
+          << "#if cond1" << std::endl
+          << " cond1 must be true" << std::endl
+          << "#ifdef cond2" << std::endl
+          << " cond1 must be true and 2 must be defined (eval to true)"
+          << std::endl
+          << "#else" << std::endl
+          << " cond1 must be true and 2 must not be defined (eval to false)"
+          << std::endl
+          << "#endif" << std::endl
+          << "#elseif cond3" << std::endl
+          << " cond1 is false and cond3 true" << std::endl
+          << "#ifndef cond4" << std::endl
+          << " cond1 must be false, 3 true and 4 not defined (evals to false)"
+          << std::endl
+          << "#elseif cond5" << std::endl
+          << " cond1 is false, 3 is true, 4 not defined, 5 true" << std::endl
+          << "#else" << std::endl
+          << " cond1 is false, 3 is true, 4 not defined, 5 false" << std::endl
+          << "#endif" << std::endl
+          << "#else" << std::endl
+          << "cond1 and 3 are false" << std::endl
+          << "#if cond6" << std::endl
+          << " cond1 must be false, 3 false and 6 true" << std::endl
+          << "#elseif cond7" << std::endl
+          << " cond1 is false, 3 is false, 6 false, and 7 true" << std::endl
+          << "#else" << std::endl
+          << " cond1 is false, 3 is false, 6 false, and 7 false" << std::endl
+          << "#endif" << std::endl
+          << "#endif";
     HaliteInterpreter<> interpreter(std::cout);
-    ASSERT_TRUE( interpreter.parse(input) );
-//    ASSERT_EQ(18, interpreter.node_count() );
+    ASSERT_TRUE(interpreter.parse(input));
+    //    ASSERT_EQ(18, interpreter.node_count() );
     auto document = interpreter.root();
-//    ASSERT_EQ( 2, document.child_count() );
-    std::string expected_paths = R"INPUT(/
+    //    ASSERT_EQ( 2, document.child_count() );
+    std::string       expected_paths = R"INPUT(/
 /txt (conditional template)
 /A
 /A/if
@@ -994,67 +997,68 @@ TEST( Halite, conditionals)
 /A/else/A/endif (#endif)
 /A/endif (#endif)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ(input.str(), document.data());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ(input.str(), document.data());
 }
-TEST( Halite, endif_error)
+TEST(Halite, endif_error)
 {
     std::stringstream input;
-    input<<"conditional template"<<std::endl
-    <<"#endif";
-    std::stringstream error;
+    input << "conditional template" << std::endl << "#endif";
+    std::stringstream   error;
     HaliteInterpreter<> interpreter(error);
-    ASSERT_FALSE( interpreter.parse(input) );
-    auto document = interpreter.root();
+    ASSERT_FALSE(interpreter.parse(input));
+    auto        document       = interpreter.root();
     std::string expected_paths = R"INPUT(/
 /txt (conditional template)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ("conditional template", document.data());
-        ASSERT_EQ("***Error : line 2 is an unmatched conditional terminator - '#endif'. The matching #if, #ifdef, #ifndef, #elseif, or #else is missing.\n"
-                  ,error.str());
-}
-
-TEST( Halite, elseif_error)
-{
-    std::stringstream input;
-    input<<"conditional template"<<std::endl
-    <<"#elseif blah";
-    std::stringstream error;
-    HaliteInterpreter<> interpreter(error);
-    ASSERT_FALSE( interpreter.parse(input) );
-    auto document = interpreter.root();
-    std::string expected_paths = R"INPUT(/
-/txt (conditional template)
-)INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ("conditional template", document.data());
-        ASSERT_EQ("***Error : line 2 is an unmatched conditional elseif. The matching #if, #ifdef, #ifndef, or #elseif is missing.\n"
-                  ,error.str());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ("conditional template", document.data());
+    ASSERT_EQ("***Error : line 2 is an unmatched conditional terminator - "
+              "'#endif'. The matching #if, #ifdef, #ifndef, #elseif, or #else "
+              "is missing.\n",
+              error.str());
 }
 
-TEST( Halite, else_error)
+TEST(Halite, elseif_error)
 {
     std::stringstream input;
-    input<<"conditional template"<<std::endl<<std::endl
-    <<"#else blah";
-    std::stringstream error;
+    input << "conditional template" << std::endl << "#elseif blah";
+    std::stringstream   error;
     HaliteInterpreter<> interpreter(error);
-    ASSERT_FALSE( interpreter.parse(input) );
-    auto document = interpreter.root();
+    ASSERT_FALSE(interpreter.parse(input));
+    auto        document       = interpreter.root();
     std::string expected_paths = R"INPUT(/
 /txt (conditional template)
 )INPUT";
-        std::stringstream paths;
-        document.paths(paths);
-        ASSERT_EQ(expected_paths, paths.str());
-        ASSERT_EQ("conditional template", document.data());
-        ASSERT_EQ("***Error : line 3 is an unmatched conditional else. The matching #if, #ifdef, #ifndef, or #elseif is missing.\n"
-                  ,error.str());
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ("conditional template", document.data());
+    ASSERT_EQ("***Error : line 2 is an unmatched conditional elseif. The "
+              "matching #if, #ifdef, #ifndef, or #elseif is missing.\n",
+              error.str());
+}
+
+TEST(Halite, else_error)
+{
+    std::stringstream input;
+    input << "conditional template" << std::endl << std::endl << "#else blah";
+    std::stringstream   error;
+    HaliteInterpreter<> interpreter(error);
+    ASSERT_FALSE(interpreter.parse(input));
+    auto        document       = interpreter.root();
+    std::string expected_paths = R"INPUT(/
+/txt (conditional template)
+)INPUT";
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+    ASSERT_EQ("conditional template", document.data());
+    ASSERT_EQ("***Error : line 3 is an unmatched conditional else. The "
+              "matching #if, #ifdef, #ifndef, or #elseif is missing.\n",
+              error.str());
 }

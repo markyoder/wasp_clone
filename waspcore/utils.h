@@ -7,186 +7,208 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
-#include <stdio.h> // windows exponent configure
+#include <stdio.h>  // windows exponent configure
 #include "waspcore/decl.h"
 
-namespace wasp{
-    /**
-     * @brief strip_quotes removes single or double quotes
-     * @param s the string to have the quotes removes from.
-     * @return a string with 1 set of single or double quotes removed
-     */
-    WASP_PUBLIC std::string strip_quotes( const std::string & s);
+namespace wasp
+{
+/**
+ * @brief strip_quotes removes single or double quotes
+ * @param s the string to have the quotes removes from.
+ * @return a string with 1 set of single or double quotes removed
+ */
+WASP_PUBLIC std::string strip_quotes(const std::string& s);
 
-    /**
-     * @brief trim removes the given character set leading and trailing from the given string
-     * @param s the string to trim potential prefix and suffix characters
-     * @param char_set the set of characters to be remove
-     * @return the string with all leading and trailing character set removed
-     */
-    WASP_PUBLIC std::string trim(  std::string s, const std::string& char_set);
+/**
+ * @brief trim removes the given character set leading and trailing from the
+ * given string
+ * @param s the string to trim potential prefix and suffix characters
+ * @param char_set the set of characters to be remove
+ * @return the string with all leading and trailing character set removed
+ */
+WASP_PUBLIC std::string trim(std::string s, const std::string& char_set);
 
-    /**
-     * @brief dir_name convenience method to acquire the directory name for the given path
-     * @param path the path from which the directory name will be acquired
-     * @return path minus the last '/name' or \\name
-     */
-    WASP_PUBLIC std::string dir_name(const std::string& path);
-    /**
-     * @brief xml_escape_data replaces string with escaped versions of the five
-     * characters that must be escaped in XML document data ( &, \, ", <, > )
-     * to be used on xml data
-     * @param src the string in which to have the characters escaped
-     * @return a string with characters escaped
-     */
-    WASP_PUBLIC std::string xml_escape_data(const std::string& src);
-    /**
-     * @brief xml_escape_name replaces string with versions that will parse
-     * as node names in xml
-     * to be used on xml node names
-     * @param src the string in which to have the characters replaced
-     * @return a string with characters replaced
-     */
-    WASP_PUBLIC std::string xml_escape_name(const std::string& src);
+/**
+ * @brief dir_name convenience method to acquire the directory name for the
+ * given path
+ * @param path the path from which the directory name will be acquired
+ * @return path minus the last '/name' or \\name
+ */
+WASP_PUBLIC std::string dir_name(const std::string& path);
+/**
+ * @brief xml_escape_data replaces string with escaped versions of the five
+ * characters that must be escaped in XML document data ( &, \, ", <, > )
+ * to be used on xml data
+ * @param src the string in which to have the characters escaped
+ * @return a string with characters escaped
+ */
+WASP_PUBLIC std::string xml_escape_data(const std::string& src);
+/**
+ * @brief xml_escape_name replaces string with versions that will parse
+ * as node names in xml
+ * to be used on xml node names
+ * @param src the string in which to have the characters replaced
+ * @return a string with characters replaced
+ */
+WASP_PUBLIC std::string xml_escape_name(const std::string& src);
 
-    /**
-     * @brief to_type acquire the data typed as the requested type
-     * @param result the typed result
-     * @param ok optional boolean return value indicating if conversion was successful.
-     */
-    template<typename T>
-    WASP_PUBLIC void to_type(T & result
-                 , const std::string & data
-                 , bool * ok=nullptr)
+/**
+ * @brief to_type acquire the data typed as the requested type
+ * @param result the typed result
+ * @param ok optional boolean return value indicating if conversion was
+ * successful.
+ */
+template<typename T>
+WASP_PUBLIC void to_type(T& result, const std::string& data, bool* ok = nullptr)
+{
+    std::stringstream str;
+    str << data;
+    str >> result;
+    if (ok)
+        *ok = !(str.bad() || str.fail());
+}
+/**
+ *Specialization on string so as to avoid whitespace issues in stream operator>>
+ */
+template<>
+inline WASP_PUBLIC void
+to_type<std::string>(std::string& result, const std::string& data, bool* ok)
+{
+    result = data;
+    if (ok)
+        *ok = true;
+}
+template<>
+inline WASP_PUBLIC void
+to_type<int>(int& result, const std::string& data, bool* ok)
+{
+    try
     {
-        std::stringstream str;
-        str << data;
-        str >> result;
-        if( ok ) *ok = !(str.bad() || str.fail());
+        result = std::stoi(data.c_str());
+        if (ok)
+            *ok = true;
     }
-    /**
-     *Specialization on string so as to avoid whitespace issues in stream operator>>
-     */
-    template<>
-    inline WASP_PUBLIC void to_type<std::string>(std::string & result
-                              ,const std::string & data
-                              , bool * ok)
+    catch (...)
     {
-        result = data;
-        if( ok ) *ok = true;
+        result = 0;
+        if (ok)
+            *ok = false;
     }
-    template<>
-    inline WASP_PUBLIC void to_type<int>(int & result
-                              , const std::string& data
-                              , bool * ok)
+}
+template<>
+inline WASP_PUBLIC void
+to_type<double>(double& result, const std::string& data, bool* ok)
+{
+    try
     {
-        try{
-            result = std::stoi(data.c_str());
-            if( ok ) *ok = true;
-        }catch(...)
-        {
-            result = 0;
-            if( ok ) *ok = false;
-        }
+        result = std::stod(data.c_str());
+        if (ok)
+            *ok = true;
     }
-    template<>
-    inline WASP_PUBLIC void to_type<double>(double& result
-                              , const std::string& data
-                              , bool * ok)
+    catch (...)
     {
-        try{
-            result = std::stod(data.c_str());
-            if( ok ) *ok = true;
-        }catch(...)
-        {
-            result = 0.0;
-            if( ok ) *ok = false;
-        }
+        result = 0.0;
+        if (ok)
+            *ok = false;
     }
+}
 
-    template<typename T>
-    static std::string to_string(T v, bool * ok=nullptr){
-        std::stringstream s;
-        s<<v;
-        if( ok ) *ok = !(s.bad() || s.fail());
-        return s.str();
-    }
+template<typename T>
+static std::string to_string(T v, bool* ok = nullptr)
+{
+    std::stringstream s;
+    s << v;
+    if (ok)
+        *ok = !(s.bad() || s.fail());
+    return s.str();
+}
 
-    /**
-     * @brief to_xml walk the given node and emit xml elements into out
-     * @param node the node to convert to xml
-     * @param out the stream to emit the xml
-     * @param emit_decorative indicates whether to emit decorative nodes to xml stream
-     * @param space amount of whitespace to prefix to a line
-     */
-    template<class TAdapter>
-    inline WASP_PUBLIC void to_xml(const TAdapter& node, std::ostream & out, bool emit_decorative=true, std::string space="")
+/**
+ * @brief to_xml walk the given node and emit xml elements into out
+ * @param node the node to convert to xml
+ * @param out the stream to emit the xml
+ * @param emit_decorative indicates whether to emit decorative nodes to xml
+ * stream
+ * @param space amount of whitespace to prefix to a line
+ */
+template<class TAdapter>
+inline WASP_PUBLIC void to_xml(const TAdapter& node,
+                               std::ostream&   out,
+                               bool            emit_decorative = true,
+                               std::string     space           = "")
+{
+    bool decorative = node.is_decorative();
+    if (decorative && !emit_decorative)
+        return;
+    size_t child_count = node.child_count();
+    // print element name and location
+    out << space << "<" << xml_escape_name(node.name());
+    // capture location if it is a leaf
+    if (child_count == 0)
+        out << " loc=\"" << node.line() << "." << node.column() << "\"";
+    if (decorative)
+        out << " dec=\"" << std::boolalpha << decorative << "\"";
+    out << ">";
+    if (child_count == 0)
+        out << xml_escape_data(node.data());
+    else
+        out << std::endl;
+    // recurse into each child
+    for (size_t i = 0; i < child_count; ++i)
     {
-        bool decorative = node.is_decorative();
-        if( decorative && !emit_decorative ) return;
-        size_t child_count = node.child_count();
-        // print element name and location
-        out<<space<<"<"<<xml_escape_name(node.name());
-        // capture location if it is a leaf
-        if( child_count == 0 ) out<<" loc=\""<<node.line()<<"."<<node.column()<<"\"";
-        if( decorative ) out<<" dec=\""<<std::boolalpha<<decorative<<"\"";
-        out<<">";
-        if( child_count == 0 ) out<<xml_escape_data(node.data());
-        else out<<std::endl;
-        // recurse into each child
-        for( size_t i = 0; i < child_count; ++i )
-        {
-            to_xml(node.child_at(i),out, emit_decorative, space+"  ");
-        }
-
-        // close the element
-        if( child_count > 0 ) out<<space;
-        out<<"</"<<xml_escape_name(node.name())<<">"<<std::endl;
+        to_xml(node.child_at(i), out, emit_decorative, space + "  ");
     }
 
-    /**
-     * @brief wildcard_string_match
-     * @param first wildcarded pattern to match
-     * @param second literal string to determine match
-     * @return true, iff, second matches first
-     * NOTE: gratefully acquired from :
-     * http://www.geeksforgeeks.org/wildcard-character-matching/
-     */
-    inline WASP_PUBLIC bool wildcard_string_match(const char *first, const char * second)
-    {
-        // If we reach at the end of both strings, we are done
-        if (*first == '\0' && *second == '\0')
-            return true;
+    // close the element
+    if (child_count > 0)
+        out << space;
+    out << "</" << xml_escape_name(node.name()) << ">" << std::endl;
+}
 
-        // Make sure that the characters after '*' are present
-        // in second string. This function assumes that the first
-        // string will not contain two consecutive '*'
-        if (*first == '*' && *(first+1) != '\0' && *second == '\0')
-            return false;
+/**
+ * @brief wildcard_string_match
+ * @param first wildcarded pattern to match
+ * @param second literal string to determine match
+ * @return true, iff, second matches first
+ * NOTE: gratefully acquired from :
+ * http://www.geeksforgeeks.org/wildcard-character-matching/
+ */
+inline WASP_PUBLIC bool wildcard_string_match(const char* first,
+                                              const char* second)
+{
+    // If we reach at the end of both strings, we are done
+    if (*first == '\0' && *second == '\0')
+        return true;
 
-        // If the first string contains '?', or current characters
-        // of both strings match
-        if (*first == '?' || *first == *second)
-            return wildcard_string_match(first+1, second+1);
-
-        // If there is *, then there are two possibilities
-        // a) We consider current character of second string
-        // b) We ignore current character of second string.
-        if (*first == '*')
-            return wildcard_string_match(first+1, second)
-                    || wildcard_string_match(first, second+1);
+    // Make sure that the characters after '*' are present
+    // in second string. This function assumes that the first
+    // string will not contain two consecutive '*'
+    if (*first == '*' && *(first + 1) != '\0' && *second == '\0')
         return false;
-    }
-    template<class TV>
-    WASP_PUBLIC std::string info( const TV & view )
-    {
-        if( view.is_null() ) return "@TreeView(null)";
-        else return "@TreeView(l="+std::to_string(view.line())
-                +","+std::to_string(view.column())
-                +": t="+std::to_string(view.tree_node_index())
-                +", i"+std::to_string(view.type())
-                +", n'"+view.name()+"'"
-                +")";
-    }
+
+    // If the first string contains '?', or current characters
+    // of both strings match
+    if (*first == '?' || *first == *second)
+        return wildcard_string_match(first + 1, second + 1);
+
+    // If there is *, then there are two possibilities
+    // a) We consider current character of second string
+    // b) We ignore current character of second string.
+    if (*first == '*')
+        return wildcard_string_match(first + 1, second) ||
+               wildcard_string_match(first, second + 1);
+    return false;
+}
+template<class TV>
+WASP_PUBLIC std::string info(const TV& view)
+{
+    if (view.is_null())
+        return "@TreeView(null)";
+    else
+        return "@TreeView(l=" + std::to_string(view.line()) + "," +
+               std::to_string(view.column()) +
+               ": t=" + std::to_string(view.tree_node_index()) + ", i" +
+               std::to_string(view.type()) + ", n'" + view.name() + "'" + ")";
+}
 }
 #endif

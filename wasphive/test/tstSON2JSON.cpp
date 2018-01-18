@@ -10,17 +10,20 @@
 using namespace wasp;
 
 typedef TokenPool<unsigned int, unsigned int, unsigned int> TP;
-typedef TreeNodePool<unsigned int, unsigned int, TP> TNP;
-typedef SONInterpreter<TNP> SONInterp;
+typedef TreeNodePool<unsigned int, unsigned int, TP>        TNP;
+typedef SONInterpreter<TNP>            SONInterp;
 typedef SONNodeView<TreeNodeView<TNP>> SONNV;
 
 // macro to print a cleaner text diff if strings are different
-#define EXPECT_JSON(EXPECTED,ACTUAL) EXPECT_TRUE(EXPECTED==ACTUAL) << \
-      "\nExpected JSON:\n" << "*********************" << EXPECTED << "*********************\n" \
-      "\nActual JSON:\n"   << "*********************" << ACTUAL   << "*********************\n"
+#define EXPECT_JSON(EXPECTED, ACTUAL)                                       \
+    EXPECT_TRUE(EXPECTED == ACTUAL)                                         \
+        << "\nExpected JSON:\n"                                             \
+        << "*********************" << EXPECTED << "*********************\n" \
+                                                  "\nActual JSON:\n"        \
+        << "*********************" << ACTUAL << "*********************\n"
 
-TEST(SON2JSON, 001){
-
+TEST(SON2JSON, 001)
+{
     std::stringstream son_schema;
     std::stringstream son_input;
     std::stringstream expected_json;
@@ -381,33 +384,34 @@ case(1) {
 
     // parse schema
     SONInterp schema_interp(std::cerr);
-    ASSERT_TRUE( schema_interp.parse(son_schema) );
+    ASSERT_TRUE(schema_interp.parse(son_schema));
 
     // save schema root
     SONNV schema_root = schema_interp.root();
 
     // parse input
     SONInterp input_interp(std::cerr);
-    ASSERT_TRUE( input_interp.parse(son_input) );
+    ASSERT_TRUE(input_interp.parse(son_input));
 
     // save input root
-    SONNV input_root  = input_interp.root();
+    SONNV input_root = input_interp.root();
 
     // covert to json save in actual_json
     std::stringstream actual_json;
     std::stringstream actual_errors;
-    int root_level = 0;
-    int last_level_printed = -1;
-    ASSERT_TRUE( HIVE::input_to_json(schema_root, input_root, root_level, last_level_printed, actual_json, actual_errors) );
+    int               root_level         = 0;
+    int               last_level_printed = -1;
+    ASSERT_TRUE(HIVE::input_to_json(schema_root, input_root, root_level,
+                                    last_level_printed, actual_json,
+                                    actual_errors));
 
     EXPECT_TRUE(actual_errors.str() == "");
 
     EXPECT_JSON(expected_json.str(), actual_json.str());
-
 }
 
-TEST(SON2JSON, 002){
-
+TEST(SON2JSON, 002)
+{
     std::stringstream son_schema;
     std::stringstream son_input;
     std::stringstream expected_json;
@@ -606,33 +610,34 @@ singleflag3(sf3_id)=[ val3 val4 ]
 
     // parse schema
     SONInterp schema_interp(std::cerr);
-    ASSERT_TRUE( schema_interp.parse(son_schema) );
+    ASSERT_TRUE(schema_interp.parse(son_schema));
 
     // save schema root
     SONNV schema_root = schema_interp.root();
 
     // parse input
     SONInterp input_interp(std::cerr);
-    ASSERT_TRUE( input_interp.parse(son_input) );
+    ASSERT_TRUE(input_interp.parse(son_input));
 
     // save input root
-    SONNV input_root  = input_interp.root();
+    SONNV input_root = input_interp.root();
 
     // covert to json save in actual_json
     std::stringstream actual_json;
     std::stringstream actual_errors;
-    int root_level = 0;
-    int last_level_printed = -1;
-    ASSERT_TRUE( HIVE::input_to_json(schema_root, input_root, root_level, last_level_printed, actual_json, actual_errors) );
+    int               root_level         = 0;
+    int               last_level_printed = -1;
+    ASSERT_TRUE(HIVE::input_to_json(schema_root, input_root, root_level,
+                                    last_level_printed, actual_json,
+                                    actual_errors));
 
     EXPECT_TRUE(actual_errors.str() == "");
 
     EXPECT_JSON(expected_json.str(), actual_json.str());
-
 }
 
-TEST(SON2JSON, 003){
-
+TEST(SON2JSON, 003)
+{
     std::stringstream son_schema;
     std::stringstream son_input;
     std::stringstream expected_json;
@@ -850,33 +855,34 @@ outer_two{
 
     // parse schema
     SONInterp schema_interp(std::cerr);
-    ASSERT_TRUE( schema_interp.parse(son_schema) );
+    ASSERT_TRUE(schema_interp.parse(son_schema));
 
     // save schema root
     SONNV schema_root = schema_interp.root();
 
     // parse input
     SONInterp input_interp(std::cerr);
-    ASSERT_TRUE( input_interp.parse(son_input) );
+    ASSERT_TRUE(input_interp.parse(son_input));
 
     // save input root
-    SONNV input_root  = input_interp.root();
+    SONNV input_root = input_interp.root();
 
     // covert to json save in actual_json
     std::stringstream actual_json;
     std::stringstream actual_errors;
-    int root_level = 0;
-    int last_level_printed = -1;
-    ASSERT_TRUE( HIVE::input_to_json(schema_root, input_root, root_level, last_level_printed, actual_json, actual_errors) );
+    int               root_level         = 0;
+    int               last_level_printed = -1;
+    ASSERT_TRUE(HIVE::input_to_json(schema_root, input_root, root_level,
+                                    last_level_printed, actual_json,
+                                    actual_errors));
 
     EXPECT_TRUE(actual_errors.str() == "");
 
     EXPECT_JSON(expected_json.str(), actual_json.str());
-
 }
 
-TEST(SON2JSON, 004){
-
+TEST(SON2JSON, 004)
+{
     std::stringstream son_schema;
     std::stringstream son_input;
     std::stringstream expected_json;
@@ -978,33 +984,34 @@ mixed_three = [ 1 2 three="four" three=[ five six seven=[ 8 9 ] ] 10 ]
 
     // parse schema
     SONInterp schema_interp(std::cerr);
-    ASSERT_TRUE( schema_interp.parse(son_schema) );
+    ASSERT_TRUE(schema_interp.parse(son_schema));
 
     // save schema root
     SONNV schema_root = schema_interp.root();
 
     // parse input
     SONInterp input_interp(std::cerr);
-    ASSERT_TRUE( input_interp.parse(son_input) );
+    ASSERT_TRUE(input_interp.parse(son_input));
 
     // save input root
-    SONNV input_root  = input_interp.root();
+    SONNV input_root = input_interp.root();
 
     // covert to json save in actual_json
     std::stringstream actual_json;
     std::stringstream actual_errors;
-    int root_level = 0;
-    int last_level_printed = -1;
-    ASSERT_TRUE( HIVE::input_to_json(schema_root, input_root, root_level, last_level_printed, actual_json, actual_errors) );
+    int               root_level         = 0;
+    int               last_level_printed = -1;
+    ASSERT_TRUE(HIVE::input_to_json(schema_root, input_root, root_level,
+                                    last_level_printed, actual_json,
+                                    actual_errors));
 
     EXPECT_TRUE(actual_errors.str() == "");
 
     EXPECT_JSON(expected_json.str(), actual_json.str());
-
 }
 
-TEST(SON2JSON, error_001){
-
+TEST(SON2JSON, error_001)
+{
     std::stringstream son_schema;
     std::stringstream son_input;
     std::stringstream expected_errors;
@@ -1036,36 +1043,38 @@ object{
 
 )INPUT";
 
-    expected_errors << R"INPUT(***ERROR: /object/level/parameter exists multiple times in schema.
+    expected_errors
+        << R"INPUT(***ERROR: /object/level/parameter exists multiple times in schema.
 )INPUT";
 
     // parse schema
     SONInterp schema_interp(std::cerr);
-    ASSERT_TRUE( schema_interp.parse(son_schema) );
+    ASSERT_TRUE(schema_interp.parse(son_schema));
 
     // save schema root
     SONNV schema_root = schema_interp.root();
 
     // parse input
     SONInterp input_interp(std::cerr);
-    ASSERT_TRUE( input_interp.parse(son_input) );
+    ASSERT_TRUE(input_interp.parse(son_input));
 
     // save input root
-    SONNV input_root  = input_interp.root();
+    SONNV input_root = input_interp.root();
 
     // covert to json save in actual_json
     std::stringstream actual_json;
     std::stringstream actual_errors;
-    int root_level = 0;
-    int last_level_printed = -1;
-    ASSERT_FALSE( HIVE::input_to_json(schema_root, input_root, root_level, last_level_printed, actual_json, actual_errors) );
+    int               root_level         = 0;
+    int               last_level_printed = -1;
+    ASSERT_FALSE(HIVE::input_to_json(schema_root, input_root, root_level,
+                                     last_level_printed, actual_json,
+                                     actual_errors));
 
-    EXPECT_TRUE( expected_errors.str() == actual_errors.str() );
-
+    EXPECT_TRUE(expected_errors.str() == actual_errors.str());
 }
 
-TEST(SON2JSON, error_002){
-
+TEST(SON2JSON, error_002)
+{
     std::stringstream son_schema;
     std::stringstream son_input;
     std::stringstream expected_errors;
@@ -1094,30 +1103,32 @@ object{
 
 )INPUT";
 
-    expected_errors << R"INPUT(***ERROR: /object/level/not_in_schema does not exist in schema.
+    expected_errors
+        << R"INPUT(***ERROR: /object/level/not_in_schema does not exist in schema.
 )INPUT";
 
     // parse schema
     SONInterp schema_interp(std::cerr);
-    ASSERT_TRUE( schema_interp.parse(son_schema) );
+    ASSERT_TRUE(schema_interp.parse(son_schema));
 
     // save schema root
     SONNV schema_root = schema_interp.root();
 
     // parse input
     SONInterp input_interp(std::cerr);
-    ASSERT_TRUE( input_interp.parse(son_input) );
+    ASSERT_TRUE(input_interp.parse(son_input));
 
     // save input root
-    SONNV input_root  = input_interp.root();
+    SONNV input_root = input_interp.root();
 
     // covert to json save in actual_json
     std::stringstream actual_json;
     std::stringstream actual_errors;
-    int root_level = 0;
-    int last_level_printed = -1;
-    ASSERT_FALSE( HIVE::input_to_json(schema_root, input_root, root_level, last_level_printed, actual_json, actual_errors) );
+    int               root_level         = 0;
+    int               last_level_printed = -1;
+    ASSERT_FALSE(HIVE::input_to_json(schema_root, input_root, root_level,
+                                     last_level_printed, actual_json,
+                                     actual_errors));
 
-    EXPECT_TRUE( expected_errors.str() == actual_errors.str() );
-
+    EXPECT_TRUE(expected_errors.str() == actual_errors.str());
 }
