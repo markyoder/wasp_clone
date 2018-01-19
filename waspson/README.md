@@ -1,9 +1,9 @@
 # Standard Object Notation (SON)
 The standard object notation is a lightweight data entry syntax intended to facilitate application input acquisition.
 
-The supported constructs are Objects, Arrays, and Keyed values. Additionally, Objects, Arrays, and Keyed values can be further disambiguated using identifiers.
+The supported constructs are Blocks, Objects, Arrays, and Keyed values. Additionally, Objects, Arrays, and Keyed values can be further disambiguated using identifiers.
 
-SON can facilitate simple constructs such as property or configuration files using keyed-values. 
+SON can facilitate simple constructs such as property or configuration files using keyed-values. Blocks allow for top-level grouping.
 
 ## Keyed-Value 
 
@@ -39,6 +39,22 @@ height(main) = 1080
 x(settings) = 520 y(settings) = 800
 width (settings) = 120 height(settings) = 120
 ```
+
+## Blocks 
+The traditional configuration file blocks allows for top-level grouping of key-values. 
+
+```
+[ui]
+x(main)=544 y(main)=100
+width(main) = 1920
+height(main) = 1080
+...
+
+[database]
+url="https://somewhere.com"
+```
+Blocks allow for any SON construct (except other blocks) to be nested/grouped.
+
 
 ## Hierarchy via Objects
 Hierarchy or grouping can be added using the Object construct. Objects are useful in exhuming common context with a succinct handle. 
