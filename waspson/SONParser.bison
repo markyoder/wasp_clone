@@ -114,12 +114,13 @@
 %type <node_index>  lparen rparen plus minus multiply divide exponent
 %type <node_index>  lbracket rbracket
 %type <node_index>  lbrace rbrace
-%type <node_index>  filler
-%type <node_index>  decl
-%type <node_index>  comma
-%type <node_index>  exp value
-%type <node_index>  identifier
 %type <node_index>  array
+%type <node_index>  block
+%type <node_index>  comma
+%type <node_index>  decl
+%type <node_index>  exp value
+%type <node_index>  filler
+%type <node_index>  identifier
 %type <node_index>  object
 %type <node_index>  keyedvalue
 %type <node_index>  comment
@@ -797,12 +798,43 @@ execution_unit : execution_unit_start execution_unit_name execution_unit_end
                         ,wasp::strip_quotes(interpreter.data(name_i)).c_str()
                         ,child_indices);
        }
+ // Blocks are a terminator-less construct, which pushes a stage/scope after which all
+ // SON constructs (except execution_unit) are children       
+block : lbracket decl rbracket
+      {
+          // Check for prior staged blocks that may need to be committed.
+          // Because blocks are the only SON construct that are staged (in addition to the root)
+          // the stage count should be 1, if it is greater, the additional stages should be closed
+          if (interpreter.staged_count() > 1)
+          {
+              // blocks cannot be nested, so there should only be 1 additional stage
+              // root+prior block = 2 stages
+              wasp_check(interpreter.staged_count() == 2);
+              interpreter.commit_staged(interpreter.staged_count()-2);
+          }
+          
+          size_t start_i = ($1);
+          size_t name_i = ($2);
+          size_t end_i = ($3);
+          std::vector<size_t> child_indices = {start_i
+                                                     ,name_i
+                                                     ,end_i
+                                                     };
+
+          std::string quote_less_data = interpreter.data($2);
+          quote_less_data = wasp::strip_quotes(quote_less_data);
+          $$ = interpreter.push_staged(wasp::OBJECT
+                                    ,quote_less_data.c_str()
+                                    ,child_indices);
+          
+      }
 start   : /** empty **/
         | start comment{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
         | start array{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
         | start keyedvalue{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
         | start object{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
         | start execution_unit{interpreter.push_staged_child(($2));if(interpreter.single_parse() ) {YYACCEPT;}}
+        | start block{ /*Node staging occurs in block rule*/;if(interpreter.single_parse() ) {YYACCEPT;}}
 
  /*** END RULES - Change the wasp grammar rules above ***/
 

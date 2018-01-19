@@ -46,7 +46,7 @@
 #include "waspcore/utils.h"
 #include "waspcore/decl.h"
 
-#line 49 "SONParser.hpp" // lalr1.cc:377
+#line 50 "SONParser.hpp" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -116,29 +116,29 @@
 # define YYDEBUG 0
 #endif
 
-#line 33 "SONParser.bison" // lalr1.cc:377
+#line 34 "SONParser.bison" // lalr1.cc:377
 namespace wasp {
-#line 121 "SONParser.hpp" // lalr1.cc:377
+#line 122 "SONParser.hpp" // lalr1.cc:377
 
 
 
 
 
   /// A Bison parser.
-  class WASP_PUBLIC SONParser
+  class SONParser
   {
   public:
 #ifndef YYSTYPE
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 61 "SONParser.bison" // lalr1.cc:377
+    #line 62 "SONParser.bison" // lalr1.cc:377
 
         std::size_t token_index;
         std::size_t node_index;
         std::vector<size_t>* node_indices;
 
-#line 141 "SONParser.hpp" // lalr1.cc:377
+#line 142 "SONParser.hpp" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -505,8 +505,8 @@ namespace wasp {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 291,     ///< Last index in yytable_.
-      yynnts_ = 50,  ///< Number of nonterminal symbols.
+      yylast_ = 312,     ///< Last index in yytable_.
+      yynnts_ = 51,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
@@ -521,9 +521,9 @@ namespace wasp {
   };
 
 
-#line 33 "SONParser.bison" // lalr1.cc:377
+#line 34 "SONParser.bison" // lalr1.cc:377
 } // wasp
-#line 526 "SONParser.hpp" // lalr1.cc:377
+#line 527 "SONParser.hpp" // lalr1.cc:377
 
 
 

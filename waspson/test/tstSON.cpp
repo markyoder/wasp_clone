@@ -1545,7 +1545,64 @@ TEST(SON, object_expression_identifier)
     ASSERT_FALSE(k_id_view.is_null());
     ASSERT_EQ("id", std::string(k_id_view.name()));
 }
+TEST(SON, empty_block)
+{
+    std::stringstream input;
+    input << R"INPUT([block])INPUT";
+    SONInterpreter<> interpreter;
+    ASSERT_EQ(true, interpreter.parse(input));
+    ASSERT_EQ(5, interpreter.node_count());
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count());
 
+    std::string       expected_paths = R"INPUT(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+)INPUT";
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+}
+TEST(SON, populated_block)
+{
+    std::stringstream input;
+    input << R"INPUT([block]
+	k=v
+	o={}
+	a=[]
+)INPUT";
+    SONInterpreter<> interpreter;
+    ASSERT_EQ(true, interpreter.parse(input));
+    ASSERT_EQ(19, interpreter.node_count());
+    auto document = interpreter.root();
+    ASSERT_EQ(1, document.child_count());
+
+    std::string       expected_paths = R"INPUT(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+/block/k
+/block/k/decl (k)
+/block/k/= (=)
+/block/k/value (v)
+/block/o
+/block/o/decl (o)
+/block/o/= (=)
+/block/o/{ ({)
+/block/o/} (})
+/block/a
+/block/a/decl (a)
+/block/a/= (=)
+/block/a/[ ([)
+/block/a/] (])
+)INPUT";
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+}
 /**
  * @brief TEST the capture of an expression as the identifer of an array
  * DISABLED as the REDUCE/REDUCE conflict causes

@@ -40,7 +40,7 @@
 
 # include <vector>
 
-#line 33 "SONParser.bison" // stack.hh:132
+#line 34 "SONParser.bison" // stack.hh:132
 namespace wasp {
 #line 46 "stack.hh" // stack.hh:132
   template <class T, class S = std::vector<T> >
@@ -150,7 +150,7 @@ namespace wasp {
     unsigned int range_;
   };
 
-#line 33 "SONParser.bison" // stack.hh:132
+#line 34 "SONParser.bison" // stack.hh:132
 } // wasp
 #line 156 "stack.hh" // stack.hh:132
 
