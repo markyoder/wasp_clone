@@ -66,7 +66,7 @@ TOKEN_FALSE false|FALSE|False|no|NO|No
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
 SINGLE_QUOTED_STRING \'([^\\\'\n])*\'
 QSTRING {DOUBLE_QUOTED_STRING}|{SINGLE_QUOTED_STRING}
-COMMENT \/\/[^\n]*|%[^\n]*
+COMMENT \/\/[^\n]*|[%#][^\n]*
  /*
  * The 'execution unit' is a rebranded SCALE sequence construct
  * where the sequence started with the unit_start rule below

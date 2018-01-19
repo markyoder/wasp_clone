@@ -1572,12 +1572,15 @@ TEST(SON, populated_block)
 	k=v
 	o={}
 	a=[]
+    # comment
 )INPUT";
     SONInterpreter<> interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
-    ASSERT_EQ(19, interpreter.node_count());
+    ASSERT_EQ(20, interpreter.node_count());
     auto document = interpreter.root();
     ASSERT_EQ(1, document.child_count());
+    auto block_node = document.child_at(0);
+    ASSERT_EQ("block", std::string(block_node.name()));
 
     std::string       expected_paths = R"INPUT(/
 /block
@@ -1598,6 +1601,7 @@ TEST(SON, populated_block)
 /block/a/= (=)
 /block/a/[ ([)
 /block/a/] (])
+/block/comment (# comment)
 )INPUT";
     std::stringstream paths;
     document.paths(paths);
