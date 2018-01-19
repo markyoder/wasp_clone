@@ -810,7 +810,7 @@ block : lbracket decl rbracket
               // blocks cannot be nested, so there should only be 1 additional stage
               // root+prior block = 2 stages
               wasp_check(interpreter.staged_count() == 2);
-              interpreter.commit_staged(interpreter.staged_count()-2);
+              interpreter.commit_staged(interpreter.staged_count()-1);
           }
           
           size_t start_i = ($1);

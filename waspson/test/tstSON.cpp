@@ -1565,6 +1565,28 @@ TEST(SON, empty_block)
     document.paths(paths);
     ASSERT_EQ(expected_paths, paths.str());
 }
+TEST(SON, comment_preceeding_empty_block)
+{
+    std::stringstream input;
+    input << R"INPUT(# comment
+    [block])INPUT";
+    SONInterpreter<> interpreter;
+    ASSERT_EQ(true, interpreter.parse(input));
+    ASSERT_EQ(6, interpreter.node_count());
+    auto document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+
+    std::string       expected_paths = R"INPUT(/
+/comment (# comment)
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+)INPUT";
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+}
 TEST(SON, populated_block)
 {
     std::stringstream input;
@@ -1602,6 +1624,71 @@ TEST(SON, populated_block)
 /block/a/[ ([)
 /block/a/] (])
 /block/comment (# comment)
+)INPUT";
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
+}
+TEST(SON, consecutive_populated_block)
+{
+    std::stringstream input;
+    input << R"INPUT([block]
+        k=v
+        o={}
+        a=[]
+ [block1]
+         k=v
+         o={}
+         a=[]
+    # comment
+)INPUT";
+    SONInterpreter<> interpreter;
+    ASSERT_EQ(true, interpreter.parse(input));
+    ASSERT_EQ(38, interpreter.node_count());
+    auto document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+    auto block_node = document.child_at(0);
+    ASSERT_EQ("block", std::string(block_node.name()));
+    block_node = document.child_at(1);
+    ASSERT_EQ("block1", std::string(block_node.name()));
+    std::string       expected_paths = R"INPUT(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+/block/k
+/block/k/decl (k)
+/block/k/= (=)
+/block/k/value (v)
+/block/o
+/block/o/decl (o)
+/block/o/= (=)
+/block/o/{ ({)
+/block/o/} (})
+/block/a
+/block/a/decl (a)
+/block/a/= (=)
+/block/a/[ ([)
+/block/a/] (])
+/block1
+/block1/[ ([)
+/block1/decl (block1)
+/block1/] (])
+/block1/k
+/block1/k/decl (k)
+/block1/k/= (=)
+/block1/k/value (v)
+/block1/o
+/block1/o/decl (o)
+/block1/o/= (=)
+/block1/o/{ ({)
+/block1/o/} (})
+/block1/a
+/block1/a/decl (a)
+/block1/a/= (=)
+/block1/a/[ ([)
+/block1/a/] (])
+/block1/comment (# comment)
 )INPUT";
     std::stringstream paths;
     document.paths(paths);
