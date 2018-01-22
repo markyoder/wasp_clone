@@ -10,7 +10,7 @@ SET(${PROJECT_NAME}_VERSION 0.1)
 SET(${PROJECT_NAME}_FULL_VERSION "beta 0.1")
 SET(${PROJECT_NAME}_VERSION_STRING "0.1 (beta)")
 SET(${PROJECT_NAME}_MAJOR_VERSION 00)
-SET(${PROJECT_NAME}_MAJOR_MINOR_VERSION 001001)
+SET(${PROJECT_NAME}_MAJOR_MINOR_VERSION 001002)
 SET(${PROJECT_NAME}_ENABLE_DEVELOPMENT_MODE_DEFAULT ON) # Change to 'OFF' for a release (beta or final)
 
 ##---------------------------------------------------------------------------##
