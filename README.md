@@ -95,7 +95,8 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
             * [File Import using an Object](/wasphalite/README.md#file-import-using-an-object)
             * [Iterative File Import using an Array](/wasphalite/README.md#iterative-file-import-using-an-array-or-ranges)
     * [Conditional Blocks](/wasphalite/README.md#conditional-blocks)
-10. [Utils](/wasputils/README.md#command-line-utilities) - utilities for command line file interaction (listing, validating, selecting, etc.)
+10. [INI](/waspson/README.md#standard-object-notation-son) - configuration file format 
+11. [Utils](/wasputils/README.md#command-line-utilities) - utilities for command line file interaction (listing, validating, selecting, etc.)
     * [File Listing Utilities](/wasputils/README.md#file-listing-utilities)
     * [File Component Selection Utilities](/wasputils/README.md#file-component-selection-utilities)
     * [XML Utilities](/wasputils/README.md#xml-utilities)
@@ -142,7 +143,7 @@ WASP is composed of the following primary components:
     * absolute and relative wild-carded names and value, or
     * index-predicated node path lookup
 7. [__SON__](/waspson/README.md#standard-object-notation-son): the Standard Object Notation (SON) - waspson package contains the lexer, parser, and tree node view for the SON grammar; the flexible, structured, input entry mechanism supports
-    * objects, arrays, and keyed values, as well as
+    * blocks, objects, arrays, and keyed values, as well as
     * identified objects, arrays, and keyed values.
 8. [__DDI__](waspddi/README.md#definition-driven-interpreter): the Definition-Driven Interpreter (DDI) contains a lexer, a parser, and an interpreter for the lightweight input format. 
     * Hierarchical Input format with very little syntax.
@@ -150,7 +151,8 @@ WASP is composed of the following primary components:
     * Supports attribute and expression evaluations.
     * Supports template imports.
     * Supports conditional action blocks.
-10. [__Utils__](/wasputils/README.md#command-line-utilities) - the wasputils package contains executable utilities for listing/viewing, selecting, validating, and transforming WASP-supported grammars.
+10. [__INI__](/waspson/README.md#standard-object-notation-son): configuration file format, supported by SON.
+11. [__Utils__](/wasputils/README.md#command-line-utilities) - the wasputils package contains executable utilities for listing/viewing, selecting, validating, and transforming WASP-supported grammars.
     * List: lists paths to each file element.
     * Select: allows using SIREN expression to select pieces of input.
     * Valid: validates a given text file with a given document definition/schema.
