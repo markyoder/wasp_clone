@@ -491,7 +491,6 @@ array :
                                         ,*$1);
         delete $1;
         error(@2, name+" has unmatched left bracket!");
-        delete $1;
         YYERROR;
     }
     | declaration lbracket array_members END
@@ -799,7 +798,7 @@ execution_unit : execution_unit_start execution_unit_name execution_unit_end
                         ,child_indices);
        }
  // Blocks are a terminator-less construct, which pushes a stage/scope after which all
- // SON constructs (except execution_unit) are children       
+ // SON constructs (except execution_unit) are children
 block : lbracket decl rbracket
       {
           // Check for prior staged blocks that may need to be committed.
@@ -812,7 +811,7 @@ block : lbracket decl rbracket
               wasp_check(interpreter.staged_count() == 2);
               interpreter.commit_staged(interpreter.staged_count()-1);
           }
-          
+
           size_t start_i = ($1);
           size_t name_i = ($2);
           size_t end_i = ($3);
@@ -826,7 +825,7 @@ block : lbracket decl rbracket
           $$ = interpreter.push_staged(wasp::OBJECT
                                     ,quote_less_data.c_str()
                                     ,child_indices);
-          
+
       }
 start   : /** empty **/
         | start comment{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
