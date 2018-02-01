@@ -1,4 +1,5 @@
 INCLUDE(WaspAddCompilerFlags)
+INCLUDE(WaspFlexAndBison)
 
 TRIBITS_SUBPACKAGE(getpot)
 
