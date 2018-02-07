@@ -180,7 +180,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @brief root acquire the root of the document
      * @return TreeNodeView view into the document parse tree
      */
-    TreeNodeView<TreeNodePool_type> root() const;
+    NodeView<TreeNodePool_type> root() const;
 
     /**
      * @brief node_at acquire the node at the given index in the pool
@@ -188,7 +188,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @return the TreeNodeView from which data (name, type, data, children) can
      * be conventienty acquired
      */
-    TreeNodeView<TreeNodePool_type>
+    NodeView<TreeNodePool_type>
     node_at(node_index_size node_pool_index) const;
 
     /**

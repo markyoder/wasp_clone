@@ -21,12 +21,10 @@ typedef unsigned int   default_node_index_size;
  */
 template<
     // size type describing node type maximum
-    typename nts = default_node_type_size
-    // size type describing node occurrence maximum
-    ,
-    typename nis = default_node_index_size
-    // Token Pool storage type
-    ,
+    typename nts = default_node_type_size,
+    // size type describing node occurrence maximum    
+    typename nis = default_node_index_size,
+    // Token Pool storage type    
     class TP = TokenPool<>>
 class WASP_PUBLIC TreeNodePool
 {
@@ -377,30 +375,30 @@ class WASP_PUBLIC TreeNodePool
 };
 
 /**
- * @brief The TreeNodeView class provies light weight interface to TreeNodes
+ * @brief The NodeView class provies light weight interface to TreeNodes
  * Allows traversing child nodes and parent as well as acquire node information
  * *
  */
 template<class TreeNodePool_T = TreeNodePool<>>
-class WASP_PUBLIC TreeNodeView
+class WASP_PUBLIC NodeView
 {
   public:
-    using Collection = std::vector<TreeNodeView>;
+    using Collection = std::vector<NodeView>;
     typedef TreeNodePool_T TreeNodePool_type;
-    TreeNodeView() : m_tree_node_index(-1), m_tree_data(nullptr) {}
-    TreeNodeView(std::size_t node_index, const TreeNodePool_T& nodes);
-    TreeNodeView(const TreeNodeView& orig);
-    ~TreeNodeView();
+    NodeView() : m_tree_node_index(-1), m_tree_data(nullptr) {}
+    NodeView(std::size_t node_index, const TreeNodePool_T& nodes);
+    NodeView(const NodeView& orig);
+    ~NodeView();
 
-    TreeNodeView& operator=(const TreeNodeView& b);
+    NodeView& operator=(const NodeView& b);
 
-    bool operator==(const TreeNodeView& b) const;
-    bool operator!=(const TreeNodeView& b) const { return !(*this == b); }
+    bool operator==(const NodeView& b) const;
+    bool operator!=(const NodeView& b) const { return !(*this == b); }
     /**
-     * @brief equal determines if this is equal to the provides TreeNodeView
+     * @brief equal determines if this is equal to the provides NodeView
      * @return true, iff and only if the nodes are the same
      */
-    bool equal(const TreeNodeView& b) const { return *this == b; }
+    bool equal(const NodeView& b) const { return *this == b; }
 
     /**
      * @brief data acquire the node's data
@@ -411,7 +409,7 @@ class WASP_PUBLIC TreeNodeView
      * @brief parent acquire the parent view of the current node
      * @return
      */
-    TreeNodeView parent() const;
+    NodeView parent() const;
     /**
      * @brief has_parent determine if this node has a parent
      * @return true, iff this node has a parent
@@ -424,7 +422,7 @@ class WASP_PUBLIC TreeNodeView
      */
     bool is_null() const { return m_tree_data == nullptr; }
     /**
-     * @brief is_decorative default TreeNodeView interface implementation
+     * @brief is_decorative default NodeView interface implementation
      * @return always false
      */
     bool is_decorative() const { return false; }
@@ -436,13 +434,13 @@ class WASP_PUBLIC TreeNodeView
     bool is_leaf() const;
 
     /**
-     * @brief is_declarator default TreeNodeView interface implementation
+     * @brief is_declarator default NodeView interface implementation
      * @return true if the type is 'DECL'
      */
     bool is_declarator() const { return type() == DECL; }
 
     /**
-     * @brief is_terminator default TreeNodeView interface implementation
+     * @brief is_terminator default NodeView interface implementation
      * @return true if the type is 'TERM'
      */
     bool is_terminator() const { return type() == TERM; }
@@ -478,9 +476,9 @@ class WASP_PUBLIC TreeNodeView
     /**
      * @brief child_at acquire the child node view at the given index
      * @param index the index of the child [0-child_count())
-     * @return TreeNodeView describing the child node
+     * @return NodeView describing the child node
      */
-    TreeNodeView child_at(std::size_t index) const;
+    NodeView child_at(std::size_t index) const;
 
     /**
      * @brief child_by_name acquire child nodes by the given name
@@ -488,15 +486,15 @@ class WASP_PUBLIC TreeNodeView
      * @param limit the limit on the number of children ( 0 := no limit )
      * @return A collection of views. Empty if no match occurrs
      */
-    typename TreeNodeView::Collection child_by_name(const std::string& name,
+    typename NodeView::Collection child_by_name(const std::string& name,
                                                     size_t limit = 0) const;
     /**
      * @brief first_child_by_name acquires the first child with the given name
      * @param name the name of the requested child
-     * @return Named TreeNodeView as requestd. is_null indicates if none was
+     * @return Named NodeView as requestd. is_null indicates if none was
      * found
      */
-    TreeNodeView first_child_by_name(const std::string& name) const;
+    NodeView first_child_by_name(const std::string& name) const;
     /**
      * @brief type acquire the type of the node
      * @return the node's type
@@ -573,9 +571,9 @@ class WASP_PUBLIC TreeNodeView
     // Friendly stream operator
     friend std::ostream&
     operator<<(std::ostream&                             str,
-               const wasp::TreeNodeView<TreeNodePool_T>& view)
+               const wasp::NodeView<TreeNodePool_T>& view)
     {
-        str << "TreeNodeView(tree_node_index=" << view.m_tree_node_index
+        str << "NodeView(tree_node_index=" << view.m_tree_node_index
             << ", &pool=" << view.m_tree_data << ")";
         return str;
     }

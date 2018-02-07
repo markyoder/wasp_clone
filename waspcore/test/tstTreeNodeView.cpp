@@ -30,7 +30,7 @@ char root    = 10;
  *    |_ '1.2343'
  *    |_ 'end'
  */
-TEST(TreeNodeView, child_by_name)
+TEST(NodeView, child_by_name)
 {
     //'array (foo) 234 1.2343 end\n' // data
     // 0     67  1011  15     22     // offsets
@@ -96,7 +96,7 @@ TEST(TreeNodeView, child_by_name)
     ASSERT_EQ(root, tp.type(tp.size() - 1));
 
     {  // test data child_by_name(value)
-        TreeNodeView<decltype(tp)> data_view(data_root_index, tp);
+        NodeView<decltype(tp)> data_view(data_root_index, tp);
         ASSERT_FALSE(data_view.is_null());
         ASSERT_EQ(&tp, data_view.tree_node_pool());
         std::string name          = data_view.name();
@@ -104,7 +104,7 @@ TEST(TreeNodeView, child_by_name)
         ASSERT_EQ(expected_name, name);
         {  // test empty scenario
             const std::string                      expected_child_name = "ted";
-            TreeNodeView<decltype(tp)>::Collection children =
+            NodeView<decltype(tp)>::Collection children =
                 data_view.child_by_name(expected_child_name);
             ASSERT_TRUE(children.empty());
             ASSERT_EQ(0, data_view.child_count_by_name(expected_child_name));
@@ -112,7 +112,7 @@ TEST(TreeNodeView, child_by_name)
         }
         {  // test multiple returned
             const std::string expected_child_name = "value";
-            TreeNodeView<decltype(tp)>::Collection children =
+            NodeView<decltype(tp)>::Collection children =
                 data_view.child_by_name(expected_child_name);
             ASSERT_EQ(2, children.size());
             ASSERT_EQ(2, data_view.child_count_by_name(expected_child_name));
@@ -136,7 +136,7 @@ TEST(TreeNodeView, child_by_name)
             ASSERT_EQ("234", child_data);
         }
     }
-    TreeNodeView<decltype(tp)> root_view(tp.size() - 1, tp);
+    NodeView<decltype(tp)> root_view(tp.size() - 1, tp);
     std::cout << root_view.data() << std::endl;
     std::stringstream xml;
     wasp::to_xml(root_view, xml);
@@ -156,28 +156,28 @@ TEST(TreeNodeView, child_by_name)
 }
 TEST(TreeNodePool, is_null_test)
 {
-    TreeNodeView<TreeNodePool<>> null_view;
+    NodeView<TreeNodePool<>> null_view;
     ASSERT_TRUE(null_view.is_null());
     TreeNodePool<char, char,
                  TokenPool<char, char, default_file_offset_type_size>>
                                tp;
-    TreeNodeView<decltype(tp)> view(1, tp);
+    NodeView<decltype(tp)> view(1, tp);
     ASSERT_FALSE(view.is_null());
 }
 TEST(TreeNodePool, operator_equal_test)
 {
-    TreeNodeView<TreeNodePool<>> null_view;
+    NodeView<TreeNodePool<>> null_view;
     ASSERT_TRUE(null_view.is_null());
     TreeNodePool<char, char,
                  TokenPool<char, char, default_file_offset_type_size>>
                                tp;
-    TreeNodeView<decltype(tp)> view1(0, tp);
-    TreeNodeView<decltype(tp)> view2(0, tp);
-    TreeNodeView<decltype(tp)> view3(1, tp);
+    NodeView<decltype(tp)> view1(0, tp);
+    NodeView<decltype(tp)> view2(0, tp);
+    NodeView<decltype(tp)> view3(1, tp);
     ASSERT_EQ(view1, view2);
     ASSERT_NE(view1, view3);
 }
-TEST(TreeNodeView, to_type_test)
+TEST(NodeView, to_type_test)
 {
     //'"QString1" \'QString2\' string 14 14e6 15.0 15.0e6 3.145' // data
     TreeNodePool<char, char,
@@ -204,7 +204,7 @@ TEST(TreeNodeView, to_type_test)
         {
             std::string expected_string =
                 std::string("String") + std::to_string(i);
-            TreeNodeView<decltype(tp)> view(i, tp);
+            NodeView<decltype(tp)> view(i, tp);
             EXPECT_EQ(expected_string, view.to_string());
             bool ok = false;
             EXPECT_EQ(expected_string, view.to_string(&ok));
@@ -214,7 +214,7 @@ TEST(TreeNodeView, to_type_test)
         for (std::size_t i = 3; i < token_data.size(); ++i)
         {
             std::string                expected_string = token_data[i];
-            TreeNodeView<decltype(tp)> view(i, tp);
+            NodeView<decltype(tp)> view(i, tp);
             EXPECT_EQ(expected_string, view.to_string());
             bool ok = false;
             EXPECT_EQ(expected_string, view.to_string(&ok));
@@ -223,7 +223,7 @@ TEST(TreeNodeView, to_type_test)
         // test strings as doubles - failure
         for (std::size_t i = 0; i < 3 /*strings*/; ++i)
         {
-            TreeNodeView<decltype(tp)> view(i, tp);
+            NodeView<decltype(tp)> view(i, tp);
             EXPECT_EQ(0.0, view.to_double());
             bool ok = true;
             view.to_double(&ok);
@@ -232,7 +232,7 @@ TEST(TreeNodeView, to_type_test)
         // test strings as int - failure
         for (std::size_t i = 0; i < 3 /*strings*/; ++i)
         {
-            TreeNodeView<decltype(tp)> view(i, tp);
+            NodeView<decltype(tp)> view(i, tp);
             EXPECT_EQ(0, view.to_int());
             bool ok = true;
             view.to_int(&ok);

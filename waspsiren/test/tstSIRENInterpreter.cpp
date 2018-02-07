@@ -29,9 +29,9 @@ TEST(SIREN, selection_on_keyed_value)
     tree.push_leaf(wasp::VALUE, "value", token_i);           // node 2
     tree.push_parent(wasp::KEYED_VALUE, "key", {0, 1, 2});   // node 3
     tree.push_parent(wasp::DOCUMENT_ROOT, "document", {3});  // node 4
-    TreeNodeView<decltype(tree)> document(4, tree);
+    NodeView<decltype(tree)> document(4, tree);
     ASSERT_EQ(1, document.child_count());
-    TreeNodeView<decltype(tree)> key = document.child_at(0);
+    NodeView<decltype(tree)> key = document.child_at(0);
     ASSERT_TRUE(key.has_parent());
     ASSERT_EQ(3, key.child_count());
     {  // select only the root
@@ -300,10 +300,10 @@ TEST(SIREN, selection_on_keyed_values)
     ASSERT_EQ(11, tree.size());
     tree.push_parent(wasp::KEYED_VALUE, "key", {8, 9, 10});         // node 11
     tree.push_parent(wasp::DOCUMENT_ROOT, "document", {3, 7, 11});  // node 12
-    TreeNodeView<decltype(tree)> document(12, tree);
+    NodeView<decltype(tree)> document(12, tree);
     ASSERT_EQ(13, tree.size());
     ASSERT_EQ(3, document.child_count());
-    TreeNodeView<decltype(tree)> key = document.child_at(2);
+    NodeView<decltype(tree)> key = document.child_at(2);
     ASSERT_TRUE(key.has_parent());
     ASSERT_EQ(3, key.child_count());
     ASSERT_EQ(0, strcmp("key", key.name()));

@@ -25,12 +25,10 @@ typedef unsigned int default_file_offset_type_size;
  */
 template<
     // size type describing token type maximum token type count
-    typename tts = default_token_type_size
-    // size type describing maximum number of tokens
-    ,
-    typename tits = default_token_index_type_size
-    // size type describing the maximum byte file offset
-    ,
+    typename tts = default_token_type_size,
+    // size type describing maximum number of tokens    
+    typename tits = default_token_index_type_size,
+    // size type describing the maximum byte file offset    
     typename fots = default_file_offset_type_size>
 struct WASP_PUBLIC TokenPool
 {

@@ -77,7 +77,7 @@ bool JSONInterpreter<S>::generate_object(DataObject&   obj,
 }
 
 template<class S>
-bool JSONInterpreter<S>::generate_object_internal(const TreeNodeView<S>& view,
+bool JSONInterpreter<S>::generate_object_internal(const NodeView<S>& view,
                                                   DataObject&            obj,
                                                   std::ostream& err) const
 {
@@ -152,7 +152,7 @@ bool JSONInterpreter<S>::generate_object_internal(const TreeNodeView<S>& view,
 }
 
 template<class S>
-bool JSONInterpreter<S>::generate_array_internal(const TreeNodeView<S>& view,
+bool JSONInterpreter<S>::generate_array_internal(const NodeView<S>& view,
                                                  DataArray&             array,
                                                  std::ostream& err) const
 {
@@ -217,7 +217,7 @@ bool JSONInterpreter<S>::generate_array_internal(const TreeNodeView<S>& view,
 }
 template<class S>
 bool JSONInterpreter<S>::generate_value_internal(
-    const TreeNodeView<S>& value_view,
+    const NodeView<S>& value_view,
     wasp::Value&           value,
     std::ostream&          err) const
 {

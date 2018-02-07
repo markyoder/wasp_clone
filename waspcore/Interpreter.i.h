@@ -19,24 +19,24 @@ Interpreter<TNS>::~Interpreter()
 }
 
 template<class TNS>
-TreeNodeView<TNS> Interpreter<TNS>::root() const
+NodeView<TNS> Interpreter<TNS>::root() const
 {
     // have any nodes?
     if (m_tree_nodes.size() == 0)
     {
-        return TreeNodeView<TNS>(m_tree_nodes.size(), this->m_tree_nodes);
+        return NodeView<TNS>(m_tree_nodes.size(), this->m_tree_nodes);
     }
-    return TreeNodeView<TNS>(m_root_index, this->m_tree_nodes);
+    return NodeView<TNS>(m_root_index, this->m_tree_nodes);
 }
 template<class TNS>
-TreeNodeView<TNS> Interpreter<TNS>::node_at(node_index_size index) const
+NodeView<TNS> Interpreter<TNS>::node_at(node_index_size index) const
 {
     // have any nodes?
     if (m_tree_nodes.size() == 0)
     {
-        return TreeNodeView<TNS>(m_tree_nodes.size(), this->m_tree_nodes);
+        return NodeView<TNS>(m_tree_nodes.size(), this->m_tree_nodes);
     }
-    return TreeNodeView<TNS>(index, this->m_tree_nodes);
+    return NodeView<TNS>(index, this->m_tree_nodes);
 }
 template<class TNS>
 size_t Interpreter<TNS>::child_count(size_t node_index) const

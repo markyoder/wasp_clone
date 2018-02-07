@@ -9,7 +9,7 @@ using namespace wasp;
 typedef TokenPool<unsigned int, unsigned int, unsigned int> TP;
 typedef TreeNodePool<unsigned int, unsigned int, TP>        TNP;
 typedef SONInterpreter<TNP>            SONInterp;
-typedef SONNodeView<TreeNodeView<TNP>> SONNV;
+typedef SONNodeView<NodeView<TNP>> SONNV;
 
 struct skel_node
 {

@@ -127,13 +127,13 @@ class WASP_PUBLIC JSONInterpreter : public Interpreter<S>
   private:  // private methods
     // TODO these generate methods do not need to live in the interpreter class
 
-    bool generate_object_internal(const TreeNodeView<S>& view,
+    bool generate_object_internal(const NodeView<S>& view,
                                   DataObject&            obj,
                                   std::ostream&          err) const;
-    bool generate_array_internal(const TreeNodeView<S>& view,
+    bool generate_array_internal(const NodeView<S>& view,
                                  DataArray&             obj,
                                  std::ostream&          err) const;
-    bool generate_value_internal(const TreeNodeView<S>& value_view,
+    bool generate_value_internal(const NodeView<S>& value_view,
                                  wasp::Value&           value,
                                  std::ostream&          err) const;
 };  // end of JSONInterpreter class

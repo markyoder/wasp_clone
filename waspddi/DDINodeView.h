@@ -14,7 +14,7 @@ namespace wasp
  * Allows traversing child nodes and parent as well as acquire node information
  * *
  */
-template<class TNV = TreeNodeView<>>
+template<class TNV = NodeView<>>
 class WASP_PUBLIC DDINodeView
 {
   public:

@@ -159,7 +159,7 @@ std::size_t TreeNodePool<NTS, NIS, TP>::child_count(NIS node_index) const
 }
 template<class TreeNodePool_T>  // template type
 std::size_t                     // return type
-    TreeNodeView<TreeNodePool_T>::child_count_by_name(const std::string& name,
+    NodeView<TreeNodePool_T>::child_count_by_name(const std::string& name,
                                                       std::size_t limit) const
 {
     std::size_t matching_named_child_count = 0;
@@ -450,95 +450,95 @@ void TreeNodePool<NTS, NIS, TP>::data(NIS node_index, std::ostream& out) const
     // 2. accumulate the parent
     else
     {
-        TreeNodeView<TreeNodePool<NTS, NIS, TP>> view(node_index, *this);
+        NodeView<TreeNodePool<NTS, NIS, TP>> view(node_index, *this);
         print(out, view);
     }
 }
 
 template<class TreeNodePool_T>
-TreeNodeView<TreeNodePool_T>::TreeNodeView(std::size_t           node_index,
+NodeView<TreeNodePool_T>::NodeView(std::size_t           node_index,
                                            const TreeNodePool_T& nodes)
     : m_tree_node_index(node_index), m_tree_data(&nodes)
 {
 }
 template<class TreeNodePool_T>
-TreeNodeView<TreeNodePool_T>::TreeNodeView(const TreeNodeView& orig)
+NodeView<TreeNodePool_T>::NodeView(const NodeView& orig)
     : m_tree_node_index(orig.m_tree_node_index), m_tree_data(orig.m_tree_data)
 {
 }
 template<class TreeNodePool_T>
-TreeNodeView<TreeNodePool_T>::~TreeNodeView()
+NodeView<TreeNodePool_T>::~NodeView()
 {
 }
 template<class TreeNodePool_T>
-TreeNodeView<TreeNodePool_T>& TreeNodeView<TreeNodePool_T>::
-operator=(const TreeNodeView& b)
+NodeView<TreeNodePool_T>& NodeView<TreeNodePool_T>::
+operator=(const NodeView& b)
 {
     m_tree_node_index = b.m_tree_node_index;
     m_tree_data       = b.m_tree_data;
     return *this;
 }
 template<class TreeNodePool_T>
-bool TreeNodeView<TreeNodePool_T>::operator==(const TreeNodeView& b) const
+bool NodeView<TreeNodePool_T>::operator==(const NodeView& b) const
 {
     return m_tree_data == b.m_tree_data &&
            m_tree_node_index == b.m_tree_node_index;
 }
 template<class TreeNodePool_T>
-TreeNodeView<TreeNodePool_T> TreeNodeView<TreeNodePool_T>::parent() const
+NodeView<TreeNodePool_T> NodeView<TreeNodePool_T>::parent() const
 {
-    TreeNodeView<TreeNodePool_T> view(
+    NodeView<TreeNodePool_T> view(
         m_tree_data->parent_node_index(m_tree_node_index), *m_tree_data);
     return view;
 }
 template<class TreeNodePool_T>
-bool TreeNodeView<TreeNodePool_T>::has_parent() const
+bool NodeView<TreeNodePool_T>::has_parent() const
 {
     return m_tree_data->has_parent(m_tree_node_index);
 }
 template<class TreeNodePool_T>
-bool TreeNodeView<TreeNodePool_T>::is_leaf() const
+bool NodeView<TreeNodePool_T>::is_leaf() const
 {
     return m_tree_data->is_leaf(m_tree_node_index);
 }
 template<class TreeNodePool_T>
-std::string TreeNodeView<TreeNodePool_T>::data() const
+std::string NodeView<TreeNodePool_T>::data() const
 {
     std::stringstream str;
     m_tree_data->data(m_tree_node_index, str);
     return str.str();
 }
 template<class TreeNodePool_T>
-std::string TreeNodeView<TreeNodePool_T>::path() const
+std::string NodeView<TreeNodePool_T>::path() const
 {
     std::stringstream str;
     m_tree_data->node_path(m_tree_node_index, str);
     return str.str();
 }
 template<class TreeNodePool_T>
-void TreeNodeView<TreeNodePool_T>::paths(std::ostream& out) const
+void NodeView<TreeNodePool_T>::paths(std::ostream& out) const
 {
     m_tree_data->node_paths(m_tree_node_index, out);
 }
 template<class TreeNodePool_T>
-std::size_t TreeNodeView<TreeNodePool_T>::child_count() const
+std::size_t NodeView<TreeNodePool_T>::child_count() const
 {
     return m_tree_data->child_count(m_tree_node_index);
 }
 template<class TreeNodePool_T>
-TreeNodeView<TreeNodePool_T>
-TreeNodeView<TreeNodePool_T>::child_at(std::size_t index) const
+NodeView<TreeNodePool_T>
+NodeView<TreeNodePool_T>::child_at(std::size_t index) const
 {
     auto child_node_pool_index =
         m_tree_data->child_at(m_tree_node_index, index);
-    return TreeNodeView<TreeNodePool_T>(child_node_pool_index, *m_tree_data);
+    return NodeView<TreeNodePool_T>(child_node_pool_index, *m_tree_data);
 }
 template<class TreeNodePool_T>                     // template type
-typename TreeNodeView<TreeNodePool_T>::Collection  // return type
-    TreeNodeView<TreeNodePool_T>::child_by_name(const std::string& name,
+typename NodeView<TreeNodePool_T>::Collection  // return type
+    NodeView<TreeNodePool_T>::child_by_name(const std::string& name,
                                                 std::size_t        limit) const
 {
-    TreeNodeView<TreeNodePool_T>::Collection results;
+    NodeView<TreeNodePool_T>::Collection results;
 
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
     {
@@ -555,8 +555,8 @@ typename TreeNodeView<TreeNodePool_T>::Collection  // return type
     return results;
 }
 template<class TreeNodePool_T>  // template type
-TreeNodeView<TreeNodePool_T>
-TreeNodeView<TreeNodePool_T>::first_child_by_name(const std::string& name) const
+NodeView<TreeNodePool_T>
+NodeView<TreeNodePool_T>::first_child_by_name(const std::string& name) const
 {
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
     {
@@ -564,48 +564,48 @@ TreeNodeView<TreeNodePool_T>::first_child_by_name(const std::string& name) const
         if (name == child.name())
             return child;
     }
-    return TreeNodeView<TreeNodePool_T>();  // null view
+    return NodeView<TreeNodePool_T>();  // null view
 }
 template<class TreeNodePool_T>
-std::size_t TreeNodeView<TreeNodePool_T>::type() const
+std::size_t NodeView<TreeNodePool_T>::type() const
 {
     return m_tree_data->type(m_tree_node_index);
 }
 template<class TreeNodePool_T>
-std::size_t TreeNodeView<TreeNodePool_T>::token_type() const
+std::size_t NodeView<TreeNodePool_T>::token_type() const
 {
     return m_tree_data->node_token_type(m_tree_node_index);
 }
 template<class TreeNodePool_T>
-const char* TreeNodeView<TreeNodePool_T>::name() const
+const char* NodeView<TreeNodePool_T>::name() const
 {
     return m_tree_data->name(m_tree_node_index);
 }
 template<class TreeNodePool_T>
-std::size_t TreeNodeView<TreeNodePool_T>::line() const
+std::size_t NodeView<TreeNodePool_T>::line() const
 {
     return m_tree_data->line(m_tree_node_index);
 }
 template<class TreeNodePool_T>
-std::size_t TreeNodeView<TreeNodePool_T>::column() const
+std::size_t NodeView<TreeNodePool_T>::column() const
 {
     return m_tree_data->column(m_tree_node_index);
 }
 
 template<class TreeNodePool_T>
-std::size_t TreeNodeView<TreeNodePool_T>::last_line() const
+std::size_t NodeView<TreeNodePool_T>::last_line() const
 {
     return m_tree_data->last_line(m_tree_node_index);
 }
 
 template<class TreeNodePool_T>
-std::size_t TreeNodeView<TreeNodePool_T>::last_column() const
+std::size_t NodeView<TreeNodePool_T>::last_column() const
 {
     return m_tree_data->last_column(m_tree_node_index);
 }
 
 template<class TreeNodePool_T>
-bool TreeNodeView<TreeNodePool_T>::to_bool(bool* ok) const
+bool NodeView<TreeNodePool_T>::to_bool(bool* ok) const
 {
     bool              result = false;
     std::stringstream str;
@@ -616,21 +616,21 @@ bool TreeNodeView<TreeNodePool_T>::to_bool(bool* ok) const
     return result;
 }
 template<class TreeNodePool_T>
-int TreeNodeView<TreeNodePool_T>::to_int(bool* ok) const
+int NodeView<TreeNodePool_T>::to_int(bool* ok) const
 {
     int result = 0;
     to_type(result, data(), ok);
     return result;
 }
 template<class TreeNodePool_T>
-double TreeNodeView<TreeNodePool_T>::to_double(bool* ok) const
+double NodeView<TreeNodePool_T>::to_double(bool* ok) const
 {
     double result = 0.0;
     to_type(result, data(), ok);
     return result;
 }
 template<class TreeNodePool_T>
-std::string TreeNodeView<TreeNodePool_T>::to_string(bool* ok) const
+std::string NodeView<TreeNodePool_T>::to_string(bool* ok) const
 {
     std::string result;
     to_type(result, data(), ok);
