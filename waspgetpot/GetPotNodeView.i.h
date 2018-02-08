@@ -1,10 +1,8 @@
 #ifndef WASP_GetPotNODE_VIEW_I_H
 #define WASP_GetPotNODE_VIEW_I_H
 
-
-GetPotNodeView::GetPotNodeView(
-    std::size_t                node_index,
-    const AbstractInterpreter& data)
+GetPotNodeView::GetPotNodeView(std::size_t                node_index,
+                               const AbstractInterpreter& data)
     : m_node_index(node_index), m_pool(&data)
 {
     wasp_require(!this->is_null());
@@ -15,8 +13,7 @@ GetPotNodeView::GetPotNodeView(const GetPotNodeView& orig)
 }
 template<class NV>
 GetPotNodeView::GetPotNodeView(const NV& orig)
-    : m_node_index(orig.node_index())
-    , m_pool(orig.node_pool())
+    : m_node_index(orig.node_index()), m_pool(orig.node_pool())
 {
 }
 
@@ -40,8 +37,7 @@ GetPotNodeView& GetPotNodeView::operator=(const NV& b)
 
 bool GetPotNodeView::operator==(const GetPotNodeView& b) const
 {
-    return m_pool == b.m_pool &&
-           m_node_index == b.m_node_index;
+    return m_pool == b.m_pool && m_node_index == b.m_node_index;
 }
 
 bool GetPotNodeView::operator<(const GetPotNodeView& b) const
@@ -51,8 +47,7 @@ bool GetPotNodeView::operator<(const GetPotNodeView& b) const
 
 GetPotNodeView GetPotNodeView::parent() const
 {
-    GetPotNodeView view(m_pool->parent_node_index(m_node_index),
-                             *m_pool);
+    GetPotNodeView view(m_pool->parent_node_index(m_node_index), *m_pool);
     return view;
 }
 
@@ -90,12 +85,10 @@ bool GetPotNodeView::is_decorative() const
     return false;
 }
 
-
 bool GetPotNodeView::is_declarator() const
 {
     return type() == wasp::DECL;
 }
-
 
 bool GetPotNodeView::is_terminator() const
 {
@@ -110,8 +103,7 @@ bool GetPotNodeView::is_terminator() const
     }
 }
 
-GetPotNodeView::Collection
-GetPotNodeView::non_decorative_children() const
+GetPotNodeView::Collection GetPotNodeView::non_decorative_children() const
 {
     Collection results;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
@@ -175,9 +167,9 @@ std::size_t GetPotNodeView::child_count() const
 {
     return m_pool->child_count(m_node_index);
 }
-std::size_t          // return type
+std::size_t  // return type
     GetPotNodeView::child_count_by_name(const std::string& name,
-                                             std::size_t        limit) const
+                                        std::size_t        limit) const
 {
     NodeView view(node_index(), *node_pool());
     return view.child_count_by_name(name, limit);
@@ -185,13 +177,12 @@ std::size_t          // return type
 
 GetPotNodeView GetPotNodeView::child_at(std::size_t index) const
 {
-    auto child_node_pool_index =
-        m_pool->child_at(m_node_index, index);
+    auto child_node_pool_index = m_pool->child_at(m_node_index, index);
     return GetPotNodeView(child_node_pool_index, *m_pool);
 }
 GetPotNodeView::Collection  // return type
     GetPotNodeView::child_by_name(const std::string& name,
-                                       std::size_t        limit) const
+                                  std::size_t        limit) const
 {
     Collection results;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
@@ -235,25 +226,21 @@ std::size_t GetPotNodeView::column() const
     return m_pool->column(m_node_index);
 }
 
-
 std::size_t GetPotNodeView::last_line() const
 {
     return m_pool->last_line(m_node_index);
 }
-
 
 std::size_t GetPotNodeView::last_column() const
 {
     return m_pool->last_column(m_node_index);
 }
 
-
 bool GetPotNodeView::to_bool(bool* ok) const
 {
     NodeView view(value_node_index(), *node_pool());
     return view.to_bool(ok);
 }
-
 
 int GetPotNodeView::to_int(bool* ok) const
 {

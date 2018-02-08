@@ -176,11 +176,11 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @return true, iff no errors occurred during the substitution/printing of
      * the attribute
      */
-    bool print_attribute(DataAccessor&          data,
+    bool print_attribute(DataAccessor&   data,
                          const NodeView& attr_view,
-                         std::ostream&          out,
-                         size_t&                line,
-                         size_t&                column);
+                         std::ostream&   out,
+                         size_t&         line,
+                         size_t&         column);
 
     class SubstitutionOptions
     {
@@ -366,11 +366,11 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
                            const std::string&   data,
                            size_t               line);
 
-    bool accumulate_attribute(DataAccessor&          data,
+    bool accumulate_attribute(DataAccessor&   data,
                               const NodeView& attr_view,
-                              std::ostream&          out,
-                              size_t&                line,
-                              size_t&                column) const;
+                              std::ostream&   out,
+                              size_t&         line,
+                              size_t&         column) const;
     /**
      * @brief conditional handles actioned conditional blocks
      * @param data the data accessor
@@ -380,21 +380,21 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @param column the column from which the field begins
      * @return
      */
-    bool conditional(DataAccessor&          data,
+    bool conditional(DataAccessor&   data,
                      const NodeView& action_view,
-                     std::ostream&          out,
-                     size_t&                line,
-                     size_t&                column);
-    bool evaluate(DataAccessor&          data,
+                     std::ostream&   out,
+                     size_t&         line,
+                     size_t&         column);
+    bool evaluate(DataAccessor&   data,
                   const NodeView& action_view,
-                  std::ostream&          out,
-                  size_t&                line,
-                  size_t&                column);
-    bool evaluate_component(DataAccessor&          data,
+                  std::ostream&   out,
+                  size_t&         line,
+                  size_t&         column);
+    bool evaluate_component(DataAccessor&   data,
                             const NodeView& action_view,
-                            std::ostream&          out,
-                            size_t&                line,
-                            size_t&                column);
+                            std::ostream&   out,
+                            size_t&         line,
+                            size_t&         column);
 
     /**
      * @brief import_file imports the file represented by the given tree view
@@ -406,16 +406,16 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @return true, iff the file and its contents were successfully imported
      * and emitted
      */
-    bool import_file(DataAccessor&          data,
+    bool import_file(DataAccessor&   data,
                      const NodeView& import_view,
-                     std::ostream&          out,
-                     size_t&                line,
-                     size_t&                column);
-    bool repeat_file(DataAccessor&          data,
+                     std::ostream&   out,
+                     size_t&         line,
+                     size_t&         column);
+    bool repeat_file(DataAccessor&   data,
                      const NodeView& import_view,
-                     std::ostream&          out,
-                     size_t&                line,
-                     size_t&                column);
+                     std::ostream&   out,
+                     size_t&         line,
+                     size_t&         column);
     /**
      * @brief process_result conduct formatting, error checking of the result
      * @param result the result to be emitted to the output stream

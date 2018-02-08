@@ -57,8 +57,8 @@ int main(int argc, char** argv)
         return 1;
     }
     // Construct the definition
-    SONNodeView schema_root = schema.root();
-    std::stringstream                    definition_errors;
+    SONNodeView       schema_root = schema.root();
+    std::stringstream definition_errors;
     if (!HIVE::create_definition(parser.definition(), schema_root,
                                  definition_errors, false))
     {

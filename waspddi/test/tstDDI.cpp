@@ -166,8 +166,8 @@ sect9  1 2        # comment about sect9 list line 1
 /sect9/value ("five")
 /sect9/comment (# comment about sect9 list line 2)
 )I";
-    std::stringstream                 paths;
-    DDINodeView root = ddi.root();
+    std::stringstream paths;
+    DDINodeView       root = ddi.root();
     root.paths(paths);
     ASSERT_EQ(expected.str(), paths.str());
 

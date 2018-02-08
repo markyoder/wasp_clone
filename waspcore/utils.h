@@ -213,11 +213,11 @@ WASP_PUBLIC std::string info(const TV& view)
 }
 
 template<class Pool>
-WASP_PUBLIC void print_from(std::ostream&   stream,
-                const Pool& node_pool,
-                size_t          node_index,
-                size_t&         last_line,
-                size_t&         last_column)
+WASP_PUBLIC void print_from(std::ostream& stream,
+                            const Pool&   node_pool,
+                            size_t        node_index,
+                            size_t&       last_line,
+                            size_t&       last_column)
 {
     size_t child_count = node_pool.child_count(node_index);
     if (child_count == 0)  // fast check
@@ -268,18 +268,18 @@ WASP_PUBLIC void print_from(std::ostream&   stream,
     }
     for (size_t i = 0, cc = child_count; i < cc; i++)
     {
-        size_t child_index = node_pool.child_at(node_index,i);
+        size_t child_index = node_pool.child_at(node_index, i);
         print_from(stream, node_pool, child_index, last_line, last_column);
     }
 }
 template<class TAdapter>
 WASP_PUBLIC void print_from(std::ostream&   out,
-                const TAdapter& node_view,
-                size_t&         last_line,
-                size_t&         last_column)
+                            const TAdapter& node_view,
+                            size_t&         last_line,
+                            size_t&         last_column)
 {
-    print_from(out, *node_view.node_pool(), node_view.node_index(),
-               last_line, last_column);
+    print_from(out, *node_view.node_pool(), node_view.node_index(), last_line,
+               last_column);
 }
 
 template<class TAdapter>

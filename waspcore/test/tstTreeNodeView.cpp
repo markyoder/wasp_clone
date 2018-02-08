@@ -35,9 +35,8 @@ TEST(NodeView, child_by_name)
 {
     //'array (foo) 234 1.2343 end\n' // data
     // 0     67  1011  15     22     // offsets
-    DummyInterp<
-    TreeNodePool<char, char,
-                 TokenPool<char, char, default_file_offset_type_size>>>
+    DummyInterp<TreeNodePool<
+        char, char, TokenPool<char, char, default_file_offset_type_size>>>
                              interp;
     std::vector<size_t>      root_child_indices;
     size_t                   data_root_index;
@@ -64,9 +63,12 @@ TEST(NodeView, child_by_name)
                 // capture index of new leaf node
                 child_indices.push_back(static_cast<char>(i));
                 size_t token_index = interp.token_count();
-                interp.push_token(token_data[i].c_str(), token_type[i], token_offset[i]);
-                interp.push_leaf(node_type[i], node_name[i].c_str(), token_index);
-                ASSERT_EQ(i, interp.leaf_index(i));  // already leaf, so same index
+                interp.push_token(token_data[i].c_str(), token_type[i],
+                                  token_offset[i]);
+                interp.push_leaf(node_type[i], node_name[i].c_str(),
+                                 token_index);
+                ASSERT_EQ(i,
+                          interp.leaf_index(i));  // already leaf, so same index
                 ASSERT_EQ(1, interp.line(i));
                 ASSERT_EQ(node_type[i], interp.type(i));
                 ASSERT_EQ(node_name[i], interp.name(i));
@@ -83,8 +85,9 @@ TEST(NodeView, child_by_name)
         data_root_index = interp.size();
         interp.push_parent(parent_type, parent_name.c_str(), child_indices);
         ASSERT_EQ(7 + 1, interp.size());
-        ASSERT_EQ(0,
-                  interp.leaf_index(interp.size() - 1));  // parent of first leaf node
+        ASSERT_EQ(
+            0,
+            interp.leaf_index(interp.size() - 1));  // parent of first leaf node
         ASSERT_EQ(1, interp.line(interp.size() - 1));
         ASSERT_EQ(1, interp.column(interp.size() - 1));
         default_file_offset_type_size line_offset =
@@ -106,7 +109,7 @@ TEST(NodeView, child_by_name)
         std::string expected_name = "data";
         ASSERT_EQ(expected_name, name);
         {  // test empty scenario
-            const std::string                      expected_child_name = "ted";
+            const std::string    expected_child_name = "ted";
             NodeView::Collection children =
                 data_view.child_by_name(expected_child_name);
             ASSERT_TRUE(children.empty());
@@ -114,7 +117,7 @@ TEST(NodeView, child_by_name)
             ASSERT_EQ(0, data_view.child_count_by_name(expected_child_name, 1));
         }
         {  // test multiple returned
-            const std::string expected_child_name = "value";
+            const std::string    expected_child_name = "value";
             NodeView::Collection children =
                 data_view.child_by_name(expected_child_name);
             ASSERT_EQ(2, children.size());
@@ -161,10 +164,9 @@ TEST(TreeNodePool, is_null_test)
 {
     NodeView null_view;
     ASSERT_TRUE(null_view.is_null());
-    DummyInterp<
-    TreeNodePool<char, char,
-                 TokenPool<char, char, default_file_offset_type_size>>>
-                               interp;
+    DummyInterp<TreeNodePool<
+        char, char, TokenPool<char, char, default_file_offset_type_size>>>
+             interp;
     NodeView view(1, interp);
     ASSERT_FALSE(view.is_null());
 }
@@ -172,10 +174,9 @@ TEST(TreeNodePool, operator_equal_test)
 {
     NodeView null_view;
     ASSERT_TRUE(null_view.is_null());
-    DummyInterp<
-    TreeNodePool<char, char,
-                 TokenPool<char, char, default_file_offset_type_size>>>
-                               interp;
+    DummyInterp<TreeNodePool<
+        char, char, TokenPool<char, char, default_file_offset_type_size>>>
+             interp;
     NodeView view1(0, interp);
     NodeView view2(0, interp);
     NodeView view3(1, interp);
@@ -185,9 +186,8 @@ TEST(TreeNodePool, operator_equal_test)
 TEST(NodeView, to_type_test)
 {
     //'"QString1" \'QString2\' string 14 14e6 15.0 15.0e6 3.145' // data
-    DummyInterp<
-    TreeNodePool<char, char,
-                 TokenPool<char, char, default_file_offset_type_size>>>
+    DummyInterp<TreeNodePool<
+        char, char, TokenPool<char, char, default_file_offset_type_size>>>
         interp;
 
     {  // push the data with needed metadata for testing purposes
@@ -219,8 +219,8 @@ TEST(NodeView, to_type_test)
         // test all others as strings
         for (std::size_t i = 3; i < token_data.size(); ++i)
         {
-            std::string                expected_string = token_data[i];
-            NodeView view(i, interp);
+            std::string expected_string = token_data[i];
+            NodeView    view(i, interp);
             EXPECT_EQ(expected_string, view.to_string());
             bool ok = false;
             EXPECT_EQ(expected_string, view.to_string(&ok));

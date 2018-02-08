@@ -429,7 +429,7 @@ void TreeNodePool<NTS, NIS, TP>::data(NIS node_index, std::ostream& out) const
     // 2. accumulate the parent
     else
     {
-        size_t node_line = line(node_index);
+        size_t node_line   = line(node_index);
         size_t node_column = column(node_index);
         print_from(out, *this, node_index, node_line, node_column);
     }

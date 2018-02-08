@@ -2,8 +2,7 @@
 
 namespace wasp
 {
-NodeView::NodeView(std::size_t node_index,
-                               const AbstractInterpreter& nodes)
+NodeView::NodeView(std::size_t node_index, const AbstractInterpreter& nodes)
     : m_node_index(node_index), m_pool(&nodes)
 {
 }
@@ -17,8 +16,7 @@ NodeView::~NodeView()
 {
 }
 
-NodeView& NodeView::
-operator=(const NodeView& b)
+NodeView& NodeView::operator=(const NodeView& b)
 {
     m_node_index = b.m_node_index;
     m_pool       = b.m_pool;
@@ -27,14 +25,12 @@ operator=(const NodeView& b)
 
 bool NodeView::operator==(const NodeView& b) const
 {
-    return m_pool == b.m_pool &&
-           m_node_index == b.m_node_index;
+    return m_pool == b.m_pool && m_node_index == b.m_node_index;
 }
 
 NodeView NodeView::parent() const
 {
-    NodeView view(
-        m_pool->parent_node_index(m_node_index), *m_pool);
+    NodeView view(m_pool->parent_node_index(m_node_index), *m_pool);
     return view;
 }
 
@@ -71,9 +67,9 @@ std::size_t NodeView::child_count() const
 {
     return m_pool->child_count(m_node_index);
 }
-std::size_t                     // return type
+std::size_t  // return type
     NodeView::child_count_by_name(const std::string& name,
-                                                      std::size_t limit) const
+                                  std::size_t        limit) const
 {
     std::size_t matching_named_child_count = 0;
 
@@ -91,17 +87,13 @@ std::size_t                     // return type
     }
     return matching_named_child_count;
 }
-NodeView
-NodeView::child_at(std::size_t index) const
+NodeView NodeView::child_at(std::size_t index) const
 {
-    auto child_node_pool_index =
-        m_pool->child_at(m_node_index, index);
+    auto child_node_pool_index = m_pool->child_at(m_node_index, index);
     return NodeView(child_node_pool_index, *m_pool);
 }
-                     // template type
 NodeView::Collection  // return type
-    NodeView::child_by_name(const std::string& name,
-                                                std::size_t        limit) const
+    NodeView::child_by_name(const std::string& name, std::size_t limit) const
 {
     NodeView::Collection results;
 
@@ -119,8 +111,7 @@ NodeView::Collection  // return type
     }
     return results;
 }
-NodeView
-NodeView::first_child_by_name(const std::string& name) const
+NodeView NodeView::first_child_by_name(const std::string& name) const
 {
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
     {
@@ -156,7 +147,6 @@ std::size_t NodeView::column() const
     return m_pool->column(m_node_index);
 }
 
-
 std::size_t NodeView::last_line() const
 {
     return m_pool->last_line(m_node_index);
@@ -166,7 +156,6 @@ std::size_t NodeView::last_column() const
 {
     return m_pool->last_column(m_node_index);
 }
-
 
 bool NodeView::to_bool(bool* ok) const
 {
@@ -202,4 +191,4 @@ std::string NodeView::to_string(bool* ok) const
     return result;
 }
 
-} // end of namespace
+}  // end of namespace

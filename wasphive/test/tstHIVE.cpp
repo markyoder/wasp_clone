@@ -116,13 +116,10 @@ void do_test(const std::string& name)
     ASSERT_TRUE(load_streams(t, name + ".fail.son", name + ".pass.son",
                              name + ".fail.gld", name + ".sch"));
     ASSERT_TRUE(load_ast(t));
-    std::vector<std::string>                            errors;
-    SONNodeView schema_adapter =
-        t.schema_interpreter->root();
-    SONNodeView input_fail_adapter =
-        t.input_fail_interpreter->root();
-    SONNodeView input_pass_adapter =
-        t.input_pass_interpreter->root();
+    std::vector<std::string> errors;
+    SONNodeView              schema_adapter = t.schema_interpreter->root();
+    SONNodeView input_fail_adapter          = t.input_fail_interpreter->root();
+    SONNodeView input_pass_adapter          = t.input_pass_interpreter->root();
     bool valid = hive.validate(schema_adapter, input_fail_adapter, errors);
     std::string msgs = HIVE::combine(errors);
     EXPECT_FALSE(valid);

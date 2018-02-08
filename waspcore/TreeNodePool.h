@@ -22,9 +22,9 @@ typedef unsigned int   default_node_index_size;
 template<
     // size type describing node type maximum
     typename nts = default_node_type_size,
-    // size type describing node occurrence maximum    
+    // size type describing node occurrence maximum
     typename nis = default_node_index_size,
-    // Token Pool storage type    
+    // Token Pool storage type
     class TP = TokenPool<>>
 class WASP_PUBLIC TreeNodePool
 {

@@ -16,8 +16,8 @@ using namespace wasp;
 
 typedef TokenPool<unsigned int, unsigned int, unsigned int> TP;
 typedef TreeNodePool<unsigned int, unsigned int, TP>        TNP;
-typedef SONInterpreter<TNP>            SONInterp;
-typedef SONNodeView SONNV;
+typedef SONInterpreter<TNP> SONInterp;
+typedef SONNodeView         SONNV;
 
 int main(int argc, char** argv)
 {

@@ -12,7 +12,6 @@
 
 namespace wasp
 {
-
 /**
  * @brief The NodeView class provies light weight interface to TreeNodes
  * Allows traversing child nodes and parent as well as acquire node information
@@ -23,7 +22,7 @@ class WASP_PUBLIC NodeView
   public:
     using Collection = std::vector<NodeView>;
     NodeView() : m_node_index(-1), m_pool(nullptr) {}
-    NodeView(std::size_t node_index, const class AbstractInterpreter & data);
+    NodeView(std::size_t node_index, const class AbstractInterpreter& data);
     NodeView(const NodeView& orig);
     ~NodeView();
 
@@ -124,7 +123,7 @@ class WASP_PUBLIC NodeView
      * @return A collection of views. Empty if no match occurrs
      */
     NodeView::Collection child_by_name(const std::string& name,
-                                                    size_t limit = 0) const;
+                                       size_t             limit = 0) const;
     /**
      * @brief first_child_by_name acquires the first child with the given name
      * @param name the name of the requested child
@@ -206,9 +205,8 @@ class WASP_PUBLIC NodeView
     std::string to_string(bool* ok = nullptr) const;
 
     // Friendly stream operator
-    friend std::ostream&
-    operator<<(std::ostream&                             str,
-               const wasp::NodeView& view)
+    friend std::ostream& operator<<(std::ostream&         str,
+                                    const wasp::NodeView& view)
     {
         str << "NodeView(node_index=" << view.m_node_index
             << ", &pool=" << view.m_pool << ")";
@@ -216,7 +214,7 @@ class WASP_PUBLIC NodeView
     }
 
   private:
-    std::size_t           m_node_index;
+    std::size_t                      m_node_index;
     const class AbstractInterpreter* m_pool;
 };
 
@@ -369,19 +367,19 @@ class WASP_PUBLIC AbstractInterpreter
     virtual bool single_parse() const = 0;
 
     virtual size_t parent_node_index(size_t node_index) const = 0;
-    virtual bool has_parent(size_t node_index) const = 0;
-    virtual bool is_leaf(size_t node_index) const = 0;
-    virtual void data(size_t node_index, std::ostream& out) const = 0;
-    virtual void node_path(size_t node_index, std::ostream& out) const = 0;
+    virtual bool has_parent(size_t node_index) const          = 0;
+    virtual bool is_leaf(size_t node_index) const             = 0;
+    virtual void data(size_t node_index, std::ostream& out) const       = 0;
+    virtual void node_path(size_t node_index, std::ostream& out) const  = 0;
     virtual void node_paths(size_t node_index, std::ostream& out) const = 0;
-    virtual size_t child_at(size_t node_index, size_t index) const = 0;
+    virtual size_t child_at(size_t node_index, size_t index) const      = 0;
     virtual size_t node_token_type(size_t node_index) const = 0;
-    virtual size_t line(size_t node_index) const = 0;
-    virtual size_t last_line(size_t node_index) const = 0;
-    virtual size_t column(size_t node_index) const = 0;
-    virtual size_t last_column(size_t node_index) const = 0;
-    virtual size_t leaf_index(size_t node_index) const = 0;
-    virtual size_t size() const = 0;
+    virtual size_t line(size_t node_index) const            = 0;
+    virtual size_t last_line(size_t node_index) const       = 0;
+    virtual size_t column(size_t node_index) const          = 0;
+    virtual size_t last_column(size_t node_index) const     = 0;
+    virtual size_t leaf_index(size_t node_index) const      = 0;
+    virtual size_t size() const                             = 0;
 };
 
 template<class NodeStorage = TreeNodePool<>>
@@ -392,8 +390,9 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
     typedef typename NodeStorage::node_index_size node_index_size;
     typedef typename NodeStorage::node_type_size  node_type_size;
     typedef typename NodeStorage::TokenPool_type::token_index_type_size
-                                                          token_index_type_size;
-    typedef typename NodeStorage::TokenPool_type::token_type_size token_type_size;
+        token_index_type_size;
+    typedef
+        typename NodeStorage::TokenPool_type::token_type_size token_type_size;
     typedef typename NodeStorage::TokenPool_type::file_offset_type_size
         file_offset_type_size;
     Interpreter(std::ostream& error_stream = std::cerr);
@@ -411,8 +410,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @return the TreeNodeView from which data (name, type, data, children) can
      * be conventienty acquired
      */
-    NodeView
-    node_at(node_index_size node_pool_index) const;
+    NodeView node_at(node_index_size node_pool_index) const;
 
     /**
      * @brief parse parser the given input stream
@@ -556,21 +554,18 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
     {
         return m_nodes.is_leaf(node_index);
     }
-    size_t parent_node_count() const
-    {
-        return m_nodes.parent_node_count();
-    }
+    size_t parent_node_count() const { return m_nodes.parent_node_count(); }
     void data(size_t node_index, std::ostream& out) const
     {
-        m_nodes.data(node_index,out);
+        m_nodes.data(node_index, out);
     }
     void node_path(size_t node_index, std::ostream& out) const
     {
-        m_nodes.node_path(node_index,out);
+        m_nodes.node_path(node_index, out);
     }
     void node_paths(size_t node_index, std::ostream& out) const
     {
-        m_nodes.node_paths(node_index,out);
+        m_nodes.node_paths(node_index, out);
     }
     size_t child_at(size_t node_index, size_t index) const
     {
@@ -580,7 +575,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
     {
         return m_nodes.leaf_index(node_index);
     }
-    size_t size() const {return m_nodes.size();}
+    size_t size() const { return m_nodes.size(); }
     /**
      * @brief push_staged stages the given node for child accrual and later
      * commitment
@@ -723,10 +718,13 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
 template<class NodeStorage>
 class DummyInterp : public Interpreter<NodeStorage>
 {
-public:
+  public:
     bool parse(std::istream& input,
-               size_t m_start_line   = 1u,
-               size_t        m_start_column = 1u){return true;}
+               size_t        m_start_line   = 1u,
+               size_t        m_start_column = 1u)
+    {
+        return true;
+    }
 };
 }  // end of namespace
 #endif

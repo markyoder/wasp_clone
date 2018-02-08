@@ -17,7 +17,7 @@ namespace wasp
 class GetPotNodeView
 {
   public:
-    using Collection = std::vector<GetPotNodeView>;    
+    using Collection = std::vector<GetPotNodeView>;
     GetPotNodeView() : m_node_index(-1), m_pool(nullptr) {}
     GetPotNodeView(std::size_t node_index, const AbstractInterpreter& data);
     template<class NV>
@@ -106,8 +106,7 @@ class GetPotNodeView
      */
     bool is_null() const
     {
-        return m_pool == nullptr ||
-               m_node_index == m_pool->size();
+        return m_pool == nullptr || m_node_index == m_pool->size();
     }
 
     /**
@@ -152,7 +151,7 @@ class GetPotNodeView
      * @return A collection of views. Empty if no match occurrs
      */
     GetPotNodeView::Collection child_by_name(const std::string& name,
-                                                      size_t limit = 0) const;
+                                             size_t limit = 0) const;
     /**
      * @brief first_child_by_name acquires the first child with the given name
      * @param name the name of the requested child
@@ -241,7 +240,7 @@ class GetPotNodeView
     std::string last_as_string(bool* ok = nullptr) const;
 
     // Friendly stream operator
-    friend std::ostream& operator<<(std::ostream&                    str,
+    friend std::ostream& operator<<(std::ostream&               str,
                                     const wasp::GetPotNodeView& view)
     {
         str << "GetPotNodeView(node_index=" << view.m_node_index
@@ -250,7 +249,7 @@ class GetPotNodeView
     }
 
   private:
-    size_t                   m_node_index;
+    size_t                     m_node_index;
     const AbstractInterpreter* m_pool;
 
     /**

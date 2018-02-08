@@ -78,8 +78,8 @@ bool JSONInterpreter<S>::generate_object(DataObject&   obj,
 
 template<class S>
 bool JSONInterpreter<S>::generate_object_internal(const NodeView& view,
-                                                  DataObject&            obj,
-                                                  std::ostream& err) const
+                                                  DataObject&     obj,
+                                                  std::ostream&   err) const
 {
     wasp_require(view.is_null() == false);
     for (size_t i = 0, count = view.child_count(); i < count; ++i)
@@ -153,8 +153,8 @@ bool JSONInterpreter<S>::generate_object_internal(const NodeView& view,
 
 template<class S>
 bool JSONInterpreter<S>::generate_array_internal(const NodeView& view,
-                                                 DataArray&             array,
-                                                 std::ostream& err) const
+                                                 DataArray&      array,
+                                                 std::ostream&   err) const
 {
     wasp_require(view.is_null() == false);
     size_t child_index = 0;
@@ -216,10 +216,9 @@ bool JSONInterpreter<S>::generate_array_internal(const NodeView& view,
     return true;
 }
 template<class S>
-bool JSONInterpreter<S>::generate_value_internal(
-    const NodeView& value_view,
-    wasp::Value&           value,
-    std::ostream&          err) const
+bool JSONInterpreter<S>::generate_value_internal(const NodeView& value_view,
+                                                 wasp::Value&    value,
+                                                 std::ostream&   err) const
 {
     wasp_check(value_view.is_null() == false);
     auto value_type = value_view.token_type();

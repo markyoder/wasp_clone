@@ -97,10 +97,9 @@ SIRENInterpreter<S>::evaluate(TAdapter&                 node,
 }
 template<class S>
 template<typename TAdapter>
-std::size_t
-SIRENInterpreter<S>::evaluate(const NodeView& context,
-                              SIRENResultSet<TAdapter>&         result,
-                              std::vector<TAdapter>&            stage) const
+std::size_t SIRENInterpreter<S>::evaluate(const NodeView&           context,
+                                          SIRENResultSet<TAdapter>& result,
+                                          std::vector<TAdapter>&    stage) const
 {
     switch (context.type())
     {
@@ -137,8 +136,7 @@ SIRENInterpreter<S>::evaluate(const NodeView& context,
             // TODO - ensure selections are legit
             if (evaluate(left_selection, result, stage) > 0)
             {
-                NodeView right_selection =
-                    context.child_at(2);
+                NodeView right_selection = context.child_at(2);
                 evaluate(right_selection, result, stage);
             }
         }
@@ -165,9 +163,8 @@ SIRENInterpreter<S>::evaluate(const NodeView& context,
 }
 template<class S>
 template<typename TAdapter>
-void SIRENInterpreter<S>::search_child_name(
-    const NodeView& context,
-    std::vector<TAdapter>&            stage) const
+void SIRENInterpreter<S>::search_child_name(const NodeView&        context,
+                                            std::vector<TAdapter>& stage) const
 {
     if (stage.empty())
         return;
@@ -192,8 +189,7 @@ void SIRENInterpreter<S>::search_child_name(
 template<class S>
 template<typename TAdapter>
 void SIRENInterpreter<S>::search_conditional_predicated_child(
-    const NodeView& context,
-    std::vector<TAdapter>&            stage) const
+    const NodeView& context, std::vector<TAdapter>& stage) const
 {
     // context should be something like
     // obj [ id=value ]
@@ -210,10 +206,8 @@ void SIRENInterpreter<S>::search_conditional_predicated_child(
     // value = [2]
     NodeView predicate_context = context.child_at(2);
     // TODO - ensure predicate context fulfills expectations
-    NodeView predicate_name_context =
-        predicate_context.child_at(0);
-    NodeView predicate_value_context =
-        predicate_context.child_at(2);
+    NodeView predicate_name_context  = predicate_context.child_at(0);
+    NodeView predicate_value_context = predicate_context.child_at(2);
 
     // the names for which to search
     const char*        name            = child_name_context.name();
@@ -267,8 +261,7 @@ void SIRENInterpreter<S>::search_conditional_predicated_child(
 template<class S>
 template<typename TAdapter>
 void SIRENInterpreter<S>::search_index_predicated_child(
-    const NodeView& context,
-    std::vector<TAdapter>&            stage) const
+    const NodeView& context, std::vector<TAdapter>& stage) const
 {
     // context should be something like
     // obj [ 1 ] | obj [ 1:10 ] | obj [ 1:10:2 ]
@@ -299,17 +292,17 @@ void SIRENInterpreter<S>::search_index_predicated_child(
     else if (predicate_context.child_count() == 3)
     {  // TODO check type
         NodeView sindex = predicate_context.child_at(0);
-        start_i                           = sindex.to_int();
+        start_i         = sindex.to_int();
         NodeView eindex = predicate_context.child_at(2);
-        end_i                             = eindex.to_int();
+        end_i           = eindex.to_int();
     }
     else if (predicate_context.child_count() == 5)
     {
         // TODO check type
         NodeView sindex      = predicate_context.child_at(0);
-        start_i                                = sindex.to_int();
+        start_i              = sindex.to_int();
         NodeView eindex      = predicate_context.child_at(2);
-        end_i                                  = eindex.to_int();
+        end_i                = eindex.to_int();
         NodeView stride_node = predicate_context.child_at(4);
         stride = stride_node.to_int() - 1;  // remove 1 because 1-based
     }

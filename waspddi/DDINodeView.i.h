@@ -1,10 +1,8 @@
 #ifndef WASP_DDINODE_VIEW_I_H
 #define WASP_DDINODE_VIEW_I_H
 
-
-DDINodeView::DDINodeView(
-    std::size_t                 node_index,
-    const AbstractInterpreter& pool)
+DDINodeView::DDINodeView(std::size_t                node_index,
+                         const AbstractInterpreter& pool)
     : m_node_index(node_index), m_pool(&pool)
 {
     wasp_require(!this->is_null());
@@ -14,10 +12,9 @@ DDINodeView::DDINodeView(const DDINodeView& orig)
     : m_node_index(orig.m_node_index), m_pool(orig.m_pool)
 {
 }
-template <class NV>
+template<class NV>
 DDINodeView::DDINodeView(const NV& orig)
-    : m_node_index(orig.node_index())
-    , m_pool(orig.node_pool())
+    : m_node_index(orig.node_index()), m_pool(orig.node_pool())
 {
 }
 
@@ -41,8 +38,7 @@ DDINodeView& DDINodeView::operator=(const NV& b)
 
 bool DDINodeView::operator==(const DDINodeView& b) const
 {
-    return m_pool == b.m_pool &&
-           m_node_index == b.m_node_index;
+    return m_pool == b.m_pool && m_node_index == b.m_node_index;
 }
 
 bool DDINodeView::operator<(const DDINodeView& b) const
@@ -52,8 +48,7 @@ bool DDINodeView::operator<(const DDINodeView& b) const
 
 DDINodeView DDINodeView::parent() const
 {
-    DDINodeView view(m_pool->parent_node_index(m_node_index),
-                          *m_pool);
+    DDINodeView view(m_pool->parent_node_index(m_node_index), *m_pool);
     return view;
 }
 
@@ -82,12 +77,10 @@ bool DDINodeView::is_decorative() const
     return false;
 }
 
-
 bool DDINodeView::is_declarator() const
 {
     return type() == wasp::DECL;
 }
-
 
 bool DDINodeView::is_terminator() const
 {
@@ -100,9 +93,7 @@ bool DDINodeView::is_terminator() const
     }
 }
 
-
-DDINodeView::Collection
-DDINodeView::non_decorative_children() const
+DDINodeView::Collection DDINodeView::non_decorative_children() const
 {
     Collection results;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
@@ -114,8 +105,8 @@ DDINodeView::non_decorative_children() const
     return results;
 }
 
-DDINodeView DDINodeView::first_non_decorative_child_by_name(
-    const std::string& name) const
+DDINodeView
+DDINodeView::first_non_decorative_child_by_name(const std::string& name) const
 {
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
     {
@@ -167,9 +158,9 @@ std::size_t DDINodeView::child_count() const
     return m_pool->child_count(m_node_index);
 }
 
-std::size_t          // return type
+std::size_t  // return type
     DDINodeView::child_count_by_name(const std::string& name,
-                                          std::size_t        limit) const
+                                     std::size_t        limit) const
 {
     NodeView view(node_index(), *node_pool());
     return view.child_count_by_name(name, limit);
@@ -177,14 +168,12 @@ std::size_t          // return type
 
 DDINodeView DDINodeView::child_at(std::size_t index) const
 {
-    auto child_node_pool_index =
-        m_pool->child_at(m_node_index, index);
+    auto child_node_pool_index = m_pool->child_at(m_node_index, index);
     return DDINodeView(child_node_pool_index, *m_pool);
 }
 
 DDINodeView::Collection  // return type
-    DDINodeView::child_by_name(const std::string& name,
-                                    std::size_t        limit) const
+    DDINodeView::child_by_name(const std::string& name, std::size_t limit) const
 {
     Collection results;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
@@ -201,7 +190,7 @@ DDINodeView::Collection  // return type
     }
     return results;
 }
-DDINodeView     // return type
+DDINodeView  // return type
     DDINodeView::first_child_by_name(const std::string& name) const
 {
     NodeView view(node_index(), *node_pool());
@@ -228,25 +217,21 @@ std::size_t DDINodeView::column() const
     return m_pool->column(m_node_index);
 }
 
-
 std::size_t DDINodeView::last_line() const
 {
     return m_pool->last_line(m_node_index);
 }
-
 
 std::size_t DDINodeView::last_column() const
 {
     return m_pool->last_column(m_node_index);
 }
 
-
 bool DDINodeView::to_bool(bool* ok) const
 {
     NodeView view(value_node_index(), *node_pool());
     return view.to_bool(ok);
 }
-
 
 int DDINodeView::to_int(bool* ok) const
 {

@@ -1,10 +1,8 @@
 #ifndef WASP_SONNODE_VIEW_I_H
 #define WASP_SONNODE_VIEW_I_H
 
-
-SONNodeView::SONNodeView(
-    std::size_t                 node_index,
-    const AbstractInterpreter&  pool)
+SONNodeView::SONNodeView(std::size_t                node_index,
+                         const AbstractInterpreter& pool)
     : m_node_index(node_index), m_pool(&pool)
 {
     wasp_require(!this->is_null());
@@ -16,8 +14,7 @@ SONNodeView::SONNodeView(const SONNodeView& orig)
 }
 template<class NV>
 SONNodeView::SONNodeView(const NV& orig)
-    : m_node_index(orig.node_index())
-    , m_pool(orig.node_pool())
+    : m_node_index(orig.node_index()), m_pool(orig.node_pool())
 {
 }
 
@@ -41,8 +38,7 @@ SONNodeView& SONNodeView::operator=(const NV& b)
 
 bool SONNodeView::operator==(const SONNodeView& b) const
 {
-    return m_pool == b.m_pool &&
-           m_node_index == b.m_node_index;
+    return m_pool == b.m_pool && m_node_index == b.m_node_index;
 }
 
 bool SONNodeView::operator<(const SONNodeView& b) const
@@ -52,8 +48,7 @@ bool SONNodeView::operator<(const SONNodeView& b) const
 
 SONNodeView SONNodeView::parent() const
 {
-    SONNodeView view(m_pool->parent_node_index(m_node_index),
-                          *m_pool);
+    SONNodeView view(m_pool->parent_node_index(m_node_index), *m_pool);
     return view;
 }
 
@@ -115,12 +110,10 @@ bool SONNodeView::is_decorative() const
     return false;
 }
 
-
 bool SONNodeView::is_declarator() const
 {
     return type() == wasp::DECL;
 }
-
 
 bool SONNodeView::is_terminator() const
 {
@@ -136,9 +129,7 @@ bool SONNodeView::is_terminator() const
     }
 }
 
-
-SONNodeView::Collection
-SONNodeView::non_decorative_children() const
+SONNodeView::Collection SONNodeView::non_decorative_children() const
 {
     Collection results;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
@@ -150,8 +141,8 @@ SONNodeView::non_decorative_children() const
     return results;
 }
 
-SONNodeView SONNodeView::first_non_decorative_child_by_name(
-    const std::string& name) const
+SONNodeView
+SONNodeView::first_non_decorative_child_by_name(const std::string& name) const
 {
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
     {
@@ -202,10 +193,9 @@ std::size_t SONNodeView::child_count() const
 {
     return m_pool->child_count(m_node_index);
 }
-  // template type
-std::size_t          // return type
+std::size_t  // return type
     SONNodeView::child_count_by_name(const std::string& name,
-                                          std::size_t        limit) const
+                                     std::size_t        limit) const
 {
     NodeView view(node_index(), *node_pool());
     return view.child_count_by_name(name, limit);
@@ -213,14 +203,11 @@ std::size_t          // return type
 
 SONNodeView SONNodeView::child_at(std::size_t index) const
 {
-    auto child_node_pool_index =
-        m_pool->child_at(m_node_index, index);
+    auto child_node_pool_index = m_pool->child_at(m_node_index, index);
     return SONNodeView(child_node_pool_index, *m_pool);
 }
-                    // template type
 SONNodeView::Collection  // return type
-    SONNodeView::child_by_name(const std::string& name,
-                                    std::size_t        limit) const
+    SONNodeView::child_by_name(const std::string& name, std::size_t limit) const
 {
     Collection results;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
@@ -237,8 +224,7 @@ SONNodeView::Collection  // return type
     }
     return results;
 }
-  // template type
-SONNodeView     // return type
+SONNodeView  // return type
     SONNodeView::first_child_by_name(const std::string& name) const
 {
     NodeView view(node_index(), *node_pool());
@@ -265,25 +251,21 @@ std::size_t SONNodeView::column() const
     return m_pool->column(m_node_index);
 }
 
-
 std::size_t SONNodeView::last_line() const
 {
     return m_pool->last_line(m_node_index);
 }
-
 
 std::size_t SONNodeView::last_column() const
 {
     return m_pool->last_column(m_node_index);
 }
 
-
 bool SONNodeView::to_bool(bool* ok) const
 {
     NodeView view(value_node_index(), *node_pool());
     return view.to_bool(ok);
 }
-
 
 int SONNodeView::to_int(bool* ok) const
 {

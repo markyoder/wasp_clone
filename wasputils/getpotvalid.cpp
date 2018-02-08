@@ -104,8 +104,8 @@ int main(int argc, char* argv[])
             std::cout << errors.str() << std::endl;
             return -1;
         }
-        GetPotNodeView input_root = input_interp.root();
-        SONNodeView schema_root   = schema_interp.root();
+        GetPotNodeView           input_root  = input_interp.root();
+        SONNodeView              schema_root = schema_interp.root();
         HIVE                     validation_engine;
         std::vector<std::string> validation_errors;
         bool valid = validation_engine.validate(schema_root, input_root,

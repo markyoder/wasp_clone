@@ -97,9 +97,9 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      * given context
      */
     template<typename TAdapter>
-    size_t evaluate(const NodeView& context,
-                    SIRENResultSet<TAdapter>&         result,
-                    std::vector<TAdapter>&            stage) const;    
+    size_t evaluate(const NodeView&           context,
+                    SIRENResultSet<TAdapter>& result,
+                    std::vector<TAdapter>&    stage) const;
 
     /**
      * @brief search_child_name searches the staged node's children for
@@ -110,8 +110,8 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      * named child nodes
      */
     template<typename TAdapter>
-    void search_child_name(const NodeView& context,
-                           std::vector<TAdapter>&            stage) const;
+    void search_child_name(const NodeView&        context,
+                           std::vector<TAdapter>& stage) const;
     /**
      * @brief search_conditional_predicated_child searches the staged node's
      * children for specifically named children with grandchild attributes
@@ -124,9 +124,9 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      * only where the obj node has a child node 'name' with value 'fred'.
      */
     template<typename TAdapter>
-    void search_conditional_predicated_child(
-        const NodeView& context,
-        std::vector<TAdapter>&            stage) const;
+    void
+    search_conditional_predicated_child(const NodeView&        context,
+                                        std::vector<TAdapter>& stage) const;
 
     /**
      * @brief search_index_predicated_child searches the staged node's children
@@ -140,12 +140,11 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      * only where the obj node is at the 1-10 index and every 3rd
      */
     template<typename TAdapter>
-    void
-    search_index_predicated_child(const NodeView& context,
-                                  std::vector<TAdapter>& stage) const;
+    void search_index_predicated_child(const NodeView&        context,
+                                       std::vector<TAdapter>& stage) const;
     template<typename TAdapter>
-    void recursive_child_select(const NodeView& context,
-                                std::vector<TAdapter>&            stage) const;
+    void recursive_child_select(const NodeView&        context,
+                                std::vector<TAdapter>& stage) const;
 };  // end of SIRENInterpreter class
 
 #include "waspsiren/SIRENInterpreter.i.h"

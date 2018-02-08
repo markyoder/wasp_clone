@@ -69,23 +69,24 @@ size_t Interpreter<NodeStorage>::parent_node_index(size_t node_index) const
 }
 template<class NodeStorage>
 size_t Interpreter<NodeStorage>::child_index_at(size_t node_index,
-                                        size_t child_index) const
+                                                size_t child_index) const
 {
     return this->m_nodes.child_at(node_index, child_index);
 }
 template<class NodeStorage>
 size_t Interpreter<NodeStorage>::push_leaf(size_t      node_type,
-                                   const char* node_name,
-                                   size_t      token_index)
+                                           const char* node_name,
+                                           size_t      token_index)
 {
     size_t node_index = node_count();
     m_nodes.push_leaf(node_type, node_name, token_index);
     return node_index;
 }
 template<class NodeStorage>
-size_t Interpreter<NodeStorage>::push_parent(size_t                     node_type,
-                                     const char*                node_name,
-                                     const std::vector<size_t>& child_indices)
+size_t
+Interpreter<NodeStorage>::push_parent(size_t                     node_type,
+                                      const char*                node_name,
+                                      const std::vector<size_t>& child_indices)
 {
     size_t node_index = node_count();
     m_nodes.push_parent(node_type, node_name, child_indices);
@@ -122,7 +123,8 @@ const char* Interpreter<NodeStorage>::name(size_t index) const
     return this->m_nodes.name(index);
 }
 template<class NodeStorage>
-bool Interpreter<NodeStorage>::set_name(size_t node_index, const char* node_name)
+bool Interpreter<NodeStorage>::set_name(size_t      node_index,
+                                        const char* node_name)
 {
     return this->m_nodes.set_name(node_index, node_name);
 }
@@ -156,9 +158,9 @@ const char* Interpreter<NodeStorage>::token_data(size_t index) const
 template<class NodeStorage>
 template<class PARSER_IMPL>
 bool Interpreter<NodeStorage>::parse_impl(std::istream&      in,
-                                  const std::string& stream_name,
-                                  size_t             start_line,
-                                  size_t             start_column)
+                                          const std::string& stream_name,
+                                          size_t             start_line,
+                                          size_t             start_column)
 {
     //    lexer.set_debug(m_trace_lexing);
     //    lexer.set_debug(true);
@@ -191,9 +193,10 @@ size_t& Interpreter<NodeStorage>::staged_type(size_t staged_index)
     return m_staged[staged_index].m_type;
 }
 template<class NodeStorage>
-size_t Interpreter<NodeStorage>::push_staged(size_t                     node_type,
-                                     const std::string&         node_name,
-                                     const std::vector<size_t>& child_indices)
+size_t
+Interpreter<NodeStorage>::push_staged(size_t                     node_type,
+                                      const std::string&         node_name,
+                                      const std::vector<size_t>& child_indices)
 {
     m_staged.push_back(Stage());
     auto& back           = m_staged.back();
@@ -229,4 +232,3 @@ size_t Interpreter<NodeStorage>::commit_staged(size_t stage_index)
         push_staged_child(node_index);
     return node_index;
 }
-

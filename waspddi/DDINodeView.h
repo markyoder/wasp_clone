@@ -106,8 +106,7 @@ class WASP_PUBLIC DDINodeView
      */
     bool is_null() const
     {
-        return m_pool == nullptr ||
-               m_node_index == m_pool->size();
+        return m_pool == nullptr || m_node_index == m_pool->size();
     }
 
     /**
@@ -152,7 +151,7 @@ class WASP_PUBLIC DDINodeView
      * @return A collection of views. Empty if no match occurrs
      */
     DDINodeView::Collection child_by_name(const std::string& name,
-                                                   size_t limit = 0) const;
+                                          size_t             limit = 0) const;
     /**
      * @brief first_child_by_name acquires the first child with the given name
      * @param name the name of the requested child
@@ -241,7 +240,7 @@ class WASP_PUBLIC DDINodeView
     std::string last_as_string(bool* ok = nullptr) const;
 
     // Friendly stream operator
-    friend std::ostream& operator<<(std::ostream&                 str,
+    friend std::ostream& operator<<(std::ostream&            str,
                                     const wasp::DDINodeView& view)
     {
         str << "DDINodeView(node_index=" << view.m_node_index
@@ -250,8 +249,8 @@ class WASP_PUBLIC DDINodeView
     }
 
   private:
-    size_t                      m_node_index;
-    const AbstractInterpreter*  m_pool;
+    size_t                     m_node_index;
+    const AbstractInterpreter* m_pool;
 
     /**
      * @brief value_node_index when the value is requested (to_int, string,

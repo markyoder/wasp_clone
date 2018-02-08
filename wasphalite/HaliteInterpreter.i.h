@@ -530,11 +530,11 @@ bool HaliteInterpreter<S>::evaluate(std::ostream& out,
 }
 
 template<class S>
-bool HaliteInterpreter<S>::evaluate(DataAccessor&          data,
+bool HaliteInterpreter<S>::evaluate(DataAccessor&   data,
                                     const NodeView& tree_view,
-                                    std::ostream&          out,
-                                    size_t&                current_line,
-                                    size_t&                current_column)
+                                    std::ostream&   out,
+                                    size_t&         current_line,
+                                    size_t&         current_column)
 {
     for (size_t i = 0; i < tree_view.child_count(); ++i)
     {
@@ -548,11 +548,11 @@ bool HaliteInterpreter<S>::evaluate(DataAccessor&          data,
     return true;
 }
 template<class S>
-bool HaliteInterpreter<S>::evaluate_component(DataAccessor&          data,
+bool HaliteInterpreter<S>::evaluate_component(DataAccessor&   data,
                                               const NodeView& tree_view,
-                                              std::ostream&          out,
-                                              size_t& current_line,
-                                              size_t& current_column)
+                                              std::ostream&   out,
+                                              size_t&         current_line,
+                                              size_t&         current_column)
 {
     auto child_type = tree_view.type();
     switch (child_type)
@@ -598,11 +598,11 @@ bool HaliteInterpreter<S>::evaluate_component(DataAccessor&          data,
     return true;
 }
 template<class S>
-bool HaliteInterpreter<S>::print_attribute(DataAccessor&          data,
+bool HaliteInterpreter<S>::print_attribute(DataAccessor&   data,
                                            const NodeView& attr_view,
-                                           std::ostream&          out,
-                                           size_t&                line,
-                                           size_t&                column)
+                                           std::ostream&   out,
+                                           size_t&         line,
+                                           size_t&         column)
 {
     // attributes must have '<' txt? '>'
     // e.g., < txt> or <>
@@ -849,11 +849,11 @@ bool HaliteInterpreter<S>::process_result(const Result&              result,
 }
 
 template<class S>
-bool HaliteInterpreter<S>::conditional(DataAccessor&          data,
+bool HaliteInterpreter<S>::conditional(DataAccessor&   data,
                                        const NodeView& action_view,
-                                       std::ostream&          out,
-                                       size_t&                line,
-                                       size_t&                column)
+                                       std::ostream&   out,
+                                       size_t&         line,
+                                       size_t&         column)
 {
     // action fields start with if,ifdef,ifndef
     size_t child_count = action_view.child_count();
@@ -1055,11 +1055,11 @@ bool HaliteInterpreter<S>::conditional(DataAccessor&          data,
 }
 
 template<class S>
-bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
+bool HaliteInterpreter<S>::import_file(DataAccessor&   data,
                                        const NodeView& import_view,
-                                       std::ostream&          out,
-                                       size_t&                line,
-                                       size_t&                column)
+                                       std::ostream&   out,
+                                       size_t&         line,
+                                       size_t&         column)
 {
     // attributes must have '#import txt'
     // e.g., #import txt or #import txt<a1>txt<a2>...
@@ -1239,11 +1239,11 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
     return import;
 }
 template<class S>
-bool HaliteInterpreter<S>::repeat_file(DataAccessor&          data,
+bool HaliteInterpreter<S>::repeat_file(DataAccessor&   data,
                                        const NodeView& repeat_view,
-                                       std::ostream&          out,
-                                       size_t&                line,
-                                       size_t&                column)
+                                       std::ostream&   out,
+                                       size_t&         line,
+                                       size_t&         column)
 {
     // attributes must have '#repear txt'
     // e.g., #repeat txt or #repeat txt<a1>txt<a2>...

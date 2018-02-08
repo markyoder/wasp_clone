@@ -11,8 +11,8 @@ using namespace wasp;
 
 typedef TokenPool<unsigned int, unsigned int, unsigned int> TP;
 typedef TreeNodePool<unsigned int, unsigned int, TP>        TNP;
-typedef SONInterpreter<TNP>            SONInterp;
-typedef SONNodeView SONNV;
+typedef SONInterpreter<TNP> SONInterp;
+typedef SONNodeView         SONNV;
 
 // macro to print a cleaner text diff if strings are different
 #define EXPECT_JSON(EXPECTED, ACTUAL)                                       \

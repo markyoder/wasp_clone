@@ -93,9 +93,8 @@ int main(int argc, char** argv)
         std::cerr << errors.str() << std::endl;
         return -1;
     }
-    SONNodeView input_root = input_interp.root();
-    SONNodeView schema_root =
-        schema_interp.root();
+    SONNodeView              input_root  = input_interp.root();
+    SONNodeView              schema_root = schema_interp.root();
     HIVE                     validation_engine;
     std::vector<std::string> validation_errors;
     bool                     valid =
