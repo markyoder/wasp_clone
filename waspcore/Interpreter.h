@@ -123,7 +123,7 @@ class WASP_PUBLIC NodeView
      * @param limit the limit on the number of children ( 0 := no limit )
      * @return A collection of views. Empty if no match occurrs
      */
-    typename NodeView::Collection child_by_name(const std::string& name,
+    NodeView::Collection child_by_name(const std::string& name,
                                                     size_t limit = 0) const;
     /**
      * @brief first_child_by_name acquires the first child with the given name

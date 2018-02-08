@@ -99,7 +99,7 @@ NodeView::child_at(std::size_t index) const
     return NodeView(child_node_pool_index, *m_pool);
 }
                      // template type
-typename NodeView::Collection  // return type
+NodeView::Collection  // return type
     NodeView::child_by_name(const std::string& name,
                                                 std::size_t        limit) const
 {
