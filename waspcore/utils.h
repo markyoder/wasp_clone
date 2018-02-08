@@ -1,6 +1,7 @@
 #ifndef WASP_UTILS_H
 #define WASP_UTILS_H
 #include "waspcore/wasp_bug.h"
+#include <algorithm>
 #include <cmath>
 #include <string>
 #include <cstring>
@@ -209,6 +210,83 @@ WASP_PUBLIC std::string info(const TV& view)
                std::to_string(view.column()) +
                ": t=" + std::to_string(view.tree_node_index()) + ", i" +
                std::to_string(view.type()) + ", n'" + view.name() + "'" + ")";
+}
+
+template<class Pool>
+WASP_PUBLIC void print_from(std::ostream&   stream,
+                const Pool& node_pool,
+                size_t          node_index,
+                size_t&         last_line,
+                size_t&         last_column)
+{
+    size_t child_count = node_pool.child_count(node_index);
+    if (child_count == 0)  // fast check
+    {
+        if (node_pool.is_leaf(node_index) == false)
+            return;
+        //
+        // determine distance from previous
+        //
+        size_t line = node_pool.line(node_index);
+        wasp_check(line != size_t(-1));
+        size_t column = node_pool.column(node_index);
+        wasp_check(column != size_t(-1));
+        size_t ldiff;
+        if (line >= last_line)
+            ldiff = line - last_line;
+        else
+            ldiff = 0;
+
+        size_t cdiff;
+        if (ldiff > 0)
+            cdiff = column - 1;
+        else if (column >= last_column)
+            cdiff = column - last_column;
+        else
+            cdiff = 1;
+
+        //        if( cdiff <= column || cdiff <= lastColumn )
+        // write preceeding newlines
+        for (size_t i = 0; i < ldiff; i++)
+            stream << std::endl;
+        //
+        if (cdiff > 0)
+            stream << std::string(cdiff, ' ');
+        const std::string& data = node_pool.data(node_index);
+        if (!(data.length() == 1 && data[0] == '\n'))
+            stream << data;
+
+        int newLinePrintedCount = 0;
+        if (!(data.length() == 1 && data[0] == '\n'))
+        {
+            newLinePrintedCount = std::count(data.begin(), data.end(), '\n');
+        }
+        last_line = line + newLinePrintedCount;
+        // todo - data could span newlines making column some remainder
+        last_column = column + data.size();
+        return;
+    }
+    for (size_t i = 0, cc = child_count; i < cc; i++)
+    {
+        size_t child_index = node_pool.child_at(node_index,i);
+        print_from(stream, node_pool, child_index, last_line, last_column);
+    }
+}
+template<class TAdapter>
+WASP_PUBLIC void print_from(std::ostream&   out,
+                const TAdapter& node_view,
+                size_t&         last_line,
+                size_t&         last_column)
+{
+    print_from(out, *node_view.node_pool(), node_view.node_index(),
+               last_line, last_column);
+}
+
+template<class TAdapter>
+WASP_PUBLIC void print(std::ostream& out, const TAdapter& node_view)
+{
+    size_t l = node_view.line(), c = node_view.column();
+    print_from(out, *node_view.node_pool(), node_view.node_index(), l, c);
 }
 }
 #endif

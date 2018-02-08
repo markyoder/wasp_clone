@@ -5,7 +5,7 @@
 #include <sstream>
 #include <ostream>
 #include <iostream>
-#include "waspcore/TreeNodePool.h"  // for Default TreeNodeView
+#include "waspcore/Interpreter.h"  // for Default NodeView
 namespace wasp
 {
 /**
@@ -14,22 +14,21 @@ namespace wasp
  * Allows traversing child nodes and parent as well as acquire node information
  * *
  */
-template<class TNV = NodeView<>>
 class GetPotNodeView
 {
   public:
-    using Collection = std::vector<GetPotNodeView>;
-    typedef TNV                             TreeNodeView_type;
-    typedef typename TNV::TreeNodePool_type TreeNodePool_type;
-    GetPotNodeView() : m_tree_node_index(-1), m_tree_data(nullptr) {}
-    GetPotNodeView(std::size_t node_index, const TreeNodePool_type& nodes);
-    GetPotNodeView(const TNV& orig);
+    using Collection = std::vector<GetPotNodeView>;    
+    GetPotNodeView() : m_node_index(-1), m_pool(nullptr) {}
+    GetPotNodeView(std::size_t node_index, const AbstractInterpreter& data);
+    template<class NV>
+    GetPotNodeView(const NV& orig);
     GetPotNodeView(const GetPotNodeView& orig);
 
     ~GetPotNodeView();
 
     GetPotNodeView& operator=(const GetPotNodeView& b);
-    GetPotNodeView& operator=(const TreeNodeView_type& b);
+    template<class NV>
+    GetPotNodeView& operator=(const NV& b);
 
     bool operator==(const GetPotNodeView& b) const;
     bool operator!=(const GetPotNodeView& b) const { return !(*this == b); }
@@ -107,8 +106,8 @@ class GetPotNodeView
      */
     bool is_null() const
     {
-        return m_tree_data == nullptr ||
-               m_tree_node_index == m_tree_data->size();
+        return m_pool == nullptr ||
+               m_node_index == m_pool->size();
     }
 
     /**
@@ -157,7 +156,7 @@ class GetPotNodeView
     /**
      * @brief first_child_by_name acquires the first child with the given name
      * @param name the name of the requested child
-     * @return Named TreeNodeView as requestd. is_null indicates if none was
+     * @return Named NodeView as requestd. is_null indicates if none was
      * found
      */
     GetPotNodeView first_child_by_name(const std::string& name) const;
@@ -196,16 +195,16 @@ class GetPotNodeView
     std::size_t last_column() const;
 
     /**
-     * @brief tree_node_index acquire the index into the tree node data pool
+     * @brief node_index acquire the index into the tree node data pool
      * @return the index into the data pool
      */
-    std::size_t tree_node_index() const { return m_tree_node_index; }
+    std::size_t node_index() const { return m_node_index; }
 
     /**
-     * @brief tree_node_pool acquire the pointer to the backend storage
+     * @brief node_pool acquire the pointer to the backend storage
      * @return the TreeNodePool that backs this view
      */
-    const TreeNodePool_type* tree_node_pool() const { return m_tree_data; }
+    const AbstractInterpreter* node_pool() const { return m_pool; }
 
     // !> Type operators
     /**
@@ -243,19 +242,19 @@ class GetPotNodeView
 
     // Friendly stream operator
     friend std::ostream& operator<<(std::ostream&                    str,
-                                    const wasp::GetPotNodeView<TNV>& view)
+                                    const wasp::GetPotNodeView& view)
     {
-        str << "GetPotNodeView(tree_node_index=" << view.m_tree_node_index
-            << ", &pool=" << view.m_tree_data << ")";
+        str << "GetPotNodeView(node_index=" << view.m_node_index
+            << ", &pool=" << view.m_pool << ")";
         return str;
     }
 
   private:
-    size_t                   m_tree_node_index;
-    const TreeNodePool_type* m_tree_data;
+    size_t                   m_node_index;
+    const AbstractInterpreter* m_pool;
 
     /**
-     * @brief value_tree_node_index when the value is requested (to_int, string,
+     * @brief value_node_index when the value is requested (to_int, string,
      * etc) this returns the index
      * @return index of the node considered this node's value
      * I.e.,  key = value
@@ -265,9 +264,9 @@ class GetPotNodeView
      *  |_value
      * When key's value is requested, the index of the 'value' node will be
      * returned.
-     * If no children, the m_tree_node_index is returned
+     * If no children, the m_node_index is returned
      */
-    size_t value_tree_node_index() const;
+    size_t value_node_index() const;
 };
 #include "waspgetpot/GetPotNodeView.i.h"
 }  // end of namespace

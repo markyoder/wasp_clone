@@ -97,13 +97,9 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      * given context
      */
     template<typename TAdapter>
-    size_t evaluate(const NodeView<Storage_type>& context,
+    size_t evaluate(const NodeView& context,
                     SIRENResultSet<TAdapter>&         result,
-                    std::vector<TAdapter>&            stage) const;
-    //        template<typename TAdapter>
-    //        size_t select_any(TreeNodeView & context
-    //                        , TAdapter & node
-    //                        , SIRENResultSet<TAdapter> & result)const;
+                    std::vector<TAdapter>&            stage) const;    
 
     /**
      * @brief search_child_name searches the staged node's children for
@@ -114,7 +110,7 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      * named child nodes
      */
     template<typename TAdapter>
-    void search_child_name(const NodeView<Storage_type>& context,
+    void search_child_name(const NodeView& context,
                            std::vector<TAdapter>&            stage) const;
     /**
      * @brief search_conditional_predicated_child searches the staged node's
@@ -129,7 +125,7 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      */
     template<typename TAdapter>
     void search_conditional_predicated_child(
-        const NodeView<Storage_type>& context,
+        const NodeView& context,
         std::vector<TAdapter>&            stage) const;
 
     /**
@@ -145,10 +141,10 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      */
     template<typename TAdapter>
     void
-    search_index_predicated_child(const NodeView<Storage_type>& context,
+    search_index_predicated_child(const NodeView& context,
                                   std::vector<TAdapter>& stage) const;
     template<typename TAdapter>
-    void recursive_child_select(const NodeView<Storage_type>& context,
+    void recursive_child_select(const NodeView& context,
                                 std::vector<TAdapter>&            stage) const;
 };  // end of SIRENInterpreter class
 

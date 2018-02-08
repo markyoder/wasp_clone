@@ -62,7 +62,7 @@ int main(int argc, char** argv)
         return 1;
     }
     // Construct the definition
-    SONNodeView<decltype(schema.root())> schema_root = schema.root();
+    SONNodeView schema_root = schema.root();
     std::stringstream                    definition_errors;
     Definition::SP definition = std::make_shared<Definition>();
 
@@ -87,8 +87,8 @@ int main(int argc, char** argv)
                       << std::endl;
             return 1;
         }
-        DDINodeView<decltype(parser.root())> input_root  = parser.root();
-        SONNodeView<decltype(schema.root())> schema_root = schema.root();
+        DDINodeView input_root  = parser.root();
+        SONNodeView schema_root = schema.root();
         HIVE                                 validation_engine;
         std::vector<std::string>             validation_errors;
         bool valid = validation_engine.validate(schema_root, input_root,

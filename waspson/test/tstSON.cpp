@@ -1292,7 +1292,7 @@ obj(foo){
     SONInterpreter<> interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(71, interpreter.node_count());
-    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    SONNodeView document = interpreter.root();
     ASSERT_FALSE(document.is_null());
     ASSERT_FALSE(document.has_parent());
     {  // test names
@@ -1434,7 +1434,7 @@ TEST(SON, array_of_unary_minus)
     SONInterpreter<> interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     EXPECT_EQ(10, interpreter.node_count());
-    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    SONNodeView document = interpreter.root();
     EXPECT_EQ(1, document.child_count());
     std::stringstream printed_document;
     wasp::print(printed_document, document);
@@ -1450,7 +1450,7 @@ TEST(SON, keyed_to_value)
     SONInterpreter<> interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     EXPECT_EQ(13, interpreter.node_count());
-    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    SONNodeView document = interpreter.root();
     EXPECT_EQ(3, document.child_count());
     std::stringstream printed_document;
     wasp::print(printed_document, document);
@@ -1500,7 +1500,7 @@ TEST(SON, key_expression_identifier)
     SONInterpreter<> interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(11, interpreter.node_count());
-    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    SONNodeView document = interpreter.root();
     ASSERT_EQ(1, document.child_count());
     std::stringstream printed_document;
     wasp::print(printed_document, document);
@@ -1526,7 +1526,7 @@ TEST(SON, object_expression_identifier)
     SONInterpreter<> interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(21, interpreter.node_count());
-    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    SONNodeView document = interpreter.root();
     ASSERT_EQ(1, document.child_count());
     std::stringstream printed_document;
     wasp::print(printed_document, document);
@@ -1707,7 +1707,7 @@ TEST(SON, DISABLED_array_expression_identifier)
     SONInterpreter<> interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(21, interpreter.node_count());
-    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    SONNodeView document = interpreter.root();
     ASSERT_EQ(1, document.child_count());
     std::stringstream printed_document;
     wasp::print(printed_document, document);

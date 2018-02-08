@@ -48,7 +48,7 @@ int main(int argc, char** argv)
                   << std::endl;
         return 1;
     }
-    SONNodeView<decltype(parser.root())> root = parser.root();
+    SONNodeView root = parser.root();
     wasp::to_xml(root, std::cout);
     return 0;
 }

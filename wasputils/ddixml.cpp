@@ -58,7 +58,7 @@ int main(int argc, char** argv)
         return 1;
     }
     // Construct the definition
-    SONNodeView<decltype(schema.root())> schema_root = schema.root();
+    SONNodeView schema_root = schema.root();
     std::stringstream                    definition_errors;
     if (!HIVE::create_definition(parser.definition(), schema_root,
                                  definition_errors, false))
@@ -73,7 +73,7 @@ int main(int argc, char** argv)
                   << std::endl;
         return 1;
     }
-    wasp::to_xml((DDINodeView<decltype(parser.root())>)parser.root(),
+    wasp::to_xml((DDINodeView)parser.root(),
                  std::cout);
     return 0;
 }

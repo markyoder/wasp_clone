@@ -531,7 +531,7 @@ bool HaliteInterpreter<S>::evaluate(std::ostream& out,
 
 template<class S>
 bool HaliteInterpreter<S>::evaluate(DataAccessor&          data,
-                                    const NodeView<S>& tree_view,
+                                    const NodeView& tree_view,
                                     std::ostream&          out,
                                     size_t&                current_line,
                                     size_t&                current_column)
@@ -549,7 +549,7 @@ bool HaliteInterpreter<S>::evaluate(DataAccessor&          data,
 }
 template<class S>
 bool HaliteInterpreter<S>::evaluate_component(DataAccessor&          data,
-                                              const NodeView<S>& tree_view,
+                                              const NodeView& tree_view,
                                               std::ostream&          out,
                                               size_t& current_line,
                                               size_t& current_column)
@@ -599,7 +599,7 @@ bool HaliteInterpreter<S>::evaluate_component(DataAccessor&          data,
 }
 template<class S>
 bool HaliteInterpreter<S>::print_attribute(DataAccessor&          data,
-                                           const NodeView<S>& attr_view,
+                                           const NodeView& attr_view,
                                            std::ostream&          out,
                                            size_t&                line,
                                            size_t&                column)
@@ -850,7 +850,7 @@ bool HaliteInterpreter<S>::process_result(const Result&              result,
 
 template<class S>
 bool HaliteInterpreter<S>::conditional(DataAccessor&          data,
-                                       const NodeView<S>& action_view,
+                                       const NodeView& action_view,
                                        std::ostream&          out,
                                        size_t&                line,
                                        size_t&                column)
@@ -1056,7 +1056,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor&          data,
 
 template<class S>
 bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
-                                       const NodeView<S>& import_view,
+                                       const NodeView& import_view,
                                        std::ostream&          out,
                                        size_t&                line,
                                        size_t&                column)
@@ -1240,7 +1240,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
 }
 template<class S>
 bool HaliteInterpreter<S>::repeat_file(DataAccessor&          data,
-                                       const NodeView<S>& repeat_view,
+                                       const NodeView& repeat_view,
                                        std::ostream&          out,
                                        size_t&                line,
                                        size_t&                column)

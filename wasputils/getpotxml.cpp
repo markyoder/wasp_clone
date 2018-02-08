@@ -54,9 +54,7 @@ int main(int argc, char* argv[])
                          << "Parse Timer duration: " << parse_time.duration()
                          << " nanoseconds with " << parse_time.intervals()
                          << " invervals" << std::endl);
-        wasp::to_xml(
-            (GetPotNodeView<decltype(interpreter.root())>)interpreter.root(),
-            std::cout);
+        wasp::to_xml((GetPotNodeView)interpreter.root(),std::cout);
         if (!parsed)
         {
             std::cout << errors.str() << std::endl;

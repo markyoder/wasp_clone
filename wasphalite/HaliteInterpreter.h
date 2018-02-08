@@ -177,7 +177,7 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * the attribute
      */
     bool print_attribute(DataAccessor&          data,
-                         const NodeView<S>& attr_view,
+                         const NodeView& attr_view,
                          std::ostream&          out,
                          size_t&                line,
                          size_t&                column);
@@ -367,7 +367,7 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
                            size_t               line);
 
     bool accumulate_attribute(DataAccessor&          data,
-                              const NodeView<S>& attr_view,
+                              const NodeView& attr_view,
                               std::ostream&          out,
                               size_t&                line,
                               size_t&                column) const;
@@ -381,17 +381,17 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @return
      */
     bool conditional(DataAccessor&          data,
-                     const NodeView<S>& action_view,
+                     const NodeView& action_view,
                      std::ostream&          out,
                      size_t&                line,
                      size_t&                column);
     bool evaluate(DataAccessor&          data,
-                  const NodeView<S>& action_view,
+                  const NodeView& action_view,
                   std::ostream&          out,
                   size_t&                line,
                   size_t&                column);
     bool evaluate_component(DataAccessor&          data,
-                            const NodeView<S>& action_view,
+                            const NodeView& action_view,
                             std::ostream&          out,
                             size_t&                line,
                             size_t&                column);
@@ -407,12 +407,12 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * and emitted
      */
     bool import_file(DataAccessor&          data,
-                     const NodeView<S>& import_view,
+                     const NodeView& import_view,
                      std::ostream&          out,
                      size_t&                line,
                      size_t&                column);
     bool repeat_file(DataAccessor&          data,
-                     const NodeView<S>& import_view,
+                     const NodeView& import_view,
                      std::ostream&          out,
                      size_t&                line,
                      size_t&                column);

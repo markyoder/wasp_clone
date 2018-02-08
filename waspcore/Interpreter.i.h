@@ -17,52 +17,61 @@ template<class TNS>
 Interpreter<TNS>::~Interpreter()
 {
 }
-
 template<class TNS>
-NodeView<TNS> Interpreter<TNS>::root() const
+NodeView Interpreter<TNS>::root() const
 {
     // have any nodes?
-    if (m_tree_nodes.size() == 0)
+    if (m_nodes.size() == 0)
     {
-        return NodeView<TNS>(m_tree_nodes.size(), this->m_tree_nodes);
+        return NodeView(m_nodes.size(), *this);
     }
-    return NodeView<TNS>(m_root_index, this->m_tree_nodes);
+    return NodeView(m_root_index, *this);
 }
 template<class TNS>
-NodeView<TNS> Interpreter<TNS>::node_at(node_index_size index) const
+NodeView Interpreter<TNS>::node_at(node_index_size index) const
 {
     // have any nodes?
-    if (m_tree_nodes.size() == 0)
+    if (m_nodes.size() == 0)
     {
-        return NodeView<TNS>(m_tree_nodes.size(), this->m_tree_nodes);
+        return NodeView(m_nodes.size(), *this);
     }
-    return NodeView<TNS>(index, this->m_tree_nodes);
+    return NodeView(index, *this);
 }
 template<class TNS>
 size_t Interpreter<TNS>::child_count(size_t node_index) const
 {
-    return this->m_tree_nodes.child_count(node_index);
+    return this->m_nodes.child_count(node_index);
 }
 template<class TNS>
 size_t Interpreter<TNS>::column(size_t node_index) const
 {
-    return this->m_tree_nodes.column(node_index);
+    return this->m_nodes.column(node_index);
+}
+template<class TNS>
+size_t Interpreter<TNS>::last_column(size_t node_index) const
+{
+    return this->m_nodes.last_column(node_index);
 }
 template<class TNS>
 size_t Interpreter<TNS>::line(size_t node_index) const
 {
-    return this->m_tree_nodes.line(node_index);
+    return this->m_nodes.line(node_index);
+}
+template<class TNS>
+size_t Interpreter<TNS>::last_line(size_t node_index) const
+{
+    return this->m_nodes.last_line(node_index);
 }
 template<class TNS>
 size_t Interpreter<TNS>::parent_node_index(size_t node_index) const
 {
-    return this->m_tree_nodes.parent_node_index(node_index);
+    return this->m_nodes.parent_node_index(node_index);
 }
 template<class TNS>
 size_t Interpreter<TNS>::child_index_at(size_t node_index,
                                         size_t child_index) const
 {
-    return this->m_tree_nodes.child_at(node_index, child_index);
+    return this->m_nodes.child_at(node_index, child_index);
 }
 template<class TNS>
 size_t Interpreter<TNS>::push_leaf(size_t      node_type,
@@ -70,7 +79,7 @@ size_t Interpreter<TNS>::push_leaf(size_t      node_type,
                                    size_t      token_index)
 {
     size_t node_index = node_count();
-    m_tree_nodes.push_leaf(node_type, node_name, token_index);
+    m_nodes.push_leaf(node_type, node_name, token_index);
     return node_index;
 }
 template<class TNS>
@@ -79,65 +88,64 @@ size_t Interpreter<TNS>::push_parent(size_t                     node_type,
                                      const std::vector<size_t>& child_indices)
 {
     size_t node_index = node_count();
-    m_tree_nodes.push_parent(node_type, node_name, child_indices);
+    m_nodes.push_parent(node_type, node_name, child_indices);
     return node_index;
 }
 template<class TNS>
 size_t Interpreter<TNS>::type(size_t index) const
 {
     // have any nodes?
-    if (m_tree_nodes.size() == 0)
+    if (m_nodes.size() == 0)
     {
         return wasp::UNKNOWN;
     }
-    return this->m_tree_nodes.type(index);
+    return this->m_nodes.type(index);
 }
 template<class TNS>
-typename Interpreter<TNS>::token_type_size
-Interpreter<TNS>::node_token_type(size_t index) const
+size_t Interpreter<TNS>::node_token_type(size_t index) const
 {
     // have any nodes?
-    if (m_tree_nodes.size() == 0)
+    if (m_nodes.size() == 0)
     {
         return wasp::UNKNOWN;
     }
-    return this->m_tree_nodes.node_token_type(index);
+    return this->m_nodes.node_token_type(index);
 }
 template<class TNS>
 const char* Interpreter<TNS>::name(size_t index) const
 {
     // have any nodes?
-    if (m_tree_nodes.size() == 0)
+    if (m_nodes.size() == 0)
     {
         return nullptr;
     }
-    return this->m_tree_nodes.name(index);
+    return this->m_nodes.name(index);
 }
 template<class TNS>
 bool Interpreter<TNS>::set_name(size_t node_index, const char* node_name)
 {
-    return this->m_tree_nodes.set_name(node_index, node_name);
+    return this->m_nodes.set_name(node_index, node_name);
 }
 template<class TNS>
 void Interpreter<TNS>::set_type(size_t node_index, size_t node_type)
 {
-    return this->m_tree_nodes.set_type(node_index, node_type);
+    return this->m_nodes.set_type(node_index, node_type);
 }
 template<class TNS>
 std::string Interpreter<TNS>::data(size_t index) const
 {
     // have any nodes?
-    if (m_tree_nodes.size() == 0)
+    if (m_nodes.size() == 0)
     {
         return "";
     }
-    return this->m_tree_nodes.data(index);
+    return this->m_nodes.data(index);
 }
 template<class TNS>
 const char* Interpreter<TNS>::token_data(size_t index) const
 {
     // have any tokens?
-    const auto& token_pool = m_tree_nodes.token_data();
+    const auto& token_pool = m_nodes.token_data();
     if (token_pool.size() == 0)
     {
         return nullptr;
@@ -158,8 +166,8 @@ bool Interpreter<TNS>::parse_impl(std::istream&      in,
     m_stream_name  = stream_name;
     m_start_line   = start_line;
     m_start_column = start_column;
-    m_tree_nodes.set_start_line(start_line);
-    m_tree_nodes.set_start_column(start_column);
+    m_nodes.set_start_line(start_line);
+    m_nodes.set_start_column(start_column);
     PARSER_IMPL parser(*this, in, nullptr);
     //    parser.set_debug_level(true);
 
@@ -213,7 +221,7 @@ size_t Interpreter<TNS>::commit_staged(size_t stage_index)
     size_t node_index =
         push_parent(stage.m_type, stage.m_name.c_str(), stage.m_child_indices);
 
-    wasp_ensure(node_index >= 0 && node_index < m_tree_nodes.size());
+    wasp_ensure(node_index >= 0 && node_index < m_nodes.size());
     m_staged.pop_back();
     // make sure to add newly realized tree node
     // to existing staged parent
@@ -221,3 +229,4 @@ size_t Interpreter<TNS>::commit_staged(size_t stage_index)
         push_staged_child(node_index);
     return node_index;
 }
+

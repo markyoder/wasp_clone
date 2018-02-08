@@ -117,11 +117,11 @@ void do_test(const std::string& name)
                              name + ".fail.gld", name + ".sch"));
     ASSERT_TRUE(load_ast(t));
     std::vector<std::string>                            errors;
-    SONNodeView<decltype(t.schema_interpreter->root())> schema_adapter =
+    SONNodeView schema_adapter =
         t.schema_interpreter->root();
-    SONNodeView<decltype(t.input_fail_interpreter->root())> input_fail_adapter =
+    SONNodeView input_fail_adapter =
         t.input_fail_interpreter->root();
-    SONNodeView<decltype(t.input_pass_interpreter->root())> input_pass_adapter =
+    SONNodeView input_pass_adapter =
         t.input_pass_interpreter->root();
     bool valid = hive.validate(schema_adapter, input_fail_adapter, errors);
     std::string msgs = HIVE::combine(errors);

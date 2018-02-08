@@ -4,6 +4,7 @@ TRIBITS_CONFIGURE_FILE(version.h)
 
 SET(SOURCE
 Definition.cpp
+Interpreter.cpp
 utils.cpp
 Object.cpp
 )

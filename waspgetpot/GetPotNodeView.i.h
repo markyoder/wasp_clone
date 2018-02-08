@@ -1,74 +1,73 @@
 #ifndef WASP_GetPotNODE_VIEW_I_H
 #define WASP_GetPotNODE_VIEW_I_H
 
-template<class TNV>
-GetPotNodeView<TNV>::GetPotNodeView(
-    std::size_t                                            node_index,
-    const typename GetPotNodeView<TNV>::TreeNodePool_type& nodes)
-    : m_tree_node_index(node_index), m_tree_data(&nodes)
+
+GetPotNodeView::GetPotNodeView(
+    std::size_t                node_index,
+    const AbstractInterpreter& data)
+    : m_node_index(node_index), m_pool(&data)
 {
     wasp_require(!this->is_null());
 }
-template<class TNV>
-GetPotNodeView<TNV>::GetPotNodeView(const GetPotNodeView& orig)
-    : m_tree_node_index(orig.m_tree_node_index), m_tree_data(orig.m_tree_data)
+GetPotNodeView::GetPotNodeView(const GetPotNodeView& orig)
+    : m_node_index(orig.m_node_index), m_pool(orig.m_pool)
 {
 }
-template<class TNV>
-GetPotNodeView<TNV>::GetPotNodeView(const TNV& orig)
-    : m_tree_node_index(orig.tree_node_index())
-    , m_tree_data(orig.tree_node_pool())
+template<class NV>
+GetPotNodeView::GetPotNodeView(const NV& orig)
+    : m_node_index(orig.node_index())
+    , m_pool(orig.node_pool())
 {
 }
-template<class TNV>
-GetPotNodeView<TNV>::~GetPotNodeView()
+
+GetPotNodeView::~GetPotNodeView()
 {
 }
-template<class TNV>
-GetPotNodeView<TNV>& GetPotNodeView<TNV>::operator=(const GetPotNodeView& b)
+
+GetPotNodeView& GetPotNodeView::operator=(const GetPotNodeView& b)
 {
-    m_tree_node_index = b.tree_node_index();
-    m_tree_data       = b.tree_node_pool();
+    m_node_index = b.node_index();
+    m_pool       = b.node_pool();
     return *this;
 }
-template<class TNV>
-GetPotNodeView<TNV>& GetPotNodeView<TNV>::operator=(const TNV& b)
+template<class NV>
+GetPotNodeView& GetPotNodeView::operator=(const NV& b)
 {
-    m_tree_node_index = b.tree_node_index();
-    m_tree_data       = b.tree_node_pool();
+    m_node_index = b.node_index();
+    m_pool       = b.node_pool();
     return *this;
 }
-template<class TNV>
-bool GetPotNodeView<TNV>::operator==(const GetPotNodeView& b) const
+
+bool GetPotNodeView::operator==(const GetPotNodeView& b) const
 {
-    return m_tree_data == b.m_tree_data &&
-           m_tree_node_index == b.m_tree_node_index;
+    return m_pool == b.m_pool &&
+           m_node_index == b.m_node_index;
 }
-template<class TNV>
-bool GetPotNodeView<TNV>::operator<(const GetPotNodeView& b) const
+
+bool GetPotNodeView::operator<(const GetPotNodeView& b) const
 {
-    return m_tree_node_index < b.m_tree_node_index;
+    return m_node_index < b.m_node_index;
 }
-template<class TNV>
-GetPotNodeView<TNV> GetPotNodeView<TNV>::parent() const
+
+GetPotNodeView GetPotNodeView::parent() const
 {
-    GetPotNodeView<TNV> view(m_tree_data->parent_node_index(m_tree_node_index),
-                             *m_tree_data);
+    GetPotNodeView view(m_pool->parent_node_index(m_node_index),
+                             *m_pool);
     return view;
 }
-template<class TNV>
-bool GetPotNodeView<TNV>::has_parent() const
+
+bool GetPotNodeView::has_parent() const
 {
-    return m_tree_data->has_parent(m_tree_node_index);
+    return m_pool->has_parent(m_node_index);
 }
-template<class TNV>
-bool GetPotNodeView<TNV>::is_leaf() const
+
+bool GetPotNodeView::is_leaf() const
 {
-    TNV view(tree_node_index(), *tree_node_pool());
+    NodeView view(node_index(), *node_pool());
     return view.is_leaf();
 }
-template<class TNV>
-bool GetPotNodeView<TNV>::is_decorative() const
+
+bool GetPotNodeView::is_decorative() const
 {
     auto t = type();
     switch (t)
@@ -91,14 +90,14 @@ bool GetPotNodeView<TNV>::is_decorative() const
     return false;
 }
 
-template<class TNV>
-bool GetPotNodeView<TNV>::is_declarator() const
+
+bool GetPotNodeView::is_declarator() const
 {
     return type() == wasp::DECL;
 }
 
-template<class TNV>
-bool GetPotNodeView<TNV>::is_terminator() const
+
+bool GetPotNodeView::is_terminator() const
 {
     switch (type())
     {
@@ -111,9 +110,9 @@ bool GetPotNodeView<TNV>::is_terminator() const
     }
 }
 
-template<class TNV>
-typename GetPotNodeView<TNV>::Collection
-GetPotNodeView<TNV>::non_decorative_children() const
+
+typename GetPotNodeView::Collection
+GetPotNodeView::non_decorative_children() const
 {
     Collection results;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
@@ -124,8 +123,8 @@ GetPotNodeView<TNV>::non_decorative_children() const
     }
     return results;
 }
-template<class TNV>
-GetPotNodeView<TNV> GetPotNodeView<TNV>::first_non_decorative_child_by_name(
+
+GetPotNodeView GetPotNodeView::first_non_decorative_child_by_name(
     const std::string& name) const
 {
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
@@ -139,10 +138,10 @@ GetPotNodeView<TNV> GetPotNodeView<TNV>::first_non_decorative_child_by_name(
             }
         }
     }
-    return GetPotNodeView<TNV>();  // null node
+    return GetPotNodeView();  // null node
 }
-template<class TNV>
-size_t GetPotNodeView<TNV>::non_decorative_children_count() const
+
+size_t GetPotNodeView::non_decorative_children_count() const
 {
     size_t result = 0;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
@@ -153,48 +152,47 @@ size_t GetPotNodeView<TNV>::non_decorative_children_count() const
     }
     return result;
 }
-template<class TNV>
-std::string GetPotNodeView<TNV>::data() const
+
+std::string GetPotNodeView::data() const
 {
     std::stringstream str;
-    m_tree_data->data(m_tree_node_index, str);
+    m_pool->data(m_node_index, str);
     return str.str();
 }
-template<class TNV>
-std::string GetPotNodeView<TNV>::path() const
+
+std::string GetPotNodeView::path() const
 {
     std::stringstream str;
-    m_tree_data->node_path(m_tree_node_index, str);
+    m_pool->node_path(m_node_index, str);
     return str.str();
 }
-template<class TNV>
-void GetPotNodeView<TNV>::paths(std::ostream& out) const
+
+void GetPotNodeView::paths(std::ostream& out) const
 {
-    m_tree_data->node_paths(m_tree_node_index, out);
+    m_pool->node_paths(m_node_index, out);
 }
-template<class TNV>
-std::size_t GetPotNodeView<TNV>::child_count() const
+
+std::size_t GetPotNodeView::child_count() const
 {
-    return m_tree_data->child_count(m_tree_node_index);
+    return m_pool->child_count(m_node_index);
 }
-template<class TNV>  // template type
 std::size_t          // return type
-    GetPotNodeView<TNV>::child_count_by_name(const std::string& name,
+    GetPotNodeView::child_count_by_name(const std::string& name,
                                              std::size_t        limit) const
 {
-    TNV view(tree_node_index(), *tree_node_pool());
+    NodeView view(node_index(), *node_pool());
     return view.child_count_by_name(name, limit);
 }
-template<class TNV>
-GetPotNodeView<TNV> GetPotNodeView<TNV>::child_at(std::size_t index) const
+
+GetPotNodeView GetPotNodeView::child_at(std::size_t index) const
 {
     auto child_node_pool_index =
-        m_tree_data->child_at(m_tree_node_index, index);
-    return GetPotNodeView<TNV>(child_node_pool_index, *m_tree_data);
+        m_pool->child_at(m_node_index, index);
+    return GetPotNodeView(child_node_pool_index, *m_pool);
 }
-template<class TNV>                       // template type
-typename GetPotNodeView<TNV>::Collection  // return type
-    GetPotNodeView<TNV>::child_by_name(const std::string& name,
+                       // template type
+typename GetPotNodeView::Collection  // return type
+    GetPotNodeView::child_by_name(const std::string& name,
                                        std::size_t        limit) const
 {
     Collection results;
@@ -212,73 +210,73 @@ typename GetPotNodeView<TNV>::Collection  // return type
     }
     return results;
 }
-template<class TNV>  // template type
-GetPotNodeView<TNV>  // return type
-    GetPotNodeView<TNV>::first_child_by_name(const std::string& name) const
+  // template type
+GetPotNodeView  // return type
+    GetPotNodeView::first_child_by_name(const std::string& name) const
 {
-    TNV view(tree_node_index(), *tree_node_pool());
+    NodeView view(node_index(), *node_pool());
     return view.first_child_by_name(name);
 }
-template<class TNV>
-std::size_t GetPotNodeView<TNV>::type() const
+
+std::size_t GetPotNodeView::type() const
 {
-    return m_tree_data->type(m_tree_node_index);
-}
-template<class TNV>
-const char* GetPotNodeView<TNV>::name() const
-{
-    return m_tree_data->name(m_tree_node_index);
-}
-template<class TNV>
-std::size_t GetPotNodeView<TNV>::line() const
-{
-    return m_tree_data->line(m_tree_node_index);
-}
-template<class TNV>
-std::size_t GetPotNodeView<TNV>::column() const
-{
-    return m_tree_data->column(m_tree_node_index);
+    return m_pool->type(m_node_index);
 }
 
-template<class TNV>
-std::size_t GetPotNodeView<TNV>::last_line() const
+const char* GetPotNodeView::name() const
 {
-    return m_tree_data->last_line(m_tree_node_index);
+    return m_pool->name(m_node_index);
 }
 
-template<class TNV>
-std::size_t GetPotNodeView<TNV>::last_column() const
+std::size_t GetPotNodeView::line() const
 {
-    return m_tree_data->last_column(m_tree_node_index);
+    return m_pool->line(m_node_index);
 }
 
-template<class TNV>
-bool GetPotNodeView<TNV>::to_bool(bool* ok) const
+std::size_t GetPotNodeView::column() const
 {
-    TNV view(value_tree_node_index(), *tree_node_pool());
+    return m_pool->column(m_node_index);
+}
+
+
+std::size_t GetPotNodeView::last_line() const
+{
+    return m_pool->last_line(m_node_index);
+}
+
+
+std::size_t GetPotNodeView::last_column() const
+{
+    return m_pool->last_column(m_node_index);
+}
+
+
+bool GetPotNodeView::to_bool(bool* ok) const
+{
+    NodeView view(value_node_index(), *node_pool());
     return view.to_bool(ok);
 }
 
-template<class TNV>
-int GetPotNodeView<TNV>::to_int(bool* ok) const
+
+int GetPotNodeView::to_int(bool* ok) const
 {
-    TNV view(value_tree_node_index(), *tree_node_pool());
+    NodeView view(value_node_index(), *node_pool());
     return view.to_int(ok);
 }
-template<class TNV>
-double GetPotNodeView<TNV>::to_double(bool* ok) const
+
+double GetPotNodeView::to_double(bool* ok) const
 {
-    TNV view(value_tree_node_index(), *tree_node_pool());
+    NodeView view(value_node_index(), *node_pool());
     return view.to_double(ok);
 }
-template<class TNV>
-std::string GetPotNodeView<TNV>::to_string(bool* ok) const
+
+std::string GetPotNodeView::to_string(bool* ok) const
 {
-    TNV view(value_tree_node_index(), *tree_node_pool());
+    NodeView view(value_node_index(), *node_pool());
     return view.to_string(ok);
 }
-template<class TNV>
-std::string GetPotNodeView<TNV>::last_as_string(bool* ok) const
+
+std::string GetPotNodeView::last_as_string(bool* ok) const
 {
     size_t count = child_count();
     if (count > 0)
@@ -287,14 +285,14 @@ std::string GetPotNodeView<TNV>::last_as_string(bool* ok) const
     }
     return to_string(ok);
 }
-template<class TNV>
-size_t GetPotNodeView<TNV>::value_tree_node_index() const
+
+size_t GetPotNodeView::value_node_index() const
 {
-    /// TODO - could push this lower to TNV ?
+    /// TODO - could push this lower to NodeView ?
     if (type() == wasp::KEYED_VALUE && child_count() > 0)
     {
-        return child_at(child_count() - 1).tree_node_index();
+        return child_at(child_count() - 1).node_index();
     }
-    return tree_node_index();
+    return node_index();
 }
 #endif

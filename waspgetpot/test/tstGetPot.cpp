@@ -921,11 +921,11 @@ TEST(GetPotInterpreter, multiple_objects)
     GetPotInterpreter<> interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(55, interpreter.node_count());
-    GetPotNodeView<decltype(interpreter.root())> document = interpreter.root();
+    GetPotNodeView document = interpreter.root();
     ASSERT_EQ(3, document.child_count());  // problem and mesh
-    ASSERT_EQ(3, interpreter.child_count(document.tree_node_index()));
-    ASSERT_EQ(document.child_at(0).tree_node_index(),
-              interpreter.child_index_at(document.tree_node_index(), 0));
+    ASSERT_EQ(3, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
     std::string       expected_paths = R"INPUT(/
 /Problem
 /Problem/[ ([)
@@ -1039,9 +1039,9 @@ TEST(GetPotInterpreter, type_promotion)
     GetPotInterpreter<> interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(61, interpreter.node_count());
-    GetPotNodeView<decltype(interpreter.root())> document = interpreter.root();
+    GetPotNodeView document = interpreter.root();
     ASSERT_EQ(3, document.child_count());  // problem and mesh
-    ASSERT_EQ(3, interpreter.child_count(document.tree_node_index()));
+    ASSERT_EQ(3, interpreter.child_count(document.node_index()));
     std::string       expected_paths = R"INPUT(/
 /ted_type
 /ted_type/[ ([)

@@ -9,7 +9,7 @@ using namespace wasp;
 typedef TokenPool<unsigned int, unsigned int, unsigned int> TP;
 typedef TreeNodePool<unsigned int, unsigned int, TP>        TNP;
 typedef SONInterpreter<TNP>            SONInterp;
-typedef SONNodeView<NodeView<TNP>> SONNV;
+typedef SONNodeView SONNV;
 
 struct skel_node
 {
@@ -122,8 +122,7 @@ int main(int argc, char* argv[])
             std::cout << errors.str() << std::endl;
             return -1;
         }
-        SONNodeView<decltype(input_interp.root())> input_root =
-            input_interp.root();
+        SONNodeView input_root = input_interp.root();
 
         build_skeleton(&input_root, skel_root);
     }
