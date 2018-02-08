@@ -384,17 +384,17 @@ class WASP_PUBLIC AbstractInterpreter
     virtual size_t size() const = 0;
 };
 
-template<class TNS = TreeNodePool<>>
+template<class NodeStorage = TreeNodePool<>>
 class WASP_PUBLIC Interpreter : public AbstractInterpreter
 {
   public:
-    typedef TNS                           TreeNodePool_type;
-    typedef typename TNS::node_index_size node_index_size;
-    typedef typename TNS::node_type_size  node_type_size;
-    typedef typename TNS::TokenPool_type::token_index_type_size
+    typedef NodeStorage                           TreeNodePool_type;
+    typedef typename NodeStorage::node_index_size node_index_size;
+    typedef typename NodeStorage::node_type_size  node_type_size;
+    typedef typename NodeStorage::TokenPool_type::token_index_type_size
                                                           token_index_type_size;
-    typedef typename TNS::TokenPool_type::token_type_size token_type_size;
-    typedef typename TNS::TokenPool_type::file_offset_type_size
+    typedef typename NodeStorage::TokenPool_type::token_type_size token_type_size;
+    typedef typename NodeStorage::TokenPool_type::file_offset_type_size
         file_offset_type_size;
     Interpreter(std::ostream& error_stream = std::cerr);
     virtual ~Interpreter();
@@ -720,8 +720,8 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
 #include "waspcore/Interpreter.i.h"
 
 // dummy interpreter for demonstration and testing
-template<class StoragePool>
-class DummyInterp : public Interpreter<StoragePool>
+template<class NodeStorage>
+class DummyInterp : public Interpreter<NodeStorage>
 {
 public:
     bool parse(std::istream& input,

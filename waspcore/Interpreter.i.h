@@ -1,6 +1,6 @@
 
-template<class TNS>
-Interpreter<TNS>::Interpreter(std::ostream& err)
+template<class NodeStorage>
+Interpreter<NodeStorage>::Interpreter(std::ostream& err)
     : AbstractInterpreter()
     , m_start_column(1)
     , m_start_line(1)
@@ -13,12 +13,12 @@ Interpreter<TNS>::Interpreter(std::ostream& err)
     // this staged root will not be committed.
     push_staged(wasp::DOCUMENT_ROOT, "document", {});
 }
-template<class TNS>
-Interpreter<TNS>::~Interpreter()
+template<class NodeStorage>
+Interpreter<NodeStorage>::~Interpreter()
 {
 }
-template<class TNS>
-NodeView Interpreter<TNS>::root() const
+template<class NodeStorage>
+NodeView Interpreter<NodeStorage>::root() const
 {
     // have any nodes?
     if (m_nodes.size() == 0)
@@ -27,8 +27,8 @@ NodeView Interpreter<TNS>::root() const
     }
     return NodeView(m_root_index, *this);
 }
-template<class TNS>
-NodeView Interpreter<TNS>::node_at(node_index_size index) const
+template<class NodeStorage>
+NodeView Interpreter<NodeStorage>::node_at(node_index_size index) const
 {
     // have any nodes?
     if (m_nodes.size() == 0)
@@ -37,44 +37,44 @@ NodeView Interpreter<TNS>::node_at(node_index_size index) const
     }
     return NodeView(index, *this);
 }
-template<class TNS>
-size_t Interpreter<TNS>::child_count(size_t node_index) const
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::child_count(size_t node_index) const
 {
     return this->m_nodes.child_count(node_index);
 }
-template<class TNS>
-size_t Interpreter<TNS>::column(size_t node_index) const
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::column(size_t node_index) const
 {
     return this->m_nodes.column(node_index);
 }
-template<class TNS>
-size_t Interpreter<TNS>::last_column(size_t node_index) const
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::last_column(size_t node_index) const
 {
     return this->m_nodes.last_column(node_index);
 }
-template<class TNS>
-size_t Interpreter<TNS>::line(size_t node_index) const
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::line(size_t node_index) const
 {
     return this->m_nodes.line(node_index);
 }
-template<class TNS>
-size_t Interpreter<TNS>::last_line(size_t node_index) const
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::last_line(size_t node_index) const
 {
     return this->m_nodes.last_line(node_index);
 }
-template<class TNS>
-size_t Interpreter<TNS>::parent_node_index(size_t node_index) const
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::parent_node_index(size_t node_index) const
 {
     return this->m_nodes.parent_node_index(node_index);
 }
-template<class TNS>
-size_t Interpreter<TNS>::child_index_at(size_t node_index,
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::child_index_at(size_t node_index,
                                         size_t child_index) const
 {
     return this->m_nodes.child_at(node_index, child_index);
 }
-template<class TNS>
-size_t Interpreter<TNS>::push_leaf(size_t      node_type,
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::push_leaf(size_t      node_type,
                                    const char* node_name,
                                    size_t      token_index)
 {
@@ -82,8 +82,8 @@ size_t Interpreter<TNS>::push_leaf(size_t      node_type,
     m_nodes.push_leaf(node_type, node_name, token_index);
     return node_index;
 }
-template<class TNS>
-size_t Interpreter<TNS>::push_parent(size_t                     node_type,
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::push_parent(size_t                     node_type,
                                      const char*                node_name,
                                      const std::vector<size_t>& child_indices)
 {
@@ -91,8 +91,8 @@ size_t Interpreter<TNS>::push_parent(size_t                     node_type,
     m_nodes.push_parent(node_type, node_name, child_indices);
     return node_index;
 }
-template<class TNS>
-size_t Interpreter<TNS>::type(size_t index) const
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::type(size_t index) const
 {
     // have any nodes?
     if (m_nodes.size() == 0)
@@ -101,8 +101,8 @@ size_t Interpreter<TNS>::type(size_t index) const
     }
     return this->m_nodes.type(index);
 }
-template<class TNS>
-size_t Interpreter<TNS>::node_token_type(size_t index) const
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::node_token_type(size_t index) const
 {
     // have any nodes?
     if (m_nodes.size() == 0)
@@ -111,8 +111,8 @@ size_t Interpreter<TNS>::node_token_type(size_t index) const
     }
     return this->m_nodes.node_token_type(index);
 }
-template<class TNS>
-const char* Interpreter<TNS>::name(size_t index) const
+template<class NodeStorage>
+const char* Interpreter<NodeStorage>::name(size_t index) const
 {
     // have any nodes?
     if (m_nodes.size() == 0)
@@ -121,18 +121,18 @@ const char* Interpreter<TNS>::name(size_t index) const
     }
     return this->m_nodes.name(index);
 }
-template<class TNS>
-bool Interpreter<TNS>::set_name(size_t node_index, const char* node_name)
+template<class NodeStorage>
+bool Interpreter<NodeStorage>::set_name(size_t node_index, const char* node_name)
 {
     return this->m_nodes.set_name(node_index, node_name);
 }
-template<class TNS>
-void Interpreter<TNS>::set_type(size_t node_index, size_t node_type)
+template<class NodeStorage>
+void Interpreter<NodeStorage>::set_type(size_t node_index, size_t node_type)
 {
     return this->m_nodes.set_type(node_index, node_type);
 }
-template<class TNS>
-std::string Interpreter<TNS>::data(size_t index) const
+template<class NodeStorage>
+std::string Interpreter<NodeStorage>::data(size_t index) const
 {
     // have any nodes?
     if (m_nodes.size() == 0)
@@ -141,8 +141,8 @@ std::string Interpreter<TNS>::data(size_t index) const
     }
     return this->m_nodes.data(index);
 }
-template<class TNS>
-const char* Interpreter<TNS>::token_data(size_t index) const
+template<class NodeStorage>
+const char* Interpreter<NodeStorage>::token_data(size_t index) const
 {
     // have any tokens?
     const auto& token_pool = m_nodes.token_data();
@@ -153,9 +153,9 @@ const char* Interpreter<TNS>::token_data(size_t index) const
     return token_pool.str(index);
 }
 
-template<class TNS>
+template<class NodeStorage>
 template<class PARSER_IMPL>
-bool Interpreter<TNS>::parse_impl(std::istream&      in,
+bool Interpreter<NodeStorage>::parse_impl(std::istream&      in,
                                   const std::string& stream_name,
                                   size_t             start_line,
                                   size_t             start_column)
@@ -178,20 +178,20 @@ bool Interpreter<TNS>::parse_impl(std::istream&      in,
     return parsed;
 }
 
-template<class TNS>
-const size_t& Interpreter<TNS>::staged_type(size_t staged_index) const
+template<class NodeStorage>
+const size_t& Interpreter<NodeStorage>::staged_type(size_t staged_index) const
 {
     wasp_require(staged_index < m_staged.size());
     return m_staged[staged_index].m_type;
 }
-template<class TNS>
-size_t& Interpreter<TNS>::staged_type(size_t staged_index)
+template<class NodeStorage>
+size_t& Interpreter<NodeStorage>::staged_type(size_t staged_index)
 {
     wasp_require(staged_index < m_staged.size());
     return m_staged[staged_index].m_type;
 }
-template<class TNS>
-size_t Interpreter<TNS>::push_staged(size_t                     node_type,
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::push_staged(size_t                     node_type,
                                      const std::string&         node_name,
                                      const std::vector<size_t>& child_indices)
 {
@@ -203,16 +203,16 @@ size_t Interpreter<TNS>::push_staged(size_t                     node_type,
     return m_staged.size() - 1;
 }
 
-template<class TNS>
-size_t Interpreter<TNS>::push_staged_child(size_t child_index)
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::push_staged_child(size_t child_index)
 {
     wasp_require(m_staged.empty() == false);
     auto& back = m_staged.back();
     back.m_child_indices.push_back(child_index);
     return back.m_child_indices.size();
 }
-template<class TNS>
-size_t Interpreter<TNS>::commit_staged(size_t stage_index)
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::commit_staged(size_t stage_index)
 {
     wasp_require(m_staged.empty() == false);
     wasp_require(stage_index < m_staged.size());

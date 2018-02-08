@@ -5,7 +5,7 @@
 #include <sstream>
 #include <ostream>
 #include <iostream>
-#include "waspcore/Interpreter.h"  // for Default NodeView
+#include "waspcore/Interpreter.h"
 #include "waspcore/decl.h"
 namespace wasp
 {
