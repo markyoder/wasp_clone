@@ -85,7 +85,7 @@ class GetPotNodeView
      * @brief non_decorative_children acquires all non decorative children
      * @return collection of GetPotNodeViews
      */
-    typename GetPotNodeView::Collection non_decorative_children() const;
+    GetPotNodeView::Collection non_decorative_children() const;
     /**
      * @brief first_non_decorative_child_by_name acquires the first non
      * decorative child
