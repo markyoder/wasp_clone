@@ -94,7 +94,6 @@ clang-format -style=file -i waspsiren/SIRENInterpreter.cpp
 clang-format -style=file -i waspsiren/test/tstSIRENInterpreter.cpp
 clang-format -style=file -i waspsiren/test/tstSIRENParser.cpp
 clang-format -style=file -i waspsiren/test/tstSIRENResultSet.cpp
-clang-format -style=file -i waspson/SONParser.cpp
 clang-format -style=file -i waspson/test/tstSON.cpp
 clang-format -style=file -i wasputils/ddilist.cpp
 clang-format -style=file -i wasputils/ddiselect.cpp
