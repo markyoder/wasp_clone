@@ -110,8 +110,7 @@ bool GetPotNodeView::is_terminator() const
     }
 }
 
-
-typename GetPotNodeView::Collection
+GetPotNodeView::Collection
 GetPotNodeView::non_decorative_children() const
 {
     Collection results;
@@ -190,8 +189,7 @@ GetPotNodeView GetPotNodeView::child_at(std::size_t index) const
         m_pool->child_at(m_node_index, index);
     return GetPotNodeView(child_node_pool_index, *m_pool);
 }
-                       // template type
-typename GetPotNodeView::Collection  // return type
+GetPotNodeView::Collection  // return type
     GetPotNodeView::child_by_name(const std::string& name,
                                        std::size_t        limit) const
 {
@@ -210,7 +208,6 @@ typename GetPotNodeView::Collection  // return type
     }
     return results;
 }
-  // template type
 GetPotNodeView  // return type
     GetPotNodeView::first_child_by_name(const std::string& name) const
 {

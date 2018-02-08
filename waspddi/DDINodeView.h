@@ -85,7 +85,7 @@ class WASP_PUBLIC DDINodeView
      * @brief non_decorative_children acquires all non decorative children
      * @return collection of DDINodeViews
      */
-    typename DDINodeView::Collection non_decorative_children() const;
+    DDINodeView::Collection non_decorative_children() const;
     /**
      * @brief first_non_decorative_child_by_name acquires the first non
      * decorative child
@@ -151,7 +151,7 @@ class WASP_PUBLIC DDINodeView
      * @param limit the limit on the number of children ( 0 := no limit )
      * @return A collection of views. Empty if no match occurrs
      */
-    typename DDINodeView::Collection child_by_name(const std::string& name,
+    DDINodeView::Collection child_by_name(const std::string& name,
                                                    size_t limit = 0) const;
     /**
      * @brief first_child_by_name acquires the first child with the given name

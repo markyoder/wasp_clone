@@ -98,7 +98,7 @@ class WASP_PUBLIC SONNodeView
      * @brief non_decorative_children acquires all non decorative children
      * @return collection of SONNodeViews
      */
-    typename SONNodeView::Collection non_decorative_children() const;
+    SONNodeView::Collection non_decorative_children() const;
     /**
      * @brief first_non_decorative_child_by_name acquires the first non
      * decorative child
@@ -164,7 +164,7 @@ class WASP_PUBLIC SONNodeView
      * @param limit the limit on the number of children ( 0 := no limit )
      * @return A collection of views. Empty if no match occurrs
      */
-    typename SONNodeView::Collection child_by_name(const std::string& name,
+    SONNodeView::Collection child_by_name(const std::string& name,
                                                    size_t limit = 0) const;
     /**
      * @brief first_child_by_name acquires the first child with the given name

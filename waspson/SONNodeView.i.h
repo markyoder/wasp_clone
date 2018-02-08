@@ -137,7 +137,7 @@ bool SONNodeView::is_terminator() const
 }
 
 
-typename SONNodeView::Collection
+SONNodeView::Collection
 SONNodeView::non_decorative_children() const
 {
     Collection results;
@@ -218,7 +218,7 @@ SONNodeView SONNodeView::child_at(std::size_t index) const
     return SONNodeView(child_node_pool_index, *m_pool);
 }
                     // template type
-typename SONNodeView::Collection  // return type
+SONNodeView::Collection  // return type
     SONNodeView::child_by_name(const std::string& name,
                                     std::size_t        limit) const
 {

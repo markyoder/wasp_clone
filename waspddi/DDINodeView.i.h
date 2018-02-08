@@ -101,7 +101,7 @@ bool DDINodeView::is_terminator() const
 }
 
 
-typename DDINodeView::Collection
+DDINodeView::Collection
 DDINodeView::non_decorative_children() const
 {
     Collection results;
@@ -166,7 +166,7 @@ std::size_t DDINodeView::child_count() const
 {
     return m_pool->child_count(m_node_index);
 }
-  // template type
+
 std::size_t          // return type
     DDINodeView::child_count_by_name(const std::string& name,
                                           std::size_t        limit) const
@@ -181,8 +181,8 @@ DDINodeView DDINodeView::child_at(std::size_t index) const
         m_pool->child_at(m_node_index, index);
     return DDINodeView(child_node_pool_index, *m_pool);
 }
-                    // template type
-typename DDINodeView::Collection  // return type
+
+DDINodeView::Collection  // return type
     DDINodeView::child_by_name(const std::string& name,
                                     std::size_t        limit) const
 {
