@@ -75,10 +75,7 @@ int main(int argc, char** argv)
     int return_code = 0;
     for (int i = 2; i < argcount; ++i)
     {
-        DDInterpreter<
-            TreeNodePool<unsigned int, unsigned int,
-                         TokenPool<unsigned int, unsigned int, unsigned int>>>
-            parser;
+        DefaultDDInterpreter parser;
         parser.set_definition_store(definition);
         bool failed = !parser.parseFile(argv[i]);
         if (failed)

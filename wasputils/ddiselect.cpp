@@ -49,10 +49,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    DDInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-        parser;
+    DefaultDDInterpreter parser;
 
     SONInterpreter<
         TreeNodePool<unsigned int, unsigned int,
