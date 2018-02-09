@@ -52,11 +52,7 @@ int main(int argc, char* argv[])
         return 1;
     }
     std::stringstream errors;
-    // TODO - adjust file offset size based on file size
-    SONInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-        schema_interp(errors);
+    DefaultSONInterpreter schema_interp(errors);
     wasp_timer(parse_schema_time);
     wasp_timer_start(parse_schema_time);
     bool parsed_schema = schema_interp.parse(schema);

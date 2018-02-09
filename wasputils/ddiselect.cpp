@@ -51,10 +51,7 @@ int main(int argc, char** argv)
 
     DefaultDDInterpreter parser;
 
-    SONInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-         schema;
+    DefaultSONInterpreter schema;
     bool schema_failed = !schema.parseFile(argv[1]);
     if (schema_failed)
     {

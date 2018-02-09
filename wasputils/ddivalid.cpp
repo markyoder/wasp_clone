@@ -50,10 +50,7 @@ int main(int argc, char** argv)
         argcount = argc - 1;
     }
 
-    SONInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-         schema;
+    DefaultSONInterpreter schema;
     bool schema_failed = !schema.parseFile(argv[1]);
     if (schema_failed)
     {

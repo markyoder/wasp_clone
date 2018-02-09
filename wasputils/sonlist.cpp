@@ -36,10 +36,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    SONInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-         parser;
+    DefaultSONInterpreter parser;
     bool failed = !parser.parseFile(argv[1]);
     if (failed)
     {

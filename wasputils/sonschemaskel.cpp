@@ -8,7 +8,7 @@
 using namespace wasp;
 typedef TokenPool<unsigned int, unsigned int, unsigned int> TP;
 typedef TreeNodePool<unsigned int, unsigned int, TP>        TNP;
-typedef SONInterpreter<TNP> SONInterp;
+typedef DefaultSONInterpreter SONInterp;
 typedef SONNodeView         SONNV;
 
 struct skel_node

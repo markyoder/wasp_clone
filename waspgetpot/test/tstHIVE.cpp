@@ -30,7 +30,7 @@ struct GetPotHIVETest
 
     std::string                       schema_path;
     std::shared_ptr<std::ifstream>    schema;  // schema to validate input
-    std::shared_ptr<SONInterpreter<>> schema_interpreter;
+    std::shared_ptr<DefaultSONInterpreter> schema_interpreter;
 
     std::shared_ptr<std::stringstream> output_data;  // expected output
 };
@@ -100,7 +100,7 @@ bool load_ast(GetPotHIVETest& t)
     bool input_pass_good     = t.input_pass_interpreter->parse(*t.input_pass);
     EXPECT_TRUE(input_pass_good);
 
-    t.schema_interpreter = std::make_shared<SONInterpreter<>>();
+    t.schema_interpreter = std::make_shared<DefaultSONInterpreter>();
     bool schema_good =
         t.schema_interpreter->parseStream(*t.schema, t.schema_path);
     EXPECT_TRUE(schema_good);

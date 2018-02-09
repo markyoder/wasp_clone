@@ -60,10 +60,7 @@ int main(int argc, char** argv)
     }
     std::stringstream errors;
     // TODO - adjust file offset size based on file size
-    SONInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-         schema_interp(errors);
+    DefaultSONInterpreter schema_interp(errors);
     bool parsed_schema = schema_interp.parse(schema);
     if (!parsed_schema)
     {
@@ -80,11 +77,8 @@ int main(int argc, char** argv)
         input.close();
         return 2;
     }
-    // TODO - adjust file offset size based on file size
-    SONInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-         input_interp(errors);
+
+    DefaultSONInterpreter input_interp(errors);
     bool parsed_input = input_interp.parse(input);
     if (!parsed_input)
     {
@@ -100,10 +94,7 @@ int main(int argc, char** argv)
     bool                     valid =
         validation_engine.validate(schema_root, input_root, validation_errors);
 
-    SONInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-         parser;
+    DefaultSONInterpreter parser;
     bool failed = !parser.parseFile(argv[1]);
     if (failed)
     {
