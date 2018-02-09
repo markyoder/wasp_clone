@@ -15,7 +15,7 @@ disp_y = disp_y
 disp_z = disp_z
 [../])INPUT";
     std::stringstream   error;
-    GetPotInterpreter<> interpreter(error);
+    DefaultGetPotInterpreter interpreter(error);
     ASSERT_FALSE(interpreter.parse(input));
     ASSERT_EQ(
         "stream input:5.1-5: syntax error, unexpected subblock terminator\n",
@@ -58,7 +58,7 @@ TEST(GetPotInterpreter, simple)
     //    |_ = '='
     //    |_ value '3.421'
     input << "key =  3.421";
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(5, interpreter.node_count());
 
@@ -115,7 +115,7 @@ TEST(GetPotInterpreter, empty_object)
     //    |_ object_term '[]'
 
     input << "[ted][]";
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(6, interpreter.node_count());
 
@@ -165,7 +165,7 @@ TEST(GetPotInterpreter, simple_object)
     //    |_ object_term '[]'
 
     input << "[ted]key = 3.421[]";
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(10, interpreter.node_count());
 
@@ -231,7 +231,7 @@ TEST(GetPotInterpreter, less_simple_object)
      fred = 1
      key = 3.421
  [])INPUT";
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(19, interpreter.node_count());
 
@@ -324,7 +324,7 @@ TEST(GetPotInterpreter, object_array)
     //    |_ object_term '[]'
 
     input << "[ted]data='basic 201 lu'[]";
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(14, interpreter.node_count());
 
@@ -405,7 +405,7 @@ TEST(GetPotInterpreter, object_array_commas)
     //    |_ object_term '[]'
 
     input << "[ted]data='basic,201 , again,here,close , far lu'[]";
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(23, interpreter.node_count());
 
@@ -503,7 +503,7 @@ TEST(GetPotInterpreter, object_empty_subobject)
     //    |_ object_term '[]'
 
     input << "[ted][./fred][../][]";
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(12, interpreter.node_count());
 
@@ -559,7 +559,7 @@ TEST(GetPotInterpreter, object_subobject)
     //    |_ object_term '[]'
 
     input << "[ted][./fred]key=3.4321[../][]";
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(16, interpreter.node_count());
 
@@ -621,7 +621,7 @@ TEST(GetPotInterpreter, simple_view)
     //    |_ = '='
     //    |_ value '3.421'
     input << "key =  3.421";
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(5, interpreter.node_count());
 
@@ -708,7 +708,7 @@ TEST(GetPotInterpreter, paths)
 /Problem/[] ([])
 )INPUT";
 
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(16, interpreter.node_count());
     auto document = interpreter.root();
@@ -739,7 +739,7 @@ function = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)
         "+3*(gr0^2+gr1^2+gr2^2+gr3^2)^2)",
         "'"};
 
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(9, interpreter.node_count());
     auto document = interpreter.root();
@@ -763,7 +763,7 @@ TEST(GetPotInterpreter, comments)
     input << R"INPUT(#
 # comment with content
 #)INPUT";
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(4, interpreter.node_count());
     auto document = interpreter.root();
@@ -804,7 +804,7 @@ TEST(GetPotInterpreter, early_terminated_object)
         f=b
 [])INPUT";
 
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(41, interpreter.node_count());
     auto document = interpreter.root();
@@ -877,7 +877,7 @@ TEST(GetPotInterpreter, nested_subblocks)
     [../]
   [../]
 [])INPUT";
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(18, interpreter.node_count());
     auto document = interpreter.root();
@@ -918,7 +918,7 @@ TEST(GetPotInterpreter, multiple_objects)
     [../]
 [])INPUT";
 
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(55, interpreter.node_count());
     GetPotNodeView document = interpreter.root();
@@ -1036,7 +1036,7 @@ TEST(GetPotInterpreter, type_promotion)
 []
 )INPUT";
 
-    GetPotInterpreter<> interpreter;
+    DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(61, interpreter.node_count());
     GetPotNodeView document = interpreter.root();

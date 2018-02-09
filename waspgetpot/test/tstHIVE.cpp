@@ -21,12 +21,12 @@ struct GetPotHIVETest
     std::string input_fail_path;
     std::shared_ptr<std::ifstream>
                                          input_fail;  // test failing input for schema to exercise
-    std::shared_ptr<GetPotInterpreter<>> input_fail_interpreter;
+    std::shared_ptr<DefaultGetPotInterpreter> input_fail_interpreter;
 
     std::string input_pass_path;
     std::shared_ptr<std::ifstream>
                                          input_pass;  // test passing input for schema to exercise
-    std::shared_ptr<GetPotInterpreter<>> input_pass_interpreter;
+    std::shared_ptr<DefaultGetPotInterpreter> input_pass_interpreter;
 
     std::string                       schema_path;
     std::shared_ptr<std::ifstream>    schema;  // schema to validate input
@@ -91,12 +91,12 @@ bool load_streams(GetPotHIVETest&    t,
 // load abstract syntax trees (dom)
 bool load_ast(GetPotHIVETest& t)
 {
-    t.input_fail_interpreter = std::make_shared<GetPotInterpreter<>>();
+    t.input_fail_interpreter = std::make_shared<DefaultGetPotInterpreter>();
     bool input_fail_good     = t.input_fail_interpreter->parse(*t.input_fail);
 
     EXPECT_TRUE(input_fail_good);
 
-    t.input_pass_interpreter = std::make_shared<GetPotInterpreter<>>();
+    t.input_pass_interpreter = std::make_shared<DefaultGetPotInterpreter>();
     bool input_pass_good     = t.input_pass_interpreter->parse(*t.input_pass);
     EXPECT_TRUE(input_pass_good);
 

@@ -83,11 +83,7 @@ int main(int argc, char* argv[])
             input.close();
             return 2;
         }
-        // TODO - adjust file offset size based on file size
-        GetPotInterpreter<
-            TreeNodePool<unsigned int, unsigned int,
-                         TokenPool<unsigned int, unsigned int, unsigned int>>>
-            input_interp(errors);
+        DefaultGetPotInterpreter input_interp(errors);
         wasp_timer(parse_input_time);
         wasp_timer_start(parse_input_time);
         bool parsed_input = input_interp.parse(input);
