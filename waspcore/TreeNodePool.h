@@ -1,6 +1,7 @@
 #ifndef WASP_TREENODEPOOL_H
 #define WASP_TREENODEPOOL_H
 #include <unordered_map>
+#include <cstdint>
 #include <string>
 #include <sstream>
 #include <ostream>
@@ -13,8 +14,8 @@
 
 namespace wasp
 {
-typedef unsigned short default_node_type_size;
-typedef unsigned int   default_node_index_size;
+typedef std::uint16_t default_node_type_size;
+typedef std::uint32_t default_node_index_size;
 /**
  * @class TreeNodePool class for managing Tree Nodes in a memory efficient
  * manner

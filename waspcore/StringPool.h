@@ -1,5 +1,6 @@
 #ifndef WASP_STRINGPOOL_H
 #define WASP_STRINGPOOL_H
+#include <cstdint>
 #include <vector>
 #include <iostream>
 #include "waspcore/decl.h"
@@ -9,7 +10,7 @@ namespace wasp
 /**
  * @brief default_token_index_type_size
  */
-typedef unsigned int default_token_index_type_size;
+typedef std::uint32_t default_token_index_type_size;
 /**
  * @class StringPool Memory pool and data accessor for string data
  * This data consists of indexed null terminated character array data.

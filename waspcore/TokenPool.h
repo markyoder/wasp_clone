@@ -1,6 +1,7 @@
 #ifndef WASP_TOKENPOOL_H
 #define WASP_TOKENPOOL_H
 #include <algorithm>
+#include <cstdint>
 #include <cstring>
 #include <vector>
 #include "waspcore/StringPool.h"
@@ -11,12 +12,12 @@ namespace wasp
 /**
  * @brief default_token_type_size
  */
-typedef unsigned short default_token_type_size;
+typedef std::uint16_t default_token_type_size;
 
 /**
  * @brief file_offset_type_size
  */
-typedef unsigned int default_file_offset_type_size;
+typedef std::uint32_t default_file_offset_type_size;
 
 /**
  * @class TokenPool Memory pool and data accessor for token data
