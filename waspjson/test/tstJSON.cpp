@@ -35,7 +35,7 @@ TEST(JSON, simple_object)
  "array_empty" : [],
  "array_mixed" : [{}, [], 1, 1.004, true, false, null ]
 })INPUT";
-    JSONInterpreter<> interpreter;
+    DefaultJSONInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(89, interpreter.node_count());
     auto document = interpreter.root();
@@ -257,7 +257,7 @@ TEST(JSON, simple_array)
 {
     std::stringstream input;
     input << "[]";  // empty
-    JSONInterpreter<> interpreter;
+    DefaultJSONInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(3, interpreter.node_count());
     auto document = interpreter.root();
