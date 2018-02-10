@@ -35,7 +35,7 @@ TEST(SIREN, selection_on_keyed_value)
     ASSERT_TRUE(key.has_parent());
     ASSERT_EQ(3, key.child_count());
     {  // select only the root
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString("/"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -48,7 +48,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // select the key child
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString("/key"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -61,7 +61,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // select the key's value child
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString("/key/value"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -74,7 +74,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // select the any first level's value child
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString("/*/value"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -87,7 +87,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // select the key's decl child
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key / decl "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -100,7 +100,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // select the key's decl child relative from document
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString("  key / decl "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -113,7 +113,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // select the key's decl child relative from key
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" decl "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -126,7 +126,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // test root-based selection with expected no results
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" /nothing/decl "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -135,7 +135,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // test relative-based selection with expected no results
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" nothing/decl "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -144,7 +144,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // test relative-based selection of parent
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" .. "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -157,7 +157,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // test relative-based selection of parent with expected no results
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" ../.. "));  // document has no parent
         {
             SIRENResultSet<decltype(document)> set;
@@ -166,7 +166,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // select the key's decl where key's value=3.14
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key [ value = 3.14 ]/ decl "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -179,7 +179,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // select the key's *l where ke?'s va?ue=3.14
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / ke? [ va?ue = 3.14 ]/ *l "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -192,7 +192,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // select the key's dec where key's value=3.14 (no results)
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key [ value = 3.14 ]/ dec "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -201,7 +201,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // select the key's dec where key's val=3.14 (no results)
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key [ val = 3.14 ]/ dec "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -210,7 +210,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // select the key's decl where key's value=3.1 (no results)
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key [ value = 3.1 ]/ decl "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -219,7 +219,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // select the key's first decl
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key / decl[1]"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -232,7 +232,7 @@ TEST(SIREN, selection_on_keyed_value)
         }
     }
     {  // select the key's second decl (no second - empty selection)
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key / decl[2]"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -308,7 +308,7 @@ TEST(SIREN, selection_on_keyed_values)
     ASSERT_EQ(3, key.child_count());
     ASSERT_EQ(0, strcmp("key", key.name()));
     {  // select only the root
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString("/"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -321,7 +321,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the key child
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString("/key"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -339,7 +339,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the key's value child
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString("/key/value"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -356,7 +356,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the key's decl child
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key / decl "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -373,7 +373,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the key's decl child relative from document
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString("  key / decl "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -390,7 +390,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the key's decl child relative from key
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" decl "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -403,7 +403,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // test root-based selection with expected no results
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" /nothing/decl "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -412,7 +412,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // test relative-based selection with expected no results
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" nothing/decl "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -421,7 +421,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // test relative-based selection of parent
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" .. "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -434,7 +434,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // test relative-based selection of parent with expected no results
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" ../.. "));  // document has no parent
         {
             SIRENResultSet<decltype(document)> set;
@@ -443,7 +443,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the key's decl where key's value=3.149
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key [ value = 3.149 ]/ decl "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -456,7 +456,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the key's dec where key's value=3.14 (no results)
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key [ value = 3.14 ]/ dec "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -465,7 +465,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the key's dec where key's val=3.14 (no results)
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key [ val = 3.14 ]/ dec "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -474,7 +474,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the key's decl where key's value=3.1 (no results)
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key [ value = 3.1 ]/ decl "));
         {
             SIRENResultSet<decltype(document)> set;
@@ -483,7 +483,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the key's first decl
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key / decl[1]"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -497,7 +497,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the key's second decl
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key / decl[2]"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -511,7 +511,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the key's third decl
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key / decl[3]"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -525,7 +525,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the first and second key's decl
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key[1:2] / decl"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -545,7 +545,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the second and third key's decl
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key[2:3] / decl"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -565,7 +565,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the all 3 key's decl
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key[0:5] / decl"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -585,7 +585,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the first and third key's decl
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key[1:3:2] / decl"));
         {
             SIRENResultSet<decltype(document)> set;
@@ -605,7 +605,7 @@ TEST(SIREN, selection_on_keyed_values)
         }
     }
     {  // select the first and third key's decl
-        SIRENInterpreter<TreeNodePool<>> siren;
+        DefaultSIRENInterpreter siren;
         ASSERT_TRUE(siren.parseString(" / key[3:6:3] / decl"));
         {
             SIRENResultSet<decltype(document)> set;

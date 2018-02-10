@@ -83,7 +83,7 @@ int main(int argc, char** argv)
         std::stringstream select_statement_errors;
         std::string       select_statement = argv[j];
         std::cout << "Selecting " << select_statement << std::endl;
-        SIRENInterpreter<> siren(select_statement_errors);
+        DefaultSIRENInterpreter siren(select_statement_errors);
         std::string        selection_name =
             "selection statement " + std::to_string(j - 2);
         bool parsed = siren.parseString(select_statement, selection_name);
