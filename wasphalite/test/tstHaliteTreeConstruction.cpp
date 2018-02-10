@@ -22,7 +22,7 @@ line2
  line3
    line
             )INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(6, interpreter.node_count());
     auto document = interpreter.root();
@@ -51,7 +51,7 @@ asdfghjkl;'\][poiuytrewq
 ASDFGHJKL:"';lkjhgfdsa'
 zxcvbnm,./  MNBVCXZ
 ZXCVBNM  ?.,mnbvcxz)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     auto              document       = interpreter.root();
     std::string       expected_paths = R"INPUT(/
@@ -78,7 +78,7 @@ TEST(Halite, attribute_options_symbols)
 use=<a>use= options use object scope
 fmt=<a>fmt= options format
 sep=<a>sep= options separator)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     auto              document       = interpreter.root();
     std::string       expected_paths = R"INPUT(/
@@ -128,7 +128,7 @@ TEST(Halite, iterative_formatted_attribute_embedded_tree)
 {
     std::stringstream input;
     input << R"INPUT(<i:fmt=%3d; i=1,<end>>)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     auto              document       = interpreter.root();
     std::string       expected_paths = R"INPUT(/
@@ -153,7 +153,7 @@ TEST(Halite, simple_parameterized_text)
     input << R"INPUT(This is plain test
 <attribute1><attr2><ted>
             )INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(15, interpreter.node_count());
     auto document = interpreter.root();
@@ -188,7 +188,7 @@ TEST(Halite, simple_parameterized_text_wss)
     input << R"INPUT(This is plain test
  <attribute1>  <attr2>   <ted>
             )INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(18, interpreter.node_count());
     auto document = interpreter.root();
@@ -224,7 +224,7 @@ TEST(Halite, nested_attr_empty)
 {
     std::stringstream input;
     input << "<><<>><<<>>>";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(19, interpreter.node_count());
     auto document = interpreter.root();
@@ -261,7 +261,7 @@ TEST(Halite, nested_attr_suffix)
 {
     std::stringstream input;
     input << "<<a>b><<<c>d>e>";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(21, interpreter.node_count());
     auto document = interpreter.root();
@@ -301,7 +301,7 @@ TEST(Halite, nested_attr_prefix)
 {
     std::stringstream input;
     input << "<b<a>><e<d<c>>>";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(21, interpreter.node_count());
     auto document = interpreter.root();
@@ -340,7 +340,7 @@ TEST(Halite, nested_attr_infix)
 {
     std::stringstream input;
     input << "<b< a >b1><e<d<c>d1>e1>";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(24, interpreter.node_count());
     auto document = interpreter.root();
@@ -383,7 +383,7 @@ TEST(Halite, nested_attr_surrounding)
 {
     std::stringstream input;
     input << "prefix <> suffix ";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(6, interpreter.node_count());
     auto document = interpreter.root();
@@ -407,7 +407,7 @@ TEST(Halite, attr_options_surrounding)
 {
     std::stringstream input;
     input << "prefix <pi:fmt=%2.8f> suffix ";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(8, interpreter.node_count());
     auto document = interpreter.root();
@@ -438,7 +438,7 @@ TEST(Halite, import_basic)
 {
     std::stringstream input;
     input << "#import some/path/to/some/file";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(4, interpreter.node_count());
     auto document = interpreter.root();
@@ -460,7 +460,7 @@ TEST(Halite, repeat_basic)
 {
     std::stringstream input;
     input << "#repeat some/path/to/some/file";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(4, interpreter.node_count());
     auto document = interpreter.root();
@@ -484,7 +484,7 @@ TEST(Halite, import_parameterized)
 {
     std::stringstream input;
     input << "#import <ned>/<ted>/to/some/<fred>";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(18, interpreter.node_count());
     auto document = interpreter.root();
@@ -521,7 +521,7 @@ TEST(Halite, import_parameterized_using)
 {
     std::stringstream input;
     input << "#import <ned>/<ted>/to/some/file using <zed>";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(18, interpreter.node_count());
     auto document = interpreter.root();
@@ -556,7 +556,7 @@ TEST(Halite, import_parameterized_using_inline)
     std::stringstream input;
     input
         << R"INPUT(#import ./import_by_name_inline.tmpl using {"foo":"bar"})INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     //    ASSERT_EQ(18, interpreter.node_count() );
     auto document = interpreter.root();
@@ -580,7 +580,7 @@ TEST(Halite, multiple_import_parameterized_using)
     input << "#import <ned>/<ted>/to/some/file using <zed>" << std::endl
           << "random text line" << std::endl
           << "#import some/other/import using <fred>";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(26, interpreter.node_count());
     auto document = interpreter.root();
@@ -625,7 +625,7 @@ TEST(Halite, ifdef)
 {
     std::stringstream input;
     input << "#ifdef something" << std::endl << "#endif";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(8, interpreter.node_count());
     auto document = interpreter.root();
@@ -654,7 +654,7 @@ TEST(Halite, ifdef_parameterized)
     input << "#ifdef <x>" << std::endl
           << " intermediate text " << std::endl
           << "#endif";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(13, interpreter.node_count());
     auto document = interpreter.root();
@@ -687,7 +687,7 @@ TEST(Halite, ifndef_parameterized)
     input << "#ifndef <x>" << std::endl
           << " intermediate text " << std::endl
           << "#endif";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(13, interpreter.node_count());
     auto document = interpreter.root();
@@ -721,7 +721,7 @@ TEST(Halite, if_parameterized)
     input << "#if <x> < <y>" << std::endl
           << " only if x is less than y " << std::endl
           << "#endif";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(18, interpreter.node_count());
     auto document = interpreter.root();
@@ -762,7 +762,7 @@ TEST(Halite, elseif_parameterized)
           << "#elseif condition " << std::endl
           << " only if x is not less than y and condition is true " << std::endl
           << "#endif";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(24, interpreter.node_count());
     auto document = interpreter.root();
@@ -810,7 +810,7 @@ TEST(Halite, if_elseif_else_parameterized)
           << "#else" << std::endl
           << "last bastion" << std::endl
           << "#endif";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(27, interpreter.node_count());
     auto document = interpreter.root();
@@ -859,7 +859,7 @@ TEST(Halite, else_parameterized)
           << "#else" << std::endl
           << " only if x is not less than y " << std::endl
           << "#endif";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(21, interpreter.node_count());
     auto document = interpreter.root();
@@ -927,7 +927,7 @@ TEST(Halite, conditionals)
           << " cond1 is false, 3 is false, 6 false, and 7 false" << std::endl
           << "#endif" << std::endl
           << "#endif";
-    HaliteInterpreter<> interpreter(std::cout);
+    DefaultHaliteInterpreter interpreter(std::cout);
     ASSERT_TRUE(interpreter.parse(input));
     //    ASSERT_EQ(18, interpreter.node_count() );
     auto document = interpreter.root();
@@ -1007,7 +1007,7 @@ TEST(Halite, endif_error)
     std::stringstream input;
     input << "conditional template" << std::endl << "#endif";
     std::stringstream   error;
-    HaliteInterpreter<> interpreter(error);
+    DefaultHaliteInterpreter interpreter(error);
     ASSERT_FALSE(interpreter.parse(input));
     auto        document       = interpreter.root();
     std::string expected_paths = R"INPUT(/
@@ -1028,7 +1028,7 @@ TEST(Halite, elseif_error)
     std::stringstream input;
     input << "conditional template" << std::endl << "#elseif blah";
     std::stringstream   error;
-    HaliteInterpreter<> interpreter(error);
+    DefaultHaliteInterpreter interpreter(error);
     ASSERT_FALSE(interpreter.parse(input));
     auto        document       = interpreter.root();
     std::string expected_paths = R"INPUT(/
@@ -1048,7 +1048,7 @@ TEST(Halite, else_error)
     std::stringstream input;
     input << "conditional template" << std::endl << std::endl << "#else blah";
     std::stringstream   error;
-    HaliteInterpreter<> interpreter(error);
+    DefaultHaliteInterpreter interpreter(error);
     ASSERT_FALSE(interpreter.parse(input));
     auto        document       = interpreter.root();
     std::string expected_paths = R"INPUT(/

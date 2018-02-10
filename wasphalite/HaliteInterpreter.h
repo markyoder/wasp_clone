@@ -2,6 +2,7 @@
 #ifndef WASP_HALITEINTERPRETER_H
 #define WASP_HALITEINTERPRETER_H
 
+#include <cstdint>
 #include <set>
 #include <string>
 #include <fstream>
@@ -39,10 +40,71 @@ WASP_PUBLIC bool expand_template(std::ostream&      result,
                                  bool               defaultVars         = false,
                                  bool               defaultFuncs = false);
 
-template<class S = TreeNodePool<
-             unsigned short,
-             unsigned short,
-             TokenPool<unsigned short, unsigned short, unsigned short>>>
+// How many input node type's (section, value, etc.) in a Halite file
+typedef std::uint8_t HaliteNodeType_t;
+
+// How many input token type's (word, int, real, comma, etc.) in a Halite file
+typedef std::uint8_t HaliteTokenType_t;
+
+// How many bytes in a file
+typedef std::uint8_t  HaliteTinyFileSize_t;
+typedef std::uint16_t HaliteMediumFileSize_t;
+typedef std::uint32_t HaliteFileSize_t;
+typedef std::uint64_t HaliteLargeFileSize_t;
+
+// How many tokens in a file (5 reals, 100 ints, 50 words, etc.)
+typedef std::uint8_t  HaliteTinyTokenSize_t;
+typedef std::uint16_t HaliteMediumTokenSize_t;
+typedef std::uint32_t HaliteTokenSize_t;
+typedef std::uint64_t HaliteLargeTokenSize_t;
+
+// Tiny file TokenPool (less than 256 bytes)
+typedef TokenPool<
+                // Token type
+                HaliteTokenType_t,
+                // Max number of token
+                HaliteTinyTokenSize_t,
+                // Max number of bytes in the file
+                HaliteTinyFileSize_t> HaliteTinyTokenPool;
+
+// Medium file TokenPool (less than 65k bytes)
+typedef TokenPool<
+                // Token type
+                HaliteTokenType_t,
+                // Max number of token
+                HaliteMediumTokenSize_t,
+                // Max number of bytes in the file
+                HaliteMediumFileSize_t> HaliteMediumTokenPool;
+
+// Regular file TokenPool (less than 4b bytes)
+typedef TokenPool<
+                // Token type
+                HaliteTokenType_t,
+                // Max number of token
+                HaliteTokenSize_t,
+                // Max number of bytes in the file
+                HaliteFileSize_t> HaliteTokenPool;
+
+// Large file TokenPool (greater than 4b bytes)
+typedef TokenPool<
+                // Token type
+                HaliteTokenType_t,
+                // Max number of token
+                HaliteLargeTokenSize_t,
+                // Max number of bytes in the file
+                HaliteLargeFileSize_t> HaliteLargeTokenPool;
+
+
+// Regular NodePool storage
+typedef  TreeNodePool<
+                        // Node type
+                        HaliteNodeType_t,
+                        // Max number of nodes in the file
+                        std::uint32_t,
+                        // Regular TokenPool
+                        HaliteTokenPool> HaliteNodePool;
+
+template<class S = HaliteNodePool>
 class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
 {
   public:
@@ -577,5 +639,6 @@ inline WASP_PUBLIC bool expand_template(std::ostream&      result,
     }
     return true;
 }
+typedef HaliteInterpreter<> DefaultHaliteInterpreter;
 }  // namespace wasp
 #endif  // WASPHaliteIntERPRETER_H
