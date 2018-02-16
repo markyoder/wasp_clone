@@ -61,7 +61,7 @@ int main(int argc, char** argv)
     std::stringstream errors;
     // TODO - adjust file offset size based on file size
     DefaultSONInterpreter schema_interp(errors);
-    bool parsed_schema = schema_interp.parse(schema);
+    bool                  parsed_schema = schema_interp.parse(schema);
     if (!parsed_schema)
     {
         std::cerr << "Failed to process schema file '" << argv[1] << "'"
@@ -79,7 +79,7 @@ int main(int argc, char** argv)
     }
 
     DefaultSONInterpreter input_interp(errors);
-    bool parsed_input = input_interp.parse(input);
+    bool                  parsed_input = input_interp.parse(input);
     if (!parsed_input)
     {
         std::cerr << "Failed to process input file '" << argv[2] << "'"
@@ -95,7 +95,7 @@ int main(int argc, char** argv)
         validation_engine.validate(schema_root, input_root, validation_errors);
 
     DefaultSONInterpreter parser;
-    bool failed = !parser.parseFile(argv[1]);
+    bool                  failed = !parser.parseFile(argv[1]);
     if (failed)
     {
         std::cerr << "***Error : Parsing of " << argv[1] << " failed!"

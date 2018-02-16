@@ -1006,7 +1006,7 @@ TEST(Halite, endif_error)
 {
     std::stringstream input;
     input << "conditional template" << std::endl << "#endif";
-    std::stringstream   error;
+    std::stringstream        error;
     DefaultHaliteInterpreter interpreter(error);
     ASSERT_FALSE(interpreter.parse(input));
     auto        document       = interpreter.root();
@@ -1027,7 +1027,7 @@ TEST(Halite, elseif_error)
 {
     std::stringstream input;
     input << "conditional template" << std::endl << "#elseif blah";
-    std::stringstream   error;
+    std::stringstream        error;
     DefaultHaliteInterpreter interpreter(error);
     ASSERT_FALSE(interpreter.parse(input));
     auto        document       = interpreter.root();
@@ -1047,7 +1047,7 @@ TEST(Halite, else_error)
 {
     std::stringstream input;
     input << "conditional template" << std::endl << std::endl << "#else blah";
-    std::stringstream   error;
+    std::stringstream        error;
     DefaultHaliteInterpreter interpreter(error);
     ASSERT_FALSE(interpreter.parse(input));
     auto        document       = interpreter.root();

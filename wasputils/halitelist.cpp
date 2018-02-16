@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
             input.close();
             return 1;
         }
-        std::stringstream   errors;
+        std::stringstream        errors;
         DefaultHaliteInterpreter interpreter(errors);
         wasp_timer(parse_time);
         wasp_timer_start(parse_time);

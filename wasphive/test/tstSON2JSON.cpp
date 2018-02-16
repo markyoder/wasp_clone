@@ -12,7 +12,7 @@ using namespace wasp;
 typedef TokenPool<unsigned int, unsigned int, unsigned int> TP;
 typedef TreeNodePool<unsigned int, unsigned int, TP>        TNP;
 typedef DefaultSONInterpreter SONInterp;
-typedef SONNodeView         SONNV;
+typedef SONNodeView           SONNV;
 
 // macro to print a cleaner text diff if strings are different
 #define EXPECT_JSON(EXPECTED, ACTUAL)                                       \

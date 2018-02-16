@@ -14,7 +14,7 @@ disp_x = disp_x
 disp_y = disp_y
 disp_z = disp_z
 [../])INPUT";
-    std::stringstream   error;
+    std::stringstream        error;
     DefaultGetPotInterpreter interpreter(error);
     ASSERT_FALSE(interpreter.parse(input));
     ASSERT_EQ(

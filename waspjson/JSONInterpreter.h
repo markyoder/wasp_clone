@@ -44,50 +44,53 @@ typedef std::uint64_t JSONLargeTokenSize_t;
 
 // Tiny file TokenPool (less than 256 bytes)
 typedef TokenPool<
-                // Token type
-                JSONTokenType_t,
-                // Max number of token
-                JSONTinyTokenSize_t,
-                // Max number of bytes in the file
-                JSONTinyFileSize_t> JSONTinyTokenPool;
+    // Token type
+    JSONTokenType_t,
+    // Max number of token
+    JSONTinyTokenSize_t,
+    // Max number of bytes in the file
+    JSONTinyFileSize_t>
+    JSONTinyTokenPool;
 
 // Medium file TokenPool (less than 65k bytes)
 typedef TokenPool<
-                // Token type
-                JSONTokenType_t,
-                // Max number of token
-                JSONMediumTokenSize_t,
-                // Max number of bytes in the file
-                JSONMediumFileSize_t> JSONMediumTokenPool;
+    // Token type
+    JSONTokenType_t,
+    // Max number of token
+    JSONMediumTokenSize_t,
+    // Max number of bytes in the file
+    JSONMediumFileSize_t>
+    JSONMediumTokenPool;
 
 // Regular file TokenPool (less than 4b bytes)
 typedef TokenPool<
-                // Token type
-                JSONTokenType_t,
-                // Max number of token
-                JSONTokenSize_t,
-                // Max number of bytes in the file
-                JSONFileSize_t> JSONTokenPool;
+    // Token type
+    JSONTokenType_t,
+    // Max number of token
+    JSONTokenSize_t,
+    // Max number of bytes in the file
+    JSONFileSize_t>
+    JSONTokenPool;
 
 // Large file TokenPool (greater than 4b bytes)
 typedef TokenPool<
-                // Token type
-                JSONTokenType_t,
-                // Max number of token
-                JSONLargeTokenSize_t,
-                // Max number of bytes in the file
-                JSONLargeFileSize_t> JSONLargeTokenPool;
-
+    // Token type
+    JSONTokenType_t,
+    // Max number of token
+    JSONLargeTokenSize_t,
+    // Max number of bytes in the file
+    JSONLargeFileSize_t>
+    JSONLargeTokenPool;
 
 // Regular NodePool storage
-typedef  TreeNodePool<
-                        // Node type
-                        JSONNodeType_t,
-                        // Max number of nodes in the file
-                        std::uint32_t,
-                        // Regular TokenPool
-                        JSONTokenPool> JSONNodePool;
-
+typedef TreeNodePool<
+    // Node type
+    JSONNodeType_t,
+    // Max number of nodes in the file
+    std::uint32_t,
+    // Regular TokenPool
+    JSONTokenPool>
+    JSONNodePool;
 
 /** The JSONInterpreter class brings together all components. It creates an
  * instance of

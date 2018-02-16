@@ -638,9 +638,10 @@ TEST(Halite, range)
         SCOPED_TRACE(i);
         SCOPED_TRACE(ranges[i]);
         std::vector<DefaultHaliteInterpreter::Range> imports;
-        std::string                             range = ranges[i];
-        std::string                             error;
-        EXPECT_TRUE(DefaultHaliteInterpreter::extract_ranges(range, imports, error));
+        std::string                                  range = ranges[i];
+        std::string                                  error;
+        EXPECT_TRUE(
+            DefaultHaliteInterpreter::extract_ranges(range, imports, error));
         std::cout << error << std::endl;
         ASSERT_FALSE(imports.empty());
         EXPECT_EQ(expected_imports[i].name, imports.front().name);
@@ -651,13 +652,13 @@ TEST(Halite, range)
 }
 TEST(Halite, multi_range)
 {
-    std::vector<std::vector<DefaultHaliteInterpreter::Range>> expected_imports = {
-        {{"x", 1, 1, 1}, {"y", 1, 1, 1}},
-        {{"x", 1, 2, 1}, {"y", 2, 2, 1}},
-        {{"x", 1, 2, 3}, {"y", 3, 3, 1}},
-        {{"x", 1, 2, 1}, {"y", 4, 5, 1}},
-        {{"x", 1, 3, 2}, {"y", 6, 12, 3}},
-        {{"x", 1, 3, 2}, {"y", 7, 7, 1}, {"z", 3, 3, 1}}};
+    std::vector<std::vector<DefaultHaliteInterpreter::Range>> expected_imports =
+        {{{"x", 1, 1, 1}, {"y", 1, 1, 1}},
+         {{"x", 1, 2, 1}, {"y", 2, 2, 1}},
+         {{"x", 1, 2, 3}, {"y", 3, 3, 1}},
+         {{"x", 1, 2, 1}, {"y", 4, 5, 1}},
+         {{"x", 1, 3, 2}, {"y", 6, 12, 3}},
+         {{"x", 1, 3, 2}, {"y", 7, 7, 1}, {"z", 3, 3, 1}}};
     std::vector<std::string> ranges = {" x=1;y=1",
                                        "x = 1,2;y=2",
                                        " x=1,2,3;y=3",
@@ -670,9 +671,10 @@ TEST(Halite, multi_range)
         SCOPED_TRACE(i);
         SCOPED_TRACE(ranges[i]);
         std::vector<DefaultHaliteInterpreter::Range> imports;
-        std::string                             range = ranges[i];
-        std::string                             error;
-        EXPECT_TRUE(DefaultHaliteInterpreter::extract_ranges(range, imports, error));
+        std::string                                  range = ranges[i];
+        std::string                                  error;
+        EXPECT_TRUE(
+            DefaultHaliteInterpreter::extract_ranges(range, imports, error));
         std::cout << error << std::endl;
         ASSERT_FALSE(imports.empty());
         ASSERT_EQ(expected_imports[i].size(), imports.size());
@@ -1361,7 +1363,7 @@ TEST(Halite, iterative_configurable_delimiter_emission)
         std::stringstream input;
         input
             << R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=<nl>,-5>)INPUT";
-        std::stringstream   errors;
+        std::stringstream        errors;
         DefaultHaliteInterpreter interpreter(errors);
         ASSERT_TRUE(interpreter.parse(input));
         std::stringstream out;
@@ -1376,7 +1378,7 @@ TEST(Halite, iterative_configurable_delimiter_emission)
         std::stringstream input;
         input
             << R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=5,ted>)INPUT";
-        std::stringstream   errors;
+        std::stringstream        errors;
         DefaultHaliteInterpreter interpreter(errors);
         ASSERT_TRUE(interpreter.parse(input));
         std::stringstream out;

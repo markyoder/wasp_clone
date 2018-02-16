@@ -18,16 +18,16 @@ struct HIVETest
 {
     std::string input_fail_path;
     std::shared_ptr<std::ifstream>
-                                      input_fail;  // test failing input for schema to exercise
+                                           input_fail;  // test failing input for schema to exercise
     std::shared_ptr<DefaultSONInterpreter> input_fail_interpreter;
 
     std::string input_pass_path;
     std::shared_ptr<std::ifstream>
-                                      input_pass;  // test passing input for schema to exercise
+                                           input_pass;  // test passing input for schema to exercise
     std::shared_ptr<DefaultSONInterpreter> input_pass_interpreter;
 
-    std::string                       schema_path;
-    std::shared_ptr<std::ifstream>    schema;  // schema to validate input
+    std::string                            schema_path;
+    std::shared_ptr<std::ifstream>         schema;  // schema to validate input
     std::shared_ptr<DefaultSONInterpreter> schema_interpreter;
 
     std::shared_ptr<std::stringstream> output_data;  // expected output

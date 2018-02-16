@@ -60,49 +60,53 @@ typedef std::uint64_t HaliteLargeTokenSize_t;
 
 // Tiny file TokenPool (less than 256 bytes)
 typedef TokenPool<
-                // Token type
-                HaliteTokenType_t,
-                // Max number of token
-                HaliteTinyTokenSize_t,
-                // Max number of bytes in the file
-                HaliteTinyFileSize_t> HaliteTinyTokenPool;
+    // Token type
+    HaliteTokenType_t,
+    // Max number of token
+    HaliteTinyTokenSize_t,
+    // Max number of bytes in the file
+    HaliteTinyFileSize_t>
+    HaliteTinyTokenPool;
 
 // Medium file TokenPool (less than 65k bytes)
 typedef TokenPool<
-                // Token type
-                HaliteTokenType_t,
-                // Max number of token
-                HaliteMediumTokenSize_t,
-                // Max number of bytes in the file
-                HaliteMediumFileSize_t> HaliteMediumTokenPool;
+    // Token type
+    HaliteTokenType_t,
+    // Max number of token
+    HaliteMediumTokenSize_t,
+    // Max number of bytes in the file
+    HaliteMediumFileSize_t>
+    HaliteMediumTokenPool;
 
 // Regular file TokenPool (less than 4b bytes)
 typedef TokenPool<
-                // Token type
-                HaliteTokenType_t,
-                // Max number of token
-                HaliteTokenSize_t,
-                // Max number of bytes in the file
-                HaliteFileSize_t> HaliteTokenPool;
+    // Token type
+    HaliteTokenType_t,
+    // Max number of token
+    HaliteTokenSize_t,
+    // Max number of bytes in the file
+    HaliteFileSize_t>
+    HaliteTokenPool;
 
 // Large file TokenPool (greater than 4b bytes)
 typedef TokenPool<
-                // Token type
-                HaliteTokenType_t,
-                // Max number of token
-                HaliteLargeTokenSize_t,
-                // Max number of bytes in the file
-                HaliteLargeFileSize_t> HaliteLargeTokenPool;
-
+    // Token type
+    HaliteTokenType_t,
+    // Max number of token
+    HaliteLargeTokenSize_t,
+    // Max number of bytes in the file
+    HaliteLargeFileSize_t>
+    HaliteLargeTokenPool;
 
 // Regular NodePool storage
-typedef  TreeNodePool<
-                        // Node type
-                        HaliteNodeType_t,
-                        // Max number of nodes in the file
-                        std::uint32_t,
-                        // Regular TokenPool
-                        HaliteTokenPool> HaliteNodePool;
+typedef TreeNodePool<
+    // Node type
+    HaliteNodeType_t,
+    // Max number of nodes in the file
+    std::uint32_t,
+    // Regular TokenPool
+    HaliteTokenPool>
+    HaliteNodePool;
 
 template<class S = HaliteNodePool>
 class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>

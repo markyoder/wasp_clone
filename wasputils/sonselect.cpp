@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
         input.close();
         return 1;
     }
-    std::stringstream errors;
+    std::stringstream     errors;
     DefaultSONInterpreter interpreter(errors);
     wasp_timer(parse_time);
     wasp_timer_start(parse_time);
@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
         std::string       select_statement = argv[j];
         std::cout << "Selecting " << select_statement << std::endl;
         DefaultSIRENInterpreter siren(select_statement_errors);
-        std::string        selection_name =
+        std::string             selection_name =
             "selection statement " + std::to_string(j - 1);
         parsed = siren.parseString(select_statement, selection_name);
         if (!parsed)

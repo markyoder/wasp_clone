@@ -41,8 +41,8 @@ TEST(DDInterpreter, comment_placement)
  sect2
 )I" << std::endl;
     DefaultDDInterpreter ddi;
-    auto*           sect1   = ddi.definition()->create("sect1");
-    auto*           sect1_1 = sect1->create("sect1.1");
+    auto*                sect1   = ddi.definition()->create("sect1");
+    auto*                sect1_1 = sect1->create("sect1.1");
     sect1_1->create("sect1.1.1");
     sect1_1->create("sect1.1.2");
     auto* sect1_2 = sect1->create("sect1.2");
@@ -211,7 +211,7 @@ blergity_blerg 2
     sect2.2 2.2
 )I" << std::endl;
     DefaultDDInterpreter ddi;
-    auto            sect = ddi.definition()->create("sect1")->create("sect1.1");
+    auto sect = ddi.definition()->create("sect1")->create("sect1.1");
     sect->parent()->create_aliased("blurgity_blarg", sect);
     ddi.definition()->create("sect2")->create("sect2.2");
     ddi.definition()->create_aliased("blergity_blerg",
@@ -243,8 +243,8 @@ TEST(DDInterpreter, failing_decl_values)
     input << R"I( sect1
 sect_eek 1
 )I" << std::endl;
-    std::stringstream errors;
-    DefaultDDInterpreter   ddi(errors);
+    std::stringstream    errors;
+    DefaultDDInterpreter ddi(errors);
     ddi.definition()->create("sect1");
 
     EXPECT_FALSE(ddi.parse(input));
@@ -261,8 +261,8 @@ TEST(DDInterpreter, failing_decl)
     input << R"I( sect1
  sect_eek
 )I" << std::endl;
-    std::stringstream errors;
-    DefaultDDInterpreter   ddi(errors);
+    std::stringstream    errors;
+    DefaultDDInterpreter ddi(errors);
     ddi.definition()->create("sect1");
 
     EXPECT_FALSE(ddi.parse(input));
@@ -279,8 +279,8 @@ TEST(DDInterpreter, failing_decl_assign_values)
     input << R"I( sect1
   boom="boom"
 )I" << std::endl;
-    std::stringstream errors;
-    DefaultDDInterpreter   ddi(errors);
+    std::stringstream    errors;
+    DefaultDDInterpreter ddi(errors);
     ddi.definition()->create("sect1");
 
     EXPECT_FALSE(ddi.parse(input));

@@ -44,32 +44,33 @@ typedef std::uint64_t SIRENLargeTokenSize_t;
 
 // Tiny file TokenPool (less than 256 bytes)
 typedef TokenPool<
-                // Token type
-                SIRENTokenType_t,
-                // Max number of token
-                SIRENTinyTokenSize_t,
-                // Max number of bytes in the file
-                SIRENTinyFileSize_t> SIRENTinyTokenPool;
+    // Token type
+    SIRENTokenType_t,
+    // Max number of token
+    SIRENTinyTokenSize_t,
+    // Max number of bytes in the file
+    SIRENTinyFileSize_t>
+    SIRENTinyTokenPool;
 
 // Medium file TokenPool (less than 65k bytes)
 typedef TokenPool<
-                // Token type
-                SIRENTokenType_t,
-                // Max number of token
-                SIRENMediumTokenSize_t,
-                // Max number of bytes in the file
-                SIRENMediumFileSize_t> SIRENMediumTokenPool;
-
-
+    // Token type
+    SIRENTokenType_t,
+    // Max number of token
+    SIRENMediumTokenSize_t,
+    // Max number of bytes in the file
+    SIRENMediumFileSize_t>
+    SIRENMediumTokenPool;
 
 // Regular NodePool storage
-typedef  TreeNodePool<
-                        // Node type
-                        SIRENNodeType_t,
-                        // Max number of nodes in the file
-                        std::uint16_t,
-                        // Regular TokenPool
-                        SIRENMediumTokenPool> SIRENNodePool;
+typedef TreeNodePool<
+    // Node type
+    SIRENNodeType_t,
+    // Max number of nodes in the file
+    std::uint16_t,
+    // Regular TokenPool
+    SIRENMediumTokenPool>
+    SIRENNodePool;
 
 template<class S = SIRENNodePool>
 class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>

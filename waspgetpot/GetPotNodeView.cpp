@@ -1,8 +1,7 @@
 #include "waspgetpot/GetPotNodeView.h"
 
-namespace wasp{
-
-
+namespace wasp
+{
 GetPotNodeView::GetPotNodeView(std::size_t                node_index,
                                const AbstractInterpreter& data)
     : m_node_index(node_index), m_pool(&data)
@@ -269,4 +268,4 @@ size_t GetPotNodeView::value_node_index() const
     }
     return node_index();
 }
-} // end of namespace wasp
+}  // end of namespace wasp

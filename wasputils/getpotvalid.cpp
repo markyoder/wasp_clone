@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
         schema.close();
         return 1;
     }
-    std::stringstream errors;
+    std::stringstream     errors;
     DefaultSONInterpreter schema_interp(errors);
     wasp_timer(parse_schema_time);
     wasp_timer_start(parse_schema_time);

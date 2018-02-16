@@ -36,7 +36,7 @@ int main(int argc, char** argv)
         return 1;
     }
     DefaultJSONInterpreter parser;
-    bool failed = !parser.parseFile(argv[1]);
+    bool                   failed = !parser.parseFile(argv[1]);
     if (failed)
     {
         std::cout << "***Error : Parsing of " << argv[1] << " failed!"

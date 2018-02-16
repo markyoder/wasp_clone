@@ -45,50 +45,53 @@ typedef std::uint64_t SONLargeTokenSize_t;
 
 // Tiny file TokenPool (less than 256 bytes)
 typedef TokenPool<
-                // Token type
-                SONTokenType_t,
-                // Max number of token
-                SONTinyTokenSize_t,
-                // Max number of bytes in the file
-                SONTinyFileSize_t> SONTinyTokenPool;
+    // Token type
+    SONTokenType_t,
+    // Max number of token
+    SONTinyTokenSize_t,
+    // Max number of bytes in the file
+    SONTinyFileSize_t>
+    SONTinyTokenPool;
 
 // Medium file TokenPool (less than 65k bytes)
 typedef TokenPool<
-                // Token type
-                SONTokenType_t,
-                // Max number of token
-                SONMediumTokenSize_t,
-                // Max number of bytes in the file
-                SONMediumFileSize_t> SONMediumTokenPool;
+    // Token type
+    SONTokenType_t,
+    // Max number of token
+    SONMediumTokenSize_t,
+    // Max number of bytes in the file
+    SONMediumFileSize_t>
+    SONMediumTokenPool;
 
 // Regular file TokenPool (less than 4b bytes)
 typedef TokenPool<
-                // Token type
-                SONTokenType_t,
-                // Max number of token
-                SONTokenSize_t,
-                // Max number of bytes in the file
-                SONFileSize_t> SONTokenPool;
+    // Token type
+    SONTokenType_t,
+    // Max number of token
+    SONTokenSize_t,
+    // Max number of bytes in the file
+    SONFileSize_t>
+    SONTokenPool;
 
 // Large file TokenPool (greater than 4b bytes)
 typedef TokenPool<
-                // Token type
-                SONTokenType_t,
-                // Max number of token
-                SONLargeTokenSize_t,
-                // Max number of bytes in the file
-                SONLargeFileSize_t> SONLargeTokenPool;
-
+    // Token type
+    SONTokenType_t,
+    // Max number of token
+    SONLargeTokenSize_t,
+    // Max number of bytes in the file
+    SONLargeFileSize_t>
+    SONLargeTokenPool;
 
 // Regular NodePool storage
-typedef  TreeNodePool<
-                        // Node type
-                        SONNodeType_t,
-                        // Max number of nodes in the file
-                        std::uint32_t,
-                        // Regular TokenPool
-                        SONTokenPool> SONNodePool;
-
+typedef TreeNodePool<
+    // Node type
+    SONNodeType_t,
+    // Max number of nodes in the file
+    std::uint32_t,
+    // Regular TokenPool
+    SONTokenPool>
+    SONNodePool;
 
 /** The SONInterpreter class brings together all components. It creates an
  * instance of

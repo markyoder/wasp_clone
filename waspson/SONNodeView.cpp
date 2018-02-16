@@ -1,7 +1,7 @@
 #include "waspson/SONNodeView.h"
 
-namespace wasp{
-
+namespace wasp
+{
 SONNodeView::SONNodeView(std::size_t                node_index,
                          const AbstractInterpreter& pool)
     : m_node_index(node_index), m_pool(&pool)
@@ -13,7 +13,6 @@ SONNodeView::SONNodeView(const SONNodeView& orig)
     : m_node_index(orig.m_node_index), m_pool(orig.m_pool)
 {
 }
-
 
 SONNodeView::~SONNodeView()
 {
@@ -295,4 +294,4 @@ size_t SONNodeView::value_node_index() const
     return node_index();
 }
 
-} // end of namespace wasp
+}  // end of namespace wasp

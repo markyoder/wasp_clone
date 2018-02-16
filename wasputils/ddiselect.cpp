@@ -52,7 +52,7 @@ int main(int argc, char** argv)
     DefaultDDInterpreter parser;
 
     DefaultSONInterpreter schema;
-    bool schema_failed = !schema.parseFile(argv[1]);
+    bool                  schema_failed = !schema.parseFile(argv[1]);
     if (schema_failed)
     {
         std::cout << "***Error : Parsing of " << argv[1] << " failed!"
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
         std::string       select_statement = argv[j];
         std::cout << "Selecting " << select_statement << std::endl;
         DefaultSIRENInterpreter siren(select_statement_errors);
-        std::string        selection_name =
+        std::string             selection_name =
             "selection statement " + std::to_string(j - 2);
         bool parsed = siren.parseString(select_statement, selection_name);
         if (!parsed)

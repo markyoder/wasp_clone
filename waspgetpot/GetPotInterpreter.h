@@ -32,49 +32,53 @@ typedef std::uint64_t GetPotLargeTokenSize_t;
 
 // Tiny file TokenPool (less than 256 bytes)
 typedef TokenPool<
-                // Token type
-                GetPotTokenType_t,
-                // Max number of token
-                GetPotTinyTokenSize_t,
-                // Max number of bytes in the file
-                GetPotTinyFileSize_t> GetPotTinyTokenPool;
+    // Token type
+    GetPotTokenType_t,
+    // Max number of token
+    GetPotTinyTokenSize_t,
+    // Max number of bytes in the file
+    GetPotTinyFileSize_t>
+    GetPotTinyTokenPool;
 
 // Medium file TokenPool (less than 65k bytes)
 typedef TokenPool<
-                // Token type
-                GetPotTokenType_t,
-                // Max number of token
-                GetPotMediumTokenSize_t,
-                // Max number of bytes in the file
-                GetPotMediumFileSize_t> GetPotMediumTokenPool;
+    // Token type
+    GetPotTokenType_t,
+    // Max number of token
+    GetPotMediumTokenSize_t,
+    // Max number of bytes in the file
+    GetPotMediumFileSize_t>
+    GetPotMediumTokenPool;
 
 // Regular file TokenPool (less than 4b bytes)
 typedef TokenPool<
-                // Token type
-                GetPotTokenType_t,
-                // Max number of token
-                GetPotTokenSize_t,
-                // Max number of bytes in the file
-                GetPotFileSize_t> GetPotTokenPool;
+    // Token type
+    GetPotTokenType_t,
+    // Max number of token
+    GetPotTokenSize_t,
+    // Max number of bytes in the file
+    GetPotFileSize_t>
+    GetPotTokenPool;
 
 // Large file TokenPool (greater than 4b bytes)
 typedef TokenPool<
-                // Token type
-                GetPotTokenType_t,
-                // Max number of token
-                GetPotLargeTokenSize_t,
-                // Max number of bytes in the file
-                GetPotLargeFileSize_t> GetPotLargeTokenPool;
-
+    // Token type
+    GetPotTokenType_t,
+    // Max number of token
+    GetPotLargeTokenSize_t,
+    // Max number of bytes in the file
+    GetPotLargeFileSize_t>
+    GetPotLargeTokenPool;
 
 // Regular NodePool storage
-typedef  TreeNodePool<
-                        // Node type
-                        GetPotNodeType_t,
-                        // Max number of nodes in the file
-                        std::uint32_t,
-                        // Regular TokenPool
-                        GetPotTokenPool> GetPotNodePool;
+typedef TreeNodePool<
+    // Node type
+    GetPotNodeType_t,
+    // Max number of nodes in the file
+    std::uint32_t,
+    // Regular TokenPool
+    GetPotTokenPool>
+    GetPotNodePool;
 
 template<class S = GetPotNodePool>
 class GetPotInterpreter : public Interpreter<S>

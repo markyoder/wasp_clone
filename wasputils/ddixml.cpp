@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     DefaultDDInterpreter parser;
 
     DefaultSONInterpreter schema;
-    bool schema_failed = !schema.parseFile(argv[1]);
+    bool                  schema_failed = !schema.parseFile(argv[1]);
     if (schema_failed)
     {
         std::cout << "***Error : Parsing of " << argv[1] << " failed!"
