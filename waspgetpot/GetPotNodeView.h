@@ -6,6 +6,7 @@
 #include <ostream>
 #include <iostream>
 #include "waspcore/Interpreter.h"
+#include "waspcore/decl.h"
 namespace wasp
 {
 /**
@@ -14,7 +15,7 @@ namespace wasp
  * Allows traversing child nodes and parent as well as acquire node information
  * *
  */
-class GetPotNodeView
+class WASP_PUBLIC GetPotNodeView
 {
   public:
     using Collection = std::vector<GetPotNodeView>;
