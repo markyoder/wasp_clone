@@ -6,6 +6,7 @@ Interpreter<TNS>::Interpreter(std::ostream& err)
     , m_start_line(1)
     , m_stream_name("stream")
     , m_error_stream(err)
+    , m_failed(false)
     , m_root_index(-1)
 {
     // All documents have a root.
@@ -163,10 +164,13 @@ bool Interpreter<TNS>::parse_impl(std::istream&      in,
     PARSER_IMPL parser(*this, in, nullptr);
     //    parser.set_debug_level(true);
 
-    bool parsed = parser.parse() == 0;
+    // parsed is understood to be that
+    // the parse method did not immediately fail (i.e., non-zero return)
+    // and that an underlying parse did not fail (i.e. the failed flag was assigned true)
+    bool parsed = parser.parse() == 0 && !failed();
 
     commit_stages();
-
+    set_failed(parsed); // updated failed cache
     return parsed;
 }
 

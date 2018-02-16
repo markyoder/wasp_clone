@@ -46,7 +46,7 @@
 #include "waspcore/utils.h"
 #include "waspcore/decl.h"
 
-#line 49 "DDIParser.hpp" // lalr1.cc:377
+#line 50 "DDIParser.hpp" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -116,9 +116,9 @@
 # define YYDEBUG 0
 #endif
 
-#line 34 "DDIParser.bison" // lalr1.cc:377
+#line 35 "DDIParser.bison" // lalr1.cc:377
 namespace wasp {
-#line 121 "DDIParser.hpp" // lalr1.cc:377
+#line 122 "DDIParser.hpp" // lalr1.cc:377
 
 
 
@@ -132,14 +132,14 @@ namespace wasp {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 62 "DDIParser.bison" // lalr1.cc:377
+    #line 63 "DDIParser.bison" // lalr1.cc:377
 
         std::size_t token_index;
         std::size_t node_index;
         std::size_t stage_index;
         std::vector<size_t>* node_indices;
 
-#line 142 "DDIParser.hpp" // lalr1.cc:377
+#line 143 "DDIParser.hpp" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -491,9 +491,9 @@ namespace wasp {
   };
 
 
-#line 34 "DDIParser.bison" // lalr1.cc:377
+#line 35 "DDIParser.bison" // lalr1.cc:377
 } // wasp
-#line 496 "DDIParser.hpp" // lalr1.cc:377
+#line 497 "DDIParser.hpp" // lalr1.cc:377
 
 
 

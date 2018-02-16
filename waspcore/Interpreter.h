@@ -143,11 +143,14 @@ class WASP_PUBLIC AbstractInterpreter
 
     virtual size_t staged_count() const = 0;
 
+    virtual bool               failed() const       = 0;
+    virtual void               set_failed(bool b)   = 0;
     virtual size_t             start_column() const = 0;
     virtual size_t             start_line() const   = 0;
     virtual const std::string& stream_name() const  = 0;
     virtual std::string&       stream_name()        = 0;
     virtual std::ostream&      error_stream()       = 0;
+
 
     virtual const AbstractDefinition* definition() const
     {
@@ -175,6 +178,19 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
         file_offset_type_size;
     Interpreter(std::ostream& error_stream = std::cerr);
     virtual ~Interpreter();
+
+    /**
+     * @brief failed indicates if the parse failed
+     * @return true, iff parse failed
+     */
+    bool               failed() const
+    {
+        return m_failed;
+    }
+    void               set_failed(bool b)
+    {
+        m_failed = b;
+    }
 
     /**
      * @brief root acquire the root of the document
@@ -444,6 +460,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      */
     std::ostream&     m_error_stream;
     TreeNodePool_type m_tree_nodes;
+    bool m_failed;
 
   protected:
     struct Stage
