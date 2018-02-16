@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Additions
+- Typedefs for Default TokenPool,TreeNodePool, and Interpreters.
+
+### Changes
+- The TreeNodeView has been refactored to be NodeView and free of template paramters. This breaks backwards compatibility
+
+### Fixes
+None
 
 ## [0.1.2] - 01-22-2018
 ### Added
