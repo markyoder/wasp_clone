@@ -47,7 +47,7 @@
 #include "waspcore/wasp_node.h"
 #include "waspcore/decl.h"
 
-#line 50 "GetPotParser.hpp" // lalr1.cc:377
+#line 51 "GetPotParser.hpp" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -117,23 +117,23 @@
 # define YYDEBUG 0
 #endif
 
-#line 34 "GetPot.bison" // lalr1.cc:377
+#line 35 "GetPot.bison" // lalr1.cc:377
 namespace wasp {
-#line 122 "GetPotParser.hpp" // lalr1.cc:377
+#line 123 "GetPotParser.hpp" // lalr1.cc:377
 
 
 
 
 
   /// A Bison parser.
-  class WASP_PUBLIC GetPotParser
+  class GetPotParser
   {
   public:
 #ifndef YYSTYPE
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 62 "GetPot.bison" // lalr1.cc:377
+    #line 63 "GetPot.bison" // lalr1.cc:377
 
     std::size_t token_index;
     std::size_t node_index;
@@ -144,7 +144,7 @@ namespace wasp {
     // the pair.first (index) = pair.second (vector>.size()
     std::pair<size_t, std::vector<size_t>*>* object_children;
 
-#line 147 "GetPotParser.hpp" // lalr1.cc:377
+#line 148 "GetPotParser.hpp" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -504,9 +504,9 @@ namespace wasp {
   };
 
 
-#line 34 "GetPot.bison" // lalr1.cc:377
+#line 35 "GetPot.bison" // lalr1.cc:377
 } // wasp
-#line 509 "GetPotParser.hpp" // lalr1.cc:377
+#line 510 "GetPotParser.hpp" // lalr1.cc:377
 
 
 
