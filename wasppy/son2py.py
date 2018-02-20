@@ -11,7 +11,12 @@ def get_json_dict(schema_filepath, son_input_filepath):
             if not os.path.isfile(sonvalidjson) :
                 ### for windows visual studio shared with CMAKE_RUNTIME_OUTPUT_DIRECTORY fixup
                 sonvalidjson = os.path.dirname(__file__) + "\\..\\cmake_runtime_output\\Release\\sonvalidjson.exe"
-    else : sonvalidjson = os.path.dirname(__file__) + "/../wasputils/sonvalidjson"
+                if not os.path.isfile(sonvalidjson):
+                    sonvalidjson = os.path.dirname(__file__)+"\\..\\bin\\sonvalidjson.exe"
+    else : 
+        sonvalidjson = os.path.dirname(__file__) + "/../wasputils/sonvalidjson"
+        if not os.path.isfile(sonvalidjson):
+            sonvalidjson = os.path.dirname(__file__)+"/../bin/sonvalidjson"
     cmd = sonvalidjson + ' ' + schema_filepath + ' ' + son_input_filepath + " --json"
     proc = Popen(cmd, shell=True, stdout=PIPE)
     json_result = proc.communicate()[0]
