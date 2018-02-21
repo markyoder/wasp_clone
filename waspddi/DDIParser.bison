@@ -203,9 +203,9 @@ definition_section : decl  value_list
                                                , quote_less_data) )
         {
             error(@1, "'"+quote_less_data+"' is unknown.");
-            delete $2;
-            YYERROR; // returns
+            interpreter.set_failed(true);
         }
+        else{
         $$ = interpreter.push_staged(is_array ? wasp::ARRAY : wasp::KEYED_VALUE
                                      // use the data instead of the name
                                      // this provides the following tree
@@ -214,6 +214,7 @@ definition_section : decl  value_list
                                      //  |_ value (1.2..blah)
                                     ,quote_less_data.c_str()
                                     ,*$2);
+        }
         delete $2;
     }
     | decl assignment value_list // keyed = value/values
@@ -228,10 +229,9 @@ definition_section : decl  value_list
                                                , quote_less_data) )
         {
             error(@1, "'"+quote_less_data+"' is unknown.");
-            delete $3;
-            YYERROR; // returns
+            interpreter.set_failed(true);
         }
-
+else{
         $$ = interpreter.push_staged(is_array ? wasp::ARRAY : wasp::KEYED_VALUE
                                      // use the data instead of the name
                                      // this provides the following tree
@@ -241,7 +241,7 @@ definition_section : decl  value_list
                                      //  |_ value (1.2..blah)
                                     ,quote_less_data.c_str()
                                     ,*$3);
-
+}
         delete $3;
     }
     | decl {
@@ -252,12 +252,14 @@ definition_section : decl  value_list
                                                , quote_less_data) )
         {
             error(@1, "'"+quote_less_data+"' is unknown.");
-            YYERROR; // returns
+            interpreter.set_failed(true);
         }
+        else{
         std::vector<size_t> child_indices = {$decl};
         $$ = interpreter.push_staged(wasp::OBJECT
                                     ,quote_less_data.c_str()
                                     ,child_indices);
+        }
     }
     | decl comma {
 
@@ -267,12 +269,14 @@ definition_section : decl  value_list
                                                , quote_less_data) )
         {
             error(@1, "'"+quote_less_data+"' is unknown.");
-            YYERROR; // returns
+            interpreter.set_failed(true);
         }
-        std::vector<size_t> child_indices = {$decl,$comma};
-        $$ = interpreter.push_staged(wasp::OBJECT
-                                    ,quote_less_data.c_str()
+        else{
+            std::vector<size_t> child_indices = {$decl,$comma};
+            $$ = interpreter.push_staged(wasp::OBJECT
+                                        ,quote_less_data.c_str()
                                     ,child_indices);
+        }
     }
 
 
@@ -281,6 +285,7 @@ comment : COMMENT
             auto token_index = ($1);
             $$ = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
+
 start   : /** empty **/
         | start comment{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
         | start definition_section{
@@ -290,6 +295,7 @@ start   : /** empty **/
                 YYACCEPT;
             }
         }
+
 
 
  /*** END RULES - Change the wasp grammar rules above ***/

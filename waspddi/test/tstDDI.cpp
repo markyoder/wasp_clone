@@ -287,3 +287,38 @@ TEST(DDInterpreter, failing_decl_assign_values)
     std::string msg = "stream input:2.3-6: 'boom' is unknown.\n";
     ASSERT_EQ(msg, errors.str());
 }
+
+/**
+ * @brief TEST ensures that an unknown section produces an expected error and
+ * recovers capturing following legal input
+ * Specifically tests unknown in 'decl' logic with following legal section
+ *              test unknown in decl=assign, and nested in a section.
+ */
+TEST(DDInterpreter, failing_decl_recovered)
+{
+    std::stringstream input;
+    input << R"I( sect1
+ sect_eek=1 2
+ sect1,
+   blurg
+   sect1.1
+ sect2
+)I" << std::endl;
+    std::stringstream errors;
+    DDInterpreter<>   ddi(errors);
+    ddi.definition()->create("sect1")->create("sect1.1");
+    ddi.definition()->create("sect2");
+
+    EXPECT_FALSE(ddi.parse(input));
+    std::string msg = "stream input:2.2-9: 'sect_eek' is unknown.\n"
+                      "stream input:4.4-8: 'blurg' is unknown.\n";
+    ASSERT_EQ(msg, errors.str());
+    const auto& root = ddi.root();
+    ASSERT_EQ(3, root.child_count());
+    ASSERT_EQ("sect1", std::string(root.child_at(0).name()));
+    ASSERT_EQ("sect1", std::string(root.child_at(1).name()));
+    // decl, comma, and sec1.1
+    ASSERT_EQ(3, root.child_at(1).child_count());
+    ASSERT_EQ("sect1.1", std::string(root.child_at(1).child_at(2).name()));
+    ASSERT_EQ("sect2", std::string(root.child_at(2).name()));
+}
