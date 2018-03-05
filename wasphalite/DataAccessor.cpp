@@ -14,9 +14,7 @@ DataAccessor::DataAccessor(const DataAccessor& orig)
 {
 }
 
-DataAccessor::~DataAccessor()
-{
-}
+DataAccessor::~DataAccessor() {}
 
 bool DataAccessor::exists(const std::string& name) const
 {
@@ -490,16 +488,29 @@ DataObject* DataAccessor::object(const std::string& name) const
 }
 DataArray* DataAccessor::array(const std::string& name) const
 {
-    if (m_current_data == nullptr)
-        return nullptr;
-    auto itr = m_current_data->find(name);
-    if (itr == m_current_data->end())
+    bool current_data_exists =
+        m_current_data != nullptr && m_current_data->contains(name);
+    bool parent_data_exists = false;
+    if (current_data_exists == false &&
+        !(parent_data_exists = (m_parent && m_parent->exists(name))))
     {
         return nullptr;
     }
-    if (itr->second.is_array())
+    if (current_data_exists)
     {
-        return itr->second.to_array();
+        auto itr = m_current_data->find(name);
+        if (itr == m_current_data->end())
+        {
+            return nullptr;
+        }
+        if (itr->second.is_array())
+        {
+            return itr->second.to_array();
+        }
+    }
+    else if (parent_data_exists)
+    {
+        return m_parent->array(name);
     }
     return nullptr;
 }
