@@ -165,4 +165,9 @@ TEST(Halite, data_accessor_parent_access)
     ASSERT_EQ("ted", l.string("a", 3));
 
     ASSERT_NE(nullptr, l.object("obj"));
+
+    // Get a DataAccess at the level of 'obj'
+    // and request the obj sibling array 'a'
+    DataAccessor obj_access(l.object("obj"), &l);
+    ASSERT_NE(nullptr, obj_access.array("a"));
 }
