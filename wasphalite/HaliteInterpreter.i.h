@@ -695,9 +695,8 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor&          data,
         return false;
     }
 
-    if (false ==
-        expr.parse(attr_str, line,
-                   start_column + m_attribute_start_delim.size()))
+    if (false == expr.parse(attr_str, line,
+                            start_column + m_attribute_start_delim.size()))
     {
         wasp_tagged_line("Failed parsing expression evaluation...");
         return false;
@@ -1157,6 +1156,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
     {
         DataObject* obj   = nullptr;
         DataArray*  array = nullptr;
+        wasp_tagged_line("Importing using_reference(" << using_what << ")");
         if ((obj = data.object(using_what)) != nullptr)
         {
             DataAccessor ref(obj, &data);
@@ -1665,8 +1665,8 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions& options,
         wasp_tagged_line("Separator of '" << options.separator()
                                           << "' captured");
         // capture the separator text interval
-        intervals.insert(std::make_pair(
-            separator_i, separator_i + sep.size() + length + delim_s));
+        intervals.insert(std::make_pair(separator_i, separator_i + sep.size() +
+                                                         length + delim_s));
     }
     if (use_i != std::string::npos)
     {
