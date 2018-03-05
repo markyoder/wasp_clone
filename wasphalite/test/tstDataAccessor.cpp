@@ -170,4 +170,8 @@ TEST(Halite, data_accessor_parent_access)
     // and request the obj sibling array 'a'
     DataAccessor obj_access(l.object("obj"), &l);
     ASSERT_NE(nullptr, obj_access.array("a"));
+    DataArray* array_a = obj_access.array("a");
+    ASSERT_EQ(4, array_a->size());
+    ASSERT_TRUE(array_a->at(0).is_int());
+    ASSERT_EQ(2, array_a->at(0).to_int());
 }
