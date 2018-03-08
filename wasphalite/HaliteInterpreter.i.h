@@ -1168,6 +1168,8 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
             wasp_tagged_line("importing " << array->size() << " times...");
             for (size_t array_i = 0; array_i < array->size(); ++array_i)
             {
+                auto tellp = out.tellp();
+                wasp_tagged_line("tellp(" << tellp << ") before");
                 const auto& variable_at_i = array->at(array_i);
                 if (variable_at_i.is_object())
                 {
@@ -1182,8 +1184,14 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
                             << nested_interp.stream_name() << "'." << std::endl;
                         return false;
                     }
-                    if (array_i + 1 < array->size())
+                    wasp_tagged_line("tellp(" << tellp << ") after");
+                    // if this import contributed anything to the document
+                    // insert a newline
+                    if (tellp != out.tellp())
+                    {
+                        wasp_tagged_line("inserting newline.");
                         out << std::endl;
+                    }
                 }
                 else
                 {
@@ -1252,7 +1260,10 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor&          data,
     int    delta       = repeat_line - line;
     wasp_check(delta >= 0);
     if (delta > 0)
+    {
+        wasp_tagged_line("inserting newline before repeat.");
         out << std::string(delta, '\n');
+    }
 
     std::stringstream repeat_str;
     // accumulate an attribute string
@@ -1540,6 +1551,7 @@ bool HaliteInterpreter<S>::import_range(DataAccessor&         data,
             }
             if (r != imports[i].end)
             {
+                wasp_tagged_line("inserting newline.");
                 out << std::endl;
             }
         }
@@ -1550,6 +1562,7 @@ bool HaliteInterpreter<S>::import_range(DataAccessor&         data,
         // range succussfully imported
         else if (r != imports[i].end)
         {
+            wasp_tagged_line("inserting newline.");
             out << std::endl;
         }
     }
