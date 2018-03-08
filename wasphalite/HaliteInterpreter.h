@@ -108,11 +108,11 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
         }
     };
 
-    bool import_range(DataAccessor&             data,
-                      HaliteInterpreter<S>&     file_interpreter,
-                      const std::vector<Range>& imports,
-                      size_t                    index,
-                      std::ostream&             out);
+    bool        import_range(DataAccessor&             data,
+                             HaliteInterpreter<S>&     file_interpreter,
+                             const std::vector<Range>& imports,
+                             size_t                    index,
+                             std::ostream&             out);
     static bool extract_ranges(std::string         range_data,
                                std::vector<Range>& ranges,
                                std::string&        error);
@@ -509,7 +509,6 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      */
     bool m_has_file;
 };  // end of HaliteInterpreter class
-#include "wasphalite/HaliteInterpreter.i.h"
 
 inline WASP_PUBLIC bool expand_template(std::ostream&      result,
                                         std::ostream&      elog,
@@ -578,4 +577,6 @@ inline WASP_PUBLIC bool expand_template(std::ostream&      result,
     return true;
 }
 }  // namespace wasp
+
+#include "wasphalite/HaliteInterpreter.i.h"
 #endif  // WASPHaliteIntERPRETER_H

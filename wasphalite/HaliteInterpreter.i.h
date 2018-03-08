@@ -1,6 +1,10 @@
 #ifndef WASP_HALITEINTERPRETER_I_H
 #define WASP_HALITEINTERPRETER_I_H
 
+#include "wasphalite/HaliteInterpreter.h"
+
+namespace wasp
+{
 template<class S>
 HaliteInterpreter<S>::HaliteInterpreter()
     : Interpreter<S>()
@@ -524,6 +528,7 @@ bool HaliteInterpreter<S>::evaluate(std::ostream& out,
                                      << m_current_line_count);
     if (remaining_lines > 0)
     {
+        wasp_tagged_line("inserting " << remaining_lines << " newline(s).");
         out << std::string(remaining_lines, '\n');
     }
     return result;
@@ -615,7 +620,10 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor&          data,
     wasp_check(delta >= 0);
     wasp_tagged_line(info(attr_view) << " line delta " << delta);
     if (delta > 0)
+    {
+        wasp_tagged_line("inserting " << delta << " newline(s).");
         out << std::string(delta, '\n');
+    }
     std::stringstream options_str;
     bool              has_options = false;
     // accumulate an attribute string
@@ -863,6 +871,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor&          data,
     int         delta       = action_line - line;
     if (delta > 0)
     {
+        wasp_tagged_line("inserting " << delta << " newline(s).");
         out << std::string(delta, '\n');
         line += delta;
         wasp_tagged_line("conditional block has " << delta
@@ -920,6 +929,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor&          data,
                 int         delta            = action_true_view.line() - line;
                 if (delta > 0)
                 {
+                    wasp_tagged_line("inserting " << delta << " newline(s).");
                     out << std::string(delta, '\n');
                     line += delta;
                     wasp_tagged_line("conditional block has "
@@ -1043,7 +1053,10 @@ bool HaliteInterpreter<S>::conditional(DataAccessor&          data,
         wasp_tagged_line("conditional line delta " << delta << " for "
                                                    << info(action_view));
         if (delta > 0)
+        {
+            wasp_tagged_line("inserting " << delta << " newline(s).");
             out << std::string(delta, '\n');
+        }
     }
     // if no action was evaluated (line == action line),
     // move +1 beyond terminator
@@ -1067,7 +1080,11 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
     int    delta       = import_line - line;
     wasp_check(delta >= 0);
     if (delta > 0)
+    {
+        wasp_tagged_line("inserting " << delta << " newline(s).");
         out << std::string(delta, '\n');
+    }
+    auto file_tellp = out.tellp();
 
     std::stringstream import_str;
     // accumulate an attribute string
@@ -1242,7 +1259,9 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
                 << nested_interp.stream_name() << "'." << std::endl;
         }
     }
-    line += delta;
+
+    column = 1;
+    line += delta + 1;
     wasp_tagged_line("import successful? " << std::boolalpha << import);
     return import;
 }
@@ -1261,7 +1280,7 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor&          data,
     wasp_check(delta >= 0);
     if (delta > 0)
     {
-        wasp_tagged_line("inserting newline before repeat.");
+        wasp_tagged_line("inserting " << delta << " newline(s) before repeat.");
         out << std::string(delta, '\n');
     }
 
@@ -1795,4 +1814,5 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions& options,
     }
     return true;
 }
+}  // namespace wasp
 #endif

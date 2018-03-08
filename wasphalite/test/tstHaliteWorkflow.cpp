@@ -131,7 +131,7 @@ TEST(Halite, ParseFile)
                    << "1.000     2.000     " << std::endl
                    << "1.000     2.000     " << std::endl
                    << "Line 2";
-        EXPECT_EQ(output_stream.str(), blessed_ss.str());
+        EXPECT_EQ(blessed_ss.str(), output_stream.str());
         std::cout << output_stream.str() << std::endl;
     }
     {  // test using the #if w/o emissions
@@ -166,7 +166,7 @@ TEST(Halite, ParseFile)
         ASSERT_TRUE(render_result);
         std::stringstream blessed_ss;
         blessed_ss << "Line 1" << std::endl << "Line 2";
-        EXPECT_EQ(output_stream.str(), blessed_ss.str());
+        EXPECT_EQ(blessed_ss.str(), output_stream.str());
         std::cout << output_stream.str() << std::endl;
     }
 }
