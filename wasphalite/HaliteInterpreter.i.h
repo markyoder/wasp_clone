@@ -1083,8 +1083,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
     {
         wasp_tagged_line("inserting " << delta << " newline(s).");
         out << std::string(delta, '\n');
-    }
-    auto file_tellp = out.tellp();
+    }    
 
     std::stringstream import_str;
     // accumulate an attribute string
