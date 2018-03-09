@@ -555,7 +555,7 @@ TEST(Halite, attributed_text_fileimport)
     content << "this is" << std::endl
             << "nested files using <ted>" << std::endl
             << std::endl                              // empty line
-            << "and assigning fred to < fred = x >";  // missing new line
+            << "and assigning fred to < fred = x >" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -767,7 +767,7 @@ TEST(Halite, file_import_using_object_by_name)
     content << "this is" << std::endl
             << "nested files using ted's foo (<foo>)" << std::endl
             << std::endl  // empty line
-            << "and assigning foo to < foo = 9 > and p (<p>) to <p=4>";
+            << "and assigning foo to < foo = 9 > and p (<p>) to <p=4>"<<std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -811,7 +811,7 @@ TEST(Halite, file_import_using_object_by_copy)
     content << "this is" << std::endl
             << "nested files using ted's foo (<foo:fmt=%-10.1e>)" << std::endl
             << std::endl  // empty line
-            << "and assigning foo to < foo = 9 >";
+            << "and assigning foo to < foo = 9 >"<<std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -839,7 +839,8 @@ this is
 nested files using ted's foo (1.0e+10   )
 
 and assigning foo to 9
- text after)INPUT";
+ text after
+)INPUT";
     ASSERT_EQ(expected.str(), out.str());
     std::remove("import_by_name_template.tmpl");
     // ensure the child was passed by copy (cannot be changed)
@@ -853,7 +854,7 @@ TEST(Halite, file_import_using_inline)
     content << "this is" << std::endl
             << "nested files using ted's foo (<foo>)" << std::endl
             << std::endl  // empty line
-            << "and assigning foo to < foo = 9 >";
+            << "and assigning foo to < foo = 9 >"<<std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -861,7 +862,6 @@ TEST(Halite, file_import_using_inline)
     text prior
 #import ./import_by_name_inline.tmpl using {"foo":"bar"}
  text after
-
 )INPUT";
     HaliteInterpreter<> interpreter;
 
@@ -892,7 +892,7 @@ TEST(Halite, file_import_using_array_by_name)
     content << "nested template" << std::endl
             << "using parameter <name>" << std::endl
             << "with value <value>" << std::endl
-            << "and assigning value its own name <value=name>";
+            << "and assigning value its own name <value=name>"<<std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -936,7 +936,8 @@ nested template
 using parameter ted3
 with value fred
 and assigning value its own name ted3
- text after)INPUT";
+ text after
+)INPUT";
     ASSERT_EQ(expected.str(), out.str());
     std::remove("import_by_name_iterative.tmpl");
     // ensure the child was passed by reference (can be changed)
@@ -986,7 +987,7 @@ TEST(Halite, parameterized_fileimport)
     content << "this is" << std::endl
             << "nested files using <ted>" << std::endl
             << std::endl                              // empty line
-            << "and assigning fred to < fred = x >";  // missing new line
+            << "and assigning fred to < fred = x >"<<std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -1099,6 +1100,7 @@ text
         std::stringstream expected;
         expected << R"INPUT(
 3.14159 is defined as pi math constant
+
 )INPUT";
         std::stringstream out;
         DataObject        o;
@@ -1113,6 +1115,7 @@ text
  some else statement
 
 text
+
 
 )INPUT";
         std::stringstream out;

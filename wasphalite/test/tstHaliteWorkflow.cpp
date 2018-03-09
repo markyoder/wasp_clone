@@ -130,7 +130,7 @@ TEST(Halite, ParseFile)
         blessed_ss << "Line 1" << std::endl
                    << "1.000     2.000     " << std::endl
                    << "1.000     2.000     " << std::endl
-                   << "Line 2";
+                   << "Line 2" << std::endl;
         EXPECT_EQ(blessed_ss.str(), output_stream.str());
         std::cout << output_stream.str() << std::endl;
     }
@@ -165,7 +165,7 @@ TEST(Halite, ParseFile)
             workflow.renderTemplate(parameters, output_stream, std::cerr);
         ASSERT_TRUE(render_result);
         std::stringstream blessed_ss;
-        blessed_ss << "Line 1" << std::endl << "Line 2";
+        blessed_ss << "Line 1" << std::endl << "Line 2" << std::endl;
         EXPECT_EQ(blessed_ss.str(), output_stream.str());
         std::cout << output_stream.str() << std::endl;
     }
