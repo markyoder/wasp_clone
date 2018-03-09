@@ -554,7 +554,7 @@ TEST(Halite, attributed_text_fileimport)
     std::stringstream content;
     content << "this is" << std::endl
             << "nested files using <ted>" << std::endl
-            << std::endl                              // empty line
+            << std::endl  // empty line
             << "and assigning fred to < fred = x >" << std::endl;
     import << content.str();
     import.close();
@@ -767,7 +767,8 @@ TEST(Halite, file_import_using_object_by_name)
     content << "this is" << std::endl
             << "nested files using ted's foo (<foo>)" << std::endl
             << std::endl  // empty line
-            << "and assigning foo to < foo = 9 > and p (<p>) to <p=4>"<<std::endl;
+            << "and assigning foo to < foo = 9 > and p (<p>) to <p=4>"
+            << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -811,7 +812,7 @@ TEST(Halite, file_import_using_object_by_copy)
     content << "this is" << std::endl
             << "nested files using ted's foo (<foo:fmt=%-10.1e>)" << std::endl
             << std::endl  // empty line
-            << "and assigning foo to < foo = 9 >"<<std::endl;
+            << "and assigning foo to < foo = 9 >" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -854,7 +855,7 @@ TEST(Halite, file_import_using_inline)
     content << "this is" << std::endl
             << "nested files using ted's foo (<foo>)" << std::endl
             << std::endl  // empty line
-            << "and assigning foo to < foo = 9 >"<<std::endl;
+            << "and assigning foo to < foo = 9 >" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -892,7 +893,7 @@ TEST(Halite, file_import_using_array_by_name)
     content << "nested template" << std::endl
             << "using parameter <name>" << std::endl
             << "with value <value>" << std::endl
-            << "and assigning value its own name <value=name>"<<std::endl;
+            << "and assigning value its own name <value=name>" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -986,8 +987,8 @@ TEST(Halite, parameterized_fileimport)
     std::stringstream content;
     content << "this is" << std::endl
             << "nested files using <ted>" << std::endl
-            << std::endl                              // empty line
-            << "and assigning fred to < fred = x >"<<std::endl;
+            << std::endl  // empty line
+            << "and assigning fred to < fred = x >" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;

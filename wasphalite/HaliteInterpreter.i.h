@@ -511,8 +511,9 @@ bool HaliteInterpreter<S>::evaluate(std::ostream& out,
     data.store(attr_start_name(), attr_start_delim());
     data.store(attr_end_name(), attr_end_delim());
     size_t oline = line, ocol = column;
-    bool result = evaluate(data, tree_view, out, line, column);
-    wasp_tagged_line("line,col: "<<line<<","<<column<<" vs "<<oline<<","<<ocol);
+    bool   result = evaluate(data, tree_view, out, line, column);
+    wasp_tagged_line("line,col: " << line << "," << column << " vs " << oline
+                                  << "," << ocol);
     int    remaining_lines = m_current_line_count - line;
     size_t child_count     = tree_view.child_count();
     // account for situation
@@ -520,8 +521,8 @@ bool HaliteInterpreter<S>::evaluate(std::ostream& out,
     // trailing newline to not be emitted.
     if (child_count > 0 &&
         tree_view.child_at(child_count - 1).type() == PREDICATED_CHILD
-            // only if file content was emitted
-            && (oline != line && ocol != column))
+        // only if file content was emitted
+        && (oline != line && ocol != column))
     {
         remaining_lines++;
     }
@@ -705,8 +706,9 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor&          data,
         return false;
     }
 
-    if (false == expr.parse(attr_str, line,
-                            start_column + m_attribute_start_delim.size()))
+    if (false ==
+        expr.parse(attr_str, line,
+                   start_column + m_attribute_start_delim.size()))
     {
         wasp_tagged_line("Failed parsing expression evaluation...");
         return false;
@@ -1052,15 +1054,16 @@ bool HaliteInterpreter<S>::conditional(DataAccessor&          data,
         int         delta         = end_of_action.line() - line;
         wasp_check(delta >= 0);
         wasp_tagged_line("conditional line delta " << delta << " between line "
-                                                   << line
-                         <<" and end action "<<info(end_of_action));
+                                                   << line << " and end action "
+                                                   << info(end_of_action));
         if (delta > 0)
         {
             wasp_tagged_line("inserting " << delta << " newline(s).");
             out << std::string(delta, '\n');
         }
     }
-    line   = term_view.line()+1;;
+    line = term_view.line() + 1;
+    ;
     column = 1;
     return true;
 }
@@ -1082,7 +1085,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
     {
         wasp_tagged_line("inserting " << delta << " newline(s).");
         out << std::string(delta, '\n');
-    }    
+    }
 
     std::stringstream import_str;
     // accumulate an attribute string
@@ -1183,8 +1186,6 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
             wasp_tagged_line("importing " << array->size() << " times...");
             for (size_t array_i = 0; array_i < array->size(); ++array_i)
             {
-                auto tellp = out.tellp();
-                wasp_tagged_line("tellp(" << tellp << ") before");
                 const auto& variable_at_i = array->at(array_i);
                 if (variable_at_i.is_object())
                 {
@@ -1198,14 +1199,6 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
                             << "' - unable to import '"
                             << nested_interp.stream_name() << "'." << std::endl;
                         return false;
-                    }
-                    wasp_tagged_line("tellp(" << tellp << ") after");
-                    // if this import contributed anything to the document
-                    // insert a newline
-                    if (tellp != out.tellp())
-                    {
-                        wasp_tagged_line("inserting newline.");
-//                        out << std::endl;
                     }
                 }
                 else
@@ -1695,8 +1688,8 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions& options,
         wasp_tagged_line("Separator of '" << options.separator()
                                           << "' captured");
         // capture the separator text interval
-        intervals.insert(std::make_pair(separator_i, separator_i + sep.size() +
-                                                         length + delim_s));
+        intervals.insert(std::make_pair(
+            separator_i, separator_i + sep.size() + length + delim_s));
     }
     if (use_i != std::string::npos)
     {
