@@ -25,6 +25,8 @@ class WASP_PUBLIC AbstractInterpreter
      */
     virtual size_t token_count() const = 0;
     virtual size_t line_count() const  = 0;
+
+    virtual void pop_line() = 0;
     /**
      * @brief push appends a token
      * @param str the token's string data
@@ -231,7 +233,12 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      */
     void push_line_offset(size_t line_file_offset)
     {
-        m_tree_nodes.token_data().push_line(line_file_offset);
+        m_tree_nodes.push_line(line_file_offset);
+    }
+
+    void pop_line()
+    {
+        m_tree_nodes.pop_line();
     }
 
     /**

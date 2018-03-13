@@ -13,7 +13,6 @@ HaliteInterpreter<S>::HaliteInterpreter()
     , m_attribute_start_name("_S_")
     , m_attribute_end_name("_E_")
     , m_attribute_options_delim(":")
-    , m_current_line_count(0)
     , m_file_offset(0)
     , m_has_file(false)
 {
@@ -26,7 +25,6 @@ HaliteInterpreter<S>::HaliteInterpreter(std::ostream& err)
     , m_attribute_start_name("_S_")
     , m_attribute_end_name("_E_")
     , m_attribute_options_delim(":")
-    , m_current_line_count(0)
     , m_file_offset(0)
     , m_has_file(false)
 {
@@ -89,11 +87,10 @@ template<class S>
 bool HaliteInterpreter<S>::parse_content(std::istream& in)
 {
     // process all lines of the file
+    std::string line;
     while (!in.eof() && in.good())
     {
-        std::string line;
         std::getline(in, line);
-        ++m_current_line_count;
         bool line_processed = parse_line(line);
 
         if (line_processed == false)
@@ -107,14 +104,14 @@ bool HaliteInterpreter<S>::parse_content(std::istream& in)
                                        << " - error while reading" << std::endl;
         return false;
     }
-    // should always have 1 line
-    // but need to try and track lines with no newline
-    if (m_current_line_count == 0)
+
+    //
+    if( Interpreter<S>::line_count() > 0 && line.empty()) // pop last empty line
     {
-        wasp_tagged_line("needing newline for "
-                         << Interpreter<S>::stream_name());
-        m_current_line_count = 1;
+//        Interpreter<S>::pop_line();
+        wasp_tagged_line("Parsed file Line count "<<Interpreter<S>::line_count());
     }
+
     return true;
 }
 template<class S>
@@ -417,6 +414,7 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     // compute the new offset
     m_file_offset += line.size();
     Interpreter<S>::push_line_offset(m_file_offset);
+    wasp_tagged_line("Pushed line "<<Interpreter<S>::line_count()<<" offset "<<m_file_offset<<" for line '"<<line<<"'");
     return true;
 }
 template<class S>
@@ -510,29 +508,17 @@ bool HaliteInterpreter<S>::evaluate(std::ostream& out,
     size_t line = 1, column = 1;
     data.store(attr_start_name(), attr_start_delim());
     data.store(attr_end_name(), attr_end_delim());
-    size_t oline = line, ocol = column;
-    bool   result = evaluate(data, tree_view, out, line, column);
-    wasp_tagged_line("line,col: " << line << "," << column << " vs " << oline
-                                  << "," << ocol);
-    int    remaining_lines = m_current_line_count - line;
-    size_t child_count     = tree_view.child_count();
-    // account for situation
-    // where conditional concludes file, causing
-    // trailing newline to not be emitted.
-    if (child_count > 0 &&
-        tree_view.child_at(child_count - 1).type() == PREDICATED_CHILD
-        // only if file content was emitted
-        && (oline != line && ocol != column))
+
+    bool   result = evaluate(data, tree_view, out, line, column);    
+
+    int remaining_lines = Interpreter<S>::line_count() - line;
+    wasp_tagged_line("Remaining lines = "<<remaining_lines);
+    if( remaining_lines > 0 )
     {
-        remaining_lines++;
-    }
-    wasp_tagged_line(remaining_lines << " remaining lines for "
-                                     << Interpreter<S>::stream_name() << " vs "
-                                     << m_current_line_count);
-    if (remaining_lines > 0)
-    {
-        wasp_tagged_line("inserting " << remaining_lines << " newline(s).");
-        out << std::string(remaining_lines, '\n');
+        wasp_tagged_line("Emitting "<<Interpreter<S>::line_count()<<"-"
+                         <<line<<"="
+                         <<remaining_lines<<" remaining lines...");
+        out<<std::string(remaining_lines, '\n');
     }
     return result;
 }
@@ -553,6 +539,7 @@ bool HaliteInterpreter<S>::evaluate(DataAccessor&          data,
             return false;
         }
     }
+
     return true;
 }
 template<class S>
@@ -1063,7 +1050,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor&          data,
         }
     }
     line = term_view.line() + 1;
-    ;
+    wasp_tagged_line("concluding condition starting on line "<<line);
     column = 1;
     return true;
 }
@@ -1236,8 +1223,9 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
         {
             return false;
         }
-        DataAccessor data_by_copy_accessor(data_by_copy.get(), &data);
+        DataAccessor data_by_copy_accessor(data_by_copy.get(), &data);        
         import = nested_interp.evaluate(out, data_by_copy_accessor);
+
     }
     else
     {
@@ -1252,7 +1240,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
     }
 
     column = 1;
-    line += delta + 1;
+    line += delta + 2;
     wasp_tagged_line("import successful? " << std::boolalpha << import);
     return import;
 }
@@ -1367,7 +1355,13 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor&          data,
     {
         import = nested_interp.evaluate(out, data);
     }
-    line += delta;
+    // update contet information:
+    // Repeats require a line, and always produce
+    // 1) a new line when content is present.
+    // 2) a newline to ensure any new content does not emit an extraneous newline
+    line += delta + 1;
+    // Because repeat requires its own line, column will be reset back to 1.
+    column = 1;
     return import;
 }
 
@@ -1558,22 +1552,11 @@ bool HaliteInterpreter<S>::import_range(DataAccessor&         data,
             {
                 wasp_tagged_line("failing iterative file import");
                 return false;
-            }
-            if (r != imports[i].end)
-            {
-                wasp_tagged_line("inserting newline.");
-                out << std::endl;
-            }
+            }            
         }
         else if (!import_range(data, file_interpreter, imports, i + 1, out))
         {
             return false;
-        }
-        // range succussfully imported
-        else if (r != imports[i].end)
-        {
-            wasp_tagged_line("inserting newline.");
-            out << std::endl;
         }
     }
     return true;

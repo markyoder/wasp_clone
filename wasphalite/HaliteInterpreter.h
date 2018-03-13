@@ -500,7 +500,6 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      */
     std::string m_attribute_options_delim;
 
-    size_t m_current_line_count;
     size_t m_file_offset;
 
   private:  // private methods
