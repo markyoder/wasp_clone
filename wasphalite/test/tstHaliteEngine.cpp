@@ -14,7 +14,7 @@
 #include "wasphalite/DataAccessor.h"
 #include "waspcore/Object.h"
 
-#include "wasphalite/test/paths.h"
+#include "wasphalite/test/Paths.h"
 
 #include "gtest/gtest.h"
 using namespace std;
