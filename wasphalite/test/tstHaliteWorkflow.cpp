@@ -99,9 +99,9 @@ TEST(Halite, Workflow)
 
 TEST(Halite, ParseFile)
 {
-    {  // test using the #if with emissions        
-        std::string template_file =
-            wasp::dir_name(SOURCE_DIR+"/") + "/data/111-if-newline-emission.tmpl";
+    {  // test using the #if with emissions
+        std::string template_file = wasp::dir_name(SOURCE_DIR + "/") +
+                                    "/data/111-if-newline-emission.tmpl";
 
         std::stringstream output_stream;
         DataObject::SP    parameters = std::make_shared<DataObject>();
@@ -138,8 +138,8 @@ TEST(Halite, ParseFile)
         std::cout << output_stream.str() << std::endl;
     }
     {  // test using the #if w/o emissions
-        std::string template_file =
-            wasp::dir_name(SOURCE_DIR+"/") + "/data/111-if-newline-emission.tmpl";
+        std::string template_file = wasp::dir_name(SOURCE_DIR + "/") +
+                                    "/data/111-if-newline-emission.tmpl";
 
         std::stringstream output_stream;
         DataObject::SP    parameters = std::make_shared<DataObject>();

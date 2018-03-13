@@ -699,7 +699,7 @@ TEST(Halite, repeat_fileimport_using_single_range)
 {
     std::ofstream     import("nested repeated template.tmpl");
     std::stringstream content;
-    content << "i=<i>"<<std::endl;
+    content << "i=<i>" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -957,12 +957,12 @@ TEST(Halite, parent_scope_var_use_in_fileimport)
 {
     std::ofstream     import("parent_scope_var_use.tmpl");
     std::stringstream content;
-    content << "<'var name':use=pobj>" <<std::endl;
+    content << "<'var name':use=pobj>" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
     input << "<'var name':use=pobj;fmt=%4d>" << std::endl;
-    input << "#import ./parent_scope_var_use.tmpl using p2obj"<<std::endl;
+    input << "#import ./parent_scope_var_use.tmpl using p2obj" << std::endl;
 
     HaliteInterpreter<> interpreter;
 
@@ -979,8 +979,7 @@ TEST(Halite, parent_scope_var_use_in_fileimport)
     ASSERT_TRUE(interpreter.evaluate(out, data));
 
     std::stringstream expected;
-    expected << "   3" << std::endl
-             << "3.14" << std::endl;
+    expected << "   3" << std::endl << "3.14" << std::endl;
     ASSERT_EQ(expected.str(), out.str());
     std::remove("parent_scope_var_use.tmpl");
 }
@@ -1420,8 +1419,8 @@ TEST(Halite, simple_parameterized_conditional)
         expected << "X = Y" << std::endl;
         std::stringstream out;
         DataObject        o;
-        o["InputType"] = std::string("key_value");
-        o["InputName"] = std::string("X");
+        o["InputType"]  = std::string("key_value");
+        o["InputName"]  = std::string("X");
         o["InputValue"] = std::string("Y");
         DataAccessor data(&o);
         ASSERT_TRUE(interpreter.evaluate(out, data));
@@ -1433,19 +1432,19 @@ TEST(Halite, simple_parameterized_conditional)
         expected << "Y = ' ARRAY '" << std::endl;
         std::stringstream out;
         DataObject        o;
-        o["InputType"] = std::string("key_array");
-        o["InputName"] = std::string("Y");
+        o["InputType"]  = std::string("key_array");
+        o["InputName"]  = std::string("Y");
         o["InputValue"] = std::string("ARRAY");
         DataAccessor data(&o);
         ASSERT_TRUE(interpreter.evaluate(out, data));
         ASSERT_EQ(expected.str(), out.str());
     }
-    {  // test undefined path through template
-        std::stringstream expected; // empty string
+    {                                // test undefined path through template
+        std::stringstream expected;  // empty string
         std::stringstream out;
         DataObject        o;
         o["InputType"] = std::string("undefined");
-        DataAccessor      data(&o);
+        DataAccessor data(&o);
         ASSERT_TRUE(interpreter.evaluate(out, data));
         ASSERT_EQ(expected.str(), out.str());
     }
@@ -1458,27 +1457,23 @@ TEST(Halite, simple_parameterized_conditional)
  */
 TEST(Halite, nested_repeated_file)
 {
-
     std::string template_file =
-                        wasp::dir_name(__FILE__) + "/data/array_sub_one.tmpl";
+        wasp::dir_name(__FILE__) + "/data/array_sub_one.tmpl";
     std::string json_data_file =
-                        wasp::dir_name(__FILE__) + "/data/array_sub_one.json";
+        wasp::dir_name(__FILE__) + "/data/array_sub_one.json";
 
     std::stringstream output_stream;
 
-    bool template_result = wasp::expand_template(output_stream,
-                                                 std::cerr,std::cerr,
-                                                 template_file,
-                                                 json_data_file,
-                                                 true,
-                                                 true);
+    bool template_result =
+        wasp::expand_template(output_stream, std::cerr, std::cerr,
+                              template_file, json_data_file, true, true);
 
     ASSERT_TRUE(template_result);
     std::stringstream expected_ss;
     expected_ss << "' z = 1 " << std::endl
-                <<"    3 3" << std::endl
-                <<"    3 3" << std::endl
-                <<"    3 3" << std::endl;
+                << "    3 3" << std::endl
+                << "    3 3" << std::endl
+                << "    3 3" << std::endl;
 
     EXPECT_EQ(expected_ss.str(), output_stream.str());
 }
@@ -1491,28 +1486,24 @@ TEST(Halite, nested_repeated_file)
  */
 TEST(Halite, nested_repeated_file_with_trailing_content)
 {
-
     std::string template_file =
-                wasp::dir_name(__FILE__) + "/data/array_sub_one_trailing.tmpl";
+        wasp::dir_name(__FILE__) + "/data/array_sub_one_trailing.tmpl";
     std::string json_data_file =
-                wasp::dir_name(__FILE__) + "/data/array_sub_one.json";
+        wasp::dir_name(__FILE__) + "/data/array_sub_one.json";
 
     std::stringstream output_stream;
 
-    bool template_result = wasp::expand_template(output_stream,
-                                                 std::cerr,std::cerr,
-                                                 template_file,
-                                                 json_data_file,
-                                                 true,
-                                                 true);
+    bool template_result =
+        wasp::expand_template(output_stream, std::cerr, std::cerr,
+                              template_file, json_data_file, true, true);
 
     ASSERT_TRUE(template_result);
     std::stringstream expected_ss;
     expected_ss << "' z = 1 " << std::endl
-                <<"    3 3" << std::endl
-                <<"    3 3" << std::endl
-                <<"    3 3" << std::endl
-                <<"' end of level 1 of z" << std::endl;
+                << "    3 3" << std::endl
+                << "    3 3" << std::endl
+                << "    3 3" << std::endl
+                << "' end of level 1 of z" << std::endl;
 
     EXPECT_EQ(expected_ss.str(), output_stream.str());
 }
@@ -1521,29 +1512,26 @@ TEST(Halite, nested_repeated_file_with_trailing_content)
  * @brief TEST file repeated importing a subtemplate with zero repeats
  *  This exercises the newline emission logic for templates
  * that consist of zero-repeated subtemplate, trailing text, which
- * test the newline emission logic surrounding data before and after zero-repeats
+ * test the newline emission logic surrounding data before and after
+ * zero-repeats
  */
 TEST(Halite, nested_repeated_file_with_zero_repeats)
 {
-
     std::string template_file =
-                wasp::dir_name(SOURCE_DIR+"/") + "/data/array_sub_one_trailing.tmpl";
-    std::string json_data_file =
-                wasp::dir_name(SOURCE_DIR+"/") + "/data/array_sub_one_zero_repeat.json";
+        wasp::dir_name(SOURCE_DIR + "/") + "/data/array_sub_one_trailing.tmpl";
+    std::string json_data_file = wasp::dir_name(SOURCE_DIR + "/") +
+                                 "/data/array_sub_one_zero_repeat.json";
 
     std::stringstream output_stream;
 
-    bool template_result = wasp::expand_template(output_stream,
-                                                 std::cerr,std::cerr,
-                                                 template_file,
-                                                 json_data_file,
-                                                 true,
-                                                 true);
+    bool template_result =
+        wasp::expand_template(output_stream, std::cerr, std::cerr,
+                              template_file, json_data_file, true, true);
 
     ASSERT_TRUE(template_result);
     std::stringstream expected_ss;
     expected_ss << "' z = 1 " << std::endl
-                <<"' end of level 1 of z" << std::endl;
+                << "' end of level 1 of z" << std::endl;
 
     EXPECT_EQ(expected_ss.str(), output_stream.str());
 }

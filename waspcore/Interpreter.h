@@ -236,10 +236,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
         m_tree_nodes.push_line(line_file_offset);
     }
 
-    void pop_line()
-    {
-        m_tree_nodes.pop_line();
-    }
+    void pop_line() { m_tree_nodes.pop_line(); }
 
     /**
      * @brief line_count acquire the number of lines processed by this
