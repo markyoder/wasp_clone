@@ -1458,9 +1458,9 @@ TEST(Halite, simple_parameterized_conditional)
 TEST(Halite, nested_repeated_file)
 {
     std::string template_file =
-        wasp::dir_name(__FILE__) + "/data/array_sub_one.tmpl";
+        wasp::dir_name(SOURCE_DIR+"/") + "/data/array_sub_one.tmpl";
     std::string json_data_file =
-        wasp::dir_name(__FILE__) + "/data/array_sub_one.json";
+        wasp::dir_name(SOURCE_DIR+"/") + "/data/array_sub_one.json";
 
     std::stringstream output_stream;
 
@@ -1487,9 +1487,9 @@ TEST(Halite, nested_repeated_file)
 TEST(Halite, nested_repeated_file_with_trailing_content)
 {
     std::string template_file =
-        wasp::dir_name(__FILE__) + "/data/array_sub_one_trailing.tmpl";
+        wasp::dir_name(SOURCE_DIR+"/") + "/data/array_sub_one_trailing.tmpl";
     std::string json_data_file =
-        wasp::dir_name(__FILE__) + "/data/array_sub_one.json";
+        wasp::dir_name(SOURCE_DIR+"/") + "/data/array_sub_one.json";
 
     std::stringstream output_stream;
 
