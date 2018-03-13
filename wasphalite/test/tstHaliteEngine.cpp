@@ -1,10 +1,11 @@
 /*
- * File:   tstHalite.cpp
+ * File:   tstHaliteEngine.cpp
  * Author: Robert A. Lefebvre
  */
 
 #include <cstdlib>
-#include <cstdio>  // std::remove(file_name)
+// cstdio - std::remove(file_name)
+#include <cstdio>
 #include <sstream>
 #include <string>
 #include <stdexcept>
@@ -12,6 +13,8 @@
 #include "wasphalite/HaliteInterpreter.h"
 #include "wasphalite/DataAccessor.h"
 #include "waspcore/Object.h"
+
+#include "wasphalite/test/paths.h"
 
 #include "gtest/gtest.h"
 using namespace std;
@@ -1524,9 +1527,9 @@ TEST(Halite, nested_repeated_file_with_zero_repeats)
 {
 
     std::string template_file =
-                wasp::dir_name(__FILE__) + "/data/array_sub_one_trailing.tmpl";
+                wasp::dir_name(SOURCE_DIR+"/") + "/data/array_sub_one_trailing.tmpl";
     std::string json_data_file =
-                wasp::dir_name(__FILE__) + "/data/array_sub_one_zero_repeat.json";
+                wasp::dir_name(SOURCE_DIR+"/") + "/data/array_sub_one_zero_repeat.json";
 
     std::stringstream output_stream;
 

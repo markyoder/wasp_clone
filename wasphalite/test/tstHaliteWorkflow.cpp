@@ -12,7 +12,10 @@
 #include "waspcore/Object.h"
 #include "wasphalite/HaliteWorkflow.h"
 
+#include "wasphalite/test/Paths.h"
+
 #include "gtest/gtest.h"
+
 using namespace std;
 using namespace wasp;
 
@@ -96,9 +99,9 @@ TEST(Halite, Workflow)
 
 TEST(Halite, ParseFile)
 {
-    {  // test using the #if with emissions
+    {  // test using the #if with emissions        
         std::string template_file =
-            wasp::dir_name(__FILE__) + "/data/111-if-newline-emission.tmpl";
+            wasp::dir_name(SOURCE_DIR+"/") + "/data/111-if-newline-emission.tmpl";
 
         std::stringstream output_stream;
         DataObject::SP    parameters = std::make_shared<DataObject>();
@@ -136,7 +139,7 @@ TEST(Halite, ParseFile)
     }
     {  // test using the #if w/o emissions
         std::string template_file =
-            wasp::dir_name(__FILE__) + "/data/111-if-newline-emission.tmpl";
+            wasp::dir_name(SOURCE_DIR+"/") + "/data/111-if-newline-emission.tmpl";
 
         std::stringstream output_stream;
         DataObject::SP    parameters = std::make_shared<DataObject>();
