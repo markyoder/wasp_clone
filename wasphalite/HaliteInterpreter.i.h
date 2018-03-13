@@ -611,7 +611,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor&          data,
         column;  // todo ensure column is propogated appropriately
     size_t new_line = attr_view.line();
     int    delta    = new_line - line;
-    wasp_check(delta >= 0);
+
     wasp_tagged_line(info(attr_view) << " line delta " << delta);
     if (delta > 0)
     {
