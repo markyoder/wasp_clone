@@ -262,6 +262,7 @@ class WASP_PUBLIC TreeNodePool
     }
 
     size_t line_count() const { return m_token_data.line_count(); }
+    void   pop_line() { m_token_data.pop_line(); }
     typename TP::file_offset_type_size
     line_offset(typename TP::token_index_type_size line_index) const
     {

@@ -14,7 +14,9 @@ DataAccessor::DataAccessor(const DataAccessor& orig)
 {
 }
 
-DataAccessor::~DataAccessor() {}
+DataAccessor::~DataAccessor()
+{
+}
 
 bool DataAccessor::exists(const std::string& name) const
 {

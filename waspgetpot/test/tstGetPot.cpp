@@ -654,7 +654,7 @@ TEST(GetPotInterpreter, simple_view)
     ASSERT_EQ(node_names[3], key.name());
     ASSERT_EQ(1, key.line());
     ASSERT_EQ(1, key.column());
-    ASSERT_EQ(false, document.equal(key));
+    ASSERT_FALSE(document.equal(key));
     ASSERT_EQ(node_paths[3], key.path());
     // TODO add test on data (type, line, col, etc).
     for (std::size_t i = 0, child_count = key.child_count(); i < child_count;

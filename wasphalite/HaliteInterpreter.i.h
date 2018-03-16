@@ -1,6 +1,10 @@
 #ifndef WASP_HALITEINTERPRETER_I_H
 #define WASP_HALITEINTERPRETER_I_H
 
+#include "wasphalite/HaliteInterpreter.h"
+
+namespace wasp
+{
 template<class S>
 HaliteInterpreter<S>::HaliteInterpreter()
     : Interpreter<S>()
@@ -9,7 +13,6 @@ HaliteInterpreter<S>::HaliteInterpreter()
     , m_attribute_start_name("_S_")
     , m_attribute_end_name("_E_")
     , m_attribute_options_delim(":")
-    , m_current_line_count(0)
     , m_file_offset(0)
     , m_has_file(false)
 {
@@ -22,7 +25,6 @@ HaliteInterpreter<S>::HaliteInterpreter(std::ostream& err)
     , m_attribute_start_name("_S_")
     , m_attribute_end_name("_E_")
     , m_attribute_options_delim(":")
-    , m_current_line_count(0)
     , m_file_offset(0)
     , m_has_file(false)
 {
@@ -85,12 +87,10 @@ template<class S>
 bool HaliteInterpreter<S>::parse_content(std::istream& in)
 {
     // process all lines of the file
+    std::string line;
     while (!in.eof() && in.good())
     {
-        std::string line;
         std::getline(in, line);
-        if (!in.eof())
-            ++m_current_line_count;
         bool line_processed = parse_line(line);
 
         if (line_processed == false)
@@ -104,14 +104,16 @@ bool HaliteInterpreter<S>::parse_content(std::istream& in)
                                        << " - error while reading" << std::endl;
         return false;
     }
-    // should always have 1 line
-    // but need to try and track lines with no newline
-    if (m_current_line_count == 0)
+
+    //
+    if (Interpreter<S>::line_count() > 0 &&
+        line.empty())  // pop last empty line
     {
-        wasp_tagged_line("needing newline for "
-                         << Interpreter<S>::stream_name());
-        m_current_line_count = 1;
+        //        Interpreter<S>::pop_line();
+        wasp_tagged_line("Parsed file Line count "
+                         << Interpreter<S>::line_count());
     }
+
     return true;
 }
 template<class S>
@@ -414,6 +416,9 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
     // compute the new offset
     m_file_offset += line.size();
     Interpreter<S>::push_line_offset(m_file_offset);
+    wasp_tagged_line("Pushed line " << Interpreter<S>::line_count()
+                                    << " offset " << m_file_offset
+                                    << " for line '" << line << "'");
     return true;
 }
 template<class S>
@@ -507,23 +512,16 @@ bool HaliteInterpreter<S>::evaluate(std::ostream& out,
     size_t line = 1, column = 1;
     data.store(attr_start_name(), attr_start_delim());
     data.store(attr_end_name(), attr_end_delim());
+
     bool result = evaluate(data, tree_view, out, line, column);
 
-    int    remaining_lines = m_current_line_count - line;
-    size_t child_count     = tree_view.child_count();
-    // account for situation
-    // where conditional concludes file, causing
-    // trailing newline to not be emitted.
-    if (child_count > 0 &&
-        tree_view.child_at(child_count - 1).type() == PREDICATED_CHILD)
-    {
-        remaining_lines++;
-    }
-    wasp_tagged_line(remaining_lines << " remaining lines for "
-                                     << Interpreter<S>::stream_name() << " vs "
-                                     << m_current_line_count);
+    int remaining_lines = Interpreter<S>::line_count() - line;
+    wasp_tagged_line("Remaining lines = " << remaining_lines);
     if (remaining_lines > 0)
     {
+        wasp_tagged_line("Emitting " << Interpreter<S>::line_count() << "-"
+                                     << line << "=" << remaining_lines
+                                     << " remaining lines...");
         out << std::string(remaining_lines, '\n');
     }
     return result;
@@ -545,6 +543,7 @@ bool HaliteInterpreter<S>::evaluate(DataAccessor&          data,
             return false;
         }
     }
+
     return true;
 }
 template<class S>
@@ -612,10 +611,13 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor&          data,
         column;  // todo ensure column is propogated appropriately
     size_t new_line = attr_view.line();
     int    delta    = new_line - line;
-    wasp_check(delta >= 0);
+
     wasp_tagged_line(info(attr_view) << " line delta " << delta);
     if (delta > 0)
+    {
+        wasp_tagged_line("inserting " << delta << " newline(s).");
         out << std::string(delta, '\n');
+    }
     std::stringstream options_str;
     bool              has_options = false;
     // accumulate an attribute string
@@ -695,8 +697,9 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor&          data,
         return false;
     }
 
-    if (false == expr.parse(attr_str, line,
-                            start_column + m_attribute_start_delim.size()))
+    if (false ==
+        expr.parse(attr_str, line,
+                   start_column + m_attribute_start_delim.size()))
     {
         wasp_tagged_line("Failed parsing expression evaluation...");
         return false;
@@ -863,6 +866,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor&          data,
     int         delta       = action_line - line;
     if (delta > 0)
     {
+        wasp_tagged_line("inserting " << delta << " newline(s).");
         out << std::string(delta, '\n');
         line += delta;
         wasp_tagged_line("conditional block has " << delta
@@ -920,6 +924,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor&          data,
                 int         delta            = action_true_view.line() - line;
                 if (delta > 0)
                 {
+                    wasp_tagged_line("inserting " << delta << " newline(s).");
                     out << std::string(delta, '\n');
                     line += delta;
                     wasp_tagged_line("conditional block has "
@@ -930,7 +935,6 @@ bool HaliteInterpreter<S>::conditional(DataAccessor&          data,
                 {
                     return false;
                 }
-
                 break;
             }
             // more than 1 component indicates attributes need evaluation
@@ -1010,7 +1014,7 @@ bool HaliteInterpreter<S>::conditional(DataAccessor&          data,
                     << m_attribute_end_delim << "." << std::endl;
                 return false;
             }
-            wasp_not_implemented("paramterized conditional");
+            wasp_not_implemented("parameterized conditional");
         }
         else
         {  // #else
@@ -1033,22 +1037,24 @@ bool HaliteInterpreter<S>::conditional(DataAccessor&          data,
     }
     // capture any trailing newlines
     // between the last text
-    // and the #endif
+    // and the next action
     if (i + 1 < child_count)
     {
         wasp_check(i + 1 <= action_view.child_count());
         const auto& end_of_action = action_view.child_at(i + 1);
-        int         delta         = end_of_action.line() - 1 - line;
+        int         delta         = end_of_action.line() - line;
         wasp_check(delta >= 0);
-        wasp_tagged_line("conditional line delta " << delta << " for "
-                                                   << info(action_view));
+        wasp_tagged_line("conditional line delta " << delta << " between line "
+                                                   << line << " and end action "
+                                                   << info(end_of_action));
         if (delta > 0)
+        {
+            wasp_tagged_line("inserting " << delta << " newline(s).");
             out << std::string(delta, '\n');
+        }
     }
-    // if no action was evaluated (line == action line),
-    // move +1 beyond terminator
-    wasp_tagged_line("actionline vs line is " << action_line << " vs " << line);
-    line   = term_view.line() + (line == action_line ? 1 : 0);
+    line = term_view.line() + 1;
+    wasp_tagged_line("concluding condition starting on line " << line);
     column = 1;
     return true;
 }
@@ -1067,7 +1073,10 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
     int    delta       = import_line - line;
     wasp_check(delta >= 0);
     if (delta > 0)
+    {
+        wasp_tagged_line("inserting " << delta << " newline(s).");
         out << std::string(delta, '\n');
+    }
 
     std::stringstream import_str;
     // accumulate an attribute string
@@ -1182,8 +1191,6 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
                             << nested_interp.stream_name() << "'." << std::endl;
                         return false;
                     }
-                    if (array_i + 1 < array->size())
-                        out << std::endl;
                 }
                 else
                 {
@@ -1234,7 +1241,9 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&          data,
                 << nested_interp.stream_name() << "'." << std::endl;
         }
     }
-    line += delta;
+
+    column = 1;
+    line += delta + 2;
     wasp_tagged_line("import successful? " << std::boolalpha << import);
     return import;
 }
@@ -1252,7 +1261,10 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor&          data,
     int    delta       = repeat_line - line;
     wasp_check(delta >= 0);
     if (delta > 0)
+    {
+        wasp_tagged_line("inserting " << delta << " newline(s) before repeat.");
         out << std::string(delta, '\n');
+    }
 
     std::stringstream repeat_str;
     // accumulate an attribute string
@@ -1346,7 +1358,14 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor&          data,
     {
         import = nested_interp.evaluate(out, data);
     }
-    line += delta;
+    // update contet information:
+    // Repeats require a line, and always produce
+    // 1) a new line when content is present.
+    // 2) a newline to ensure any new content does not emit an extraneous
+    // newline
+    line += delta + 1;
+    // Because repeat requires its own line, column will be reset back to 1.
+    column = 1;
     return import;
 }
 
@@ -1538,19 +1557,10 @@ bool HaliteInterpreter<S>::import_range(DataAccessor&         data,
                 wasp_tagged_line("failing iterative file import");
                 return false;
             }
-            if (r != imports[i].end)
-            {
-                out << std::endl;
-            }
         }
         else if (!import_range(data, file_interpreter, imports, i + 1, out))
         {
             return false;
-        }
-        // range succussfully imported
-        else if (r != imports[i].end)
-        {
-            out << std::endl;
         }
     }
     return true;
@@ -1665,8 +1675,8 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions& options,
         wasp_tagged_line("Separator of '" << options.separator()
                                           << "' captured");
         // capture the separator text interval
-        intervals.insert(std::make_pair(separator_i, separator_i + sep.size() +
-                                                         length + delim_s));
+        intervals.insert(std::make_pair(
+            separator_i, separator_i + sep.size() + length + delim_s));
     }
     if (use_i != std::string::npos)
     {
@@ -1782,4 +1792,5 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions& options,
     }
     return true;
 }
+}  // namespace wasp
 #endif
