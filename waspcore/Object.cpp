@@ -455,7 +455,7 @@ Value& Value::operator[](const std::string& name)
     DataObject* o = to_object();
     return o->operator[](name);
 }
-Value Value::operator[](const std::string& name) const
+const Value& Value::operator[](const std::string& name) const
 {
     wasp_check(is_object());
     const DataObject* o = to_object();
@@ -467,7 +467,7 @@ Value& Value::operator[](size_t i)
     DataArray* a = to_array();
     return a->operator[](i);
 }
-Value Value::operator[](size_t i) const
+const Value& Value::operator[](size_t i) const
 {
     wasp_check(is_array());
     DataArray* a = to_array();
