@@ -714,13 +714,13 @@ Value& DataObject::operator[](const std::string& name)
     // since c++11 std::map<>[] does insertion if key doesn't exist
     return m_data[name];
 }
-Value DataObject::operator[](const std::string& name) const
+const Value& DataObject::operator[](const std::string& name) const
 {
     auto itr = m_data.find(name);
 
     if (itr == m_data.end())
     {
-        return Value();  // null value
+        throw std::out_of_range(name + " not found in object");
     }
     return itr->second;
 }
