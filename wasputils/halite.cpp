@@ -39,24 +39,49 @@ int main(int argc, char** argv)
         std::cout << "Usage: " << std::endl;
         std::cout << "\t" << argv[0] << " template [data.json] " << std::endl;
         std::cout << "\ti.e., " << argv[0]
-                  << " /path/to/definition.tmpl /path/to/some/data.json "
+                  << " /path/to/definition.tmpl /path/to/some/data.json --ldelim \"<\" --rdelim \">\""
                   << std::endl;
         std::cout << " Usage : " << argv[0]
                   << " --version\t(print version info)" << std::endl;
         return 1;
     }
+
     std::string tmpl = argv[1];
     std::string json = "";
-    if (argc == 3)
+    std::string ldelim = "<";
+    std::string rdelim = ">";
+
+    for ( int i = 1; i < argc; ++i )
     {
-        json = argv[2];
-        if (tmpl.size() > 5 && tmpl.substr(tmpl.size() - 5) == ".json")
+        std::string arg = argv[i];
+        if (arg.size() > 5 && arg.substr(arg.size() - 5) == ".json")
         {
-            std::swap(tmpl, json);
+            json = arg;
+        }
+        else if (arg.size() > 5 && arg.substr(arg.size() - 5) == ".tmpl")
+        {
+            tmpl = arg;
+        }
+        else if (arg == "--ldelim" && i+1 < argc)
+        {
+            ldelim = argv[i+1];
+            i++;
+        }
+        else if (arg == "--rdelim" && i+1 < argc)
+        {
+            rdelim = argv[i+1];
+            i++;
+        }
+        else
+        {
+            std::cerr<<" Unable to determine argument at position "<<i<<" - '"
+                    <<arg<<"'"<<std::endl;
+            return 1;
         }
     }
+
     if (!wasp::expand_template(std::cout, std::cerr, std::cerr, tmpl, json,
-                               true, true))
+                               true, true, ldelim, rdelim))
     {
         return -1;
     }
