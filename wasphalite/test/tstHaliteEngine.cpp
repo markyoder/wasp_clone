@@ -1,10 +1,11 @@
 /*
- * File:   tstHalite.cpp
+ * File:   tstHaliteEngine.cpp
  * Author: Robert A. Lefebvre
  */
 
 #include <cstdlib>
-#include <cstdio>  // std::remove(file_name)
+// cstdio - std::remove(file_name)
+#include <cstdio>
 #include <sstream>
 #include <string>
 #include <stdexcept>
@@ -12,6 +13,8 @@
 #include "wasphalite/HaliteInterpreter.h"
 #include "wasphalite/DataAccessor.h"
 #include "waspcore/Object.h"
+
+#include "wasphalite/test/Paths.h"
 
 #include "gtest/gtest.h"
 using namespace std;
@@ -554,13 +557,14 @@ TEST(Halite, attributed_text_fileimport)
     std::stringstream content;
     content << "this is" << std::endl
             << "nested files using <ted>" << std::endl
-            << std::endl                              // empty line
-            << "and assigning fred to < fred = x >";  // missing new line
+            << std::endl  // empty line
+            << "and assigning fred to < fred = x >" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
     input << R"INPUT(#import ./nested parameterized template.tmpl
-<ted> has <fred> brothers)INPUT";
+<ted> has <fred> brothers
+)INPUT";
     DefaultHaliteInterpreter interpreter;
 
     ASSERT_TRUE(interpreter.parse(input));
@@ -579,7 +583,8 @@ TEST(Halite, attributed_text_fileimport)
 nested files using wombat
 
 and assigning fred to 2
-wombat has 2 brothers)INPUT";
+wombat has 2 brothers
+)INPUT";
     ASSERT_EQ(expected.str(), out.str());
     std::remove("nested parameterized template.tmpl");
     ASSERT_EQ(Value::TYPE_INTEGER, o["fred"].type());
@@ -596,7 +601,7 @@ TEST(Halite, repeat_fileimport)
     content << "this is" << std::endl
             << "nested files using nothing" << std::endl
             << std::endl  // empty line
-            << "and assigning fred to < fred = 3.14159 >";
+            << "and assigning fred to < fred = 3.14159 >" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -696,7 +701,7 @@ TEST(Halite, repeat_fileimport_using_single_range)
 {
     std::ofstream     import("nested repeated template.tmpl");
     std::stringstream content;
-    content << "i=<i>";
+    content << "i=<i>" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -731,7 +736,7 @@ TEST(Halite, repeat_fileimport_using_multiple_range)
 {
     std::ofstream     import("nested repeated template.tmpl");
     std::stringstream content;
-    content << "i=<i> j=<j> k=<k>";
+    content << "i=<i> j=<j> k=<k>" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -769,7 +774,8 @@ TEST(Halite, file_import_using_object_by_name)
     content << "this is" << std::endl
             << "nested files using ted's foo (<foo>)" << std::endl
             << std::endl  // empty line
-            << "and assigning foo to < foo = 9 > and p (<p>) to <p=4>";
+            << "and assigning foo to < foo = 9 > and p (<p>) to <p=4>"
+            << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -813,7 +819,7 @@ TEST(Halite, file_import_using_object_by_copy)
     content << "this is" << std::endl
             << "nested files using ted's foo (<foo:fmt=%-10.1e>)" << std::endl
             << std::endl  // empty line
-            << "and assigning foo to < foo = 9 >";
+            << "and assigning foo to < foo = 9 >" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -841,7 +847,8 @@ this is
 nested files using ted's foo (1.0e+10   )
 
 and assigning foo to 9
- text after)INPUT";
+ text after
+)INPUT";
     ASSERT_EQ(expected.str(), out.str());
     std::remove("import_by_name_template.tmpl");
     // ensure the child was passed by copy (cannot be changed)
@@ -855,7 +862,7 @@ TEST(Halite, file_import_using_inline)
     content << "this is" << std::endl
             << "nested files using ted's foo (<foo>)" << std::endl
             << std::endl  // empty line
-            << "and assigning foo to < foo = 9 >";
+            << "and assigning foo to < foo = 9 >" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -863,7 +870,6 @@ TEST(Halite, file_import_using_inline)
     text prior
 #import ./import_by_name_inline.tmpl using {"foo":"bar"}
  text after
-
 )INPUT";
     DefaultHaliteInterpreter interpreter;
 
@@ -894,7 +900,7 @@ TEST(Halite, file_import_using_array_by_name)
     content << "nested template" << std::endl
             << "using parameter <name>" << std::endl
             << "with value <value>" << std::endl
-            << "and assigning value its own name <value=name>";
+            << "and assigning value its own name <value=name>" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -906,6 +912,8 @@ TEST(Halite, file_import_using_array_by_name)
     DefaultHaliteInterpreter interpreter;
 
     ASSERT_TRUE(interpreter.parse(input));
+    // template line counts always include 1 additional line
+    ASSERT_EQ(5, interpreter.line_count());
     std::stringstream out;
     DataObject        o;
     DataAccessor      data(&o);
@@ -938,7 +946,8 @@ nested template
 using parameter ted3
 with value fred
 and assigning value its own name ted3
- text after)INPUT";
+ text after
+)INPUT";
     ASSERT_EQ(expected.str(), out.str());
     std::remove("import_by_name_iterative.tmpl");
     // ensure the child was passed by reference (can be changed)
@@ -950,12 +959,12 @@ TEST(Halite, parent_scope_var_use_in_fileimport)
 {
     std::ofstream     import("parent_scope_var_use.tmpl");
     std::stringstream content;
-    content << "<'var name':use=pobj>";
+    content << "<'var name':use=pobj>" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
     input << "<'var name':use=pobj;fmt=%4d>" << std::endl;
-    input << "#import ./parent_scope_var_use.tmpl using p2obj";
+    input << "#import ./parent_scope_var_use.tmpl using p2obj" << std::endl;
 
     DefaultHaliteInterpreter interpreter;
 
@@ -972,8 +981,7 @@ TEST(Halite, parent_scope_var_use_in_fileimport)
     ASSERT_TRUE(interpreter.evaluate(out, data));
 
     std::stringstream expected;
-    expected << "   3" << std::endl;
-    expected << "3.14";
+    expected << "   3" << std::endl << "3.14" << std::endl;
     ASSERT_EQ(expected.str(), out.str());
     std::remove("parent_scope_var_use.tmpl");
 }
@@ -987,8 +995,8 @@ TEST(Halite, parameterized_fileimport)
     std::stringstream content;
     content << "this is" << std::endl
             << "nested files using <ted>" << std::endl
-            << std::endl                              // empty line
-            << "and assigning fred to < fred = x >";  // missing new line
+            << std::endl  // empty line
+            << "and assigning fred to < fred = x >" << std::endl;
     import << content.str();
     import.close();
     std::stringstream input;
@@ -1101,6 +1109,7 @@ text
         std::stringstream expected;
         expected << R"INPUT(
 3.14159 is defined as pi math constant
+
 )INPUT";
         std::stringstream out;
         DataObject        o;
@@ -1115,6 +1124,7 @@ text
  some else statement
 
 text
+
 
 )INPUT";
         std::stringstream out;
@@ -1389,4 +1399,141 @@ TEST(Halite, iterative_configurable_delimiter_emission)
                  << std::endl;
         ASSERT_EQ(expected.str(), errors.str());
     }
+}
+
+/**
+ * @brief test conditional blocks
+ */
+TEST(Halite, simple_parameterized_conditional)
+{
+    std::stringstream input;
+    input << "#if     <InputType == \"key_value\">" << std::endl
+          << "<InputName> = <InputValue>" << std::endl
+          << "#elseif <InputType == \"key_array\">" << std::endl
+          << "<InputName> = ' <InputValue> '" << std::endl
+          << "#endif" << std::endl;
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    // template line count is always +1 to account for trailing eof newline
+    ASSERT_EQ(6, interpreter.line_count());
+    {  // test defined path through template
+        std::stringstream expected;
+        expected << "X = Y" << std::endl;
+        std::stringstream out;
+        DataObject        o;
+        o["InputType"]  = std::string("key_value");
+        o["InputName"]  = std::string("X");
+        o["InputValue"] = std::string("Y");
+        DataAccessor data(&o);
+        ASSERT_TRUE(interpreter.evaluate(out, data));
+        ASSERT_EQ(expected.str(), out.str());
+    }
+
+    {  // test elseif  path through template
+        std::stringstream expected;
+        expected << "Y = ' ARRAY '" << std::endl;
+        std::stringstream out;
+        DataObject        o;
+        o["InputType"]  = std::string("key_array");
+        o["InputName"]  = std::string("Y");
+        o["InputValue"] = std::string("ARRAY");
+        DataAccessor data(&o);
+        ASSERT_TRUE(interpreter.evaluate(out, data));
+        ASSERT_EQ(expected.str(), out.str());
+    }
+    {                                // test undefined path through template
+        std::stringstream expected;  // empty string
+        std::stringstream out;
+        DataObject        o;
+        o["InputType"] = std::string("undefined");
+        DataAccessor data(&o);
+        ASSERT_TRUE(interpreter.evaluate(out, data));
+        ASSERT_EQ(expected.str(), out.str());
+    }
+}
+
+/**
+ * @brief TEST file repeated importing a subtemplate
+ *  This exercises the newline emission logic for templates
+ * that consist solely of subtemplate
+ */
+TEST(Halite, nested_repeated_file)
+{
+    std::string template_file =
+        wasp::dir_name(SOURCE_DIR+"/") + "/data/array_sub_one.tmpl";
+    std::string json_data_file =
+        wasp::dir_name(SOURCE_DIR+"/") + "/data/array_sub_one.json";
+
+    std::stringstream output_stream;
+
+    bool template_result =
+        wasp::expand_template(output_stream, std::cerr, std::cerr,
+                              template_file, json_data_file, true, true);
+
+    ASSERT_TRUE(template_result);
+    std::stringstream expected_ss;
+    expected_ss << "' z = 1 " << std::endl
+                << "    3 3" << std::endl
+                << "    3 3" << std::endl
+                << "    3 3" << std::endl;
+
+    EXPECT_EQ(expected_ss.str(), output_stream.str());
+}
+
+/**
+ * @brief TEST file repeated importing a subtemplate
+ *  This exercises the newline emission logic for templates
+ * that consist solely of subtemplate but also contain trailing text, which
+ * test the newline emission logic surrounding data before and after repeats
+ */
+TEST(Halite, nested_repeated_file_with_trailing_content)
+{
+    std::string template_file =
+        wasp::dir_name(SOURCE_DIR+"/") + "/data/array_sub_one_trailing.tmpl";
+    std::string json_data_file =
+        wasp::dir_name(SOURCE_DIR+"/") + "/data/array_sub_one.json";
+
+    std::stringstream output_stream;
+
+    bool template_result =
+        wasp::expand_template(output_stream, std::cerr, std::cerr,
+                              template_file, json_data_file, true, true);
+
+    ASSERT_TRUE(template_result);
+    std::stringstream expected_ss;
+    expected_ss << "' z = 1 " << std::endl
+                << "    3 3" << std::endl
+                << "    3 3" << std::endl
+                << "    3 3" << std::endl
+                << "' end of level 1 of z" << std::endl;
+
+    EXPECT_EQ(expected_ss.str(), output_stream.str());
+}
+
+/**
+ * @brief TEST file repeated importing a subtemplate with zero repeats
+ *  This exercises the newline emission logic for templates
+ * that consist of zero-repeated subtemplate, trailing text, which
+ * test the newline emission logic surrounding data before and after
+ * zero-repeats
+ */
+TEST(Halite, nested_repeated_file_with_zero_repeats)
+{
+    std::string template_file =
+        wasp::dir_name(SOURCE_DIR + "/") + "/data/array_sub_one_trailing.tmpl";
+    std::string json_data_file = wasp::dir_name(SOURCE_DIR + "/") +
+                                 "/data/array_sub_one_zero_repeat.json";
+
+    std::stringstream output_stream;
+
+    bool template_result =
+        wasp::expand_template(output_stream, std::cerr, std::cerr,
+                              template_file, json_data_file, true, true);
+
+    ASSERT_TRUE(template_result);
+    std::stringstream expected_ss;
+    expected_ss << "' z = 1 " << std::endl
+                << "' end of level 1 of z" << std::endl;
+
+    EXPECT_EQ(expected_ss.str(), output_stream.str());
 }

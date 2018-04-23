@@ -111,9 +111,9 @@ class WASP_PUBLIC Value
     DataObject&       as_object();
 
     Value& operator[](const std::string& name);
-    Value operator[](const std::string& name) const;
+    const Value& operator[](const std::string& name) const;
     Value& operator[](size_t i);
-    Value operator[](size_t i) const;
+    const Value& operator[](size_t i) const;
 
     /**
      * @brief empty whether the value is empty
@@ -228,7 +228,7 @@ class WASP_PUBLIC DataObject
     storage_type::iterator end() { return m_data.end(); }
 
     Value& operator[](const std::string& name);
-    Value operator[](const std::string& name) const;
+    const Value& operator[](const std::string& name) const;
 
     bool contains(const std::string& name) const
     {

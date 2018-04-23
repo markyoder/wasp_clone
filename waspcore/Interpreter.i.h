@@ -176,11 +176,12 @@ bool Interpreter<NodeStorage>::parse_impl(std::istream&      in,
 
     // parsed is understood to be that
     // the parse method did not immediately fail (i.e., non-zero return)
-    // and that an underlying parse did not fail (i.e. the failed flag was assigned true)
+    // and that an underlying parse did not fail (i.e. the failed flag was
+    // assigned true)
     bool parsed = parser.parse() == 0 && !failed();
 
     commit_stages();
-    set_failed(parsed); // updated failed cache
+    set_failed(parsed);  // updated failed cache
     return parsed;
 }
 

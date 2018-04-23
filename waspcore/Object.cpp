@@ -455,7 +455,7 @@ Value& Value::operator[](const std::string& name)
     DataObject* o = to_object();
     return o->operator[](name);
 }
-Value Value::operator[](const std::string& name) const
+const Value& Value::operator[](const std::string& name) const
 {
     wasp_check(is_object());
     const DataObject* o = to_object();
@@ -467,7 +467,7 @@ Value& Value::operator[](size_t i)
     DataArray* a = to_array();
     return a->operator[](i);
 }
-Value Value::operator[](size_t i) const
+const Value& Value::operator[](size_t i) const
 {
     wasp_check(is_array());
     DataArray* a = to_array();
@@ -714,13 +714,13 @@ Value& DataObject::operator[](const std::string& name)
     // since c++11 std::map<>[] does insertion if key doesn't exist
     return m_data[name];
 }
-Value DataObject::operator[](const std::string& name) const
+const Value& DataObject::operator[](const std::string& name) const
 {
     auto itr = m_data.find(name);
 
     if (itr == m_data.end())
     {
-        return Value();  // null value
+        throw std::out_of_range(name + " not found in object");
     }
     return itr->second;
 }

@@ -17,3 +17,4 @@ install(DIRECTORY .
         DESTINATION "wasppy"
         PATTERN "./*.py"
 )
+TRIBITS_SUBPACKAGE_POSTPROCESS()

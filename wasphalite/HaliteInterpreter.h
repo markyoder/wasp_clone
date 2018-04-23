@@ -566,7 +566,6 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      */
     std::string m_attribute_options_delim;
 
-    size_t m_current_line_count;
     size_t m_file_offset;
 
   private:  // private methods
@@ -575,7 +574,6 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      */
     bool m_has_file;
 };  // end of HaliteInterpreter class
-#include "wasphalite/HaliteInterpreter.i.h"
 
 inline WASP_PUBLIC bool expand_template(std::ostream&      result,
                                         std::ostream&      elog,
@@ -645,4 +643,6 @@ inline WASP_PUBLIC bool expand_template(std::ostream&      result,
 }
 typedef HaliteInterpreter<> DefaultHaliteInterpreter;
 }  // namespace wasp
+
+#include "wasphalite/HaliteInterpreter.i.h"
 #endif  // WASPHaliteIntERPRETER_H

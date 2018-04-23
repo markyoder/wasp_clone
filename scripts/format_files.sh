@@ -3,7 +3,6 @@
 #
 clang-format -style=file -i waspcore/decl.h
 clang-format -style=file -i waspcore/Definition.h
-clang-format -style=file -i waspcore/FlexLexer.h
 clang-format -style=file -i waspcore/Format.h
 clang-format -style=file -i waspcore/Interpreter.h
 clang-format -style=file -i waspcore/Interpreter.i.h
