@@ -3,6 +3,15 @@
 #             WASP   TriBITS Project and Package CMakeLists.txt File           #
 #             Workbench Analysis Sequence Processor                            #
 ################################################################################
+
+#
+# Incorporate GitLab CI Traceability 
+# 
+if(DEFINED ENV{CI_ENVIRONMENT_URL})
+    message(STATUS "GitLab CI Job Info:  $ENV{CI_ENVIRONMENT_URL}-/jobs/$ENV{CI_JOB_ID}")
+endif()
+
+
 IF(NOT DEFINED WASP_DEBUG_OUTPUT)
    SET(WASP_DEBUG_OUTPUT 0 CACHE STRING "Display debug output.")
 ENDIF()
