@@ -1,4 +1,4 @@
-import os, unittest, son2py
+import os, unittest, wasp2py
 
 
 
@@ -17,7 +17,7 @@ else:
 
 
 ### obtain pieces of input by name for convenience
-document = son2py.get_json_dict(schema_filepath,son_input_filepath)
+document = wasp2py.get_json_dict(schema_filepath,son_input_filepath)
 pytest = document['pytest']
 object_one = pytest['object_one']
 color = object_one['color']

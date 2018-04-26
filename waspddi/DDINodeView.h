@@ -62,6 +62,12 @@ class WASP_PUBLIC DDINodeView
     bool has_parent() const;
 
     /**
+     * @brief id will return an empty string as it doesn't apply to DDI nodes
+     * @return empty string
+     */
+    std::string id() const { return ""; }
+
+    /**
      * @brief is_decorative determine if this node is decorative
      * @return true, iff the node is a decorative '(','[','{', etc.
      * Declarators and terminators are decorative
