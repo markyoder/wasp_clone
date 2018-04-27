@@ -24,6 +24,27 @@ class TestDDI2Python(unittest.TestCase):
             if idx == 1:
                 self.assertEqual(extract['value'], 'filename_2.out')
 
+    def test_columns(self):
+        for idx, extract in enumerate(document['extract_from']):
+            if idx == 1:
+                for idy, fnd in enumerate(extract['find']):
+                    if idy == 3:
+                        for idz, col in enumerate(fnd['column']):
+                            if idz == 0:
+                                for val_id, colval in enumerate(col['value']):
+                                    if val_id == 0:
+                                        self.assertEqual(colval, 3)
+                                    if val_id == 1:
+                                        self.assertEqual(colval, 4)
+                            if idz == 1:
+                                for val_id, colval in enumerate(col['value']):
+                                    if val_id == 0:
+                                        self.assertEqual(colval, 5)
+                                    if val_id == 1:
+                                        self.assertEqual(colval, 6)
+                                    if val_id == 2:
+                                        self.assertEqual(colval, 2)
+
 if __name__ == '__main__':
     unittest.main()
 

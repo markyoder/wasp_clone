@@ -66,6 +66,11 @@ class WASP_PUBLIC DDINodeView
      * @return empty string
      */
     std::string id() const { return ""; }
+    /**
+     * @brief id_child will return a null view as it doesn't apply to DDI nodes
+     * @return null view
+     */
+    DDINodeView id_child() const { return DDINodeView(); }
 
     /**
      * @brief is_decorative determine if this node is decorative

@@ -33,6 +33,7 @@ TEST(SON2JSON, 001)
 options{
     MaxOccurs=1
     fixed_fission_energy{
+        ValType=Int
         MaxOccurs=NoLimit
     }
 }
@@ -41,6 +42,7 @@ case{
     MaxOccurs=NoLimit
 
     title{
+        ValType=String
         MaxOccurs=1
     }
 
@@ -52,6 +54,7 @@ case{
              MaxOccurs=1
            }
            value{
+               ValType=String
                MaxOccurs=NoLimit
            }
         }
@@ -59,6 +62,7 @@ case{
            MaxOccurs=1
         }
         unit{
+           ValType=Int
            MaxOccurs=NoLimit
         }
     }
@@ -66,6 +70,7 @@ case{
     time{
         MaxOccurs=NoLimit
         value{
+            ValType=Int
             MaxOccurs=NoLimit
         }
     }
@@ -78,9 +83,11 @@ case{
     mat{
         MaxOccurs=NoLimit
         units{
+            ValType=String
             MaxOccurs=1
         }
         idform{
+            ValType=Int
             MaxOccurs=1
         }
     }
@@ -123,6 +130,7 @@ case{
         kinf{
             MaxOccurs=NoLimit
             value{
+                ValType=String
                 MaxOccurs=1
             }
         }
@@ -133,6 +141,7 @@ case{
         steps{
             MaxOccurs=1
             value{
+                ValType=Int
                 MaxOccurs=NoLimit
             }
         }
@@ -223,11 +232,11 @@ case(1) {
     "fixed_fission_energy":[
       {
         "_id":"id_1",
-        "value":"1"
+        "value":1
       },
       {
         "_id":"id_2",
-        "value":"2"
+        "value":2
       }
     ]
   },
@@ -252,13 +261,13 @@ case(1) {
           ],
           "unit":[
             {
-              "value":"7"
+              "value":7
             },
             {
-              "value":"8"
+              "value":8
             },
             {
-              "value":"9"
+              "value":9
             }
           ],
           "path":{
@@ -301,11 +310,11 @@ case(1) {
       "time":[
         {
           "_id":"time_id_1",
-          "value":[ "50", "100", "150", "200" ]
+          "value":[ 50, 100, 150, 200 ]
         },
         {
           "_id":"time_id_2",
-          "value":[ "60", "110", "160", "210" ]
+          "value":[ 60, 110, 160, 210 ]
         }
       ],
       "power":{
@@ -319,7 +328,7 @@ case(1) {
             "value":"grams"
           },
           "idform":{
-            "value":"123"
+            "value":123
           }
         },
         {
@@ -328,7 +337,7 @@ case(1) {
             "value":"kg"
           },
           "idform":{
-            "value":"456"
+            "value":456
           }
         }
       ],
@@ -364,7 +373,7 @@ case(1) {
       "save":[
         {
           "steps":{
-            "value":[ "1", "2", "3", "4" ]
+            "value":[ 1, 2, 3, 4 ]
           },
           "file":{
             "_id":"file_id_1",
@@ -373,7 +382,7 @@ case(1) {
         },
         {
           "steps":{
-            "value":[ "5", "6", "7", "8" ]
+            "value":[ 5, 6, 7, 8 ]
           }
         }
       ]
@@ -424,6 +433,7 @@ obj_multi_one{
   flag{
     MaxOccurs=NoLimit
     value{
+      ValType=String
       MaxOccurs=1
     }
   }
@@ -437,6 +447,7 @@ obj_multi_two{
       MaxOccurs=1
     }
     value{
+      ValType=Real
       MaxOccurs=NoLimit
     }
   }
@@ -445,6 +456,7 @@ obj_multi_two{
 singleflag1{
  MaxOccurs=1
  value{
+  ValType=String
   MaxOccurs=1
  }
 }
@@ -458,6 +470,7 @@ singleflag2{
 
 singleflag3{
  MaxOccurs=1
+ id{ ValType=Int }
  value{
   MaxOccurs=2
  }
@@ -477,8 +490,8 @@ obj_multi_one(real_id){
 singleflag1=val1
 
 obj_multi_two{
-  array(id_1)=[ 11 12 13 ]
-  array(id_2)=[ 21 22 23 ]
+  array(id_1)=[ 1.1 1.2 1.3 ]
+  array(id_2)=[ 2.1 2.2 2.3 ]
 }
 
 
@@ -491,7 +504,7 @@ obj_multi_one{
 singleflag2=val2
 
 obj_multi_two{
-  array(id_3)=[ 31 32 33 ]
+  array(id_3)=[ 3.1 3.2 3.3 ]
   array(id_4)=[ 41 42 43 ]
 }
 
@@ -503,10 +516,10 @@ obj_multi_one{
 
 obj_multi_two{
   array(id_5)=[ 51 52 53 ]
-  array(id_6)=[ 61 62 63 ]
+  array(id_6)=[ 6.1 6.2 6.3 ]
 }
 
-singleflag3(sf3_id)=[ val3 val4 ]
+singleflag3(99)=[ val3 val4 ]
 
 )INPUT";
 
@@ -565,11 +578,11 @@ singleflag3(sf3_id)=[ val3 val4 ]
       "array":[
         {
           "_id":"id_1",
-          "value":[ "11", "12", "13" ]
+          "value":[ 1.1, 1.2, 1.3 ]
         },
         {
           "_id":"id_2",
-          "value":[ "21", "22", "23" ]
+          "value":[ 2.1, 2.2, 2.3 ]
         }
       ]
     },
@@ -577,11 +590,11 @@ singleflag3(sf3_id)=[ val3 val4 ]
       "array":[
         {
           "_id":"id_3",
-          "value":[ "31", "32", "33" ]
+          "value":[ 3.1, 3.2, 3.3 ]
         },
         {
           "_id":"id_4",
-          "value":[ "41", "42", "43" ]
+          "value":[ 41, 42, 43 ]
         }
       ]
     },
@@ -589,11 +602,11 @@ singleflag3(sf3_id)=[ val3 val4 ]
       "array":[
         {
           "_id":"id_5",
-          "value":[ "51", "52", "53" ]
+          "value":[ 51, 52, 53 ]
         },
         {
           "_id":"id_6",
-          "value":[ "61", "62", "63" ]
+          "value":[ 6.1, 6.2, 6.3 ]
         }
       ]
     }
@@ -602,7 +615,7 @@ singleflag3(sf3_id)=[ val3 val4 ]
     "value":[ "val2" ]
   },
   "singleflag3":{
-    "_id":"sf3_id",
+    "_id":99,
     "value":[ "val3", "val4" ]
   }
 }
@@ -651,6 +664,7 @@ exp_id_one{
 exp_id_two{
  MaxOccurs=NoLimit
  value{
+    ValType=String
     MaxOccurs=NoLimit
  }
 }
@@ -674,6 +688,7 @@ exp_id_four{
   MaxOccurs=1
  }
  exp_id_one{
+  ValType=String
   MaxOccurs=1
  }
  exp_id_two{
@@ -684,6 +699,7 @@ exp_id_four{
 outer_one{
  MaxOccurs=1
  inner_one{
+     id{ ValType=Int }
      MaxOccurs=1
    flag_one{
      MaxOccurs=1
@@ -691,16 +707,18 @@ outer_one{
        MaxOccurs=NoLimit
      }
    }
-  value{ MaxOccurs=1 }
+  value{ id{ ValType=Int } ValType=Int MaxOccurs=1 }
  }
 }
 
 outer_two{
  MaxOccurs=1
  value{
+  ValType=Int
   MaxOccurs=NoLimit
  }
  flag_two{
+   ValType=Real
    MaxOccurs=1
  }
 }
@@ -740,7 +758,7 @@ outer_one{
 }
 outer_two{
  flag_two=99
- value(11)=456 value(12)=789
+ value(11)=45.6 value(12)=78.9
 }
 
 )INPUT";
@@ -825,28 +843,28 @@ outer_two{
   ],
   "outer_one":{
     "inner_one":{
-      "_id":"89",
+      "_id":89,
       "flag_one":{
         "value":[ "9" ]
       },
       "value":{
-        "_id":"1",
-        "value":"123"
+        "_id":1,
+        "value":123
       }
     }
   },
   "outer_two":{
     "flag_two":{
-      "value":"99"
+      "value":99
     },
     "value":[
       {
         "_id":"11",
-        "value":"456"
+        "value":45.6
       },
       {
         "_id":"12",
-        "value":"789"
+        "value":78.9
       }
     ]
   }
@@ -892,6 +910,7 @@ TEST(SON2JSON, 004)
 mixed_one{
     MaxOccurs=1
     value{
+        ValType=Int
         MaxOccurs=NoLimit
     }
     three{
@@ -905,11 +924,13 @@ mixed_one{
 mixed_two{
     MaxOccurs=1
     value{
+        ValType=Int
         MaxOccurs=NoLimit
     }
     three{
         MaxOccurs=NoLimit
         value{
+            ValType=String
             MaxOccurs=1
         }
     }
@@ -923,11 +944,13 @@ mixed_three{
     three{
         MaxOccurs=NoLimit
         value{
+            ValType=String
             MaxOccurs=NoLimit
         }
         seven{
             MaxOccurs=1
             value{
+                ValType=Real
                 MaxOccurs=NoLimit
             }
         }
@@ -942,20 +965,20 @@ mixed_one   = [ 1 2 three=four 5 ]
 
 mixed_two   = [ 1 2 three=four three='a "sentence" with "quotes" here' 6 ]
 
-mixed_three = [ 1 2 three="four" three=[ five six seven=[ 8 9 ] ] 10 ]
+mixed_three = [ 1 2 three="four" three=[ five six seven=[ 8.0 9 ] ] 10 ]
 
 )INPUT";
 
     expected_json << R"INPUT(
 {
   "mixed_one":{
-    "value":[ "1", "2", "5" ],
+    "value":[ 1, 2, 5 ],
     "three":{
       "value":"four"
     }
   },
   "mixed_two":{
-    "value":[ "1", "2", "6" ],
+    "value":[ 1, 2, 6 ],
     "three":[
       {
         "value":"four"
@@ -974,7 +997,7 @@ mixed_three = [ 1 2 three="four" three=[ five six seven=[ 8 9 ] ] 10 ]
       {
         "value":[ "five", "six" ],
         "seven":{
-          "value":[ "8", "9" ]
+          "value":[ 8.0, 9 ]
         }
       }
     ]
