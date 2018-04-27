@@ -207,7 +207,9 @@ ddivalidjson /path/to/schema.sch /path/to/input.ddi
 
 The schema is used during the conversion so that if multiple input components of a given name are available at any level, then this is represented by a single JSON array of that given name with each element of that array being the input components.
 
-Leaf values in the input document are represented by "value" in the converted JSON. For example, if according to the provided schema, "foo" can only occur one time and its value can only occur one time (i.e. not an array), then the SON:
+Leaf values in the input document are represented by "value" in the converted JSON. Values that have a `ValType=Int` or `ValType=Real` in the schema are not quoted in the JSON.  All other values are quoted.
+
+For example, if according to the provided schema, "foo" can only occur one time and its value is an integer that can only occur one time (i.e. not an array), then the SON:
 
 ```
 foo=7
@@ -223,27 +225,27 @@ is represented by this JSON:
 
 ```
   "foo":{
-    "value":"7"
+    "value":7
   }
 ```
 
-However, if the values of "foo" can occur multiple times (i.e. an array), then the SON:
+However, if the values of "foo" are strings instead of numbers (thus quoted in the JSON) and can occur multiple times (i.e. an array), then the SON:
 
 ```
-foo = [ 7 8 9 ]
+foo = [ seven eight nine ]
 ```
 
 or the DDI:
 
 ```
-foo 7 8 9
+foo 'seven' 'eight' 'nine'
 ```
 
 is represented by this in JSON:
 
 ```
   "foo":{
-    "value":[ "7", "8", "9" ]
+    "value":[ "seven", "eight", "nine" ]
   }
 ```
 
@@ -266,19 +268,20 @@ is represented by this in JSON:
 ```
   "foo":[
     {
-      "value":[ "6" ]
+      "value":[ 6 ]
     },
     {
-      "value":[ "7", "8", "9" ]
+      "value":[ 7, 8, 9 ]
     }
   ]
 ```
 
-Finally, the ID tag field in SON is represented by the name "_id" in JSON.  So the SON:
+Finally, the ID tag field in SON (DDI does not have this ID construct) is represented by the name "_id" in JSON.  Again, if this ID tag field is specified to be a number by the schema, then its value is not quoted in the JSON. Otherwise, it is quoted. So the SON:
 
 ```
 foo(name_one) = 6
 foo(name_two) = [ 7 8 9 ]
+bar(10)       = three
 ```
 
 is represented by this in JSON:
@@ -287,13 +290,17 @@ is represented by this in JSON:
   "foo":[
     {
       "_id":"name_one",
-      "value":[ "6" ]
+      "value":[ 6 ]
     },
     {
       "_id":"name_two",
-      "value":[ "7", "8", "9" ]
+      "value":[ 7, 8, 9 ]
     }
-  ]
+  ],
+  "bar":{
+    "_id":10
+    "value":"three"
+    }
 ```
 
 ## The HierarchAL Input Template Expansion (HALITE) Engine 
