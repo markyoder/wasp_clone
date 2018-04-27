@@ -4,6 +4,8 @@
 #include "waspcore/TreeNodePool.h"
 #include "waspson/SONInterpreter.h"
 #include "waspson/SONNodeView.h"
+#include "waspddi/DDInterpreter.h"
+#include "waspddi/DDINodeView.h"
 #include "wasphive/HIVE.h"
 #include "gtest/gtest.h"
 
@@ -13,6 +15,8 @@ typedef TokenPool<unsigned int, unsigned int, unsigned int> TP;
 typedef TreeNodePool<unsigned int, unsigned int, TP>        TNP;
 typedef SONInterpreter<TNP>            SONInterp;
 typedef SONNodeView<TreeNodeView<TNP>> SONNV;
+typedef DDInterpreter<TNP>             DDInterp;
+typedef DDINodeView<TreeNodeView<TNP>> DDINV;
 
 // macro to print a cleaner text diff if strings are different
 #define EXPECT_JSON(EXPECTED, ACTUAL)                                       \
@@ -22,7 +26,7 @@ typedef SONNodeView<TreeNodeView<TNP>> SONNV;
                                                   "\nActual JSON:\n"        \
         << "*********************" << ACTUAL << "*********************\n"
 
-TEST(SON2JSON, 001)
+TEST(Input2JSON, son_001)
 {
     std::stringstream son_schema;
     std::stringstream son_input;
@@ -419,7 +423,7 @@ case(1) {
     EXPECT_JSON(expected_json.str(), actual_json.str());
 }
 
-TEST(SON2JSON, 002)
+TEST(Input2JSON, son_002)
 {
     std::stringstream son_schema;
     std::stringstream son_input;
@@ -649,7 +653,7 @@ singleflag3(99)=[ val3 val4 ]
     EXPECT_JSON(expected_json.str(), actual_json.str());
 }
 
-TEST(SON2JSON, 003)
+TEST(Input2JSON, son_003)
 {
     std::stringstream son_schema;
     std::stringstream son_input;
@@ -899,7 +903,7 @@ outer_two{
     EXPECT_JSON(expected_json.str(), actual_json.str());
 }
 
-TEST(SON2JSON, 004)
+TEST(Input2JSON, son_004)
 {
     std::stringstream son_schema;
     std::stringstream son_input;
@@ -1033,7 +1037,236 @@ mixed_three = [ 1 2 three="four" three=[ five six seven=[ 8.0 9 ] ] 10 ]
     EXPECT_JSON(expected_json.str(), actual_json.str());
 }
 
-TEST(SON2JSON, error_001)
+TEST(Input2JSON, ddi_001)
+{
+    std::stringstream son_schema;
+    std::stringstream ddi_input;
+    std::stringstream expected_json;
+
+    son_schema << R"INPUT(
+object_multi{
+
+    MinOccurs=1
+    MaxOccurs=NoLimit
+    
+    foo{
+        MinOccurs=0
+        MaxOccurs=1
+        ValType=Int
+    }
+    fog{
+        MinOccurs=0
+        MaxOccurs=1
+        value{
+            MinOccurs=1
+            MaxOccurs=1
+            ValType=Int
+        }
+    }
+    bar{
+        MinOccurs=0
+        MaxOccurs=1
+        ValType=String
+    }
+    bag{
+        MinOccurs=0
+        MaxOccurs=1
+        value{
+            MinOccurs=1
+            MaxOccurs=1
+            ValType=String
+        }
+    }
+    bam{
+        MinOccurs=0
+        MaxOccurs=1
+        value{
+            MinOccurs=1
+            MaxOccurs=1
+        }
+    }
+    bax{
+        MinOccurs=0
+        MaxOccurs=1
+    }
+    rat{
+        MinOccurs=1
+        MaxOccurs=NoLimit
+        value{
+            MinOccurs=1
+            MaxOccurs=NoLimit
+            ValType=String
+        }
+    }
+    inside_single{
+
+        MinOccurs=0
+        MaxOccurs=1
+
+        zap{
+            MinOccurs=0
+            MaxOccurs=NoLimit
+        }
+        baz{
+            MinOccurs=0
+            MaxOccurs=1
+            value{
+                MinOccurs=1
+                MaxOccurs=NoLimit
+            }
+        }
+        rot{
+            MinOccurs=0
+            MaxOccurs=NoLimit
+            value{
+                MinOccurs=1
+                MaxOccurs=NoLimit
+                ValType=Real
+            }
+        }
+        bat{
+            MinOccurs=0
+            MaxOccurs=1
+            value{
+                MinOccurs=1
+                MaxOccurs=NoLimit
+                ValType=Int
+            }
+        }
+    }
+}
+)INPUT";
+
+    ddi_input << R"INPUT(
+  object_multi
+    foo 7
+    fog 7
+    rat 'six'  'seven' 'eight'
+    rat 'nine' 'ten'   'eleven'
+    inside_single
+        zap 'six'
+        zap 'two'
+        baz 'one' 'three' 'five'
+  object_multi
+    bar 'seven'
+    bag 'seven'
+    bam 'seven'
+    bax 'seven'
+    rat 'aaa' 'bbb' 'ccc'
+    rat 'ddd' 'eee' 'fff'
+    inside_single
+        rot 6.0  7.0  8.0
+        rot 9.0 10.0 11.0
+        bat 1 3 5
+)INPUT";
+
+    expected_json << R"INPUT(
+{
+  "object_multi":[
+    {
+      "foo":{
+        "value":7
+      },
+      "fog":{
+        "value":7
+      },
+      "rat":[
+        {
+          "value":[ "six", "seven", "eight" ]
+        },
+        {
+          "value":[ "nine", "ten", "eleven" ]
+        }
+      ],
+      "inside_single":{
+        "zap":[
+          {
+            "value":"six"
+          },
+          {
+            "value":"two"
+          }
+        ],
+        "baz":{
+          "value":[ "one", "three", "five" ]
+        }
+      }
+    },
+    {
+      "bar":{
+        "value":"seven"
+      },
+      "bag":{
+        "value":"seven"
+      },
+      "bam":{
+        "value":"seven"
+      },
+      "bax":{
+        "value":"seven"
+      },
+      "rat":[
+        {
+          "value":[ "aaa", "bbb", "ccc" ]
+        },
+        {
+          "value":[ "ddd", "eee", "fff" ]
+        }
+      ],
+      "inside_single":{
+        "rot":[
+          {
+            "value":[ 6.0, 7.0, 8.0 ]
+          },
+          {
+            "value":[ 9.0, 10.0, 11.0 ]
+          }
+        ],
+        "bat":{
+          "value":[ 1, 3, 5 ]
+        }
+      }
+    }
+  ]
+}
+)INPUT";
+
+    // parse schema
+    SONInterp schema_interp(std::cerr);
+    ASSERT_TRUE(schema_interp.parse(son_schema));
+
+    // save schema root
+    SONNV schema_root = schema_interp.root();
+
+    // construct definition
+    DDInterp input_interp(std::cerr);
+    std::stringstream definition_errors;
+    ASSERT_TRUE(HIVE::create_definition(input_interp.definition(),
+                                        schema_root,
+                                        definition_errors,
+                                        false));
+    
+    // parse input
+    ASSERT_TRUE(input_interp.parse(ddi_input));
+
+    // save input root
+    DDINV input_root = input_interp.root();
+
+    // covert to json save in actual_json
+    std::stringstream actual_json;
+    std::stringstream actual_errors;
+    int               root_level         = 0;
+    int               last_level_printed = -1;
+    ASSERT_TRUE(HIVE::input_to_json(schema_root, input_root, root_level,
+                                    last_level_printed, actual_json,
+                                    actual_errors));
+
+    EXPECT_TRUE(actual_errors.str() == "");
+
+    EXPECT_JSON(expected_json.str(), actual_json.str());
+}
+
+TEST(Input2JSON, son_error_001)
 {
     std::stringstream son_schema;
     std::stringstream son_input;
@@ -1096,7 +1329,7 @@ object{
     EXPECT_TRUE(expected_errors.str() == actual_errors.str());
 }
 
-TEST(SON2JSON, error_002)
+TEST(Input2JSON, son_error_002)
 {
     std::stringstream son_schema;
     std::stringstream son_input;
