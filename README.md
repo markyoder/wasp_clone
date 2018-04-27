@@ -101,7 +101,7 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
     * [File Component Selection Utilities](/wasputils/README.md#file-component-selection-utilities)
     * [XML Utilities](/wasputils/README.md#xml-utilities)
     * [File Validation](/wasputils/README.md#file-validation-utilities)
-    * [SON to JSON Utilities](/wasputils/README.md#son-to-json-utilities)
+    * [SON/DDI to JSON Utilities](/wasputils/README.md##sonddi-to-json-utilities)
     * [HALITE](/wasputils/README.md#the-hierarchal-input-template-expansion-engine)
     * [Schema Skeleton Creation Utility](/wasputils/README.md#schema-skeleton-creation-utility)
 

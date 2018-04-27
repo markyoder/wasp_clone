@@ -182,29 +182,41 @@ sonvalid /path/to/schema.sch /path/to/input.inp
 The schema's contents are beyond the scope of this document. The product of *valid will be a return code of 0 only if no validation errors occur in the input. 
 If an error occurs, a non-zero return code is produced and validation errors emitted. See the [HIVE](/wasphive/README.md#hierarchical-input-validation-engine-hive) documentation of types of validation errors.
 
-## SON to JSON Utilities
- The JSON standard is readily accessible in most programming languages while SON is not.  JSON can easily be consumed into a native Python dictionary.
+## SON/DDI to JSON Utilities
+ The JSON standard is readily accessible in most programming languages while SON and DDI are not.  JSON can easily be consumed into a native Python dictionary.
 
 Invocation of the JSON conversion utilities requires a schema and an input:
 
 ```
-sonjson /path/to/schema.sch /path/to/input.inp
+sonjson /path/to/schema.sch /path/to/input.son
 ```
 
 ```
-sonvalidjson /path/to/schema.sch /path/to/input.inp
+sonvalidjson /path/to/schema.sch /path/to/input.son
+```
+
+```
+ddivalidjson /path/to/schema.sch /path/to/input.ddi
 ```
 
 `sonjson` takes the SON input and converts it to a JSON with the results on stdout.
 
 `sonvalidjson` takes the SON input, validates it against the provided schema, and converts it to a JSON with the results on stdout. If there are any validation errors, the JSON conversion still takes place with the results on stdout and any validation messages on stdderr.  If there are any validiation errors, this utility returns a non-zero code.
 
-The schema is used during the conversion so that if multiple SON components of a given name are available at any level, then this is represented by a single JSON array of that given name with each element of that array being the SON components.
+`ddivalidjson` takes the DDI input and validates it agasint the provided schema. If the input is not valid, then the utility will output the validation messages on stdderr and exit with a non-zero code. If there are no validation errors, then this utility converts the DDI input to JSON with the results on stdout.
 
-Leaf values in the SON document are represented by "value" in the converted JSON. For example, if according to the provided schema,  "foo" can only occur one time and its value can only occur one time (i.e. not a SON array), then the SON:
+The schema is used during the conversion so that if multiple input components of a given name are available at any level, then this is represented by a single JSON array of that given name with each element of that array being the input components.
+
+Leaf values in the input document are represented by "value" in the converted JSON. For example, if according to the provided schema, "foo" can only occur one time and its value can only occur one time (i.e. not an array), then the SON:
 
 ```
 foo=7
+```
+
+or the DDI:
+
+```
+foo 7
 ```
 
 is represented by this JSON:
@@ -215,10 +227,16 @@ is represented by this JSON:
   }
 ```
 
-However, if the values of "foo" can occur multiple times (i.e. a SON array), then the SON:
+However, if the values of "foo" can occur multiple times (i.e. an array), then the SON:
 
 ```
 foo = [ 7 8 9 ]
+```
+
+or the DDI:
+
+```
+foo 7 8 9
 ```
 
 is represented by this in JSON:
@@ -234,6 +252,13 @@ Further, if "foo" itself can appear multiple times, then in the converted JSON t
 ```
 foo = 6
 foo = [ 7 8 9 ]
+```
+
+or the DDI:
+
+```
+foo 6
+foo 7 8 9
 ```
 
 is represented by this in JSON:
