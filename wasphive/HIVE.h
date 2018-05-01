@@ -338,24 +338,40 @@ class WASP_PUBLIC HIVE
     }
 
     // json type of singleton or array to switch on
-    enum class JsonType
+    enum class JsonSizeType
     {
         SINGLETON,
         ARRAY
     };
 
+    // json type of string or number to decided if values are quoted or unquoted
+    enum class JsonValueType
+    {
+        STRING,
+        NUMBER
+    };
+
     // check if this node could occur just one time ( singleton )
     // or occur multiple times ( array ) according to the schema
+    // also check if the value type should be a string and thus quoted
+    // or if the value type type should be a number and thus unquoted
+    // note that the JsonValueType will only be applicable for nodes deemed
+    // to be a value or an id - the default is STRING
     template<class SR, class CN>
-    static bool get_json_type(SR            schema_root,
-                              const CN&     current_node,
-                              JsonType&     type,
-                              std::ostream& err)
+    static bool get_json_info(SR             schema_root,
+                              const CN&      current_node,
+                              JsonSizeType&  size_type,
+                              JsonValueType& value_type,
+                              std::ostream&  err)
     {
+
+        // default value_type is string - quoted
+        value_type = JsonValueType::STRING;
+
         // if this is the document_root - then it is a singleton
         if (current_node.type() == wasp::DOCUMENT_ROOT)
         {
-            type = JsonType::SINGLETON;
+            size_type = JsonSizeType::SINGLETON;
             return true;
         }
 
@@ -378,7 +394,31 @@ class WASP_PUBLIC HIVE
         {
             if (current_node.type() == wasp::VALUE)
             {
-                type = JsonType::SINGLETON;
+                size_type = JsonSizeType::SINGLETON;
+
+                // look up the parent node's valtype in the schema
+                SIRENInterpreter<> parent_valtype_selector(err);
+                std::string parent_valtype_path = current_node.parent().path() + "/ValType/value";
+                parent_valtype_selector.parseString(parent_valtype_path);
+                SIRENResultSet<SR> parent_valtype_results;
+                parent_valtype_selector.evaluate(schema_root, parent_valtype_results);
+
+                // if the parent node has a valtype, then if it is int or real
+                // set value_type to number
+                if (parent_valtype_results.size() == 1)
+                {
+                    std::string lowerVal = parent_valtype_results.adapted(0).to_string();
+                    std::transform(lowerVal.begin(), lowerVal.end(), lowerVal.begin(), ::tolower);
+                    if (lowerVal == "int" || lowerVal == "real")
+                    {
+                        value_type = JsonValueType::NUMBER;
+                    }
+                }
+            }
+            else if(current_node.type() == wasp::IDENTIFIER)
+            {
+                size_type = JsonSizeType::SINGLETON;
+                value_type = JsonValueType::STRING;
             }
             else
             {
@@ -399,11 +439,23 @@ class WASP_PUBLIC HIVE
                         .first_child_by_name("MaxOccurs")
                         .to_string() == "1")
             {
-                type = JsonType::SINGLETON;
+                size_type = JsonSizeType::SINGLETON;
             }
             else
             {
-                type = JsonType::ARRAY;
+                size_type = JsonSizeType::ARRAY;
+            }
+
+            // if this node has a valtype node in the schema, then check its value,
+            // and if it is int or real, then set value_type to number
+            if (!results.adapted(0).first_child_by_name("ValType").is_null())
+            {
+                std::string lowerVal = results.adapted(0).first_child_by_name("ValType").to_string();
+                std::transform(lowerVal.begin(), lowerVal.end(), lowerVal.begin(), ::tolower);
+                if (lowerVal == "int" || lowerVal == "real")
+                {
+                    value_type = JsonValueType::NUMBER;
+                }
             }
         }
 
@@ -421,10 +473,11 @@ class WASP_PUBLIC HIVE
                               std::ostream& err)
     {
         // deterime if this is a json object or array and if it is a "value"
-        // node
-        JsonType json_type;
-        if (!get_json_type(schema_root, current_node, json_type, err))
-            return false;
+        // node - and if it is a value then is it a string value or number value
+        JsonSizeType json_size_type;
+        JsonValueType json_value_type;
+        if (!get_json_info(schema_root, current_node,
+                               json_size_type, json_value_type, err)) return false;
         const bool is_value = (current_node.type() == wasp::VALUE);
 
         // lambda returning the indentation spaces string depending on the level
@@ -434,20 +487,28 @@ class WASP_PUBLIC HIVE
         };
 
         // if this component can occur just a single time
-        if (json_type == JsonType::SINGLETON)
+        if (json_size_type == JsonSizeType::SINGLETON)
         {
             // print a comma if needed
             if (level == last_level_printed)
                 out << "," << std::endl;
 
             // if this is a value node, then print simple
+            // if number - without quotes / if string - with quotes
             if (is_value)
             {
                 std::string escape_string = current_node.last_as_string();
-                std::replace(escape_string.begin(), escape_string.end(), '"',
-                             '\'');
-                out << spaces(level) << "\"" << current_node.name() << "\":\""
-                    << escape_string << "\"";
+                std::replace(escape_string.begin(), escape_string.end(), '"', '\'');
+                if (json_value_type == JsonValueType::NUMBER)
+                {
+                    out << spaces(level) << "\"" << current_node.name()
+                        << "\":"    << escape_string;
+                }
+                else
+                {
+                    out << spaces(level) << "\"" << current_node.name()
+                        << "\":\""  << escape_string << "\"";
+                }
             }
 
             // if this is not a value node, then print json object and recurse
@@ -469,10 +530,26 @@ class WASP_PUBLIC HIVE
                 level++;
 
                 // print id tag if present
-                if (!current_node.id().empty())
+                // if number - without quotes / if string - with quotes
+                if (!current_node.id_child().is_null() &&
+                    !current_node.id().empty())
                 {
-                    out << spaces(level) << "\"_id\":\"" << current_node.id()
-                        << "\"," << std::endl;
+
+                    JsonSizeType id_size_type;
+                    JsonValueType id_value_type;
+                    if (!get_json_info(schema_root, current_node.id_child(),
+                                   id_size_type, id_value_type, err)) return false;
+                    if (id_value_type == JsonValueType::NUMBER)
+                    {
+                        out << spaces(level) << "\"_id\":" << current_node.id()
+                            << "," << std::endl;
+                    }
+                    else
+                    {
+                        out << spaces(level) << "\"_id\":\"" << current_node.id()
+                            << "\"," << std::endl;
+                    }
+
                 }
 
                 // get the non decorative children and recurse further
@@ -503,7 +580,7 @@ class WASP_PUBLIC HIVE
         }
 
         // if this component can occur multiple times
-        else if (json_type == JsonType::ARRAY)
+        else if (json_size_type == JsonSizeType::ARRAY)
         {
             // get the parent and all children of the same name
             auto parent = !current_node.parent().is_null()
@@ -530,13 +607,20 @@ class WASP_PUBLIC HIVE
                      i < out_count; i++)
                 {
                     // if this is a value node, then print simple
+                    // if number - without quotes / if string - with quotes
                     if (is_value)
                     {
                         std::string escape_string =
                             children_by_name[i].last_as_string();
-                        std::replace(escape_string.begin(), escape_string.end(),
-                                     '"', '\'');
-                        out << " \"" << escape_string << "\"";
+                        std::replace(escape_string.begin(), escape_string.end(), '"', '\'');
+                        if (json_value_type == JsonValueType::NUMBER)
+                        {
+                            out << " " << escape_string ;
+                        }
+                        else
+                        {
+                            out << " \"" << escape_string << "\"";
+                        }
                     }
 
                     // if this is not a value node, then print json object and
@@ -550,11 +634,24 @@ class WASP_PUBLIC HIVE
                         level++;
 
                         // print id tag if present
-                        if (!children_by_name[i].id().empty())
+                        // if number - without quotes / if string - with quotes
+                        if (!children_by_name[i].id_child().is_null() &&
+                            !children_by_name[i].id().empty())
                         {
-                            out << spaces(level) << "\"_id\":\""
-                                << children_by_name[i].id() << "\","
-                                << std::endl;
+                            JsonSizeType id_size_type;
+                            JsonValueType id_value_type;
+                            if (!get_json_info(schema_root, children_by_name[i].id_child(),
+                                               id_size_type, id_value_type, err)) return false;
+                            if (id_value_type == JsonValueType::NUMBER)
+                            {
+                                out << spaces(level) << "\"_id\":" << children_by_name[i].id()
+                                    << "," << std::endl;
+                            }
+                            else
+                            {
+                                out << spaces(level) << "\"_id\":\"" << children_by_name[i].id()
+                                    << "\"," << std::endl;
+                            }
                         }
 
                         // get the non decorative children and recurse further
