@@ -47,8 +47,8 @@ TEST(JSON, simple_object)
     ASSERT_EQ(1, json["key_int"].to_int());
     ASSERT_EQ(1.03, json["key_double"].to_double());
     ASSERT_EQ("value1", json["key_string"].to_string());
-    ASSERT_EQ(true, json["key_bool_true"].to_bool());
-    ASSERT_EQ(false, json["key_bool_false"].to_bool());
+    ASSERT_TRUE(json["key_bool_true"].to_bool());
+    ASSERT_FALSE(json["key_bool_false"].to_bool());
     ASSERT_FALSE(json["key_null"].to_bool());
     ASSERT_TRUE(json["key_null"].is_null());
 
