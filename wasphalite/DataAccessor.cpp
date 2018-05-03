@@ -570,7 +570,8 @@ wasp::DataObject* DataAccessor::scope(std::string& name) const
     auto* current_data = m_current_data;
 
     size_t i_op = 0;
-    while ( (i_op = name.find(".", i_op) ) != std::string::npos )
+    while ( (i_op = name.find(m_hierarchy_operator, i_op) )
+            != std::string::npos )
     {
         std::string object_name = name.substr(0,i_op);
         // Check Object existence
@@ -585,7 +586,8 @@ wasp::DataObject* DataAccessor::scope(std::string& name) const
             // could not find the next object, return progress
             return current_data;
         }
-        name = name.substr(i_op+1);
+        name = name.substr(i_op+m_hierarchy_operator.size());
+        i_op = 0;
     }
     return current_data;
 }

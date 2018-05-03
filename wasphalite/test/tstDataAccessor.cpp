@@ -192,7 +192,10 @@ TEST(Halite, hierarchy)
  "key_bool_false" : false,
  "key_null" : null,
  "object_empty": { },
- "object_mixed": { "o":{}, "a":[1,2,3], "r":1.0, "i":3, "bt" :true ,"bf":false, "n": null}
+ "object": { "o":{"r":1.1, "i":4, "bt" :true ,"bf":false, "n": null, "a" : [2,3],
+                "o":{"r":1.1, "i":4, "bt" :true ,"bf":false, "n": null, "a" : [2,3]}
+             },
+             "a":[1,2,3], "r":1.0, "i":3, "bt" :true ,"bf":false, "n": null}
 })INPUT";
     DataObject::SP json_ptr;
     {
@@ -202,14 +205,154 @@ TEST(Halite, hierarchy)
     ASSERT_TRUE(json_ptr != nullptr);
     DataObject& json = *(json_ptr.get());
 
-    {
-    DataAccessor accessor(&json, nullptr, ".");
-    ASSERT_FALSE(accessor.boolean("key_bool_false"));
-    ASSERT_TRUE(accessor.boolean("key_bool_true"));
-    ASSERT_TRUE(accessor.exists("object_mixed.bt"));
-    ASSERT_TRUE(accessor.boolean("object_mixed.bt"));
-    ASSERT_FALSE(accessor.boolean("object_mixed.bf"));
-    ASSERT_EQ( 3, accessor.integer("object_mixed.i"));
-    ASSERT_EQ( 1.0, accessor.real("object_mixed.r"));
+    { // test '.'
+        DataAccessor accessor(&json, nullptr, ".");
+
+        ASSERT_TRUE(accessor.exists("key_bool_false"));
+        ASSERT_FALSE(accessor.boolean("key_bool_false"));
+        ASSERT_TRUE(accessor.exists("key_bool_true"));
+        ASSERT_TRUE(accessor.boolean("key_bool_true"));
+        ASSERT_TRUE(accessor.exists("object.bt"));
+        ASSERT_TRUE(accessor.boolean("object.bt"));
+        ASSERT_TRUE(accessor.exists("object.bf"));
+        ASSERT_FALSE(accessor.boolean("object.bf"));
+        ASSERT_TRUE(accessor.exists("object.i"));
+        ASSERT_EQ( 3, accessor.integer("object.i"));
+        ASSERT_TRUE(accessor.exists("object.r"));
+        ASSERT_EQ( 1.0, accessor.real("object.r"));
+        ASSERT_NE( nullptr, accessor.array("object.a"));
+        ASSERT_EQ( 3, accessor.array("object.a")->size());
+        ASSERT_EQ( 1, accessor.array("object.a")->at(0).to_int());
+        ASSERT_EQ( 2, accessor.array("object.a")->at(1).to_int());
+
+        ASSERT_TRUE(accessor.exists("object.o.bt"));
+        ASSERT_TRUE(accessor.boolean("object.o.bt"));
+        ASSERT_TRUE(accessor.exists("object.o.bf"));
+        ASSERT_FALSE(accessor.boolean("object.o.bf"));
+        ASSERT_TRUE(accessor.exists("object.o.i"));
+        ASSERT_EQ( 4, accessor.integer("object.o.i"));
+        ASSERT_TRUE(accessor.exists("object.o.r"));
+        ASSERT_EQ( 1.1, accessor.real("object.o.r"));
+        ASSERT_NE ( nullptr, accessor.array("object.o.a"));
+        ASSERT_EQ( 2, accessor.array("object.o.a")->size());
+        ASSERT_EQ( 2, accessor.array("object.o.a")->at(0).to_int());
+        ASSERT_EQ( 3, accessor.array("object.o.a")->at(1).to_int());
+
+        ASSERT_TRUE(accessor.exists("object.o.o.bt"));
+        ASSERT_TRUE(accessor.boolean("object.o.o.bt"));
+        ASSERT_TRUE(accessor.exists("object.o.o.bf"));
+        ASSERT_FALSE(accessor.boolean("object.o.o.bf"));
+        ASSERT_TRUE(accessor.exists("object.o.o.i"));
+        ASSERT_EQ( 4, accessor.integer("object.o.o.i"));
+        ASSERT_TRUE(accessor.exists("object.o.o.r"));
+        ASSERT_EQ( 1.1, accessor.real("object.o.o.r"));
+        ASSERT_NE ( nullptr, accessor.array("object.o.o.a"));
+        ASSERT_EQ( 2, accessor.array("object.o.o.a")->size());
+        ASSERT_EQ( 2, accessor.array("object.o.o.a")->at(0).to_int());
+        ASSERT_EQ( 3, accessor.array("object.o.o.a")->at(1).to_int());
+
+        // Test parent scoping
+        DataObject* object = accessor.object("object");
+        ASSERT_NE( nullptr, object);
+        DataAccessor accessor_object(object, &accessor, ".");
+
+        DataObject* object_o = accessor.object("object.o");
+        ASSERT_NE( nullptr, object_o);
+        DataAccessor accessor_object_o(object_o, &accessor_object, ".");
+
+        DataObject* object_o_o = accessor.object("object.o.o");
+        ASSERT_NE( nullptr, object_o);
+        DataAccessor accessor_object_o_o(object_o_o, &accessor_object_o, ".");
+
+        // Test that the parent scopes are used to identify variables
+        ASSERT_TRUE(accessor_object_o_o.exists("key_bool_false"));
+        ASSERT_FALSE(accessor_object_o_o.boolean("key_bool_false"));
+        ASSERT_TRUE(accessor_object_o_o.exists("key_bool_true"));
+        ASSERT_TRUE(accessor_object_o_o.boolean("key_bool_true"));
+        ASSERT_TRUE(accessor_object_o_o.exists("object.bt"));
+        ASSERT_TRUE(accessor_object_o_o.boolean("object.bt"));
+        ASSERT_TRUE(accessor_object_o_o.exists("object.bf"));
+        ASSERT_FALSE(accessor_object_o_o.boolean("object.bf"));
+        ASSERT_TRUE(accessor_object_o_o.exists("object.i"));
+        ASSERT_EQ( 3, accessor_object_o_o.integer("object.i"));
+        ASSERT_TRUE(accessor_object_o_o.exists("object.r"));
+        ASSERT_EQ( 1.0, accessor_object_o_o.real("object.r"));
+        ASSERT_NE( nullptr, accessor_object_o_o.array("object.a"));
+        ASSERT_EQ( 3, accessor_object_o_o.array("object.a")->size());
+        ASSERT_EQ( 1, accessor_object_o_o.array("object.a")->at(0).to_int());
+        ASSERT_EQ( 2, accessor_object_o_o.array("object.a")->at(1).to_int());
+
+        ASSERT_TRUE(accessor_object_o_o.exists("object.o.bt"));
+        ASSERT_TRUE(accessor_object_o_o.boolean("object.o.bt"));
+        ASSERT_TRUE(accessor_object_o_o.exists("object.o.bf"));
+        ASSERT_FALSE(accessor_object_o_o.boolean("object.o.bf"));
+        ASSERT_TRUE(accessor_object_o_o.exists("object.o.i"));
+        ASSERT_EQ( 4, accessor_object_o_o.integer("object.o.i"));
+        ASSERT_TRUE(accessor_object_o_o.exists("object.o.r"));
+        ASSERT_EQ( 1.1, accessor_object_o_o.real("object.o.r"));
+        ASSERT_NE ( nullptr, accessor_object_o_o.array("object.o.a"));
+        ASSERT_EQ( 2, accessor_object_o_o.array("object.o.a")->size());
+        ASSERT_EQ( 2, accessor_object_o_o.array("object.o.a")->at(0).to_int());
+        ASSERT_EQ( 3, accessor_object_o_o.array("object.o.a")->at(1).to_int());
+
+        ASSERT_TRUE(accessor_object_o_o.exists("object.o.o.bt"));
+        ASSERT_TRUE(accessor_object_o_o.boolean("object.o.o.bt"));
+        ASSERT_TRUE(accessor_object_o_o.exists("object.o.o.bf"));
+        ASSERT_FALSE(accessor_object_o_o.boolean("object.o.o.bf"));
+        ASSERT_TRUE(accessor_object_o_o.exists("object.o.o.i"));
+        ASSERT_EQ( 4, accessor_object_o_o.integer("object.o.o.i"));
+        ASSERT_TRUE(accessor_object_o_o.exists("object.o.o.r"));
+        ASSERT_EQ( 1.1, accessor_object_o_o.real("object.o.o.r"));
+        ASSERT_NE ( nullptr, accessor_object_o_o.array("object.o.o.a"));
+        ASSERT_EQ( 2, accessor_object_o_o.array("object.o.o.a")->size());
+        ASSERT_EQ( 2, accessor_object_o_o.array("object.o.o.a")->at(0).to_int());
+        ASSERT_EQ( 3, accessor_object_o_o.array("object.o.o.a")->at(1).to_int());
+    }
+
+    { // test '::'
+        DataAccessor accessor(&json, nullptr, "::");
+
+        ASSERT_TRUE(accessor.exists("key_bool_false"));
+        ASSERT_FALSE(accessor.boolean("key_bool_false"));
+        ASSERT_TRUE(accessor.exists("key_bool_true"));
+        ASSERT_TRUE(accessor.boolean("key_bool_true"));
+        ASSERT_TRUE(accessor.exists("object::bt"));
+        ASSERT_TRUE(accessor.boolean("object::bt"));
+        ASSERT_TRUE(accessor.exists("object::bf"));
+        ASSERT_FALSE(accessor.boolean("object::bf"));
+        ASSERT_TRUE(accessor.exists("object::i"));
+        ASSERT_EQ( 3, accessor.integer("object::i"));
+        ASSERT_TRUE(accessor.exists("object::r"));
+        ASSERT_EQ( 1.0, accessor.real("object::r"));
+        ASSERT_NE( nullptr, accessor.array("object::a"));
+        ASSERT_EQ( 3, accessor.array("object::a")->size());
+        ASSERT_EQ( 1, accessor.array("object::a")->at(0).to_int());
+        ASSERT_EQ( 2, accessor.array("object::a")->at(1).to_int());
+
+        ASSERT_TRUE(accessor.exists("object::o::bt"));
+        ASSERT_TRUE(accessor.boolean("object::o::bt"));
+        ASSERT_TRUE(accessor.exists("object::o::bf"));
+        ASSERT_FALSE(accessor.boolean("object::o::bf"));
+        ASSERT_TRUE(accessor.exists("object::o::i"));
+        ASSERT_EQ( 4, accessor.integer("object::o::i"));
+        ASSERT_TRUE(accessor.exists("object::o::r"));
+        ASSERT_EQ( 1.1, accessor.real("object::o::r"));
+        ASSERT_NE ( nullptr, accessor.array("object::o::a"));
+        ASSERT_EQ( 2, accessor.array("object::o::a")->size());
+        ASSERT_EQ( 2, accessor.array("object::o::a")->at(0).to_int());
+        ASSERT_EQ( 3, accessor.array("object::o::a")->at(1).to_int());
+
+        ASSERT_TRUE(accessor.exists("object::o::o::bt"));
+        ASSERT_TRUE(accessor.boolean("object::o::o::bt"));
+        ASSERT_TRUE(accessor.exists("object::o::o::bf"));
+        ASSERT_FALSE(accessor.boolean("object::o::o::bf"));
+        ASSERT_TRUE(accessor.exists("object::o::o::i"));
+        ASSERT_EQ( 4, accessor.integer("object::o::o::i"));
+        ASSERT_TRUE(accessor.exists("object::o::o::r"));
+        ASSERT_EQ( 1.1, accessor.real("object::o::o::r"));
+        ASSERT_NE ( nullptr, accessor.array("object::o::o::a"));
+        ASSERT_EQ( 2, accessor.array("object::o::o::a")->size());
+        ASSERT_EQ( 2, accessor.array("object::o::o::a")->at(0).to_int());
+        ASSERT_EQ( 3, accessor.array("object::o::o::a")->at(1).to_int());
     }
 }
