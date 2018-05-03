@@ -587,7 +587,6 @@ wasp::DataObject* DataAccessor::scope(std::string& name) const
         }
         name = name.substr(i_op+1);
     }
-
     return current_data;
 }
 }  // end of namespace

@@ -11,6 +11,7 @@
 #include <utility>
 #include "waspcore/Object.h"
 #include "wasphalite/DataAccessor.h"
+#include "waspjson/JSONObjectParser.hpp"
 
 #include "gtest/gtest.h"
 using namespace std;
@@ -174,4 +175,41 @@ TEST(Halite, data_accessor_parent_access)
     ASSERT_EQ(4, array_a->size());
     ASSERT_TRUE(array_a->at(0).is_int());
     ASSERT_EQ(2, array_a->at(0).to_int());
+}
+
+
+/**
+ * @brief TEST hierarchy access
+ */
+TEST(Halite, hierarchy)
+{
+    std::stringstream input;
+    input << R"INPUT({
+ "key_string":"value1",
+ "key_int" : 1 ,
+ "key_double" : 1.03,
+ "key_bool_true" : true,
+ "key_bool_false" : false,
+ "key_null" : null,
+ "object_empty": { },
+ "object_mixed": { "o":{}, "a":[1,2,3], "r":1.0, "i":3, "bt" :true ,"bf":false, "n": null}
+})INPUT";
+    DataObject::SP json_ptr;
+    {
+        JSONObjectParser generator(json_ptr, input, std::cerr, nullptr);
+        ASSERT_EQ(0, generator.parse());
+    }
+    ASSERT_TRUE(json_ptr != nullptr);
+    DataObject& json = *(json_ptr.get());
+
+    {
+    DataAccessor accessor(&json, nullptr, ".");
+    ASSERT_FALSE(accessor.boolean("key_bool_false"));
+    ASSERT_TRUE(accessor.boolean("key_bool_true"));
+    ASSERT_TRUE(accessor.exists("object_mixed.bt"));
+    ASSERT_TRUE(accessor.boolean("object_mixed.bt"));
+    ASSERT_FALSE(accessor.boolean("object_mixed.bf"));
+    ASSERT_EQ( 3, accessor.integer("object_mixed.i"));
+    ASSERT_EQ( 1.0, accessor.real("object_mixed.r"));
+    }
 }
