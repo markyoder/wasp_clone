@@ -570,6 +570,7 @@ wasp::DataObject* DataAccessor::scope(std::string& name) const
     if (m_hierarchy_operator.empty()
             || m_current_data == nullptr) return m_current_data;
 
+    std::string original_name = name;
     //
     // Search down from this accessor scope
     //
@@ -589,7 +590,13 @@ wasp::DataObject* DataAccessor::scope(std::string& name) const
         }
         else
         {
-            // could not find the next object, return progress
+            // could not find the next object
+            // attempt to address as a missname
+            if (m_current_data->find(original_name) != m_current_data->end())
+            {
+                name = original_name;
+                return m_current_data;
+            }
             return current_data;
         }
         name = name.substr(i_op+m_hierarchy_operator.size());
