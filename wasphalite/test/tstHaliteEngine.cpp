@@ -250,6 +250,24 @@ TEST(Halite, attribute_use_scope_object)
 
     ASSERT_EQ("ted-20.440000", out.str());
 }
+TEST(Halite, attribute_object_hierarchy_reference)
+{
+    std::stringstream input;
+    // access to x,y,z under obj
+    input << R"INPUT(<obj.y+"-"+obj.x*obj.z>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::stringstream out;
+    DataObject        o;
+    DataAccessor      data(&o, nullptr, ".");
+    o["obj"]      = DataObject();
+    o["obj"]["x"] = 2;
+    o["obj"]["y"] = "ted";
+    o["obj"]["z"] = 10.22;
+    ASSERT_TRUE(interpreter.evaluate(out, data));
+
+    ASSERT_EQ("ted-20.440000", out.str());
+}
 TEST(Halite, attribute_use_scope_array_optional)
 {
     std::stringstream input;
@@ -301,6 +319,25 @@ TEST(Halite, iterative_attribute_use_scope_object)
     std::stringstream out;
     DataObject        o;
     DataAccessor      data(&o);
+    o["obj"]      = DataObject();
+    o["obj"]["x"] = 2;
+    o["obj"]["y"] = "ted";
+    o["obj"]["z"] = 10.22;
+    ASSERT_TRUE(interpreter.evaluate(out, data));
+
+    ASSERT_EQ("ted-20.440000,ted-21.440000", out.str());
+}
+TEST(Halite, iterative_attribute_hierarchy_object)
+{
+    std::stringstream input;
+    // access to x,y,z are restricted to obj
+    // use obj scope to facilitate access
+    input << R"INPUT(<obj%y+"-"+(obj%x*obj%z+i): i=0,1;sep=,>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::stringstream out;
+    DataObject        o;
+    DataAccessor      data(&o, nullptr, "%");
     o["obj"]      = DataObject();
     o["obj"]["x"] = 2;
     o["obj"]["y"] = "ted";

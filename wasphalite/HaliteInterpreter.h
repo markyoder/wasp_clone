@@ -39,7 +39,8 @@ WASP_PUBLIC bool expand_template(std::ostream&      result,
                                  bool               defaultVars         = false,
                                  bool               defaultFuncs = false,
                                  const std::string& ldelim="<",
-                                 const std::string& rdelim=">");
+                                 const std::string& rdelim=">",
+                                 const std::string& hop=".");
 
 template<class S = TreeNodePool<
              unsigned short,
@@ -519,7 +520,8 @@ inline WASP_PUBLIC bool expand_template(std::ostream&      result,
                                         bool               defaultVars,
                                         bool               defaultFuncs,
                                         const std::string& ldelim,
-                                        const std::string& rdelim)
+                                        const std::string& rdelim,
+                                        const std::string& hop)
 {
     HaliteInterpreter<
         TreeNodePool<unsigned int, unsigned int,
@@ -538,7 +540,7 @@ inline WASP_PUBLIC bool expand_template(std::ostream&      result,
     if (json_parameter_file.empty())
     {
         DataObject   o;
-        DataAccessor data(&o);
+        DataAccessor data(&o, nullptr, hop);
         if (defaultVars)
             data.add_default_variables();
         if (defaultFuncs)
@@ -567,7 +569,7 @@ inline WASP_PUBLIC bool expand_template(std::ostream&      result,
              << " failed!" << std::endl;
         return false;
     }
-    DataAccessor data(obj_ptr.get());
+    DataAccessor data(obj_ptr.get(), nullptr, hop);
     if (defaultVars)
         data.add_default_variables();
     if (defaultFuncs)

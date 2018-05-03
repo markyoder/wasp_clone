@@ -39,10 +39,13 @@ int main(int argc, char** argv)
         std::cout << "Usage: " << std::endl;
         std::cout << "\t" << argv[0] << " template [data.json] " << std::endl;
         std::cout << "\ti.e., " << argv[0]
-                  << " /path/to/definition.tmpl /path/to/some/data.json --ldelim \"<\" --rdelim \">\""
+                  << " /path/to/definition.tmpl /path/to/some/data.json --ldelim \"<\" --rdelim \">\" --hop \".\""
                   << std::endl;
         std::cout << " Usage : " << argv[0]
-                  << " --version\t(print version info)" << std::endl;
+                  << " --version\t(print version info)" << std::endl
+                  << " --ldelim\tset the attribute's left delimiter" << std::endl
+                  << " --rdelim\tset the attribute's right delimiter" << std::endl
+                  << " --hop\tset the attribute's hierarchical delimiter"<< std::endl;
         return 1;
     }
 
@@ -50,6 +53,7 @@ int main(int argc, char** argv)
     std::string json = "";
     std::string ldelim = "<";
     std::string rdelim = ">";
+    std::string hop    = ".";
 
     for ( int i = 1; i < argc; ++i )
     {
@@ -72,6 +76,11 @@ int main(int argc, char** argv)
             rdelim = argv[i+1];
             i++;
         }
+        else if (arg == "--hop" && i+1 < argc)
+        {
+            hop = argv[i+1];
+            i++;
+        }
         else
         {
             std::cerr<<" Unable to determine argument at position "<<i<<" - '"
@@ -81,7 +90,7 @@ int main(int argc, char** argv)
     }
 
     if (!wasp::expand_template(std::cout, std::cerr, std::cerr, tmpl, json,
-                               true, true, ldelim, rdelim))
+                               true, true, ldelim, rdelim, hop))
     {
         return -1;
     }
