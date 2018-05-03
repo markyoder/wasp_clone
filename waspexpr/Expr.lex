@@ -42,12 +42,11 @@ typedef wasp::ExprParser::token_type token_type;
 INT [0-9]+
 EXPONENT [eE][\+\-]?{INT}
 REAL {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)|{INT}\.[^lgenao]|{INT}{EXPONENT}
-STRING [A-Za-z_]([A-Za-z0-9\._])*
+STRING [A-Za-z_]([A-Za-z0-9\._%])*
 
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
 SINGLE_QUOTED_STRING \'([^\'\n])*\'
 QSTRING {DOUBLE_QUOTED_STRING}|{SINGLE_QUOTED_STRING}
-COMMENT #[^\n]*|%[^\n]*
 
 LTE <=|".lte."
 GTE >=|".gte."

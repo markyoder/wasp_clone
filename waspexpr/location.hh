@@ -40,7 +40,7 @@
 
 # include "position.hh"
 
-#line 33 "Expr.bison" // location.cc:296
+#line 34 "Expr.bison" // location.cc:296
 namespace wasp {
 #line 46 "location.hh" // location.cc:296
   /// Abstract a location.
@@ -186,7 +186,7 @@ namespace wasp {
     return ostr;
   }
 
-#line 33 "Expr.bison" // location.cc:296
+#line 34 "Expr.bison" // location.cc:296
 } // wasp
 #line 192 "location.hh" // location.cc:296
 #endif // !YY_YY_LOCATION_HH_INCLUDED
