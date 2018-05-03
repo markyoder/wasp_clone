@@ -262,9 +262,9 @@ bool DataAccessor::boolean(const std::string& vname, bool* ok) const
     }
     if (current_data_exists)
     {
-        auto itr = m_current_data->find(name);
+        auto itr = current_data->find(name);
 
-        if (ok && itr == m_current_data->end())
+        if (ok && itr == current_data->end())
             *ok = false;
         else if (ok)
         {
