@@ -6,8 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- Hierarchical data attribute references in HALITE. I.e., `<object.key.value>` 
+
 ### Fixed
 - inoperable wasp2py when using wasp2py module from a regular wasp installation (i.e., wasp/wasppy/son2py and wasp/bin)
+- missing support for `%` in expression engine strings
 
 ## [0.1.2] - 01-22-2018
 ### Added
