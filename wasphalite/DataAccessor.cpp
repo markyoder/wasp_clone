@@ -21,8 +21,9 @@ DataAccessor::~DataAccessor()
 {
 }
 
-bool DataAccessor::exists(const std::string& name) const
+bool DataAccessor::exists(const std::string& vname) const
 {
+    std::string name = vname;
     const auto* current_data = m_current_data;
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
@@ -34,8 +35,9 @@ bool DataAccessor::exists(const std::string& name) const
     }
     return current_data_exists || parent_data_exists;
 }
-Context::Type DataAccessor::type(const std::string& name) const
+Context::Type DataAccessor::type(const std::string& vname) const
 {
+    std::string name = vname;
     const auto* current_data = m_current_data;
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
@@ -70,8 +72,9 @@ Context::Type DataAccessor::type(const std::string& name) const
     }
     return Context::Type::UNDEFINED;
 }
-Context::Type DataAccessor::type(const std::string& name, size_t index) const
+Context::Type DataAccessor::type(const std::string& vname, size_t index) const
 {
+    std::string name = vname;
     const auto* current_data = m_current_data;
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
@@ -118,8 +121,9 @@ Context::Type DataAccessor::type(const std::string& name, size_t index) const
     return Context::Type::UNDEFINED;
 }
 
-int DataAccessor::size(const std::string& name) const
+int DataAccessor::size(const std::string& vname) const
 {
+    std::string name = vname;
     const auto* current_data = m_current_data;
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
@@ -149,8 +153,9 @@ int DataAccessor::size(const std::string& name) const
     }
     return 0;
 }
-bool DataAccessor::store(const std::string& name, const bool& v)
+bool DataAccessor::store(const std::string& vname, const bool& v)
 {
+    std::string name = vname;
     auto* current_data = m_current_data;
     if (current_data == nullptr)
     {
@@ -160,8 +165,9 @@ bool DataAccessor::store(const std::string& name, const bool& v)
     return true;
 }
 
-bool DataAccessor::store(const std::string& name, const int& v)
+bool DataAccessor::store(const std::string& vname, const int& v)
 {
+    std::string name = vname;
     auto* current_data = m_current_data;
     if (current_data == nullptr)
     {
@@ -175,8 +181,9 @@ bool DataAccessor::store(const std::string& name, const char* v)
 {
     return store(name, std::string(v));
 }
-bool DataAccessor::store(const std::string& name, const std::string& v)
+bool DataAccessor::store(const std::string& vname, const std::string& v)
 {
+    std::string name = vname;
     auto* current_data = m_current_data;
     if (current_data == nullptr)
     {
@@ -186,8 +193,9 @@ bool DataAccessor::store(const std::string& name, const std::string& v)
     return true;
 }
 
-bool DataAccessor::store(const std::string& name, const double& v)
+bool DataAccessor::store(const std::string& vname, const double& v)
 {
+    std::string name = vname;
     auto* current_data = m_current_data;
     if (current_data == nullptr)
     {
@@ -197,10 +205,11 @@ bool DataAccessor::store(const std::string& name, const double& v)
     return true;
 }
 
-bool DataAccessor::boolean(const std::string& name,
+bool DataAccessor::boolean(const std::string& vname,
                            size_t             index,
                            bool*              ok) const
 {
+    std::string name = vname;
     const auto* current_data = m_current_data;
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
@@ -239,8 +248,9 @@ bool DataAccessor::boolean(const std::string& name,
     }
     return std::numeric_limits<bool>::quiet_NaN();
 }
-bool DataAccessor::boolean(const std::string& name, bool* ok) const
+bool DataAccessor::boolean(const std::string& vname, bool* ok) const
 {
+    std::string name = vname;
     const auto* current_data = m_current_data;
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
@@ -268,8 +278,9 @@ bool DataAccessor::boolean(const std::string& name, bool* ok) const
     }
     return std::numeric_limits<bool>::quiet_NaN();
 }
-int DataAccessor::integer(const std::string& name, size_t index, bool* ok) const
+int DataAccessor::integer(const std::string& vname, size_t index, bool* ok) const
 {
+    std::string name = vname;
     const auto* current_data = m_current_data;
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
@@ -309,8 +320,9 @@ int DataAccessor::integer(const std::string& name, size_t index, bool* ok) const
     }
     return std::numeric_limits<int>::quiet_NaN();
 }
-int DataAccessor::integer(const std::string& name, bool* ok) const
+int DataAccessor::integer(const std::string& vname, bool* ok) const
 {
+    std::string name = vname;
     const auto* current_data = m_current_data;
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
@@ -340,8 +352,9 @@ int DataAccessor::integer(const std::string& name, bool* ok) const
     return std::numeric_limits<int>::quiet_NaN();
 }
 
-double DataAccessor::real(const std::string& name, size_t index, bool* ok) const
+double DataAccessor::real(const std::string& vname, size_t index, bool* ok) const
 {
+    std::string name = vname;
     const auto* current_data = m_current_data;
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
@@ -380,8 +393,9 @@ double DataAccessor::real(const std::string& name, size_t index, bool* ok) const
     }
     return std::numeric_limits<double>::quiet_NaN();
 }
-double DataAccessor::real(const std::string& name, bool* ok) const
+double DataAccessor::real(const std::string& vname, bool* ok) const
 {
+    std::string name = vname;
     const auto* current_data = m_current_data;
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
@@ -411,8 +425,9 @@ double DataAccessor::real(const std::string& name, bool* ok) const
 }
 
 std::string
-DataAccessor::string(const std::string& name, size_t index, bool* ok) const
+DataAccessor::string(const std::string& vname, size_t index, bool* ok) const
 {
+    std::string name = vname;
     const auto* current_data = m_current_data;
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
@@ -451,8 +466,9 @@ DataAccessor::string(const std::string& name, size_t index, bool* ok) const
     }
     return "";
 }
-std::string DataAccessor::string(const std::string& name, bool* ok) const
+std::string DataAccessor::string(const std::string& vname, bool* ok) const
 {
+    std::string name = vname;
     const auto* current_data = m_current_data;
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
@@ -481,8 +497,9 @@ std::string DataAccessor::string(const std::string& name, bool* ok) const
     return "";
 }
 
-DataObject* DataAccessor::object(const std::string& name) const
+DataObject* DataAccessor::object(const std::string& vname) const
 {
+    std::string name = vname;
     const auto* current_data = m_current_data;
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
@@ -510,8 +527,9 @@ DataObject* DataAccessor::object(const std::string& name) const
     }
     return nullptr;
 }
-DataArray* DataAccessor::array(const std::string& name) const
+DataArray* DataAccessor::array(const std::string& vname) const
 {
+    std::string name = vname;
     const auto* current_data = m_current_data;
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
