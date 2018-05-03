@@ -767,7 +767,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor&          data,
         {
             const std::string& obj_name = options.use();
             DataObject*        use_obj  = data.object(obj_name);
-            if (use_obj == nullptr)
+            if (use_obj == nullptr && !options.optional())
             {
                 Interpreter<S>::error_stream()
                     << "***Error : unable to substitute expression on line "
@@ -775,8 +775,16 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor&          data,
                     << "' - the data object could not be found." << std::endl;
                 return false;
             }
-            // capture new scope with appropriate parent
-            use = DataAccessor(use_obj, &data);
+            // Missing use object is not an error as user
+            // indicated it was optional
+            else if (use_obj == nullptr && options.optional())
+            {
+                return true;
+            }
+            else{
+                // capture new scope with appropriate parent
+                use = DataAccessor(use_obj, &data);
+            }
         }
         DataObject   o;
         DataAccessor layer(&o, &use);
