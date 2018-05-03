@@ -7,6 +7,12 @@ DataAccessor::DataAccessor(DataObject* data, DataAccessor* parent,
     : Context(), m_parent(parent), m_current_data(data),
       m_hierarchy_operator(hierarchy_operator)
 {
+    // Inherit the hierarchy operator from the parent
+    // only if not explicity specified
+    if ( parent != nullptr && !hierarchy_operator.empty() )
+    {
+        m_hierarchy_operator = parent->m_hierarchy_operator;
+    }
 }
 
 DataAccessor::DataAccessor(const DataAccessor& orig)

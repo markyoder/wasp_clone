@@ -75,6 +75,13 @@ class WASP_PUBLIC DataAccessor : public Context
      */
     DataArray* array(const std::string& name) const;
 
+    /**
+     * @brief hierarchy_operator obtains the operator that dictates hierachy in
+     * the variable name
+     * @return returns the string indicating the hierarchy operator, default '.'
+     */
+    const std::string& hierarchy_operator() const {return m_hierarchy_operator;}
+
 protected:
     /**
      * @brief scope acquire the DataObject scope for the given variable
