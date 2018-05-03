@@ -24,7 +24,7 @@ DataAccessor::~DataAccessor()
 bool DataAccessor::exists(const std::string& vname) const
 {
     std::string name = vname;
-    const auto* current_data = m_current_data;
+    const auto* current_data = scope(name);
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
@@ -38,7 +38,7 @@ bool DataAccessor::exists(const std::string& vname) const
 Context::Type DataAccessor::type(const std::string& vname) const
 {
     std::string name = vname;
-    const auto* current_data = m_current_data;
+    const auto* current_data = scope(name);
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
@@ -75,7 +75,7 @@ Context::Type DataAccessor::type(const std::string& vname) const
 Context::Type DataAccessor::type(const std::string& vname, size_t index) const
 {
     std::string name = vname;
-    const auto* current_data = m_current_data;
+    const auto* current_data = scope(name);
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
@@ -124,7 +124,7 @@ Context::Type DataAccessor::type(const std::string& vname, size_t index) const
 int DataAccessor::size(const std::string& vname) const
 {
     std::string name = vname;
-    const auto* current_data = m_current_data;
+    const auto* current_data = scope(name);
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
@@ -156,7 +156,7 @@ int DataAccessor::size(const std::string& vname) const
 bool DataAccessor::store(const std::string& vname, const bool& v)
 {
     std::string name = vname;
-    auto* current_data = m_current_data;
+    auto* current_data = scope(name);
     if (current_data == nullptr)
     {
         return Context::store(name, v);
@@ -168,7 +168,7 @@ bool DataAccessor::store(const std::string& vname, const bool& v)
 bool DataAccessor::store(const std::string& vname, const int& v)
 {
     std::string name = vname;
-    auto* current_data = m_current_data;
+    auto* current_data = scope(name);
     if (current_data == nullptr)
     {
         return Context::store(name, v);
@@ -184,7 +184,7 @@ bool DataAccessor::store(const std::string& name, const char* v)
 bool DataAccessor::store(const std::string& vname, const std::string& v)
 {
     std::string name = vname;
-    auto* current_data = m_current_data;
+    auto* current_data = scope(name);
     if (current_data == nullptr)
     {
         return Context::store(name, v);
@@ -196,7 +196,7 @@ bool DataAccessor::store(const std::string& vname, const std::string& v)
 bool DataAccessor::store(const std::string& vname, const double& v)
 {
     std::string name = vname;
-    auto* current_data = m_current_data;
+    auto* current_data = scope(name);
     if (current_data == nullptr)
     {
         return Context::store(name, v);
@@ -210,7 +210,7 @@ bool DataAccessor::boolean(const std::string& vname,
                            bool*              ok) const
 {
     std::string name = vname;
-    const auto* current_data = m_current_data;
+    const auto* current_data = scope(name);
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
@@ -251,7 +251,7 @@ bool DataAccessor::boolean(const std::string& vname,
 bool DataAccessor::boolean(const std::string& vname, bool* ok) const
 {
     std::string name = vname;
-    const auto* current_data = m_current_data;
+    const auto* current_data = scope(name);
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
@@ -281,7 +281,7 @@ bool DataAccessor::boolean(const std::string& vname, bool* ok) const
 int DataAccessor::integer(const std::string& vname, size_t index, bool* ok) const
 {
     std::string name = vname;
-    const auto* current_data = m_current_data;
+    const auto* current_data = scope(name);
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
@@ -323,7 +323,7 @@ int DataAccessor::integer(const std::string& vname, size_t index, bool* ok) cons
 int DataAccessor::integer(const std::string& vname, bool* ok) const
 {
     std::string name = vname;
-    const auto* current_data = m_current_data;
+    const auto* current_data = scope(name);
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
@@ -355,7 +355,7 @@ int DataAccessor::integer(const std::string& vname, bool* ok) const
 double DataAccessor::real(const std::string& vname, size_t index, bool* ok) const
 {
     std::string name = vname;
-    const auto* current_data = m_current_data;
+    const auto* current_data = scope(name);
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
@@ -396,7 +396,7 @@ double DataAccessor::real(const std::string& vname, size_t index, bool* ok) cons
 double DataAccessor::real(const std::string& vname, bool* ok) const
 {
     std::string name = vname;
-    const auto* current_data = m_current_data;
+    const auto* current_data = scope(name);
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
@@ -428,7 +428,7 @@ std::string
 DataAccessor::string(const std::string& vname, size_t index, bool* ok) const
 {
     std::string name = vname;
-    const auto* current_data = m_current_data;
+    const auto* current_data = scope(name);
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
@@ -469,7 +469,7 @@ DataAccessor::string(const std::string& vname, size_t index, bool* ok) const
 std::string DataAccessor::string(const std::string& vname, bool* ok) const
 {
     std::string name = vname;
-    const auto* current_data = m_current_data;
+    const auto* current_data = scope(name);
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
@@ -500,7 +500,7 @@ std::string DataAccessor::string(const std::string& vname, bool* ok) const
 DataObject* DataAccessor::object(const std::string& vname) const
 {
     std::string name = vname;
-    const auto* current_data = m_current_data;
+    const auto* current_data = scope(name);
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
@@ -530,7 +530,7 @@ DataObject* DataAccessor::object(const std::string& vname) const
 DataArray* DataAccessor::array(const std::string& vname) const
 {
     std::string name = vname;
-    const auto* current_data = m_current_data;
+    const auto* current_data = scope(name);
     bool current_data_exists =
         current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
