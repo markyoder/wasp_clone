@@ -762,7 +762,7 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor&          data,
     }
     else
     {
-        DataAccessor use = data;
+        DataAccessor use(data);
         if (options.has_use())
         {
             const std::string& obj_name = options.use();

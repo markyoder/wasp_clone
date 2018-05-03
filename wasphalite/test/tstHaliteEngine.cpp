@@ -307,6 +307,28 @@ TEST(Halite, attribute_use_scope_array)
 
     ASSERT_EQ("fred-20.440000 ted-40.880000", out.str());
 }
+TEST(Halite, hierarchical_attribute_use_scope_array)
+{
+    std::stringstream input;
+    // access to x,y,z are restricted to each element of an array
+    // use arrayscope to facilitate access
+    input << R"INPUT(<obj.value: use=array>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::stringstream out;
+    DataObject        o;
+    DataAccessor      data(&o, nullptr, ".");
+    o["array"]         = DataArray();
+    o["array"][0]      = DataObject();
+    o["array"][0]["obj"]= DataObject();
+    o["array"][0]["obj"]["value"] = 2;
+    o["array"][1]      = DataObject();
+    o["array"][1]["obj"]= DataObject();
+    o["array"][1]["obj"]["value"] = 4;
+    ASSERT_TRUE(interpreter.evaluate(out, data));
+
+    ASSERT_EQ("2 4", out.str());
+}
 
 TEST(Halite, iterative_attribute_use_scope_object)
 {

@@ -9,7 +9,7 @@ DataAccessor::DataAccessor(DataObject* data, DataAccessor* parent,
 {
     // Inherit the hierarchy operator from the parent
     // only if not explicity specified
-    if ( parent != nullptr && !hierarchy_operator.empty() )
+    if ( parent != nullptr && hierarchy_operator.empty() )
     {
         m_hierarchy_operator = parent->m_hierarchy_operator;
     }
@@ -568,7 +568,10 @@ wasp::DataObject* DataAccessor::scope(std::string& name) const
 {
     // no operator, it better be scoped by this accessor's data
     if (m_hierarchy_operator.empty()
-            || m_current_data == nullptr) return m_current_data;
+            || m_current_data == nullptr)
+    {
+        return m_current_data;
+    }
 
     std::string original_name = name;
     //
