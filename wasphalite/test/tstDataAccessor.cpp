@@ -307,6 +307,7 @@ TEST(Halite, hierarchy)
         ASSERT_EQ( 2, accessor_object_o_o.array("object.o.o.a")->size());
         ASSERT_EQ( 2, accessor_object_o_o.array("object.o.o.a")->at(0).to_int());
         ASSERT_EQ( 3, accessor_object_o_o.array("object.o.o.a")->at(1).to_int());
+        ASSERT_NE( nullptr, accessor.object("object.o.o"));
     }
 
     { // test '::'
