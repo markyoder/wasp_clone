@@ -1545,6 +1545,30 @@ TEST(Halite, simple_parameterized_conditional)
     }
 }
 
+TEST(Halite, non_default_attribute_delim)
+{
+    std::string template_file =
+        wasp::dir_name(SOURCE_DIR+"/") + "/data/non_default_attribute_delim.tmpl";
+    std::string json_data_file =
+        wasp::dir_name(SOURCE_DIR+"/") + "/data/non_default_attribute_delim.json";
+
+    std::stringstream output_stream;
+
+    bool template_result =
+        wasp::expand_template(output_stream, std::cerr, std::cerr,
+                              template_file, json_data_file, true, true,
+                              "{","}",".");
+
+    ASSERT_TRUE(template_result);
+    std::stringstream expected_ss;
+    expected_ss << "here is an" <<std::endl
+                <<std::endl
+                <<"attribute"<<std::endl
+                <<std::endl
+                <<"that is 3.14159"<<std::endl;
+
+    EXPECT_EQ(expected_ss.str(), output_stream.str());
+}
 /**
  * @brief TEST file repeated importing a subtemplate
  *  This exercises the newline emission logic for templates
