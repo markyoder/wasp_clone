@@ -250,6 +250,24 @@ TEST(Halite, attribute_use_scope_object)
 
     ASSERT_EQ("ted-20.440000", out.str());
 }
+TEST(Halite, attribute_object_hierarchy_reference)
+{
+    std::stringstream input;
+    // access to x,y,z under obj
+    input << R"INPUT(<obj.y+"-"+obj.x*obj.z>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::stringstream out;
+    DataObject        o;
+    DataAccessor      data(&o, nullptr, ".");
+    o["obj"]      = DataObject();
+    o["obj"]["x"] = 2;
+    o["obj"]["y"] = "ted";
+    o["obj"]["z"] = 10.22;
+    ASSERT_TRUE(interpreter.evaluate(out, data));
+
+    ASSERT_EQ("ted-20.440000", out.str());
+}
 TEST(Halite, attribute_use_scope_array_optional)
 {
     std::stringstream input;
@@ -289,6 +307,28 @@ TEST(Halite, attribute_use_scope_array)
 
     ASSERT_EQ("fred-20.440000 ted-40.880000", out.str());
 }
+TEST(Halite, hierarchical_attribute_use_scope_array)
+{
+    std::stringstream input;
+    // access to x,y,z are restricted to each element of an array
+    // use arrayscope to facilitate access
+    input << R"INPUT(<obj.value: use=array>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::stringstream out;
+    DataObject        o;
+    DataAccessor      data(&o, nullptr, ".");
+    o["array"]         = DataArray();
+    o["array"][0]      = DataObject();
+    o["array"][0]["obj"]= DataObject();
+    o["array"][0]["obj"]["value"] = 2;
+    o["array"][1]      = DataObject();
+    o["array"][1]["obj"]= DataObject();
+    o["array"][1]["obj"]["value"] = 4;
+    ASSERT_TRUE(interpreter.evaluate(out, data));
+
+    ASSERT_EQ("2 4", out.str());
+}
 
 TEST(Halite, iterative_attribute_use_scope_object)
 {
@@ -301,6 +341,25 @@ TEST(Halite, iterative_attribute_use_scope_object)
     std::stringstream out;
     DataObject        o;
     DataAccessor      data(&o);
+    o["obj"]      = DataObject();
+    o["obj"]["x"] = 2;
+    o["obj"]["y"] = "ted";
+    o["obj"]["z"] = 10.22;
+    ASSERT_TRUE(interpreter.evaluate(out, data));
+
+    ASSERT_EQ("ted-20.440000,ted-21.440000", out.str());
+}
+TEST(Halite, iterative_attribute_hierarchy_object)
+{
+    std::stringstream input;
+    // access to x,y,z are restricted to obj
+    // use obj scope to facilitate access
+    input << R"INPUT(<obj%y+"-"+(obj%x*obj%z+i): i=0,1;sep=,>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::stringstream out;
+    DataObject        o;
+    DataAccessor      data(&o, nullptr, "%");
     o["obj"]      = DataObject();
     o["obj"]["x"] = 2;
     o["obj"]["y"] = "ted";
@@ -324,6 +383,42 @@ TEST(Halite, indirect_attribute)
     o["obj.x"]  = 3.14159;
     ASSERT_TRUE(interpreter.evaluate(out, data));
     ASSERT_EQ("obj 3.14159", out.str());
+}
+TEST(Halite, indirect_hierarchical_attribute)
+{
+    std::stringstream input;
+    input << R"INPUT(<<attr>> <<what>.<member>:fmt=%.2f>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::stringstream out;
+    DataObject        o;
+    DataAccessor      data(&o,nullptr,".");
+    o["attr"]   = std::string("what");
+    o["what"]   = std::string("obj");
+    o["member"] = std::string("x");
+    o["obj.x"]  = 3.14159;
+    o["obj"]    = DataObject();
+    o["obj"]["x"] = 2.1;
+    ASSERT_TRUE(interpreter.evaluate(out, data));
+    ASSERT_EQ("obj 2.10", out.str());
+}
+TEST(Halite, indirect_fake_hierarchical_attribute)
+{
+    std::stringstream input;
+    input << R"INPUT(<<attr>> <<what>.<member>:fmt=%.4f>)INPUT";
+    HaliteInterpreter<> interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::stringstream out;
+    DataObject        o;
+    DataAccessor      data(&o,nullptr,".");
+    o["attr"]   = std::string("what");
+    o["what"]   = std::string("obj");
+    o["member"] = std::string("x");
+    o["obj.x"]  = 3.14159; // <--- FAKE hierarchy... still works
+//    o["obj"]    = DataObject();
+//    o["obj"]["x"] = 2.1;
+    ASSERT_TRUE(interpreter.evaluate(out, data));
+    ASSERT_EQ("obj 3.1416", out.str());
 }
 TEST(Halite, indirect_attribute_delim_output)
 {
@@ -1450,6 +1545,30 @@ TEST(Halite, simple_parameterized_conditional)
     }
 }
 
+TEST(Halite, non_default_attribute_delim)
+{
+    std::string template_file =
+        wasp::dir_name(SOURCE_DIR+"/") + "/data/non_default_attribute_delim.tmpl";
+    std::string json_data_file =
+        wasp::dir_name(SOURCE_DIR+"/") + "/data/non_default_attribute_delim.json";
+
+    std::stringstream output_stream;
+
+    bool template_result =
+        wasp::expand_template(output_stream, std::cerr, std::cerr,
+                              template_file, json_data_file, true, true,
+                              "{","}",".");
+
+    ASSERT_TRUE(template_result);
+    std::stringstream expected_ss;
+    expected_ss << "here is an" <<std::endl
+                <<std::endl
+                <<"attribute"<<std::endl
+                <<std::endl
+                <<"that is 3.14159"<<std::endl;
+
+    EXPECT_EQ(expected_ss.str(), output_stream.str());
+}
 /**
  * @brief TEST file repeated importing a subtemplate
  *  This exercises the newline emission logic for templates

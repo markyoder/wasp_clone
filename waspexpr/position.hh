@@ -50,7 +50,7 @@
 #  endif
 # endif
 
-#line 33 "Expr.bison" // location.cc:296
+#line 34 "Expr.bison" // location.cc:296
 namespace wasp {
 #line 56 "position.hh" // location.cc:296
   /// Abstract a position.
@@ -174,7 +174,7 @@ namespace wasp {
     return ostr << pos.line << '.' << pos.column;
   }
 
-#line 33 "Expr.bison" // location.cc:296
+#line 34 "Expr.bison" // location.cc:296
 } // wasp
 #line 180 "position.hh" // location.cc:296
 #endif // !YY_YY_POSITION_HH_INCLUDED
