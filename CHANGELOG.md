@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Typedefs for Default TokenPool,TreeNodePool, and Interpreters.
 
 ### Changes
-- The TreeNodeView has been refactored to be NodeView and free of template paramters. This breaks backwards compatibility
+- The TreeNodeView has been refactored to be NodeView and free of template parameters. This breaks backwards compatibility
 
 ### Fixes
 None
