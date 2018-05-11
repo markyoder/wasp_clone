@@ -4,15 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-### Additions
-- Typedefs for Default TokenPool,TreeNodePool, and Interpreters.
-
-### Changes
-- The TreeNodeView has been refactored to be NodeView and free of template parameters. This breaks backwards compatibility
-
+## [1.0.0] - 05-11-2018
 ### Added
-- Hierarchical data attribute references in HALITE. I.e., `<object.key.value>` 
+- Typedefs for Default TokenPool,TreeNodePool, and Interpreters.
+- Hierarchical data attribute references in HALITE. I.e., `<object.key.value>`
+
+### Changed
+- The TreeNodeView has been refactored to be NodeView and free of template parameters. This breaks backwards compatibility
 
 ### Fixed
 - inoperable wasp2py when using wasp2py module from a regular wasp installation (i.e., wasp/wasppy/son2py and wasp/bin)
