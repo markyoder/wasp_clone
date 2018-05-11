@@ -208,7 +208,7 @@ WASP_PUBLIC std::string info(const TV& view)
     else
         return "@TreeView(l=" + std::to_string(view.line()) + "," +
                std::to_string(view.column()) +
-               ": t=" + std::to_string(view.tree_node_index()) + ", i" +
+               ": t=" + std::to_string(view.node_index()) + ", i" +
                std::to_string(view.type()) + ", n'" + view.name() + "'" + ")";
 }
 
