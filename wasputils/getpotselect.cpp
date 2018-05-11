@@ -46,11 +46,8 @@ int main(int argc, char* argv[])
         input.close();
         return 1;
     }
-    std::stringstream errors;
-    GetPotInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-        interpreter(errors);
+    std::stringstream        errors;
+    DefaultGetPotInterpreter interpreter(errors);
     wasp_timer(parse_time);
     wasp_timer_start(parse_time);
     bool parsed = interpreter.parse(input);
@@ -71,8 +68,8 @@ int main(int argc, char* argv[])
         std::stringstream select_statement_errors;
         std::string       select_statement = argv[j];
         std::cout << "Selecting " << select_statement << std::endl;
-        SIRENInterpreter<> siren(select_statement_errors);
-        std::string        selection_name =
+        DefaultSIRENInterpreter siren(select_statement_errors);
+        std::string             selection_name =
             "selection statement " + std::to_string(j - 1);
         parsed = siren.parseString(select_statement, selection_name);
         if (!parsed)

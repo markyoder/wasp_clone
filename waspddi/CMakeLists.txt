@@ -44,6 +44,7 @@ FILE(GLOB HEADERS *.h *.hh *.hpp *.lex *.bison
 SET(SOURCES
 DDILexer.cpp
 DDIParser.cpp
+DDINodeView.cpp
 )
 
 ##---------------------------------------------------------------------------##

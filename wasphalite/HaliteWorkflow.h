@@ -17,12 +17,8 @@ class WASP_PUBLIC HaliteWorkflow
     bool m_use_default_functions = false;
     bool m_template_parse_result = false;
 
-    typedef TokenPool<unsigned int, unsigned int, unsigned int> token_pool_type;
-    typedef TreeNodePool<unsigned int, unsigned int, token_pool_type>
-        treenode_pool_type;
-
-    typedef HaliteInterpreter<treenode_pool_type> halite_interp_type;
-    halite_interp_type::SharedPtr                 m_halite_interpreter;
+    typedef DefaultHaliteInterpreter halite_interp_type;
+    halite_interp_type::SharedPtr    m_halite_interpreter;
 
   public:
     bool useDefaultVariables() const;

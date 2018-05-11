@@ -3,7 +3,8 @@
 #define WASP_SIRENINTERPRETER_H
 
 #include <string>
-#include <cstring>  // strcmp
+#include <cstring>
+#include <cstdint>
 #include <fstream>
 #include <istream>
 #include <ostream>
@@ -23,7 +24,55 @@
  * wasp::SIRENParser, wasp::SIRENLexerImpl and wasp::SIRENInterpreter */
 namespace wasp
 {
-template<class S = TreeNodePool<>>
+// How many input node type's (section, value, etc.) in a SIREN file
+typedef std::uint8_t SIRENNodeType_t;
+
+// How many input token type's (word, int, real, comma, etc.) in a SIREN file
+typedef std::uint8_t SIRENTokenType_t;
+
+// How many bytes in a file
+typedef std::uint8_t  SIRENTinyFileSize_t;
+typedef std::uint16_t SIRENMediumFileSize_t;
+typedef std::uint32_t SIRENFileSize_t;
+typedef std::uint64_t SIRENLargeFileSize_t;
+
+// How many tokens in a file (5 reals, 100 ints, 50 words, etc.)
+typedef std::uint8_t  SIRENTinyTokenSize_t;
+typedef std::uint16_t SIRENMediumTokenSize_t;
+typedef std::uint32_t SIRENTokenSize_t;
+typedef std::uint64_t SIRENLargeTokenSize_t;
+
+// Tiny file TokenPool (less than 256 bytes)
+typedef TokenPool<
+    // Token type
+    SIRENTokenType_t,
+    // Max number of token
+    SIRENTinyTokenSize_t,
+    // Max number of bytes in the file
+    SIRENTinyFileSize_t>
+    SIRENTinyTokenPool;
+
+// Medium file TokenPool (less than 65k bytes)
+typedef TokenPool<
+    // Token type
+    SIRENTokenType_t,
+    // Max number of token
+    SIRENMediumTokenSize_t,
+    // Max number of bytes in the file
+    SIRENMediumFileSize_t>
+    SIRENMediumTokenPool;
+
+// Regular NodePool storage
+typedef TreeNodePool<
+    // Node type
+    SIRENNodeType_t,
+    // Max number of nodes in the file
+    std::uint16_t,
+    // Regular TokenPool
+    SIRENMediumTokenPool>
+    SIRENNodePool;
+
+template<class S = SIRENNodePool>
 class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
 {
   public:
@@ -97,13 +146,9 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      * given context
      */
     template<typename TAdapter>
-    size_t evaluate(const TreeNodeView<Storage_type>& context,
-                    SIRENResultSet<TAdapter>&         result,
-                    std::vector<TAdapter>&            stage) const;
-    //        template<typename TAdapter>
-    //        size_t select_any(TreeNodeView & context
-    //                        , TAdapter & node
-    //                        , SIRENResultSet<TAdapter> & result)const;
+    size_t evaluate(const NodeView&           context,
+                    SIRENResultSet<TAdapter>& result,
+                    std::vector<TAdapter>&    stage) const;
 
     /**
      * @brief search_child_name searches the staged node's children for
@@ -114,8 +159,8 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      * named child nodes
      */
     template<typename TAdapter>
-    void search_child_name(const TreeNodeView<Storage_type>& context,
-                           std::vector<TAdapter>&            stage) const;
+    void search_child_name(const NodeView&        context,
+                           std::vector<TAdapter>& stage) const;
     /**
      * @brief search_conditional_predicated_child searches the staged node's
      * children for specifically named children with grandchild attributes
@@ -128,9 +173,9 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      * only where the obj node has a child node 'name' with value 'fred'.
      */
     template<typename TAdapter>
-    void search_conditional_predicated_child(
-        const TreeNodeView<Storage_type>& context,
-        std::vector<TAdapter>&            stage) const;
+    void
+    search_conditional_predicated_child(const NodeView&        context,
+                                        std::vector<TAdapter>& stage) const;
 
     /**
      * @brief search_index_predicated_child searches the staged node's children
@@ -144,14 +189,15 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      * only where the obj node is at the 1-10 index and every 3rd
      */
     template<typename TAdapter>
-    void
-    search_index_predicated_child(const TreeNodeView<Storage_type>& context,
-                                  std::vector<TAdapter>& stage) const;
+    void search_index_predicated_child(const NodeView&        context,
+                                       std::vector<TAdapter>& stage) const;
     template<typename TAdapter>
-    void recursive_child_select(const TreeNodeView<Storage_type>& context,
-                                std::vector<TAdapter>&            stage) const;
+    void recursive_child_select(const NodeView&        context,
+                                std::vector<TAdapter>& stage) const;
 };  // end of SIRENInterpreter class
 
 #include "waspsiren/SIRENInterpreter.i.h"
+
+typedef SIRENInterpreter<> DefaultSIRENInterpreter;
 }  // namespace wasp
 #endif  // WASPSIRENINTERPRETER_H

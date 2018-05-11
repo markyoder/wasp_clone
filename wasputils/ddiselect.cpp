@@ -49,16 +49,10 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    DDInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-        parser;
+    DefaultDDInterpreter parser;
 
-    SONInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-         schema;
-    bool schema_failed = !schema.parseFile(argv[1]);
+    DefaultSONInterpreter schema;
+    bool                  schema_failed = !schema.parseFile(argv[1]);
     if (schema_failed)
     {
         std::cout << "***Error : Parsing of " << argv[1] << " failed!"
@@ -66,8 +60,8 @@ int main(int argc, char** argv)
         return 1;
     }
     // Construct the definition
-    SONNodeView<decltype(schema.root())> schema_root = schema.root();
-    std::stringstream                    definition_errors;
+    SONNodeView       schema_root = schema.root();
+    std::stringstream definition_errors;
     if (!HIVE::create_definition(parser.definition(), schema_root,
                                  definition_errors, false))
     {
@@ -89,8 +83,8 @@ int main(int argc, char** argv)
         std::stringstream select_statement_errors;
         std::string       select_statement = argv[j];
         std::cout << "Selecting " << select_statement << std::endl;
-        SIRENInterpreter<> siren(select_statement_errors);
-        std::string        selection_name =
+        DefaultSIRENInterpreter siren(select_statement_errors);
+        std::string             selection_name =
             "selection statement " + std::to_string(j - 2);
         bool parsed = siren.parseString(select_statement, selection_name);
         if (!parsed)

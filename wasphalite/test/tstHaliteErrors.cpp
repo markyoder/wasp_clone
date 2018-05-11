@@ -52,11 +52,11 @@ TEST(Halite, range_errors)
     {
         SCOPED_TRACE(expected_error[i]);
         SCOPED_TRACE(ranges[i]);
-        std::vector<HaliteInterpreter<>::Range> imports;
-        std::string                             range = ranges[i];
-        std::string                             error;
+        std::vector<DefaultHaliteInterpreter::Range> imports;
+        std::string                                  range = ranges[i];
+        std::string                                  error;
         EXPECT_FALSE(
-            HaliteInterpreter<>::extract_ranges(range, imports, error));
+            DefaultHaliteInterpreter::extract_ranges(range, imports, error));
         std::cout << error << std::endl;
         ASSERT_EQ(expected_error[i], error);
     }
@@ -102,8 +102,8 @@ TEST(Halite, attribute_range_errors)
         SCOPED_TRACE(e);
         std::stringstream input;
         input << t;
-        std::stringstream   errors;
-        HaliteInterpreter<> interpreter(errors);
+        std::stringstream        errors;
+        DefaultHaliteInterpreter interpreter(errors);
         // TODO - these should really be parse errors
         ASSERT_TRUE(interpreter.parse(input));
 

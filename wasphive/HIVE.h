@@ -376,7 +376,7 @@ class WASP_PUBLIC HIVE
         }
 
         // look up this current node's path in the schema
-        SIRENInterpreter<> selector(err);
+        DefaultSIRENInterpreter selector(err);
         selector.parseString(current_node.path());
         SIRENResultSet<SR> results;
         selector.evaluate(schema_root, results);

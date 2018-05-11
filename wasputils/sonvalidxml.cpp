@@ -60,11 +60,8 @@ int main(int argc, char** argv)
     }
     std::stringstream errors;
     // TODO - adjust file offset size based on file size
-    SONInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-         schema_interp(errors);
-    bool parsed_schema = schema_interp.parse(schema);
+    DefaultSONInterpreter schema_interp(errors);
+    bool                  parsed_schema = schema_interp.parse(schema);
     if (!parsed_schema)
     {
         std::cerr << "Failed to process schema file '" << argv[1] << "'"
@@ -80,12 +77,9 @@ int main(int argc, char** argv)
         input.close();
         return 2;
     }
-    // TODO - adjust file offset size based on file size
-    SONInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-         input_interp(errors);
-    bool parsed_input = input_interp.parse(input);
+
+    DefaultSONInterpreter input_interp(errors);
+    bool                  parsed_input = input_interp.parse(input);
     if (!parsed_input)
     {
         std::cerr << "Failed to process input file '" << argv[2] << "'"
@@ -93,19 +87,15 @@ int main(int argc, char** argv)
         std::cerr << errors.str() << std::endl;
         return -1;
     }
-    SONNodeView<decltype(input_interp.root())> input_root = input_interp.root();
-    SONNodeView<decltype(schema_interp.root())> schema_root =
-        schema_interp.root();
+    SONNodeView              input_root  = input_interp.root();
+    SONNodeView              schema_root = schema_interp.root();
     HIVE                     validation_engine;
     std::vector<std::string> validation_errors;
     bool                     valid =
         validation_engine.validate(schema_root, input_root, validation_errors);
 
-    SONInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-         parser;
-    bool failed = !parser.parseFile(argv[1]);
+    DefaultSONInterpreter parser;
+    bool                  failed = !parser.parseFile(argv[1]);
     if (failed)
     {
         std::cerr << "***Error : Parsing of " << argv[1] << " failed!"

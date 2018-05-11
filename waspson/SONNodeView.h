@@ -5,7 +5,7 @@
 #include <sstream>
 #include <ostream>
 #include <iostream>
-#include "waspcore/TreeNodePool.h"  // for Default TreeNodeView
+#include "waspcore/Interpreter.h"
 #include "waspcore/decl.h"
 namespace wasp
 {
@@ -14,22 +14,21 @@ namespace wasp
  * Allows traversing child nodes and parent as well as acquire node information
  * *
  */
-template<class TNV = TreeNodeView<>>
 class WASP_PUBLIC SONNodeView
 {
   public:
     using Collection = std::vector<SONNodeView>;
-    typedef TNV                             TreeNodeView_type;
-    typedef typename TNV::TreeNodePool_type TreeNodePool_type;
-    SONNodeView() : m_tree_node_index(-1), m_tree_data(nullptr) {}
-    SONNodeView(std::size_t node_index, const TreeNodePool_type& nodes);
-    SONNodeView(const TNV& orig);
+    SONNodeView() : m_node_index(-1), m_pool(nullptr) {}
+    SONNodeView(std::size_t node_index, const AbstractInterpreter& nodes);
+    template<class NV>
+    SONNodeView(const NV& orig);
     SONNodeView(const SONNodeView& orig);
 
     ~SONNodeView();
 
     SONNodeView& operator=(const SONNodeView& b);
-    SONNodeView& operator=(const TreeNodeView_type& b);
+    template<class NV>
+    SONNodeView& operator=(const NV& b);
 
     bool operator==(const SONNodeView& b) const;
     bool operator!=(const SONNodeView& b) const { return !(*this == b); }
@@ -99,7 +98,7 @@ class WASP_PUBLIC SONNodeView
      * @brief non_decorative_children acquires all non decorative children
      * @return collection of SONNodeViews
      */
-    typename SONNodeView::Collection non_decorative_children() const;
+    SONNodeView::Collection non_decorative_children() const;
     /**
      * @brief first_non_decorative_child_by_name acquires the first non
      * decorative child
@@ -120,8 +119,7 @@ class WASP_PUBLIC SONNodeView
      */
     bool is_null() const
     {
-        return m_tree_data == nullptr ||
-               m_tree_node_index == m_tree_data->size();
+        return m_pool == nullptr || m_node_index == m_pool->size();
     }
 
     /**
@@ -165,12 +163,12 @@ class WASP_PUBLIC SONNodeView
      * @param limit the limit on the number of children ( 0 := no limit )
      * @return A collection of views. Empty if no match occurrs
      */
-    typename SONNodeView::Collection child_by_name(const std::string& name,
-                                                   size_t limit = 0) const;
+    SONNodeView::Collection child_by_name(const std::string& name,
+                                          size_t             limit = 0) const;
     /**
      * @brief first_child_by_name acquires the first child with the given name
      * @param name the name of the requested child
-     * @return Named TreeNodeView as requestd. is_null indicates if none was
+     * @return Named NodeView as requestd. is_null indicates if none was
      * found
      */
     SONNodeView first_child_by_name(const std::string& name) const;
@@ -209,16 +207,16 @@ class WASP_PUBLIC SONNodeView
     std::size_t last_column() const;
 
     /**
-     * @brief tree_node_index acquire the index into the tree node data pool
+     * @brief node_index acquire the index into the tree node data pool
      * @return the index into the data pool
      */
-    std::size_t tree_node_index() const { return m_tree_node_index; }
+    std::size_t node_index() const { return m_node_index; }
 
     /**
-     * @brief tree_node_pool acquire the pointer to the backend storage
+     * @brief node_pool acquire the pointer to the backend storage
      * @return the TreeNodePool that backs this view
      */
-    const TreeNodePool_type* tree_node_pool() const { return m_tree_data; }
+    const AbstractInterpreter* node_pool() const { return m_pool; }
 
     // !> Type operators
     /**
@@ -255,20 +253,20 @@ class WASP_PUBLIC SONNodeView
     std::string last_as_string(bool* ok = nullptr) const;
 
     // Friendly stream operator
-    friend std::ostream& operator<<(std::ostream&                 str,
-                                    const wasp::SONNodeView<TNV>& view)
+    friend std::ostream& operator<<(std::ostream&            str,
+                                    const wasp::SONNodeView& view)
     {
-        str << "SONNodeView(tree_node_index=" << view.m_tree_node_index
-            << ", &pool=" << view.m_tree_data << ")";
+        str << "SONNodeView(node_index=" << view.m_node_index
+            << ", &pool=" << view.m_pool << ")";
         return str;
     }
 
   private:
-    size_t                   m_tree_node_index;
-    const TreeNodePool_type* m_tree_data;
+    size_t                     m_node_index;
+    const AbstractInterpreter* m_pool;
 
     /**
-     * @brief value_tree_node_index when the value is requested (to_int, string,
+     * @brief value_node_index when the value is requested (to_int, string,
      * etc) this returns the index
      * @return index of the node considered this node's value
      * I.e.,  key = value
@@ -278,9 +276,9 @@ class WASP_PUBLIC SONNodeView
      *  |_value
      * When key's value is requested, the index of the 'value' node will be
      * returned.
-     * If no children, the m_tree_node_index is returned
+     * If no children, the m_node_index is returned
      */
-    size_t value_tree_node_index() const;
+    size_t value_node_index() const;
 };
 #include "waspson/SONNodeView.i.h"
 }  // end of namespace

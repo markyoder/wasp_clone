@@ -31,7 +31,7 @@ TEST(SON, keyed_value)
                     tag ( "the id" ) = valu
                     tag ( an_id ) = vl
             )INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(43, interpreter.node_count());
     auto document = interpreter.root();
@@ -115,7 +115,7 @@ TEST(SON, empty_object)
             e5(id1) = { }
             'e6'("id 2") : {}
             )INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(35, interpreter.node_count());
     auto document = interpreter.root();
@@ -190,7 +190,7 @@ TEST(SON, empty_array)
             e5(id1) = [ ]
             'e6'("id 2") : []
             )INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(35, interpreter.node_count());
     auto document = interpreter.root();
@@ -256,7 +256,7 @@ TEST(SON, empty_execution_unit)
     std::stringstream input;
     input << R"INPUT(=code
 end)INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(5, interpreter.node_count());
     auto document = interpreter.root();
@@ -295,7 +295,7 @@ TEST(SON, execution_unit)
                     tag ( "the id" ) = valu
                     tag ( an_id ) = vl
 end)INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(47, interpreter.node_count());
     auto document = interpreter.root();
@@ -421,7 +421,7 @@ TEST(SON, int_array)
                      [ 4 5
                        6 7 ]
             )INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(24, interpreter.node_count());
     auto document = interpreter.root();
@@ -492,7 +492,7 @@ TEST(SON, real_array)
                      [ 4.3 5.4
                        6.1 7.0 ]
             )INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(24, interpreter.node_count());
     auto document = interpreter.root();
@@ -577,7 +577,7 @@ TEST(SON, comments)
 % start of line
    k=1 % trailing line
             )INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(7, interpreter.node_count());
     auto document = interpreter.root();
@@ -626,7 +626,7 @@ TEST(SON, SON)
             A[ 1.0-5 -4 ] O { g=d } ]
 end % conclusion of unit of execution
 )INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(80, interpreter.node_count());
     auto document = interpreter.root();
@@ -910,7 +910,7 @@ TEST(SON, expressions)
             a||b a||2 a||1.2 b||a 2||a 1.2||a
             ]
 )INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     EXPECT_EQ(312 + 5, interpreter.node_count());
     auto document = interpreter.root();
@@ -1289,10 +1289,10 @@ obj(foo){
 }
  % comment 3
 )INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(71, interpreter.node_count());
-    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    SONNodeView document = interpreter.root();
     ASSERT_FALSE(document.is_null());
     ASSERT_FALSE(document.has_parent());
     {  // test names
@@ -1418,7 +1418,7 @@ TEST(SON, data_simple)
 {
     std::stringstream input;
     input << "k=1  t =  5";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(9, interpreter.node_count());
     auto document = interpreter.root();
@@ -1431,10 +1431,10 @@ TEST(SON, array_of_unary_minus)
 {
     std::stringstream input;
     input << "a  [ -1 -2 -3 -4 -5 ]";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     EXPECT_EQ(10, interpreter.node_count());
-    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    SONNodeView document = interpreter.root();
     EXPECT_EQ(1, document.child_count());
     std::stringstream printed_document;
     wasp::print(printed_document, document);
@@ -1447,10 +1447,10 @@ TEST(SON, keyed_to_value)
 {
     std::stringstream input;
     input << "a =ted b = 1 c =  1.3";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     EXPECT_EQ(13, interpreter.node_count());
-    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    SONNodeView document = interpreter.root();
     EXPECT_EQ(3, document.child_count());
     std::stringstream printed_document;
     wasp::print(printed_document, document);
@@ -1479,7 +1479,7 @@ TEST(SON, data)
    k=1 % trailing line
 
  t = [1 3 5 ])INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(15, interpreter.node_count());
     auto document = interpreter.root();
@@ -1497,10 +1497,10 @@ TEST(SON, key_expression_identifier)
 {
     std::stringstream input;
     input << "k( my-id )=1";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(11, interpreter.node_count());
-    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    SONNodeView document = interpreter.root();
     ASSERT_EQ(1, document.child_count());
     std::stringstream printed_document;
     wasp::print(printed_document, document);
@@ -1523,10 +1523,10 @@ TEST(SON, object_expression_identifier)
 {
     std::stringstream input;
     input << "obj(my-obj){ k( my-id )=1 }";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(21, interpreter.node_count());
-    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    SONNodeView document = interpreter.root();
     ASSERT_EQ(1, document.child_count());
     std::stringstream printed_document;
     wasp::print(printed_document, document);
@@ -1549,7 +1549,7 @@ TEST(SON, empty_block)
 {
     std::stringstream input;
     input << R"INPUT([block])INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(5, interpreter.node_count());
     auto document = interpreter.root();
@@ -1570,7 +1570,7 @@ TEST(SON, comment_preceeding_empty_block)
     std::stringstream input;
     input << R"INPUT(# comment
     [block])INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(6, interpreter.node_count());
     auto document = interpreter.root();
@@ -1596,7 +1596,7 @@ TEST(SON, populated_block)
 	a=[]
     # comment
 )INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(20, interpreter.node_count());
     auto document = interpreter.root();
@@ -1642,7 +1642,7 @@ TEST(SON, consecutive_populated_block)
          a=[]
     # comment
 )INPUT";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(38, interpreter.node_count());
     auto document = interpreter.root();
@@ -1704,10 +1704,10 @@ TEST(SON, DISABLED_array_expression_identifier)
 {
     std::stringstream input;
     input << "arr(my-arr)[ k( my-id )=1 ]";
-    SONInterpreter<> interpreter;
+    DefaultSONInterpreter interpreter;
     ASSERT_EQ(true, interpreter.parse(input));
     ASSERT_EQ(21, interpreter.node_count());
-    SONNodeView<decltype(interpreter.root())> document = interpreter.root();
+    SONNodeView document = interpreter.root();
     ASSERT_EQ(1, document.child_count());
     std::stringstream printed_document;
     wasp::print(printed_document, document);

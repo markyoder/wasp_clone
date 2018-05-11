@@ -35,11 +35,8 @@ int main(int argc, char** argv)
                   << " --version\t(print version info)" << std::endl;
         return 1;
     }
-    JSONInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-         parser;
-    bool failed = !parser.parseFile(argv[1]);
+    DefaultJSONInterpreter parser;
+    bool                   failed = !parser.parseFile(argv[1]);
     if (failed)
     {
         std::cout << "***Error : Parsing of " << argv[1] << " failed!"

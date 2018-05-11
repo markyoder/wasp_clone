@@ -3,6 +3,7 @@
 #define WASP_SONINTERPRETER_H
 
 #include <cstddef>
+#include <cstdint>
 #include <string>
 #include <fstream>
 #include <istream>
@@ -24,6 +25,74 @@
  * wasp::SONParser, wasp::SONLexerImpl and wasp::SONInterpreter */
 namespace wasp
 {
+// How many input node type's (section, value, etc.) in a SON file
+typedef std::uint8_t SONNodeType_t;
+
+// How many input token type's (word, int, real, comma, etc.) in a SON file
+typedef std::uint8_t SONTokenType_t;
+
+// How many bytes in a file
+typedef std::uint8_t  SONTinyFileSize_t;
+typedef std::uint16_t SONMediumFileSize_t;
+typedef std::uint32_t SONFileSize_t;
+typedef std::uint64_t SONLargeFileSize_t;
+
+// How many tokens in a file (5 reals, 100 ints, 50 words, etc.)
+typedef std::uint8_t  SONTinyTokenSize_t;
+typedef std::uint16_t SONMediumTokenSize_t;
+typedef std::uint32_t SONTokenSize_t;
+typedef std::uint64_t SONLargeTokenSize_t;
+
+// Tiny file TokenPool (less than 256 bytes)
+typedef TokenPool<
+    // Token type
+    SONTokenType_t,
+    // Max number of token
+    SONTinyTokenSize_t,
+    // Max number of bytes in the file
+    SONTinyFileSize_t>
+    SONTinyTokenPool;
+
+// Medium file TokenPool (less than 65k bytes)
+typedef TokenPool<
+    // Token type
+    SONTokenType_t,
+    // Max number of token
+    SONMediumTokenSize_t,
+    // Max number of bytes in the file
+    SONMediumFileSize_t>
+    SONMediumTokenPool;
+
+// Regular file TokenPool (less than 4b bytes)
+typedef TokenPool<
+    // Token type
+    SONTokenType_t,
+    // Max number of token
+    SONTokenSize_t,
+    // Max number of bytes in the file
+    SONFileSize_t>
+    SONTokenPool;
+
+// Large file TokenPool (greater than 4b bytes)
+typedef TokenPool<
+    // Token type
+    SONTokenType_t,
+    // Max number of token
+    SONLargeTokenSize_t,
+    // Max number of bytes in the file
+    SONLargeFileSize_t>
+    SONLargeTokenPool;
+
+// Regular NodePool storage
+typedef TreeNodePool<
+    // Node type
+    SONNodeType_t,
+    // Max number of nodes in the file
+    std::uint32_t,
+    // Regular TokenPool
+    SONTokenPool>
+    SONNodePool;
+
 /** The SONInterpreter class brings together all components. It creates an
  * instance of
  * the SONParser and SONLexerImpl classes and connects them. Then the input
@@ -45,10 +114,7 @@ namespace wasp
  * primitives : (integer|true|false|real|string|quoted_string)+
  * objects : object+
  */
-template<class S = TreeNodePool<
-             unsigned short,
-             unsigned short,
-             TokenPool<unsigned short, unsigned short, unsigned short>>>
+template<class S = SONNodePool>
 class WASP_PUBLIC SONInterpreter : public Interpreter<S>
 {
   public:
@@ -134,5 +200,7 @@ class WASP_PUBLIC SONInterpreter : public Interpreter<S>
     bool mHasFile;
 };  // end of SONInterpreter class
 #include "waspson/SONInterpreter.i.h"
+
+typedef SONInterpreter<> DefaultSONInterpreter;
 }  // namespace wasp
 #endif  // WASPSONINTERPRETER_H

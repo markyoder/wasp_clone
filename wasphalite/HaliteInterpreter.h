@@ -2,6 +2,7 @@
 #ifndef WASP_HALITEINTERPRETER_H
 #define WASP_HALITEINTERPRETER_H
 
+#include <cstdint>
 #include <set>
 #include <string>
 #include <fstream>
@@ -42,10 +43,75 @@ WASP_PUBLIC bool expand_template(std::ostream&      result,
                                  const std::string& rdelim=">",
                                  const std::string& hop=".");
 
-template<class S = TreeNodePool<
-             unsigned short,
-             unsigned short,
-             TokenPool<unsigned short, unsigned short, unsigned short>>>
+// How many input node type's (section, value, etc.) in a Halite file
+typedef std::uint8_t HaliteNodeType_t;
+
+// How many input token type's (word, int, real, comma, etc.) in a Halite file
+typedef std::uint8_t HaliteTokenType_t;
+
+// How many bytes in a file
+typedef std::uint8_t  HaliteTinyFileSize_t;
+typedef std::uint16_t HaliteMediumFileSize_t;
+typedef std::uint32_t HaliteFileSize_t;
+typedef std::uint64_t HaliteLargeFileSize_t;
+
+// How many tokens in a file (5 reals, 100 ints, 50 words, etc.)
+typedef std::uint8_t  HaliteTinyTokenSize_t;
+typedef std::uint16_t HaliteMediumTokenSize_t;
+typedef std::uint32_t HaliteTokenSize_t;
+typedef std::uint64_t HaliteLargeTokenSize_t;
+
+// Tiny file TokenPool (less than 256 bytes)
+typedef TokenPool<
+    // Token type
+    HaliteTokenType_t,
+    // Max number of token
+    HaliteTinyTokenSize_t,
+    // Max number of bytes in the file
+    HaliteTinyFileSize_t>
+    HaliteTinyTokenPool;
+
+// Medium file TokenPool (less than 65k bytes)
+typedef TokenPool<
+    // Token type
+    HaliteTokenType_t,
+    // Max number of token
+    HaliteMediumTokenSize_t,
+    // Max number of bytes in the file
+    HaliteMediumFileSize_t>
+    HaliteMediumTokenPool;
+
+// Regular file TokenPool (less than 4b bytes)
+typedef TokenPool<
+    // Token type
+    HaliteTokenType_t,
+    // Max number of token
+    HaliteTokenSize_t,
+    // Max number of bytes in the file
+    HaliteFileSize_t>
+    HaliteTokenPool;
+
+// Large file TokenPool (greater than 4b bytes)
+typedef TokenPool<
+    // Token type
+    HaliteTokenType_t,
+    // Max number of token
+    HaliteLargeTokenSize_t,
+    // Max number of bytes in the file
+    HaliteLargeFileSize_t>
+    HaliteLargeTokenPool;
+
+// Regular NodePool storage
+typedef TreeNodePool<
+    // Node type
+    HaliteNodeType_t,
+    // Max number of nodes in the file
+    std::uint32_t,
+    // Regular TokenPool
+    HaliteTokenPool>
+    HaliteNodePool;
+
+template<class S = HaliteNodePool>
 class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
 {
   public:
@@ -179,11 +245,11 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @return true, iff no errors occurred during the substitution/printing of
      * the attribute
      */
-    bool print_attribute(DataAccessor&          data,
-                         const TreeNodeView<S>& attr_view,
-                         std::ostream&          out,
-                         size_t&                line,
-                         size_t&                column);
+    bool print_attribute(DataAccessor&   data,
+                         const NodeView& attr_view,
+                         std::ostream&   out,
+                         size_t&         line,
+                         size_t&         column);
 
     class SubstitutionOptions
     {
@@ -369,11 +435,11 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
                            const std::string&   data,
                            size_t               line);
 
-    bool accumulate_attribute(DataAccessor&          data,
-                              const TreeNodeView<S>& attr_view,
-                              std::ostream&          out,
-                              size_t&                line,
-                              size_t&                column) const;
+    bool accumulate_attribute(DataAccessor&   data,
+                              const NodeView& attr_view,
+                              std::ostream&   out,
+                              size_t&         line,
+                              size_t&         column) const;
     /**
      * @brief conditional handles actioned conditional blocks
      * @param data the data accessor
@@ -383,21 +449,21 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @param column the column from which the field begins
      * @return
      */
-    bool conditional(DataAccessor&          data,
-                     const TreeNodeView<S>& action_view,
-                     std::ostream&          out,
-                     size_t&                line,
-                     size_t&                column);
-    bool evaluate(DataAccessor&          data,
-                  const TreeNodeView<S>& action_view,
-                  std::ostream&          out,
-                  size_t&                line,
-                  size_t&                column);
-    bool evaluate_component(DataAccessor&          data,
-                            const TreeNodeView<S>& action_view,
-                            std::ostream&          out,
-                            size_t&                line,
-                            size_t&                column);
+    bool conditional(DataAccessor&   data,
+                     const NodeView& action_view,
+                     std::ostream&   out,
+                     size_t&         line,
+                     size_t&         column);
+    bool evaluate(DataAccessor&   data,
+                  const NodeView& action_view,
+                  std::ostream&   out,
+                  size_t&         line,
+                  size_t&         column);
+    bool evaluate_component(DataAccessor&   data,
+                            const NodeView& action_view,
+                            std::ostream&   out,
+                            size_t&         line,
+                            size_t&         column);
 
     /**
      * @brief import_file imports the file represented by the given tree view
@@ -409,16 +475,16 @@ class WASP_PUBLIC HaliteInterpreter : public Interpreter<S>
      * @return true, iff the file and its contents were successfully imported
      * and emitted
      */
-    bool import_file(DataAccessor&          data,
-                     const TreeNodeView<S>& import_view,
-                     std::ostream&          out,
-                     size_t&                line,
-                     size_t&                column);
-    bool repeat_file(DataAccessor&          data,
-                     const TreeNodeView<S>& import_view,
-                     std::ostream&          out,
-                     size_t&                line,
-                     size_t&                column);
+    bool import_file(DataAccessor&   data,
+                     const NodeView& import_view,
+                     std::ostream&   out,
+                     size_t&         line,
+                     size_t&         column);
+    bool repeat_file(DataAccessor&   data,
+                     const NodeView& import_view,
+                     std::ostream&   out,
+                     size_t&         line,
+                     size_t&         column);
     /**
      * @brief process_result conduct formatting, error checking of the result
      * @param result the result to be emitted to the output stream
@@ -583,6 +649,7 @@ inline WASP_PUBLIC bool expand_template(std::ostream&      result,
     }
     return true;
 }
+typedef HaliteInterpreter<> DefaultHaliteInterpreter;
 }  // namespace wasp
 
 #include "wasphalite/HaliteInterpreter.i.h"

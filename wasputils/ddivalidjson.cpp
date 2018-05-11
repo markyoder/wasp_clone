@@ -18,10 +18,10 @@ using namespace wasp;
 
 typedef TokenPool<unsigned int, unsigned int, unsigned int> TP;
 typedef TreeNodePool<unsigned int, unsigned int, TP>        TNP;
-typedef DDInterpreter<TNP>             DDInterp;
-typedef SONInterpreter<TNP>            SONInterp;
-typedef DDINodeView<TreeNodeView<TNP>> DDINV;
-typedef SONNodeView<TreeNodeView<TNP>> SONNV;
+typedef DefaultDDInterpreter           DDInterp;
+typedef DefaultSONInterpreter          SONInterp;
+typedef DDINodeView                    DDINV;
+typedef SONNodeView                    SONNV;
 
 int main(int argc, char** argv)
 {

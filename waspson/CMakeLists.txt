@@ -45,6 +45,7 @@ FILE(GLOB HEADERS *.h *.hh *.hpp *.lex *.bison
 SET(SOURCES
 SONLexer.cpp
 SONParser.cpp
+SONNodeView.cpp
 )
 
 ##---------------------------------------------------------------------------##

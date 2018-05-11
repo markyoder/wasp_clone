@@ -13,6 +13,212 @@
 namespace wasp
 {
 /**
+ * @brief The NodeView class provies light weight interface to TreeNodes
+ * Allows traversing child nodes and parent as well as acquire node information
+ * *
+ */
+class WASP_PUBLIC NodeView
+{
+  public:
+    using Collection = std::vector<NodeView>;
+    NodeView() : m_node_index(-1), m_pool(nullptr) {}
+    NodeView(std::size_t node_index, const class AbstractInterpreter& data);
+    NodeView(const NodeView& orig);
+    ~NodeView();
+
+    NodeView& operator=(const NodeView& b);
+
+    bool operator==(const NodeView& b) const;
+    bool operator!=(const NodeView& b) const { return !(*this == b); }
+    /**
+     * @brief equal determines if this is equal to the provides NodeView
+     * @return true, iff and only if the nodes are the same
+     */
+    bool equal(const NodeView& b) const { return *this == b; }
+
+    /**
+     * @brief data acquire the node's data
+     * @return the node's data
+     */
+    std::string data() const;
+    /**
+     * @brief parent acquire the parent view of the current node
+     * @return
+     */
+    NodeView parent() const;
+    /**
+     * @brief has_parent determine if this node has a parent
+     * @return true, iff this node has a parent
+     */
+    bool has_parent() const;
+
+    /**
+     * @brief is_null determines if this view is backed by a storage pool
+     * @return true, iff the view has no storage backing
+     */
+    bool is_null() const { return m_pool == nullptr; }
+    /**
+     * @brief is_decorative default NodeView interface implementation
+     * @return always false
+     */
+    bool is_decorative() const { return false; }
+
+    /**
+     * @brief is_leaf indicates whether this is a leaf node (no parent data)
+     * @return true, iff there is no parent data associated
+     */
+    bool is_leaf() const;
+
+    /**
+     * @brief is_declarator default NodeView interface implementation
+     * @return true if the type is 'DECL'
+     */
+    bool is_declarator() const { return type() == DECL; }
+
+    /**
+     * @brief is_terminator default NodeView interface implementation
+     * @return true if the type is 'TERM'
+     */
+    bool is_terminator() const { return type() == TERM; }
+
+    /**
+     * @brief path acquire the path of this node from the document root
+     * @return path to node, e.g., '/object/key/value'
+     */
+    std::string path() const;
+    /**
+     * @brief paths acquire the paths of this node and its children
+     * @param out the output stream to capture the node paths
+     * The node paths are written, new line delimited
+     */
+    void paths(std::ostream& out) const;
+    /**
+     * @brief child_count acquire the number of nodes for which this node is a
+     * parent
+     * @return child count
+     */
+    std::size_t child_count() const;
+    /**
+     * @brief child_count_by_name determines the number of children with the
+     * given name
+     * @param name the name of the child nodes to count
+     * @param limit the limit (0 reserved as no limit) which can be used to
+     * optimize determination of named children
+     * @return the number of children with the given name
+     */
+    std::size_t child_count_by_name(const std::string& name,
+                                    size_t             limit = 0) const;
+
+    /**
+     * @brief child_at acquire the child node view at the given index
+     * @param index the index of the child [0-child_count())
+     * @return NodeView describing the child node
+     */
+    NodeView child_at(std::size_t index) const;
+
+    /**
+     * @brief child_by_name acquire child nodes by the given name
+     * @param name the name of the children to be retrieved
+     * @param limit the limit on the number of children ( 0 := no limit )
+     * @return A collection of views. Empty if no match occurrs
+     */
+    NodeView::Collection child_by_name(const std::string& name,
+                                       size_t             limit = 0) const;
+    /**
+     * @brief first_child_by_name acquires the first child with the given name
+     * @param name the name of the requested child
+     * @return Named NodeView as requestd. is_null indicates if none was
+     * found
+     */
+    NodeView first_child_by_name(const std::string& name) const;
+    /**
+     * @brief type acquire the type of the node
+     * @return the node's type
+     */
+    std::size_t type() const;
+
+    /**
+     * @brief token_type acquires the type of the underlying token
+     * @return the token type, wasp::UNKNOWN if the node is null or not a leaf
+     */
+    std::size_t token_type() const;
+    /**
+     * @brief name acquire the name of the node
+     * @return the node's name
+     */
+    const char* name() const;
+
+    /**
+     * @brief line acquire the node's starting line
+     * @return the starting line of the node
+     */
+    std::size_t line() const;
+    /**
+     * @brief column acquire the node's starting column
+     * @return the starting column of the node
+     */
+    std::size_t column() const;
+
+    /**
+     * @brief last_line acquire the node's ending line
+     * @return the ending line of the node
+     */
+    std::size_t last_line() const;
+
+    /**
+     * @brief last_column acquire the node's ending column
+     * @return the ending column of the node
+     */
+    std::size_t last_column() const;
+
+    /**
+     * @brief tree_node_index acquire the index into the tree node data pool
+     * @return the index into the data pool
+     */
+    std::size_t node_index() const { return m_node_index; }
+
+    /**
+     * @brief tree_node_pool acquire the pointer to the backend storage
+     * @return the TreeNodePool that backs this view
+     */
+    const class AbstractInterpreter* node_pool() const { return m_pool; }
+
+    // !> Type operators
+    bool to_bool(bool* ok = nullptr) const;
+    /**
+     * @brief to_int converts the data to an integer
+     * @return the data as an integer
+     */
+    int to_int(bool* ok = nullptr) const;
+
+    /**
+     * @brief to_double converts the data to a double
+     * @return the data as a double
+     */
+    double to_double(bool* ok = nullptr) const;
+
+    /**
+     * @brief to_string converts the data to a string
+     * @return the data as a string (single and double quotes are removed from
+     * front and back).
+     */
+    std::string to_string(bool* ok = nullptr) const;
+
+    // Friendly stream operator
+    friend std::ostream& operator<<(std::ostream&         str,
+                                    const wasp::NodeView& view)
+    {
+        str << "NodeView(node_index=" << view.m_node_index
+            << ", &pool=" << view.m_pool << ")";
+        return str;
+    }
+
+  private:
+    std::size_t                      m_node_index;
+    const class AbstractInterpreter* m_pool;
+};
+
+/**
  * @brief The AbstractInterpreter class to fulfill design req for parser
  * interaction
  */
@@ -163,19 +369,35 @@ class WASP_PUBLIC AbstractInterpreter
     }
 
     virtual bool single_parse() const = 0;
+
+    virtual size_t parent_node_index(size_t node_index) const = 0;
+    virtual bool has_parent(size_t node_index) const          = 0;
+    virtual bool is_leaf(size_t node_index) const             = 0;
+    virtual void data(size_t node_index, std::ostream& out) const       = 0;
+    virtual void node_path(size_t node_index, std::ostream& out) const  = 0;
+    virtual void node_paths(size_t node_index, std::ostream& out) const = 0;
+    virtual size_t child_at(size_t node_index, size_t index) const      = 0;
+    virtual size_t node_token_type(size_t node_index) const = 0;
+    virtual size_t line(size_t node_index) const            = 0;
+    virtual size_t last_line(size_t node_index) const       = 0;
+    virtual size_t column(size_t node_index) const          = 0;
+    virtual size_t last_column(size_t node_index) const     = 0;
+    virtual size_t leaf_index(size_t node_index) const      = 0;
+    virtual size_t size() const                             = 0;
 };
 
-template<class TNS = TreeNodePool<>>
+template<class NodeStorage = TreeNodePool<>>
 class WASP_PUBLIC Interpreter : public AbstractInterpreter
 {
   public:
-    typedef TNS                           TreeNodePool_type;
-    typedef typename TNS::node_index_size node_index_size;
-    typedef typename TNS::node_type_size  node_type_size;
-    typedef typename TNS::TokenPool_type::token_index_type_size
-                                                          token_index_type_size;
-    typedef typename TNS::TokenPool_type::token_type_size token_type_size;
-    typedef typename TNS::TokenPool_type::file_offset_type_size
+    typedef NodeStorage                           TreeNodePool_type;
+    typedef typename NodeStorage::node_index_size node_index_size;
+    typedef typename NodeStorage::node_type_size  node_type_size;
+    typedef typename NodeStorage::TokenPool_type::token_index_type_size
+        token_index_type_size;
+    typedef
+        typename NodeStorage::TokenPool_type::token_type_size token_type_size;
+    typedef typename NodeStorage::TokenPool_type::file_offset_type_size
         file_offset_type_size;
     Interpreter(std::ostream& error_stream = std::cerr);
     virtual ~Interpreter();
@@ -191,7 +413,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @brief root acquire the root of the document
      * @return TreeNodeView view into the document parse tree
      */
-    TreeNodeView<TreeNodePool_type> root() const;
+    NodeView root() const;
 
     /**
      * @brief node_at acquire the node at the given index in the pool
@@ -199,8 +421,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @return the TreeNodeView from which data (name, type, data, children) can
      * be conventienty acquired
      */
-    TreeNodeView<TreeNodePool_type>
-    node_at(node_index_size node_pool_index) const;
+    NodeView node_at(node_index_size node_pool_index) const;
 
     /**
      * @brief parse parser the given input stream
@@ -216,7 +437,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @brief token_count acquires the number of tokens so far interpreted
      * @return the number of tokens
      */
-    size_t token_count() const { return m_tree_nodes.token_data().size(); }
+    size_t token_count() const { return m_nodes.token_data().size(); }
     /**
      * @brief push appends a token
      * @param str the token's string data
@@ -225,7 +446,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      */
     void push_token(const char* str, size_t type, size_t token_file_offset)
     {
-        m_tree_nodes.push_token(str, type, token_file_offset);
+        m_nodes.push_token(str, type, token_file_offset);
     }
     /**
      * @brief push_line appends a line to the new line buffer
@@ -233,17 +454,17 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      */
     void push_line_offset(size_t line_file_offset)
     {
-        m_tree_nodes.push_line(line_file_offset);
+        m_nodes.push_line(line_file_offset);
     }
 
-    void pop_line() { m_tree_nodes.pop_line(); }
+    void pop_line() { m_nodes.pop_line(); }
 
     /**
      * @brief line_count acquire the number of lines processed by this
      * interpreter
      * @return the number of lines processed
      */
-    size_t line_count() const { return m_tree_nodes.token_data().line_count(); }
+    size_t line_count() const { return m_nodes.token_data().line_count(); }
     /**
      * @brief push_leaf create a leaf node with the given type, name, and token
      * reference
@@ -281,7 +502,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * If the node at the given index is not a leaf node, wasp::UNKNOWN is
      * returned
      */
-    token_type_size node_token_type(size_t node_index) const;
+    size_t node_token_type(size_t node_index) const;
     /**
      * @brief name acquire the name of the node at the given index
      * @param node_index the node index
@@ -314,12 +535,14 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @return the column for the node
      */
     size_t column(size_t node_index) const;
+    size_t last_column(size_t node_index) const;
     /**
      * @brief line determines line for the node
      * @param node_index index of the node of which children count are requested
      * @return the line for the node
      */
     size_t line(size_t node_index) const;
+    size_t last_line(size_t node_index) const;
     /**
      * @brief parent_node_index determines parent's node index
      * @param node_index index of the node of which children count are requested
@@ -334,13 +557,38 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @return the index of the child at the requested index
      */
     size_t child_index_at(size_t node_index, size_t child_index) const;
-    size_t node_count() const { return m_tree_nodes.size(); }
-    size_t leaf_node_count() const { return m_tree_nodes.leaf_node_count(); }
-    size_t parent_node_count() const
+    size_t node_count() const { return m_nodes.size(); }
+    size_t leaf_node_count() const { return m_nodes.leaf_node_count(); }
+    bool has_parent(size_t node_index) const
     {
-        return m_tree_nodes.parent_node_count();
+        return m_nodes.has_parent(node_index);
     }
-
+    bool is_leaf(size_t node_index) const
+    {
+        return m_nodes.is_leaf(node_index);
+    }
+    size_t parent_node_count() const { return m_nodes.parent_node_count(); }
+    void data(size_t node_index, std::ostream& out) const
+    {
+        m_nodes.data(node_index, out);
+    }
+    void node_path(size_t node_index, std::ostream& out) const
+    {
+        m_nodes.node_path(node_index, out);
+    }
+    void node_paths(size_t node_index, std::ostream& out) const
+    {
+        m_nodes.node_paths(node_index, out);
+    }
+    size_t child_at(size_t node_index, size_t index) const
+    {
+        return m_nodes.child_at(node_index, index);
+    }
+    size_t leaf_index(size_t node_index) const
+    {
+        return m_nodes.leaf_index(node_index);
+    }
+    size_t size() const { return m_nodes.size(); }
     /**
      * @brief push_staged stages the given node for child accrual and later
      * commitment
@@ -417,9 +665,9 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
         }
         wasp_ensure(m_staged.size() == 1);
         Stage& document = m_staged.front();
-        if (document.m_child_indices.empty() && m_tree_nodes.size() > 0)
+        if (document.m_child_indices.empty() && m_nodes.size() > 0)
         {
-            document.m_child_indices.push_back(m_tree_nodes.size() - 1);
+            document.m_child_indices.push_back(m_nodes.size() - 1);
         }
         if (!document.m_child_indices.empty())
         {
@@ -456,8 +704,9 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @brief err - the error stream to report on
      */
     std::ostream&     m_error_stream;
-    TreeNodePool_type m_tree_nodes;
-    bool              m_failed;
+
+    TreeNodePool_type m_nodes;
+    bool m_failed;
 
   protected:
     struct Stage
@@ -479,5 +728,18 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
 };
 
 #include "waspcore/Interpreter.i.h"
+
+// dummy interpreter for demonstration and testing
+template<class NodeStorage>
+class DummyInterp : public Interpreter<NodeStorage>
+{
+  public:
+    bool parse(std::istream& input,
+               size_t        m_start_line   = 1u,
+               size_t        m_start_column = 1u)
+    {
+        return true;
+    }
+};
 }  // end of namespace
 #endif

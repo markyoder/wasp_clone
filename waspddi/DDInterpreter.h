@@ -3,6 +3,7 @@
 #define WASP_DDINTERPRETER_H
 
 #include <cstddef>
+#include <cstdint>
 #include <string>
 #include <fstream>
 #include <istream>
@@ -25,10 +26,75 @@
  * wasp::DDIParser, wasp::DDILexerImpl and wasp::DDIInterpreter */
 namespace wasp
 {
-template<class S = TreeNodePool<
-             unsigned short,
-             unsigned short,
-             TokenPool<unsigned short, unsigned short, unsigned short>>>
+// How many input node type's (section, value, etc.) in a DDI file
+typedef std::uint8_t DDINodeType_t;
+
+// How many input token type's (word, int, real, comma, etc.) in a DDI file
+typedef std::uint8_t DDITokenType_t;
+
+// How many bytes in a file
+typedef std::uint8_t  DDITinyFileSize_t;
+typedef std::uint16_t DDIMediumFileSize_t;
+typedef std::uint32_t DDIFileSize_t;
+typedef std::uint64_t DDILargeFileSize_t;
+
+// How many tokens in a file (5 reals, 100 ints, 50 words, etc.)
+typedef std::uint8_t  DDITinyTokenSize_t;
+typedef std::uint16_t DDIMediumTokenSize_t;
+typedef std::uint32_t DDITokenSize_t;
+typedef std::uint64_t DDILargeTokenSize_t;
+
+// Tiny file TokenPool (less than 256 bytes)
+typedef TokenPool<
+    // Token type
+    DDITokenType_t,
+    // Max number of token
+    DDITinyTokenSize_t,
+    // Max number of bytes in the file
+    DDITinyFileSize_t>
+    DDITinyTokenPool;
+
+// Medium file TokenPool (less than 65k bytes)
+typedef TokenPool<
+    // Token type
+    DDITokenType_t,
+    // Max number of token
+    DDIMediumTokenSize_t,
+    // Max number of bytes in the file
+    DDIMediumFileSize_t>
+    DDIMediumTokenPool;
+
+// Regular file TokenPool (less than 4b bytes)
+typedef TokenPool<
+    // Token type
+    DDITokenType_t,
+    // Max number of token
+    DDITokenSize_t,
+    // Max number of bytes in the file
+    DDIFileSize_t>
+    DDITokenPool;
+
+// Large file TokenPool (greater than 4b bytes)
+typedef TokenPool<
+    // Token type
+    DDITokenType_t,
+    // Max number of token
+    DDILargeTokenSize_t,
+    // Max number of bytes in the file
+    DDILargeFileSize_t>
+    DDILargeTokenPool;
+
+// Regular NodePool storage
+typedef TreeNodePool<
+    // Node type
+    DDINodeType_t,
+    // Max number of nodes in the file
+    std::uint32_t,
+    // Regular TokenPool
+    DDITokenPool>
+    DDINodePool;
+
+template<class S = DDINodePool>
 class WASP_PUBLIC DDInterpreter : public Interpreter<S>
 {
   public:
@@ -138,5 +204,7 @@ class WASP_PUBLIC DDInterpreter : public Interpreter<S>
     bool mHasFile;
 };  // end of DDIInterpreter class
 #include "waspddi/DDInterpreter.i.h"
+
+typedef DDInterpreter<> DefaultDDInterpreter;
 }  // namespace wasp
 #endif  // WASPDDIINTERPRETER_H

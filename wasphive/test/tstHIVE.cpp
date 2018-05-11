@@ -18,17 +18,17 @@ struct HIVETest
 {
     std::string input_fail_path;
     std::shared_ptr<std::ifstream>
-                                      input_fail;  // test failing input for schema to exercise
-    std::shared_ptr<SONInterpreter<>> input_fail_interpreter;
+                                           input_fail;  // test failing input for schema to exercise
+    std::shared_ptr<DefaultSONInterpreter> input_fail_interpreter;
 
     std::string input_pass_path;
     std::shared_ptr<std::ifstream>
-                                      input_pass;  // test passing input for schema to exercise
-    std::shared_ptr<SONInterpreter<>> input_pass_interpreter;
+                                           input_pass;  // test passing input for schema to exercise
+    std::shared_ptr<DefaultSONInterpreter> input_pass_interpreter;
 
-    std::string                       schema_path;
-    std::shared_ptr<std::ifstream>    schema;  // schema to validate input
-    std::shared_ptr<SONInterpreter<>> schema_interpreter;
+    std::string                            schema_path;
+    std::shared_ptr<std::ifstream>         schema;  // schema to validate input
+    std::shared_ptr<DefaultSONInterpreter> schema_interpreter;
 
     std::shared_ptr<std::stringstream> output_data;  // expected output
 };
@@ -89,18 +89,18 @@ bool load_streams(HIVETest&          t,
 // load abstract syntax trees (dom)
 bool load_ast(HIVETest& t)
 {
-    t.input_fail_interpreter = std::make_shared<SONInterpreter<>>();
+    t.input_fail_interpreter = std::make_shared<DefaultSONInterpreter>();
     bool input_fail_good =
         t.input_fail_interpreter->parseStream(*t.input_fail, t.input_fail_path);
 
     EXPECT_TRUE(input_fail_good);
 
-    t.input_pass_interpreter = std::make_shared<SONInterpreter<>>();
+    t.input_pass_interpreter = std::make_shared<DefaultSONInterpreter>();
     bool input_pass_good =
         t.input_pass_interpreter->parseStream(*t.input_pass, t.input_pass_path);
     EXPECT_TRUE(input_pass_good);
 
-    t.schema_interpreter = std::make_shared<SONInterpreter<>>();
+    t.schema_interpreter = std::make_shared<DefaultSONInterpreter>();
     bool schema_good =
         t.schema_interpreter->parseStream(*t.schema, t.schema_path);
     EXPECT_TRUE(schema_good);
@@ -116,13 +116,10 @@ void do_test(const std::string& name)
     ASSERT_TRUE(load_streams(t, name + ".fail.son", name + ".pass.son",
                              name + ".fail.gld", name + ".sch"));
     ASSERT_TRUE(load_ast(t));
-    std::vector<std::string>                            errors;
-    SONNodeView<decltype(t.schema_interpreter->root())> schema_adapter =
-        t.schema_interpreter->root();
-    SONNodeView<decltype(t.input_fail_interpreter->root())> input_fail_adapter =
-        t.input_fail_interpreter->root();
-    SONNodeView<decltype(t.input_pass_interpreter->root())> input_pass_adapter =
-        t.input_pass_interpreter->root();
+    std::vector<std::string> errors;
+    SONNodeView              schema_adapter = t.schema_interpreter->root();
+    SONNodeView input_fail_adapter          = t.input_fail_interpreter->root();
+    SONNodeView input_pass_adapter          = t.input_pass_interpreter->root();
     bool valid = hive.validate(schema_adapter, input_fail_adapter, errors);
     std::string msgs = HIVE::combine(errors);
     EXPECT_FALSE(valid);

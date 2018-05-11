@@ -19,6 +19,7 @@ WASP_FLEX_AND_BISON(
 SET(SOURCE
 GetPotLexer.cpp
 GetPotParser.cpp
+GetPotNodeView.cpp
 )
 
 SET(HEADERS

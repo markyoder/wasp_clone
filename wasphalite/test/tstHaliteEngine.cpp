@@ -25,7 +25,7 @@ TEST(Halite, single_attribute)
     {
         std::stringstream input;
         input << R"INPUT(<attribute>)INPUT";
-        HaliteInterpreter<> interpreter;
+        DefaultHaliteInterpreter interpreter;
         ASSERT_TRUE(interpreter.parse(input));
         std::stringstream out;
         DataAccessor      data;
@@ -37,7 +37,7 @@ TEST(Halite, single_attribute)
     {
         std::stringstream input;
         input << R"INPUT(<attribute:fmt=%-10.1e>)INPUT";
-        HaliteInterpreter<> interpreter;
+        DefaultHaliteInterpreter interpreter;
         ASSERT_TRUE(interpreter.parse(input));
         std::stringstream out;
         DataAccessor      data;
@@ -51,7 +51,7 @@ TEST(Halite, single_quoted_attribute)
 {
     std::stringstream input;
     input << R"INPUT(<'attr with space( )'>)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -64,7 +64,7 @@ TEST(Halite, single_abscent_optional_attribute)
 {
     std::stringstream input;
     input << R"INPUT(b<attribute:?>a)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -75,7 +75,7 @@ TEST(Halite, single_present_optional_attribute)
 {
     std::stringstream input;
     input << R"INPUT(b<attribute:?>a)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -87,7 +87,7 @@ TEST(Halite, single_silent_attribute)
 {
     std::stringstream input;
     input << R"INPUT(b<attribute=4:|>a)INPUT";
-    HaliteInterpreter<> interpreter(std::cout);
+    DefaultHaliteInterpreter interpreter(std::cout);
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -101,7 +101,7 @@ TEST(Halite, single_present_formatted_optional_attribute)
 {
     std::stringstream input;
     input << R"INPUT(b<attribute:?fmt=%6.2f>a)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -114,7 +114,7 @@ TEST(Halite, formatted_single_attribute)
     std::stringstream input;
     input << R"INPUT(<pi:fmt=rounded=%12.8f>
 <pi><nl>)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -126,7 +126,7 @@ TEST(Halite, iterative_formatted_attribute_only_start)
 {
     std::stringstream input;
     input << R"INPUT(<i:fmt=rounded=%3d; i=1>)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -137,7 +137,7 @@ TEST(Halite, iterative_formatted_attribute_embedded)
 {
     std::stringstream input;
     input << R"INPUT(<i:fmt=%3d; i=<start>,<end>>)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -151,7 +151,7 @@ TEST(Halite, iterative_formatted_attribute_only_start_end)
     std::stringstream input;
     // default separator is a whitespace making %2 behave like %3
     input << R"INPUT(<i:fmt=%2d; i=1,3>)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -163,7 +163,7 @@ TEST(Halite, iterative_formatted_attribute)
     std::stringstream input;
     // default separator is a whitespace making %2 behave like %3
     input << R"INPUT(<i:fmt=%2d; i=1,3,2>)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -175,7 +175,7 @@ TEST(Halite, iterative_formatted_attribute_sep)
     std::stringstream input;
     // default separator is a whitespace making %2 behave like %3
     input << R"INPUT(<i:fmt=%2d;i=1,3,2;sep=,>)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -187,7 +187,7 @@ TEST(Halite, iterative_formatted_sep_attribute)
     std::stringstream input;
     // default separator is a whitespace making %2 behave like %3
     input << R"INPUT(<i:fmt=%2d;sep=s;i=1,3,2;>)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -199,7 +199,7 @@ TEST(Halite, iterative_formatted_sep_first_attribute)
     std::stringstream input;
     // default separator is a whitespace making %2 behave like %3
     input << R"INPUT(<i:sep=*;fmt=%2d;i=1,3,2;>)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -211,7 +211,7 @@ TEST(Halite, iterative_formatted_attribute_multi_only_start)
     std::stringstream input;
     // default separator is a whitespace making %2 behave like %3
     input << R"INPUT(<i*j:j=3; fmt=%2d; i=1,3,2>)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -223,7 +223,7 @@ TEST(Halite, iterative_formatted_attribute_multi_only_start_end)
     std::stringstream input;
     // default separator is a whitespace making %2 behave like %3
     input << R"INPUT(<i*j: j=3,5; i=1,3,2; fmt=%2d; >)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -237,7 +237,7 @@ TEST(Halite, attribute_use_scope_object)
     // access to x,y,z are restricted to obj
     // use obj scope to facilitate access
     input << R"INPUT(<y+"-"+x*z: use=obj >)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataObject        o;
@@ -274,7 +274,7 @@ TEST(Halite, attribute_use_scope_array_optional)
     // access to x,y,z are restricted to each element of an array
     // use arrayscope to facilitate access
     input << R"INPUT(before<y+"-"+x*z:? use=array >after)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataObject        o;
@@ -289,7 +289,7 @@ TEST(Halite, attribute_use_scope_array)
     // access to x,y,z are restricted to each element of an array
     // use arrayscope to facilitate access
     input << R"INPUT(<y+"-"+x*z: use=array >)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataObject        o;
@@ -336,7 +336,7 @@ TEST(Halite, iterative_attribute_use_scope_object)
     // access to x,y,z are restricted to obj
     // use obj scope to facilitate access
     input << R"INPUT(<y+"-"+(x*z+i): use=obj; i=0,1;sep=,>)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataObject        o;
@@ -372,7 +372,7 @@ TEST(Halite, indirect_attribute)
 {
     std::stringstream input;
     input << R"INPUT(<<attr>> <<what>.<member>>)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataObject        o;
@@ -424,7 +424,7 @@ TEST(Halite, indirect_attribute_delim_output)
 {
     std::stringstream input;
     input << R"INPUT(<<attr>> <_E_><_S_> <<what>.<member>>)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataObject        o;
@@ -440,7 +440,7 @@ TEST(Halite, indirect_attribute_delim)
 {
     std::stringstream input;
     input << R"INPUT({{attr}} {{what}.{member}})INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     interpreter.attr_start_delim() = "{";
     interpreter.attr_end_delim()   = "}";
     ASSERT_TRUE(interpreter.parse(input));
@@ -460,7 +460,7 @@ TEST(Halite, indirect_attribute_preceeding_static)
     input << R"INPUT(line1
 <jumperof<what>>
 line3)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataObject        o;
@@ -476,7 +476,7 @@ TEST(Halite, indirect_attribute_preceeding_static2)
     input << R"INPUT(line1
 line2<jumperof<what>>
 line3)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataObject        o;
@@ -490,7 +490,7 @@ TEST(Halite, indirect_attribute_non_uniform_delim)
 {
     std::stringstream input;
     input << R"INPUT(${${attr}} ${${what}.${member}} ${value:fmt=%d})INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     interpreter.attr_start_delim() = "${";
     interpreter.attr_end_delim()   = "}";
     ASSERT_TRUE(interpreter.parse(input));
@@ -513,7 +513,7 @@ TEST(Halite, indirect_attribute_non_uniform_delim_output)
     std::stringstream input;
     input
         << R"INPUT(${${attr}} ${${what}.${member}} ${_S_}${_E_} ${value:fmt=%d})INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     interpreter.attr_start_delim() = "${";
     interpreter.attr_end_delim()   = "}";
     ASSERT_TRUE(interpreter.parse(input));
@@ -537,7 +537,7 @@ line2
  line3
    line
             )INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -558,7 +558,7 @@ TEST(Halite, parameterized_text)
  3.14159
    line
             )INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataAccessor      data;
@@ -585,7 +585,7 @@ TEST(Halite, array_access)
 
 0 19 500.123123 dead ted
 0 19 500.123 dead ted)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataObject        o;
@@ -629,7 +629,7 @@ TEST(Halite, parameterized_text_data_accessed)
  2
    line
             )INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
     DataObject        o;
@@ -660,7 +660,7 @@ TEST(Halite, attributed_text_fileimport)
     input << R"INPUT(#import ./nested parameterized template.tmpl
 <ted> has <fred> brothers
 )INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
 
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
@@ -704,7 +704,7 @@ TEST(Halite, repeat_fileimport)
             Some preceeding text
 #repeat ./nested template.tmpl
 no iteration. Fred = <fred>)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
 
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
@@ -727,7 +727,7 @@ no iteration. Fred = 3.14159)INPUT";
 }
 TEST(Halite, range)
 {
-    std::vector<HaliteInterpreter<>::Range> expected_imports = {
+    std::vector<DefaultHaliteInterpreter::Range> expected_imports = {
         {"x", 1, 1, 1}, {"x", 1, 1, 1}, {"x", 1, 2, 1},
         {"x", 1, 2, 1}, {"x", 1, 3, 2}, {"x", 6, 6, 1}};
     std::vector<std::string> ranges = {
@@ -737,10 +737,11 @@ TEST(Halite, range)
     {
         SCOPED_TRACE(i);
         SCOPED_TRACE(ranges[i]);
-        std::vector<HaliteInterpreter<>::Range> imports;
-        std::string                             range = ranges[i];
-        std::string                             error;
-        EXPECT_TRUE(HaliteInterpreter<>::extract_ranges(range, imports, error));
+        std::vector<DefaultHaliteInterpreter::Range> imports;
+        std::string                                  range = ranges[i];
+        std::string                                  error;
+        EXPECT_TRUE(
+            DefaultHaliteInterpreter::extract_ranges(range, imports, error));
         std::cout << error << std::endl;
         ASSERT_FALSE(imports.empty());
         EXPECT_EQ(expected_imports[i].name, imports.front().name);
@@ -751,13 +752,13 @@ TEST(Halite, range)
 }
 TEST(Halite, multi_range)
 {
-    std::vector<std::vector<HaliteInterpreter<>::Range>> expected_imports = {
-        {{"x", 1, 1, 1}, {"y", 1, 1, 1}},
-        {{"x", 1, 2, 1}, {"y", 2, 2, 1}},
-        {{"x", 1, 2, 3}, {"y", 3, 3, 1}},
-        {{"x", 1, 2, 1}, {"y", 4, 5, 1}},
-        {{"x", 1, 3, 2}, {"y", 6, 12, 3}},
-        {{"x", 1, 3, 2}, {"y", 7, 7, 1}, {"z", 3, 3, 1}}};
+    std::vector<std::vector<DefaultHaliteInterpreter::Range>> expected_imports =
+        {{{"x", 1, 1, 1}, {"y", 1, 1, 1}},
+         {{"x", 1, 2, 1}, {"y", 2, 2, 1}},
+         {{"x", 1, 2, 3}, {"y", 3, 3, 1}},
+         {{"x", 1, 2, 1}, {"y", 4, 5, 1}},
+         {{"x", 1, 3, 2}, {"y", 6, 12, 3}},
+         {{"x", 1, 3, 2}, {"y", 7, 7, 1}, {"z", 3, 3, 1}}};
     std::vector<std::string> ranges = {" x=1;y=1",
                                        "x = 1,2;y=2",
                                        " x=1,2,3;y=3",
@@ -769,10 +770,11 @@ TEST(Halite, multi_range)
     {
         SCOPED_TRACE(i);
         SCOPED_TRACE(ranges[i]);
-        std::vector<HaliteInterpreter<>::Range> imports;
-        std::string                             range = ranges[i];
-        std::string                             error;
-        EXPECT_TRUE(HaliteInterpreter<>::extract_ranges(range, imports, error));
+        std::vector<DefaultHaliteInterpreter::Range> imports;
+        std::string                                  range = ranges[i];
+        std::string                                  error;
+        EXPECT_TRUE(
+            DefaultHaliteInterpreter::extract_ranges(range, imports, error));
         std::cout << error << std::endl;
         ASSERT_FALSE(imports.empty());
         ASSERT_EQ(expected_imports[i].size(), imports.size());
@@ -803,7 +805,7 @@ TEST(Halite, repeat_fileimport_using_single_range)
 #repeat ./nested repeated template.tmpl using i=1,3
 
 text that follows)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
 
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
@@ -838,7 +840,7 @@ TEST(Halite, repeat_fileimport_using_multiple_range)
 #repeat ./nested repeated template.tmpl using i=1,3; j=1,1; k=0,2,2
 
 text that follows)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
 
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
@@ -876,7 +878,7 @@ TEST(Halite, file_import_using_object_by_name)
     text prior
 #import ./import_by_name_template.tmpl using ted
  text after)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
 
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
@@ -921,7 +923,7 @@ TEST(Halite, file_import_using_object_by_copy)
 #import ./import_by_name_template.tmpl using <ted>
  text after
 )INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
 
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
@@ -964,7 +966,7 @@ TEST(Halite, file_import_using_inline)
 #import ./import_by_name_inline.tmpl using {"foo":"bar"}
  text after
 )INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
 
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
@@ -1002,7 +1004,7 @@ TEST(Halite, file_import_using_array_by_name)
 #import ./import_by_name_iterative.tmpl using my_array
  text after
 )INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
 
     ASSERT_TRUE(interpreter.parse(input));
     // template line counts always include 1 additional line
@@ -1059,7 +1061,7 @@ TEST(Halite, parent_scope_var_use_in_fileimport)
     input << "<'var name':use=pobj;fmt=%4d>" << std::endl;
     input << "#import ./parent_scope_var_use.tmpl using p2obj" << std::endl;
 
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
 
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
@@ -1095,7 +1097,7 @@ TEST(Halite, parameterized_fileimport)
     std::stringstream input;
     input << R"INPUT(#import ./nested <x> <ted>.tmpl
 <ted> has <fred> brothers)INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
 
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream out;
@@ -1141,7 +1143,7 @@ text
 #endif
 )INPUT";
 
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     {  // test defined path through template
         std::stringstream expected;
@@ -1196,7 +1198,7 @@ text
 
 #endif)INPUT";
 
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     {  // test defined path through template
         std::stringstream expected;
@@ -1244,7 +1246,7 @@ x and y are not defined
 #endif
    line
             )INPUT";
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     {  // test defined path through template
         std::stringstream expected;
@@ -1302,7 +1304,7 @@ action3
 #endif
 )INPUT";
 
-    HaliteInterpreter<> interpreter;
+    DefaultHaliteInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     {  // test undefined path through template
         std::stringstream expected;
@@ -1370,7 +1372,7 @@ TEST(Halite, iterative_configurable_delimiter_emission)
         std::stringstream input;
         input
             << R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=<nl>,5>)INPUT";
-        HaliteInterpreter<> interpreter;
+        DefaultHaliteInterpreter interpreter;
         ASSERT_TRUE(interpreter.parse(input));
         std::stringstream out;
         ASSERT_TRUE(interpreter.evaluate(out, data));
@@ -1384,7 +1386,7 @@ TEST(Halite, iterative_configurable_delimiter_emission)
     //        input<< R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep=
     //        ;emit=<nl>,5>
     //)INPUT";
-    //        HaliteInterpreter<> interpreter;
+    //        DefaultHaliteInterpreter interpreter;
     //        ASSERT_TRUE( interpreter.parse(input) );
     //        std::stringstream out;
     //        ASSERT_TRUE( interpreter.evaluate(out,data) );
@@ -1397,7 +1399,7 @@ TEST(Halite, iterative_configurable_delimiter_emission)
         std::stringstream input;
         input
             << R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=<nl>,4>)INPUT";
-        HaliteInterpreter<> interpreter;
+        DefaultHaliteInterpreter interpreter;
         ASSERT_TRUE(interpreter.parse(input));
         std::stringstream out;
         ASSERT_TRUE(interpreter.evaluate(out, data));
@@ -1411,7 +1413,7 @@ TEST(Halite, iterative_configurable_delimiter_emission)
     //        input<< R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep=
     //        ;emit=<nl>,4>
     //)INPUT";
-    //        HaliteInterpreter<> interpreter;
+    //        DefaultHaliteInterpreter interpreter;
     //        ASSERT_TRUE( interpreter.parse(input) );
     //        std::stringstream out;
     //        ASSERT_TRUE( interpreter.evaluate(out,data) );
@@ -1423,7 +1425,7 @@ TEST(Halite, iterative_configurable_delimiter_emission)
         std::stringstream input;
         input
             << R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=<nl>,6>)INPUT";
-        HaliteInterpreter<> interpreter;
+        DefaultHaliteInterpreter interpreter;
         ASSERT_TRUE(interpreter.parse(input));
         std::stringstream out;
         ASSERT_TRUE(interpreter.evaluate(out, data));
@@ -1434,7 +1436,7 @@ TEST(Halite, iterative_configurable_delimiter_emission)
     {  // test fixed column block
         std::stringstream input;
         input << R"INPUT(<j:j=10,0,-1;fmt=%2d;sep=;emit=# comment<nl>,2>)INPUT";
-        HaliteInterpreter<> interpreter;
+        DefaultHaliteInterpreter interpreter;
         ASSERT_TRUE(interpreter.parse(input));
         std::stringstream out;
         ASSERT_TRUE(interpreter.evaluate(out, data));
@@ -1453,7 +1455,7 @@ TEST(Halite, iterative_configurable_delimiter_emission)
     //        input<< R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep=
     //        ;emit=<nl>,6>
     //)INPUT";
-    //        HaliteInterpreter<> interpreter;
+    //        DefaultHaliteInterpreter interpreter;
     //        ASSERT_TRUE( interpreter.parse(input) );
     //        std::stringstream out;
     //        ASSERT_TRUE( interpreter.evaluate(out,data) );
@@ -1466,8 +1468,8 @@ TEST(Halite, iterative_configurable_delimiter_emission)
         std::stringstream input;
         input
             << R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=<nl>,-5>)INPUT";
-        std::stringstream   errors;
-        HaliteInterpreter<> interpreter(errors);
+        std::stringstream        errors;
+        DefaultHaliteInterpreter interpreter(errors);
         ASSERT_TRUE(interpreter.parse(input));
         std::stringstream out;
         ASSERT_FALSE(interpreter.evaluate(out, data));
@@ -1481,8 +1483,8 @@ TEST(Halite, iterative_configurable_delimiter_emission)
         std::stringstream input;
         input
             << R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=5,ted>)INPUT";
-        std::stringstream   errors;
-        HaliteInterpreter<> interpreter(errors);
+        std::stringstream        errors;
+        DefaultHaliteInterpreter interpreter(errors);
         ASSERT_TRUE(interpreter.parse(input));
         std::stringstream out;
         ASSERT_FALSE(interpreter.evaluate(out, data));

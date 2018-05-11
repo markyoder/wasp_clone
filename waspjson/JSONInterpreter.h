@@ -24,6 +24,74 @@
  * wasp::JSONParser, wasp::JSONLexerImpl and wasp::JSONInterpreter */
 namespace wasp
 {
+// How many input node type's (section, value, etc.) in a JSON file
+typedef std::uint8_t JSONNodeType_t;
+
+// How many input token type's (word, int, real, comma, etc.) in a JSON file
+typedef std::uint8_t JSONTokenType_t;
+
+// How many bytes in a file
+typedef std::uint8_t  JSONTinyFileSize_t;
+typedef std::uint16_t JSONMediumFileSize_t;
+typedef std::uint32_t JSONFileSize_t;
+typedef std::uint64_t JSONLargeFileSize_t;
+
+// How many tokens in a file (5 reals, 100 ints, 50 words, etc.)
+typedef std::uint8_t  JSONTinyTokenSize_t;
+typedef std::uint16_t JSONMediumTokenSize_t;
+typedef std::uint32_t JSONTokenSize_t;
+typedef std::uint64_t JSONLargeTokenSize_t;
+
+// Tiny file TokenPool (less than 256 bytes)
+typedef TokenPool<
+    // Token type
+    JSONTokenType_t,
+    // Max number of token
+    JSONTinyTokenSize_t,
+    // Max number of bytes in the file
+    JSONTinyFileSize_t>
+    JSONTinyTokenPool;
+
+// Medium file TokenPool (less than 65k bytes)
+typedef TokenPool<
+    // Token type
+    JSONTokenType_t,
+    // Max number of token
+    JSONMediumTokenSize_t,
+    // Max number of bytes in the file
+    JSONMediumFileSize_t>
+    JSONMediumTokenPool;
+
+// Regular file TokenPool (less than 4b bytes)
+typedef TokenPool<
+    // Token type
+    JSONTokenType_t,
+    // Max number of token
+    JSONTokenSize_t,
+    // Max number of bytes in the file
+    JSONFileSize_t>
+    JSONTokenPool;
+
+// Large file TokenPool (greater than 4b bytes)
+typedef TokenPool<
+    // Token type
+    JSONTokenType_t,
+    // Max number of token
+    JSONLargeTokenSize_t,
+    // Max number of bytes in the file
+    JSONLargeFileSize_t>
+    JSONLargeTokenPool;
+
+// Regular NodePool storage
+typedef TreeNodePool<
+    // Node type
+    JSONNodeType_t,
+    // Max number of nodes in the file
+    std::uint32_t,
+    // Regular TokenPool
+    JSONTokenPool>
+    JSONNodePool;
+
 /** The JSONInterpreter class brings together all components. It creates an
  * instance of
  * the JSONParser and JSONLexerImpl classes and connects them. Then the input
@@ -36,10 +104,7 @@ namespace wasp
  * @brief Parse a Standard Object Notation (JSONInterpreter) file/stream
  * www.json.org for specications
  */
-template<class S = TreeNodePool<
-             unsigned short,
-             unsigned short,
-             TokenPool<unsigned short, unsigned short, unsigned short>>>
+template<class S = JSONNodePool>
 class WASP_PUBLIC JSONInterpreter : public Interpreter<S>
 {
   public:
@@ -127,16 +192,18 @@ class WASP_PUBLIC JSONInterpreter : public Interpreter<S>
   private:  // private methods
     // TODO these generate methods do not need to live in the interpreter class
 
-    bool generate_object_internal(const TreeNodeView<S>& view,
-                                  DataObject&            obj,
-                                  std::ostream&          err) const;
-    bool generate_array_internal(const TreeNodeView<S>& view,
-                                 DataArray&             obj,
-                                 std::ostream&          err) const;
-    bool generate_value_internal(const TreeNodeView<S>& value_view,
-                                 wasp::Value&           value,
-                                 std::ostream&          err) const;
+    bool generate_object_internal(const NodeView& view,
+                                  DataObject&     obj,
+                                  std::ostream&   err) const;
+    bool generate_array_internal(const NodeView& view,
+                                 DataArray&      obj,
+                                 std::ostream&   err) const;
+    bool generate_value_internal(const NodeView& value_view,
+                                 wasp::Value&    value,
+                                 std::ostream&   err) const;
 };  // end of JSONInterpreter class
 #include "waspjson/JSONInterpreter.i.h"
+
+typedef JSONInterpreter<> DefaultJSONInterpreter;
 }  // namespace wasp
 #endif  // WASPJSONINTERPRETER_H

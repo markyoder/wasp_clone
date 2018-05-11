@@ -40,11 +40,8 @@ int main(int argc, char* argv[])
             input.close();
             return 1;
         }
-        std::stringstream errors;
-        GetPotInterpreter<
-            TreeNodePool<unsigned int, unsigned int,
-                         TokenPool<unsigned int, unsigned int, unsigned int>>>
-            interpreter(errors);
+        std::stringstream        errors;
+        DefaultGetPotInterpreter interpreter(errors);
         wasp_timer(parse_time);
         wasp_timer_start(parse_time);
         bool parsed = interpreter.parse(input);

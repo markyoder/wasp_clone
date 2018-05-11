@@ -50,11 +50,8 @@ int main(int argc, char** argv)
         argcount = argc - 1;
     }
 
-    SONInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-         schema;
-    bool schema_failed = !schema.parseFile(argv[1]);
+    DefaultSONInterpreter schema;
+    bool                  schema_failed = !schema.parseFile(argv[1]);
     if (schema_failed)
     {
         std::cout << "***Error : Parsing of " << argv[1] << " failed!"
@@ -62,9 +59,9 @@ int main(int argc, char** argv)
         return 1;
     }
     // Construct the definition
-    SONNodeView<decltype(schema.root())> schema_root = schema.root();
-    std::stringstream                    definition_errors;
-    Definition::SP definition = std::make_shared<Definition>();
+    SONNodeView       schema_root = schema.root();
+    std::stringstream definition_errors;
+    Definition::SP    definition = std::make_shared<Definition>();
 
     if (!HIVE::create_definition(definition.get(), schema_root,
                                  definition_errors, false))
@@ -75,10 +72,7 @@ int main(int argc, char** argv)
     int return_code = 0;
     for (int i = 2; i < argcount; ++i)
     {
-        DDInterpreter<
-            TreeNodePool<unsigned int, unsigned int,
-                         TokenPool<unsigned int, unsigned int, unsigned int>>>
-            parser;
+        DefaultDDInterpreter parser;
         parser.set_definition_store(definition);
         bool failed = !parser.parseFile(argv[i]);
         if (failed)
@@ -87,10 +81,10 @@ int main(int argc, char** argv)
                       << std::endl;
             return 1;
         }
-        DDINodeView<decltype(parser.root())> input_root  = parser.root();
-        SONNodeView<decltype(schema.root())> schema_root = schema.root();
-        HIVE                                 validation_engine;
-        std::vector<std::string>             validation_errors;
+        DDINodeView              input_root  = parser.root();
+        SONNodeView              schema_root = schema.root();
+        HIVE                     validation_engine;
+        std::vector<std::string> validation_errors;
         bool valid = validation_engine.validate(schema_root, input_root,
                                                 validation_errors);
         if (!valid)

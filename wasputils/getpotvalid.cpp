@@ -51,12 +51,8 @@ int main(int argc, char* argv[])
         schema.close();
         return 1;
     }
-    std::stringstream errors;
-    // TODO - adjust file offset size based on file size
-    SONInterpreter<
-        TreeNodePool<unsigned int, unsigned int,
-                     TokenPool<unsigned int, unsigned int, unsigned int>>>
-        schema_interp(errors);
+    std::stringstream     errors;
+    DefaultSONInterpreter schema_interp(errors);
     wasp_timer(parse_schema_time);
     wasp_timer_start(parse_schema_time);
     bool parsed_schema = schema_interp.parse(schema);
@@ -83,11 +79,7 @@ int main(int argc, char* argv[])
             input.close();
             return 2;
         }
-        // TODO - adjust file offset size based on file size
-        GetPotInterpreter<
-            TreeNodePool<unsigned int, unsigned int,
-                         TokenPool<unsigned int, unsigned int, unsigned int>>>
-            input_interp(errors);
+        DefaultGetPotInterpreter input_interp(errors);
         wasp_timer(parse_input_time);
         wasp_timer_start(parse_input_time);
         bool parsed_input = input_interp.parse(input);
@@ -104,10 +96,8 @@ int main(int argc, char* argv[])
             std::cout << errors.str() << std::endl;
             return -1;
         }
-        GetPotNodeView<decltype(input_interp.root())> input_root =
-            input_interp.root();
-        SONNodeView<decltype(schema_interp.root())> schema_root =
-            schema_interp.root();
+        GetPotNodeView           input_root  = input_interp.root();
+        SONNodeView              schema_root = schema_interp.root();
         HIVE                     validation_engine;
         std::vector<std::string> validation_errors;
         bool valid = validation_engine.validate(schema_root, input_root,
