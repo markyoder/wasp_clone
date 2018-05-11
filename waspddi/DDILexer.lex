@@ -43,9 +43,12 @@ typedef wasp::DDIParser::token_type token_type;
 /*%x exclusive*/
 /*%s inclusive*/
 
-INT \-?[0-9]+([eE]\+?[0-9]+)?
-EXPONENT [eE][\+\-]?{INT}
-DOUBLE {INT}?\.{INT}?{EXPONENT}?|{INT}\.({INT}?{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
+FRAC \-?[0-9]+([eE]\+?[0-9]+)?
+WHOLE [\+\-]?[0-9]+([eE]\+?[0-9]+)?
+INTEGER {WHOLE}
+EXPONENT [eE]{WHOLE}
+
+DOUBLE {WHOLE}?\.{FRAC}?{EXPONENT}?|{WHOLE}\.({FRAC}?{EXPONENT}?)?|{WHOLE}\.?{EXPONENT}
 
 STRING [A-Za-z_]([A-Za-z0-9_\.])*
 
@@ -84,7 +87,7 @@ ASSIGN =
     capture_token(yylval,wasp::REAL);
     return token::DOUBLE;
 }
-{INT} {
+{INTEGER} {
     capture_token(yylval,wasp::INT);
     return token::INTEGER;
 }

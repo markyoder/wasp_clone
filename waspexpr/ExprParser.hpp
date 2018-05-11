@@ -47,7 +47,7 @@
 #include "waspcore/wasp_node.h"
 #include "waspcore/decl.h"
 
-#line 50 "ExprParser.hpp" // lalr1.cc:377
+#line 51 "ExprParser.hpp" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -117,9 +117,9 @@
 # define YYDEBUG 0
 #endif
 
-#line 33 "Expr.bison" // lalr1.cc:377
+#line 34 "Expr.bison" // lalr1.cc:377
 namespace wasp {
-#line 122 "ExprParser.hpp" // lalr1.cc:377
+#line 123 "ExprParser.hpp" // lalr1.cc:377
 
 
 
@@ -133,13 +133,13 @@ namespace wasp {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 61 "Expr.bison" // lalr1.cc:377
+    #line 62 "Expr.bison" // lalr1.cc:377
 
     std::size_t token_index;
     std::size_t node_index;
     std::vector<size_t>* node_indices;
 
-#line 142 "ExprParser.hpp" // lalr1.cc:377
+#line 143 "ExprParser.hpp" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -511,9 +511,9 @@ namespace wasp {
   };
 
 
-#line 33 "Expr.bison" // lalr1.cc:377
+#line 34 "Expr.bison" // lalr1.cc:377
 } // wasp
-#line 516 "ExprParser.hpp" // lalr1.cc:377
+#line 517 "ExprParser.hpp" // lalr1.cc:377
 
 
 

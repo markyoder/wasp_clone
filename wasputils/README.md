@@ -321,6 +321,12 @@ halite /path/to/template.tmpl /path/to/data.json
 
 The expanded template emitted on stdout, and errors/log information is emitted on stderr.
 
+The template attribute delimiters can be specified as:
+
+```
+halite /path/to/template.tmpl /path/to/data.json --ldelim='${' --rdelim='}'
+```
+
 
 ## Schema Skeleton Creation Utility
 

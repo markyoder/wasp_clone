@@ -14,7 +14,8 @@ namespace wasp
 class WASP_PUBLIC DataAccessor : public Context
 {
   public:
-    DataAccessor(DataObject* data = nullptr, DataAccessor* parent = nullptr);
+    DataAccessor(DataObject* data = nullptr, DataAccessor* parent = nullptr,
+                 const std::string& hierarchy_operator="");
     DataAccessor(const DataAccessor& orig);
     virtual ~DataAccessor();
 
@@ -74,7 +75,23 @@ class WASP_PUBLIC DataAccessor : public Context
      */
     DataArray* array(const std::string& name) const;
 
-  private:
+    /**
+     * @brief hierarchy_operator obtains the operator that dictates hierachy in
+     * the variable name
+     * @return returns the string indicating the hierarchy operator, default '.'
+     */
+    const std::string& hierarchy_operator() const {return m_hierarchy_operator;}
+
+protected:
+    /**
+     * @brief scope acquire the DataObject scope for the given variable
+     * @param name the name of the variable, updated to be the lowest scope
+     * @return the DataObject for the variable, minimally this.
+     * Note if given child.value, and child is an object,
+     * child is returned and name is updated to be value.
+     */
+    DataObject* scope(std::string& name) const;
+  private:    
     /**
      * @brief m_parent unmanaged data pointer to parent data layer
      */
@@ -83,6 +100,14 @@ class WASP_PUBLIC DataAccessor : public Context
      * @brief m_current_data unmanaged data pointer to current data hierarchy
      */
     DataObject* m_current_data;
+
+    /**
+     * @brief m_hierarchy_operator the character(s) that delimit variable hierarchy
+     * E.g.,
+     * operator = ".", e.g., parent.child.
+     * operator = "::" e.g., parent::child.
+     */
+    std::string m_hierarchy_operator;
 };
 
 }  // wasp

@@ -502,7 +502,9 @@ class WASP_PUBLIC HIVE
                 if (json_value_type == JsonValueType::NUMBER)
                 {
                     out << spaces(level) << "\"" << current_node.name()
-                        << "\":"    << escape_string;
+                        << "\":"    << (escape_string.front() == '+' ?
+                                            escape_string.substr(1)
+                                          : escape_string);
                 }
                 else
                 {
@@ -615,7 +617,9 @@ class WASP_PUBLIC HIVE
                         std::replace(escape_string.begin(), escape_string.end(), '"', '\'');
                         if (json_value_type == JsonValueType::NUMBER)
                         {
-                            out << " " << escape_string ;
+                            out << " " << (escape_string.front() == '+' ?
+                                               escape_string.substr(1)
+                                             : escape_string) ;
                         }
                         else
                         {

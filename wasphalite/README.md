@@ -101,7 +101,7 @@ data record <x> <y> <z> <comment:? fmt=com="%s">
 Here the `comment` is optional data, but when present requires a 'com="`comment`"' to indicate context. The format statement proides the context 'com=' only when `comment` is present.
 
 ### Attribute Patterns
-Attribute names are defined as the regular expression `[A-Za-z_]([A-Za-z0-9\._])*`. Examples of these are: 
+Attribute names are defined as the regular expression `[A-Za-z_]([A-Za-z0-9\._%])*`. Examples of these are: 
 
 1. `var`
 2. `var_name`
@@ -402,6 +402,10 @@ the <speed:use=fox> <color:use=fox> fox jumped over the <'dog color'> dog.
 or
 ```
 <"the "+speed+" "+color:use=fox> fox jumped over the <'dog color'> dog. 
+```
+or
+```
+the <fox.speed> <fox.color> fox jumped over the <'dog color'> dog. 
 ```
 
 ### Array Scoped Attribute

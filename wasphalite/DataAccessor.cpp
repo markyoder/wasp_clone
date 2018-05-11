@@ -2,15 +2,24 @@
 
 namespace wasp
 {
-DataAccessor::DataAccessor(DataObject* data, DataAccessor* parent)
-    : Context(), m_parent(parent), m_current_data(data)
+DataAccessor::DataAccessor(DataObject* data, DataAccessor* parent,
+                           const std::string& hierarchy_operator)
+    : Context(), m_parent(parent), m_current_data(data),
+      m_hierarchy_operator(hierarchy_operator)
 {
+    // Inherit the hierarchy operator from the parent
+    // only if not explicity specified
+    if ( parent != nullptr && hierarchy_operator.empty() )
+    {
+        m_hierarchy_operator = parent->m_hierarchy_operator;
+    }
 }
 
 DataAccessor::DataAccessor(const DataAccessor& orig)
     : Context(orig)
     , m_parent(orig.m_parent)
     , m_current_data(orig.m_current_data)
+    , m_hierarchy_operator(orig.m_hierarchy_operator)
 {
 }
 
@@ -18,10 +27,12 @@ DataAccessor::~DataAccessor()
 {
 }
 
-bool DataAccessor::exists(const std::string& name) const
+bool DataAccessor::exists(const std::string& vname) const
 {
+    std::string name = vname;
+    const auto* current_data = scope(name);
     bool current_data_exists =
-        m_current_data != nullptr && m_current_data->contains(name);
+        current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
     if (current_data_exists == false &&
         !(parent_data_exists = (m_parent && m_parent->exists(name))))
@@ -30,10 +41,12 @@ bool DataAccessor::exists(const std::string& name) const
     }
     return current_data_exists || parent_data_exists;
 }
-Context::Type DataAccessor::type(const std::string& name) const
+Context::Type DataAccessor::type(const std::string& vname) const
 {
+    std::string name = vname;
+    const auto* current_data = scope(name);
     bool current_data_exists =
-        m_current_data != nullptr && m_current_data->contains(name);
+        current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
     if (current_data_exists == false &&
         !(parent_data_exists = (m_parent && m_parent->exists(name))))
@@ -42,9 +55,9 @@ Context::Type DataAccessor::type(const std::string& name) const
     }
     if (current_data_exists)
     {
-        wasp_check(m_current_data);
-        auto itr = m_current_data->find(name);
-        if (itr == m_current_data->end())
+        wasp_check(current_data);
+        auto itr = current_data->find(name);
+        if (itr == current_data->end())
             return Context::Type::UNDEFINED;
         const wasp::Value& variable = itr->second;
         if (variable.is_double())
@@ -65,10 +78,12 @@ Context::Type DataAccessor::type(const std::string& name) const
     }
     return Context::Type::UNDEFINED;
 }
-Context::Type DataAccessor::type(const std::string& name, size_t index) const
+Context::Type DataAccessor::type(const std::string& vname, size_t index) const
 {
+    std::string name = vname;
+    const auto* current_data = scope(name);
     bool current_data_exists =
-        m_current_data != nullptr && m_current_data->contains(name);
+        current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
     if (current_data_exists == false &&
         !(parent_data_exists = (m_parent && m_parent->exists(name))))
@@ -77,9 +92,9 @@ Context::Type DataAccessor::type(const std::string& name, size_t index) const
     }
     if (current_data_exists)
     {
-        wasp_check(m_current_data);
-        auto itr = m_current_data->find(name);
-        if (itr == m_current_data->end())
+        wasp_check(current_data);
+        auto itr = current_data->find(name);
+        if (itr == current_data->end())
             return Context::Type::UNDEFINED;
         const wasp::Value& variable = itr->second;
         if (variable.is_array())
@@ -112,10 +127,12 @@ Context::Type DataAccessor::type(const std::string& name, size_t index) const
     return Context::Type::UNDEFINED;
 }
 
-int DataAccessor::size(const std::string& name) const
+int DataAccessor::size(const std::string& vname) const
 {
+    std::string name = vname;
+    const auto* current_data = scope(name);
     bool current_data_exists =
-        m_current_data != nullptr && m_current_data->contains(name);
+        current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
     if (current_data_exists == false &&
         !(parent_data_exists = (m_parent && m_parent->exists(name))))
@@ -124,9 +141,9 @@ int DataAccessor::size(const std::string& name) const
     }
     if (current_data_exists)
     {
-        wasp_check(m_current_data);
-        auto itr = m_current_data->find(name);
-        if (itr == m_current_data->end())
+        wasp_check(current_data);
+        auto itr = current_data->find(name);
+        if (itr == current_data->end())
             return 0;
         const wasp::Value& variable = itr->second;
         if (variable.is_array())
@@ -142,23 +159,27 @@ int DataAccessor::size(const std::string& name) const
     }
     return 0;
 }
-bool DataAccessor::store(const std::string& name, const bool& v)
+bool DataAccessor::store(const std::string& vname, const bool& v)
 {
-    if (m_current_data == nullptr)
+    std::string name = vname;
+    auto* current_data = scope(name);
+    if (current_data == nullptr)
     {
         return Context::store(name, v);
     }
-    (*m_current_data)[name] = v;
+    (*current_data)[name] = v;
     return true;
 }
 
-bool DataAccessor::store(const std::string& name, const int& v)
+bool DataAccessor::store(const std::string& vname, const int& v)
 {
-    if (m_current_data == nullptr)
+    std::string name = vname;
+    auto* current_data = scope(name);
+    if (current_data == nullptr)
     {
         return Context::store(name, v);
     }
-    (*m_current_data)[name] = v;
+    (*current_data)[name] = v;
     return true;
 }
 
@@ -166,32 +187,38 @@ bool DataAccessor::store(const std::string& name, const char* v)
 {
     return store(name, std::string(v));
 }
-bool DataAccessor::store(const std::string& name, const std::string& v)
+bool DataAccessor::store(const std::string& vname, const std::string& v)
 {
-    if (m_current_data == nullptr)
+    std::string name = vname;
+    auto* current_data = scope(name);
+    if (current_data == nullptr)
     {
         return Context::store(name, v);
     }
-    (*m_current_data)[name] = v;
+    (*current_data)[name] = v;
     return true;
 }
 
-bool DataAccessor::store(const std::string& name, const double& v)
+bool DataAccessor::store(const std::string& vname, const double& v)
 {
-    if (m_current_data == nullptr)
+    std::string name = vname;
+    auto* current_data = scope(name);
+    if (current_data == nullptr)
     {
         return Context::store(name, v);
     }
-    (*m_current_data)[name] = v;
+    (*current_data)[name] = v;
     return true;
 }
 
-bool DataAccessor::boolean(const std::string& name,
+bool DataAccessor::boolean(const std::string& vname,
                            size_t             index,
                            bool*              ok) const
 {
+    std::string name = vname;
+    const auto* current_data = scope(name);
     bool current_data_exists =
-        m_current_data != nullptr && m_current_data->contains(name);
+        current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
     if (current_data_exists == false &&
         !(parent_data_exists = (m_parent && m_parent->exists(name))))
@@ -200,9 +227,9 @@ bool DataAccessor::boolean(const std::string& name,
     }
     if (current_data_exists)
     {
-        auto       itr   = m_current_data->find(name);
+        auto       itr   = current_data->find(name);
         DataArray* array = nullptr;
-        if (ok && itr == m_current_data->end())
+        if (ok && itr == current_data->end())
             *ok = false;
         else if (ok)
         {
@@ -227,10 +254,12 @@ bool DataAccessor::boolean(const std::string& name,
     }
     return std::numeric_limits<bool>::quiet_NaN();
 }
-bool DataAccessor::boolean(const std::string& name, bool* ok) const
+bool DataAccessor::boolean(const std::string& vname, bool* ok) const
 {
+    std::string name = vname;
+    const auto* current_data = scope(name);
     bool current_data_exists =
-        m_current_data != nullptr && m_current_data->contains(name);
+        current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
     if (current_data_exists == false &&
         !(parent_data_exists = (m_parent && m_parent->exists(name))))
@@ -239,9 +268,9 @@ bool DataAccessor::boolean(const std::string& name, bool* ok) const
     }
     if (current_data_exists)
     {
-        auto itr = m_current_data->find(name);
+        auto itr = current_data->find(name);
 
-        if (ok && itr == m_current_data->end())
+        if (ok && itr == current_data->end())
             *ok = false;
         else if (ok)
         {
@@ -255,21 +284,24 @@ bool DataAccessor::boolean(const std::string& name, bool* ok) const
     }
     return std::numeric_limits<bool>::quiet_NaN();
 }
-int DataAccessor::integer(const std::string& name, size_t index, bool* ok) const
+int DataAccessor::integer(const std::string& vname, size_t index, bool* ok) const
 {
+    std::string name = vname;
+    const auto* current_data = scope(name);
     bool current_data_exists =
-        m_current_data != nullptr && m_current_data->contains(name);
+        current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
     if (current_data_exists == false &&
-        !(parent_data_exists = (m_parent && m_parent->exists(name))))
+        !(parent_data_exists =
+          (m_parent && m_parent->exists(name))))
     {
         return Context::integer(name, index, ok);
     }
     if (current_data_exists)
     {
-        auto       itr   = m_current_data->find(name);
+        auto       itr   = current_data->find(name);
         DataArray* array = nullptr;
-        if (ok && itr == m_current_data->end())
+        if (ok && itr == current_data->end())
             *ok = false;
         else if (ok)
         {
@@ -294,21 +326,24 @@ int DataAccessor::integer(const std::string& name, size_t index, bool* ok) const
     }
     return std::numeric_limits<int>::quiet_NaN();
 }
-int DataAccessor::integer(const std::string& name, bool* ok) const
+int DataAccessor::integer(const std::string& vname, bool* ok) const
 {
+    std::string name = vname;
+    const auto* current_data = scope(name);
     bool current_data_exists =
-        m_current_data != nullptr && m_current_data->contains(name);
+        current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
     if (current_data_exists == false &&
-        !(parent_data_exists = (m_parent && m_parent->exists(name))))
+        !(parent_data_exists =
+          (m_parent && m_parent->exists(name))))
     {
         return Context::integer(name, ok);
     }
     if (current_data_exists)
     {
-        auto itr = m_current_data->find(name);
+        auto itr = current_data->find(name);
 
-        if (ok && itr == m_current_data->end())
+        if (ok && itr == current_data->end())
             *ok = false;
         else if (ok)
         {
@@ -323,10 +358,12 @@ int DataAccessor::integer(const std::string& name, bool* ok) const
     return std::numeric_limits<int>::quiet_NaN();
 }
 
-double DataAccessor::real(const std::string& name, size_t index, bool* ok) const
+double DataAccessor::real(const std::string& vname, size_t index, bool* ok) const
 {
+    std::string name = vname;
+    const auto* current_data = scope(name);
     bool current_data_exists =
-        m_current_data != nullptr && m_current_data->contains(name);
+        current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
     if (current_data_exists == false &&
         !(parent_data_exists = (m_parent && m_parent->exists(name))))
@@ -335,9 +372,9 @@ double DataAccessor::real(const std::string& name, size_t index, bool* ok) const
     }
     if (current_data_exists)
     {
-        auto       itr   = m_current_data->find(name);
+        auto       itr   = current_data->find(name);
         DataArray* array = nullptr;
-        if (ok && itr == m_current_data->end())
+        if (ok && itr == current_data->end())
             *ok = false;
         else if (ok)
         {
@@ -362,10 +399,12 @@ double DataAccessor::real(const std::string& name, size_t index, bool* ok) const
     }
     return std::numeric_limits<double>::quiet_NaN();
 }
-double DataAccessor::real(const std::string& name, bool* ok) const
+double DataAccessor::real(const std::string& vname, bool* ok) const
 {
+    std::string name = vname;
+    const auto* current_data = scope(name);
     bool current_data_exists =
-        m_current_data != nullptr && m_current_data->contains(name);
+        current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
     if (current_data_exists == false &&
         !(parent_data_exists = (m_parent && m_parent->exists(name))))
@@ -374,9 +413,9 @@ double DataAccessor::real(const std::string& name, bool* ok) const
     }
     if (current_data_exists)
     {
-        auto itr = m_current_data->find(name);
+        auto itr = current_data->find(name);
 
-        if (ok && itr == m_current_data->end())
+        if (ok && itr == current_data->end())
             *ok = false;
         else if (ok)
         {
@@ -392,10 +431,12 @@ double DataAccessor::real(const std::string& name, bool* ok) const
 }
 
 std::string
-DataAccessor::string(const std::string& name, size_t index, bool* ok) const
+DataAccessor::string(const std::string& vname, size_t index, bool* ok) const
 {
+    std::string name = vname;
+    const auto* current_data = scope(name);
     bool current_data_exists =
-        m_current_data != nullptr && m_current_data->contains(name);
+        current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
     if (current_data_exists == false &&
         !(parent_data_exists = (m_parent && m_parent->exists(name))))
@@ -404,9 +445,9 @@ DataAccessor::string(const std::string& name, size_t index, bool* ok) const
     }
     if (current_data_exists)
     {
-        auto       itr   = m_current_data->find(name);
+        auto       itr   = current_data->find(name);
         DataArray* array = nullptr;
-        if (ok && itr == m_current_data->end())
+        if (ok && itr == current_data->end())
             *ok = false;
         else if (ok)
         {
@@ -431,10 +472,12 @@ DataAccessor::string(const std::string& name, size_t index, bool* ok) const
     }
     return "";
 }
-std::string DataAccessor::string(const std::string& name, bool* ok) const
+std::string DataAccessor::string(const std::string& vname, bool* ok) const
 {
+    std::string name = vname;
+    const auto* current_data = scope(name);
     bool current_data_exists =
-        m_current_data != nullptr && m_current_data->contains(name);
+        current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
     if (current_data_exists == false &&
         !(parent_data_exists = (m_parent && m_parent->exists(name))))
@@ -443,9 +486,9 @@ std::string DataAccessor::string(const std::string& name, bool* ok) const
     }
     if (current_data_exists)
     {
-        auto itr = m_current_data->find(name);
+        auto itr = current_data->find(name);
 
-        if (ok && itr == m_current_data->end())
+        if (ok && itr == current_data->end())
             *ok = false;
         else if (ok)
         {
@@ -460,10 +503,12 @@ std::string DataAccessor::string(const std::string& name, bool* ok) const
     return "";
 }
 
-DataObject* DataAccessor::object(const std::string& name) const
+DataObject* DataAccessor::object(const std::string& vname) const
 {
+    std::string name = vname;
+    const auto* current_data = scope(name);
     bool current_data_exists =
-        m_current_data != nullptr && m_current_data->contains(name);
+        current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
     if (current_data_exists == false &&
         !(parent_data_exists = (m_parent && m_parent->exists(name))))
@@ -472,8 +517,8 @@ DataObject* DataAccessor::object(const std::string& name) const
     }
     if (current_data_exists)
     {
-        auto itr = m_current_data->find(name);
-        if (itr == m_current_data->end())
+        auto itr = current_data->find(name);
+        if (itr == current_data->end())
         {
             return nullptr;
         }
@@ -488,10 +533,12 @@ DataObject* DataAccessor::object(const std::string& name) const
     }
     return nullptr;
 }
-DataArray* DataAccessor::array(const std::string& name) const
+DataArray* DataAccessor::array(const std::string& vname) const
 {
+    std::string name = vname;
+    const auto* current_data = scope(name);
     bool current_data_exists =
-        m_current_data != nullptr && m_current_data->contains(name);
+        current_data != nullptr && current_data->contains(name);
     bool parent_data_exists = false;
     if (current_data_exists == false &&
         !(parent_data_exists = (m_parent && m_parent->exists(name))))
@@ -500,8 +547,8 @@ DataArray* DataAccessor::array(const std::string& name) const
     }
     if (current_data_exists)
     {
-        auto itr = m_current_data->find(name);
-        if (itr == m_current_data->end())
+        auto itr = current_data->find(name);
+        if (itr == current_data->end())
         {
             return nullptr;
         }
@@ -515,5 +562,49 @@ DataArray* DataAccessor::array(const std::string& name) const
         return m_parent->array(name);
     }
     return nullptr;
+}
+
+wasp::DataObject* DataAccessor::scope(std::string& name) const
+{
+    // no operator, it better be scoped by this accessor's data
+    if (m_hierarchy_operator.empty()
+            || m_current_data == nullptr)
+    {
+        return m_current_data;
+    }
+
+    std::string original_name = name;
+    //
+    // Search down from this accessor scope
+    //
+    auto* current_data = m_current_data;
+
+    size_t i_op = 0;
+    while ( (i_op = name.find(m_hierarchy_operator, i_op) )
+            != std::string::npos )
+    {
+        std::string object_name = name.substr(0,i_op);
+        // Check Object existence
+        auto itr = current_data->find(object_name);
+        if ( itr != current_data->end()
+             && itr->second.is_object())
+        {
+            current_data = itr->second.to_object();
+        }
+        else
+        {
+            // could not find the next object
+            // attempt to address as a missname
+            if (m_current_data->find(original_name) != m_current_data->end())
+            {
+                name = original_name;
+                return m_current_data;
+            }
+            return current_data;
+        }
+        name = name.substr(i_op+m_hierarchy_operator.size());
+        i_op = 0;
+    }
+    return current_data;
 }
 }  // end of namespace

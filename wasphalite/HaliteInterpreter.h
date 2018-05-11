@@ -38,7 +38,10 @@ WASP_PUBLIC bool expand_template(std::ostream&      result,
                                  const std::string& template_file,
                                  const std::string& json_parameter_file = "",
                                  bool               defaultVars         = false,
-                                 bool               defaultFuncs = false);
+                                 bool               defaultFuncs = false,
+                                 const std::string& ldelim="<",
+                                 const std::string& rdelim=">",
+                                 const std::string& hop=".");
 
 // How many input node type's (section, value, etc.) in a Halite file
 typedef std::uint8_t HaliteNodeType_t;
@@ -581,12 +584,17 @@ inline WASP_PUBLIC bool expand_template(std::ostream&      result,
                                         const std::string& template_file,
                                         const std::string& json_parameter_file,
                                         bool               defaultVars,
-                                        bool               defaultFuncs)
+                                        bool               defaultFuncs,
+                                        const std::string& ldelim,
+                                        const std::string& rdelim,
+                                        const std::string& hop)
 {
     HaliteInterpreter<
         TreeNodePool<unsigned int, unsigned int,
                      TokenPool<unsigned int, unsigned int, unsigned int>>>
         halite(elog);
+    halite.attr_start_delim() = ldelim;
+    halite.attr_end_delim() = rdelim;
 
     bool tmpl_failed = !halite.parseFile(template_file);
     if (tmpl_failed)
@@ -598,7 +606,7 @@ inline WASP_PUBLIC bool expand_template(std::ostream&      result,
     if (json_parameter_file.empty())
     {
         DataObject   o;
-        DataAccessor data(&o);
+        DataAccessor data(&o, nullptr, hop);
         if (defaultVars)
             data.add_default_variables();
         if (defaultFuncs)
@@ -627,7 +635,7 @@ inline WASP_PUBLIC bool expand_template(std::ostream&      result,
              << " failed!" << std::endl;
         return false;
     }
-    DataAccessor data(obj_ptr.get());
+    DataAccessor data(obj_ptr.get(), nullptr, hop);
     if (defaultVars)
         data.add_default_variables();
     if (defaultFuncs)
