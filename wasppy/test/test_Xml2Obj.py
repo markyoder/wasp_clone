@@ -1,23 +1,16 @@
 import subprocess, os, sys
 # MAKE SURE THE xml2obj MODULE IS IN THE PATH
 sys.path.insert(0, os.path.dirname(__file__)+"/..")
-import xml2obj
+import xml2obj, wasp2py
 import unittest
 
 ### convert son file to xml stream and create python data structure
-if os.name == 'nt':
-    ### for windows intel
-    sonvalidxml = os.path.dirname(__file__)+"\\..\\wasputils\\sonvalidxml.exe"
-    if not os.path.isfile(sonvalidxml) :
-        ### for windows visual studio
-        sonvalidxml = os.path.dirname(__file__) + "\\..\\wasputils\\Release\\sonvalidxml.exe"
-        if not os.path.isfile(sonvalidxml) :
-            ### for windows visual studio shared with CMAKE_RUNTIME_OUTPUT_DIRECTORY fixup
-            sonvalidxml = os.path.dirname(__file__) + "\\..\\cmake_runtime_output\\Release\\sonvalidxml.exe"
+sonvalidxml = wasp2py.get_wasp_utility_path("sonvalidxml")
+
+if os.name == 'nt':    
     schema_filepath = os.path.dirname(__file__)+"\\schema.sch"
     son_input_filepath = os.path.dirname(__file__)+"\\input.son"
-else:
-    sonvalidxml = os.path.dirname(__file__)+"/../wasputils/sonvalidxml"
+else:    
     schema_filepath = os.path.dirname(__file__)+"/schema.sch"
     son_input_filepath = os.path.dirname(__file__)+"/input.son"
 cmd = sonvalidxml+' '+schema_filepath+' '+son_input_filepath+" --xml"
