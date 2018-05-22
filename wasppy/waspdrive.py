@@ -3,29 +3,35 @@ import subprocess, os, json
 import wasp2py as w2py
 #todo: follow Rob's driver schema and example to revise codes
 
-def run_external_app(file_extract_driver, application_json_parameters):
+def process_drive_input(file_extract_driver):
+    """Process and obtain the driver document data"""
     drive_schema =  os.path.dirname(__file__)+"/drive/driver.sch"
-    #use ddi to generate dict of driver instruction
-    #include: 1. name of external application; 
-    #2. input of external application; 
-    #3. run external application;
-    #4. the complete logic for result extraction 
-    instruction=w2py.get_json_dict(drive_schema, file_extract_driver, ext="ddi" )
-    external_app=instruction['application']['value'] #
-    input_file=instruction['application']['input_file']['value'] #
-    tmpl_file=instruction['application']['input_tmpl']['value'] #
+    document=w2py.get_json_dict(drive_schema, file_extract_driver, ext="ddi" )    
+    return document
+
+def run_external_app(document, application_json_parameters):    
+    """Runs the external application as listed in the given document.
+    Expands the application input template using the provided application_json_parameters prior to application execution.    
+    """ 
+    external_app=document['application']['value'] #
+    input_file=document['application']['input_file']['value'] #
+    tmpl_file=document['application']['input_tmpl']['value'] #
     template_engine = w2py.get_wasp_utility_path("halite")
 
     args = "{} {} {} > {}".format(template_engine, tmpl_file, application_json_parameters, input_file)
     print "Executing template engine..."
     print "-- ",args
-    os.system(args)
+    rtncode = os.system(args)
+    print "Template expansion completed. Return code ",rtncode
+    if rtncode != 0:
+        return rtncode
+
     print "Running external simulation..."
     print " -- ",external_app
     
-    os.system(external_app) 
-    print "External simulation complete."
-    return instruction
+    rtncode = os.system(external_app) 
+    print "External simulation complete. Return code ",rtncode
+    return rtncode
 
 def extract_results(document):
     res_output=[]
@@ -83,11 +89,22 @@ def extract_results(document):
 
     return res_output
 
+def drive(driver_input_path, application_parameter_json_path):
+    document = process_drive_input(sys.argv[1])
+    if None == document :
+        print "***Error: Failed to process driver input in '",sys.argv[1]
+
+    rtncode = run_external_app(document, sys.argv[2])
+    if rtncode != 0:
+        print "***Error: Failed to run application"
+
+    print extract_results(document)
+
 if __name__ == "__main__":
     import sys
     if len(sys.argv) != 3:
         print "Usage: "
         print __file__+" /path/to/input /path/to/parameters"
 
-    document = run_external_app(sys.argv[1], sys.argv[2])
-    print extract_results(document)
+    drive(sys.argv[1], sys.argv[2])
+
