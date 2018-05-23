@@ -1,6 +1,9 @@
 import subprocess, os, json
-
+import re
 import wasp2py as w2py
+from itertools import islice
+from collections import deque
+
 #todo: follow Rob's driver schema and example to revise codes
 
 def process_drive_input(file_extract_driver):
@@ -33,6 +36,47 @@ def run_external_app(document, application_json_parameters):
     print "External simulation complete. Return code ",rtncode
     return rtncode
 
+def first_n_line(str_file, n):
+    #read the first n lines from a file,
+    #return the last line only
+    last_line=""
+    with open(str_file) as f:
+        for line in islice(f, n):
+            last_line=line
+    return last_line
+
+def last_n_line(str_file, n):
+    #read the last n line from a file,
+    #return the first line only
+    first_line=""
+    with open(str_file) as f:
+        first_line=deque(f, maxlen=n).popleft()
+    return first_line
+
+def between_lines(str_file, start_n, end_n):
+    #read between start_n and end_n from a file
+    #return the lines in between
+    #to include start_n line, begin with start_n-1
+    lines=""
+    with open(str_file) as f:
+        if int(start_n)==0:
+            print "start index must be integer > 0"
+            pass
+        elif int(start_n)>int(end_n):
+            print "line index must be 0 < start_n <= end_n"
+            pass
+        else:
+            for line in islice(f, start_n-1, end_n):
+                lines+=line
+    return lines
+
+def grep_string(str_file, pattern):
+    #read the file and return the first line with matched pattern
+    with open(str_file) as f:
+        for line in f:
+            if pattern in line:
+                return line
+
 def extract_results(document):
     res_output=[]
     output_file=[]
@@ -47,46 +91,49 @@ def extract_results(document):
              if "column" in each_find:
                  delimiter=str(each_find["column"][0]["delimiter"]["value"])
                  for each_col in each_find["column"][0]["value"]:
-                     res_output.append(float(subprocess.check_output("head -1 " + output_file[i] \
-                         + " | awk -F\"" + delimiter +"\" '/1/ {print $" + str(each_col) + "}'",shell=True).strip('\n')))
+                     res_output.append(float((first_n_line(output_file[i],1).strip().split(delimiter)[int(each_col)-1]).strip('\n')))
              if "first_line" in each_find:
                  int_line="-"+str(each_find["first_line"]['value'])
                  #extract the whole line
-                 res_output.append(str(subprocess.check_output("head "+int_line + " " + output_file[i] + "| tail -1" \
-                     ,shell=True).strip('\n')))
+                 res_output.append(str((first_n_line(output_file[i],int(each_find["first_line"]['value']))).strip('\n')))
              if "last_line" in each_find:
                  int_line="-"+str(each_find["last_line"]['value'])
                  #extract the whole line
-                 res_output.append(str(subprocess.check_output("tail "+int_line + " " + output_file[i] + "| head -1" \
-                     ,shell=True).strip('\n')))
+                 res_output.append(str((last_n_line(output_file[i],int(each_find["first_line"]['value']))).strip('\n')))
              if "pattern" in each_find:
                  str_pattern=str(each_find["pattern"]['value'])
                  #extract the whole line
-                 res_output.append(str(subprocess.check_output("grep " + str_pattern + " " + output_file[i] \
-                     ,shell=True).strip('\n')))                
+                 res_output.append(str((grep_string(output_file[i], str_pattern)).strip('\n')))         
              if "between" in each_find:
-                 str_tmp="" #todo
+                 str_pattern_start=str(each_find["between"]['value'][0])
+                 str_pattern_end=str(each_find["between"]['value'][1])
+                 res_output.append(str((between_patterns(output_file[i], str_pattern_start, str_pattern_end)).strip('\n')))
          elif len(each_find)==2: #two layers of extraction command
              if ("column" in each_find) and ("last_line" in each_find):
                  int_line="-"+str(each_find["last_line"]['value'])
+                 delimiter=str(each_find["column"][0]["delimiter"]["value"])
                  for each_column in each_find["column"]:
-                     res_output.append(float(subprocess.check_output("tail "+int_line + " " + output_file[i] +" | head -1" \
-                         + " | awk '{print $" + str(each_column["value"][0]) + "}'",shell=True).strip('\n')))
+                     res_output.append(float((last_n_line(output_file[i],int(each_find["last_line"]['value'])) \
+                                               .strip().split(delimiter)[int(each_column["value"][0])-1]).strip('\n')))
              if ("column" in each_find) and ("first_line" in each_find):
                  int_line="-"+str(each_find["first_line"]['value'])
+                 delimiter=str(each_find["column"][0]["delimiter"]["value"])
                  for each_column in each_find["column"]:
-                     res_output.append(float(subprocess.check_output("head "+int_line + " " + output_file[i] + "| tail -1" \
-                         + " | awk '{print $" + str(each_column["value"][0]) + "}'",shell=True).strip('\n')))
+                     res_output.append(float((first_n_line(output_file[i],int(each_find["last_line"]['value'])) \
+                                               .strip().split(delimiter)[int(each_column["value"][0])-1]).strip('\n')))
              if ("column" in each_find) and ("pattern" in each_find):
                  str_pattern=str(each_find["pattern"]['value'])
                  for each_column in each_find["column"]:
-                     res_output.append(float(subprocess.check_output("grep " + str_pattern + " " + output_file[i] \
-                         + "| head -n 1 | awk '{print $" + str(each_column["value"][0]) + "}'",shell=True).strip('\n')))
+                     res_output.append(float((grep_string(output_file[i],str_pattern) \
+                                               .strip().split()[int(each_column["value"][0])-1]).strip('\n')))
              if ("column" in each_find) and ("between" in each_find):
-                 str_tmp=""#todo
+                 str_pattern_start=str(each_find["between"]['value'][0])
+                 str_pattern_end=str(each_find["between"]['value'][1])
+                 for each_column in each_find["column"]:
+                     res_output.append(float((between_patterns(output_file[i], str_pattern_start, str_pattern_end) \
+                                               .strip().split()[int(each_column["value"][0])-1]).strip('\n')))
 
         i+=1
-
     return res_output
 
 def drive(driver_input_path, application_parameter_json_path):
