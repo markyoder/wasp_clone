@@ -70,6 +70,16 @@ def between_lines(str_file, start_n, end_n):
                 lines+=line
     return lines
 
+def between_patterns(str_file, start_pattern, end_pattern):
+    #read between start_pattern and end_pattern from a file
+    #return the lines in between
+    with open(str_file) as f:
+        content = f.read()
+        start = content.index(start_pattern)
+        end = content.index(end_pattern, start)
+        section = content[start:end]
+    return section
+
 def grep_string(str_file, pattern):
     #read the file and return the first line with matched pattern
     with open(str_file) as f:
