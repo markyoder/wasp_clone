@@ -82,10 +82,12 @@ def between_patterns(str_file, start_pattern, end_pattern):
 
 def grep_string(str_file, pattern):
     #read the file and return the first line with matched pattern
+    lines=""
     with open(str_file) as f:
         for line in f:
             if pattern in line:
-                return line
+                lines+=line
+    return lines
 
 def extract_results(document):
     res_output=[]
@@ -135,7 +137,7 @@ def extract_results(document):
                  str_pattern=str(each_find["pattern"]['value'])
                  for each_column in each_find["column"]:
                      res_output.append(float((grep_string(output_file[i],str_pattern) \
-                                               .strip().split()[int(each_column["value"][0])-1]).strip('\n')))
+                                               .strip().split()[int(each_column["value"][0])]).strip('\n')))
              if ("column" in each_find) and ("between" in each_find):
                  str_pattern_start=str(each_find["between"]['value'][0])
                  str_pattern_end=str(each_find["between"]['value'][1])
