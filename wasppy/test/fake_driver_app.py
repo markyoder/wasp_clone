@@ -14,7 +14,8 @@ def rnd_string(iCol):
 
 tmpFile = open("fake_driver_app.csv","w")
 tmpFile.write("x: "+rnd_string(3)) 
-tmpFile.write("v\n") 
+tmpFile.write("v: "+rnd_string(2)) 
+tmpFile.write("x: "+rnd_string(3)) 
 tmpFile.write(rnd_string(4)) 
 tmpFile.write(rnd_string(4)) 
 tmpFile.write(rnd_string(4)) 
