@@ -85,8 +85,9 @@ def grep_string(str_file, pattern):
     lines=""
     with open(str_file) as f:
         for line in f:
-            if pattern in line:
-                lines+=line
+            m=re.search(pattern, line)
+            if m:
+               lines+=line
     return lines
 
 def extract_results(document):
@@ -136,8 +137,10 @@ def extract_results(document):
              if ("column" in each_find) and ("pattern" in each_find):
                  str_pattern=str(each_find["pattern"]['value'])
                  for each_column in each_find["column"]:
-                     res_output.append(float((grep_string(output_file[i],str_pattern) \
-                                               .strip().split()[int(each_column["value"][0])]).strip('\n')))
+                     lines=grep_string(output_file[i],str_pattern).split('\n')
+                     for each_line in lines:
+                         if each_line!="":
+                             res_output.append(float(each_line.strip().split()[int(each_column["value"][0])]))
              if ("column" in each_find) and ("between" in each_find):
                  str_pattern_start=str(each_find["between"]['value'][0])
                  str_pattern_end=str(each_find["between"]['value'][1])
