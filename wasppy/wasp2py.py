@@ -28,6 +28,7 @@ def get_json_dict(schema_filepath, input_filepath, ext=""):
     waspvalidjson = get_wasp_utility_path(utility_name)
     
     cmd = waspvalidjson + ' ' + schema_filepath + ' ' + input_filepath
+    # print "CMD: ",cmd
     proc = Popen(cmd, shell=True, stdout=PIPE)
     json_result = proc.communicate()[0]
     document_dictionary = json.loads(json_result)

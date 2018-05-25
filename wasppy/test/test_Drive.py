@@ -41,6 +41,24 @@ class TestDrive(unittest.TestCase):
              40.5, 4.5, # v             
         ], results)        
 
+    def test_pattern_column_driver(self):
+        """Test """
+        app_driver_input = os.path.dirname(__file__)+"/using.driver"
+        app_json_parameters = os.path.dirname(__file__)+"/using.json"
+
+        os.chdir("test")
+        ### obtain pieces of input by name for convenience
+        self.document = waspdrive.process_drive_input(app_driver_input)
+        self.assertIsNotNone(self.document, "Failed to acquire document!")
+
+        rtncode = waspdrive.run_external_app(self.document, app_json_parameters)
+        self.assertEqual(0, rtncode, "External application return code is not 0!")
+    
+        results = waspdrive.extract_results(self.document)
+        os.chdir("../") # go back a director, in case of failure
+        self.assertListEqual(
+            [123456789], results) 
+
 if __name__ == '__main__':
     unittest.main()
 
