@@ -140,7 +140,8 @@ def extract_results(document):
                      lines=grep_string(output_file[i],str_pattern).split('\n')
                      for each_line in lines:
                          if each_line!="":
-                             res_output.append(float(each_line.strip().split()[int(each_column["value"][0])-1]))
+                             replaced_line=each_line.replace(str_pattern,'')
+                             res_output.append(float(replaced_line.strip().split()[int(each_column["value"][0])-1]))
              if ("column" in each_find) and ("between" in each_find):
                  str_pattern_start=str(each_find["between"]['value'][0])
                  str_pattern_end=str(each_find["between"]['value'][1])
