@@ -43,8 +43,9 @@ extract_from{
         MaxOccurs=1
         ValType=String
     }
+    ChildExactlyOne[ find using ] 
     using{
-        MinOccurs=1
+        MinOccurs=0
         MaxOccurs=NoLimit
         InputTmpl="using"
         Description="specify a custom command for data extraction"
@@ -57,7 +58,7 @@ extract_from{
     }
     find{
 
-        MinOccurs=1
+        MinOccurs=0
         MaxOccurs=NoLimit
         InputTmpl="find"
 
