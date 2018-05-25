@@ -43,7 +43,18 @@ extract_from{
         MaxOccurs=1
         ValType=String
     }
+    using{
+        MinOccurs=1
+        MaxOccurs=NoLimit
+        InputTmpl="using"
+        Description="specify a custom command for data extraction"
+        value{
+            MinOccurs=1
+            MaxOccurs=1
+            ValType=String
+        }
 
+    }
     find{
 
         MinOccurs=1
