@@ -16,6 +16,7 @@
 #include <memory>
 #include <numeric>
 #include <cstdlib>
+#include <regex>
 #include <string>
 #include <sstream>
 #include <set>
@@ -498,7 +499,11 @@ class WASP_PUBLIC HIVE
             if (is_value)
             {
                 std::string escape_string = current_node.last_as_string();
-                std::replace(escape_string.begin(), escape_string.end(), '"', '\'');
+                // Escape escapes , replace '\' with '\\'... yes requires '\'-> '\\\\', and '\\\\'->'\\' 
+                // In any other order I get an infinite loop
+                escape_string = std::regex_replace(escape_string, std::regex("\\\\"), "\\\\");
+                // Escape double quotes
+                escape_string = std::regex_replace(escape_string, std::regex("\""), "\\\"");
                 if (json_value_type == JsonValueType::NUMBER)
                 {
                     out << spaces(level) << "\"" << current_node.name()
@@ -614,7 +619,11 @@ class WASP_PUBLIC HIVE
                     {
                         std::string escape_string =
                             children_by_name[i].last_as_string();
-                        std::replace(escape_string.begin(), escape_string.end(), '"', '\'');
+						// Escape escapes
+                        // Escape escapes , replace '\' with '\\'... yes requires '\'-> '\\\\', and '\\\\'->'\\' 
+                        escape_string = std::regex_replace(escape_string, std::regex("\\\\"), "\\\\");
+                		// Escape double quotes
+                		escape_string = std::regex_replace(escape_string, std::regex("\""), "\\\"");
                         if (json_value_type == JsonValueType::NUMBER)
                         {
                             out << " " << (escape_string.front() == '+' ?
