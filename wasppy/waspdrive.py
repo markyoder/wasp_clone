@@ -116,7 +116,8 @@ def extract_results(document):
              if "pattern" in each_find:
                  str_pattern=str(each_find["pattern"]['value'])
                  #extract the whole line
-                 res_output.append(str((grep_string(output_file[i], str_pattern)).strip('\n')))         
+                 data = str((grep_string(output_file[i], str_pattern)).strip('\n'))
+                 res_output.append(data)         
              if "between" in each_find:
                  str_pattern_start=str(each_find["between"]['value'][0])
                  str_pattern_end=str(each_find["between"]['value'][1])
@@ -136,11 +137,14 @@ def extract_results(document):
                                                .strip().split(delimiter)[int(each_column["value"][0])-1]).strip('\n')))
              if ("column" in each_find) and ("pattern" in each_find):
                  str_pattern=str(each_find["pattern"]['value'])
-                 for each_column in each_find["column"]:
-                     lines=grep_string(output_file[i],str_pattern).split('\n')
-                     for each_line in lines:
-                         if each_line!="":
-                             res_output.append(float(each_line.strip().split()[int(each_column["value"][0])-1]))
+                 lines=grep_string(output_file[i],str_pattern).split('\n')
+                 for each_line in lines:
+                    if each_line!="":
+                        split = each_line.strip().split()
+                        for each_column in each_find["column"]:
+                          data = split[int(each_column["value"][0])-1]
+                          res_output.append(float(data))
+                     
              if ("column" in each_find) and ("between" in each_find):
                  str_pattern_start=str(each_find["between"]['value'][0])
                  str_pattern_end=str(each_find["between"]['value'][1])
