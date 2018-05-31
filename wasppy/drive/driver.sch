@@ -108,6 +108,16 @@ extract_from{
                     ValType=String
                 }
             }
+            as{
+     			MinOccurs=0
+      			MaxOccurs=1
+      			InputTmpl="as"
+      			value{
+          			MinOccurs=1
+          			MaxOccurs=1
+          			ValType=String
+      			}
+ 			}
         }
 
     }
