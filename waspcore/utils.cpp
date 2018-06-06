@@ -55,7 +55,7 @@ std::string json_escape_string(const std::string& src)
         switch (ch)
         {
             case '\\':
-                dst << "\\";
+                dst << "\\\\";
                 break;
             case '"':
                 dst << "\\\"";
