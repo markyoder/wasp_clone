@@ -16,7 +16,6 @@
 #include <memory>
 #include <numeric>
 #include <cstdlib>
-#include <regex>
 #include <string>
 #include <sstream>
 #include <set>
@@ -498,12 +497,8 @@ class WASP_PUBLIC HIVE
             // if number - without quotes / if string - with quotes
             if (is_value)
             {
-                std::string escape_string = current_node.last_as_string();
-                // Escape escapes , replace '\' with '\\'... yes requires '\'-> '\\\\', and '\\\\'->'\\' 
-                // In any other order I get an infinite loop
-                escape_string = std::regex_replace(escape_string, std::regex("\\\\"), "\\\\");
-                // Escape double quotes
-                escape_string = std::regex_replace(escape_string, std::regex("\""), "\\\"");
+                std::string escape_string = current_node.last_as_string();                
+                escape_string = json_escape_string(escape_string);
                 if (json_value_type == JsonValueType::NUMBER)
                 {
                     out << spaces(level) << "\"" << current_node.name()
@@ -618,12 +613,8 @@ class WASP_PUBLIC HIVE
                     if (is_value)
                     {
                         std::string escape_string =
-                            children_by_name[i].last_as_string();
-						// Escape escapes
-                        // Escape escapes , replace '\' with '\\'... yes requires '\'-> '\\\\', and '\\\\'->'\\' 
-                        escape_string = std::regex_replace(escape_string, std::regex("\\\\"), "\\\\");
-                		// Escape double quotes
-                		escape_string = std::regex_replace(escape_string, std::regex("\""), "\\\"");
+                                children_by_name[i].last_as_string();
+                        escape_string = json_escape_string(escape_string);
                         if (json_value_type == JsonValueType::NUMBER)
                         {
                             out << " " << (escape_string.front() == '+' ?
