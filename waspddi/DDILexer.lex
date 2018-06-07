@@ -54,7 +54,7 @@ STRING [A-Za-z_]([A-Za-z0-9_\.])*
 
 
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
-SINGLE_QUOTED_STRING \'([^\\\'\n])*\'
+SINGLE_QUOTED_STRING \'([^\'\n])*\'
 QSTRING {DOUBLE_QUOTED_STRING}|{SINGLE_QUOTED_STRING}
 COMMENT #[^\n]*|%[^\n]*
 COMMA ,

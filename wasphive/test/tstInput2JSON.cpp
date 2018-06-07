@@ -988,7 +988,7 @@ mixed_three = [ 1 2 three="four" three=[ five six seven=[ 8.0 9 ] ] 10 ]
         "value":"four"
       },
       {
-        "value":"a 'sentence' with 'quotes' here"
+        "value":"a \"sentence\" with \"quotes\" here"
       }
     ]
   },

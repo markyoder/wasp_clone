@@ -47,6 +47,26 @@ std::string dir_name(const std::string& path)
         return path.substr(0, sep_i);
     return path;
 }
+std::string json_escape_string(const std::string& src)
+{
+    std::stringstream dst;
+    for (char ch : src)
+    {
+        switch (ch)
+        {
+            case '\\':
+                dst << "\\\\";
+                break;
+            case '"':
+                dst << "\\\"";
+                break;
+            default:
+                dst << ch;
+                break;
+        }
+    }
+    return dst.str();
+}  // json_escape_data
 
 std::string xml_escape_data(const std::string& src)
 {

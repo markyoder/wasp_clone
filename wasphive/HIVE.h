@@ -497,8 +497,8 @@ class WASP_PUBLIC HIVE
             // if number - without quotes / if string - with quotes
             if (is_value)
             {
-                std::string escape_string = current_node.last_as_string();
-                std::replace(escape_string.begin(), escape_string.end(), '"', '\'');
+                std::string escape_string = current_node.last_as_string();                
+                escape_string = json_escape_string(escape_string);
                 if (json_value_type == JsonValueType::NUMBER)
                 {
                     out << spaces(level) << "\"" << current_node.name()
@@ -613,8 +613,8 @@ class WASP_PUBLIC HIVE
                     if (is_value)
                     {
                         std::string escape_string =
-                            children_by_name[i].last_as_string();
-                        std::replace(escape_string.begin(), escape_string.end(), '"', '\'');
+                                children_by_name[i].last_as_string();
+                        escape_string = json_escape_string(escape_string);
                         if (json_value_type == JsonValueType::NUMBER)
                         {
                             out << " " << (escape_string.front() == '+' ?
