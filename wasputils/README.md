@@ -324,7 +324,7 @@ The expanded template emitted on stdout, and errors/log information is emitted o
 The template attribute delimiters can be specified as:
 
 ```
-halite /path/to/template.tmpl /path/to/data.json --ldelim='${' --rdelim='}'
+halite /path/to/template.tmpl /path/to/data.json --ldelim '${' --rdelim '}'
 ```
 
 
