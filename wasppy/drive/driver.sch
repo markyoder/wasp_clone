@@ -87,6 +87,17 @@ extract_from{
                ValType=Int
            }
         }
+        first_line{
+           MinOccurs=0
+           MaxOccurs=1
+           InputTmpl="first_line"
+           Description="grab either first line or first N line"
+           value{
+               MinOccurs=0
+               MaxOccurs=1
+               ValType=Int
+           }
+        }
 
         column{
             MinOccurs=0

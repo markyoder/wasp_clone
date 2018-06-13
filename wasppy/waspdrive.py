@@ -40,17 +40,38 @@ def first_n_line(str_file, n):
     #read the first n lines from a file,
     #return the last line only
     last_line=""
-    with open(str_file) as f:
-        for line in islice(f, n):
-            last_line=line
+    if os.path.exists(str_file):
+        with open(str_file) as f:
+            try:
+                line_count=0
+                for line in islice(f, n):
+                    last_line=line
+                    line_count+=1
+                if n > line_count :
+                    last_line=""
+                    print "Line index > max line number!"
+            except:
+                print "File reading error!"
+    else:
+        print "No such file!"
     return last_line
 
 def last_n_line(str_file, n):
     #read the last n line from a file,
     #return the first line only
     first_line=""
-    with open(str_file) as f:
-        first_line=deque(f, maxlen=n).popleft()
+    if os.path.exists(str_file):
+        line_count = len(open(str_file).readlines())
+        if n > line_count:
+            print "Line index > max line number!"
+        else:
+            with open(str_file) as f:
+                try:
+                    first_line=deque(f, maxlen=n).popleft()
+                except:
+                    print "File reading error!"
+    else:
+        print "No such file!"
     return first_line
 
 def between_lines(str_file, start_n, end_n):
@@ -58,36 +79,55 @@ def between_lines(str_file, start_n, end_n):
     #return the lines in between
     #to include start_n line, begin with start_n-1
     lines=""
-    with open(str_file) as f:
-        if int(start_n)==0:
-            print "start index must be integer > 0"
-            pass
-        elif int(start_n)>int(end_n):
-            print "line index must be 0 < start_n <= end_n"
-            pass
-        else:
-            for line in islice(f, start_n-1, end_n):
-                lines+=line
+    if os.path.exists(str_file):
+        with open(str_file) as f:
+            try:
+                if int(start_n)==0:
+                    print "start index must be integer > 0"
+                    pass
+                elif int(start_n)>int(end_n):
+                    print "line index must be 0 < start_n <= end_n"
+                    pass
+                else:
+                    for line in islice(f, start_n-1, end_n):
+                        lines+=line
+            except:
+                print "File reading error!"
+    else:
+        print "No such file!"
     return lines
 
 def between_patterns(str_file, start_pattern, end_pattern):
     #read between start_pattern and end_pattern from a file
     #return the lines in between
-    with open(str_file) as f:
-        content = f.read()
-        start = content.index(start_pattern)
-        end = content.index(end_pattern, start)
-        section = content[start:end]
+    section = ""
+    if os.path.exists(str_file):
+        with open(str_file) as f:
+            try:
+                content = f.read()
+                start = content.index(start_pattern)
+                end = content.index(end_pattern, start)
+                section = content[start:end]
+            except:
+                print "File reading error!"
+    else:
+        print "No such file!"
     return section
 
 def grep_string(str_file, pattern):
     #read the file and return the first line with matched pattern
     lines=""
-    with open(str_file) as f:
-        for line in f:
-            m=re.search(pattern, line)
-            if m:
-               lines+=line
+    if os.path.exists(str_file):
+        with open(str_file) as f:
+            try:
+                for line in f:
+                    m=re.search(pattern, line)
+                    if m:
+                       lines+=line
+            except:
+                print "File reading error!"
+    else:
+        print "No such file!"
     return lines
 
 def extract_results(document):
@@ -135,14 +175,18 @@ def extract_results(document):
                     if ("column" in each_find) and ("last_line" in each_find):
                         int_line="-"+str(each_find["last_line"]['value'])
                         delimiter=str(each_find["column"][0]["delimiter"]["value"])
-                        for each_column in each_find["column"]:
-                            res_output.append(float((last_n_line(output_file[i],int(each_find["last_line"]['value'])) \
+                        str_last_n_line=last_n_line(output_file[i],int(each_find["last_line"]['value']))
+                        if str_last_n_line != "":
+                            for each_column in each_find["column"]:
+                                res_output.append(float((str_last_n_line \
                                                     .strip().split(delimiter)[int(each_column["value"][0])-1]).strip('\n')))
                     if ("column" in each_find) and ("first_line" in each_find):
                         int_line="-"+str(each_find["first_line"]['value'])
                         delimiter=str(each_find["column"][0]["delimiter"]["value"])
-                        for each_column in each_find["column"]:
-                            res_output.append(float((first_n_line(output_file[i],int(each_find["last_line"]['value'])) \
+                        str_first_n_line=first_n_line(output_file[i],int(each_find["first_line"]['value']))
+                        if str_first_n_line != "":
+                            for each_column in each_find["column"]:
+                                res_output.append(float((str_first_n_line \
                                                     .strip().split(delimiter)[int(each_column["value"][0])-1]).strip('\n')))
                     if ("column" in each_find) and ("pattern" in each_find):
                         str_pattern=str(each_find["pattern"]['value'])
