@@ -1,0 +1,15 @@
+application 'python fake_driver_app.py'
+    input_file 'fake_app_input'
+    input_tmpl 'my_fake_app.tmpl'
+extract_from 'fake_driver_app.csv'
+    find between 'x' '\n'
+        column 3 delimiter ' ' as 'x1' 
+        column 4 delimiter ' ' as 'x2' 
+    find between "v" "\n"
+        column 2 delimiter ' ' as 'v1' 
+        column 3 delimiter ' ' as 'v2'     
+    find column 2 delimiter ' '
+    find last_line 2
+    find first_line 2
+    find between 'x' '\n'
+    find pattern 'x'

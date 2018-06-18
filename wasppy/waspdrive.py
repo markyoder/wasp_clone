@@ -36,6 +36,45 @@ def run_external_app(document, application_json_parameters):
     print "External simulation complete. Return code ",rtncode
     return rtncode
 
+def first_n_lines(str_file, n):
+    #return the first n lines from a file as a list
+    #if n > max line number, return all lines in the file
+    lines=[]
+    if os.path.exists(str_file):
+        with open(str_file) as f:
+            try:
+                line_count=0
+                for line in islice(f, n):
+                    lines.append(line)
+                    line_count+=1
+                if n > line_count :
+                    print "Line index > max line number, return all lines!"
+            except:
+                print "File reading error!"
+    else:
+        print "No such file!"
+    return lines
+
+
+def last_n_lines(str_file, n):
+    #return the last n lines from a file as a list
+    #if n > max line number, return all lines in the file
+    lines=[]
+    if os.path.exists(str_file):
+        line_count = len(open(str_file).readlines())
+        if n > line_count:
+            lines=open(str_file).readlines()
+            print "Line index > max line number, return all lines in file!"
+        else:
+            with open(str_file) as f:
+                try:
+                    lines=list(deque(f, maxlen=n))
+                except:
+                    print "File reading error!"
+    else:
+        print "No such file!"
+    return lines
+
 def first_n_line(str_file, n):
     #read the first n lines from a file,
     #return the last line only
@@ -85,7 +124,9 @@ def between_lines(str_file, start_n, end_n):
                 if int(start_n)==0:
                     print "start index must be integer > 0"
                     pass
-                elif int(start_n)>int(end_n):
+                elif int(end_n)==-1:#read the whole file if end_n=-1
+                    lines=f.read();
+                elif int(start_n)>int(end_n) and int(end_n)>0:
                     print "line index must be 0 < start_n <= end_n"
                     pass
                 else:
@@ -95,6 +136,7 @@ def between_lines(str_file, start_n, end_n):
                 print "File reading error!"
     else:
         print "No such file!"
+
     return lines
 
 def between_patterns(str_file, start_pattern, end_pattern):
@@ -105,9 +147,29 @@ def between_patterns(str_file, start_pattern, end_pattern):
         with open(str_file) as f:
             try:
                 content = f.read()
-                start = content.index(start_pattern)
-                end = content.index(end_pattern, start)
-                section = content[start:end]
+                ''' first method, pair the start-end patterns manually
+                # this method allows including multilines between
+                # one pair of start-end patterns
+                ends=[]
+                for each_find in re.finditer(end_pattern, content):
+                    #push all matched end_pattern into list
+                    ends.append(each_find.end())
+                for each_find in re.finditer(start_pattern, content):
+                    #loop from each start_pattern
+                    each_start=each_find.start()
+                    if len(ends)>0:
+                        #remove those matched ends before each start_pattern
+                        while (each_start >= ends[0]):
+                            ends.pop(0)
+                        if len(ends)>0:
+                            #add the matched section with one pair of [start:end]
+                            section += content[each_start:ends[0]] \
+                                        + ("\n" if (content[ends[0]-1] != "\n") else "")
+                            ends.pop(0)#remove this matched end
+                '''
+                #another method, just join the start_pattern and end_pattern
+                for each_find in re.finditer(start_pattern+".+"+end_pattern, content):
+                    section +=each_find.group(0)+ ("\n" if (each_find.group(0)[-1:] != "\n") else "")
             except:
                 print "File reading error!"
     else:
@@ -130,6 +192,9 @@ def grep_string(str_file, pattern):
         print "No such file!"
     return lines
 
+def print_column_error(idx_column):
+    print "Column " + str(idx_column) + " is wrong or type mismatch!"
+
 def extract_results(document):
     res_output=[]
     output_file=[]
@@ -138,72 +203,111 @@ def extract_results(document):
     #process logic here
     for idx, extract in enumerate(document['extract_from']):
         output_file.append(extract['value'])
-
-        if 'using' in extract: # run the user provided script
-            for using in extract['using']:            
-                using_what = using['value']
-                print "Using '"+using_what+"'"
-                output = subprocess.check_output(using_what,shell=True).strip()            
-                print "Using produced '"+output+"'"
-                res_output.extend([float(r) for r in output.split("\n")])
-        
-        elif 'find' in extract: # Finding pattern or line
-            for each_find in extract['find']:
-                if len(each_find)==1: #one line of extraction command only
-                    if "column" in each_find:
-                        delimiter=str(each_find["column"][0]["delimiter"]["value"])
-                        for each_col in each_find["column"][0]["value"]:
-                            res_output.append(float((first_n_line(output_file[i],1).strip().split(delimiter)[int(each_col)-1]).strip('\n')))
-                    if "first_line" in each_find:
-                        int_line="-"+str(each_find["first_line"]['value'])
-                        #extract the whole line
-                        res_output.append(str((first_n_line(output_file[i],int(each_find["first_line"]['value']))).strip('\n')))
-                    if "last_line" in each_find:
-                        int_line="-"+str(each_find["last_line"]['value'])
-                        #extract the whole line
-                        res_output.append(str((last_n_line(output_file[i],int(each_find["first_line"]['value']))).strip('\n')))
-                    if "pattern" in each_find:
-                        str_pattern=str(each_find["pattern"]['value'])
-                        #extract the whole line
-                        data = str((grep_string(output_file[i], str_pattern)).strip('\n'))
-                        res_output.append(data)         
-                    if "between" in each_find:
-                        str_pattern_start=str(each_find["between"]['value'][0])
-                        str_pattern_end=str(each_find["between"]['value'][1])
-                        res_output.append(str((between_patterns(output_file[i], str_pattern_start, str_pattern_end)).strip('\n')))
-                elif len(each_find)==2: #two layers of extraction command
-                    if ("column" in each_find) and ("last_line" in each_find):
-                        int_line="-"+str(each_find["last_line"]['value'])
-                        delimiter=str(each_find["column"][0]["delimiter"]["value"])
-                        str_last_n_line=last_n_line(output_file[i],int(each_find["last_line"]['value']))
-                        if str_last_n_line != "":
-                            for each_column in each_find["column"]:
-                                res_output.append(float((str_last_n_line \
-                                                    .strip().split(delimiter)[int(each_column["value"][0])-1]).strip('\n')))
-                    if ("column" in each_find) and ("first_line" in each_find):
-                        int_line="-"+str(each_find["first_line"]['value'])
-                        delimiter=str(each_find["column"][0]["delimiter"]["value"])
-                        str_first_n_line=first_n_line(output_file[i],int(each_find["first_line"]['value']))
-                        if str_first_n_line != "":
-                            for each_column in each_find["column"]:
-                                res_output.append(float((str_first_n_line \
-                                                    .strip().split(delimiter)[int(each_column["value"][0])-1]).strip('\n')))
-                    if ("column" in each_find) and ("pattern" in each_find):
-                        str_pattern=str(each_find["pattern"]['value'])
-                        lines=grep_string(output_file[i],str_pattern).split('\n')
-                        for each_line in lines:
-                            if each_line!="":
-                                split = each_line.strip().split()
+        if os.path.exists(extract['value']):
+            # extract_file=open(output_file[i],"r")
+            # reading file into string buffer, find in string buffer
+            # vs. reading file at each find operation
+            # which solution is better?
+            if 'using' in extract: # run the user provided script
+                for using in extract['using']:            
+                    using_what = using['value']
+                    print "Using '"+using_what+"'"
+                    output = subprocess.check_output(using_what,shell=True).strip()            
+                    print "Using produced '"+output+"'"
+                    res_output.extend([float(r) for r in output.split("\n")])
+            
+            elif 'find' in extract: # Finding pattern or line
+                for each_find in extract['find']:
+                    if len(each_find)==1: #one line of extraction command only
+                        if "column" in each_find:
+                            delimiter=str(each_find["column"][0]["delimiter"]["value"])
+                            lines=between_lines(output_file[i],1,-1).strip().split("\n")
+                            for each_line in lines:
+                                for each_col in each_find["column"][0]["value"]:
+                                    try:
+                                        data=(each_line.strip().split(delimiter)[int(each_col)-1]).strip('\n')
+                                        res_output.append(data)
+                                    except:
+                                        print_column_error(each_col)
+                        if "first_line" in each_find:
+                            int_line="-"+str(each_find["first_line"]['value'])
+                            #extract lines
+                            lines=first_n_lines(output_file[i],int(each_find["first_line"]['value']))
+                            str_lines=""
+                            for each_line in lines:
+                                str_lines+=each_line
+                            res_output.append(str_lines)
+                        if "last_line" in each_find:
+                            int_line="-"+str(each_find["last_line"]['value'])
+                            #extract lines
+                            lines=last_n_lines(output_file[i],int(each_find["last_line"]['value']))
+                            str_lines=""
+                            for each_line in lines:
+                                str_lines+=each_line
+                            res_output.append(str_lines)
+                        if "pattern" in each_find:
+                            str_pattern=str(each_find["pattern"]['value'])
+                            #extract the whole line
+                            data = str((grep_string(output_file[i], str_pattern)).strip('\n'))
+                            res_output.append(data)         
+                        if "between" in each_find:
+                            str_pattern_start=str(each_find["between"]['value'][0])
+                            str_pattern_end=str(each_find["between"]['value'][1])
+                            res_output.append(str((between_patterns(output_file[i], str_pattern_start, str_pattern_end)).strip('\n')))
+                    elif len(each_find)==2: #two layers of extraction command
+                        if ("column" in each_find) and ("last_line" in each_find):
+                            int_line="-"+str(each_find["last_line"]['value'])
+                            delimiter=str(each_find["column"][0]["delimiter"]["value"])
+                            #str_last_n_line=last_n_line(output_file[i],int(each_find["last_line"]['value']))
+                            str_last_n_lines=last_n_lines(output_file[i],int(each_find["last_line"]['value']))
+                            for each_line in str_last_n_lines:
+                            #if str_last_n_line != "":
                                 for each_column in each_find["column"]:
-                                    data = split[int(each_column["value"][0])-1]
-                                    res_output.append(float(data))
-                            
-                    if ("column" in each_find) and ("between" in each_find):
-                        str_pattern_start=str(each_find["between"]['value'][0])
-                        str_pattern_end=str(each_find["between"]['value'][1])
-                        for each_column in each_find["column"]:
-                            res_output.append(float((between_patterns(output_file[i], str_pattern_start, str_pattern_end) \
-                                                    .strip().split()[int(each_column["value"][0])-1]).strip('\n')))
+                                    try:
+                                        data=(each_line.strip().split(delimiter)[int(each_column["value"][0])-1]).strip('\n')
+                                        res_output.append(float(data))
+                                    except:
+                                        print_column_error(each_column["value"][0])
+                        if ("column" in each_find) and ("first_line" in each_find):
+                            int_line="-"+str(each_find["first_line"]['value'])
+                            delimiter=str(each_find["column"][0]["delimiter"]["value"])
+                            #str_first_n_line=first_n_line(output_file[i],int(each_find["first_line"]['value']))
+                            str_first_n_lines=first_n_lines(output_file[i],int(each_find["first_line"]['value']))
+                            for each_line in str_first_n_lines:
+                            #if str_first_n_line != "":
+                                for each_column in each_find["column"]:
+                                    try:
+                                        data=(each_line.strip().split(delimiter)[int(each_column["value"][0])-1]).strip('\n')
+                                        res_output.append(float(data))
+                                    except:
+                                        print_column_error(each_column["value"][0])
+                        if ("column" in each_find) and ("pattern" in each_find):
+                            str_pattern=str(each_find["pattern"]['value'])
+                            lines=grep_string(output_file[i],str_pattern).split('\n')
+                            for each_line in lines:
+                                if each_line!="":
+                                    split = each_line.strip().split()
+                                    for each_column in each_find["column"]:
+                                        try:
+                                            data = split[int(each_column["value"][0])-1]
+                                            res_output.append(float(data))
+                                        except:
+                                            print_column_error(each_column["value"][0])
+                                
+                        if ("column" in each_find) and ("between" in each_find):
+                            str_pattern_start=str(each_find["between"]['value'][0])
+                            str_pattern_end=str(each_find["between"]['value'][1])
+                            lines=between_patterns(output_file[i], str_pattern_start, str_pattern_end).strip().split("\n")
+                            #split search results with '\n' if multiple lines returned
+                            for each_line in lines:
+                                for each_column in each_find["column"]:
+                                    try:
+                                        data=(each_line.strip().split()[int(each_column["value"][0])-1]).strip('\n')
+                                        res_output.append(float(data))
+                                    except:
+                                        print_column_error(each_column["value"][0])
+        else:
+            print "No such file: "+ extract['value'] + "!"
 
         i+=1
     return res_output

@@ -6,6 +6,22 @@ class TestDrive(unittest.TestCase):
     def test_first_n_lines(self):
         app_file= os.path.dirname(__file__)+"/last_line.driver"
         os.chdir("test")
+        str_line=waspdrive.first_n_lines(app_file,3)
+        os.chdir("../") # go back a director, in case of failure
+        self.assertEqual(str_line, 
+            ["application 'python fake_driver_app.py'\n","    input_file 'fake_app_input'\n","    input_tmpl 'my_fake_app.tmpl'\n"], "Line doesn't match")
+
+    def test_last_n_lines(self):
+        app_file= os.path.dirname(__file__)+"/last_line.driver"
+        os.chdir("test")
+        str_line=waspdrive.last_n_lines(app_file,3)
+        os.chdir("../") # go back a director, in case of failure
+        self.assertEqual(str_line, 
+            ["        column 2 delimiter ' ' as 'x1' \n", "        column 3 delimiter ' ' as 'x2' \n","        column 4 delimiter ' ' as 'x3'\n"], "Line doesn't match")
+        
+    def test_first_n_line(self):
+        app_file= os.path.dirname(__file__)+"/last_line.driver"
+        os.chdir("test")
         str_line=waspdrive.first_n_line(app_file,3)
         os.chdir("../") # go back a director, in case of failure
         self.assertEqual(str_line, 
@@ -35,11 +51,11 @@ class TestDrive(unittest.TestCase):
     def test_between_patterns(self):
         app_file= os.path.dirname(__file__)+"/last_line.driver"
         os.chdir("test")
-        str_lines=waspdrive.between_patterns(app_file,"input_file",
-            "    input_tmpl")
+        str_lines=waspdrive.between_patterns(app_file,"column",
+            "x[0-9]{1}'")
         os.chdir("../") # go back a director, in case of failure
-        self.assertEqual(str_lines,"input_file 'fake_app_input'\n",
-            "Lines don't match")
+        self.assertEqual(str_lines,"column 2 delimiter ' ' as 'x1'\ncolumn 3 delimiter ' ' as 'x2'\ncolumn 4 delimiter ' ' as 'x3'\n",
+            str_lines)
 
     def test_grep_string(self):
         app_file=os.path.dirname(__file__)+"/last_line.driver"
@@ -52,6 +68,36 @@ class TestDrive(unittest.TestCase):
             "        column 4 delimiter ' ' as 'x3'\n",
             "Lines don't match")
 
+    def test_between_patterns_driver(self):
+        """Test """
+        app_driver_input = os.path.dirname(__file__)+"/between_and_the_others.driver"
+        app_json_parameters = os.path.dirname(__file__)+"/between_and_the_others.json"
+
+        os.chdir("test")
+        ### obtain pieces of input by name for convenience
+        self.document = waspdrive.process_drive_input(app_driver_input)
+        self.assertIsNotNone(self.document, "Failed to acquire document!")
+
+        rtncode = waspdrive.run_external_app(self.document, app_json_parameters)
+        self.assertEqual(0, rtncode, "External application return code is not 0!")
+    
+        results = waspdrive.extract_results(self.document)
+        os.chdir("../") # go back a director, in case of failure
+        self.assertListEqual(
+            [58.5, 37.0, # x
+             48.0, 32.0, # x
+             40.5, 4.5, # v  
+             '3.75', #column 2 of the whole file
+             '40.5', 
+             '2.5', 
+             '10.0', 
+             '20.75', 
+             '15.0',
+             '28.5 20.75 16.5 0.5 \n39.5 15.0 23.25 46.0 \n', 
+             'x: 3.75 58.5 37.0 \nv: 40.5 4.5 \n', 
+             'x: 3.75 58.5 37.0 \nx: 2.5 48.0 32.0 ', 
+             'x: 3.75 58.5 37.0 \nx: 2.5 48.0 32.0 '           
+        ], results, results)        
     
     def test_first_line_driver(self):
         app_driver_input = os.path.dirname(__file__)+"/first_line.driver"
@@ -66,7 +112,7 @@ class TestDrive(unittest.TestCase):
         
         results = waspdrive.extract_results(self.document)
         os.chdir("../") # go back a director, in case of failure
-        self.assertListEqual([16.0, 11.25, 75.0], results, results)
+        self.assertListEqual([14.5,14.75,83.0], results, results)
     
     def test_last_line_driver(self):
         app_driver_input = os.path.dirname(__file__)+"/last_line.driver"
