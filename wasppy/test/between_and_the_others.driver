@@ -5,6 +5,7 @@ extract_from 'fake_driver_app.csv'
     find between 'x' '\n'
         column 3 delimiter ' ' as 'x1' 
         column 4 delimiter ' ' as 'x2' 
+extract_from 'fake_driver_app.csv'
     find between "v" "\n"
         column 2 delimiter ' ' as 'v1' 
         column 3 delimiter ' ' as 'v2'     
