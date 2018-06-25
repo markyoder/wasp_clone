@@ -54,7 +54,7 @@ class TestDrive(unittest.TestCase):
         str_lines=waspdrive.between_patterns(app_file,"column",
             "x[0-9]{1}'")
         os.chdir("../") # go back a director, in case of failure
-        self.assertEqual(str_lines,"column 2 delimiter ' ' as 'x1'\ncolumn 3 delimiter ' ' as 'x2'\ncolumn 4 delimiter ' ' as 'x3'\n",
+        self.assertEqual(str_lines," 2 delimiter ' ' as '\n 3 delimiter ' ' as '\n 4 delimiter ' ' as '\n",
             str_lines)
 
     def test_grep_string(self):
@@ -84,21 +84,27 @@ class TestDrive(unittest.TestCase):
         results = waspdrive.extract_results(self.document)
         os.chdir("../") # go back a director, in case of failure
         self.assertListEqual(
-            [58.5, 37.0, # x
-             48.0, 32.0, # x
-             40.5, 4.5, # v  
+            [64.0, 27.5, # x1, x2
+             16.5, 0.5, # 
+             23.25, 46.0, # 
+             10.0, 64.0,#v1, v2
+             20.75, 16.5,
+             15.0, 23.25,
              '3.75', #column 2 of the whole file
              '40.5', 
              '2.5', 
+             'Header',
              '10.0', 
              '20.75', 
              '15.0',
-             '28.5 20.75 16.5 0.5 \n39.5 15.0 23.25 46.0 \n', 
-             'x: 3.75 58.5 37.0 \nv: 40.5 4.5 \n', 
-             'x: 3.75 58.5 37.0 \nx: 2.5 48.0 32.0 ', 
-             'x: 3.75 58.5 37.0 \nx: 2.5 48.0 32.0 '           
+             'Footer',
+             '42.0',
+             'Table Footer\n23.0 42.0 46.5 59.25 \n', # last 2 lines
+             'x: 3.75 58.5 37.0 \nv: 40.5 4.5 \n', # first 2 lines
+             '5.25 10.0 64.0 27.5 \n28.5 20.75 16.5 0.5 \n39.5 15.0 23.25 46.0 ', #between table tags 
+             'x: 3.75 58.5 37.0 \nx: 2.5 48.0 32.0 ' # pattern 'x'       
         ], results, results)        
-    
+
     def test_first_line_driver(self):
         app_driver_input = os.path.dirname(__file__)+"/first_line.driver"
         app_json_parameters = os.path.dirname(__file__)+"/first_line.json"
@@ -128,7 +134,7 @@ class TestDrive(unittest.TestCase):
     
         results = waspdrive.extract_results(self.document)
         os.chdir("../") # go back a director, in case of failure
-        self.assertListEqual([16.0, 11.25, 75.0], results)
+        self.assertListEqual([10.5, 51.0, 50.25], results)
         
 
     def test_pattern_column_driver(self):

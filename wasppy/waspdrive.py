@@ -147,16 +147,15 @@ def between_patterns(str_file, start_pattern, end_pattern):
         with open(str_file) as f:
             try:
                 content = f.read()
-                ''' first method, pair the start-end patterns manually
                 # this method allows including multilines between
                 # one pair of start-end patterns
                 ends=[]
                 for each_find in re.finditer(end_pattern, content):
                     #push all matched end_pattern into list
-                    ends.append(each_find.end())
+                    ends.append(each_find.start())
                 for each_find in re.finditer(start_pattern, content):
                     #loop from each start_pattern
-                    each_start=each_find.start()
+                    each_start=each_find.end()
                     if len(ends)>0:
                         #remove those matched ends before each start_pattern
                         while (each_start >= ends[0]):
@@ -166,10 +165,6 @@ def between_patterns(str_file, start_pattern, end_pattern):
                             section += content[each_start:ends[0]] \
                                         + ("\n" if (content[ends[0]-1] != "\n") else "")
                             ends.pop(0)#remove this matched end
-                '''
-                #another method, just join the start_pattern and end_pattern
-                for each_find in re.finditer(start_pattern+".+"+end_pattern, content):
-                    section +=each_find.group(0)+ ("\n" if (each_find.group(0)[-1:] != "\n") else "")
             except:
                 print "File reading error!"
     else:
