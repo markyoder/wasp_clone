@@ -50,9 +50,9 @@ def first_n_lines(str_file, n):
                 if n > line_count :
                     print "Line index > max line number, return all lines!"
             except:
-                print "File reading error!"
+                print "File reading error on" + os.getcwd()+ "/" + str_file +"!"
     else:
-        print "No such file!"
+        print "No such file in "+ os.getcwd()+ "!"
     return lines
 
 
@@ -70,9 +70,9 @@ def last_n_lines(str_file, n):
                 try:
                     lines=list(deque(f, maxlen=n))
                 except:
-                    print "File reading error!"
+                    print "File reading error on" + os.getcwd()+ "/" + str_file +"!"
     else:
-        print "No such file!"
+        print "No such file in "+ os.getcwd()+ "!"
     return lines
 
 def first_n_line(str_file, n):
@@ -90,9 +90,9 @@ def first_n_line(str_file, n):
                     last_line=""
                     print "Line index > max line number!"
             except:
-                print "File reading error!"
+                print "File reading error on" + os.getcwd()+ "/" + str_file +"!"
     else:
-        print "No such file!"
+        print "No such file in "+ os.getcwd()+ "!"
     return last_line
 
 def last_n_line(str_file, n):
@@ -108,9 +108,9 @@ def last_n_line(str_file, n):
                 try:
                     first_line=deque(f, maxlen=n).popleft()
                 except:
-                    print "File reading error!"
+                    print "File reading error on" + os.getcwd()+ "/" + str_file +"!"
     else:
-        print "No such file!"
+        print "No such file in "+ os.getcwd()+ "!"
     return first_line
 
 def between_lines(str_file, start_n, end_n):
@@ -133,9 +133,9 @@ def between_lines(str_file, start_n, end_n):
                     for line in islice(f, start_n-1, end_n):
                         lines+=line
             except:
-                print "File reading error!"
+                print "File reading error on" + os.getcwd()+ "/" + str_file +"!"
     else:
-        print "No such file!"
+        print "No such file in "+ os.getcwd()+ "!"
 
     return lines
 
@@ -166,9 +166,9 @@ def between_patterns(str_file, start_pattern, end_pattern):
                                         + ("\n" if (content[ends[0]-1] != "\n") else "")
                             ends.pop(0)#remove this matched end
             except:
-                print "File reading error!"
+                print "File reading error on" + os.getcwd()+ "/" + str_file +"!"
     else:
-        print "No such file!"
+        print "No such file in "+ os.getcwd()+ "!"
     return section
 
 def grep_string(str_file, pattern):
@@ -182,9 +182,9 @@ def grep_string(str_file, pattern):
                     if m:
                        lines+=line
             except:
-                print "File reading error!"
+                print "File reading error on" + os.getcwd()+ "/" + str_file +"!"
     else:
-        print "No such file!"
+        "No such file in "+ os.getcwd()+ "!"
     return lines
 
 def print_column_error(idx_column):
@@ -302,7 +302,7 @@ def extract_results(document):
                                     except:
                                         print_column_error(each_column["value"][0])
         else:
-            print "No such file: "+ extract['value'] + "!"
+            print "No such file: "+os.getcwd()+"/"+ extract['value'] + "!"
 
         i+=1
     return res_output
