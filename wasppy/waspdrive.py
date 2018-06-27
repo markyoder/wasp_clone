@@ -184,7 +184,7 @@ def grep_string(str_file, pattern):
             except:
                 print "File reading error on" + os.getcwd()+ "/" + str_file +"!"
     else:
-        "No such file in "+ os.getcwd()+ "!"
+        print "No such file in "+ os.getcwd()+ "!"
     return lines
 
 def print_column_error(idx_column):
