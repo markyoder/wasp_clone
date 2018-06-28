@@ -283,11 +283,12 @@ def extract_results(document):
                                 if each_line!="":
                                     split = each_line.strip().split()
                                     for each_column in each_find["column"]:
-                                        try:
-                                            data = split[int(each_column["value"][0])-1]
-                                            res_output.append(float(data))
-                                        except:
-                                            print_column_error(each_column["value"][0])
+                                        for single_col in each_column["value"]:#added for multi columns
+                                            try:
+                                                data = split[int(single_col)-1]
+                                                res_output.append(float(data))
+                                            except:
+                                                print_column_error(each_column["value"][0])
                                 
                         if ("column" in each_find) and ("between" in each_find):
                             str_pattern_start=str(each_find["between"]['value'][0])
