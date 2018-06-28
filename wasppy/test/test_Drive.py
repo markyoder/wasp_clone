@@ -166,7 +166,7 @@ class TestDrive(unittest.TestCase):
         os.chdir("test")
         ### obtain pieces of input by name for convenience
         self.document = waspdrive.process_drive_input(app_driver_input)
-        print self.document
+
         self.assertIsNotNone(self.document, "Failed to acquire document!")
 
         rtncode = waspdrive.run_external_app(self.document, app_json_parameters)
