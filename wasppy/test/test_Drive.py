@@ -90,15 +90,15 @@ class TestDrive(unittest.TestCase):
              10.0, 64.0,#v1, v2
              20.75, 16.5,
              15.0, 23.25,
-             '3.75', #column 2 of the whole file
-             '40.5', 
-             '2.5', 
-             'Header',
-             '10.0', 
-             '20.75', 
-             '15.0',
-             'Footer',
-             '42.0',
+             'x:', '3.75', #column 1, 2 of the whole file
+             'v:', '40.5', 
+             'x:', '2.5', 
+             'Table', 'Header',
+             '5.25', '10.0', 
+             '28.5', '20.75', 
+             '39.5', '15.0',
+             'Table', 'Footer',
+             '23.0', '42.0',
              'Table Footer\n23.0 42.0 46.5 59.25 \n', # last 2 lines
              'x: 3.75 58.5 37.0 \nv: 40.5 4.5 \n', # first 2 lines
              '5.25 10.0 64.0 27.5 \n28.5 20.75 16.5 0.5 \n39.5 15.0 23.25 46.0 ', #between table tags 
