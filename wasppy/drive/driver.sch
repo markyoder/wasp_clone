@@ -67,7 +67,7 @@ extract_from{
                         ]
 
         ChildAtMostOne  = [ pattern between last_line ]
-        ChildAtLeastOne = [ pattern between last_line column]
+        ChildAtLeastOne = [ pattern between last_line first_line column]
 
         pattern{
            MinOccurs=0
@@ -87,7 +87,30 @@ extract_from{
                ValType=Int
            }
         }
-
+        first_line{
+           MinOccurs=0
+           MaxOccurs=1
+           InputTmpl="first_line"
+           Description="grab either first line or first N line"
+           value{
+               MinOccurs=0
+               MaxOccurs=1
+               ValType=Int
+           }
+        }
+        
+        between{
+           MinOccurs=0
+           MaxOccurs=1
+           InputTmpl="between"
+           Description="grab between pattern_start and pattern_end"
+           value{
+               MinOccurs=2
+               MaxOccurs=2
+               ValType=String
+           }
+        }
+        
         column{
             MinOccurs=0
             MaxOccurs=NoLimit
