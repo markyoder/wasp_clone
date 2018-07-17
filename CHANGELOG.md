@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - DocPrint utility that consumes an input schema and produces GitLab compatible Markdown. The Markdown can be converted to html using Pandoc.
 
+## [1.0.1] - 07-05-2018
+### Added
+- wasppy/driver capability that allows execution of an external application and results extraction.
+
 ## [1.0.0] - 05-11-2018
 ### Added
 - Typedefs for Default TokenPool,TreeNodePool, and Interpreters.
