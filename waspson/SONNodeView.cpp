@@ -213,6 +213,24 @@ SONNodeView::Collection  // return type
     }
     return results;
 }
+SONNodeView::Collection  // return type
+    SONNodeView::child_by_type(std::size_t type, std::size_t limit) const
+{
+    Collection results;
+    for (std::size_t i = 0, count = child_count(); i < count; ++i)
+    {
+        auto        child      = child_at(i);
+        std::size_t child_type = child.type();
+        if (child_type == type)
+        {
+            results.push_back(child);
+        }
+        // limit of 0 is reserved as no limit
+        if (limit != 0 && results.size() == limit)
+            break;
+    }
+    return results;
+}
 SONNodeView  // return type
     SONNodeView::first_child_by_name(const std::string& name) const
 {

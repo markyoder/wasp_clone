@@ -338,4 +338,16 @@ Therefore, if a user has multiple SON formatted input files that are known to be
 
 and the resulting output will be a schema skeleton that can be used with the Hierarchical Input Validation Engine to validate the inputs.  These schema skeletons have actual rule stubs for each input node commented out.  These rules can reviewed in more detail in the [HIVE section](/wasphive/README.md#hierarchical-input-validation-engine-hive) and should be modified for each piece of input.
 
+## Autogenerate Input Documentation
+
+The ability to auto-generate Markdown input documentation from an input schema exists as a WASP utility. Input modifications can be made in just the schema, and then the input documentation can be automatically updated at any time by simply running:
+
+```
+docprint path/to/valid/schema.son > documentation.md
+```
+
+The result will be Markdown documentation for the entire input hierarchy represented in the provided schema. This documentation will contain tables of all fields available in the input with restrictions such as how many are expected, the value type (integer, real, string), allowed ranges for numbers, available value choices, input lookup keys, descriptions, etc.
+
+The produced Markdown is GitLab compatible and can be converted to HTML via the [Pandoc](https://pandoc.org/).
+
 
