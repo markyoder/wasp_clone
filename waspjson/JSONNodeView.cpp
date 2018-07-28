@@ -49,22 +49,12 @@ bool JSONNodeView::has_parent() const
 
 std::string JSONNodeView::id() const
 {
-    JSONNodeView potential_id_child = id_child();
-    if (potential_id_child.is_null())
-        return "";
-    return potential_id_child.to_string();
+    return "";
 }
 
 JSONNodeView JSONNodeView::id_child() const
 {
-    // id is the 3rd child
-    if (child_count() > 2)
-    {
-        const JSONNodeView& child      = child_at(2);
-        std::string        child_name = child.name();
-        if (child_name == "id")
-            return child;
-    }
+    // JSON doesn't have the concept of an id
     return JSONNodeView();  // null view
 }
 
@@ -80,21 +70,13 @@ bool JSONNodeView::is_decorative() const
     switch (t)
     {
         case wasp::DECL:
-        case wasp::TERM:
         case wasp::ASSIGN:
-        case wasp::COMMENT:
-        case wasp::IDENTIFIER:
-        case wasp::OBJECT_TERM:
         case wasp::WASP_COMMA:  // ,
         case wasp::COLON:
-        case wasp::LPAREN:    // (
-        case wasp::RPAREN:    // )
         case wasp::LBRACE:    // {
         case wasp::RBRACE:    // }
         case wasp::LBRACKET:  // [
         case wasp::RBRACKET:  // ]
-        case wasp::EXECUTION_UNIT_START:
-        case wasp::EXECUTION_UNIT_END:
             return true;
     }
     return false;
@@ -108,11 +90,9 @@ bool JSONNodeView::is_declarator() const
 bool JSONNodeView::is_terminator() const
 {
     switch (type())
-    {
-        case wasp::TERM:
+    {\
         case wasp::RBRACE:    // }
         case wasp::RBRACKET:  // ]
-        case wasp::EXECUTION_UNIT_END:
             return true;
         default:
             return false;
