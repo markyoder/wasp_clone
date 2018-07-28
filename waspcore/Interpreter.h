@@ -82,6 +82,25 @@ class WASP_PUBLIC NodeView
     bool is_terminator() const { return type() == TERM; }
 
     /**
+     * @brief non_decorative_children acquires all non decorative children
+     * @return collection of NodeViews
+     */
+    NodeView::Collection non_decorative_children() const;
+    /**
+     * @brief first_non_decorative_child_by_name acquires the first non
+     * decorative child
+     * @return NodeView - need to check is_null to ensure valid node
+     */
+    NodeView
+    first_non_decorative_child_by_name(const std::string& name) const;
+    /**
+     * @brief non_decorative_children_count convenience to determine number of
+     * non decorative
+     * @return number of decorative children
+     */
+    size_t non_decorative_children_count() const;
+
+    /**
      * @brief path acquire the path of this node from the document root
      * @return path to node, e.g., '/object/key/value'
      */
@@ -203,6 +222,14 @@ class WASP_PUBLIC NodeView
      * front and back).
      */
     std::string to_string(bool* ok = nullptr) const;
+
+    /**
+     * @brief last_as_string this node or last child's data as a string
+     * @param ok true, iff the string was obtained
+     * @return the data as a string (single and double quites are removed from
+     * front and back)
+     */
+    std::string last_as_string(bool* ok = nullptr) const;
 
     // Friendly stream operator
     friend std::ostream& operator<<(std::ostream&         str,

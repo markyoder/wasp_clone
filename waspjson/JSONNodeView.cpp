@@ -1,80 +1,80 @@
-#include "waspson/SONNodeView.h"
+#include "waspjson/JSONNodeView.h"
 #include "waspcore/utils.h"
 
 namespace wasp
 {
-SONNodeView::SONNodeView(std::size_t                node_index,
+JSONNodeView::JSONNodeView(std::size_t                node_index,
                          const AbstractInterpreter& pool)
     : m_node_index(node_index), m_pool(&pool)
 {
     wasp_require(!this->is_null());
 }
 
-SONNodeView::SONNodeView(const SONNodeView& orig)
+JSONNodeView::JSONNodeView(const JSONNodeView& orig)
     : m_node_index(orig.m_node_index), m_pool(orig.m_pool)
 {
 }
 
-SONNodeView::~SONNodeView()
+JSONNodeView::~JSONNodeView()
 {
 }
 
-SONNodeView& SONNodeView::operator=(const SONNodeView& b)
+JSONNodeView& JSONNodeView::operator=(const JSONNodeView& b)
 {
     m_node_index = b.node_index();
     m_pool       = b.node_pool();
     return *this;
 }
 
-bool SONNodeView::operator==(const SONNodeView& b) const
+bool JSONNodeView::operator==(const JSONNodeView& b) const
 {
     return m_pool == b.m_pool && m_node_index == b.m_node_index;
 }
 
-bool SONNodeView::operator<(const SONNodeView& b) const
+bool JSONNodeView::operator<(const JSONNodeView& b) const
 {
     return m_node_index < b.m_node_index;
 }
 
-SONNodeView SONNodeView::parent() const
+JSONNodeView JSONNodeView::parent() const
 {
-    SONNodeView view(m_pool->parent_node_index(m_node_index), *m_pool);
+    JSONNodeView view(m_pool->parent_node_index(m_node_index), *m_pool);
     return view;
 }
 
-bool SONNodeView::has_parent() const
+bool JSONNodeView::has_parent() const
 {
     return m_pool->has_parent(m_node_index);
 }
 
-std::string SONNodeView::id() const
+std::string JSONNodeView::id() const
 {
-    SONNodeView potential_id_child = id_child();
+    JSONNodeView potential_id_child = id_child();
     if (potential_id_child.is_null())
         return "";
     return potential_id_child.to_string();
 }
 
-SONNodeView SONNodeView::id_child() const
+JSONNodeView JSONNodeView::id_child() const
 {
     // id is the 3rd child
     if (child_count() > 2)
     {
-        const SONNodeView& child      = child_at(2);
+        const JSONNodeView& child      = child_at(2);
         std::string        child_name = child.name();
         if (child_name == "id")
             return child;
     }
-    return SONNodeView();  // null view
+    return JSONNodeView();  // null view
 }
 
-bool SONNodeView::is_leaf() const
+bool JSONNodeView::is_leaf() const
 {
     NodeView view(node_index(), *node_pool());
     return view.is_leaf();
 }
 
-bool SONNodeView::is_decorative() const
+bool JSONNodeView::is_decorative() const
 {
     auto t = type();
     switch (t)
@@ -100,12 +100,12 @@ bool SONNodeView::is_decorative() const
     return false;
 }
 
-bool SONNodeView::is_declarator() const
+bool JSONNodeView::is_declarator() const
 {
     return type() == wasp::DECL;
 }
 
-bool SONNodeView::is_terminator() const
+bool JSONNodeView::is_terminator() const
 {
     switch (type())
     {
@@ -119,60 +119,60 @@ bool SONNodeView::is_terminator() const
     }
 }
 
-SONNodeView::Collection SONNodeView::non_decorative_children() const
+JSONNodeView::Collection JSONNodeView::non_decorative_children() const
 {
     return wasp::non_decorative_children(*this);
 }
 
-SONNodeView
-SONNodeView::first_non_decorative_child_by_name(const std::string& name) const
+JSONNodeView
+JSONNodeView::first_non_decorative_child_by_name(const std::string& name) const
 {
     return wasp::first_non_decorative_child_by_name(*this,name);
 }
 
-size_t SONNodeView::non_decorative_children_count() const
+size_t JSONNodeView::non_decorative_children_count() const
 {
     return wasp::non_decorative_children_count(*this);
 }
 
-std::string SONNodeView::data() const
+std::string JSONNodeView::data() const
 {
     std::stringstream str;
     m_pool->data(m_node_index, str);
     return str.str();
 }
 
-std::string SONNodeView::path() const
+std::string JSONNodeView::path() const
 {
     std::stringstream str;
     m_pool->node_path(m_node_index, str);
     return str.str();
 }
 
-void SONNodeView::paths(std::ostream& out) const
+void JSONNodeView::paths(std::ostream& out) const
 {
     m_pool->node_paths(m_node_index, out);
 }
 
-std::size_t SONNodeView::child_count() const
+std::size_t JSONNodeView::child_count() const
 {
     return m_pool->child_count(m_node_index);
 }
 std::size_t  // return type
-    SONNodeView::child_count_by_name(const std::string& name,
+    JSONNodeView::child_count_by_name(const std::string& name,
                                      std::size_t        limit) const
 {
     NodeView view(node_index(), *node_pool());
     return view.child_count_by_name(name, limit);
 }
 
-SONNodeView SONNodeView::child_at(std::size_t index) const
+JSONNodeView JSONNodeView::child_at(std::size_t index) const
 {
     auto child_node_pool_index = m_pool->child_at(m_node_index, index);
-    return SONNodeView(child_node_pool_index, *m_pool);
+    return JSONNodeView(child_node_pool_index, *m_pool);
 }
-SONNodeView::Collection  // return type
-    SONNodeView::child_by_name(const std::string& name, std::size_t limit) const
+JSONNodeView::Collection  // return type
+    JSONNodeView::child_by_name(const std::string& name, std::size_t limit) const
 {
     Collection results;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
@@ -189,8 +189,8 @@ SONNodeView::Collection  // return type
     }
     return results;
 }
-SONNodeView::Collection  // return type
-    SONNodeView::child_by_type(std::size_t type, std::size_t limit) const
+JSONNodeView::Collection  // return type
+    JSONNodeView::child_by_type(std::size_t type, std::size_t limit) const
 {
     Collection results;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
@@ -207,73 +207,73 @@ SONNodeView::Collection  // return type
     }
     return results;
 }
-SONNodeView  // return type
-    SONNodeView::first_child_by_name(const std::string& name) const
+JSONNodeView  // return type
+    JSONNodeView::first_child_by_name(const std::string& name) const
 {
     NodeView view(node_index(), *node_pool());
     return view.first_child_by_name(name);
 }
 
-std::size_t SONNodeView::type() const
+std::size_t JSONNodeView::type() const
 {
     return m_pool->type(m_node_index);
 }
 
-const char* SONNodeView::name() const
+const char* JSONNodeView::name() const
 {
     return m_pool->name(m_node_index);
 }
 
-std::size_t SONNodeView::line() const
+std::size_t JSONNodeView::line() const
 {
     return m_pool->line(m_node_index);
 }
 
-std::size_t SONNodeView::column() const
+std::size_t JSONNodeView::column() const
 {
     return m_pool->column(m_node_index);
 }
 
-std::size_t SONNodeView::last_line() const
+std::size_t JSONNodeView::last_line() const
 {
     return m_pool->last_line(m_node_index);
 }
 
-std::size_t SONNodeView::last_column() const
+std::size_t JSONNodeView::last_column() const
 {
     return m_pool->last_column(m_node_index);
 }
 
-bool SONNodeView::to_bool(bool* ok) const
+bool JSONNodeView::to_bool(bool* ok) const
 {
     NodeView view(value_node_index(), *node_pool());
     return view.to_bool(ok);
 }
 
-int SONNodeView::to_int(bool* ok) const
+int JSONNodeView::to_int(bool* ok) const
 {
     NodeView view(value_node_index(), *node_pool());
     return view.to_int(ok);
 }
 
-double SONNodeView::to_double(bool* ok) const
+double JSONNodeView::to_double(bool* ok) const
 {
     NodeView view(value_node_index(), *node_pool());
     return view.to_double(ok);
 }
 
-std::string SONNodeView::to_string(bool* ok) const
+std::string JSONNodeView::to_string(bool* ok) const
 {
     NodeView view(value_node_index(), *node_pool());
     return view.to_string(ok);
 }
 
-std::string SONNodeView::last_as_string(bool* ok) const
+std::string JSONNodeView::last_as_string(bool* ok) const
 {
     return wasp::last_as_string(*this, ok);
 }
 
-size_t SONNodeView::value_node_index() const
+size_t JSONNodeView::value_node_index() const
 {
     /// TODO - could push this lower to NodeView ?
     if (type() == wasp::KEYED_VALUE && child_count() > 0)

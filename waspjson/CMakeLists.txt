@@ -44,6 +44,7 @@ FILE(GLOB HEADERS *.h *.hh *.hpp *.lex *.bison
 SET(SOURCES
 JSONLexer.cpp
 JSONParser.cpp
+JSONNodeView.cpp
 JSONObjectLexer.cpp
 JSONObjectParser.cpp
 )
