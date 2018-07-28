@@ -41,4 +41,5 @@ ADD_GOOGLE_TEST(tstHaliteErrors.cpp NP 1)
 ADD_GOOGLE_TEST(tstSubStringIndexer.cpp NP 1)
 ADD_GOOGLE_TEST(tstDataAccessor.cpp NP 1)
 ADD_GOOGLE_TEST(tstHaliteWorkflow.cpp NP 1)
+ADD_GOOGLE_TEST(tstHaliteNodeView.cpp NP 1)
 

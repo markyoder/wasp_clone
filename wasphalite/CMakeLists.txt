@@ -36,6 +36,7 @@ SET(SOURCES
 DataAccessor.cpp
 SubStringIndexer.cpp
 HaliteWorkflow.cpp
+HaliteNodeView.cpp
 )
 
 ##---------------------------------------------------------------------------##
