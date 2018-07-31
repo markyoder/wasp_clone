@@ -190,6 +190,11 @@ def grep_string(str_file, pattern):
 def print_column_error(idx_column):
     print "Column " + str(idx_column) + " is wrong or type mismatch!"
 
+def line_count(line):
+    if 'value' in line:
+        return line['value']
+    return 1
+
 def extract_results(document):
     res_output=[]
     output_file=[]
@@ -225,17 +230,17 @@ def extract_results(document):
                                     except:
                                         print_column_error(each_col)
                         if "first_line" in each_find:
-                            int_line="-"+str(each_find["first_line"]['value'])
+                            int_line="-"+str(line_count(each_find['first_line']))
                             #extract lines
-                            lines=first_n_lines(output_file[i],int(each_find["first_line"]['value']))
+                            lines=first_n_lines(output_file[i],int(line_count(each_find['first_line'])))
                             str_lines=""
                             for each_line in lines:
                                 str_lines+=each_line
                             res_output.append(str_lines)
                         if "last_line" in each_find:
-                            int_line="-"+str(each_find["last_line"]['value'])
+                            int_line="-"+str(line_count(each_find['last_line']))
                             #extract lines
-                            lines=last_n_lines(output_file[i],int(each_find["last_line"]['value']))
+                            lines=last_n_lines(output_file[i],int(line_count(each_find['last_line'])))
                             str_lines=""
                             for each_line in lines:
                                 str_lines+=each_line
@@ -251,10 +256,11 @@ def extract_results(document):
                             res_output.append(str((between_patterns(output_file[i], str_pattern_start, str_pattern_end)).strip('\n')))
                     elif len(each_find)==2: #two layers of extraction command
                         if ("column" in each_find) and ("last_line" in each_find):
-                            int_line="-"+str(each_find["last_line"]['value'])
+                            print each_find["last_line"]
+                            int_line="-"+str(line_count(each_find['last_line']))
                             delimiter=str(each_find["column"][0]["delimiter"]["value"])
-                            #str_last_n_line=last_n_line(output_file[i],int(each_find["last_line"]['value']))
-                            str_last_n_lines=last_n_lines(output_file[i],int(each_find["last_line"]['value']))
+                            #str_last_n_line=last_n_line(output_file[i],int(line_count(each_find['last_line'])))
+                            str_last_n_lines=last_n_lines(output_file[i],int(line_count(each_find['last_line'])))
                             for each_line in str_last_n_lines:
                             #if str_last_n_line != "":
                                 for each_column in each_find["column"]:
@@ -264,10 +270,10 @@ def extract_results(document):
                                     except:
                                         print_column_error(each_column["value"][0])
                         if ("column" in each_find) and ("first_line" in each_find):
-                            int_line="-"+str(each_find["first_line"]['value'])
+                            int_line="-"+str(line_count(each_find['first_line']))
                             delimiter=str(each_find["column"][0]["delimiter"]["value"])
-                            #str_first_n_line=first_n_line(output_file[i],int(each_find["first_line"]['value']))
-                            str_first_n_lines=first_n_lines(output_file[i],int(each_find["first_line"]['value']))
+                            #str_first_n_line=first_n_line(output_file[i],int(line_count(each_find['first_line'])))
+                            str_first_n_lines=first_n_lines(output_file[i],int(line_count(each_find['first_line'])))
                             for each_line in str_first_n_lines:
                             #if str_first_n_line != "":
                                 for each_column in each_find["column"]:
