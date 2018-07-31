@@ -1,4 +1,5 @@
 #include "waspgetpot/GetPotNodeView.h"
+#include "waspcore/utils.h"
 
 namespace wasp
 {
@@ -94,43 +95,18 @@ bool GetPotNodeView::is_terminator() const
 
 GetPotNodeView::Collection GetPotNodeView::non_decorative_children() const
 {
-    Collection results;
-    for (std::size_t i = 0, count = child_count(); i < count; ++i)
-    {
-        const auto& child = child_at(i);
-        if (!child.is_decorative())
-            results.push_back(child);
-    }
-    return results;
+    return wasp::non_decorative_children(*this);
 }
 
 GetPotNodeView GetPotNodeView::first_non_decorative_child_by_name(
     const std::string& name) const
 {
-    for (std::size_t i = 0, count = child_count(); i < count; ++i)
-    {
-        const auto& child = child_at(i);
-        if (!child.is_decorative())
-        {
-            if (name == child.name())
-            {
-                return child;
-            }
-        }
-    }
-    return GetPotNodeView();  // null node
+    return wasp::first_non_decorative_child_by_name(*this, name);
 }
 
 size_t GetPotNodeView::non_decorative_children_count() const
 {
-    size_t result = 0;
-    for (std::size_t i = 0, count = child_count(); i < count; ++i)
-    {
-        const auto& child = child_at(i);
-        if (!child.is_decorative())
-            ++result;
-    }
-    return result;
+    return wasp::non_decorative_children_count(*this);
 }
 
 std::string GetPotNodeView::data() const
@@ -251,12 +227,7 @@ std::string GetPotNodeView::to_string(bool* ok) const
 
 std::string GetPotNodeView::last_as_string(bool* ok) const
 {
-    size_t count = child_count();
-    if (count > 0)
-    {
-        return child_at(count - 1).last_as_string(ok);
-    }
-    return to_string(ok);
+    return wasp::last_as_string(*this, ok);
 }
 
 size_t GetPotNodeView::value_node_index() const

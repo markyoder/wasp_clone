@@ -1,4 +1,5 @@
 #include "waspcore/Interpreter.h"
+#include "waspcore/utils.h"
 
 namespace wasp
 {
@@ -42,6 +43,22 @@ bool NodeView::has_parent() const
 bool NodeView::is_leaf() const
 {
     return m_pool->is_leaf(m_node_index);
+}
+
+NodeView::Collection NodeView::non_decorative_children() const
+{
+    return wasp::non_decorative_children(*this);
+}
+
+NodeView NodeView::first_non_decorative_child_by_name(
+    const std::string& name) const
+{
+    return wasp::first_non_decorative_child_by_name(*this, name);
+}
+
+size_t NodeView::non_decorative_children_count() const
+{
+    return wasp::non_decorative_children_count(*this);
 }
 
 std::string NodeView::data() const
@@ -189,6 +206,11 @@ std::string NodeView::to_string(bool* ok) const
     // trim front quotes
     result = wasp::strip_quotes(result);
     return result;
+}
+
+std::string NodeView::last_as_string(bool* ok) const
+{
+    return wasp::last_as_string(*this, ok);
 }
 
 }  // end of namespace

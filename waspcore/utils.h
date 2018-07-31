@@ -296,5 +296,60 @@ WASP_PUBLIC void print(std::ostream& out, const TAdapter& node_view)
     size_t l = node_view.line(), c = node_view.column();
     print_from(out, *node_view.node_pool(), node_view.node_index(), l, c);
 }
+
+template<class TAdapter>
+WASP_PUBLIC typename TAdapter::Collection
+non_decorative_children(const TAdapter& node)
+{
+    typename TAdapter::Collection results;
+    for (std::size_t i = 0, count = node.child_count(); i < count; ++i)
+    {
+        const auto& child = node.child_at(i);
+        if (!child.is_decorative())
+            results.push_back(child);
+    }
+    return results;
+}
+template<class TAdapter>
+WASP_PUBLIC TAdapter first_non_decorative_child_by_name(const TAdapter& node,
+                                            const std::string& name)
+{
+    for (std::size_t i = 0, count = node.child_count(); i < count; ++i)
+    {
+        const auto& child = node.child_at(i);
+        if (!child.is_decorative())
+        {
+            if (name == child.name())
+            {
+                return child;
+            }
+        }
+    }
+    return TAdapter();  // null node
+}
+
+template<class TAdapter>
+WASP_PUBLIC size_t non_decorative_children_count(const TAdapter& node)
+{
+    size_t result = 0;
+    for (std::size_t i = 0, count = node.child_count(); i < count; ++i)
+    {
+        const auto& child = node.child_at(i);
+        if (!child.is_decorative())
+            ++result;
+    }
+    return result;
+}
+
+template<class TAdapter>
+WASP_PUBLIC std::string last_as_string(const TAdapter& node, bool* ok)
+{
+    size_t count = node.child_count();
+    if (count > 0)
+    {
+        return last_as_string(node.child_at(count - 1),ok);
+    }
+    return node.to_string(ok);
+}
 }
 #endif

@@ -1,5 +1,5 @@
-#ifndef WASP_SONNODE_VIEW_H
-#define WASP_SONNODE_VIEW_H
+#ifndef WASP_JSONNODE_VIEW_H
+#define WASP_JSONNODE_VIEW_H
 
 #include <string>
 #include <sstream>
@@ -10,39 +10,39 @@
 namespace wasp
 {
 /**
- * @brief The SONNodeView class provides light weight interface to SON Nodes
+ * @brief The JSONNodeView class provides light weight interface to JSON Nodes
  * Allows traversing child nodes and parent as well as acquire node information
  * *
  */
-class WASP_PUBLIC SONNodeView
+class WASP_PUBLIC JSONNodeView
 {
   public:
-    using Collection = std::vector<SONNodeView>;
-    SONNodeView() : m_node_index(-1), m_pool(nullptr) {}
-    SONNodeView(std::size_t node_index, const AbstractInterpreter& nodes);
+    using Collection = std::vector<JSONNodeView>;
+    JSONNodeView() : m_node_index(-1), m_pool(nullptr) {}
+    JSONNodeView(std::size_t node_index, const AbstractInterpreter& nodes);
     template<class NV>
-    SONNodeView(const NV& orig);
-    SONNodeView(const SONNodeView& orig);
+    JSONNodeView(const NV& orig);
+    JSONNodeView(const JSONNodeView& orig);
 
-    ~SONNodeView();
+    ~JSONNodeView();
 
-    SONNodeView& operator=(const SONNodeView& b);
+    JSONNodeView& operator=(const JSONNodeView& b);
     template<class NV>
-    SONNodeView& operator=(const NV& b);
+    JSONNodeView& operator=(const NV& b);
 
-    bool operator==(const SONNodeView& b) const;
-    bool operator!=(const SONNodeView& b) const { return !(*this == b); }
+    bool operator==(const JSONNodeView& b) const;
+    bool operator!=(const JSONNodeView& b) const { return !(*this == b); }
     /**
      * @brief operator < orders by pool index
      * @param b the node to compare pool index
      * @return true, iff this views index is strictly less than b.index
      */
-    bool operator<(const SONNodeView& b) const;
+    bool operator<(const JSONNodeView& b) const;
     /**
-     * @brief equal determines if this is equal to the provides SONNodeView
+     * @brief equal determines if this is equal to the provides JSONNodeView
      * @return true, iff and only if the nodes are the same
      */
-    bool equal(const SONNodeView& b) const { return *this == b; }
+    bool equal(const JSONNodeView& b) const { return *this == b; }
 
     /**
      * @brief data acquire the node's data
@@ -53,7 +53,7 @@ class WASP_PUBLIC SONNodeView
      * @brief parent acquire the parent view of the current node
      * @return
      */
-    SONNodeView parent() const;
+    JSONNodeView parent() const;
     /**
      * @brief has_parent determine if this node has a parent
      * @return true, iff this node has a parent
@@ -61,21 +61,19 @@ class WASP_PUBLIC SONNodeView
     bool has_parent() const;
 
     /**
-     * @brief id acquire the id of the SON component
-     * @return the identifier of the SON component, empty string if no id exists
-     * This is always the 1=decl 2='(' 3=id child and only if the 3rd is named
-     * 'id'
+     * @brief id acquire the id of the JSON component
+     * @return the identifier of the JSON component, empty string if no id exists
      */
     std::string id() const;
     /**
      * @brief id_child acquire the identifier child node
      * @return id child node. Always check ::is_null to ensure the node exists.
      */
-    SONNodeView id_child() const;
+    JSONNodeView id_child() const;
 
     /**
      * @brief is_decorative determine if this node is decorative
-     * @return true, iff the node is a decorative '(','[','{', etc.
+     * @return true, iff the node is a decorative '[','{', etc.
      * Declarators and terminators are decorative
      */
     bool is_decorative() const;
@@ -96,15 +94,15 @@ class WASP_PUBLIC SONNodeView
 
     /**
      * @brief non_decorative_children acquires all non decorative children
-     * @return collection of SONNodeViews
+     * @return collection of JSONNodeViews
      */
-    SONNodeView::Collection non_decorative_children() const;
+    JSONNodeView::Collection non_decorative_children() const;
     /**
      * @brief first_non_decorative_child_by_name acquires the first non
      * decorative child
-     * @return SONNodeView - need to check is_null to ensure valid node
+     * @return JSONNodeView - need to check is_null to ensure valid node
      */
-    SONNodeView
+    JSONNodeView
     first_non_decorative_child_by_name(const std::string& name) const;
     /**
      * @brief non_decorative_children_count convenience to determine number of
@@ -153,9 +151,9 @@ class WASP_PUBLIC SONNodeView
     /**
      * @brief child_at acquire the child node view at the given index
      * @param index the index of the child [0-child_count())
-     * @return SONNodeView describing the child node
+     * @return JSONNodeView describing the child node
      */
-    SONNodeView child_at(std::size_t index) const;
+    JSONNodeView child_at(std::size_t index) const;
 
     /**
      * @brief child_by_name acquire child nodes by the given name
@@ -163,7 +161,7 @@ class WASP_PUBLIC SONNodeView
      * @param limit the limit on the number of children ( 0 := no limit )
      * @return A collection of views. Empty if no match occurrs
      */
-    SONNodeView::Collection child_by_name(const std::string& name,
+    JSONNodeView::Collection child_by_name(const std::string& name,
                                           size_t             limit = 0) const;
 
     /**
@@ -172,7 +170,7 @@ class WASP_PUBLIC SONNodeView
      * @param limit the limit on the number of children ( 0 := no limit )
      * @return A collection of views. Empty if no match occurrs
      */
-    SONNodeView::Collection child_by_type(std::size_t type,
+    JSONNodeView::Collection child_by_type(std::size_t type,
                                           size_t      limit = 0) const;
 
     /**
@@ -181,7 +179,7 @@ class WASP_PUBLIC SONNodeView
      * @return Named NodeView as requestd. is_null indicates if none was
      * found
      */
-    SONNodeView first_child_by_name(const std::string& name) const;
+    JSONNodeView first_child_by_name(const std::string& name) const;
     /**
      * @brief type acquire the type of the node
      * @return the node's type
@@ -264,9 +262,9 @@ class WASP_PUBLIC SONNodeView
 
     // Friendly stream operator
     friend std::ostream& operator<<(std::ostream&            str,
-                                    const wasp::SONNodeView& view)
+                                    const wasp::JSONNodeView& view)
     {
-        str << "SONNodeView(node_index=" << view.m_node_index
+        str << "JSONNodeView(node_index=" << view.m_node_index
             << ", &pool=" << view.m_pool << ")";
         return str;
     }
@@ -279,10 +277,10 @@ class WASP_PUBLIC SONNodeView
      * @brief value_node_index when the value is requested (to_int, string,
      * etc) this returns the index
      * @return index of the node considered this node's value
-     * I.e.,  key = value
+     * I.e.,  key : value
      *  key
      *  |_decl
-     *  |_=
+     *  |_:
      *  |_value
      * When key's value is requested, the index of the 'value' node will be
      * returned.
@@ -290,7 +288,7 @@ class WASP_PUBLIC SONNodeView
      */
     size_t value_node_index() const;
 };
-#include "waspson/SONNodeView.i.h"
+#include "waspjson/JSONNodeView.i.h"
 }  // end of namespace
 
 #endif
