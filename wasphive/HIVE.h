@@ -501,10 +501,16 @@ class WASP_PUBLIC HIVE
                 escape_string = json_escape_string(escape_string);
                 if (json_value_type == JsonValueType::NUMBER)
                 {
+                    if (escape_string.front() == '+')
+                    {
+                        escape_string = escape_string.substr(1);
+                    }
+                    if (escape_string.back() == '.')
+                    {
+                        escape_string += '0';
+                    }
                     out << spaces(level) << "\"" << current_node.name()
-                        << "\":"    << (escape_string.front() == '+' ?
-                                            escape_string.substr(1)
-                                          : escape_string);
+                        << "\":"    << escape_string;
                 }
                 else
                 {
@@ -617,9 +623,15 @@ class WASP_PUBLIC HIVE
                         escape_string = json_escape_string(escape_string);
                         if (json_value_type == JsonValueType::NUMBER)
                         {
-                            out << " " << (escape_string.front() == '+' ?
-                                               escape_string.substr(1)
-                                             : escape_string) ;
+                            if (escape_string.front() == '+')
+                            {
+                                escape_string = escape_string.substr(1);
+                            }
+                            if (escape_string.back() == '.')
+                            {
+                                escape_string += '0';
+                            }
+                            out << " " << escape_string;
                         }
                         else
                         {
