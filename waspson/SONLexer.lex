@@ -45,7 +45,7 @@ typedef wasp::SONParser::token_type token_type;
 
 INT \-?[0-9]+
 EXPONENT [eE][\+\-]?{INT}
-DOUBLE {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}{EXPONENT}
+DOUBLE {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}{EXPONENT}|\-\.{INT}{EXPONENT}?
 
 STRING [A-Za-z_]([A-Za-z0-9_])*
 FILLER_REPEAT [0-9]+[rR][' ']*({INT}|{DOUBLE})

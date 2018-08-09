@@ -969,7 +969,7 @@ mixed_one   = [ 1 2 three=four 5 ]
 
 mixed_two   = [ 1 2 three=four three='a "sentence" with "quotes" here' 6 ]
 
-mixed_three = [ 1 2 three="four" three=[ five six seven=[ 8. 9 ] ] 10 ]
+mixed_three = [ 1 2 three="four" three=[ five six seven=[ 8. 9 .7 -.6 ] ] 10 ]
 
 )INPUT";
 
@@ -1001,7 +1001,7 @@ mixed_three = [ 1 2 three="four" three=[ five six seven=[ 8. 9 ] ] 10 ]
       {
         "value":[ "five", "six" ],
         "seven":{
-          "value":[ 8.0, 9 ]
+          "value":[ 8.0, 9, 0.7, -0.6 ]
         }
       }
     ]
@@ -1156,7 +1156,7 @@ object_multi{
     rat 'ddd' 'eee' 'fff'
     inside_single
         rot 6.  7.0  +8.0
-        rot 9.0 +10. 11.0
+        rot .9 +10. 11.0
         bat 1 3 5
 )INPUT";
 
@@ -1219,7 +1219,7 @@ object_multi{
             "value":[ 6.0, 7.0, 8.0 ]
           },
           {
-            "value":[ 9.0, 10.0, 11.0 ]
+            "value":[ 0.9, 10.0, 11.0 ]
           }
         ],
         "bat":{

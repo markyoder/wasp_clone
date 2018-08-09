@@ -507,7 +507,17 @@ class WASP_PUBLIC HIVE
                     }
                     if (escape_string.back() == '.')
                     {
-                        escape_string += '0';
+                        escape_string += "0";
+                    }
+                    else if (escape_string.front() == '.')
+                    {
+                        escape_string = "0" + escape_string;
+                    }
+                    else if (escape_string.front() == '-' &&
+                        escape_string.length() > 1   &&
+                        escape_string.at(1) == '.')
+                    {
+                        escape_string = "-0" + escape_string.substr(1);
                     }
                     out << spaces(level) << "\"" << current_node.name()
                         << "\":"    << escape_string;
@@ -629,7 +639,17 @@ class WASP_PUBLIC HIVE
                             }
                             if (escape_string.back() == '.')
                             {
-                                escape_string += '0';
+                                escape_string += "0";
+                            }
+                            else if (escape_string.front() == '.')
+                            {
+                                escape_string = "0" + escape_string;
+                            }
+                            else if (escape_string.front() == '-' &&
+                                escape_string.length() > 1   &&
+                                escape_string.at(1) == '.')
+                            {
+                                escape_string = "-0" + escape_string.substr(1);
                             }
                             out << " " << escape_string;
                         }
