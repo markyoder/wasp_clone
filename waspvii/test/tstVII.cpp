@@ -17,6 +17,48 @@ TEST(VIInterpreter, comments)
     DefaultVIInterpreter vii;
     ASSERT_TRUE(vii.parse(input));
     ASSERT_EQ(4, vii.root().child_count());
+
+}
+
+TEST(VIInterpreter, named)
+{
+    std::stringstream input;
+    input << R"I( [block]
+ command1 name1 2 3
+ command2 3 4
+ command3 1 4.3
+)I" << std::endl;
+    DefaultVIInterpreter vii;
+    auto*                block1   = vii.definition()->create("block");
+    auto*                command1 = block1->create("command1");
+    command1->create("_name");
+    block1->create("command2");
+    block1->create("command3")->create("_name");
+    EXPECT_TRUE(vii.parse(input));
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected << R"I(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+/block/command1
+/block/command1/decl (command1)
+/block/command1/_name (name1)
+/block/command1/value (2)
+/block/command1/value (3)
+/block/command2
+/block/command2/decl (command2)
+/block/command2/value (3)
+/block/command2/value (4)
+/block/command3
+/block/command3/decl (command3)
+/block/command3/_name (1)
+/block/command3/value (4.3)
+)I";
+
+    ASSERT_EQ(expected.str(), paths.str());
 }
 
 TEST(VIInterpreter, comment_placement)
@@ -259,6 +301,5 @@ TEST(VIInterpreter, test_simple_blocks)
 }
 
 // TODO TEST
-// Named commands
 // commands containing the 'slash' construct
 //

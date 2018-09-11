@@ -171,12 +171,22 @@ command_part : part {
 
         auto token_type = interpreter.node_token_type($1);
         // If this is a potential start of a new command
-        if ( token_type == wasp::STRING || token_type == wasp::QUOTED_STRING)
-        { // TODO determine if it has a 'name' which means
-          // if a command just started (has no children)
-          // the first part of the command is actually the name/id of the command
-            std::string data = interpreter.data($1);
-            wasp_check(interpreter.definition());
+        std::string data = interpreter.data($1);
+        wasp_check(interpreter.definition());
+        // if there are stages, and the existing stage only contains
+        // the declarator (child_count==1), and the block/command is named
+        // we need to consume/recast the first child as the '_name' node
+        if ( interpreter.staged_count() > 1
+             && interpreter.staged_child_count(interpreter.staged_count()-1) == 1
+             && interpreter.definition()->has("_name") )
+        {
+            interpreter.set_type($1, wasp::IDENTIFIER);
+            bool name_set_success = interpreter.set_name($1, "_name");
+            wasp_check(name_set_success);
+            $$ = interpreter.push_staged_child($1);
+        }
+        else if ( token_type == wasp::STRING || token_type == wasp::QUOTED_STRING)
+        {
             int delta = interpreter.definition()->delta(data, data);
             if( -1 == delta ) // no adjustment, not a command
             {
