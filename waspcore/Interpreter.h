@@ -375,6 +375,7 @@ class WASP_PUBLIC AbstractInterpreter
 
     virtual const std::string& staged_name(size_t staged_index) const = 0;
     virtual std::string& staged_name(size_t staged_index)             = 0;
+    virtual size_t staged_child_count(size_t staged_index)      const = 0;
 
     virtual size_t staged_count() const = 0;
 
@@ -651,15 +652,19 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
     }
     virtual const std::string& staged_name(size_t staged_index) const
     {
-        wasp_require(staged_index <
-                     m_staged.size()) return m_staged[staged_index]
-            .m_name;
+        wasp_require(staged_index < m_staged.size());
+
+        return m_staged[staged_index].m_name;
     }
     virtual std::string& staged_name(size_t staged_index)
     {
-        wasp_require(staged_index <
-                     m_staged.size()) return m_staged[staged_index]
-            .m_name;
+        wasp_require(staged_index < m_staged.size());
+        return m_staged[staged_index].m_name;
+    }
+    virtual size_t staged_child_count(size_t staged_index) const
+    {
+        wasp_require(staged_index <m_staged.size());
+        return m_staged[staged_index].m_child_indices.size();
     }
 
     /**
