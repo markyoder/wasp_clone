@@ -58,7 +58,7 @@ QSTRING {DOUBLE_QUOTED_STRING}|{SINGLE_QUOTED_STRING}
  // decl /
  // this includes whitespace to provide for
  // declarators that are multi word
-DECL ([A-Za-z*?]((\\.|[^\n/<>\[=])*[A-Za-z0-9?])?\*?)|\.
+DECL ([A-Za-z_*?]((\\.|[^\n/<>\[=])*[A-Za-z_0-9?])?\*?)|\.
 PARENT \.\.
 ANY \/\/
 LTE <=
