@@ -70,6 +70,32 @@ IF ( wasp_ENABLE_waspddi )
       INSTALLABLE
     )
 ENDIF()
+IF ( wasp_ENABLE_waspvii )
+    TRIBITS_ADD_EXECUTABLE(viilist
+      SOURCES viilist.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
+    TRIBITS_ADD_EXECUTABLE(viixml
+      SOURCES viixml.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
+    TRIBITS_ADD_EXECUTABLE(viivalid
+      SOURCES viivalid.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
+    TRIBITS_ADD_EXECUTABLE(viiselect
+      SOURCES viiselect.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
+ENDIF()
 IF ( wasp_ENABLE_waspgetpot )
     TRIBITS_ADD_EXECUTABLE(getpotlist
       SOURCES getpotlist.cpp

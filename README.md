@@ -15,6 +15,7 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
     * [SIREN](/waspsiren/README.md#sequence-input-retrieval-engine-siren)
     * [SON](/waspson/README.md#standard-object-notation-son)
     * [DDI](/waspddi/README.md#definition-driven-interpreter)
+    * [VII](/waspvii/README.md#vera-input-interpreter)
     * [HALITE](/wasphalite/README.md#halite-engine)
     * [Utils](/wasputils/README.md#command-line-utilities)
 2. [Getting Started](#getting-started) - code compilation requirements and instructions
@@ -75,7 +76,8 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
     * [Selecting Unknown Nodes](/waspsiren/README.md#selecting-unknown-nodes)
 7. [SON](/waspson/README.md#standard-object-notation-son) - Standard Object Notation (SON) for general input data entry
 8. [DDI](/waspddi/README.md#definition-driven-interpreter) - Definition Driven Interpreter (DDI) for reduced input data entry  
-9. [HALITE](/wasphalite/README.md#halite-engine) - HierarchicAL Input Template Engine (HALITE) 
+9. [VII](/waspvii/README.md#vera-input-interpreter) - VERA Input Interpreter (VII) for reduced input data entry  
+10. [HALITE](/wasphalite/README.md#halite-engine) - HierarchicAL Input Template Engine (HALITE) 
     * [Template Evaluation Summary](/wasphalite/README.md#template-evaluation-summary)
     * [Attributes and Expressions](/wasphalite/README.md#attributes-and-expressions)
         * [Intrinsic Attributes](/wasphalite/README.md#intrinsic-attributes)  
@@ -95,8 +97,8 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
             * [File Import using an Object](/wasphalite/README.md#file-import-using-an-object)
             * [Iterative File Import using an Array](/wasphalite/README.md#iterative-file-import-using-an-array-or-ranges)
     * [Conditional Blocks](/wasphalite/README.md#conditional-blocks)
-10. [INI](/waspson/README.md#standard-object-notation-son) - configuration file format 
-11. [Utils](/wasputils/README.md#command-line-utilities) - utilities for command line file interaction (listing, validating, selecting, etc.)
+11. [INI](/waspson/README.md#standard-object-notation-son) - configuration file format 
+12. [Utils](/wasputils/README.md#command-line-utilities) - utilities for command line file interaction (listing, validating, selecting, etc.)
     * [File Listing Utilities](/wasputils/README.md#file-listing-utilities)
     * [File Component Selection Utilities](/wasputils/README.md#file-component-selection-utilities)
     * [XML Utilities](/wasputils/README.md#xml-utilities)
@@ -148,12 +150,14 @@ WASP is composed of the following primary components:
     * identified objects, arrays, and keyed values.
 8. [__DDI__](waspddi/README.md#definition-driven-interpreter): the Definition-Driven Interpreter (DDI) contains a lexer, a parser, and an interpreter for the lightweight input format. 
     * Hierarchical Input format with very little syntax.
-9. [__HALITE__](/wasphalite/README.md#halite-engine): the Hierarchical Input Template Expansion engine provides a data-driven means of expanding patterned input.
+9. [__VII__](waspvii/README.md#vera-input-interpreter): the VERA Input Interpreter (VII) contains a lexer, a parser, and an interpreter for the lightweight VERA input format. 
+    * Hierarchical Input format with VERA syntax representing blocks, and scalar and list commands
+10. [__HALITE__](/wasphalite/README.md#halite-engine): the Hierarchical Input Template Expansion engine provides a data-driven means of expanding patterned input.
     * Supports attribute and expression evaluations.
     * Supports template imports.
     * Supports conditional action blocks.
-10. [__INI__](/waspson/README.md#standard-object-notation-son): configuration file format, supported by SON.
-11. [__Utils__](/wasputils/README.md#command-line-utilities) - the wasputils package contains executable utilities for listing/viewing, selecting, validating, and transforming WASP-supported grammars.
+12. [__INI__](/waspson/README.md#standard-object-notation-son): configuration file format, supported by SON.
+13. [__Utils__](/wasputils/README.md#command-line-utilities) - the wasputils package contains executable utilities for listing/viewing, selecting, validating, and transforming WASP-supported grammars.
     * List: lists paths to each file element.
     * Select: allows using SIREN expression to select pieces of input.
     * Valid: validates a given text file with a given document definition/schema.
