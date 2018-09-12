@@ -7,3 +7,4 @@
  python --version
  python TriBITS/tribits/ci_support/clone_extra_repos.py
  mkdir build
+ env
