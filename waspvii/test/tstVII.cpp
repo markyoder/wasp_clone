@@ -61,6 +61,55 @@ TEST(VIInterpreter, named)
     ASSERT_EQ(expected.str(), paths.str());
 }
 
+// TEST that named-index aliased list parameters work as expected
+TEST(VIInterpreter, indexed)
+{
+    std::stringstream input;
+    input << R"I( [block]
+ command1 2 3
+ command2 3 4
+ command3 1 4.3
+)I" << std::endl;
+    DefaultVIInterpreter vii;
+    auto*                block1   = vii.definition()->create("block");
+    auto*                command1 = block1->create("command1");
+    auto* b = command1->create("b");
+    command1->create_aliased("_2",b);
+    auto* command2 = block1->create("command2");
+    auto * x = command2->create("x");
+    // create named index at 1st
+    command2->create_aliased("_1", x);
+    auto* command3 = block1->create("command3");
+    command3->create("_name");
+    // create named index at 2nd child of named
+    auto* y = command3->create("y");
+    command3->create_aliased("_1", y);
+    EXPECT_TRUE(vii.parse(input));
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected << R"I(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+/block/command1
+/block/command1/decl (command1)
+/block/command1/value (2)
+/block/command1/b (3)
+/block/command2
+/block/command2/decl (command2)
+/block/command2/x (3)
+/block/command2/value (4)
+/block/command3
+/block/command3/decl (command3)
+/block/command3/_name (1)
+/block/command3/y (4.3)
+)I";
+
+    ASSERT_EQ(expected.str(), paths.str());
+}
+
 TEST(VIInterpreter, comment_placement)
 {
     std::stringstream input;

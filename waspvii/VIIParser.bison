@@ -173,17 +173,34 @@ command_part : part {
         // If this is a potential start of a new command
         std::string data = interpreter.data($1);
         wasp_check(interpreter.definition());
+
+        bool is_named = interpreter.definition()->has("_name");
+        size_t staged_child_count = interpreter.staged_child_count(interpreter.staged_count()-1);
+        std::string index_name = is_named ? "_"+std::to_string(staged_child_count-1)
+                                          : "_"+std::to_string(staged_child_count);
         // if there are stages, and the existing stage only contains
         // the declarator (child_count==1), and the block/command is named
         // we need to consume/recast the first child as the '_name' node
         if ( interpreter.staged_count() > 1
-             && interpreter.staged_child_count(interpreter.staged_count()-1) == 1
-             && interpreter.definition()->has("_name") )
+             && staged_child_count == 1
+             && is_named )
         {
             interpreter.set_type($1, wasp::IDENTIFIER);
             bool name_set_success = interpreter.set_name($1, "_name");
             wasp_check(name_set_success);
             $$ = interpreter.push_staged_child($1);
+        }
+        // If staged child index is aliased to a named component
+        // we need to capture it appropriately
+        else if (interpreter.staged_count() > 1
+                && staged_child_count >= 1
+                && interpreter.definition()->has(index_name) )
+        {
+           int delta = interpreter.definition()->delta(index_name, index_name);
+           interpreter.set_type($1, wasp::VALUE);
+           bool name_set_success = interpreter.set_name($1, index_name.c_str());
+           wasp_check(name_set_success);
+           $$ = interpreter.push_staged_child($1);
         }
         else if ( token_type == wasp::STRING || token_type == wasp::QUOTED_STRING)
         {
