@@ -85,6 +85,17 @@ bool VIINodeView::is_terminator() const
     }
 }
 
+std::string VIINodeView::id() const {
+     if(child_count() > 2 && child_at(1).type() == wasp::IDENTIFIER)
+         return child_at(1).to_string();
+     return "";
+}
+VIINodeView VIINodeView::id_child() const {
+     if(child_count() > 2 && child_at(1).type() == wasp::IDENTIFIER)
+         return child_at(1);
+     return VIINodeView();
+}
+
 VIINodeView::Collection VIINodeView::non_decorative_children() const
 {
     return wasp::non_decorative_children(*this);

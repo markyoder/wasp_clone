@@ -304,7 +304,7 @@ non_decorative_children(const TAdapter& node)
     typename TAdapter::Collection results;
     for (std::size_t i = 0, count = node.child_count(); i < count; ++i)
     {
-        const auto& child = node.child_at(i);
+        const auto& child = node.child_at(i);        
         if (!child.is_decorative())
             results.push_back(child);
     }

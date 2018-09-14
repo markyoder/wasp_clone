@@ -108,6 +108,22 @@ TEST(VIInterpreter, indexed)
 )I";
 
     ASSERT_EQ(expected.str(), paths.str());
+    VIINodeView root = vii.root();
+    EXPECT_EQ(3,root.first_child_by_name("block")
+              .first_child_by_name("command1")
+              .first_child_by_name("b").to_int());
+    EXPECT_EQ(4.3,root.first_child_by_name("block")
+              .first_child_by_name("command3")
+              .first_child_by_name("y").to_double());
+    EXPECT_EQ("1",root.first_child_by_name("block")
+              .first_child_by_name("command3").id());
+    EXPECT_EQ("1",root.first_child_by_name("block")
+              .first_child_by_name("command3").id_child().to_string());
+    EXPECT_EQ(wasp::OBJECT,root.first_child_by_name("block").type());
+    EXPECT_EQ("",root.first_child_by_name("block").id());
+    EXPECT_EQ("",root.first_child_by_name("block").id());
+    EXPECT_TRUE(root.first_child_by_name("block").id_child().is_null());
+    EXPECT_EQ(3,root.first_child_by_name("block").non_decorative_children().size());
 }
 
 TEST(VIInterpreter, comment_placement)

@@ -61,19 +61,19 @@ class WASP_PUBLIC VIINodeView
     bool has_parent() const;
 
     /**
-     * @brief id will return an empty string as it doesn't apply to VII nodes
-     * @return empty string
+     * @brief id will return the _name node's data
+     * @return _name node's data iff _name exists
      */
-    std::string id() const { return ""; }
+    std::string id() const;
     /**
-     * @brief id_child will return a null view as it doesn't apply to VII nodes
-     * @return null view
+     * @brief id_child will return the _name node iff _name exists and is child(1)
+     * @return null view iff _name node doesn't exist
      */
-    VIINodeView id_child() const { return VIINodeView(); }
+    VIINodeView id_child() const;
 
     /**
      * @brief is_decorative determine if this node is decorative
-     * @return true, iff the node is a decorative '[','=', etc.
+     * @return true, iff the node is a decorative '[', '=', etc.
      * Declarators and terminators are decorative
      */
     bool is_decorative() const;
