@@ -736,6 +736,9 @@ namespace wasp {
         size_t staged_child_count = interpreter.staged_child_count(interpreter.staged_count()-1);
         std::string index_name = is_named ? "_"+std::to_string(staged_child_count-1)
                                           : "_"+std::to_string(staged_child_count);
+        std::string even_odd_name = (is_named?staged_child_count:staged_child_count-1)%2 == 0
+                                    ? "_even" : "_odd";
+
         // if there are stages, and the existing stage only contains
         // the declarator (child_count==1), and the block/command is named
         // we need to consume/recast the first child as the '_name' node
@@ -754,7 +757,7 @@ namespace wasp {
                 && staged_child_count >= 1
                 && interpreter.definition()->has(index_name) )
         {
-           int delta = interpreter.definition()->delta(index_name, index_name);
+           interpreter.definition()->delta(index_name, index_name);
            interpreter.set_type((yystack_[0].value.node_index), wasp::VALUE);
            bool name_set_success = interpreter.set_name((yystack_[0].value.node_index), index_name.c_str());
            wasp_check(name_set_success);
@@ -765,13 +768,26 @@ namespace wasp {
             int delta = interpreter.definition()->delta(data, data);
             if( -1 == delta ) // no adjustment, not a command
             {
+                // TODO cleanup duplicate code
+                if (interpreter.staged_count() > 1
+                        && staged_child_count >= 1
+                        && interpreter.definition()->has(even_odd_name) )
+                {
+                   interpreter.definition()->delta(even_odd_name, even_odd_name);
+                   interpreter.set_type((yystack_[0].value.node_index), wasp::VALUE);
+                   bool name_set_success = interpreter.set_name((yystack_[0].value.node_index), even_odd_name.c_str());
+                   wasp_check(name_set_success);
+                   (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
+                }
                 // the string is not a new command, capture as a value
                 // correct part name and type to be decl
                 // must occur prior to prior stage commital
-                interpreter.set_type((yystack_[0].value.node_index), wasp::VALUE);
-                bool name_set_success = interpreter.set_name((yystack_[0].value.node_index), "value");
-                wasp_check(name_set_success);
-                (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
+                else{
+                    interpreter.set_type((yystack_[0].value.node_index), wasp::VALUE);
+                    bool name_set_success = interpreter.set_name((yystack_[0].value.node_index), "value");
+                    wasp_check(name_set_success);
+                    (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
+                }
             }
             else{
                 // commit prior stages
@@ -786,26 +802,37 @@ namespace wasp {
                                         ,child_indices);
             }
         }
+        // if staged index
+        else if (interpreter.staged_count() > 1
+                && staged_child_count >= 1
+                && interpreter.definition()->has(even_odd_name) )
+        {
+           interpreter.definition()->delta(even_odd_name, even_odd_name);
+           interpreter.set_type((yystack_[0].value.node_index), wasp::VALUE);
+           bool name_set_success = interpreter.set_name((yystack_[0].value.node_index), even_odd_name.c_str());
+           wasp_check(name_set_success);
+           (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
+        }
         // This is a part of a command, stage in existing stage
         else
         {
             (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
         }
     }
-#line 796 "VIIParser.cpp" // lalr1.cc:859
+#line 823 "VIIParser.cpp" // lalr1.cc:859
     break;
 
   case 19:
-#line 239 "VIIParser.bison" // lalr1.cc:859
+#line 266 "VIIParser.bison" // lalr1.cc:859
     {
             auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
-#line 805 "VIIParser.cpp" // lalr1.cc:859
+#line 832 "VIIParser.cpp" // lalr1.cc:859
     break;
 
   case 20:
-#line 244 "VIIParser.bison" // lalr1.cc:859
+#line 271 "VIIParser.bison" // lalr1.cc:859
     {
         // Block is top level parse construct
         // It closes/commits existing stages
@@ -820,11 +847,11 @@ namespace wasp {
                                     ,quote_less_data.c_str()
                                     ,child_indices);
     }
-#line 824 "VIIParser.cpp" // lalr1.cc:859
+#line 851 "VIIParser.cpp" // lalr1.cc:859
     break;
 
   case 22:
-#line 260 "VIIParser.bison" // lalr1.cc:859
+#line 287 "VIIParser.bison" // lalr1.cc:859
     {
            if(interpreter.single_parse() )
            {
@@ -832,11 +859,11 @@ namespace wasp {
                YYACCEPT;
            }
        }
-#line 836 "VIIParser.cpp" // lalr1.cc:859
+#line 863 "VIIParser.cpp" // lalr1.cc:859
     break;
 
   case 23:
-#line 267 "VIIParser.bison" // lalr1.cc:859
+#line 294 "VIIParser.bison" // lalr1.cc:859
     {
             if(interpreter.single_parse() )
             {
@@ -844,11 +871,11 @@ namespace wasp {
                 YYACCEPT;
             }
         }
-#line 848 "VIIParser.cpp" // lalr1.cc:859
+#line 875 "VIIParser.cpp" // lalr1.cc:859
     break;
 
 
-#line 852 "VIIParser.cpp" // lalr1.cc:859
+#line 879 "VIIParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1195,8 +1222,8 @@ namespace wasp {
   VIIParser::yyrline_[] =
   {
        0,   110,   110,   116,   121,   126,   132,   132,   132,   132,
-     134,   143,   152,   166,   167,   167,   167,   168,   170,   238,
-     243,   259,   260,   267
+     134,   143,   152,   166,   167,   167,   167,   168,   170,   265,
+     270,   286,   287,   294
   };
 
   // Print the state stack on the debug stream.
@@ -1278,8 +1305,8 @@ namespace wasp {
 
 #line 35 "VIIParser.bison" // lalr1.cc:1167
 } // wasp
-#line 1282 "VIIParser.cpp" // lalr1.cc:1167
-#line 279 "VIIParser.bison" // lalr1.cc:1168
+#line 1309 "VIIParser.cpp" // lalr1.cc:1167
+#line 306 "VIIParser.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 
 void wasp::VIIParser::error(const VIIParser::location_type& l,

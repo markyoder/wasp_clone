@@ -126,6 +126,55 @@ TEST(VIInterpreter, indexed)
     EXPECT_EQ(3,root.first_child_by_name("block").non_decorative_children().size());
 }
 
+// TEST that named-odd-even-index aliased list parameters work as expected
+TEST(VIInterpreter, even_odd)
+{
+    std::stringstream input;
+    input << R"I( [block]
+ command1 0 one 2
+ command2 name 4 5 six
+)I" << std::endl;
+    DefaultVIInterpreter vii;
+    auto*                block1   = vii.definition()->create("block");
+
+    // Create regular command (no named node)
+    auto*                command1 = block1->create("command1");
+    auto* c1o = command1->create("odd");
+    command1->create_aliased("_odd",c1o);
+    auto* c1e = command1->create("even");
+    command1->create_aliased("_even",c1e);
+
+    // Create named command with even-odd
+    auto* command2 = block1->create("command2");
+    command2->create("_name");
+    auto* c2o = command2->create("odd");
+    command2->create_aliased("_odd",c2o);
+    auto* c2e = command2->create("even");
+    command2->create_aliased("_even",c2e);
+    EXPECT_TRUE(vii.parse(input));
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected << R"I(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+/block/command1
+/block/command1/decl (command1)
+/block/command1/even (0)
+/block/command1/odd (one)
+/block/command1/even (2)
+/block/command2
+/block/command2/decl (command2)
+/block/command2/_name (name)
+/block/command2/even (4)
+/block/command2/odd (5)
+/block/command2/even (six)
+)I";
+
+    ASSERT_EQ(expected.str(), paths.str());
+}
 TEST(VIInterpreter, comment_placement)
 {
     std::stringstream input;

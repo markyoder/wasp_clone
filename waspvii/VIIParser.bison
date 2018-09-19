@@ -178,6 +178,9 @@ command_part : part {
         size_t staged_child_count = interpreter.staged_child_count(interpreter.staged_count()-1);
         std::string index_name = is_named ? "_"+std::to_string(staged_child_count-1)
                                           : "_"+std::to_string(staged_child_count);
+        std::string even_odd_name = (is_named?staged_child_count:staged_child_count-1)%2 == 0
+                                    ? "_even" : "_odd";
+
         // if there are stages, and the existing stage only contains
         // the declarator (child_count==1), and the block/command is named
         // we need to consume/recast the first child as the '_name' node
@@ -196,7 +199,7 @@ command_part : part {
                 && staged_child_count >= 1
                 && interpreter.definition()->has(index_name) )
         {
-           int delta = interpreter.definition()->delta(index_name, index_name);
+           interpreter.definition()->delta(index_name, index_name);
            interpreter.set_type($1, wasp::VALUE);
            bool name_set_success = interpreter.set_name($1, index_name.c_str());
            wasp_check(name_set_success);
@@ -207,13 +210,26 @@ command_part : part {
             int delta = interpreter.definition()->delta(data, data);
             if( -1 == delta ) // no adjustment, not a command
             {
+                // TODO cleanup duplicate code
+                if (interpreter.staged_count() > 1
+                        && staged_child_count >= 1
+                        && interpreter.definition()->has(even_odd_name) )
+                {
+                   interpreter.definition()->delta(even_odd_name, even_odd_name);
+                   interpreter.set_type($1, wasp::VALUE);
+                   bool name_set_success = interpreter.set_name($1, even_odd_name.c_str());
+                   wasp_check(name_set_success);
+                   $$ = interpreter.push_staged_child($1);
+                }
                 // the string is not a new command, capture as a value
                 // correct part name and type to be decl
                 // must occur prior to prior stage commital
-                interpreter.set_type($1, wasp::VALUE);
-                bool name_set_success = interpreter.set_name($1, "value");
-                wasp_check(name_set_success);
-                $$ = interpreter.push_staged_child($1);
+                else{
+                    interpreter.set_type($1, wasp::VALUE);
+                    bool name_set_success = interpreter.set_name($1, "value");
+                    wasp_check(name_set_success);
+                    $$ = interpreter.push_staged_child($1);
+                }
             }
             else{
                 // commit prior stages
@@ -227,6 +243,17 @@ command_part : part {
                                         ,data.c_str()
                                         ,child_indices);
             }
+        }
+        // if staged index
+        else if (interpreter.staged_count() > 1
+                && staged_child_count >= 1
+                && interpreter.definition()->has(even_odd_name) )
+        {
+           interpreter.definition()->delta(even_odd_name, even_odd_name);
+           interpreter.set_type($1, wasp::VALUE);
+           bool name_set_success = interpreter.set_name($1, even_odd_name.c_str());
+           wasp_check(name_set_success);
+           $$ = interpreter.push_staged_child($1);
         }
         // This is a part of a command, stage in existing stage
         else
