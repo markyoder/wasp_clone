@@ -197,6 +197,22 @@ size_t& Interpreter<NodeStorage>::staged_type(size_t staged_index)
     wasp_require(staged_index < m_staged.size());
     return m_staged[staged_index].m_type;
 }
+
+template<class NodeStorage>
+const std::vector<size_t>&
+Interpreter<NodeStorage>::staged_child_indices(size_t staged_index) const
+{
+    wasp_require(staged_index < m_staged.size());
+    return m_staged[staged_index].m_child_indices;
+}
+template<class NodeStorage>
+std::vector<size_t>&
+Interpreter<NodeStorage>::staged_child_indices(size_t staged_index)
+{
+    wasp_require(staged_index < m_staged.size());
+    return m_staged[staged_index].m_child_indices;
+}
+
 template<class NodeStorage>
 size_t
 Interpreter<NodeStorage>::push_staged(size_t                     node_type,

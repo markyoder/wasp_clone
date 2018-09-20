@@ -373,6 +373,9 @@ class WASP_PUBLIC AbstractInterpreter
     virtual const size_t& staged_type(size_t staged_index) const = 0;
     virtual size_t& staged_type(size_t staged_index)             = 0;
 
+    virtual const std::vector<size_t>& staged_child_indices(size_t staged_index) const  = 0;
+    virtual std::vector<size_t>& staged_child_indices(size_t staged_index)  = 0;
+
     virtual const std::string& staged_name(size_t staged_index) const = 0;
     virtual std::string& staged_name(size_t staged_index)             = 0;
     virtual size_t staged_child_count(size_t staged_index)      const = 0;
@@ -678,6 +681,9 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
 
     const size_t& staged_type(size_t staged_index) const;
     size_t& staged_type(size_t staged_index);
+
+    virtual std::vector<size_t>& staged_child_indices(size_t staged_index) ;
+    virtual const std::vector<size_t>& staged_child_indices(size_t staged_index) const ;
 
     size_t       staged_count() const { return m_staged.size(); }
     virtual bool single_parse() const { return false; }

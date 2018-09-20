@@ -91,6 +91,7 @@
 %{
 
 #include "VIInterpreter.h"
+#include "VIINodeView.h"
 #include "VIILexer.h"
 
 #include "waspcore/wasp_bug.h"
@@ -173,18 +174,35 @@ command_part : part {
         // If this is a potential start of a new command
         std::string data = interpreter.data($1);
         wasp_check(interpreter.definition());
+        const auto& child_indices = interpreter.staged_child_indices(interpreter.staged_count()-1);
 
+        // Accumumate non-decorative staged child count
+        // This cannot be done with the node view because the node is staged and
+        // has not been committed to the tree, yet.
+        size_t staged_child_count = 0;
+        for ( const auto&  c_index : child_indices)
+        {
+            if ( wasp::COMMENT != interpreter.type(c_index) )
+            {
+                ++staged_child_count;
+            }
+        }
         bool is_named = interpreter.definition()->has("_name");
-        size_t staged_child_count = interpreter.staged_child_count(interpreter.staged_count()-1);
+        bool is_part_decorative
+                = VIINodeView::is_type_decorative(interpreter.type($1));
         std::string index_name = is_named ? "_"+std::to_string(staged_child_count-1)
                                           : "_"+std::to_string(staged_child_count);
         std::string even_odd_name = (is_named?staged_child_count:staged_child_count-1)%2 == 0
                                     ? "_even" : "_odd";
 
+        if ( wasp::COMMENT == token_type )
+        {
+            $$ = interpreter.push_staged_child($1);
+        }
         // if there are stages, and the existing stage only contains
         // the declarator (child_count==1), and the block/command is named
         // we need to consume/recast the first child as the '_name' node
-        if ( interpreter.staged_count() > 1
+        else if ( interpreter.staged_count() > 1
              && staged_child_count == 1
              && is_named )
         {

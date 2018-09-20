@@ -56,6 +56,10 @@ bool VIINodeView::is_leaf() const
 bool VIINodeView::is_decorative() const
 {
     auto t = type();
+    return is_type_decorative(t);
+}
+bool VIINodeView::is_type_decorative(std::size_t t)
+{
     switch (t)
     {
         case wasp::DECL:

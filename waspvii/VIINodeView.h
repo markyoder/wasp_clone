@@ -77,6 +77,7 @@ class WASP_PUBLIC VIINodeView
      * Declarators and terminators are decorative
      */
     bool is_decorative() const;
+    static bool is_type_decorative(std::size_t type);
 
     bool is_leaf() const;
 

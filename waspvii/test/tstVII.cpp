@@ -131,8 +131,10 @@ TEST(VIInterpreter, even_odd)
 {
     std::stringstream input;
     input << R"I( [block]
- command1 0 one 2
- command2 name 4 5 six
+ command1 0 ! comment
+          one 2
+ command2 name 4 5 ! comment
+          six
 )I" << std::endl;
     DefaultVIInterpreter vii;
     auto*                block1   = vii.definition()->create("block");
@@ -163,6 +165,7 @@ TEST(VIInterpreter, even_odd)
 /block/command1
 /block/command1/decl (command1)
 /block/command1/even (0)
+/block/command1/comment (! comment)
 /block/command1/odd (one)
 /block/command1/even (2)
 /block/command2
@@ -170,6 +173,7 @@ TEST(VIInterpreter, even_odd)
 /block/command2/_name (name)
 /block/command2/even (4)
 /block/command2/odd (5)
+/block/command2/comment (! comment)
 /block/command2/even (six)
 )I";
 
