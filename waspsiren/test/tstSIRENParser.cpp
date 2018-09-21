@@ -694,3 +694,24 @@ TEST(SIREN, parse_relative_based_any_selection_w_child)
         }
     }
 }
+TEST(SIREN, parse_numbered_child)
+{
+    std::stringstream input;
+    input << R"INPUT(/1child)INPUT";
+    DefaultSIRENInterpreter interpreter;
+    ASSERT_EQ(true, interpreter.parse(input));
+    ASSERT_EQ(4, interpreter.node_count());
+    auto document = interpreter.root();
+    ASSERT_EQ(DOCUMENT_ROOT, document.type());
+    ASSERT_EQ(1, document.child_count());
+    auto root_selection = document.child_at(0);
+    // when there exists a root selection
+    // with a child selection the node type is a declaration
+    ASSERT_EQ(DOCUMENT_ROOT, root_selection.type());
+    // '/' 'child'
+    ASSERT_EQ(2, root_selection.child_count());
+    ASSERT_EQ(SEPARATOR, root_selection.child_at(0).type());
+    ASSERT_EQ(DECL, root_selection.child_at(1).type());
+    std::string decl = "1child";
+    ASSERT_EQ(decl, root_selection.child_at(1).name());
+}
