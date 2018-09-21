@@ -130,7 +130,7 @@ TEST(VIInterpreter, indexed)
 TEST(VIInterpreter, even_odd)
 {
     std::stringstream input;
-    input << R"I( [block]
+    input << R"I([block]
  command1 0 ! comment
           one 2
  command2 name 4 5 ! comment
@@ -416,6 +416,38 @@ TEST(VIInterpreter, test_simple_blocks)
     ASSERT_EQ(4, root.child_at(1).child_count());
     ASSERT_EQ("block1.1", std::string(root.child_at(1).child_at(3).name()));
     ASSERT_EQ("block2", std::string(root.child_at(2).name()));
+}
+/**
+ * @brief TEST
+ */
+TEST(VIInterpreter, test_unknown_blocks)
+{
+    std::stringstream input;
+    input << R"I( [unknown]
+
+ [block1]
+   block1.1
+ [erg]
+ [block2]
+)I" << std::endl;
+    std::stringstream errors;
+    VIInterpreter<>   vii(errors);
+    vii.definition()->create("block1")->create("block1.1");
+    vii.definition()->create("block2");
+
+    EXPECT_FALSE(vii.parse(input));
+    std::stringstream expected_errors;
+    expected_errors<<"stream input:1.3-9: 'unknown' is unknown."<<std::endl
+                  <<"stream input:5.3-5: 'erg' is unknown."<<std::endl;
+    ASSERT_EQ(expected_errors.str(), errors.str());
+
+    const auto& root = vii.root();
+    ASSERT_EQ(2, root.child_count());
+    ASSERT_EQ("block1", std::string(root.child_at(0).name()));
+    // [, decl, ],  block1.1
+    ASSERT_EQ(4, root.child_at(0).child_count());
+    ASSERT_EQ("block1.1", std::string(root.child_at(0).child_at(3).name()));
+    ASSERT_EQ("block2", std::string(root.child_at(1).name()));
 }
 
 // TODO TEST

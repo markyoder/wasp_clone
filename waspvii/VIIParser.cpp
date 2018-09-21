@@ -746,8 +746,7 @@ namespace wasp {
             }
         }
         bool is_named = interpreter.definition()->has("_name");
-        bool is_part_decorative
-                = VIINodeView::is_type_decorative(interpreter.type((yystack_[0].value.node_index)));
+
         std::string index_name = is_named ? "_"+std::to_string(staged_child_count-1)
                                           : "_"+std::to_string(staged_child_count);
         std::string even_odd_name = (is_named?staged_child_count:staged_child_count-1)%2 == 0
@@ -837,20 +836,20 @@ namespace wasp {
             (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
         }
     }
-#line 841 "VIIParser.cpp" // lalr1.cc:859
+#line 840 "VIIParser.cpp" // lalr1.cc:859
     break;
 
   case 19:
-#line 284 "VIIParser.bison" // lalr1.cc:859
+#line 283 "VIIParser.bison" // lalr1.cc:859
     {
             auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
-#line 850 "VIIParser.cpp" // lalr1.cc:859
+#line 849 "VIIParser.cpp" // lalr1.cc:859
     break;
 
   case 20:
-#line 289 "VIIParser.bison" // lalr1.cc:859
+#line 288 "VIIParser.bison" // lalr1.cc:859
     {
         // Block is top level parse construct
         // It closes/commits existing stages
@@ -858,18 +857,27 @@ namespace wasp {
         {
             interpreter.commit_staged(interpreter.staged_count() - 1);
         }
-        std::vector<size_t> child_indices = {(yystack_[2].value.node_index), (yystack_[1].value.node_index), (yystack_[0].value.node_index)};
-        std::string quote_less_data = interpreter.data((yystack_[1].value.node_index));
-        quote_less_data = wasp::strip_quotes(quote_less_data);
-        (yylhs.value.stage_index) = interpreter.push_staged(wasp::OBJECT // top level blocks are objects
-                                    ,quote_less_data.c_str()
-                                    ,child_indices);
+        std::string data = interpreter.data((yystack_[1].value.node_index));
+        int delta = interpreter.definition()->delta(data, data);
+        if( -1 == delta ) // no adjustment, not a command
+        {
+            error(yystack_[1].location, "'"+data+"' is unknown.");
+            interpreter.set_failed(true);
+        }
+        else
+        {
+            std::vector<size_t> child_indices = {(yystack_[2].value.node_index), (yystack_[1].value.node_index), (yystack_[0].value.node_index)};
+            // top level blocks are objects
+            (yylhs.value.stage_index) = interpreter.push_staged(wasp::OBJECT
+                                        ,data.c_str()
+                                        ,child_indices);
+        }
     }
-#line 869 "VIIParser.cpp" // lalr1.cc:859
+#line 877 "VIIParser.cpp" // lalr1.cc:859
     break;
 
   case 22:
-#line 305 "VIIParser.bison" // lalr1.cc:859
+#line 313 "VIIParser.bison" // lalr1.cc:859
     {
            if(interpreter.single_parse() )
            {
@@ -877,11 +885,11 @@ namespace wasp {
                YYACCEPT;
            }
        }
-#line 881 "VIIParser.cpp" // lalr1.cc:859
+#line 889 "VIIParser.cpp" // lalr1.cc:859
     break;
 
   case 23:
-#line 312 "VIIParser.bison" // lalr1.cc:859
+#line 320 "VIIParser.bison" // lalr1.cc:859
     {
             if(interpreter.single_parse() )
             {
@@ -889,11 +897,11 @@ namespace wasp {
                 YYACCEPT;
             }
         }
-#line 893 "VIIParser.cpp" // lalr1.cc:859
+#line 901 "VIIParser.cpp" // lalr1.cc:859
     break;
 
 
-#line 897 "VIIParser.cpp" // lalr1.cc:859
+#line 905 "VIIParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1240,8 +1248,8 @@ namespace wasp {
   VIIParser::yyrline_[] =
   {
        0,   111,   111,   117,   122,   127,   133,   133,   133,   133,
-     135,   144,   153,   167,   168,   168,   168,   169,   171,   283,
-     288,   304,   305,   312
+     135,   144,   153,   167,   168,   168,   168,   169,   171,   282,
+     287,   312,   313,   320
   };
 
   // Print the state stack on the debug stream.
@@ -1323,8 +1331,8 @@ namespace wasp {
 
 #line 35 "VIIParser.bison" // lalr1.cc:1167
 } // wasp
-#line 1327 "VIIParser.cpp" // lalr1.cc:1167
-#line 324 "VIIParser.bison" // lalr1.cc:1168
+#line 1335 "VIIParser.cpp" // lalr1.cc:1167
+#line 332 "VIIParser.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 
 void wasp::VIIParser::error(const VIIParser::location_type& l,

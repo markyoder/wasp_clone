@@ -188,8 +188,7 @@ command_part : part {
             }
         }
         bool is_named = interpreter.definition()->has("_name");
-        bool is_part_decorative
-                = VIINodeView::is_type_decorative(interpreter.type($1));
+
         std::string index_name = is_named ? "_"+std::to_string(staged_child_count-1)
                                           : "_"+std::to_string(staged_child_count);
         std::string even_odd_name = (is_named?staged_child_count:staged_child_count-1)%2 == 0
@@ -293,12 +292,21 @@ block : lbracket decl rbracket
         {
             interpreter.commit_staged(interpreter.staged_count() - 1);
         }
-        std::vector<size_t> child_indices = {$lbracket, $decl, $rbracket};
-        std::string quote_less_data = interpreter.data($2);
-        quote_less_data = wasp::strip_quotes(quote_less_data);
-        $$ = interpreter.push_staged(wasp::OBJECT // top level blocks are objects
-                                    ,quote_less_data.c_str()
-                                    ,child_indices);
+        std::string data = interpreter.data($2);
+        int delta = interpreter.definition()->delta(data, data);
+        if( -1 == delta ) // no adjustment, not a command
+        {
+            error(@2, "'"+data+"' is unknown.");
+            interpreter.set_failed(true);
+        }
+        else
+        {
+            std::vector<size_t> child_indices = {$lbracket, $decl, $rbracket};
+            // top level blocks are objects
+            $$ = interpreter.push_staged(wasp::OBJECT
+                                        ,data.c_str()
+                                        ,child_indices);
+        }
     }
 
 start   : /** empty files are not syntax errors **/
