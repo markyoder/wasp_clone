@@ -45,6 +45,7 @@
     @$.begin.line = @$.end.line = interpreter.start_line();
     @$.begin.column = @$.end.column = interpreter.start_column();
     lexer = std::make_shared<SIRENLexerImpl>(interpreter,&input_stream);
+    //    lexer->set_debug(true); // requires lexer '%option debug' enabled
 };
 
 /* The interpreter is passed by reference to the parser and to the SIRENLexer. This

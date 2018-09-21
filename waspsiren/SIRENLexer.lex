@@ -33,14 +33,23 @@ typedef wasp::SIRENParser::token_type token_type;
 
  /* enable scanner to generate debug output. disable this for release
  * versions. */
- /*%option debug*/
+ // %option debug
 
  /* no support for include files is planned */
 %option yywrap nounput
 
  /* enables the use of start condition stacks */
-%option stack
+ // %option stack
 
+ // consume everthing,
+ // escaped characters like '\/'
+ // until control character
+ // decl =
+ // decl \n
+ // decl /
+ // this includes whitespace to provide for
+ // declarators that are multi word
+DECL ([0-9A-Za-z_\*?]((\.|[^\n/<>:\[=])*[A-Za-z_0-9?])?\*?)|\.
 
 INT [0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INT}
@@ -50,15 +59,7 @@ DOUBLE {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
 SINGLE_QUOTED_STRING \'([^\\\'\n])*\'
 QSTRING {DOUBLE_QUOTED_STRING}|{SINGLE_QUOTED_STRING}
- // consume everthing,
- // escaped characters like '\/'
- // until control character
- // decl =
- // decl \n
- // decl /
- // this includes whitespace to provide for
- // declarators that are multi word
-DECL ([A-Za-z_*?]((\\.|[^\n/<>\[=])*[A-Za-z_0-9?])?\*?)|\.
+
 PARENT \.\.
 ANY \/\/
 LTE <=

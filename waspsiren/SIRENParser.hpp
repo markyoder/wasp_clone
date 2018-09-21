@@ -132,7 +132,7 @@ namespace wasp {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 62 "SIRENParser.bison" // lalr1.cc:377
+    #line 63 "SIRENParser.bison" // lalr1.cc:377
 
         std::size_t token_index;
         std::size_t node_index;
