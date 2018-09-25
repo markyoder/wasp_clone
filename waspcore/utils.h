@@ -36,6 +36,8 @@ WASP_PUBLIC std::string trim(std::string s, const std::string& char_set);
  * @return path minus the last '/name' or \\name
  */
 WASP_PUBLIC std::string dir_name(const std::string& path);
+
+WASP_PUBLIC bool file_exists(const std::string& path);
 /**
  * @brief xml_escape_data replaces string with escaped versions of the five
  * characters that must be escaped in XML document data ( &, \, ", <, > )
@@ -350,6 +352,25 @@ WASP_PUBLIC std::string last_as_string(const TAdapter& node, bool* ok)
         return last_as_string(node.child_at(count - 1),ok);
     }
     return node.to_string(ok);
+}
+
+/**
+ * Captures the node lineage from child to ancestore (exludes document root)
+ */
+template<class TAdapter>
+WASP_PUBLIC typename TAdapter::Collection lineage(const TAdapter& node)
+{
+    wasp_require(node.is_null() == false);
+    typename TAdapter::Collection results;
+    auto parent = node;
+    results.push_back(parent);
+    while ( parent.has_parent() )
+    {
+        parent = parent.parent();
+        results.push_back(parent);
+    }
+    if ( results.size() > 1 ) results.pop_back(); // do not include document root
+    return results;
 }
 }
 #endif
