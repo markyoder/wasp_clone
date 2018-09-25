@@ -328,7 +328,7 @@ block9  1 2        ! comment about block9 list line 1
                   .to_int());
 }
 
-TEST(VIInterpreter, passing_simple_blockions)
+TEST(VIInterpreter, passing_simple_blocks)
 {
     std::stringstream input;
     input << R"I( block1 1
@@ -344,20 +344,21 @@ block2 2
     expected << R"I(/
 /block1
 /block1/decl (block1)
-/block2/value (1)
+/block1/value (1)
 /block2
 /block2/decl (block2)
 /block2/value (2)
-/block2/sec2.2
+/block2/block2.2
 /block2/block2.2/decl (block2.2)
 /block2/block2.2/= (=)
 /block2/block2.2/value (2.2)
 )I";
     std::stringstream paths;
     vii.root().paths(paths);
+    ASSERT_EQ(expected.str(), paths.str());
 }
 
-TEST(VIInterpreter, passing_blockions_aliased)
+TEST(VIInterpreter, passing_blocks_aliased)
 {
     std::stringstream input;
     input << R"I( block1 1 blurgity_blarg
@@ -375,16 +376,19 @@ blergity_blerg 2
     expected << R"I(/
 /block1
 /block1/decl (block1)
-/block2/value (1)
+/block1/value (1)
+/block1/block1.1
+/block1/block1.1/decl (blurgity_blarg)
 /block2
-/block2/decl (block2)
+/block2/decl (blergity_blerg)
 /block2/value (2)
-/block2/sec2.2
+/block2/block2.2
 /block2/block2.2/decl (block2.2)
 /block2/block2.2/value (2.2)
 )I";
     std::stringstream paths;
     vii.root().paths(paths);
+    ASSERT_EQ(expected.str(), paths.str());
 }
 
 
@@ -406,7 +410,6 @@ TEST(VIInterpreter, test_simple_blocks)
     vii.definition()->create("block2");
 
     EXPECT_TRUE(vii.parse(input));
-
 
     const auto& root = vii.root();
     ASSERT_EQ(3, root.child_count());
@@ -449,6 +452,9 @@ TEST(VIInterpreter, test_unknown_blocks)
     ASSERT_EQ("block1.1", std::string(root.child_at(0).child_at(3).name()));
     ASSERT_EQ("block2", std::string(root.child_at(1).name()));
 }
+
+
+
 
 // TODO TEST
 // commands containing the 'slash' construct
