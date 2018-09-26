@@ -280,11 +280,22 @@ command_part : part {
                 }
             }
             else{
-                // commit prior stages
-                wasp_ensure( delta < static_cast<int>(interpreter.staged_count()) );
-                while( delta > 0 ){
-                    interpreter.commit_staged(interpreter.staged_count()-1);
-                    --delta;
+                // if nothing has been staged and we are a nested document
+                // we need to update definition
+                if( staged_child_count == 0 && interpreter.staged_count() == 1
+                        && interpreter.document_parent() && delta == 1)
+                {
+                    auto* parent_definition = interpreter.definition()->parent();
+                    interpreter.set_current_definition(parent_definition);
+                }
+                else
+                {
+                    wasp_ensure( delta < static_cast<int>(interpreter.staged_count()) );
+                    // commit prior stages
+                    while( delta > 0 ){
+                        interpreter.commit_staged(interpreter.staged_count()-1);
+                        --delta;
+                    }
                 }
                 std::vector<size_t> child_indices = {$1};
                 $$ = interpreter.push_staged(wasp::ARRAY // commands are
@@ -311,7 +322,9 @@ command_part : part {
     }
     | include_file
     {
-            $$ = interpreter.push_staged_child($1);
+        // assume the included content will be a child of the existing
+        // staged content.
+        $$ = interpreter.push_staged_child($1);
     }
 
 comment : COMMENT

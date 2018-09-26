@@ -500,18 +500,52 @@ TEST(VIInterpreter, includes)
     ASSERT_TRUE(vii.parseStream(input, "./"));
     ASSERT_EQ(3, vii.document_count());
     std::stringstream paths;
-    vii.root().paths(std::cout);
-    
-    VIINodeView block_node = vii.root().child_at(0);
-    ASSERT_EQ(wasp::FILE, block_node.type());
-    // should have an associated document
-    ASSERT_NE(nullptr, vii.document(block_node.node_index()));
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected<<R"I(/
+/incl
+/incl/decl (include)
+/incl/path (block.txt)
+/block1
+/block1/[ ([)
+/block1/decl (block1)
+/block1/] (])
+/block1/block1.1
+/block1/block1.1/decl (block1.1)
+/block1/block1.1/incl
+/block1/block1.1/incl/decl (include)
+/block1/block1.1/incl/path (block1.2.txt)
+/block1/block1.1/incl
+/block1/block1.1/incl/decl (include)
+/block1/block1.1/incl/path (_block1.2.txt )
+/block1/block1.1/comment (! trailing comment)
+/block1/block1.3
+/block1/block1.3/decl (block1.3)
+)I"<<std::endl;
 
-    ASSERT_EQ(1, block_node.non_decorative_children().size());
-    // block_1.1 aliased to 'block1.1'
-    std::cout<<block_node.non_decorative_children()[0].data()<<std::endl;
-    ASSERT_EQ(1, block_node.non_decorative_children()[0].non_decorative_children().size());
-    ASSERT_EQ("block1.1", std::string(block_node.non_decorative_children()[0].non_decorative_children()[0].name()));
+    VIINodeView blocktxt_incl_node = vii.root().child_at(0); 
+    ASSERT_EQ(wasp::FILE, blocktxt_incl_node.type());
+    // should have an associated document
+    ASSERT_NE(nullptr, vii.document(blocktxt_incl_node.node_index()));
+
+
+    ASSERT_EQ(1, blocktxt_incl_node.non_decorative_children().size());
+    // block_1.1 aliased to 'block1.1'    
+    ASSERT_EQ(1, blocktxt_incl_node.non_decorative_children()[0].non_decorative_children().size());
+    ASSERT_EQ("block1.1", std::string(blocktxt_incl_node.non_decorative_children()[0].non_decorative_children()[0].name()));
+
+    VIINodeView viiroot = vii.root();
+    VIINodeView blocktxt_root = viiroot.child_at(0);
+    ASSERT_EQ(wasp::FILE, blocktxt_root.type());
+    ASSERT_EQ(1, blocktxt_root.child_count()); // dereferences
+    auto block1 = blocktxt_root.child_at(0); // dereferences
+    ASSERT_EQ("/block1", block1.path());
+
+    // [ decl ] block_1.1
+    ASSERT_EQ(4, block1.child_count());
+    auto block_11 = block1.child_at(3);
+    ASSERT_EQ("block_1.1", block_11.data());
+    ASSERT_EQ("/block1/block1.1", block_11.path());
 
     { // cleanup test files
     std::remove("block.txt");

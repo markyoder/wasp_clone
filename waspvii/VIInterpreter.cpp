@@ -16,9 +16,8 @@ AbstractDefinition* get_definition(size_t node_index,
     wasp_require(node_index < interp->size());
 
     VIINodeView nv(node_index,*interp);
-    auto node_lineage = wasp::lineage(nv);
 
-    wasp_check(node_lineage.size() > 1);
+    auto node_lineage = wasp::lineage(nv);
 
     auto* definition = interp->definition();
 

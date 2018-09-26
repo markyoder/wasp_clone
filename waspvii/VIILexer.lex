@@ -110,7 +110,7 @@ INCLUDE_PATH [^ \t\n][^\n!]*
 }
 
  /* gobble up white-spaces */
-[ \t\r]+ {
+<*>[ \t\r]+ {
     yylloc->step();
 }
 
@@ -145,8 +145,7 @@ include {
     return token::COMMENT;
 }
 
- /* pass all other characters up to bison
-  * NOTE: references do not support whitespace */
+ /* pass all other characters up to bison*/
 . {
     return static_cast<token_type>(*yytext);
 }

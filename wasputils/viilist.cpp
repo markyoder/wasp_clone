@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include "waspvii/VIInterpreter.h"
+#include "waspvii/VIINodeView.h"
 #include "waspson/SONInterpreter.h"
 #include "waspson/SONNodeView.h"
 #include "wasphive/HIVE.h"
@@ -66,7 +67,8 @@ int main(int argc, char** argv)
                   << std::endl;
         return 1;
     }
-    parser.root().paths(std::cout);
+    VIINodeView viiroot = parser.root();
+    viiroot.paths(std::cout);
 
     return 0;
 }

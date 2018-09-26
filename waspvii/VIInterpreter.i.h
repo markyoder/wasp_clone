@@ -129,6 +129,9 @@ bool VIInterpreter<S>::load_document(std::ostream& document_errors)
             interp->m_parent = this;
             interp->set_definition_store(this->definition_store());
 
+            auto parent_node_index = Interpreter<S>::parent_node_index(node_index);
+            interp->m_current = get_definition(parent_node_index, this);
+            wasp_check (interp->m_current);
             if ( !interp->parseFile(document_relative_path) )
             {
                 Interpreter<S>::error_stream()<<err_msgs.str()<<std::endl;
@@ -136,9 +139,12 @@ bool VIInterpreter<S>::load_document(std::ostream& document_errors)
             }
             else
             {
-                wasp_check(Interpreter<S>::m_node_interp.find(node_path.first)
+                wasp_check(Interpreter<S>::m_node_interp.find(node_index)
                            == Interpreter<S>::m_node_interp.end());
-                Interpreter<S>::m_node_interp[node_path.first] = interp;
+                wasp_check(Interpreter<S>::m_interp_node.find(interp)
+                           == Interpreter<S>::m_interp_node.end());
+                Interpreter<S>::m_node_interp[node_index] = interp;
+                Interpreter<S>::m_interp_node[interp] = node_index;
             }
         }
         else

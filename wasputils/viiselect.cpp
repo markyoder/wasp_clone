@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include "waspvii/VIInterpreter.h"
+#include "waspvii/VIINodeView.h"
 #include "waspson/SONInterpreter.h"
 #include "waspson/SONNodeView.h"
 #include "wasphive/HIVE.h"
@@ -76,8 +77,10 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    std::vector<decltype(parser.root())> select_from_node;
-    select_from_node.push_back(parser.root());
+    VIINodeView viiroot = parser.root();
+
+    std::vector<decltype(viiroot)> select_from_node;
+    select_from_node.push_back(viiroot);
     for (int j = 3; j < argc; ++j)
     {
         std::stringstream select_statement_errors;
@@ -93,7 +96,7 @@ int main(int argc, char** argv)
             std::cout << select_statement_errors.str() << std::endl;
             continue;
         }
-        std::vector<decltype(parser.root())> new_select_from;
+        std::vector<decltype(viiroot)> new_select_from;
         for (size_t i = 0; i < select_from_node.size(); ++i)
         {
             auto                              context = select_from_node.at(i);

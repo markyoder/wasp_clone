@@ -379,7 +379,7 @@ WASP_PUBLIC typename TAdapter::Collection lineage(const TAdapter& node)
         parent = parent.parent();
         results.push_back(parent);
     }
-    if ( results.size() > 1 ) results.pop_back(); // do not include document root
+    if ( !results.empty() ) results.pop_back(); // do not include document root
     return results;
 }
 
@@ -394,6 +394,33 @@ WASP_PUBLIC TAdapter parent_document_node(const Interp* document)
     wasp_check(view.has_parent());
     view = view.parent();
     return view;
+}
+
+template<class TAdapter>
+WASP_PUBLIC std::string node_path(const TAdapter& node)
+{
+    auto node_lineage = lineage(node);
+    std::stringstream pathstream;
+    while( node_lineage.empty() == false )
+    {
+        pathstream<<"/"<<node_lineage.back().name();
+        node_lineage.pop_back();
+    }
+    std::string path = pathstream.str();
+    if (path.size() == 0 ) path = "/";
+    return path;
+}
+template<class TAdapter>
+WASP_PUBLIC void node_paths(const TAdapter& node, std::ostream& out)
+{
+    size_t child_count = node.child_count();
+    if (child_count == 0 && node.is_leaf() ) out<< node.path()
+                                             <<" ("<<node.data()<<")"<<std::endl;
+    else out<<node.path()<<std::endl;
+    for( size_t i = 0; i < child_count; ++i)
+    {
+        node_paths(node.child_at(i),out);
+    }
 }
 }
 #endif

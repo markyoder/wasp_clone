@@ -405,6 +405,10 @@ class WASP_PUBLIC AbstractInterpreter
     {
         wasp_not_implemented("definition");
     }
+    virtual void set_current_definition(AbstractDefinition* current)
+    {
+        wasp_not_implemented("set_current_definition");
+    }
 
     virtual bool single_parse() const = 0;
 

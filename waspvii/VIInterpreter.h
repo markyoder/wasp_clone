@@ -180,6 +180,11 @@ class WASP_PUBLIC VIInterpreter : public Interpreter<S>
 
     const AbstractDefinition* definition() const;
     AbstractDefinition*       definition();
+    virtual void set_current_definition(AbstractDefinition* current)
+    {
+        wasp_require(current);
+        m_current = current;
+    }
 
     AbstractDefinition::SP definition_store() { return m_definition; }
     void set_definition_store(AbstractDefinition::SP store)
