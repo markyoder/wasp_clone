@@ -80,13 +80,14 @@
 %token <token_index>    RBRACKET           "right bracket"
 %token <token_index>    LBRACKET           "left bracket"
 %token <token_index>    FSLASH             "forward slash"
+%token <token_index>    FILE              "file include"
 
 %type <token_index> PRIMITIVE
 
 %type <node_index>  decl lbracket rbracket fslash assign
-%type <node_index>  value part decl_or_key_value
+%type <node_index>  value part path decl_or_key_value
 %type <stage_index>  command_part block
-%type <node_index>  comment
+%type <node_index>  comment include include_file
 
 %{
 
@@ -107,7 +108,11 @@
 %% /*** Grammar Rules ***/
 
  /*** BEGIN - Change the wasp grammar rules below ***/
-
+include : FILE
+        {
+            auto token_index = $1;
+            $$ = interpreter.push_leaf(wasp::FILE,"decl",token_index);
+        }
 assign : ASSIGN
         {
             auto token_index = $1;
@@ -139,6 +144,32 @@ value : PRIMITIVE
                      ,token_index);
 }
 
+path : STRING
+        {
+            size_t token_index = ($1);
+            $$ = interpreter.push_leaf(wasp::VALUE,"path"
+                             ,token_index);
+        }
+        | QSTRING
+        {
+            size_t token_index = ($1);
+            $$ = interpreter.push_leaf(wasp::VALUE,"path"
+                             ,token_index);
+        }
+
+include_file : include path
+        {
+
+            std::vector<size_t> child_indices = {$1,$2};
+            $$ = interpreter.push_parent(wasp::FILE
+                                         // include
+                                         //  |_ decl (include)
+                                         //  |_ value (path/to/file)
+                                        ,"incl"
+                                        ,child_indices);
+            interpreter.add_document_path($$,
+                                          wasp::trim(interpreter.data($2)," "));
+        }
 
 
 decl : STRING
@@ -277,6 +308,10 @@ command_part : part {
         {
             $$ = interpreter.push_staged_child($1);
         }
+    }
+    | include_file
+    {
+            $$ = interpreter.push_staged_child($1);
     }
 
 comment : COMMENT

@@ -169,7 +169,8 @@ namespace wasp {
         COMMENT = 265,
         RBRACKET = 266,
         LBRACKET = 267,
-        FSLASH = 268
+        FSLASH = 268,
+        FILE = 269
       };
     };
 
@@ -357,7 +358,7 @@ namespace wasp {
   // number is the opposite.  If YYTABLE_NINF, syntax error.
   static const unsigned char yytable_[];
 
-  static const signed char yycheck_[];
+  static const unsigned char yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -477,12 +478,12 @@ namespace wasp {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 19,     ///< Last index in yytable_.
-      yynnts_ = 14,  ///< Number of nonterminal symbols.
+      yylast_ = 20,     ///< Last index in yytable_.
+      yynnts_ = 17,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 14  ///< Number of tokens.
+      yyntokens_ = 15  ///< Number of tokens.
     };
 
 
@@ -495,7 +496,7 @@ namespace wasp {
 
 #line 35 "VIIParser.bison" // lalr1.cc:377
 } // wasp
-#line 499 "VIIParser.hpp" // lalr1.cc:377
+#line 500 "VIIParser.hpp" // lalr1.cc:377
 
 
 

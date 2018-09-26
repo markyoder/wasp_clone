@@ -210,6 +210,13 @@ inline WASP_PUBLIC bool wildcard_string_match(const char* first,
                wildcard_string_match(first, second + 1);
     return false;
 }
+
+class NullNodeDeRef{
+public:
+    template<class T>
+    T operator()(const T& node)const{return node;}
+};
+
 template<class TV>
 WASP_PUBLIC std::string info(const TV& view)
 {
@@ -299,26 +306,28 @@ WASP_PUBLIC void print(std::ostream& out, const TAdapter& node_view)
     print_from(out, *node_view.node_pool(), node_view.node_index(), l, c);
 }
 
-template<class TAdapter>
+template<class TAdapter, class DeRef=NullNodeDeRef>
 WASP_PUBLIC typename TAdapter::Collection
 non_decorative_children(const TAdapter& node)
 {
     typename TAdapter::Collection results;
-    for (std::size_t i = 0, count = node.child_count(); i < count; ++i)
+    auto n = DeRef()(node);
+    for (std::size_t i = 0, count = n.child_count(); i < count; ++i)
     {
-        const auto& child = node.child_at(i);        
+        const auto& child = DeRef()(n.child_at(i));
         if (!child.is_decorative())
             results.push_back(child);
     }
     return results;
 }
-template<class TAdapter>
+template<class TAdapter, class DeRef=NullNodeDeRef>
 WASP_PUBLIC TAdapter first_non_decorative_child_by_name(const TAdapter& node,
                                             const std::string& name)
 {
-    for (std::size_t i = 0, count = node.child_count(); i < count; ++i)
+    auto n = DeRef()(node);
+    for (std::size_t i = 0, count = n.child_count(); i < count; ++i)
     {
-        const auto& child = node.child_at(i);
+        const auto& child = DeRef()(n.child_at(i));
         if (!child.is_decorative())
         {
             if (name == child.name())
@@ -330,13 +339,14 @@ WASP_PUBLIC TAdapter first_non_decorative_child_by_name(const TAdapter& node,
     return TAdapter();  // null node
 }
 
-template<class TAdapter>
+template<class TAdapter, class DeRef=NullNodeDeRef>
 WASP_PUBLIC size_t non_decorative_children_count(const TAdapter& node)
 {
     size_t result = 0;
-    for (std::size_t i = 0, count = node.child_count(); i < count; ++i)
+    auto n = DeRef()(node);
+    for (std::size_t i = 0, count = n.child_count(); i < count; ++i)
     {
-        const auto& child = node.child_at(i);
+        const auto& child = DeRef()(n.child_at(i));
         if (!child.is_decorative())
             ++result;
     }
@@ -371,6 +381,19 @@ WASP_PUBLIC typename TAdapter::Collection lineage(const TAdapter& node)
     }
     if ( results.size() > 1 ) results.pop_back(); // do not include document root
     return results;
+}
+
+template<class TAdapter, class Interp>
+WASP_PUBLIC TAdapter parent_document_node(const Interp* document)
+{
+    const auto* parent_document = document->document_parent();
+
+    TAdapter view = TAdapter(parent_document->document_node(document),
+                       *parent_document);
+    wasp_check(view.is_null() == false);
+    wasp_check(view.has_parent());
+    view = view.parent();
+    return view;
 }
 }
 #endif

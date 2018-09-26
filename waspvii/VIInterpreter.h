@@ -26,6 +26,16 @@
  * wasp::VIIParser, wasp::VIILexerImpl and wasp::VIIInterpreter */
 namespace wasp
 {
+
+/**
+ * @brief get_definition acquires the definition for the given node
+ * @param node_index the node index of the node for which to acquire the definition
+ * @param interp the interpreter from which to acquire the node and definition data
+ * @return the definition, iff, the the definition exists for the entire lineage
+ */
+AbstractDefinition * get_definition(size_t node_index,
+                                    AbstractInterpreter* interp);
+
 // How many input node type's (section, value, etc.) in a VII file
 typedef std::uint8_t VIINodeType_t;
 
@@ -103,6 +113,9 @@ class WASP_PUBLIC VIInterpreter : public Interpreter<S>
     VIInterpreter();
     VIInterpreter(std::ostream& err);
     virtual ~VIInterpreter();
+
+    bool load_document(std::ostream& document_errors);
+    const VIInterpreter* document_parent() const {return m_parent;}
 
     /** Invoke the lexer and parser for a stream.
      * @param in        input stream
@@ -194,6 +207,7 @@ class WASP_PUBLIC VIInterpreter : public Interpreter<S>
      * Default is false;
      */
     bool singleParse;
+    VIInterpreter* m_parent;
 
   private:  // private methods
     AbstractDefinition::SP m_definition;

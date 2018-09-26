@@ -181,6 +181,12 @@ bool Interpreter<NodeStorage>::parse_impl(std::istream&      in,
     bool parsed = parser.parse() == 0 && !failed();
 
     commit_stages();
+    bool documents_loaded = true;
+    if (document_count() > 0)
+    {
+        documents_loaded = load_document(m_error_stream);
+    }
+    parsed &= documents_loaded;
     set_failed(parsed);  // updated failed cache
     return parsed;
 }
@@ -252,4 +258,45 @@ size_t Interpreter<NodeStorage>::commit_staged(size_t stage_index)
     if (!m_staged.empty())
         push_staged_child(node_index);
     return node_index;
+}
+
+template<class NodeStorage>
+void Interpreter<NodeStorage>::add_document_path(size_t node_index,
+                                                        const std::string& path)
+{
+    wasp_require(m_node_interp_path.find(node_index) 
+                == m_node_interp_path.end());
+    wasp_require(path.empty() == false);
+    m_node_interp_path[node_index] = path;
+}
+
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::document_count() const
+{   
+    return m_node_interp_path.size();   
+}
+
+template<class NodeStorage>
+bool Interpreter<NodeStorage>::load_document(std::ostream& document_errors) 
+{
+    wasp_not_implemented("Generic Interpreter load document");
+    return false;
+}
+
+template<class NodeStorage>
+const AbstractInterpreter* Interpreter<NodeStorage>::document(size_t node_index) const
+{
+    auto itr = m_node_interp.find(node_index);
+    if (itr == m_node_interp.end()) return nullptr;
+    return itr->second;
+}
+
+
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::document_node(const AbstractInterpreter* document) const
+{
+           
+    auto itr = m_interp_node.find(document);
+    if (itr == m_interp_node.end()) return size(); // size() = 'unknown'
+    return itr->second;
 }

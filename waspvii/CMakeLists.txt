@@ -45,6 +45,7 @@ SET(SOURCES
 VIILexer.cpp
 VIIParser.cpp
 VIINodeView.cpp
+VIInterpreter.cpp
 )
 
 ##---------------------------------------------------------------------------##

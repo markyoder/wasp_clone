@@ -39,8 +39,8 @@ typedef wasp::VIIParser::token_type token_type;
 %option yywrap nounput
 
  /* enables the use of start condition stacks */
-/*%option stack*/
-/*%x exclusive*/
+%option stack
+%x file_include
 /*%s inclusive*/
 
 FRAC \-?[0-9]+([eE]\+?[0-9]+)?
@@ -62,6 +62,8 @@ ASSIGN =
 LBRACKET \[
 RBRACKET \]
 FSLASH \/
+INCLUDE_PATH [^ \t\n][^\n!]*
+
  /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
 %{
@@ -122,7 +124,18 @@ FSLASH \/
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
 }
-
+include {
+    yy_push_state(file_include);
+    capture_token(yylval,wasp::FILE);
+    return token::FILE;
+}
+<file_include>{INCLUDE_PATH} {
+    // file includes grab everyting starting after 'include' to
+    // either a newline '\n' or a comment '!'
+    yy_pop_state();
+    capture_token(yylval,wasp::STRING);
+    return token::STRING;
+}
 {STRING} {
     capture_token(yylval,wasp::STRING);
     return token::STRING;

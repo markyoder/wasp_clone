@@ -1,6 +1,7 @@
 #ifndef WASP_INTERPRETER_H
 #define WASP_INTERPRETER_H
 #include <vector>
+#include <map>
 #include <string>
 #include <cstddef>  // size_t
 #include <iostream>
@@ -252,6 +253,12 @@ class WASP_PUBLIC NodeView
 class WASP_PUBLIC AbstractInterpreter
 {
   public:
+    typedef std::shared_ptr<AbstractInterpreter> SP;
+    /**
+     * @brief root acquire the root of the document
+     * @return TreeNodeView view into the document parse tree
+     */
+    virtual NodeView root() const = 0;
     /**
      * @brief token_count acquires the number of tokens so far interpreted
      * @return the number of tokens
@@ -415,6 +422,37 @@ class WASP_PUBLIC AbstractInterpreter
     virtual size_t last_column(size_t node_index) const     = 0;
     virtual size_t leaf_index(size_t node_index) const      = 0;
     virtual size_t size() const                             = 0;
+
+
+    /**
+     * @brief add_document_path associates the given node with the subdocument path
+     * @param node_index the index/id of the input node including/importing the subdocument
+     * @param path the relative or absolute path to the subdocument
+     */
+    virtual void add_document_path(size_t node_index, const std::string& path) = 0;
+    virtual size_t document_count() const = 0;
+    /**
+     * @brief load_document interprets previously added document paths
+     * @param document_errors a stream for capturing document parse errors
+     * @return true iff all documents were successfully interpreted
+     */
+    virtual bool load_document(std::ostream& document_errors) = 0;
+    /**
+     * @brief document obtains the associated document for the given node index
+     * @param node_index the node index at which the Interpreter is being requested
+     * @return pointer to nested interpreter, nullptr iff no interpreter associated
+     */
+    virtual const AbstractInterpreter* document(size_t node_index) const = 0;
+
+    /**
+     * @brief document_node obtains the node index for the associated document
+     * @param document the document pointer
+     * @return the node_index associated with the given document
+     */
+    virtual size_t document_node(const AbstractInterpreter* document) const = 0;
+
+    virtual const AbstractInterpreter* document_parent() const = 0;
+
 };
 
 template<class NodeStorage = TreeNodePool<>>
@@ -430,8 +468,41 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
         typename NodeStorage::TokenPool_type::token_type_size token_type_size;
     typedef typename NodeStorage::TokenPool_type::file_offset_type_size
         file_offset_type_size;
+
+    typedef std::map<const AbstractInterpreter*, node_index_size> InterpNodeMap;
+    typedef std::map<node_index_size, const AbstractInterpreter*> NodeInterpMap;
+    typedef std::map<node_index_size, std::string> NodeInterpPathMap;
+
     Interpreter(std::ostream& error_stream = std::cerr);
     virtual ~Interpreter();
+
+    /**
+     * @brief add_document_path associates the given node with the subdocument path
+     * @param node_index the index/id of the input node including/importing the subdocument
+     * @param path the relative or absolute path to the subdocument
+     */
+    virtual void add_document_path(size_t node_index, const std::string& path);
+    virtual size_t document_count() const;
+    /**
+     * @brief load_document interprets previously added document paths
+     * @param document_errors a stream for capturing document parse errors
+     * @return true iff all documents were successfully interpreted
+     */
+    virtual bool load_document(std::ostream& document_errors);
+    /**
+     * @brief document obtains the associated document for the given node index
+     * @param node_index the node index at which the Interpreter is being requested
+     * @return pointer to nested interpreter, nullptr iff no interpreter associated
+     */
+    virtual const AbstractInterpreter* document(size_t node_index) const;
+
+    /**
+     * @brief document_node obtains the node index for the associated document
+     * @param document the document pointer
+     * @return the node_index associated with the given document
+     */
+    virtual size_t document_node(const AbstractInterpreter* document) const;
+    virtual const AbstractInterpreter* document_parent() const {return nullptr;}
 
     /**
      * @brief failed indicates if the parse failed
@@ -763,6 +834,9 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
     };
     std::vector<Stage> m_staged;
     size_t             m_root_index;
+    InterpNodeMap m_interp_node;
+    NodeInterpMap m_node_interp;
+    NodeInterpPathMap m_node_interp_path;
 };
 
 #include "waspcore/Interpreter.i.h"

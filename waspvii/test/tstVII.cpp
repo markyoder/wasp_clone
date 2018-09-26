@@ -435,7 +435,7 @@ TEST(VIInterpreter, test_unknown_blocks)
 )I" << std::endl;
     std::stringstream errors;
     VIInterpreter<>   vii(errors);
-    vii.definition()->create("block1")->create("block1.1");
+    auto* b11 = vii.definition()->create("block1")->create("block1.1");
     vii.definition()->create("block2");
 
     EXPECT_FALSE(vii.parse(input));
@@ -451,9 +451,74 @@ TEST(VIInterpreter, test_unknown_blocks)
     ASSERT_EQ(4, root.child_at(0).child_count());
     ASSERT_EQ("block1.1", std::string(root.child_at(0).child_at(3).name()));
     ASSERT_EQ("block2", std::string(root.child_at(1).name()));
+
+    auto lineage = wasp::lineage(root.child_at(0) // block1
+                                     .child_at(3)); // block1.1
+    EXPECT_EQ(2, lineage.size());
+    ASSERT_EQ("block1.1", std::string(lineage[0].name()));
+    ASSERT_EQ("block1", std::string(lineage[1].name()));
+    auto* def = wasp::get_definition(root.child_at(0).child_at(3).node_index(),
+                                   &vii);
+    ASSERT_EQ(b11, def);
 }
 
+TEST(VIInterpreter, includes)
+{
+    {
+    std::ofstream block_file("block.txt");
+    block_file << "[block1] " <<std::endl
+               << "  block_1.1"<<std::endl;
+    block_file.close();
+    }
+    {
+    std::ofstream block_file("block1.2.txt");
+    block_file << "  block1.2 1 " <<std::endl
+               << "  block1.2 2"<<std::endl;
+    block_file.close();
+    }
+    {
+    std::ofstream block_file("_block1.2.txt");
+    block_file << "block1.2 3 " <<std::endl
+               << "  block1.2 4"<<std::endl;
+    block_file.close();
+    }
+    std::stringstream input;
+    input << R"I( include block.txt
+ [block1]
+     block1.1
+     include block1.2.txt
+     include _block1.2.txt ! trailing comment
+     block1.3
+)I" << std::endl;
 
+    DefaultVIInterpreter vii;
+    auto b1 = vii.definition()->create("block1");
+    b1->create_aliased("block_1.1",b1->create("block1.1"));
+    b1->create("block1.2");
+    b1->create("block1.3");
+
+    ASSERT_TRUE(vii.parseStream(input, "./"));
+    ASSERT_EQ(3, vii.document_count());
+    std::stringstream paths;
+    vii.root().paths(std::cout);
+    
+    VIINodeView block_node = vii.root().child_at(0);
+    ASSERT_EQ(wasp::FILE, block_node.type());
+    // should have an associated document
+    ASSERT_NE(nullptr, vii.document(block_node.node_index()));
+
+    ASSERT_EQ(1, block_node.non_decorative_children().size());
+    // block_1.1 aliased to 'block1.1'
+    std::cout<<block_node.non_decorative_children()[0].data()<<std::endl;
+    ASSERT_EQ(1, block_node.non_decorative_children()[0].non_decorative_children().size());
+    ASSERT_EQ("block1.1", std::string(block_node.non_decorative_children()[0].non_decorative_children()[0].name()));
+
+    { // cleanup test files
+    std::remove("block.txt");
+    std::remove("block1.2.txt");
+    std::remove("_block1.2.txt");
+    }
+}
 
 
 // TODO TEST

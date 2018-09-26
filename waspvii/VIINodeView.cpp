@@ -3,6 +3,25 @@
 
 namespace wasp
 {
+template<size_t FileNodeType>
+class NodeFileDeRef{
+public:
+    template<class T>
+    T operator()(const T& node){
+        if ( FileNodeType != node.type() )
+        {
+            return node;
+        }
+        wasp_check(node.node_pool());
+        const auto* document = node.node_pool()->document(node.node_index());
+        if (document)
+        {
+            T root = document->root();
+            return root;
+        }
+        return T(); // null deref
+    }
+};
 VIINodeView::VIINodeView(std::size_t                node_index,
                          const AbstractInterpreter& pool)
     : m_node_index(node_index), m_pool(&pool)
@@ -37,14 +56,26 @@ bool VIINodeView::operator<(const VIINodeView& b) const
 }
 
 VIINodeView VIINodeView::parent() const
-{
+{    
     VIINodeView view(m_pool->parent_node_index(m_node_index), *m_pool);
+
+    if (view.type() == wasp::DOCUMENT_ROOT
+            && m_pool->document_parent() != nullptr)
+    {
+        view = wasp::parent_document_node<VIINodeView,
+                                            AbstractInterpreter>(m_pool);
+    }
     return view;
 }
 
 bool VIINodeView::has_parent() const
 {
-    return m_pool->has_parent(m_node_index);
+    bool _has_parent = m_pool->has_parent(m_node_index);
+    if (m_pool->document_parent() != nullptr)
+    {
+        return true;
+    }
+    return _has_parent;
 }
 
 bool VIINodeView::is_leaf() const
@@ -102,7 +133,7 @@ VIINodeView VIINodeView::id_child() const {
 
 VIINodeView::Collection VIINodeView::non_decorative_children() const
 {
-    return wasp::non_decorative_children(*this);
+    return wasp::non_decorative_children<VIINodeView,NodeFileDeRef<wasp::FILE>>(*this);
 }
 
 VIINodeView
@@ -151,7 +182,7 @@ std::size_t  // return type
 VIINodeView VIINodeView::child_at(std::size_t index) const
 {
     auto child_node_pool_index = m_pool->child_at(m_node_index, index);
-    return VIINodeView(child_node_pool_index, *m_pool);
+    return NodeFileDeRef<wasp::FILE>()(VIINodeView(child_node_pool_index, *m_pool));
 }
 
 VIINodeView::Collection  // return type
