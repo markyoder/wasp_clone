@@ -9,8 +9,12 @@ The pattern is as follows:
 ```
 file := block*
 block := '[' name ']' commands
-commands := (name value+ (key_value)*)+ 
+commands := named_command | unnamed_command
+unnamed_command := (name value+ (key_value)*)+ 
+named_command := (name _name value+ (key_value)*)+ 
 key_value := name =? value
+name := string
+_name := anything
 ```
 where the block `name` must adhere to the pattern `([A-Za-z0-9_\.])+`. A `value` can be an integer, real, string, or quoted string.
 A file can have zero or more blocks. 

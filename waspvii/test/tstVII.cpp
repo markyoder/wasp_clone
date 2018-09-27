@@ -481,7 +481,7 @@ TEST(VIInterpreter, includes)
     }
     std::stringstream input;
     input << R"I( include block.txt
- [block1]
+  [block1]
      block1.1
      include block1.2.txt
      include _block1.2.txt ! trailing comment
@@ -534,6 +534,23 @@ TEST(VIInterpreter, includes)
     ASSERT_EQ("block1.1", std::string(blocktxt_incl_node.non_decorative_children()[0].non_decorative_children()[0].name()));
 
     VIINodeView viiroot = vii.root();
+    {// acquire included block1
+
+    auto b1node = viiroot.first_non_decorative_child_by_name("block1");
+    ASSERT_EQ(1, b1node.line());
+    ASSERT_EQ(2, b1node.last_line());
+    ASSERT_EQ(1, b1node.column());
+    ASSERT_EQ(11, b1node.last_column());
+    }
+    {
+        ASSERT_EQ(2, viiroot.child_by_name("block1").size());
+        ASSERT_EQ(2, viiroot.child_count_by_name("block1"));
+        auto b1node = viiroot.child_by_name("block1")[1];
+        ASSERT_EQ(2, b1node.line());
+        ASSERT_EQ(6, b1node.last_line());
+        ASSERT_EQ(3, b1node.column());
+        ASSERT_EQ(13, b1node.last_column());
+    }
     paths.str(""); // reset
     viiroot.paths(paths);
     std::stringstream expected_explicit;
