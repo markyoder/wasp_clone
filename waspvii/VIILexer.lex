@@ -50,7 +50,7 @@ EXPONENT [eE]{WHOLE}
 
 DOUBLE {WHOLE}?\.{FRAC}?{EXPONENT}?|{WHOLE}\.({FRAC}?{EXPONENT}?)?|{WHOLE}\.?{EXPONENT}
 
-STRING ([A-Za-z0-9_\.])+
+STRING ([A-Za-z0-9_\.\-])+
 
 
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
