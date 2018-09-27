@@ -429,7 +429,7 @@ TEST(VIInterpreter, test_unknown_blocks)
     input << R"I( [unknown]
 
  [block1]
-   block1.1
+   block1.1 = block_data
  [erg]
  [block2]
 )I" << std::endl;

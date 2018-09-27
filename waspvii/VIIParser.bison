@@ -85,7 +85,7 @@
 %type <token_index> PRIMITIVE
 
 %type <node_index>  decl lbracket rbracket fslash assign
-%type <node_index>  value part path decl_or_key_value
+%type <node_index>  value key_value part path decl_or_key_value
 %type <stage_index>  command_part block
 %type <node_index>  comment include include_file
 
@@ -143,6 +143,13 @@ value : PRIMITIVE
     $$ = interpreter.push_leaf(wasp::VALUE,"value"
                      ,token_index);
 }
+key_value : value
+        | STRING
+{
+    size_t token_index = ($1);
+    $$ = interpreter.push_leaf(wasp::VALUE,"value"
+                     ,token_index);
+}
 
 path : STRING
         {
@@ -180,7 +187,7 @@ decl : STRING
                                    ,"decl"
                                    ,token_index);
     }
-decl_or_key_value :  decl assign value
+decl_or_key_value :  decl assign key_value
         {
             std::string quote_less_data = interpreter.data($1);
             quote_less_data = wasp::strip_quotes(quote_less_data);
