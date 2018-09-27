@@ -512,16 +512,18 @@ TEST(VIInterpreter, includes)
 /block1/] (])
 /block1/block1.1
 /block1/block1.1/decl (block1.1)
-/block1/block1.1/incl
-/block1/block1.1/incl/decl (include)
-/block1/block1.1/incl/path (block1.2.txt)
-/block1/block1.1/incl
-/block1/block1.1/incl/decl (include)
-/block1/block1.1/incl/path (_block1.2.txt )
-/block1/block1.1/comment (! trailing comment)
+/block1/incl
+/block1/incl/decl (include)
+/block1/incl/path (block1.2.txt)
+/block1/incl
+/block1/incl/decl (include)
+/block1/incl/path (_block1.2.txt )
+/block1/comment (! trailing comment)
 /block1/block1.3
 /block1/block1.3/decl (block1.3)
-)I"<<std::endl;
+)I";
+
+    ASSERT_EQ(expected.str(), paths.str());
 
     VIINodeView blocktxt_incl_node = vii.root().child_at(0); 
     ASSERT_EQ(wasp::FILE, blocktxt_incl_node.type());
