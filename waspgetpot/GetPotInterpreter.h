@@ -95,8 +95,16 @@ class GetPotInterpreter : public Interpreter<S>
      * @return true, iff no input processing errors were encountered
      */
     bool parse(std::istream& input,
-               std::size_t   m_start_line   = 1u,
-               std::size_t   m_start_column = 1u);
+               std::size_t   start_line   = 1u,
+               std::size_t   start_column = 1u);
+    bool parseStream(std::istream& input,
+               const std::string& name,
+               std::size_t   start_line   = 1u,
+               std::size_t   start_column = 1u)
+    {
+        Interpreter<S>::stream_name() = name;
+        return parse(input, start_line, start_column);
+    }
     bool parseFile(const std::string& filename, size_t startLine = 1u);
 };
 #include "waspgetpot/GetPotInterpreter.i.h"
