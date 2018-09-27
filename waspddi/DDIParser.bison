@@ -120,7 +120,7 @@ bool adjust_interpreter_stages( wasp::AbstractInterpreter & interpreter
         return false;
     }
     else if( delta > 0 ){
-        wasp_ensure( delta < interpreter.staged_count() );
+        wasp_ensure( delta < static_cast<int>(interpreter.staged_count()) );
         while( delta > 0 ){
             interpreter.commit_staged(interpreter.staged_count()-1);
             --delta;

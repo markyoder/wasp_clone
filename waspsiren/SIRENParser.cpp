@@ -51,7 +51,7 @@
 #include "SIRENParser.hpp"
 
 // User implementation prologue.
-#line 119 "SIRENParser.bison"  // lalr1.cc:412
+#line 121 "SIRENParser.bison"  // lalr1.cc:412
 
 #include "SIRENInterpreter.h"
 #include "SIRENLexer.h"
@@ -152,7 +152,7 @@
 #define YYERROR goto yyerrorlab
 #define YYRECOVERING() (!!yyerrstatus_)
 
-#line 32 "SIRENParser.bison"  // lalr1.cc:479
+#line 33 "SIRENParser.bison"  // lalr1.cc:479
 namespace wasp
 {
 #line 155 "SIRENParser.cpp"  // lalr1.cc:479
@@ -374,7 +374,7 @@ inline void SIRENParser::yy_destroy_(const char*         yymsg,
     {
         case 70:  // key_declaration
 
-#line 118 "SIRENParser.bison"  // lalr1.cc:614
+#line 120 "SIRENParser.bison"  // lalr1.cc:614
         {
             delete (yysym.value.node_indices);
         }
@@ -383,7 +383,7 @@ inline void SIRENParser::yy_destroy_(const char*         yymsg,
 
         case 71:  // tag
 
-#line 118 "SIRENParser.bison"  // lalr1.cc:614
+#line 120 "SIRENParser.bison"  // lalr1.cc:614
         {
             delete (yysym.value.node_indices);
         }
@@ -501,7 +501,7 @@ int SIRENParser::parse()
         YYCDEBUG << "Starting parse" << std::endl;
 
 // User initialization code.
-#line 41 "SIRENParser.bison"  // lalr1.cc:741
+#line 42 "SIRENParser.bison"  // lalr1.cc:741
         {
             // initialize the initial location object
             yyla.location.begin.filename = yyla.location.end.filename =
@@ -512,9 +512,11 @@ int SIRENParser::parse()
                 interpreter.start_column();
             lexer =
                 std::make_shared<SIRENLexerImpl>(interpreter, &input_stream);
+            //    lexer->set_debug(true); // requires lexer '%option debug'
+            //    enabled
         }
 
-#line 558 "SIRENParser.cpp"  // lalr1.cc:741
+#line 559 "SIRENParser.cpp"  // lalr1.cc:741
 
         /* Initialize the stack.  The initial state will be set in
            yynewstate, since the latter expects the semantical and the
@@ -622,248 +624,248 @@ int SIRENParser::parse()
                 switch (yyn)
                 {
                     case 2:
-#line 136 "SIRENParser.bison"  // lalr1.cc:859
+#line 138 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) =
                             interpreter.push_leaf(wasp::ANY, "A", token_index);
                     }
-#line 671 "SIRENParser.cpp"  // lalr1.cc:859
+#line 672 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 3:
-#line 141 "SIRENParser.bison"  // lalr1.cc:859
+#line 143 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         // P - parent
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::PARENT, "P", token_index);
                     }
-#line 681 "SIRENParser.cpp"  // lalr1.cc:859
+#line 682 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 4:
-#line 152 "SIRENParser.bison"  // lalr1.cc:859
+#line 154 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::COLON, ":", token_index);
                     }
-#line 690 "SIRENParser.cpp"  // lalr1.cc:859
+#line 691 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 5:
-#line 157 "SIRENParser.bison"  // lalr1.cc:859
+#line 159 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::MULTIPLY, "*", token_index);
                     }
-#line 699 "SIRENParser.cpp"  // lalr1.cc:859
+#line 700 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 6:
-#line 162 "SIRENParser.bison"  // lalr1.cc:859
+#line 164 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::DIVIDE, "/", token_index);
                     }
-#line 708 "SIRENParser.cpp"  // lalr1.cc:859
+#line 709 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 7:
-#line 169 "SIRENParser.bison"  // lalr1.cc:859
+#line 171 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::SEPARATOR, "/", token_index);
                     }
-#line 717 "SIRENParser.cpp"  // lalr1.cc:859
+#line 718 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 10:
-#line 175 "SIRENParser.bison"  // lalr1.cc:859
+#line 177 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) =
                             interpreter.push_leaf(wasp::PLUS, "+", token_index);
                     }
-#line 726 "SIRENParser.cpp"  // lalr1.cc:859
+#line 727 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 11:
-#line 180 "SIRENParser.bison"  // lalr1.cc:859
+#line 182 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::MINUS, "-", token_index);
                     }
-#line 735 "SIRENParser.cpp"  // lalr1.cc:859
+#line 736 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 12:
-#line 186 "SIRENParser.bison"  // lalr1.cc:859
+#line 188 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::EXPONENT, "^", token_index);
                     }
-#line 744 "SIRENParser.cpp"  // lalr1.cc:859
+#line 745 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 19:
-#line 194 "SIRENParser.bison"  // lalr1.cc:859
+#line 196 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) =
                             interpreter.push_leaf(wasp::EQ, "==", token_index);
                     }
-#line 753 "SIRENParser.cpp"  // lalr1.cc:859
+#line 754 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 20:
-#line 199 "SIRENParser.bison"  // lalr1.cc:859
+#line 201 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) =
                             interpreter.push_leaf(wasp::NEQ, "!=", token_index);
                     }
-#line 762 "SIRENParser.cpp"  // lalr1.cc:859
+#line 763 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 21:
-#line 204 "SIRENParser.bison"  // lalr1.cc:859
+#line 206 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) =
                             interpreter.push_leaf(wasp::GTE, ">=", token_index);
                     }
-#line 771 "SIRENParser.cpp"  // lalr1.cc:859
+#line 772 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 22:
-#line 209 "SIRENParser.bison"  // lalr1.cc:859
+#line 211 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) =
                             interpreter.push_leaf(wasp::GT, ">", token_index);
                     }
-#line 780 "SIRENParser.cpp"  // lalr1.cc:859
+#line 781 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 23:
-#line 214 "SIRENParser.bison"  // lalr1.cc:859
+#line 216 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) =
                             interpreter.push_leaf(wasp::LTE, "<=", token_index);
                     }
-#line 789 "SIRENParser.cpp"  // lalr1.cc:859
+#line 790 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 24:
-#line 219 "SIRENParser.bison"  // lalr1.cc:859
+#line 221 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) =
                             interpreter.push_leaf(wasp::LT, "<", token_index);
                     }
-#line 798 "SIRENParser.cpp"  // lalr1.cc:859
+#line 799 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 27:
-#line 225 "SIRENParser.bison"  // lalr1.cc:859
+#line 227 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::WASP_AND, "&&", token_index);
                     }
-#line 807 "SIRENParser.cpp"  // lalr1.cc:859
+#line 808 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 28:
-#line 230 "SIRENParser.bison"  // lalr1.cc:859
+#line 232 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::WASP_OR, "||", token_index);
                     }
-#line 816 "SIRENParser.cpp"  // lalr1.cc:859
+#line 817 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 29:
-#line 236 "SIRENParser.bison"  // lalr1.cc:859
+#line 238 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::UNARY_NOT, "!", token_index);
                     }
-#line 825 "SIRENParser.cpp"  // lalr1.cc:859
+#line 826 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 30:
-#line 242 "SIRENParser.bison"  // lalr1.cc:859
+#line 244 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::LPAREN, "(", token_index);
                     }
-#line 834 "SIRENParser.cpp"  // lalr1.cc:859
+#line 835 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 31:
-#line 247 "SIRENParser.bison"  // lalr1.cc:859
+#line 249 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::RPAREN, ")", token_index);
                     }
-#line 843 "SIRENParser.cpp"  // lalr1.cc:859
+#line 844 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 32:
-#line 262 "SIRENParser.bison"  // lalr1.cc:859
+#line 264 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::LBRACKET, "[", token_index);
                     }
-#line 852 "SIRENParser.cpp"  // lalr1.cc:859
+#line 853 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 33:
-#line 267 "SIRENParser.bison"  // lalr1.cc:859
+#line 269 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::RBRACKET, "]", token_index);
                     }
-#line 861 "SIRENParser.cpp"  // lalr1.cc:859
+#line 862 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 40:
-#line 274 "SIRENParser.bison"  // lalr1.cc:859
+#line 276 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         size_t token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::INT, "int", token_index);
                     }
-#line 871 "SIRENParser.cpp"  // lalr1.cc:859
+#line 872 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 41:
-#line 280 "SIRENParser.bison"  // lalr1.cc:859
+#line 282 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         size_t token_index = ((yystack_[0].value.token_index));
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::VALUE, "value", token_index);
                     }
-#line 881 "SIRENParser.cpp"  // lalr1.cc:859
+#line 882 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 44:
-#line 300 "SIRENParser.bison"  // lalr1.cc:859
+#line 302 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         size_t left_i  = ((yystack_[2].value.node_index));
                         size_t op_i    = ((yystack_[1].value.node_index));
@@ -874,11 +876,11 @@ int SIRENParser::parse()
                         (yylhs.value.node_index) = interpreter.push_parent(
                             interpreter.type(op_i), "value", child_indices);
                     }
-#line 899 "SIRENParser.cpp"  // lalr1.cc:859
+#line 900 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 45:
-#line 314 "SIRENParser.bison"  // lalr1.cc:859
+#line 316 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         size_t left_i  = ((yystack_[2].value.node_index));
                         size_t op_i    = ((yystack_[1].value.node_index));
@@ -889,11 +891,11 @@ int SIRENParser::parse()
                         (yylhs.value.node_index) = interpreter.push_parent(
                             interpreter.type(op_i), "value", child_indices);
                     }
-#line 917 "SIRENParser.cpp"  // lalr1.cc:859
+#line 918 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 46:
-#line 328 "SIRENParser.bison"  // lalr1.cc:859
+#line 330 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         size_t left_i  = ((yystack_[2].value.node_index));
                         size_t op_i    = ((yystack_[1].value.node_index));
@@ -904,11 +906,11 @@ int SIRENParser::parse()
                         (yylhs.value.node_index) = interpreter.push_parent(
                             interpreter.type(op_i), "value", child_indices);
                     }
-#line 935 "SIRENParser.cpp"  // lalr1.cc:859
+#line 936 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 47:
-#line 342 "SIRENParser.bison"  // lalr1.cc:859
+#line 344 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         size_t left_i  = ((yystack_[2].value.node_index));
                         size_t op_i    = ((yystack_[1].value.node_index));
@@ -919,11 +921,11 @@ int SIRENParser::parse()
                         (yylhs.value.node_index) = interpreter.push_parent(
                             interpreter.type(op_i), "value", child_indices);
                     }
-#line 953 "SIRENParser.cpp"  // lalr1.cc:859
+#line 954 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 48:
-#line 356 "SIRENParser.bison"  // lalr1.cc:859
+#line 358 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         size_t left_i  = ((yystack_[2].value.node_index));
                         size_t op_i    = ((yystack_[1].value.node_index));
@@ -934,11 +936,11 @@ int SIRENParser::parse()
                         (yylhs.value.node_index) = interpreter.push_parent(
                             interpreter.type(op_i), "value", child_indices);
                     }
-#line 971 "SIRENParser.cpp"  // lalr1.cc:859
+#line 972 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 49:
-#line 371 "SIRENParser.bison"  // lalr1.cc:859
+#line 373 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         size_t left_i  = ((yystack_[2].value.node_index));
                         size_t op_i    = ((yystack_[1].value.node_index));
@@ -949,11 +951,11 @@ int SIRENParser::parse()
                         (yylhs.value.node_index) = interpreter.push_parent(
                             interpreter.type(op_i), "value", child_indices);
                     }
-#line 989 "SIRENParser.cpp"  // lalr1.cc:859
+#line 990 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 50:
-#line 385 "SIRENParser.bison"  // lalr1.cc:859
+#line 387 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         size_t left_i   = ((yystack_[2].value.node_index));
                         size_t center_i = ((yystack_[1].value.node_index));
@@ -964,11 +966,11 @@ int SIRENParser::parse()
                         (yylhs.value.node_index) = interpreter.push_parent(
                             wasp::PARENTHESIS, "value", child_indices);
                     }
-#line 1007 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1008 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 51:
-#line 399 "SIRENParser.bison"  // lalr1.cc:859
+#line 401 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         size_t op_i    = ((yystack_[1].value.node_index));
                         size_t right_i = ((yystack_[0].value.node_index));
@@ -977,11 +979,11 @@ int SIRENParser::parse()
                         (yylhs.value.node_index) = interpreter.push_parent(
                             interpreter.type(op_i), "value", child_indices);
                     }
-#line 1023 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1024 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 52:
-#line 411 "SIRENParser.bison"  // lalr1.cc:859
+#line 413 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         size_t op_i    = ((yystack_[1].value.node_index));
                         size_t right_i = ((yystack_[0].value.node_index));
@@ -990,11 +992,11 @@ int SIRENParser::parse()
                         (yylhs.value.node_index) = interpreter.push_parent(
                             interpreter.type(op_i), "value", child_indices);
                     }
-#line 1039 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1040 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 53:
-#line 423 "SIRENParser.bison"  // lalr1.cc:859
+#line 425 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         auto token_index = ((yystack_[0].value.token_index));
                         std::string quote_less_data =
@@ -1003,32 +1005,32 @@ int SIRENParser::parse()
                         (yylhs.value.node_index) = interpreter.push_leaf(
                             wasp::DECL, quote_less_data.c_str(), token_index);
                     }
-#line 1052 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1053 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 54:
-#line 433 "SIRENParser.bison"  // lalr1.cc:859
+#line 435 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         (yylhs.value.node_indices) =
                             (yystack_[1].value.node_indices);
                         (yylhs.value.node_indices)
                             ->push_back((yystack_[0].value.node_index));
                     }
-#line 1062 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1063 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 55:
-#line 440 "SIRENParser.bison"  // lalr1.cc:859
+#line 442 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         (yylhs.value.node_indices) = new std::vector<size_t>();
                         (yylhs.value.node_indices)
                             ->push_back((yystack_[0].value.node_index));
                     }
-#line 1071 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1072 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 56:
-#line 447 "SIRENParser.bison"  // lalr1.cc:859
+#line 449 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         (yystack_[1].value.node_indices)
                             ->push_back((yystack_[0].value.node_index));
@@ -1048,11 +1050,11 @@ int SIRENParser::parse()
                             *(yystack_[1].value.node_indices));
                         delete (yystack_[1].value.node_indices);
                     }
-#line 1091 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1092 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 57:
-#line 463 "SIRENParser.bison"  // lalr1.cc:859
+#line 465 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         // capture integer index
                         size_t i_i = ((yystack_[0].value.node_index));
@@ -1063,11 +1065,11 @@ int SIRENParser::parse()
                             ,
                             child_indices);
                     }
-#line 1106 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1107 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 58:
-#line 474 "SIRENParser.bison"  // lalr1.cc:859
+#line 476 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         // capture index range
                         size_t si_i = ((yystack_[2].value.node_index));
@@ -1080,11 +1082,11 @@ int SIRENParser::parse()
                             ,
                             child_indices);
                     }
-#line 1125 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1126 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 59:
-#line 489 "SIRENParser.bison"  // lalr1.cc:859
+#line 491 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         // capture strided index range
                         size_t si_i     = ((yystack_[4].value.node_index));
@@ -1100,11 +1102,11 @@ int SIRENParser::parse()
                             ,
                             child_indices);
                     }
-#line 1148 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1149 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 61:
-#line 509 "SIRENParser.bison"  // lalr1.cc:859
+#line 511 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         // capture condition predicated child selection
                         // obj[name = 'ted']
@@ -1122,11 +1124,11 @@ int SIRENParser::parse()
                             ,
                             child_indices);
                     }
-#line 1171 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1172 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 62:
-#line 528 "SIRENParser.bison"  // lalr1.cc:859
+#line 530 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         // capture index predicated child selection
                         // obj[1]
@@ -1145,22 +1147,22 @@ int SIRENParser::parse()
                             ,
                             child_indices);
                     }
-#line 1195 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1196 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 63:
-#line 548 "SIRENParser.bison"  // lalr1.cc:859
+#line 550 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         // capture parent selection
                         // obj/..
                         (yylhs.value.node_index) =
                             (yystack_[0].value.node_index);
                     }
-#line 1205 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1206 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 64:
-#line 554 "SIRENParser.bison"  // lalr1.cc:859
+#line 556 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         // capture consecutive selections
                         // obj/child
@@ -1177,11 +1179,11 @@ int SIRENParser::parse()
                             ,
                             child_indices);
                     }
-#line 1227 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1228 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 65:
-#line 572 "SIRENParser.bison"  // lalr1.cc:859
+#line 574 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         // capture named child selection
                         // parent//child
@@ -1198,11 +1200,11 @@ int SIRENParser::parse()
                             ,
                             child_indices);
                     }
-#line 1249 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1250 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 66:
-#line 590 "SIRENParser.bison"  // lalr1.cc:859
+#line 592 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         // capture named node's descendants
                         // parent//
@@ -1217,11 +1219,11 @@ int SIRENParser::parse()
                             ,
                             child_indices);
                     }
-#line 1269 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1270 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 67:
-#line 611 "SIRENParser.bison"  // lalr1.cc:859
+#line 613 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         // capture root only selection
                         size_t s_i = ((yystack_[0].value.node_index));
@@ -1231,11 +1233,11 @@ int SIRENParser::parse()
                             ,
                             child_indices);
                     }
-#line 1282 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1283 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 68:
-#line 620 "SIRENParser.bison"  // lalr1.cc:859
+#line 622 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         // capture root based child selection
                         size_t root_i  = ((yystack_[1].value.node_index));
@@ -1247,11 +1249,11 @@ int SIRENParser::parse()
                             ,
                             child_indices);
                     }
-#line 1299 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1300 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 70:
-#line 634 "SIRENParser.bison"  // lalr1.cc:859
+#line 636 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         // capture any child of the root
                         size_t any_i   = ((yystack_[1].value.node_index));
@@ -1263,28 +1265,28 @@ int SIRENParser::parse()
                                                     ,
                                                     child_indices);
                     }
-#line 1316 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1317 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 71:
-#line 646 "SIRENParser.bison"  // lalr1.cc:859
+#line 648 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         interpreter.push_staged_child(
                             ((yystack_[0].value.node_index)));
                     }
-#line 1322 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1323 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
                     case 72:
-#line 647 "SIRENParser.bison"  // lalr1.cc:859
+#line 649 "SIRENParser.bison"  // lalr1.cc:859
                     {
                         interpreter.push_staged_child(
                             ((yystack_[0].value.node_index)));
                     }
-#line 1328 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1329 "SIRENParser.cpp"  // lalr1.cc:859
                     break;
 
-#line 1332 "SIRENParser.cpp"  // lalr1.cc:859
+#line 1333 "SIRENParser.cpp"  // lalr1.cc:859
                     default:
                         break;
                 }
@@ -1693,11 +1695,11 @@ const char* const SIRENParser::yytname_[] = {"\"end of file\"",
 
 #if YYDEBUG
 const unsigned short int SIRENParser::yyrline_[] = {
-    0,   135, 135, 140, 151, 156, 161, 168, 173, 173, 174, 179, 185, 191, 191,
-    191, 191, 191, 191, 193, 198, 203, 208, 213, 218, 223, 223, 224, 229, 235,
-    241, 246, 261, 266, 272, 272, 273, 273, 273, 273, 274, 279, 296, 298, 299,
-    313, 327, 341, 355, 370, 384, 398, 410, 422, 432, 439, 446, 462, 473, 488,
-    507, 508, 527, 547, 553, 571, 589, 610, 619, 632, 633, 646, 647};
+    0,   137, 137, 142, 153, 158, 163, 170, 175, 175, 176, 181, 187, 193, 193,
+    193, 193, 193, 193, 195, 200, 205, 210, 215, 220, 225, 225, 226, 231, 237,
+    243, 248, 263, 268, 274, 274, 275, 275, 275, 275, 276, 281, 298, 300, 301,
+    315, 329, 343, 357, 372, 386, 400, 412, 424, 434, 441, 448, 464, 475, 490,
+    509, 510, 529, 549, 555, 573, 591, 612, 621, 634, 635, 648, 649};
 
 // Print the state stack on the debug stream.
 void SIRENParser::yystack_print_()
@@ -1757,10 +1759,10 @@ inline SIRENParser::token_number_type SIRENParser::yytranslate_(int t)
         return undef_token_;
 }
 
-#line 32 "SIRENParser.bison"  // lalr1.cc:1167
+#line 33 "SIRENParser.bison"  // lalr1.cc:1167
 }  // wasp
-#line 1835 "SIRENParser.cpp"   // lalr1.cc:1167
-#line 652 "SIRENParser.bison"  // lalr1.cc:1168
+#line 1836 "SIRENParser.cpp"   // lalr1.cc:1167
+#line 654 "SIRENParser.bison"  // lalr1.cc:1168
                                /*** Additional Code ***/
 
 void wasp::SIRENParser::error(const SIRENParser::location_type& l,

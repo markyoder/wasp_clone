@@ -28,6 +28,7 @@
 
 #include "waspcore/decl.h"
 
+
 namespace wasp
 {
 /**
@@ -116,15 +117,18 @@ class WASP_PUBLIC HIVE
 
     std::map<std::string, std::set<std::string>> enumRef;
     /**
-     * @brief select_nodes selects nodes.
+     * @brief select_nodes selects nodes for a given path relative to given input.
      * @param results the result set to populate with the nodes selected.
+     * @param schema_node the schema node from which the selection logic
+     *                      originated- used for selection error reporting.
      * @param input_node the input node from which to make the selection.
      * @param selection_path the selection query path.
      * @return true, iff no selection path errors were encountered.
      * An error message is placed on the error.
      */
-    template<class InputAdapter>
+    template<class SchemaAdapter, class InputAdapter>
     bool select_nodes(SIRENResultSet<InputAdapter>& results,
+                      SchemaAdapter&                schema_node,
                       InputAdapter&                 input_node,
                       const std::string&            selection_path,
                       std::vector<std::string>&     errors);
@@ -736,10 +740,14 @@ class WASP_PUBLIC HIVE
     {
       public:
         //// Invalid Schema Rule Errors ////
-
-        static std::string SirenParseError(const std::string& message)
+        template<class SchemaAdapter>
+        static std::string SirenParseError(const SchemaAdapter& view,
+                                           const std::string& message)
         {
-            return "Validation Error: Invalid Schema Rule: " + message;
+            return "Validation Error: Invalid Schema Rule at line "
+                    + std::to_string(view.line()) + " and column "
+                    + std::to_string(view.column()) + " : "
+                    + message;
         }
 
         static std::string

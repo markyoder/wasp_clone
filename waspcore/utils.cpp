@@ -1,4 +1,5 @@
 #include "waspcore/utils.h"
+#include <fstream>
 
 namespace wasp
 {
@@ -46,6 +47,12 @@ std::string dir_name(const std::string& path)
     if (sep_i != std::string::npos)
         return path.substr(0, sep_i);
     return path;
+}
+
+bool file_exists(const std::string &path)
+{
+    std::ifstream relativeFile(path);
+    return relativeFile.good();
 }
 std::string json_escape_string(const std::string& src)
 {

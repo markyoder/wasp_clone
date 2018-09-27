@@ -36,6 +36,8 @@ WASP_PUBLIC std::string trim(std::string s, const std::string& char_set);
  * @return path minus the last '/name' or \\name
  */
 WASP_PUBLIC std::string dir_name(const std::string& path);
+
+WASP_PUBLIC bool file_exists(const std::string& path);
 /**
  * @brief xml_escape_data replaces string with escaped versions of the five
  * characters that must be escaped in XML document data ( &, \, ", <, > )
@@ -208,6 +210,13 @@ inline WASP_PUBLIC bool wildcard_string_match(const char* first,
                wildcard_string_match(first, second + 1);
     return false;
 }
+
+class NullNodeDeRef{
+public:
+    template<class T>
+    T operator()(const T& node)const{return node;}
+};
+
 template<class TV>
 WASP_PUBLIC std::string info(const TV& view)
 {
@@ -297,26 +306,28 @@ WASP_PUBLIC void print(std::ostream& out, const TAdapter& node_view)
     print_from(out, *node_view.node_pool(), node_view.node_index(), l, c);
 }
 
-template<class TAdapter>
+template<class TAdapter, class DeRef=NullNodeDeRef>
 WASP_PUBLIC typename TAdapter::Collection
 non_decorative_children(const TAdapter& node)
 {
     typename TAdapter::Collection results;
-    for (std::size_t i = 0, count = node.child_count(); i < count; ++i)
+    auto n = DeRef()(node);
+    for (std::size_t i = 0, count = n.child_count(); i < count; ++i)
     {
-        const auto& child = node.child_at(i);
+        const auto& child = DeRef()(n.child_at(i));
         if (!child.is_decorative())
             results.push_back(child);
     }
     return results;
 }
-template<class TAdapter>
+template<class TAdapter, class DeRef=NullNodeDeRef>
 WASP_PUBLIC TAdapter first_non_decorative_child_by_name(const TAdapter& node,
                                             const std::string& name)
 {
-    for (std::size_t i = 0, count = node.child_count(); i < count; ++i)
+    auto n = DeRef()(node);
+    for (std::size_t i = 0, count = n.child_count(); i < count; ++i)
     {
-        const auto& child = node.child_at(i);
+        const auto& child = DeRef()(n.child_at(i));
         if (!child.is_decorative())
         {
             if (name == child.name())
@@ -328,13 +339,14 @@ WASP_PUBLIC TAdapter first_non_decorative_child_by_name(const TAdapter& node,
     return TAdapter();  // null node
 }
 
-template<class TAdapter>
+template<class TAdapter, class DeRef=NullNodeDeRef>
 WASP_PUBLIC size_t non_decorative_children_count(const TAdapter& node)
 {
     size_t result = 0;
-    for (std::size_t i = 0, count = node.child_count(); i < count; ++i)
+    auto n = DeRef()(node);
+    for (std::size_t i = 0, count = n.child_count(); i < count; ++i)
     {
-        const auto& child = node.child_at(i);
+        const auto& child = DeRef()(n.child_at(i));
         if (!child.is_decorative())
             ++result;
     }
@@ -350,6 +362,65 @@ WASP_PUBLIC std::string last_as_string(const TAdapter& node, bool* ok)
         return last_as_string(node.child_at(count - 1),ok);
     }
     return node.to_string(ok);
+}
+
+/**
+ * Captures the node lineage from child to ancestore (exludes document root)
+ */
+template<class TAdapter>
+WASP_PUBLIC typename TAdapter::Collection lineage(const TAdapter& node)
+{
+    wasp_require(node.is_null() == false);
+    typename TAdapter::Collection results;
+    auto parent = node;
+    results.push_back(parent);
+    while ( parent.has_parent() )
+    {
+        parent = parent.parent();
+        results.push_back(parent);
+    }
+    if ( !results.empty() ) results.pop_back(); // do not include document root
+    return results;
+}
+
+template<class TAdapter, class Interp>
+WASP_PUBLIC TAdapter parent_document_node(const Interp* document)
+{
+    const auto* parent_document = document->document_parent();
+
+    TAdapter view = TAdapter(parent_document->document_node(document),
+                       *parent_document);
+    wasp_check(view.is_null() == false);
+    wasp_check(view.has_parent());
+    view = view.parent();
+    return view;
+}
+
+template<class TAdapter>
+WASP_PUBLIC std::string node_path(const TAdapter& node)
+{
+    auto node_lineage = lineage(node);
+    std::stringstream pathstream;
+    while( node_lineage.empty() == false )
+    {
+        pathstream<<"/"<<node_lineage.back().name();
+        node_lineage.pop_back();
+    }
+    std::string path = pathstream.str();
+    if (path.size() == 0 ) path = "/";
+    return path;
+}
+template<class TAdapter>
+WASP_PUBLIC void node_paths(const TAdapter& node, std::ostream& out)
+{
+    size_t child_count = node.child_count();
+    if (child_count == 0 && node.is_leaf() ) out<< node.path()
+                                             <<" ("<<node.data()<<")"<<std::endl;
+    else out<<node.path()<<std::endl;
+    for( size_t i = 0; i < child_count; ++i)
+    {
+        node_paths(node.child_at(i),out);
+    }
 }
 }
 #endif

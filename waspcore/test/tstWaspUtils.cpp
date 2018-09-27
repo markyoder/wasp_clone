@@ -28,6 +28,7 @@ TEST(utils, trim)
     EXPECT_EQ("str", trim("str", " "));
     EXPECT_EQ("str", trim("str  ", " "));
     EXPECT_EQ("str", trim("  str", " "));
+    EXPECT_EQ("s t  r", trim("  s t  r", " "));
     EXPECT_EQ("tr", trim("strs", " s"));
 }
 TEST(utils, strip_quotes)
@@ -54,4 +55,9 @@ TEST(utils, dir_name)
     EXPECT_EQ("/path/to/stuff", dir_name("/path/to/stuff/"));
     EXPECT_EQ("c:\\path\\to", dir_name("c:\\path\\to\\stuff"));
     EXPECT_EQ("c:\\path\\to\\stuff", dir_name("c:\\path\\to\\stuff\\"));
+}
+TEST(utils, file_exists)
+{
+    EXPECT_TRUE(file_exists(__FILE__));
+    EXPECT_FALSE(file_exists("/this/doesnt/exist/anywhere/ever"));
 }

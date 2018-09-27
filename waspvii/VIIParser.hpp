@@ -31,22 +31,22 @@
 // version 2.2 of Bison.
 
 /**
- ** \file SIRENParser.hpp
+ ** \file VIIParser.hpp
  ** Define the wasp::parser class.
  */
 
 // C++ LALR(1) parser skeleton written by Akim Demaille.
 
-#ifndef YY_YY_SIRENPARSER_HPP_INCLUDED
-# define YY_YY_SIRENPARSER_HPP_INCLUDED
+#ifndef YY_YY_VIIPARSER_HPP_INCLUDED
+# define YY_YY_VIIPARSER_HPP_INCLUDED
 // //                    "%code requires" blocks.
-#line 10 "SIRENParser.bison" // lalr1.cc:377
+#line 11 "VIIParser.bison" // lalr1.cc:377
 
 #include <memory>
 #include "waspcore/utils.h"
 #include "waspcore/decl.h"
 
-#line 50 "SIRENParser.hpp" // lalr1.cc:377
+#line 50 "VIIParser.hpp" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -116,29 +116,29 @@
 # define YYDEBUG 0
 #endif
 
-#line 33 "SIRENParser.bison" // lalr1.cc:377
+#line 35 "VIIParser.bison" // lalr1.cc:377
 namespace wasp {
-#line 122 "SIRENParser.hpp" // lalr1.cc:377
+#line 122 "VIIParser.hpp" // lalr1.cc:377
 
 
 
 
 
   /// A Bison parser.
-  class WASP_PUBLIC SIRENParser
+  class WASP_PUBLIC VIIParser
   {
   public:
 #ifndef YYSTYPE
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 63 "SIRENParser.bison" // lalr1.cc:377
+    #line 63 "VIIParser.bison" // lalr1.cc:377
 
         std::size_t token_index;
         std::size_t node_index;
-        std::vector<size_t>* node_indices;
+        std::size_t stage_index;
 
-#line 142 "SIRENParser.hpp" // lalr1.cc:377
+#line 142 "VIIParser.hpp" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -160,38 +160,19 @@ namespace wasp {
       {
         END = 0,
         EOL = 258,
-        ANY = 259,
-        MINUS = 260,
-        LPAREN = 261,
-        RPAREN = 262,
-        LBRACKET = 263,
-        RBRACKET = 264,
-        LBRACE = 265,
-        RBRACE = 266,
-        COMMA = 267,
-        COLON = 268,
-        GTE = 269,
-        LT = 270,
-        GT = 271,
-        LTE = 272,
-        NEQ = 273,
-        EQ = 274,
-        AND = 275,
-        PARENT = 276,
-        OR = 277,
-        BANG = 278,
-        MULTIPLY = 279,
-        DIVIDE = 280,
-        SEPARATOR = 281,
-        PLUS = 282,
-        EXPONENT = 283,
-        INTEGER = 284,
-        DOUBLE = 285,
-        DECL = 286,
-        QSTRING = 287,
-        ASSIGN = 288,
-        UMINUS = 289,
-        UNOT = 290
+        MINUS = 259,
+        ASSIGN = 260,
+        WASP_COMMA = 261,
+        SEMICOLON = 262,
+        INTEGER = 263,
+        DOUBLE = 264,
+        STRING = 265,
+        QSTRING = 266,
+        COMMENT = 267,
+        RBRACKET = 268,
+        LBRACKET = 269,
+        FSLASH = 270,
+        FILE = 271
       };
     };
 
@@ -296,8 +277,8 @@ namespace wasp {
 
 
     /// Build a parser object.
-    SIRENParser (class AbstractInterpreter& interpreter_yyarg, std::istream &input_stream_yyarg, std::shared_ptr<class SIRENLexerImpl> lexer_yyarg);
-    virtual ~SIRENParser ();
+    VIIParser (class AbstractInterpreter& interpreter_yyarg, std::istream &input_stream_yyarg, std::shared_ptr<class VIILexerImpl> lexer_yyarg);
+    virtual ~VIIParser ();
 
     /// Parse.
     /// \returns  0 iff parsing succeeded.
@@ -327,8 +308,8 @@ namespace wasp {
 
   private:
     /// This class is not copyable.
-    SIRENParser (const SIRENParser&);
-    SIRENParser& operator= (const SIRENParser&);
+    VIIParser (const VIIParser&);
+    VIIParser& operator= (const VIIParser&);
 
     /// State numbers.
     typedef int state_type;
@@ -379,7 +360,7 @@ namespace wasp {
   // number is the opposite.  If YYTABLE_NINF, syntax error.
   static const unsigned char yytable_[];
 
-  static const signed char yycheck_[];
+  static const unsigned char yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -499,27 +480,27 @@ namespace wasp {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 120,     ///< Last index in yytable_.
-      yynnts_ = 40,  ///< Number of nonterminal symbols.
-      yyfinal_ = 20, ///< Termination state number.
+      yylast_ = 23,     ///< Last index in yytable_.
+      yynnts_ = 20,  ///< Number of nonterminal symbols.
+      yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 37  ///< Number of tokens.
+      yyntokens_ = 17  ///< Number of tokens.
     };
 
 
     // User arguments.
     class AbstractInterpreter& interpreter;
     std::istream &input_stream;
-    std::shared_ptr<class SIRENLexerImpl> lexer;
+    std::shared_ptr<class VIILexerImpl> lexer;
   };
 
 
-#line 33 "SIRENParser.bison" // lalr1.cc:377
+#line 35 "VIIParser.bison" // lalr1.cc:377
 } // wasp
-#line 521 "SIRENParser.hpp" // lalr1.cc:377
+#line 502 "VIIParser.hpp" // lalr1.cc:377
 
 
 
 
-#endif // !YY_YY_SIRENPARSER_HPP_INCLUDED
+#endif // !YY_YY_VIIPARSER_HPP_INCLUDED
