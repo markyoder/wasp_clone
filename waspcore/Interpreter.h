@@ -436,11 +436,11 @@ class WASP_PUBLIC AbstractInterpreter
     virtual void add_document_path(size_t node_index, const std::string& path) = 0;
     virtual size_t document_count() const = 0;
     /**
-     * @brief load_document interprets previously added document paths
+     * @brief load_document interprets document at the given node and path
      * @param document_errors a stream for capturing document parse errors
-     * @return true iff all documents were successfully interpreted
+     * @return true iff the document was successfully interpreted
      */
-    virtual bool load_document(std::ostream& document_errors) = 0;
+    virtual bool load_document(size_t node_index, const std::string& path) = 0;
     /**
      * @brief document obtains the associated document for the given node index
      * @param node_index the node index at which the Interpreter is being requested
@@ -455,7 +455,7 @@ class WASP_PUBLIC AbstractInterpreter
      */
     virtual size_t document_node(const AbstractInterpreter* document) const = 0;
 
-    virtual const AbstractInterpreter* document_parent() const = 0;
+    virtual AbstractInterpreter* document_parent() const = 0;
 
 };
 
@@ -488,11 +488,11 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
     virtual void add_document_path(size_t node_index, const std::string& path);
     virtual size_t document_count() const;
     /**
-     * @brief load_document interprets previously added document paths
+     * @brief load_document interprets document at the given node and path
      * @param document_errors a stream for capturing document parse errors
-     * @return true iff all documents were successfully interpreted
+     * @return true iff the document was successfully interpreted
      */
-    virtual bool load_document(std::ostream& document_errors);
+    virtual bool load_document(size_t node_index, const std::string& path);
     /**
      * @brief document obtains the associated document for the given node index
      * @param node_index the node index at which the Interpreter is being requested
@@ -506,7 +506,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @return the node_index associated with the given document
      */
     virtual size_t document_node(const AbstractInterpreter* document) const;
-    virtual const AbstractInterpreter* document_parent() const {return nullptr;}
+    virtual AbstractInterpreter* document_parent() const {return nullptr;}
 
     /**
      * @brief failed indicates if the parse failed

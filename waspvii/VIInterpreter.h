@@ -114,8 +114,8 @@ class WASP_PUBLIC VIInterpreter : public Interpreter<S>
     VIInterpreter(std::ostream& err);
     virtual ~VIInterpreter();
 
-    bool load_document(std::ostream& document_errors);
-    const VIInterpreter* document_parent() const {return m_parent;}
+    bool load_document(size_t node_index, const std::string& path);
+    VIInterpreter* document_parent() const {return m_parent;}
 
     /** Invoke the lexer and parser for a stream.
      * @param in        input stream

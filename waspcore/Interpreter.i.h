@@ -181,12 +181,7 @@ bool Interpreter<NodeStorage>::parse_impl(std::istream&      in,
     bool parsed = parser.parse() == 0 && !failed();
 
     commit_stages();
-    bool documents_loaded = true;
-    if (document_count() > 0)
-    {
-        documents_loaded = load_document(m_error_stream);
-    }
-    parsed &= documents_loaded;
+
     set_failed(parsed);  // updated failed cache
     return parsed;
 }
@@ -277,7 +272,8 @@ size_t Interpreter<NodeStorage>::document_count() const
 }
 
 template<class NodeStorage>
-bool Interpreter<NodeStorage>::load_document(std::ostream& document_errors) 
+bool Interpreter<NodeStorage>::load_document(size_t node_index,
+                                             const std::string & path)
 {
     wasp_not_implemented("Generic Interpreter load document");
     return false;

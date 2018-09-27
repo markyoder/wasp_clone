@@ -110,56 +110,53 @@ size_t VIInterpreter<S>::commit_staged(size_t stage_index)
     if ( m_current->parent() ) m_current = m_current->parent();  // pops current definition
     return node_index;
 }
+
 template<class S>
-bool VIInterpreter<S>::load_document(std::ostream& document_errors)
+bool VIInterpreter<S>::load_document(size_t node_index, const std::string& path)
 {
     bool passed = true;
+    Interpreter<S>::add_document_path(node_index, path);
 
-    for ( auto node_path: Interpreter<S>::m_node_interp_path )
+    std::stringstream err_msgs;
+
+    std::string directory_name = wasp::dir_name(Interpreter<S>::stream_name());
+    if (directory_name == Interpreter<S>::stream_name()) directory_name=".";
+    auto document_relative_path  = directory_name+"/"+path;
+    if ( wasp::file_exists(document_relative_path) )
     {
-        auto node_index = node_path.first;
-
-        std::stringstream err_msgs;
-
-        auto document_relative_path  = wasp::dir_name(Interpreter<S>::stream_name())
-                                      +"/"+node_path.second;
-        if ( wasp::file_exists(document_relative_path) )
+        auto * interp = new VIInterpreter<S>(err_msgs);
+        interp->m_parent = this;
+        interp->set_definition_store(this->definition_store());
+        interp->m_current = m_current;
+        wasp_check (interp->m_current);
+        if ( !interp->parseFile(document_relative_path) )
         {
-            auto * interp = new VIInterpreter<S>(err_msgs);
-            interp->m_parent = this;
-            interp->set_definition_store(this->definition_store());
-
-            auto parent_node_index = Interpreter<S>::parent_node_index(node_index);
-            interp->m_current = get_definition(parent_node_index, this);
-            wasp_check (interp->m_current);
-            if ( !interp->parseFile(document_relative_path) )
-            {
-                Interpreter<S>::error_stream()<<err_msgs.str()<<std::endl;
-                passed &= false;
-            }
-            else
-            {
-                wasp_check(Interpreter<S>::m_node_interp.find(node_index)
-                           == Interpreter<S>::m_node_interp.end());
-                wasp_check(Interpreter<S>::m_interp_node.find(interp)
-                           == Interpreter<S>::m_interp_node.end());
-                Interpreter<S>::m_node_interp[node_index] = interp;
-                Interpreter<S>::m_interp_node[interp] = node_index;
-            }
+            Interpreter<S>::error_stream()<<err_msgs.str()<<std::endl;
+            passed &= false;
         }
         else
         {
-            Interpreter<S>::error_stream()<<Interpreter<S>::stream_name()
-                                          <<" line:"
-                                          <<Interpreter<S>::line(node_index)
-                                          <<" column:"
-                                          <<Interpreter<S>::column(node_index)
-                                          <<" : could not find '"
-                                          <<document_relative_path<<"'"
-                                          <<std::endl;
-            passed &= false;
+            wasp_check(Interpreter<S>::m_node_interp.find(node_index)
+                       == Interpreter<S>::m_node_interp.end());
+            wasp_check(Interpreter<S>::m_interp_node.find(interp)
+                       == Interpreter<S>::m_interp_node.end());
+            Interpreter<S>::m_node_interp[node_index] = interp;
+            Interpreter<S>::m_interp_node[interp] = node_index;
         }
     }
+    else
+    {
+        Interpreter<S>::error_stream()<<Interpreter<S>::stream_name()
+                                      <<" line:"
+                                      <<Interpreter<S>::line(node_index)
+                                      <<" column:"
+                                      <<Interpreter<S>::column(node_index)
+                                      <<" : could not find '"
+                                      <<document_relative_path<<"'"
+                                      <<std::endl;
+        passed &= false;
+    }
+
     return passed;
 }
 #endif

@@ -167,8 +167,7 @@ include_file : include path
                                          //  |_ value (path/to/file)
                                         ,"incl"
                                         ,child_indices);
-            interpreter.add_document_path($$,
-                                          wasp::trim(interpreter.data($2)," "));
+            interpreter.load_document($$, wasp::trim(interpreter.data($2)," "));
         }
 
 
@@ -283,17 +282,33 @@ command_part : part {
                 // if nothing has been staged and we are a nested document
                 // we need to update definition
                 if( staged_child_count == 0 && interpreter.staged_count() == 1
-                        && interpreter.document_parent() && delta == 1)
+                        && interpreter.document_parent() != nullptr)
                 {
-                    auto* parent_definition = interpreter.definition()->parent();
-                    interpreter.set_current_definition(parent_definition);
+                    auto* parent_doc = interpreter.document_parent();
+                    while (delta > 0)
+                    {
+                        auto* parent_definition = interpreter.definition()->parent();
+                        interpreter.set_current_definition(parent_definition);
+                        wasp_check(static_cast<int>(parent_doc->staged_count()) > delta);
+                        parent_doc->commit_staged(parent_doc->staged_count()-1);
+                        --delta;
+                    }
                 }
                 else
                 {
                     wasp_ensure( delta < static_cast<int>(interpreter.staged_count()) );
                     // commit prior stages
                     while( delta > 0 ){
-                        interpreter.commit_staged(interpreter.staged_count()-1);
+                        if ( interpreter.staged_count() == 0 ) // user error
+                        {
+                            error(@1, "'"+data+"' has been identified, but belongs to a different scope.");
+                            interpreter.set_failed(true);
+
+                        }
+                        else
+                        {
+                            interpreter.commit_staged(interpreter.staged_count()-1);
+                        }
                         --delta;
                     }
                 }
