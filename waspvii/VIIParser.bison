@@ -221,9 +221,9 @@ part : value | fslash | comment
 command_part : part {
 
         auto token_type = interpreter.node_token_type($1);
-
-        // If this is a potential start of a new command
-        std::string data = interpreter.data($1);
+        auto node_type = interpreter.type($1);
+        bool is_key_value = node_type == wasp::KEYED_VALUE;
+        // If this is a potential start of a new command        
         wasp_check(interpreter.definition());
         const auto& child_indices = interpreter.staged_child_indices(interpreter.staged_count()-1);
 
@@ -233,10 +233,10 @@ command_part : part {
         size_t staged_child_count = 0;
         for ( const auto&  c_index : child_indices)
         {
-            auto node_type = interpreter.type(c_index);
-            if ( node_type != wasp::COMMENT
-                    && node_type != wasp::WASP_COMMA
-                    && node_type != wasp::TERM)
+            auto child_node_type = interpreter.type(c_index);
+            if ( child_node_type != wasp::COMMENT
+                    && child_node_type != wasp::WASP_COMMA
+                    && child_node_type != wasp::TERM)
             {
                 ++staged_child_count;
             }
@@ -284,8 +284,12 @@ command_part : part {
            wasp_check(name_set_success);
            $$ = interpreter.push_staged_child($1);
         }
-        else if ( token_type == wasp::STRING || token_type == wasp::QUOTED_STRING)
+        else if ( is_key_value ||
+                  token_type == wasp::STRING ||
+                  token_type == wasp::QUOTED_STRING)
         {
+            std::string data = is_key_value ? interpreter.name($1)
+                                            : interpreter.data($1);
             int delta = interpreter.definition()->delta(data, data);
             if( -1 == delta ) // no adjustment, not a command
             {
@@ -335,7 +339,6 @@ command_part : part {
                         {
                             error(@1, "'"+data+"' has been identified, but belongs to a different scope.");
                             interpreter.set_failed(true);
-
                         }
                         else
                         {
@@ -344,10 +347,18 @@ command_part : part {
                         --delta;
                     }
                 }
-                std::vector<size_t> child_indices = {$1};
-                $$ = interpreter.push_staged(wasp::ARRAY // commands are
-                                        ,data.c_str()
-                                        ,child_indices);
+
+                if ( is_key_value )
+                {
+                    $$ = interpreter.push_staged_child($1);
+                }
+                else
+                {
+                    std::vector<size_t> child_indices = {$1};
+                    $$ = interpreter.push_staged(wasp::ARRAY // commands are
+                                            ,data.c_str()
+                                            ,child_indices);
+                }
             }
         }
         // if staged index

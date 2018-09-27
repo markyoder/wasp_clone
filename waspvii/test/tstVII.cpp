@@ -333,6 +333,7 @@ TEST(VIInterpreter, passing_simple_blocks)
     std::stringstream input;
     input << R"I( block1 1
 block2 2
+    block2.2
     block2.2=2.2
 
 )I" << std::endl;
@@ -348,6 +349,8 @@ block2 2
 /block2
 /block2/decl (block2)
 /block2/value (2)
+/block2/block2.2
+/block2/block2.2/decl (block2.2)
 /block2/block2.2
 /block2/block2.2/decl (block2.2)
 /block2/block2.2/= (=)
