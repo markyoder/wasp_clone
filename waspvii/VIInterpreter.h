@@ -27,15 +27,6 @@
 namespace wasp
 {
 
-/**
- * @brief get_definition acquires the definition for the given node
- * @param node_index the node index of the node for which to acquire the definition
- * @param interp the interpreter from which to acquire the node and definition data
- * @return the definition, iff, the the definition exists for the entire lineage
- */
-AbstractDefinition * get_definition(size_t node_index,
-                                    AbstractInterpreter* interp);
-
 // How many input node type's (section, value, etc.) in a VII file
 typedef std::uint8_t VIINodeType_t;
 

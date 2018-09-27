@@ -435,7 +435,7 @@ TEST(VIInterpreter, test_unknown_blocks)
 )I" << std::endl;
     std::stringstream errors;
     VIInterpreter<>   vii(errors);
-    auto* b11 = vii.definition()->create("block1")->create("block1.1");
+    vii.definition()->create("block1")->create("block1.1");
     vii.definition()->create("block2");
 
     EXPECT_FALSE(vii.parse(input));
@@ -457,9 +457,6 @@ TEST(VIInterpreter, test_unknown_blocks)
     EXPECT_EQ(2, lineage.size());
     ASSERT_EQ("block1.1", std::string(lineage[0].name()));
     ASSERT_EQ("block1", std::string(lineage[1].name()));
-    auto* def = wasp::get_definition(root.child_at(0).child_at(3).node_index(),
-                                   &vii);
-    ASSERT_EQ(b11, def);
 }
 
 TEST(VIInterpreter, includes)
@@ -537,6 +534,42 @@ TEST(VIInterpreter, includes)
     ASSERT_EQ("block1.1", std::string(blocktxt_incl_node.non_decorative_children()[0].non_decorative_children()[0].name()));
 
     VIINodeView viiroot = vii.root();
+    paths.str(""); // reset
+    viiroot.paths(paths);
+    std::stringstream expected_explicit;
+    expected_explicit<<R"I(/
+/incl
+/block1
+/block1/[ ([)
+/block1/decl (block1)
+/block1/] (])
+/block1/block1.1
+/block1/block1.1/decl (block_1.1)
+/block1
+/block1/[ ([)
+/block1/decl (block1)
+/block1/] (])
+/block1/block1.1
+/block1/block1.1/decl (block1.1)
+/block1/incl
+/block1/block1.2
+/block1/block1.2/decl (block1.2)
+/block1/block1.2/value (1)
+/block1/block1.2
+/block1/block1.2/decl (block1.2)
+/block1/block1.2/value (2)
+/block1/incl
+/block1/block1.2
+/block1/block1.2/decl (block1.2)
+/block1/block1.2/value (3)
+/block1/block1.2
+/block1/block1.2/decl (block1.2)
+/block1/block1.2/value (4)
+/block1/comment (! trailing comment)
+/block1/block1.3
+/block1/block1.3/decl (block1.3)
+)I";
+    ASSERT_EQ(expected_explicit.str(), paths.str());
     VIINodeView blocktxt_root = viiroot.child_at(0);
     ASSERT_EQ(wasp::FILE, blocktxt_root.type());
     ASSERT_EQ(1, blocktxt_root.child_count()); // dereferences
