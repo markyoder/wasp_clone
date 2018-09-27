@@ -589,6 +589,98 @@ TEST(VIInterpreter, includes)
     }
 }
 
+TEST(VIInterpreter, commas_semicolons)
+{
+    std::stringstream input;
+    input << R"I(
+ com 1,2; com_odd_even 6,7,8;
+ com_index_aliased 8; com_named name 1,2;
+ com_odd_even_named name 2,3,4;
+ com_index_aliased_named  8
+)I";
+    DefaultVIInterpreter vii;
+    vii.definition()->create("com");
+    auto* odd_even = vii.definition()->create("com_odd_even");
+    odd_even->create_aliased("_odd", odd_even->create("o"));
+    odd_even->create_aliased("_even", odd_even->create("e"));
+
+    auto* index_aliased = vii.definition()->create("com_index_aliased");
+    index_aliased->create_aliased("_1", index_aliased->create("one"));
+
+    vii.definition()->create("com_named")->create("_name");
+
+    auto* odd_even_named = vii.definition()->create("com_odd_even_named");
+    odd_even_named->create("_name");
+    odd_even_named->create_aliased("_odd", odd_even_named->create("o"));
+    odd_even_named->create_aliased("_even", odd_even_named->create("e"));
+
+    auto* index_aliased_named = vii.definition()->create("com_index_aliased_named");
+    index_aliased_named->create("_name");
+    index_aliased_named->create_aliased("_1", index_aliased_named->create("named_one"));
+
+    ASSERT_TRUE(vii.parse(input));
+    ASSERT_EQ(6, vii.root().child_count());
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected<<R"I(/
+/com
+/com/decl (com)
+/com/value (1)
+/com/, (,)
+/com/value (2)
+/com/; (;)
+/com_odd_even
+/com_odd_even/decl (com_odd_even)
+/com_odd_even/e (6)
+/com_odd_even/, (,)
+/com_odd_even/o (7)
+/com_odd_even/, (,)
+/com_odd_even/e (8)
+/com_odd_even/; (;)
+/com_index_aliased
+/com_index_aliased/decl (com_index_aliased)
+/com_index_aliased/one (8)
+/com_index_aliased/; (;)
+/com_named
+/com_named/decl (com_named)
+/com_named/_name (name)
+/com_named/value (1)
+/com_named/, (,)
+/com_named/value (2)
+/com_named/; (;)
+/com_odd_even_named
+/com_odd_even_named/decl (com_odd_even_named)
+/com_odd_even_named/_name (name)
+/com_odd_even_named/e (2)
+/com_odd_even_named/, (,)
+/com_odd_even_named/o (3)
+/com_odd_even_named/, (,)
+/com_odd_even_named/e (4)
+/com_odd_even_named/; (;)
+/com_index_aliased_named
+/com_index_aliased_named/decl (com_index_aliased_named)
+/com_index_aliased_named/_name (8)
+)I";
+    ASSERT_EQ(expected.str(), paths.str());
+
+    VIINodeView viiroot = vii.root();
+    VIINodeView com_odd_even_named = viiroot.first_child_by_name("com_odd_even_named");
+    ASSERT_FALSE( com_odd_even_named.is_null() );
+    ASSERT_EQ(8, com_odd_even_named.child_count());
+    ASSERT_TRUE(com_odd_even_named.child_at(com_odd_even_named.child_count()-1).is_terminator());
+    // _name and 3 values
+    ASSERT_EQ(4, com_odd_even_named.non_decorative_children_count());
+    const auto& non_decorative = com_odd_even_named.non_decorative_children();
+    ASSERT_EQ(4, non_decorative.size());
+    std::vector<std::string> names = {"_name", "e","o","e"};
+    ASSERT_EQ(names.size(), non_decorative.size());
+    for (size_t i = 0; i < names.size(); ++i)
+    {
+        SCOPED_TRACE(i);
+        ASSERT_EQ(names[i], std::string(non_decorative[i].name()) );
+    }
+}
 
 // TODO TEST
 // commands containing the 'slash' construct

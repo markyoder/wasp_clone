@@ -162,15 +162,17 @@ namespace wasp {
         EOL = 258,
         MINUS = 259,
         ASSIGN = 260,
-        INTEGER = 261,
-        DOUBLE = 262,
-        STRING = 263,
-        QSTRING = 264,
-        COMMENT = 265,
-        RBRACKET = 266,
-        LBRACKET = 267,
-        FSLASH = 268,
-        FILE = 269
+        WASP_COMMA = 261,
+        SEMICOLON = 262,
+        INTEGER = 263,
+        DOUBLE = 264,
+        STRING = 265,
+        QSTRING = 266,
+        COMMENT = 267,
+        RBRACKET = 268,
+        LBRACKET = 269,
+        FSLASH = 270,
+        FILE = 271
       };
     };
 
@@ -478,12 +480,12 @@ namespace wasp {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 21,     ///< Last index in yytable_.
-      yynnts_ = 18,  ///< Number of nonterminal symbols.
+      yylast_ = 23,     ///< Last index in yytable_.
+      yynnts_ = 20,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 15  ///< Number of tokens.
+      yyntokens_ = 17  ///< Number of tokens.
     };
 
 
@@ -496,7 +498,7 @@ namespace wasp {
 
 #line 35 "VIIParser.bison" // lalr1.cc:377
 } // wasp
-#line 500 "VIIParser.hpp" // lalr1.cc:377
+#line 502 "VIIParser.hpp" // lalr1.cc:377
 
 
 

@@ -71,6 +71,8 @@
 
 %token <token_index>   MINUS            "-"
 %token <token_index>   ASSIGN           "="
+%token <token_index>   WASP_COMMA           ","
+%token <token_index>   SEMICOLON            ";"
 
 %token <token_index>    INTEGER         "integer"
 %token <token_index>    DOUBLE          "double"
@@ -85,6 +87,7 @@
 %type <token_index> PRIMITIVE
 
 %type <node_index>  decl lbracket rbracket fslash assign
+%type <node_index>  comma semicolon
 %type <node_index>  value key_value part path decl_or_key_value
 %type <stage_index>  command_part block
 %type <node_index>  comment include include_file
@@ -112,6 +115,16 @@ include : FILE
         {
             auto token_index = $1;
             $$ = interpreter.push_leaf(wasp::FILE,"decl",token_index);
+        }
+comma : WASP_COMMA
+        {
+            auto token_index = $1;
+            $$ = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
+        }
+semicolon : SEMICOLON
+        {
+            auto token_index = $1;
+            $$ = interpreter.push_leaf(wasp::TERM,";",token_index);
         }
 assign : ASSIGN
         {
@@ -203,11 +216,12 @@ decl_or_key_value :  decl assign key_value
                                         ,child_indices);
         } | decl
 part : value | fslash | comment
-        | decl_or_key_value
+        | decl_or_key_value | comma | semicolon
 
 command_part : part {
 
         auto token_type = interpreter.node_token_type($1);
+
         // If this is a potential start of a new command
         std::string data = interpreter.data($1);
         wasp_check(interpreter.definition());
@@ -219,7 +233,10 @@ command_part : part {
         size_t staged_child_count = 0;
         for ( const auto&  c_index : child_indices)
         {
-            if ( wasp::COMMENT != interpreter.type(c_index) )
+            auto node_type = interpreter.type(c_index);
+            if ( node_type != wasp::COMMENT
+                    && node_type != wasp::WASP_COMMA
+                    && node_type != wasp::TERM)
             {
                 ++staged_child_count;
             }
@@ -231,9 +248,17 @@ command_part : part {
         std::string even_odd_name = (is_named?staged_child_count:staged_child_count-1)%2 == 0
                                     ? "_even" : "_odd";
 
-        if ( wasp::COMMENT == token_type )
+        if ( wasp::COMMENT == token_type
+                || wasp::WASP_COMMA == token_type
+                || wasp::TERM == token_type)
         {
             $$ = interpreter.push_staged_child($1);
+            // terminator ';' commits the current stage
+            if ( wasp::TERM == token_type && staged_child_count > 0
+                 && interpreter.staged_count() > 1)
+            {
+                interpreter.commit_staged(interpreter.staged_count()-1);
+            }
         }
         // if there are stages, and the existing stage only contains
         // the declarator (child_count==1), and the block/command is named

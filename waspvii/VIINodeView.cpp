@@ -108,9 +108,11 @@ bool VIINodeView::is_type_decorative(std::size_t t)
         case wasp::COMMENT:
         case wasp::RBRACKET:  // [
         case wasp::LBRACKET:  // ]
+        case wasp::WASP_COMMA:
         case wasp::DIVIDE:  // forward slash '/'
+        case wasp::TERM:
             return true;
-    }
+    }    
     return false;
 }
 

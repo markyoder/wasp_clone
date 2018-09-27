@@ -58,6 +58,8 @@ SINGLE_QUOTED_STRING \'([^\'\n])*\'
 QSTRING {DOUBLE_QUOTED_STRING}|{SINGLE_QUOTED_STRING}
 COMMENT ![^\n]*
 MINUS -
+COMMA ,
+SEMICOLON ;
 ASSIGN =
 LBRACKET \[
 RBRACKET \]
@@ -79,9 +81,17 @@ INCLUDE_PATH [^ \t\n][^\n!]*
 %}
  /*** BEGIN EXAMPLE - Change the wasp lexer rules below ***/
 
-{MINUS}  {
+{MINUS} {
     capture_token(yylval,wasp::MINUS);
     return token::MINUS;
+}
+{COMMA} {
+    capture_token(yylval,wasp::WASP_COMMA);
+    return token::WASP_COMMA;
+}
+{SEMICOLON} {
+    capture_token(yylval,wasp::TERM);
+    return token::SEMICOLON;
 }
 {ASSIGN}  {
     capture_token(yylval,wasp::ASSIGN);

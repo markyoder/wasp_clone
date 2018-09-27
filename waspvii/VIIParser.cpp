@@ -53,7 +53,7 @@
 #include "VIIParser.hpp"
 
 // User implementation prologue.
-#line 92 "VIIParser.bison" // lalr1.cc:412
+#line 95 "VIIParser.bison" // lalr1.cc:412
 
 
 #include "VIInterpreter.h"
@@ -647,7 +647,7 @@ namespace wasp {
           switch (yyn)
             {
   case 2:
-#line 112 "VIIParser.bison" // lalr1.cc:859
+#line 115 "VIIParser.bison" // lalr1.cc:859
     {
             auto token_index = (yystack_[0].value.token_index);
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::FILE,"decl",token_index);
@@ -656,83 +656,101 @@ namespace wasp {
     break;
 
   case 3:
-#line 117 "VIIParser.bison" // lalr1.cc:859
+#line 120 "VIIParser.bison" // lalr1.cc:859
     {
             auto token_index = (yystack_[0].value.token_index);
-            (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,"=",token_index);
+            (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
         }
 #line 665 "VIIParser.cpp" // lalr1.cc:859
     break;
 
   case 4:
-#line 123 "VIIParser.bison" // lalr1.cc:859
+#line 125 "VIIParser.bison" // lalr1.cc:859
     {
-        auto token_index = ((yystack_[0].value.token_index));
-        (yylhs.value.node_index) = interpreter.push_leaf(wasp::DIVIDE,"/",token_index);
-    }
+            auto token_index = (yystack_[0].value.token_index);
+            (yylhs.value.node_index) = interpreter.push_leaf(wasp::TERM,";",token_index);
+        }
 #line 674 "VIIParser.cpp" // lalr1.cc:859
     break;
 
   case 5:
-#line 128 "VIIParser.bison" // lalr1.cc:859
+#line 130 "VIIParser.bison" // lalr1.cc:859
     {
-        auto token_index = ((yystack_[0].value.token_index));
-        (yylhs.value.node_index) = interpreter.push_leaf(wasp::RBRACKET,"]",token_index);
-    }
+            auto token_index = (yystack_[0].value.token_index);
+            (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,"=",token_index);
+        }
 #line 683 "VIIParser.cpp" // lalr1.cc:859
     break;
 
   case 6:
-#line 133 "VIIParser.bison" // lalr1.cc:859
+#line 136 "VIIParser.bison" // lalr1.cc:859
     {
         auto token_index = ((yystack_[0].value.token_index));
-        (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACKET,"[",token_index);
+        (yylhs.value.node_index) = interpreter.push_leaf(wasp::DIVIDE,"/",token_index);
     }
 #line 692 "VIIParser.cpp" // lalr1.cc:859
     break;
 
-  case 11:
+  case 7:
 #line 141 "VIIParser.bison" // lalr1.cc:859
     {
-    size_t token_index = ((yystack_[0].value.token_index));
-    (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
-                     ,token_index);
-}
-#line 702 "VIIParser.cpp" // lalr1.cc:859
+        auto token_index = ((yystack_[0].value.token_index));
+        (yylhs.value.node_index) = interpreter.push_leaf(wasp::RBRACKET,"]",token_index);
+    }
+#line 701 "VIIParser.cpp" // lalr1.cc:859
+    break;
+
+  case 8:
+#line 146 "VIIParser.bison" // lalr1.cc:859
+    {
+        auto token_index = ((yystack_[0].value.token_index));
+        (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACKET,"[",token_index);
+    }
+#line 710 "VIIParser.cpp" // lalr1.cc:859
     break;
 
   case 13:
-#line 148 "VIIParser.bison" // lalr1.cc:859
+#line 154 "VIIParser.bison" // lalr1.cc:859
     {
     size_t token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                      ,token_index);
 }
-#line 712 "VIIParser.cpp" // lalr1.cc:859
-    break;
-
-  case 14:
-#line 155 "VIIParser.bison" // lalr1.cc:859
-    {
-            size_t token_index = ((yystack_[0].value.token_index));
-            (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"path"
-                             ,token_index);
-        }
-#line 722 "VIIParser.cpp" // lalr1.cc:859
+#line 720 "VIIParser.cpp" // lalr1.cc:859
     break;
 
   case 15:
 #line 161 "VIIParser.bison" // lalr1.cc:859
     {
-            size_t token_index = ((yystack_[0].value.token_index));
-            (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"path"
-                             ,token_index);
-        }
-#line 732 "VIIParser.cpp" // lalr1.cc:859
+    size_t token_index = ((yystack_[0].value.token_index));
+    (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
+                     ,token_index);
+}
+#line 730 "VIIParser.cpp" // lalr1.cc:859
     break;
 
   case 16:
 #line 168 "VIIParser.bison" // lalr1.cc:859
+    {
+            size_t token_index = ((yystack_[0].value.token_index));
+            (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"path"
+                             ,token_index);
+        }
+#line 740 "VIIParser.cpp" // lalr1.cc:859
+    break;
+
+  case 17:
+#line 174 "VIIParser.bison" // lalr1.cc:859
+    {
+            size_t token_index = ((yystack_[0].value.token_index));
+            (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"path"
+                             ,token_index);
+        }
+#line 750 "VIIParser.cpp" // lalr1.cc:859
+    break;
+
+  case 18:
+#line 181 "VIIParser.bison" // lalr1.cc:859
     {
 
             std::vector<size_t> child_indices = {(yystack_[1].value.node_index),(yystack_[0].value.node_index)};
@@ -744,11 +762,11 @@ namespace wasp {
                                         ,child_indices);
             interpreter.load_document((yylhs.value.node_index), wasp::trim(interpreter.data((yystack_[0].value.node_index))," "));
         }
-#line 748 "VIIParser.cpp" // lalr1.cc:859
+#line 766 "VIIParser.cpp" // lalr1.cc:859
     break;
 
-  case 17:
-#line 182 "VIIParser.bison" // lalr1.cc:859
+  case 19:
+#line 195 "VIIParser.bison" // lalr1.cc:859
     {
         auto token_index = ((yystack_[0].value.token_index));
         std::string quote_less_data = interpreter.token_data(token_index);
@@ -757,11 +775,11 @@ namespace wasp {
                                    ,"decl"
                                    ,token_index);
     }
-#line 761 "VIIParser.cpp" // lalr1.cc:859
+#line 779 "VIIParser.cpp" // lalr1.cc:859
     break;
 
-  case 18:
-#line 191 "VIIParser.bison" // lalr1.cc:859
+  case 20:
+#line 204 "VIIParser.bison" // lalr1.cc:859
     {
             std::string quote_less_data = interpreter.data((yystack_[2].value.node_index));
             quote_less_data = wasp::strip_quotes(quote_less_data);
@@ -776,14 +794,15 @@ namespace wasp {
                                         ,quote_less_data.c_str()
                                         ,child_indices);
         }
-#line 780 "VIIParser.cpp" // lalr1.cc:859
+#line 798 "VIIParser.cpp" // lalr1.cc:859
     break;
 
-  case 24:
-#line 208 "VIIParser.bison" // lalr1.cc:859
+  case 28:
+#line 221 "VIIParser.bison" // lalr1.cc:859
     {
 
         auto token_type = interpreter.node_token_type((yystack_[0].value.node_index));
+
         // If this is a potential start of a new command
         std::string data = interpreter.data((yystack_[0].value.node_index));
         wasp_check(interpreter.definition());
@@ -795,7 +814,10 @@ namespace wasp {
         size_t staged_child_count = 0;
         for ( const auto&  c_index : child_indices)
         {
-            if ( wasp::COMMENT != interpreter.type(c_index) )
+            auto node_type = interpreter.type(c_index);
+            if ( node_type != wasp::COMMENT
+                    && node_type != wasp::WASP_COMMA
+                    && node_type != wasp::TERM)
             {
                 ++staged_child_count;
             }
@@ -807,9 +829,17 @@ namespace wasp {
         std::string even_odd_name = (is_named?staged_child_count:staged_child_count-1)%2 == 0
                                     ? "_even" : "_odd";
 
-        if ( wasp::COMMENT == token_type )
+        if ( wasp::COMMENT == token_type
+                || wasp::WASP_COMMA == token_type
+                || wasp::TERM == token_type)
         {
             (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
+            // terminator ';' commits the current stage
+            if ( wasp::TERM == token_type && staged_child_count > 0
+                 && interpreter.staged_count() > 1)
+            {
+                interpreter.commit_staged(interpreter.staged_count()-1);
+            }
         }
         // if there are stages, and the existing stage only contains
         // the declarator (child_count==1), and the block/command is named
@@ -918,30 +948,30 @@ namespace wasp {
             (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
         }
     }
-#line 922 "VIIParser.cpp" // lalr1.cc:859
+#line 952 "VIIParser.cpp" // lalr1.cc:859
     break;
 
-  case 25:
-#line 346 "VIIParser.bison" // lalr1.cc:859
+  case 29:
+#line 371 "VIIParser.bison" // lalr1.cc:859
     {
         // assume the included content will be a child of the existing
         // staged content.
         (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
     }
-#line 932 "VIIParser.cpp" // lalr1.cc:859
+#line 962 "VIIParser.cpp" // lalr1.cc:859
     break;
 
-  case 26:
-#line 353 "VIIParser.bison" // lalr1.cc:859
+  case 30:
+#line 378 "VIIParser.bison" // lalr1.cc:859
     {
             auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
-#line 941 "VIIParser.cpp" // lalr1.cc:859
+#line 971 "VIIParser.cpp" // lalr1.cc:859
     break;
 
-  case 27:
-#line 358 "VIIParser.bison" // lalr1.cc:859
+  case 31:
+#line 383 "VIIParser.bison" // lalr1.cc:859
     {
         // Block is top level parse construct
         // It closes/commits existing stages
@@ -965,11 +995,11 @@ namespace wasp {
                                         ,child_indices);
         }
     }
-#line 969 "VIIParser.cpp" // lalr1.cc:859
+#line 999 "VIIParser.cpp" // lalr1.cc:859
     break;
 
-  case 29:
-#line 383 "VIIParser.bison" // lalr1.cc:859
+  case 33:
+#line 408 "VIIParser.bison" // lalr1.cc:859
     {
            if(interpreter.single_parse() )
            {
@@ -977,11 +1007,11 @@ namespace wasp {
                YYACCEPT;
            }
        }
-#line 981 "VIIParser.cpp" // lalr1.cc:859
+#line 1011 "VIIParser.cpp" // lalr1.cc:859
     break;
 
-  case 30:
-#line 390 "VIIParser.bison" // lalr1.cc:859
+  case 34:
+#line 415 "VIIParser.bison" // lalr1.cc:859
     {
             if(interpreter.single_parse() )
             {
@@ -989,11 +1019,11 @@ namespace wasp {
                 YYACCEPT;
             }
         }
-#line 993 "VIIParser.cpp" // lalr1.cc:859
+#line 1023 "VIIParser.cpp" // lalr1.cc:859
     break;
 
 
-#line 997 "VIIParser.cpp" // lalr1.cc:859
+#line 1027 "VIIParser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1248,83 +1278,83 @@ namespace wasp {
   }
 
 
-  const signed char VIIParser::yypact_ninf_ = -14;
+  const signed char VIIParser::yypact_ninf_ = -12;
 
   const signed char VIIParser::yytable_ninf_ = -1;
 
   const signed char
   VIIParser::yypact_[] =
   {
-     -14,     0,   -14,   -14,   -14,   -14,   -14,   -14,   -14,   -14,
-     -14,   -14,    -7,   -14,    -5,   -14,   -14,   -14,     6,   -14,
-     -14,   -14,   -14,   -14,   -14,   -14,   -14,    -6,   -14,    11,
-     -14,   -14,   -14,   -14,   -14
+     -12,     0,   -12,   -12,   -12,   -12,   -12,   -12,   -12,   -12,
+     -12,   -12,   -12,   -12,    -9,   -12,   -12,   -12,    -7,   -12,
+     -12,   -12,    16,   -12,   -12,   -12,   -12,   -12,   -12,   -12,
+     -12,    -8,   -12,     9,   -12,   -12,   -12,   -12,   -12
   };
 
   const unsigned char
   VIIParser::yydefact_[] =
   {
-      28,     0,     1,    10,     8,     9,    17,     7,    26,     6,
-       4,     2,     0,    21,     0,    11,    20,    25,    19,    23,
-      24,    30,    22,    29,    14,    15,    16,     0,     3,     0,
-       5,    27,    13,    12,    18
+      32,     0,     1,    12,     3,     4,    10,    11,    19,     9,
+      30,     8,     6,     2,     0,    26,    27,    23,     0,    13,
+      22,    29,    21,    25,    28,    34,    24,    33,    16,    17,
+      18,     0,     5,     0,     7,    31,    15,    14,    20
   };
 
   const signed char
   VIIParser::yypgoto_[] =
   {
-     -14,   -14,   -14,   -14,   -14,   -14,   -14,   -13,   -14,   -14,
-     -14,     7,   -14,   -14,   -14,   -14,   -14,   -14
+     -12,   -12,   -12,   -12,   -12,   -12,   -12,   -12,   -12,   -11,
+     -12,   -12,   -12,     5,   -12,   -12,   -12,   -12,   -12,   -12
   };
 
   const signed char
   VIIParser::yydefgoto_[] =
   {
-      -1,    12,    29,    13,    31,    14,    15,    16,    34,    26,
-      17,    18,    19,    20,    21,    22,    23,     1
+      -1,    14,    15,    16,    33,    17,    35,    18,    19,    20,
+      38,    30,    21,    22,    23,    24,    25,    26,    27,     1
   };
 
   const unsigned char
   VIIParser::yytable_[] =
   {
-       2,    24,    25,     6,     3,    30,     4,     5,     6,     7,
-       8,    28,     9,    10,    11,     3,    33,     4,     5,    32,
-       7,    27
+       2,    28,    29,     8,     3,    34,     4,     5,     6,     7,
+       8,     9,    10,     3,    11,    12,    13,     6,     7,    36,
+       9,    32,    37,    31
   };
 
   const unsigned char
   VIIParser::yycheck_[] =
   {
-       0,     8,     9,     8,     4,    11,     6,     7,     8,     9,
-      10,     5,    12,    13,    14,     4,    29,     6,     7,     8,
-       9,    14
+       0,    10,    11,    10,     4,    13,     6,     7,     8,     9,
+      10,    11,    12,     4,    14,    15,    16,     8,     9,    10,
+      11,     5,    33,    18
   };
 
   const unsigned char
   VIIParser::yystos_[] =
   {
-       0,    32,     0,     4,     6,     7,     8,     9,    10,    12,
-      13,    14,    16,    18,    20,    21,    22,    25,    26,    27,
-      28,    29,    30,    31,     8,     9,    24,    26,     5,    17,
-      11,    19,     8,    22,    23
+       0,    36,     0,     4,     6,     7,     8,     9,    10,    11,
+      12,    14,    15,    16,    18,    19,    20,    22,    24,    25,
+      26,    29,    30,    31,    32,    33,    34,    35,    10,    11,
+      28,    30,     5,    21,    13,    23,    10,    26,    27
   };
 
   const unsigned char
   VIIParser::yyr1_[] =
   {
-       0,    15,    16,    17,    18,    19,    20,    21,    21,    21,
-      21,    22,    23,    23,    24,    24,    25,    26,    27,    27,
-      28,    28,    28,    28,    29,    29,    30,    31,    32,    32,
-      32
+       0,    17,    18,    19,    20,    21,    22,    23,    24,    25,
+      25,    25,    25,    26,    27,    27,    28,    28,    29,    30,
+      31,    31,    32,    32,    32,    32,    32,    32,    33,    33,
+      34,    35,    36,    36,    36
   };
 
   const unsigned char
   VIIParser::yyr2_[] =
   {
        0,     2,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     2,     1,     3,     1,
-       1,     1,     1,     1,     1,     1,     1,     3,     0,     2,
-       2
+       1,     1,     1,     1,     1,     1,     1,     1,     2,     1,
+       3,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     3,     0,     2,     2
   };
 
 
@@ -1335,22 +1365,23 @@ namespace wasp {
   const VIIParser::yytname_[] =
   {
   "\"end of file\"", "error", "$undefined", "\"end of line\"", "\"-\"",
-  "\"=\"", "\"integer\"", "\"double\"", "\"string\"", "\"quoted string\"",
-  "\"comment\"", "\"right bracket\"", "\"left bracket\"",
-  "\"forward slash\"", "\"file include\"", "$accept", "include", "assign",
-  "fslash", "rbracket", "lbracket", "PRIMITIVE", "value", "key_value",
-  "path", "include_file", "decl", "decl_or_key_value", "part",
-  "command_part", "comment", "block", "start", YY_NULLPTR
+  "\"=\"", "\",\"", "\";\"", "\"integer\"", "\"double\"", "\"string\"",
+  "\"quoted string\"", "\"comment\"", "\"right bracket\"",
+  "\"left bracket\"", "\"forward slash\"", "\"file include\"", "$accept",
+  "include", "comma", "semicolon", "assign", "fslash", "rbracket",
+  "lbracket", "PRIMITIVE", "value", "key_value", "path", "include_file",
+  "decl", "decl_or_key_value", "part", "command_part", "comment", "block",
+  "start", YY_NULLPTR
   };
 
 #if YYDEBUG
   const unsigned short int
   VIIParser::yyrline_[] =
   {
-       0,   111,   111,   116,   122,   127,   132,   138,   138,   138,
-     138,   140,   146,   147,   154,   160,   167,   181,   190,   204,
-     205,   205,   205,   206,   208,   345,   352,   357,   382,   383,
-     390
+       0,   114,   114,   119,   124,   129,   135,   140,   145,   151,
+     151,   151,   151,   153,   159,   160,   167,   173,   180,   194,
+     203,   217,   218,   218,   218,   219,   219,   219,   221,   370,
+     377,   382,   407,   408,   415
   };
 
   // Print the state stack on the debug stream.
@@ -1417,9 +1448,10 @@ namespace wasp {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12,    13,    14
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16
     };
-    const unsigned int user_token_number_max_ = 269;
+    const unsigned int user_token_number_max_ = 271;
     const token_number_type undef_token_ = 2;
 
     if (static_cast<int>(t) <= yyeof_)
@@ -1432,8 +1464,8 @@ namespace wasp {
 
 #line 35 "VIIParser.bison" // lalr1.cc:1167
 } // wasp
-#line 1436 "VIIParser.cpp" // lalr1.cc:1167
-#line 402 "VIIParser.bison" // lalr1.cc:1168
+#line 1468 "VIIParser.cpp" // lalr1.cc:1167
+#line 427 "VIIParser.bison" // lalr1.cc:1168
  /*** Additional Code ***/
 
 void wasp::VIIParser::error(const VIIParser::location_type& l,
