@@ -10,6 +10,7 @@ cmake -DCMAKE_C_COMPILER=icl ^
 	  -DCMAKE_BUILD_TYPE:STRING=RELEASE ^
 	  -Dwasp_ENABLE_TESTS:BOOL=ON ^
 	  -Dwasp_ENABLE_ALL_PACKAGES:BOOL=ON ^
+	  -DCMAKE_CXX_FLAGS:STRING=/FC ^
 	  -G "Ninja" ^
 	  ..
 ctest -D ExperimentalStart ^
