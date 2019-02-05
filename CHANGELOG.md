@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+
+### Fixed
+- wasppy inablility to handle file paths with whitespaces. 
+
 ## [1.0.2] - 07-16-2018
 ### Added
 - DocPrint utility that consumes an input schema and produces GitLab compatible Markdown. The Markdown can be converted to html using Pandoc.
