@@ -420,6 +420,7 @@ class WASP_PUBLIC AbstractInterpreter
     virtual void node_paths(size_t node_index, std::ostream& out) const = 0;
     virtual size_t child_at(size_t node_index, size_t index) const      = 0;
     virtual size_t node_token_type(size_t node_index) const = 0;
+    virtual size_t node_token_line(size_t node_index) const = 0;
     virtual size_t line(size_t node_index) const            = 0;
     virtual size_t last_line(size_t node_index) const       = 0;
     virtual size_t column(size_t node_index) const          = 0;
@@ -600,7 +601,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
     size_t type(size_t node_index) const;
 
     /**
-     * @brief node_token_type acquire the type of the toke backing the node at
+     * @brief node_token_type acquire the type of the token backing the node at
      * the given index
      * @param node_index the node for which the token type is requested.
      * @return the token type of the leaf node at the given index.
@@ -609,6 +610,16 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * returned
      */
     size_t node_token_type(size_t node_index) const;
+    /**
+     * @brief node_token_line acquire the line of the token backing the node at
+     * the given index
+     * @param node_index the node for which the token line is requested.
+     * @return the token line of the leaf node at the given index.
+     * If the node index is out of range, 0 is returned.
+     * If the node at the given index is not a leaf node, 0 is
+     * returned
+     */
+    size_t node_token_line(size_t node_index) const;
     /**
      * @brief name acquire the name of the node at the given index
      * @param node_index the node index
@@ -629,6 +640,12 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @return the data of the token
      */
     const char* token_data(size_t token_index) const;
+    /**
+     * @brief token_line acquires the line for the token at the given index
+     * @param token_index the index of the token for which the line is requested
+     * @return the line number of the given token
+     */
+    size_t token_line(size_t token_index) const;
     /**
      * @brief child_count determines the number of children for the node
      * @param node_index index of the node of which children count are requested

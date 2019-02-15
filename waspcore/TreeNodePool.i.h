@@ -381,6 +381,18 @@ TreeNodePool<NTS, NIS, TP>::node_token_type(NIS node_index) const
     }
     return wasp::UNKNOWN;
 }
+template<typename NTS, typename NIS, class TP>
+size_t
+TreeNodePool<NTS, NIS, TP>::node_token_line(NIS node_index) const
+{
+    auto leaf_itr = m_leaf_token_lookup.find(node_index);
+    // obtain the token's column
+    if (leaf_itr != m_leaf_token_lookup.end())
+    {
+        return m_token_data.line(leaf_itr->second);
+    }
+    return 0;
+}
 // Obtain a leaf node's token type
 template<typename NTS, typename NIS, class TP>
 typename TP::file_offset_type_size

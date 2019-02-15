@@ -222,12 +222,14 @@ command_part : part {
 
         auto token_type = interpreter.node_token_type($1);
         auto node_type = interpreter.type($1);
+        auto staged_type = interpreter.staged_type(interpreter.staged_count()-1);
+
         bool is_key_value = node_type == wasp::KEYED_VALUE;
         // If this is a potential start of a new command        
         wasp_check(interpreter.definition());
         const auto& child_indices = interpreter.staged_child_indices(interpreter.staged_count()-1);
 
-        // Accumumate non-decorative staged child count
+        // Accumulate non-decorative staged child count
         // This cannot be done with the node view because the node is staged and
         // has not been committed to the tree, yet.
         size_t staged_child_count = 0;
@@ -241,6 +243,11 @@ command_part : part {
                 ++staged_child_count;
             }
         }
+        auto prev_part_line = @1.end.line;  // initialize to current line
+        if (!child_indices.empty())
+        {
+            prev_part_line = interpreter.node_token_line(child_indices.back());
+        }
         bool is_named = interpreter.definition()->has("_name");
 
         std::string index_name = is_named ? "_"+std::to_string(staged_child_count-1)
@@ -248,7 +255,20 @@ command_part : part {
         std::string even_odd_name = (is_named?staged_child_count:staged_child_count-1)%2 == 0
                                     ? "_even" : "_odd";
 
+        // Check for scenario where comment is trailing on a different line
         if ( wasp::COMMENT == token_type
+                && @1.end.line !=  prev_part_line
+                && staged_type  != wasp::OBJECT
+                && interpreter.staged_count() > 1)
+        {
+            // this comment belongs to parent scope
+            // terminate the current staged data
+            interpreter.commit_staged(interpreter.staged_count()-1);
+
+            // Stage
+            $$ = interpreter.push_staged_child($1);
+        }
+        else if ( wasp::COMMENT == token_type
                 || wasp::WASP_COMMA == token_type
                 || wasp::TERM == token_type)
         {
