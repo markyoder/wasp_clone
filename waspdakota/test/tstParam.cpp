@@ -122,3 +122,35 @@ TEST(Dakota, param1)
     }
 }
 
+TEST(Dakota, unknown_block)
+{
+    std::stringstream input;
+    input << R"I(                                         1 variables
+             0        ddriv_1
+             0 fowbles
+             1 eval_id
+)I" << std::endl;
+    ParametersFile params;
+    std::stringstream errors;
+    ASSERT_FALSE(params.load(input,errors));
+    std::stringstream expected;
+    expected<<"***Error: line 3, fowbles is an unknown parameter block!\n"
+              "\t Expecting functions, derivative_variables, or analysis_components.\n";
+    ASSERT_EQ(expected.str(), errors.str());
+}
+
+TEST(Dakota, nagative_count_block)
+{
+    std::stringstream input;
+    input << R"I(                                         -1 variables
+             0        ddriv_1
+             0 fowbles
+             1 eval_id
+)I" << std::endl;
+    ParametersFile params;
+    std::stringstream errors;
+    ASSERT_FALSE(params.load(input,errors));
+    std::stringstream expected;
+    expected<<"***Error: line 1, variable count must be non-negative, but was provided as -1\n";
+    ASSERT_EQ(expected.str(), errors.str());
+}

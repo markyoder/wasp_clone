@@ -40,9 +40,16 @@ bool ParametersFile::load(std::istream &input, std::ostream &errors)
               <<variables_label<<"' instead"<<std::endl;
         return false;
     }
+    if (variable_count < 0 )
+    {
+        errors <<"***Error: line "<<line
+              <<", variable count must be non-negative, but was provided as "<<variable_count
+             <<std::endl;
+        return false;
+    }
     m_variable.count= variable_count;
     m_variable.name = variables_label;
-
+    ++line;
     if ( !load_block(m_variable, input, errors, line) )
     {
         errors << "***Error: line "<<line
