@@ -1,4 +1,3 @@
-
 template<class NodeStorage>
 Interpreter<NodeStorage>::Interpreter(std::ostream& err)
     : AbstractInterpreter()
@@ -119,7 +118,7 @@ size_t Interpreter<NodeStorage>::node_token_line(size_t index) const
     // have any nodes?
     if (m_nodes.size() == 0)
     {
-        return wasp::UNKNOWN;
+        return 0;
     }
     return this->m_nodes.node_token_line(index);
 }
