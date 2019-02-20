@@ -204,6 +204,17 @@ class WASP_PUBLIC TreeNodePool
      */
     typename TP::token_type_size
     node_token_type(node_index_size node_index) const;
+    /**
+     * @brief node_token_line acquire the line of the token backing the node at
+     * the given index
+     * @param node_index the node for which the token line is requested.
+     * @return the token line of the leaf node at the given index.
+     * If the node index is out of range, 0 is returned.
+     * If the node at the given index is not a leaf node 0 is
+     * returned
+     */
+    size_t node_token_line(node_index_size node_index) const;
+
     typename TP::file_offset_type_size
     node_token_offset(node_index_size node_index) const;
     /**

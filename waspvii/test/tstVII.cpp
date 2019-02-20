@@ -183,20 +183,17 @@ TEST(VIInterpreter, comment_placement)
 {
     std::stringstream input;
     input << R"I( ! comment of document
- block1 "a"
-    ! comment for blockion 1
+ block1 "a" ! comment for blockion 1
     block1.1
         block1.1.1 ! comment for block 1.1.1
-        !comment still 1.1.1
-        block1.1.2
-            !comment for 1.1.2
-    block1.2
-        ! comment of 1.2
+        !comment for block1.1
+        block1.1.2 !comment for 1.1.2
+    block1.2  ! comment of 1.2
         block1.2.1
-! block 1.2.1
+! block 1.2
         block1.2.2
         block1.2.3 "value"
-    !block 1.2.3
+    !comment ends up in block 1.2
     block1.3
  block2
 )I" << std::endl;
@@ -226,7 +223,7 @@ TEST(VIInterpreter, comment_placement)
 /block1/block1.1/block1.1.1
 /block1/block1.1/block1.1.1/decl (block1.1.1)
 /block1/block1.1/block1.1.1/comment (! comment for block 1.1.1)
-/block1/block1.1/block1.1.1/comment (!comment still 1.1.1)
+/block1/block1.1/comment (!comment for block1.1)
 /block1/block1.1/block1.1.2
 /block1/block1.1/block1.1.2/decl (block1.1.2)
 /block1/block1.1/block1.1.2/comment (!comment for 1.1.2)
@@ -235,13 +232,13 @@ TEST(VIInterpreter, comment_placement)
 /block1/block1.2/comment (! comment of 1.2)
 /block1/block1.2/block1.2.1
 /block1/block1.2/block1.2.1/decl (block1.2.1)
-/block1/block1.2/block1.2.1/comment (! block 1.2.1)
+/block1/block1.2/comment (! block 1.2)
 /block1/block1.2/block1.2.2
 /block1/block1.2/block1.2.2/decl (block1.2.2)
 /block1/block1.2/block1.2.3
 /block1/block1.2/block1.2.3/decl (block1.2.3)
 /block1/block1.2/block1.2.3/value ("value")
-/block1/block1.2/block1.2.3/comment (!block 1.2.3)
+/block1/block1.2/comment (!comment ends up in block 1.2)
 /block1/block1.3
 /block1/block1.3/decl (block1.3)
 /block2

@@ -1,4 +1,3 @@
-
 template<class NodeStorage>
 Interpreter<NodeStorage>::Interpreter(std::ostream& err)
     : AbstractInterpreter()
@@ -114,6 +113,16 @@ size_t Interpreter<NodeStorage>::node_token_type(size_t index) const
     return this->m_nodes.node_token_type(index);
 }
 template<class NodeStorage>
+size_t Interpreter<NodeStorage>::node_token_line(size_t index) const
+{
+    // have any nodes?
+    if (m_nodes.size() == 0)
+    {
+        return 0;
+    }
+    return this->m_nodes.node_token_line(index);
+}
+template<class NodeStorage>
 const char* Interpreter<NodeStorage>::name(size_t index) const
 {
     // have any nodes?
@@ -154,6 +163,18 @@ const char* Interpreter<NodeStorage>::token_data(size_t index) const
         return nullptr;
     }
     return token_pool.str(index);
+}
+
+template<class NodeStorage>
+size_t Interpreter<NodeStorage>::token_line(size_t index) const
+{
+    // have any tokens?
+    const auto& token_pool = m_nodes.token_data();
+    if (token_pool.size() == 0)
+    {
+        return 0;
+    }
+    return token_pool.line(index);
 }
 
 template<class NodeStorage>
