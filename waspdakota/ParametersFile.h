@@ -1,6 +1,8 @@
 #ifndef WASP_DAKOTA_PARAMETERSFILE_H
 #define WASP_DAKOTA_PARAMETERSFILE_H
 
+#include "waspcore/decl.h"
+
 #include <iostream>
 #include <string>
 #include <utility>
@@ -42,7 +44,7 @@ namespace wasp{
  *  <string> eval_id
  *
  */
-class ParametersFile
+class WASP_PUBLIC ParametersFile
 {
 public:
     ParametersFile();
