@@ -16,6 +16,29 @@ using namespace wasp;
 
 
 
+inline void insert_typed(DataObject::SP& obj_ptr, const std::string& label,
+                    const std::string& value)
+{
+    bool ok = false;
+
+    double d;
+    wasp::to_type<double>(d,value, &ok);
+    if (ok)
+    {
+        obj_ptr->insert(std::make_pair(label,d));
+        return;
+    }
+    int i;
+    wasp::to_type<int>(i,value, &ok);
+    if (ok)
+    {
+        obj_ptr->insert(std::make_pair(label,i));
+        return;
+    }
+
+    obj_ptr->insert(std::make_pair(label, value));
+}
+
 inline WASP_PUBLIC bool substitute_template(std::ostream&      result,
                                         std::ostream&      elog,
                                         std::ostream&      alog,
@@ -82,28 +105,28 @@ inline WASP_PUBLIC bool substitute_template(std::ostream&      result,
     {
         const auto& label = parameters.variable_label(i);
         const auto& value = parameters.variable_value(i);
-        obj_ptr->insert(std::make_pair(label, value));
+        insert_typed(obj_ptr,label, value);
     }
     // add functions to DataObject
     for( size_t i = 0; i < parameters.function_count(); ++i)
     {
         const auto& label = parameters.function_label(i);
         const auto& value = parameters.function_value(i);
-        obj_ptr->insert(std::make_pair(label, value));
+        insert_typed(obj_ptr,label, value);
     }
     // add derivative variables
     for( size_t i = 0; i < parameters.derivative_variable_count(); ++i)
     {
         const auto& label = parameters.derivative_variable_label(i);
         const auto& value = parameters.derivative_variable_value(i);
-        obj_ptr->insert(std::make_pair(label, value));
+        insert_typed(obj_ptr,label, value);
     }
     // add analysis components
     for( size_t i = 0; i < parameters.analysis_component_count(); ++i)
     {
         const auto& label = parameters.analysis_component_label(i);
         const auto& value = parameters.analysis_component_value(i);
-        obj_ptr->insert(std::make_pair(label, value));
+        insert_typed(obj_ptr,label, value);
     }
 
     DataAccessor data(obj_ptr.get(), nullptr, hop);
