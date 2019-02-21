@@ -2,6 +2,8 @@
 #define WASP_DAKOTA_PARAMETERSFILE_H
 
 #include "waspcore/decl.h"
+#include "waspcore/Object.h"
+#include "wasphalite/HaliteInterpreter.h"
 
 #include <iostream>
 #include <string>
@@ -120,5 +122,147 @@ public:
 
 
 }; // end of ParametersFile
+
+inline void insert_typed(DataObject::SP& obj_ptr, const std::string& label,
+                    const std::string& value)
+{
+    bool ok = false;
+
+    double d;
+    wasp::to_type<double>(d,value, &ok);
+    if (ok)
+    {
+        obj_ptr->insert(std::make_pair(label,d));
+        return;
+    }
+    int i;
+    wasp::to_type<int>(i,value, &ok);
+    if (ok)
+    {
+        obj_ptr->insert(std::make_pair(label,i));
+        return;
+    }
+
+    obj_ptr->insert(std::make_pair(label, value));
+}
+
+/**
+ * @brief substitute_template convenience function for template substition
+ * @param result the substituted template
+ * @param elog the error log
+ * @param alog the activity log
+ * @param template_file the template path
+ * @param parameter_file the parameter path
+ * @param defaultVars use default variables (e, pi, etc.)
+ * @param defaultFuncs use default functions (cos, sin, etc.)
+ * @param ldelim the opening/left attribute delimiter
+ * @param rdelim the closing/right attribute delimiter
+ * @param hop the hierarchical operator ('.', etc.)
+ * @return true if the template had no issues in being substituted
+ */
+inline WASP_PUBLIC bool substitute_template(std::ostream&      result,
+                                        std::ostream&      elog,
+                                        std::ostream&      alog,
+                                        const std::string& template_file,
+                                        const std::string& parameter_file,
+                                        bool               defaultVars,
+                                        bool               defaultFuncs,
+                                        const std::string& ldelim,
+                                        const std::string& rdelim,
+                                        const std::string& hop)
+{
+    HaliteInterpreter<
+        TreeNodePool<unsigned int, unsigned int,
+                     TokenPool<unsigned int, unsigned int, unsigned int>>>
+        halite(elog);
+    halite.attr_start_delim() = ldelim;
+    halite.attr_end_delim() = rdelim;
+
+    bool tmpl_failed = !halite.parseFile(template_file);
+    if (tmpl_failed)
+    {
+        elog << "***Error : Parsing of template " << template_file << " failed!"
+             << std::endl;
+        return false;
+    }
+    // No parameter file, expand template
+    if (parameter_file.empty())
+    {
+        DataObject   o;
+        DataAccessor data(&o, nullptr, hop);
+        if (defaultVars)
+            data.add_default_variables();
+        if (defaultFuncs)
+            data.add_default_functions();
+        bool emitted = halite.evaluate(result, data, &alog);
+
+        if (!emitted)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    // process param file
+    std::ifstream param_file_stream(parameter_file);
+    if (!param_file_stream)
+    {
+        elog << "***Error : Parameter file could not be opened! "
+             <<parameter_file<< std::endl;
+        return false;
+    }
+    DataObject::SP obj_ptr = std::make_shared<DataObject>();
+    ParametersFile parameters;
+    bool           param_failed = !parameters.load(param_file_stream,elog);
+    if (param_failed)
+    {
+        elog << "***Error : failed to load " << parameter_file
+             <<"!"<<std::endl;
+        return false;
+    }
+
+    // add variables to DataObject
+    for( size_t i = 0; i < parameters.variable_count(); ++i)
+    {
+        const auto& label = parameters.variable_label(i);
+        const auto& value = parameters.variable_value(i);
+        insert_typed(obj_ptr,label, value);
+    }
+    // add functions to DataObject
+    for( size_t i = 0; i < parameters.function_count(); ++i)
+    {
+        const auto& label = parameters.function_label(i);
+        const auto& value = parameters.function_value(i);
+        insert_typed(obj_ptr,label, value);
+    }
+    // add derivative variables
+    for( size_t i = 0; i < parameters.derivative_variable_count(); ++i)
+    {
+        const auto& label = parameters.derivative_variable_label(i);
+        const auto& value = parameters.derivative_variable_value(i);
+        insert_typed(obj_ptr,label, value);
+    }
+    // add analysis components
+    for( size_t i = 0; i < parameters.analysis_component_count(); ++i)
+    {
+        const auto& label = parameters.analysis_component_label(i);
+        const auto& value = parameters.analysis_component_value(i);
+        insert_typed(obj_ptr,label, value);
+    }
+
+    DataAccessor data(obj_ptr.get(), nullptr, hop);
+    if (defaultVars)
+        data.add_default_variables();
+    if (defaultFuncs)
+        data.add_default_functions();
+
+    bool emitted = halite.evaluate(result, data, &alog);
+
+    if (!emitted)
+    {
+        return false;
+    }
+    return true;
+} // end of substitute_template
 } // end namespace
 #endif
