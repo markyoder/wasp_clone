@@ -30,7 +30,7 @@ int main(int argc, char** argv)
         std::cout << "Usage: " << std::endl;
         std::cout << "\t" << argv[0] << " template [dakota_params.in] " << std::endl;
         std::cout << "\ti.e., " << argv[0]
-                  << " /path/to/definition.tmpl /path/to/some/dakota_params.json --ldelim \"<\" --rdelim \">\" --hop \".\""
+                  << " /path/to/definition.tmpl /path/to/some/dakota_params.in[.#] /path/to/the/results.out[.#] --ldelim \"<\" --rdelim \">\" --hop \".\""
                   << std::endl;
         std::cout << " Usage : " << argv[0]
                   << " --version\t(print version info)" << std::endl
@@ -42,6 +42,7 @@ int main(int argc, char** argv)
 
     std::string tmpl = argv[1];
     std::string params = "";
+    std::string results = "";
     std::string ldelim = "<";
     std::string rdelim = ">";
     std::string hop    = ".";
@@ -52,6 +53,10 @@ int main(int argc, char** argv)
         if (arg.size() > 3 && arg.substr(arg.size() - 3) == ".in")
         {
             params = arg;
+        }
+        else if (arg.size() > 4 && arg.substr(arg.size() - 4) == ".out")
+        {
+            results = arg;
         }
         else if (arg.size() > 5 && arg.substr(arg.size() - 5) == ".tmpl")
         {
@@ -77,6 +82,11 @@ int main(int argc, char** argv)
         {
             params = arg;
         }
+        // Result files can be '*.out.#'
+        else if( arg.find(".out.") != std::string::npos)
+        {
+            results = arg;
+        }
         else
         {
             std::cerr<<" Unable to determine argument at position "<<i<<" - '"
@@ -85,8 +95,29 @@ int main(int argc, char** argv)
         }
     }
 
-    if (!wasp::substitute_template(std::cout, std::cerr, std::cerr, tmpl,
-                                   params, true, true, ldelim, rdelim, hop))
+    bool success = false;
+    if (!results.empty())
+    {
+        std::ofstream result_stream(results.c_str());
+        if (!result_stream.is_open())
+        {
+            std::cerr<<"***Error: Unable to open '"<<results<<"' for output!"<<std::endl;
+            return -2;
+        }
+        success = wasp::substitute_template(result_stream, std::cerr,
+                                            std::cerr, tmpl,
+                                            params, true, true,
+                                            ldelim, rdelim, hop);
+    }
+    else
+    {
+
+        success = wasp::substitute_template(std::cout, std::cerr,
+                                            std::cerr, tmpl,
+                                            params, true, true,
+                                            ldelim, rdelim, hop);
+    }
+    if (!success)
     {
         return -1;
     }
