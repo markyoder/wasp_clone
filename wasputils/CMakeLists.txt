@@ -89,6 +89,12 @@ IF ( wasp_ENABLE_waspvii )
       NOEXESUFFIX
       INSTALLABLE
     )
+    TRIBITS_ADD_EXECUTABLE(viivalidjson
+      SOURCES viivalidjson.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
     TRIBITS_ADD_EXECUTABLE(viiselect
       SOURCES viiselect.cpp
       NOEXEPREFIX
