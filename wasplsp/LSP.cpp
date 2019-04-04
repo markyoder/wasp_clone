@@ -3,22 +3,67 @@
 namespace wasp {
 namespace lsp  {
 
-bool checkRange( std::ostream & errors          ,
-                 int            start_line      ,
-                 int            start_character ,
-                 int            end_line        ,
-                 int            end_character   )
+bool buildPositionObject( DataObject   & object    ,
+                          std::ostream & errors    ,
+                          int            line      ,
+                          int            character )
 {
+    bool pass = true;
+
+    if ( line < 0 )
+    {
+        errors << "Error:: Line number must be non-negative - received: "
+               << line << std::endl;
+        pass = false;
+    }
+
+    if ( character < 0 )
+    {
+        errors << "Error:: Column number must be non-negative - received: "
+               << character << std::endl;
+        pass = false;
+    }
+
+    object[_line]      = line;
+    object[_character] = character;
+
+    return pass;
+}
+
+bool buildRangeObject( DataObject   & object          ,
+                       std::ostream & errors          ,
+                       int            start_line      ,
+                       int            start_character ,
+                       int            end_line        ,
+                       int            end_character   )
+{
+    bool pass = true;
+
     if (( start_line  > end_line ) ||
         ( start_line == end_line && start_character > end_character ))
     {
         errors << "Error:: Range start ( line:" << start_line << " column:"
                << start_character << " ) must be less than range end ( line:"
                << end_line << " column:" << end_character << " )" << std::endl;
-        return false;
+        pass = false;
     }
 
-    return true;
+    DataObject start;
+    pass &= buildPositionObject( start           ,
+                                 errors          ,
+                                 start_line      ,
+                                 start_character );
+
+    DataObject end;
+    pass &= buildPositionObject( end           ,
+                                 errors        ,
+                                 end_line      ,
+                                 end_character );
+
+    object[_start] = start;
+    object[_end]   = end;
+
+    return pass;
 }
 
 bool buildInitializeRequest( DataObject        & object              ,
@@ -27,48 +72,56 @@ bool buildInitializeRequest( DataObject        & object              ,
                              const std::string & root_uri            ,
                              const DataObject  & client_capabilities )
 {
+    bool pass = true;
+
     DataObject params;
+    params[_process_id]   = process_id;
+    params[_root_uri]     = root_uri;
+    params[_capabilities] = client_capabilities;
 
-    object[_method]                = "initialize";
-    object[_params]                =  params;
-    object[_params][_process_id]   =  process_id;
-    object[_params][_root_uri]     =  root_uri;
-    object[_params][_capabilities] =  client_capabilities;
+    object[_params] =  params;
+    object[_method] = _method_initialize;
 
-    return true;
+    return pass;
 }
 
 bool buildInitializedNotification( DataObject   & object ,
                                    std::ostream & errors )
 {
+    bool pass = true;
+
     DataObject params;
 
-    object[_method] = "initialized";
     object[_params] =  params;
+    object[_method] = _method_initialized;
 
-    return true;
+    return pass;
 }
 
 bool buildShutdownRequest( DataObject   & object ,
                            std::ostream & errors )
 {
+    bool pass = true;
+
     DataObject params;
 
-    object[_method] = "shutdown";
     object[_params] =  params;
+    object[_method] = _method_shutdown;
 
-    return true;
+    return pass;
 }
 
 bool buildExitNotification( DataObject   & object ,
                             std::ostream & errors )
 {
+    bool pass = true;
+
     DataObject params;
 
-    object[_method] = "exit";
     object[_params] =  params;
+    object[_method] = _method_exit;
 
-    return true;
+    return pass;
 }
 
 bool buildDidOpenNotification( DataObject        & object      ,
@@ -78,18 +131,21 @@ bool buildDidOpenNotification( DataObject        & object      ,
                                double              version     ,
                                const std::string & text        )
 {
-    DataObject params;
+    bool pass = true;
+
     DataObject text_document;
+    text_document[_uri]         = uri;
+    text_document[_language_id] = language_id;
+    text_document[_version]     = version;
+    text_document[_text]        = text;
 
-    object[_method]                               = "textDocument/didOpen";
-    object[_params]                               =  params;
-    object[_params][_text_document]               =  text_document;
-    object[_params][_text_document][_uri]         =  uri;
-    object[_params][_text_document][_language_id] =  language_id;
-    object[_params][_text_document][_version]     =  version;
-    object[_params][_text_document][_text]        =  text;
+    DataObject params;
+    params[_text_document] = text_document;
 
-    return true;
+    object[_params] =  params;
+    object[_method] = _method_didopen;
+
+    return pass;
 }
 
 bool buildDidChangeNotification( DataObject        & object          ,
@@ -103,36 +159,33 @@ bool buildDidChangeNotification( DataObject        & object          ,
                                  int                 range_length    ,
                                  const std::string & text            )
 {
-    if ( !checkRange( errors          ,
-                      start_line      ,
-                      start_character ,
-                      end_line        ,
-                      end_character   )) return false;
+    bool pass = true;
+
+    DataObject range;
+    pass &= buildRangeObject( range           ,
+                              errors          ,
+                              start_line      ,
+                              start_character ,
+                              end_line        ,
+                              end_character   );
+
+    DataObject content_changes;
+    content_changes[_range]        = range;
+    content_changes[_range_length] = range_length;
+    content_changes[_text]         = text;
+
+    DataObject text_document;
+    text_document[_uri]     = uri;
+    text_document[_version] = version;
 
     DataObject params;
-    DataObject text_document;
-    DataObject content_changes;
-    DataObject range;
-    DataObject start;
-    DataObject end;
+    params[_content_changes] = content_changes;
+    params[_text_document]   = text_document;
 
-    object[_method]                                               = "textDocument/didChange";
-    object[_params]                                               =  params;
-    object[_params][_text_document]                               =  text_document;
-    object[_params][_text_document][_uri]                         =  uri;
-    object[_params][_text_document][_version]                     =  version;
-    object[_params][_content_changes]                             =  content_changes;
-    object[_params][_content_changes][_range]                     =  range;
-    object[_params][_content_changes][_range][_start]             =  start;
-    object[_params][_content_changes][_range][_start][_line]      =  start_line;
-    object[_params][_content_changes][_range][_start][_character] =  start_character;
-    object[_params][_content_changes][_range][_end]               =  end;
-    object[_params][_content_changes][_range][_end][_line]        =  end_line;
-    object[_params][_content_changes][_range][_end][_character]   =  end_character;
-    object[_params][_content_changes][_range_length]              =  range_length;
-    object[_params][_content_changes][_text]                      =  text;
+    object[_params] =  params;
+    object[_method] = _method_didchange;
 
-    return true;
+    return pass;
 }
 
 bool buildCompletionRequest( DataObject        & object    ,
@@ -141,19 +194,25 @@ bool buildCompletionRequest( DataObject        & object    ,
                              int                 line      ,
                              int                 character )
 {
-    DataObject params;
-    DataObject text_document;
+    bool pass = true;
+
     DataObject position;
+    pass &= buildPositionObject( position  ,
+                                 errors    ,
+                                 line      ,
+                                 character );
 
-    object[_method]                        = "textDocument/completion";
-    object[_params]                        =  params;
-    object[_params][_text_document]        =  text_document;
-    object[_params][_text_document][_uri]  =  uri;
-    object[_params][_position]             =  position;
-    object[_params][_position][_line]      =  line;
-    object[_params][_position][_character] =  character;
+    DataObject text_document;
+    text_document[_uri] = uri;
 
-    return true;
+    DataObject params;
+    params[_position]      = position;
+    params[_text_document] = text_document;
+
+    object[_params] =  params;
+    object[_method] = _method_completion;
+
+    return pass;
 }
 
 bool buildDefinitionRequest( DataObject        & object    ,
@@ -162,19 +221,25 @@ bool buildDefinitionRequest( DataObject        & object    ,
                              int                 line      ,
                              int                 character )
 {
-    DataObject params;
-    DataObject text_document;
+    bool pass = true;
+
     DataObject position;
+    pass &= buildPositionObject( position  ,
+                                 errors    ,
+                                 line      ,
+                                 character );
 
-    object[_method]                        = "textDocument/definition";
-    object[_params]                        =  params;
-    object[_params][_text_document]        =  text_document;
-    object[_params][_text_document][_uri]  =  uri;
-    object[_params][_position]             =  position;
-    object[_params][_position][_line]      =  line;
-    object[_params][_position][_character] =  character;
+    DataObject text_document;
+    text_document[_uri] = uri;
 
-    return true;
+    DataObject params;
+    params[_position]      = position;
+    params[_text_document] = text_document;
+
+    object[_params] =  params;
+    object[_method] = _method_definition;
+
+    return pass;
 }
 
 bool buildReferencesRequest( DataObject        & object              ,
@@ -184,22 +249,29 @@ bool buildReferencesRequest( DataObject        & object              ,
                              int                 character           ,
                              bool                include_declaration )
 {
-    DataObject params;
-    DataObject text_document;
+    bool pass = true;
+
     DataObject position;
+    pass &= buildPositionObject( position  ,
+                                 errors    ,
+                                 line      ,
+                                 character );
+
+    DataObject text_document;
+    text_document[_uri] = uri;
+
     DataObject context;
+    context[_include_declaration] = include_declaration;
 
-    object[_method]                                 = "textDocument/references";
-    object[_params]                                 =  params;
-    object[_params][_text_document]                 =  text_document;
-    object[_params][_text_document][_uri]           =  uri;
-    object[_params][_position]                      =  position;
-    object[_params][_position][_line]               =  line;
-    object[_params][_position][_character]          =  character;
-    object[_params][_context]                       =  context;
-    object[_params][_context][_include_declaration] =  include_declaration;
+    DataObject params;
+    params[_position]      = position;
+    params[_text_document] = text_document;
+    params[_context]       = context;
 
-    return true;
+    object[_params] =  params;
+    object[_method] = _method_references;
+
+    return pass;
 }
 
 bool buildRangeFormattingRequest( DataObject        & object          ,
@@ -212,36 +284,32 @@ bool buildRangeFormattingRequest( DataObject        & object          ,
                                   int                 tab_size        ,
                                   bool                insert_spaces   )
 {
-    if ( !checkRange( errors          ,
-                      start_line      ,
-                      start_character ,
-                      end_line        ,
-                      end_character   )) return false;
+    bool pass = true;
+
+    DataObject range;
+    pass &= buildRangeObject( range           ,
+                              errors          ,
+                              start_line      ,
+                              start_character ,
+                              end_line        ,
+                              end_character   );
+
+    DataObject options;
+    options[_tab_size]      = tab_size;
+    options[_insert_spaces] = insert_spaces;
+
+    DataObject text_document;
+    text_document[_uri] = uri;
 
     DataObject params;
-    DataObject text_document;
-    DataObject content_changes;
-    DataObject range;
-    DataObject start;
-    DataObject end;
-    DataObject options;
+    params[_range]         = range;
+    params[_options]       = options;
+    params[_text_document] = text_document;
 
-    object[_method]                             = "textDocument/rangeFormatting";
-    object[_params]                             =  params;
-    object[_params][_text_document]             =  text_document;
-    object[_params][_text_document][_uri]       =  uri;
-    object[_params][_range]                     =  range;
-    object[_params][_range][_start]             =  start;
-    object[_params][_range][_start][_line]      =  start_line;
-    object[_params][_range][_start][_character] =  start_character;
-    object[_params][_range][_end]               =  end;
-    object[_params][_range][_end][_line]        =  end_line;
-    object[_params][_range][_end][_character]   =  end_character;
-    object[_params][_options]                   =  options;
-    object[_params][_options][_tab_size]        =  tab_size;
-    object[_params][_options][_insert_spaces]   =  insert_spaces;
+    object[_params] =  params;
+    object[_method] = _method_rangeformat;
 
-    return true;
+    return pass;
 }
 
 bool buildDiagnosticObject( DataObject        & object          ,
@@ -255,29 +323,23 @@ bool buildDiagnosticObject( DataObject        & object          ,
                             const std::string & source          ,
                             const std::string & message         )
 {
-    if ( !checkRange( errors          ,
-                      start_line      ,
-                      start_character ,
-                      end_line        ,
-                      end_character   )) return false;
+    bool pass = true;
 
     DataObject range;
-    DataObject start;
-    DataObject end;
+    pass &= buildRangeObject( range           ,
+                              errors          ,
+                              start_line      ,
+                              start_character ,
+                              end_line        ,
+                              end_character   );
 
-    object[_range]                     =  range;
-    object[_range][_start]             =  start;
-    object[_range][_start][_line]      =  start_line;
-    object[_range][_start][_character] =  start_character;
-    object[_range][_end]               =  end;
-    object[_range][_end][_line]        =  end_line;
-    object[_range][_end][_character]   =  end_character;
-    object[_severity]                  =  severity;
-    object[_code]                      =  code;
-    object[_source]                    =  source;
-    object[_message]                   =  message;
+    object[_range]    = range;
+    object[_severity] = severity;
+    object[_code]     = code;
+    object[_source]   = source;
+    object[_message]  = message;
 
-    return true;
+    return pass;
 }
 
 bool buildPublishDiagnosticsNotification( DataObject        & object      ,
@@ -285,36 +347,42 @@ bool buildPublishDiagnosticsNotification( DataObject        & object      ,
                                           const std::string & uri         ,
                                           const DataArray   & diagnostics )
 {
+    bool pass = true;
+
     DataObject params;
+    params[_uri]         = uri;
+    params[_diagnostics] = diagnostics;
 
-    object[_method]               = "textDocument/publishDiagnostics";
-    object[_params]               =  params;
-    object[_params][_uri]         =  uri;
-    object[_params][_diagnostics] =  diagnostics;
+    object[_params] =  params;
+    object[_method] = _method_pubdiagnostics;
 
-    return true;
+    return pass;
 }
 
 bool buildInitializeResponse( DataObject        & object              ,
                               std::ostream      & errors              ,
                               const DataObject  & server_capabilities )
 {
+    bool pass = true;
+
     DataObject result;
+    result[_capabilities] = server_capabilities;
 
-    object[_result]                = result;
-    object[_result][_capabilities] = server_capabilities;
+    object[_result] = result;
 
-    return true;
+    return pass;
 }
 
 bool buildShutdownResponse( DataObject   & object ,
                             std::ostream & errors )
 {
+    bool pass = true;
+
     DataObject result;
 
     object[_result] = result;
 
-    return true;
+    return pass;
 }
 
 bool buildCompletionObject( DataObject        & object          ,
@@ -331,34 +399,29 @@ bool buildCompletionObject( DataObject        & object          ,
                             bool                deprecated      ,
                             bool                preselect       )
 {
-    if ( !checkRange( errors          ,
-                      start_line      ,
-                      start_character ,
-                      end_line        ,
-                      end_character   )) return false;
+    bool pass = true;
+
+    DataObject range;
+    pass &= buildRangeObject( range           ,
+                              errors          ,
+                              start_line      ,
+                              start_character ,
+                              end_line        ,
+                              end_character   );
 
     DataObject text_edit;
-    DataObject range;
-    DataObject start;
-    DataObject end;
+    text_edit[_range]    = range;
+    text_edit[_new_text] = new_text;
 
-    object[_label]                                 = label;
-    object[_text_edit]                             = text_edit;
-    object[_text_edit][_range]                     = range;
-    object[_text_edit][_range][_start]             = start;
-    object[_text_edit][_range][_start][_line]      = start_line;
-    object[_text_edit][_range][_start][_character] = start_character;
-    object[_text_edit][_range][_end]               = end;
-    object[_text_edit][_range][_end][_line]        = end_line;
-    object[_text_edit][_range][_end][_character]   = end_character;
-    object[_text_edit][_new_text]                  = new_text;
-    object[_kind]                                  = kind;
-    object[_detail]                                = detail;
-    object[_documentation]                         = documentation;
-    object[_deprecated]                            = deprecated;
-    object[_preselect]                             = preselect;
+    object[_text_edit]     = text_edit;
+    object[_label]         = label;
+    object[_kind]          = kind;
+    object[_detail]        = detail;
+    object[_documentation] = documentation;
+    object[_deprecated]    = deprecated;
+    object[_preselect]     = preselect;
 
-    return true;
+    return pass;
 }
 
 bool buildCompletionResponse( DataObject        & object           ,
@@ -366,13 +429,15 @@ bool buildCompletionResponse( DataObject        & object           ,
                               bool                is_incomplete    ,
                               const DataArray   & completion_items )
 {
+    bool pass = true;
+
     DataObject result;
+    result[_is_incomplete] = is_incomplete;
+    result[_items]         = completion_items;
 
-    object[_result]                 = result;
-    object[_result][_is_incomplete] = is_incomplete;
-    object[_result][_items]         = completion_items;
+    object[_result] = result;
 
-    return true;
+    return pass;
 }
 
 bool buildLocationObject( DataObject        & object          ,
@@ -383,37 +448,33 @@ bool buildLocationObject( DataObject        & object          ,
                           int                 end_line        ,
                           int                 end_character   )
 {
-    if ( !checkRange( errors          ,
-                      start_line      ,
-                      start_character ,
-                      end_line        ,
-                      end_character   )) return false;
+    bool pass = true;
 
     DataObject range;
-    DataObject start;
-    DataObject end;
+    pass &= buildRangeObject( range           ,
+                              errors          ,
+                              start_line      ,
+                              start_character ,
+                              end_line        ,
+                              end_character   );
 
-    object[_uri]                       = uri;
-    object[_range]                     = range;
-    object[_range][_start]             = start;
-    object[_range][_start][_line]      = start_line;
-    object[_range][_start][_character] = start_character;
-    object[_range][_end]               = end;
-    object[_range][_end][_line]        = end_line;
-    object[_range][_end][_character]   = end_character;
+    object[_range] = range;
+    object[_uri]   = uri;
 
-    return true;
+    return pass;
 }
 
 bool buildLocationsResponse( DataObject        & object           ,
                              std::ostream      & errors           ,
                              const DataArray   & location_objects )
 {
+    bool pass = true;
+
     DataObject result;
 
     object[_result] = location_objects;
 
-    return true;
+    return pass;
 }
 
 bool buildTextEditObject( DataObject        & object          ,
@@ -424,37 +485,33 @@ bool buildTextEditObject( DataObject        & object          ,
                           int                 end_character   ,
                           const std::string & new_text        )
 {
-    if ( !checkRange( errors          ,
-                      start_line      ,
-                      start_character ,
-                      end_line        ,
-                      end_character   )) return false;
+    bool pass = true;
 
     DataObject range;
-    DataObject start;
-    DataObject end;
+    pass &= buildRangeObject( range           ,
+                              errors          ,
+                              start_line      ,
+                              start_character ,
+                              end_line        ,
+                              end_character   );
 
-    object[_range]                     = range;
-    object[_range][_start]             = start;
-    object[_range][_start][_line]      = start_line;
-    object[_range][_start][_character] = start_character;
-    object[_range][_end]               = end;
-    object[_range][_end][_line]        = end_line;
-    object[_range][_end][_character]   = end_character;
-    object[_new_text]                  = new_text;
+    object[_range]    = range;
+    object[_new_text] = new_text;
 
-    return true;
+    return pass;
 }
 
 bool buildRangeFormattingResponse( DataObject        & object           ,
                                    std::ostream      & errors           ,
                                    const DataArray   & textedit_objects )
 {
+    bool pass = true;
+
     DataObject result;
 
     object[_result] = textedit_objects;
 
-    return true;
+    return pass;
 }
 
 }

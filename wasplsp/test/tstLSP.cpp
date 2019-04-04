@@ -6,14 +6,6 @@
 namespace wasp {
 namespace lsp  {
 
-void print_object(const DataObject & object)
-{
-    std::cout << std::endl;
-    object.format_json(std::cout);
-    std::cout << std::endl;
-    std::cout << std::endl;
-}
-
 TEST(lsp, bad_ranges)
 {
     {
@@ -24,13 +16,17 @@ TEST(lsp, bad_ranges)
         bool              insert_spaces   =  true;
 
         int               start_line      =  17;
-        int               start_character =  34;
+        int               start_character = -34;
         int               end_line        =  13;
-        int               end_character   =  39;
+        int               end_character   = -39;
         std::string       expected_errors = "Error:: Range start "
-                                            "( line:17 column:34 ) "
+                                            "( line:17 column:-34 ) "
                                             "must be less than range end "
-                                            "( line:13 column:39 )\n";
+                                            "( line:13 column:-39 )\n"
+                                            "Error:: Column number must be "
+                                            "non-negative - received: -34\n"
+                                            "Error:: Column number must be "
+                                            "non-negative - received: -39\n";
 
         ASSERT_FALSE(buildRangeFormattingRequest( object           ,
                                                   errors           ,
@@ -41,8 +37,7 @@ TEST(lsp, bad_ranges)
                                                   end_character    ,
                                                   tab_size         ,
                                                   insert_spaces    ));
-        ASSERT_EQ( object.size() , (size_t) 0      );
-        ASSERT_EQ( errors.str()  , expected_errors );
+        ASSERT_EQ( errors.str() , expected_errors );
     }
     {
         DataObject        object;
@@ -69,8 +64,7 @@ TEST(lsp, bad_ranges)
                                                   end_character    ,
                                                   tab_size         ,
                                                   insert_spaces    ));
-        ASSERT_EQ( object.size() , (size_t) 0      );
-        ASSERT_EQ( errors.str()  , expected_errors );
+        ASSERT_EQ( errors.str() , expected_errors );
     }
 }
 
