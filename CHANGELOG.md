@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - wasppy inablility to handle file paths with whitespaces. 
 
+### Added
+- GCC 5.4 compiler compatibility CI job.
+
 ## [1.0.2] - 07-16-2018
 ### Added
 - DocPrint utility that consumes an input schema and produces GitLab compatible Markdown. The Markdown can be converted to html using Pandoc.
