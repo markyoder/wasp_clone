@@ -1,5 +1,6 @@
 . ci/setup.sh
 cd build
+export PATH=/projects/gcc-5.4.0/common_tools/anaconda2/bin/:$PATH 
 . /projects/gcc-5.4.0/load_dev_env.sh
 cmake -DBUILDNAME="$(uname -s)-GCC-5.4-Release-${CI_BUILD_REF_NAME}" \
       -DCMAKE_BUILD_TYPE=RELEASE \
