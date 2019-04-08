@@ -23,6 +23,7 @@ def get_wasp_utility_path(utility_name):
 def get_json_dict(schema_filepath, input_filepath, ext=""):
     
     if   (ext == 'ddi') or (input_filepath[-4:] == '.ddi') : utility_name = 'ddivalidjson'
+    elif (ext=="vii") : utility_name="viivalidjson"
     else : utility_name = 'sonvalidjson' 
     
     waspvalidjson = get_wasp_utility_path(utility_name)
