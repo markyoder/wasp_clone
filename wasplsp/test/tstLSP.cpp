@@ -219,7 +219,7 @@ TEST(lsp, exit_notification)
     std::stringstream errors;
 
     ASSERT_TRUE(buildExitNotification( object ,
-                                      errors ));
+                                       errors ));
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 

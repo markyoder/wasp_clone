@@ -33,6 +33,7 @@ FILE(GLOB HEADERS *.h *.hh *.hpp
 # c++ files
 SET(SOURCES
 LSP.cpp
+test/TestServer.cpp
 )
 
 ##---------------------------------------------------------------------------##
