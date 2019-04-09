@@ -58,8 +58,8 @@ bool buildPositionObject( DataObject   & object    ,
                            line      ,
                            character );
 
-    object[_line]      = line;
-    object[_character] = character;
+    object[m_line]      = line;
+    object[m_character] = character;
 
     return pass;
 }
@@ -71,13 +71,13 @@ bool dissectPositionObject( const DataObject   & object    ,
 {
     bool pass = true;
 
-    wasp_check( object[_line].is_int() );
+    wasp_check( object[m_line].is_int() );
 
-    line = object[_line].to_int();
+    line = object[m_line].to_int();
 
-    wasp_check( object[_character].is_int() );
+    wasp_check( object[m_character].is_int() );
 
-    character = object[_character].to_int();
+    character = object[m_character].to_int();
 
     pass &= checkPosition( errors    ,
                            line      ,
@@ -113,8 +113,8 @@ bool buildRangeObject( DataObject   & object          ,
                                  end_line      ,
                                  end_character );
 
-    object[_start] = start;
-    object[_end]   = end;
+    object[m_start] = start;
+    object[m_end]   = end;
 
     return pass;
 }
@@ -128,18 +128,18 @@ bool dissectRangeObject( const DataObject      & object          ,
 {
     bool pass = true;
 
-    wasp_check( object[_start].is_object() );
+    wasp_check( object[m_start].is_object() );
 
-    DataObject start = *(object[_start].to_object());
+    const DataObject& start = *(object[m_start].to_object());
 
     pass &= dissectPositionObject( start           ,
                                    errors          ,
                                    start_line      ,
                                    start_character );
 
-    wasp_check( object[_end].is_object() );
+    wasp_check( object[m_end].is_object() );
 
-    DataObject end = *(object[_end].to_object());
+    const DataObject& end = *(object[m_end].to_object());
 
     pass &= dissectPositionObject( end           ,
                                    errors        ,
@@ -165,13 +165,13 @@ bool buildInitializeRequest( DataObject        & object              ,
     bool pass = true;
 
     DataObject params;
-    params[_process_id]   = process_id;
-    params[_root_uri]     = root_uri;
-    params[_capabilities] = client_capabilities;
+    params[m_process_id]   = process_id;
+    params[m_root_uri]     = root_uri;
+    params[m_capabilities] = client_capabilities;
 
-    object[_params] =  params;
-    object[_id]     =  request_id;
-    object[_method] = _method_initialize;
+    object[m_params] =  params;
+    object[m_id]     =  request_id;
+    object[m_method] = m_method_initialize;
 
     return pass;
 }
@@ -185,29 +185,29 @@ bool dissectInitializeRequest( const DataObject        & object              ,
 {
     bool pass = true;
 
-    wasp_check( object[_method].is_string() );
+    wasp_check( object[m_method].is_string() );
 
-    wasp_check( object[_method].to_string() == _method_initialize );
+    wasp_check( object[m_method].to_string() == m_method_initialize );
 
-    wasp_check( object[_id].is_int() );
+    wasp_check( object[m_id].is_int() );
 
-    request_id = object[_id].to_int();
+    request_id = object[m_id].to_int();
 
-    wasp_check( object[_params].is_object() );
+    wasp_check( object[m_params].is_object() );
 
-    DataObject params = *(object[_params].to_object());
+    const DataObject& params = *(object[m_params].to_object());
 
-    wasp_check( params[_process_id].is_int() );
+    wasp_check( params[m_process_id].is_int() );
 
-    process_id = params[_process_id].to_int();
+    process_id = params[m_process_id].to_int();
 
-    wasp_check( params[_root_uri].is_string() );
+    wasp_check( params[m_root_uri].is_string() );
 
-    root_uri = params[_root_uri].to_string();
+    root_uri = params[m_root_uri].to_string();
 
-    wasp_check( params[_capabilities].is_object() );
+    wasp_check( params[m_capabilities].is_object() );
 
-    client_capabilities = *(params[_capabilities].to_object());
+    client_capabilities = *(params[m_capabilities].to_object());
 
     return pass;
 }
@@ -219,8 +219,8 @@ bool buildInitializedNotification( DataObject   & object ,
 
     DataObject params;
 
-    object[_params] =  params;
-    object[_method] = _method_initialized;
+    object[m_params] =  params;
+    object[m_method] = m_method_initialized;
 
     return pass;
 }
@@ -230,11 +230,11 @@ bool dissectInitializedNotification( const DataObject   & object ,
 {
     bool pass = true;
 
-    wasp_check( object[_method].is_string() );
+    wasp_check( object[m_method].is_string() );
 
-    wasp_check( object[_method].to_string() == _method_initialized );
+    wasp_check( object[m_method].to_string() == m_method_initialized );
 
-    wasp_check( object[_params].is_object() );
+    wasp_check( object[m_params].is_object() );
 
     return pass;
 }
@@ -247,9 +247,9 @@ bool buildShutdownRequest( DataObject   & object     ,
 
     DataObject params;
 
-    object[_params] =  params;
-    object[_id]     =  request_id;
-    object[_method] = _method_shutdown;
+    object[m_params] =  params;
+    object[m_id]     =  request_id;
+    object[m_method] = m_method_shutdown;
 
     return pass;
 }
@@ -260,15 +260,15 @@ bool dissectShutdownRequest( const DataObject   & object     ,
 {
     bool pass = true;
 
-    wasp_check( object[_method].is_string() );
+    wasp_check( object[m_method].is_string() );
 
-    wasp_check( object[_method].to_string() == _method_shutdown );
+    wasp_check( object[m_method].to_string() == m_method_shutdown );
 
-    wasp_check( object[_id].is_int() );
+    wasp_check( object[m_id].is_int() );
 
-    request_id = object[_id].to_int();
+    request_id = object[m_id].to_int();
 
-    wasp_check( object[_params].is_object() );
+    wasp_check( object[m_params].is_object() );
 
     return pass;
 }
@@ -280,8 +280,8 @@ bool buildExitNotification( DataObject   & object ,
 
     DataObject params;
 
-    object[_params] =  params;
-    object[_method] = _method_exit;
+    object[m_params] =  params;
+    object[m_method] = m_method_exit;
 
     return pass;
 }
@@ -291,11 +291,11 @@ bool dissectExitNotification( const DataObject   & object ,
 {
     bool pass = true;
 
-    wasp_check( object[_method].is_string() );
+    wasp_check( object[m_method].is_string() );
 
-    wasp_check( object[_method].to_string() == _method_exit );
+    wasp_check( object[m_method].to_string() == m_method_exit );
 
-    wasp_check( object[_params].is_object() );
+    wasp_check( object[m_params].is_object() );
 
     return pass;
 }
@@ -310,16 +310,16 @@ bool buildDidOpenNotification( DataObject        & object      ,
     bool pass = true;
 
     DataObject text_document;
-    text_document[_uri]         = uri;
-    text_document[_language_id] = language_id;
-    text_document[_version]     = version;
-    text_document[_text]        = text;
+    text_document[m_uri]         = uri;
+    text_document[m_language_id] = language_id;
+    text_document[m_version]     = version;
+    text_document[m_text]        = text;
 
     DataObject params;
-    params[_text_document] = text_document;
+    params[m_text_document] = text_document;
 
-    object[_params] =  params;
-    object[_method] = _method_didopen;
+    object[m_params] =  params;
+    object[m_method] = m_method_didopen;
 
     return pass;
 }
@@ -333,33 +333,33 @@ bool dissectDidOpenNotification( const DataObject   & object      ,
 {
     bool pass = true;
 
-    wasp_check( object[_method].is_string() );
+    wasp_check( object[m_method].is_string() );
 
-    wasp_check( object[_method].to_string() == _method_didopen );
+    wasp_check( object[m_method].to_string() == m_method_didopen );
 
-    wasp_check( object[_params].is_object() );
+    wasp_check( object[m_params].is_object() );
 
-    DataObject params = *(object[_params].to_object());
+    const DataObject& params = *(object[m_params].to_object());
 
-    wasp_check( params[_text_document].is_object() );
+    wasp_check( params[m_text_document].is_object() );
 
-    DataObject text_document = *(params[_text_document].to_object());
+    const DataObject& text_document = *(params[m_text_document].to_object());
 
-    wasp_check( text_document[_uri].is_string() );
+    wasp_check( text_document[m_uri].is_string() );
 
-    uri = text_document[_uri].to_string();
+    uri = text_document[m_uri].to_string();
 
-    wasp_check( text_document[_language_id].is_string() );
+    wasp_check( text_document[m_language_id].is_string() );
 
-    language_id = text_document[_language_id].to_string();
+    language_id = text_document[m_language_id].to_string();
 
-    wasp_check( text_document[_version].is_int() );
+    wasp_check( text_document[m_version].is_int() );
 
-    version = text_document[_version].to_int();
+    version = text_document[m_version].to_int();
 
-    wasp_check( text_document[_text].is_string() );
+    wasp_check( text_document[m_text].is_string() );
 
-    text = text_document[_text].to_string();
+    text = text_document[m_text].to_string();
 
     return pass;
 }
@@ -386,20 +386,20 @@ bool buildDidChangeNotification( DataObject        & object          ,
                               end_character   );
 
     DataObject content_changes;
-    content_changes[_range]        = range;
-    content_changes[_range_length] = range_length;
-    content_changes[_text]         = text;
+    content_changes[m_range]        = range;
+    content_changes[m_range_length] = range_length;
+    content_changes[m_text]         = text;
 
     DataObject text_document;
-    text_document[_uri]     = uri;
-    text_document[_version] = version;
+    text_document[m_uri]     = uri;
+    text_document[m_version] = version;
 
     DataObject params;
-    params[_content_changes] = content_changes;
-    params[_text_document]   = text_document;
+    params[m_content_changes] = content_changes;
+    params[m_text_document]   = text_document;
 
-    object[_params] =  params;
-    object[_method] = _method_didchange;
+    object[m_params] =  params;
+    object[m_method] = m_method_didchange;
 
     return pass;
 }
@@ -417,33 +417,33 @@ bool dissectDidChangeNotification( const DataObject   & object          ,
 {
     bool pass = true;
 
-    wasp_check( object[_method].is_string() );
+    wasp_check( object[m_method].is_string() );
 
-    wasp_check( object[_method].to_string() == _method_didchange );
+    wasp_check( object[m_method].to_string() == m_method_didchange );
 
-    wasp_check( object[_params].is_object() );
+    wasp_check( object[m_params].is_object() );
 
-    DataObject params = *(object[_params].to_object());
+    const DataObject& params = *(object[m_params].to_object());
 
-    wasp_check( params[_text_document].is_object() );
+    wasp_check( params[m_text_document].is_object() );
 
-    DataObject text_document = *(params[_text_document].to_object());
+    const DataObject& text_document = *(params[m_text_document].to_object());
 
-    wasp_check( text_document[_uri].is_string() );
+    wasp_check( text_document[m_uri].is_string() );
 
-    uri = text_document[_uri].to_string();
+    uri = text_document[m_uri].to_string();
 
-    wasp_check( text_document[_version].is_int() );
+    wasp_check( text_document[m_version].is_int() );
 
-    version = text_document[_version].to_int();
+    version = text_document[m_version].to_int();
 
-    wasp_check( params[_content_changes].is_object() );
+    wasp_check( params[m_content_changes].is_object() );
 
-    DataObject content_changes = *(params[_content_changes].to_object());
+    const DataObject& content_changes = *(params[m_content_changes].to_object());
 
-    wasp_check( content_changes[_range].is_object() );
+    wasp_check( content_changes[m_range].is_object() );
 
-    DataObject range = *(content_changes[_range].to_object());
+    const DataObject& range = *(content_changes[m_range].to_object());
 
     pass &= dissectRangeObject( range           ,
                                 errors          ,
@@ -452,13 +452,13 @@ bool dissectDidChangeNotification( const DataObject   & object          ,
                                 end_line        ,
                                 end_character   );
 
-    wasp_check( content_changes[_range_length].is_int() );
+    wasp_check( content_changes[m_range_length].is_int() );
 
-    range_length = content_changes[_range_length].to_int();
+    range_length = content_changes[m_range_length].to_int();
 
-    wasp_check( content_changes[_text].is_string() );
+    wasp_check( content_changes[m_text].is_string() );
 
-    text = content_changes[_text].to_string();
+    text = content_changes[m_text].to_string();
 
     return pass;
 }
@@ -479,15 +479,15 @@ bool buildCompletionRequest( DataObject        & object     ,
                                  character );
 
     DataObject text_document;
-    text_document[_uri] = uri;
+    text_document[m_uri] = uri;
 
     DataObject params;
-    params[_position]      = position;
-    params[_text_document] = text_document;
+    params[m_position]      = position;
+    params[m_text_document] = text_document;
 
-    object[_params] =  params;
-    object[_id]     =  request_id;
-    object[_method] = _method_completion;
+    object[m_params] =  params;
+    object[m_id]     =  request_id;
+    object[m_method] = m_method_completion;
 
     return pass;
 }
@@ -501,29 +501,29 @@ bool dissectCompletionRequest( const DataObject   & object     ,
 {
     bool pass = true;
 
-    wasp_check( object[_method].is_string() );
+    wasp_check( object[m_method].is_string() );
 
-    wasp_check( object[_method].to_string() == _method_completion );
+    wasp_check( object[m_method].to_string() == m_method_completion );
 
-    wasp_check( object[_id].is_int() );
+    wasp_check( object[m_id].is_int() );
 
-    request_id = object[_id].to_int();
+    request_id = object[m_id].to_int();
 
-    wasp_check( object[_params].is_object() );
+    wasp_check( object[m_params].is_object() );
 
-    DataObject params = *(object[_params].to_object());
+    const DataObject& params = *(object[m_params].to_object());
 
-    wasp_check( params[_text_document].is_object() );
+    wasp_check( params[m_text_document].is_object() );
 
-    DataObject text_document = *(params[_text_document].to_object());
+    const DataObject& text_document = *(params[m_text_document].to_object());
 
-    wasp_check( text_document[_uri].is_string() );
+    wasp_check( text_document[m_uri].is_string() );
 
-    uri = text_document[_uri].to_string();
+    uri = text_document[m_uri].to_string();
 
-    wasp_check( params[_position].is_object() );
+    wasp_check( params[m_position].is_object() );
 
-    DataObject position = *(params[_position].to_object());
+    const DataObject& position = *(params[m_position].to_object());
 
     pass &= dissectPositionObject( position  ,
                                    errors    ,
@@ -549,15 +549,15 @@ bool buildDefinitionRequest( DataObject        & object     ,
                                  character );
 
     DataObject text_document;
-    text_document[_uri] = uri;
+    text_document[m_uri] = uri;
 
     DataObject params;
-    params[_position]      = position;
-    params[_text_document] = text_document;
+    params[m_position]      = position;
+    params[m_text_document] = text_document;
 
-    object[_params] =  params;
-    object[_id]     =  request_id;
-    object[_method] = _method_definition;
+    object[m_params] =  params;
+    object[m_id]     =  request_id;
+    object[m_method] = m_method_definition;
 
     return pass;
 }
@@ -571,29 +571,29 @@ bool dissectDefinitionRequest( const DataObject   & object     ,
 {
     bool pass = true;
 
-    wasp_check( object[_method].is_string() );
+    wasp_check( object[m_method].is_string() );
 
-    wasp_check( object[_method].to_string() == _method_definition );
+    wasp_check( object[m_method].to_string() == m_method_definition );
 
-    wasp_check( object[_id].is_int() );
+    wasp_check( object[m_id].is_int() );
 
-    request_id = object[_id].to_int();
+    request_id = object[m_id].to_int();
 
-    wasp_check( object[_params].is_object() );
+    wasp_check( object[m_params].is_object() );
 
-    DataObject params = *(object[_params].to_object());
+    const DataObject& params = *(object[m_params].to_object());
 
-    wasp_check( params[_text_document].is_object() );
+    wasp_check( params[m_text_document].is_object() );
 
-    DataObject text_document = *(params[_text_document].to_object());
+    const DataObject& text_document = *(params[m_text_document].to_object());
 
-    wasp_check( text_document[_uri].is_string() );
+    wasp_check( text_document[m_uri].is_string() );
 
-    uri = text_document[_uri].to_string();
+    uri = text_document[m_uri].to_string();
 
-    wasp_check( params[_position].is_object() );
+    wasp_check( params[m_position].is_object() );
 
-    DataObject position = *(params[_position].to_object());
+    const DataObject& position = *(params[m_position].to_object());
 
     pass &= dissectPositionObject( position  ,
                                    errors    ,
@@ -620,19 +620,19 @@ bool buildReferencesRequest( DataObject        & object              ,
                                  character );
 
     DataObject text_document;
-    text_document[_uri] = uri;
+    text_document[m_uri] = uri;
 
     DataObject context;
-    context[_include_declaration] = include_declaration;
+    context[m_include_declaration] = include_declaration;
 
     DataObject params;
-    params[_position]      = position;
-    params[_text_document] = text_document;
-    params[_context]       = context;
+    params[m_position]      = position;
+    params[m_text_document] = text_document;
+    params[m_context]       = context;
 
-    object[_params] =  params;
-    object[_id]     =  request_id;
-    object[_method] = _method_references;
+    object[m_params] =  params;
+    object[m_id]     =  request_id;
+    object[m_method] = m_method_references;
 
     return pass;
 }
@@ -647,42 +647,42 @@ bool dissectReferencesRequest( const DataObject   & object              ,
 {
     bool pass = true;
 
-    wasp_check( object[_method].is_string() );
+    wasp_check( object[m_method].is_string() );
 
-    wasp_check( object[_method].to_string() == _method_references );
+    wasp_check( object[m_method].to_string() == m_method_references );
 
-    wasp_check( object[_id].is_int() );
+    wasp_check( object[m_id].is_int() );
 
-    request_id = object[_id].to_int();
+    request_id = object[m_id].to_int();
 
-    wasp_check( object[_params].is_object() );
+    wasp_check( object[m_params].is_object() );
 
-    DataObject params = *(object[_params].to_object());
+    const DataObject& params = *(object[m_params].to_object());
 
-    wasp_check( params[_text_document].is_object() );
+    wasp_check( params[m_text_document].is_object() );
 
-    DataObject text_document = *(params[_text_document].to_object());
+    const DataObject& text_document = *(params[m_text_document].to_object());
 
-    wasp_check( text_document[_uri].is_string() );
+    wasp_check( text_document[m_uri].is_string() );
 
-    uri = text_document[_uri].to_string();
+    uri = text_document[m_uri].to_string();
 
-    wasp_check( params[_position].is_object() );
+    wasp_check( params[m_position].is_object() );
 
-    DataObject position = *(params[_position].to_object());
+    const DataObject& position = *(params[m_position].to_object());
 
     pass &= dissectPositionObject( position  ,
                                    errors    ,
                                    line      ,
                                    character );
 
-    wasp_check( params[_context].is_object() );
+    wasp_check( params[m_context].is_object() );
 
-    DataObject context = *(params[_context].to_object());
+    const DataObject& context = *(params[m_context].to_object());
 
-    wasp_check( context[_include_declaration].is_bool() );
+    wasp_check( context[m_include_declaration].is_bool() );
 
-    include_declaration = context[_include_declaration].to_bool();
+    include_declaration = context[m_include_declaration].to_bool();
 
     return pass;
 }
@@ -709,20 +709,20 @@ bool buildRangeFormattingRequest( DataObject        & object          ,
                               end_character   );
 
     DataObject options;
-    options[_tab_size]      = tab_size;
-    options[_insert_spaces] = insert_spaces;
+    options[m_tab_size]      = tab_size;
+    options[m_insert_spaces] = insert_spaces;
 
     DataObject text_document;
-    text_document[_uri] = uri;
+    text_document[m_uri] = uri;
 
     DataObject params;
-    params[_range]         = range;
-    params[_options]       = options;
-    params[_text_document] = text_document;
+    params[m_range]         = range;
+    params[m_options]       = options;
+    params[m_text_document] = text_document;
 
-    object[_params] =  params;
-    object[_id]     =  request_id;
-    object[_method] = _method_rangeformat;
+    object[m_params] =  params;
+    object[m_id]     =  request_id;
+    object[m_method] = m_method_rangeformat;
 
     return pass;
 }
@@ -740,29 +740,29 @@ bool dissectRangeFormattingRequest( const DataObject   & object          ,
 {
     bool pass = true;
 
-    wasp_check( object[_method].is_string() );
+    wasp_check( object[m_method].is_string() );
 
-    wasp_check( object[_method].to_string() == _method_rangeformat );
+    wasp_check( object[m_method].to_string() == m_method_rangeformat );
 
-    wasp_check( object[_id].is_int() );
+    wasp_check( object[m_id].is_int() );
 
-    request_id = object[_id].to_int();
+    request_id = object[m_id].to_int();
 
-    wasp_check( object[_params].is_object() );
+    wasp_check( object[m_params].is_object() );
 
-    DataObject params = *(object[_params].to_object());
+    const DataObject& params = *(object[m_params].to_object());
 
-    wasp_check( params[_text_document].is_object() );
+    wasp_check( params[m_text_document].is_object() );
 
-    DataObject text_document = *(params[_text_document].to_object());
+    const DataObject& text_document = *(params[m_text_document].to_object());
 
-    wasp_check( text_document[_uri].is_string() );
+    wasp_check( text_document[m_uri].is_string() );
 
-    uri = text_document[_uri].to_string();
+    uri = text_document[m_uri].to_string();
 
-    wasp_check( params[_range].is_object() );
+    wasp_check( params[m_range].is_object() );
 
-    DataObject range = *(params[_range].to_object());
+    const DataObject& range = *(params[m_range].to_object());
 
     pass &= dissectRangeObject( range           ,
                                 errors          ,
@@ -771,17 +771,17 @@ bool dissectRangeFormattingRequest( const DataObject   & object          ,
                                 end_line        ,
                                 end_character   );
 
-    wasp_check( params[_options].is_object() );
+    wasp_check( params[m_options].is_object() );
 
-    DataObject options = *(params[_options].to_object());
+    const DataObject& options = *(params[m_options].to_object());
 
-    wasp_check( options[_tab_size].is_int() );
+    wasp_check( options[m_tab_size].is_int() );
 
-    tab_size = options[_tab_size].to_int();
+    tab_size = options[m_tab_size].to_int();
 
-    wasp_check( options[_insert_spaces].is_bool() );
+    wasp_check( options[m_insert_spaces].is_bool() );
 
-    insert_spaces = options[_insert_spaces].to_bool();
+    insert_spaces = options[m_insert_spaces].to_bool();
 
     return pass;
 }
@@ -807,11 +807,11 @@ bool buildDiagnosticObject( DataObject        & object          ,
                               end_line        ,
                               end_character   );
 
-    object[_range]    = range;
-    object[_severity] = severity;
-    object[_code]     = code;
-    object[_source]   = source;
-    object[_message]  = message;
+    object[m_range]    = range;
+    object[m_severity] = severity;
+    object[m_code]     = code;
+    object[m_source]   = source;
+    object[m_message]  = message;
 
     return pass;
 }
@@ -829,9 +829,9 @@ bool dissectDiagnosticObject( const DataObject   & object          ,
 {
     bool pass = true;
 
-    wasp_check( object[_range].is_object() );
+    wasp_check( object[m_range].is_object() );
 
-    DataObject range = *(object[_range].to_object());
+    const DataObject& range = *(object[m_range].to_object());
 
     pass &= dissectRangeObject( range           ,
                                 errors          ,
@@ -840,21 +840,21 @@ bool dissectDiagnosticObject( const DataObject   & object          ,
                                 end_line        ,
                                 end_character   );
 
-    wasp_check( object[_severity].is_int() );
+    wasp_check( object[m_severity].is_int() );
 
-    severity = object[_severity].to_int();
+    severity = object[m_severity].to_int();
 
-    wasp_check( object[_code].is_string() );
+    wasp_check( object[m_code].is_string() );
 
-    code = object[_code].to_string();
+    code = object[m_code].to_string();
 
-    wasp_check( object[_source].is_string() );
+    wasp_check( object[m_source].is_string() );
 
-    source = object[_source].to_string();
+    source = object[m_source].to_string();
 
-    wasp_check( object[_message].is_string() );
+    wasp_check( object[m_message].is_string() );
 
-    message = object[_message].to_string();
+    message = object[m_message].to_string();
 
     return pass;
 }
@@ -867,11 +867,11 @@ bool buildPublishDiagnosticsNotification( DataObject        & object      ,
     bool pass = true;
 
     DataObject params;
-    params[_uri]         = uri;
-    params[_diagnostics] = diagnostics;
+    params[m_uri]         = uri;
+    params[m_diagnostics] = diagnostics;
 
-    object[_params] =  params;
-    object[_method] = _method_pubdiagnostics;
+    object[m_params] =  params;
+    object[m_method] = m_method_pubdiagnostics;
 
     return pass;
 }
@@ -883,21 +883,21 @@ bool dissectPublishDiagnosticsNotification( const DataObject   & object      ,
 {
     bool pass = true;
 
-    wasp_check( object[_method].is_string() );
+    wasp_check( object[m_method].is_string() );
 
-    wasp_check( object[_method].to_string() == _method_pubdiagnostics );
+    wasp_check( object[m_method].to_string() == m_method_pubdiagnostics );
 
-    wasp_check( object[_params].is_object() );
+    wasp_check( object[m_params].is_object() );
 
-    DataObject params = *(object[_params].to_object());
+    const DataObject& params = *(object[m_params].to_object());
 
-    wasp_check( params[_uri].is_string() );
+    wasp_check( params[m_uri].is_string() );
 
-    uri = params[_uri].to_string();
+    uri = params[m_uri].to_string();
 
-    wasp_check( params[_diagnostics].is_array() );
+    wasp_check( params[m_diagnostics].is_array() );
 
-    diagnostics = *(params[_diagnostics].to_array());
+    diagnostics = *(params[m_diagnostics].to_array());
 
     return pass;
 }
@@ -910,10 +910,10 @@ bool buildInitializeResponse( DataObject        & object              ,
     bool pass = true;
 
     DataObject result;
-    result[_capabilities] = server_capabilities;
+    result[m_capabilities] = server_capabilities;
 
-    object[_result] = result;
-    object[_id]     = request_id;
+    object[m_result] = result;
+    object[m_id]     = request_id;
 
     return pass;
 }
@@ -925,17 +925,17 @@ bool dissectInitializeResponse( const DataObject   & object              ,
 {
     bool pass = true;
 
-    wasp_check( object[_id].is_int() );
+    wasp_check( object[m_id].is_int() );
 
-    request_id = object[_id].to_int();
+    request_id = object[m_id].to_int();
 
-    wasp_check( object[_result].is_object() );
+    wasp_check( object[m_result].is_object() );
 
-    DataObject result = *(object[_result].to_object());
+    const DataObject& result = *(object[m_result].to_object());
 
-    wasp_check( result[_capabilities].is_object() );
+    wasp_check( result[m_capabilities].is_object() );
 
-    server_capabilities = *(result[_capabilities].to_object());
+    server_capabilities = *(result[m_capabilities].to_object());
 
     return pass;
 }
@@ -948,8 +948,8 @@ bool buildShutdownResponse( DataObject        & object     ,
 
     DataObject result;
 
-    object[_result] = result;
-    object[_id]     = request_id;
+    object[m_result] = result;
+    object[m_id]     = request_id;
 
     return pass;
 }
@@ -960,11 +960,11 @@ bool dissectShutdownResponse( const DataObject   & object     ,
 {
     bool pass = true;
 
-    wasp_check( object[_id].is_int() );
+    wasp_check( object[m_id].is_int() );
 
-    request_id = object[_id].to_int();
+    request_id = object[m_id].to_int();
 
-    wasp_check( object[_result].is_object() );
+    wasp_check( object[m_result].is_object() );
 
     return pass;
 }
@@ -994,16 +994,16 @@ bool buildCompletionObject( DataObject        & object          ,
                               end_character   );
 
     DataObject text_edit;
-    text_edit[_range]    = range;
-    text_edit[_new_text] = new_text;
+    text_edit[m_range]    = range;
+    text_edit[m_new_text] = new_text;
 
-    object[_text_edit]     = text_edit;
-    object[_label]         = label;
-    object[_kind]          = kind;
-    object[_detail]        = detail;
-    object[_documentation] = documentation;
-    object[_deprecated]    = deprecated;
-    object[_preselect]     = preselect;
+    object[m_text_edit]     = text_edit;
+    object[m_label]         = label;
+    object[m_kind]          = kind;
+    object[m_detail]        = detail;
+    object[m_documentation] = documentation;
+    object[m_deprecated]    = deprecated;
+    object[m_preselect]     = preselect;
 
     return pass;
 }
@@ -1024,13 +1024,13 @@ bool dissectCompletionObject( const DataObject   & object          ,
 {
     bool pass = true;
 
-    wasp_check( object[_text_edit].is_object() );
+    wasp_check( object[m_text_edit].is_object() );
 
-    DataObject text_edit = *(object[_text_edit].to_object());
+    const DataObject& text_edit = *(object[m_text_edit].to_object());
 
-    wasp_check( text_edit[_range].is_object() );
+    wasp_check( text_edit[m_range].is_object() );
 
-    DataObject range = *(text_edit[_range].to_object());
+    const DataObject& range = *(text_edit[m_range].to_object());
 
     pass &= dissectRangeObject( range           ,
                                 errors          ,
@@ -1039,33 +1039,33 @@ bool dissectCompletionObject( const DataObject   & object          ,
                                 end_line        ,
                                 end_character   );
 
-    wasp_check( text_edit[_new_text].is_string() );
+    wasp_check( text_edit[m_new_text].is_string() );
 
-    new_text = text_edit[_new_text].to_string();
+    new_text = text_edit[m_new_text].to_string();
 
-    wasp_check( object[_label].is_string() );
+    wasp_check( object[m_label].is_string() );
 
-    label = object[_label].to_string();
+    label = object[m_label].to_string();
 
-    wasp_check( object[_kind].is_int() );
+    wasp_check( object[m_kind].is_int() );
 
-    kind = object[_kind].to_int();
+    kind = object[m_kind].to_int();
 
-    wasp_check( object[_detail].is_string() );
+    wasp_check( object[m_detail].is_string() );
 
-    detail = object[_detail].to_string();
+    detail = object[m_detail].to_string();
 
-    wasp_check( object[_documentation].is_string() );
+    wasp_check( object[m_documentation].is_string() );
 
-    documentation = object[_documentation].to_string();
+    documentation = object[m_documentation].to_string();
 
-    wasp_check( object[_deprecated].is_bool() );
+    wasp_check( object[m_deprecated].is_bool() );
 
-    deprecated = object[_deprecated].to_bool();
+    deprecated = object[m_deprecated].to_bool();
 
-    wasp_check( object[_preselect].is_bool() );
+    wasp_check( object[m_preselect].is_bool() );
 
-    preselect = object[_preselect].to_bool();
+    preselect = object[m_preselect].to_bool();
 
     return pass;
 }
@@ -1079,11 +1079,11 @@ bool buildCompletionResponse( DataObject        & object           ,
     bool pass = true;
 
     DataObject result;
-    result[_is_incomplete] = is_incomplete;
-    result[_items]         = completion_items;
+    result[m_is_incomplete] = is_incomplete;
+    result[m_items]         = completion_items;
 
-    object[_result] = result;
-    object[_id]     = request_id;
+    object[m_result] = result;
+    object[m_id]     = request_id;
 
     return pass;
 }
@@ -1096,21 +1096,21 @@ bool dissectCompletionResponse( const DataObject   & object           ,
 {
     bool pass = true;
 
-    wasp_check( object[_id].is_int() );
+    wasp_check( object[m_id].is_int() );
 
-    request_id = object[_id].to_int();
+    request_id = object[m_id].to_int();
 
-    wasp_check( object[_result].is_object() );
+    wasp_check( object[m_result].is_object() );
 
-    DataObject result = *(object[_result].to_object());
+    const DataObject& result = *(object[m_result].to_object());
 
-    wasp_check( result[_is_incomplete].is_bool() );
+    wasp_check( result[m_is_incomplete].is_bool() );
 
-    is_incomplete = result[_is_incomplete].to_bool();
+    is_incomplete = result[m_is_incomplete].to_bool();
 
-    wasp_check( result[_items].is_array() );
+    wasp_check( result[m_items].is_array() );
 
-    completion_items = *(result[_items].to_array());
+    completion_items = *(result[m_items].to_array());
 
     return pass;
 }
@@ -1133,8 +1133,8 @@ bool buildLocationObject( DataObject        & object          ,
                               end_line        ,
                               end_character   );
 
-    object[_range] = range;
-    object[_uri]   = uri;
+    object[m_range] = range;
+    object[m_uri]   = uri;
 
     return pass;
 }
@@ -1149,13 +1149,13 @@ bool dissectLocationObject( const DataObject   & object          ,
 {
     bool pass = true;
 
-    wasp_check( object[_uri].is_string() );
+    wasp_check( object[m_uri].is_string() );
 
-    uri = object[_uri].to_string();
+    uri = object[m_uri].to_string();
 
-    wasp_check( object[_range].is_object() );
+    wasp_check( object[m_range].is_object() );
 
-    DataObject range = *(object[_range].to_object());
+    const DataObject& range = *(object[m_range].to_object());
 
     pass &= dissectRangeObject( range           ,
                                 errors          ,
@@ -1176,8 +1176,8 @@ bool buildLocationsResponse( DataObject        & object           ,
 
     DataObject result;
 
-    object[_result] = location_objects;
-    object[_id]     = request_id;
+    object[m_result] = location_objects;
+    object[m_id]     = request_id;
 
     return pass;
 }
@@ -1189,13 +1189,13 @@ bool dissectLocationsResponse( const DataObject   & object           ,
 {
     bool pass = true;
 
-    wasp_check( object[_id].is_int() );
+    wasp_check( object[m_id].is_int() );
 
-    request_id = object[_id].to_int();
+    request_id = object[m_id].to_int();
 
-    wasp_check( object[_result].is_array() );
+    wasp_check( object[m_result].is_array() );
 
-    location_objects = *(object[_result].to_array());
+    location_objects = *(object[m_result].to_array());
 
     return pass;
 }
@@ -1218,8 +1218,8 @@ bool buildTextEditObject( DataObject        & object          ,
                               end_line        ,
                               end_character   );
 
-    object[_range]    = range;
-    object[_new_text] = new_text;
+    object[m_range]    = range;
+    object[m_new_text] = new_text;
 
     return pass;
 }
@@ -1234,9 +1234,9 @@ bool dissectTextEditObject( const DataObject   & object          ,
 {
     bool pass = true;
 
-    wasp_check( object[_range].is_object() );
+    wasp_check( object[m_range].is_object() );
 
-    DataObject range = *(object[_range].to_object());
+    const DataObject& range = *(object[m_range].to_object());
 
     pass &= dissectRangeObject( range           ,
                                 errors          ,
@@ -1245,9 +1245,9 @@ bool dissectTextEditObject( const DataObject   & object          ,
                                 end_line        ,
                                 end_character   );
 
-    wasp_check( object[_new_text].is_string() );
+    wasp_check( object[m_new_text].is_string() );
 
-    new_text = object[_new_text].to_string();
+    new_text = object[m_new_text].to_string();
 
     return pass;
 }
@@ -1261,8 +1261,8 @@ bool buildRangeFormattingResponse( DataObject        & object           ,
 
     DataObject result;
 
-    object[_result] = textedit_objects;
-    object[_id]     = request_id;
+    object[m_result] = textedit_objects;
+    object[m_id]     = request_id;
 
     return pass;
 }
@@ -1274,13 +1274,13 @@ bool dissectRangeFormattingResponse( const DataObject   & object           ,
 {
     bool pass = true;
 
-    wasp_check( object[_id].is_int() );
+    wasp_check( object[m_id].is_int() );
 
-    request_id = object[_id].to_int();
+    request_id = object[m_id].to_int();
 
-    wasp_check( object[_result].is_array() );
+    wasp_check( object[m_result].is_array() );
 
-    textedit_objects = *(object[_result].to_array());
+    textedit_objects = *(object[m_result].to_array());
 
     return pass;
 }

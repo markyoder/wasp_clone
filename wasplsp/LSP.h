@@ -2,7 +2,6 @@
 #define WASPLSP_LSP_H
 
 #include <string>
-#include <vector>
 #include <iostream>
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
@@ -368,57 +367,57 @@ bool dissectRangeFormattingResponse( const DataObject   & object           ,
                                            int          & request_id       ,
                                            DataArray    & textedit_objects );
 
-static const char _id[]                    = "id";
-static const char _method_initialize[]     = "initialize";
-static const char _method_initialized[]    = "initialized";
-static const char _method_shutdown[]       = "shutdown";
-static const char _method_exit[]           = "exit";
-static const char _method_didopen[]        = "textDocument/didOpen";
-static const char _method_didchange[]      = "textDocument/didChange";
-static const char _method_completion[]     = "textDocument/completion";
-static const char _method_definition[]     = "textDocument/definition";
-static const char _method_references[]     = "textDocument/references";
-static const char _method_rangeformat[]    = "textDocument/rangeFormatting";
-static const char _method_pubdiagnostics[] = "textDocument/publishDiagnostics";
-static const char _method[]                = "method";
-static const char _params[]                = "params";
-static const char _result[]                = "result";
-static const char _process_id[]            = "processId";
-static const char _root_uri[]              = "rootUri";
-static const char _capabilities[]          = "capabilities";
-static const char _text_document[]         = "textDocument";
-static const char _uri[]                   = "uri";
-static const char _language_id[]           = "languageId";
-static const char _version[]               = "version";
-static const char _text[]                  = "text";
-static const char _content_changes[]       = "contentChanges";
-static const char _range[]                 = "range";
-static const char _start[]                 = "start";
-static const char _end[]                   = "end";
-static const char _line[]                  = "line";
-static const char _character[]             = "character";
-static const char _range_length[]          = "range_length";
-static const char _position[]              = "position";
-static const char _context[]               = "context";
-static const char _include_declaration[]   = "includeDeclaration";
-static const char _options[]               = "options";
-static const char _tab_size[]              = "tabSize";
-static const char _insert_spaces[]         = "insertSpaces";
-static const char _severity[]              = "severity";
-static const char _code[]                  = "code";
-static const char _source[]                = "source";
-static const char _message[]               = "message";
-static const char _diagnostics[]           = "diagnostics";
-static const char _label[]                 = "label";
-static const char _text_edit[]             = "textEdit";
-static const char _new_text[]              = "newText";
-static const char _kind[]                  = "kind";
-static const char _detail[]                = "detail";
-static const char _documentation[]         = "documentation";
-static const char _deprecated[]            = "deprecated";
-static const char _preselect[]             = "preselect";
-static const char _items[]                 = "items";
-static const char _is_incomplete[]         = "isIncomplete";
+static const char m_id[]                    = "id";
+static const char m_method_initialize[]     = "initialize";
+static const char m_method_initialized[]    = "initialized";
+static const char m_method_shutdown[]       = "shutdown";
+static const char m_method_exit[]           = "exit";
+static const char m_method_didopen[]        = "textDocument/didOpen";
+static const char m_method_didchange[]      = "textDocument/didChange";
+static const char m_method_completion[]     = "textDocument/completion";
+static const char m_method_definition[]     = "textDocument/definition";
+static const char m_method_references[]     = "textDocument/references";
+static const char m_method_rangeformat[]    = "textDocument/rangeFormatting";
+static const char m_method_pubdiagnostics[] = "textDocument/publishDiagnostics";
+static const char m_method[]                = "method";
+static const char m_params[]                = "params";
+static const char m_result[]                = "result";
+static const char m_process_id[]            = "processId";
+static const char m_root_uri[]              = "rootUri";
+static const char m_capabilities[]          = "capabilities";
+static const char m_text_document[]         = "textDocument";
+static const char m_uri[]                   = "uri";
+static const char m_language_id[]           = "languageId";
+static const char m_version[]               = "version";
+static const char m_text[]                  = "text";
+static const char m_content_changes[]       = "contentChanges";
+static const char m_range[]                 = "range";
+static const char m_start[]                 = "start";
+static const char m_end[]                   = "end";
+static const char m_line[]                  = "line";
+static const char m_character[]             = "character";
+static const char m_range_length[]          = "range_length";
+static const char m_position[]              = "position";
+static const char m_context[]               = "context";
+static const char m_include_declaration[]   = "includeDeclaration";
+static const char m_options[]               = "options";
+static const char m_tab_size[]              = "tabSize";
+static const char m_insert_spaces[]         = "insertSpaces";
+static const char m_severity[]              = "severity";
+static const char m_code[]                  = "code";
+static const char m_source[]                = "source";
+static const char m_message[]               = "message";
+static const char m_diagnostics[]           = "diagnostics";
+static const char m_label[]                 = "label";
+static const char m_text_edit[]             = "textEdit";
+static const char m_new_text[]              = "newText";
+static const char m_kind[]                  = "kind";
+static const char m_detail[]                = "detail";
+static const char m_documentation[]         = "documentation";
+static const char m_deprecated[]            = "deprecated";
+static const char m_preselect[]             = "preselect";
+static const char m_items[]                 = "items";
+static const char m_is_incomplete[]         = "isIncomplete";
 
 } // namespace lsp
 } // namespace wasp

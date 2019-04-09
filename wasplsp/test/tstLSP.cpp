@@ -93,20 +93,20 @@ TEST(lsp, initialize_request)
 
     ASSERT_EQ  ( object.size() , (size_t) 3 );
 
-    ASSERT_TRUE( object[_method].is_string()                );
-    ASSERT_EQ  ( object[_method].to_string() , "initialize" );
+    ASSERT_TRUE( object[m_method].is_string()                );
+    ASSERT_EQ  ( object[m_method].to_string() , "initialize" );
 
-    ASSERT_TRUE( object[_params].is_object()         );
-    ASSERT_EQ  ( object[_params].size() , (size_t) 3 );
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 3 );
 
-    ASSERT_TRUE( object[_params][_process_id].is_int()              );
-    ASSERT_EQ  ( object[_params][_process_id].to_int() , process_id );
+    ASSERT_TRUE( object[m_params][m_process_id].is_int()              );
+    ASSERT_EQ  ( object[m_params][m_process_id].to_int() , process_id );
 
-    ASSERT_TRUE( object[_params][_root_uri].is_string()            );
-    ASSERT_EQ  ( object[_params][_root_uri].to_string() , root_uri );
+    ASSERT_TRUE( object[m_params][m_root_uri].is_string()            );
+    ASSERT_EQ  ( object[m_params][m_root_uri].to_string() , root_uri );
 
-    ASSERT_TRUE( object[_params][_capabilities].is_object()         );
-    ASSERT_EQ  ( object[_params][_capabilities].size() , (size_t) 0 );
+    ASSERT_TRUE( object[m_params][m_capabilities].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_capabilities].size() , (size_t) 0 );
 
     std::stringstream  json;
     object.format_json(json);
@@ -152,11 +152,11 @@ TEST(lsp, initialized_notification)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_method].is_string()                 );
-    ASSERT_EQ  ( object[_method].to_string() , "initialized" );
+    ASSERT_TRUE( object[m_method].is_string()                 );
+    ASSERT_EQ  ( object[m_method].to_string() , "initialized" );
 
-    ASSERT_TRUE( object[_params].is_object()         );
-    ASSERT_EQ  ( object[_params].size() , (size_t) 0 );
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 0 );
 
     std::stringstream  json;
     object.format_json(json);
@@ -186,11 +186,11 @@ TEST(lsp, shutdown_request)
 
     ASSERT_EQ  ( object.size() , (size_t) 3 );
 
-    ASSERT_TRUE( object[_method].is_string()              );
-    ASSERT_EQ  ( object[_method].to_string() , "shutdown" );
+    ASSERT_TRUE( object[m_method].is_string()              );
+    ASSERT_EQ  ( object[m_method].to_string() , "shutdown" );
 
-    ASSERT_TRUE( object[_params].is_object()         );
-    ASSERT_EQ  ( object[_params].size() , (size_t) 0 );
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 0 );
 
     std::stringstream  json;
     object.format_json(json);
@@ -223,11 +223,11 @@ TEST(lsp, exit_notification)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_method].is_string()          );
-    ASSERT_EQ  ( object[_method].to_string() , "exit" );
+    ASSERT_TRUE( object[m_method].is_string()          );
+    ASSERT_EQ  ( object[m_method].to_string() , "exit" );
 
-    ASSERT_TRUE( object[_params].is_object()         );
-    ASSERT_EQ  ( object[_params].size() , (size_t) 0 );
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 0 );
 
     std::stringstream  json;
     object.format_json(json);
@@ -263,26 +263,26 @@ TEST(lsp, didopen_notification)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_method].is_string()                          );
-    ASSERT_EQ  ( object[_method].to_string() , "textDocument/didOpen" );
+    ASSERT_TRUE( object[m_method].is_string()                          );
+    ASSERT_EQ  ( object[m_method].to_string() , "textDocument/didOpen" );
 
-    ASSERT_TRUE( object[_params].is_object()         );
-    ASSERT_EQ  ( object[_params].size() , (size_t) 1 );
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 1 );
 
-    ASSERT_TRUE( object[_params][_text_document].is_object()         );
-    ASSERT_EQ  ( object[_params][_text_document].size() , (size_t) 4 );
+    ASSERT_TRUE( object[m_params][m_text_document].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_text_document].size() , (size_t) 4 );
 
-    ASSERT_TRUE( object[_params][_text_document][_uri].is_string()       );
-    ASSERT_EQ  ( object[_params][_text_document][_uri].to_string() , uri );
+    ASSERT_TRUE( object[m_params][m_text_document][m_uri].is_string()       );
+    ASSERT_EQ  ( object[m_params][m_text_document][m_uri].to_string() , uri );
 
-    ASSERT_TRUE( object[_params][_text_document][_language_id].is_string()               );
-    ASSERT_EQ  ( object[_params][_text_document][_language_id].to_string() , language_id );
+    ASSERT_TRUE( object[m_params][m_text_document][m_language_id].is_string()               );
+    ASSERT_EQ  ( object[m_params][m_text_document][m_language_id].to_string() , language_id );
 
-    ASSERT_TRUE( object[_params][_text_document][_version].is_int()           );
-    ASSERT_EQ  ( object[_params][_text_document][_version].to_int() , version );
+    ASSERT_TRUE( object[m_params][m_text_document][m_version].is_int()           );
+    ASSERT_EQ  ( object[m_params][m_text_document][m_version].to_int() , version );
 
-    ASSERT_TRUE( object[_params][_text_document][_text].is_string()        );
-    ASSERT_EQ  ( object[_params][_text_document][_text].to_string() , text );
+    ASSERT_TRUE( object[m_params][m_text_document][m_text].is_string()        );
+    ASSERT_EQ  ( object[m_params][m_text_document][m_text].to_string() , text );
 
     std::stringstream  json;
     object.format_json(json);
@@ -348,50 +348,50 @@ TEST(lsp, didchange_notification)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_method].is_string()                            );
-    ASSERT_EQ  ( object[_method].to_string() , "textDocument/didChange" );
+    ASSERT_TRUE( object[m_method].is_string()                            );
+    ASSERT_EQ  ( object[m_method].to_string() , "textDocument/didChange" );
 
-    ASSERT_TRUE( object[_params].is_object()         );
-    ASSERT_EQ  ( object[_params].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_text_document].is_object()         );
-    ASSERT_EQ  ( object[_params][_text_document].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_text_document].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_text_document].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_text_document][_uri].is_string()       );
-    ASSERT_EQ  ( object[_params][_text_document][_uri].to_string() , uri );
+    ASSERT_TRUE( object[m_params][m_text_document][m_uri].is_string()       );
+    ASSERT_EQ  ( object[m_params][m_text_document][m_uri].to_string() , uri );
 
-    ASSERT_TRUE( object[_params][_text_document][_version].is_int()           );
-    ASSERT_EQ  ( object[_params][_text_document][_version].to_int() , version );
+    ASSERT_TRUE( object[m_params][m_text_document][m_version].is_int()           );
+    ASSERT_EQ  ( object[m_params][m_text_document][m_version].to_int() , version );
 
-    ASSERT_TRUE( object[_params][_content_changes].is_object()         );
-    ASSERT_EQ  ( object[_params][_content_changes].size() , (size_t) 3 );
+    ASSERT_TRUE( object[m_params][m_content_changes].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_content_changes].size() , (size_t) 3 );
 
-    ASSERT_TRUE( object[_params][_content_changes][_range].is_object()         );
-    ASSERT_EQ  ( object[_params][_content_changes][_range].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_content_changes][m_range].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_content_changes][m_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_content_changes][_range][_start].is_object()         );
-    ASSERT_EQ  ( object[_params][_content_changes][_range][_start].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_content_changes][m_range][m_start].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_content_changes][m_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_content_changes][_range][_start][_line].is_int()              );
-    ASSERT_EQ  ( object[_params][_content_changes][_range][_start][_line].to_int() , start_line );
+    ASSERT_TRUE( object[m_params][m_content_changes][m_range][m_start][m_line].is_int()              );
+    ASSERT_EQ  ( object[m_params][m_content_changes][m_range][m_start][m_line].to_int() , start_line );
 
-    ASSERT_TRUE( object[_params][_content_changes][_range][_start][_character].is_int()                   );
-    ASSERT_EQ  ( object[_params][_content_changes][_range][_start][_character].to_int() , start_character );
+    ASSERT_TRUE( object[m_params][m_content_changes][m_range][m_start][m_character].is_int()                   );
+    ASSERT_EQ  ( object[m_params][m_content_changes][m_range][m_start][m_character].to_int() , start_character );
 
-    ASSERT_TRUE( object[_params][_content_changes][_range][_end].is_object()         );
-    ASSERT_EQ  ( object[_params][_content_changes][_range][_end].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_content_changes][m_range][m_end].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_content_changes][m_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_content_changes][_range][_end][_line].is_int()            );
-    ASSERT_EQ  ( object[_params][_content_changes][_range][_end][_line].to_int() , end_line );
+    ASSERT_TRUE( object[m_params][m_content_changes][m_range][m_end][m_line].is_int()            );
+    ASSERT_EQ  ( object[m_params][m_content_changes][m_range][m_end][m_line].to_int() , end_line );
 
-    ASSERT_TRUE( object[_params][_content_changes][_range][_end][_character].is_int()                 );
-    ASSERT_EQ  ( object[_params][_content_changes][_range][_end][_character].to_int() , end_character );
+    ASSERT_TRUE( object[m_params][m_content_changes][m_range][m_end][m_character].is_int()                 );
+    ASSERT_EQ  ( object[m_params][m_content_changes][m_range][m_end][m_character].to_int() , end_character );
 
-    ASSERT_TRUE( object[_params][_content_changes][_range_length].is_int()                );
-    ASSERT_EQ  ( object[_params][_content_changes][_range_length].to_int() , range_length );
+    ASSERT_TRUE( object[m_params][m_content_changes][m_range_length].is_int()                );
+    ASSERT_EQ  ( object[m_params][m_content_changes][m_range_length].to_int() , range_length );
 
-    ASSERT_TRUE( object[_params][_content_changes][_text].is_string()        );
-    ASSERT_EQ  ( object[_params][_content_changes][_text].to_string() , text );
+    ASSERT_TRUE( object[m_params][m_content_changes][m_text].is_string()        );
+    ASSERT_EQ  ( object[m_params][m_content_changes][m_text].to_string() , text );
 
     std::stringstream  json;
     object.format_json(json);
@@ -472,26 +472,26 @@ TEST(lsp, completion_request)
 
     ASSERT_EQ  ( object.size() , (size_t) 3 );
 
-    ASSERT_TRUE( object[_method].is_string()                             );
-    ASSERT_EQ  ( object[_method].to_string() , "textDocument/completion" );
+    ASSERT_TRUE( object[m_method].is_string()                             );
+    ASSERT_EQ  ( object[m_method].to_string() , "textDocument/completion" );
 
-    ASSERT_TRUE( object[_params].is_object()         );
-    ASSERT_EQ  ( object[_params].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_text_document].is_object()         );
-    ASSERT_EQ  ( object[_params][_text_document].size() , (size_t) 1 );
+    ASSERT_TRUE( object[m_params][m_text_document].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_text_document].size() , (size_t) 1 );
 
-    ASSERT_TRUE( object[_params][_text_document][_uri].is_string()       );
-    ASSERT_EQ  ( object[_params][_text_document][_uri].to_string() , uri );
+    ASSERT_TRUE( object[m_params][m_text_document][m_uri].is_string()       );
+    ASSERT_EQ  ( object[m_params][m_text_document][m_uri].to_string() , uri );
 
-    ASSERT_TRUE( object[_params][_position].is_object()         );
-    ASSERT_EQ  ( object[_params][_position].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_position].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_position].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_position][_line].is_int()       );
-    ASSERT_EQ  ( object[_params][_position][_line].to_int() , line );
+    ASSERT_TRUE( object[m_params][m_position][m_line].is_int()       );
+    ASSERT_EQ  ( object[m_params][m_position][m_line].to_int() , line );
 
-    ASSERT_TRUE( object[_params][_position][_character].is_int()             );
-    ASSERT_EQ  ( object[_params][_position][_character].to_int() , character );
+    ASSERT_TRUE( object[m_params][m_position][m_character].is_int()             );
+    ASSERT_EQ  ( object[m_params][m_position][m_character].to_int() , character );
 
     std::stringstream  json;
     object.format_json(json);
@@ -551,26 +551,26 @@ TEST(lsp, definition_request)
 
     ASSERT_EQ  ( object.size() , (size_t) 3 );
 
-    ASSERT_TRUE( object[_method].is_string()                             );
-    ASSERT_EQ  ( object[_method].to_string() , "textDocument/definition" );
+    ASSERT_TRUE( object[m_method].is_string()                             );
+    ASSERT_EQ  ( object[m_method].to_string() , "textDocument/definition" );
 
-    ASSERT_TRUE( object[_params].is_object()         );
-    ASSERT_EQ  ( object[_params].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_text_document].is_object()         );
-    ASSERT_EQ  ( object[_params][_text_document].size() , (size_t) 1 );
+    ASSERT_TRUE( object[m_params][m_text_document].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_text_document].size() , (size_t) 1 );
 
-    ASSERT_TRUE( object[_params][_text_document][_uri].is_string()       );
-    ASSERT_EQ  ( object[_params][_text_document][_uri].to_string() , uri );
+    ASSERT_TRUE( object[m_params][m_text_document][m_uri].is_string()       );
+    ASSERT_EQ  ( object[m_params][m_text_document][m_uri].to_string() , uri );
 
-    ASSERT_TRUE( object[_params][_position].is_object()         );
-    ASSERT_EQ  ( object[_params][_position].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_position].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_position].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_position][_line].is_int()       );
-    ASSERT_EQ  ( object[_params][_position][_line].to_int() , line );
+    ASSERT_TRUE( object[m_params][m_position][m_line].is_int()       );
+    ASSERT_EQ  ( object[m_params][m_position][m_line].to_int() , line );
 
-    ASSERT_TRUE( object[_params][_position][_character].is_int()             );
-    ASSERT_EQ  ( object[_params][_position][_character].to_int() , character );
+    ASSERT_TRUE( object[m_params][m_position][m_character].is_int()             );
+    ASSERT_EQ  ( object[m_params][m_position][m_character].to_int() , character );
 
     std::stringstream  json;
     object.format_json(json);
@@ -631,32 +631,32 @@ TEST(lsp, references_request)
 
     ASSERT_EQ  ( object.size() , (size_t) 3 );
 
-    ASSERT_TRUE( object[_method].is_string()                             );
-    ASSERT_EQ  ( object[_method].to_string() , "textDocument/references" );
+    ASSERT_TRUE( object[m_method].is_string()                             );
+    ASSERT_EQ  ( object[m_method].to_string() , "textDocument/references" );
 
-    ASSERT_TRUE( object[_params].is_object()         );
-    ASSERT_EQ  ( object[_params].size() , (size_t) 3 );
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 3 );
 
-    ASSERT_TRUE( object[_params][_text_document].is_object()         );
-    ASSERT_EQ  ( object[_params][_text_document].size() , (size_t) 1 );
+    ASSERT_TRUE( object[m_params][m_text_document].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_text_document].size() , (size_t) 1 );
 
-    ASSERT_TRUE( object[_params][_text_document][_uri].is_string()       );
-    ASSERT_EQ  ( object[_params][_text_document][_uri].to_string() , uri );
+    ASSERT_TRUE( object[m_params][m_text_document][m_uri].is_string()       );
+    ASSERT_EQ  ( object[m_params][m_text_document][m_uri].to_string() , uri );
 
-    ASSERT_TRUE( object[_params][_position].is_object()         );
-    ASSERT_EQ  ( object[_params][_position].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_position].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_position].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_position][_line].is_int()       );
-    ASSERT_EQ  ( object[_params][_position][_line].to_int() , line );
+    ASSERT_TRUE( object[m_params][m_position][m_line].is_int()       );
+    ASSERT_EQ  ( object[m_params][m_position][m_line].to_int() , line );
 
-    ASSERT_TRUE( object[_params][_position][_character].is_int()             );
-    ASSERT_EQ  ( object[_params][_position][_character].to_int() , character );
+    ASSERT_TRUE( object[m_params][m_position][m_character].is_int()             );
+    ASSERT_EQ  ( object[m_params][m_position][m_character].to_int() , character );
 
-    ASSERT_TRUE( object[_params][_context].is_object()         );
-    ASSERT_EQ  ( object[_params][_context].size() , (size_t) 1 );
+    ASSERT_TRUE( object[m_params][m_context].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_context].size() , (size_t) 1 );
 
-    ASSERT_TRUE( object[_params][_context][_include_declaration].is_bool()                       );
-    ASSERT_EQ  ( object[_params][_context][_include_declaration].to_bool() , include_declaration );
+    ASSERT_TRUE( object[m_params][m_context][m_include_declaration].is_bool()                       );
+    ASSERT_EQ  ( object[m_params][m_context][m_include_declaration].to_bool() , include_declaration );
 
     std::stringstream  json;
     object.format_json(json);
@@ -729,47 +729,47 @@ TEST(lsp, rangeformatting_request)
 
     ASSERT_EQ  ( object.size() , (size_t) 3 );
 
-    ASSERT_TRUE( object[_method].is_string()                                  );
-    ASSERT_EQ  ( object[_method].to_string() , "textDocument/rangeFormatting" );
+    ASSERT_TRUE( object[m_method].is_string()                                  );
+    ASSERT_EQ  ( object[m_method].to_string() , "textDocument/rangeFormatting" );
 
-    ASSERT_TRUE( object[_params].is_object()         );
-    ASSERT_EQ  ( object[_params].size() , (size_t) 3 );
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 3 );
 
-    ASSERT_TRUE( object[_params][_text_document].is_object()         );
-    ASSERT_EQ  ( object[_params][_text_document].size() , (size_t) 1 );
+    ASSERT_TRUE( object[m_params][m_text_document].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_text_document].size() , (size_t) 1 );
 
-    ASSERT_TRUE( object[_params][_text_document][_uri].is_string()       );
-    ASSERT_EQ  ( object[_params][_text_document][_uri].to_string() , uri );
+    ASSERT_TRUE( object[m_params][m_text_document][m_uri].is_string()       );
+    ASSERT_EQ  ( object[m_params][m_text_document][m_uri].to_string() , uri );
 
-    ASSERT_TRUE( object[_params][_range].is_object()         );
-    ASSERT_EQ  ( object[_params][_range].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_range].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_range][_start].is_object()         );
-    ASSERT_EQ  ( object[_params][_range][_start].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_range][m_start].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_range][_start][_line].is_int()              );
-    ASSERT_EQ  ( object[_params][_range][_start][_line].to_int() , start_line );
+    ASSERT_TRUE( object[m_params][m_range][m_start][m_line].is_int()              );
+    ASSERT_EQ  ( object[m_params][m_range][m_start][m_line].to_int() , start_line );
 
-    ASSERT_TRUE( object[_params][_range][_start][_character].is_int()                   );
-    ASSERT_EQ  ( object[_params][_range][_start][_character].to_int() , start_character );
+    ASSERT_TRUE( object[m_params][m_range][m_start][m_character].is_int()                   );
+    ASSERT_EQ  ( object[m_params][m_range][m_start][m_character].to_int() , start_character );
 
-    ASSERT_TRUE( object[_params][_range][_end].is_object()         );
-    ASSERT_EQ  ( object[_params][_range][_end].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_range][m_end].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_range][_end][_line].is_int()            );
-    ASSERT_EQ  ( object[_params][_range][_end][_line].to_int() , end_line );
+    ASSERT_TRUE( object[m_params][m_range][m_end][m_line].is_int()            );
+    ASSERT_EQ  ( object[m_params][m_range][m_end][m_line].to_int() , end_line );
 
-    ASSERT_TRUE( object[_params][_range][_end][_character].is_int()                 );
-    ASSERT_EQ  ( object[_params][_range][_end][_character].to_int() , end_character );
+    ASSERT_TRUE( object[m_params][m_range][m_end][m_character].is_int()                 );
+    ASSERT_EQ  ( object[m_params][m_range][m_end][m_character].to_int() , end_character );
 
-    ASSERT_TRUE( object[_params][_options].is_object()         );
-    ASSERT_EQ  ( object[_params][_options].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_options].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_options].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_options][_tab_size].is_int() );
-    ASSERT_EQ  ( object[_params][_options][_tab_size].to_int() , tab_size );
+    ASSERT_TRUE( object[m_params][m_options][m_tab_size].is_int() );
+    ASSERT_EQ  ( object[m_params][m_options][m_tab_size].to_int() , tab_size );
 
-    ASSERT_TRUE( object[_params][_options][_insert_spaces].is_bool()                 );
-    ASSERT_EQ  ( object[_params][_options][_insert_spaces].to_bool() , insert_spaces );
+    ASSERT_TRUE( object[m_params][m_options][m_insert_spaces].is_bool()                 );
+    ASSERT_EQ  ( object[m_params][m_options][m_insert_spaces].to_bool() , insert_spaces );
 
     std::stringstream  json;
     object.format_json(json);
@@ -858,38 +858,38 @@ TEST(lsp, diagnostic_object)
 
     ASSERT_EQ  ( object.size() , (size_t) 5 );
 
-    ASSERT_TRUE( object[_range].is_object()         );
-    ASSERT_EQ  ( object[_range].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_range].is_object()         );
+    ASSERT_EQ  ( object[m_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_range][_start].is_object()         );
-    ASSERT_EQ  ( object[_range][_start].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_range][m_start].is_object()         );
+    ASSERT_EQ  ( object[m_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_range][_start][_line].is_int()              );
-    ASSERT_EQ  ( object[_range][_start][_line].to_int() , start_line );
+    ASSERT_TRUE( object[m_range][m_start][m_line].is_int()              );
+    ASSERT_EQ  ( object[m_range][m_start][m_line].to_int() , start_line );
 
-    ASSERT_TRUE( object[_range][_start][_character].is_int()                   );
-    ASSERT_EQ  ( object[_range][_start][_character].to_int() , start_character );
+    ASSERT_TRUE( object[m_range][m_start][m_character].is_int()                   );
+    ASSERT_EQ  ( object[m_range][m_start][m_character].to_int() , start_character );
 
-    ASSERT_TRUE( object[_range][_end].is_object()         );
-    ASSERT_EQ  ( object[_range][_end].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_range][m_end].is_object()         );
+    ASSERT_EQ  ( object[m_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_range][_end][_line].is_int()            );
-    ASSERT_EQ  ( object[_range][_end][_line].to_int() , end_line );
+    ASSERT_TRUE( object[m_range][m_end][m_line].is_int()            );
+    ASSERT_EQ  ( object[m_range][m_end][m_line].to_int() , end_line );
 
-    ASSERT_TRUE( object[_range][_end][_character].is_int()                 );
-    ASSERT_EQ  ( object[_range][_end][_character].to_int() , end_character );
+    ASSERT_TRUE( object[m_range][m_end][m_character].is_int()                 );
+    ASSERT_EQ  ( object[m_range][m_end][m_character].to_int() , end_character );
 
-    ASSERT_TRUE( object[_severity].is_int()            );
-    ASSERT_EQ  ( object[_severity].to_int() , severity );
+    ASSERT_TRUE( object[m_severity].is_int()            );
+    ASSERT_EQ  ( object[m_severity].to_int() , severity );
 
-    ASSERT_TRUE( object[_code].is_string()        );
-    ASSERT_EQ  ( object[_code].to_string() , code );
+    ASSERT_TRUE( object[m_code].is_string()        );
+    ASSERT_EQ  ( object[m_code].to_string() , code );
 
-    ASSERT_TRUE( object[_source].is_string()          );
-    ASSERT_EQ  ( object[_source].to_string() , source );
+    ASSERT_TRUE( object[m_source].is_string()          );
+    ASSERT_EQ  ( object[m_source].to_string() , source );
 
-    ASSERT_TRUE( object[_message].is_string()           );
-    ASSERT_EQ  ( object[_message].to_string() , message );
+    ASSERT_TRUE( object[m_message].is_string()           );
+    ASSERT_EQ  ( object[m_message].to_string() , message );
 
     std::stringstream  json;
     object.format_json(json);
@@ -1026,65 +1026,65 @@ TEST(lsp, publishdiagnostics_notification)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_method].is_string()                                     );
-    ASSERT_EQ  ( object[_method].to_string() , "textDocument/publishDiagnostics" );
+    ASSERT_TRUE( object[m_method].is_string()                                     );
+    ASSERT_EQ  ( object[m_method].to_string() , "textDocument/publishDiagnostics" );
 
-    ASSERT_TRUE( object[_params].is_object()         );
-    ASSERT_EQ  ( object[_params].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_uri].is_string()       );
-    ASSERT_EQ  ( object[_params][_uri].to_string() , uri );
+    ASSERT_TRUE( object[m_params][m_uri].is_string()       );
+    ASSERT_EQ  ( object[m_params][m_uri].to_string() , uri );
 
-    ASSERT_TRUE( object[_params][_diagnostics].is_array()          );
-    ASSERT_EQ  ( object[_params][_diagnostics].size() , (size_t) 5 );
+    ASSERT_TRUE( object[m_params][m_diagnostics].is_array()          );
+    ASSERT_EQ  ( object[m_params][m_diagnostics].size() , (size_t) 5 );
 
-    ASSERT_TRUE( object[_params][_diagnostics][0].is_object()         );
-    ASSERT_EQ  ( object[_params][_diagnostics][0].size() , (size_t) 5 );
+    ASSERT_TRUE( object[m_params][m_diagnostics][0].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][0].size() , (size_t) 5 );
 
-    ASSERT_TRUE( object[_params][_diagnostics][1].is_object()         );
-    ASSERT_EQ  ( object[_params][_diagnostics][1].size() , (size_t) 5 );
+    ASSERT_TRUE( object[m_params][m_diagnostics][1].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][1].size() , (size_t) 5 );
 
-    ASSERT_TRUE( object[_params][_diagnostics][2].is_object()         );
-    ASSERT_EQ  ( object[_params][_diagnostics][2].size() , (size_t) 5 );
+    ASSERT_TRUE( object[m_params][m_diagnostics][2].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][2].size() , (size_t) 5 );
 
-    ASSERT_TRUE( object[_params][_diagnostics][3].is_object()         );
-    ASSERT_EQ  ( object[_params][_diagnostics][3].size() , (size_t) 5 );
+    ASSERT_TRUE( object[m_params][m_diagnostics][3].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][3].size() , (size_t) 5 );
 
-    ASSERT_TRUE( object[_params][_diagnostics][4].is_object()         );
-    ASSERT_EQ  ( object[_params][_diagnostics][4].size() , (size_t) 5 );
+    ASSERT_TRUE( object[m_params][m_diagnostics][4].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][4].size() , (size_t) 5 );
 
-    ASSERT_TRUE( object[_params][_diagnostics][4][_range].is_object()         );
-    ASSERT_EQ  ( object[_params][_diagnostics][4][_range].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_diagnostics][4][m_range].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][4][m_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_diagnostics][4][_range][_start].is_object()         );
-    ASSERT_EQ  ( object[_params][_diagnostics][4][_range][_start].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_diagnostics][4][m_range][m_start].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][4][m_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_diagnostics][4][_range][_start][_line].is_int()      );
-    ASSERT_EQ  ( object[_params][_diagnostics][4][_range][_start][_line].to_int() , 87 );
+    ASSERT_TRUE( object[m_params][m_diagnostics][4][m_range][m_start][m_line].is_int()      );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][4][m_range][m_start][m_line].to_int() , 87 );
 
-    ASSERT_TRUE( object[_params][_diagnostics][4][_range][_start][_character].is_int()      );
-    ASSERT_EQ  ( object[_params][_diagnostics][4][_range][_start][_character].to_int() , 17 );
+    ASSERT_TRUE( object[m_params][m_diagnostics][4][m_range][m_start][m_character].is_int()      );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][4][m_range][m_start][m_character].to_int() , 17 );
 
-    ASSERT_TRUE( object[_params][_diagnostics][4][_range][_end].is_object()         );
-    ASSERT_EQ  ( object[_params][_diagnostics][4][_range][_end].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_diagnostics][4][m_range][m_end].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][4][m_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_params][_diagnostics][4][_range][_end][_line].is_int()      );
-    ASSERT_EQ  ( object[_params][_diagnostics][4][_range][_end][_line].to_int() , 88 );
+    ASSERT_TRUE( object[m_params][m_diagnostics][4][m_range][m_end][m_line].is_int()      );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][4][m_range][m_end][m_line].to_int() , 88 );
 
-    ASSERT_TRUE( object[_params][_diagnostics][4][_range][_end][_character].is_int()      );
-    ASSERT_EQ  ( object[_params][_diagnostics][4][_range][_end][_character].to_int() , 12 );
+    ASSERT_TRUE( object[m_params][m_diagnostics][4][m_range][m_end][m_character].is_int()      );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][4][m_range][m_end][m_character].to_int() , 12 );
 
-    ASSERT_TRUE( object[_params][_diagnostics][4][_severity].is_int()     );
-    ASSERT_EQ  ( object[_params][_diagnostics][4][_severity].to_int() , 1 );
+    ASSERT_TRUE( object[m_params][m_diagnostics][4][m_severity].is_int()     );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][4][m_severity].to_int() , 1 );
 
-    ASSERT_TRUE( object[_params][_diagnostics][4][_code].is_string()                  );
-    ASSERT_EQ  ( object[_params][_diagnostics][4][_code].to_string() , "test.code.55" );
+    ASSERT_TRUE( object[m_params][m_diagnostics][4][m_code].is_string()                  );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][4][m_code].to_string() , "test.code.55" );
 
-    ASSERT_TRUE( object[_params][_diagnostics][4][_source].is_string()                    );
-    ASSERT_EQ  ( object[_params][_diagnostics][4][_source].to_string() , "test_source_55" );
+    ASSERT_TRUE( object[m_params][m_diagnostics][4][m_source].is_string()                    );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][4][m_source].to_string() , "test_source_55" );
 
-    ASSERT_TRUE( object[_params][_diagnostics][4][_message].is_string()                      );
-    ASSERT_EQ  ( object[_params][_diagnostics][4][_message].to_string() , "Test message 55." );
+    ASSERT_TRUE( object[m_params][m_diagnostics][4][m_message].is_string()                      );
+    ASSERT_EQ  ( object[m_params][m_diagnostics][4][m_message].to_string() , "Test message 55." );
 
     std::stringstream  json;
     object.format_json(json);
@@ -1281,11 +1281,11 @@ TEST(lsp, initialize_response)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result].is_object()         );
-    ASSERT_EQ  ( object[_result].size() , (size_t) 1 );
+    ASSERT_TRUE( object[m_result].is_object()         );
+    ASSERT_EQ  ( object[m_result].size() , (size_t) 1 );
 
-    ASSERT_TRUE( object[_result][_capabilities].is_object()         );
-    ASSERT_EQ  ( object[_result][_capabilities].size() , (size_t) 0 );
+    ASSERT_TRUE( object[m_result][m_capabilities].is_object()         );
+    ASSERT_EQ  ( object[m_result][m_capabilities].size() , (size_t) 0 );
 
     std::stringstream  json;
     object.format_json(json);
@@ -1325,8 +1325,8 @@ TEST(lsp, shutdown_response)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result].is_object()         );
-    ASSERT_EQ  ( object[_result].size() , (size_t) 0 );
+    ASSERT_TRUE( object[m_result].is_object()         );
+    ASSERT_EQ  ( object[m_result].size() , (size_t) 0 );
 
     std::stringstream  json;
     object.format_json(json);
@@ -1381,50 +1381,50 @@ TEST(lsp, completion_object)
 
     ASSERT_EQ  ( object.size() , (size_t) 7 );
 
-    ASSERT_TRUE( object[_label].is_string()         );
-    ASSERT_EQ  ( object[_label].to_string() , label );
+    ASSERT_TRUE( object[m_label].is_string()         );
+    ASSERT_EQ  ( object[m_label].to_string() , label );
 
-    ASSERT_TRUE( object[_text_edit].is_object()         );
-    ASSERT_EQ  ( object[_text_edit].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_text_edit].is_object()         );
+    ASSERT_EQ  ( object[m_text_edit].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_text_edit][_range].is_object()         );
-    ASSERT_EQ  ( object[_text_edit][_range].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_text_edit][m_range].is_object()         );
+    ASSERT_EQ  ( object[m_text_edit][m_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_text_edit][_range][_start].is_object()         );
-    ASSERT_EQ  ( object[_text_edit][_range][_start].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_text_edit][m_range][m_start].is_object()         );
+    ASSERT_EQ  ( object[m_text_edit][m_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_text_edit][_range][_start][_line].is_int()              );
-    ASSERT_EQ  ( object[_text_edit][_range][_start][_line].to_int() , start_line );
+    ASSERT_TRUE( object[m_text_edit][m_range][m_start][m_line].is_int()              );
+    ASSERT_EQ  ( object[m_text_edit][m_range][m_start][m_line].to_int() , start_line );
 
-    ASSERT_TRUE( object[_text_edit][_range][_start][_character].is_int()                   );
-    ASSERT_EQ  ( object[_text_edit][_range][_start][_character].to_int() , start_character );
+    ASSERT_TRUE( object[m_text_edit][m_range][m_start][m_character].is_int()                   );
+    ASSERT_EQ  ( object[m_text_edit][m_range][m_start][m_character].to_int() , start_character );
 
-    ASSERT_TRUE( object[_text_edit][_range][_end].is_object()         );
-    ASSERT_EQ  ( object[_text_edit][_range][_end].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_text_edit][m_range][m_end].is_object()         );
+    ASSERT_EQ  ( object[m_text_edit][m_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_text_edit][_range][_end][_line].is_int()            );
-    ASSERT_EQ  ( object[_text_edit][_range][_end][_line].to_int() , end_line );
+    ASSERT_TRUE( object[m_text_edit][m_range][m_end][m_line].is_int()            );
+    ASSERT_EQ  ( object[m_text_edit][m_range][m_end][m_line].to_int() , end_line );
 
-    ASSERT_TRUE( object[_text_edit][_range][_end][_character].is_int()                 );
-    ASSERT_EQ  ( object[_text_edit][_range][_end][_character].to_int() , end_character );
+    ASSERT_TRUE( object[m_text_edit][m_range][m_end][m_character].is_int()                 );
+    ASSERT_EQ  ( object[m_text_edit][m_range][m_end][m_character].to_int() , end_character );
 
-    ASSERT_TRUE( object[_text_edit][_new_text].is_string()            );
-    ASSERT_EQ  ( object[_text_edit][_new_text].to_string() , new_text );
+    ASSERT_TRUE( object[m_text_edit][m_new_text].is_string()            );
+    ASSERT_EQ  ( object[m_text_edit][m_new_text].to_string() , new_text );
 
-    ASSERT_TRUE( object[_kind].is_int()        );
-    ASSERT_EQ  ( object[_kind].to_int() , kind );
+    ASSERT_TRUE( object[m_kind].is_int()        );
+    ASSERT_EQ  ( object[m_kind].to_int() , kind );
 
-    ASSERT_TRUE( object[_detail].is_string()          );
-    ASSERT_EQ  ( object[_detail].to_string() , detail );
+    ASSERT_TRUE( object[m_detail].is_string()          );
+    ASSERT_EQ  ( object[m_detail].to_string() , detail );
 
-    ASSERT_TRUE( object[_documentation].is_string()                 );
-    ASSERT_EQ  ( object[_documentation].to_string() , documentation );
+    ASSERT_TRUE( object[m_documentation].is_string()                 );
+    ASSERT_EQ  ( object[m_documentation].to_string() , documentation );
 
-    ASSERT_TRUE( object[_deprecated].is_bool()              );
-    ASSERT_EQ  ( object[_deprecated].to_bool() , deprecated );
+    ASSERT_TRUE( object[m_deprecated].is_bool()              );
+    ASSERT_EQ  ( object[m_deprecated].to_bool() , deprecated );
 
-    ASSERT_TRUE( object[_preselect].is_bool()             );
-    ASSERT_EQ  ( object[_preselect].to_bool() , preselect );
+    ASSERT_TRUE( object[m_preselect].is_bool()             );
+    ASSERT_EQ  ( object[m_preselect].to_bool() , preselect );
 
     std::stringstream  json;
     object.format_json(json);
@@ -1591,74 +1591,74 @@ TEST(lsp, completion_response)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result].is_object()         );
-    ASSERT_EQ  ( object[_result].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result].is_object()         );
+    ASSERT_EQ  ( object[m_result].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][_is_incomplete].is_bool()         );
-    ASSERT_EQ  ( object[_result][_is_incomplete].to_bool() , false );
+    ASSERT_TRUE( object[m_result][m_is_incomplete].is_bool()         );
+    ASSERT_EQ  ( object[m_result][m_is_incomplete].to_bool() , false );
 
-    ASSERT_TRUE( object[_result][_items].is_array()          );
-    ASSERT_EQ  ( object[_result][_items].size() , (size_t) 5 );
+    ASSERT_TRUE( object[m_result][m_items].is_array()          );
+    ASSERT_EQ  ( object[m_result][m_items].size() , (size_t) 5 );
 
-    ASSERT_TRUE( object[_result][_items][0].is_object()         );
-    ASSERT_EQ  ( object[_result][_items][0].size() , (size_t) 7 );
+    ASSERT_TRUE( object[m_result][m_items][0].is_object()         );
+    ASSERT_EQ  ( object[m_result][m_items][0].size() , (size_t) 7 );
 
-    ASSERT_TRUE( object[_result][_items][1].is_object()         );
-    ASSERT_EQ  ( object[_result][_items][1].size() , (size_t) 7 );
+    ASSERT_TRUE( object[m_result][m_items][1].is_object()         );
+    ASSERT_EQ  ( object[m_result][m_items][1].size() , (size_t) 7 );
 
-    ASSERT_TRUE( object[_result][_items][2].is_object()         );
-    ASSERT_EQ  ( object[_result][_items][2].size() , (size_t) 7 );
+    ASSERT_TRUE( object[m_result][m_items][2].is_object()         );
+    ASSERT_EQ  ( object[m_result][m_items][2].size() , (size_t) 7 );
 
-    ASSERT_TRUE( object[_result][_items][3].is_object()         );
-    ASSERT_EQ  ( object[_result][_items][3].size() , (size_t) 7 );
+    ASSERT_TRUE( object[m_result][m_items][3].is_object()         );
+    ASSERT_EQ  ( object[m_result][m_items][3].size() , (size_t) 7 );
 
-    ASSERT_TRUE( object[_result][_items][4].is_object()         );
-    ASSERT_EQ  ( object[_result][_items][4].size() , (size_t) 7 );
+    ASSERT_TRUE( object[m_result][m_items][4].is_object()         );
+    ASSERT_EQ  ( object[m_result][m_items][4].size() , (size_t) 7 );
 
-    ASSERT_TRUE( object[_result][_items][4][_label].is_string()                  );
-    ASSERT_EQ  ( object[_result][_items][4][_label].to_string() , "test-label-5" );
+    ASSERT_TRUE( object[m_result][m_items][4][m_label].is_string()                  );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_label].to_string() , "test-label-5" );
 
-    ASSERT_TRUE( object[_result][_items][4][_text_edit].is_object()         );
-    ASSERT_EQ  ( object[_result][_items][4][_text_edit].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][m_items][4][m_text_edit].is_object()         );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_text_edit].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][_items][4][_text_edit][_range].is_object()         );
-    ASSERT_EQ  ( object[_result][_items][4][_text_edit][_range].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][m_items][4][m_text_edit][m_range].is_object()         );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_text_edit][m_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][_items][4][_text_edit][_range][_start].is_object()         );
-    ASSERT_EQ  ( object[_result][_items][4][_text_edit][_range][_start].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][m_items][4][m_text_edit][m_range][m_start].is_object()         );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_text_edit][m_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][_items][4][_text_edit][_range][_start][_line].is_int()      );
-    ASSERT_EQ  ( object[_result][_items][4][_text_edit][_range][_start][_line].to_int() , 55 );
+    ASSERT_TRUE( object[m_result][m_items][4][m_text_edit][m_range][m_start][m_line].is_int()      );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_text_edit][m_range][m_start][m_line].to_int() , 55 );
 
-    ASSERT_TRUE( object[_result][_items][4][_text_edit][_range][_start][_character].is_int()      );
-    ASSERT_EQ  ( object[_result][_items][4][_text_edit][_range][_start][_character].to_int() , 55 );
+    ASSERT_TRUE( object[m_result][m_items][4][m_text_edit][m_range][m_start][m_character].is_int()      );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_text_edit][m_range][m_start][m_character].to_int() , 55 );
 
-    ASSERT_TRUE( object[_result][_items][4][_text_edit][_range][_end].is_object()         );
-    ASSERT_EQ  ( object[_result][_items][4][_text_edit][_range][_end].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][m_items][4][m_text_edit][m_range][m_end].is_object()         );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_text_edit][m_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][_items][4][_text_edit][_range][_end][_line].is_int()      );
-    ASSERT_EQ  ( object[_result][_items][4][_text_edit][_range][_end][_line].to_int() , 55 );
+    ASSERT_TRUE( object[m_result][m_items][4][m_text_edit][m_range][m_end][m_line].is_int()      );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_text_edit][m_range][m_end][m_line].to_int() , 55 );
 
-    ASSERT_TRUE( object[_result][_items][4][_text_edit][_range][_end][_character].is_int()      );
-    ASSERT_EQ  ( object[_result][_items][4][_text_edit][_range][_end][_character].to_int() , 55 );
+    ASSERT_TRUE( object[m_result][m_items][4][m_text_edit][m_range][m_end][m_character].is_int()      );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_text_edit][m_range][m_end][m_character].to_int() , 55 );
 
-    ASSERT_TRUE( object[_result][_items][4][_text_edit][_new_text].is_string()                        );
-    ASSERT_EQ  ( object[_result][_items][4][_text_edit][_new_text].to_string() , "test-insert-text-5" );
+    ASSERT_TRUE( object[m_result][m_items][4][m_text_edit][m_new_text].is_string()                        );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_text_edit][m_new_text].to_string() , "test-insert-text-5" );
 
-    ASSERT_TRUE( object[_result][_items][4][_kind].is_int()     );
-    ASSERT_EQ  ( object[_result][_items][4][_kind].to_int() , 5 );
+    ASSERT_TRUE( object[m_result][m_items][4][m_kind].is_int()     );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_kind].to_int() , 5 );
 
-    ASSERT_TRUE( object[_result][_items][4][_detail].is_string()                      );
-    ASSERT_EQ  ( object[_result][_items][4][_detail].to_string() , "test type info 5" );
+    ASSERT_TRUE( object[m_result][m_items][4][m_detail].is_string()                      );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_detail].to_string() , "test type info 5" );
 
-    ASSERT_TRUE( object[_result][_items][4][_documentation].is_string()                           );
-    ASSERT_EQ  ( object[_result][_items][4][_documentation].to_string() , "test documentation 5"  );
+    ASSERT_TRUE( object[m_result][m_items][4][m_documentation].is_string()                           );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_documentation].to_string() , "test documentation 5"  );
 
-    ASSERT_TRUE( object[_result][_items][4][_deprecated].is_bool()         );
-    ASSERT_EQ  ( object[_result][_items][4][_deprecated].to_bool() , false );
+    ASSERT_TRUE( object[m_result][m_items][4][m_deprecated].is_bool()         );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_deprecated].to_bool() , false );
 
-    ASSERT_TRUE( object[_result][_items][4][_preselect].is_bool()         );
-    ASSERT_EQ  ( object[_result][_items][4][_preselect].to_bool() , false );
+    ASSERT_TRUE( object[m_result][m_items][4][m_preselect].is_bool()         );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_preselect].to_bool() , false );
 
     std::stringstream  json;
     object.format_json(json);
@@ -1910,29 +1910,29 @@ TEST(lsp, location_object)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_uri].is_string()       );
-    ASSERT_EQ  ( object[_uri].to_string() , uri );
+    ASSERT_TRUE( object[m_uri].is_string()       );
+    ASSERT_EQ  ( object[m_uri].to_string() , uri );
 
-    ASSERT_TRUE( object[_range].is_object()         );
-    ASSERT_EQ  ( object[_range].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_range].is_object()         );
+    ASSERT_EQ  ( object[m_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_range][_start].is_object()         );
-    ASSERT_EQ  ( object[_range][_start].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_range][m_start].is_object()         );
+    ASSERT_EQ  ( object[m_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_range][_start][_line].is_int()              );
-    ASSERT_EQ  ( object[_range][_start][_line].to_int() , start_line );
+    ASSERT_TRUE( object[m_range][m_start][m_line].is_int()              );
+    ASSERT_EQ  ( object[m_range][m_start][m_line].to_int() , start_line );
 
-    ASSERT_TRUE( object[_range][_start][_character].is_int()                   );
-    ASSERT_EQ  ( object[_range][_start][_character].to_int() , start_character );
+    ASSERT_TRUE( object[m_range][m_start][m_character].is_int()                   );
+    ASSERT_EQ  ( object[m_range][m_start][m_character].to_int() , start_character );
 
-    ASSERT_TRUE( object[_range][_end].is_object()         );
-    ASSERT_EQ  ( object[_range][_end].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_range][m_end].is_object()         );
+    ASSERT_EQ  ( object[m_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_range][_end][_line].is_int()            );
-    ASSERT_EQ  ( object[_range][_end][_line].to_int() , end_line );
+    ASSERT_TRUE( object[m_range][m_end][m_line].is_int()            );
+    ASSERT_EQ  ( object[m_range][m_end][m_line].to_int() , end_line );
 
-    ASSERT_TRUE( object[_range][_end][_character].is_int()                 );
-    ASSERT_EQ  ( object[_range][_end][_character].to_int() , end_character );
+    ASSERT_TRUE( object[m_range][m_end][m_character].is_int()                 );
+    ASSERT_EQ  ( object[m_range][m_end][m_character].to_int() , end_character );
 
     std::stringstream  json;
     object.format_json(json);
@@ -2041,47 +2041,47 @@ TEST(lsp, locations_response)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result].is_array()          );
-    ASSERT_EQ  ( object[_result].size() , (size_t) 5 );
+    ASSERT_TRUE( object[m_result].is_array()          );
+    ASSERT_EQ  ( object[m_result].size() , (size_t) 5 );
 
-    ASSERT_TRUE( object[_result][0].is_object()         );
-    ASSERT_EQ  ( object[_result][0].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][0].is_object()         );
+    ASSERT_EQ  ( object[m_result][0].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][1].is_object()         );
-    ASSERT_EQ  ( object[_result][1].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][1].is_object()         );
+    ASSERT_EQ  ( object[m_result][1].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][2].is_object()         );
-    ASSERT_EQ  ( object[_result][2].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][2].is_object()         );
+    ASSERT_EQ  ( object[m_result][2].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][3].is_object()         );
-    ASSERT_EQ  ( object[_result][3].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][3].is_object()         );
+    ASSERT_EQ  ( object[m_result][3].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][4].is_object()         );
-    ASSERT_EQ  ( object[_result][4].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][4].is_object()         );
+    ASSERT_EQ  ( object[m_result][4].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][4][_uri].is_string()                         );
-    ASSERT_EQ  ( object[_result][4][_uri].to_string() , "test/document/uri/5" );
+    ASSERT_TRUE( object[m_result][4][m_uri].is_string()                         );
+    ASSERT_EQ  ( object[m_result][4][m_uri].to_string() , "test/document/uri/5" );
 
-    ASSERT_TRUE( object[_result][4][_range].is_object()         );
-    ASSERT_EQ  ( object[_result][4][_range].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][4][m_range].is_object()         );
+    ASSERT_EQ  ( object[m_result][4][m_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][4][_range][_start].is_object()         );
-    ASSERT_EQ  ( object[_result][4][_range][_start].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][4][m_range][m_start].is_object()         );
+    ASSERT_EQ  ( object[m_result][4][m_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][4][_range][_start][_line].is_int()      );
-    ASSERT_EQ  ( object[_result][4][_range][_start][_line].to_int() , 55 );
+    ASSERT_TRUE( object[m_result][4][m_range][m_start][m_line].is_int()      );
+    ASSERT_EQ  ( object[m_result][4][m_range][m_start][m_line].to_int() , 55 );
 
-    ASSERT_TRUE( object[_result][4][_range][_start][_character].is_int()      );
-    ASSERT_EQ  ( object[_result][4][_range][_start][_character].to_int() , 55 );
+    ASSERT_TRUE( object[m_result][4][m_range][m_start][m_character].is_int()      );
+    ASSERT_EQ  ( object[m_result][4][m_range][m_start][m_character].to_int() , 55 );
 
-    ASSERT_TRUE( object[_result][4][_range][_end].is_object()         );
-    ASSERT_EQ  ( object[_result][4][_range][_end].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][4][m_range][m_end].is_object()         );
+    ASSERT_EQ  ( object[m_result][4][m_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][4][_range][_end][_line].is_int()      );
-    ASSERT_EQ  ( object[_result][4][_range][_end][_line].to_int() , 55 );
+    ASSERT_TRUE( object[m_result][4][m_range][m_end][m_line].is_int()      );
+    ASSERT_EQ  ( object[m_result][4][m_range][m_end][m_line].to_int() , 55 );
 
-    ASSERT_TRUE( object[_result][4][_range][_end][_character].is_int()      );
-    ASSERT_EQ  ( object[_result][4][_range][_end][_character].to_int() , 55 );
+    ASSERT_TRUE( object[m_result][4][m_range][m_end][m_character].is_int()      );
+    ASSERT_EQ  ( object[m_result][4][m_range][m_end][m_character].to_int() , 55 );
 
     std::stringstream  json;
     object.format_json(json);
@@ -2245,29 +2245,29 @@ TEST(lsp, textedit_object)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_range].is_object()         );
-    ASSERT_EQ  ( object[_range].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_range].is_object()         );
+    ASSERT_EQ  ( object[m_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_range][_start].is_object()         );
-    ASSERT_EQ  ( object[_range][_start].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_range][m_start].is_object()         );
+    ASSERT_EQ  ( object[m_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_range][_start][_line].is_int()              );
-    ASSERT_EQ  ( object[_range][_start][_line].to_int() , start_line );
+    ASSERT_TRUE( object[m_range][m_start][m_line].is_int()              );
+    ASSERT_EQ  ( object[m_range][m_start][m_line].to_int() , start_line );
 
-    ASSERT_TRUE( object[_range][_start][_character].is_int()                   );
-    ASSERT_EQ  ( object[_range][_start][_character].to_int() , start_character );
+    ASSERT_TRUE( object[m_range][m_start][m_character].is_int()                   );
+    ASSERT_EQ  ( object[m_range][m_start][m_character].to_int() , start_character );
 
-    ASSERT_TRUE( object[_range][_end].is_object()         );
-    ASSERT_EQ  ( object[_range][_end].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_range][m_end].is_object()         );
+    ASSERT_EQ  ( object[m_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_range][_end][_line].is_int()            );
-    ASSERT_EQ  ( object[_range][_end][_line].to_int() , end_line );
+    ASSERT_TRUE( object[m_range][m_end][m_line].is_int()            );
+    ASSERT_EQ  ( object[m_range][m_end][m_line].to_int() , end_line );
 
-    ASSERT_TRUE( object[_range][_end][_character].is_int()                 );
-    ASSERT_EQ  ( object[_range][_end][_character].to_int() , end_character );
+    ASSERT_TRUE( object[m_range][m_end][m_character].is_int()                 );
+    ASSERT_EQ  ( object[m_range][m_end][m_character].to_int() , end_character );
 
-    ASSERT_TRUE( object[_new_text].is_string()            );
-    ASSERT_EQ  ( object[_new_text].to_string() , new_text );
+    ASSERT_TRUE( object[m_new_text].is_string()            );
+    ASSERT_EQ  ( object[m_new_text].to_string() , new_text );
 
     std::stringstream  json;
     object.format_json(json);
@@ -2380,47 +2380,47 @@ TEST(lsp, rangeformatting_response)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result].is_array()          );
-    ASSERT_EQ  ( object[_result].size() , (size_t) 5 );
+    ASSERT_TRUE( object[m_result].is_array()          );
+    ASSERT_EQ  ( object[m_result].size() , (size_t) 5 );
 
-    ASSERT_TRUE( object[_result][0].is_object()         );
-    ASSERT_EQ  ( object[_result][0].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][0].is_object()         );
+    ASSERT_EQ  ( object[m_result][0].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][1].is_object()         );
-    ASSERT_EQ  ( object[_result][1].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][1].is_object()         );
+    ASSERT_EQ  ( object[m_result][1].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][2].is_object()         );
-    ASSERT_EQ  ( object[_result][2].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][2].is_object()         );
+    ASSERT_EQ  ( object[m_result][2].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][3].is_object()         );
-    ASSERT_EQ  ( object[_result][3].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][3].is_object()         );
+    ASSERT_EQ  ( object[m_result][3].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][4].is_object()         );
-    ASSERT_EQ  ( object[_result][4].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][4].is_object()         );
+    ASSERT_EQ  ( object[m_result][4].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][4][_range].is_object()         );
-    ASSERT_EQ  ( object[_result][4][_range].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][4][m_range].is_object()         );
+    ASSERT_EQ  ( object[m_result][4][m_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][4][_range][_start].is_object()         );
-    ASSERT_EQ  ( object[_result][4][_range][_start].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][4][m_range][m_start].is_object()         );
+    ASSERT_EQ  ( object[m_result][4][m_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][4][_range][_start][_line].is_int()      );
-    ASSERT_EQ  ( object[_result][4][_range][_start][_line].to_int() , 50 );
+    ASSERT_TRUE( object[m_result][4][m_range][m_start][m_line].is_int()      );
+    ASSERT_EQ  ( object[m_result][4][m_range][m_start][m_line].to_int() , 50 );
 
-    ASSERT_TRUE( object[_result][4][_range][_start][_character].is_int()      );
-    ASSERT_EQ  ( object[_result][4][_range][_start][_character].to_int() , 01 );
+    ASSERT_TRUE( object[m_result][4][m_range][m_start][m_character].is_int()      );
+    ASSERT_EQ  ( object[m_result][4][m_range][m_start][m_character].to_int() , 01 );
 
-    ASSERT_TRUE( object[_result][4][_range][_end].is_object()         );
-    ASSERT_EQ  ( object[_result][4][_range][_end].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_result][4][m_range][m_end].is_object()         );
+    ASSERT_EQ  ( object[m_result][4][m_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[_result][4][_range][_end][_line].is_int()      );
-    ASSERT_EQ  ( object[_result][4][_range][_end][_line].to_int() , 54 );
+    ASSERT_TRUE( object[m_result][4][m_range][m_end][m_line].is_int()      );
+    ASSERT_EQ  ( object[m_result][4][m_range][m_end][m_line].to_int() , 54 );
 
-    ASSERT_TRUE( object[_result][4][_range][_end][_character].is_int()      );
-    ASSERT_EQ  ( object[_result][4][_range][_end][_character].to_int() , 03 );
+    ASSERT_TRUE( object[m_result][4][m_range][m_end][m_character].is_int()      );
+    ASSERT_EQ  ( object[m_result][4][m_range][m_end][m_character].to_int() , 03 );
 
-    ASSERT_TRUE( object[_result][4][_new_text].is_string()                                        );
-    ASSERT_EQ  ( object[_result][4][_new_text].to_string() , "test\n  new\n  text\n  format\n  5" );
+    ASSERT_TRUE( object[m_result][4][m_new_text].is_string()                                        );
+    ASSERT_EQ  ( object[m_result][4][m_new_text].to_string() , "test\n  new\n  text\n  format\n  5" );
 
     std::stringstream  json;
     object.format_json(json);

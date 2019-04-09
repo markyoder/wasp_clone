@@ -1,7 +1,10 @@
 #ifndef WASPLSP_TEST_SERVER_H
 #define WASPLSP_TEST_SERVER_H
 
+#include <string>
 #include "wasplsp/LSP.h"
+#include "waspcore/Object.h"
+#include "waspcore/decl.h"
 
 namespace wasp {
 namespace lsp  {

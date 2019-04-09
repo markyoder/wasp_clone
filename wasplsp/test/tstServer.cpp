@@ -128,7 +128,6 @@ TEST(server, handle_didopen)
                                           document_version     ,
                                           document_text        ));
 
-
     DataObject publishDiagnosticsNotification;
 
     ASSERT_TRUE(test_server.handleDidOpenNotification( didOpenNotification ,

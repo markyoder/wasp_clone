@@ -111,58 +111,6 @@ class WASP_PUBLIC Server
                                                   errors             );
     }
 
-    bool parseDocumentForDiagnostics(
-                          DataArray    & diagnosticsList ,
-                          std::ostream & errors          )
-    {
-        return Impl.parseDocumentForDiagnostics( diagnosticsList ,
-                                                 errors          );
-    }
-
-    bool updateDocumentTextChanges(
-                    const std::string  & replacement_text ,
-                          int            start_line       ,
-                          int            start_character  ,
-                          int            end_line         ,
-                          int            end_character    ,
-                          int            range_length     ,
-                          std::ostream & errors           )
-    {
-        return Impl.updateDocumentTextChanges( replacement_text ,
-                                               start_line       ,
-                                               start_character  ,
-                                               end_line         ,
-                                               end_character    ,
-                                               range_length     ,
-                                               errors           );
-    }
-
-    bool gatherDocumentCompletionItems(
-                          DataArray    & completionItems ,
-                          bool         & is_incomplete   ,
-                          int            line            ,
-                          int            character       ,
-                          std::ostream & errors          )
-    {
-        return Impl.gatherDocumentCompletionItems( completionItems ,
-                                                   is_incomplete   ,
-                                                   line            ,
-                                                   character       ,
-                                                   errors          );
-    }
-
-    bool gatherDocumentDefinitionLocations(
-                          DataArray    & definitionLocations ,
-                          int            line                ,
-                          int            character           ,
-                          std::ostream & errors              )
-    {
-        return Impl.gatherDocumentDefinitionLocations( definitionLocations ,
-                                                       line                ,
-                                                       character           ,
-                                                       errors              );
-    }
-
   private:
 
       T Impl;
