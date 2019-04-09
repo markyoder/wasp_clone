@@ -44,9 +44,9 @@ bool TestServer::handleShutdownRequest(
 {
     bool pass = true;
 
-    pass &= dissectShutdownResponse( shutdownRequest         ,
-                                     errors                  ,
-                                     this->client_request_id );
+    pass &= dissectShutdownRequest( shutdownRequest         ,
+                                    errors                  ,
+                                    this->client_request_id );
 
     pass &= buildShutdownResponse( shutdownResponse        ,
                                    errors                  ,
