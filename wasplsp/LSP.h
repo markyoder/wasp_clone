@@ -1,3 +1,6 @@
+#ifndef WASPLSP_LSP_H
+#define WASPLSP_LSP_H
+
 #include <string>
 #include <vector>
 #include <iostream>
@@ -8,10 +11,28 @@ namespace wasp {
 namespace lsp  {
 
 WASP_PUBLIC
+bool checkPosition( std::ostream & errors    ,
+                    int            line      ,
+                    int            character );
+
+WASP_PUBLIC
+bool checkRange( std::ostream & errors          ,
+                 int            start_line      ,
+                 int            start_character ,
+                 int            end_line        ,
+                 int            end_character   );
+
+WASP_PUBLIC
 bool buildPositionObject( DataObject   & object    ,
                           std::ostream & errors    ,
                           int            line      ,
                           int            character );
+
+WASP_PUBLIC
+bool dissectPositionObject( const DataObject   & object    ,
+                                  std::ostream & errors    ,
+                                  int          & line      ,
+                                  int          & character );
 
 WASP_PUBLIC
 bool buildRangeObject( DataObject   & object          ,
@@ -22,37 +43,76 @@ bool buildRangeObject( DataObject   & object          ,
                        int            end_character   );
 
 WASP_PUBLIC
+bool dissectRangeObject( const DataObject      & object          ,
+                               std::ostream    & errors          ,
+                               int             & start_line      ,
+                               int             & start_character ,
+                               int             & end_line        ,
+                               int             & end_character   );
+
+WASP_PUBLIC
 bool buildInitializeRequest( DataObject        & object              ,
                              std::ostream      & errors              ,
+                             int                 request_id          ,
                              int                 process_id          ,
                              const std::string & root_uri            ,
                              const DataObject  & client_capabilities );
+
+WASP_PUBLIC
+bool dissectInitializeRequest( const DataObject        & object              ,
+                                     std::ostream      & errors              ,
+                                     int               & request_id          ,
+                                     int               & process_id          ,
+                                     std::string       & root_uri            ,
+                                     DataObject        & client_capabilities );
 
 WASP_PUBLIC
 bool buildInitializedNotification( DataObject   & object ,
                                    std::ostream & errors );
 
 WASP_PUBLIC
-bool buildShutdownRequest( DataObject   & object ,
-                           std::ostream & errors );
+bool dissectInitializedNotification( const DataObject   & object ,
+                                           std::ostream & errors );
+
+WASP_PUBLIC
+bool buildShutdownRequest( DataObject   & object     ,
+                           std::ostream & errors     ,
+                           int            request_id );
+
+WASP_PUBLIC
+bool dissectShutdownRequest( const DataObject   & object     ,
+                                   std::ostream & errors     ,
+                                   int          & request_id );
 
 WASP_PUBLIC
 bool buildExitNotification( DataObject   & object ,
                             std::ostream & errors );
 
 WASP_PUBLIC
+bool dissectExitNotification( const DataObject   & object ,
+                                    std::ostream & errors );
+
+WASP_PUBLIC
 bool buildDidOpenNotification( DataObject        & object      ,
                                std::ostream      & errors      ,
                                const std::string & uri         ,
                                const std::string & language_id ,
-                               double              version     ,
+                               int                 version     ,
                                const std::string & text        );
+
+WASP_PUBLIC
+bool dissectDidOpenNotification( const DataObject   & object      ,
+                                       std::ostream & errors      ,
+                                       std::string  & uri         ,
+                                       std::string  & language_id ,
+                                       int          & version     ,
+                                       std::string  & text        );
 
 WASP_PUBLIC
 bool buildDidChangeNotification( DataObject        & object          ,
                                  std::ostream      & errors          ,
                                  const std::string & uri             ,
-                                 double              version         ,
+                                 int                 version         ,
                                  int                 start_line      ,
                                  int                 start_character ,
                                  int                 end_line        ,
@@ -61,30 +121,71 @@ bool buildDidChangeNotification( DataObject        & object          ,
                                  const std::string & text            );
 
 WASP_PUBLIC
-bool buildCompletionRequest( DataObject        & object    ,
-                             std::ostream      & errors    ,
-                             const std::string & uri       ,
-                             int                 line      ,
+bool dissectDidChangeNotification( const DataObject   & object          ,
+                                         std::ostream & errors          ,
+                                         std::string  & uri             ,
+                                         int          & version         ,
+                                         int          & start_line      ,
+                                         int          & start_character ,
+                                         int          & end_line        ,
+                                         int          & end_character   ,
+                                         int          & range_length    ,
+                                         std::string  & text            );
+
+WASP_PUBLIC
+bool buildCompletionRequest( DataObject        & object     ,
+                             std::ostream      & errors     ,
+                             int                 request_id ,
+                             const std::string & uri        ,
+                             int                 line       ,
+                             int                 character  );
+
+WASP_PUBLIC
+bool dissectCompletionRequest( const DataObject   & object     ,
+                                     std::ostream & errors     ,
+                                     int          & request_id ,
+                                     std::string  & uri        ,
+                                     int          & line       ,
+                                     int          & character  );
+
+WASP_PUBLIC
+bool buildDefinitionRequest( DataObject        & object     ,
+                             std::ostream      & errors     ,
+                             int                 request_id ,
+                             const std::string & uri        ,
+                             int                 line       ,
                              int                 character );
 
 WASP_PUBLIC
-bool buildDefinitionRequest( DataObject        & object    ,
-                             std::ostream      & errors    ,
-                             const std::string & uri       ,
-                             int                 line      ,
-                             int                 character );
+bool dissectDefinitionRequest( const DataObject   & object     ,
+                                     std::ostream & errors     ,
+                                     int          & request_id ,
+                                     std::string  & uri        ,
+                                     int          & line       ,
+                                     int          & character  );
 
 WASP_PUBLIC
 bool buildReferencesRequest( DataObject        & object              ,
                              std::ostream      & errors              ,
+                             int                 request_id          ,
                              const std::string & uri                 ,
                              int                 line                ,
                              int                 character           ,
                              bool                include_declaration );
 
 WASP_PUBLIC
+bool dissectReferencesRequest( const DataObject   & object              ,
+                                     std::ostream & errors              ,
+                                     int          & request_id          ,
+                                     std::string  & uri                 ,
+                                     int          & line                ,
+                                     int          & character           ,
+                                     bool         & include_declaration );
+
+WASP_PUBLIC
 bool buildRangeFormattingRequest( DataObject        & object          ,
                                   std::ostream      & errors          ,
+                                  int                 request_id      ,
                                   const std::string & uri             ,
                                   int                 start_line      ,
                                   int                 start_character ,
@@ -92,6 +193,18 @@ bool buildRangeFormattingRequest( DataObject        & object          ,
                                   int                 end_character   ,
                                   int                 tab_size        ,
                                   bool                insert_spaces   );
+
+WASP_PUBLIC
+bool dissectRangeFormattingRequest( const DataObject   & object          ,
+                                          std::ostream & errors          ,
+                                          int          & request_id      ,
+                                          std::string  & uri             ,
+                                          int          & start_line      ,
+                                          int          & start_character ,
+                                          int          & end_line        ,
+                                          int          & end_character   ,
+                                          int          & tab_size        ,
+                                          bool         & insert_spaces   );
 
 WASP_PUBLIC
 bool buildDiagnosticObject( DataObject        & object          ,
@@ -106,19 +219,50 @@ bool buildDiagnosticObject( DataObject        & object          ,
                             const std::string & message         );
 
 WASP_PUBLIC
+bool dissectDiagnosticObject( const DataObject   & object          ,
+                                    std::ostream & errors          ,
+                                    int          & start_line      ,
+                                    int          & start_character ,
+                                    int          & end_line        ,
+                                    int          & end_character   ,
+                                    int          & severity        ,
+                                    std::string  & code            ,
+                                    std::string  & source          ,
+                                    std::string  & message         );
+
+WASP_PUBLIC
 bool buildPublishDiagnosticsNotification( DataObject        & object      ,
                                           std::ostream      & errors      ,
                                           const std::string & uri         ,
                                           const DataArray   & diagnostics );
 
 WASP_PUBLIC
+bool dissectPublishDiagnosticsNotification( const DataObject   & object      ,
+                                                  std::ostream & errors      ,
+                                                  std::string  & uri         ,
+                                                  DataArray    & diagnostics );
+
+WASP_PUBLIC
 bool buildInitializeResponse( DataObject        & object              ,
                               std::ostream      & errors              ,
+                              int                 request_id          ,
                               const DataObject  & server_capabilities );
 
 WASP_PUBLIC
-bool buildShutdownResponse( DataObject        & object ,
-                            std::ostream      & errors );
+bool dissectInitializeResponse( const DataObject   & object              ,
+                                      std::ostream & errors              ,
+                                      int          & request_id          ,
+                                      DataObject   & server_capabilities );
+
+WASP_PUBLIC
+bool buildShutdownResponse( DataObject        & object     ,
+                            std::ostream      & errors     ,
+                            int                 request_id );
+
+WASP_PUBLIC
+bool dissectShutdownResponse( const DataObject   & object     ,
+                                    std::ostream & errors     ,
+                                    int          & request_id );
 
 WASP_PUBLIC
 bool buildCompletionObject( DataObject        & object          ,
@@ -136,10 +280,33 @@ bool buildCompletionObject( DataObject        & object          ,
                             bool                preselect       );
 
 WASP_PUBLIC
+bool dissectCompletionObject( const DataObject   & object          ,
+                                    std::ostream & errors          ,
+                                    std::string  & label           ,
+                                    int          & start_line      ,
+                                    int          & start_character ,
+                                    int          & end_line        ,
+                                    int          & end_character   ,
+                                    std::string  & new_text        ,
+                                    int          & kind            ,
+                                    std::string  & detail          ,
+                                    std::string  & documentation   ,
+                                    bool         & deprecated      ,
+                                    bool         & preselect       );
+
+WASP_PUBLIC
 bool buildCompletionResponse( DataObject        & object           ,
                               std::ostream      & errors           ,
+                              int                 request_id       ,
                               bool                is_incomplete    ,
                               const DataArray   & completion_items );
+
+WASP_PUBLIC
+bool dissectCompletionResponse( const DataObject   & object           ,
+                                      std::ostream & errors           ,
+                                      int          & request_id       ,
+                                      bool         & is_incomplete    ,
+                                      DataArray    & completion_items );
 
 WASP_PUBLIC
 bool buildLocationObject( DataObject        & object          ,
@@ -151,9 +318,25 @@ bool buildLocationObject( DataObject        & object          ,
                           int                 end_character   );
 
 WASP_PUBLIC
+bool dissectLocationObject( const DataObject   & object          ,
+                                  std::ostream & errors          ,
+                                  std::string  & uri             ,
+                                  int          & start_line      ,
+                                  int          & start_character ,
+                                  int          & end_line        ,
+                                  int          & end_character   );
+
+WASP_PUBLIC
 bool buildLocationsResponse( DataObject        & object           ,
                              std::ostream      & errors           ,
+                             int                 request_id       ,
                              const DataArray   & location_objects );
+
+WASP_PUBLIC
+bool dissectLocationsResponse( const DataObject   & object           ,
+                                     std::ostream & errors           ,
+                                     int          & request_id       ,
+                                     DataArray    & location_objects );
 
 WASP_PUBLIC
 bool buildTextEditObject( DataObject        & object          ,
@@ -165,10 +348,27 @@ bool buildTextEditObject( DataObject        & object          ,
                           const std::string & new_text        );
 
 WASP_PUBLIC
+bool dissectTextEditObject( const DataObject   & object          ,
+                                  std::ostream & errors          ,
+                                  int          & start_line      ,
+                                  int          & start_character ,
+                                  int          & end_line        ,
+                                  int          & end_character   ,
+                                  std::string  & new_text        );
+
+WASP_PUBLIC
 bool buildRangeFormattingResponse( DataObject        & object           ,
                                    std::ostream      & errors           ,
+                                   int                 request_id       ,
                                    const DataArray   & textedit_objects );
 
+WASP_PUBLIC
+bool dissectRangeFormattingResponse( const DataObject   & object           ,
+                                           std::ostream & errors           ,
+                                           int          & request_id       ,
+                                           DataArray    & textedit_objects );
+
+static const char _id[]                    = "id";
 static const char _method_initialize[]     = "initialize";
 static const char _method_initialized[]    = "initialized";
 static const char _method_shutdown[]       = "shutdown";
@@ -220,5 +420,7 @@ static const char _preselect[]             = "preselect";
 static const char _items[]                 = "items";
 static const char _is_incomplete[]         = "isIncomplete";
 
-}
-}
+} // namespace lsp
+} // namespace wasp
+
+#endif // WASPLSP_LSP_H

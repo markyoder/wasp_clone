@@ -1,4 +1,4 @@
-#include "wasplsp/lsp.h"
+#include "wasplsp/LSP.h"
 #include "gtest/gtest.h"
 #include <sstream>
 #include <vector>
@@ -11,6 +11,8 @@ TEST(lsp, bad_ranges)
     {
         DataObject        object;
         std::stringstream errors;
+
+        int               request_id      =  91;
         std::string       uri             = "test/document/uri/string";
         int               tab_size        =  04;
         bool              insert_spaces   =  true;
@@ -30,6 +32,7 @@ TEST(lsp, bad_ranges)
 
         ASSERT_FALSE(buildRangeFormattingRequest( object           ,
                                                   errors           ,
+                                                  request_id       ,
                                                   uri              ,
                                                   start_line       ,
                                                   start_character  ,
@@ -42,6 +45,8 @@ TEST(lsp, bad_ranges)
     {
         DataObject        object;
         std::stringstream errors;
+
+        int               request_id      =  92;
         std::string       uri             = "test/document/uri/string";
         int               tab_size        =  04;
         bool              insert_spaces   =  true;
@@ -57,6 +62,7 @@ TEST(lsp, bad_ranges)
 
         ASSERT_FALSE(buildRangeFormattingRequest( object           ,
                                                   errors           ,
+                                                  request_id       ,
                                                   uri              ,
                                                   start_line       ,
                                                   start_character  ,
@@ -73,17 +79,19 @@ TEST(lsp, initialize_request)
     DataObject        object;
     std::stringstream errors;
 
-    int               process_id = 12345;
+    int               request_id =  1;
+    int               process_id =  12345;
     std::string       root_uri   = "test/root/uri/string";
     DataObject        client_capabilities;
 
     ASSERT_TRUE(buildInitializeRequest( object              ,
                                         errors              ,
+                                        request_id          ,
                                         process_id          ,
                                         root_uri            ,
                                         client_capabilities ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( object.size() , (size_t) 3 );
 
     ASSERT_TRUE( object[_method].is_string()                );
     ASSERT_EQ  ( object[_method].to_string() , "initialize" );
@@ -105,7 +113,8 @@ TEST(lsp, initialize_request)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "method" : "initialize"
+  "id" : 1
+  ,"method" : "initialize"
   ,"params" : {
     "capabilities" : {}
     ,"processId" : 12345
@@ -113,7 +122,24 @@ TEST(lsp, initialize_request)
   }
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    int         tst_request_id;
+    int         tst_process_id;
+    std::string tst_root_uri;
+    DataObject  tst_client_capabilities;
+
+    ASSERT_TRUE(dissectInitializeRequest( object                  ,
+                                          errors                  ,
+                                          tst_request_id          ,
+                                          tst_process_id          ,
+                                          tst_root_uri            ,
+                                          tst_client_capabilities ));
+
+    ASSERT_EQ( tst_request_id                 , request_id );
+    ASSERT_EQ( tst_process_id                 , process_id );
+    ASSERT_EQ( tst_root_uri                   , root_uri   );
+    ASSERT_EQ( tst_client_capabilities.size() , (size_t) 0 );
 }
 
 TEST(lsp, initialized_notification)
@@ -141,7 +167,10 @@ TEST(lsp, initialized_notification)
   ,"params" : {}
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    ASSERT_TRUE(dissectInitializedNotification( object ,
+                                                errors ));
 }
 
 TEST(lsp, shutdown_request)
@@ -149,10 +178,13 @@ TEST(lsp, shutdown_request)
     DataObject        object;
     std::stringstream errors;
 
-    ASSERT_TRUE(buildShutdownRequest( object ,
-                                      errors ));
+    int               request_id = 2;
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_TRUE(buildShutdownRequest( object     ,
+                                      errors     ,
+                                      request_id ));
+
+    ASSERT_EQ  ( object.size() , (size_t) 3 );
 
     ASSERT_TRUE( object[_method].is_string()              );
     ASSERT_EQ  ( object[_method].to_string() , "shutdown" );
@@ -165,11 +197,20 @@ TEST(lsp, shutdown_request)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "method" : "shutdown"
+  "id" : 2
+  ,"method" : "shutdown"
   ,"params" : {}
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    int tst_request_id;
+
+    ASSERT_TRUE(dissectShutdownRequest( object         ,
+                                        errors         ,
+                                        tst_request_id ));
+
+    ASSERT_EQ( tst_request_id , request_id );
 }
 
 TEST(lsp, exit_notification)
@@ -197,7 +238,10 @@ TEST(lsp, exit_notification)
   ,"params" : {}
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    ASSERT_TRUE(dissectExitNotification( object ,
+                                         errors ));
 }
 
 TEST(lsp, didopen_notification)
@@ -207,7 +251,7 @@ TEST(lsp, didopen_notification)
 
     std::string       uri         = "test/document/uri/string";
     std::string       language_id = "test_language_id_string";
-    double            version     =  3.5;
+    int               version     =  1;
     std::string       text        = "test text string";
 
     ASSERT_TRUE(buildDidOpenNotification( object       ,
@@ -234,8 +278,8 @@ TEST(lsp, didopen_notification)
     ASSERT_TRUE( object[_params][_text_document][_language_id].is_string()               );
     ASSERT_EQ  ( object[_params][_text_document][_language_id].to_string() , language_id );
 
-    ASSERT_TRUE( object[_params][_text_document][_version].is_double()           );
-    ASSERT_EQ  ( object[_params][_text_document][_version].to_double() , version );
+    ASSERT_TRUE( object[_params][_text_document][_version].is_int()           );
+    ASSERT_EQ  ( object[_params][_text_document][_version].to_int() , version );
 
     ASSERT_TRUE( object[_params][_text_document][_text].is_string()        );
     ASSERT_EQ  ( object[_params][_text_document][_text].to_string() , text );
@@ -251,12 +295,30 @@ TEST(lsp, didopen_notification)
     "languageId" : "test_language_id_string"
     ,"text" : "test text string"
     ,"uri" : "test/document/uri/string"
-    ,"version" : 3.5
+    ,"version" : 1
   }
   }
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    std::string tst_uri;
+    std::string tst_language_id;
+    int         tst_version;
+    std::string tst_text;
+
+    ASSERT_TRUE(dissectDidOpenNotification( object          ,
+                                            errors          ,
+                                            tst_uri         ,
+                                            tst_language_id ,
+                                            tst_version     ,
+                                            tst_text        ));
+
+    ASSERT_EQ( tst_uri         , uri         );
+    ASSERT_EQ( tst_language_id , language_id );
+    ASSERT_EQ( tst_version     , version     );
+    ASSERT_EQ( tst_text        , text        );
+
 }
 
 TEST(lsp, didchange_notification)
@@ -265,7 +327,7 @@ TEST(lsp, didchange_notification)
     std::stringstream errors;
 
     std::string       uri             = "test/document/uri/string";
-    double            version         =  4.5;
+    int               version         =  14;
     int               start_line      =  10;
     int               start_character =  16;
     int               end_line        =  62;
@@ -298,8 +360,8 @@ TEST(lsp, didchange_notification)
     ASSERT_TRUE( object[_params][_text_document][_uri].is_string()       );
     ASSERT_EQ  ( object[_params][_text_document][_uri].to_string() , uri );
 
-    ASSERT_TRUE( object[_params][_text_document][_version].is_double()           );
-    ASSERT_EQ  ( object[_params][_text_document][_version].to_double() , version );
+    ASSERT_TRUE( object[_params][_text_document][_version].is_int()           );
+    ASSERT_EQ  ( object[_params][_text_document][_version].to_int() , version );
 
     ASSERT_TRUE( object[_params][_content_changes].is_object()         );
     ASSERT_EQ  ( object[_params][_content_changes].size() , (size_t) 3 );
@@ -354,12 +416,41 @@ TEST(lsp, didchange_notification)
   }
     ,"textDocument" : {
       "uri" : "test/document/uri/string"
-      ,"version" : 4.5
+      ,"version" : 14
     }
   }
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    std::string tst_uri;
+    int         tst_version;
+    int         tst_start_line;
+    int         tst_start_character;
+    int         tst_end_line;
+    int         tst_end_character;
+    int         tst_range_length;
+    std::string tst_text;
+
+    ASSERT_TRUE(dissectDidChangeNotification( object              ,
+                                              errors              ,
+                                              tst_uri             ,
+                                              tst_version         ,
+                                              tst_start_line      ,
+                                              tst_start_character ,
+                                              tst_end_line        ,
+                                              tst_end_character   ,
+                                              tst_range_length    ,
+                                              tst_text            ));
+
+    ASSERT_EQ( tst_uri             , uri             );
+    ASSERT_EQ( tst_version         , version         );
+    ASSERT_EQ( tst_start_line      , start_line      );
+    ASSERT_EQ( tst_start_character , start_character );
+    ASSERT_EQ( tst_end_line        , end_line        );
+    ASSERT_EQ( tst_end_character   , end_character   );
+    ASSERT_EQ( tst_range_length    , range_length    );
+    ASSERT_EQ( tst_text            , text            );
 }
 
 TEST(lsp, completion_request)
@@ -367,17 +458,19 @@ TEST(lsp, completion_request)
     DataObject        object;
     std::stringstream errors;
 
-    std::string       uri       = "test/document/uri/string";
-    int               line      =  87;
-    int               character =  48;
+    int               request_id =  3;
+    std::string       uri        = "test/document/uri/string";
+    int               line       =  87;
+    int               character  =  48;
 
-    ASSERT_TRUE(buildCompletionRequest( object    ,
-                                        errors    ,
-                                        uri       ,
-                                        line      ,
-                                        character ));
+    ASSERT_TRUE(buildCompletionRequest( object     ,
+                                        errors     ,
+                                        request_id ,
+                                        uri        ,
+                                        line       ,
+                                        character  ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( object.size() , (size_t) 3 );
 
     ASSERT_TRUE( object[_method].is_string()                             );
     ASSERT_EQ  ( object[_method].to_string() , "textDocument/completion" );
@@ -405,7 +498,8 @@ TEST(lsp, completion_request)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "method" : "textDocument/completion"
+  "id" : 3
+  ,"method" : "textDocument/completion"
   ,"params" : {
     "position" : {
     "character" : 48
@@ -417,7 +511,25 @@ TEST(lsp, completion_request)
   }
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    int         tst_request_id ;
+    std::string tst_uri;
+    int         tst_line;
+    int         tst_character;
+
+    ASSERT_TRUE(dissectCompletionRequest( object         ,
+                                          errors         ,
+                                          tst_request_id ,
+                                          tst_uri        ,
+                                          tst_line       ,
+                                          tst_character  ));
+
+    ASSERT_EQ( tst_request_id , request_id );
+    ASSERT_EQ( tst_uri        , uri        );
+    ASSERT_EQ( tst_line       , line       );
+    ASSERT_EQ( tst_character  , character  );
+
 }
 
 TEST(lsp, definition_request)
@@ -425,17 +537,19 @@ TEST(lsp, definition_request)
     DataObject        object;
     std::stringstream errors;
 
-    std::string       uri       = "test/document/uri/string";
-    int               line      =  25;
-    int               character =  52;
+    int               request_id =  4;
+    std::string       uri        = "test/document/uri/string";
+    int               line       =  25;
+    int               character  =  52;
 
-    ASSERT_TRUE(buildDefinitionRequest( object    ,
-                                        errors    ,
-                                        uri       ,
-                                        line      ,
-                                        character ));
+    ASSERT_TRUE(buildDefinitionRequest( object     ,
+                                        errors     ,
+                                        request_id ,
+                                        uri        ,
+                                        line       ,
+                                        character  ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( object.size() , (size_t) 3 );
 
     ASSERT_TRUE( object[_method].is_string()                             );
     ASSERT_EQ  ( object[_method].to_string() , "textDocument/definition" );
@@ -463,7 +577,8 @@ TEST(lsp, definition_request)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "method" : "textDocument/definition"
+  "id" : 4
+  ,"method" : "textDocument/definition"
   ,"params" : {
     "position" : {
     "character" : 52
@@ -475,7 +590,24 @@ TEST(lsp, definition_request)
   }
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    int         tst_request_id ;
+    std::string tst_uri;
+    int         tst_line;
+    int         tst_character;
+
+    ASSERT_TRUE(dissectDefinitionRequest( object         ,
+                                          errors         ,
+                                          tst_request_id ,
+                                          tst_uri        ,
+                                          tst_line       ,
+                                          tst_character  ));
+
+    ASSERT_EQ( tst_request_id , request_id );
+    ASSERT_EQ( tst_uri        , uri        );
+    ASSERT_EQ( tst_line       , line       );
+    ASSERT_EQ( tst_character  , character  );
 }
 
 TEST(lsp, references_request)
@@ -483,19 +615,21 @@ TEST(lsp, references_request)
     DataObject        object;
     std::stringstream errors;
 
-    std::string       uri       = "test/document/uri/string";
-    int               line      =  25;
-    int               character =  52;
+    int               request_id          =  5;
+    std::string       uri                 = "test/document/uri/string";
+    int               line                =  25;
+    int               character           =  52;
     bool              include_declaration = false;
 
     ASSERT_TRUE(buildReferencesRequest( object              ,
                                         errors              ,
+                                        request_id          ,
                                         uri                 ,
                                         line                ,
                                         character           ,
                                         include_declaration ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( object.size() , (size_t) 3 );
 
     ASSERT_TRUE( object[_method].is_string()                             );
     ASSERT_EQ  ( object[_method].to_string() , "textDocument/references" );
@@ -529,7 +663,8 @@ TEST(lsp, references_request)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "method" : "textDocument/references"
+  "id" : 5
+  ,"method" : "textDocument/references"
   ,"params" : {
     "context" : {
     "includeDeclaration" : false
@@ -544,7 +679,27 @@ TEST(lsp, references_request)
   }
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    int         tst_request_id ;
+    std::string tst_uri;
+    int         tst_line;
+    int         tst_character;
+    bool        tst_include_declaration;
+
+    ASSERT_TRUE(dissectReferencesRequest( object                  ,
+                                          errors                  ,
+                                          tst_request_id          ,
+                                          tst_uri                 ,
+                                          tst_line                ,
+                                          tst_character           ,
+                                          tst_include_declaration ));
+
+    ASSERT_EQ( tst_request_id          , request_id           );
+    ASSERT_EQ( tst_uri                 , uri                  );
+    ASSERT_EQ( tst_line                , line                 );
+    ASSERT_EQ( tst_character           , character            );
+    ASSERT_EQ( tst_include_declaration , include_declaration  );
 }
 
 TEST(lsp, rangeformatting_request)
@@ -552,6 +707,7 @@ TEST(lsp, rangeformatting_request)
     DataObject        object;
     std::stringstream errors;
 
+    int               request_id      =  6;
     std::string       uri             = "test/document/uri/string";
     int               start_line      =  54;
     int               start_character =  65;
@@ -560,17 +716,18 @@ TEST(lsp, rangeformatting_request)
     int               tab_size        =  04;
     bool              insert_spaces   =  true;
 
-    ASSERT_TRUE(buildRangeFormattingRequest( object           ,
-                                             errors           ,
-                                             uri              ,
-                                             start_line       ,
-                                             start_character  ,
-                                             end_line         ,
-                                             end_character    ,
-                                             tab_size         ,
-                                             insert_spaces    ));
+    ASSERT_TRUE(buildRangeFormattingRequest( object          ,
+                                             errors          ,
+                                             request_id      ,
+                                             uri             ,
+                                             start_line      ,
+                                             start_character ,
+                                             end_line        ,
+                                             end_character   ,
+                                             tab_size        ,
+                                             insert_spaces   ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( object.size() , (size_t) 3 );
 
     ASSERT_TRUE( object[_method].is_string()                                  );
     ASSERT_EQ  ( object[_method].to_string() , "textDocument/rangeFormatting" );
@@ -619,7 +776,8 @@ TEST(lsp, rangeformatting_request)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "method" : "textDocument/rangeFormatting"
+  "id" : 6
+  ,"method" : "textDocument/rangeFormatting"
   ,"params" : {
     "options" : {
     "insertSpaces" : true
@@ -641,7 +799,36 @@ TEST(lsp, rangeformatting_request)
   }
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    int         tst_request_id ;
+    std::string tst_uri;
+    int         tst_start_line;
+    int         tst_start_character;
+    int         tst_end_line;
+    int         tst_end_character;
+    int         tst_tab_size;
+    bool        tst_insert_spaces;
+
+    ASSERT_TRUE(dissectRangeFormattingRequest( object              ,
+                                               errors              ,
+                                               tst_request_id      ,
+                                               tst_uri             ,
+                                               tst_start_line      ,
+                                               tst_start_character ,
+                                               tst_end_line        ,
+                                               tst_end_character   ,
+                                               tst_tab_size        ,
+                                               tst_insert_spaces   ));
+
+    ASSERT_EQ( tst_request_id      , request_id      );
+    ASSERT_EQ( tst_uri             , uri             );
+    ASSERT_EQ( tst_start_line      , start_line      );
+    ASSERT_EQ( tst_start_character , start_character );
+    ASSERT_EQ( tst_end_line        , end_line        );
+    ASSERT_EQ( tst_end_character   , end_character   );
+    ASSERT_EQ( tst_tab_size        , tab_size        );
+    ASSERT_EQ( tst_insert_spaces   , insert_spaces   );
 }
 
 TEST(lsp, diagnostic_object)
@@ -658,16 +845,16 @@ TEST(lsp, diagnostic_object)
     std::string       source          = "test_source";
     std::string       message         = "Couldn't convert 'test' to double.";
 
-    ASSERT_TRUE(buildDiagnosticObject( object           ,
-                                       errors           ,
-                                       start_line       ,
-                                       start_character  ,
-                                       end_line         ,
-                                       end_character    ,
-                                       severity         ,
-                                       code             ,
-                                       source           ,
-                                       message          ));
+    ASSERT_TRUE(buildDiagnosticObject( object          ,
+                                       errors          ,
+                                       start_line      ,
+                                       start_character ,
+                                       end_line        ,
+                                       end_character   ,
+                                       severity        ,
+                                       code            ,
+                                       source          ,
+                                       message         ));
 
     ASSERT_EQ  ( object.size() , (size_t) 5 );
 
@@ -725,7 +912,37 @@ TEST(lsp, diagnostic_object)
   ,"source" : "test_source"
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+
+    int         tst_start_line;
+    int         tst_start_character;
+    int         tst_end_line;
+    int         tst_end_character;
+    int         tst_severity;
+    std::string tst_code;
+    std::string tst_source;
+    std::string tst_message;
+
+    ASSERT_TRUE(dissectDiagnosticObject( object              ,
+                                         errors              ,
+                                         tst_start_line      ,
+                                         tst_start_character ,
+                                         tst_end_line        ,
+                                         tst_end_character   ,
+                                         tst_severity        ,
+                                         tst_code            ,
+                                         tst_source          ,
+                                         tst_message         ));
+
+    ASSERT_EQ( tst_start_line      , start_line      );
+    ASSERT_EQ( tst_start_character , start_character );
+    ASSERT_EQ( tst_end_line        , end_line        );
+    ASSERT_EQ( tst_end_character   , end_character   );
+    ASSERT_EQ( tst_severity        , severity        );
+    ASSERT_EQ( tst_code            , code            );
+    ASSERT_EQ( tst_source          , source          );
+    ASSERT_EQ( tst_message         , message         );
 }
 
 TEST(lsp, publishdiagnostics_notification)
@@ -962,7 +1179,91 @@ TEST(lsp, publishdiagnostics_notification)
   }
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    std::string tst_uri;
+    DataArray   tst_diagnostics;
+
+    ASSERT_TRUE(dissectPublishDiagnosticsNotification( object          ,
+                                                       errors          ,
+                                                       tst_uri         ,
+                                                       tst_diagnostics ));
+
+    ASSERT_EQ( tst_uri                , uri        );
+    ASSERT_EQ( tst_diagnostics.size() , (size_t) 5 );
+
+    int         tst_start_line;
+    int         tst_start_character;
+    int         tst_end_line;
+    int         tst_end_character;
+    int         tst_severity;
+    std::string tst_code;
+    std::string tst_source;
+    std::string tst_message;
+
+    ASSERT_TRUE(dissectDiagnosticObject( *(tst_diagnostics[0].to_object()) ,
+                                           errors                          ,
+                                           tst_start_line                  ,
+                                           tst_start_character             ,
+                                           tst_end_line                    ,
+                                           tst_end_character               ,
+                                           tst_severity                    ,
+                                           tst_code                        ,
+                                           tst_source                      ,
+                                           tst_message                     ));
+
+    ASSERT_TRUE(dissectDiagnosticObject( *(tst_diagnostics[1].to_object()) ,
+                                           errors                          ,
+                                           tst_start_line                  ,
+                                           tst_start_character             ,
+                                           tst_end_line                    ,
+                                           tst_end_character               ,
+                                           tst_severity                    ,
+                                           tst_code                        ,
+                                           tst_source                      ,
+                                           tst_message                     ));
+
+    ASSERT_TRUE(dissectDiagnosticObject( *(tst_diagnostics[2].to_object()) ,
+                                           errors                          ,
+                                           tst_start_line                  ,
+                                           tst_start_character             ,
+                                           tst_end_line                    ,
+                                           tst_end_character               ,
+                                           tst_severity                    ,
+                                           tst_code                        ,
+                                           tst_source                      ,
+                                           tst_message                     ));
+
+    ASSERT_TRUE(dissectDiagnosticObject( *(tst_diagnostics[3].to_object()) ,
+                                           errors                          ,
+                                           tst_start_line                  ,
+                                           tst_start_character             ,
+                                           tst_end_line                    ,
+                                           tst_end_character               ,
+                                           tst_severity                    ,
+                                           tst_code                        ,
+                                           tst_source                      ,
+                                           tst_message                     ));
+
+    ASSERT_TRUE(dissectDiagnosticObject( *(tst_diagnostics[4].to_object()) ,
+                                           errors                          ,
+                                           tst_start_line                  ,
+                                           tst_start_character             ,
+                                           tst_end_line                    ,
+                                           tst_end_character               ,
+                                           tst_severity                    ,
+                                           tst_code                        ,
+                                           tst_source                      ,
+                                           tst_message                     ));
+
+    ASSERT_EQ( tst_start_line      , 87                 );
+    ASSERT_EQ( tst_start_character , 17                 );
+    ASSERT_EQ( tst_end_line        , 88                 );
+    ASSERT_EQ( tst_end_character   , 12                 );
+    ASSERT_EQ( tst_severity        , 1                  );
+    ASSERT_EQ( tst_code            , "test.code.55"     );
+    ASSERT_EQ( tst_source          , "test_source_55"   );
+    ASSERT_EQ( tst_message         , "Test message 55." );
 }
 
 TEST(lsp, initialize_response)
@@ -970,13 +1271,15 @@ TEST(lsp, initialize_response)
     DataObject        object;
     std::stringstream errors;
 
+    int               request_id = 7;
     DataObject        server_capabilities;
 
     ASSERT_TRUE(buildInitializeResponse( object              ,
                                          errors              ,
+                                         request_id          ,
                                          server_capabilities ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 1 );
+    ASSERT_EQ  ( object.size() , (size_t) 2 );
 
     ASSERT_TRUE( object[_result].is_object()         );
     ASSERT_EQ  ( object[_result].size() , (size_t) 1 );
@@ -989,12 +1292,24 @@ TEST(lsp, initialize_response)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "result" : {
-  "capabilities" : {}
-}
+  "id" : 7
+  ,"result" : {
+    "capabilities" : {}
+  }
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    int        tst_request_id;
+    DataObject tst_server_capabilities;
+
+    ASSERT_TRUE(dissectInitializeResponse( object                  ,
+                                           errors                  ,
+                                           tst_request_id          ,
+                                           tst_server_capabilities ));
+
+    ASSERT_EQ( tst_request_id                 , request_id );
+    ASSERT_EQ( tst_server_capabilities.size() , (size_t) 0 );
 }
 
 TEST(lsp, shutdown_response)
@@ -1002,10 +1317,13 @@ TEST(lsp, shutdown_response)
     DataObject        object;
     std::stringstream errors;
 
-    ASSERT_TRUE(buildShutdownResponse( object ,
-                                       errors ));
+    int               request_id = 8;
 
-    ASSERT_EQ  ( object.size() , (size_t) 1 );
+    ASSERT_TRUE(buildShutdownResponse( object     ,
+                                       errors     ,
+                                       request_id ));
+
+    ASSERT_EQ  ( object.size() , (size_t) 2 );
 
     ASSERT_TRUE( object[_result].is_object()         );
     ASSERT_EQ  ( object[_result].size() , (size_t) 0 );
@@ -1015,10 +1333,19 @@ TEST(lsp, shutdown_response)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "result" : {}
+  "id" : 8
+  ,"result" : {}
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    int tst_request_id;
+
+    ASSERT_TRUE(dissectShutdownResponse( object         ,
+                                         errors         ,
+                                         tst_request_id ));
+
+    ASSERT_EQ( tst_request_id , request_id );
 }
 
 TEST(lsp, completion_object)
@@ -1125,7 +1452,45 @@ TEST(lsp, completion_object)
   }
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    std::string tst_label;
+    int         tst_start_line;
+    int         tst_start_character;
+    int         tst_end_line;
+    int         tst_end_character;
+    std::string tst_new_text;
+    int         tst_kind;
+    std::string tst_detail;
+    std::string tst_documentation;
+    bool        tst_deprecated;
+    bool        tst_preselect;
+
+    ASSERT_TRUE(dissectCompletionObject( object              ,
+                                         errors              ,
+                                         tst_label           ,
+                                         tst_start_line      ,
+                                         tst_start_character ,
+                                         tst_end_line        ,
+                                         tst_end_character   ,
+                                         tst_new_text        ,
+                                         tst_kind            ,
+                                         tst_detail          ,
+                                         tst_documentation   ,
+                                         tst_deprecated      ,
+                                         tst_preselect       ));
+
+    ASSERT_EQ( tst_label           , label           );
+    ASSERT_EQ( tst_start_line      , start_line      );
+    ASSERT_EQ( tst_start_character , start_character );
+    ASSERT_EQ( tst_end_line        , end_line        );
+    ASSERT_EQ( tst_end_character   , end_character   );
+    ASSERT_EQ( tst_new_text        , new_text        );
+    ASSERT_EQ( tst_kind            , kind            );
+    ASSERT_EQ( tst_detail          , detail          );
+    ASSERT_EQ( tst_documentation   , documentation   );
+    ASSERT_EQ( tst_deprecated      , deprecated      );
+    ASSERT_EQ( tst_preselect       , preselect       );
 }
 
 TEST(lsp, completion_response)
@@ -1133,6 +1498,7 @@ TEST(lsp, completion_response)
     DataObject        object;
     std::stringstream errors;
 
+    int               request_id    = 9;
     bool              is_incomplete = false;
     DataObject        completion_item;
     DataArray         completion_items;
@@ -1219,10 +1585,11 @@ TEST(lsp, completion_response)
 
     ASSERT_TRUE(buildCompletionResponse( object           ,
                                          errors           ,
+                                         request_id       ,
                                          is_incomplete    ,
                                          completion_items ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 1 );
+    ASSERT_EQ  ( object.size() , (size_t) 2 );
 
     ASSERT_TRUE( object[_result].is_object()         );
     ASSERT_EQ  ( object[_result].size() , (size_t) 2 );
@@ -1298,119 +1665,228 @@ TEST(lsp, completion_response)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "result" : {
-  "isIncomplete" : false
-  ,"items" : [
-    {
-    "deprecated" : false
-    ,"detail" : "test type info 1"
-    ,"documentation" : "test documentation 1"
-    ,"kind" : 1
-    ,"label" : "test-label-1"
-    ,"preselect" : true
-    ,"textEdit" : {
-      "newText" : "test-insert-text-1"
-      ,"range" : {
-        "end" : {
-        "character" : 11
-        ,"line" : 11
-      }
-        ,"start" : {
+  "id" : 9
+  ,"result" : {
+    "isIncomplete" : false
+    ,"items" : [
+      {
+      "deprecated" : false
+      ,"detail" : "test type info 1"
+      ,"documentation" : "test documentation 1"
+      ,"kind" : 1
+      ,"label" : "test-label-1"
+      ,"preselect" : true
+      ,"textEdit" : {
+        "newText" : "test-insert-text-1"
+        ,"range" : {
+          "end" : {
           "character" : 11
           ,"line" : 11
         }
+          ,"start" : {
+            "character" : 11
+            ,"line" : 11
+          }
+        }
       }
     }
-  }
-    ,{
-    "deprecated" : false
-    ,"detail" : "test type info 2"
-    ,"documentation" : "test documentation 2"
-    ,"kind" : 2
-    ,"label" : "test-label-2"
-    ,"preselect" : false
-    ,"textEdit" : {
-      "newText" : "test-insert-text-2"
-      ,"range" : {
-        "end" : {
-        "character" : 22
-        ,"line" : 22
-      }
-        ,"start" : {
+      ,{
+      "deprecated" : false
+      ,"detail" : "test type info 2"
+      ,"documentation" : "test documentation 2"
+      ,"kind" : 2
+      ,"label" : "test-label-2"
+      ,"preselect" : false
+      ,"textEdit" : {
+        "newText" : "test-insert-text-2"
+        ,"range" : {
+          "end" : {
           "character" : 22
           ,"line" : 22
         }
+          ,"start" : {
+            "character" : 22
+            ,"line" : 22
+          }
+        }
       }
     }
-  }
-    ,{
-    "deprecated" : false
-    ,"detail" : "test type info 3"
-    ,"documentation" : "test documentation 3"
-    ,"kind" : 3
-    ,"label" : "test-label-3"
-    ,"preselect" : false
-    ,"textEdit" : {
-      "newText" : "test-insert-text-3"
-      ,"range" : {
-        "end" : {
-        "character" : 33
-        ,"line" : 33
-      }
-        ,"start" : {
+      ,{
+      "deprecated" : false
+      ,"detail" : "test type info 3"
+      ,"documentation" : "test documentation 3"
+      ,"kind" : 3
+      ,"label" : "test-label-3"
+      ,"preselect" : false
+      ,"textEdit" : {
+        "newText" : "test-insert-text-3"
+        ,"range" : {
+          "end" : {
           "character" : 33
           ,"line" : 33
         }
+          ,"start" : {
+            "character" : 33
+            ,"line" : 33
+          }
+        }
       }
     }
-  }
-    ,{
-    "deprecated" : false
-    ,"detail" : "test type info 4"
-    ,"documentation" : "test documentation 4"
-    ,"kind" : 4
-    ,"label" : "test-label-4"
-    ,"preselect" : false
-    ,"textEdit" : {
-      "newText" : "test-insert-text-4"
-      ,"range" : {
-        "end" : {
-        "character" : 44
-        ,"line" : 44
-      }
-        ,"start" : {
+      ,{
+      "deprecated" : false
+      ,"detail" : "test type info 4"
+      ,"documentation" : "test documentation 4"
+      ,"kind" : 4
+      ,"label" : "test-label-4"
+      ,"preselect" : false
+      ,"textEdit" : {
+        "newText" : "test-insert-text-4"
+        ,"range" : {
+          "end" : {
           "character" : 44
           ,"line" : 44
         }
-      }
-    }
-  }
-    ,{
-    "deprecated" : false
-    ,"detail" : "test type info 5"
-    ,"documentation" : "test documentation 5"
-    ,"kind" : 5
-    ,"label" : "test-label-5"
-    ,"preselect" : false
-    ,"textEdit" : {
-      "newText" : "test-insert-text-5"
-      ,"range" : {
-        "end" : {
-        "character" : 55
-        ,"line" : 55
-      }
-        ,"start" : {
-          "character" : 55
-          ,"line" : 55
+          ,"start" : {
+            "character" : 44
+            ,"line" : 44
+          }
         }
       }
     }
+      ,{
+      "deprecated" : false
+      ,"detail" : "test type info 5"
+      ,"documentation" : "test documentation 5"
+      ,"kind" : 5
+      ,"label" : "test-label-5"
+      ,"preselect" : false
+      ,"textEdit" : {
+        "newText" : "test-insert-text-5"
+        ,"range" : {
+          "end" : {
+          "character" : 55
+          ,"line" : 55
+        }
+          ,"start" : {
+            "character" : 55
+            ,"line" : 55
+          }
+        }
+      }
+    }
+    ]
   }
-  ]
-}
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    int       tst_request_id;
+    bool      tst_is_incomplete;
+    DataArray tst_completion_items;
+
+    ASSERT_TRUE(dissectCompletionResponse( object               ,
+                                           errors               ,
+                                           tst_request_id       ,
+                                           tst_is_incomplete    ,
+                                           tst_completion_items ));
+
+    ASSERT_EQ( tst_request_id              , tst_request_id    );
+    ASSERT_EQ( tst_is_incomplete           , tst_is_incomplete );
+    ASSERT_EQ( tst_completion_items.size() , (size_t) 5        );
+
+    std::string tst_label;
+    int         tst_start_line;
+    int         tst_start_character;
+    int         tst_end_line;
+    int         tst_end_character;
+    std::string tst_new_text;
+    int         tst_kind;
+    std::string tst_detail;
+    std::string tst_documentation;
+    bool        tst_deprecated;
+    bool        tst_preselect;
+
+    ASSERT_TRUE(dissectCompletionObject( *(tst_completion_items[0].to_object()) ,
+                                           errors                               ,
+                                           tst_label                            ,
+                                           tst_start_line                       ,
+                                           tst_start_character                  ,
+                                           tst_end_line                         ,
+                                           tst_end_character                    ,
+                                           tst_new_text                         ,
+                                           tst_kind                             ,
+                                           tst_detail                           ,
+                                           tst_documentation                    ,
+                                           tst_deprecated                       ,
+                                           tst_preselect                        ));
+
+    ASSERT_TRUE(dissectCompletionObject( *(tst_completion_items[1].to_object()) ,
+                                           errors                               ,
+                                           tst_label                            ,
+                                           tst_start_line                       ,
+                                           tst_start_character                  ,
+                                           tst_end_line                         ,
+                                           tst_end_character                    ,
+                                           tst_new_text                         ,
+                                           tst_kind                             ,
+                                           tst_detail                           ,
+                                           tst_documentation                    ,
+                                           tst_deprecated                       ,
+                                           tst_preselect                        ));
+
+    ASSERT_TRUE(dissectCompletionObject( *(tst_completion_items[2].to_object()) ,
+                                           errors                               ,
+                                           tst_label                            ,
+                                           tst_start_line                       ,
+                                           tst_start_character                  ,
+                                           tst_end_line                         ,
+                                           tst_end_character                    ,
+                                           tst_new_text                         ,
+                                           tst_kind                             ,
+                                           tst_detail                           ,
+                                           tst_documentation                    ,
+                                           tst_deprecated                       ,
+                                           tst_preselect                        ));
+
+    ASSERT_TRUE(dissectCompletionObject( *(tst_completion_items[3].to_object()) ,
+                                           errors                               ,
+                                           tst_label                            ,
+                                           tst_start_line                       ,
+                                           tst_start_character                  ,
+                                           tst_end_line                         ,
+                                           tst_end_character                    ,
+                                           tst_new_text                         ,
+                                           tst_kind                             ,
+                                           tst_detail                           ,
+                                           tst_documentation                    ,
+                                           tst_deprecated                       ,
+                                           tst_preselect                        ));
+
+    ASSERT_TRUE(dissectCompletionObject( *(tst_completion_items[4].to_object()) ,
+                                           errors                               ,
+                                           tst_label                            ,
+                                           tst_start_line                       ,
+                                           tst_start_character                  ,
+                                           tst_end_line                         ,
+                                           tst_end_character                    ,
+                                           tst_new_text                         ,
+                                           tst_kind                             ,
+                                           tst_detail                           ,
+                                           tst_documentation                    ,
+                                           tst_deprecated                       ,
+                                           tst_preselect                        ));
+
+    ASSERT_EQ( tst_label           , "test-label-5"         );
+    ASSERT_EQ( tst_start_line      , 55                     );
+    ASSERT_EQ( tst_start_character , 55                     );
+    ASSERT_EQ( tst_end_line        , 55                     );
+    ASSERT_EQ( tst_end_character   , 55                     );
+    ASSERT_EQ( tst_new_text        , "test-insert-text-5"   );
+    ASSERT_EQ( tst_kind            , 5                      );
+    ASSERT_EQ( tst_detail          , "test type info 5"     );
+    ASSERT_EQ( tst_documentation   , "test documentation 5" );
+    ASSERT_EQ( tst_deprecated      , false                  );
+    ASSERT_EQ( tst_preselect       , false                  );
 }
 
 TEST(lsp, location_object)
@@ -1476,7 +1952,27 @@ TEST(lsp, location_object)
   ,"uri" : "test/document/uri/string"
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    std::string tst_uri;
+    int         tst_start_line;
+    int         tst_start_character;
+    int         tst_end_line;
+    int         tst_end_character;
+
+    ASSERT_TRUE(dissectLocationObject( object              ,
+                                       errors              ,
+                                       tst_uri             ,
+                                       tst_start_line      ,
+                                       tst_start_character ,
+                                       tst_end_line        ,
+                                       tst_end_character   ));
+
+    ASSERT_EQ( tst_uri             , uri             );
+    ASSERT_EQ( tst_start_line      , start_line      );
+    ASSERT_EQ( tst_start_character , start_character );
+    ASSERT_EQ( tst_end_line        , end_line        );
+    ASSERT_EQ( tst_end_character   , end_character   );
 }
 
 TEST(lsp, locations_response)
@@ -1484,6 +1980,7 @@ TEST(lsp, locations_response)
     DataObject        object;
     std::stringstream errors;
 
+    int               request_id = 10;
     DataObject        location;
     DataArray         locations;
 
@@ -1537,11 +2034,12 @@ TEST(lsp, locations_response)
 
     locations.push_back(location);
 
-    ASSERT_TRUE(buildLocationsResponse( object    ,
-                                        errors    ,
-                                        locations ));
+    ASSERT_TRUE(buildLocationsResponse( object     ,
+                                        errors     ,
+                                        request_id ,
+                                        locations  ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 1 );
+    ASSERT_EQ  ( object.size() , (size_t) 2 );
 
     ASSERT_TRUE( object[_result].is_array()          );
     ASSERT_EQ  ( object[_result].size() , (size_t) 5 );
@@ -1590,76 +2088,140 @@ TEST(lsp, locations_response)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "result" : [
-  {
-  "range" : {
-  "end" : {
-  "character" : 11
-  ,"line" : 11
-}
-  ,"start" : {
+  "id" : 10
+  ,"result" : [
+    {
+    "range" : {
+    "end" : {
     "character" : 11
     ,"line" : 11
   }
-}
-  ,"uri" : "test/document/uri/1"
-}
-  ,{
-  "range" : {
-  "end" : {
-  "character" : 22
-  ,"line" : 22
-}
-  ,"start" : {
+    ,"start" : {
+      "character" : 11
+      ,"line" : 11
+    }
+  }
+    ,"uri" : "test/document/uri/1"
+  }
+    ,{
+    "range" : {
+    "end" : {
     "character" : 22
     ,"line" : 22
   }
-}
-  ,"uri" : "test/document/uri/2"
-}
-  ,{
-  "range" : {
-  "end" : {
-  "character" : 33
-  ,"line" : 33
-}
-  ,"start" : {
+    ,"start" : {
+      "character" : 22
+      ,"line" : 22
+    }
+  }
+    ,"uri" : "test/document/uri/2"
+  }
+    ,{
+    "range" : {
+    "end" : {
     "character" : 33
     ,"line" : 33
   }
-}
-  ,"uri" : "test/document/uri/3"
-}
-  ,{
-  "range" : {
-  "end" : {
-  "character" : 44
-  ,"line" : 44
-}
-  ,"start" : {
+    ,"start" : {
+      "character" : 33
+      ,"line" : 33
+    }
+  }
+    ,"uri" : "test/document/uri/3"
+  }
+    ,{
+    "range" : {
+    "end" : {
     "character" : 44
     ,"line" : 44
   }
-}
-  ,"uri" : "test/document/uri/4"
-}
-  ,{
-  "range" : {
-  "end" : {
-  "character" : 55
-  ,"line" : 55
-}
-  ,"start" : {
+    ,"start" : {
+      "character" : 44
+      ,"line" : 44
+    }
+  }
+    ,"uri" : "test/document/uri/4"
+  }
+    ,{
+    "range" : {
+    "end" : {
     "character" : 55
     ,"line" : 55
   }
-}
-  ,"uri" : "test/document/uri/5"
-}
-]
+    ,"start" : {
+      "character" : 55
+      ,"line" : 55
+    }
+  }
+    ,"uri" : "test/document/uri/5"
+  }
+  ]
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    int       tst_request_id;
+    DataArray tst_locations;
+
+    ASSERT_TRUE(dissectLocationsResponse( object         ,
+                                          errors         ,
+                                          tst_request_id ,
+                                          tst_locations  ));
+
+    ASSERT_EQ( tst_request_id       , tst_request_id    );
+    ASSERT_EQ( tst_locations.size() , (size_t) 5        );
+
+    std::string tst_uri;
+    int         tst_start_line;
+    int         tst_start_character;
+    int         tst_end_line;
+    int         tst_end_character;
+
+    ASSERT_TRUE(dissectLocationObject( *(tst_locations[0].to_object()) ,
+                                         errors                        ,
+                                         tst_uri                       ,
+                                         tst_start_line                ,
+                                         tst_start_character           ,
+                                         tst_end_line                  ,
+                                         tst_end_character             ));
+
+    ASSERT_TRUE(dissectLocationObject( *(tst_locations[1].to_object()) ,
+                                         errors                        ,
+                                         tst_uri                       ,
+                                         tst_start_line                ,
+                                         tst_start_character           ,
+                                         tst_end_line                  ,
+                                         tst_end_character             ));
+
+    ASSERT_TRUE(dissectLocationObject( *(tst_locations[2].to_object()) ,
+                                         errors                        ,
+                                         tst_uri                       ,
+                                         tst_start_line                ,
+                                         tst_start_character           ,
+                                         tst_end_line                  ,
+                                         tst_end_character             ));
+
+    ASSERT_TRUE(dissectLocationObject( *(tst_locations[3].to_object()) ,
+                                         errors                        ,
+                                         tst_uri                       ,
+                                         tst_start_line                ,
+                                         tst_start_character           ,
+                                         tst_end_line                  ,
+                                         tst_end_character             ));
+
+    ASSERT_TRUE(dissectLocationObject( *(tst_locations[4].to_object()) ,
+                                         errors                        ,
+                                         tst_uri                       ,
+                                         tst_start_line                ,
+                                         tst_start_character           ,
+                                         tst_end_line                  ,
+                                         tst_end_character             ));
+
+    ASSERT_EQ( tst_uri             , "test/document/uri/5" );
+    ASSERT_EQ( tst_start_line      ,  55                   );
+    ASSERT_EQ( tst_start_character ,  55                   );
+    ASSERT_EQ( tst_end_line        ,  55                   );
+    ASSERT_EQ( tst_end_character   ,  55                   );
 }
 
 TEST(lsp, textedit_object)
@@ -1729,7 +2291,27 @@ TEST(lsp, textedit_object)
   }
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    int         tst_start_line;
+    int         tst_start_character;
+    int         tst_end_line;
+    int         tst_end_character;
+    std::string tst_new_text;
+
+    ASSERT_TRUE(dissectTextEditObject( object              ,
+                                       errors              ,
+                                       tst_start_line      ,
+                                       tst_start_character ,
+                                       tst_end_line        ,
+                                       tst_end_character   ,
+                                       tst_new_text        ));
+
+    ASSERT_EQ( tst_start_line      , start_line      );
+    ASSERT_EQ( tst_start_character , start_character );
+    ASSERT_EQ( tst_end_line        , end_line        );
+    ASSERT_EQ( tst_end_character   , end_character   );
+    ASSERT_EQ( tst_new_text        , new_text        );
 }
 
 TEST(lsp, rangeformatting_response)
@@ -1737,6 +2319,7 @@ TEST(lsp, rangeformatting_response)
     DataObject        object;
     std::stringstream errors;
 
+    int               request_id = 11;
     DataObject        textedit;
     DataArray         textedits;
 
@@ -1790,11 +2373,12 @@ TEST(lsp, rangeformatting_response)
 
     textedits.push_back(textedit);
 
-    ASSERT_TRUE(buildRangeFormattingResponse( object    ,
-                                              errors    ,
-                                              textedits ));
+    ASSERT_TRUE(buildRangeFormattingResponse( object     ,
+                                              errors     ,
+                                              request_id ,
+                                              textedits  ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 1 );
+    ASSERT_EQ  ( object.size() , (size_t) 2 );
 
     ASSERT_TRUE( object[_result].is_array()          );
     ASSERT_EQ  ( object[_result].size() , (size_t) 5 );
@@ -1843,97 +2427,161 @@ TEST(lsp, rangeformatting_response)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "result" : [
-  {
-  "newText" : "test
+  "id" : 11
+  ,"result" : [
+    {
+    "newText" : "test
   new
   text
   format
   1"
-  ,"range" : {
-    "end" : {
-    "character" : 3
-    ,"line" : 14
-  }
-    ,"start" : {
-      "character" : 1
-      ,"line" : 10
+    ,"range" : {
+      "end" : {
+      "character" : 3
+      ,"line" : 14
+    }
+      ,"start" : {
+        "character" : 1
+        ,"line" : 10
+      }
     }
   }
-}
-  ,{
-  "newText" : "test
+    ,{
+    "newText" : "test
   new
   text
   format
   2"
-  ,"range" : {
-    "end" : {
-    "character" : 3
-    ,"line" : 24
-  }
-    ,"start" : {
-      "character" : 1
-      ,"line" : 20
+    ,"range" : {
+      "end" : {
+      "character" : 3
+      ,"line" : 24
+    }
+      ,"start" : {
+        "character" : 1
+        ,"line" : 20
+      }
     }
   }
-}
-  ,{
-  "newText" : "test
+    ,{
+    "newText" : "test
   new
   text
   format
   3"
-  ,"range" : {
-    "end" : {
-    "character" : 3
-    ,"line" : 34
-  }
-    ,"start" : {
-      "character" : 1
-      ,"line" : 30
+    ,"range" : {
+      "end" : {
+      "character" : 3
+      ,"line" : 34
+    }
+      ,"start" : {
+        "character" : 1
+        ,"line" : 30
+      }
     }
   }
-}
-  ,{
-  "newText" : "test
+    ,{
+    "newText" : "test
   new
   text
   format
   4"
-  ,"range" : {
-    "end" : {
-    "character" : 3
-    ,"line" : 44
-  }
-    ,"start" : {
-      "character" : 1
-      ,"line" : 40
+    ,"range" : {
+      "end" : {
+      "character" : 3
+      ,"line" : 44
+    }
+      ,"start" : {
+        "character" : 1
+        ,"line" : 40
+      }
     }
   }
-}
-  ,{
-  "newText" : "test
+    ,{
+    "newText" : "test
   new
   text
   format
   5"
-  ,"range" : {
-    "end" : {
-    "character" : 3
-    ,"line" : 54
-  }
-    ,"start" : {
-      "character" : 1
-      ,"line" : 50
+    ,"range" : {
+      "end" : {
+      "character" : 3
+      ,"line" : 54
+    }
+      ,"start" : {
+        "character" : 1
+        ,"line" : 50
+      }
     }
   }
-}
-]
+  ]
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    int       tst_request_id;
+    DataArray tst_textedits;
+
+    ASSERT_TRUE(dissectRangeFormattingResponse( object         ,
+                                                errors         ,
+                                                tst_request_id ,
+                                                tst_textedits  ));
+
+    ASSERT_EQ( tst_request_id       , tst_request_id    );
+    ASSERT_EQ( tst_textedits.size() , (size_t) 5        );
+
+    int         tst_start_line;
+    int         tst_start_character;
+    int         tst_end_line;
+    int         tst_end_character;
+    std::string tst_new_text;
+
+    ASSERT_TRUE(dissectTextEditObject( *(tst_textedits[0].to_object()) ,
+                                         errors                        ,
+                                         tst_start_line                ,
+                                         tst_start_character           ,
+                                         tst_end_line                  ,
+                                         tst_end_character             ,
+                                         tst_new_text                  ));
+
+    ASSERT_TRUE(dissectTextEditObject( *(tst_textedits[1].to_object()) ,
+                                         errors                        ,
+                                         tst_start_line                ,
+                                         tst_start_character           ,
+                                         tst_end_line                  ,
+                                         tst_end_character             ,
+                                         tst_new_text                  ));
+
+    ASSERT_TRUE(dissectTextEditObject( *(tst_textedits[2].to_object()) ,
+                                         errors                        ,
+                                         tst_start_line                ,
+                                         tst_start_character           ,
+                                         tst_end_line                  ,
+                                         tst_end_character             ,
+                                         tst_new_text                  ));
+
+    ASSERT_TRUE(dissectTextEditObject( *(tst_textedits[3].to_object()) ,
+                                         errors                        ,
+                                         tst_start_line                ,
+                                         tst_start_character           ,
+                                         tst_end_line                  ,
+                                         tst_end_character             ,
+                                         tst_new_text                  ));
+
+    ASSERT_TRUE(dissectTextEditObject( *(tst_textedits[4].to_object()) ,
+                                         errors                        ,
+                                         tst_start_line                ,
+                                         tst_start_character           ,
+                                         tst_end_line                  ,
+                                         tst_end_character             ,
+                                         tst_new_text                  ));
+
+    ASSERT_EQ( tst_start_line      , 50                                   );
+    ASSERT_EQ( tst_start_character , 01                                   );
+    ASSERT_EQ( tst_end_line        , 54                                   );
+    ASSERT_EQ( tst_end_character   , 03                                   );
+    ASSERT_EQ( tst_new_text        , "test\n  new\n  text\n  format\n  5" );
 }
 
-}
-}
+} // namespace lsp
+} // namespace wasp
