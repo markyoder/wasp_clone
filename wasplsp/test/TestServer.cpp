@@ -3,7 +3,6 @@
 namespace wasp {
 namespace lsp  {
 
-
 bool TestServer::handleInitializeRequest(
                 const DataObject   & initializeRequest  ,
                       DataObject   & initializeResponse ,
@@ -217,6 +216,31 @@ bool TestServer::handleReferencesRequest(
 {
     bool pass = true;
 
+    int  line;
+    int  character;
+    bool include_declaration;
+
+    pass &= dissectReferencesRequest( referencesRequest       ,
+                                      errors                  ,
+                                      this->client_request_id ,
+                                      this->document_path     ,
+                                      line                    ,
+                                      character               ,
+                                      include_declaration     );
+
+    DataArray references_locations;
+
+    pass &= this->gatherDocumentReferencesLocations( references_locations ,
+                                                     line                 ,
+                                                     character            ,
+                                                     include_declaration  ,
+                                                     errors               );
+
+    pass &= buildLocationsResponse( referencesResponse      ,
+                                    errors                  ,
+                                    this->client_request_id ,
+                                    references_locations    );
+
     return pass;
 }
 
@@ -226,6 +250,40 @@ bool TestServer::handleRangeFormattingRequest(
                       std::ostream & errors                  )
 {
     bool pass = true;
+
+    int  start_line;
+    int  start_character;
+    int  end_line;
+    int  end_character;
+    int  tab_size;
+    bool insert_spaces;
+
+    pass &= dissectRangeFormattingRequest( rangeFormattingRequest  ,
+                                           errors                  ,
+                                           this->client_request_id ,
+                                           this->document_path     ,
+                                           start_line              ,
+                                           start_character         ,
+                                           end_line                ,
+                                           end_character           ,
+                                           tab_size                ,
+                                           insert_spaces           );
+
+    DataArray formatting_textedits;
+
+    pass &= this->gatherDocumentFormattingTextEdits( formatting_textedits ,
+                                                     start_line           ,
+                                                     start_character      ,
+                                                     end_line             ,
+                                                     end_character        ,
+                                                     tab_size             ,
+                                                     insert_spaces        ,
+                                                     errors               );
+
+    pass &= buildRangeFormattingResponse( rangeFormattingResponse ,
+                                          errors                  ,
+                                          this->client_request_id ,
+                                          formatting_textedits    );
 
     return pass;
 }
@@ -415,7 +473,7 @@ bool TestServer::gatherDocumentDefinitionLocations(
 
     if ( line      == 2 &&
          character == 5 )
-    {               
+    {
         pass &= buildLocationObject( location_object       ,
                                      errors                ,
                                      this->document_path   ,
@@ -435,7 +493,7 @@ bool TestServer::gatherDocumentDefinitionLocations(
                                      22                    );
 
         definitionLocations.push_back(location_object);
- 
+
         pass &= buildLocationObject( location_object       ,
                                      errors                ,
                                      this->document_path   ,
@@ -445,6 +503,100 @@ bool TestServer::gatherDocumentDefinitionLocations(
                                      33                    );
 
         definitionLocations.push_back(location_object);
+    }
+
+    return pass;
+}
+
+bool TestServer::gatherDocumentReferencesLocations(
+                      DataArray    & referencesLocations ,
+                      int            line                ,
+                      int            character           ,
+                      bool           include_declaration ,
+                      std::ostream & errors              )
+{
+    bool pass = true;
+
+    DataObject location_object;
+
+    if ( line                == 1     &&
+         character           == 3     &&
+         include_declaration == false )
+    {
+        pass &= buildLocationObject( location_object       ,
+                                     errors                ,
+                                     this->document_path   ,
+                                     44                    ,
+                                     44                    ,
+                                     44                    ,
+                                     44                    );
+
+        referencesLocations.push_back(location_object);
+
+        pass &= buildLocationObject( location_object       ,
+                                     errors                ,
+                                     this->document_path   ,
+                                     55                    ,
+                                     55                    ,
+                                     55                    ,
+                                     55                    );
+
+        referencesLocations.push_back(location_object);
+    }
+
+    return pass;
+}
+
+bool TestServer::gatherDocumentFormattingTextEdits(
+                      DataArray    & formattingTextEdits ,
+                      int            start_line          ,
+                      int            start_character     ,
+                      int            end_line            ,
+                      int            end_character       ,
+                      int            tab_size            ,
+                      bool           insert_spaces       ,
+                      std::ostream & errors              )
+{
+    bool pass = true;
+
+    DataObject textedit_object;
+
+    if ( start_line      == 2    &&
+         start_character == 0    &&
+         end_line        == 4    &&
+         end_character   == 3    &&
+         tab_size        == 4    &&
+         insert_spaces   == true )
+    {
+        pass &= buildTextEditObject( textedit_object                      ,
+                                     errors                               ,
+                                     10                                   ,
+                                     01                                   ,
+                                     14                                   ,
+                                     03                                   ,
+                                     "test\n  new\n  text\n  format\n  1" );
+
+        formattingTextEdits.push_back(textedit_object);
+
+        pass &= buildTextEditObject( textedit_object                      ,
+                                     errors                               ,
+                                     20                                   ,
+                                     01                                   ,
+                                     24                                   ,
+                                     03                                   ,
+                                     "test\n  new\n  text\n  format\n  2" );
+
+        formattingTextEdits.push_back(textedit_object);
+
+        pass &= buildTextEditObject( textedit_object                      ,
+                                     errors                               ,
+                                     30                                   ,
+                                     01                                   ,
+                                     34                                   ,
+                                     03                                   ,
+                                     "test\n  new\n  text\n  format\n  3" );
+
+        formattingTextEdits.push_back(textedit_object);
     }
 
     return pass;

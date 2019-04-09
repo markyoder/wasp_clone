@@ -84,11 +84,28 @@ class WASP_PUBLIC TestServer
                           int            line             ,
                           int            character        ,
                           std::ostream & errors           );
-    
+
     bool gatherDocumentDefinitionLocations(
                           DataArray    & definitionLocations ,
                           int            line                ,
                           int            character           ,
+                          std::ostream & errors              );
+
+    bool gatherDocumentReferencesLocations(
+                          DataArray    & referencesLocations ,
+                          int            line                ,
+                          int            character           ,
+                          bool           include_declaration ,
+                          std::ostream & errors              );
+
+    bool gatherDocumentFormattingTextEdits(
+                          DataArray    & formattingTextEdits ,
+                          int            start_line          ,
+                          int            start_character     ,
+                          int            end_line            ,
+                          int            end_character       ,
+                          int            tab_size            ,
+                          bool           insert_spaces       ,
                           std::ostream & errors              );
 
   private:

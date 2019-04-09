@@ -8,7 +8,7 @@
 
 namespace wasp {
 namespace lsp  {
-   
+
 TEST(server, handle_initialize)
 {
     Server<TestServer> test_server;
@@ -18,7 +18,7 @@ TEST(server, handle_initialize)
 
     int               client_request_id =  1;
     int               client_process_id =  12345;
-    std::string       client_root_path   = "test/root/uri/string";
+    std::string       client_root_path  = "test/root/uri/string";
     DataObject        client_capabilities;
 
     ASSERT_TRUE(buildInitializeRequest( initializeRequest   ,
@@ -296,13 +296,14 @@ TEST(server, handle_completion)
                                         client_request_id  ,
                                         document_path      ,
                                         line               ,
-                                        character          ));  
+                                        character          ));
 
     DataObject completionResponse;
 
     ASSERT_TRUE(test_server.handleCompletionRequest( completionRequest  ,
                                                      completionResponse ,
                                                      errors             ));
+
     std::stringstream json;
     completionResponse.format_json(json);
 
@@ -399,13 +400,14 @@ TEST(server, handle_definition)
                                         client_request_id  ,
                                         document_path      ,
                                         line               ,
-                                        character          ));  
+                                        character          ));
 
     DataObject definitionResponse;
 
     ASSERT_TRUE(test_server.handleDefinitionRequest( definitionRequest  ,
                                                      definitionResponse ,
                                                      errors             ));
+
     std::stringstream json;
     definitionResponse.format_json(json);
 
@@ -451,6 +453,170 @@ TEST(server, handle_definition)
     }
   }
     ,"uri" : "test/document/uri/string"
+  }
+  ]
+})INPUT";
+
+    ASSERT_EQ(json.str() , json_expected.str());
+}
+
+TEST(server, handle_references)
+{
+    Server<TestServer> test_server;
+
+    DataObject        referencesRequest;
+    std::stringstream errors;
+
+    int               client_request_id   =  5;
+    std::string       document_path       = "test/document/uri/string";
+    int               line                =  1;
+    int               character           =  3;
+    bool              include_declaration = false;
+
+    ASSERT_TRUE(buildReferencesRequest( referencesRequest   ,
+                                        errors              ,
+                                        client_request_id   ,
+                                        document_path       ,
+                                        line                ,
+                                        character           ,
+                                        include_declaration ));
+
+    DataObject referencesResponse;
+
+    ASSERT_TRUE(test_server.handleReferencesRequest( referencesRequest  ,
+                                                     referencesResponse ,
+                                                     errors             ));
+
+    std::stringstream json;
+    referencesResponse.format_json(json);
+
+    std::stringstream json_expected;
+    json_expected << R"INPUT({
+  "id" : 5
+  ,"result" : [
+    {
+    "range" : {
+    "end" : {
+    "character" : 44
+    ,"line" : 44
+  }
+    ,"start" : {
+      "character" : 44
+      ,"line" : 44
+    }
+  }
+    ,"uri" : "test/document/uri/string"
+  }
+    ,{
+    "range" : {
+    "end" : {
+    "character" : 55
+    ,"line" : 55
+  }
+    ,"start" : {
+      "character" : 55
+      ,"line" : 55
+    }
+  }
+    ,"uri" : "test/document/uri/string"
+  }
+  ]
+})INPUT";
+
+    ASSERT_EQ(json.str() , json_expected.str());
+}
+
+TEST(server, handle_rangeformatting)
+{
+    Server<TestServer> test_server;
+
+    DataObject        rangeFormattingRequest;
+    std::stringstream errors;
+
+    int               client_request_id =  6;
+    std::string       document_path     = "test/document/uri/string";
+    int               start_line        =  2;
+    int               start_character   =  0;
+    int               end_line          =  4;
+    int               end_character     =  3;
+    int               tab_size          =  4;
+    bool              insert_spaces     =  true;
+
+
+    ASSERT_TRUE(buildRangeFormattingRequest( rangeFormattingRequest ,
+                                             errors                 ,
+                                             client_request_id      ,
+                                             document_path          ,
+                                             start_line             ,
+                                             start_character        ,
+                                             end_line               ,
+                                             end_character          ,
+                                             tab_size               ,
+                                             insert_spaces          ));
+
+    DataObject rangeFormattingResponse;
+
+    ASSERT_TRUE(test_server.handleRangeFormattingRequest( rangeFormattingRequest  ,
+                                                          rangeFormattingResponse ,
+                                                          errors             ));
+
+    std::stringstream json;
+    rangeFormattingResponse.format_json(json);
+
+    std::stringstream json_expected;
+    json_expected << R"INPUT({
+  "id" : 6
+  ,"result" : [
+    {
+    "newText" : "test
+  new
+  text
+  format
+  1"
+    ,"range" : {
+      "end" : {
+      "character" : 3
+      ,"line" : 14
+    }
+      ,"start" : {
+        "character" : 1
+        ,"line" : 10
+      }
+    }
+  }
+    ,{
+    "newText" : "test
+  new
+  text
+  format
+  2"
+    ,"range" : {
+      "end" : {
+      "character" : 3
+      ,"line" : 24
+    }
+      ,"start" : {
+        "character" : 1
+        ,"line" : 20
+      }
+    }
+  }
+    ,{
+    "newText" : "test
+  new
+  text
+  format
+  3"
+    ,"range" : {
+      "end" : {
+      "character" : 3
+      ,"line" : 34
+    }
+      ,"start" : {
+        "character" : 1
+        ,"line" : 30
+      }
+    }
   }
   ]
 })INPUT";
