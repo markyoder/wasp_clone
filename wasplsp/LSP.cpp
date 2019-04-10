@@ -1,8 +1,79 @@
 #include "wasplsp/LSP.h"
+#include "waspjson/JSONObjectParser.hpp"
 #include "waspcore/wasp_bug.h"
 
 namespace wasp {
 namespace lsp  {
+
+bool objectToStream( DataObject   & object ,
+                     std::ostream & packet ,
+                     std::ostream & errors )
+{
+    bool pass = true;
+
+    object[m_rpc_jsonrpc_key] = m_rpc_jsonrpc_val;
+
+    std::stringstream body;
+
+    object.format_json(body);
+
+    packet << m_rpc_content_len_key
+           << " "
+           << body.str().size()
+           << m_rpc_separator
+           << body.str();
+
+    return pass;
+}
+
+bool streamToObject( std::istream & stream      ,
+                     std::string  & method_name ,
+                     DataObject   & object      ,
+                     std::ostream & errors      )
+{
+    bool pass = true;
+
+    std::string content_length_key;
+
+    stream >> content_length_key;
+
+    wasp_check( content_length_key == m_rpc_content_len_key );
+
+    int content_length_val;
+
+    stream >> content_length_val;
+
+//    content_length_val+=4;
+//
+//    char * content_buffer = new char[ content_length_val ];
+//
+//    stream.read(content_buffer, content_length_val);
+
+    DataObject::SP json_ptr;
+
+    JSONObjectParser generator(json_ptr, stream, errors, nullptr);
+
+    pass &= (generator.parse() == 0);
+
+    wasp_check( json_ptr != nullptr );
+
+    object = *(json_ptr.get());
+
+    wasp_check( object[m_rpc_jsonrpc_key].is_string() );
+
+    wasp_check( object[m_rpc_jsonrpc_key].to_string() == m_rpc_jsonrpc_val );
+
+    if ( object[m_method].is_string() )
+    {
+        method_name = object[m_method].to_string();
+    }
+    else
+    {
+        method_name = m_empty_string;
+    }
+
+    return pass;
+}
 
 bool checkPosition( std::ostream & errors    ,
                     int            line      ,
@@ -12,14 +83,14 @@ bool checkPosition( std::ostream & errors    ,
 
     if ( line < 0 )
     {
-        errors << "Error:: Line number must be non-negative - received: "
+        errors << m_error << "Line number must be non-negative - received: "
                << line << std::endl;
         pass = false;
     }
 
     if ( character < 0 )
     {
-        errors << "Error:: Column number must be non-negative - received: "
+        errors << m_error << "Column number must be non-negative - received: "
                << character << std::endl;
         pass = false;
     }
@@ -38,7 +109,7 @@ bool checkRange( std::ostream & errors          ,
     if (( start_line  > end_line ) ||
         ( start_line == end_line && start_character > end_character ))
     {
-        errors << "Error:: Range start ( line:" << start_line << " column:"
+        errors << m_error << "Range start ( line:" << start_line << " column:"
                << start_character << " ) must be less than range end ( line:"
                << end_line << " column:" << end_character << " )" << std::endl;
         pass = false;
