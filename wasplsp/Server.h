@@ -2,6 +2,9 @@
 #define WASPLSP_SERVER_H
 
 #include "wasplsp/LSP.h"
+#include "waspcore/Object.h"
+#include "waspcore/decl.h"
+#include <iostream>
 
 namespace wasp {
 namespace lsp  {
@@ -14,6 +17,14 @@ class WASP_PUBLIC Server
     Server(){}
 
     ~Server(){}
+
+    bool handlePacket( std::istream & input  ,
+                       std::ostream & output ,
+                       std::ostream & errors )
+    {
+        return Impl.handlePacket( input  ,
+                                  output );
+    }
 
     bool handleInitializeRequest(
                     const DataObject   & initializeRequest  ,

@@ -17,6 +17,10 @@ class WASP_PUBLIC TestServer
 
     ~TestServer(){}
 
+    bool handlePacket( std::istream & input  ,
+                       std::ostream & output ,
+                       std::ostream & errors );
+
     bool handleInitializeRequest(
                     const DataObject   & initializeRequest  ,
                           DataObject   & initializeResponse ,

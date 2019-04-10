@@ -3,6 +3,115 @@
 namespace wasp {
 namespace lsp  {
 
+bool TestServer::handlePacket( std::istream & input_stream  ,
+                               std::ostream & output_stream ,
+                               std::ostream & error_stream  )
+{
+    bool pass = true;
+
+    DataObject  input_object;
+    DataObject  output_object;
+    std::string method_name;
+    bool        send_response;
+
+    pass &= streamToObject( input_stream ,
+                            method_name  ,
+                            input_object ,
+                            error_stream );
+
+    if ( method_name == m_method_initialize )
+    {
+        pass &= this->handleInitializeRequest( input_object  ,
+                                               output_object ,
+                                               error_stream  );
+        send_response = true;
+    }
+    else if ( method_name == m_method_initialized )
+    {
+        pass &= this->handleInitializedNotification( input_object ,
+                                                     error_stream );
+        send_response = false;
+    }
+    else if ( method_name == m_method_shutdown )
+    {
+        pass &= this->handleShutdownRequest( input_object  ,
+                                             output_object ,
+                                             error_stream  );
+        send_response = true;
+    }
+    else if ( method_name == m_method_exit )
+    {
+        pass &= this->handleExitNotification( input_object ,
+                                              error_stream );
+        send_response = false;
+    }
+    else if ( method_name == m_method_didopen )
+    {
+        pass &= this->handleDidOpenNotification( input_object  ,
+                                                 output_object ,
+                                                 error_stream  );
+        send_response = true;
+    }
+    else if ( method_name == m_method_didchange)
+    {
+        pass &= this->handleDidChangeNotification( input_object  ,
+                                                   output_object ,
+                                                   error_stream  );
+        send_response = true;
+    }
+    else if ( method_name == m_method_completion )
+    {
+        pass &= this->handleCompletionRequest( input_object  ,
+                                               output_object ,
+                                               error_stream  );
+        send_response = true;
+    }
+    else if ( method_name == m_method_definition )
+    {
+        pass &= this->handleDefinitionRequest( input_object  ,
+                                               output_object ,
+                                               error_stream  );
+        send_response = true;
+    }
+    else if ( method_name == m_method_references )
+    {
+        pass &= this->handleReferencesRequest( input_object  ,
+                                               output_object ,
+                                               error_stream  );
+        send_response = true;
+    }
+    else if ( method_name == m_method_rangeformat )
+    {
+        pass &= this->handleRangeFormattingRequest( input_object  ,
+                                                    output_object ,
+                                                    error_stream  );
+        send_response = true;
+    }
+    else if ( method_name == m_empty_string )
+    {
+        pass = false;
+        error_stream << m_error << "Message to server has no method name"
+                     << std::endl;
+        send_response = false;
+    }
+    else
+    {
+        pass = false;
+        error_stream << m_error << "Message to server has bad method name: \""
+                     << method_name << "\"" << std::endl;
+        send_response = false;
+    }
+
+    if ( send_response )
+    {
+        pass &= objectToStream( output_object ,
+                                output_stream ,
+                                error_stream  );
+    }
+
+    return pass;
+}
+
 bool TestServer::handleInitializeRequest(
                 const DataObject   & initializeRequest  ,
                       DataObject   & initializeResponse ,
