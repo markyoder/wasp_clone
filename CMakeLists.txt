@@ -35,10 +35,13 @@ IF(BUILD_SHARED_LIBS)
    ADD_DEFINITIONS("-DBUILD_SHARED")
 ENDIF()
 
+SET(CMAKE_CXX_STANDARD 11)
+SET(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 IF (NOT TRIBITS_PROCESSING_PACKAGE)
   # This CMakeLists.txt file is being processed as the wasp TriBITS projects's base
   # CMakeLists.txt file!  (See comments at bottom of this file.)
-  CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12.2 FATAL_ERROR)
+  CMAKE_MINIMUM_REQUIRED(VERSION 3.1 FATAL_ERROR)
   INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/ProjectName.cmake")
   PROJECT(${PROJECT_NAME} NONE)
   # enable C++11 by default
