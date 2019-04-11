@@ -23,6 +23,8 @@ bool objectToStream( DataObject   & object ,
            << m_rpc_separator
            << body.str();
 
+    pass = packet.good();
+
     return pass;
 }
 
@@ -43,15 +45,19 @@ bool streamToObject( std::istream & stream      ,
 
     stream >> content_length_val;
 
-//    content_length_val+=4;
-//
-//    char * content_buffer = new char[ content_length_val ];
-//
-//    stream.read(content_buffer, content_length_val);
+    content_length_val+=4;
+
+    char * content_buffer = new char[ content_length_val ];
+
+    stream.read(content_buffer, content_length_val);
+
+    std::istringstream packet(std::string(content_buffer,content_length_val));
+
+    delete[] content_buffer;
 
     DataObject::SP json_ptr;
 
-    JSONObjectParser generator(json_ptr, stream, errors, nullptr);
+    JSONObjectParser generator(json_ptr, packet, errors, nullptr);
 
     pass &= (generator.parse() == 0);
 
