@@ -4,7 +4,6 @@
 #include "waspcore/Object.h"
 #include "gtest/gtest.h"
 #include <sstream>
-#include <vector>
 
 namespace wasp {
 namespace lsp  {
@@ -568,11 +567,7 @@ TEST(server, handle_rangeformatting)
   "id" : 6
   ,"result" : [
     {
-    "newText" : "test
-  new
-  text
-  format
-  1"
+    "newText" : "test\n  new\n  text\n  format\n  1"
     ,"range" : {
       "end" : {
       "character" : 3
@@ -585,11 +580,7 @@ TEST(server, handle_rangeformatting)
     }
   }
     ,{
-    "newText" : "test
-  new
-  text
-  format
-  2"
+    "newText" : "test\n  new\n  text\n  format\n  2"
     ,"range" : {
       "end" : {
       "character" : 3
@@ -602,11 +593,7 @@ TEST(server, handle_rangeformatting)
     }
   }
     ,{
-    "newText" : "test
-  new
-  text
-  format
-  3"
+    "newText" : "test\n  new\n  text\n  format\n  3"
     ,"range" : {
       "end" : {
       "character" : 3

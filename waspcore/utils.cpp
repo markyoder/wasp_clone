@@ -67,13 +67,77 @@ std::string json_escape_string(const std::string& src)
             case '"':
                 dst << "\\\"";
                 break;
+            case '\b':
+                dst << "\\b";
+                break;
+            case '\f':
+                dst << "\\f";
+                break;
+            case '\n':
+                dst << "\\n";
+                break;
+            case '\r':
+                dst << "\\r";
+                break;
+            case '\t':
+                dst << "\\t";
+                break;
             default:
                 dst << ch;
                 break;
         }
     }
     return dst.str();
-}  // json_escape_data
+}  // json_escape_string
+
+std::string json_unescape_string(const std::string& src)
+{
+    std::stringstream dst;
+    bool escape_state = false;
+    for (char ch : src)
+    {
+        if (!escape_state && ch == '\\')
+        {
+            escape_state = true;
+        }
+        else if (escape_state)
+        {
+            switch (ch)
+            {
+                case '\\':
+                    dst << "\\";
+                    break;
+                case '"' :
+                    dst << "\"";
+                    break;
+                case 'b' :
+                    dst << "\b";
+                    break;
+                case 'f' :
+                    dst << "\f";
+                    break;
+                case 'n' :
+                    dst << "\n";
+                    break;
+                case 'r' :
+                    dst << "\r";
+                    break;
+                case 't' :
+                    dst << "\t";
+                    break;
+                default:
+                    dst << "\\" << ch;
+                    break;
+            }
+            escape_state = false;
+        }
+        else
+        {
+            dst << ch;
+        }
+    }
+    return dst.str();
+}  // json_unescape_string
 
 std::string xml_escape_data(const std::string& src)
 {

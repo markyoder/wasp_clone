@@ -47,13 +47,21 @@ WASP_PUBLIC bool file_exists(const std::string& path);
  */
 WASP_PUBLIC std::string xml_escape_data(const std::string& src);
 /**
- * @brief json_escape_string replaces string with escaped versions of the two
- * characters that must be escaped in JSON document string ( \, " )
+ * @brief json_escape_string replaces string with escaped versions of the
+ * characters that must be escaped in JSON document string
  * to be used on json data
  * @param src the string in which to have the characters escaped
  * @return a string with characters escaped
  */
 WASP_PUBLIC std::string json_escape_string(const std::string& src);
+/**
+ * @brief json_unescape_string replaces string with unescaped versions of the
+ * characters that must be escaped in JSON document string
+ * to be used on json data
+ * @param src the string in which to have the characters unescaped
+ * @return a string with characters unescaped
+ */
+WASP_PUBLIC std::string json_unescape_string(const std::string& src);
 /**
  * @brief xml_escape_name replaces string with versions that will parse
  * as node names in xml

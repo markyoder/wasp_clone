@@ -2468,11 +2468,7 @@ TEST(lsp, textedit_object)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "newText" : "test
-  new
-  text
-  format
-  0"
+  "newText" : "test\n  new\n  text\n  format\n  0"
   ,"range" : {
     "end" : {
     "character" : 3
@@ -2523,7 +2519,7 @@ TEST(lsp, rangeformatting_response)
                                      01                                   ,
                                      14                                   ,
                                      03                                   ,
-                                     "test\\n  new\\n  text\\n  format\\n  1" ));
+                                     "new\n  \"text\"\n  f\tor\\mat\n  1" ));
 
     textedits.push_back(textedit);
 
@@ -2533,7 +2529,7 @@ TEST(lsp, rangeformatting_response)
                                      01                                   ,
                                      24                                   ,
                                      03                                   ,
-                                     "test\\n  new\\n  text\\n  format\\n  2" ));
+                                     "new\n  \"text\"\n  f\tor\\mat\n  2" ));
 
     textedits.push_back(textedit);
 
@@ -2543,7 +2539,7 @@ TEST(lsp, rangeformatting_response)
                                      01                                   ,
                                      34                                   ,
                                      03                                   ,
-                                     "test\\n  new\\n  text\\n  format\\n  3" ));
+                                     "new\n  \"text\"\n  f\tor\\mat\n  3" ));
 
     textedits.push_back(textedit);
 
@@ -2553,7 +2549,7 @@ TEST(lsp, rangeformatting_response)
                                      01                                   ,
                                      44                                   ,
                                      03                                   ,
-                                     "test\\n  new\\n  text\\n  format\\n  4" ));
+                                     "new\n  \"text\"\n  f\tor\\mat\n  4" ));
 
     textedits.push_back(textedit);
 
@@ -2563,7 +2559,7 @@ TEST(lsp, rangeformatting_response)
                                       01                                   ,
                                       54                                   ,
                                       03                                   ,
-                                      "test\\n  new\\n  text\\n  format\\n  5" ));
+                                      "new\n  \"text\"\n  f\tor\\mat\n  5" ));
 
     textedits.push_back(textedit);
 
@@ -2614,7 +2610,7 @@ TEST(lsp, rangeformatting_response)
     ASSERT_EQ  ( object[m_result][4][m_range][m_end][m_character].to_int() , 03 );
 
     ASSERT_TRUE( object[m_result][4][m_new_text].is_string()                                        );
-    ASSERT_EQ  ( object[m_result][4][m_new_text].to_string() , "test\\n  new\\n  text\\n  format\\n  5" );
+    ASSERT_EQ  ( object[m_result][4][m_new_text].to_string() , "new\n  \"text\"\n  f\tor\\mat\n  5" );
 
     std::stringstream  json;
     ASSERT_TRUE( objectToStream( object ,
@@ -2628,7 +2624,7 @@ TEST(lsp, rangeformatting_response)
   ,"jsonrpc" : "2.0"
   ,"result" : [
     {
-    "newText" : "test\n  new\n  text\n  format\n  1"
+    "newText" : "new\n  \"text\"\n  f\tor\\mat\n  1"
     ,"range" : {
       "end" : {
       "character" : 3
@@ -2641,7 +2637,7 @@ TEST(lsp, rangeformatting_response)
     }
   }
     ,{
-    "newText" : "test\n  new\n  text\n  format\n  2"
+    "newText" : "new\n  \"text\"\n  f\tor\\mat\n  2"
     ,"range" : {
       "end" : {
       "character" : 3
@@ -2654,7 +2650,7 @@ TEST(lsp, rangeformatting_response)
     }
   }
     ,{
-    "newText" : "test\n  new\n  text\n  format\n  3"
+    "newText" : "new\n  \"text\"\n  f\tor\\mat\n  3"
     ,"range" : {
       "end" : {
       "character" : 3
@@ -2667,7 +2663,7 @@ TEST(lsp, rangeformatting_response)
     }
   }
     ,{
-    "newText" : "test\n  new\n  text\n  format\n  4"
+    "newText" : "new\n  \"text\"\n  f\tor\\mat\n  4"
     ,"range" : {
       "end" : {
       "character" : 3
@@ -2680,7 +2676,7 @@ TEST(lsp, rangeformatting_response)
     }
   }
     ,{
-    "newText" : "test\n  new\n  text\n  format\n  5"
+    "newText" : "new\n  \"text\"\n  f\tor\\mat\n  5"
     ,"range" : {
       "end" : {
       "character" : 3
@@ -2767,7 +2763,7 @@ TEST(lsp, rangeformatting_response)
     ASSERT_EQ( tst_start_character , 01                                   );
     ASSERT_EQ( tst_end_line        , 54                                   );
     ASSERT_EQ( tst_end_character   , 03                                   );
-    ASSERT_EQ( tst_new_text        , "test\\n  new\\n  text\\n  format\\n  5" );
+    ASSERT_EQ( tst_new_text        , "new\n  \"text\"\n  f\tor\\mat\n  5" );
 }
 
 } // namespace lsp
