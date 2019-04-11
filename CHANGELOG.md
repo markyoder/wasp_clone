@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - wasppy inablility to handle file paths with whitespaces. 
+- CMake package logic to allow for incorporation into a Fortran project.
 
 ### Added
 - GCC 5.4 compiler compatibility CI job.
