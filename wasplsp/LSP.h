@@ -11,14 +11,13 @@ namespace lsp  {
 
 WASP_PUBLIC
 bool objectToStream( DataObject   & object ,
-                     std::ostream & packet ,
+                     std::ostream & stream ,
                      std::ostream & errors );
 
 WASP_PUBLIC
-bool streamToObject( std::istream & stream      ,
-                     std::string  & method_name ,
-                     DataObject   & object      ,
-                     std::ostream & errors      );
+bool streamToObject( std::istream & stream ,
+                     DataObject   & object ,
+                     std::ostream & errors );
 
 WASP_PUBLIC
 bool checkPosition( std::ostream & errors    ,
@@ -383,7 +382,6 @@ static const char m_rpc_separator[]         = "\r\n\r\n";
 static const char m_rpc_jsonrpc_key[]       = "jsonrpc";
 static const char m_rpc_jsonrpc_val[]       = "2.0";
 static const char m_error[]                 = "Error:: ";
-static const char m_empty_string[]          = "";
 static const char m_id[]                    = "id";
 static const char m_method_initialize[]     = "initialize";
 static const char m_method_initialized[]    = "initialized";

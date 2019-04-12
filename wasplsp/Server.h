@@ -18,12 +18,13 @@ class WASP_PUBLIC Server
 
     ~Server(){}
 
-    bool handlePacket( std::istream & input  ,
-                       std::ostream & output ,
-                       std::ostream & errors )
+    bool run( std::istream & input_stream  ,
+              std::ostream & output_stream ,
+              std::ostream & error_stream  )
     {
-        return Impl.handlePacket( input  ,
-                                  output );
+        return Impl.run( input_stream  ,
+                         output_stream ,
+                         error_stream  );
     }
 
     bool handleInitializeRequest(

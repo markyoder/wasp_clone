@@ -6,7 +6,7 @@ namespace wasp {
 namespace lsp  {
 
 bool objectToStream( DataObject   & object ,
-                     std::ostream & packet ,
+                     std::ostream & stream ,
                      std::ostream & errors )
 {
     bool pass = true;
@@ -17,25 +17,26 @@ bool objectToStream( DataObject   & object ,
 
     object.format_json(body);
 
-    packet << m_rpc_content_len_key
+    stream << m_rpc_content_len_key
            << " "
            << body.str().size()
            << m_rpc_separator
            << body.str();
 
-    pass = packet.good();
+    pass = stream.good();
 
     return pass;
 }
 
-bool streamToObject( std::istream & stream      ,
-                     std::string  & method_name ,
-                     DataObject   & object      ,
-                     std::ostream & errors      )
+bool streamToObject( std::istream & stream ,
+                     DataObject   & object ,
+                     std::ostream & errors )
 {
     bool pass = true;
 
     std::string content_length_key;
+
+    while( !stream.rdbuf()->in_avail() );
 
     stream >> content_length_key;
 
@@ -68,15 +69,6 @@ bool streamToObject( std::istream & stream      ,
     wasp_check( object[m_rpc_jsonrpc_key].is_string() );
 
     wasp_check( object[m_rpc_jsonrpc_key].to_string() == m_rpc_jsonrpc_val );
-
-    if ( object[m_method].is_string() )
-    {
-        method_name = object[m_method].to_string();
-    }
-    else
-    {
-        method_name = m_empty_string;
-    }
 
     return pass;
 }

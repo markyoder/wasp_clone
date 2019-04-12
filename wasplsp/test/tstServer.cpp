@@ -8,10 +8,10 @@
 namespace wasp {
 namespace lsp  {
 
+Server<TestServer> test_server;
+
 TEST(server, handle_initialize)
 {
-    Server<TestServer> test_server;
-
     DataObject        initializeRequest;
     std::stringstream errors;
 
@@ -50,8 +50,6 @@ TEST(server, handle_initialize)
 
 TEST(server, handle_initialized)
 {
-    Server<TestServer> test_server;
-
     DataObject        initializedNotification;
     std::stringstream errors;
 
@@ -64,8 +62,6 @@ TEST(server, handle_initialized)
 
 TEST(server, handle_shutdown)
 {
-    Server<TestServer> test_server;
-
     DataObject        shutdownRequest;
     std::stringstream errors;
 
@@ -96,8 +92,6 @@ TEST(server, handle_shutdown)
 
 TEST(server, handle_exit)
 {
-    Server<TestServer> test_server;
-
     DataObject        exitNotification;
     std::stringstream errors;
 
@@ -110,8 +104,6 @@ TEST(server, handle_exit)
 
 TEST(server, handle_didopen)
 {
-    Server<TestServer> test_server;
-
     DataObject        didOpenNotification;
     std::stringstream errors;
 
@@ -199,8 +191,6 @@ TEST(server, handle_didopen)
 
 TEST(server, handle_didchange)
 {
-    Server<TestServer> test_server;
-
     DataObject        didChangeNotification;
     std::stringstream errors;
 
@@ -280,8 +270,6 @@ TEST(server, handle_didchange)
 
 TEST(server, handle_completion)
 {
-    Server<TestServer> test_server;
-
     DataObject        completionRequest;
     std::stringstream errors;
 
@@ -384,8 +372,6 @@ TEST(server, handle_completion)
 
 TEST(server, handle_definition)
 {
-    Server<TestServer> test_server;
-
     DataObject        definitionRequest;
     std::stringstream errors;
 
@@ -461,8 +447,6 @@ TEST(server, handle_definition)
 
 TEST(server, handle_references)
 {
-    Server<TestServer> test_server;
-
     DataObject        referencesRequest;
     std::stringstream errors;
 
@@ -527,8 +511,6 @@ TEST(server, handle_references)
 
 TEST(server, handle_rangeformatting)
 {
-    Server<TestServer> test_server;
-
     DataObject        rangeFormattingRequest;
     std::stringstream errors;
 

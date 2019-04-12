@@ -130,12 +130,12 @@ TEST(lsp, initialize_request)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));
 
-    ASSERT_EQ( tst_method_name , m_method_initialize );
+    ASSERT_TRUE( tst_object[m_method].is_string()                       );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_initialize );
 
     int         tst_request_id;
     int         tst_process_id;
@@ -188,12 +188,12 @@ TEST(lsp, initialized_notification)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));
 
-    ASSERT_EQ( tst_method_name , m_method_initialized );
+    ASSERT_TRUE( tst_object[m_method].is_string()                        );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_initialized );
 
     ASSERT_TRUE(dissectInitializedNotification( object ,
                                                 errors ));
@@ -236,12 +236,12 @@ TEST(lsp, shutdown_request)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));
 
-    ASSERT_EQ( tst_method_name , m_method_shutdown );
+    ASSERT_TRUE( tst_object[m_method].is_string()                     );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_shutdown );
 
     int tst_request_id;
 
@@ -285,12 +285,12 @@ TEST(lsp, exit_notification)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));
 
-    ASSERT_EQ( tst_method_name , m_method_exit );
+    ASSERT_TRUE( tst_object[m_method].is_string()                 );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_exit );
 
     ASSERT_TRUE(dissectExitNotification( object ,
                                          errors ));
@@ -360,12 +360,12 @@ TEST(lsp, didopen_notification)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));
 
-    ASSERT_EQ( tst_method_name , m_method_didopen );
+    ASSERT_TRUE( tst_object[m_method].is_string()                    );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_didopen );
 
     std::string tst_uri;
     std::string tst_language_id;
@@ -494,12 +494,12 @@ TEST(lsp, didchange_notification)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));
 
-    ASSERT_EQ( tst_method_name , m_method_didchange );
+    ASSERT_TRUE( tst_object[m_method].is_string()                      );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_didchange );
 
     std::string tst_uri;
     int         tst_version;
@@ -597,12 +597,12 @@ TEST(lsp, completion_request)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));
 
-    ASSERT_EQ( tst_method_name , m_method_completion );
+    ASSERT_TRUE( tst_object[m_method].is_string()                       );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_completion );
 
     int         tst_request_id ;
     std::string tst_uri;
@@ -689,12 +689,12 @@ TEST(lsp, definition_request)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));
 
-    ASSERT_EQ( tst_method_name , m_method_definition );
+    ASSERT_TRUE( tst_object[m_method].is_string()                       );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_definition );
 
     int         tst_request_id ;
     std::string tst_uri;
@@ -791,12 +791,12 @@ TEST(lsp, references_request)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));
 
-    ASSERT_EQ( tst_method_name , m_method_references );
+    ASSERT_TRUE( tst_object[m_method].is_string()                       );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_references );
 
     int         tst_request_id ;
     std::string tst_uri;
@@ -924,12 +924,12 @@ TEST(lsp, rangeformatting_request)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));
 
-    ASSERT_EQ( tst_method_name , m_method_rangeformat );
+    ASSERT_TRUE( tst_object[m_method].is_string()                        );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_rangeformat );
 
     int         tst_request_id ;
     std::string tst_uri;
@@ -1316,12 +1316,12 @@ TEST(lsp, publishdiagnostics_notification)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));
 
-    ASSERT_EQ( tst_method_name , m_method_pubdiagnostics );
+    ASSERT_TRUE( tst_object[m_method].is_string()                           );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_pubdiagnostics );
 
     std::string tst_uri;
     DataArray   tst_diagnostics;
@@ -1448,12 +1448,11 @@ TEST(lsp, initialize_response)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));
 
-    ASSERT_EQ( tst_method_name , m_empty_string );
+    ASSERT_FALSE( tst_object[m_method].is_string() );
 
     int        tst_request_id;
     DataObject tst_server_capabilities;
@@ -1500,12 +1499,11 @@ TEST(lsp, shutdown_response)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));
 
-    ASSERT_EQ( tst_method_name , m_empty_string );
+    ASSERT_FALSE( tst_object[m_method].is_string() );
 
     int tst_request_id;
 
@@ -1954,12 +1952,11 @@ TEST(lsp, completion_response)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));;
 
-    ASSERT_EQ( tst_method_name , m_empty_string );
+    ASSERT_FALSE( tst_object[m_method].is_string() );
 
     int       tst_request_id;
     bool      tst_is_incomplete;
@@ -2347,12 +2344,11 @@ TEST(lsp, locations_response)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));
 
-    ASSERT_EQ( tst_method_name , m_empty_string );
+    ASSERT_FALSE( tst_object[m_method].is_string() );
 
     int       tst_request_id;
     DataArray tst_locations;
@@ -2695,12 +2691,11 @@ TEST(lsp, rangeformatting_response)
 
     DataObject  tst_object;
     std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json            ,
-                                 tst_method_name ,
-                                 tst_object      ,
-                                 errors          ));
+    ASSERT_TRUE( streamToObject( json       ,
+                                 tst_object ,
+                                 errors     ));
 
-    ASSERT_EQ( tst_method_name , m_empty_string );
+    ASSERT_FALSE( tst_object[m_method].is_string() );
 
     int       tst_request_id;
     DataArray tst_textedits;

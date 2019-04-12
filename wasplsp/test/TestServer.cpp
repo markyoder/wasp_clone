@@ -3,110 +3,110 @@
 namespace wasp {
 namespace lsp  {
 
-bool TestServer::handlePacket( std::istream & input_stream  ,
-                               std::ostream & output_stream ,
-                               std::ostream & error_stream  )
+TestServer::TestServer() : is_initialized(false) , is_document_open(false)
+{
+}
+
+bool TestServer::run( std::istream & input_stream  ,
+                      std::ostream & output_stream ,
+                      std::ostream & error_stream  )
 {
     bool pass = true;
 
-    DataObject  input_object;
-    DataObject  output_object;
-    std::string method_name;
-    bool        send_response;
+    while(1)
+    {
+        DataObject  input_object;
+        std::string method_name;
+        DataObject  output_object;
 
-    pass &= streamToObject( input_stream ,
-                            method_name  ,
-                            input_object ,
-                            error_stream );
+        pass &= streamToObject( input_stream ,
+                                input_object ,
+                                error_stream );
 
-    if ( method_name == m_method_initialize )
-    {
-        pass &= this->handleInitializeRequest( input_object  ,
-                                               output_object ,
-                                               error_stream  );
-        send_response = true;
-    }
-    else if ( method_name == m_method_initialized )
-    {
-        pass &= this->handleInitializedNotification( input_object ,
-                                                     error_stream );
-        send_response = false;
-    }
-    else if ( method_name == m_method_shutdown )
-    {
-        pass &= this->handleShutdownRequest( input_object  ,
-                                             output_object ,
-                                             error_stream  );
-        send_response = true;
-    }
-    else if ( method_name == m_method_exit )
-    {
-        pass &= this->handleExitNotification( input_object ,
-                                              error_stream );
-        send_response = false;
-    }
-    else if ( method_name == m_method_didopen )
-    {
-        pass &= this->handleDidOpenNotification( input_object  ,
-                                                 output_object ,
-                                                 error_stream  );
-        send_response = true;
-    }
-    else if ( method_name == m_method_didchange)
-    {
-        pass &= this->handleDidChangeNotification( input_object  ,
+        if ( input_object[m_method].is_string() )
+        {
+            method_name = input_object[m_method].to_string();
+        }
+
+        if ( method_name == m_method_initialize )
+        {
+            pass &= this->handleInitializeRequest( input_object  ,
                                                    output_object ,
                                                    error_stream  );
-        send_response = true;
-    }
-    else if ( method_name == m_method_completion )
-    {
-        pass &= this->handleCompletionRequest( input_object  ,
-                                               output_object ,
-                                               error_stream  );
-        send_response = true;
-    }
-    else if ( method_name == m_method_definition )
-    {
-        pass &= this->handleDefinitionRequest( input_object  ,
-                                               output_object ,
-                                               error_stream  );
-        send_response = true;
-    }
-    else if ( method_name == m_method_references )
-    {
-        pass &= this->handleReferencesRequest( input_object  ,
-                                               output_object ,
-                                               error_stream  );
-        send_response = true;
-    }
-    else if ( method_name == m_method_rangeformat )
-    {
-        pass &= this->handleRangeFormattingRequest( input_object  ,
-                                                    output_object ,
-                                                    error_stream  );
-        send_response = true;
-    }
-    else if ( method_name == m_empty_string )
-    {
-        pass = false;
-        error_stream << m_error << "Message to server has no method name"
-                     << std::endl;
-        send_response = false;
-    }
-    else
-    {
-        pass = false;
-        error_stream << m_error << "Message to server has bad method name: \""
-                     << method_name << "\"" << std::endl;
-        send_response = false;
-    }
+        }
+        else if ( method_name == m_method_initialized )
+        {
+            pass &= this->handleInitializedNotification( input_object ,
+                                                         error_stream );
+        }
+        else if ( method_name == m_method_shutdown )
+        {
+            pass &= this->handleShutdownRequest( input_object  ,
+                                                 output_object ,
+                                                 error_stream  );
+        }
+        else if ( method_name == m_method_exit )
+        {
+            pass &= this->handleExitNotification( input_object ,
+                                                  error_stream );
+        }
+        else if ( method_name == m_method_didopen )
+        {
+            pass &= this->handleDidOpenNotification( input_object  ,
+                                                     output_object ,
+                                                     error_stream  );
+        }
+        else if ( method_name == m_method_didchange)
+        {
+            pass &= this->handleDidChangeNotification( input_object  ,
+                                                       output_object ,
+                                                       error_stream  );
+        }
+        else if ( method_name == m_method_completion )
+        {
+            pass &= this->handleCompletionRequest( input_object  ,
+                                                   output_object ,
+                                                   error_stream  );
+        }
+        else if ( method_name == m_method_definition )
+        {
+            pass &= this->handleDefinitionRequest( input_object  ,
+                                                   output_object ,
+                                                   error_stream  );;
+        }
+        else if ( method_name == m_method_references )
+        {
+            pass &= this->handleReferencesRequest( input_object  ,
+                                                   output_object ,
+                                                   error_stream  );
+        }
+        else if ( method_name == m_method_rangeformat )
+        {
+            pass &= this->handleRangeFormattingRequest( input_object  ,
+                                                        output_object ,
+                                                        error_stream  );
+        }
+        else if ( method_name.empty() )
+        {
+            pass = false;
+            error_stream << m_error << "Message to server has no method name"
+                         << std::endl;
+        }
+        else
+        {
+            pass = false;
+            error_stream << m_error << "Message to server has bad method name: "
+                         "\"" << method_name << "\"" << std::endl;
+        }
 
-    if ( send_response )
-    {
-        pass &= objectToStream( output_object ,
-                                output_stream ,
-                                error_stream  );
+        if ( !pass || method_name == m_method_exit ) break;
+
+        if ( !output_object.empty() )
+        {
+            pass &= objectToStream( output_object ,
+                                    output_stream ,
+                                    error_stream  );
+        }
     }
 
     return pass;
@@ -131,6 +131,8 @@ bool TestServer::handleInitializeRequest(
                                      this->client_request_id   ,
                                      this->server_capabilities );
 
+    this->is_initialized = true;
+
     return pass;
 }
 
@@ -138,6 +140,12 @@ bool TestServer::handleInitializedNotification(
                 const DataObject   & initializedNotification ,
                       std::ostream & errors                  )
 {
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
     bool pass = true;
 
     pass &= dissectInitializedNotification( initializedNotification ,
@@ -151,6 +159,12 @@ bool TestServer::handleShutdownRequest(
                       DataObject   & shutdownResponse ,
                       std::ostream & errors           )
 {
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
     bool pass = true;
 
     pass &= dissectShutdownRequest( shutdownRequest         ,
@@ -168,6 +182,12 @@ bool TestServer::handleExitNotification(
                 const DataObject   & exitNotification ,
                       std::ostream & errors           )
 {
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
     bool pass = true;
 
     pass &= dissectExitNotification( exitNotification ,
@@ -181,6 +201,12 @@ bool TestServer::handleDidOpenNotification(
                       DataObject   & publishDiagnosticsNotification ,
                       std::ostream & errors                         )
 {
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+    this->is_document_open = true;
     bool pass = true;
 
     pass &= dissectDidOpenNotification( didOpenNotification        ,
@@ -200,6 +226,8 @@ bool TestServer::handleDidOpenNotification(
                                                  this->document_path            ,
                                                  document_diagnostics           );
 
+
+
     return pass;
 }
 
@@ -208,6 +236,18 @@ bool TestServer::handleDidChangeNotification(
                       DataObject   & publishDiagnosticsNotification ,
                       std::ostream & errors                         )
 {
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (!this->is_document_open)
+    {
+        errors << m_error << "Server has no open document" << std::endl;
+        return false;
+    }
+
     bool pass = true;
 
     int         start_line;
@@ -254,6 +294,18 @@ bool TestServer::handleCompletionRequest(
                       DataObject   & completionResponse ,
                       std::ostream & errors             )
 {
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (!this->is_document_open)
+    {
+        errors << m_error << "Server has no open document" << std::endl;
+        return false;
+    }
+
     bool pass = true;
 
     int line;
@@ -289,6 +341,18 @@ bool TestServer::handleDefinitionRequest(
                       DataObject   & definitionResponse ,
                       std::ostream & errors             )
 {
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (!this->is_document_open)
+    {
+        errors << m_error << "Server has no open document" << std::endl;
+        return false;
+    }
+
     bool pass = true;
 
     int line;
@@ -323,6 +387,18 @@ bool TestServer::handleReferencesRequest(
                       DataObject   & referencesResponse ,
                       std::ostream & errors             )
 {
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (!this->is_document_open)
+    {
+        errors << m_error << "Server has no open document" << std::endl;
+        return false;
+    }
+
     bool pass = true;
 
     int  line;
@@ -358,6 +434,18 @@ bool TestServer::handleRangeFormattingRequest(
                       DataObject   & rangeFormattingResponse ,
                       std::ostream & errors                  )
 {
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (!this->is_document_open)
+    {
+        errors << m_error << "Server has no open document" << std::endl;
+        return false;
+    }
+
     bool pass = true;
 
     int  start_line;
@@ -401,6 +489,18 @@ bool TestServer::parseDocumentForDiagnostics(
                       DataArray    & diagnosticsList ,
                       std::ostream & errors          )
 {
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (!this->is_document_open)
+    {
+        errors << m_error << "Server has no open document" << std::endl;
+        return false;
+    }
+
     bool pass = true;
 
     DataObject diagnostic;
@@ -488,6 +588,18 @@ bool TestServer::updateDocumentTextChanges(
                       int            range_length     ,
                       std::ostream & errors           )
 {
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (!this->is_document_open)
+    {
+        errors << m_error << "Server has no open document" << std::endl;
+        return false;
+    }
+
     bool pass = true;
 
     if ( start_line      == 0 &&
@@ -509,6 +621,18 @@ bool TestServer::gatherDocumentCompletionItems(
                       int            character        ,
                       std::ostream & errors           )
 {
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (!this->is_document_open)
+    {
+        errors << m_error << "Server has no open document" << std::endl;
+        return false;
+    }
+
     bool pass = true;
 
     DataObject completion_item;
@@ -576,6 +700,18 @@ bool TestServer::gatherDocumentDefinitionLocations(
                       int            character           ,
                       std::ostream & errors              )
 {
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (!this->is_document_open)
+    {
+        errors << m_error << "Server has no open document" << std::endl;
+        return false;
+    }
+
     bool pass = true;
 
     DataObject location_object;
@@ -624,6 +760,18 @@ bool TestServer::gatherDocumentReferencesLocations(
                       bool           include_declaration ,
                       std::ostream & errors              )
 {
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (!this->is_document_open)
+    {
+        errors << m_error << "Server has no open document" << std::endl;
+        return false;
+    }
+
     bool pass = true;
 
     DataObject location_object;
@@ -666,6 +814,18 @@ bool TestServer::gatherDocumentFormattingTextEdits(
                       bool           insert_spaces       ,
                       std::ostream & errors              )
 {
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (!this->is_document_open)
+    {
+        errors << m_error << "Server has no open document" << std::endl;
+        return false;
+    }
+
     bool pass = true;
 
     DataObject textedit_object;
