@@ -32,6 +32,7 @@ FILE(GLOB HEADERS *.h *.hh *.hpp
 
 # c++ files
 SET(SOURCES
+StreamLock.cpp
 LSP.cpp
 )
 

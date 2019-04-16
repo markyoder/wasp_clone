@@ -108,10 +108,10 @@ TEST(lsp, initialize_request)
     ASSERT_TRUE( object[m_params][m_capabilities].is_object()         );
     ASSERT_EQ  ( object[m_params][m_capabilities].size() , (size_t) 0 );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 171)INPUT" << "\r\n\r\n"
@@ -128,11 +128,10 @@ TEST(lsp, initialize_request)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_TRUE( tst_object[m_method].is_string()                       );
     ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_initialize );
@@ -171,10 +170,10 @@ TEST(lsp, initialized_notification)
     ASSERT_TRUE( object[m_params].is_object()         );
     ASSERT_EQ  ( object[m_params].size() , (size_t) 0 );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 68)INPUT" << "\r\n\r\n"
@@ -186,11 +185,10 @@ TEST(lsp, initialized_notification)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_TRUE( tst_object[m_method].is_string()                        );
     ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_initialized );
@@ -218,10 +216,10 @@ TEST(lsp, shutdown_request)
     ASSERT_TRUE( object[m_params].is_object()         );
     ASSERT_EQ  ( object[m_params].size() , (size_t) 0 );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 77)INPUT" << "\r\n\r\n"
@@ -234,11 +232,10 @@ TEST(lsp, shutdown_request)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_TRUE( tst_object[m_method].is_string()                     );
     ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_shutdown );
@@ -268,10 +265,10 @@ TEST(lsp, exit_notification)
     ASSERT_TRUE( object[m_params].is_object()         );
     ASSERT_EQ  ( object[m_params].size() , (size_t) 0 );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 61)INPUT" << "\r\n\r\n"
@@ -283,11 +280,10 @@ TEST(lsp, exit_notification)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_TRUE( tst_object[m_method].is_string()                 );
     ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_exit );
@@ -336,10 +332,10 @@ TEST(lsp, didopen_notification)
     ASSERT_TRUE( object[m_params][m_text_document][m_text].is_string()        );
     ASSERT_EQ  ( object[m_params][m_text_document][m_text].to_string() , text );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 244)INPUT" << "\r\n\r\n"
@@ -358,11 +354,10 @@ TEST(lsp, didopen_notification)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_TRUE( tst_object[m_method].is_string()                    );
     ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_didopen );
@@ -458,10 +453,10 @@ TEST(lsp, didchange_notification)
     ASSERT_TRUE( object[m_params][m_content_changes][m_text].is_string()        );
     ASSERT_EQ  ( object[m_params][m_content_changes][m_text].to_string() , text );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 415)INPUT" << "\r\n\r\n"
@@ -492,11 +487,10 @@ TEST(lsp, didchange_notification)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_TRUE( tst_object[m_method].is_string()                      );
     ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_didchange );
@@ -571,10 +565,10 @@ TEST(lsp, completion_request)
     ASSERT_TRUE( object[m_params][m_position][m_character].is_int()             );
     ASSERT_EQ  ( object[m_params][m_position][m_character].to_int() , character );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 227)INPUT" << "\r\n\r\n"
@@ -595,11 +589,10 @@ TEST(lsp, completion_request)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_TRUE( tst_object[m_method].is_string()                       );
     ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_completion );
@@ -663,10 +656,10 @@ TEST(lsp, definition_request)
     ASSERT_TRUE( object[m_params][m_position][m_character].is_int()             );
     ASSERT_EQ  ( object[m_params][m_position][m_character].to_int() , character );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 227)INPUT" << "\r\n\r\n"
@@ -687,11 +680,10 @@ TEST(lsp, definition_request)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_TRUE( tst_object[m_method].is_string()                       );
     ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_definition );
@@ -762,10 +754,10 @@ TEST(lsp, references_request)
     ASSERT_TRUE( object[m_params][m_context][m_include_declaration].is_bool()                       );
     ASSERT_EQ  ( object[m_params][m_context][m_include_declaration].to_bool() , include_declaration );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 289)INPUT" << "\r\n\r\n"
@@ -789,11 +781,10 @@ TEST(lsp, references_request)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_TRUE( tst_object[m_method].is_string()                       );
     ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_references );
@@ -888,10 +879,10 @@ TEST(lsp, rangeformatting_request)
     ASSERT_TRUE( object[m_params][m_options][m_insert_spaces].is_bool()                 );
     ASSERT_EQ  ( object[m_params][m_options][m_insert_spaces].to_bool() , insert_spaces );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 398)INPUT" << "\r\n\r\n"
@@ -922,11 +913,10 @@ TEST(lsp, rangeformatting_request)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_TRUE( tst_object[m_method].is_string()                        );
     ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_rangeformat );
@@ -1215,10 +1205,10 @@ TEST(lsp, publishdiagnostics_notification)
     ASSERT_TRUE( object[m_params][m_diagnostics][4][m_message].is_string()                      );
     ASSERT_EQ  ( object[m_params][m_diagnostics][4][m_message].to_string() , "Test message 55." );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 1596)INPUT" << "\r\n\r\n"
@@ -1314,11 +1304,10 @@ TEST(lsp, publishdiagnostics_notification)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_TRUE( tst_object[m_method].is_string()                           );
     ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_pubdiagnostics );
@@ -1429,10 +1418,10 @@ TEST(lsp, initialize_response)
     ASSERT_TRUE( object[m_result][m_capabilities].is_object()         );
     ASSERT_EQ  ( object[m_result][m_capabilities].size() , (size_t) 0 );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 79)INPUT" << "\r\n\r\n"
@@ -1446,11 +1435,10 @@ TEST(lsp, initialize_response)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_FALSE( tst_object[m_method].is_string() );
 
@@ -1482,10 +1470,10 @@ TEST(lsp, shutdown_response)
     ASSERT_TRUE( object[m_result].is_object()         );
     ASSERT_EQ  ( object[m_result].size() , (size_t) 0 );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 52)INPUT" << "\r\n\r\n"
@@ -1497,11 +1485,10 @@ TEST(lsp, shutdown_response)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_FALSE( tst_object[m_method].is_string() );
 
@@ -1826,10 +1813,10 @@ TEST(lsp, completion_response)
     ASSERT_TRUE( object[m_result][m_items][4][m_preselect].is_bool()         );
     ASSERT_EQ  ( object[m_result][m_items][4][m_preselect].to_bool() , false );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 2478)INPUT" << "\r\n\r\n"
@@ -1950,11 +1937,10 @@ TEST(lsp, completion_response)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));;
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_FALSE( tst_object[m_method].is_string() );
 
@@ -2261,10 +2247,10 @@ TEST(lsp, locations_response)
     ASSERT_TRUE( object[m_result][4][m_range][m_end][m_character].is_int()      );
     ASSERT_EQ  ( object[m_result][4][m_range][m_end][m_character].to_int() , 55 );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 990)INPUT" << "\r\n\r\n"
@@ -2342,11 +2328,10 @@ TEST(lsp, locations_response)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_FALSE( tst_object[m_method].is_string() );
 
@@ -2608,10 +2593,10 @@ TEST(lsp, rangeformatting_response)
     ASSERT_TRUE( object[m_result][4][m_new_text].is_string()                                        );
     ASSERT_EQ  ( object[m_result][4][m_new_text].to_string() , "new\n  \"text\"\n  f\tor\\mat\n  5" );
 
-    std::stringstream  json;
-    ASSERT_TRUE( objectToStream( object ,
-                                 json   ,
-                                 errors ));
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
 
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 1165)INPUT" << "\r\n\r\n"
@@ -2689,11 +2674,10 @@ TEST(lsp, rangeformatting_response)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    DataObject  tst_object;
-    std::string tst_method_name;
-    ASSERT_TRUE( streamToObject( json       ,
-                                 tst_object ,
-                                 errors     ));
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
 
     ASSERT_FALSE( tst_object[m_method].is_string() );
 

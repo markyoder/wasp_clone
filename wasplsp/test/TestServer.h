@@ -13,12 +13,13 @@ class WASP_PUBLIC TestServer
 {
   public:
 
-    TestServer();
+    TestServer() : is_initialized(false) , is_document_open(false) {}
 
     ~TestServer(){}
 
-    bool run( std::istream & input_stream  ,
-              std::ostream & output_stream ,
+    template <typename I, typename O>
+    bool run( I            & input_stream  ,
+              O            & output_stream ,
               std::ostream & error_stream  );
 
     bool handleInitializeRequest(
@@ -128,6 +129,8 @@ class WASP_PUBLIC TestServer
       std::string document_text;
       int         document_version;
 };
+
+#include "TestServer.i.h"
 
 } // namespace lsp
 } // namespace wasp

@@ -5,17 +5,18 @@
 #include <iostream>
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
+#include "waspjson/JSONObjectParser.hpp"
 
 namespace wasp {
 namespace lsp  {
 
-WASP_PUBLIC
+template <typename T> WASP_PUBLIC
 bool objectToStream( DataObject   & object ,
-                     std::ostream & stream ,
+                     T            & stream ,
                      std::ostream & errors );
 
-WASP_PUBLIC
-bool streamToObject( std::istream & stream ,
+template <typename T> WASP_PUBLIC
+bool streamToObject( T            & stream ,
                      DataObject   & object ,
                      std::ostream & errors );
 
@@ -433,6 +434,8 @@ static const char m_deprecated[]            = "deprecated";
 static const char m_preselect[]             = "preselect";
 static const char m_items[]                 = "items";
 static const char m_is_incomplete[]         = "isIncomplete";
+
+#include "LSP.i.h"
 
 } // namespace lsp
 } // namespace wasp
