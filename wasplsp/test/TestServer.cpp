@@ -377,6 +377,41 @@ bool TestServer::handleRangeFormattingRequest(
     return pass;
 }
 
+bool TestServer::handleDidCloseNotification(
+                const DataObject   & didCloseNotification ,
+                      std::ostream & errors               )
+{
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (!this->is_document_open)
+    {
+        errors << m_error << "Server has no open document" << std::endl;
+        return false;
+    }
+
+    bool pass = true;
+
+    std::string document_path;
+
+    pass &= dissectDidCloseNotification( didCloseNotification ,
+                                         errors               ,
+                                         document_path        );
+
+    if ( document_path != this->document_path )
+    {
+        errors << m_error << "Server has different document open" << std::endl;
+        return false;
+    }
+
+    this->is_document_open = false;
+
+    return pass;
+}
+
 bool TestServer::handleShutdownRequest(
                 const DataObject   & shutdownRequest  ,
                       DataObject   & shutdownResponse ,
@@ -385,6 +420,12 @@ bool TestServer::handleShutdownRequest(
     if (!this->is_initialized)
     {
         errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (this->is_document_open)
+    {
+        errors << m_error << "Server document needs to be closed" << std::endl;
         return false;
     }
 

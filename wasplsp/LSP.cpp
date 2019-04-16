@@ -241,67 +241,6 @@ bool dissectInitializedNotification( const DataObject   & object ,
     return pass;
 }
 
-bool buildShutdownRequest( DataObject   & object     ,
-                           std::ostream & errors     ,
-                           int            request_id )
-{
-    bool pass = true;
-
-    DataObject params;
-
-    object[m_params] =  params;
-    object[m_id]     =  request_id;
-    object[m_method] = m_method_shutdown;
-
-    return pass;
-}
-
-bool dissectShutdownRequest( const DataObject   & object     ,
-                                   std::ostream & errors     ,
-                                   int          & request_id )
-{
-    bool pass = true;
-
-    wasp_check( object[m_method].is_string() );
-
-    wasp_check( object[m_method].to_string() == m_method_shutdown );
-
-    wasp_check( object[m_id].is_int() );
-
-    request_id = object[m_id].to_int();
-
-    wasp_check( object[m_params].is_object() );
-
-    return pass;
-}
-
-bool buildExitNotification( DataObject   & object ,
-                            std::ostream & errors )
-{
-    bool pass = true;
-
-    DataObject params;
-
-    object[m_params] =  params;
-    object[m_method] = m_method_exit;
-
-    return pass;
-}
-
-bool dissectExitNotification( const DataObject   & object ,
-                                    std::ostream & errors )
-{
-    bool pass = true;
-
-    wasp_check( object[m_method].is_string() );
-
-    wasp_check( object[m_method].to_string() == m_method_exit );
-
-    wasp_check( object[m_params].is_object() );
-
-    return pass;
-}
-
 bool buildDidOpenNotification( DataObject        & object      ,
                                std::ostream      & errors      ,
                                const std::string & uri         ,
@@ -784,6 +723,110 @@ bool dissectRangeFormattingRequest( const DataObject   & object          ,
     wasp_check( options[m_insert_spaces].is_bool() );
 
     insert_spaces = options[m_insert_spaces].to_bool();
+
+    return pass;
+}
+
+bool buildDidCloseNotification( DataObject        & object ,
+                                std::ostream      & errors ,
+                                const std::string & uri    )
+{
+    bool pass = true;
+
+    DataObject text_document;
+    text_document[m_uri] = uri;
+
+    DataObject params;
+    params[m_text_document] = text_document;
+
+    object[m_params] =  params;
+    object[m_method] = m_method_didclose;
+
+    return pass;
+}
+
+bool dissectDidCloseNotification( const DataObject   & object ,
+                                        std::ostream & errors ,
+                                        std::string  & uri    )
+{
+    bool pass = true;
+
+    wasp_check( object[m_method].is_string() );
+
+    wasp_check( object[m_method].to_string() == m_method_didclose );
+
+    wasp_check( object[m_params].is_object() );
+
+    const DataObject& params = *(object[m_params].to_object());
+
+    wasp_check( params[m_text_document].is_object() );
+
+    const DataObject& text_document = *(params[m_text_document].to_object());
+
+    wasp_check( text_document[m_uri].is_string() );
+
+    uri = text_document[m_uri].to_string();
+
+    return pass;
+}
+
+bool buildShutdownRequest( DataObject   & object     ,
+                           std::ostream & errors     ,
+                           int            request_id )
+{
+    bool pass = true;
+
+    DataObject params;
+
+    object[m_params] =  params;
+    object[m_id]     =  request_id;
+    object[m_method] = m_method_shutdown;
+
+    return pass;
+}
+
+bool dissectShutdownRequest( const DataObject   & object     ,
+                                   std::ostream & errors     ,
+                                   int          & request_id )
+{
+    bool pass = true;
+
+    wasp_check( object[m_method].is_string() );
+
+    wasp_check( object[m_method].to_string() == m_method_shutdown );
+
+    wasp_check( object[m_id].is_int() );
+
+    request_id = object[m_id].to_int();
+
+    wasp_check( object[m_params].is_object() );
+
+    return pass;
+}
+
+bool buildExitNotification( DataObject   & object ,
+                            std::ostream & errors )
+{
+    bool pass = true;
+
+    DataObject params;
+
+    object[m_params] =  params;
+    object[m_method] = m_method_exit;
+
+    return pass;
+}
+
+bool dissectExitNotification( const DataObject   & object ,
+                                    std::ostream & errors )
+{
+    bool pass = true;
+
+    wasp_check( object[m_method].is_string() );
+
+    wasp_check( object[m_method].to_string() == m_method_exit );
+
+    wasp_check( object[m_params].is_object() );
 
     return pass;
 }

@@ -85,24 +85,6 @@ bool dissectInitializedNotification( const DataObject   & object ,
                                            std::ostream & errors );
 
 WASP_PUBLIC
-bool buildShutdownRequest( DataObject   & object     ,
-                           std::ostream & errors     ,
-                           int            request_id );
-
-WASP_PUBLIC
-bool dissectShutdownRequest( const DataObject   & object     ,
-                                   std::ostream & errors     ,
-                                   int          & request_id );
-
-WASP_PUBLIC
-bool buildExitNotification( DataObject   & object ,
-                            std::ostream & errors );
-
-WASP_PUBLIC
-bool dissectExitNotification( const DataObject   & object ,
-                                    std::ostream & errors );
-
-WASP_PUBLIC
 bool buildDidOpenNotification( DataObject        & object      ,
                                std::ostream      & errors      ,
                                const std::string & uri         ,
@@ -215,6 +197,34 @@ bool dissectRangeFormattingRequest( const DataObject   & object          ,
                                           int          & end_character   ,
                                           int          & tab_size        ,
                                           bool         & insert_spaces   );
+
+WASP_PUBLIC
+bool buildDidCloseNotification( DataObject        & object ,
+                                std::ostream      & errors ,
+                                const std::string & uri    );
+
+WASP_PUBLIC
+bool dissectDidCloseNotification( const DataObject   & object ,
+                                        std::ostream & errors ,
+                                        std::string  & uri    );
+
+WASP_PUBLIC
+bool buildShutdownRequest( DataObject   & object     ,
+                           std::ostream & errors     ,
+                           int            request_id );
+
+WASP_PUBLIC
+bool dissectShutdownRequest( const DataObject   & object     ,
+                                   std::ostream & errors     ,
+                                   int          & request_id );
+
+WASP_PUBLIC
+bool buildExitNotification( DataObject   & object ,
+                            std::ostream & errors );
+
+WASP_PUBLIC
+bool dissectExitNotification( const DataObject   & object ,
+                                    std::ostream & errors );
 
 WASP_PUBLIC
 bool buildDiagnosticObject( DataObject        & object          ,
@@ -386,8 +396,6 @@ static const char m_error[]                 = "Error:: ";
 static const char m_id[]                    = "id";
 static const char m_method_initialize[]     = "initialize";
 static const char m_method_initialized[]    = "initialized";
-static const char m_method_shutdown[]       = "shutdown";
-static const char m_method_exit[]           = "exit";
 static const char m_method_didopen[]        = "textDocument/didOpen";
 static const char m_method_didchange[]      = "textDocument/didChange";
 static const char m_method_completion[]     = "textDocument/completion";
@@ -395,6 +403,9 @@ static const char m_method_definition[]     = "textDocument/definition";
 static const char m_method_references[]     = "textDocument/references";
 static const char m_method_rangeformat[]    = "textDocument/rangeFormatting";
 static const char m_method_pubdiagnostics[] = "textDocument/publishDiagnostics";
+static const char m_method_didclose[]       = "textDocument/didClose";
+static const char m_method_shutdown[]       = "shutdown";
+static const char m_method_exit[]           = "exit";
 static const char m_method[]                = "method";
 static const char m_params[]                = "params";
 static const char m_result[]                = "result";

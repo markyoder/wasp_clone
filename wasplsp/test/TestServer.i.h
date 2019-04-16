@@ -35,17 +35,6 @@ bool TestServer::run( I            & input_stream  ,
             pass &= this->handleInitializedNotification( input_object ,
                                                          error_stream );
         }
-        else if ( method_name == m_method_shutdown )
-        {
-            pass &= this->handleShutdownRequest( input_object  ,
-                                                 output_object ,
-                                                 error_stream  );
-        }
-        else if ( method_name == m_method_exit )
-        {
-            pass &= this->handleExitNotification( input_object ,
-                                                  error_stream );
-        }
         else if ( method_name == m_method_didopen )
         {
             pass &= this->handleDidOpenNotification( input_object  ,
@@ -81,6 +70,22 @@ bool TestServer::run( I            & input_stream  ,
             pass &= this->handleRangeFormattingRequest( input_object  ,
                                                         output_object ,
                                                         error_stream  );
+        }
+        else if ( method_name == m_method_didclose )
+        {
+            pass &= this->handleDidCloseNotification( input_object ,
+                                                      error_stream );
+        }
+        else if ( method_name == m_method_shutdown )
+        {
+            pass &= this->handleShutdownRequest( input_object  ,
+                                                 output_object ,
+                                                 error_stream  );
+        }
+        else if ( method_name == m_method_exit )
+        {
+            pass &= this->handleExitNotification( input_object ,
+                                                  error_stream );
         }
         else if ( method_name.empty() )
         {

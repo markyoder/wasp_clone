@@ -93,6 +93,9 @@ TEST(lsp, initialize_request)
 
     ASSERT_EQ  ( object.size() , (size_t) 3 );
 
+    ASSERT_TRUE( object[m_id].is_int()              );
+    ASSERT_EQ  ( object[m_id].to_int() , request_id );
+
     ASSERT_TRUE( object[m_method].is_string()                       );
     ASSERT_EQ  ( object[m_method].to_string() , m_method_initialize );
 
@@ -195,101 +198,6 @@ TEST(lsp, initialized_notification)
 
     ASSERT_TRUE(dissectInitializedNotification( object ,
                                                 errors ));
-}
-
-TEST(lsp, shutdown_request)
-{
-    DataObject        object;
-    std::stringstream errors;
-
-    int               request_id = 2;
-
-    ASSERT_TRUE(buildShutdownRequest( object     ,
-                                      errors     ,
-                                      request_id ));
-
-    ASSERT_EQ  ( object.size() , (size_t) 3 );
-
-    ASSERT_TRUE( object[m_method].is_string()                     );
-    ASSERT_EQ  ( object[m_method].to_string() , m_method_shutdown );
-
-    ASSERT_TRUE( object[m_params].is_object()         );
-    ASSERT_EQ  ( object[m_params].size() , (size_t) 0 );
-
-    std::stringstream json;
-    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
-                                                    json   ,
-                                                    errors ));
-
-    std::stringstream json_expected;
-    json_expected << R"INPUT(Content-Length: 77)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
-  "id" : 2
-  ,"jsonrpc" : "2.0"
-  ,"method" : "shutdown"
-  ,"params" : {}
-})INPUT";
-
-    ASSERT_EQ( json.str() , json_expected.str() );
-
-    DataObject tst_object;
-    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
-                                                    tst_object ,
-                                                    errors     ));
-
-    ASSERT_TRUE( tst_object[m_method].is_string()                     );
-    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_shutdown );
-
-    int tst_request_id;
-
-    ASSERT_TRUE(dissectShutdownRequest( object         ,
-                                        errors         ,
-                                        tst_request_id ));
-
-    ASSERT_EQ( tst_request_id , request_id );
-}
-
-TEST(lsp, exit_notification)
-{
-    DataObject        object;
-    std::stringstream errors;
-
-    ASSERT_TRUE(buildExitNotification( object ,
-                                       errors ));
-
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
-
-    ASSERT_TRUE( object[m_method].is_string()                 );
-    ASSERT_EQ  ( object[m_method].to_string() , m_method_exit );
-
-    ASSERT_TRUE( object[m_params].is_object()         );
-    ASSERT_EQ  ( object[m_params].size() , (size_t) 0 );
-
-    std::stringstream json;
-    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
-                                                    json   ,
-                                                    errors ));
-
-    std::stringstream json_expected;
-    json_expected << R"INPUT(Content-Length: 61)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
-  "jsonrpc" : "2.0"
-  ,"method" : "exit"
-  ,"params" : {}
-})INPUT";
-
-    ASSERT_EQ( json.str() , json_expected.str() );
-
-    DataObject tst_object;
-    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
-                                                    tst_object ,
-                                                    errors     ));
-
-    ASSERT_TRUE( tst_object[m_method].is_string()                 );
-    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_exit );
-
-    ASSERT_TRUE(dissectExitNotification( object ,
-                                         errors ));
 }
 
 TEST(lsp, didopen_notification)
@@ -530,7 +438,7 @@ TEST(lsp, completion_request)
     DataObject        object;
     std::stringstream errors;
 
-    int               request_id =  3;
+    int               request_id =  2;
     std::string       uri        = "test/document/uri/string";
     int               line       =  87;
     int               character  =  48;
@@ -543,6 +451,9 @@ TEST(lsp, completion_request)
                                         character  ));
 
     ASSERT_EQ  ( object.size() , (size_t) 3 );
+
+    ASSERT_TRUE( object[m_id].is_int()              );
+    ASSERT_EQ  ( object[m_id].to_int() , request_id );
 
     ASSERT_TRUE( object[m_method].is_string()                       );
     ASSERT_EQ  ( object[m_method].to_string() , m_method_completion );
@@ -573,7 +484,7 @@ TEST(lsp, completion_request)
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 227)INPUT" << "\r\n\r\n"
                   << R"INPUT({
-  "id" : 3
+  "id" : 2
   ,"jsonrpc" : "2.0"
   ,"method" : "textDocument/completion"
   ,"params" : {
@@ -621,7 +532,7 @@ TEST(lsp, definition_request)
     DataObject        object;
     std::stringstream errors;
 
-    int               request_id =  4;
+    int               request_id =  3;
     std::string       uri        = "test/document/uri/string";
     int               line       =  25;
     int               character  =  52;
@@ -634,6 +545,9 @@ TEST(lsp, definition_request)
                                         character  ));
 
     ASSERT_EQ  ( object.size() , (size_t) 3 );
+
+    ASSERT_TRUE( object[m_id].is_int()              );
+    ASSERT_EQ  ( object[m_id].to_int() , request_id );
 
     ASSERT_TRUE( object[m_method].is_string()                       );
     ASSERT_EQ  ( object[m_method].to_string() , m_method_definition );
@@ -664,7 +578,7 @@ TEST(lsp, definition_request)
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 227)INPUT" << "\r\n\r\n"
                   << R"INPUT({
-  "id" : 4
+  "id" : 3
   ,"jsonrpc" : "2.0"
   ,"method" : "textDocument/definition"
   ,"params" : {
@@ -711,7 +625,7 @@ TEST(lsp, references_request)
     DataObject        object;
     std::stringstream errors;
 
-    int               request_id          =  5;
+    int               request_id          =  4;
     std::string       uri                 = "test/document/uri/string";
     int               line                =  25;
     int               character           =  52;
@@ -726,6 +640,9 @@ TEST(lsp, references_request)
                                         include_declaration ));
 
     ASSERT_EQ  ( object.size() , (size_t) 3 );
+
+    ASSERT_TRUE( object[m_id].is_int()              );
+    ASSERT_EQ  ( object[m_id].to_int() , request_id );
 
     ASSERT_TRUE( object[m_method].is_string()                       );
     ASSERT_EQ  ( object[m_method].to_string() , m_method_references );
@@ -762,7 +679,7 @@ TEST(lsp, references_request)
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 289)INPUT" << "\r\n\r\n"
                   << R"INPUT({
-  "id" : 5
+  "id" : 4
   ,"jsonrpc" : "2.0"
   ,"method" : "textDocument/references"
   ,"params" : {
@@ -815,7 +732,7 @@ TEST(lsp, rangeformatting_request)
     DataObject        object;
     std::stringstream errors;
 
-    int               request_id      =  6;
+    int               request_id      =  5;
     std::string       uri             = "test/document/uri/string";
     int               start_line      =  54;
     int               start_character =  65;
@@ -836,6 +753,9 @@ TEST(lsp, rangeformatting_request)
                                              insert_spaces   ));
 
     ASSERT_EQ  ( object.size() , (size_t) 3 );
+
+    ASSERT_TRUE( object[m_id].is_int()              );
+    ASSERT_EQ  ( object[m_id].to_int() , request_id );
 
     ASSERT_TRUE( object[m_method].is_string()                        );
     ASSERT_EQ  ( object[m_method].to_string() , m_method_rangeformat );
@@ -887,7 +807,7 @@ TEST(lsp, rangeformatting_request)
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 398)INPUT" << "\r\n\r\n"
                   << R"INPUT({
-  "id" : 6
+  "id" : 5
   ,"jsonrpc" : "2.0"
   ,"method" : "textDocument/rangeFormatting"
   ,"params" : {
@@ -949,6 +869,167 @@ TEST(lsp, rangeformatting_request)
     ASSERT_EQ( tst_end_character   , end_character   );
     ASSERT_EQ( tst_tab_size        , tab_size        );
     ASSERT_EQ( tst_insert_spaces   , insert_spaces   );
+}
+
+TEST(lsp, didclose_notification)
+{
+    DataObject        object;
+    std::stringstream errors;
+
+    std::string       uri             = "test/document/uri/string";
+
+    ASSERT_TRUE(buildDidCloseNotification( object ,
+                                           errors ,
+                                           uri    ));
+
+    ASSERT_EQ  ( object.size() , (size_t) 2 );
+
+    ASSERT_TRUE( object[m_method].is_string()                     );
+    ASSERT_EQ  ( object[m_method].to_string() , m_method_didclose );
+
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 1 );
+
+    ASSERT_TRUE( object[m_params][m_text_document].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_text_document].size() , (size_t) 1 );
+
+    ASSERT_TRUE( object[m_params][m_text_document][m_uri].is_string()       );
+    ASSERT_EQ  ( object[m_params][m_text_document][m_uri].to_string() , uri );
+
+
+
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
+
+    std::stringstream json_expected;
+    json_expected << R"INPUT(Content-Length: 147)INPUT" << "\r\n\r\n"
+                  << R"INPUT({
+  "jsonrpc" : "2.0"
+  ,"method" : "textDocument/didClose"
+  ,"params" : {
+    "textDocument" : {
+    "uri" : "test/document/uri/string"
+  }
+  }
+})INPUT";
+
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
+
+    ASSERT_TRUE( tst_object[m_method].is_string()                     );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_didclose );
+
+    std::string tst_uri;
+
+    ASSERT_TRUE(dissectDidCloseNotification( object  ,
+                                             errors  ,
+                                             tst_uri ));
+
+    ASSERT_EQ( tst_uri , uri );
+}
+
+TEST(lsp, shutdown_request)
+{
+    DataObject        object;
+    std::stringstream errors;
+
+    int               request_id = 6;
+
+    ASSERT_TRUE(buildShutdownRequest( object     ,
+                                      errors     ,
+                                      request_id ));
+
+    ASSERT_EQ  ( object.size() , (size_t) 3 );
+
+    ASSERT_TRUE( object[m_id].is_int()              );
+    ASSERT_EQ  ( object[m_id].to_int() , request_id );
+
+    ASSERT_TRUE( object[m_method].is_string()                     );
+    ASSERT_EQ  ( object[m_method].to_string() , m_method_shutdown );
+
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 0 );
+
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
+
+    std::stringstream json_expected;
+    json_expected << R"INPUT(Content-Length: 77)INPUT" << "\r\n\r\n"
+                  << R"INPUT({
+  "id" : 6
+  ,"jsonrpc" : "2.0"
+  ,"method" : "shutdown"
+  ,"params" : {}
+})INPUT";
+
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
+
+    ASSERT_TRUE( tst_object[m_method].is_string()                     );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_shutdown );
+
+    int tst_request_id;
+
+    ASSERT_TRUE(dissectShutdownRequest( object         ,
+                                        errors         ,
+                                        tst_request_id ));
+
+    ASSERT_EQ( tst_request_id , request_id );
+}
+
+TEST(lsp, exit_notification)
+{
+    DataObject        object;
+    std::stringstream errors;
+
+    ASSERT_TRUE(buildExitNotification( object ,
+                                       errors ));
+
+    ASSERT_EQ  ( object.size() , (size_t) 2 );
+
+    ASSERT_TRUE( object[m_method].is_string()                 );
+    ASSERT_EQ  ( object[m_method].to_string() , m_method_exit );
+
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 0 );
+
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
+
+    std::stringstream json_expected;
+    json_expected << R"INPUT(Content-Length: 61)INPUT" << "\r\n\r\n"
+                  << R"INPUT({
+  "jsonrpc" : "2.0"
+  ,"method" : "exit"
+  ,"params" : {}
+})INPUT";
+
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
+
+    ASSERT_TRUE( tst_object[m_method].is_string()                 );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_exit );
+
+    ASSERT_TRUE(dissectExitNotification( object ,
+                                         errors ));
 }
 
 TEST(lsp, diagnostic_object)
@@ -1412,6 +1493,9 @@ TEST(lsp, initialize_response)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
+    ASSERT_TRUE( object[m_id].is_int()              );
+    ASSERT_EQ  ( object[m_id].to_int() , request_id );
+
     ASSERT_TRUE( object[m_result].is_object()         );
     ASSERT_EQ  ( object[m_result].size() , (size_t) 1 );
 
@@ -1452,53 +1536,6 @@ TEST(lsp, initialize_response)
 
     ASSERT_EQ( tst_request_id                 , request_id );
     ASSERT_EQ( tst_server_capabilities.size() , (size_t) 0 );
-}
-
-TEST(lsp, shutdown_response)
-{
-    DataObject        object;
-    std::stringstream errors;
-
-    int               request_id = 8;
-
-    ASSERT_TRUE(buildShutdownResponse( object     ,
-                                       errors     ,
-                                       request_id ));
-
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
-
-    ASSERT_TRUE( object[m_result].is_object()         );
-    ASSERT_EQ  ( object[m_result].size() , (size_t) 0 );
-
-    std::stringstream json;
-    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
-                                                    json   ,
-                                                    errors ));
-
-    std::stringstream json_expected;
-    json_expected << R"INPUT(Content-Length: 52)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
-  "id" : 8
-  ,"jsonrpc" : "2.0"
-  ,"result" : {}
-})INPUT";
-
-    ASSERT_EQ( json.str() , json_expected.str() );
-
-    DataObject tst_object;
-    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
-                                                    tst_object ,
-                                                    errors     ));
-
-    ASSERT_FALSE( tst_object[m_method].is_string() );
-
-    int tst_request_id;
-
-    ASSERT_TRUE(dissectShutdownResponse( object         ,
-                                         errors         ,
-                                         tst_request_id ));
-
-    ASSERT_EQ( tst_request_id , request_id );
 }
 
 TEST(lsp, completion_object)
@@ -1651,7 +1688,7 @@ TEST(lsp, completion_response)
     DataObject        object;
     std::stringstream errors;
 
-    int               request_id    = 9;
+    int               request_id    = 8;
     bool              is_incomplete = false;
     DataObject        completion_item;
     DataArray         completion_items;
@@ -1744,6 +1781,9 @@ TEST(lsp, completion_response)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
+    ASSERT_TRUE( object[m_id].is_int()              );
+    ASSERT_EQ  ( object[m_id].to_int() , request_id );
+
     ASSERT_TRUE( object[m_result].is_object()         );
     ASSERT_EQ  ( object[m_result].size() , (size_t) 2 );
 
@@ -1821,7 +1861,7 @@ TEST(lsp, completion_response)
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 2478)INPUT" << "\r\n\r\n"
                   << R"INPUT({
-  "id" : 9
+  "id" : 8
   ,"jsonrpc" : "2.0"
   ,"result" : {
     "isIncomplete" : false
@@ -2144,7 +2184,7 @@ TEST(lsp, locations_response)
     DataObject        object;
     std::stringstream errors;
 
-    int               request_id = 10;
+    int               request_id = 9;
     DataObject        location;
     DataArray         locations;
 
@@ -2205,6 +2245,9 @@ TEST(lsp, locations_response)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
+    ASSERT_TRUE( object[m_id].is_int()              );
+    ASSERT_EQ  ( object[m_id].to_int() , request_id );
+
     ASSERT_TRUE( object[m_result].is_array()          );
     ASSERT_EQ  ( object[m_result].size() , (size_t) 5 );
 
@@ -2253,9 +2296,9 @@ TEST(lsp, locations_response)
                                                     errors ));
 
     std::stringstream json_expected;
-    json_expected << R"INPUT(Content-Length: 990)INPUT" << "\r\n\r\n"
+    json_expected << R"INPUT(Content-Length: 989)INPUT" << "\r\n\r\n"
                   << R"INPUT({
-  "id" : 10
+  "id" : 9
   ,"jsonrpc" : "2.0"
   ,"result" : [
     {
@@ -2490,7 +2533,7 @@ TEST(lsp, rangeformatting_response)
     DataObject        object;
     std::stringstream errors;
 
-    int               request_id = 11;
+    int               request_id = 10;
     DataObject        textedit;
     DataArray         textedits;
 
@@ -2551,6 +2594,9 @@ TEST(lsp, rangeformatting_response)
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
+    ASSERT_TRUE( object[m_id].is_int()              );
+    ASSERT_EQ  ( object[m_id].to_int() , request_id );
+
     ASSERT_TRUE( object[m_result].is_array()          );
     ASSERT_EQ  ( object[m_result].size() , (size_t) 5 );
 
@@ -2601,7 +2647,7 @@ TEST(lsp, rangeformatting_response)
     std::stringstream json_expected;
     json_expected << R"INPUT(Content-Length: 1165)INPUT" << "\r\n\r\n"
                   << R"INPUT({
-  "id" : 11
+  "id" : 10
   ,"jsonrpc" : "2.0"
   ,"result" : [
     {
@@ -2743,6 +2789,56 @@ TEST(lsp, rangeformatting_response)
     ASSERT_EQ( tst_end_line        , 54                                   );
     ASSERT_EQ( tst_end_character   , 03                                   );
     ASSERT_EQ( tst_new_text        , "new\n  \"text\"\n  f\tor\\mat\n  5" );
+}
+
+TEST(lsp, shutdown_response)
+{
+    DataObject        object;
+    std::stringstream errors;
+
+    int               request_id = 11;
+
+    ASSERT_TRUE(buildShutdownResponse( object     ,
+                                       errors     ,
+                                       request_id ));
+
+    ASSERT_EQ  ( object.size() , (size_t) 2 );
+
+    ASSERT_TRUE( object[m_id].is_int()              );
+    ASSERT_EQ  ( object[m_id].to_int() , request_id );
+
+    ASSERT_TRUE( object[m_result].is_object()         );
+    ASSERT_EQ  ( object[m_result].size() , (size_t) 0 );
+
+    std::stringstream json;
+    ASSERT_TRUE( objectToStream<std::stringstream>( object ,
+                                                    json   ,
+                                                    errors ));
+
+    std::stringstream json_expected;
+    json_expected << R"INPUT(Content-Length: 53)INPUT" << "\r\n\r\n"
+                  << R"INPUT({
+  "id" : 11
+  ,"jsonrpc" : "2.0"
+  ,"result" : {}
+})INPUT";
+
+    ASSERT_EQ( json.str() , json_expected.str() );
+
+    DataObject tst_object;
+    ASSERT_TRUE( streamToObject<std::stringstream>( json       ,
+                                                    tst_object ,
+                                                    errors     ));
+
+    ASSERT_FALSE( tst_object[m_method].is_string() );
+
+    int tst_request_id;
+
+    ASSERT_TRUE(dissectShutdownResponse( object         ,
+                                         errors         ,
+                                         tst_request_id ));
+
+    ASSERT_EQ( tst_request_id , request_id );
 }
 
 } // namespace lsp

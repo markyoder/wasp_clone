@@ -231,7 +231,7 @@ TEST(server, handle_completion)
     DataObject        completionRequest;
     std::stringstream errors;
 
-    int               client_request_id =  3;
+    int               client_request_id =  2;
     std::string       document_path     = "test/document/uri/string";
     int               line              =  4;
     int               character         =  2;
@@ -254,7 +254,7 @@ TEST(server, handle_completion)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "id" : 3
+  "id" : 2
   ,"result" : {
     "isIncomplete" : false
     ,"items" : [
@@ -333,7 +333,7 @@ TEST(server, handle_definition)
     DataObject        definitionRequest;
     std::stringstream errors;
 
-    int               client_request_id =  4;
+    int               client_request_id =  3;
     std::string       document_path     = "test/document/uri/string";
     int               line              =  2;
     int               character         =  5;
@@ -356,7 +356,7 @@ TEST(server, handle_definition)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "id" : 4
+  "id" : 3
   ,"result" : [
     {
     "range" : {
@@ -408,7 +408,7 @@ TEST(server, handle_references)
     DataObject        referencesRequest;
     std::stringstream errors;
 
-    int               client_request_id   =  5;
+    int               client_request_id   =  4;
     std::string       document_path       = "test/document/uri/string";
     int               line                =  1;
     int               character           =  3;
@@ -433,7 +433,7 @@ TEST(server, handle_references)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "id" : 5
+  "id" : 4
   ,"result" : [
     {
     "range" : {
@@ -472,7 +472,7 @@ TEST(server, handle_rangeformatting)
     DataObject        rangeFormattingRequest;
     std::stringstream errors;
 
-    int               client_request_id =  6;
+    int               client_request_id =  5;
     std::string       document_path     = "test/document/uri/string";
     int               start_line        =  2;
     int               start_character   =  0;
@@ -497,14 +497,14 @@ TEST(server, handle_rangeformatting)
 
     ASSERT_TRUE(test_server.handleRangeFormattingRequest( rangeFormattingRequest  ,
                                                           rangeFormattingResponse ,
-                                                          errors             ));
+                                                          errors                  ));
 
     std::stringstream json;
     rangeFormattingResponse.format_json(json);
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "id" : 6
+  "id" : 5
   ,"result" : [
     {
     "newText" : "test\n  new\n  text\n  format\n  1"
@@ -551,12 +551,27 @@ TEST(server, handle_rangeformatting)
     ASSERT_EQ(json.str() , json_expected.str());
 }
 
+TEST(server, handle_didclose)
+{
+    DataObject        didCloseNotification;
+    std::stringstream errors;
+
+    std::string       document_path = "test/document/uri/string";
+
+    ASSERT_TRUE(buildDidCloseNotification( didCloseNotification   ,
+                                           errors                 ,
+                                           document_path          ));
+
+    ASSERT_TRUE(test_server.handleDidCloseNotification( didCloseNotification  ,
+                                                        errors                ));
+}
+
 TEST(server, handle_shutdown)
 {
     DataObject        shutdownRequest;
     std::stringstream errors;
 
-    int               client_request_id =  2;
+    int               client_request_id =  7;
 
     ASSERT_TRUE(buildShutdownRequest( shutdownRequest   ,
                                       errors            ,
@@ -574,7 +589,7 @@ TEST(server, handle_shutdown)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "id" : 2
+  "id" : 7
   ,"result" : {}
 })INPUT";
 

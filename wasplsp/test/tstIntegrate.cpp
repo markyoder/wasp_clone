@@ -489,6 +489,22 @@ TEST(integrate, test_formatting)
     ASSERT_EQ( response_3_new_text        , "test\n  new\n  text\n  format\n  3" );
 }
 
+TEST(integrate, test_didclose)
+{
+    // didclose - build object / stream to server / no response expected
+
+    DataObject  client_object;
+    std::string document_uri = "test/document/uri/string";
+
+    ASSERT_TRUE( buildDidCloseNotification( client_object        ,
+                                            client_errors_stream ,
+                                            document_uri         ) );
+
+    ASSERT_TRUE( objectToStream<StreamLock>( client_object           ,
+                                             client_to_server_stream ,
+                                             client_errors_stream    ) );
+}
+
 TEST(integrate, test_shutdown)
 {
     // shutdown - build object / stream to server / get response back / test

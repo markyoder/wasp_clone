@@ -46,24 +46,6 @@ class WASP_PUBLIC Server
                                                    errors                  );
     }
 
-    bool handleShutdownRequest(
-                    const DataObject   & shutdownRequest  ,
-                          DataObject   & shutdownResponse ,
-                          std::ostream & errors           )
-    {
-        return Impl.handleShutdownRequest( shutdownRequest  ,
-                                           shutdownResponse ,
-                                           errors           );
-    }
-
-    bool handleExitNotification(
-                    const DataObject   & exitNotification ,
-                          std::ostream & errors           )
-    {
-        return Impl.handleExitNotification( exitNotification  ,
-                                            errors            );
-    }
-
     bool handleDidOpenNotification(
                     const DataObject   & didOpenNotification            ,
                           DataObject   & publishDiagnosticsNotification ,
@@ -122,6 +104,32 @@ class WASP_PUBLIC Server
         return Impl.handleRangeFormattingRequest( rangeFormattingRequest  ,
                                                   rangeFormattingResponse ,
                                                   errors             );
+    }
+
+    bool handleDidCloseNotification(
+                    const DataObject   & didCloseNotification ,
+                          std::ostream & errors               )
+    {
+        return Impl.handleDidCloseNotification( didCloseNotification  ,
+                                                errors                );
+    }
+
+    bool handleShutdownRequest(
+                    const DataObject   & shutdownRequest  ,
+                          DataObject   & shutdownResponse ,
+                          std::ostream & errors           )
+    {
+        return Impl.handleShutdownRequest( shutdownRequest  ,
+                                           shutdownResponse ,
+                                           errors           );
+    }
+
+    bool handleExitNotification(
+                    const DataObject   & exitNotification ,
+                          std::ostream & errors           )
+    {
+        return Impl.handleExitNotification( exitNotification  ,
+                                            errors            );
     }
 
   private:

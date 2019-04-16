@@ -61,6 +61,10 @@ class WASP_PUBLIC TestServer
                           DataObject   & rangeFormattingResponse ,
                           std::ostream & errors                  );
 
+    bool handleDidCloseNotification(
+                    const DataObject   & didCloseNotification ,
+                          std::ostream & errors               );
+
     bool handleShutdownRequest(
                     const DataObject   & shutdownRequest  ,
                           DataObject   & shutdownResponse ,
