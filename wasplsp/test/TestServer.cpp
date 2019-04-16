@@ -17,12 +17,12 @@ bool TestServer::handleInitializeRequest(
                                       this->client_root_path    ,
                                       this->client_capabilities );
 
+    this->is_initialized = true;
+
     pass &= buildInitializeResponse( initializeResponse        ,
                                      errors                    ,
                                      this->client_request_id   ,
                                      this->server_capabilities );
-
-    this->is_initialized = true;
 
     return pass;
 }
@@ -45,48 +45,6 @@ bool TestServer::handleInitializedNotification(
     return pass;
 }
 
-bool TestServer::handleShutdownRequest(
-                const DataObject   & shutdownRequest  ,
-                      DataObject   & shutdownResponse ,
-                      std::ostream & errors           )
-{
-    if (!this->is_initialized)
-    {
-        errors << m_error << "Server needs to be initialized" << std::endl;
-        return false;
-    }
-
-    bool pass = true;
-
-    pass &= dissectShutdownRequest( shutdownRequest         ,
-                                    errors                  ,
-                                    this->client_request_id );
-
-    pass &= buildShutdownResponse( shutdownResponse        ,
-                                   errors                  ,
-                                   this->client_request_id );
-
-    return pass;
-}
-
-bool TestServer::handleExitNotification(
-                const DataObject   & exitNotification ,
-                      std::ostream & errors           )
-{
-    if (!this->is_initialized)
-    {
-        errors << m_error << "Server needs to be initialized" << std::endl;
-        return false;
-    }
-
-    bool pass = true;
-
-    pass &= dissectExitNotification( exitNotification ,
-                                     errors           );
-
-    return pass;
-}
-
 bool TestServer::handleDidOpenNotification(
                 const DataObject   & didOpenNotification            ,
                       DataObject   & publishDiagnosticsNotification ,
@@ -97,7 +55,7 @@ bool TestServer::handleDidOpenNotification(
         errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
-    this->is_document_open = true;
+
     bool pass = true;
 
     pass &= dissectDidOpenNotification( didOpenNotification        ,
@@ -106,6 +64,8 @@ bool TestServer::handleDidOpenNotification(
                                         this->document_language_id ,
                                         this->document_version     ,
                                         this->document_text        );
+
+    this->is_document_open = true;
 
     DataArray document_diagnostics;
 
@@ -413,6 +373,50 @@ bool TestServer::handleRangeFormattingRequest(
                                           errors                  ,
                                           this->client_request_id ,
                                           formatting_textedits    );
+
+    return pass;
+}
+
+bool TestServer::handleShutdownRequest(
+                const DataObject   & shutdownRequest  ,
+                      DataObject   & shutdownResponse ,
+                      std::ostream & errors           )
+{
+    if (!this->is_initialized)
+    {
+        errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    bool pass = true;
+
+    pass &= dissectShutdownRequest( shutdownRequest         ,
+                                    errors                  ,
+                                    this->client_request_id );
+
+    this->is_initialized = false;
+
+    pass &= buildShutdownResponse( shutdownResponse        ,
+                                   errors                  ,
+                                   this->client_request_id );
+
+    return pass;
+}
+
+bool TestServer::handleExitNotification(
+                const DataObject   & exitNotification ,
+                      std::ostream & errors           )
+{
+    if (this->is_initialized)
+    {
+        errors << m_error << "Server needs to be shutdown" << std::endl;
+        return false;
+    }
+
+    bool pass = true;
+
+    pass &= dissectExitNotification( exitNotification ,
+                                     errors           );
 
     return pass;
 }

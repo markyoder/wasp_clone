@@ -60,48 +60,6 @@ TEST(server, handle_initialized)
                                                            errors                  ));
 }
 
-TEST(server, handle_shutdown)
-{
-    DataObject        shutdownRequest;
-    std::stringstream errors;
-
-    int               client_request_id =  2;
-
-    ASSERT_TRUE(buildShutdownRequest( shutdownRequest   ,
-                                      errors            ,
-                                      client_request_id ));
-
-
-    DataObject shutdownResponse;
-
-    ASSERT_TRUE(test_server.handleShutdownRequest( shutdownRequest  ,
-                                                   shutdownResponse ,
-                                                   errors           ));
-
-    std::stringstream json;
-    shutdownResponse.format_json(json);
-
-    std::stringstream json_expected;
-    json_expected << R"INPUT({
-  "id" : 2
-  ,"result" : {}
-})INPUT";
-
-    ASSERT_EQ(json.str() , json_expected.str());
-}
-
-TEST(server, handle_exit)
-{
-    DataObject        exitNotification;
-    std::stringstream errors;
-
-    ASSERT_TRUE(buildExitNotification( exitNotification ,
-                                       errors           ));
-
-    ASSERT_TRUE(test_server.handleExitNotification( exitNotification ,
-                                                    errors           ));
-}
-
 TEST(server, handle_didopen)
 {
     DataObject        didOpenNotification;
@@ -591,6 +549,48 @@ TEST(server, handle_rangeformatting)
 })INPUT";
 
     ASSERT_EQ(json.str() , json_expected.str());
+}
+
+TEST(server, handle_shutdown)
+{
+    DataObject        shutdownRequest;
+    std::stringstream errors;
+
+    int               client_request_id =  2;
+
+    ASSERT_TRUE(buildShutdownRequest( shutdownRequest   ,
+                                      errors            ,
+                                      client_request_id ));
+
+
+    DataObject shutdownResponse;
+
+    ASSERT_TRUE(test_server.handleShutdownRequest( shutdownRequest  ,
+                                                   shutdownResponse ,
+                                                   errors           ));
+
+    std::stringstream json;
+    shutdownResponse.format_json(json);
+
+    std::stringstream json_expected;
+    json_expected << R"INPUT({
+  "id" : 2
+  ,"result" : {}
+})INPUT";
+
+    ASSERT_EQ(json.str() , json_expected.str());
+}
+
+TEST(server, handle_exit)
+{
+    DataObject        exitNotification;
+    std::stringstream errors;
+
+    ASSERT_TRUE(buildExitNotification( exitNotification ,
+                                       errors           ));
+
+    ASSERT_TRUE(test_server.handleExitNotification( exitNotification ,
+                                                    errors           ));
 }
 
 } // namespace lsp

@@ -31,15 +31,6 @@ class WASP_PUBLIC TestServer
                     const DataObject   & initializedNotification ,
                           std::ostream & errors                  );
 
-    bool handleShutdownRequest(
-                    const DataObject   & shutdownRequest  ,
-                          DataObject   & shutdownResponse ,
-                          std::ostream & errors           );
-
-    bool handleExitNotification(
-                    const DataObject   & exitNotification ,
-                          std::ostream & errors           );
-
     bool handleDidOpenNotification(
                     const DataObject   & didOpenNotification            ,
                           DataObject   & publishDiagnosticsNotification ,
@@ -69,6 +60,15 @@ class WASP_PUBLIC TestServer
                     const DataObject   & rangeFormattingRequest  ,
                           DataObject   & rangeFormattingResponse ,
                           std::ostream & errors                  );
+
+    bool handleShutdownRequest(
+                    const DataObject   & shutdownRequest  ,
+                          DataObject   & shutdownResponse ,
+                          std::ostream & errors           );
+
+    bool handleExitNotification(
+                    const DataObject   & exitNotification ,
+                          std::ostream & errors           );
 
     bool parseDocumentForDiagnostics(
                           DataArray    & diagnosticsList ,
