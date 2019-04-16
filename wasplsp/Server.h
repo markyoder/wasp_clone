@@ -23,9 +23,9 @@ class WASP_PUBLIC Server
               O            & output_stream ,
               std::ostream & error_stream  )
     {
-        return Impl.run<I,O>( input_stream  ,
-                              output_stream ,
-                              error_stream  );
+        return Impl.template run<I,O>( input_stream  ,
+                                       output_stream ,
+                                       error_stream  );
     }
 
     bool handleInitializeRequest(
