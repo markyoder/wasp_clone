@@ -117,8 +117,6 @@ bool TestServer::handleDidOpenNotification(
                                                  this->document_path            ,
                                                  document_diagnostics           );
 
-
-
     return pass;
 }
 
@@ -141,6 +139,8 @@ bool TestServer::handleDidChangeNotification(
 
     bool pass = true;
 
+    std::string document_path;
+    int         document_version;
     int         start_line;
     int         start_character;
     int         end_line;
@@ -150,14 +150,28 @@ bool TestServer::handleDidChangeNotification(
 
     pass &= dissectDidChangeNotification( didChangeNotification  ,
                                           errors                 ,
-                                          this->document_path    ,
-                                          this->document_version ,
+                                          document_path          ,
+                                          document_version       ,
                                           start_line             ,
                                           start_character        ,
                                           end_line               ,
                                           end_character          ,
                                           range_length           ,
                                           replacement_text       );
+
+    if ( document_path != this->document_path )
+    {
+        errors << m_error << "Server has different document open" << std::endl;
+        return false;
+    }
+
+    if (document_version <= this->document_version )
+    {
+        errors << m_error << "Server sent bad document version" << std::endl;
+        return false;
+    }
+
+    this->document_version = document_version;
 
     pass &= this->updateDocumentTextChanges( replacement_text ,
                                              start_line       ,
@@ -199,15 +213,22 @@ bool TestServer::handleCompletionRequest(
 
     bool pass = true;
 
-    int line;
-    int character;
+    std::string document_path;
+    int         line;
+    int         character;
 
     pass &= dissectCompletionRequest( completionRequest       ,
                                       errors                  ,
                                       this->client_request_id ,
-                                      this->document_path     ,
+                                      document_path           ,
                                       line                    ,
                                       character               );
+
+    if ( document_path != this->document_path )
+    {
+        errors << m_error << "Server has different document open" << std::endl;
+        return false;
+    }
 
     DataArray completion_items;
     bool      is_incomplete;
@@ -246,16 +267,22 @@ bool TestServer::handleDefinitionRequest(
 
     bool pass = true;
 
-    int line;
-    int character;
+    std::string document_path;
+    int         line;
+    int         character;
 
     pass &= dissectDefinitionRequest( definitionRequest       ,
                                       errors                  ,
                                       this->client_request_id ,
-                                      this->document_path     ,
+                                      document_path           ,
                                       line                    ,
                                       character               );
 
+    if ( document_path != this->document_path )
+    {
+        errors << m_error << "Server has different document open" << std::endl;
+        return false;
+    }
 
     DataArray definition_locations;
 
@@ -292,17 +319,24 @@ bool TestServer::handleReferencesRequest(
 
     bool pass = true;
 
-    int  line;
-    int  character;
-    bool include_declaration;
+    std::string document_path;
+    int         line;
+    int         character;
+    bool        include_declaration;
 
     pass &= dissectReferencesRequest( referencesRequest       ,
                                       errors                  ,
                                       this->client_request_id ,
-                                      this->document_path     ,
+                                      document_path           ,
                                       line                    ,
                                       character               ,
                                       include_declaration     );
+
+    if ( document_path != this->document_path )
+    {
+        errors << m_error << "Server has different document open" << std::endl;
+        return false;
+    }
 
     DataArray references_locations;
 
@@ -339,23 +373,30 @@ bool TestServer::handleRangeFormattingRequest(
 
     bool pass = true;
 
-    int  start_line;
-    int  start_character;
-    int  end_line;
-    int  end_character;
-    int  tab_size;
-    bool insert_spaces;
+    std::string document_path;
+    int         start_line;
+    int         start_character;
+    int         end_line;
+    int         end_character;
+    int         tab_size;
+    bool        insert_spaces;
 
     pass &= dissectRangeFormattingRequest( rangeFormattingRequest  ,
                                            errors                  ,
                                            this->client_request_id ,
-                                           this->document_path     ,
+                                           document_path           ,
                                            start_line              ,
                                            start_character         ,
                                            end_line                ,
                                            end_character           ,
                                            tab_size                ,
                                            insert_spaces           );
+
+    if ( document_path != this->document_path )
+    {
+        errors << m_error << "Server has different document open" << std::endl;
+        return false;
+    }
 
     DataArray formatting_textedits;
 
