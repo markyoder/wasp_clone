@@ -29,14 +29,11 @@ TEST(integrate, server_thread_launch)
 //                                 std::ref( server_to_client_stream )   ,
 //                                 std::ref( server_errors_stream    )   );
 
-    server_thread = std::thread( [ &test_server ,
-                                   &client_to_server_stream ,
-                                   &server_to_client_stream ,
-                                   &server_errors_stream ]()
+    server_thread = std::thread( []()
                                    {
                                         test_server.run( client_to_server_stream ,
                                                          server_to_client_stream ,
-                                                         server_errors_stream);
+                                                         server_errors_stream );
                                    } // end of lambda function
                                 ); // end of thread constructor call
 
