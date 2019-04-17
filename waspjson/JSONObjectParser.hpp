@@ -134,7 +134,7 @@ namespace wasp {
 
 
   /// A Bison parser.
-  class JSONObjectParser
+  class WASP_PUBLIC JSONObjectParser
   {
   public:
 #ifndef YYSTYPE
