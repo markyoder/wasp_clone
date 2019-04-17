@@ -2,9 +2,9 @@
 #include "wasplsp/LSP.h"
 #include "waspcore/Object.h"
 
-template <typename I, typename O>
-bool TestServer::run( I            & input_stream  ,
-                      O            & output_stream ,
+template <typename S>
+bool TestServer::run( S            & input_stream  ,
+                      S            & output_stream ,
                       std::ostream & error_stream  )
 {
     bool pass = true;
@@ -15,7 +15,7 @@ bool TestServer::run( I            & input_stream  ,
         std::string method_name;
         DataObject  output_object;
 
-        pass &= streamToObject<I>( input_stream ,
+        pass &= streamToObject<S>( input_stream ,
                                    input_object ,
                                    error_stream );
 
@@ -104,7 +104,7 @@ bool TestServer::run( I            & input_stream  ,
 
         if ( !output_object.empty() )
         {
-            pass &= objectToStream<O>( output_object ,
+            pass &= objectToStream<S>( output_object ,
                                        output_stream ,
                                        error_stream  );
         }

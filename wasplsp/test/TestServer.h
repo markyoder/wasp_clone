@@ -17,9 +17,9 @@ class WASP_PUBLIC TestServer
 
     ~TestServer(){}
 
-    template <typename I, typename O>
-    bool run( I            & input_stream  ,
-              O            & output_stream ,
+    template <typename S>
+    bool run( S            & input_stream  ,
+              S            & output_stream ,
               std::ostream & error_stream  );
 
     bool handleInitializeRequest(

@@ -18,14 +18,14 @@ class WASP_PUBLIC Server
 
     ~Server(){}
 
-    template <typename I, typename O>
-    bool run( I            & input_stream  ,
-              O            & output_stream ,
+    template <typename S>
+    bool run( S            & input_stream  ,
+              S            & output_stream ,
               std::ostream & error_stream  )
     {
-        return Impl.template run<I,O>( input_stream  ,
-                                       output_stream ,
-                                       error_stream  );
+        return Impl.template run<S>( input_stream  ,
+                                     output_stream ,
+                                     error_stream  );
     }
 
     bool handleInitializeRequest(

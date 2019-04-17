@@ -23,12 +23,11 @@ TEST(integrate, server_thread_launch)
 {
     // launch server on separate thread providing the communication streams
 
-    server_thread = std::thread( & Server< TestServer >::run
-                                 < StreamLock , StreamLock >         ,
-                                 & test_server                       ,
-                                 std::ref( client_to_server_stream ) ,
-                                 std::ref( server_to_client_stream ) ,
-                                 std::ref( server_errors_stream    ) );
+    server_thread = std::thread( & Server<TestServer>::run<StreamLock> ,
+                                 & test_server                         ,
+                                 std::ref( client_to_server_stream )   ,
+                                 std::ref( server_to_client_stream )   ,
+                                 std::ref( server_errors_stream    )   );
 }
 
 TEST(integrate, test_initialize)
