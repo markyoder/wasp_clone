@@ -106,6 +106,11 @@ class WASP_PUBLIC TestServer
         return connection;
     }
 
+    std::string getErrors()
+    {
+        return errors.str();
+    }
+
   private:
 
       std::shared_ptr<ThreadConnection>  connection;

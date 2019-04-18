@@ -111,6 +111,11 @@ class WASP_PUBLIC Server
         return Impl.getConnection();
     }
 
+    std::string getErrors()
+    {
+        return Impl.getErrors();
+    }
+
   private:
 
       T Impl;
