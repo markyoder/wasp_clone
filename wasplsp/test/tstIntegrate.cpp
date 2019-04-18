@@ -22,7 +22,8 @@ TEST(integrate, server_thread_launch)
 
     test_connection = test_server.getConnection();
 
-    server_thread = std::thread( []() { test_server.run(); } );
+    server_thread = std::thread( & Server<TestServer>::run ,
+                                 & test_server             );
 }
 
 TEST(integrate, test_initialize)
