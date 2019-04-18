@@ -21,7 +21,7 @@ class WASP_PUBLIC Server
 
     bool run()
     {
-        return Impl.template run();
+        return Impl.run();
     }
 
     bool handleInitializeRequest(
