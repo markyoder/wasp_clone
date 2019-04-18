@@ -10,15 +10,15 @@
 namespace wasp {
 namespace lsp  {
 
-template <typename T> WASP_PUBLIC
-bool objectToStream( DataObject   & object ,
-                     T            & stream ,
-                     std::ostream & errors );
+WASP_PUBLIC
+bool objectToRPCString( DataObject   & object ,
+                        std::string  & rpcstr ,
+                        std::ostream & errors );
 
-template <typename T> WASP_PUBLIC
-bool streamToObject( T            & stream ,
-                     DataObject   & object ,
-                     std::ostream & errors );
+WASP_PUBLIC
+bool RPCStringToObject( std::string  & rpcstr ,
+                        DataObject   & object ,
+                        std::ostream & errors );
 
 WASP_PUBLIC
 bool checkPosition( std::ostream & errors    ,
@@ -446,7 +446,7 @@ static const char m_preselect[]             = "preselect";
 static const char m_items[]                 = "items";
 static const char m_is_incomplete[]         = "isIncomplete";
 
-#include "LSP.i.h"
+//#include "LSP.i.h"
 
 } // namespace lsp
 } // namespace wasp

@@ -3,15 +3,109 @@
 namespace wasp {
 namespace lsp  {
 
+bool TestServer::run()
+{
+    bool pass = true;
+
+    while(1)
+    {
+        DataObject  input_object;
+        std::string method_name;
+        DataObject  output_object;
+
+        pass &= this->connection->server_read( input_object ,
+                                               this->errors );
+
+        if ( input_object[m_method].is_string() )
+        {
+            method_name = input_object[m_method].to_string();
+        }
+
+        if ( method_name == m_method_initialize )
+        {
+            pass &= this->handleInitializeRequest( input_object  ,
+                                                   output_object );
+        }
+        else if ( method_name == m_method_initialized )
+        {
+            pass &= this->handleInitializedNotification( input_object );
+        }
+        else if ( method_name == m_method_didopen )
+        {
+            pass &= this->handleDidOpenNotification( input_object  ,
+                                                     output_object );
+        }
+        else if ( method_name == m_method_didchange)
+        {
+            pass &= this->handleDidChangeNotification( input_object  ,
+                                                       output_object );
+        }
+        else if ( method_name == m_method_completion )
+        {
+            pass &= this->handleCompletionRequest( input_object  ,
+                                                   output_object );
+        }
+        else if ( method_name == m_method_definition )
+        {
+            pass &= this->handleDefinitionRequest( input_object  ,
+                                                   output_object );;
+        }
+        else if ( method_name == m_method_references )
+        {
+            pass &= this->handleReferencesRequest( input_object  ,
+                                                   output_object );
+        }
+        else if ( method_name == m_method_rangeformat )
+        {
+            pass &= this->handleRangeFormattingRequest( input_object  ,
+                                                        output_object );
+        }
+        else if ( method_name == m_method_didclose )
+        {
+            pass &= this->handleDidCloseNotification( input_object );
+        }
+        else if ( method_name == m_method_shutdown )
+        {
+            pass &= this->handleShutdownRequest( input_object  ,
+                                                 output_object );
+        }
+        else if ( method_name == m_method_exit )
+        {
+            pass &= this->handleExitNotification( input_object );
+        }
+        else if ( method_name.empty() )
+        {
+            pass = false;
+            this->errors << m_error << "Message to server has no method name"
+                               << std::endl;
+        }
+        else
+        {
+            pass = false;
+            this->errors << m_error << "Message to server has bad method name: "
+                               "\"" << method_name << "\"" << std::endl;
+        }
+
+        if ( !pass || method_name == m_method_exit ) break;
+
+        if ( !output_object.empty() )
+        {
+            pass &= this->connection->server_write( output_object ,
+                                                    this->errors  );
+        }
+    }
+
+    return pass;
+}
+
 bool TestServer::handleInitializeRequest(
-                const DataObject   & initializeRequest  ,
-                      DataObject   & initializeResponse ,
-                      std::ostream & errors             )
+                const DataObject & initializeRequest  ,
+                      DataObject & initializeResponse )
 {
     bool pass = true;
 
     pass &= dissectInitializeRequest( initializeRequest         ,
-                                      errors                    ,
+                                      this->errors              ,
                                       this->client_request_id   ,
                                       this->client_process_id   ,
                                       this->client_root_path    ,
@@ -20,7 +114,7 @@ bool TestServer::handleInitializeRequest(
     this->is_initialized = true;
 
     pass &= buildInitializeResponse( initializeResponse        ,
-                                     errors                    ,
+                                     this->errors              ,
                                      this->client_request_id   ,
                                      this->server_capabilities );
 
@@ -28,38 +122,36 @@ bool TestServer::handleInitializeRequest(
 }
 
 bool TestServer::handleInitializedNotification(
-                const DataObject   & initializedNotification ,
-                      std::ostream & errors                  )
+                const DataObject & initializedNotification )
 {
     if (!this->is_initialized)
     {
-        errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     bool pass = true;
 
     pass &= dissectInitializedNotification( initializedNotification ,
-                                            errors                  );
+                                            this->errors            );
 
     return pass;
 }
 
 bool TestServer::handleDidOpenNotification(
-                const DataObject   & didOpenNotification            ,
-                      DataObject   & publishDiagnosticsNotification ,
-                      std::ostream & errors                         )
+                const DataObject & didOpenNotification            ,
+                      DataObject & publishDiagnosticsNotification )
 {
     if (!this->is_initialized)
     {
-        errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     bool pass = true;
 
     pass &= dissectDidOpenNotification( didOpenNotification        ,
-                                        errors                     ,
+                                        this->errors               ,
                                         this->document_path        ,
                                         this->document_language_id ,
                                         this->document_version     ,
@@ -69,11 +161,10 @@ bool TestServer::handleDidOpenNotification(
 
     DataArray document_diagnostics;
 
-    pass &= this->parseDocumentForDiagnostics( document_diagnostics ,
-                                               errors               );
+    pass &= this->parseDocumentForDiagnostics( document_diagnostics );
 
     pass &= buildPublishDiagnosticsNotification( publishDiagnosticsNotification ,
-                                                 errors                         ,
+                                                 this->errors                   ,
                                                  this->document_path            ,
                                                  document_diagnostics           );
 
@@ -81,19 +172,18 @@ bool TestServer::handleDidOpenNotification(
 }
 
 bool TestServer::handleDidChangeNotification(
-                const DataObject   & didChangeNotification          ,
-                      DataObject   & publishDiagnosticsNotification ,
-                      std::ostream & errors                         )
+                const DataObject & didChangeNotification          ,
+                      DataObject & publishDiagnosticsNotification )
 {
     if (!this->is_initialized)
     {
-        errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -109,7 +199,7 @@ bool TestServer::handleDidChangeNotification(
     std::string replacement_text;
 
     pass &= dissectDidChangeNotification( didChangeNotification  ,
-                                          errors                 ,
+                                          this->errors           ,
                                           document_path          ,
                                           document_version       ,
                                           start_line             ,
@@ -121,13 +211,13 @@ bool TestServer::handleDidChangeNotification(
 
     if ( document_path != this->document_path )
     {
-        errors << m_error << "Server has different document open" << std::endl;
+        this->errors << m_error << "Server has different document open" << std::endl;
         return false;
     }
 
     if (document_version <= this->document_version )
     {
-        errors << m_error << "Server sent bad document version" << std::endl;
+        this->errors << m_error << "Server sent bad document version" << std::endl;
         return false;
     }
 
@@ -138,16 +228,14 @@ bool TestServer::handleDidChangeNotification(
                                              start_character  ,
                                              end_line         ,
                                              end_character    ,
-                                             range_length     ,
-                                             errors           );
+                                             range_length     );
 
     DataArray document_diagnostics;
 
-    pass &= this->parseDocumentForDiagnostics( document_diagnostics ,
-                                               errors               );
+    pass &= this->parseDocumentForDiagnostics( document_diagnostics );
 
     pass &= buildPublishDiagnosticsNotification( publishDiagnosticsNotification ,
-                                                 errors                         ,
+                                                 this->errors                   ,
                                                  this->document_path            ,
                                                  document_diagnostics           );
 
@@ -155,19 +243,18 @@ bool TestServer::handleDidChangeNotification(
 }
 
 bool TestServer::handleCompletionRequest(
-                const DataObject   & completionRequest  ,
-                      DataObject   & completionResponse ,
-                      std::ostream & errors             )
+                const DataObject & completionRequest  ,
+                      DataObject & completionResponse )
 {
     if (!this->is_initialized)
     {
-        errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -178,7 +265,7 @@ bool TestServer::handleCompletionRequest(
     int         character;
 
     pass &= dissectCompletionRequest( completionRequest       ,
-                                      errors                  ,
+                                      this->errors            ,
                                       this->client_request_id ,
                                       document_path           ,
                                       line                    ,
@@ -186,7 +273,7 @@ bool TestServer::handleCompletionRequest(
 
     if ( document_path != this->document_path )
     {
-        errors << m_error << "Server has different document open" << std::endl;
+        this->errors << m_error << "Server has different document open" << std::endl;
         return false;
     }
 
@@ -196,11 +283,10 @@ bool TestServer::handleCompletionRequest(
     pass &= this->gatherDocumentCompletionItems( completion_items,
                                                  is_incomplete   ,
                                                  line            ,
-                                                 character       ,
-                                                 errors          );
+                                                 character       );
 
     pass &= buildCompletionResponse( completionResponse      ,
-                                     errors                  ,
+                                     this->errors            ,
                                      this->client_request_id ,
                                      is_incomplete           ,
                                      completion_items        );
@@ -209,19 +295,18 @@ bool TestServer::handleCompletionRequest(
 }
 
 bool TestServer::handleDefinitionRequest(
-                const DataObject   & definitionRequest  ,
-                      DataObject   & definitionResponse ,
-                      std::ostream & errors             )
+                const DataObject & definitionRequest  ,
+                      DataObject & definitionResponse )
 {
     if (!this->is_initialized)
     {
-        errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -232,7 +317,7 @@ bool TestServer::handleDefinitionRequest(
     int         character;
 
     pass &= dissectDefinitionRequest( definitionRequest       ,
-                                      errors                  ,
+                                      this->errors            ,
                                       this->client_request_id ,
                                       document_path           ,
                                       line                    ,
@@ -240,7 +325,7 @@ bool TestServer::handleDefinitionRequest(
 
     if ( document_path != this->document_path )
     {
-        errors << m_error << "Server has different document open" << std::endl;
+        this->errors << m_error << "Server has different document open" << std::endl;
         return false;
     }
 
@@ -248,12 +333,11 @@ bool TestServer::handleDefinitionRequest(
 
     pass &= this->gatherDocumentDefinitionLocations( definition_locations ,
                                                      line                 ,
-                                                     character            ,
-                                                     errors               );
+                                                     character            );
 
 
     pass &= buildLocationsResponse( definitionResponse      ,
-                                    errors                  ,
+                                    this->errors            ,
                                     this->client_request_id ,
                                     definition_locations    );
 
@@ -261,19 +345,18 @@ bool TestServer::handleDefinitionRequest(
 }
 
 bool TestServer::handleReferencesRequest(
-                const DataObject   & referencesRequest  ,
-                      DataObject   & referencesResponse ,
-                      std::ostream & errors             )
+                const DataObject & referencesRequest  ,
+                      DataObject & referencesResponse )
 {
     if (!this->is_initialized)
     {
-        errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -285,7 +368,7 @@ bool TestServer::handleReferencesRequest(
     bool        include_declaration;
 
     pass &= dissectReferencesRequest( referencesRequest       ,
-                                      errors                  ,
+                                      this->errors            ,
                                       this->client_request_id ,
                                       document_path           ,
                                       line                    ,
@@ -294,7 +377,7 @@ bool TestServer::handleReferencesRequest(
 
     if ( document_path != this->document_path )
     {
-        errors << m_error << "Server has different document open" << std::endl;
+        this->errors << m_error << "Server has different document open" << std::endl;
         return false;
     }
 
@@ -303,11 +386,10 @@ bool TestServer::handleReferencesRequest(
     pass &= this->gatherDocumentReferencesLocations( references_locations ,
                                                      line                 ,
                                                      character            ,
-                                                     include_declaration  ,
-                                                     errors               );
+                                                     include_declaration  );
 
     pass &= buildLocationsResponse( referencesResponse      ,
-                                    errors                  ,
+                                    this->errors            ,
                                     this->client_request_id ,
                                     references_locations    );
 
@@ -315,19 +397,18 @@ bool TestServer::handleReferencesRequest(
 }
 
 bool TestServer::handleRangeFormattingRequest(
-                const DataObject   & rangeFormattingRequest  ,
-                      DataObject   & rangeFormattingResponse ,
-                      std::ostream & errors                  )
+                const DataObject & rangeFormattingRequest  ,
+                      DataObject & rangeFormattingResponse )
 {
     if (!this->is_initialized)
     {
-        errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -342,7 +423,7 @@ bool TestServer::handleRangeFormattingRequest(
     bool        insert_spaces;
 
     pass &= dissectRangeFormattingRequest( rangeFormattingRequest  ,
-                                           errors                  ,
+                                           this->errors            ,
                                            this->client_request_id ,
                                            document_path           ,
                                            start_line              ,
@@ -354,7 +435,7 @@ bool TestServer::handleRangeFormattingRequest(
 
     if ( document_path != this->document_path )
     {
-        errors << m_error << "Server has different document open" << std::endl;
+        this->errors << m_error << "Server has different document open" << std::endl;
         return false;
     }
 
@@ -366,11 +447,10 @@ bool TestServer::handleRangeFormattingRequest(
                                                      end_line             ,
                                                      end_character        ,
                                                      tab_size             ,
-                                                     insert_spaces        ,
-                                                     errors               );
+                                                     insert_spaces        );
 
     pass &= buildRangeFormattingResponse( rangeFormattingResponse ,
-                                          errors                  ,
+                                          this->errors            ,
                                           this->client_request_id ,
                                           formatting_textedits    );
 
@@ -378,18 +458,17 @@ bool TestServer::handleRangeFormattingRequest(
 }
 
 bool TestServer::handleDidCloseNotification(
-                const DataObject   & didCloseNotification ,
-                      std::ostream & errors               )
+                const DataObject & didCloseNotification )
 {
     if (!this->is_initialized)
     {
-        errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -398,12 +477,12 @@ bool TestServer::handleDidCloseNotification(
     std::string document_path;
 
     pass &= dissectDidCloseNotification( didCloseNotification ,
-                                         errors               ,
+                                         this->errors         ,
                                          document_path        );
 
     if ( document_path != this->document_path )
     {
-        errors << m_error << "Server has different document open" << std::endl;
+        this->errors << m_error << "Server has different document open" << std::endl;
         return false;
     }
 
@@ -413,68 +492,65 @@ bool TestServer::handleDidCloseNotification(
 }
 
 bool TestServer::handleShutdownRequest(
-                const DataObject   & shutdownRequest  ,
-                      DataObject   & shutdownResponse ,
-                      std::ostream & errors           )
+                const DataObject & shutdownRequest  ,
+                      DataObject & shutdownResponse )
 {
     if (!this->is_initialized)
     {
-        errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (this->is_document_open)
     {
-        errors << m_error << "Server document needs to be closed" << std::endl;
+        this->errors << m_error << "Server document needs to be closed" << std::endl;
         return false;
     }
 
     bool pass = true;
 
     pass &= dissectShutdownRequest( shutdownRequest         ,
-                                    errors                  ,
+                                    this->errors            ,
                                     this->client_request_id );
 
     this->is_initialized = false;
 
     pass &= buildShutdownResponse( shutdownResponse        ,
-                                   errors                  ,
+                                   this->errors            ,
                                    this->client_request_id );
 
     return pass;
 }
 
 bool TestServer::handleExitNotification(
-                const DataObject   & exitNotification ,
-                      std::ostream & errors           )
+                const DataObject & exitNotification )
 {
     if (this->is_initialized)
     {
-        errors << m_error << "Server needs to be shutdown" << std::endl;
+        this->errors << m_error << "Server needs to be shutdown" << std::endl;
         return false;
     }
 
     bool pass = true;
 
     pass &= dissectExitNotification( exitNotification ,
-                                     errors           );
+                                     this->errors     );
 
     return pass;
 }
 
 bool TestServer::parseDocumentForDiagnostics(
-                      DataArray    & diagnosticsList ,
-                      std::ostream & errors          )
+                      DataArray & diagnosticsList )
 {
     if (!this->is_initialized)
     {
-        errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -485,7 +561,7 @@ bool TestServer::parseDocumentForDiagnostics(
     if (this->document_text == "test\ntext\n1\nstring\n")
     {
         pass &= buildDiagnosticObject( diagnostic         ,
-                                       errors             ,
+                                       this->errors       ,
                                        20                 ,
                                        16                 ,
                                        20                 ,
@@ -498,7 +574,7 @@ bool TestServer::parseDocumentForDiagnostics(
         diagnosticsList.push_back(diagnostic);
 
         pass &= buildDiagnosticObject( diagnostic         ,
-                                       errors             ,
+                                       this->errors       ,
                                        28                 ,
                                        56                 ,
                                        34                 ,
@@ -511,7 +587,7 @@ bool TestServer::parseDocumentForDiagnostics(
         diagnosticsList.push_back(diagnostic);
 
         pass &= buildDiagnosticObject( diagnostic         ,
-                                       errors             ,
+                                       this->errors       ,
                                        47                 ,
                                        36                 ,
                                        47                 ,
@@ -527,7 +603,7 @@ bool TestServer::parseDocumentForDiagnostics(
     else if (this->document_text == "test\ntext\n2\nstring\n")
     {
         pass &= buildDiagnosticObject( diagnostic         ,
-                                       errors             ,
+                                       this->errors       ,
                                        67                 ,
                                        45                 ,
                                        68                 ,
@@ -540,7 +616,7 @@ bool TestServer::parseDocumentForDiagnostics(
         diagnosticsList.push_back(diagnostic);
 
         pass &= buildDiagnosticObject( diagnostic         ,
-                                       errors             ,
+                                       this->errors       ,
                                        87                 ,
                                        17                 ,
                                        88                 ,
@@ -557,23 +633,22 @@ bool TestServer::parseDocumentForDiagnostics(
 }
 
 bool TestServer::updateDocumentTextChanges(
-                const std::string  & replacement_text ,
-                      int            start_line       ,
-                      int            start_character  ,
-                      int            end_line         ,
-                      int            end_character    ,
-                      int            range_length     ,
-                      std::ostream & errors           )
+                const std::string & replacement_text ,
+                      int           start_line       ,
+                      int           start_character  ,
+                      int           end_line         ,
+                      int           end_character    ,
+                      int           range_length     )
 {
     if (!this->is_initialized)
     {
-        errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -592,21 +667,20 @@ bool TestServer::updateDocumentTextChanges(
 }
 
 bool TestServer::gatherDocumentCompletionItems(
-                      DataArray    & completionItems  ,
-                      bool         & is_incomplete    ,
-                      int            line             ,
-                      int            character        ,
-                      std::ostream & errors           )
+                      DataArray & completionItems  ,
+                      bool      & is_incomplete    ,
+                      int         line             ,
+                      int         character        )
 {
     if (!this->is_initialized)
     {
-        errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -618,7 +692,7 @@ bool TestServer::gatherDocumentCompletionItems(
          character == 2 )
     {
         pass &= buildCompletionObject( completion_item        ,
-                                       errors                 ,
+                                       this->errors           ,
                                        "test-label-1"         ,
                                        11                     ,
                                        11                     ,
@@ -634,7 +708,7 @@ bool TestServer::gatherDocumentCompletionItems(
         completionItems.push_back(completion_item);
 
         pass &= buildCompletionObject( completion_item        ,
-                                       errors                 ,
+                                       this->errors           ,
                                        "test-label-2"         ,
                                        22                     ,
                                        22                     ,
@@ -650,7 +724,7 @@ bool TestServer::gatherDocumentCompletionItems(
         completionItems.push_back(completion_item);
 
         pass &= buildCompletionObject( completion_item        ,
-                                       errors                 ,
+                                       this->errors           ,
                                        "test-label-3"         ,
                                        33                     ,
                                        33                     ,
@@ -672,20 +746,19 @@ bool TestServer::gatherDocumentCompletionItems(
 }
 
 bool TestServer::gatherDocumentDefinitionLocations(
-                      DataArray    & definitionLocations ,
-                      int            line                ,
-                      int            character           ,
-                      std::ostream & errors              )
+                      DataArray & definitionLocations ,
+                      int         line                ,
+                      int         character           )
 {
     if (!this->is_initialized)
     {
-        errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -697,7 +770,7 @@ bool TestServer::gatherDocumentDefinitionLocations(
          character == 5 )
     {
         pass &= buildLocationObject( location_object       ,
-                                     errors                ,
+                                     this->errors          ,
                                      this->document_path   ,
                                      11                    ,
                                      11                    ,
@@ -707,7 +780,7 @@ bool TestServer::gatherDocumentDefinitionLocations(
         definitionLocations.push_back(location_object);
 
         pass &= buildLocationObject( location_object       ,
-                                     errors                ,
+                                     this->errors          ,
                                      this->document_path   ,
                                      22                    ,
                                      22                    ,
@@ -717,7 +790,7 @@ bool TestServer::gatherDocumentDefinitionLocations(
         definitionLocations.push_back(location_object);
 
         pass &= buildLocationObject( location_object       ,
-                                     errors                ,
+                                     this->errors          ,
                                      this->document_path   ,
                                      33                    ,
                                      33                    ,
@@ -731,21 +804,20 @@ bool TestServer::gatherDocumentDefinitionLocations(
 }
 
 bool TestServer::gatherDocumentReferencesLocations(
-                      DataArray    & referencesLocations ,
-                      int            line                ,
-                      int            character           ,
-                      bool           include_declaration ,
-                      std::ostream & errors              )
+                      DataArray & referencesLocations ,
+                      int         line                ,
+                      int         character           ,
+                      bool        include_declaration )
 {
     if (!this->is_initialized)
     {
-        errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -758,7 +830,7 @@ bool TestServer::gatherDocumentReferencesLocations(
          include_declaration == false )
     {
         pass &= buildLocationObject( location_object       ,
-                                     errors                ,
+                                     this->errors          ,
                                      this->document_path   ,
                                      44                    ,
                                      44                    ,
@@ -768,7 +840,7 @@ bool TestServer::gatherDocumentReferencesLocations(
         referencesLocations.push_back(location_object);
 
         pass &= buildLocationObject( location_object       ,
-                                     errors                ,
+                                     this->errors          ,
                                      this->document_path   ,
                                      55                    ,
                                      55                    ,
@@ -782,24 +854,23 @@ bool TestServer::gatherDocumentReferencesLocations(
 }
 
 bool TestServer::gatherDocumentFormattingTextEdits(
-                      DataArray    & formattingTextEdits ,
-                      int            start_line          ,
-                      int            start_character     ,
-                      int            end_line            ,
-                      int            end_character       ,
-                      int            tab_size            ,
-                      bool           insert_spaces       ,
-                      std::ostream & errors              )
+                      DataArray & formattingTextEdits ,
+                      int         start_line          ,
+                      int         start_character     ,
+                      int         end_line            ,
+                      int         end_character       ,
+                      int         tab_size            ,
+                      bool        insert_spaces       )
 {
     if (!this->is_initialized)
     {
-        errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -815,7 +886,7 @@ bool TestServer::gatherDocumentFormattingTextEdits(
          insert_spaces   == true )
     {
         pass &= buildTextEditObject( textedit_object                      ,
-                                     errors                               ,
+                                     this->errors                         ,
                                      10                                   ,
                                      01                                   ,
                                      14                                   ,
@@ -825,7 +896,7 @@ bool TestServer::gatherDocumentFormattingTextEdits(
         formattingTextEdits.push_back(textedit_object);
 
         pass &= buildTextEditObject( textedit_object                      ,
-                                     errors                               ,
+                                     this->errors                         ,
                                      20                                   ,
                                      01                                   ,
                                      24                                   ,
@@ -835,7 +906,7 @@ bool TestServer::gatherDocumentFormattingTextEdits(
         formattingTextEdits.push_back(textedit_object);
 
         pass &= buildTextEditObject( textedit_object                      ,
-                                     errors                               ,
+                                     this->errors                         ,
                                      30                                   ,
                                      01                                   ,
                                      34                                   ,

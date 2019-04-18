@@ -2,6 +2,7 @@
 #define WASPLSP_SERVER_H
 
 #include "wasplsp/LSP.h"
+#include "wasplsp/Connection.h"
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
 #include <iostream>
@@ -18,118 +19,96 @@ class WASP_PUBLIC Server
 
     ~Server(){}
 
-    template <typename S>
-    bool run( S            & input_stream  ,
-              S            & output_stream ,
-              std::ostream & error_stream  )
+    bool run()
     {
-        return Impl.template run<S>( input_stream  ,
-                                     output_stream ,
-                                     error_stream  );
+        return Impl.template run();
     }
 
     bool handleInitializeRequest(
-                    const DataObject   & initializeRequest  ,
-                          DataObject   & initializeResponse ,
-                          std::ostream & errors             )
+                    const DataObject & initializeRequest  ,
+                          DataObject & initializeResponse )
     {
         return Impl.handleInitializeRequest( initializeRequest  ,
-                                             initializeResponse ,
-                                             errors             );
+                                             initializeResponse );
     }
 
     bool handleInitializedNotification(
-                    const DataObject   & initializedNotification ,
-                          std::ostream & errors                  )
+                    const DataObject & initializedNotification )
     {
-        return Impl.handleInitializedNotification( initializedNotification ,
-                                                   errors                  );
+        return Impl.handleInitializedNotification( initializedNotification );
     }
 
     bool handleDidOpenNotification(
-                    const DataObject   & didOpenNotification            ,
-                          DataObject   & publishDiagnosticsNotification ,
-                          std::ostream & errors                         )
+                    const DataObject & didOpenNotification            ,
+                          DataObject & publishDiagnosticsNotification )
     {
         return Impl.handleDidOpenNotification( didOpenNotification            ,
-                                               publishDiagnosticsNotification ,
-                                               errors                         );
+                                               publishDiagnosticsNotification );
     }
 
     bool handleDidChangeNotification(
-                    const DataObject   & didChangeNotification          ,
-                          DataObject   & publishDiagnosticsNotification ,
-                          std::ostream & errors                         )
+                    const DataObject & didChangeNotification          ,
+                          DataObject & publishDiagnosticsNotification )
     {
         return Impl.handleDidChangeNotification( didChangeNotification          ,
-                                                 publishDiagnosticsNotification ,
-                                                 errors                         );
+                                                 publishDiagnosticsNotification );
     }
 
     bool handleCompletionRequest(
-                    const DataObject   & completionRequest  ,
-                          DataObject   & completionResponse ,
-                          std::ostream & errors             )
+                    const DataObject & completionRequest  ,
+                          DataObject & completionResponse )
     {
         return Impl.handleCompletionRequest( completionRequest  ,
-                                             completionResponse ,
-                                             errors             );
+                                             completionResponse );
     }
 
     bool handleDefinitionRequest(
-                    const DataObject   & definitionRequest  ,
-                          DataObject   & definitionResponse ,
-                          std::ostream & errors             )
+                    const DataObject & definitionRequest  ,
+                          DataObject & definitionResponse )
     {
         return Impl.handleDefinitionRequest( definitionRequest  ,
-                                             definitionResponse ,
-                                             errors             );
+                                             definitionResponse );
     }
 
     bool handleReferencesRequest(
-                    const DataObject   & referencesRequest  ,
-                          DataObject   & referencesResponse ,
-                          std::ostream & errors             )
+                    const DataObject & referencesRequest  ,
+                          DataObject & referencesResponse )
     {
         return Impl.handleReferencesRequest( referencesRequest  ,
-                                             referencesResponse ,
-                                             errors             );
+                                             referencesResponse );
     }
 
     bool handleRangeFormattingRequest(
-                    const DataObject   & rangeFormattingRequest  ,
-                          DataObject   & rangeFormattingResponse ,
-                          std::ostream & errors                  )
+                    const DataObject & rangeFormattingRequest  ,
+                          DataObject & rangeFormattingResponse )
     {
         return Impl.handleRangeFormattingRequest( rangeFormattingRequest  ,
-                                                  rangeFormattingResponse ,
-                                                  errors             );
+                                                  rangeFormattingResponse );
     }
 
     bool handleDidCloseNotification(
-                    const DataObject   & didCloseNotification ,
-                          std::ostream & errors               )
+                    const DataObject & didCloseNotification )
     {
-        return Impl.handleDidCloseNotification( didCloseNotification  ,
-                                                errors                );
+        return Impl.handleDidCloseNotification( didCloseNotification  );
     }
 
     bool handleShutdownRequest(
-                    const DataObject   & shutdownRequest  ,
-                          DataObject   & shutdownResponse ,
-                          std::ostream & errors           )
+                    const DataObject & shutdownRequest  ,
+                          DataObject & shutdownResponse )
     {
         return Impl.handleShutdownRequest( shutdownRequest  ,
-                                           shutdownResponse ,
-                                           errors           );
+                                           shutdownResponse );
     }
 
     bool handleExitNotification(
-                    const DataObject   & exitNotification ,
-                          std::ostream & errors           )
+                    const DataObject & exitNotification )
     {
-        return Impl.handleExitNotification( exitNotification  ,
-                                            errors            );
+        return Impl.handleExitNotification( exitNotification  );
+    }
+
+    std::shared_ptr<Connection> getConnection()
+    {
+        return Impl.getConnection();
     }
 
   private:

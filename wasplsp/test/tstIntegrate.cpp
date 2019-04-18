@@ -1,7 +1,7 @@
 #include "TestServer.h"
 #include "wasplsp/Server.h"
 #include "wasplsp/LSP.h"
-#include "wasplsp/StreamLock.h"
+#include "wasplsp/Connection.h"
 #include "waspcore/Object.h"
 #include "gtest/gtest.h"
 #include <sstream>
@@ -10,34 +10,19 @@
 namespace wasp {
 namespace lsp  {
 
-// handles for server, server-thread, and thread-safe communication streams
+// handles for server, server-thread, and thread-safe communication
 
-Server<TestServer> test_server;
-std::thread        server_thread;
-StreamLock         client_to_server_stream;
-StreamLock         server_to_client_stream;
-std::stringstream  client_errors_stream;
-std::stringstream  server_errors_stream;
+std::thread                 server_thread;
+Server<TestServer>          test_server;
+std::shared_ptr<Connection> test_connection;
 
 TEST(integrate, server_thread_launch)
 {
-    // launch server on separate thread providing the communication streams
-//
-//    server_thread = std::thread( & Server<TestServer>::run<StreamLock> ,
-//                                 & test_server                         ,
-//                                 std::ref( client_to_server_stream )   ,
-//                                 std::ref( server_to_client_stream )   ,
-//                                 std::ref( server_errors_stream    )   );
+    // get handle to the server communication object and launch server thread
 
-    server_thread = std::thread( []()
-                                   {
-                                        test_server.run( client_to_server_stream ,
-                                                         server_to_client_stream ,
-                                                         server_errors_stream );
-                                   } // end of lambda function
-                                ); // end of thread constructor call
+    test_connection = test_server.getConnection();
 
-
+    server_thread = std::thread( []() { test_server.run(); } );
 }
 
 TEST(integrate, test_initialize)
@@ -54,23 +39,23 @@ TEST(integrate, test_initialize)
     int         response_request_id;
     DataObject  response_capabilities;
 
-    ASSERT_TRUE( buildInitializeRequest( client_object        ,
-                                         client_errors_stream ,
-                                         client_request_id    ,
-                                         client_process_id    ,
-                                         client_root_uri      ,
-                                         client_capabilities  ) );
+    std::stringstream  client_errors;
 
-    ASSERT_TRUE( objectToStream<StreamLock>( client_object           ,
-                                             client_to_server_stream ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( buildInitializeRequest( client_object       ,
+                                         client_errors       ,
+                                         client_request_id   ,
+                                         client_process_id   ,
+                                         client_root_uri     ,
+                                         client_capabilities ) );
 
-    ASSERT_TRUE( streamToObject<StreamLock>( server_to_client_stream ,
-                                             response_object         ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( test_connection->client_write( client_object ,
+                                                client_errors ) );
+
+    ASSERT_TRUE( test_connection->client_read( response_object ,
+                                               client_errors   ) );
 
     ASSERT_TRUE( dissectInitializeResponse( response_object       ,
-                                            client_errors_stream  ,
+                                            client_errors         ,
                                             response_request_id   ,
                                             response_capabilities ) );
 
@@ -84,12 +69,13 @@ TEST(integrate, test_initialized)
 
     DataObject client_object;
 
-    ASSERT_TRUE( buildInitializedNotification( client_object        ,
-                                               client_errors_stream ) );
+    std::stringstream  client_errors;
 
-    ASSERT_TRUE( objectToStream<StreamLock>( client_object           ,
-                                             client_to_server_stream ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( buildInitializedNotification( client_object ,
+                                               client_errors ) );
+
+    ASSERT_TRUE( test_connection->client_write( client_object ,
+                                                client_errors ) );
 }
 
 TEST(integrate, test_didopen)
@@ -115,23 +101,23 @@ TEST(integrate, test_didopen)
     std::string response_3_source;
     std::string response_3_message;
 
+    std::stringstream  client_errors;
+
     ASSERT_TRUE( buildDidOpenNotification( client_object        ,
-                                           client_errors_stream ,
+                                           client_errors        ,
                                            document_uri         ,
                                            document_language_id ,
                                            document_version     ,
                                            document_text        ) );
 
-    ASSERT_TRUE( objectToStream<StreamLock>( client_object           ,
-                                             client_to_server_stream ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( test_connection->client_write( client_object ,
+                                                client_errors ) );
 
-    ASSERT_TRUE( streamToObject<StreamLock>( server_to_client_stream ,
-                                             response_object         ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( test_connection->client_read( response_object ,
+                                               client_errors   ) );
 
     ASSERT_TRUE( dissectPublishDiagnosticsNotification( response_object      ,
-                                                        client_errors_stream ,
+                                                        client_errors        ,
                                                         response_uri         ,
                                                         response_diagnostics ) );
 
@@ -139,7 +125,7 @@ TEST(integrate, test_didopen)
     ASSERT_EQ( response_diagnostics.size() , (size_t) 3   );
 
     ASSERT_TRUE( dissectDiagnosticObject( *(response_diagnostics[2].to_object()) ,
-                                            client_errors_stream                 ,
+                                            client_errors                        ,
                                             response_3_start_line                ,
                                             response_3_start_character           ,
                                             response_3_end_line                  ,
@@ -186,27 +172,27 @@ TEST(integrate, test_didchange)
     std::string response_2_source;
     std::string response_2_message;
 
-    ASSERT_TRUE( buildDidChangeNotification( client_object        ,
-                                             client_errors_stream ,
-                                             document_uri         ,
-                                             document_version     ,
-                                             start_line           ,
-                                             start_character      ,
-                                             end_line             ,
-                                             end_character        ,
-                                             range_length         ,
-                                             document_text        ) );
+    std::stringstream  client_errors;
 
-    ASSERT_TRUE( objectToStream<StreamLock>( client_object           ,
-                                             client_to_server_stream ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( buildDidChangeNotification( client_object    ,
+                                             client_errors    ,
+                                             document_uri     ,
+                                             document_version ,
+                                             start_line       ,
+                                             start_character  ,
+                                             end_line         ,
+                                             end_character    ,
+                                             range_length     ,
+                                             document_text    ) );
 
-    ASSERT_TRUE( streamToObject<StreamLock>( server_to_client_stream ,
-                                             response_object         ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( test_connection->client_write( client_object ,
+                                                client_errors ) );
+
+    ASSERT_TRUE( test_connection->client_read( response_object ,
+                                               client_errors   ) );
 
     ASSERT_TRUE( dissectPublishDiagnosticsNotification( response_object      ,
-                                                        client_errors_stream ,
+                                                        client_errors        ,
                                                         response_uri         ,
                                                         response_diagnostics ) );
 
@@ -214,7 +200,7 @@ TEST(integrate, test_didchange)
     ASSERT_EQ( response_diagnostics.size() , (size_t) 2   );
 
     ASSERT_TRUE( dissectDiagnosticObject( *(response_diagnostics[1].to_object()) ,
-                                            client_errors_stream                 ,
+                                            client_errors                        ,
                                             response_2_start_line                ,
                                             response_2_start_character           ,
                                             response_2_end_line                  ,
@@ -261,23 +247,23 @@ TEST(integrate, test_completion)
     bool        response_3_deprecated;
     bool        response_3_preselect;
 
-    ASSERT_TRUE( buildCompletionRequest( client_object        ,
-                                         client_errors_stream ,
-                                         client_request_id    ,
-                                         document_uri         ,
-                                         line                 ,
-                                         character            ) );
+    std::stringstream  client_errors;
 
-    ASSERT_TRUE( objectToStream<StreamLock>( client_object           ,
-                                             client_to_server_stream ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( buildCompletionRequest( client_object     ,
+                                         client_errors     ,
+                                         client_request_id ,
+                                         document_uri      ,
+                                         line              ,
+                                         character         ) );
 
-    ASSERT_TRUE( streamToObject<StreamLock>( server_to_client_stream ,
-                                             response_object         ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( test_connection->client_write( client_object ,
+                                                client_errors ) );
+
+    ASSERT_TRUE( test_connection->client_read( response_object ,
+                                               client_errors   ) );
 
     ASSERT_TRUE( dissectCompletionResponse( response_object        ,
-                                            client_errors_stream   ,
+                                            client_errors          ,
                                             response_request_id    ,
                                             response_is_incomplete ,
                                             response_completions   ) );
@@ -287,7 +273,7 @@ TEST(integrate, test_completion)
     ASSERT_EQ( response_completions.size() , (size_t) 3        );
 
     ASSERT_TRUE( dissectCompletionObject( *(response_completions[2].to_object()) ,
-                                            client_errors_stream                 ,
+                                            client_errors                        ,
                                             response_3_label                     ,
                                             response_3_start_line                ,
                                             response_3_start_character           ,
@@ -333,23 +319,23 @@ TEST(integrate, test_definition)
     int         response_3_end_line;
     int         response_3_end_character;
 
-    ASSERT_TRUE( buildDefinitionRequest( client_object        ,
-                                         client_errors_stream ,
-                                         client_request_id    ,
-                                         document_uri         ,
-                                         line                 ,
-                                         character            ) );
+    std::stringstream  client_errors;
 
-    ASSERT_TRUE( objectToStream<StreamLock>( client_object           ,
-                                             client_to_server_stream ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( buildDefinitionRequest( client_object     ,
+                                         client_errors     ,
+                                         client_request_id ,
+                                         document_uri      ,
+                                         line              ,
+                                         character         ) );
 
-    ASSERT_TRUE( streamToObject<StreamLock>( server_to_client_stream ,
-                                             response_object         ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( test_connection->client_write( client_object ,
+                                                client_errors ) );
+
+    ASSERT_TRUE( test_connection->client_read( response_object ,
+                                               client_errors   ) );
 
     ASSERT_TRUE( dissectLocationsResponse( response_object      ,
-                                           client_errors_stream ,
+                                           client_errors        ,
                                            response_request_id  ,
                                            response_locations   ) );
 
@@ -357,7 +343,7 @@ TEST(integrate, test_definition)
     ASSERT_EQ( response_locations.size() , (size_t) 3        );
 
     ASSERT_TRUE( dissectLocationObject( *(response_locations[2].to_object()) ,
-                                          client_errors_stream               ,
+                                          client_errors                      ,
                                           response_3_uri                     ,
                                           response_3_start_line              ,
                                           response_3_start_character         ,
@@ -392,24 +378,24 @@ TEST(integrate, test_references)
     int         response_2_end_line;
     int         response_2_end_character;
 
-    ASSERT_TRUE( buildReferencesRequest( client_object        ,
-                                         client_errors_stream ,
-                                         client_request_id    ,
-                                         document_uri         ,
-                                         line                 ,
-                                         character            ,
-                                         include_declaration  ) );
+    std::stringstream  client_errors;
 
-    ASSERT_TRUE( objectToStream<StreamLock>( client_object           ,
-                                             client_to_server_stream ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( buildReferencesRequest( client_object       ,
+                                         client_errors       ,
+                                         client_request_id   ,
+                                         document_uri        ,
+                                         line                ,
+                                         character           ,
+                                         include_declaration ) );
 
-    ASSERT_TRUE( streamToObject<StreamLock>( server_to_client_stream ,
-                                             response_object         ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( test_connection->client_write( client_object ,
+                                                client_errors ) );
+
+    ASSERT_TRUE( test_connection->client_read( response_object ,
+                                               client_errors   ) );;
 
     ASSERT_TRUE( dissectLocationsResponse( response_object      ,
-                                           client_errors_stream ,
+                                           client_errors        ,
                                            response_request_id  ,
                                            response_locations   ) );
 
@@ -417,7 +403,7 @@ TEST(integrate, test_references)
     ASSERT_EQ( response_locations.size() , (size_t) 2        );
 
     ASSERT_TRUE( dissectLocationObject( *(response_locations[1].to_object()) ,
-                                          client_errors_stream               ,
+                                          client_errors                      ,
                                           response_2_uri                     ,
                                           response_2_start_line              ,
                                           response_2_start_character         ,
@@ -434,7 +420,7 @@ TEST(integrate, test_references)
 TEST(integrate, test_formatting)
 {
     // formatting - build object / stream to server / get response back / test
-
+;
     DataObject  client_object;
     int         client_request_id =  6;
     std::string document_uri      = "test/document/uri/string";
@@ -456,40 +442,40 @@ TEST(integrate, test_formatting)
     int         response_3_end_character;
     std::string response_3_new_text;
 
-    ASSERT_TRUE( buildRangeFormattingRequest( client_object        ,
-                                              client_errors_stream ,
-                                              client_request_id    ,
-                                              document_uri         ,
-                                              start_line           ,
-                                              start_character      ,
-                                              end_line             ,
-                                              end_character        ,
-                                              tab_size             ,
-                                              insert_spaces        ) );
+    std::stringstream  client_errors;
 
-    ASSERT_TRUE( objectToStream<StreamLock>( client_object           ,
-                                             client_to_server_stream ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( buildRangeFormattingRequest( client_object     ,
+                                              client_errors     ,
+                                              client_request_id ,
+                                              document_uri      ,
+                                              start_line        ,
+                                              start_character   ,
+                                              end_line          ,
+                                              end_character     ,
+                                              tab_size          ,
+                                              insert_spaces     ) );
 
-    ASSERT_TRUE( streamToObject<StreamLock>( server_to_client_stream ,
-                                             response_object         ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( test_connection->client_write( client_object ,
+                                                client_errors ) );
+
+    ASSERT_TRUE( test_connection->client_read( response_object ,
+                                               client_errors   ) );
 
     ASSERT_TRUE( dissectRangeFormattingResponse( response_object      ,
-                                                 client_errors_stream ,
-                                                 response_request_id  ,
-                                                 response_textedits   ) );
+                                                 client_errors       ,
+                                                 response_request_id ,
+                                                 response_textedits  ) );
 
     ASSERT_EQ( response_request_id       , client_request_id );
     ASSERT_EQ( response_textedits.size() , (size_t) 3        );
 
-    ASSERT_TRUE(dissectTextEditObject( *(response_textedits[2].to_object())   ,
-                                         client_errors_stream                 ,
-                                         response_3_start_line                ,
-                                         response_3_start_character           ,
-                                         response_3_end_line                  ,
-                                         response_3_end_character             ,
-                                         response_3_new_text                  ) );
+    ASSERT_TRUE(dissectTextEditObject( *(response_textedits[2].to_object()) ,
+                                         client_errors                      ,
+                                         response_3_start_line              ,
+                                         response_3_start_character         ,
+                                         response_3_end_line                ,
+                                         response_3_end_character           ,
+                                         response_3_new_text                ) );
 
     ASSERT_EQ( response_3_start_line      , 30                                   );
     ASSERT_EQ( response_3_start_character , 01                                   );
@@ -505,13 +491,14 @@ TEST(integrate, test_didclose)
     DataObject  client_object;
     std::string document_uri = "test/document/uri/string";
 
-    ASSERT_TRUE( buildDidCloseNotification( client_object        ,
-                                            client_errors_stream ,
-                                            document_uri         ) );
+    std::stringstream  client_errors;
 
-    ASSERT_TRUE( objectToStream<StreamLock>( client_object           ,
-                                             client_to_server_stream ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( buildDidCloseNotification( client_object ,
+                                            client_errors ,
+                                            document_uri  ) );
+
+    ASSERT_TRUE( test_connection->client_write( client_object ,
+                                                client_errors ) );
 }
 
 TEST(integrate, test_shutdown)
@@ -524,21 +511,21 @@ TEST(integrate, test_shutdown)
     DataObject  response_object;
     int         response_request_id;
 
-    ASSERT_TRUE( buildShutdownRequest( client_object        ,
-                                       client_errors_stream ,
-                                       client_request_id    ) );
+    std::stringstream  client_errors;
 
-    ASSERT_TRUE( objectToStream<StreamLock>( client_object           ,
-                                             client_to_server_stream ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( buildShutdownRequest( client_object     ,
+                                       client_errors     ,
+                                       client_request_id ) );
 
-    ASSERT_TRUE( streamToObject<StreamLock>( server_to_client_stream ,
-                                             response_object         ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( test_connection->client_write( client_object ,
+                                                client_errors ) );
 
-    ASSERT_TRUE( dissectShutdownResponse( response_object       ,
-                                          client_errors_stream  ,
-                                          response_request_id   ) );
+    ASSERT_TRUE( test_connection->client_read( response_object ,
+                                               client_errors   ) );
+
+    ASSERT_TRUE( dissectShutdownResponse( response_object     ,
+                                          client_errors       ,
+                                          response_request_id ) );
 
     ASSERT_EQ( response_request_id , client_request_id );
 }
@@ -549,12 +536,13 @@ TEST(integrate, test_exit)
 
     DataObject client_object;
 
-    ASSERT_TRUE( buildExitNotification( client_object        ,
-                                        client_errors_stream ) );
+    std::stringstream  client_errors;
 
-    ASSERT_TRUE( objectToStream<StreamLock>( client_object           ,
-                                             client_to_server_stream ,
-                                             client_errors_stream    ) );
+    ASSERT_TRUE( buildExitNotification( client_object ,
+                                        client_errors ) );
+
+    ASSERT_TRUE( test_connection->client_write( client_object ,
+                                                client_errors ) );
 }
 
 TEST(integrate, server_thread_join)

@@ -31,8 +31,7 @@ TEST(server, handle_initialize)
     DataObject initializeResponse;
 
     ASSERT_TRUE(test_server.handleInitializeRequest( initializeRequest  ,
-                                                     initializeResponse ,
-                                                     errors             ));
+                                                     initializeResponse ));
 
     std::stringstream json;
     initializeResponse.format_json(json);
@@ -56,8 +55,7 @@ TEST(server, handle_initialized)
     ASSERT_TRUE(buildInitializedNotification( initializedNotification ,
                                               errors                  ));
 
-    ASSERT_TRUE(test_server.handleInitializedNotification( initializedNotification ,
-                                                           errors                  ));
+    ASSERT_TRUE(test_server.handleInitializedNotification( initializedNotification ));
 }
 
 TEST(server, handle_didopen)
@@ -80,8 +78,7 @@ TEST(server, handle_didopen)
     DataObject publishDiagnosticsNotification;
 
     ASSERT_TRUE(test_server.handleDidOpenNotification( didOpenNotification ,
-                                                       publishDiagnosticsNotification ,
-                                                       errors                         ));
+                                                       publishDiagnosticsNotification ));
 
     std::stringstream json;
     publishDiagnosticsNotification.format_json(json);
@@ -175,8 +172,7 @@ TEST(server, handle_didchange)
     DataObject publishDiagnosticsNotification;
 
     ASSERT_TRUE(test_server.handleDidChangeNotification( didChangeNotification          ,
-                                                         publishDiagnosticsNotification ,
-                                                         errors                         ));
+                                                         publishDiagnosticsNotification ));
 
     std::stringstream json;
     publishDiagnosticsNotification.format_json(json);
@@ -246,8 +242,7 @@ TEST(server, handle_completion)
     DataObject completionResponse;
 
     ASSERT_TRUE(test_server.handleCompletionRequest( completionRequest  ,
-                                                     completionResponse ,
-                                                     errors             ));
+                                                     completionResponse ));
 
     std::stringstream json;
     completionResponse.format_json(json);
@@ -348,8 +343,7 @@ TEST(server, handle_definition)
     DataObject definitionResponse;
 
     ASSERT_TRUE(test_server.handleDefinitionRequest( definitionRequest  ,
-                                                     definitionResponse ,
-                                                     errors             ));
+                                                     definitionResponse ));
 
     std::stringstream json;
     definitionResponse.format_json(json);
@@ -425,8 +419,7 @@ TEST(server, handle_references)
     DataObject referencesResponse;
 
     ASSERT_TRUE(test_server.handleReferencesRequest( referencesRequest  ,
-                                                     referencesResponse ,
-                                                     errors             ));
+                                                     referencesResponse ));
 
     std::stringstream json;
     referencesResponse.format_json(json);
@@ -496,8 +489,7 @@ TEST(server, handle_rangeformatting)
     DataObject rangeFormattingResponse;
 
     ASSERT_TRUE(test_server.handleRangeFormattingRequest( rangeFormattingRequest  ,
-                                                          rangeFormattingResponse ,
-                                                          errors                  ));
+                                                          rangeFormattingResponse ));
 
     std::stringstream json;
     rangeFormattingResponse.format_json(json);
@@ -562,8 +554,7 @@ TEST(server, handle_didclose)
                                            errors                 ,
                                            document_path          ));
 
-    ASSERT_TRUE(test_server.handleDidCloseNotification( didCloseNotification  ,
-                                                        errors                ));
+    ASSERT_TRUE(test_server.handleDidCloseNotification( didCloseNotification ));
 }
 
 TEST(server, handle_shutdown)
@@ -581,8 +572,7 @@ TEST(server, handle_shutdown)
     DataObject shutdownResponse;
 
     ASSERT_TRUE(test_server.handleShutdownRequest( shutdownRequest  ,
-                                                   shutdownResponse ,
-                                                   errors           ));
+                                                   shutdownResponse ));
 
     std::stringstream json;
     shutdownResponse.format_json(json);
@@ -604,8 +594,7 @@ TEST(server, handle_exit)
     ASSERT_TRUE(buildExitNotification( exitNotification ,
                                        errors           ));
 
-    ASSERT_TRUE(test_server.handleExitNotification( exitNotification ,
-                                                    errors           ));
+    ASSERT_TRUE(test_server.handleExitNotification( exitNotification ));
 }
 
 } // namespace lsp
