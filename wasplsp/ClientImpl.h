@@ -10,18 +10,18 @@
 namespace wasp {
 namespace lsp  {
 
-class WASP_PUBLIC TestClient
+class WASP_PUBLIC ClientImpl
 {
   public:
 
-    TestClient() :
+    ClientImpl() :
         is_connected(false)     ,
         is_initialized(false)   ,
         is_document_open(false) ,
         request_id(0)           ,
         document_version(0)    {}
 
-    ~TestClient(){}
+    ~ClientImpl(){}
 
     bool connect( std::shared_ptr<Connection> connection );
 

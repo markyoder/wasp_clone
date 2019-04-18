@@ -1,10 +1,10 @@
-#include "TestClient.h"
+#include "wasplsp/ClientImpl.h"
 #include <unistd.h>
 
 namespace wasp {
 namespace lsp  {
 
-bool TestClient::connect( std::shared_ptr<Connection> connection )
+bool ClientImpl::connect( std::shared_ptr<Connection> connection )
 {
     bool pass = true;
 
@@ -24,7 +24,7 @@ bool TestClient::connect( std::shared_ptr<Connection> connection )
     return pass;
 }
 
-bool TestClient::initialize()
+bool ClientImpl::initialize()
 {
     if ( !this->is_connected )
     {
@@ -79,7 +79,7 @@ bool TestClient::initialize()
     return pass;
 }
 
-bool TestClient::initialized()
+bool ClientImpl::initialized()
 {
     if ( !this->is_connected )
     {
@@ -107,7 +107,7 @@ bool TestClient::initialized()
     return pass;
 }
 
-bool TestClient::opened( const std::string & document_path        ,
+bool ClientImpl::opened( const std::string & document_path        ,
                          const std::string & document_language_id ,
                          const std::string & document_text        )
 {
@@ -118,7 +118,7 @@ bool TestClient::opened( const std::string & document_path        ,
     return pass;
 }
 
-bool TestClient::changed( int                 start_line        ,
+bool ClientImpl::changed( int                 start_line        ,
                           int                 start_character   ,
                           int                 end_line          ,
                           int                 end_character     ,
@@ -132,7 +132,7 @@ bool TestClient::changed( int                 start_line        ,
     return pass;
 }
 
-bool TestClient::completion( int line      ,
+bool ClientImpl::completion( int line      ,
                              int character )
 {
     bool pass = true;
@@ -142,7 +142,7 @@ bool TestClient::completion( int line      ,
     return pass;
 }
 
-bool TestClient::definition( int line      ,
+bool ClientImpl::definition( int line      ,
                              int character )
 {
     bool pass = true;
@@ -152,7 +152,7 @@ bool TestClient::definition( int line      ,
     return pass;
 }
 
-bool TestClient::references( int  line                ,
+bool ClientImpl::references( int  line                ,
                              int  character           ,
                              bool include_declaration )
 {
@@ -163,7 +163,7 @@ bool TestClient::references( int  line                ,
     return pass;
 }
 
-bool TestClient::formatting( int  start_line      ,
+bool ClientImpl::formatting( int  start_line      ,
                              int  start_character ,
                              int  end_line        ,
                              int  end_character   ,
@@ -177,7 +177,7 @@ bool TestClient::formatting( int  start_line      ,
     return pass;
 }
 
-bool TestClient::closed()
+bool ClientImpl::closed()
 {
     bool pass = true;
 
@@ -186,7 +186,7 @@ bool TestClient::closed()
     return pass;
 }
 
-bool TestClient::shutdown()
+bool ClientImpl::shutdown()
 {
     if ( !this->is_connected )
     {
@@ -242,7 +242,7 @@ bool TestClient::shutdown()
     return pass;
 }
 
-bool TestClient::exit()
+bool ClientImpl::exit()
 {
     bool pass = true;
 

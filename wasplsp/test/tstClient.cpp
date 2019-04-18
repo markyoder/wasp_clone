@@ -1,6 +1,6 @@
 #include "TestServer.h"
 #include "wasplsp/Server.h"
-#include "TestClient.h"
+#include "wasplsp/ClientImpl.h"
 #include "wasplsp/Client.h"
 #include "wasplsp/LSP.h"
 #include "wasplsp/Connection.h"
@@ -15,7 +15,7 @@ TEST(client, script)
 {
     // handles for test client and test server
 
-    Client<TestClient> test_client;
+    Client<ClientImpl> test_client;
 
     Server<TestServer> test_server;
 
