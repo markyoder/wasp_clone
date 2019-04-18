@@ -3,7 +3,7 @@
 
 #include <string>
 #include "wasplsp/LSP.h"
-#include "wasplsp/ThreadConnection.h"
+#include "wasplsp/Connection.h"
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
 
@@ -14,11 +14,16 @@ class WASP_PUBLIC TestClient
 {
   public:
 
-    TestClient() : is_setup(false) {}
+    TestClient() :
+        is_connected(false)     ,
+        is_initialized(false)   ,
+        is_document_open(false) ,
+        request_id(0)           ,
+        document_version(0)    {}
 
     ~TestClient(){}
 
-    bool setup( std::shared_ptr<Connection> connection );
+    bool connect( std::shared_ptr<Connection> connection );
 
     bool initialize();
 
@@ -58,6 +63,11 @@ class WASP_PUBLIC TestClient
 
     bool exit();
 
+    std::shared_ptr<Connection> getConnection()
+    {
+        return connection;
+    }
+
     std::string getErrors()
     {
         return errors.str();
@@ -78,17 +88,17 @@ class WASP_PUBLIC TestClient
       std::shared_ptr<Connection> connection;
       std::stringstream           errors;
 
-
-      bool                        is_setup;
-
+      bool                        is_connected;
       bool                        is_initialized;
       bool                        is_document_open;
-
       int                         request_id;
       int                         document_version;
-};
 
-//#include "TestClientx.i.h"
+      void incrementRequestID()
+      {
+          this->request_id++;
+      }
+};
 
 } // namespace lsp
 } // namespace wasp

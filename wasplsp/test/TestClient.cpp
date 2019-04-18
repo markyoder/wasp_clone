@@ -4,40 +4,39 @@
 namespace wasp {
 namespace lsp  {
 
-bool TestClient::setup( std::shared_ptr<Connection> connection )
+bool TestClient::connect( std::shared_ptr<Connection> connection )
 {
-    if ( this->is_setup )
-    {
-        this->errors << m_error << "Client already setup" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
-    this->connection = connection;
+    if ( this->is_connected )
+    {
+        this->errors << m_error << "Client already connected" << std::endl;
 
-    this->is_initialized = false;
+        pass = false;
+    }
+    else
+    {
+        this->connection = connection;
 
-    this->is_document_open = false;
-
-    this->request_id = 0;
-
-    this->is_setup = true;
+        this->is_connected = true;
+    }
 
     return pass;
 }
 
 bool TestClient::initialize()
 {
-    if ( !this->is_setup )
+    if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not setup" << std::endl;
+        this->errors << m_error << "Client not connected" << std::endl;
+
         return false;
     }
 
     if ( this->is_initialized )
     {
         this->errors << m_error << "Connection already initialized" << std::endl;
+
         return false;
     }
 
@@ -50,7 +49,7 @@ bool TestClient::initialize()
     int        response_request_id;
     DataObject response_capabilities;
 
-    this->request_id++;
+    this->incrementRequestID();
 
     pass &= buildInitializeRequest( client_object       ,
                                     this->errors        ,
@@ -59,9 +58,9 @@ bool TestClient::initialize()
                                     "temp-root-uri"     ,
                                     client_capabilities );
 
-    pass &= connection->client_write( client_object , this->errors );
+    pass &= connection->clientWrite( client_object , this->errors );
 
-    pass &= connection->client_read( response_object , this->errors );
+    pass &= connection->clientRead( response_object , this->errors );
 
     pass &= dissectInitializeResponse( response_object     ,
                                        this->errors        ,
@@ -71,7 +70,8 @@ bool TestClient::initialize()
     if ( response_request_id != this->request_id )
     {
         this->errors << m_error << "Initialize response id mismatch" << std::endl;
-        return false;
+
+        pass = false;
     }
 
     this->is_initialized = true;
@@ -81,15 +81,17 @@ bool TestClient::initialize()
 
 bool TestClient::initialized()
 {
-    if ( !this->is_setup )
+    if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not setup" << std::endl;
+        this->errors << m_error << "Client not connected" << std::endl;
+
         return false;
     }
 
     if ( !this->is_initialized )
     {
         this->errors << m_error << "Connection not initialized" << std::endl;
+
         return false;
     }
 
@@ -100,7 +102,7 @@ bool TestClient::initialized()
     pass &= buildInitializedNotification( client_object ,
                                           this->errors  );
 
-    pass &= connection->client_write( client_object , this->errors );
+    pass &= connection->clientWrite( client_object , this->errors );
 
     return pass;
 }
@@ -186,21 +188,24 @@ bool TestClient::closed()
 
 bool TestClient::shutdown()
 {
-    if ( !this->is_setup )
+    if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not setup" << std::endl;
+        this->errors << m_error << "Client not connected" << std::endl;
+
         return false;
     }
 
     if ( !this->is_initialized )
     {
         this->errors << m_error << "Connection needs to be initialized" << std::endl;
+
         return false;
     }
 
     if ( this->is_document_open )
     {
         this->errors << m_error << "Document needs to be closed" << std::endl;
+
         return false;
     }
 
@@ -211,15 +216,15 @@ bool TestClient::shutdown()
     DataObject response_object;
     int        response_request_id;
 
-    this->request_id++;
+    this->incrementRequestID();
 
     pass &= buildShutdownRequest( client_object    ,
                                   this->errors     ,
                                   this->request_id );
 
-    pass &= connection->client_write( client_object , this->errors );
+    pass &= connection->clientWrite( client_object , this->errors );
 
-    pass &= connection->client_read( response_object , this->errors );
+    pass &= connection->clientRead( response_object , this->errors );
 
     pass &= dissectShutdownResponse( response_object     ,
                                      this->errors        ,
@@ -228,7 +233,8 @@ bool TestClient::shutdown()
     if ( response_request_id != this->request_id )
     {
         this->errors << m_error << "Shutdown response id mismatch" << std::endl;
-        return false;
+
+        pass = false;
     }
 
     this->is_initialized = false;
@@ -240,15 +246,17 @@ bool TestClient::exit()
 {
     bool pass = true;
 
-    if ( !this->is_setup )
+    if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not setup" << std::endl;
+        this->errors << m_error << "Client not connected" << std::endl;
+
         return false;
     }
 
     if ( this->is_initialized )
     {
         this->errors << m_error << "Connection needs to be shutdown" << std::endl;
+
         return false;
     }
 
@@ -257,9 +265,9 @@ bool TestClient::exit()
     pass &= buildExitNotification( client_object ,
                                    this->errors  );
 
-    pass &= connection->client_write( client_object , this->errors );
+    pass &= connection->clientWrite( client_object , this->errors );
 
-    this->is_setup = false;
+    this->is_connected = false;
 
     return pass;
 }

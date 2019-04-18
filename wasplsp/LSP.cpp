@@ -31,9 +31,9 @@ bool objectToRPCString( DataObject   & object ,
     return pass;
 }
 
-bool RPCStringToObject( std::string  & rpcstr ,
-                        DataObject   & object ,
-                        std::ostream & errors )
+bool RPCStringToObject( const std::string  & rpcstr ,
+                              DataObject   & object ,
+                              std::ostream & errors )
 {
     bool pass = true;
 

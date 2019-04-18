@@ -111,6 +111,11 @@ class WASP_PUBLIC Server
         return Impl.getConnection();
     }
 
+    bool isRunning()
+    {
+        return Impl.isRunning();
+    }
+
     std::string getErrors()
     {
         return Impl.getErrors();

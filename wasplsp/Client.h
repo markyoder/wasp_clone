@@ -15,9 +15,9 @@ class WASP_PUBLIC Client
 
     ~Client(){}
 
-    bool setup( std::shared_ptr<Connection> connection )
+    bool connect( std::shared_ptr<Connection> connection )
     {
-        return Impl.setup( connection );
+        return Impl.connect( connection );
     }
 
     bool initialize()
@@ -104,6 +104,11 @@ class WASP_PUBLIC Client
     bool exit()
     {
         return Impl.exit();
+    }
+
+    std::shared_ptr<Connection> getConnection()
+    {
+        return Impl.getConnection();
     }
 
     std::string getErrors()

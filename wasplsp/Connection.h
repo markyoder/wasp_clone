@@ -15,17 +15,21 @@ class WASP_PUBLIC Connection
 
     ~Connection(){}
 
-    virtual bool server_write( DataObject        & object ,
-                               std::stringstream & errors ) = 0;
-
-    virtual bool client_write( DataObject        & object ,
-                               std::stringstream & errors ) = 0;
-
-    virtual bool server_read( DataObject        & object ,
+    virtual bool serverWrite( DataObject        & object ,
                               std::stringstream & errors ) = 0;
 
-    virtual bool client_read( DataObject        & object ,
+    virtual bool clientWrite( DataObject        & object ,
                               std::stringstream & errors ) = 0;
+
+    virtual bool serverRead( DataObject        & object ,
+                             std::stringstream & errors ) = 0;
+
+    virtual bool clientRead( DataObject        & object ,
+                             std::stringstream & errors ) = 0;
+
+    virtual bool isServerRunning() = 0;
+
+    virtual std::string getServerErrors() = 0;
 };
 
 } // namespace lsp

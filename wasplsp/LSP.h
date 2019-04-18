@@ -16,9 +16,9 @@ bool objectToRPCString( DataObject   & object ,
                         std::ostream & errors );
 
 WASP_PUBLIC
-bool RPCStringToObject( std::string  & rpcstr ,
-                        DataObject   & object ,
-                        std::ostream & errors );
+bool RPCStringToObject( const std::string  & rpcstr ,
+                              DataObject   & object ,
+                              std::ostream & errors );
 
 WASP_PUBLIC
 bool checkPosition( std::ostream & errors    ,
@@ -445,8 +445,6 @@ static const char m_deprecated[]            = "deprecated";
 static const char m_preselect[]             = "preselect";
 static const char m_items[]                 = "items";
 static const char m_is_incomplete[]         = "isIncomplete";
-
-//#include "LSP.i.h"
 
 } // namespace lsp
 } // namespace wasp

@@ -16,7 +16,7 @@ class WASP_PUBLIC TestServer
 
     TestServer() : is_initialized(false) , is_document_open(false)
     {
-        connection = std::make_shared<ThreadConnection>();
+        connection = std::make_shared<ThreadConnection<TestServer>>(this);
     }
 
     ~TestServer(){}
@@ -101,7 +101,7 @@ class WASP_PUBLIC TestServer
                           int           tab_size            ,
                           bool          insert_spaces       );
 
-    std::shared_ptr<ThreadConnection> getConnection()
+    std::shared_ptr<ThreadConnection<TestServer>> getConnection()
     {
         return connection;
     }
@@ -111,27 +111,30 @@ class WASP_PUBLIC TestServer
         return errors.str();
     }
 
+    bool isRunning()
+    {
+        return this->is_initialized;
+    }
+
   private:
 
-      std::shared_ptr<ThreadConnection>  connection;
-      std::stringstream                  errors;
+      std::shared_ptr<ThreadConnection<TestServer>> connection;
+      std::stringstream                             errors;
 
-      bool                               is_initialized;
-      bool                               is_document_open;
+      bool                                          is_initialized;
+      bool                                          is_document_open;
 
-      DataObject                         server_capabilities;
-      DataObject                         client_capabilities;
-      std::string                        client_root_path;
-      int                                client_process_id;
-      int                                client_request_id;
+      DataObject                                    server_capabilities;
+      DataObject                                    client_capabilities;
+      std::string                                   client_root_path;
+      int                                           client_process_id;
+      int                                           client_request_id;
 
-      std::string                        document_path;
-      std::string                        document_language_id;
-      std::string                        document_text;
-      int                                document_version;
+      std::string                                   document_path;
+      std::string                                   document_language_id;
+      std::string                                   document_text;
+      int                                           document_version;
 };
-
-//#include "TestServer.i.h"
 
 } // namespace lsp
 } // namespace wasp

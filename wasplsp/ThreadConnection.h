@@ -9,16 +9,17 @@
 namespace wasp {
 namespace lsp  {
 
+template<class SERVER>
 class WASP_PUBLIC ThreadConnection : public Connection
 {
   public:
 
-    ThreadConnection(){}
+    ThreadConnection(SERVER * server){ this->server = server; }
 
     ~ThreadConnection(){}
 
-    bool server_write( DataObject        & object ,
-                       std::stringstream & errors )
+    bool serverWrite( DataObject        & object ,
+                      std::stringstream & errors )
     {
         bool pass = true;
 
@@ -31,8 +32,8 @@ class WASP_PUBLIC ThreadConnection : public Connection
         return pass;
     }
 
-    bool client_write( DataObject        & object ,
-                       std::stringstream & errors )
+    bool clientWrite( DataObject        & object ,
+                      std::stringstream & errors )
     {
         bool pass = true;
 
@@ -45,8 +46,8 @@ class WASP_PUBLIC ThreadConnection : public Connection
         return pass;
     }
 
-    bool server_read( DataObject        & object ,
-                      std::stringstream & errors )
+    bool serverRead( DataObject        & object ,
+                     std::stringstream & errors )
     {
        bool pass = true;
 
@@ -59,8 +60,8 @@ class WASP_PUBLIC ThreadConnection : public Connection
        return pass;
     }
 
-    bool client_read( DataObject        & object ,
-                      std::stringstream & errors )
+    bool clientRead( DataObject        & object ,
+                     std::stringstream & errors )
     {
         bool pass = true;
 
@@ -73,7 +74,19 @@ class WASP_PUBLIC ThreadConnection : public Connection
         return pass;
     }
 
+    bool isServerRunning()
+    {
+        return ( server != nullptr && server->isRunning() );
+    }
+
+    std::string getServerErrors()
+    {
+        return server->getErrors();
+    }
+
   private:
+
+    SERVER * server;
 
     StreamLock client_to_server;
 
