@@ -2,8 +2,9 @@
 #define WASPLSP_THREAD_CONNECTION_H
 
 #include <string>
+#include <mutex>
+#include <condition_variable>
 #include "wasplsp/Connection.h"
-#include "wasplsp/StreamLock.h"
 #include "waspcore/decl.h"
 
 namespace wasp {
@@ -18,60 +19,45 @@ class WASP_PUBLIC ThreadConnection : public Connection
 
     ~ThreadConnection(){}
 
-    bool serverWrite( DataObject        & object ,
-                      std::stringstream & errors )
+    bool read( DataObject & object , std::stringstream & errors )
     {
         bool pass = true;
 
-        std::string rpc_string;
+        std::unique_lock<std::mutex> unique_lock( mutex_lock );
 
-        pass &= objectToRPCString( object , rpc_string , errors );
+        if( this->packet.empty() )
+        {
+            ready_to_read.wait( unique_lock );
+        }
 
-        pass &= server_to_client.write( rpc_string );
+        std::string rpc_string = this->packet;
 
-        return pass;
-    }
+        this->packet.clear();
 
-    bool clientWrite( DataObject        & object ,
-                      std::stringstream & errors )
-    {
-        bool pass = true;
-
-        std::string rpc_string;
-
-        pass &= objectToRPCString( object , rpc_string , errors );
-
-        pass &= client_to_server.write( rpc_string );
-
-        return pass;
-    }
-
-    bool serverRead( DataObject        & object ,
-                     std::stringstream & errors )
-    {
-       bool pass = true;
-
-       std::string rpc_string;
-
-       pass &= client_to_server.read( rpc_string );
-
-       pass &= RPCStringToObject( rpc_string , object , errors );
-
-       return pass;
-    }
-
-    bool clientRead( DataObject        & object ,
-                     std::stringstream & errors )
-    {
-        bool pass = true;
-
-        std::string rpc_string;
-
-        pass &= server_to_client.read( rpc_string );
+        ready_to_write.notify_all();
 
         pass &= RPCStringToObject( rpc_string , object , errors );
 
-        return pass;
+        return true;
+    }
+
+    bool write( DataObject & object , std::stringstream & errors )
+    {
+        bool pass = true;
+
+        std::unique_lock<std::mutex> unique_lock( mutex_lock );
+
+        std::string rpc_string;
+
+        pass &= objectToRPCString( object , rpc_string , errors );
+
+        this->packet = rpc_string;
+
+        ready_to_read.notify_all();
+
+        ready_to_write.wait( unique_lock );
+
+        return true;
     }
 
     bool isServerRunning()
@@ -88,9 +74,14 @@ class WASP_PUBLIC ThreadConnection : public Connection
 
     SERVER * server;
 
-    StreamLock client_to_server;
+    std::mutex              mutex_lock;
 
-    StreamLock server_to_client;
+    std::condition_variable ready_to_read;
+
+    std::condition_variable ready_to_write;
+
+    std::string             packet;
+
 };
 
 } // namespace lsp

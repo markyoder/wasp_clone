@@ -13,8 +13,7 @@ bool TestServer::run()
         std::string method_name;
         DataObject  output_object;
 
-        pass &= this->connection->serverRead( input_object ,
-                                              this->errors );
+        pass &= this->connection->read( input_object , this->errors );
 
         if ( input_object[m_method].is_string() )
         {
@@ -90,8 +89,7 @@ bool TestServer::run()
 
         if ( !output_object.empty() )
         {
-            pass &= this->connection->serverWrite( output_object ,
-                                                   this->errors  );
+            pass &= this->connection->write( output_object , this->errors );
         }
     }
 

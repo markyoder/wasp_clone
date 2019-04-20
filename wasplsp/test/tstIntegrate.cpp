@@ -49,11 +49,9 @@ TEST(integrate, test_initialize)
                                          client_root_uri     ,
                                          client_capabilities ) );
 
-    ASSERT_TRUE( test_connection->clientWrite( client_object ,
-                                               client_errors ) );
+    ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
 
-    ASSERT_TRUE( test_connection->clientRead( response_object ,
-                                              client_errors   ) );
+    ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
     ASSERT_TRUE( dissectInitializeResponse( response_object       ,
                                             client_errors         ,
@@ -75,8 +73,7 @@ TEST(integrate, test_initialized)
     ASSERT_TRUE( buildInitializedNotification( client_object ,
                                                client_errors ) );
 
-    ASSERT_TRUE( test_connection->clientWrite( client_object ,
-                                               client_errors ) );
+    ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
 }
 
 TEST(integrate, test_didopen)
@@ -111,11 +108,9 @@ TEST(integrate, test_didopen)
                                            document_version     ,
                                            document_text        ) );
 
-    ASSERT_TRUE( test_connection->clientWrite( client_object ,
-                                               client_errors ) );
+    ASSERT_TRUE( test_connection->write( client_object ,  client_errors ) );
 
-    ASSERT_TRUE( test_connection->clientRead( response_object ,
-                                              client_errors   ) );
+    ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
     ASSERT_TRUE( dissectPublishDiagnosticsNotification( response_object      ,
                                                         client_errors        ,
@@ -186,11 +181,9 @@ TEST(integrate, test_didchange)
                                              range_length     ,
                                              document_text    ) );
 
-    ASSERT_TRUE( test_connection->clientWrite( client_object ,
-                                               client_errors ) );
+    ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
 
-    ASSERT_TRUE( test_connection->clientRead( response_object ,
-                                              client_errors   ) );
+    ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
     ASSERT_TRUE( dissectPublishDiagnosticsNotification( response_object      ,
                                                         client_errors        ,
@@ -257,11 +250,9 @@ TEST(integrate, test_completion)
                                          line              ,
                                          character         ) );
 
-    ASSERT_TRUE( test_connection->clientWrite( client_object ,
-                                               client_errors ) );
+    ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
 
-    ASSERT_TRUE( test_connection->clientRead( response_object ,
-                                              client_errors   ) );
+    ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
     ASSERT_TRUE( dissectCompletionResponse( response_object        ,
                                             client_errors          ,
@@ -329,11 +320,9 @@ TEST(integrate, test_definition)
                                          line              ,
                                          character         ) );
 
-    ASSERT_TRUE( test_connection->clientWrite( client_object ,
-                                               client_errors ) );
+    ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
 
-    ASSERT_TRUE( test_connection->clientRead( response_object ,
-                                              client_errors   ) );
+    ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
     ASSERT_TRUE( dissectLocationsResponse( response_object      ,
                                            client_errors        ,
@@ -389,11 +378,9 @@ TEST(integrate, test_references)
                                          character           ,
                                          include_declaration ) );
 
-    ASSERT_TRUE( test_connection->clientWrite( client_object ,
-                                               client_errors ) );
+    ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
 
-    ASSERT_TRUE( test_connection->clientRead( response_object ,
-                                              client_errors   ) );;
+    ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
     ASSERT_TRUE( dissectLocationsResponse( response_object      ,
                                            client_errors        ,
@@ -456,11 +443,9 @@ TEST(integrate, test_formatting)
                                               tab_size          ,
                                               insert_spaces     ) );
 
-    ASSERT_TRUE( test_connection->clientWrite( client_object ,
-                                               client_errors ) );
+    ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
 
-    ASSERT_TRUE( test_connection->clientRead( response_object ,
-                                              client_errors   ) );
+    ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
     ASSERT_TRUE( dissectRangeFormattingResponse( response_object      ,
                                                  client_errors       ,
@@ -498,8 +483,7 @@ TEST(integrate, test_didclose)
                                             client_errors ,
                                             document_uri  ) );
 
-    ASSERT_TRUE( test_connection->clientWrite( client_object ,
-                                               client_errors ) );
+    ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
 }
 
 TEST(integrate, test_shutdown)
@@ -518,11 +502,9 @@ TEST(integrate, test_shutdown)
                                        client_errors     ,
                                        client_request_id ) );
 
-    ASSERT_TRUE( test_connection->clientWrite( client_object ,
-                                               client_errors ) );
+    ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
 
-    ASSERT_TRUE( test_connection->clientRead( response_object ,
-                                              client_errors   ) );
+    ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
     ASSERT_TRUE( dissectShutdownResponse( response_object     ,
                                           client_errors       ,
@@ -542,8 +524,7 @@ TEST(integrate, test_exit)
     ASSERT_TRUE( buildExitNotification( client_object ,
                                         client_errors ) );
 
-    ASSERT_TRUE( test_connection->clientWrite( client_object ,
-                                               client_errors ) );
+    ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
 }
 
 TEST(integrate, server_thread_join)

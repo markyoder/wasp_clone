@@ -15,17 +15,9 @@ class WASP_PUBLIC Connection
 
     ~Connection(){}
 
-    virtual bool serverWrite( DataObject        & object ,
-                              std::stringstream & errors ) = 0;
+    virtual bool write( DataObject & object , std::stringstream & errors ) = 0;
 
-    virtual bool clientWrite( DataObject        & object ,
-                              std::stringstream & errors ) = 0;
-
-    virtual bool serverRead( DataObject        & object ,
-                             std::stringstream & errors ) = 0;
-
-    virtual bool clientRead( DataObject        & object ,
-                             std::stringstream & errors ) = 0;
+    virtual bool read ( DataObject & object , std::stringstream & errors ) = 0;
 
     virtual bool isServerRunning() = 0;
 

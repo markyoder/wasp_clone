@@ -58,9 +58,9 @@ bool ClientImpl::initialize()
                                     "temp-root-uri"     ,
                                     client_capabilities );
 
-    pass &= connection->clientWrite( client_object , this->errors );
+    pass &= connection->write( client_object , this->errors );
 
-    pass &= connection->clientRead( response_object , this->errors );
+    pass &= connection->read( response_object , this->errors );
 
     pass &= dissectInitializeResponse( response_object     ,
                                        this->errors        ,
@@ -102,7 +102,7 @@ bool ClientImpl::initialized()
     pass &= buildInitializedNotification( client_object ,
                                           this->errors  );
 
-    pass &= connection->clientWrite( client_object , this->errors );
+    pass &= connection->write( client_object , this->errors );
 
     return pass;
 }
@@ -222,9 +222,9 @@ bool ClientImpl::shutdown()
                                   this->errors     ,
                                   this->request_id );
 
-    pass &= connection->clientWrite( client_object , this->errors );
+    pass &= connection->write( client_object , this->errors );
 
-    pass &= connection->clientRead( response_object , this->errors );
+    pass &= connection->read( response_object , this->errors );
 
     pass &= dissectShutdownResponse( response_object     ,
                                      this->errors        ,
@@ -265,7 +265,7 @@ bool ClientImpl::exit()
     pass &= buildExitNotification( client_object ,
                                    this->errors  );
 
-    pass &= connection->clientWrite( client_object , this->errors );
+    pass &= connection->write( client_object , this->errors );
 
     this->is_connected = false;
 
