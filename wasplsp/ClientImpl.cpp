@@ -42,13 +42,13 @@ bool ClientImpl::initialize()
 
     bool pass = true;
 
+    this->incrementRequestID();
+
     DataObject client_object;
     DataObject client_capabilities;
     DataObject response_object;
     int        response_request_id;
     DataObject response_capabilities;
-
-    this->incrementRequestID();
 
     pass &= buildInitializeRequest( client_object       ,
                                     this->errors        ,
@@ -133,13 +133,13 @@ bool ClientImpl::opened( const std::string & document_path        ,
 
     bool pass = true;
 
-    DataObject  client_object;
-    DataObject  response_object;
-    std::string response_uri;
-
     this->document_path = document_path;
 
     this->incrementDocumentVersion();
+
+    DataObject  client_object;
+    DataObject  response_object;
+    std::string response_uri;
 
     pass &= buildDidOpenNotification( client_object          ,
                                       this->errors           ,
@@ -201,11 +201,11 @@ bool ClientImpl::changed( int                 start_line        ,
 
     bool pass = true;
 
+    this->incrementDocumentVersion();
+
     DataObject  client_object;
     DataObject  response_object;
     std::string response_uri;
-
-    this->incrementDocumentVersion();
 
     pass &= buildDidChangeNotification( client_object          ,
                                         this->errors           ,
@@ -242,9 +242,61 @@ bool ClientImpl::changed( int                 start_line        ,
 bool ClientImpl::completion( int line      ,
                              int character )
 {
+    if ( !this->is_connected )
+    {
+        this->errors << m_error << "Client not connected" << std::endl;
+
+        return false;
+    }
+
+    if ( !this->is_initialized )
+    {
+        this->errors << m_error << "Connection not initialized" << std::endl;
+
+        return false;
+    }
+
+    if ( !this->is_document_open )
+    {
+        this->errors << m_error << "Document not open" << std::endl;
+
+        return false;
+    }
+
     bool pass = true;
 
-    /* * * TODO * * */
+    this->incrementRequestID();
+
+    DataObject client_object;
+    DataObject response_object;
+    int        response_request_id;
+    bool       response_is_incomplete;
+
+    pass &= buildCompletionRequest( client_object       ,
+                                    this->errors        ,
+                                    this->request_id    ,
+                                    this->document_path ,
+                                    line                ,
+                                    character           );
+
+    pass &= connection->write( client_object , this->errors );
+
+    pass &= connection->read( response_object , this->errors );
+
+    pass &= dissectCompletionResponse( response_object        ,
+                                       this->errors           ,
+                                       response_request_id    ,
+                                       response_is_incomplete ,
+                                       this->response_array   );
+
+    if ( response_request_id != this->request_id )
+    {
+        this->errors << m_error << "Completion response id mismatch" << std::endl;
+
+        pass = false;
+    }
+
+    this->response_array_type = COMPLETION;
 
     return pass;
 }
@@ -252,9 +304,45 @@ bool ClientImpl::completion( int line      ,
 bool ClientImpl::definition( int line      ,
                              int character )
 {
+    if ( !this->is_connected )
+    {
+        this->errors << m_error << "Client not connected" << std::endl;
+
+        return false;
+    }
+
+    if ( !this->is_initialized )
+    {
+        this->errors << m_error << "Connection not initialized" << std::endl;
+
+        return false;
+    }
+
+    if ( !this->is_document_open )
+    {
+        this->errors << m_error << "Document not open" << std::endl;
+
+        return false;
+    }
+
     bool pass = true;
 
+    this->incrementRequestID();
+
+    DataObject client_object;
+    DataObject response_object;
+    int        response_request_id;
+
     /* * * TODO * * */
+
+    if ( response_request_id != this->request_id )
+    {
+        this->errors << m_error << "Definition response id mismatch" << std::endl;
+
+        pass = false;
+    }
+
+    this->response_array_type = DEFINITION;
 
     return pass;
 }
@@ -263,9 +351,45 @@ bool ClientImpl::references( int  line                ,
                              int  character           ,
                              bool include_declaration )
 {
+    if ( !this->is_connected )
+    {
+        this->errors << m_error << "Client not connected" << std::endl;
+
+        return false;
+    }
+
+    if ( !this->is_initialized )
+    {
+        this->errors << m_error << "Connection not initialized" << std::endl;
+
+        return false;
+    }
+
+    if ( !this->is_document_open )
+    {
+        this->errors << m_error << "Document not open" << std::endl;
+
+        return false;
+    }
+
     bool pass = true;
 
+    this->incrementRequestID();
+
+    DataObject client_object;
+    DataObject response_object;
+    int        response_request_id;
+
     /* * * TODO * * */
+
+    if ( response_request_id != this->request_id )
+    {
+        this->errors << m_error << "References response id mismatch" << std::endl;
+
+        pass = false;
+    }
+
+    this->response_array_type = REFERENCES;
 
     return pass;
 }
@@ -277,9 +401,45 @@ bool ClientImpl::formatting( int  start_line      ,
                              int  tab_size        ,
                              bool insert_spaces   )
 {
+    if ( !this->is_connected )
+    {
+        this->errors << m_error << "Client not connected" << std::endl;
+
+        return false;
+    }
+
+    if ( !this->is_initialized )
+    {
+        this->errors << m_error << "Connection not initialized" << std::endl;
+
+        return false;
+    }
+
+    if ( !this->is_document_open )
+    {
+        this->errors << m_error << "Document not open" << std::endl;
+
+        return false;
+    }
+
     bool pass = true;
 
+    this->incrementRequestID();
+
+    DataObject client_object;
+    DataObject response_object;
+    int        response_request_id;
+
     /* * * TODO * * */
+
+    if ( response_request_id != this->request_id )
+    {
+        this->errors << m_error << "Formatting response id mismatch" << std::endl;
+
+        pass = false;
+    }
+
+    this->response_array_type = FORMATTING;
 
     return pass;
 }
@@ -347,11 +507,11 @@ bool ClientImpl::shutdown()
 
     bool pass = true;
 
+    this->incrementRequestID();
+
     DataObject client_object;
     DataObject response_object;
     int        response_request_id;
-
-    this->incrementRequestID();
 
     pass &= buildShutdownRequest( client_object    ,
                                   this->errors     ,

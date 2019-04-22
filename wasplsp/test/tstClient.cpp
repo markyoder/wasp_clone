@@ -111,7 +111,6 @@ TEST(client, script)
             ASSERT_EQ ( code            , "test.code.11"     );
             ASSERT_EQ ( source          , "test_source_11"   );
             ASSERT_EQ ( message         , "Test message 11." );
-
         }
         else if ( index == 1 )
         {
@@ -123,7 +122,6 @@ TEST(client, script)
             ASSERT_EQ ( code            , "test.code.22"     );
             ASSERT_EQ ( source          , "test_source_22"   );
             ASSERT_EQ ( message         , "Test message 22." );
-
         }
         else if ( index == 2 )
         {
@@ -135,7 +133,6 @@ TEST(client, script)
             ASSERT_EQ ( code            , "test.code.33"     );
             ASSERT_EQ ( source          , "test_source_33"   );
             ASSERT_EQ ( message         , "Test message 33." );
-
         }
     }
 
@@ -158,8 +155,6 @@ TEST(client, script)
                                        new_document_text ) );
 
     ASSERT_EQ   ( test_client.getCurrentDocumentVersion() , 2 );
-
-    ASSERT_TRUE ( test_client.getConnection()->isServerRunning() );
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
@@ -202,7 +197,6 @@ TEST(client, script)
             ASSERT_EQ ( code            , "test.code.44"     );
             ASSERT_EQ ( source          , "test_source_44"   );
             ASSERT_EQ ( message         , "Test message 44." );
-
         }
         else if ( index == 1 )
         {
@@ -214,13 +208,97 @@ TEST(client, script)
             ASSERT_EQ ( code            , "test.code.55"     );
             ASSERT_EQ ( source          , "test_source_55"   );
             ASSERT_EQ ( message         , "Test message 55." );
-
         }
     }
 
-    /* * * TODO : COMPLETION * * */
+    /* * * COMPLETION * * */
 
-    /* * * TODO : COMPLETION RESPONSE * * */
+    int line        = 4;
+    int character   = 2;
+
+    ASSERT_TRUE ( test_client.completion( line      ,
+                                          character ) );
+
+    ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
+
+    ASSERT_TRUE ( test_client.getErrors().empty() );
+
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 2 );
+
+    /* * * COMPLETION RESPONSE * * */
+
+    ASSERT_EQ   ( test_client.getCompletionSize(), 3 );
+
+    for (int index = 0; index < test_client.getCompletionSize(); index++)
+    {
+        std::string label;
+        int         start_line;
+        int         start_character;
+        int         end_line;
+        int         end_character;
+        std::string new_text;
+        int         kind;
+        std::string detail;
+        std::string documentation;
+        bool        deprecated;
+        bool        preselect;
+
+        ASSERT_TRUE ( test_client.getCompletionAt( index           ,
+                                                   label           ,
+                                                   start_line      ,
+                                                   start_character ,
+                                                   end_line        ,
+                                                   end_character   ,
+                                                   new_text        ,
+                                                   kind            ,
+                                                   detail          ,
+                                                   documentation   ,
+                                                   deprecated      ,
+                                                   preselect       ) );
+
+        if ( index == 0 )
+        {
+            EXPECT_EQ ( label           , "test-label-1"         );
+            EXPECT_EQ ( start_line      , 11                     );
+            EXPECT_EQ ( start_character , 11                     );
+            EXPECT_EQ ( end_line        , 11                     );
+            EXPECT_EQ ( end_character   , 11                     );
+            EXPECT_EQ ( new_text        , "test-insert-text-1"   );
+            EXPECT_EQ ( kind            , 1                      );
+            EXPECT_EQ ( detail          , "test type info 1"     );
+            EXPECT_EQ ( documentation   , "test documentation 1" );
+            EXPECT_EQ ( deprecated      , false                  );
+            EXPECT_EQ ( preselect       , true                   );
+        }
+        else if ( index == 1 )
+        {
+            EXPECT_EQ ( label           , "test-label-2"         );
+            EXPECT_EQ ( start_line      , 22                     );
+            EXPECT_EQ ( start_character , 22                     );
+            EXPECT_EQ ( end_line        , 22                     );
+            EXPECT_EQ ( end_character   , 22                     );
+            EXPECT_EQ ( new_text        , "test-insert-text-2"   );
+            EXPECT_EQ ( kind            , 2                      );
+            EXPECT_EQ ( detail          , "test type info 2"     );
+            EXPECT_EQ ( documentation   , "test documentation 2" );
+            EXPECT_EQ ( deprecated      , false                  );
+            EXPECT_EQ ( preselect       , false                  );
+        }
+        else if ( index == 2 )
+        {
+            EXPECT_EQ ( label           , "test-label-3"         );
+            EXPECT_EQ ( start_line      , 33                     );
+            EXPECT_EQ ( start_character , 33                     );
+            EXPECT_EQ ( end_line        , 33                     );
+            EXPECT_EQ ( end_character   , 33                     );
+            EXPECT_EQ ( new_text        , "test-insert-text-3"   );
+            EXPECT_EQ ( kind            , 3                      );
+            EXPECT_EQ ( detail          , "test type info 3"     );
+            EXPECT_EQ ( documentation   , "test documentation 3" );
+            EXPECT_EQ ( deprecated      , false                  );
+            EXPECT_EQ ( preselect       , false                  );
+        }
+    }
 
     /* * * TODO : DEFINITION * * */
 
@@ -246,7 +324,7 @@ TEST(client, script)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 2 );
 
     /* * * SHUTDOWN * * */
 
@@ -260,7 +338,7 @@ TEST(client, script)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 2 );
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 3 );
 
     /* * * EXIT * * */
 
@@ -270,7 +348,7 @@ TEST(client, script)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 2 );
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 3 );
 
     // make sure server thread finishes execution from the exit notification
 
