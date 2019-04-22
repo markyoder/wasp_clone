@@ -17,7 +17,7 @@ Client<ClientImpl> test_client;
 Server<TestServer> test_server;
 std::thread        server_thread;
 
-TEST(client, launch_server_connnect_client)
+TEST(client, launch_server_thread_and_connnect_client)
 {
     // launch server thread and connect test client to server's communication
 
@@ -36,7 +36,7 @@ TEST(client, initialize)
 
     ASSERT_FALSE( test_client.getConnection()->isServerRunning() );
 
-    ASSERT_TRUE ( test_client.initialize() );
+    ASSERT_TRUE ( test_client.doInitialize() );
 
     ASSERT_TRUE ( test_client.getConnection()->isServerRunning() );
 
@@ -51,7 +51,7 @@ TEST(client, initialized)
 {
     // initialized
 
-    ASSERT_TRUE ( test_client.initialized() );
+    ASSERT_TRUE ( test_client.doInitialized() );
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
@@ -60,9 +60,9 @@ TEST(client, initialized)
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
 }
 
-TEST(client, opened_and_diagnostics)
+TEST(client, document_open_and_diagnostics)
 {
-    // opened
+    // document open
 
     std::string document_path        = "/test/document/path.inp";
     std::string document_language_id = "test-document-language-id";
@@ -70,9 +70,9 @@ TEST(client, opened_and_diagnostics)
 
     ASSERT_FALSE( test_client.isDocumentOpen() );
 
-    ASSERT_TRUE ( test_client.opened( document_path        ,
-                                      document_language_id ,
-                                      document_text        ) );
+    ASSERT_TRUE ( test_client.doDocumentOpen( document_path        ,
+                                              document_language_id ,
+                                              document_text        ) );
 
     ASSERT_TRUE ( test_client.isDocumentOpen() );
 
@@ -84,7 +84,7 @@ TEST(client, opened_and_diagnostics)
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
 
-    // diagnostic response
+    // diagnostic responses
 
     ASSERT_EQ   ( test_client.getDiagnosticSize(), 3 );
 
@@ -144,9 +144,9 @@ TEST(client, opened_and_diagnostics)
     }
 }
 
-TEST(client, changed_and_diagnostics)
+TEST(client, document_change_and_diagnostics)
 {
-    // changed
+    // document change
 
     int         start_line        = 0;
     int         start_character   = 0;
@@ -157,12 +157,12 @@ TEST(client, changed_and_diagnostics)
 
     ASSERT_EQ   ( test_client.getCurrentDocumentVersion() , 1 );
 
-    ASSERT_TRUE ( test_client.changed( start_line        ,
-                                       start_character   ,
-                                       end_line          ,
-                                       end_character     ,
-                                       range_length      ,
-                                       new_document_text ) );
+    ASSERT_TRUE ( test_client.doDocumentChange( start_line        ,
+                                                start_character   ,
+                                                end_line          ,
+                                                end_character     ,
+                                                range_length      ,
+                                                new_document_text ) );
 
     ASSERT_EQ   ( test_client.getCurrentDocumentVersion() , 2 );
 
@@ -172,7 +172,7 @@ TEST(client, changed_and_diagnostics)
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
 
-    // diagnostic response
+    // diagnostic responses
 
     ASSERT_EQ   ( test_client.getDiagnosticSize(), 2 );
 
@@ -221,15 +221,15 @@ TEST(client, changed_and_diagnostics)
     }
 }
 
-TEST(client, completion_and_response)
+TEST(client, document_completion_and_responses)
 {
-    // completion
+    // document completion
 
     int line        = 4;
     int character   = 2;
 
-    ASSERT_TRUE ( test_client.completion( line      ,
-                                          character ) );
+    ASSERT_TRUE ( test_client.doDocumentCompletion( line      ,
+                                                    character ) );
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
@@ -237,7 +237,7 @@ TEST(client, completion_and_response)
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 2 );
 
-    // completion response
+    // completion responses
 
     ASSERT_EQ   ( test_client.getCompletionSize(), 3 );
 
@@ -312,15 +312,15 @@ TEST(client, completion_and_response)
     }
 }
 
-TEST(client, definition_and_response)
+TEST(client, document_definition_and_responses)
 {
-    // definition
+    // document definition
 
     int line        = 2;
     int character   = 5;
 
-    ASSERT_TRUE ( test_client.definition( line      ,
-                                          character ) );
+    ASSERT_TRUE ( test_client.doDocumentDefinition( line      ,
+                                                    character ) );
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
@@ -328,7 +328,7 @@ TEST(client, definition_and_response)
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 3 );
 
-    // definition response
+    // definition responses
 
     ASSERT_EQ   ( test_client.getDefinitionSize(), 3 );
 
@@ -368,17 +368,17 @@ TEST(client, definition_and_response)
     }
 }
 
-TEST(client, references_and_response)
+TEST(client, document_references_and_responses)
 {
-    // references
+    // document references
 
     int  line                = 1;
     int  character           = 3;
     bool include_declaration = false;
 
-    ASSERT_TRUE ( test_client.references( line                ,
-                                          character           ,
-                                          include_declaration ) );
+    ASSERT_TRUE ( test_client.doDocumentReferences( line                ,
+                                                    character           ,
+                                                    include_declaration ) );
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
@@ -386,7 +386,7 @@ TEST(client, references_and_response)
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 4 );
 
-    // references response
+    // references responses
 
     ASSERT_EQ   ( test_client.getReferencesSize(), 2 );
 
@@ -419,9 +419,9 @@ TEST(client, references_and_response)
     }
 }
 
-TEST(client, formatting_and_response)
+TEST(client, document_formatting_and_responses)
 {
-    // formatting
+    // document formatting
 
     int         start_line        =  2;
     int         start_character   =  0;
@@ -430,12 +430,12 @@ TEST(client, formatting_and_response)
     int         tab_size          =  4;
     bool        insert_spaces     =  true;
 
-    ASSERT_TRUE ( test_client.formatting( start_line      ,
-                                          start_character ,
-                                          end_line        ,
-                                          end_character   ,
-                                          tab_size        ,
-                                          insert_spaces   ) );
+    ASSERT_TRUE ( test_client.doDocumentFormatting( start_line      ,
+                                                    start_character ,
+                                                    end_line        ,
+                                                    end_character   ,
+                                                    tab_size        ,
+                                                    insert_spaces   ) );
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
@@ -443,7 +443,7 @@ TEST(client, formatting_and_response)
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 5 );
 
-    // formatting response
+    // formatting responses
 
     ASSERT_EQ   ( test_client.getFormattingSize(), 3 );
 
@@ -488,13 +488,13 @@ TEST(client, formatting_and_response)
     }
 }
 
-TEST(client, closed)
+TEST(client, document_close)
 {
-    // closed
+    // document close
 
     ASSERT_TRUE ( test_client.isDocumentOpen() );
 
-    test_client.closed();
+    ASSERT_TRUE ( test_client.doDocumentClose() );
 
     ASSERT_FALSE( test_client.isDocumentOpen() );
 
@@ -511,7 +511,7 @@ TEST(client, shutdown)
 
     ASSERT_TRUE ( test_client.getConnection()->isServerRunning() );
 
-    ASSERT_TRUE ( test_client.shutdown() );
+    ASSERT_TRUE ( test_client.doShutdown() );
 
     ASSERT_FALSE( test_client.getConnection()->isServerRunning() );
 
@@ -526,7 +526,7 @@ TEST(client, exit)
 {
     // exit
 
-    ASSERT_TRUE ( test_client.exit() );
+    ASSERT_TRUE ( test_client.doExit() );
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 

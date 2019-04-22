@@ -24,7 +24,7 @@ bool ClientImpl::connect( std::shared_ptr<Connection> connection )
     return pass;
 }
 
-bool ClientImpl::initialize()
+bool ClientImpl::doInitialize()
 {
     if ( !this->is_connected )
     {
@@ -78,7 +78,7 @@ bool ClientImpl::initialize()
     return pass;
 }
 
-bool ClientImpl::initialized()
+bool ClientImpl::doInitialized()
 {
     if ( !this->is_connected )
     {
@@ -106,9 +106,9 @@ bool ClientImpl::initialized()
     return pass;
 }
 
-bool ClientImpl::opened( const std::string & document_path        ,
-                         const std::string & document_language_id ,
-                         const std::string & document_text        )
+bool ClientImpl::doDocumentOpen( const std::string & document_path        ,
+                                 const std::string & document_language_id ,
+                                 const std::string & document_text        )
 {
     if ( !this->is_connected )
     {
@@ -171,12 +171,12 @@ bool ClientImpl::opened( const std::string & document_path        ,
     return pass;
 }
 
-bool ClientImpl::changed( int                 start_line        ,
-                          int                 start_character   ,
-                          int                 end_line          ,
-                          int                 end_character     ,
-                          int                 range_length      ,
-                          const std::string & new_document_text )
+bool ClientImpl::doDocumentChange( int                 start_line        ,
+                                   int                 start_character   ,
+                                   int                 end_line          ,
+                                   int                 end_character     ,
+                                   int                 range_length      ,
+                                   const std::string & new_document_text )
 {
     if ( !this->is_connected )
     {
@@ -239,8 +239,8 @@ bool ClientImpl::changed( int                 start_line        ,
     return pass;
 }
 
-bool ClientImpl::completion( int line      ,
-                             int character )
+bool ClientImpl::doDocumentCompletion( int line      ,
+                                       int character )
 {
     if ( !this->is_connected )
     {
@@ -301,8 +301,8 @@ bool ClientImpl::completion( int line      ,
     return pass;
 }
 
-bool ClientImpl::definition( int line      ,
-                             int character )
+bool ClientImpl::doDocumentDefinition( int line      ,
+                                       int character )
 {
     if ( !this->is_connected )
     {
@@ -361,9 +361,9 @@ bool ClientImpl::definition( int line      ,
     return pass;
 }
 
-bool ClientImpl::references( int  line                ,
-                             int  character           ,
-                             bool include_declaration )
+bool ClientImpl::doDocumentReferences( int  line                ,
+                                       int  character           ,
+                                       bool include_declaration )
 {
     if ( !this->is_connected )
     {
@@ -423,12 +423,12 @@ bool ClientImpl::references( int  line                ,
     return pass;
 }
 
-bool ClientImpl::formatting( int  start_line      ,
-                             int  start_character ,
-                             int  end_line        ,
-                             int  end_character   ,
-                             int  tab_size        ,
-                             bool insert_spaces   )
+bool ClientImpl::doDocumentFormatting( int  start_line      ,
+                                       int  start_character ,
+                                       int  end_line        ,
+                                       int  end_character   ,
+                                       int  tab_size        ,
+                                       bool insert_spaces   )
 {
     if ( !this->is_connected )
     {
@@ -491,7 +491,7 @@ bool ClientImpl::formatting( int  start_line      ,
     return pass;
 }
 
-bool ClientImpl::closed()
+bool ClientImpl::doDocumentClose()
 {
     if ( !this->is_connected )
     {
@@ -529,7 +529,7 @@ bool ClientImpl::closed()
     return pass;
 }
 
-bool ClientImpl::shutdown()
+bool ClientImpl::doShutdown()
 {
     if ( !this->is_connected )
     {
@@ -584,7 +584,7 @@ bool ClientImpl::shutdown()
     return pass;
 }
 
-bool ClientImpl::exit()
+bool ClientImpl::doExit()
 {
     bool pass = true;
 

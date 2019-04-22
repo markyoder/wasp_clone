@@ -20,91 +20,91 @@ class WASP_PUBLIC Client
         return Impl.connect( connection );
     }
 
-    bool initialize()
+    bool doInitialize()
     {
-        return Impl.initialize();
+        return Impl.doInitialize();
     }
 
-    bool initialized()
+    bool doInitialized()
     {
-        return Impl.initialized();
+        return Impl.doInitialized();
     }
 
-    bool opened( const std::string & document_path        ,
-                 const std::string & document_language_id ,
-                 const std::string & document_text        )
+    bool doDocumentOpen( const std::string & document_path        ,
+                         const std::string & document_language_id ,
+                         const std::string & document_text        )
     {
-        return Impl.opened( document_path        ,
-                            document_language_id ,
-                            document_text        );
+        return Impl.doDocumentOpen( document_path        ,
+                                    document_language_id ,
+                                    document_text        );
     }
 
-    bool changed( int                 start_line        ,
-                  int                 start_character   ,
-                  int                 end_line          ,
-                  int                 end_character     ,
-                  int                 range_length      ,
-                  const std::string & new_document_text )
+    bool doDocumentChange( int                 start_line        ,
+                           int                 start_character   ,
+                           int                 end_line          ,
+                           int                 end_character     ,
+                           int                 range_length      ,
+                           const std::string & new_document_text )
     {
-        return Impl.changed( start_line        ,
-                             start_character   ,
-                             end_line          ,
-                             end_character     ,
-                             range_length ,
-                             new_document_text );
+        return Impl.doDocumentChange( start_line        ,
+                                      start_character   ,
+                                      end_line          ,
+                                      end_character     ,
+                                      range_length      ,
+                                      new_document_text );
     }
 
-    bool completion( int line      ,
-                     int character )
+    bool doDocumentCompletion( int line      ,
+                               int character )
     {
-        return Impl.completion( line      ,
-                                character );
+        return Impl.doDocumentCompletion( line      ,
+                                          character );
     }
 
-    bool definition( int line      ,
-                     int character )
+    bool doDocumentDefinition( int line      ,
+                               int character )
     {
-        return Impl.definition( line      ,
-                                character );
+        return Impl.doDocumentDefinition( line      ,
+                                          character );
     }
 
-    bool references( int  line                ,
-                     int  character           ,
-                     bool include_declaration )
+    bool doDocumentReferences( int  line                ,
+                               int  character           ,
+                               bool include_declaration )
     {
-        return Impl.references( line                ,
-                                character           ,
-                                include_declaration );
+        return Impl.doDocumentReferences( line                ,
+                                          character           ,
+                                          include_declaration );
     }
 
-    bool formatting( int  start_line      ,
-                     int  start_character ,
-                     int  end_line        ,
-                     int  end_character   ,
-                     int  tab_size        ,
-                     bool insert_spaces   )
+    bool doDocumentFormatting( int  start_line      ,
+                               int  start_character ,
+                               int  end_line        ,
+                               int  end_character   ,
+                               int  tab_size        ,
+                               bool insert_spaces   )
     {
-        return Impl.formatting( start_line      ,
-                                start_character ,
-                                end_line        ,
-                                end_character   ,
-                                tab_size        ,
-                                insert_spaces   );
+        return Impl.doDocumentFormatting( start_line      ,
+                                          start_character ,
+                                          end_line        ,
+                                          end_character   ,
+                                          tab_size        ,
+                                          insert_spaces   );
     }
 
-    bool closed()
+    bool doDocumentClose()
     {
-        return Impl.closed();
+        return Impl.doDocumentClose();
     }
 
-    bool shutdown()
+    bool doShutdown()
     {
-        return Impl.shutdown();
+        return Impl.doShutdown();
     }
 
-    bool exit()
+    bool doExit()
     {
-        return Impl.exit();
+        return Impl.doExit();
     }
 
     int getDiagnosticSize()

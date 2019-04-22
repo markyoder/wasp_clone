@@ -26,43 +26,43 @@ class WASP_PUBLIC ClientImpl
 
     bool connect( std::shared_ptr<Connection> connection );
 
-    bool initialize();
+    bool doInitialize();
 
-    bool initialized();
+    bool doInitialized();
 
-    bool opened( const std::string & document_path        ,
-                 const std::string & document_language_id ,
-                 const std::string & document_text        );
+    bool doDocumentOpen( const std::string & document_path        ,
+                         const std::string & document_language_id ,
+                         const std::string & document_text        );
 
-    bool changed( int                 start_line        ,
-                  int                 start_character   ,
-                  int                 end_line          ,
-                  int                 end_character     ,
-                  int                 range_length      ,
-                  const std::string & new_document_text );
+    bool doDocumentChange( int                 start_line        ,
+                           int                 start_character   ,
+                           int                 end_line          ,
+                           int                 end_character     ,
+                           int                 range_length      ,
+                           const std::string & new_document_text );
 
-    bool completion( int line      ,
-                     int character );
+    bool doDocumentCompletion( int line      ,
+                               int character );
 
-    bool definition( int line      ,
-                     int character );
+    bool doDocumentDefinition( int line      ,
+                               int character );
 
-    bool references( int  line                ,
-                     int  character           ,
-                     bool include_declaration );
+    bool doDocumentReferences( int  line                ,
+                               int  character           ,
+                               bool include_declaration );
 
-    bool formatting( int  start_line      ,
-                     int  start_character ,
-                     int  end_line        ,
-                     int  end_character   ,
-                     int  tab_size        ,
-                     bool insert_spaces   );
+    bool doDocumentFormatting( int  start_line      ,
+                               int  start_character ,
+                               int  end_line        ,
+                               int  end_character   ,
+                               int  tab_size        ,
+                               bool insert_spaces   );
 
-    bool closed();
+    bool doDocumentClose();
 
-    bool shutdown();
+    bool doShutdown();
 
-    bool exit();
+    bool doExit();
 
     int getDiagnosticSize();
 
@@ -158,8 +158,7 @@ class WASP_PUBLIC ClientImpl
       int                         document_version;
       std::string                 document_path;
 
-      enum ResponseArrayType
-      {
+      enum {
         DIAGNOSTIC,
         COMPLETION,
         DEFINITION,
