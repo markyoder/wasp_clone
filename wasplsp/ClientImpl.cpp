@@ -616,27 +616,27 @@ bool ClientImpl::doExit()
 
 int ClientImpl::getDiagnosticSize()
 {
-    return response_array_type == DIAGNOSTIC ? response_array.size() : 0;
+    return this->response_array_type == DIAGNOSTIC ? this->response_array.size() : 0;
 }
 
 int ClientImpl::getCompletionSize()
 {
-    return response_array_type == COMPLETION ? response_array.size() : 0;
+    return this->response_array_type == COMPLETION ? this->response_array.size() : 0;
 }
 
 int ClientImpl::getDefinitionSize()
 {
-    return response_array_type == DEFINITION ? response_array.size() : 0;
+    return this->response_array_type == DEFINITION ? this->response_array.size() : 0;
 }
 
 int ClientImpl::getReferencesSize()
 {
-    return response_array_type == REFERENCES ? response_array.size() : 0;
+    return this->response_array_type == REFERENCES ? this->response_array.size() : 0;
 }
 
 int ClientImpl::getFormattingSize()
 {
-    return response_array_type == FORMATTING ? response_array.size() : 0;
+    return this->response_array_type == FORMATTING ? this->response_array.size() : 0;
 }
 
 bool ClientImpl::getDiagnosticAt( int           index           ,
@@ -649,14 +649,14 @@ bool ClientImpl::getDiagnosticAt( int           index           ,
                                   std::string & source          ,
                                   std::string & message         )
 {
-    if ( response_array_type != DIAGNOSTIC )
+    if ( this->response_array_type != DIAGNOSTIC )
     {
         this->errors << m_error << "No diagnostics currently stored" << std::endl;
 
         return false;
     }
 
-    if ( index >= (int) response_array.size() )
+    if ( index >= (int) this->response_array.size() )
     {
         this->errors << m_error << "Diagnostics index out of bounds" << std::endl;
 
@@ -665,16 +665,16 @@ bool ClientImpl::getDiagnosticAt( int           index           ,
 
     bool pass = true;
 
-    pass &= dissectDiagnosticObject( *(response_array[index].to_object()) ,
-                                       this->errors                       ,
-                                       start_line                         ,
-                                       start_character                    ,
-                                       end_line                           ,
-                                       end_character                      ,
-                                       severity                           ,
-                                       code                               ,
-                                       source                             ,
-                                       message                            );
+    pass &= dissectDiagnosticObject( *(this->response_array[index].to_object()) ,
+                                       this->errors                             ,
+                                       start_line                               ,
+                                       start_character                          ,
+                                       end_line                                 ,
+                                       end_character                            ,
+                                       severity                                 ,
+                                       code                                     ,
+                                       source                                   ,
+                                       message                                  );
 
     return pass;
 }
@@ -692,14 +692,14 @@ bool ClientImpl::getCompletionAt( int           index           ,
                                   bool        & deprecated      ,
                                   bool        & preselect       )
 {
-    if ( response_array_type != COMPLETION )
+    if ( this->response_array_type != COMPLETION )
     {
         this->errors << m_error << "No completions currently stored" << std::endl;
 
         return false;
     }
 
-    if ( index >= (int) response_array.size() )
+    if ( index >= (int) this->response_array.size() )
     {
         this->errors << m_error << "Completions index out of bounds" << std::endl;
 
@@ -708,19 +708,19 @@ bool ClientImpl::getCompletionAt( int           index           ,
 
     bool pass = true;
 
-    pass &= dissectCompletionObject( *(response_array[index].to_object()) ,
-                                       this->errors                       ,
-                                       label                              ,
-                                       start_line                         ,
-                                       start_character                    ,
-                                       end_line                           ,
-                                       end_character                      ,
-                                       new_text                           ,
-                                       kind                               ,
-                                       detail                             ,
-                                       documentation                      ,
-                                       deprecated                         ,
-                                       preselect                          );
+    pass &= dissectCompletionObject( *(this->response_array[index].to_object()) ,
+                                       this->errors                             ,
+                                       label                                    ,
+                                       start_line                               ,
+                                       start_character                          ,
+                                       end_line                                 ,
+                                       end_character                            ,
+                                       new_text                                 ,
+                                       kind                                     ,
+                                       detail                                   ,
+                                       documentation                            ,
+                                       deprecated                               ,
+                                       preselect                                );
 
 
 
@@ -735,14 +735,14 @@ bool ClientImpl::getDefinitionAt( int           index           ,
                                   int         & end_line        ,
                                   int         & end_character   )
 {
-    if ( response_array_type != DEFINITION )
+    if ( this->response_array_type != DEFINITION )
     {
         this->errors << m_error << "No definitions currently stored" << std::endl;
 
         return false;
     }
 
-    if ( index >= (int) response_array.size() )
+    if ( index >= (int) this->response_array.size() )
     {
         this->errors << m_error << "Definitions index out of bounds" << std::endl;
 
@@ -753,13 +753,13 @@ bool ClientImpl::getDefinitionAt( int           index           ,
 
     std::string response_document_path;
 
-    pass &= dissectLocationObject( *(response_array[index].to_object()) ,
-                                     this->errors                       ,
-                                     response_document_path             ,
-                                     start_line                         ,
-                                     start_character                    ,
-                                     end_line                           ,
-                                     end_character                      );
+    pass &= dissectLocationObject( *(this->response_array[index].to_object()) ,
+                                     this->errors                             ,
+                                     response_document_path                   ,
+                                     start_line                               ,
+                                     start_character                          ,
+                                     end_line                                 ,
+                                     end_character                            );
 
     if ( response_document_path != this->document_path )
     {
@@ -777,14 +777,14 @@ bool ClientImpl::getReferencesAt( int           index           ,
                                   int         & end_line        ,
                                   int         & end_character   )
 {
-    if ( response_array_type != REFERENCES )
+    if ( this->response_array_type != REFERENCES )
     {
         this->errors << m_error << "No references currently stored" << std::endl;
 
         return false;
     }
 
-    if ( index >= (int) response_array.size() )
+    if ( index >= (int) this->response_array.size() )
     {
         this->errors << m_error << "References index out of bounds" << std::endl;
 
@@ -795,13 +795,13 @@ bool ClientImpl::getReferencesAt( int           index           ,
 
     std::string response_document_path;
 
-    pass &= dissectLocationObject( *(response_array[index].to_object()) ,
-                                     this->errors                       ,
-                                     response_document_path             ,
-                                     start_line                         ,
-                                     start_character                    ,
-                                     end_line                           ,
-                                     end_character                      );
+    pass &= dissectLocationObject( *(this->response_array[index].to_object()) ,
+                                     this->errors                             ,
+                                     response_document_path                   ,
+                                     start_line                               ,
+                                     start_character                          ,
+                                     end_line                                 ,
+                                     end_character                            );
 
     if ( response_document_path != this->document_path )
     {
@@ -820,14 +820,14 @@ bool ClientImpl::getFormattingAt( int           index           ,
                                   int         & end_character   ,
                                   std::string & new_text        )
 {
-    if ( response_array_type != FORMATTING )
+    if ( this->response_array_type != FORMATTING )
     {
         this->errors << m_error << "No formattings currently stored" << std::endl;
 
         return false;
     }
 
-    if ( index >= (int) response_array.size() )
+    if ( index >= (int) this->response_array.size() )
     {
         this->errors << m_error << "Formattings index out of bounds" << std::endl;
 
@@ -836,13 +836,13 @@ bool ClientImpl::getFormattingAt( int           index           ,
 
     bool pass = true;
 
-    pass &= dissectTextEditObject( *(response_array[index].to_object()) ,
-                                     this->errors                       ,
-                                     start_line                         ,
-                                     start_character                    ,
-                                     end_line                           ,
-                                     end_character                      ,
-                                     new_text                           );
+    pass &= dissectTextEditObject( *(this->response_array[index].to_object()) ,
+                                     this->errors                             ,
+                                     start_line                               ,
+                                     start_character                          ,
+                                     end_line                                 ,
+                                     end_character                            ,
+                                     new_text                                 );
 
     return pass;
 }
