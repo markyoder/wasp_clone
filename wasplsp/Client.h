@@ -217,7 +217,8 @@ class WASP_PUBLIC Client
                                      start_line      ,
                                      start_character ,
                                      end_line        ,
-                                     end_character   );
+                                     end_character   ,
+                                     new_text        );
     }
 
     bool isConnected()

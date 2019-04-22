@@ -446,7 +446,7 @@ TEST(integrate, test_formatting)
 
     ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
-    ASSERT_TRUE( dissectRangeFormattingResponse( response_object      ,
+    ASSERT_TRUE( dissectRangeFormattingResponse( response_object     ,
                                                  client_errors       ,
                                                  response_request_id ,
                                                  response_textedits  ) );
@@ -454,13 +454,13 @@ TEST(integrate, test_formatting)
     ASSERT_EQ( response_request_id       , client_request_id );
     ASSERT_EQ( response_textedits.size() , (size_t) 3        );
 
-    ASSERT_TRUE(dissectTextEditObject( *(response_textedits[2].to_object()) ,
-                                         client_errors                      ,
-                                         response_3_start_line              ,
-                                         response_3_start_character         ,
-                                         response_3_end_line                ,
-                                         response_3_end_character           ,
-                                         response_3_new_text                ) );
+    ASSERT_TRUE( dissectTextEditObject( *(response_textedits[2].to_object()) ,
+                                          client_errors                      ,
+                                          response_3_start_line              ,
+                                          response_3_start_character         ,
+                                          response_3_end_line                ,
+                                          response_3_end_character           ,
+                                          response_3_new_text                ) );
 
     ASSERT_EQ( response_3_start_line      , 30                                   );
     ASSERT_EQ( response_3_start_character , 01                                   );

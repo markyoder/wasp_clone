@@ -421,9 +421,71 @@ TEST(client, references_and_response)
 
 TEST(client, formatting_and_response)
 {
-    // todo : formatting
+    // formatting
 
-    // todo : formatting response
+    int         start_line        =  2;
+    int         start_character   =  0;
+    int         end_line          =  4;
+    int         end_character     =  3;
+    int         tab_size          =  4;
+    bool        insert_spaces     =  true;
+
+    ASSERT_TRUE ( test_client.formatting( start_line      ,
+                                          start_character ,
+                                          end_line        ,
+                                          end_character   ,
+                                          tab_size        ,
+                                          insert_spaces   ) );
+
+    ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
+
+    ASSERT_TRUE ( test_client.getErrors().empty() );
+
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 5 );
+
+    // formatting response
+
+    ASSERT_EQ   ( test_client.getFormattingSize(), 3 );
+
+    for (int index = 0; index < test_client.getFormattingSize(); index++)
+    {
+        int         start_line;
+        int         start_character;
+        int         end_line;
+        int         end_character;
+        std::string new_text;
+
+        ASSERT_TRUE ( test_client.getFormattingAt( index           ,
+                                                   start_line      ,
+                                                   start_character ,
+                                                   end_line        ,
+                                                   end_character   ,
+                                                   new_text        ) );
+        if ( index == 0 )
+        {
+            ASSERT_EQ ( start_line      , 10                                   );
+            ASSERT_EQ ( start_character , 01                                   );
+            ASSERT_EQ ( end_line        , 14                                   );
+            ASSERT_EQ ( end_character   , 03                                   );
+            ASSERT_EQ ( new_text        , "test\n  new\n  text\n  format\n  1" );
+        }
+        else if ( index == 1 )
+        {
+            ASSERT_EQ ( start_line      , 20                                   );
+            ASSERT_EQ ( start_character , 01                                   );
+            ASSERT_EQ ( end_line        , 24                                   );
+            ASSERT_EQ ( end_character   , 03                                   );
+            ASSERT_EQ ( new_text        , "test\n  new\n  text\n  format\n  2" );
+        }
+        else if ( index == 2 )
+        {
+            ASSERT_EQ ( start_line      , 30                                   );
+            ASSERT_EQ ( start_character , 01                                   );
+            ASSERT_EQ ( end_line        , 34                                   );
+            ASSERT_EQ ( end_character   , 03                                   );
+            ASSERT_EQ ( new_text        , "test\n  new\n  text\n  format\n  3" );
+        }
+    }
 }
 
 TEST(client, closed)
@@ -440,7 +502,7 @@ TEST(client, closed)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 4 );
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 5 );
 }
 
 TEST(client, shutdown)
@@ -457,7 +519,7 @@ TEST(client, shutdown)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 5 );
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 6 );
 }
 
 TEST(client, exit)
@@ -470,7 +532,7 @@ TEST(client, exit)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 5 );
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 6 );
 }
 
 TEST(client, server_thread_join)

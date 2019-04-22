@@ -459,7 +459,25 @@ bool ClientImpl::formatting( int  start_line      ,
     DataObject response_object;
     int        response_request_id;
 
-    /* * * TODO * * */
+    pass &= buildRangeFormattingRequest( client_object       ,
+                                         this->errors        ,
+                                         this->request_id    ,
+                                         this->document_path ,
+                                         start_line          ,
+                                         start_character     ,
+                                         end_line            ,
+                                         end_character       ,
+                                         tab_size            ,
+                                         insert_spaces       );
+
+    pass &= connection->write( client_object , this->errors );
+
+    pass &= connection->read( response_object , this->errors );
+
+    pass &= dissectRangeFormattingResponse( response_object      ,
+                                            this->errors         ,
+                                            response_request_id  ,
+                                            this->response_array );
 
     if ( response_request_id != this->request_id )
     {
