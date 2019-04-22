@@ -108,7 +108,6 @@ TEST(client, opened_and_diagnostics)
                                                    code            ,
                                                    source          ,
                                                    message         ) );
-
         if ( index == 0 )
         {
             ASSERT_EQ ( start_line      , 20                 );
@@ -197,7 +196,6 @@ TEST(client, changed_and_diagnostics)
                                                    code            ,
                                                    source          ,
                                                    message         ) );
-
         if ( index == 0 )
         {
             ASSERT_EQ ( start_line      , 67                 );
@@ -269,64 +267,156 @@ TEST(client, completion_and_response)
                                                    documentation   ,
                                                    deprecated      ,
                                                    preselect       ) );
-
         if ( index == 0 )
         {
-            EXPECT_EQ ( label           , "test-label-1"         );
-            EXPECT_EQ ( start_line      , 11                     );
-            EXPECT_EQ ( start_character , 11                     );
-            EXPECT_EQ ( end_line        , 11                     );
-            EXPECT_EQ ( end_character   , 11                     );
-            EXPECT_EQ ( new_text        , "test-insert-text-1"   );
-            EXPECT_EQ ( kind            , 1                      );
-            EXPECT_EQ ( detail          , "test type info 1"     );
-            EXPECT_EQ ( documentation   , "test documentation 1" );
-            EXPECT_EQ ( deprecated      , false                  );
-            EXPECT_EQ ( preselect       , true                   );
+            ASSERT_EQ ( label           , "test-label-1"         );
+            ASSERT_EQ ( start_line      , 11                     );
+            ASSERT_EQ ( start_character , 11                     );
+            ASSERT_EQ ( end_line        , 11                     );
+            ASSERT_EQ ( end_character   , 11                     );
+            ASSERT_EQ ( new_text        , "test-insert-text-1"   );
+            ASSERT_EQ ( kind            , 1                      );
+            ASSERT_EQ ( detail          , "test type info 1"     );
+            ASSERT_EQ ( documentation   , "test documentation 1" );
+            ASSERT_EQ ( deprecated      , false                  );
+            ASSERT_EQ ( preselect       , true                   );
         }
         else if ( index == 1 )
         {
-            EXPECT_EQ ( label           , "test-label-2"         );
-            EXPECT_EQ ( start_line      , 22                     );
-            EXPECT_EQ ( start_character , 22                     );
-            EXPECT_EQ ( end_line        , 22                     );
-            EXPECT_EQ ( end_character   , 22                     );
-            EXPECT_EQ ( new_text        , "test-insert-text-2"   );
-            EXPECT_EQ ( kind            , 2                      );
-            EXPECT_EQ ( detail          , "test type info 2"     );
-            EXPECT_EQ ( documentation   , "test documentation 2" );
-            EXPECT_EQ ( deprecated      , false                  );
-            EXPECT_EQ ( preselect       , false                  );
+            ASSERT_EQ ( label           , "test-label-2"         );
+            ASSERT_EQ ( start_line      , 22                     );
+            ASSERT_EQ ( start_character , 22                     );
+            ASSERT_EQ ( end_line        , 22                     );
+            ASSERT_EQ ( end_character   , 22                     );
+            ASSERT_EQ ( new_text        , "test-insert-text-2"   );
+            ASSERT_EQ ( kind            , 2                      );
+            ASSERT_EQ ( detail          , "test type info 2"     );
+            ASSERT_EQ ( documentation   , "test documentation 2" );
+            ASSERT_EQ ( deprecated      , false                  );
+            ASSERT_EQ ( preselect       , false                  );
         }
         else if ( index == 2 )
         {
-            EXPECT_EQ ( label           , "test-label-3"         );
-            EXPECT_EQ ( start_line      , 33                     );
-            EXPECT_EQ ( start_character , 33                     );
-            EXPECT_EQ ( end_line        , 33                     );
-            EXPECT_EQ ( end_character   , 33                     );
-            EXPECT_EQ ( new_text        , "test-insert-text-3"   );
-            EXPECT_EQ ( kind            , 3                      );
-            EXPECT_EQ ( detail          , "test type info 3"     );
-            EXPECT_EQ ( documentation   , "test documentation 3" );
-            EXPECT_EQ ( deprecated      , false                  );
-            EXPECT_EQ ( preselect       , false                  );
+            ASSERT_EQ ( label           , "test-label-3"         );
+            ASSERT_EQ ( start_line      , 33                     );
+            ASSERT_EQ ( start_character , 33                     );
+            ASSERT_EQ ( end_line        , 33                     );
+            ASSERT_EQ ( end_character   , 33                     );
+            ASSERT_EQ ( new_text        , "test-insert-text-3"   );
+            ASSERT_EQ ( kind            , 3                      );
+            ASSERT_EQ ( detail          , "test type info 3"     );
+            ASSERT_EQ ( documentation   , "test documentation 3" );
+            ASSERT_EQ ( deprecated      , false                  );
+            ASSERT_EQ ( preselect       , false                  );
         }
     }
 }
 
 TEST(client, definition_and_response)
 {
-    // todo : definition
+    // definition
 
-    // todo : definition response
+    int line        = 2;
+    int character   = 5;
+
+    ASSERT_TRUE ( test_client.definition( line      ,
+                                          character ) );
+
+    ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
+
+    ASSERT_TRUE ( test_client.getErrors().empty() );
+
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 3 );
+
+    // definition response
+
+    ASSERT_EQ   ( test_client.getDefinitionSize(), 3 );
+
+    for (int index = 0; index < test_client.getDefinitionSize(); index++)
+    {
+        int         start_line;
+        int         start_character;
+        int         end_line;
+        int         end_character;
+
+        ASSERT_TRUE ( test_client.getDefinitionAt( index           ,
+                                                   start_line      ,
+                                                   start_character ,
+                                                   end_line        ,
+                                                   end_character   ) );
+        if ( index == 0 )
+        {
+            ASSERT_EQ ( start_line      , 11 );
+            ASSERT_EQ ( start_character , 11 );
+            ASSERT_EQ ( end_line        , 11 );
+            ASSERT_EQ ( end_character   , 11 );
+        }
+        else if ( index == 1 )
+        {
+            ASSERT_EQ ( start_line      , 22 );
+            ASSERT_EQ ( start_character , 22 );
+            ASSERT_EQ ( end_line        , 22 );
+            ASSERT_EQ ( end_character   , 22 );
+        }
+        else if ( index == 2 )
+        {
+            ASSERT_EQ ( start_line      , 33 );
+            ASSERT_EQ ( start_character , 33 );
+            ASSERT_EQ ( end_line        , 33 );
+            ASSERT_EQ ( end_character   , 33 );
+        }
+    }
 }
 
 TEST(client, references_and_response)
 {
-    // todo : references
+    // references
 
-    // todo : references response
+    int  line                = 1;
+    int  character           = 3;
+    bool include_declaration = false;
+
+    ASSERT_TRUE ( test_client.references( line                ,
+                                          character           ,
+                                          include_declaration ) );
+
+    ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
+
+    ASSERT_TRUE ( test_client.getErrors().empty() );
+
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 4 );
+
+    // references response
+
+    ASSERT_EQ   ( test_client.getReferencesSize(), 2 );
+
+    for (int index = 0; index < test_client.getReferencesSize(); index++)
+    {
+        int         start_line;
+        int         start_character;
+        int         end_line;
+        int         end_character;
+
+        ASSERT_TRUE ( test_client.getReferencesAt( index           ,
+                                                   start_line      ,
+                                                   start_character ,
+                                                   end_line        ,
+                                                   end_character   ) );
+        if ( index == 0 )
+        {
+            ASSERT_EQ ( start_line      , 44 );
+            ASSERT_EQ ( start_character , 44 );
+            ASSERT_EQ ( end_line        , 44 );
+            ASSERT_EQ ( end_character   , 44 );
+        }
+        else if ( index == 1 )
+        {
+            ASSERT_EQ ( start_line      , 55 );
+            ASSERT_EQ ( start_character , 55 );
+            ASSERT_EQ ( end_line        , 55 );
+            ASSERT_EQ ( end_character   , 55 );
+        }
+    }
 }
 
 TEST(client, formatting_and_response)
@@ -350,7 +440,7 @@ TEST(client, closed)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 2 );
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 4 );
 }
 
 TEST(client, shutdown)
@@ -367,7 +457,7 @@ TEST(client, shutdown)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 3 );
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 5 );
 }
 
 TEST(client, exit)
@@ -380,7 +470,7 @@ TEST(client, exit)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 3 );
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 5 );
 }
 
 TEST(client, server_thread_join)

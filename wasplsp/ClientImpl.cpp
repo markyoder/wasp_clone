@@ -139,7 +139,7 @@ bool ClientImpl::opened( const std::string & document_path        ,
 
     DataObject  client_object;
     DataObject  response_object;
-    std::string response_uri;
+    std::string response_document_path;
 
     pass &= buildDidOpenNotification( client_object          ,
                                       this->errors           ,
@@ -152,14 +152,14 @@ bool ClientImpl::opened( const std::string & document_path        ,
 
     pass &= connection->read( response_object , this->errors );
 
-    pass &= dissectPublishDiagnosticsNotification( response_object      ,
-                                                   this->errors         ,
-                                                   response_uri         ,
-                                                   this->response_array );
+    pass &= dissectPublishDiagnosticsNotification( response_object        ,
+                                                   this->errors           ,
+                                                   response_document_path ,
+                                                   this->response_array   );
 
-    if ( response_uri != this->document_path )
+    if ( response_document_path != this->document_path )
     {
-        this->errors << m_error << "Diagnositics uri mismatch" << std::endl;
+        this->errors << m_error << "Diagnositics path mismatch" << std::endl;
 
         pass = false;
     }
@@ -205,7 +205,7 @@ bool ClientImpl::changed( int                 start_line        ,
 
     DataObject  client_object;
     DataObject  response_object;
-    std::string response_uri;
+    std::string response_document_path;
 
     pass &= buildDidChangeNotification( client_object          ,
                                         this->errors           ,
@@ -222,14 +222,14 @@ bool ClientImpl::changed( int                 start_line        ,
 
     pass &= connection->read( response_object , this->errors );
 
-    pass &= dissectPublishDiagnosticsNotification( response_object      ,
-                                                   this->errors         ,
-                                                   response_uri         ,
-                                                   this->response_array );
+    pass &= dissectPublishDiagnosticsNotification( response_object        ,
+                                                   this->errors           ,
+                                                   response_document_path ,
+                                                   this->response_array   );
 
-    if ( response_uri != this->document_path )
+    if ( response_document_path != this->document_path )
     {
-        this->errors << m_error << "Diagnositics uri mismatch" << std::endl;
+        this->errors << m_error << "Diagnositics path mismatch" << std::endl;
 
         pass = false;
     }
@@ -333,7 +333,21 @@ bool ClientImpl::definition( int line      ,
     DataObject response_object;
     int        response_request_id;
 
-    /* * * TODO * * */
+    pass &= buildDefinitionRequest( client_object       ,
+                                    this->errors        ,
+                                    this->request_id    ,
+                                    this->document_path ,
+                                    line                ,
+                                    character           );
+
+    pass &= connection->write( client_object , this->errors );
+
+    pass &= connection->read( response_object , this->errors );
+
+    pass &= dissectLocationsResponse( response_object      ,
+                                      this->errors         ,
+                                      response_request_id  ,
+                                      this->response_array );
 
     if ( response_request_id != this->request_id )
     {
@@ -380,7 +394,22 @@ bool ClientImpl::references( int  line                ,
     DataObject response_object;
     int        response_request_id;
 
-    /* * * TODO * * */
+    pass &= buildReferencesRequest( client_object       ,
+                                    this->errors        ,
+                                    this->request_id    ,
+                                    this->document_path ,
+                                    line                ,
+                                    character           ,
+                                    include_declaration );
+
+    pass &= connection->write( client_object , this->errors );
+
+    pass &= connection->read( response_object , this->errors );
+
+    pass &= dissectLocationsResponse( response_object      ,
+                                      this->errors         ,
+                                      response_request_id  ,
+                                      this->response_array );
 
     if ( response_request_id != this->request_id )
     {
@@ -704,13 +733,22 @@ bool ClientImpl::getDefinitionAt( int           index           ,
 
     bool pass = true;
 
+    std::string response_document_path;
+
     pass &= dissectLocationObject( *(response_array[index].to_object()) ,
                                      this->errors                       ,
-                                     this->document_path                ,
+                                     response_document_path             ,
                                      start_line                         ,
                                      start_character                    ,
                                      end_line                           ,
                                      end_character                      );
+
+    if ( response_document_path != this->document_path )
+    {
+        this->errors << m_error << "Definition path mismatch" << std::endl;
+
+        pass = false;
+    }
 
     return pass;
 }
@@ -737,13 +775,22 @@ bool ClientImpl::getReferencesAt( int           index           ,
 
     bool pass = true;
 
+    std::string response_document_path;
+
     pass &= dissectLocationObject( *(response_array[index].to_object()) ,
                                      this->errors                       ,
-                                     this->document_path                ,
+                                     response_document_path             ,
                                      start_line                         ,
                                      start_character                    ,
                                      end_line                           ,
                                      end_character                      );
+
+    if ( response_document_path != this->document_path )
+    {
+        this->errors << m_error << "Refererences path mismatch" << std::endl;
+
+        pass = false;
+    }
 
     return pass;
 }
