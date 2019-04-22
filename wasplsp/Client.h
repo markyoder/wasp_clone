@@ -50,6 +50,7 @@ class WASP_PUBLIC Client
                              start_character   ,
                              end_line          ,
                              end_character     ,
+                             range_length ,
                              new_document_text );
     }
 
@@ -106,6 +107,11 @@ class WASP_PUBLIC Client
         return Impl.exit();
     }
 
+    bool isConnected()
+    {
+        return Impl.isConnected();
+    }
+
     std::shared_ptr<Connection> getConnection()
     {
         return Impl.getConnection();
@@ -121,9 +127,60 @@ class WASP_PUBLIC Client
         return Impl.getPreviousRequestID();
     }
 
+    bool isDocumentOpen()
+    {
+        return Impl.isDocumentOpen();
+    }
+
     int getCurrentDocumentVersion()
     {
         return Impl.getCurrentDocumentVersion();
+    }
+
+    int getDiagnosticSize()
+    {
+        return Impl.getDiagnosticSize();
+    }
+
+    int getCompletionSize()
+    {
+        return Impl.getCompletionSize();
+    }
+
+    int getDefinitionSize()
+    {
+        return Impl.getDefinitionSize();
+    }
+
+    int getReferencesSize()
+    {
+        return Impl.getReferencesSize();
+    }
+
+    int getFormattingSize()
+    {
+        return Impl.getFormattingSize();
+    }
+
+    bool getDiagnosticAt( int           index           ,
+                          int         & start_line      ,
+                          int         & start_character ,
+                          int         & end_line        ,
+                          int         & end_character   ,
+                          int         & severity        ,
+                          std::string & code            ,
+                          std::string & source          ,
+                          std::string & message         )
+    {
+        return Impl.getDiagnosticAt( index           ,
+                                     start_line      ,
+                                     start_character ,
+                                     end_line        ,
+                                     end_character   ,
+                                     severity        ,
+                                     code            ,
+                                     source          ,
+                                     message         );
     }
 
   private:

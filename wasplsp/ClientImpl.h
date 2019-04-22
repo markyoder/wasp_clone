@@ -15,11 +15,12 @@ class WASP_PUBLIC ClientImpl
   public:
 
     ClientImpl() :
-        is_connected(false)     ,
-        is_initialized(false)   ,
-        is_document_open(false) ,
-        request_id(0)           ,
-        document_version(0)    {}
+        is_connected(false)      ,
+        is_initialized(false)    ,
+        is_document_open(false)  ,
+        request_id(0)            ,
+        document_version(0)      ,
+        response_array_type(NONE){}
 
     ~ClientImpl(){}
 
@@ -63,24 +64,54 @@ class WASP_PUBLIC ClientImpl
 
     bool exit();
 
+    int getDiagnosticSize();
+
+    int getCompletionSize();
+
+    int getDefinitionSize();
+
+    int getReferencesSize();
+
+    int getFormattingSize();
+
+    bool getDiagnosticAt( int           index           ,
+                          int         & start_line      ,
+                          int         & start_character ,
+                          int         & end_line        ,
+                          int         & end_character   ,
+                          int         & severity        ,
+                          std::string & code            ,
+                          std::string & source          ,
+                          std::string & message         );
+
+    bool isConnected()
+    {
+        return this->is_connected;
+    }
+
     std::shared_ptr<Connection> getConnection()
     {
-        return connection;
+        return this->connection;
     }
 
     std::string getErrors()
     {
-        return errors.str();
+        return this->errors.str();
     }
 
     int getPreviousRequestID()
     {
-        return request_id;
+        return this->request_id;
+    }
+
+    bool isDocumentOpen()
+    {
+        return this->is_document_open;
     }
 
     int getCurrentDocumentVersion()
     {
-        return document_version;
+        return this->document_version;
     }
 
   private:
@@ -93,10 +124,28 @@ class WASP_PUBLIC ClientImpl
       bool                        is_document_open;
       int                         request_id;
       int                         document_version;
+      std::string                 document_path;
+
+      enum ResponseArrayType
+      {
+        DIAGNOSTIC,
+        COMPLETION,
+        DEFINITION,
+        REFERENCES,
+        FORMATTING,
+        NONE
+      } response_array_type;
+
+      DataArray response_array;
 
       void incrementRequestID()
       {
           this->request_id++;
+      }
+
+      void incrementDocumentVersion()
+      {
+          this->document_version++;
       }
 };
 

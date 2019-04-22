@@ -13,18 +13,22 @@ namespace lsp  {
 
 TEST(client, script)
 {
-    // handles for test client and test server
+    // handles for client, server, and thread
 
     Client<ClientImpl> test_client;
 
     Server<TestServer> test_server;
 
-    // connect test client to server's communication and launch server thread
-
-    test_client.connect( test_server.getConnection() );
-
     std::thread server_thread = std::thread( & Server<TestServer>::run ,
                                              & test_server             );
+
+    // connect test client to server's communication
+
+    ASSERT_FALSE( test_client.isConnected() );
+
+    ASSERT_TRUE ( test_client.connect( test_server.getConnection() ) );
+
+    ASSERT_TRUE ( test_client.isConnected() );
 
     /* * * INITIALIZE * * */
 
@@ -34,9 +38,9 @@ TEST(client, script)
 
     ASSERT_TRUE ( test_client.getConnection()->isServerRunning() );
 
-    ASSERT_TRUE ( test_client.getErrors().empty() );
-
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
+
+    ASSERT_TRUE ( test_client.getErrors().empty() );
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
 
@@ -44,13 +48,205 @@ TEST(client, script)
 
     ASSERT_TRUE ( test_client.initialized() );
 
+    ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
+
+    ASSERT_TRUE ( test_client.getErrors().empty() );
+
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
+
+    /* * * OPENED * * */
+
+    std::string document_path        = "/test/document/path.inp";
+    std::string document_language_id = "test-document-language-id";
+    std::string document_text        = "test\ntext\n1\nstring\n";
+
+    ASSERT_FALSE( test_client.isDocumentOpen() );
+
+    ASSERT_TRUE ( test_client.opened( document_path        ,
+                                      document_language_id ,
+                                      document_text        ) );
+
+    ASSERT_TRUE ( test_client.isDocumentOpen() );
+
+    ASSERT_EQ   ( test_client.getCurrentDocumentVersion() , 1 );
+
+    ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
+
+    ASSERT_TRUE ( test_client.getErrors().empty() );
+
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
+
+    /* * * DIAGNOSTIC RESPONSE * * */
+
+    ASSERT_EQ   ( test_client.getDiagnosticSize(), 3 );
+
+    for (int index = 0; index < test_client.getDiagnosticSize(); index++)
+    {
+        int         start_line;
+        int         start_character;
+        int         end_line;
+        int         end_character;
+        int         severity;
+        std::string code;
+        std::string source;
+        std::string message;
+
+        ASSERT_TRUE ( test_client.getDiagnosticAt( index           ,
+                                                   start_line      ,
+                                                   start_character ,
+                                                   end_line        ,
+                                                   end_character   ,
+                                                   severity        ,
+                                                   code            ,
+                                                   source          ,
+                                                   message         ) );
+
+        if ( index == 0 )
+        {
+            ASSERT_EQ ( start_line      , 20                 );
+            ASSERT_EQ ( start_character , 16                 );
+            ASSERT_EQ ( end_line        , 20                 );
+            ASSERT_EQ ( end_character   , 27                 );
+            ASSERT_EQ ( severity        , 1                  );
+            ASSERT_EQ ( code            , "test.code.11"     );
+            ASSERT_EQ ( source          , "test_source_11"   );
+            ASSERT_EQ ( message         , "Test message 11." );
+
+        }
+        else if ( index == 1 )
+        {
+            ASSERT_EQ ( start_line      , 28                 );
+            ASSERT_EQ ( start_character , 56                 );
+            ASSERT_EQ ( end_line        , 34                 );
+            ASSERT_EQ ( end_character   , 27                 );
+            ASSERT_EQ ( severity        , 2                  );
+            ASSERT_EQ ( code            , "test.code.22"     );
+            ASSERT_EQ ( source          , "test_source_22"   );
+            ASSERT_EQ ( message         , "Test message 22." );
+
+        }
+        else if ( index == 2 )
+        {
+            ASSERT_EQ ( start_line      , 47                 );
+            ASSERT_EQ ( start_character , 36                 );
+            ASSERT_EQ ( end_line        , 47                 );
+            ASSERT_EQ ( end_character   , 43                 );
+            ASSERT_EQ ( severity        , 3                  );
+            ASSERT_EQ ( code            , "test.code.33"     );
+            ASSERT_EQ ( source          , "test_source_33"   );
+            ASSERT_EQ ( message         , "Test message 33." );
+
+        }
+    }
+
+    /* * * CHANGED * * */
+
+    int         start_line        = 0;
+    int         start_character   = 0;
+    int         end_line          = 3;
+    int         end_character     = 7;
+    int         range_length      = 0;
+    std::string new_document_text = "test\ntext\n2\nstring\n";
+
+    ASSERT_EQ   ( test_client.getCurrentDocumentVersion() , 1 );
+
+    ASSERT_TRUE ( test_client.changed( start_line        ,
+                                       start_character   ,
+                                       end_line          ,
+                                       end_character     ,
+                                       range_length      ,
+                                       new_document_text ) );
+
+    ASSERT_EQ   ( test_client.getCurrentDocumentVersion() , 2 );
+
+    ASSERT_TRUE ( test_client.getConnection()->isServerRunning() );
+
+    ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
+
+    ASSERT_TRUE ( test_client.getErrors().empty() );
+
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
+
+    /* * * DIAGNOSTIC RESPONSE * * */
+
+    ASSERT_EQ   ( test_client.getDiagnosticSize(), 2 );
+
+    for (int index = 0; index < test_client.getDiagnosticSize(); index++)
+    {
+        int         start_line;
+        int         start_character;
+        int         end_line;
+        int         end_character;
+        int         severity;
+        std::string code;
+        std::string source;
+        std::string message;
+
+        ASSERT_TRUE ( test_client.getDiagnosticAt( index           ,
+                                                   start_line      ,
+                                                   start_character ,
+                                                   end_line        ,
+                                                   end_character   ,
+                                                   severity        ,
+                                                   code            ,
+                                                   source          ,
+                                                   message         ) );
+
+        if ( index == 0 )
+        {
+            ASSERT_EQ ( start_line      , 67                 );
+            ASSERT_EQ ( start_character , 45                 );
+            ASSERT_EQ ( end_line        , 68                 );
+            ASSERT_EQ ( end_character   , 16                 );
+            ASSERT_EQ ( severity        , 4                  );
+            ASSERT_EQ ( code            , "test.code.44"     );
+            ASSERT_EQ ( source          , "test_source_44"   );
+            ASSERT_EQ ( message         , "Test message 44." );
+
+        }
+        else if ( index == 1 )
+        {
+            ASSERT_EQ ( start_line      , 87                 );
+            ASSERT_EQ ( start_character , 17                 );
+            ASSERT_EQ ( end_line        , 88                 );
+            ASSERT_EQ ( end_character   , 12                 );
+            ASSERT_EQ ( severity        , 1                  );
+            ASSERT_EQ ( code            , "test.code.55"     );
+            ASSERT_EQ ( source          , "test_source_55"   );
+            ASSERT_EQ ( message         , "Test message 55." );
+
+        }
+    }
+
+    /* * * TODO : COMPLETION * * */
+
+    /* * * TODO : COMPLETION RESPONSE * * */
+
+    /* * * TODO : DEFINITION * * */
+
+    /* * * TODO : DEFINITION RESPONSE * * */
+
+    /* * * TODO : REFERENCES * * */
+
+    /* * * TODO : LOCATION RESPONSE * * */
+
+    /* * * TODO : FORMATTING * * */
+
+    /* * * TODO : FORMATTING RESPONSE * * */
+
+    /* * * CLOSED * * */
+
+    ASSERT_TRUE ( test_client.isDocumentOpen() );
+
+    test_client.closed();
+
+    ASSERT_FALSE( test_client.isDocumentOpen() );
+
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
-
-    /* * * TODO - OTHER METHODS * * */
 
     /* * * SHUTDOWN * * */
 
