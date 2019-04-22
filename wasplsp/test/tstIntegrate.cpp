@@ -22,8 +22,7 @@ TEST(integrate, server_thread_launch)
 
     test_connection = test_server.getConnection();
 
-    server_thread = std::thread( & Server<TestServer>::run ,
-                                 & test_server             );
+    server_thread = std::thread( &Server<TestServer>::run , &test_server );
 }
 
 TEST(integrate, test_initialize)
@@ -408,7 +407,7 @@ TEST(integrate, test_references)
 TEST(integrate, test_formatting)
 {
     // formatting - build object / stream to server / get response back / test
-;
+
     DataObject  client_object;
     int         client_request_id =  6;
     std::string document_uri      = "test/document/uri/string";

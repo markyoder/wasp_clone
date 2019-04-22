@@ -11,26 +11,28 @@
 namespace wasp {
 namespace lsp  {
 
-TEST(client, script)
+// handles for client, server, and server thread
+
+Client<ClientImpl> test_client;
+Server<TestServer> test_server;
+std::thread        server_thread;
+
+TEST(client, launch_server_connnect_client)
 {
-    // handles for client, server, and thread
+    // launch server thread and connect test client to server's communication
 
-    Client<ClientImpl> test_client;
-
-    Server<TestServer> test_server;
-
-    std::thread server_thread = std::thread( & Server<TestServer>::run ,
-                                             & test_server             );
-
-    // connect test client to server's communication
+    server_thread = std::thread( &Server<TestServer>::run , &test_server );
 
     ASSERT_FALSE( test_client.isConnected() );
 
     ASSERT_TRUE ( test_client.connect( test_server.getConnection() ) );
 
     ASSERT_TRUE ( test_client.isConnected() );
+}
 
-    /* * * INITIALIZE * * */
+TEST(client, initialize)
+{
+    // initialize
 
     ASSERT_FALSE( test_client.getConnection()->isServerRunning() );
 
@@ -43,8 +45,11 @@ TEST(client, script)
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
+}
 
-    /* * * INITIALIZED * * */
+TEST(client, initialized)
+{
+    // initialized
 
     ASSERT_TRUE ( test_client.initialized() );
 
@@ -53,8 +58,11 @@ TEST(client, script)
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
+}
 
-    /* * * OPENED * * */
+TEST(client, opened_and_diagnostics)
+{
+    // opened
 
     std::string document_path        = "/test/document/path.inp";
     std::string document_language_id = "test-document-language-id";
@@ -76,7 +84,7 @@ TEST(client, script)
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
 
-    /* * * DIAGNOSTIC RESPONSE * * */
+    // diagnostic response
 
     ASSERT_EQ   ( test_client.getDiagnosticSize(), 3 );
 
@@ -135,8 +143,11 @@ TEST(client, script)
             ASSERT_EQ ( message         , "Test message 33." );
         }
     }
+}
 
-    /* * * CHANGED * * */
+TEST(client, changed_and_diagnostics)
+{
+    // changed
 
     int         start_line        = 0;
     int         start_character   = 0;
@@ -162,7 +173,7 @@ TEST(client, script)
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
 
-    /* * * DIAGNOSTIC RESPONSE * * */
+    // diagnostic response
 
     ASSERT_EQ   ( test_client.getDiagnosticSize(), 2 );
 
@@ -210,8 +221,11 @@ TEST(client, script)
             ASSERT_EQ ( message         , "Test message 55." );
         }
     }
+}
 
-    /* * * COMPLETION * * */
+TEST(client, completion_and_response)
+{
+    // completion
 
     int line        = 4;
     int character   = 2;
@@ -225,7 +239,7 @@ TEST(client, script)
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 2 );
 
-    /* * * COMPLETION RESPONSE * * */
+    // completion response
 
     ASSERT_EQ   ( test_client.getCompletionSize(), 3 );
 
@@ -299,20 +313,32 @@ TEST(client, script)
             EXPECT_EQ ( preselect       , false                  );
         }
     }
+}
 
-    /* * * TODO : DEFINITION * * */
+TEST(client, definition_and_response)
+{
+    // todo : definition
 
-    /* * * TODO : DEFINITION RESPONSE * * */
+    // todo : definition response
+}
 
-    /* * * TODO : REFERENCES * * */
+TEST(client, references_and_response)
+{
+    // todo : references
 
-    /* * * TODO : LOCATION RESPONSE * * */
+    // todo : references response
+}
 
-    /* * * TODO : FORMATTING * * */
+TEST(client, formatting_and_response)
+{
+    // todo : formatting
 
-    /* * * TODO : FORMATTING RESPONSE * * */
+    // todo : formatting response
+}
 
-    /* * * CLOSED * * */
+TEST(client, closed)
+{
+    // closed
 
     ASSERT_TRUE ( test_client.isDocumentOpen() );
 
@@ -325,8 +351,11 @@ TEST(client, script)
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 2 );
+}
 
-    /* * * SHUTDOWN * * */
+TEST(client, shutdown)
+{
+    // shutdown
 
     ASSERT_TRUE ( test_client.getConnection()->isServerRunning() );
 
@@ -339,8 +368,11 @@ TEST(client, script)
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 3 );
+}
 
-    /* * * EXIT * * */
+TEST(client, exit)
+{
+    // exit
 
     ASSERT_TRUE ( test_client.exit() );
 
@@ -349,7 +381,10 @@ TEST(client, script)
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
     ASSERT_EQ   ( test_client.getPreviousRequestID() , 3 );
+}
 
+TEST(client, server_thread_join)
+{
     // make sure server thread finishes execution from the exit notification
 
     server_thread.join();
