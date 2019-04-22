@@ -107,36 +107,6 @@ class WASP_PUBLIC Client
         return Impl.exit();
     }
 
-    bool isConnected()
-    {
-        return Impl.isConnected();
-    }
-
-    std::shared_ptr<Connection> getConnection()
-    {
-        return Impl.getConnection();
-    }
-
-    std::string getErrors()
-    {
-        return Impl.getErrors();
-    }
-
-    int getPreviousRequestID()
-    {
-        return Impl.getPreviousRequestID();
-    }
-
-    bool isDocumentOpen()
-    {
-        return Impl.isDocumentOpen();
-    }
-
-    int getCurrentDocumentVersion()
-    {
-        return Impl.getCurrentDocumentVersion();
-    }
-
     int getDiagnosticSize()
     {
         return Impl.getDiagnosticSize();
@@ -181,6 +151,103 @@ class WASP_PUBLIC Client
                                      code            ,
                                      source          ,
                                      message         );
+    }
+
+    bool getCompletionAt( int           index           ,
+                          std::string & label           ,
+                          int         & start_line      ,
+                          int         & start_character ,
+                          int         & end_line        ,
+                          int         & end_character   ,
+                          std::string & new_text        ,
+                          int         & kind            ,
+                          std::string & detail          ,
+                          std::string & documentation   ,
+                          bool        & deprecated      ,
+                          bool        & preselect       )
+    {
+        return Impl.getCompletionAt( index           ,
+                                     label           ,
+                                     start_line      ,
+                                     start_character ,
+                                     end_line        ,
+                                     end_character   ,
+                                     new_text        ,
+                                     kind            ,
+                                     detail          ,
+                                     documentation   ,
+                                     deprecated      ,
+                                     preselect       );
+    }
+
+    bool getDefinitionAt( int           index           ,
+                          int         & start_line      ,
+                          int         & start_character ,
+                          int         & end_line        ,
+                          int         & end_character   )
+    {
+        return Impl.getDefinitionAt( index           ,
+                                     start_line      ,
+                                     start_character ,
+                                     end_line        ,
+                                     end_character   );
+    }
+
+    bool getReferencesAt( int           index           ,
+                          int         & start_line      ,
+                          int         & start_character ,
+                          int         & end_line        ,
+                          int         & end_character   )
+    {
+        return Impl.getReferencesAt( index           ,
+                                     start_line      ,
+                                     start_character ,
+                                     end_line        ,
+                                     end_character   );
+    }
+
+    bool getFormattingAt( int           index           ,
+                          int         & start_line      ,
+                          int         & start_character ,
+                          int         & end_line        ,
+                          int         & end_character   ,
+                          std::string & new_text        )
+    {
+        return Impl.getFormattingAt( index           ,
+                                     start_line      ,
+                                     start_character ,
+                                     end_line        ,
+                                     end_character   );
+    }
+
+    bool isConnected()
+    {
+        return Impl.isConnected();
+    }
+
+    std::shared_ptr<Connection> getConnection()
+    {
+        return Impl.getConnection();
+    }
+
+    std::string getErrors()
+    {
+        return Impl.getErrors();
+    }
+
+    int getPreviousRequestID()
+    {
+        return Impl.getPreviousRequestID();
+    }
+
+    bool isDocumentOpen()
+    {
+        return Impl.isDocumentOpen();
+    }
+
+    int getCurrentDocumentVersion()
+    {
+        return Impl.getCurrentDocumentVersion();
     }
 
   private:

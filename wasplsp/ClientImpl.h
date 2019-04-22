@@ -1,5 +1,5 @@
-#ifndef WASPLSP_TEST_CLIENT_H
-#define WASPLSP_TEST_CLIENT_H
+#ifndef WASPLSP_CLIENT_IMPL_H
+#define WASPLSP_CLIENT_IMPL_H
 
 #include <string>
 #include "wasplsp/LSP.h"
@@ -84,6 +84,38 @@ class WASP_PUBLIC ClientImpl
                           std::string & source          ,
                           std::string & message         );
 
+    bool getCompletionAt( int           index           ,
+                          std::string & label           ,
+                          int         & start_line      ,
+                          int         & start_character ,
+                          int         & end_line        ,
+                          int         & end_character   ,
+                          std::string & new_text        ,
+                          int         & kind            ,
+                          std::string & detail          ,
+                          std::string & documentation   ,
+                          bool        & deprecated      ,
+                          bool        & preselect       );
+
+    bool getDefinitionAt( int           index           ,
+                          int         & start_line      ,
+                          int         & start_character ,
+                          int         & end_line        ,
+                          int         & end_character   );
+
+    bool getReferencesAt( int           index           ,
+                          int         & start_line      ,
+                          int         & start_character ,
+                          int         & end_line        ,
+                          int         & end_character   );
+
+    bool getFormattingAt( int           index           ,
+                          int         & start_line      ,
+                          int         & start_character ,
+                          int         & end_line        ,
+                          int         & end_character   ,
+                          std::string & new_text        );
+
     bool isConnected()
     {
         return this->is_connected;
@@ -152,4 +184,4 @@ class WASP_PUBLIC ClientImpl
 } // namespace lsp
 } // namespace wasp
 
-#endif // WASPLSP_TEST_CLIENT_H
+#endif // WASPLSP_CLIENT_IMPL_H
