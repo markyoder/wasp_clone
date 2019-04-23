@@ -15,7 +15,7 @@ class WASP_PUBLIC Client
 
     ~Client(){}
 
-    bool connect( std::shared_ptr<Connection> connection )
+    bool connect( Connection::SP connection )
     {
         return Impl.connect( connection );
     }
@@ -226,7 +226,7 @@ class WASP_PUBLIC Client
         return Impl.isConnected();
     }
 
-    std::shared_ptr<Connection> getConnection()
+    Connection::SP getConnection()
     {
         return Impl.getConnection();
     }

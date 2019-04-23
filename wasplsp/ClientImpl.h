@@ -24,7 +24,7 @@ class WASP_PUBLIC ClientImpl
 
     ~ClientImpl(){}
 
-    bool connect( std::shared_ptr<Connection> connection );
+    bool connect( Connection::SP connection );
 
     bool doInitialize();
 
@@ -121,7 +121,7 @@ class WASP_PUBLIC ClientImpl
         return this->is_connected;
     }
 
-    std::shared_ptr<Connection> getConnection()
+    Connection::SP getConnection()
     {
         return this->connection;
     }
@@ -148,15 +148,15 @@ class WASP_PUBLIC ClientImpl
 
   private:
 
-      std::shared_ptr<Connection> connection;
-      std::stringstream           errors;
+      Connection::SP    connection;
+      std::stringstream errors;
 
-      bool                        is_connected;
-      bool                        is_initialized;
-      bool                        is_document_open;
-      int                         request_id;
-      int                         document_version;
-      std::string                 document_path;
+      bool              is_connected;
+      bool              is_initialized;
+      bool              is_document_open;
+      int               request_id;
+      int               document_version;
+      std::string       document_path;
 
       enum {
         DIAGNOSTIC,

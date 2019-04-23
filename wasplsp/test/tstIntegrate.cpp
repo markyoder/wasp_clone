@@ -12,9 +12,9 @@ namespace lsp  {
 
 // handles for server, server-thread, and thread-safe communication
 
-std::thread                 server_thread;
-Server<TestServer>          test_server;
-std::shared_ptr<Connection> test_connection;
+std::thread        server_thread;
+Server<TestServer> test_server;
+Connection::SP     test_connection;
 
 TEST(integrate, server_thread_launch)
 {

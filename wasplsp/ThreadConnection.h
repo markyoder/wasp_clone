@@ -19,6 +19,8 @@ class WASP_PUBLIC ThreadConnection : public Connection
 
     ~ThreadConnection(){}
 
+    typedef std::shared_ptr<Connection> SP;
+
     bool read( DataObject & object , std::stringstream & errors )
     {
         bool pass = true;

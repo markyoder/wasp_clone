@@ -106,7 +106,7 @@ class WASP_PUBLIC Server
         return Impl.handleExitNotification( exitNotification  );
     }
 
-    std::shared_ptr<Connection> getConnection()
+    Connection::SP getConnection()
     {
         return Impl.getConnection();
     }

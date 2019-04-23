@@ -15,6 +15,8 @@ class WASP_PUBLIC Connection
 
     ~Connection(){}
 
+    typedef std::shared_ptr<Connection> SP;
+
     virtual bool write( DataObject & object , std::stringstream & errors ) = 0;
 
     virtual bool read ( DataObject & object , std::stringstream & errors ) = 0;

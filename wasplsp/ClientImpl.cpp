@@ -1,10 +1,9 @@
 #include "wasplsp/ClientImpl.h"
-#include <unistd.h>
 
 namespace wasp {
 namespace lsp  {
 
-bool ClientImpl::connect( std::shared_ptr<Connection> connection )
+bool ClientImpl::connect( Connection::SP connection )
 {
     bool pass = true;
 
