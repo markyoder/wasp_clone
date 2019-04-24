@@ -1417,6 +1417,60 @@ bool dissectTextEditObject( const DataObject   & object          ,
     return pass;
 }
 
+bool buildDocumentSymbolObject( DataObject        & object                    ,
+                                std::ostream      & errors                    ,
+                                const std::string & name                      ,
+                                const std::string & detail                    ,
+                                int                 kind                      ,
+                                bool                deprecated                ,
+                                int                 start_line                ,
+                                int                 start_character           ,
+                                int                 end_line                  ,
+                                int                 end_character             ,
+                                int                 selection_start_line      ,
+                                int                 selection_start_character ,
+                                int                 selection_end_line        ,
+                                int                 selection_end_character   )
+{
+    bool pass = true;
+
+    // TODO
+
+    return pass;
+}
+
+bool dissectDocumentSymbolObject( const DataObject   & object                    ,
+                                        std::ostream & errors                    ,
+                                        std::string  & name                      ,
+                                        std::string  & detail                    ,
+                                        int          & kind                      ,
+                                        bool         & deprecated                ,
+                                        int          & start_line                ,
+                                        int          & start_character           ,
+                                        int          & end_line                  ,
+                                        int          & end_character             ,
+                                        int          & selection_start_line      ,
+                                        int          & selection_start_character ,
+                                        int          & selection_end_line        ,
+                                        int          & selection_end_character   )
+{
+    bool pass = true;
+
+    // TODO
+
+    return pass;
+}
+
+bool addDocumentSymbolChild( DataObject       & parent ,
+                             const DataObject & child  )
+{
+    bool pass = true;
+
+    // TODO
+
+    return pass;
+}
+
 bool buildFormattingResponse( DataObject        & object           ,
                               std::ostream      & errors           ,
                               int                 request_id       ,

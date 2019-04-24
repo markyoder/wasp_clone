@@ -389,6 +389,42 @@ bool dissectTextEditObject( const DataObject   & object          ,
                                   std::string  & new_text        );
 
 WASP_PUBLIC
+bool buildDocumentSymbolObject( DataObject        & object                    ,
+                                std::ostream      & errors                    ,
+                                const std::string & name                      ,
+                                const std::string & detail                    ,
+                                int                 kind                      ,
+                                bool                deprecated                ,
+                                int                 start_line                ,
+                                int                 start_character           ,
+                                int                 end_line                  ,
+                                int                 end_character             ,
+                                int                 selection_start_line      ,
+                                int                 selection_start_character ,
+                                int                 selection_end_line        ,
+                                int                 selection_end_character   );
+
+WASP_PUBLIC
+bool dissectDocumentSymbolObject( const DataObject   & object                    ,
+                                        std::ostream & errors                    ,
+                                        std::string  & name                      ,
+                                        std::string  & detail                    ,
+                                        int          & kind                      ,
+                                        bool         & deprecated                ,
+                                        int          & start_line                ,
+                                        int          & start_character           ,
+                                        int          & end_line                  ,
+                                        int          & end_character             ,
+                                        int          & selection_start_line      ,
+                                        int          & selection_start_character ,
+                                        int          & selection_end_line        ,
+                                        int          & selection_end_character   );
+
+WASP_PUBLIC
+bool addDocumentSymbolChild( DataObject       & parent ,
+                             const DataObject & child  );
+
+WASP_PUBLIC
 bool buildFormattingResponse( DataObject        & object           ,
                               std::ostream      & errors           ,
                               int                 request_id       ,
@@ -494,6 +530,9 @@ static const char m_deprecated[]            = "deprecated";
 static const char m_preselect[]             = "preselect";
 static const char m_items[]                 = "items";
 static const char m_is_incomplete[]         = "isIncomplete";
+static const char m_name[]                  = "name";
+static const char m_selection_range[]       = "selectionRange";
+static const char m_children[]              = "children";
 
 } // namespace lsp
 } // namespace wasp
