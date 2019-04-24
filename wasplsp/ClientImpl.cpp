@@ -45,9 +45,8 @@ bool ClientImpl::doInitialize()
 
     DataObject client_object;
     DataObject client_capabilities;
-    DataObject response_object;
-    int        response_request_id;
-    DataObject response_capabilities;
+
+    this->response = std::make_shared<DataObject>();
 
     pass &= buildInitializeRequest( client_object       ,
                                     this->errors        ,
@@ -58,19 +57,11 @@ bool ClientImpl::doInitialize()
 
     pass &= connection->write( client_object , this->errors );
 
-    pass &= connection->read( response_object , this->errors );
+    pass &= connection->read( *(this->response) , this->errors );
 
-    pass &= dissectInitializeResponse( response_object       ,
-                                       this->errors          ,
-                                       response_request_id   ,
-                                       response_capabilities );
+    verifyInitializeResponse( *(this->response) );
 
-    if ( response_request_id != this->request_id )
-    {
-        this->errors << m_error << "Initialize response id mismatch" << std::endl;
-
-        pass = false;
-    }
+    this->response_type = INITIALIZE;
 
     this->is_initialized = true;
 
@@ -137,7 +128,7 @@ bool ClientImpl::doDocumentOpen( const std::string & document_path        ,
     this->incrementDocumentVersion();
 
     DataObject  client_object;
-    DataObject  response_object;
+    this->response = std::make_shared<DataObject>();
     std::string response_document_path;
 
     pass &= buildDidOpenNotification( client_object          ,
@@ -149,21 +140,11 @@ bool ClientImpl::doDocumentOpen( const std::string & document_path        ,
 
     pass &= connection->write( client_object , this->errors );
 
-    pass &= connection->read( response_object , this->errors );
+    pass &= connection->read( *(this->response) , this->errors );
 
-    pass &= dissectPublishDiagnosticsNotification( response_object        ,
-                                                   this->errors           ,
-                                                   response_document_path ,
-                                                   this->response_array   );
+    verifyDiagnosticResponse( *(this->response) );
 
-    if ( response_document_path != this->document_path )
-    {
-        this->errors << m_error << "Diagnositics path mismatch" << std::endl;
-
-        pass = false;
-    }
-
-    this->response_array_type = DIAGNOSTIC;
+    this->response_type = DIAGNOSTIC;
 
     this->is_document_open = true;
 
@@ -203,7 +184,7 @@ bool ClientImpl::doDocumentChange( int                 start_line        ,
     this->incrementDocumentVersion();
 
     DataObject  client_object;
-    DataObject  response_object;
+    this->response = std::make_shared<DataObject>();
     std::string response_document_path;
 
     pass &= buildDidChangeNotification( client_object          ,
@@ -219,21 +200,11 @@ bool ClientImpl::doDocumentChange( int                 start_line        ,
 
     pass &= connection->write( client_object , this->errors );
 
-    pass &= connection->read( response_object , this->errors );
+    pass &= connection->read( *(this->response) , this->errors );
 
-    pass &= dissectPublishDiagnosticsNotification( response_object        ,
-                                                   this->errors           ,
-                                                   response_document_path ,
-                                                   this->response_array   );
+    verifyDiagnosticResponse( *(this->response) );
 
-    if ( response_document_path != this->document_path )
-    {
-        this->errors << m_error << "Diagnositics path mismatch" << std::endl;
-
-        pass = false;
-    }
-
-    this->response_array_type = DIAGNOSTIC;
+    this->response_type = DIAGNOSTIC;
 
     return pass;
 }
@@ -267,9 +238,8 @@ bool ClientImpl::doDocumentCompletion( int line      ,
     this->incrementRequestID();
 
     DataObject client_object;
-    DataObject response_object;
-    int        response_request_id;
-    bool       response_is_incomplete;
+
+    this->response = std::make_shared<DataObject>();
 
     pass &= buildCompletionRequest( client_object       ,
                                     this->errors        ,
@@ -280,22 +250,11 @@ bool ClientImpl::doDocumentCompletion( int line      ,
 
     pass &= connection->write( client_object , this->errors );
 
-    pass &= connection->read( response_object , this->errors );
+    pass &= connection->read( *(this->response) , this->errors );
 
-    pass &= dissectCompletionResponse( response_object        ,
-                                       this->errors           ,
-                                       response_request_id    ,
-                                       response_is_incomplete ,
-                                       this->response_array   );
+    verifyCompletionResponse( *(this->response) );
 
-    if ( response_request_id != this->request_id )
-    {
-        this->errors << m_error << "Completion response id mismatch" << std::endl;
-
-        pass = false;
-    }
-
-    this->response_array_type = COMPLETION;
+    this->response_type = COMPLETION;
 
     return pass;
 }
@@ -329,8 +288,8 @@ bool ClientImpl::doDocumentDefinition( int line      ,
     this->incrementRequestID();
 
     DataObject client_object;
-    DataObject response_object;
-    int        response_request_id;
+
+    this->response = std::make_shared<DataObject>();
 
     pass &= buildDefinitionRequest( client_object       ,
                                     this->errors        ,
@@ -341,21 +300,11 @@ bool ClientImpl::doDocumentDefinition( int line      ,
 
     pass &= connection->write( client_object , this->errors );
 
-    pass &= connection->read( response_object , this->errors );
+    pass &= connection->read( *(this->response) , this->errors );
 
-    pass &= dissectLocationsResponse( response_object      ,
-                                      this->errors         ,
-                                      response_request_id  ,
-                                      this->response_array );
+    verifyDefinitionResponse( *(this->response) );
 
-    if ( response_request_id != this->request_id )
-    {
-        this->errors << m_error << "Definition response id mismatch" << std::endl;
-
-        pass = false;
-    }
-
-    this->response_array_type = DEFINITION;
+    this->response_type = DEFINITION;
 
     return pass;
 }
@@ -390,8 +339,8 @@ bool ClientImpl::doDocumentReferences( int  line                ,
     this->incrementRequestID();
 
     DataObject client_object;
-    DataObject response_object;
-    int        response_request_id;
+
+    this->response = std::make_shared<DataObject>();
 
     pass &= buildReferencesRequest( client_object       ,
                                     this->errors        ,
@@ -403,21 +352,11 @@ bool ClientImpl::doDocumentReferences( int  line                ,
 
     pass &= connection->write( client_object , this->errors );
 
-    pass &= connection->read( response_object , this->errors );
+    pass &= connection->read( *(this->response) , this->errors );
 
-    pass &= dissectLocationsResponse( response_object      ,
-                                      this->errors         ,
-                                      response_request_id  ,
-                                      this->response_array );
+    verifyReferencesResponse( *(this->response) );
 
-    if ( response_request_id != this->request_id )
-    {
-        this->errors << m_error << "References response id mismatch" << std::endl;
-
-        pass = false;
-    }
-
-    this->response_array_type = REFERENCES;
+    this->response_type = REFERENCES;
 
     return pass;
 }
@@ -455,8 +394,8 @@ bool ClientImpl::doDocumentFormatting( int  start_line      ,
     this->incrementRequestID();
 
     DataObject client_object;
-    DataObject response_object;
-    int        response_request_id;
+
+    this->response = std::make_shared<DataObject>();
 
     pass &= buildRangeFormattingRequest( client_object       ,
                                          this->errors        ,
@@ -471,21 +410,11 @@ bool ClientImpl::doDocumentFormatting( int  start_line      ,
 
     pass &= connection->write( client_object , this->errors );
 
-    pass &= connection->read( response_object , this->errors );
+    pass &= connection->read( *(this->response) , this->errors );
 
-    pass &= dissectRangeFormattingResponse( response_object      ,
-                                            this->errors         ,
-                                            response_request_id  ,
-                                            this->response_array );
+    verifyFormattingResponse( *(this->response) );
 
-    if ( response_request_id != this->request_id )
-    {
-        this->errors << m_error << "Formatting response id mismatch" << std::endl;
-
-        pass = false;
-    }
-
-    this->response_array_type = FORMATTING;
+    this->response_type = FORMATTING;
 
     return pass;
 }
@@ -556,8 +485,8 @@ bool ClientImpl::doShutdown()
     this->incrementRequestID();
 
     DataObject client_object;
-    DataObject response_object;
-    int        response_request_id;
+
+    this->response = std::make_shared<DataObject>();
 
     pass &= buildShutdownRequest( client_object    ,
                                   this->errors     ,
@@ -565,18 +494,11 @@ bool ClientImpl::doShutdown()
 
     pass &= connection->write( client_object , this->errors );
 
-    pass &= connection->read( response_object, this->errors );
+    pass &= connection->read( *(this->response) , this->errors );
 
-    pass &= dissectShutdownResponse( response_object ,
-                                     this->errors          ,
-                                     response_request_id   );
+    verifyShutdownResponse( *(this->response) );
 
-    if ( response_request_id != this->request_id )
-    {
-        this->errors << m_error << "Shutdown response id mismatch" << std::endl;
-
-        pass = false;
-    }
+    this->response_type = SHUTDOWN;
 
     this->is_initialized = false;
 
@@ -615,27 +537,62 @@ bool ClientImpl::doExit()
 
 int ClientImpl::getDiagnosticSize()
 {
-    return this->response_array_type == DIAGNOSTIC ? this->response_array.size() : 0;
+    int size = 0;
+
+    if ( this->response_type == DIAGNOSTIC )
+    {
+        size = getDiagnosticResponseArray(*this->response)->size();
+    }
+
+    return size;
 }
 
 int ClientImpl::getCompletionSize()
 {
-    return this->response_array_type == COMPLETION ? this->response_array.size() : 0;
+    int size = 0;
+
+    if ( this->response_type == COMPLETION )
+    {
+        size = getCompletionResponseArray(*this->response)->size();
+    }
+
+    return size;
 }
 
 int ClientImpl::getDefinitionSize()
 {
-    return this->response_array_type == DEFINITION ? this->response_array.size() : 0;
+    int size = 0;
+
+    if ( this->response_type == DEFINITION )
+    {
+        size = getDefinitionResponseArray(*this->response)->size();
+    }
+
+    return size;
 }
 
 int ClientImpl::getReferencesSize()
 {
-    return this->response_array_type == REFERENCES ? this->response_array.size() : 0;
+    int size = 0;
+
+    if ( this->response_type == REFERENCES )
+    {
+        size = getReferencesResponseArray(*this->response)->size();
+    }
+
+    return size;
 }
 
 int ClientImpl::getFormattingSize()
 {
-    return this->response_array_type == FORMATTING ? this->response_array.size() : 0;
+    int size = 0;
+
+    if ( this->response_type == FORMATTING )
+    {
+        size = getFormattingResponseArray(*this->response)->size();
+    }
+
+    return size;
 }
 
 bool ClientImpl::getDiagnosticAt( int           index           ,
@@ -648,14 +605,14 @@ bool ClientImpl::getDiagnosticAt( int           index           ,
                                   std::string & source          ,
                                   std::string & message         )
 {
-    if ( this->response_array_type != DIAGNOSTIC )
+    if ( this->response_type != DIAGNOSTIC )
     {
         this->errors << m_error << "No diagnostics currently stored" << std::endl;
 
         return false;
     }
 
-    if ( index >= (int) this->response_array.size() )
+    if ( index >= this->getDiagnosticSize() )
     {
         this->errors << m_error << "Diagnostics index out of bounds" << std::endl;
 
@@ -664,16 +621,19 @@ bool ClientImpl::getDiagnosticAt( int           index           ,
 
     bool pass = true;
 
-    pass &= dissectDiagnosticObject( *(this->response_array[index].to_object()) ,
-                                       this->errors                             ,
-                                       start_line                               ,
-                                       start_character                          ,
-                                       end_line                                 ,
-                                       end_character                            ,
-                                       severity                                 ,
-                                       code                                     ,
-                                       source                                   ,
-                                       message                                  );
+    const DataObject & diagnosticObject =
+            *getDiagnosticResponseArray(*this->response)->at(index).to_object();
+
+    pass &= dissectDiagnosticObject( diagnosticObject ,
+                                     this->errors     ,
+                                     start_line       ,
+                                     start_character  ,
+                                     end_line         ,
+                                     end_character    ,
+                                     severity         ,
+                                     code             ,
+                                     source           ,
+                                     message          );
 
     return pass;
 }
@@ -691,14 +651,14 @@ bool ClientImpl::getCompletionAt( int           index           ,
                                   bool        & deprecated      ,
                                   bool        & preselect       )
 {
-    if ( this->response_array_type != COMPLETION )
+    if ( this->response_type != COMPLETION )
     {
         this->errors << m_error << "No completions currently stored" << std::endl;
 
         return false;
     }
 
-    if ( index >= (int) this->response_array.size() )
+    if ( index >= this->getCompletionSize() )
     {
         this->errors << m_error << "Completions index out of bounds" << std::endl;
 
@@ -707,41 +667,40 @@ bool ClientImpl::getCompletionAt( int           index           ,
 
     bool pass = true;
 
-    pass &= dissectCompletionObject( *(this->response_array[index].to_object()) ,
-                                       this->errors                             ,
-                                       label                                    ,
-                                       start_line                               ,
-                                       start_character                          ,
-                                       end_line                                 ,
-                                       end_character                            ,
-                                       new_text                                 ,
-                                       kind                                     ,
-                                       detail                                   ,
-                                       documentation                            ,
-                                       deprecated                               ,
-                                       preselect                                );
+    const DataObject & completionObject =
+            *getCompletionResponseArray(*this->response)->at(index).to_object();
 
-
-
-
+    pass &= dissectCompletionObject( completionObject ,
+                                     this->errors     ,
+                                     label            ,
+                                     start_line       ,
+                                     start_character  ,
+                                     end_line         ,
+                                     end_character    ,
+                                     new_text         ,
+                                     kind             ,
+                                     detail           ,
+                                     documentation    ,
+                                     deprecated       ,
+                                     preselect        );
 
     return pass;
 }
 
-bool ClientImpl::getDefinitionAt( int           index           ,
-                                  int         & start_line      ,
-                                  int         & start_character ,
-                                  int         & end_line        ,
-                                  int         & end_character   )
+bool ClientImpl::getDefinitionAt( int   index           ,
+                                  int & start_line      ,
+                                  int & start_character ,
+                                  int & end_line        ,
+                                  int & end_character   )
 {
-    if ( this->response_array_type != DEFINITION )
+    if ( this->response_type != DEFINITION )
     {
         this->errors << m_error << "No definitions currently stored" << std::endl;
 
         return false;
     }
 
-    if ( index >= (int) this->response_array.size() )
+    if ( index >= this->getDefinitionSize() )
     {
         this->errors << m_error << "Definitions index out of bounds" << std::endl;
 
@@ -752,13 +711,16 @@ bool ClientImpl::getDefinitionAt( int           index           ,
 
     std::string response_document_path;
 
-    pass &= dissectLocationObject( *(this->response_array[index].to_object()) ,
-                                     this->errors                             ,
-                                     response_document_path                   ,
-                                     start_line                               ,
-                                     start_character                          ,
-                                     end_line                                 ,
-                                     end_character                            );
+    const DataObject & locationObject =
+            *getDefinitionResponseArray(*this->response)->at(index).to_object();
+
+    pass &= dissectLocationObject( locationObject         ,
+                                   this->errors           ,
+                                   response_document_path ,
+                                   start_line             ,
+                                   start_character        ,
+                                   end_line               ,
+                                   end_character          );
 
     if ( response_document_path != this->document_path )
     {
@@ -770,20 +732,20 @@ bool ClientImpl::getDefinitionAt( int           index           ,
     return pass;
 }
 
-bool ClientImpl::getReferencesAt( int           index           ,
-                                  int         & start_line      ,
-                                  int         & start_character ,
-                                  int         & end_line        ,
-                                  int         & end_character   )
+bool ClientImpl::getReferencesAt( int   index           ,
+                                  int & start_line      ,
+                                  int & start_character ,
+                                  int & end_line        ,
+                                  int & end_character   )
 {
-    if ( this->response_array_type != REFERENCES )
+    if ( this->response_type != REFERENCES )
     {
         this->errors << m_error << "No references currently stored" << std::endl;
 
         return false;
     }
 
-    if ( index >= (int) this->response_array.size() )
+    if ( index >= this->getReferencesSize() )
     {
         this->errors << m_error << "References index out of bounds" << std::endl;
 
@@ -794,13 +756,16 @@ bool ClientImpl::getReferencesAt( int           index           ,
 
     std::string response_document_path;
 
-    pass &= dissectLocationObject( *(this->response_array[index].to_object()) ,
-                                     this->errors                             ,
-                                     response_document_path                   ,
-                                     start_line                               ,
-                                     start_character                          ,
-                                     end_line                                 ,
-                                     end_character                            );
+    const DataObject & locationObject =
+            *getReferencesResponseArray(*this->response)->at(index).to_object();
+
+    pass &= dissectLocationObject( locationObject         ,
+                                   this->errors           ,
+                                   response_document_path ,
+                                   start_line             ,
+                                   start_character        ,
+                                   end_line               ,
+                                   end_character          );
 
     if ( response_document_path != this->document_path )
     {
@@ -819,14 +784,14 @@ bool ClientImpl::getFormattingAt( int           index           ,
                                   int         & end_character   ,
                                   std::string & new_text        )
 {
-    if ( this->response_array_type != FORMATTING )
+    if ( this->response_type != FORMATTING )
     {
         this->errors << m_error << "No formattings currently stored" << std::endl;
 
         return false;
     }
 
-    if ( index >= (int) this->response_array.size() )
+    if ( index >= this->getFormattingSize() )
     {
         this->errors << m_error << "Formattings index out of bounds" << std::endl;
 
@@ -835,15 +800,19 @@ bool ClientImpl::getFormattingAt( int           index           ,
 
     bool pass = true;
 
-    pass &= dissectTextEditObject( *(this->response_array[index].to_object()) ,
-                                     this->errors                             ,
-                                     start_line                               ,
-                                     start_character                          ,
-                                     end_line                                 ,
-                                     end_character                            ,
-                                     new_text                                 );
+    const DataObject & textEditObject =
+            *getFormattingResponseArray(*this->response)->at(index).to_object();
+
+    pass &= dissectTextEditObject( textEditObject  ,
+                                   this->errors    ,
+                                   start_line      ,
+                                   start_character ,
+                                   end_line        ,
+                                   end_character   ,
+                                   new_text        );
 
     return pass;
 }
+
 } // namespace lsp
 } // namespace wasp

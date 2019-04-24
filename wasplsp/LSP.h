@@ -388,6 +388,42 @@ bool dissectRangeFormattingResponse( const DataObject   & object           ,
                                            int          & request_id       ,
                                            DataArray    & textedit_objects );
 
+WASP_PUBLIC
+void verifyInitializeResponse( const DataObject & object );
+
+WASP_PUBLIC
+void verifyDiagnosticResponse( const DataObject & object );
+
+WASP_PUBLIC
+void verifyCompletionResponse( const DataObject & object );
+
+WASP_PUBLIC
+void verifyDefinitionResponse( const DataObject & object );
+
+WASP_PUBLIC
+void verifyReferencesResponse( const DataObject & object );
+
+WASP_PUBLIC
+void verifyFormattingResponse( const DataObject & object );
+
+WASP_PUBLIC
+void verifyShutdownResponse( const DataObject & object );
+
+WASP_PUBLIC
+DataArray * getDiagnosticResponseArray( const DataObject & object );
+
+WASP_PUBLIC
+DataArray * getCompletionResponseArray( const DataObject & object );
+
+WASP_PUBLIC
+DataArray * getDefinitionResponseArray( const DataObject & object );
+
+WASP_PUBLIC
+DataArray * getReferencesResponseArray( const DataObject & object );
+
+WASP_PUBLIC
+DataArray * getFormattingResponseArray( const DataObject & object );
+
 static const char m_rpc_content_len_key[]   = "Content-Length:";
 static const char m_rpc_separator[]         = "\r\n\r\n";
 static const char m_rpc_jsonrpc_key[]       = "jsonrpc";

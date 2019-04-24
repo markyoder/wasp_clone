@@ -1400,5 +1400,91 @@ bool dissectRangeFormattingResponse( const DataObject   & object           ,
     return pass;
 }
 
+void verifyInitializeResponse( const DataObject & object )
+{
+    wasp_check( object[m_id].is_int() );
+
+    wasp_check( object[m_result].is_object() );
+
+    wasp_check( object[m_result][m_capabilities].is_object() );
+}
+
+void verifyDiagnosticResponse( const DataObject & object )
+{
+    wasp_check( object[m_method].is_string() );
+
+    wasp_check( object[m_method].to_string() == m_method_pubdiagnostics );
+
+    wasp_check( object[m_params].is_object() );
+
+    wasp_check( object[m_params][m_uri].is_string() );
+
+    wasp_check( object[m_params][m_diagnostics].is_array() );
+}
+
+void verifyCompletionResponse( const DataObject & object )
+{
+    wasp_check( object[m_id].is_int() );
+
+    wasp_check( object[m_result].is_object() );
+
+    wasp_check( object[m_result][m_is_incomplete].is_bool() );
+
+    wasp_check( object[m_result][m_items].is_array() );
+}
+
+void verifyDefinitionResponse( const DataObject & object )
+{
+    wasp_check( object[m_id].is_int() );
+
+    wasp_check( object[m_result].is_array() );
+}
+
+void verifyReferencesResponse( const DataObject & object )
+{
+    wasp_check( object[m_id].is_int() );
+
+    wasp_check( object[m_result].is_array() );
+}
+
+void verifyFormattingResponse( const DataObject & object )
+{
+    wasp_check( object[m_id].is_int() );
+
+    wasp_check( object[m_result].is_array() );
+}
+
+void verifyShutdownResponse( const DataObject & object )
+{
+    wasp_check( object[m_id].is_int() );
+
+    wasp_check( object[m_result].is_object() );
+}
+
+DataArray * getDiagnosticResponseArray( const DataObject & object )
+{
+    return object[m_params][m_diagnostics].to_array();
+}
+
+DataArray * getCompletionResponseArray( const DataObject & object )
+{
+    return object[m_result][m_items].to_array();
+}
+
+DataArray * getDefinitionResponseArray( const DataObject & object )
+{
+    return object[m_result].to_array();
+}
+
+DataArray * getReferencesResponseArray( const DataObject & object )
+{
+    return object[m_result].to_array();
+}
+
+DataArray * getFormattingResponseArray( const DataObject & object )
+{
+    return object[m_result].to_array();
+}
+
 } // namespace lsp
 } // namespace wasp

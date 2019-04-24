@@ -20,7 +20,7 @@ class WASP_PUBLIC ClientImpl
         is_document_open(false)  ,
         request_id(0)            ,
         document_version(0)      ,
-        response_array_type(NONE){}
+        response_type(NONE){}
 
     ~ClientImpl(){}
 
@@ -159,15 +159,17 @@ class WASP_PUBLIC ClientImpl
       std::string       document_path;
 
       enum {
+        INITIALIZE,
         DIAGNOSTIC,
         COMPLETION,
         DEFINITION,
         REFERENCES,
         FORMATTING,
+        SHUTDOWN,
         NONE
-      } response_array_type;
+      } response_type;
 
-      DataArray response_array;
+      DataObject::SP response;
 
       void incrementRequestID()
       {
