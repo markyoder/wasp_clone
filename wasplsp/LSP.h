@@ -199,6 +199,18 @@ bool dissectFormattingRequest( const DataObject   & object          ,
                                      bool         & insert_spaces   );
 
 WASP_PUBLIC
+bool buildSymbolsRequest( DataObject        & object     ,
+                          std::ostream      & errors     ,
+                          int                 request_id ,
+                          const std::string & uri        );
+
+WASP_PUBLIC
+bool dissectSymbolsRequest( const DataObject   & object     ,
+                                  std::ostream & errors     ,
+                                  int          & request_id ,
+                                  std::string  & uri        );
+
+WASP_PUBLIC
 bool buildDidCloseNotification( DataObject        & object ,
                                 std::ostream      & errors ,
                                 const std::string & uri    );
@@ -438,6 +450,7 @@ static const char m_method_completion[]     = "textDocument/completion";
 static const char m_method_definition[]     = "textDocument/definition";
 static const char m_method_references[]     = "textDocument/references";
 static const char m_method_rangeformat[]    = "textDocument/rangeFormatting";
+static const char m_method_documentsymbol[] = "textDocument/documentSymbol";
 static const char m_method_pubdiagnostics[] = "textDocument/publishDiagnostics";
 static const char m_method_didclose[]       = "textDocument/didClose";
 static const char m_method_shutdown[]       = "shutdown";

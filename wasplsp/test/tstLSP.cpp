@@ -119,8 +119,7 @@ TEST(lsp, initialize_request)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 171)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
+    rpc_expected << "Content-Length: 171\r\n\r\n" << R"INPUT({
   "id" : 1
   ,"jsonrpc" : "2.0"
   ,"method" : "initialize"
@@ -181,8 +180,7 @@ TEST(lsp, initialized_notification)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 68)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
+    rpc_expected << "Content-Length: 68\r\n\r\n" << R"INPUT({
   "jsonrpc" : "2.0"
   ,"method" : "initialized"
   ,"params" : {}
@@ -248,8 +246,7 @@ TEST(lsp, didopen_notification)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 244)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
+    rpc_expected << "Content-Length: 244\r\n\r\n" << R"INPUT({
   "jsonrpc" : "2.0"
   ,"method" : "textDocument/didOpen"
   ,"params" : {
@@ -369,8 +366,7 @@ TEST(lsp, didchange_notification)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 415)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
+    rpc_expected << "Content-Length: 415\r\n\r\n" << R"INPUT({
   "jsonrpc" : "2.0"
   ,"method" : "textDocument/didChange"
   ,"params" : {
@@ -484,8 +480,7 @@ TEST(lsp, completion_request)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 227)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
+    rpc_expected << "Content-Length: 227\r\n\r\n" << R"INPUT({
   "id" : 2
   ,"jsonrpc" : "2.0"
   ,"method" : "textDocument/completion"
@@ -578,8 +573,7 @@ TEST(lsp, definition_request)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 227)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
+    rpc_expected << "Content-Length: 227\r\n\r\n" << R"INPUT({
   "id" : 3
   ,"jsonrpc" : "2.0"
   ,"method" : "textDocument/definition"
@@ -679,8 +673,7 @@ TEST(lsp, references_request)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 289)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
+    rpc_expected << "Content-Length: 289\r\n\r\n" << R"INPUT({
   "id" : 4
   ,"jsonrpc" : "2.0"
   ,"method" : "textDocument/references"
@@ -807,8 +800,7 @@ TEST(lsp, formatting_request)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 398)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
+    rpc_expected << "Content-Length: 398\r\n\r\n" << R"INPUT({
   "id" : 5
   ,"jsonrpc" : "2.0"
   ,"method" : "textDocument/rangeFormatting"
@@ -873,6 +865,75 @@ TEST(lsp, formatting_request)
     ASSERT_EQ( tst_insert_spaces   , insert_spaces   );
 }
 
+TEST(lsp, symbols_request)
+{
+    DataObject        object;
+    std::stringstream errors;
+
+    int               request_id      =  6;
+    std::string       uri             = "test/document/uri/string";
+
+    ASSERT_TRUE(buildSymbolsRequest( object     ,
+                                     errors     ,
+                                     request_id ,
+                                     uri        ));
+
+    ASSERT_EQ  ( object.size() , (size_t) 3 );
+
+    ASSERT_TRUE( object[m_id].is_int()              );
+    ASSERT_EQ  ( object[m_id].to_int() , request_id );
+
+    ASSERT_TRUE( object[m_method].is_string()                           );
+    ASSERT_EQ  ( object[m_method].to_string() , m_method_documentsymbol );
+
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 1 );
+
+    ASSERT_TRUE( object[m_params][m_text_document].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_text_document].size() , (size_t) 1 );
+
+    ASSERT_TRUE( object[m_params][m_text_document][m_uri].is_string()       );
+    ASSERT_EQ  ( object[m_params][m_text_document][m_uri].to_string() , uri );
+
+    std::string rpcstr;
+    ASSERT_TRUE( objectToRPCString( object ,
+                                    rpcstr ,
+                                    errors ));
+
+    std::stringstream rpc_expected;
+    rpc_expected << "Content-Length: 165\r\n\r\n" << R"INPUT({
+  "id" : 6
+  ,"jsonrpc" : "2.0"
+  ,"method" : "textDocument/documentSymbol"
+  ,"params" : {
+    "textDocument" : {
+    "uri" : "test/document/uri/string"
+  }
+  }
+})INPUT";
+
+    ASSERT_EQ( rpcstr , rpc_expected.str() );
+
+    DataObject tst_object;
+    ASSERT_TRUE( RPCStringToObject( rpcstr     ,
+                                    tst_object ,
+                                    errors     ));
+
+    ASSERT_TRUE( tst_object[m_method].is_string()                           );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_documentsymbol );
+
+    int         tst_request_id ;
+    std::string tst_uri;
+
+    ASSERT_TRUE(dissectSymbolsRequest( object         ,
+                                       errors         ,
+                                       tst_request_id ,
+                                       tst_uri        ));
+
+    ASSERT_EQ( tst_request_id      , request_id      );
+    ASSERT_EQ( tst_uri             , uri             );
+}
+
 TEST(lsp, didclose_notification)
 {
     DataObject        object;
@@ -906,8 +967,7 @@ TEST(lsp, didclose_notification)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 147)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
+    rpc_expected << "Content-Length: 147\r\n\r\n" << R"INPUT({
   "jsonrpc" : "2.0"
   ,"method" : "textDocument/didClose"
   ,"params" : {
@@ -941,7 +1001,7 @@ TEST(lsp, shutdown_request)
     DataObject        object;
     std::stringstream errors;
 
-    int               request_id = 6;
+    int               request_id = 7;
 
     ASSERT_TRUE(buildShutdownRequest( object     ,
                                       errors     ,
@@ -964,9 +1024,8 @@ TEST(lsp, shutdown_request)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 77)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
-  "id" : 6
+    rpc_expected << "Content-Length: 77\r\n\r\n" << R"INPUT({
+  "id" : 7
   ,"jsonrpc" : "2.0"
   ,"method" : "shutdown"
   ,"params" : {}
@@ -1013,8 +1072,7 @@ TEST(lsp, exit_notification)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 61)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
+    rpc_expected << "Content-Length: 61\r\n\r\n" << R"INPUT({
   "jsonrpc" : "2.0"
   ,"method" : "exit"
   ,"params" : {}
@@ -1294,8 +1352,7 @@ TEST(lsp, publishdiagnostics_notification)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 1596)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
+    rpc_expected << "Content-Length: 1596\r\n\r\n" << R"INPUT({
   "jsonrpc" : "2.0"
   ,"method" : "textDocument/publishDiagnostics"
   ,"params" : {
@@ -1485,7 +1542,7 @@ TEST(lsp, initialize_response)
     DataObject        object;
     std::stringstream errors;
 
-    int               request_id = 7;
+    int               request_id = 8;
     DataObject        server_capabilities;
 
     ASSERT_TRUE(buildInitializeResponse( object              ,
@@ -1510,9 +1567,8 @@ TEST(lsp, initialize_response)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 79)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
-  "id" : 7
+    rpc_expected << "Content-Length: 79\r\n\r\n" << R"INPUT({
+  "id" : 8
   ,"jsonrpc" : "2.0"
   ,"result" : {
     "capabilities" : {}
@@ -1690,7 +1746,7 @@ TEST(lsp, completion_response)
     DataObject        object;
     std::stringstream errors;
 
-    int               request_id    = 8;
+    int               request_id    = 9;
     bool              is_incomplete = false;
     DataObject        completion_item;
     DataArray         completion_items;
@@ -1861,9 +1917,8 @@ TEST(lsp, completion_response)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 2478)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
-  "id" : 8
+    rpc_expected << "Content-Length: 2478\r\n\r\n" << R"INPUT({
+  "id" : 9
   ,"jsonrpc" : "2.0"
   ,"result" : {
     "isIncomplete" : false
@@ -2186,7 +2241,7 @@ TEST(lsp, locations_response)
     DataObject        object;
     std::stringstream errors;
 
-    int               request_id = 9;
+    int               request_id = 10;
     DataObject        location;
     DataArray         locations;
 
@@ -2298,9 +2353,8 @@ TEST(lsp, locations_response)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 989)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
-  "id" : 9
+    rpc_expected << "Content-Length: 990\r\n\r\n" << R"INPUT({
+  "id" : 10
   ,"jsonrpc" : "2.0"
   ,"result" : [
     {
@@ -2535,7 +2589,7 @@ TEST(lsp, formatting_response)
     DataObject        object;
     std::stringstream errors;
 
-    int               request_id = 10;
+    int               request_id = 11;
     DataObject        textedit;
     DataArray         textedits;
 
@@ -2647,9 +2701,8 @@ TEST(lsp, formatting_response)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 1165)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
-  "id" : 10
+    rpc_expected << "Content-Length: 1165\r\n\r\n" << R"INPUT({
+  "id" : 11
   ,"jsonrpc" : "2.0"
   ,"result" : [
     {
@@ -2798,7 +2851,7 @@ TEST(lsp, shutdown_response)
     DataObject        object;
     std::stringstream errors;
 
-    int               request_id = 11;
+    int               request_id = 12;
 
     ASSERT_TRUE(buildShutdownResponse( object     ,
                                        errors     ,
@@ -2818,9 +2871,8 @@ TEST(lsp, shutdown_response)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << R"INPUT(Content-Length: 53)INPUT" << "\r\n\r\n"
-                  << R"INPUT({
-  "id" : 11
+    rpc_expected << "Content-Length: 53\r\n\r\n" << R"INPUT({
+  "id" : 12
   ,"jsonrpc" : "2.0"
   ,"result" : {}
 })INPUT";
