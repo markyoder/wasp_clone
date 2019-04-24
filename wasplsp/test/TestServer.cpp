@@ -56,8 +56,8 @@ bool TestServer::run()
         }
         else if ( method_name == m_method_rangeformat )
         {
-            pass &= this->handleRangeFormattingRequest( input_object  ,
-                                                        output_object );
+            pass &= this->handleFormattingRequest( input_object  ,
+                                                   output_object );
         }
         else if ( method_name == m_method_didclose )
         {
@@ -394,9 +394,9 @@ bool TestServer::handleReferencesRequest(
     return pass;
 }
 
-bool TestServer::handleRangeFormattingRequest(
-                const DataObject & rangeFormattingRequest  ,
-                      DataObject & rangeFormattingResponse )
+bool TestServer::handleFormattingRequest(
+                const DataObject & formattingRequest  ,
+                      DataObject & formattingResponse )
 {
     if (!this->is_initialized)
     {
@@ -420,16 +420,16 @@ bool TestServer::handleRangeFormattingRequest(
     int         tab_size;
     bool        insert_spaces;
 
-    pass &= dissectRangeFormattingRequest( rangeFormattingRequest  ,
-                                           this->errors            ,
-                                           this->client_request_id ,
-                                           document_path           ,
-                                           start_line              ,
-                                           start_character         ,
-                                           end_line                ,
-                                           end_character           ,
-                                           tab_size                ,
-                                           insert_spaces           );
+    pass &= dissectFormattingRequest( formattingRequest       ,
+                                      this->errors            ,
+                                      this->client_request_id ,
+                                      document_path           ,
+                                      start_line              ,
+                                      start_character         ,
+                                      end_line                ,
+                                      end_character           ,
+                                      tab_size                ,
+                                      insert_spaces           );
 
     if ( document_path != this->document_path )
     {
@@ -447,10 +447,10 @@ bool TestServer::handleRangeFormattingRequest(
                                                      tab_size             ,
                                                      insert_spaces        );
 
-    pass &= buildRangeFormattingResponse( rangeFormattingResponse ,
-                                          this->errors            ,
-                                          this->client_request_id ,
-                                          formatting_textedits    );
+    pass &= buildFormattingResponse( formattingResponse      ,
+                                     this->errors            ,
+                                     this->client_request_id ,
+                                     formatting_textedits    );
 
     return pass;
 }

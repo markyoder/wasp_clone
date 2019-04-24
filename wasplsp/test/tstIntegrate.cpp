@@ -431,25 +431,25 @@ TEST(integrate, test_formatting)
 
     std::stringstream  client_errors;
 
-    ASSERT_TRUE( buildRangeFormattingRequest( client_object     ,
-                                              client_errors     ,
-                                              client_request_id ,
-                                              document_uri      ,
-                                              start_line        ,
-                                              start_character   ,
-                                              end_line          ,
-                                              end_character     ,
-                                              tab_size          ,
-                                              insert_spaces     ) );
+    ASSERT_TRUE( buildFormattingRequest( client_object     ,
+                                         client_errors     ,
+                                         client_request_id ,
+                                         document_uri      ,
+                                         start_line        ,
+                                         start_character   ,
+                                         end_line          ,
+                                         end_character     ,
+                                         tab_size          ,
+                                         insert_spaces     ) );
 
     ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
 
     ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
-    ASSERT_TRUE( dissectRangeFormattingResponse( response_object     ,
-                                                 client_errors       ,
-                                                 response_request_id ,
-                                                 response_textedits  ) );
+    ASSERT_TRUE( dissectFormattingResponse( response_object     ,
+                                            client_errors       ,
+                                            response_request_id ,
+                                            response_textedits  ) );
 
     ASSERT_EQ( response_request_id       , client_request_id );
     ASSERT_EQ( response_textedits.size() , (size_t) 3        );

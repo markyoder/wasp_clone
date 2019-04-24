@@ -78,12 +78,12 @@ class WASP_PUBLIC Server
                                              referencesResponse );
     }
 
-    bool handleRangeFormattingRequest(
-                    const DataObject & rangeFormattingRequest  ,
-                          DataObject & rangeFormattingResponse )
+    bool handleFormattingRequest(
+                    const DataObject & formattingRequest  ,
+                          DataObject & formattingResponse )
     {
-        return Impl.handleRangeFormattingRequest( rangeFormattingRequest  ,
-                                                  rangeFormattingResponse );
+        return Impl.handleFormattingRequest( formattingRequest  ,
+                                             formattingResponse );
     }
 
     bool handleDidCloseNotification(

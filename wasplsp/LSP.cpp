@@ -698,16 +698,16 @@ bool dissectReferencesRequest( const DataObject   & object              ,
     return pass;
 }
 
-bool buildRangeFormattingRequest( DataObject        & object          ,
-                                  std::ostream      & errors          ,
-                                  int                 request_id      ,
-                                  const std::string & uri             ,
-                                  int                 start_line      ,
-                                  int                 start_character ,
-                                  int                 end_line        ,
-                                  int                 end_character   ,
-                                  int                 tab_size        ,
-                                  bool                insert_spaces   )
+bool buildFormattingRequest( DataObject        & object          ,
+                             std::ostream      & errors          ,
+                             int                 request_id      ,
+                             const std::string & uri             ,
+                             int                 start_line      ,
+                             int                 start_character ,
+                             int                 end_line        ,
+                             int                 end_character   ,
+                             int                 tab_size        ,
+                             bool                insert_spaces   )
 {
     bool pass = true;
 
@@ -738,16 +738,16 @@ bool buildRangeFormattingRequest( DataObject        & object          ,
     return pass;
 }
 
-bool dissectRangeFormattingRequest( const DataObject   & object          ,
-                                          std::ostream & errors          ,
-                                          int          & request_id      ,
-                                          std::string  & uri             ,
-                                          int          & start_line      ,
-                                          int          & start_character ,
-                                          int          & end_line        ,
-                                          int          & end_character   ,
-                                          int          & tab_size        ,
-                                          bool         & insert_spaces   )
+bool dissectFormattingRequest( const DataObject   & object          ,
+                                     std::ostream & errors          ,
+                                     int          & request_id      ,
+                                     std::string  & uri             ,
+                                     int          & start_line      ,
+                                     int          & start_character ,
+                                     int          & end_line        ,
+                                     int          & end_character   ,
+                                     int          & tab_size        ,
+                                     bool         & insert_spaces   )
 {
     bool pass = true;
 
@@ -1367,10 +1367,10 @@ bool dissectTextEditObject( const DataObject   & object          ,
     return pass;
 }
 
-bool buildRangeFormattingResponse( DataObject        & object           ,
-                                   std::ostream      & errors           ,
-                                   int                 request_id       ,
-                                   const DataArray   & textedit_objects )
+bool buildFormattingResponse( DataObject        & object           ,
+                              std::ostream      & errors           ,
+                              int                 request_id       ,
+                              const DataArray   & textedit_objects )
 {
     bool pass = true;
 
@@ -1382,10 +1382,10 @@ bool buildRangeFormattingResponse( DataObject        & object           ,
     return pass;
 }
 
-bool dissectRangeFormattingResponse( const DataObject   & object           ,
-                                           std::ostream & errors           ,
-                                           int          & request_id       ,
-                                           DataArray    & textedit_objects )
+bool dissectFormattingResponse( const DataObject   & object           ,
+                                      std::ostream & errors           ,
+                                      int          & request_id       ,
+                                      DataArray    & textedit_objects )
 {
     bool pass = true;
 

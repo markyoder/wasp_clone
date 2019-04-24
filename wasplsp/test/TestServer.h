@@ -50,9 +50,9 @@ class WASP_PUBLIC TestServer
                     const DataObject & referencesRequest  ,
                           DataObject & referencesResponse );
 
-    bool handleRangeFormattingRequest(
-                    const DataObject & rangeFormattingRequest  ,
-                          DataObject & rangeFormattingResponse );
+    bool handleFormattingRequest(
+                    const DataObject & formattingRequest  ,
+                          DataObject & formattingResponse );
 
     bool handleDidCloseNotification(
                     const DataObject & didCloseNotification );

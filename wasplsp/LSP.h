@@ -175,28 +175,28 @@ bool dissectReferencesRequest( const DataObject   & object              ,
                                      bool         & include_declaration );
 
 WASP_PUBLIC
-bool buildRangeFormattingRequest( DataObject        & object          ,
-                                  std::ostream      & errors          ,
-                                  int                 request_id      ,
-                                  const std::string & uri             ,
-                                  int                 start_line      ,
-                                  int                 start_character ,
-                                  int                 end_line        ,
-                                  int                 end_character   ,
-                                  int                 tab_size        ,
-                                  bool                insert_spaces   );
+bool buildFormattingRequest( DataObject        & object          ,
+                             std::ostream      & errors          ,
+                             int                 request_id      ,
+                             const std::string & uri             ,
+                             int                 start_line      ,
+                             int                 start_character ,
+                             int                 end_line        ,
+                             int                 end_character   ,
+                             int                 tab_size        ,
+                             bool                insert_spaces   );
 
 WASP_PUBLIC
-bool dissectRangeFormattingRequest( const DataObject   & object          ,
-                                          std::ostream & errors          ,
-                                          int          & request_id      ,
-                                          std::string  & uri             ,
-                                          int          & start_line      ,
-                                          int          & start_character ,
-                                          int          & end_line        ,
-                                          int          & end_character   ,
-                                          int          & tab_size        ,
-                                          bool         & insert_spaces   );
+bool dissectFormattingRequest( const DataObject   & object          ,
+                                     std::ostream & errors          ,
+                                     int          & request_id      ,
+                                     std::string  & uri             ,
+                                     int          & start_line      ,
+                                     int          & start_character ,
+                                     int          & end_line        ,
+                                     int          & end_character   ,
+                                     int          & tab_size        ,
+                                     bool         & insert_spaces   );
 
 WASP_PUBLIC
 bool buildDidCloseNotification( DataObject        & object ,
@@ -377,16 +377,16 @@ bool dissectTextEditObject( const DataObject   & object          ,
                                   std::string  & new_text        );
 
 WASP_PUBLIC
-bool buildRangeFormattingResponse( DataObject        & object           ,
-                                   std::ostream      & errors           ,
-                                   int                 request_id       ,
-                                   const DataArray   & textedit_objects );
+bool buildFormattingResponse( DataObject        & object           ,
+                              std::ostream      & errors           ,
+                              int                 request_id       ,
+                              const DataArray   & textedit_objects );
 
 WASP_PUBLIC
-bool dissectRangeFormattingResponse( const DataObject   & object           ,
-                                           std::ostream & errors           ,
-                                           int          & request_id       ,
-                                           DataArray    & textedit_objects );
+bool dissectFormattingResponse( const DataObject   & object           ,
+                                      std::ostream & errors           ,
+                                      int          & request_id       ,
+                                      DataArray    & textedit_objects );
 
 WASP_PUBLIC
 void verifyInitializeResponse( const DataObject & object );

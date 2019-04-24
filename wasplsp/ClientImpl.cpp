@@ -397,16 +397,16 @@ bool ClientImpl::doDocumentFormatting( int  start_line      ,
 
     this->response = std::make_shared<DataObject>();
 
-    pass &= buildRangeFormattingRequest( client_object       ,
-                                         this->errors        ,
-                                         this->request_id    ,
-                                         this->document_path ,
-                                         start_line          ,
-                                         start_character     ,
-                                         end_line            ,
-                                         end_character       ,
-                                         tab_size            ,
-                                         insert_spaces       );
+    pass &= buildFormattingRequest( client_object       ,
+                                    this->errors        ,
+                                    this->request_id    ,
+                                    this->document_path ,
+                                    start_line          ,
+                                    start_character     ,
+                                    end_line            ,
+                                    end_character       ,
+                                    tab_size            ,
+                                    insert_spaces       );
 
     pass &= connection->write( client_object , this->errors );
 

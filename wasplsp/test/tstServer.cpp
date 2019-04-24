@@ -460,9 +460,9 @@ TEST(server, handle_references)
     ASSERT_EQ(json.str() , json_expected.str());
 }
 
-TEST(server, handle_rangeformatting)
+TEST(server, handle_formatting)
 {
-    DataObject        rangeFormattingRequest;
+    DataObject        formattingRequest;
     std::stringstream errors;
 
     int               client_request_id =  5;
@@ -475,24 +475,24 @@ TEST(server, handle_rangeformatting)
     bool              insert_spaces     =  true;
 
 
-    ASSERT_TRUE(buildRangeFormattingRequest( rangeFormattingRequest ,
-                                             errors                 ,
-                                             client_request_id      ,
-                                             document_path          ,
-                                             start_line             ,
-                                             start_character        ,
-                                             end_line               ,
-                                             end_character          ,
-                                             tab_size               ,
-                                             insert_spaces          ));
+    ASSERT_TRUE(buildFormattingRequest( formattingRequest ,
+                                        errors            ,
+                                        client_request_id ,
+                                        document_path     ,
+                                        start_line        ,
+                                        start_character   ,
+                                        end_line          ,
+                                        end_character     ,
+                                        tab_size          ,
+                                        insert_spaces     ));
 
-    DataObject rangeFormattingResponse;
+    DataObject formattingResponse;
 
-    ASSERT_TRUE(test_server.handleRangeFormattingRequest( rangeFormattingRequest  ,
-                                                          rangeFormattingResponse ));
+    ASSERT_TRUE(test_server.handleFormattingRequest( formattingRequest  ,
+                                                     formattingResponse ));
 
     std::stringstream json;
-    rangeFormattingResponse.format_json(json);
+    formattingResponse.format_json(json);
 
     std::stringstream json_expected;
     json_expected << R"INPUT({

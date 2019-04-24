@@ -30,16 +30,16 @@ TEST(lsp, bad_ranges)
                                             "Error:: Column number must be "
                                             "non-negative - received: -39\n";
 
-        ASSERT_FALSE(buildRangeFormattingRequest( object           ,
-                                                  errors           ,
-                                                  request_id       ,
-                                                  uri              ,
-                                                  start_line       ,
-                                                  start_character  ,
-                                                  end_line         ,
-                                                  end_character    ,
-                                                  tab_size         ,
-                                                  insert_spaces    ));
+        ASSERT_FALSE(buildFormattingRequest( object           ,
+                                             errors           ,
+                                             request_id       ,
+                                             uri              ,
+                                             start_line       ,
+                                             start_character  ,
+                                             end_line         ,
+                                             end_character    ,
+                                             tab_size         ,
+                                             insert_spaces    ));
 
         ASSERT_EQ( errors.str() , expected_errors );
     }
@@ -61,16 +61,16 @@ TEST(lsp, bad_ranges)
                                             "must be less than range end "
                                             "( line:17 column:34 )\n";
 
-        ASSERT_FALSE(buildRangeFormattingRequest( object           ,
-                                                  errors           ,
-                                                  request_id       ,
-                                                  uri              ,
-                                                  start_line       ,
-                                                  start_character  ,
-                                                  end_line         ,
-                                                  end_character    ,
-                                                  tab_size         ,
-                                                  insert_spaces    ));
+        ASSERT_FALSE(buildFormattingRequest( object           ,
+                                             errors           ,
+                                             request_id       ,
+                                             uri              ,
+                                             start_line       ,
+                                             start_character  ,
+                                             end_line         ,
+                                             end_character    ,
+                                             tab_size         ,
+                                             insert_spaces    ));
 
         ASSERT_EQ( errors.str() , expected_errors );
     }
@@ -729,7 +729,7 @@ TEST(lsp, references_request)
     ASSERT_EQ( tst_include_declaration , include_declaration  );
 }
 
-TEST(lsp, rangeformatting_request)
+TEST(lsp, formatting_request)
 {
     DataObject        object;
     std::stringstream errors;
@@ -743,16 +743,16 @@ TEST(lsp, rangeformatting_request)
     int               tab_size        =  04;
     bool              insert_spaces   =  true;
 
-    ASSERT_TRUE(buildRangeFormattingRequest( object          ,
-                                             errors          ,
-                                             request_id      ,
-                                             uri             ,
-                                             start_line      ,
-                                             start_character ,
-                                             end_line        ,
-                                             end_character   ,
-                                             tab_size        ,
-                                             insert_spaces   ));
+    ASSERT_TRUE(buildFormattingRequest( object          ,
+                                        errors          ,
+                                        request_id      ,
+                                        uri             ,
+                                        start_line      ,
+                                        start_character ,
+                                        end_line        ,
+                                        end_character   ,
+                                        tab_size        ,
+                                        insert_spaces   ));
 
     ASSERT_EQ  ( object.size() , (size_t) 3 );
 
@@ -852,16 +852,16 @@ TEST(lsp, rangeformatting_request)
     int         tst_tab_size;
     bool        tst_insert_spaces;
 
-    ASSERT_TRUE(dissectRangeFormattingRequest( object              ,
-                                               errors              ,
-                                               tst_request_id      ,
-                                               tst_uri             ,
-                                               tst_start_line      ,
-                                               tst_start_character ,
-                                               tst_end_line        ,
-                                               tst_end_character   ,
-                                               tst_tab_size        ,
-                                               tst_insert_spaces   ));
+    ASSERT_TRUE(dissectFormattingRequest( object              ,
+                                          errors              ,
+                                          tst_request_id      ,
+                                          tst_uri             ,
+                                          tst_start_line      ,
+                                          tst_start_character ,
+                                          tst_end_line        ,
+                                          tst_end_character   ,
+                                          tst_tab_size        ,
+                                          tst_insert_spaces   ));
 
     ASSERT_EQ( tst_request_id      , request_id      );
     ASSERT_EQ( tst_uri             , uri             );
@@ -2530,7 +2530,7 @@ TEST(lsp, textedit_object)
     ASSERT_EQ( tst_new_text        , new_text        );
 }
 
-TEST(lsp, rangeformatting_response)
+TEST(lsp, formatting_response)
 {
     DataObject        object;
     std::stringstream errors;
@@ -2589,10 +2589,10 @@ TEST(lsp, rangeformatting_response)
 
     textedits.push_back(textedit);
 
-    ASSERT_TRUE(buildRangeFormattingResponse( object     ,
-                                              errors     ,
-                                              request_id ,
-                                              textedits  ));
+    ASSERT_TRUE(buildFormattingResponse( object     ,
+                                         errors     ,
+                                         request_id ,
+                                         textedits  ));
 
     ASSERT_EQ  ( object.size() , (size_t) 2 );
 
@@ -2732,10 +2732,10 @@ TEST(lsp, rangeformatting_response)
     int       tst_request_id;
     DataArray tst_textedits;
 
-    ASSERT_TRUE(dissectRangeFormattingResponse( object         ,
-                                                errors         ,
-                                                tst_request_id ,
-                                                tst_textedits  ));
+    ASSERT_TRUE(dissectFormattingResponse( object         ,
+                                           errors         ,
+                                           tst_request_id ,
+                                           tst_textedits  ));
 
     ASSERT_EQ( tst_request_id       , tst_request_id    );
     ASSERT_EQ( tst_textedits.size() , (size_t) 5        );
