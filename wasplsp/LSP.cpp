@@ -388,18 +388,17 @@ bool buildDidChangeNotification( DataObject        & object          ,
 {
     bool pass = true;
 
-    DataObject range;
-    pass &= buildRangeObject( range           ,
-                              errors          ,
-                              start_line      ,
-                              start_character ,
-                              end_line        ,
-                              end_character   );
-
     DataObject content_changes;
-    content_changes[m_range]        = range;
+    content_changes[m_range]        = DataObject();
     content_changes[m_range_length] = range_length;
     content_changes[m_text]         = text;
+
+    pass &= buildRangeObject( *(content_changes[m_range].to_object()) ,
+                                errors                                ,
+                                start_line                            ,
+                                start_character                       ,
+                                end_line                              ,
+                                end_character                         );
 
     DataObject text_document;
     text_document[m_uri]     = uri;
@@ -711,14 +710,6 @@ bool buildFormattingRequest( DataObject        & object          ,
 {
     bool pass = true;
 
-    DataObject range;
-    pass &= buildRangeObject( range           ,
-                              errors          ,
-                              start_line      ,
-                              start_character ,
-                              end_line        ,
-                              end_character   );
-
     DataObject options;
     options[m_tab_size]      = tab_size;
     options[m_insert_spaces] = insert_spaces;
@@ -727,9 +718,16 @@ bool buildFormattingRequest( DataObject        & object          ,
     text_document[m_uri] = uri;
 
     DataObject params;
-    params[m_range]         = range;
+    params[m_range]         = DataObject();
     params[m_options]       = options;
     params[m_text_document] = text_document;
+
+    pass &= buildRangeObject( *(params[m_range].to_object()) ,
+                                errors                       ,
+                                start_line                   ,
+                                start_character              ,
+                                end_line                     ,
+                                end_character                );
 
     object[m_params] =  params;
     object[m_id]     =  request_id;
@@ -964,19 +962,18 @@ bool buildDiagnosticObject( DataObject        & object          ,
 {
     bool pass = true;
 
-    DataObject range;
-    pass &= buildRangeObject( range           ,
-                              errors          ,
-                              start_line      ,
-                              start_character ,
-                              end_line        ,
-                              end_character   );
-
-    object[m_range]    = range;
+    object[m_range]    = DataObject();
     object[m_severity] = severity;
     object[m_code]     = code;
     object[m_source]   = source;
     object[m_message]  = message;
+
+    pass &= buildRangeObject( *(object[m_range].to_object()) ,
+                                errors                       ,
+                                start_line                   ,
+                                start_character              ,
+                                end_line                     ,
+                                end_character                );
 
     return pass;
 }
@@ -1150,17 +1147,16 @@ bool buildCompletionObject( DataObject        & object          ,
 {
     bool pass = true;
 
-    DataObject range;
-    pass &= buildRangeObject( range           ,
-                              errors          ,
-                              start_line      ,
-                              start_character ,
-                              end_line        ,
-                              end_character   );
-
     DataObject text_edit;
-    text_edit[m_range]    = range;
+    text_edit[m_range]    = DataObject();
     text_edit[m_new_text] = new_text;
+
+    pass &= buildRangeObject( *(text_edit[m_range].to_object()) ,
+                                errors                          ,
+                                start_line                      ,
+                                start_character                 ,
+                                end_line                        ,
+                                end_character                   );
 
     object[m_text_edit]     = text_edit;
     object[m_label]         = label;
@@ -1290,16 +1286,15 @@ bool buildLocationObject( DataObject        & object          ,
 {
     bool pass = true;
 
-    DataObject range;
-    pass &= buildRangeObject( range           ,
-                              errors          ,
-                              start_line      ,
-                              start_character ,
-                              end_line        ,
-                              end_character   );
-
-    object[m_range] = range;
+    object[m_range] = DataObject();
     object[m_uri]   = uri;
+
+    pass &= buildRangeObject( *(object[m_range].to_object()) ,
+                                errors                       ,
+                                start_line                   ,
+                                start_character              ,
+                                end_line                     ,
+                                end_character                );
 
     return pass;
 }
@@ -1375,16 +1370,15 @@ bool buildTextEditObject( DataObject        & object          ,
 {
     bool pass = true;
 
-    DataObject range;
-    pass &= buildRangeObject( range           ,
-                              errors          ,
-                              start_line      ,
-                              start_character ,
-                              end_line        ,
-                              end_character   );
-
-    object[m_range]    = range;
+    object[m_range]    = DataObject();
     object[m_new_text] = new_text;
+
+    pass &= buildRangeObject( *(object[m_range].to_object()) ,
+                                errors                       ,
+                                start_line                   ,
+                                start_character              ,
+                                end_line                     ,
+                                end_character                );
 
     return pass;
 }
@@ -1434,7 +1428,27 @@ bool buildDocumentSymbolObject( DataObject        & object                    ,
 {
     bool pass = true;
 
-    // TODO
+    object[m_name]            = name;
+    object[m_detail]          = detail;
+    object[m_kind]            = kind;
+    object[m_deprecated]      = deprecated;
+    object[m_range]           = DataObject();
+    object[m_selection_range] = DataObject();
+    object[m_children]        = DataArray();
+
+    pass &= buildRangeObject( *(object[m_range].to_object()) ,
+                                errors                       ,
+                                start_line                   ,
+                                start_character              ,
+                                end_line                     ,
+                                end_character                );
+
+    pass &= buildRangeObject( *(object[m_selection_range].to_object())  ,
+                                errors                                  ,
+                                selection_start_line                    ,
+                                selection_start_character               ,
+                                selection_end_line                      ,
+                                selection_end_character                 );
 
     return pass;
 }
@@ -1456,19 +1470,61 @@ bool dissectDocumentSymbolObject( const DataObject   & object                   
 {
     bool pass = true;
 
-    // TODO
+    wasp_check( object[m_range].is_object() );
+
+    const DataObject& range = *(object[m_range].to_object());
+
+    pass &= dissectRangeObject( range           ,
+                                errors          ,
+                                start_line      ,
+                                start_character ,
+                                end_line        ,
+                                end_character   );
+
+    wasp_check( object[m_selection_range].is_object() );
+
+    const DataObject& selection_range = *(object[m_selection_range].to_object());
+
+    pass &= dissectRangeObject( selection_range           ,
+                                errors                    ,
+                                selection_start_line      ,
+                                selection_start_character ,
+                                selection_end_line        ,
+                                selection_end_character   );
+
+    wasp_check( object[m_name].is_string() );
+
+    name = object[m_name].to_string();
+
+    wasp_check( object[m_detail].is_string() );
+
+    detail = object[m_detail].to_string();
+
+    wasp_check( object[m_kind].is_int() );
+
+    kind = object[m_kind].to_int();
+
+    wasp_check( object[m_deprecated].is_bool() );
+
+    deprecated = object[m_deprecated].to_bool();
 
     return pass;
 }
 
-bool addDocumentSymbolChild( DataObject       & parent ,
-                             const DataObject & child  )
+DataObject & addDocumentSymbolChild( DataObject & parent )
 {
-    bool pass = true;
+    wasp_check( parent[m_children].is_array() );
 
-    // TODO
+    parent[m_children].to_array()->push_back( DataObject() );
 
-    return pass;
+    return *(parent[m_children].to_array()->back().to_object());
+}
+
+DataArray * getDocumentSymbolChildren( const DataObject & parent )
+{
+    wasp_check( parent[m_children].is_array() );
+
+    return parent[m_children].to_array();
 }
 
 bool buildFormattingResponse( DataObject        & object           ,
@@ -1503,7 +1559,7 @@ bool dissectFormattingResponse( const DataObject   & object           ,
 
     return pass;
 }
-
+//make these bool - return false on each failure - and wrap the actual call in wasp_check
 void verifyInitializeResponse( const DataObject & object )
 {
     wasp_check( object[m_id].is_int() );
@@ -1567,26 +1623,36 @@ void verifyShutdownResponse( const DataObject & object )
 
 DataArray * getDiagnosticResponseArray( const DataObject & object )
 {
+    wasp_check( object[m_params][m_diagnostics].is_array() );
+
     return object[m_params][m_diagnostics].to_array();
 }
 
 DataArray * getCompletionResponseArray( const DataObject & object )
 {
+    wasp_check(  object[m_result][m_items].is_array() );
+
     return object[m_result][m_items].to_array();
 }
 
 DataArray * getDefinitionResponseArray( const DataObject & object )
 {
+    wasp_check( object[m_result].is_array() );
+
     return object[m_result].to_array();
 }
 
 DataArray * getReferencesResponseArray( const DataObject & object )
 {
+    wasp_check( object[m_result].is_array() );
+
     return object[m_result].to_array();
 }
 
 DataArray * getFormattingResponseArray( const DataObject & object )
 {
+    wasp_check( object[m_result].is_array() );
+
     return object[m_result].to_array();
 }
 

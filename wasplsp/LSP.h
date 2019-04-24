@@ -421,8 +421,10 @@ bool dissectDocumentSymbolObject( const DataObject   & object                   
                                         int          & selection_end_character   );
 
 WASP_PUBLIC
-bool addDocumentSymbolChild( DataObject       & parent ,
-                             const DataObject & child  );
+DataObject & addDocumentSymbolChild( DataObject & parent );
+
+WASP_PUBLIC
+DataArray * getDocumentSymbolChildren( const DataObject & parent );
 
 WASP_PUBLIC
 bool buildFormattingResponse( DataObject        & object           ,
