@@ -573,7 +573,7 @@ TEST(server, handle_symbols)
     ,"deprecated" : false
     ,"detail" : "test::symbol::detail::child::1"
     ,"kind" : 20
-    ,"name" : "test_ssymbol_name_child_1"
+    ,"name" : "test_symbol_name_child_1"
     ,"range" : {
       "end" : {
       "character" : 27
@@ -600,7 +600,7 @@ TEST(server, handle_symbols)
     ,"deprecated" : false
     ,"detail" : "test::symbol::detail::child::2"
     ,"kind" : 22
-    ,"name" : "test_ssymbol_name_child_2"
+    ,"name" : "test_symbol_name_child_2"
     ,"range" : {
       "end" : {
       "character" : 37

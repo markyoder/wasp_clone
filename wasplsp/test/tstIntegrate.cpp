@@ -422,7 +422,6 @@ TEST(integrate, test_formatting)
     int         response_request_id;
     DataArray   response_textedits;
 
-    std::string response_3_uri;
     int         response_3_start_line;
     int         response_3_start_character;
     int         response_3_end_line;
@@ -469,6 +468,172 @@ TEST(integrate, test_formatting)
     ASSERT_EQ( response_3_new_text        , "test\n  new\n  text\n  format\n  3" );
 }
 
+TEST(integrate, test_symbols)
+{
+    // symbols - build object / stream to server / get response back / test
+
+    DataObject  client_object;
+    int         client_request_id =  7;
+    std::string document_uri      = "test/document/uri/string";
+
+    DataObject  response_object;
+    int         response_request_id;
+    DataArray   response_symbols;
+
+    std::string response_parent_0_name;
+    std::string response_parent_0_detail;
+    int         response_parent_0_kind;
+    bool        response_parent_0_deprecated;
+    int         response_parent_0_start_line;
+    int         response_parent_0_start_character;
+    int         response_parent_0_end_line;
+    int         response_parent_0_end_character;
+    int         response_parent_0_selection_start_line;
+    int         response_parent_0_selection_start_character;
+    int         response_parent_0_selection_end_line;
+    int         response_parent_0_selection_end_character;
+
+    std::string response_child_1_name;
+    std::string response_child_1_detail;
+    int         response_child_1_kind;
+    bool        response_child_1_deprecated;
+    int         response_child_1_start_line;
+    int         response_child_1_start_character;
+    int         response_child_1_end_line;
+    int         response_child_1_end_character;
+    int         response_child_1_selection_start_line;
+    int         response_child_1_selection_start_character;
+    int         response_child_1_selection_end_line;
+    int         response_child_1_selection_end_character;
+
+    std::string response_child_2_name;
+    std::string response_child_2_detail;
+    int         response_child_2_kind;
+    bool        response_child_2_deprecated;
+    int         response_child_2_start_line;
+    int         response_child_2_start_character;
+    int         response_child_2_end_line;
+    int         response_child_2_end_character;
+    int         response_child_2_selection_start_line;
+    int         response_child_2_selection_start_character;
+    int         response_child_2_selection_end_line;
+    int         response_child_2_selection_end_character;
+
+    std::stringstream  client_errors;
+
+    ASSERT_TRUE( buildSymbolsRequest( client_object     ,
+                                      client_errors     ,
+                                      client_request_id ,
+                                      document_uri      ) );
+
+    ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
+
+    ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
+
+    ASSERT_TRUE( dissectSymbolsResponse( response_object     ,
+                                         client_errors       ,
+                                         response_request_id ,
+                                         response_symbols    ) );
+
+    ASSERT_EQ( response_request_id     , client_request_id );
+
+    ASSERT_EQ( response_symbols.size() , (size_t) 1        );
+
+    const DataObject & parent_0 = *response_symbols[0].to_object();
+
+    ASSERT_EQ ( getDocumentSymbolChildren( parent_0 )->size() , (size_t) 2 );
+
+    const DataObject & child_1 =
+                *(getDocumentSymbolChildren( parent_0 )->at(0).to_object());
+
+    const DataObject & child_2 =
+                *(getDocumentSymbolChildren( parent_0 )->at(1).to_object());
+
+    ASSERT_TRUE( dissectDocumentSymbolObject( parent_0                                    ,
+                                              client_errors                               ,
+                                              response_parent_0_name                      ,
+                                              response_parent_0_detail                    ,
+                                              response_parent_0_kind                      ,
+                                              response_parent_0_deprecated                ,
+                                              response_parent_0_start_line                ,
+                                              response_parent_0_start_character           ,
+                                              response_parent_0_end_line                  ,
+                                              response_parent_0_end_character             ,
+                                              response_parent_0_selection_start_line      ,
+                                              response_parent_0_selection_start_character ,
+                                              response_parent_0_selection_end_line        ,
+                                              response_parent_0_selection_end_character   ) );
+
+    ASSERT_TRUE( dissectDocumentSymbolObject( child_1                                    ,
+                                              client_errors                              ,
+                                              response_child_1_name                      ,
+                                              response_child_1_detail                    ,
+                                              response_child_1_kind                      ,
+                                              response_child_1_deprecated                ,
+                                              response_child_1_start_line                ,
+                                              response_child_1_start_character           ,
+                                              response_child_1_end_line                  ,
+                                              response_child_1_end_character             ,
+                                              response_child_1_selection_start_line      ,
+                                              response_child_1_selection_start_character ,
+                                              response_child_1_selection_end_line        ,
+                                              response_child_1_selection_end_character   ) );
+
+    ASSERT_TRUE( dissectDocumentSymbolObject( child_2                                    ,
+                                              client_errors                              ,
+                                              response_child_2_name                      ,
+                                              response_child_2_detail                    ,
+                                              response_child_2_kind                      ,
+                                              response_child_2_deprecated                ,
+                                              response_child_2_start_line                ,
+                                              response_child_2_start_character           ,
+                                              response_child_2_end_line                  ,
+                                              response_child_2_end_character             ,
+                                              response_child_2_selection_start_line      ,
+                                              response_child_2_selection_start_character ,
+                                              response_child_2_selection_end_line        ,
+                                              response_child_2_selection_end_character   ) );
+
+    EXPECT_EQ( response_parent_0_name                      , "test_symbol_name_parent_0"       );
+    EXPECT_EQ( response_parent_0_detail                    , "test::symbol::detail::parent::0" );
+    EXPECT_EQ( response_parent_0_kind                      , 15                                );
+    EXPECT_EQ( response_parent_0_deprecated                , false                             );
+    EXPECT_EQ( response_parent_0_start_line                , 10                                );
+    EXPECT_EQ( response_parent_0_start_character           , 11                                );
+    EXPECT_EQ( response_parent_0_end_line                  , 10                                );
+    EXPECT_EQ( response_parent_0_end_character             , 17                                );
+    EXPECT_EQ( response_parent_0_selection_start_line      , 10                                );
+    EXPECT_EQ( response_parent_0_selection_start_character , 13                                );
+    EXPECT_EQ( response_parent_0_selection_end_line        , 10                                );
+    EXPECT_EQ( response_parent_0_selection_end_character   , 15                                );
+
+    EXPECT_EQ( response_child_1_name                      , "test_symbol_name_child_1"       );
+    EXPECT_EQ( response_child_1_detail                    , "test::symbol::detail::child::1" );
+    EXPECT_EQ( response_child_1_kind                      , 20                               );
+    EXPECT_EQ( response_child_1_deprecated                , false                            );
+    EXPECT_EQ( response_child_1_start_line                , 20                               );
+    EXPECT_EQ( response_child_1_start_character           , 21                               );
+    EXPECT_EQ( response_child_1_end_line                  , 20                               );
+    EXPECT_EQ( response_child_1_end_character             , 27                               );
+    EXPECT_EQ( response_child_1_selection_start_line      , 20                               );
+    EXPECT_EQ( response_child_1_selection_start_character , 23                               );
+    EXPECT_EQ( response_child_1_selection_end_line        , 20                               );
+    EXPECT_EQ( response_child_1_selection_end_character   , 25                               );
+
+    EXPECT_EQ( response_child_2_name                      , "test_symbol_name_child_2"       );
+    EXPECT_EQ( response_child_2_detail                    , "test::symbol::detail::child::2" );
+    EXPECT_EQ( response_child_2_kind                      , 22                               );
+    EXPECT_EQ( response_child_2_deprecated                , false                            );
+    EXPECT_EQ( response_child_2_start_line                , 30                               );
+    EXPECT_EQ( response_child_2_start_character           , 31                               );
+    EXPECT_EQ( response_child_2_end_line                  , 30                               );
+    EXPECT_EQ( response_child_2_end_character             , 37                               );
+    EXPECT_EQ( response_child_2_selection_start_line      , 30                               );
+    EXPECT_EQ( response_child_2_selection_start_character , 33                               );
+    EXPECT_EQ( response_child_2_selection_end_line        , 30                               );
+    EXPECT_EQ( response_child_2_selection_end_character   , 35                               );
+}
+
 TEST(integrate, test_didclose)
 {
     // didclose - build object / stream to server / no response expected
@@ -490,7 +655,7 @@ TEST(integrate, test_shutdown)
     // shutdown - build object / stream to server / get response back / test
 
     DataObject  client_object;
-    int         client_request_id = 6;
+    int         client_request_id = 8;
 
     DataObject  response_object;
     int         response_request_id;

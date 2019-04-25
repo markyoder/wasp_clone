@@ -999,7 +999,7 @@ bool TestServer::gatherDocumentSymbols(
         int         p0_selection_end_line        = 10;
         int         p0_selection_end_character   = 15;
 
-        std::string c1_name                      = "test_ssymbol_name_child_1";
+        std::string c1_name                      = "test_symbol_name_child_1";
         std::string c1_detail                    = "test::symbol::detail::child::1";
         int         c1_kind                      = 20;
         bool        c1_deprecated                = false;
@@ -1012,7 +1012,7 @@ bool TestServer::gatherDocumentSymbols(
         int         c1_selection_end_line        = 20;
         int         c1_selection_end_character   = 25;
 
-        std::string c2_name                      = "test_ssymbol_name_child_2";
+        std::string c2_name                      = "test_symbol_name_child_2";
         std::string c2_detail                    = "test::symbol::detail::child::2";
         int         c2_kind                      = 22;
         bool        c2_deprecated                = false;
