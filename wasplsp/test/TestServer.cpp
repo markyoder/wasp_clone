@@ -59,6 +59,11 @@ bool TestServer::run()
             pass &= this->handleFormattingRequest( input_object  ,
                                                    output_object );
         }
+        else if ( method_name == m_method_documentsymbol )
+        {
+            pass &= this->handleSymbolsRequest( input_object  ,
+                                                output_object );
+        }
         else if ( method_name == m_method_didclose )
         {
             pass &= this->handleDidCloseNotification( input_object );
@@ -451,6 +456,49 @@ bool TestServer::handleFormattingRequest(
                                      this->errors            ,
                                      this->client_request_id ,
                                      formatting_textedits    );
+
+    return pass;
+}
+
+bool TestServer::handleSymbolsRequest(
+                const DataObject & symbolsRequest  ,
+                      DataObject & symbolsResponse )
+{
+    if (!this->is_initialized)
+    {
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (!this->is_document_open)
+    {
+        this->errors << m_error << "Server has no open document" << std::endl;
+        return false;
+    }
+
+    bool pass = true;
+
+    std::string document_path;
+
+    pass &= dissectSymbolsRequest( symbolsRequest          ,
+                                   this->errors            ,
+                                   this->client_request_id ,
+                                   document_path           );
+
+    if ( document_path != this->document_path )
+    {
+        this->errors << m_error << "Server has different document open" << std::endl;
+        return false;
+    }
+
+    DataArray document_symbols;
+
+    pass &= this->gatherDocumentSymbols( document_symbols );
+
+    pass &= buildSymbolsResponse( symbolsResponse         ,
+                                  this->errors            ,
+                                  this->client_request_id ,
+                                  document_symbols        );
 
     return pass;
 }
@@ -912,6 +960,117 @@ bool TestServer::gatherDocumentFormattingTextEdits(
                                      "test\n  new\n  text\n  format\n  3" );
 
         formattingTextEdits.push_back(textedit_object);
+    }
+
+    return pass;
+}
+
+bool TestServer::gatherDocumentSymbols(
+                      DataArray & documentSymbols )
+{
+    if (!this->is_initialized)
+    {
+        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (!this->is_document_open)
+    {
+        this->errors << m_error << "Server has no open document" << std::endl;
+        return false;
+    }
+
+    bool pass = true;
+
+    DataObject parent_object;
+
+    if (this->document_path == "test/document/uri/string")
+    {
+        std::string p0_name                      = "test_symbol_name_parent_0";
+        std::string p0_detail                    = "test::symbol::detail::parent::0";
+        int         p0_kind                      = 15;
+        bool        p0_deprecated                = false;
+        int         p0_start_line                = 10;
+        int         p0_start_character           = 11;
+        int         p0_end_line                  = 10;
+        int         p0_end_character             = 17;
+        int         p0_selection_start_line      = 10;
+        int         p0_selection_start_character = 13;
+        int         p0_selection_end_line        = 10;
+        int         p0_selection_end_character   = 15;
+
+        std::string c1_name                      = "test_ssymbol_name_child_1";
+        std::string c1_detail                    = "test::symbol::detail::child::1";
+        int         c1_kind                      = 20;
+        bool        c1_deprecated                = false;
+        int         c1_start_line                = 20;
+        int         c1_start_character           = 21;
+        int         c1_end_line                  = 20;
+        int         c1_end_character             = 27;
+        int         c1_selection_start_line      = 20;
+        int         c1_selection_start_character = 23;
+        int         c1_selection_end_line        = 20;
+        int         c1_selection_end_character   = 25;
+
+        std::string c2_name                      = "test_ssymbol_name_child_2";
+        std::string c2_detail                    = "test::symbol::detail::child::2";
+        int         c2_kind                      = 22;
+        bool        c2_deprecated                = false;
+        int         c2_start_line                = 30;
+        int         c2_start_character           = 31;
+        int         c2_end_line                  = 30;
+        int         c2_end_character             = 37;
+        int         c2_selection_start_line      = 30;
+        int         c2_selection_start_character = 33;
+        int         c2_selection_end_line        = 30;
+        int         c2_selection_end_character   = 35;
+
+        pass &= buildDocumentSymbolObject( parent_object                    ,
+                                           errors                           ,
+                                           p0_name                          ,
+                                           p0_detail                        ,
+                                           p0_kind                          ,
+                                           p0_deprecated                    ,
+                                           p0_start_line                    ,
+                                           p0_start_character               ,
+                                           p0_end_line                      ,
+                                           p0_end_character                 ,
+                                           p0_selection_start_line          ,
+                                           p0_selection_start_character     ,
+                                           p0_selection_end_line            ,
+                                           p0_selection_end_character       );
+
+        pass &= buildDocumentSymbolObject( addDocumentSymbolChild( parent_object ) ,
+                                           errors                                  ,
+                                           c1_name                                 ,
+                                           c1_detail                               ,
+                                           c1_kind                                 ,
+                                           c1_deprecated                           ,
+                                           c1_start_line                           ,
+                                           c1_start_character                      ,
+                                           c1_end_line                             ,
+                                           c1_end_character                        ,
+                                           c1_selection_start_line                 ,
+                                           c1_selection_start_character            ,
+                                           c1_selection_end_line                   ,
+                                           c1_selection_end_character              );
+
+        pass &= buildDocumentSymbolObject( addDocumentSymbolChild( parent_object ) ,
+                                           errors                                  ,
+                                           c2_name                                 ,
+                                           c2_detail                               ,
+                                           c2_kind                                 ,
+                                           c2_deprecated                           ,
+                                           c2_start_line                           ,
+                                           c2_start_character                      ,
+                                           c2_end_line                             ,
+                                           c2_end_character                        ,
+                                           c2_selection_start_line                 ,
+                                           c2_selection_start_character            ,
+                                           c2_selection_end_line                   ,
+                                           c2_selection_end_character              );
+
+        documentSymbols.push_back( parent_object );
     }
 
     return pass;

@@ -54,6 +54,10 @@ class WASP_PUBLIC TestServer
                     const DataObject & formattingRequest  ,
                           DataObject & formattingResponse );
 
+    bool handleSymbolsRequest(
+                    const DataObject & symbolsRequest  ,
+                          DataObject & symbolsResponse );
+
     bool handleDidCloseNotification(
                     const DataObject & didCloseNotification );
 
@@ -63,6 +67,21 @@ class WASP_PUBLIC TestServer
 
     bool handleExitNotification(
                     const DataObject & exitNotification );
+
+    std::shared_ptr<ThreadConnection<TestServer>> getConnection()
+    {
+        return connection;
+    }
+
+    bool isRunning()
+    {
+        return this->is_initialized;
+    }
+
+    std::string getErrors()
+    {
+        return errors.str();
+    }
 
     bool parseDocumentForDiagnostics(
                           DataArray  & diagnosticsList );
@@ -78,43 +97,31 @@ class WASP_PUBLIC TestServer
     bool gatherDocumentCompletionItems(
                           DataArray & completionItems  ,
                           bool      & is_incomplete    ,
-                          int           line             ,
-                          int           character        );
+                          int         line             ,
+                          int         character        );
 
     bool gatherDocumentDefinitionLocations(
                           DataArray & definitionLocations ,
-                          int           line                ,
-                          int           character           );
+                          int         line                ,
+                          int         character           );
 
     bool gatherDocumentReferencesLocations(
                           DataArray & referencesLocations ,
-                          int           line                ,
-                          int           character           ,
-                          bool          include_declaration );
+                          int         line                ,
+                          int         character           ,
+                          bool        include_declaration );
 
     bool gatherDocumentFormattingTextEdits(
                           DataArray & formattingTextEdits ,
-                          int           start_line          ,
-                          int           start_character     ,
-                          int           end_line            ,
-                          int           end_character       ,
-                          int           tab_size            ,
-                          bool          insert_spaces       );
+                          int         start_line          ,
+                          int         start_character     ,
+                          int         end_line            ,
+                          int         end_character       ,
+                          int         tab_size            ,
+                          bool        insert_spaces       );
 
-    std::shared_ptr<ThreadConnection<TestServer>> getConnection()
-    {
-        return connection;
-    }
-
-    std::string getErrors()
-    {
-        return errors.str();
-    }
-
-    bool isRunning()
-    {
-        return this->is_initialized;
-    }
+    bool gatherDocumentSymbols(
+                          DataArray & documentSymbols );
 
   private:
 

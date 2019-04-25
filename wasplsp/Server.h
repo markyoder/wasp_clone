@@ -86,6 +86,14 @@ class WASP_PUBLIC Server
                                              formattingResponse );
     }
 
+    bool handleSymbolsRequest(
+                    const DataObject & symbolsRequest  ,
+                          DataObject & symbolsResponse )
+    {
+        return Impl.handleSymbolsRequest( symbolsRequest  ,
+                                          symbolsResponse );
+    }
+
     bool handleDidCloseNotification(
                     const DataObject & didCloseNotification )
     {

@@ -27,7 +27,6 @@ TEST(server, handle_initialize)
                                         client_root_path    ,
                                         client_capabilities ));
 
-
     DataObject initializeResponse;
 
     ASSERT_TRUE(test_server.handleInitializeRequest( initializeRequest  ,
@@ -474,7 +473,6 @@ TEST(server, handle_formatting)
     int               tab_size          =  4;
     bool              insert_spaces     =  true;
 
-
     ASSERT_TRUE(buildFormattingRequest( formattingRequest ,
                                         errors            ,
                                         client_request_id ,
@@ -543,6 +541,119 @@ TEST(server, handle_formatting)
     ASSERT_EQ(json.str() , json_expected.str());
 }
 
+TEST(server, handle_symbols)
+{
+    DataObject        symbolsRequest;
+    std::stringstream errors;
+
+    int               client_request_id =  6;
+    std::string       document_path     = "test/document/uri/string";
+
+    ASSERT_TRUE(buildSymbolsRequest( symbolsRequest    ,
+                                     errors            ,
+                                     client_request_id ,
+                                     document_path     ));
+
+    DataObject symbolsResponse;
+
+    ASSERT_TRUE(test_server.handleSymbolsRequest( symbolsRequest  ,
+                                                  symbolsResponse ));
+
+    std::stringstream json;
+    symbolsResponse.format_json(json);
+
+    std::stringstream json_expected;
+    json_expected << R"INPUT({
+  "id" : 6
+  ,"result" : [
+    {
+    "children" : [
+    {
+    "children" : []
+    ,"deprecated" : false
+    ,"detail" : "test::symbol::detail::child::1"
+    ,"kind" : 20
+    ,"name" : "test_ssymbol_name_child_1"
+    ,"range" : {
+      "end" : {
+      "character" : 27
+      ,"line" : 20
+    }
+      ,"start" : {
+        "character" : 21
+        ,"line" : 20
+      }
+    }
+    ,"selectionRange" : {
+      "end" : {
+      "character" : 25
+      ,"line" : 20
+    }
+      ,"start" : {
+        "character" : 23
+        ,"line" : 20
+      }
+    }
+  }
+    ,{
+    "children" : []
+    ,"deprecated" : false
+    ,"detail" : "test::symbol::detail::child::2"
+    ,"kind" : 22
+    ,"name" : "test_ssymbol_name_child_2"
+    ,"range" : {
+      "end" : {
+      "character" : 37
+      ,"line" : 30
+    }
+      ,"start" : {
+        "character" : 31
+        ,"line" : 30
+      }
+    }
+    ,"selectionRange" : {
+      "end" : {
+      "character" : 35
+      ,"line" : 30
+    }
+      ,"start" : {
+        "character" : 33
+        ,"line" : 30
+      }
+    }
+  }
+  ]
+    ,"deprecated" : false
+    ,"detail" : "test::symbol::detail::parent::0"
+    ,"kind" : 15
+    ,"name" : "test_symbol_name_parent_0"
+    ,"range" : {
+      "end" : {
+      "character" : 17
+      ,"line" : 10
+    }
+      ,"start" : {
+        "character" : 11
+        ,"line" : 10
+      }
+    }
+    ,"selectionRange" : {
+      "end" : {
+      "character" : 15
+      ,"line" : 10
+    }
+      ,"start" : {
+        "character" : 13
+        ,"line" : 10
+      }
+    }
+  }
+  ]
+})INPUT";
+
+    ASSERT_EQ(json.str() , json_expected.str());
+}
+
 TEST(server, handle_didclose)
 {
     DataObject        didCloseNotification;
@@ -567,7 +678,6 @@ TEST(server, handle_shutdown)
     ASSERT_TRUE(buildShutdownRequest( shutdownRequest   ,
                                       errors            ,
                                       client_request_id ));
-
 
     DataObject shutdownResponse;
 
