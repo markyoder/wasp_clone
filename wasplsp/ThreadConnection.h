@@ -2,9 +2,11 @@
 #define WASPLSP_THREAD_CONNECTION_H
 
 #include <string>
+#include <sstream>
 #include <mutex>
 #include <condition_variable>
 #include "wasplsp/Connection.h"
+#include "waspcore/Object.h"
 #include "waspcore/decl.h"
 
 namespace wasp {

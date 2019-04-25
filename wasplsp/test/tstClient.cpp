@@ -5,7 +5,6 @@
 #include "wasplsp/LSP.h"
 #include "wasplsp/Connection.h"
 #include "gtest/gtest.h"
-#include <sstream>
 #include <thread>
 
 namespace wasp {

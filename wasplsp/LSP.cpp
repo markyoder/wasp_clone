@@ -2,6 +2,7 @@
 #include "waspcore/wasp_bug.h"
 #include <string>
 #include <iostream>
+#include <sstream>
 
 namespace wasp {
 namespace lsp  {

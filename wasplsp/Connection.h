@@ -2,6 +2,8 @@
 #define WASPLSP_CONNECTION_H
 
 #include <string>
+#include <sstream>
+#include "waspcore/Object.h"
 #include "waspcore/decl.h"
 
 namespace wasp {

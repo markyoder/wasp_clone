@@ -1,4 +1,5 @@
 #include "wasplsp/LSP.h"
+#include "waspcore/Object.h"
 #include "gtest/gtest.h"
 #include <sstream>
 #include <vector>

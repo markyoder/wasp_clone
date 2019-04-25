@@ -5,7 +5,6 @@
 #include "wasplsp/Connection.h"
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
-#include <iostream>
 
 namespace wasp {
 namespace lsp  {

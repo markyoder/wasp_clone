@@ -2,6 +2,7 @@
 #define WASPLSP_SERVER_IMPL_H
 
 #include <string>
+#include <sstream>
 #include "wasplsp/LSP.h"
 #include "wasplsp/ThreadConnection.h"
 #include "waspcore/Object.h"
