@@ -3329,12 +3329,213 @@ TEST(lsp, documentsymbol_object)
     ASSERT_EQ ( tst_c2_selection_end_character   , c2_selection_end_character   );
 }
 
-TEST(lsp, shutdown_response)
+TEST(lsp, symbols_response)
 {
     DataObject        object;
     std::stringstream errors;
 
     int               request_id = 12;
+    DataObject        document_symbol;
+    DataArray         document_symbols;
+
+    ASSERT_TRUE(buildDocumentSymbolObject( document_symbol            ,
+                                           errors                     ,
+                                           "document_symbol_name"     ,
+                                           "document::symbol::detail" ,
+                                           13                         ,
+                                           true                       ,
+                                           30                         ,
+                                           15                         ,
+                                           60                         ,
+                                           45                         ,
+                                           40                         ,
+                                           25                         ,
+                                           50                         ,
+                                           35                         ));
+
+    document_symbols.push_back(document_symbol);
+
+    ASSERT_TRUE(buildSymbolsResponse( object           ,
+                                      errors           ,
+                                      request_id       ,
+                                      document_symbols ));
+
+    ASSERT_EQ  ( object.size() , (size_t) 2 );
+
+    ASSERT_TRUE( object[m_id].is_int()              );
+    ASSERT_EQ  ( object[m_id].to_int() , request_id );
+
+    ASSERT_TRUE( object[m_result].is_array()          );
+    ASSERT_EQ  ( object[m_result].size() , (size_t) 1 );
+
+    ASSERT_TRUE( object[m_result][0].is_object()         );
+    ASSERT_EQ  ( object[m_result][0].size() , (size_t) 7 );
+
+    ASSERT_TRUE( object[m_result][0][m_name].is_string()                          );
+    ASSERT_EQ  ( object[m_result][0][m_name].to_string() , "document_symbol_name" );
+
+    ASSERT_TRUE( object[m_result][0][m_detail].is_string()                              );
+    ASSERT_EQ  ( object[m_result][0][m_detail].to_string() , "document::symbol::detail" );
+
+    ASSERT_TRUE( object[m_result][0][m_kind].is_int()      );
+    ASSERT_EQ  ( object[m_result][0][m_kind].to_int() , 13 );
+
+    ASSERT_TRUE( object[m_result][0][m_deprecated].is_bool()        );
+    ASSERT_EQ  ( object[m_result][0][m_deprecated].to_bool() , true );
+
+    ASSERT_TRUE( object[m_result][0][m_range].is_object()         );
+    ASSERT_EQ  ( object[m_result][0][m_range].size() , (size_t) 2 );
+
+    ASSERT_TRUE( object[m_result][0][m_range][m_start].is_object()         );
+    ASSERT_EQ  ( object[m_result][0][m_range][m_start].size() , (size_t) 2 );
+
+    ASSERT_TRUE( object[m_result][0][m_range][m_start][m_line].is_int()      );
+    ASSERT_EQ  ( object[m_result][0][m_range][m_start][m_line].to_int() , 30 );
+
+    ASSERT_TRUE( object[m_result][0][m_range][m_start][m_character].is_int()      );
+    ASSERT_EQ  ( object[m_result][0][m_range][m_start][m_character].to_int() , 15 );
+
+    ASSERT_TRUE( object[m_result][0][m_range][m_end].is_object()         );
+    ASSERT_EQ  ( object[m_result][0][m_range][m_end].size() , (size_t) 2 );
+
+    ASSERT_TRUE( object[m_result][0][m_range][m_end][m_line].is_int()      );
+    ASSERT_EQ  ( object[m_result][0][m_range][m_end][m_line].to_int() , 60 );
+
+    ASSERT_TRUE( object[m_result][0][m_range][m_end][m_character].is_int()      );
+    ASSERT_EQ  ( object[m_result][0][m_range][m_end][m_character].to_int() , 45 );
+
+    ASSERT_TRUE( object[m_result][0][m_selection_range].is_object()         );
+    ASSERT_EQ  ( object[m_result][0][m_selection_range].size() , (size_t) 2 );
+
+    ASSERT_TRUE( object[m_result][0][m_selection_range][m_start].is_object()         );
+    ASSERT_EQ  ( object[m_result][0][m_selection_range][m_start].size() , (size_t) 2 );
+
+    ASSERT_TRUE( object[m_result][0][m_selection_range][m_start][m_line].is_int()      );
+    ASSERT_EQ  ( object[m_result][0][m_selection_range][m_start][m_line].to_int() , 40 );
+
+    ASSERT_TRUE( object[m_result][0][m_selection_range][m_start][m_character].is_int()      );
+    ASSERT_EQ  ( object[m_result][0][m_selection_range][m_start][m_character].to_int() , 25 );
+
+    ASSERT_TRUE( object[m_result][0][m_selection_range][m_end].is_object()         );
+    ASSERT_EQ  ( object[m_result][0][m_selection_range][m_end].size() , (size_t) 2 );
+
+    ASSERT_TRUE( object[m_result][0][m_selection_range][m_end][m_line].is_int()      );
+    ASSERT_EQ  ( object[m_result][0][m_selection_range][m_end][m_line].to_int() , 50 );
+
+    ASSERT_TRUE( object[m_result][0][m_selection_range][m_end][m_character].is_int()      );
+    ASSERT_EQ  ( object[m_result][0][m_selection_range][m_end][m_character].to_int() , 35 );
+
+    ASSERT_TRUE( object[m_result][0][m_children].is_array()          );
+    ASSERT_EQ  ( object[m_result][0][m_children].size() , (size_t) 0 );
+
+    std::string rpcstr;
+    ASSERT_TRUE( objectToRPCString( object ,
+                                    rpcstr ,
+                                    errors ));
+
+    std::stringstream rpc_expected;
+    rpc_expected << "Content-Length: 537\r\n\r\n" << R"INPUT({
+  "id" : 12
+  ,"jsonrpc" : "2.0"
+  ,"result" : [
+    {
+    "children" : []
+    ,"deprecated" : true
+    ,"detail" : "document::symbol::detail"
+    ,"kind" : 13
+    ,"name" : "document_symbol_name"
+    ,"range" : {
+      "end" : {
+      "character" : 45
+      ,"line" : 60
+    }
+      ,"start" : {
+        "character" : 15
+        ,"line" : 30
+      }
+    }
+    ,"selectionRange" : {
+      "end" : {
+      "character" : 35
+      ,"line" : 50
+    }
+      ,"start" : {
+        "character" : 25
+        ,"line" : 40
+      }
+    }
+  }
+  ]
+})INPUT";
+
+    ASSERT_EQ( rpcstr , rpc_expected.str() );
+
+    DataObject tst_object;
+    ASSERT_TRUE( RPCStringToObject( rpcstr     ,
+                                    tst_object ,
+                                    errors     ));
+
+    ASSERT_FALSE( tst_object[m_method].is_string() );
+
+    int       tst_request_id;
+    DataArray tst_document_symbols;
+
+    ASSERT_TRUE(dissectSymbolsResponse( object                ,
+                                        errors                ,
+                                        tst_request_id        ,
+                                        tst_document_symbols  ));
+
+    ASSERT_EQ( tst_request_id              , tst_request_id    );
+    ASSERT_EQ( tst_document_symbols.size() , (size_t) 1        );
+
+    std::string tst_name;
+    std::string tst_detail;
+    int         tst_kind;
+    bool        tst_deprecated;
+    int         tst_start_line;
+    int         tst_start_character;
+    int         tst_end_line;
+    int         tst_end_character;
+    int         tst_selection_start_line;
+    int         tst_selection_start_character;
+    int         tst_selection_end_line;
+    int         tst_selection_end_character;
+
+    ASSERT_TRUE(dissectDocumentSymbolObject( *(tst_document_symbols[0].to_object()) ,
+                                             errors                                 ,
+                                             tst_name                               ,
+                                             tst_detail                             ,
+                                             tst_kind                               ,
+                                             tst_deprecated                         ,
+                                             tst_start_line                         ,
+                                             tst_start_character                    ,
+                                             tst_end_line                           ,
+                                             tst_end_character                      ,
+                                             tst_selection_start_line               ,
+                                             tst_selection_start_character          ,
+                                             tst_selection_end_line                 ,
+                                             tst_selection_end_character            ));
+
+    ASSERT_EQ( tst_name                      , "document_symbol_name"     );
+    ASSERT_EQ( tst_detail                    , "document::symbol::detail" );
+    ASSERT_EQ( tst_kind                      , 13                         );
+    ASSERT_EQ( tst_deprecated                , true                       );
+    ASSERT_EQ( tst_start_line                , 30                         );
+    ASSERT_EQ( tst_start_character           , 15                         );
+    ASSERT_EQ( tst_end_line                  , 60                         );
+    ASSERT_EQ( tst_end_character             , 45                         );
+    ASSERT_EQ( tst_selection_start_line      , 40                         );
+    ASSERT_EQ( tst_selection_start_character , 25                         );
+    ASSERT_EQ( tst_selection_end_line        , 50                         );
+    ASSERT_EQ( tst_selection_end_character   , 35                         );
+}
+
+TEST(lsp, shutdown_response)
+{
+    DataObject        object;
+    std::stringstream errors;
+
+    int               request_id = 13;
 
     ASSERT_TRUE(buildShutdownResponse( object     ,
                                        errors     ,
@@ -3355,7 +3556,7 @@ TEST(lsp, shutdown_response)
 
     std::stringstream rpc_expected;
     rpc_expected << "Content-Length: 53\r\n\r\n" << R"INPUT({
-  "id" : 12
+  "id" : 13
   ,"jsonrpc" : "2.0"
   ,"result" : {}
 })INPUT";

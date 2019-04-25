@@ -1411,6 +1411,39 @@ bool dissectTextEditObject( const DataObject   & object          ,
     return pass;
 }
 
+bool buildFormattingResponse( DataObject        & object           ,
+                              std::ostream      & errors           ,
+                              int                 request_id       ,
+                              const DataArray   & textedit_objects )
+{
+    bool pass = true;
+
+    DataObject result;
+
+    object[m_result] = textedit_objects;
+    object[m_id]     = request_id;
+
+    return pass;
+}
+
+bool dissectFormattingResponse( const DataObject   & object           ,
+                                      std::ostream & errors           ,
+                                      int          & request_id       ,
+                                      DataArray    & textedit_objects )
+{
+    bool pass = true;
+
+    wasp_check( object[m_id].is_int() );
+
+    request_id = object[m_id].to_int();
+
+    wasp_check( object[m_result].is_array() );
+
+    textedit_objects = *(object[m_result].to_array());
+
+    return pass;
+}
+
 bool buildDocumentSymbolObject( DataObject        & object                    ,
                                 std::ostream      & errors                    ,
                                 const std::string & name                      ,
@@ -1527,25 +1560,25 @@ DataArray * getDocumentSymbolChildren( const DataObject & parent )
     return parent[m_children].to_array();
 }
 
-bool buildFormattingResponse( DataObject        & object           ,
-                              std::ostream      & errors           ,
-                              int                 request_id       ,
-                              const DataArray   & textedit_objects )
+bool buildSymbolsResponse( DataObject      & object           ,
+                           std::ostream    & errors           ,
+                           int               request_id       ,
+                           const DataArray & document_symbols )
 {
     bool pass = true;
 
     DataObject result;
 
-    object[m_result] = textedit_objects;
+    object[m_result] = document_symbols;
     object[m_id]     = request_id;
 
     return pass;
 }
 
-bool dissectFormattingResponse( const DataObject   & object           ,
-                                      std::ostream & errors           ,
-                                      int          & request_id       ,
-                                      DataArray    & textedit_objects )
+bool dissectSymbolsResponse( const DataObject   & object           ,
+                                   std::ostream & errors           ,
+                                   int          & request_id       ,
+                                   DataArray    & document_symbols )
 {
     bool pass = true;
 
@@ -1555,70 +1588,98 @@ bool dissectFormattingResponse( const DataObject   & object           ,
 
     wasp_check( object[m_result].is_array() );
 
-    textedit_objects = *(object[m_result].to_array());
+    document_symbols = *(object[m_result].to_array());
 
     return pass;
 }
-//make these bool - return false on each failure - and wrap the actual call in wasp_check
-void verifyInitializeResponse( const DataObject & object )
+
+bool verifyInitializeResponse( const DataObject & object )
 {
-    wasp_check( object[m_id].is_int() );
+    bool pass = true;
 
-    wasp_check( object[m_result].is_object() );
+    pass &= object[m_id].is_int();
 
-    wasp_check( object[m_result][m_capabilities].is_object() );
+    pass &= object[m_result].is_object();
+
+    pass &= object[m_result][m_capabilities].is_object();
+
+    return pass;
 }
 
-void verifyDiagnosticResponse( const DataObject & object )
+bool verifyDiagnosticResponse( const DataObject & object )
 {
-    wasp_check( object[m_method].is_string() );
+    bool pass = true;
 
-    wasp_check( object[m_method].to_string() == m_method_pubdiagnostics );
+    pass &= object[m_method].is_string();
 
-    wasp_check( object[m_params].is_object() );
+    pass &= ( object[m_method].to_string() == m_method_pubdiagnostics );
 
-    wasp_check( object[m_params][m_uri].is_string() );
+    pass &= object[m_params].is_object();
 
-    wasp_check( object[m_params][m_diagnostics].is_array() );
+    pass &= object[m_params][m_uri].is_string();
+
+    pass &= object[m_params][m_diagnostics].is_array();
+
+    return pass;
 }
 
-void verifyCompletionResponse( const DataObject & object )
+bool verifyCompletionResponse( const DataObject & object )
 {
-    wasp_check( object[m_id].is_int() );
+    bool pass = true;
 
-    wasp_check( object[m_result].is_object() );
+    pass &= object[m_id].is_int();
 
-    wasp_check( object[m_result][m_is_incomplete].is_bool() );
+    pass &= object[m_result].is_object();
 
-    wasp_check( object[m_result][m_items].is_array() );
+    pass &= object[m_result][m_is_incomplete].is_bool();
+
+    pass &= object[m_result][m_items].is_array();
+
+    return pass;
 }
 
-void verifyDefinitionResponse( const DataObject & object )
+bool verifyDefinitionResponse( const DataObject & object )
 {
-    wasp_check( object[m_id].is_int() );
+    bool pass = true;
 
-    wasp_check( object[m_result].is_array() );
+    pass &= object[m_id].is_int();
+
+    pass &= object[m_result].is_array();
+
+    return pass;
 }
 
-void verifyReferencesResponse( const DataObject & object )
+bool verifyReferencesResponse( const DataObject & object )
 {
-    wasp_check( object[m_id].is_int() );
+    bool pass = true;
 
-    wasp_check( object[m_result].is_array() );
+    pass &= object[m_id].is_int();
+
+    pass &= object[m_result].is_array();
+
+    return pass;
 }
 
-void verifyFormattingResponse( const DataObject & object )
+bool verifyFormattingResponse( const DataObject & object )
 {
-    wasp_check( object[m_id].is_int() );
+    bool pass = true;
 
-    wasp_check( object[m_result].is_array() );
+    pass &= object[m_id].is_int();
+
+    pass &= object[m_result].is_array();
+
+    return pass;
 }
 
-void verifyShutdownResponse( const DataObject & object )
+bool verifyShutdownResponse( const DataObject & object )
 {
-    wasp_check( object[m_id].is_int() );
+    bool pass = true;
 
-    wasp_check( object[m_result].is_object() );
+    pass &= object[m_id].is_int();
+
+    pass &= object[m_result].is_object();
+
+    return pass;
 }
 
 DataArray * getDiagnosticResponseArray( const DataObject & object )

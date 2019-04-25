@@ -59,7 +59,7 @@ bool ClientImpl::doInitialize()
 
     pass &= connection->read( *(this->response) , this->errors );
 
-    verifyInitializeResponse( *(this->response) );
+    wasp_check( verifyInitializeResponse( *(this->response) ) );
 
     this->response_type = INITIALIZE;
 
@@ -142,7 +142,7 @@ bool ClientImpl::doDocumentOpen( const std::string & document_path        ,
 
     pass &= connection->read( *(this->response) , this->errors );
 
-    verifyDiagnosticResponse( *(this->response) );
+    wasp_check( verifyDiagnosticResponse( *(this->response) ) );
 
     this->response_type = DIAGNOSTIC;
 
@@ -202,7 +202,7 @@ bool ClientImpl::doDocumentChange( int                 start_line        ,
 
     pass &= connection->read( *(this->response) , this->errors );
 
-    verifyDiagnosticResponse( *(this->response) );
+    wasp_check( verifyDiagnosticResponse( *(this->response) ) );
 
     this->response_type = DIAGNOSTIC;
 
@@ -252,7 +252,7 @@ bool ClientImpl::doDocumentCompletion( int line      ,
 
     pass &= connection->read( *(this->response) , this->errors );
 
-    verifyCompletionResponse( *(this->response) );
+    wasp_check( verifyCompletionResponse( *(this->response) ) );
 
     this->response_type = COMPLETION;
 
@@ -302,7 +302,7 @@ bool ClientImpl::doDocumentDefinition( int line      ,
 
     pass &= connection->read( *(this->response) , this->errors );
 
-    verifyDefinitionResponse( *(this->response) );
+    wasp_check( verifyDefinitionResponse( *(this->response) ) );
 
     this->response_type = DEFINITION;
 
@@ -354,7 +354,7 @@ bool ClientImpl::doDocumentReferences( int  line                ,
 
     pass &= connection->read( *(this->response) , this->errors );
 
-    verifyReferencesResponse( *(this->response) );
+    wasp_check( verifyReferencesResponse( *(this->response) ) );
 
     this->response_type = REFERENCES;
 
@@ -412,7 +412,7 @@ bool ClientImpl::doDocumentFormatting( int  start_line      ,
 
     pass &= connection->read( *(this->response) , this->errors );
 
-    verifyFormattingResponse( *(this->response) );
+    wasp_check( verifyFormattingResponse( *(this->response) ) );
 
     this->response_type = FORMATTING;
 
@@ -496,7 +496,7 @@ bool ClientImpl::doShutdown()
 
     pass &= connection->read( *(this->response) , this->errors );
 
-    verifyShutdownResponse( *(this->response) );
+    wasp_check( verifyShutdownResponse( *(this->response) ) );
 
     this->response_type = SHUTDOWN;
 

@@ -389,6 +389,18 @@ bool dissectTextEditObject( const DataObject   & object          ,
                                   std::string  & new_text        );
 
 WASP_PUBLIC
+bool buildFormattingResponse( DataObject        & object           ,
+                              std::ostream      & errors           ,
+                              int                 request_id       ,
+                              const DataArray   & textedit_objects );
+
+WASP_PUBLIC
+bool dissectFormattingResponse( const DataObject   & object           ,
+                                      std::ostream & errors           ,
+                                      int          & request_id       ,
+                                      DataArray    & textedit_objects );
+
+WASP_PUBLIC
 bool buildDocumentSymbolObject( DataObject        & object                    ,
                                 std::ostream      & errors                    ,
                                 const std::string & name                      ,
@@ -427,37 +439,37 @@ WASP_PUBLIC
 DataArray * getDocumentSymbolChildren( const DataObject & parent );
 
 WASP_PUBLIC
-bool buildFormattingResponse( DataObject        & object           ,
-                              std::ostream      & errors           ,
-                              int                 request_id       ,
-                              const DataArray   & textedit_objects );
+bool buildSymbolsResponse( DataObject      & object                  ,
+                           std::ostream    & errors                  ,
+                           int               request_id              ,
+                           const DataArray & document_symbol_objects );
 
 WASP_PUBLIC
-bool dissectFormattingResponse( const DataObject   & object           ,
-                                      std::ostream & errors           ,
-                                      int          & request_id       ,
-                                      DataArray    & textedit_objects );
+bool dissectSymbolsResponse( const DataObject   & object                  ,
+                                   std::ostream & errors                  ,
+                                   int          & request_id              ,
+                                   DataArray    & document_symbol_objects );
 
 WASP_PUBLIC
-void verifyInitializeResponse( const DataObject & object );
+bool verifyInitializeResponse( const DataObject & object );
 
 WASP_PUBLIC
-void verifyDiagnosticResponse( const DataObject & object );
+bool verifyDiagnosticResponse( const DataObject & object );
 
 WASP_PUBLIC
-void verifyCompletionResponse( const DataObject & object );
+bool verifyCompletionResponse( const DataObject & object );
 
 WASP_PUBLIC
-void verifyDefinitionResponse( const DataObject & object );
+bool verifyDefinitionResponse( const DataObject & object );
 
 WASP_PUBLIC
-void verifyReferencesResponse( const DataObject & object );
+bool verifyReferencesResponse( const DataObject & object );
 
 WASP_PUBLIC
-void verifyFormattingResponse( const DataObject & object );
+bool verifyFormattingResponse( const DataObject & object );
 
 WASP_PUBLIC
-void verifyShutdownResponse( const DataObject & object );
+bool verifyShutdownResponse( const DataObject & object );
 
 WASP_PUBLIC
 DataArray * getDiagnosticResponseArray( const DataObject & object );
