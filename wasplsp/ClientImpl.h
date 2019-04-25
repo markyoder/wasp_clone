@@ -58,6 +58,8 @@ class WASP_PUBLIC ClientImpl
                                int  tab_size        ,
                                bool insert_spaces   );
 
+    bool doDocumentSymbols();
+
     bool doDocumentClose();
 
     bool doShutdown();
@@ -73,6 +75,8 @@ class WASP_PUBLIC ClientImpl
     int getReferencesSize();
 
     int getFormattingSize();
+
+    int getSymbolRootSize();
 
     bool getDiagnosticAt( int           index           ,
                           int         & start_line      ,
@@ -115,6 +119,20 @@ class WASP_PUBLIC ClientImpl
                           int         & end_line        ,
                           int         & end_character   ,
                           std::string & new_text        );
+
+    bool getSymbolRootAt( int           index                     ,
+                          std::string & name                      ,
+                          std::string & detail                    ,
+                          int         & kind                      ,
+                          bool        & deprecated                ,
+                          int         & start_line                ,
+                          int         & start_character           ,
+                          int         & end_line                  ,
+                          int         & end_character             ,
+                          int         & selection_start_line      ,
+                          int         & selection_start_character ,
+                          int         & selection_end_line        ,
+                          int         & selection_end_character   );
 
     bool isConnected()
     {
@@ -159,13 +177,14 @@ class WASP_PUBLIC ClientImpl
       std::string       document_path;
 
       enum {
-        INITIALIZE,
-        DIAGNOSTIC,
-        COMPLETION,
-        DEFINITION,
-        REFERENCES,
-        FORMATTING,
-        SHUTDOWN,
+        INITIALIZE ,
+        DIAGNOSTIC ,
+        COMPLETION ,
+        DEFINITION ,
+        REFERENCES ,
+        FORMATTING ,
+        SYMBOLS    ,
+        SHUTDOWN   ,
         NONE
       } response_type;
 

@@ -594,44 +594,44 @@ TEST(integrate, test_symbols)
                                               response_child_2_selection_end_line        ,
                                               response_child_2_selection_end_character   ) );
 
-    EXPECT_EQ( response_parent_0_name                      , "test_symbol_name_parent_0"       );
-    EXPECT_EQ( response_parent_0_detail                    , "test::symbol::detail::parent::0" );
-    EXPECT_EQ( response_parent_0_kind                      , 15                                );
-    EXPECT_EQ( response_parent_0_deprecated                , false                             );
-    EXPECT_EQ( response_parent_0_start_line                , 10                                );
-    EXPECT_EQ( response_parent_0_start_character           , 11                                );
-    EXPECT_EQ( response_parent_0_end_line                  , 10                                );
-    EXPECT_EQ( response_parent_0_end_character             , 17                                );
-    EXPECT_EQ( response_parent_0_selection_start_line      , 10                                );
-    EXPECT_EQ( response_parent_0_selection_start_character , 13                                );
-    EXPECT_EQ( response_parent_0_selection_end_line        , 10                                );
-    EXPECT_EQ( response_parent_0_selection_end_character   , 15                                );
+    ASSERT_EQ( response_parent_0_name                      , "test_symbol_name_parent_0"       );
+    ASSERT_EQ( response_parent_0_detail                    , "test::symbol::detail::parent::0" );
+    ASSERT_EQ( response_parent_0_kind                      , 15                                );
+    ASSERT_EQ( response_parent_0_deprecated                , false                             );
+    ASSERT_EQ( response_parent_0_start_line                , 10                                );
+    ASSERT_EQ( response_parent_0_start_character           , 11                                );
+    ASSERT_EQ( response_parent_0_end_line                  , 10                                );
+    ASSERT_EQ( response_parent_0_end_character             , 17                                );
+    ASSERT_EQ( response_parent_0_selection_start_line      , 10                                );
+    ASSERT_EQ( response_parent_0_selection_start_character , 13                                );
+    ASSERT_EQ( response_parent_0_selection_end_line        , 10                                );
+    ASSERT_EQ( response_parent_0_selection_end_character   , 15                                );
 
-    EXPECT_EQ( response_child_1_name                      , "test_symbol_name_child_1"       );
-    EXPECT_EQ( response_child_1_detail                    , "test::symbol::detail::child::1" );
-    EXPECT_EQ( response_child_1_kind                      , 20                               );
-    EXPECT_EQ( response_child_1_deprecated                , false                            );
-    EXPECT_EQ( response_child_1_start_line                , 20                               );
-    EXPECT_EQ( response_child_1_start_character           , 21                               );
-    EXPECT_EQ( response_child_1_end_line                  , 20                               );
-    EXPECT_EQ( response_child_1_end_character             , 27                               );
-    EXPECT_EQ( response_child_1_selection_start_line      , 20                               );
-    EXPECT_EQ( response_child_1_selection_start_character , 23                               );
-    EXPECT_EQ( response_child_1_selection_end_line        , 20                               );
-    EXPECT_EQ( response_child_1_selection_end_character   , 25                               );
+    ASSERT_EQ( response_child_1_name                      , "test_symbol_name_child_1"       );
+    ASSERT_EQ( response_child_1_detail                    , "test::symbol::detail::child::1" );
+    ASSERT_EQ( response_child_1_kind                      , 20                               );
+    ASSERT_EQ( response_child_1_deprecated                , false                            );
+    ASSERT_EQ( response_child_1_start_line                , 20                               );
+    ASSERT_EQ( response_child_1_start_character           , 21                               );
+    ASSERT_EQ( response_child_1_end_line                  , 20                               );
+    ASSERT_EQ( response_child_1_end_character             , 27                               );
+    ASSERT_EQ( response_child_1_selection_start_line      , 20                               );
+    ASSERT_EQ( response_child_1_selection_start_character , 23                               );
+    ASSERT_EQ( response_child_1_selection_end_line        , 20                               );
+    ASSERT_EQ( response_child_1_selection_end_character   , 25                               );
 
-    EXPECT_EQ( response_child_2_name                      , "test_symbol_name_child_2"       );
-    EXPECT_EQ( response_child_2_detail                    , "test::symbol::detail::child::2" );
-    EXPECT_EQ( response_child_2_kind                      , 22                               );
-    EXPECT_EQ( response_child_2_deprecated                , false                            );
-    EXPECT_EQ( response_child_2_start_line                , 30                               );
-    EXPECT_EQ( response_child_2_start_character           , 31                               );
-    EXPECT_EQ( response_child_2_end_line                  , 30                               );
-    EXPECT_EQ( response_child_2_end_character             , 37                               );
-    EXPECT_EQ( response_child_2_selection_start_line      , 30                               );
-    EXPECT_EQ( response_child_2_selection_start_character , 33                               );
-    EXPECT_EQ( response_child_2_selection_end_line        , 30                               );
-    EXPECT_EQ( response_child_2_selection_end_character   , 35                               );
+    ASSERT_EQ( response_child_2_name                      , "test_symbol_name_child_2"       );
+    ASSERT_EQ( response_child_2_detail                    , "test::symbol::detail::child::2" );
+    ASSERT_EQ( response_child_2_kind                      , 22                               );
+    ASSERT_EQ( response_child_2_deprecated                , false                            );
+    ASSERT_EQ( response_child_2_start_line                , 30                               );
+    ASSERT_EQ( response_child_2_start_character           , 31                               );
+    ASSERT_EQ( response_child_2_end_line                  , 30                               );
+    ASSERT_EQ( response_child_2_end_character             , 37                               );
+    ASSERT_EQ( response_child_2_selection_start_line      , 30                               );
+    ASSERT_EQ( response_child_2_selection_start_character , 33                               );
+    ASSERT_EQ( response_child_2_selection_end_line        , 30                               );
+    ASSERT_EQ( response_child_2_selection_end_character   , 35                               );
 }
 
 TEST(integrate, test_didclose)

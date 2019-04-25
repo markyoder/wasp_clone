@@ -64,7 +64,7 @@ TEST(client, document_open_and_diagnostics)
 {
     // document open
 
-    std::string document_path        = "/test/document/path.inp";
+    std::string document_path        = "test/document/uri/string";
     std::string document_language_id = "test-document-language-id";
     std::string document_text        = "test\ntext\n1\nstring\n";
 
@@ -488,6 +488,96 @@ TEST(client, document_formatting_and_responses)
     }
 }
 
+TEST(client, document_symbols_and_responses)
+{
+    // document symbols
+
+    ASSERT_TRUE ( test_client.doDocumentSymbols() );
+
+    ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
+
+    ASSERT_TRUE ( test_client.getErrors().empty() );
+
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 6 );
+
+    // symbols responses
+
+    ASSERT_EQ   ( test_client.getSymbolRootSize(), 1 );
+
+    for (int index = 0; index < test_client.getSymbolRootSize(); index++)
+    {
+        std::string parent_0_name;
+        std::string parent_0_detail;
+        int         parent_0_kind;
+        bool        parent_0_deprecated;
+        int         parent_0_start_line;
+        int         parent_0_start_character;
+        int         parent_0_end_line;
+        int         parent_0_end_character;
+        int         parent_0_selection_start_line;
+        int         parent_0_selection_start_character;
+        int         parent_0_selection_end_line;
+        int         parent_0_selection_end_character;
+
+//        std::string child_1_name;
+//        std::string child_1_detail;
+//        int         child_1_kind;
+//        bool        child_1_deprecated;
+//        int         child_1_start_line;
+//        int         child_1_start_character;
+//        int         child_1_end_line;
+//        int         child_1_end_character;
+//        int         child_1_selection_start_line;
+//        int         child_1_selection_start_character;
+//        int         child_1_selection_end_line;
+//        int         child_1_selection_end_character;
+//
+//        std::string child_2_name;
+//        std::string child_2_detail;
+//        int         child_2_kind;
+//        bool        child_2_deprecated;
+//        int         child_2_start_line;
+//        int         child_2_start_character;
+//        int         child_2_end_line;
+//        int         child_2_end_character;
+//        int         child_2_selection_start_line;
+//        int         child_2_selection_start_character;
+//        int         child_2_selection_end_line;
+//        int         child_2_selection_end_character;
+
+        ASSERT_TRUE ( test_client.getSymbolRootAt( index                              ,
+                                                   parent_0_name                      ,
+                                                   parent_0_detail                    ,
+                                                   parent_0_kind                      ,
+                                                   parent_0_deprecated                ,
+                                                   parent_0_start_line                ,
+                                                   parent_0_start_character           ,
+                                                   parent_0_end_line                  ,
+                                                   parent_0_end_character             ,
+                                                   parent_0_selection_start_line      ,
+                                                   parent_0_selection_start_character ,
+                                                   parent_0_selection_end_line        ,
+                                                   parent_0_selection_end_character   ) );
+        if ( index == 0 )
+        {
+            ASSERT_EQ ( parent_0_name                      , "test_symbol_name_parent_0"       );
+            ASSERT_EQ ( parent_0_detail                    , "test::symbol::detail::parent::0" );
+            ASSERT_EQ ( parent_0_kind                      , 15                                );
+            ASSERT_EQ ( parent_0_deprecated                , false                             );
+            ASSERT_EQ ( parent_0_start_line                , 10                                );
+            ASSERT_EQ ( parent_0_start_character           , 11                                );
+            ASSERT_EQ ( parent_0_end_line                  , 10                                );
+            ASSERT_EQ ( parent_0_end_character             , 17                                );
+            ASSERT_EQ ( parent_0_selection_start_line      , 10                                );
+            ASSERT_EQ ( parent_0_selection_start_character , 13                                );
+            ASSERT_EQ ( parent_0_selection_end_line        , 10                                );
+            ASSERT_EQ ( parent_0_selection_end_character   , 15                                );
+
+            // TODO - ADD CLIENT TREE ITERATOR PATTERN FOR TRAVERSING CHILDREN OF EACH SYMBOL
+        }
+    }
+}
+
 TEST(client, document_close)
 {
     // document close
@@ -502,7 +592,7 @@ TEST(client, document_close)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 5 );
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 6 );
 }
 
 TEST(client, shutdown)
@@ -519,7 +609,7 @@ TEST(client, shutdown)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 6 );
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 7 );
 }
 
 TEST(client, exit)
@@ -532,7 +622,7 @@ TEST(client, exit)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 6 );
+    ASSERT_EQ   ( test_client.getPreviousRequestID() , 7 );
 }
 
 TEST(client, server_thread_join)

@@ -1671,6 +1671,17 @@ bool verifyFormattingResponse( const DataObject & object )
     return pass;
 }
 
+bool verifySymbolsResponse( const DataObject & object )
+{
+    bool pass = true;
+
+    pass &= object[m_id].is_int();
+
+    pass &= object[m_result].is_array();
+
+    return pass;
+}
+
 bool verifyShutdownResponse( const DataObject & object )
 {
     bool pass = true;
@@ -1715,6 +1726,22 @@ DataArray * getFormattingResponseArray( const DataObject & object )
     wasp_check( object[m_result].is_array() );
 
     return object[m_result].to_array();
+}
+
+DataArray * getSymbolRootResponseArray( const DataObject & object )
+{
+    wasp_check( object[m_result].is_array() );
+
+    return object[m_result].to_array();
+
+//    wasp_check( object[m_result].is_array() || object[m_children].is_array() );
+//
+//    if ( object[m_result].is_array() )
+//    {
+//        return object[m_result].to_array();
+//    }
+//
+//    return object[m_children].to_array();
 }
 
 } // namespace lsp
