@@ -62,12 +62,12 @@ class WASP_PUBLIC ThreadConnection : public Connection
         return true;
     }
 
-    bool isServerRunning()
+    bool isServerRunning() const
     {
         return ( server != nullptr && server->isRunning() );
     }
 
-    std::string getServerErrors()
+    std::string getServerErrors() const
     {
         return server->getErrors();
     }

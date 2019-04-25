@@ -21,9 +21,9 @@ class WASP_PUBLIC Connection
 
     virtual bool read ( DataObject & object , std::stringstream & errors ) = 0;
 
-    virtual bool isServerRunning() = 0;
+    virtual bool isServerRunning() const = 0;
 
-    virtual std::string getServerErrors() = 0;
+    virtual std::string getServerErrors() const = 0;
 };
 
 } // namespace lsp
