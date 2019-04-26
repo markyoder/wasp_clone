@@ -1,3 +1,5 @@
+
+#include "waspcore/Object.h"
 #include "wasplsp/ClientImpl.h"
 
 namespace wasp {

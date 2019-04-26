@@ -5,11 +5,15 @@
 #include <sstream>
 #include <mutex>
 #include <condition_variable>
+
+#include "wasplsp/LSP.h"
 #include "wasplsp/Connection.h"
-#include "waspcore/Object.h"
 #include "waspcore/decl.h"
 
 namespace wasp {
+
+class DataObject;
+
 namespace lsp  {
 
 template<class SERVER>

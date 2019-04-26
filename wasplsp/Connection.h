@@ -3,10 +3,12 @@
 
 #include <string>
 #include <sstream>
-#include "waspcore/Object.h"
 #include "waspcore/decl.h"
 
 namespace wasp {
+
+class DataObject;
+
 namespace lsp  {
 
 class WASP_PUBLIC Connection
