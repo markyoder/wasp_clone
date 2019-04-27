@@ -1468,7 +1468,11 @@ bool buildDocumentSymbolObject( DataObject        & object                    ,
     object[m_deprecated]      = deprecated;
     object[m_range]           = DataObject();
     object[m_selection_range] = DataObject();
-    object[m_children]        = DataArray();
+
+    if ( !object[m_children].is_array() )
+    {
+        object[m_children] = DataArray();
+    }
 
     pass &= buildRangeObject( *(object[m_range].to_object()) ,
                                 errors                       ,
@@ -1729,20 +1733,22 @@ DataArray * getFormattingResponseArray( const DataObject & object )
     return object[m_result].to_array();
 }
 
-DataArray * getSymbolRootResponseArray( const DataObject & object )
+DataArray * getSymbolChildrenArray( const DataObject & object )
 {
-    wasp_check( object[m_result].is_array() );
+    wasp_check( ( object.contains(m_result)   && object[m_result].is_array()   ) ||
+                ( object.contains(m_children) && object[m_children].is_array() ) );
 
-    return object[m_result].to_array();
+    if ( object.contains(m_children) )
+    {
+        return object[m_children].to_array();
+    }
 
-//    wasp_check( object[m_result].is_array() || object[m_children].is_array() );
-//
-//    if ( object[m_result].is_array() )
-//    {
-//        return object[m_result].to_array();
-//    }
-//
-//    return object[m_children].to_array();
+    if ( object.contains(m_result) )
+    {
+        return object[m_result].to_array();
+    }
+
+    return nullptr;
 }
 
 } // namespace lsp

@@ -644,18 +644,6 @@ int ClientImpl::getFormattingSize()
     return size;
 }
 
-int ClientImpl::getSymbolRootSize()
-{
-    int size = 0;
-
-    if ( this->response_type == SYMBOLS )
-    {
-        size = getSymbolRootResponseArray(*this->response)->size();
-    }
-
-    return size;
-}
-
 bool ClientImpl::getDiagnosticAt( int           index           ,
                                   int         & start_line      ,
                                   int         & start_character ,
@@ -871,57 +859,6 @@ bool ClientImpl::getFormattingAt( int           index           ,
                                    end_line        ,
                                    end_character   ,
                                    new_text        );
-
-    return pass;
-}
-
-bool ClientImpl::getSymbolRootAt( int           index                     ,
-                                  std::string & name                      ,
-                                  std::string & detail                    ,
-                                  int         & kind                      ,
-                                  bool        & deprecated                ,
-                                  int         & start_line                ,
-                                  int         & start_character           ,
-                                  int         & end_line                  ,
-                                  int         & end_character             ,
-                                  int         & selection_start_line      ,
-                                  int         & selection_start_character ,
-                                  int         & selection_end_line        ,
-                                  int         & selection_end_character   )
-{
-    if ( this->response_type != SYMBOLS )
-    {
-        this->errors << m_error << "No symbols currently stored" << std::endl;
-
-        return false;
-    }
-
-    if ( index >= this->getSymbolRootSize() )
-    {
-        this->errors << m_error << "Symbols index out of bounds" << std::endl;
-
-        return false;
-    }
-
-    bool pass = true;
-
-    const DataObject & documentSymbolObject =
-            *getSymbolRootResponseArray(*this->response)->at(index).to_object();
-
-    pass &= dissectDocumentSymbolObject( documentSymbolObject      ,
-                                         this->errors              ,
-                                         name                      ,
-                                         detail                    ,
-                                         kind                      ,
-                                         deprecated                ,
-                                         start_line                ,
-                                         start_character           ,
-                                         end_line                  ,
-                                         end_character             ,
-                                         selection_start_line      ,
-                                         selection_start_character ,
-                                         selection_end_line        ,
-                                         selection_end_character   );
 
     return pass;
 }

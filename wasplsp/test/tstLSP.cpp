@@ -2850,267 +2850,273 @@ TEST(lsp, formatting_response)
 TEST(lsp, documentsymbol_object)
 {
     std::stringstream errors;
-    DataObject        p0_object;
+    DataObject        root_object;
 
-    std::string p0_name                      = "symbol_name_parent_0";
-    std::string p0_detail                    = "symbol::detail::parent::0";
-    int         p0_kind                      = 15;
-    bool        p0_deprecated                = false;
-    int         p0_start_line                = 10;
-    int         p0_start_character           = 11;
-    int         p0_end_line                  = 10;
-    int         p0_end_character             = 17;
-    int         p0_selection_start_line      = 10;
-    int         p0_selection_start_character = 13;
-    int         p0_selection_end_line        = 10;
-    int         p0_selection_end_character   = 15;
+    std::string o1_name                      = "symbol_name_parent_0";
+    std::string o1_detail                    = "symbol::detail::parent::0";
+    int         o1_kind                      = 15;
+    bool        o1_deprecated                = false;
+    int         o1_start_line                = 10;
+    int         o1_start_character           = 11;
+    int         o1_end_line                  = 10;
+    int         o1_end_character             = 17;
+    int         o1_selection_start_line      = 10;
+    int         o1_selection_start_character = 13;
+    int         o1_selection_end_line        = 10;
+    int         o1_selection_end_character   = 15;
 
-    std::string c1_name                      = "symbol_name_child_1";
-    std::string c1_detail                    = "symbol::detail::child::1";
-    int         c1_kind                      = 20;
-    bool        c1_deprecated                = false;
-    int         c1_start_line                = 20;
-    int         c1_start_character           = 21;
-    int         c1_end_line                  = 20;
-    int         c1_end_character             = 27;
-    int         c1_selection_start_line      = 20;
-    int         c1_selection_start_character = 23;
-    int         c1_selection_end_line        = 20;
-    int         c1_selection_end_character   = 25;
+    std::string o2_name                      = "symbol_name_child_1";
+    std::string o2_detail                    = "symbol::detail::child::1";
+    int         o2_kind                      = 20;
+    bool        o2_deprecated                = false;
+    int         o2_start_line                = 20;
+    int         o2_start_character           = 21;
+    int         o2_end_line                  = 20;
+    int         o2_end_character             = 27;
+    int         o2_selection_start_line      = 20;
+    int         o2_selection_start_character = 23;
+    int         o2_selection_end_line        = 20;
+    int         o2_selection_end_character   = 25;
 
-    std::string c2_name                      = "symbol_name_child_2";
-    std::string c2_detail                    = "symbol::detail::child::2";
-    int         c2_kind                      = 22;
-    bool        c2_deprecated                = false;
-    int         c2_start_line                = 30;
-    int         c2_start_character           = 31;
-    int         c2_end_line                  = 30;
-    int         c2_end_character             = 37;
-    int         c2_selection_start_line      = 30;
-    int         c2_selection_start_character = 33;
-    int         c2_selection_end_line        = 30;
-    int         c2_selection_end_character   = 35;
+    std::string o3_name                      = "symbol_name_child_2";
+    std::string o3_detail                    = "symbol::detail::child::2";
+    int         o3_kind                      = 22;
+    bool        o3_deprecated                = false;
+    int         o3_start_line                = 30;
+    int         o3_start_character           = 31;
+    int         o3_end_line                  = 30;
+    int         o3_end_character             = 37;
+    int         o3_selection_start_line      = 30;
+    int         o3_selection_start_character = 33;
+    int         o3_selection_end_line        = 30;
+    int         o3_selection_end_character   = 35;
 
-    ASSERT_TRUE(buildDocumentSymbolObject( p0_object                    ,
+    ASSERT_TRUE(buildDocumentSymbolObject( root_object                  ,
                                            errors                       ,
-                                           p0_name                      ,
-                                           p0_detail                    ,
-                                           p0_kind                      ,
-                                           p0_deprecated                ,
-                                           p0_start_line                ,
-                                           p0_start_character           ,
-                                           p0_end_line                  ,
-                                           p0_end_character             ,
-                                           p0_selection_start_line      ,
-                                           p0_selection_start_character ,
-                                           p0_selection_end_line        ,
-                                           p0_selection_end_character   ));
+                                           o1_name                      ,
+                                           o1_detail                    ,
+                                           o1_kind                      ,
+                                           o1_deprecated                ,
+                                           o1_start_line                ,
+                                           o1_start_character           ,
+                                           o1_end_line                  ,
+                                           o1_end_character             ,
+                                           o1_selection_start_line      ,
+                                           o1_selection_start_character ,
+                                           o1_selection_end_line        ,
+                                           o1_selection_end_character   ));
 
-    ASSERT_TRUE(buildDocumentSymbolObject( addDocumentSymbolChild( p0_object ) ,
-                                           errors                              ,
-                                           c1_name                             ,
-                                           c1_detail                           ,
-                                           c1_kind                             ,
-                                           c1_deprecated                       ,
-                                           c1_start_line                       ,
-                                           c1_start_character                  ,
-                                           c1_end_line                         ,
-                                           c1_end_character                    ,
-                                           c1_selection_start_line             ,
-                                           c1_selection_start_character        ,
-                                           c1_selection_end_line               ,
-                                           c1_selection_end_character          ));
+    ASSERT_TRUE(buildDocumentSymbolObject( addDocumentSymbolChild( root_object ) ,
+                                           errors                                ,
+                                           o2_name                               ,
+                                           o2_detail                             ,
+                                           o2_kind                               ,
+                                           o2_deprecated                         ,
+                                           o2_start_line                         ,
+                                           o2_start_character                    ,
+                                           o2_end_line                           ,
+                                           o2_end_character                      ,
+                                           o2_selection_start_line               ,
+                                           o2_selection_start_character          ,
+                                           o2_selection_end_line                 ,
+                                           o2_selection_end_character            ));
 
-    ASSERT_TRUE(buildDocumentSymbolObject( addDocumentSymbolChild( p0_object ) ,
-                                           errors                              ,
-                                           c2_name                             ,
-                                           c2_detail                           ,
-                                           c2_kind                             ,
-                                           c2_deprecated                       ,
-                                           c2_start_line                       ,
-                                           c2_start_character                  ,
-                                           c2_end_line                         ,
-                                           c2_end_character                    ,
-                                           c2_selection_start_line             ,
-                                           c2_selection_start_character        ,
-                                           c2_selection_end_line               ,
-                                           c2_selection_end_character          ));
+    ASSERT_TRUE(buildDocumentSymbolObject( addDocumentSymbolChild( root_object ) ,
+                                           errors                                ,
+                                           o3_name                               ,
+                                           o3_detail                             ,
+                                           o3_kind                               ,
+                                           o3_deprecated                         ,
+                                           o3_start_line                         ,
+                                           o3_start_character                    ,
+                                           o3_end_line                           ,
+                                           o3_end_character                      ,
+                                           o3_selection_start_line               ,
+                                           o3_selection_start_character          ,
+                                           o3_selection_end_line                 ,
+                                           o3_selection_end_character            ));
 
-    ASSERT_EQ  ( p0_object.size() , (size_t) 7 );
+    ASSERT_EQ  ( root_object.size() , (size_t) 7 );
 
-    ASSERT_TRUE( p0_object[m_name].is_string()           );
-    ASSERT_EQ  ( p0_object[m_name].to_string() , p0_name );
+    ASSERT_TRUE( root_object[m_name].is_string()           );
+    ASSERT_EQ  ( root_object[m_name].to_string() , o1_name );
 
-    ASSERT_TRUE( p0_object[m_detail].is_string()             );
-    ASSERT_EQ  ( p0_object[m_detail].to_string() , p0_detail );
+    ASSERT_TRUE( root_object[m_detail].is_string()             );
+    ASSERT_EQ  ( root_object[m_detail].to_string() , o1_detail );
 
-    ASSERT_TRUE( p0_object[m_kind].is_int()           );
-    ASSERT_EQ  ( p0_object[m_kind].to_int() , p0_kind );
+    ASSERT_TRUE( root_object[m_kind].is_int()           );
+    ASSERT_EQ  ( root_object[m_kind].to_int() , o1_kind );
 
-    ASSERT_TRUE( p0_object[m_deprecated].is_bool()                 );
-    ASSERT_EQ  ( p0_object[m_deprecated].to_bool() , p0_deprecated );
+    ASSERT_TRUE( root_object[m_deprecated].is_bool()                 );
+    ASSERT_EQ  ( root_object[m_deprecated].to_bool() , o1_deprecated );
 
-    ASSERT_TRUE( p0_object[m_range].is_object()         );
-    ASSERT_EQ  ( p0_object[m_range].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_range].is_object()         );
+    ASSERT_EQ  ( root_object[m_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_range][m_start].is_object()         );
-    ASSERT_EQ  ( p0_object[m_range][m_start].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_range][m_start].is_object()         );
+    ASSERT_EQ  ( root_object[m_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_range][m_start][m_line].is_int()                 );
-    ASSERT_EQ  ( p0_object[m_range][m_start][m_line].to_int() , p0_start_line );
+    ASSERT_TRUE( root_object[m_range][m_start][m_line].is_int()                 );
+    ASSERT_EQ  ( root_object[m_range][m_start][m_line].to_int() , o1_start_line );
 
-    ASSERT_TRUE( p0_object[m_range][m_start][m_character].is_int()                      );
-    ASSERT_EQ  ( p0_object[m_range][m_start][m_character].to_int() , p0_start_character );
+    ASSERT_TRUE( root_object[m_range][m_start][m_character].is_int()                      );
+    ASSERT_EQ  ( root_object[m_range][m_start][m_character].to_int() , o1_start_character );
 
-    ASSERT_TRUE( p0_object[m_range][m_end].is_object()         );
-    ASSERT_EQ  ( p0_object[m_range][m_end].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_range][m_end].is_object()         );
+    ASSERT_EQ  ( root_object[m_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_range][m_end][m_line].is_int()               );
-    ASSERT_EQ  ( p0_object[m_range][m_end][m_line].to_int() , p0_end_line );
+    ASSERT_TRUE( root_object[m_range][m_end][m_line].is_int()               );
+    ASSERT_EQ  ( root_object[m_range][m_end][m_line].to_int() , o1_end_line );
 
-    ASSERT_TRUE( p0_object[m_range][m_end][m_character].is_int()                    );
-    ASSERT_EQ  ( p0_object[m_range][m_end][m_character].to_int() , p0_end_character );
+    ASSERT_TRUE( root_object[m_range][m_end][m_character].is_int()                    );
+    ASSERT_EQ  ( root_object[m_range][m_end][m_character].to_int() , o1_end_character );
 
-    ASSERT_TRUE( p0_object[m_selection_range].is_object()         );
-    ASSERT_EQ  ( p0_object[m_selection_range].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_selection_range].is_object()         );
+    ASSERT_EQ  ( root_object[m_selection_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_selection_range][m_start].is_object()         );
-    ASSERT_EQ  ( p0_object[m_selection_range][m_start].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_selection_range][m_start].is_object()         );
+    ASSERT_EQ  ( root_object[m_selection_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_selection_range][m_start][m_line].is_int()                           );
-    ASSERT_EQ  ( p0_object[m_selection_range][m_start][m_line].to_int() , p0_selection_start_line );
+    ASSERT_TRUE( root_object[m_selection_range][m_start][m_line].is_int()                           );
+    ASSERT_EQ  ( root_object[m_selection_range][m_start][m_line].to_int() , o1_selection_start_line );
 
-    ASSERT_TRUE( p0_object[m_selection_range][m_start][m_character].is_int()                                );
-    ASSERT_EQ  ( p0_object[m_selection_range][m_start][m_character].to_int() , p0_selection_start_character );
+    ASSERT_TRUE( root_object[m_selection_range][m_start][m_character].is_int()                                );
+    ASSERT_EQ  ( root_object[m_selection_range][m_start][m_character].to_int() , o1_selection_start_character );
 
-    ASSERT_TRUE( p0_object[m_selection_range][m_end].is_object()         );
-    ASSERT_EQ  ( p0_object[m_selection_range][m_end].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_selection_range][m_end].is_object()         );
+    ASSERT_EQ  ( root_object[m_selection_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_selection_range][m_end][m_line].is_int()                         );
-    ASSERT_EQ  ( p0_object[m_selection_range][m_end][m_line].to_int() , p0_selection_end_line );
+    ASSERT_TRUE( root_object[m_selection_range][m_end][m_line].is_int()                         );
+    ASSERT_EQ  ( root_object[m_selection_range][m_end][m_line].to_int() , o1_selection_end_line );
 
-    ASSERT_TRUE( p0_object[m_selection_range][m_end][m_character].is_int()                              );
-    ASSERT_EQ  ( p0_object[m_selection_range][m_end][m_character].to_int() , p0_selection_end_character );
+    ASSERT_TRUE( root_object[m_selection_range][m_end][m_character].is_int()                              );
+    ASSERT_EQ  ( root_object[m_selection_range][m_end][m_character].to_int() , o1_selection_end_character );
 
-    ASSERT_TRUE( p0_object[m_children].is_array()          );
-    ASSERT_EQ  ( p0_object[m_children].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_children].is_array()          );
+    ASSERT_EQ  ( root_object[m_children].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_children][0].is_object()         );
-    ASSERT_EQ  ( p0_object[m_children][0].size() , (size_t) 7 );
+    ASSERT_TRUE( root_object[m_children][0].is_object()         );
+    ASSERT_EQ  ( root_object[m_children][0].size() , (size_t) 7 );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_name].is_string()           );
-    ASSERT_EQ  ( p0_object[m_children][0][m_name].to_string() , c1_name );
+    ASSERT_TRUE( root_object[m_children][0][m_name].is_string()           );
+    ASSERT_EQ  ( root_object[m_children][0][m_name].to_string() , o2_name );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_detail].is_string()             );
-    ASSERT_EQ  ( p0_object[m_children][0][m_detail].to_string() , c1_detail );
+    ASSERT_TRUE( root_object[m_children][0][m_detail].is_string()             );
+    ASSERT_EQ  ( root_object[m_children][0][m_detail].to_string() , o2_detail );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_kind].is_int()           );
-    ASSERT_EQ  ( p0_object[m_children][0][m_kind].to_int() , c1_kind );
+    ASSERT_TRUE( root_object[m_children][0][m_kind].is_int()           );
+    ASSERT_EQ  ( root_object[m_children][0][m_kind].to_int() , o2_kind );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_deprecated].is_bool()                 );
-    ASSERT_EQ  ( p0_object[m_children][0][m_deprecated].to_bool() , c1_deprecated );
+    ASSERT_TRUE( root_object[m_children][0][m_deprecated].is_bool()                 );
+    ASSERT_EQ  ( root_object[m_children][0][m_deprecated].to_bool() , o2_deprecated );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_range].is_object()         );
-    ASSERT_EQ  ( p0_object[m_children][0][m_range].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_children][0][m_range].is_object()         );
+    ASSERT_EQ  ( root_object[m_children][0][m_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_range][m_start].is_object()         );
-    ASSERT_EQ  ( p0_object[m_children][0][m_range][m_start].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_children][0][m_range][m_start].is_object()         );
+    ASSERT_EQ  ( root_object[m_children][0][m_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_range][m_start][m_line].is_int()                 );
-    ASSERT_EQ  ( p0_object[m_children][0][m_range][m_start][m_line].to_int() , c1_start_line );
+    ASSERT_TRUE( root_object[m_children][0][m_range][m_start][m_line].is_int()                 );
+    ASSERT_EQ  ( root_object[m_children][0][m_range][m_start][m_line].to_int() , o2_start_line );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_range][m_start][m_character].is_int()                      );
-    ASSERT_EQ  ( p0_object[m_children][0][m_range][m_start][m_character].to_int() , c1_start_character );
+    ASSERT_TRUE( root_object[m_children][0][m_range][m_start][m_character].is_int()                      );
+    ASSERT_EQ  ( root_object[m_children][0][m_range][m_start][m_character].to_int() , o2_start_character );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_range][m_end].is_object()         );
-    ASSERT_EQ  ( p0_object[m_children][0][m_range][m_end].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_children][0][m_range][m_end].is_object()         );
+    ASSERT_EQ  ( root_object[m_children][0][m_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_range][m_end][m_line].is_int()               );
-    ASSERT_EQ  ( p0_object[m_children][0][m_range][m_end][m_line].to_int() , c1_end_line );
+    ASSERT_TRUE( root_object[m_children][0][m_range][m_end][m_line].is_int()               );
+    ASSERT_EQ  ( root_object[m_children][0][m_range][m_end][m_line].to_int() , o2_end_line );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_range][m_end][m_character].is_int()                    );
-    ASSERT_EQ  ( p0_object[m_children][0][m_range][m_end][m_character].to_int() , c1_end_character );
+    ASSERT_TRUE( root_object[m_children][0][m_range][m_end][m_character].is_int()                    );
+    ASSERT_EQ  ( root_object[m_children][0][m_range][m_end][m_character].to_int() , o2_end_character );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_selection_range].is_object()         );
-    ASSERT_EQ  ( p0_object[m_children][0][m_selection_range].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_children][0][m_selection_range].is_object()         );
+    ASSERT_EQ  ( root_object[m_children][0][m_selection_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_selection_range][m_start].is_object()         );
-    ASSERT_EQ  ( p0_object[m_children][0][m_selection_range][m_start].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_children][0][m_selection_range][m_start].is_object()         );
+    ASSERT_EQ  ( root_object[m_children][0][m_selection_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_selection_range][m_start][m_line].is_int()                           );
-    ASSERT_EQ  ( p0_object[m_children][0][m_selection_range][m_start][m_line].to_int() , c1_selection_start_line );
+    ASSERT_TRUE( root_object[m_children][0][m_selection_range][m_start][m_line].is_int()                           );
+    ASSERT_EQ  ( root_object[m_children][0][m_selection_range][m_start][m_line].to_int() , o2_selection_start_line );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_selection_range][m_start][m_character].is_int()                                );
-    ASSERT_EQ  ( p0_object[m_children][0][m_selection_range][m_start][m_character].to_int() , c1_selection_start_character );
+    ASSERT_TRUE( root_object[m_children][0][m_selection_range][m_start][m_character].is_int()                                );
+    ASSERT_EQ  ( root_object[m_children][0][m_selection_range][m_start][m_character].to_int() , o2_selection_start_character );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_selection_range][m_end].is_object()         );
-    ASSERT_EQ  ( p0_object[m_children][0][m_selection_range][m_end].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_children][0][m_selection_range][m_end].is_object()         );
+    ASSERT_EQ  ( root_object[m_children][0][m_selection_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_selection_range][m_end][m_line].is_int()                         );
-    ASSERT_EQ  ( p0_object[m_children][0][m_selection_range][m_end][m_line].to_int() , c1_selection_end_line );
+    ASSERT_TRUE( root_object[m_children][0][m_selection_range][m_end][m_line].is_int()                         );
+    ASSERT_EQ  ( root_object[m_children][0][m_selection_range][m_end][m_line].to_int() , o2_selection_end_line );
 
-    ASSERT_TRUE( p0_object[m_children][0][m_selection_range][m_end][m_character].is_int()                              );
-    ASSERT_EQ  ( p0_object[m_children][0][m_selection_range][m_end][m_character].to_int() , c1_selection_end_character );
+    ASSERT_TRUE( root_object[m_children][0][m_selection_range][m_end][m_character].is_int()                              );
+    ASSERT_EQ  ( root_object[m_children][0][m_selection_range][m_end][m_character].to_int() , o2_selection_end_character );
 
-    ASSERT_TRUE( p0_object[m_children][1].is_object()         );
-    ASSERT_EQ  ( p0_object[m_children][1].size() , (size_t) 7 );
+    ASSERT_TRUE( root_object[m_children][0][m_children].is_array()          );
+    ASSERT_EQ  ( root_object[m_children][0][m_children].size() , (size_t) 0 );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_name].is_string()           );
-    ASSERT_EQ  ( p0_object[m_children][1][m_name].to_string() , c2_name );
+    ASSERT_TRUE( root_object[m_children][1].is_object()         );
+    ASSERT_EQ  ( root_object[m_children][1].size() , (size_t) 7 );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_detail].is_string()             );
-    ASSERT_EQ  ( p0_object[m_children][1][m_detail].to_string() , c2_detail );
+    ASSERT_TRUE( root_object[m_children][1][m_name].is_string()           );
+    ASSERT_EQ  ( root_object[m_children][1][m_name].to_string() , o3_name );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_kind].is_int()           );
-    ASSERT_EQ  ( p0_object[m_children][1][m_kind].to_int() , c2_kind );
+    ASSERT_TRUE( root_object[m_children][1][m_detail].is_string()             );
+    ASSERT_EQ  ( root_object[m_children][1][m_detail].to_string() , o3_detail );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_deprecated].is_bool()                 );
-    ASSERT_EQ  ( p0_object[m_children][1][m_deprecated].to_bool() , c2_deprecated );
+    ASSERT_TRUE( root_object[m_children][1][m_kind].is_int()           );
+    ASSERT_EQ  ( root_object[m_children][1][m_kind].to_int() , o3_kind );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_range].is_object()         );
-    ASSERT_EQ  ( p0_object[m_children][1][m_range].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_children][1][m_deprecated].is_bool()                 );
+    ASSERT_EQ  ( root_object[m_children][1][m_deprecated].to_bool() , o3_deprecated );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_range][m_start].is_object()         );
-    ASSERT_EQ  ( p0_object[m_children][1][m_range][m_start].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_children][1][m_range].is_object()         );
+    ASSERT_EQ  ( root_object[m_children][1][m_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_range][m_start][m_line].is_int()                 );
-    ASSERT_EQ  ( p0_object[m_children][1][m_range][m_start][m_line].to_int() , c2_start_line );
+    ASSERT_TRUE( root_object[m_children][1][m_range][m_start].is_object()         );
+    ASSERT_EQ  ( root_object[m_children][1][m_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_range][m_start][m_character].is_int()                      );
-    ASSERT_EQ  ( p0_object[m_children][1][m_range][m_start][m_character].to_int() , c2_start_character );
+    ASSERT_TRUE( root_object[m_children][1][m_range][m_start][m_line].is_int()                 );
+    ASSERT_EQ  ( root_object[m_children][1][m_range][m_start][m_line].to_int() , o3_start_line );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_range][m_end].is_object()         );
-    ASSERT_EQ  ( p0_object[m_children][1][m_range][m_end].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_children][1][m_range][m_start][m_character].is_int()                      );
+    ASSERT_EQ  ( root_object[m_children][1][m_range][m_start][m_character].to_int() , o3_start_character );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_range][m_end][m_line].is_int()               );
-    ASSERT_EQ  ( p0_object[m_children][1][m_range][m_end][m_line].to_int() , c2_end_line );
+    ASSERT_TRUE( root_object[m_children][1][m_range][m_end].is_object()         );
+    ASSERT_EQ  ( root_object[m_children][1][m_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_range][m_end][m_character].is_int()                    );
-    ASSERT_EQ  ( p0_object[m_children][1][m_range][m_end][m_character].to_int() , c2_end_character );
+    ASSERT_TRUE( root_object[m_children][1][m_range][m_end][m_line].is_int()               );
+    ASSERT_EQ  ( root_object[m_children][1][m_range][m_end][m_line].to_int() , o3_end_line );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_selection_range].is_object()         );
-    ASSERT_EQ  ( p0_object[m_children][1][m_selection_range].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_children][1][m_range][m_end][m_character].is_int()                    );
+    ASSERT_EQ  ( root_object[m_children][1][m_range][m_end][m_character].to_int() , o3_end_character );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_selection_range][m_start].is_object()         );
-    ASSERT_EQ  ( p0_object[m_children][1][m_selection_range][m_start].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_children][1][m_selection_range].is_object()         );
+    ASSERT_EQ  ( root_object[m_children][1][m_selection_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_selection_range][m_start][m_line].is_int()                           );
-    ASSERT_EQ  ( p0_object[m_children][1][m_selection_range][m_start][m_line].to_int() , c2_selection_start_line );
+    ASSERT_TRUE( root_object[m_children][1][m_selection_range][m_start].is_object()         );
+    ASSERT_EQ  ( root_object[m_children][1][m_selection_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_selection_range][m_start][m_character].is_int()                                );
-    ASSERT_EQ  ( p0_object[m_children][1][m_selection_range][m_start][m_character].to_int() , c2_selection_start_character );
+    ASSERT_TRUE( root_object[m_children][1][m_selection_range][m_start][m_line].is_int()                           );
+    ASSERT_EQ  ( root_object[m_children][1][m_selection_range][m_start][m_line].to_int() , o3_selection_start_line );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_selection_range][m_end].is_object()         );
-    ASSERT_EQ  ( p0_object[m_children][1][m_selection_range][m_end].size() , (size_t) 2 );
+    ASSERT_TRUE( root_object[m_children][1][m_selection_range][m_start][m_character].is_int()                                );
+    ASSERT_EQ  ( root_object[m_children][1][m_selection_range][m_start][m_character].to_int() , o3_selection_start_character );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_selection_range][m_end][m_line].is_int()                         );
-    ASSERT_EQ  ( p0_object[m_children][1][m_selection_range][m_end][m_line].to_int() , c2_selection_end_line );
+    ASSERT_TRUE( root_object[m_children][1][m_selection_range][m_end].is_object()         );
+    ASSERT_EQ  ( root_object[m_children][1][m_selection_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( p0_object[m_children][1][m_selection_range][m_end][m_character].is_int()                              );
-    ASSERT_EQ  ( p0_object[m_children][1][m_selection_range][m_end][m_character].to_int() , c2_selection_end_character );
+    ASSERT_TRUE( root_object[m_children][1][m_selection_range][m_end][m_line].is_int()                         );
+    ASSERT_EQ  ( root_object[m_children][1][m_selection_range][m_end][m_line].to_int() , o3_selection_end_line );
+
+    ASSERT_TRUE( root_object[m_children][1][m_selection_range][m_end][m_character].is_int()                              );
+    ASSERT_EQ  ( root_object[m_children][1][m_selection_range][m_end][m_character].to_int() , o3_selection_end_character );
+
+    ASSERT_TRUE( root_object[m_children][1][m_children].is_array()          );
+    ASSERT_EQ  ( root_object[m_children][1][m_children].size() , (size_t) 0 );
 
     std::stringstream json;
-    p0_object.format_json(json);
+    root_object.format_json(json);
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
@@ -3198,136 +3204,136 @@ TEST(lsp, documentsymbol_object)
 
     ASSERT_EQ( json.str() , json_expected.str() );
 
-    std::string tst_p0_name;
-    std::string tst_p0_detail;
-    int         tst_p0_kind;
-    bool        tst_p0_deprecated;
-    int         tst_p0_start_line;
-    int         tst_p0_start_character;
-    int         tst_p0_end_line;
-    int         tst_p0_end_character;
-    int         tst_p0_selection_start_line;
-    int         tst_p0_selection_start_character;
-    int         tst_p0_selection_end_line;
-    int         tst_p0_selection_end_character;
+    std::string tst_o1_name;
+    std::string tst_o1_detail;
+    int         tst_o1_kind;
+    bool        tst_o1_deprecated;
+    int         tst_o1_start_line;
+    int         tst_o1_start_character;
+    int         tst_o1_end_line;
+    int         tst_o1_end_character;
+    int         tst_o1_selection_start_line;
+    int         tst_o1_selection_start_character;
+    int         tst_o1_selection_end_line;
+    int         tst_o1_selection_end_character;
 
-    std::string tst_c1_name;
-    std::string tst_c1_detail;
-    int         tst_c1_kind;
-    bool        tst_c1_deprecated;
-    int         tst_c1_start_line;
-    int         tst_c1_start_character;
-    int         tst_c1_end_line;
-    int         tst_c1_end_character;
-    int         tst_c1_selection_start_line;
-    int         tst_c1_selection_start_character;
-    int         tst_c1_selection_end_line;
-    int         tst_c1_selection_end_character;
+    std::string tst_o2_name;
+    std::string tst_o2_detail;
+    int         tst_o2_kind;
+    bool        tst_o2_deprecated;
+    int         tst_o2_start_line;
+    int         tst_o2_start_character;
+    int         tst_o2_end_line;
+    int         tst_o2_end_character;
+    int         tst_o2_selection_start_line;
+    int         tst_o2_selection_start_character;
+    int         tst_o2_selection_end_line;
+    int         tst_o2_selection_end_character;
 
-    std::string tst_c2_name;
-    std::string tst_c2_detail;
-    int         tst_c2_kind;
-    bool        tst_c2_deprecated;
-    int         tst_c2_start_line;
-    int         tst_c2_start_character;
-    int         tst_c2_end_line;
-    int         tst_c2_end_character;
-    int         tst_c2_selection_start_line;
-    int         tst_c2_selection_start_character;
-    int         tst_c2_selection_end_line;
-    int         tst_c2_selection_end_character;
+    std::string tst_o3_name;
+    std::string tst_o3_detail;
+    int         tst_o3_kind;
+    bool        tst_o3_deprecated;
+    int         tst_o3_start_line;
+    int         tst_o3_start_character;
+    int         tst_o3_end_line;
+    int         tst_o3_end_character;
+    int         tst_o3_selection_start_line;
+    int         tst_o3_selection_start_character;
+    int         tst_o3_selection_end_line;
+    int         tst_o3_selection_end_character;
 
-    ASSERT_TRUE(dissectDocumentSymbolObject( p0_object                        ,
+    ASSERT_TRUE(dissectDocumentSymbolObject( root_object                      ,
                                              errors                           ,
-                                             tst_p0_name                      ,
-                                             tst_p0_detail                    ,
-                                             tst_p0_kind                      ,
-                                             tst_p0_deprecated                ,
-                                             tst_p0_start_line                ,
-                                             tst_p0_start_character           ,
-                                             tst_p0_end_line                  ,
-                                             tst_p0_end_character             ,
-                                             tst_p0_selection_start_line      ,
-                                             tst_p0_selection_start_character ,
-                                             tst_p0_selection_end_line        ,
-                                             tst_p0_selection_end_character   ));
+                                             tst_o1_name                      ,
+                                             tst_o1_detail                    ,
+                                             tst_o1_kind                      ,
+                                             tst_o1_deprecated                ,
+                                             tst_o1_start_line                ,
+                                             tst_o1_start_character           ,
+                                             tst_o1_end_line                  ,
+                                             tst_o1_end_character             ,
+                                             tst_o1_selection_start_line      ,
+                                             tst_o1_selection_start_character ,
+                                             tst_o1_selection_end_line        ,
+                                             tst_o1_selection_end_character   ));
 
-    ASSERT_EQ ( tst_p0_name                      , p0_name                      );
-    ASSERT_EQ ( tst_p0_detail                    , p0_detail                    );
-    ASSERT_EQ ( tst_p0_kind                      , p0_kind                      );
-    ASSERT_EQ ( tst_p0_deprecated                , p0_deprecated                );
-    ASSERT_EQ ( tst_p0_start_line                , p0_start_line                );
-    ASSERT_EQ ( tst_p0_start_character           , p0_start_character           );
-    ASSERT_EQ ( tst_p0_end_line                  , p0_end_line                  );
-    ASSERT_EQ ( tst_p0_end_character             , p0_end_character             );
-    ASSERT_EQ ( tst_p0_selection_start_line      , p0_selection_start_line      );
-    ASSERT_EQ ( tst_p0_selection_start_character , p0_selection_start_character );
-    ASSERT_EQ ( tst_p0_selection_end_line        , p0_selection_end_line        );
-    ASSERT_EQ ( tst_p0_selection_end_character   , p0_selection_end_character   );
+    ASSERT_EQ ( tst_o1_name                      , o1_name                      );
+    ASSERT_EQ ( tst_o1_detail                    , o1_detail                    );
+    ASSERT_EQ ( tst_o1_kind                      , o1_kind                      );
+    ASSERT_EQ ( tst_o1_deprecated                , o1_deprecated                );
+    ASSERT_EQ ( tst_o1_start_line                , o1_start_line                );
+    ASSERT_EQ ( tst_o1_start_character           , o1_start_character           );
+    ASSERT_EQ ( tst_o1_end_line                  , o1_end_line                  );
+    ASSERT_EQ ( tst_o1_end_character             , o1_end_character             );
+    ASSERT_EQ ( tst_o1_selection_start_line      , o1_selection_start_line      );
+    ASSERT_EQ ( tst_o1_selection_start_character , o1_selection_start_character );
+    ASSERT_EQ ( tst_o1_selection_end_line        , o1_selection_end_line        );
+    ASSERT_EQ ( tst_o1_selection_end_character   , o1_selection_end_character   );
 
-    ASSERT_EQ ( getDocumentSymbolChildren( p0_object )->size() , (size_t) 2 );
-
-    const DataObject & child_object_1 =
-                *(getDocumentSymbolChildren( p0_object )->at(0).to_object());
-
-    ASSERT_TRUE(dissectDocumentSymbolObject( child_object_1                   ,
-                                             errors                           ,
-                                             tst_c1_name                      ,
-                                             tst_c1_detail                    ,
-                                             tst_c1_kind                      ,
-                                             tst_c1_deprecated                ,
-                                             tst_c1_start_line                ,
-                                             tst_c1_start_character           ,
-                                             tst_c1_end_line                  ,
-                                             tst_c1_end_character             ,
-                                             tst_c1_selection_start_line      ,
-                                             tst_c1_selection_start_character ,
-                                             tst_c1_selection_end_line        ,
-                                             tst_c1_selection_end_character   ));
-
-    ASSERT_EQ ( tst_c1_name                      , c1_name                      );
-    ASSERT_EQ ( tst_c1_detail                    , c1_detail                    );
-    ASSERT_EQ ( tst_c1_kind                      , c1_kind                      );
-    ASSERT_EQ ( tst_c1_deprecated                , c1_deprecated                );
-    ASSERT_EQ ( tst_c1_start_line                , c1_start_line                );
-    ASSERT_EQ ( tst_c1_start_character           , c1_start_character           );
-    ASSERT_EQ ( tst_c1_end_line                  , c1_end_line                  );
-    ASSERT_EQ ( tst_c1_end_character             , c1_end_character             );
-    ASSERT_EQ ( tst_c1_selection_start_line      , c1_selection_start_line      );
-    ASSERT_EQ ( tst_c1_selection_start_character , c1_selection_start_character );
-    ASSERT_EQ ( tst_c1_selection_end_line        , c1_selection_end_line        );
-    ASSERT_EQ ( tst_c1_selection_end_character   , c1_selection_end_character   );
+    ASSERT_EQ ( getDocumentSymbolChildren( root_object )->size() , (size_t) 2 );
 
     const DataObject & child_object_2 =
-                *(getDocumentSymbolChildren( p0_object )->at(1).to_object());
+                *(getDocumentSymbolChildren( root_object )->at(0).to_object());
 
     ASSERT_TRUE(dissectDocumentSymbolObject( child_object_2                   ,
                                              errors                           ,
-                                             tst_c2_name                      ,
-                                             tst_c2_detail                    ,
-                                             tst_c2_kind                      ,
-                                             tst_c2_deprecated                ,
-                                             tst_c2_start_line                ,
-                                             tst_c2_start_character           ,
-                                             tst_c2_end_line                  ,
-                                             tst_c2_end_character             ,
-                                             tst_c2_selection_start_line      ,
-                                             tst_c2_selection_start_character ,
-                                             tst_c2_selection_end_line        ,
-                                             tst_c2_selection_end_character   ));
+                                             tst_o2_name                      ,
+                                             tst_o2_detail                    ,
+                                             tst_o2_kind                      ,
+                                             tst_o2_deprecated                ,
+                                             tst_o2_start_line                ,
+                                             tst_o2_start_character           ,
+                                             tst_o2_end_line                  ,
+                                             tst_o2_end_character             ,
+                                             tst_o2_selection_start_line      ,
+                                             tst_o2_selection_start_character ,
+                                             tst_o2_selection_end_line        ,
+                                             tst_o2_selection_end_character   ));
 
-    ASSERT_EQ ( tst_c2_name                      , c2_name                      );
-    ASSERT_EQ ( tst_c2_detail                    , c2_detail                    );
-    ASSERT_EQ ( tst_c2_kind                      , c2_kind                      );
-    ASSERT_EQ ( tst_c2_deprecated                , c2_deprecated                );
-    ASSERT_EQ ( tst_c2_start_line                , c2_start_line                );
-    ASSERT_EQ ( tst_c2_start_character           , c2_start_character           );
-    ASSERT_EQ ( tst_c2_end_line                  , c2_end_line                  );
-    ASSERT_EQ ( tst_c2_end_character             , c2_end_character             );
-    ASSERT_EQ ( tst_c2_selection_start_line      , c2_selection_start_line      );
-    ASSERT_EQ ( tst_c2_selection_start_character , c2_selection_start_character );
-    ASSERT_EQ ( tst_c2_selection_end_line        , c2_selection_end_line        );
-    ASSERT_EQ ( tst_c2_selection_end_character   , c2_selection_end_character   );
+    ASSERT_EQ ( tst_o2_name                      , o2_name                      );
+    ASSERT_EQ ( tst_o2_detail                    , o2_detail                    );
+    ASSERT_EQ ( tst_o2_kind                      , o2_kind                      );
+    ASSERT_EQ ( tst_o2_deprecated                , o2_deprecated                );
+    ASSERT_EQ ( tst_o2_start_line                , o2_start_line                );
+    ASSERT_EQ ( tst_o2_start_character           , o2_start_character           );
+    ASSERT_EQ ( tst_o2_end_line                  , o2_end_line                  );
+    ASSERT_EQ ( tst_o2_end_character             , o2_end_character             );
+    ASSERT_EQ ( tst_o2_selection_start_line      , o2_selection_start_line      );
+    ASSERT_EQ ( tst_o2_selection_start_character , o2_selection_start_character );
+    ASSERT_EQ ( tst_o2_selection_end_line        , o2_selection_end_line        );
+    ASSERT_EQ ( tst_o2_selection_end_character   , o2_selection_end_character   );
+
+    const DataObject & child_object_3 =
+                *(getDocumentSymbolChildren( root_object )->at(1).to_object());
+
+    ASSERT_TRUE(dissectDocumentSymbolObject( child_object_3                   ,
+                                             errors                           ,
+                                             tst_o3_name                      ,
+                                             tst_o3_detail                    ,
+                                             tst_o3_kind                      ,
+                                             tst_o3_deprecated                ,
+                                             tst_o3_start_line                ,
+                                             tst_o3_start_character           ,
+                                             tst_o3_end_line                  ,
+                                             tst_o3_end_character             ,
+                                             tst_o3_selection_start_line      ,
+                                             tst_o3_selection_start_character ,
+                                             tst_o3_selection_end_line        ,
+                                             tst_o3_selection_end_character   ));
+
+    ASSERT_EQ ( tst_o3_name                      , o3_name                      );
+    ASSERT_EQ ( tst_o3_detail                    , o3_detail                    );
+    ASSERT_EQ ( tst_o3_kind                      , o3_kind                      );
+    ASSERT_EQ ( tst_o3_deprecated                , o3_deprecated                );
+    ASSERT_EQ ( tst_o3_start_line                , o3_start_line                );
+    ASSERT_EQ ( tst_o3_start_character           , o3_start_character           );
+    ASSERT_EQ ( tst_o3_end_line                  , o3_end_line                  );
+    ASSERT_EQ ( tst_o3_end_character             , o3_end_character             );
+    ASSERT_EQ ( tst_o3_selection_start_line      , o3_selection_start_line      );
+    ASSERT_EQ ( tst_o3_selection_start_character , o3_selection_start_character );
+    ASSERT_EQ ( tst_o3_selection_end_line        , o3_selection_end_line        );
+    ASSERT_EQ ( tst_o3_selection_end_character   , o3_selection_end_character   );
 }
 
 TEST(lsp, symbols_response)

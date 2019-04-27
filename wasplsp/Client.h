@@ -3,6 +3,7 @@
 
 #include "waspcore/decl.h"
 #include "wasplsp/Connection.h"
+#include "waspcore/Object.h"
 
 namespace wasp {
 namespace lsp  {
@@ -137,11 +138,6 @@ class WASP_PUBLIC Client
         return Impl.getFormattingSize();
     }
 
-    int getSymbolRootSize()
-    {
-        return Impl.getSymbolRootSize();
-    }
-
     bool getDiagnosticAt( int           index           ,
                           int         & start_line      ,
                           int         & start_character ,
@@ -231,35 +227,6 @@ class WASP_PUBLIC Client
                                      new_text        );
     }
 
-    bool getSymbolRootAt( int           index                     ,
-                          std::string & name                      ,
-                          std::string & detail                    ,
-                          int         & kind                      ,
-                          bool        & deprecated                ,
-                          int         & start_line                ,
-                          int         & start_character           ,
-                          int         & end_line                  ,
-                          int         & end_character             ,
-                          int         & selection_start_line      ,
-                          int         & selection_start_character ,
-                          int         & selection_end_line        ,
-                          int         & selection_end_character   )
-    {
-        return Impl.getSymbolRootAt( index                     ,
-                                     name                      ,
-                                     detail                    ,
-                                     kind                      ,
-                                     deprecated                ,
-                                     start_line                ,
-                                     start_character           ,
-                                     end_line                  ,
-                                     end_character             ,
-                                     selection_start_line      ,
-                                     selection_start_character ,
-                                     selection_end_line        ,
-                                     selection_end_character   );
-    }
-
     bool isConnected()
     {
         return Impl.isConnected();
@@ -288,6 +255,11 @@ class WASP_PUBLIC Client
     int getCurrentDocumentVersion()
     {
         return Impl.getCurrentDocumentVersion();
+    }
+
+    DataObject::SP getCurrentResponse() const
+    {
+        return Impl.getCurrentResponse();
     }
 
   private:

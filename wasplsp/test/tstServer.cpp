@@ -571,9 +571,9 @@ TEST(server, handle_symbols)
     {
     "children" : []
     ,"deprecated" : false
-    ,"detail" : "test::symbol::detail::child::1"
+    ,"detail" : "test::symbol::detail::object::2"
     ,"kind" : 20
-    ,"name" : "test_symbol_name_child_1"
+    ,"name" : "test_symbol_name_object_2"
     ,"range" : {
       "end" : {
       "character" : 27
@@ -596,11 +596,149 @@ TEST(server, handle_symbols)
     }
   }
     ,{
+    "children" : [
+    {
+    "children" : [
+    {
+    "children" : [
+    {
     "children" : []
     ,"deprecated" : false
-    ,"detail" : "test::symbol::detail::child::2"
+    ,"detail" : "test::symbol::detail::object::6"
+    ,"kind" : 15
+    ,"name" : "test_symbol_name_object_6"
+    ,"range" : {
+      "end" : {
+      "character" : 67
+      ,"line" : 60
+    }
+      ,"start" : {
+        "character" : 61
+        ,"line" : 60
+      }
+    }
+    ,"selectionRange" : {
+      "end" : {
+      "character" : 65
+      ,"line" : 60
+    }
+      ,"start" : {
+        "character" : 63
+        ,"line" : 60
+      }
+    }
+  }
+  ]
+    ,"deprecated" : false
+    ,"detail" : "test::symbol::detail::object::5"
+    ,"kind" : 15
+    ,"name" : "test_symbol_name_object_5"
+    ,"range" : {
+      "end" : {
+      "character" : 57
+      ,"line" : 50
+    }
+      ,"start" : {
+        "character" : 51
+        ,"line" : 50
+      }
+    }
+    ,"selectionRange" : {
+      "end" : {
+      "character" : 55
+      ,"line" : 50
+    }
+      ,"start" : {
+        "character" : 53
+        ,"line" : 50
+      }
+    }
+  }
+    ,{
+    "children" : []
+    ,"deprecated" : false
+    ,"detail" : "test::symbol::detail::object::7"
+    ,"kind" : 15
+    ,"name" : "test_symbol_name_object_7"
+    ,"range" : {
+      "end" : {
+      "character" : 77
+      ,"line" : 70
+    }
+      ,"start" : {
+        "character" : 71
+        ,"line" : 70
+      }
+    }
+    ,"selectionRange" : {
+      "end" : {
+      "character" : 75
+      ,"line" : 70
+    }
+      ,"start" : {
+        "character" : 73
+        ,"line" : 70
+      }
+    }
+  }
+    ,{
+    "children" : []
+    ,"deprecated" : false
+    ,"detail" : "test::symbol::detail::object::8"
+    ,"kind" : 15
+    ,"name" : "test_symbol_name_object_8"
+    ,"range" : {
+      "end" : {
+      "character" : 87
+      ,"line" : 80
+    }
+      ,"start" : {
+        "character" : 81
+        ,"line" : 80
+      }
+    }
+    ,"selectionRange" : {
+      "end" : {
+      "character" : 85
+      ,"line" : 80
+    }
+      ,"start" : {
+        "character" : 83
+        ,"line" : 80
+      }
+    }
+  }
+  ]
+    ,"deprecated" : false
+    ,"detail" : "test::symbol::detail::object::4"
+    ,"kind" : 15
+    ,"name" : "test_symbol_name_object_4"
+    ,"range" : {
+      "end" : {
+      "character" : 47
+      ,"line" : 40
+    }
+      ,"start" : {
+        "character" : 41
+        ,"line" : 40
+      }
+    }
+    ,"selectionRange" : {
+      "end" : {
+      "character" : 45
+      ,"line" : 40
+    }
+      ,"start" : {
+        "character" : 43
+        ,"line" : 40
+      }
+    }
+  }
+  ]
+    ,"deprecated" : false
+    ,"detail" : "test::symbol::detail::object::3"
     ,"kind" : 22
-    ,"name" : "test_symbol_name_child_2"
+    ,"name" : "test_symbol_name_object_3"
     ,"range" : {
       "end" : {
       "character" : 37
@@ -624,9 +762,9 @@ TEST(server, handle_symbols)
   }
   ]
     ,"deprecated" : false
-    ,"detail" : "test::symbol::detail::parent::0"
+    ,"detail" : "test::symbol::detail::object::1"
     ,"kind" : 15
-    ,"name" : "test_symbol_name_parent_0"
+    ,"name" : "test_symbol_name_object_1"
     ,"range" : {
       "end" : {
       "character" : 17

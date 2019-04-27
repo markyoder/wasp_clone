@@ -480,44 +480,44 @@ TEST(integrate, test_symbols)
     int         response_request_id;
     DataArray   response_symbols;
 
-    std::string response_parent_0_name;
-    std::string response_parent_0_detail;
-    int         response_parent_0_kind;
-    bool        response_parent_0_deprecated;
-    int         response_parent_0_start_line;
-    int         response_parent_0_start_character;
-    int         response_parent_0_end_line;
-    int         response_parent_0_end_character;
-    int         response_parent_0_selection_start_line;
-    int         response_parent_0_selection_start_character;
-    int         response_parent_0_selection_end_line;
-    int         response_parent_0_selection_end_character;
+    std::string o1_name;
+    std::string o1_detail;
+    int         o1_kind;
+    bool        o1_deprecated;
+    int         o1_start_line;
+    int         o1_start_character;
+    int         o1_end_line;
+    int         o1_end_character;
+    int         o1_selection_start_line;
+    int         o1_selection_start_character;
+    int         o1_selection_end_line;
+    int         o1_selection_end_character;
 
-    std::string response_child_1_name;
-    std::string response_child_1_detail;
-    int         response_child_1_kind;
-    bool        response_child_1_deprecated;
-    int         response_child_1_start_line;
-    int         response_child_1_start_character;
-    int         response_child_1_end_line;
-    int         response_child_1_end_character;
-    int         response_child_1_selection_start_line;
-    int         response_child_1_selection_start_character;
-    int         response_child_1_selection_end_line;
-    int         response_child_1_selection_end_character;
+    std::string o2_name;
+    std::string o2_detail;
+    int         o2_kind;
+    bool        o2_deprecated;
+    int         o2_start_line;
+    int         o2_start_character;
+    int         o2_end_line;
+    int         o2_end_character;
+    int         o2_selection_start_line;
+    int         o2_selection_start_character;
+    int         o2_selection_end_line;
+    int         o2_selection_end_character;
 
-    std::string response_child_2_name;
-    std::string response_child_2_detail;
-    int         response_child_2_kind;
-    bool        response_child_2_deprecated;
-    int         response_child_2_start_line;
-    int         response_child_2_start_character;
-    int         response_child_2_end_line;
-    int         response_child_2_end_character;
-    int         response_child_2_selection_start_line;
-    int         response_child_2_selection_start_character;
-    int         response_child_2_selection_end_line;
-    int         response_child_2_selection_end_character;
+    std::string o3_name;
+    std::string o3_detail;
+    int         o3_kind;
+    bool        o3_deprecated;
+    int         o3_start_line;
+    int         o3_start_character;
+    int         o3_end_line;
+    int         o3_end_character;
+    int         o3_selection_start_line;
+    int         o3_selection_start_character;
+    int         o3_selection_end_line;
+    int         o3_selection_end_character;
 
     std::stringstream  client_errors;
 
@@ -539,99 +539,103 @@ TEST(integrate, test_symbols)
 
     ASSERT_EQ( response_symbols.size() , (size_t) 1        );
 
-    const DataObject & parent_0 = *response_symbols[0].to_object();
+    const DataObject & object_1 = *response_symbols[0].to_object();
 
-    ASSERT_EQ ( getDocumentSymbolChildren( parent_0 )->size() , (size_t) 2 );
+    ASSERT_EQ ( getDocumentSymbolChildren( object_1 )->size() , (size_t) 2 );
 
-    const DataObject & child_1 =
-                *(getDocumentSymbolChildren( parent_0 )->at(0).to_object());
+    const DataObject & object_2 =
+                *(getDocumentSymbolChildren( object_1 )->at(0).to_object());
 
-    const DataObject & child_2 =
-                *(getDocumentSymbolChildren( parent_0 )->at(1).to_object());
+    ASSERT_EQ ( getDocumentSymbolChildren( object_2 )->size() , (size_t) 0 );
 
-    ASSERT_TRUE( dissectDocumentSymbolObject( parent_0                                    ,
-                                              client_errors                               ,
-                                              response_parent_0_name                      ,
-                                              response_parent_0_detail                    ,
-                                              response_parent_0_kind                      ,
-                                              response_parent_0_deprecated                ,
-                                              response_parent_0_start_line                ,
-                                              response_parent_0_start_character           ,
-                                              response_parent_0_end_line                  ,
-                                              response_parent_0_end_character             ,
-                                              response_parent_0_selection_start_line      ,
-                                              response_parent_0_selection_start_character ,
-                                              response_parent_0_selection_end_line        ,
-                                              response_parent_0_selection_end_character   ) );
+    const DataObject & object_3 =
+                *(getDocumentSymbolChildren( object_1 )->at(1).to_object());
 
-    ASSERT_TRUE( dissectDocumentSymbolObject( child_1                                    ,
-                                              client_errors                              ,
-                                              response_child_1_name                      ,
-                                              response_child_1_detail                    ,
-                                              response_child_1_kind                      ,
-                                              response_child_1_deprecated                ,
-                                              response_child_1_start_line                ,
-                                              response_child_1_start_character           ,
-                                              response_child_1_end_line                  ,
-                                              response_child_1_end_character             ,
-                                              response_child_1_selection_start_line      ,
-                                              response_child_1_selection_start_character ,
-                                              response_child_1_selection_end_line        ,
-                                              response_child_1_selection_end_character   ) );
+    ASSERT_EQ ( getDocumentSymbolChildren( object_3 )->size() , (size_t) 1 );
 
-    ASSERT_TRUE( dissectDocumentSymbolObject( child_2                                    ,
-                                              client_errors                              ,
-                                              response_child_2_name                      ,
-                                              response_child_2_detail                    ,
-                                              response_child_2_kind                      ,
-                                              response_child_2_deprecated                ,
-                                              response_child_2_start_line                ,
-                                              response_child_2_start_character           ,
-                                              response_child_2_end_line                  ,
-                                              response_child_2_end_character             ,
-                                              response_child_2_selection_start_line      ,
-                                              response_child_2_selection_start_character ,
-                                              response_child_2_selection_end_line        ,
-                                              response_child_2_selection_end_character   ) );
+    ASSERT_TRUE( dissectDocumentSymbolObject( object_1                     ,
+                                              client_errors                ,
+                                              o1_name                      ,
+                                              o1_detail                    ,
+                                              o1_kind                      ,
+                                              o1_deprecated                ,
+                                              o1_start_line                ,
+                                              o1_start_character           ,
+                                              o1_end_line                  ,
+                                              o1_end_character             ,
+                                              o1_selection_start_line      ,
+                                              o1_selection_start_character ,
+                                              o1_selection_end_line        ,
+                                              o1_selection_end_character   ) );
 
-    ASSERT_EQ( response_parent_0_name                      , "test_symbol_name_parent_0"       );
-    ASSERT_EQ( response_parent_0_detail                    , "test::symbol::detail::parent::0" );
-    ASSERT_EQ( response_parent_0_kind                      , 15                                );
-    ASSERT_EQ( response_parent_0_deprecated                , false                             );
-    ASSERT_EQ( response_parent_0_start_line                , 10                                );
-    ASSERT_EQ( response_parent_0_start_character           , 11                                );
-    ASSERT_EQ( response_parent_0_end_line                  , 10                                );
-    ASSERT_EQ( response_parent_0_end_character             , 17                                );
-    ASSERT_EQ( response_parent_0_selection_start_line      , 10                                );
-    ASSERT_EQ( response_parent_0_selection_start_character , 13                                );
-    ASSERT_EQ( response_parent_0_selection_end_line        , 10                                );
-    ASSERT_EQ( response_parent_0_selection_end_character   , 15                                );
+    ASSERT_TRUE( dissectDocumentSymbolObject( object_2                     ,
+                                              client_errors                ,
+                                              o2_name                      ,
+                                              o2_detail                    ,
+                                              o2_kind                      ,
+                                              o2_deprecated                ,
+                                              o2_start_line                ,
+                                              o2_start_character           ,
+                                              o2_end_line                  ,
+                                              o2_end_character             ,
+                                              o2_selection_start_line      ,
+                                              o2_selection_start_character ,
+                                              o2_selection_end_line        ,
+                                              o2_selection_end_character   ) );
 
-    ASSERT_EQ( response_child_1_name                      , "test_symbol_name_child_1"       );
-    ASSERT_EQ( response_child_1_detail                    , "test::symbol::detail::child::1" );
-    ASSERT_EQ( response_child_1_kind                      , 20                               );
-    ASSERT_EQ( response_child_1_deprecated                , false                            );
-    ASSERT_EQ( response_child_1_start_line                , 20                               );
-    ASSERT_EQ( response_child_1_start_character           , 21                               );
-    ASSERT_EQ( response_child_1_end_line                  , 20                               );
-    ASSERT_EQ( response_child_1_end_character             , 27                               );
-    ASSERT_EQ( response_child_1_selection_start_line      , 20                               );
-    ASSERT_EQ( response_child_1_selection_start_character , 23                               );
-    ASSERT_EQ( response_child_1_selection_end_line        , 20                               );
-    ASSERT_EQ( response_child_1_selection_end_character   , 25                               );
+    ASSERT_TRUE( dissectDocumentSymbolObject( object_3                     ,
+                                              client_errors                ,
+                                              o3_name                      ,
+                                              o3_detail                    ,
+                                              o3_kind                      ,
+                                              o3_deprecated                ,
+                                              o3_start_line                ,
+                                              o3_start_character           ,
+                                              o3_end_line                  ,
+                                              o3_end_character             ,
+                                              o3_selection_start_line      ,
+                                              o3_selection_start_character ,
+                                              o3_selection_end_line        ,
+                                              o3_selection_end_character   ) );
 
-    ASSERT_EQ( response_child_2_name                      , "test_symbol_name_child_2"       );
-    ASSERT_EQ( response_child_2_detail                    , "test::symbol::detail::child::2" );
-    ASSERT_EQ( response_child_2_kind                      , 22                               );
-    ASSERT_EQ( response_child_2_deprecated                , false                            );
-    ASSERT_EQ( response_child_2_start_line                , 30                               );
-    ASSERT_EQ( response_child_2_start_character           , 31                               );
-    ASSERT_EQ( response_child_2_end_line                  , 30                               );
-    ASSERT_EQ( response_child_2_end_character             , 37                               );
-    ASSERT_EQ( response_child_2_selection_start_line      , 30                               );
-    ASSERT_EQ( response_child_2_selection_start_character , 33                               );
-    ASSERT_EQ( response_child_2_selection_end_line        , 30                               );
-    ASSERT_EQ( response_child_2_selection_end_character   , 35                               );
+    ASSERT_EQ( o1_name                      , "test_symbol_name_object_1"       );
+    ASSERT_EQ( o1_detail                    , "test::symbol::detail::object::1" );
+    ASSERT_EQ( o1_kind                      , 15                                );
+    ASSERT_EQ( o1_deprecated                , false                             );
+    ASSERT_EQ( o1_start_line                , 10                                );
+    ASSERT_EQ( o1_start_character           , 11                                );
+    ASSERT_EQ( o1_end_line                  , 10                                );
+    ASSERT_EQ( o1_end_character             , 17                                );
+    ASSERT_EQ( o1_selection_start_line      , 10                                );
+    ASSERT_EQ( o1_selection_start_character , 13                                );
+    ASSERT_EQ( o1_selection_end_line        , 10                                );
+    ASSERT_EQ( o1_selection_end_character   , 15                                );
+
+    ASSERT_EQ( o2_name                      , "test_symbol_name_object_2"       );
+    ASSERT_EQ( o2_detail                    , "test::symbol::detail::object::2" );
+    ASSERT_EQ( o2_kind                      , 20                                );
+    ASSERT_EQ( o2_deprecated                , false                             );
+    ASSERT_EQ( o2_start_line                , 20                                );
+    ASSERT_EQ( o2_start_character           , 21                                );
+    ASSERT_EQ( o2_end_line                  , 20                                );
+    ASSERT_EQ( o2_end_character             , 27                                );
+    ASSERT_EQ( o2_selection_start_line      , 20                                );
+    ASSERT_EQ( o2_selection_start_character , 23                                );
+    ASSERT_EQ( o2_selection_end_line        , 20                                );
+    ASSERT_EQ( o2_selection_end_character   , 25                                );
+
+    ASSERT_EQ( o3_name                      , "test_symbol_name_object_3"       );
+    ASSERT_EQ( o3_detail                    , "test::symbol::detail::object::3" );
+    ASSERT_EQ( o3_kind                      , 22                                );
+    ASSERT_EQ( o3_deprecated                , false                             );
+    ASSERT_EQ( o3_start_line                , 30                                );
+    ASSERT_EQ( o3_start_character           , 31                                );
+    ASSERT_EQ( o3_end_line                  , 30                                );
+    ASSERT_EQ( o3_end_character             , 37                                );
+    ASSERT_EQ( o3_selection_start_line      , 30                                );
+    ASSERT_EQ( o3_selection_start_character , 33                                );
+    ASSERT_EQ( o3_selection_end_line        , 30                                );
+    ASSERT_EQ( o3_selection_end_character   , 35                                );
 }
 
 TEST(integrate, test_didclose)

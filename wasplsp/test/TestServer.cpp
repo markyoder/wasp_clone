@@ -400,95 +400,265 @@ bool TestServer::gatherDocumentSymbols(
 
     bool pass = true;
 
-    DataObject parent_object;
-
     if (this->document_path == "test/document/uri/string")
     {
-        std::string p0_name                      = "test_symbol_name_parent_0";
-        std::string p0_detail                    = "test::symbol::detail::parent::0";
-        int         p0_kind                      = 15;
-        bool        p0_deprecated                = false;
-        int         p0_start_line                = 10;
-        int         p0_start_character           = 11;
-        int         p0_end_line                  = 10;
-        int         p0_end_character             = 17;
-        int         p0_selection_start_line      = 10;
-        int         p0_selection_start_character = 13;
-        int         p0_selection_end_line        = 10;
-        int         p0_selection_end_character   = 15;
+        std::string o1_name                      = "test_symbol_name_object_1";
+        std::string o1_detail                    = "test::symbol::detail::object::1";
+        int         o1_kind                      = 15;
+        bool        o1_deprecated                = false;
+        int         o1_start_line                = 10;
+        int         o1_start_character           = 11;
+        int         o1_end_line                  = 10;
+        int         o1_end_character             = 17;
+        int         o1_selection_start_line      = 10;
+        int         o1_selection_start_character = 13;
+        int         o1_selection_end_line        = 10;
+        int         o1_selection_end_character   = 15;
 
-        std::string c1_name                      = "test_symbol_name_child_1";
-        std::string c1_detail                    = "test::symbol::detail::child::1";
-        int         c1_kind                      = 20;
-        bool        c1_deprecated                = false;
-        int         c1_start_line                = 20;
-        int         c1_start_character           = 21;
-        int         c1_end_line                  = 20;
-        int         c1_end_character             = 27;
-        int         c1_selection_start_line      = 20;
-        int         c1_selection_start_character = 23;
-        int         c1_selection_end_line        = 20;
-        int         c1_selection_end_character   = 25;
+        std::string o2_name                      = "test_symbol_name_object_2";
+        std::string o2_detail                    = "test::symbol::detail::object::2";
+        int         o2_kind                      = 20;
+        bool        o2_deprecated                = false;
+        int         o2_start_line                = 20;
+        int         o2_start_character           = 21;
+        int         o2_end_line                  = 20;
+        int         o2_end_character             = 27;
+        int         o2_selection_start_line      = 20;
+        int         o2_selection_start_character = 23;
+        int         o2_selection_end_line        = 20;
+        int         o2_selection_end_character   = 25;
 
-        std::string c2_name                      = "test_symbol_name_child_2";
-        std::string c2_detail                    = "test::symbol::detail::child::2";
-        int         c2_kind                      = 22;
-        bool        c2_deprecated                = false;
-        int         c2_start_line                = 30;
-        int         c2_start_character           = 31;
-        int         c2_end_line                  = 30;
-        int         c2_end_character             = 37;
-        int         c2_selection_start_line      = 30;
-        int         c2_selection_start_character = 33;
-        int         c2_selection_end_line        = 30;
-        int         c2_selection_end_character   = 35;
+        std::string o3_name                      = "test_symbol_name_object_3";
+        std::string o3_detail                    = "test::symbol::detail::object::3";
+        int         o3_kind                      = 22;
+        bool        o3_deprecated                = false;
+        int         o3_start_line                = 30;
+        int         o3_start_character           = 31;
+        int         o3_end_line                  = 30;
+        int         o3_end_character             = 37;
+        int         o3_selection_start_line      = 30;
+        int         o3_selection_start_character = 33;
+        int         o3_selection_end_line        = 30;
+        int         o3_selection_end_character   = 35;
 
-        pass &= buildDocumentSymbolObject( parent_object                    ,
-                                           errors                           ,
-                                           p0_name                          ,
-                                           p0_detail                        ,
-                                           p0_kind                          ,
-                                           p0_deprecated                    ,
-                                           p0_start_line                    ,
-                                           p0_start_character               ,
-                                           p0_end_line                      ,
-                                           p0_end_character                 ,
-                                           p0_selection_start_line          ,
-                                           p0_selection_start_character     ,
-                                           p0_selection_end_line            ,
-                                           p0_selection_end_character       );
+        std::string o4_name                      = "test_symbol_name_object_4";
+        std::string o4_detail                    = "test::symbol::detail::object::4";
+        int         o4_kind                      = 15;
+        bool        o4_deprecated                = false;
+        int         o4_start_line                = 40;
+        int         o4_start_character           = 41;
+        int         o4_end_line                  = 40;
+        int         o4_end_character             = 47;
+        int         o4_selection_start_line      = 40;
+        int         o4_selection_start_character = 43;
+        int         o4_selection_end_line        = 40;
+        int         o4_selection_end_character   = 45;
 
-        pass &= buildDocumentSymbolObject( addDocumentSymbolChild( parent_object ) ,
-                                           errors                                  ,
-                                           c1_name                                 ,
-                                           c1_detail                               ,
-                                           c1_kind                                 ,
-                                           c1_deprecated                           ,
-                                           c1_start_line                           ,
-                                           c1_start_character                      ,
-                                           c1_end_line                             ,
-                                           c1_end_character                        ,
-                                           c1_selection_start_line                 ,
-                                           c1_selection_start_character            ,
-                                           c1_selection_end_line                   ,
-                                           c1_selection_end_character              );
+        std::string o5_name                      = "test_symbol_name_object_5";
+        std::string o5_detail                    = "test::symbol::detail::object::5";
+        int         o5_kind                      = 15;
+        bool        o5_deprecated                = false;
+        int         o5_start_line                = 50;
+        int         o5_start_character           = 51;
+        int         o5_end_line                  = 50;
+        int         o5_end_character             = 57;
+        int         o5_selection_start_line      = 50;
+        int         o5_selection_start_character = 53;
+        int         o5_selection_end_line        = 50;
+        int         o5_selection_end_character   = 55;
 
-        pass &= buildDocumentSymbolObject( addDocumentSymbolChild( parent_object ) ,
-                                           errors                                  ,
-                                           c2_name                                 ,
-                                           c2_detail                               ,
-                                           c2_kind                                 ,
-                                           c2_deprecated                           ,
-                                           c2_start_line                           ,
-                                           c2_start_character                      ,
-                                           c2_end_line                             ,
-                                           c2_end_character                        ,
-                                           c2_selection_start_line                 ,
-                                           c2_selection_start_character            ,
-                                           c2_selection_end_line                   ,
-                                           c2_selection_end_character              );
+        std::string o6_name                      = "test_symbol_name_object_6";
+        std::string o6_detail                    = "test::symbol::detail::object::6";
+        int         o6_kind                      = 15;
+        bool        o6_deprecated                = false;
+        int         o6_start_line                = 60;
+        int         o6_start_character           = 61;
+        int         o6_end_line                  = 60;
+        int         o6_end_character             = 67;
+        int         o6_selection_start_line      = 60;
+        int         o6_selection_start_character = 63;
+        int         o6_selection_end_line        = 60;
+        int         o6_selection_end_character   = 65;
 
-        documentSymbols.push_back( parent_object );
+        std::string o7_name                      = "test_symbol_name_object_7";
+        std::string o7_detail                    = "test::symbol::detail::object::7";
+        int         o7_kind                      = 15;
+        bool        o7_deprecated                = false;
+        int         o7_start_line                = 70;
+        int         o7_start_character           = 71;
+        int         o7_end_line                  = 70;
+        int         o7_end_character             = 77;
+        int         o7_selection_start_line      = 70;
+        int         o7_selection_start_character = 73;
+        int         o7_selection_end_line        = 70;
+        int         o7_selection_end_character   = 75;
+
+        std::string o8_name                      = "test_symbol_name_object_8";
+        std::string o8_detail                    = "test::symbol::detail::object::8";
+        int         o8_kind                      = 15;
+        bool        o8_deprecated                = false;
+        int         o8_start_line                = 80;
+        int         o8_start_character           = 81;
+        int         o8_end_line                  = 80;
+        int         o8_end_character             = 87;
+        int         o8_selection_start_line      = 80;
+        int         o8_selection_start_character = 83;
+        int         o8_selection_end_line        = 80;
+        int         o8_selection_end_character   = 85;
+
+// ------------------
+// -                -
+// -    root        -
+// -     |          -
+// -     o1         -
+// -    /  \        -
+// -  o2    o3      -
+// -        |       -
+// -        o4      -
+// -      /  |  \   -
+// -    o5  o7  o8  -
+// -    |           -
+// -    o6          -
+// -                -
+// ------------------
+
+        DataObject object_1;
+
+        pass &= buildDocumentSymbolObject( object_1                     ,
+                                           errors                       ,
+                                           o1_name                      ,
+                                           o1_detail                    ,
+                                           o1_kind                      ,
+                                           o1_deprecated                ,
+                                           o1_start_line                ,
+                                           o1_start_character           ,
+                                           o1_end_line                  ,
+                                           o1_end_character             ,
+                                           o1_selection_start_line      ,
+                                           o1_selection_start_character ,
+                                           o1_selection_end_line        ,
+                                           o1_selection_end_character   );
+
+        DataObject & object_2 = addDocumentSymbolChild( object_1 );
+
+        pass &= buildDocumentSymbolObject( object_2                     ,
+                                           errors                       ,
+                                           o2_name                      ,
+                                           o2_detail                    ,
+                                           o2_kind                      ,
+                                           o2_deprecated                ,
+                                           o2_start_line                ,
+                                           o2_start_character           ,
+                                           o2_end_line                  ,
+                                           o2_end_character             ,
+                                           o2_selection_start_line      ,
+                                           o2_selection_start_character ,
+                                           o2_selection_end_line        ,
+                                           o2_selection_end_character   );
+
+        DataObject & object_3 = addDocumentSymbolChild( object_1 );
+
+        pass &= buildDocumentSymbolObject( object_3                     ,
+                                           errors                       ,
+                                           o3_name                      ,
+                                           o3_detail                    ,
+                                           o3_kind                      ,
+                                           o3_deprecated                ,
+                                           o3_start_line                ,
+                                           o3_start_character           ,
+                                           o3_end_line                  ,
+                                           o3_end_character             ,
+                                           o3_selection_start_line      ,
+                                           o3_selection_start_character ,
+                                           o3_selection_end_line        ,
+                                           o3_selection_end_character   );
+
+        DataObject & object_4 = addDocumentSymbolChild( object_3  );
+
+        pass &= buildDocumentSymbolObject( object_4                     ,
+                                           errors                       ,
+                                           o4_name                      ,
+                                           o4_detail                    ,
+                                           o4_kind                      ,
+                                           o4_deprecated                ,
+                                           o4_start_line                ,
+                                           o4_start_character           ,
+                                           o4_end_line                  ,
+                                           o4_end_character             ,
+                                           o4_selection_start_line      ,
+                                           o4_selection_start_character ,
+                                           o4_selection_end_line        ,
+                                           o4_selection_end_character   );
+
+        DataObject & object_5 = addDocumentSymbolChild( object_4  );
+
+        pass &= buildDocumentSymbolObject( object_5                     ,
+                                           errors                       ,
+                                           o5_name                      ,
+                                           o5_detail                    ,
+                                           o5_kind                      ,
+                                           o5_deprecated                ,
+                                           o5_start_line                ,
+                                           o5_start_character           ,
+                                           o5_end_line                  ,
+                                           o5_end_character             ,
+                                           o5_selection_start_line      ,
+                                           o5_selection_start_character ,
+                                           o5_selection_end_line        ,
+                                           o5_selection_end_character   );
+
+        DataObject & object_6 = addDocumentSymbolChild( object_5  );
+
+        pass &= buildDocumentSymbolObject( object_6                     ,
+                                           errors                       ,
+                                           o6_name                      ,
+                                           o6_detail                    ,
+                                           o6_kind                      ,
+                                           o6_deprecated                ,
+                                           o6_start_line                ,
+                                           o6_start_character           ,
+                                           o6_end_line                  ,
+                                           o6_end_character             ,
+                                           o6_selection_start_line      ,
+                                           o6_selection_start_character ,
+                                           o6_selection_end_line        ,
+                                           o6_selection_end_character   );
+
+        DataObject & object_7 = addDocumentSymbolChild( object_4  );
+
+        pass &= buildDocumentSymbolObject( object_7                     ,
+                                           errors                       ,
+                                           o7_name                      ,
+                                           o7_detail                    ,
+                                           o7_kind                      ,
+                                           o7_deprecated                ,
+                                           o7_start_line                ,
+                                           o7_start_character           ,
+                                           o7_end_line                  ,
+                                           o7_end_character             ,
+                                           o7_selection_start_line      ,
+                                           o7_selection_start_character ,
+                                           o7_selection_end_line        ,
+                                           o7_selection_end_character   );
+
+        DataObject & object_8 = addDocumentSymbolChild( object_4  );
+
+        pass &= buildDocumentSymbolObject( object_8                     ,
+                                           errors                       ,
+                                           o8_name                      ,
+                                           o8_detail                    ,
+                                           o8_kind                      ,
+                                           o8_deprecated                ,
+                                           o8_start_line                ,
+                                           o8_start_character           ,
+                                           o8_end_line                  ,
+                                           o8_end_character             ,
+                                           o8_selection_start_line      ,
+                                           o8_selection_start_character ,
+                                           o8_selection_end_line        ,
+                                           o8_selection_end_character   );
+
+        documentSymbols.push_back( object_1 );
     }
 
     return pass;

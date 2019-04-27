@@ -4,9 +4,11 @@
 #include "wasplsp/Client.h"
 #include "wasplsp/LSP.h"
 #include "wasplsp/Connection.h"
+#include "wasplsp/SymbolsInterrogator.h"
 #include "gtest/gtest.h"
 #include <thread>
-
+#include <vector>
+#include <sstream>
 namespace wasp {
 namespace lsp  {
 
@@ -501,80 +503,313 @@ TEST(client, document_symbols_and_responses)
 
     // symbols responses
 
-    ASSERT_EQ   ( test_client.getSymbolRootSize(), 1 );
+    std::string expected_o1_name                      = "test_symbol_name_object_1";
+    std::string expected_o1_detail                    = "test::symbol::detail::object::1";
+    int         expected_o1_kind                      = 15;
+    bool        expected_o1_deprecated                = false;
+    int         expected_o1_start_line                = 10;
+    int         expected_o1_start_character           = 11;
+    int         expected_o1_end_line                  = 10;
+    int         expected_o1_end_character             = 17;
+    int         expected_o1_selection_start_line      = 10;
+    int         expected_o1_selection_start_character = 13;
+    int         expected_o1_selection_end_line        = 10;
+    int         expected_o1_selection_end_character   = 15;
 
-    for (int index = 0; index < test_client.getSymbolRootSize(); index++)
+    std::string expected_o2_name                      = "test_symbol_name_object_2";
+    std::string expected_o2_detail                    = "test::symbol::detail::object::2";
+    int         expected_o2_kind                      = 20;
+    bool        expected_o2_deprecated                = false;
+    int         expected_o2_start_line                = 20;
+    int         expected_o2_start_character           = 21;
+    int         expected_o2_end_line                  = 20;
+    int         expected_o2_end_character             = 27;
+    int         expected_o2_selection_start_line      = 20;
+    int         expected_o2_selection_start_character = 23;
+    int         expected_o2_selection_end_line        = 20;
+    int         expected_o2_selection_end_character   = 25;
+
+    std::string expected_o3_name                      = "test_symbol_name_object_3";
+    std::string expected_o3_detail                    = "test::symbol::detail::object::3";
+    int         expected_o3_kind                      = 22;
+    bool        expected_o3_deprecated                = false;
+    int         expected_o3_start_line                = 30;
+    int         expected_o3_start_character           = 31;
+    int         expected_o3_end_line                  = 30;
+    int         expected_o3_end_character             = 37;
+    int         expected_o3_selection_start_line      = 30;
+    int         expected_o3_selection_start_character = 33;
+    int         expected_o3_selection_end_line        = 30;
+    int         expected_o3_selection_end_character   = 35;
+
+    std::string expected_o4_name                      = "test_symbol_name_object_4";
+    std::string expected_o4_detail                    = "test::symbol::detail::object::4";
+    int         expected_o4_kind                      = 15;
+    bool        expected_o4_deprecated                = false;
+    int         expected_o4_start_line                = 40;
+    int         expected_o4_start_character           = 41;
+    int         expected_o4_end_line                  = 40;
+    int         expected_o4_end_character             = 47;
+    int         expected_o4_selection_start_line      = 40;
+    int         expected_o4_selection_start_character = 43;
+    int         expected_o4_selection_end_line        = 40;
+    int         expected_o4_selection_end_character   = 45;
+
+    std::string expected_o5_name                      = "test_symbol_name_object_5";
+    std::string expected_o5_detail                    = "test::symbol::detail::object::5";
+    int         expected_o5_kind                      = 15;
+    bool        expected_o5_deprecated                = false;
+    int         expected_o5_start_line                = 50;
+    int         expected_o5_start_character           = 51;
+    int         expected_o5_end_line                  = 50;
+    int         expected_o5_end_character             = 57;
+    int         expected_o5_selection_start_line      = 50;
+    int         expected_o5_selection_start_character = 53;
+    int         expected_o5_selection_end_line        = 50;
+    int         expected_o5_selection_end_character   = 55;
+
+    std::string expected_o6_name                      = "test_symbol_name_object_6";
+    std::string expected_o6_detail                    = "test::symbol::detail::object::6";
+    int         expected_o6_kind                      = 15;
+    bool        expected_o6_deprecated                = false;
+    int         expected_o6_start_line                = 60;
+    int         expected_o6_start_character           = 61;
+    int         expected_o6_end_line                  = 60;
+    int         expected_o6_end_character             = 67;
+    int         expected_o6_selection_start_line      = 60;
+    int         expected_o6_selection_start_character = 63;
+    int         expected_o6_selection_end_line        = 60;
+    int         expected_o6_selection_end_character   = 65;
+
+    std::string expected_o7_name                      = "test_symbol_name_object_7";
+    std::string expected_o7_detail                    = "test::symbol::detail::object::7";
+    int         expected_o7_kind                      = 15;
+    bool        expected_o7_deprecated                = false;
+    int         expected_o7_start_line                = 70;
+    int         expected_o7_start_character           = 71;
+    int         expected_o7_end_line                  = 70;
+    int         expected_o7_end_character             = 77;
+    int         expected_o7_selection_start_line      = 70;
+    int         expected_o7_selection_start_character = 73;
+    int         expected_o7_selection_end_line        = 70;
+    int         expected_o7_selection_end_character   = 75;
+
+    std::string expected_o8_name                      = "test_symbol_name_object_8";
+    std::string expected_o8_detail                    = "test::symbol::detail::object::8";
+    int         expected_o8_kind                      = 15;
+    bool        expected_o8_deprecated                = false;
+    int         expected_o8_start_line                = 80;
+    int         expected_o8_start_character           = 81;
+    int         expected_o8_end_line                  = 80;
+    int         expected_o8_end_character             = 87;
+    int         expected_o8_selection_start_line      = 80;
+    int         expected_o8_selection_start_character = 83;
+    int         expected_o8_selection_end_line        = 80;
+    int         expected_o8_selection_end_character   = 85;
+
+// ------------------
+// -                -
+// -    root        -
+// -     |          -
+// -     o1         -
+// -    /  \        -
+// -  o2    o3      -
+// -        |       -
+// -        o4      -
+// -      /  |  \   -
+// -    o5  o7  o8  -
+// -    |           -
+// -    o6          -
+// -                -
+// ------------------
+
+    SymbolsInterrogator si( test_client );
+
+    int order = 0;
+
+    std::stringstream paths;
+
+    paths << std::endl;
+
+    for( std::vector<int> indices{ 0 } ; indices.back() < (int) si.getChildSize() ; indices.back()++ )
     {
-        std::string parent_0_name;
-        std::string parent_0_detail;
-        int         parent_0_kind;
-        bool        parent_0_deprecated;
-        int         parent_0_start_line;
-        int         parent_0_start_character;
-        int         parent_0_end_line;
-        int         parent_0_end_character;
-        int         parent_0_selection_start_line;
-        int         parent_0_selection_start_character;
-        int         parent_0_selection_end_line;
-        int         parent_0_selection_end_character;
+        si.moveToChildAt( indices.back() );
 
-//        std::string child_1_name;
-//        std::string child_1_detail;
-//        int         child_1_kind;
-//        bool        child_1_deprecated;
-//        int         child_1_start_line;
-//        int         child_1_start_character;
-//        int         child_1_end_line;
-//        int         child_1_end_character;
-//        int         child_1_selection_start_line;
-//        int         child_1_selection_start_character;
-//        int         child_1_selection_end_line;
-//        int         child_1_selection_end_character;
-//
-//        std::string child_2_name;
-//        std::string child_2_detail;
-//        int         child_2_kind;
-//        bool        child_2_deprecated;
-//        int         child_2_start_line;
-//        int         child_2_start_character;
-//        int         child_2_end_line;
-//        int         child_2_end_character;
-//        int         child_2_selection_start_line;
-//        int         child_2_selection_start_character;
-//        int         child_2_selection_end_line;
-//        int         child_2_selection_end_character;
+        indices.push_back( -1 );
 
-        ASSERT_TRUE ( test_client.getSymbolRootAt( index                              ,
-                                                   parent_0_name                      ,
-                                                   parent_0_detail                    ,
-                                                   parent_0_kind                      ,
-                                                   parent_0_deprecated                ,
-                                                   parent_0_start_line                ,
-                                                   parent_0_start_character           ,
-                                                   parent_0_end_line                  ,
-                                                   parent_0_end_character             ,
-                                                   parent_0_selection_start_line      ,
-                                                   parent_0_selection_start_character ,
-                                                   parent_0_selection_end_line        ,
-                                                   parent_0_selection_end_character   ) );
-        if ( index == 0 )
+        paths << si.getPath() << std::endl;
+
+        std::string o_name;
+        std::string o_detail;
+        int         o_kind;
+        bool        o_deprecated;
+        int         o_start_line;
+        int         o_start_character;
+        int         o_end_line;
+        int         o_end_character;
+        int         o_selection_start_line;
+        int         o_selection_start_character;
+        int         o_selection_end_line;
+        int         o_selection_end_character;
+
+        ASSERT_TRUE( si.dissectCurrentSymbol( o_name                      ,
+                                              o_detail                    ,
+                                              o_kind                      ,
+                                              o_deprecated                ,
+                                              o_start_line                ,
+                                              o_start_character           ,
+                                              o_end_line                  ,
+                                              o_end_character             ,
+                                              o_selection_start_line      ,
+                                              o_selection_start_character ,
+                                              o_selection_end_line        ,
+                                              o_selection_end_character   ));
+
+        order++;
+
+        if ( order == 1 )
         {
-            ASSERT_EQ ( parent_0_name                      , "test_symbol_name_parent_0"       );
-            ASSERT_EQ ( parent_0_detail                    , "test::symbol::detail::parent::0" );
-            ASSERT_EQ ( parent_0_kind                      , 15                                );
-            ASSERT_EQ ( parent_0_deprecated                , false                             );
-            ASSERT_EQ ( parent_0_start_line                , 10                                );
-            ASSERT_EQ ( parent_0_start_character           , 11                                );
-            ASSERT_EQ ( parent_0_end_line                  , 10                                );
-            ASSERT_EQ ( parent_0_end_character             , 17                                );
-            ASSERT_EQ ( parent_0_selection_start_line      , 10                                );
-            ASSERT_EQ ( parent_0_selection_start_character , 13                                );
-            ASSERT_EQ ( parent_0_selection_end_line        , 10                                );
-            ASSERT_EQ ( parent_0_selection_end_character   , 15                                );
+            ASSERT_EQ ( o_name                      , expected_o1_name                      );
+            ASSERT_EQ ( o_detail                    , expected_o1_detail                    );
+            ASSERT_EQ ( o_kind                      , expected_o1_kind                      );
+            ASSERT_EQ ( o_deprecated                , expected_o1_deprecated                );
+            ASSERT_EQ ( o_start_line                , expected_o1_start_line                );
+            ASSERT_EQ ( o_start_character           , expected_o1_start_character           );
+            ASSERT_EQ ( o_end_line                  , expected_o1_end_line                  );
+            ASSERT_EQ ( o_end_character             , expected_o1_end_character             );
+            ASSERT_EQ ( o_selection_start_line      , expected_o1_selection_start_line      );
+            ASSERT_EQ ( o_selection_start_character , expected_o1_selection_start_character );
+            ASSERT_EQ ( o_selection_end_line        , expected_o1_selection_end_line        );
+            ASSERT_EQ ( o_selection_end_character   , expected_o1_selection_end_character   );
+        }
+        else if ( order == 2 )
+        {
+            ASSERT_EQ ( o_name                      , expected_o2_name                      );
+            ASSERT_EQ ( o_detail                    , expected_o2_detail                    );
+            ASSERT_EQ ( o_kind                      , expected_o2_kind                      );
+            ASSERT_EQ ( o_deprecated                , expected_o2_deprecated                );
+            ASSERT_EQ ( o_start_line                , expected_o2_start_line                );
+            ASSERT_EQ ( o_start_character           , expected_o2_start_character           );
+            ASSERT_EQ ( o_end_line                  , expected_o2_end_line                  );
+            ASSERT_EQ ( o_end_character             , expected_o2_end_character             );
+            ASSERT_EQ ( o_selection_start_line      , expected_o2_selection_start_line      );
+            ASSERT_EQ ( o_selection_start_character , expected_o2_selection_start_character );
+            ASSERT_EQ ( o_selection_end_line        , expected_o2_selection_end_line        );
+            ASSERT_EQ ( o_selection_end_character   , expected_o2_selection_end_character   );
+        }
+        else if ( order == 3 )
+        {
+            ASSERT_EQ ( o_name                      , expected_o3_name                      );
+            ASSERT_EQ ( o_detail                    , expected_o3_detail                    );
+            ASSERT_EQ ( o_kind                      , expected_o3_kind                      );
+            ASSERT_EQ ( o_deprecated                , expected_o3_deprecated                );
+            ASSERT_EQ ( o_start_line                , expected_o3_start_line                );
+            ASSERT_EQ ( o_start_character           , expected_o3_start_character           );
+            ASSERT_EQ ( o_end_line                  , expected_o3_end_line                  );
+            ASSERT_EQ ( o_end_character             , expected_o3_end_character             );
+            ASSERT_EQ ( o_selection_start_line      , expected_o3_selection_start_line      );
+            ASSERT_EQ ( o_selection_start_character , expected_o3_selection_start_character );
+            ASSERT_EQ ( o_selection_end_line        , expected_o3_selection_end_line        );
+            ASSERT_EQ ( o_selection_end_character   , expected_o3_selection_end_character   );
+        }
+        else if ( order == 4 )
+        {
+            ASSERT_EQ ( o_name                      , expected_o4_name                      );
+            ASSERT_EQ ( o_detail                    , expected_o4_detail                    );
+            ASSERT_EQ ( o_kind                      , expected_o4_kind                      );
+            ASSERT_EQ ( o_deprecated                , expected_o4_deprecated                );
+            ASSERT_EQ ( o_start_line                , expected_o4_start_line                );
+            ASSERT_EQ ( o_start_character           , expected_o4_start_character           );
+            ASSERT_EQ ( o_end_line                  , expected_o4_end_line                  );
+            ASSERT_EQ ( o_end_character             , expected_o4_end_character             );
+            ASSERT_EQ ( o_selection_start_line      , expected_o4_selection_start_line      );
+            ASSERT_EQ ( o_selection_start_character , expected_o4_selection_start_character );
+            ASSERT_EQ ( o_selection_end_line        , expected_o4_selection_end_line        );
+            ASSERT_EQ ( o_selection_end_character   , expected_o4_selection_end_character   );
+        }
+        else if ( order == 5 )
+        {
+            ASSERT_EQ ( o_name                      , expected_o5_name                      );
+            ASSERT_EQ ( o_detail                    , expected_o5_detail                    );
+            ASSERT_EQ ( o_kind                      , expected_o5_kind                      );
+            ASSERT_EQ ( o_deprecated                , expected_o5_deprecated                );
+            ASSERT_EQ ( o_start_line                , expected_o5_start_line                );
+            ASSERT_EQ ( o_start_character           , expected_o5_start_character           );
+            ASSERT_EQ ( o_end_line                  , expected_o5_end_line                  );
+            ASSERT_EQ ( o_end_character             , expected_o5_end_character             );
+            ASSERT_EQ ( o_selection_start_line      , expected_o5_selection_start_line      );
+            ASSERT_EQ ( o_selection_start_character , expected_o5_selection_start_character );
+            ASSERT_EQ ( o_selection_end_line        , expected_o5_selection_end_line        );
+            ASSERT_EQ ( o_selection_end_character   , expected_o5_selection_end_character   );
+        }
+        else if ( order == 6 )
+        {
+            ASSERT_EQ ( o_name                      , expected_o6_name                      );
+            ASSERT_EQ ( o_detail                    , expected_o6_detail                    );
+            ASSERT_EQ ( o_kind                      , expected_o6_kind                      );
+            ASSERT_EQ ( o_deprecated                , expected_o6_deprecated                );
+            ASSERT_EQ ( o_start_line                , expected_o6_start_line                );
+            ASSERT_EQ ( o_start_character           , expected_o6_start_character           );
+            ASSERT_EQ ( o_end_line                  , expected_o6_end_line                  );
+            ASSERT_EQ ( o_end_character             , expected_o6_end_character             );
+            ASSERT_EQ ( o_selection_start_line      , expected_o6_selection_start_line      );
+            ASSERT_EQ ( o_selection_start_character , expected_o6_selection_start_character );
+            ASSERT_EQ ( o_selection_end_line        , expected_o6_selection_end_line        );
+            ASSERT_EQ ( o_selection_end_character   , expected_o6_selection_end_character   );
+        }
+        else if ( order == 7 )
+        {
+            ASSERT_EQ ( o_name                      , expected_o7_name                      );
+            ASSERT_EQ ( o_detail                    , expected_o7_detail                    );
+            ASSERT_EQ ( o_kind                      , expected_o7_kind                      );
+            ASSERT_EQ ( o_deprecated                , expected_o7_deprecated                );
+            ASSERT_EQ ( o_start_line                , expected_o7_start_line                );
+            ASSERT_EQ ( o_start_character           , expected_o7_start_character           );
+            ASSERT_EQ ( o_end_line                  , expected_o7_end_line                  );
+            ASSERT_EQ ( o_end_character             , expected_o7_end_character             );
+            ASSERT_EQ ( o_selection_start_line      , expected_o7_selection_start_line      );
+            ASSERT_EQ ( o_selection_start_character , expected_o7_selection_start_character );
+            ASSERT_EQ ( o_selection_end_line        , expected_o7_selection_end_line        );
+            ASSERT_EQ ( o_selection_end_character   , expected_o7_selection_end_character   );
+        }
+        else if ( order == 8 )
+        {
+            ASSERT_EQ ( o_name                      , expected_o8_name                      );
+            ASSERT_EQ ( o_detail                    , expected_o8_detail                    );
+            ASSERT_EQ ( o_kind                      , expected_o8_kind                      );
+            ASSERT_EQ ( o_deprecated                , expected_o8_deprecated                );
+            ASSERT_EQ ( o_start_line                , expected_o8_start_line                );
+            ASSERT_EQ ( o_start_character           , expected_o8_start_character           );
+            ASSERT_EQ ( o_end_line                  , expected_o8_end_line                  );
+            ASSERT_EQ ( o_end_character             , expected_o8_end_character             );
+            ASSERT_EQ ( o_selection_start_line      , expected_o8_selection_start_line      );
+            ASSERT_EQ ( o_selection_start_character , expected_o8_selection_start_character );
+            ASSERT_EQ ( o_selection_end_line        , expected_o8_selection_end_line        );
+            ASSERT_EQ ( o_selection_end_character   , expected_o8_selection_end_character   );
+        }
 
-            // TODO - ADD CLIENT TREE ITERATOR PATTERN FOR TRAVERSING CHILDREN OF EACH SYMBOL
+        if ( si.getChildSize() == 0 )
+        {
+            while ( indices.back()+1 == (int) si.getChildSize() && si.moveToParent() )
+            {
+                indices.pop_back();
+            }
         }
     }
+
+    std::stringstream expected_paths;
+    expected_paths << R"INPUT(
+/test_symbol_name_object_1
+/test_symbol_name_object_1/test_symbol_name_object_2
+/test_symbol_name_object_1/test_symbol_name_object_3
+/test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4
+/test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4/test_symbol_name_object_5
+/test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4/test_symbol_name_object_5/test_symbol_name_object_6
+/test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4/test_symbol_name_object_7
+/test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4/test_symbol_name_object_8
+)INPUT";
+
+    ASSERT_EQ( paths.str() , expected_paths.str() );
 }
 
 TEST(client, document_close)

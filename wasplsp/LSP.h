@@ -490,7 +490,7 @@ WASP_PUBLIC
 DataArray * getFormattingResponseArray( const DataObject & object );
 
 WASP_PUBLIC
-DataArray * getSymbolRootResponseArray( const DataObject & object );
+DataArray * getSymbolChildrenArray( const DataObject & object );
 
 static const char m_rpc_content_len_key[]   = "Content-Length:";
 static const char m_rpc_separator[]         = "\r\n\r\n";
