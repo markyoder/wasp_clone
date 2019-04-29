@@ -7,8 +7,6 @@
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
 #include "wasplsp/LSP.h"
-#include "wasplsp/Client.h"
-#include "wasplsp/ClientImpl.h"
 
 namespace wasp {
 namespace lsp  {
@@ -17,9 +15,14 @@ class WASP_PUBLIC SymbolsInterrogator
 {
   public:
 
-    SymbolsInterrogator( const Client<ClientImpl> & client );
+    SymbolsInterrogator( DataObject::SP response )
+    {
+        this->symbols_lineage.push_back( &*response );
+    }
 
     ~SymbolsInterrogator(){}
+
+    typedef std::shared_ptr<SymbolsInterrogator> SP;
 
     size_t getChildSize() const;
 

@@ -506,21 +506,21 @@ bool TestServer::gatherDocumentSymbols(
         int         o8_selection_end_line        = 80;
         int         o8_selection_end_character   = 85;
 
-// ------------------
-// -                -
-// -    root        -
-// -     |          -
-// -     o1         -
-// -    /  \        -
-// -  o2    o3      -
-// -        |       -
-// -        o4      -
-// -      /  |  \   -
-// -    o5  o7  o8  -
-// -    |           -
-// -    o6          -
-// -                -
-// ------------------
+// - - - - - - - - -
+// -               -
+// -    root       -
+// -     |         -
+// -     o1        -
+// -    /  \       -
+// -  o2    o3     -
+// -        |      -
+// -        o4     -
+// -     /  |  \   -
+// -   o5  o7  o8  -
+// -   |           -
+// -   o6          -
+// -               -
+// - - - - - - - - -
 
         DataObject object_1;
 

@@ -257,9 +257,9 @@ class WASP_PUBLIC Client
         return Impl.getCurrentDocumentVersion();
     }
 
-    DataObject::SP getCurrentResponse() const
+    SymbolsInterrogator::SP getSymbolsInterrogator()
     {
-        return Impl.getCurrentResponse();
+        return Impl.getSymbolsInterrogator();
     }
 
   private:

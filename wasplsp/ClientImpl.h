@@ -5,6 +5,7 @@
 #include <sstream>
 #include "wasplsp/LSP.h"
 #include "wasplsp/Connection.h"
+#include "wasplsp/SymbolsInterrogator.h"
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
 
@@ -149,9 +150,13 @@ class WASP_PUBLIC ClientImpl
         return this->document_version;
     }
 
-    DataObject::SP getCurrentResponse() const
+    SymbolsInterrogator::SP getSymbolsInterrogator()
     {
-        return this->response;
+        wasp_check( verifySymbolsResponse( *(this->response) ) );
+
+        symbols_interrogator = std::make_shared<SymbolsInterrogator>( this->response );
+
+        return this->symbols_interrogator;
     }
 
   private:
@@ -189,6 +194,8 @@ class WASP_PUBLIC ClientImpl
       {
           this->document_version++;
       }
+
+      SymbolsInterrogator::SP symbols_interrogator;
 };
 
 } // namespace lsp

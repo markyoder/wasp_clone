@@ -3,17 +3,6 @@
 namespace wasp {
 namespace lsp  {
 
-SymbolsInterrogator::SymbolsInterrogator( const Client<ClientImpl> & client )
-{
-    DataObject * response = &*(client.getCurrentResponse());
-
-    wasp_check( response != nullptr );
-
-    wasp_check( verifySymbolsResponse( *response ) );
-
-    this->symbols_lineage.push_back( response );
-}
-
 size_t SymbolsInterrogator::getChildSize() const
 {
     DataArray * children = getSymbolChildrenArray( *this->symbols_lineage.back() );

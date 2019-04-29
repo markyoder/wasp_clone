@@ -607,23 +607,23 @@ TEST(client, document_symbols_and_responses)
     int         expected_o8_selection_end_line        = 80;
     int         expected_o8_selection_end_character   = 85;
 
-// ------------------
-// -                -
-// -    root        -
-// -     |          -
-// -     o1         -
-// -    /  \        -
-// -  o2    o3      -
-// -        |       -
-// -        o4      -
-// -      /  |  \   -
-// -    o5  o7  o8  -
-// -    |           -
-// -    o6          -
-// -                -
-// ------------------
+// - - - - - - - - -
+// -               -
+// -    root       -
+// -     |         -
+// -     o1        -
+// -    /  \       -
+// -  o2    o3     -
+// -        |      -
+// -        o4     -
+// -     /  |  \   -
+// -   o5  o7  o8  -
+// -   |           -
+// -   o6          -
+// -               -
+// - - - - - - - - -
 
-    SymbolsInterrogator si( test_client );
+    SymbolsInterrogator::SP si = test_client.getSymbolsInterrogator();
 
     int order = 0;
 
@@ -631,13 +631,13 @@ TEST(client, document_symbols_and_responses)
 
     paths << std::endl;
 
-    for( std::vector<int> indices{ 0 } ; indices.back() < (int) si.getChildSize() ; indices.back()++ )
+    for( std::vector<int> indices{ 0 } ; indices.back() < (int) si->getChildSize() ; indices.back()++ )
     {
-        si.moveToChildAt( indices.back() );
+        si->moveToChildAt( indices.back() );
 
         indices.push_back( -1 );
 
-        paths << si.getPath() << std::endl;
+        paths << si->getPath() << std::endl;
 
         std::string o_name;
         std::string o_detail;
@@ -652,18 +652,18 @@ TEST(client, document_symbols_and_responses)
         int         o_selection_end_line;
         int         o_selection_end_character;
 
-        ASSERT_TRUE( si.dissectCurrentSymbol( o_name                      ,
-                                              o_detail                    ,
-                                              o_kind                      ,
-                                              o_deprecated                ,
-                                              o_start_line                ,
-                                              o_start_character           ,
-                                              o_end_line                  ,
-                                              o_end_character             ,
-                                              o_selection_start_line      ,
-                                              o_selection_start_character ,
-                                              o_selection_end_line        ,
-                                              o_selection_end_character   ));
+        ASSERT_TRUE( si->dissectCurrentSymbol( o_name                      ,
+                                               o_detail                    ,
+                                               o_kind                      ,
+                                               o_deprecated                ,
+                                               o_start_line                ,
+                                               o_start_character           ,
+                                               o_end_line                  ,
+                                               o_end_character             ,
+                                               o_selection_start_line      ,
+                                               o_selection_start_character ,
+                                               o_selection_end_line        ,
+                                               o_selection_end_character   ));
 
         order++;
 
@@ -788,9 +788,9 @@ TEST(client, document_symbols_and_responses)
             ASSERT_EQ ( o_selection_end_character   , expected_o8_selection_end_character   );
         }
 
-        if ( si.getChildSize() == 0 )
+        if ( si->getChildSize() == 0 )
         {
-            while ( indices.back()+1 == (int) si.getChildSize() && si.moveToParent() )
+            while ( indices.back()+1 == (int) si->getChildSize() && si->moveToParent() )
             {
                 indices.pop_back();
             }
