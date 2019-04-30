@@ -154,9 +154,7 @@ class WASP_PUBLIC ClientImpl
     {
         wasp_check( verifySymbolsResponse( *(this->response) ) );
 
-        symbols_interrogator = std::make_shared<SymbolsInterrogator>( this->response );
-
-        return this->symbols_interrogator;
+        return std::make_shared<SymbolsInterrogator>( this->response );
     }
 
   private:
@@ -194,8 +192,6 @@ class WASP_PUBLIC ClientImpl
       {
           this->document_version++;
       }
-
-      SymbolsInterrogator::SP symbols_interrogator;
 };
 
 } // namespace lsp
