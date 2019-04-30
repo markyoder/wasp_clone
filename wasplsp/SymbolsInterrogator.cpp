@@ -30,7 +30,7 @@ bool SymbolsInterrogator::moveToChildAt( size_t index )
 
     if ( index >= this->getChildSize() )
     {
-        this->errors << m_error << "Index out of bounds" << std::endl;
+        this->errors << m_error_prefix << "Index out of bounds" << std::endl;
 
         return false;
     }
@@ -50,7 +50,7 @@ bool SymbolsInterrogator::moveToParent()
 
     if ( this->symbols_lineage.size() == 1 )
     {
-        this->errors << m_error << "Already at root" << std::endl;
+        this->errors << m_error_prefix << "Already at root" << std::endl;
 
         return false;
     }

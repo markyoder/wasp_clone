@@ -702,5 +702,43 @@ TEST(integrate, server_thread_join)
     server_thread.join();
 }
 
+TEST(client, server_response_error)
+{
+    DataObject bad_request_object;
+
+    bad_request_object[m_method] = "bad_method_name";
+
+    std::stringstream expected_error;
+
+    expected_error << "Error:: Message to server has bad method name: \"bad_method_name\""
+                   << std::endl;
+
+    DataObject response_object;
+
+    std::stringstream errors;
+
+    std::thread thread = std::thread( &Server<TestServer>::run , &test_server );
+
+    ASSERT_TRUE ( test_connection->write( bad_request_object , errors ) );
+
+    ASSERT_TRUE ( errors.str().empty() );
+
+    ASSERT_TRUE ( test_connection->read( response_object , errors ) );
+
+    ASSERT_TRUE ( errors.str().empty() );
+
+    ASSERT_FALSE( checkErrorResponse( response_object , errors ) );
+
+    ASSERT_FALSE( errors.str().empty() );
+
+    ASSERT_EQ   ( errors.str() , expected_error.str() );
+
+    ASSERT_FALSE( test_connection->getServerErrors().empty() );
+
+    ASSERT_EQ   ( test_connection->getServerErrors() , expected_error.str() );
+
+    thread.join();
+}
+
 } // namespace lsp
 } // namespace wasp

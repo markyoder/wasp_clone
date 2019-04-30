@@ -80,22 +80,29 @@ bool ServerImpl::run()
         else if ( method_name.empty() )
         {
             pass = false;
-            this->errors << m_error << "Message to server has no method name"
+            this->errors << m_error_prefix << "Message to server has no method name"
                                << std::endl;
         }
         else
         {
             pass = false;
-            this->errors << m_error << "Message to server has bad method name: "
+            this->errors << m_error_prefix << "Message to server has bad method name: "
                                "\"" << method_name << "\"" << std::endl;
         }
 
-        if ( !pass || method_name == m_method_exit ) break;
+        if ( !pass )
+        {
+            buildErrorResponse( output_object      ,
+                                m_internal_error   ,
+                                this->errors.str() );
+        }
 
         if ( !output_object.empty() )
         {
             pass &= this->connection->write( output_object , this->errors );
         }
+
+        if ( !pass || method_name == m_method_exit ) break;
     }
 
     return pass;
@@ -129,7 +136,7 @@ bool ServerImpl::handleInitializedNotification(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
@@ -147,7 +154,7 @@ bool ServerImpl::handleDidOpenNotification(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
@@ -180,13 +187,13 @@ bool ServerImpl::handleDidChangeNotification(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        this->errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -214,13 +221,13 @@ bool ServerImpl::handleDidChangeNotification(
 
     if ( document_path != this->document_path )
     {
-        this->errors << m_error << "Server has different document open" << std::endl;
+        this->errors << m_error_prefix << "Server has different document open" << std::endl;
         return false;
     }
 
     if (document_version <= this->document_version )
     {
-        this->errors << m_error << "Server sent bad document version" << std::endl;
+        this->errors << m_error_prefix << "Server sent bad document version" << std::endl;
         return false;
     }
 
@@ -251,13 +258,13 @@ bool ServerImpl::handleCompletionRequest(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        this->errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -276,7 +283,7 @@ bool ServerImpl::handleCompletionRequest(
 
     if ( document_path != this->document_path )
     {
-        this->errors << m_error << "Server has different document open" << std::endl;
+        this->errors << m_error_prefix << "Server has different document open" << std::endl;
         return false;
     }
 
@@ -303,13 +310,13 @@ bool ServerImpl::handleDefinitionRequest(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        this->errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -328,7 +335,7 @@ bool ServerImpl::handleDefinitionRequest(
 
     if ( document_path != this->document_path )
     {
-        this->errors << m_error << "Server has different document open" << std::endl;
+        this->errors << m_error_prefix << "Server has different document open" << std::endl;
         return false;
     }
 
@@ -353,13 +360,13 @@ bool ServerImpl::handleReferencesRequest(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        this->errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -380,7 +387,7 @@ bool ServerImpl::handleReferencesRequest(
 
     if ( document_path != this->document_path )
     {
-        this->errors << m_error << "Server has different document open" << std::endl;
+        this->errors << m_error_prefix << "Server has different document open" << std::endl;
         return false;
     }
 
@@ -405,13 +412,13 @@ bool ServerImpl::handleFormattingRequest(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        this->errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -438,7 +445,7 @@ bool ServerImpl::handleFormattingRequest(
 
     if ( document_path != this->document_path )
     {
-        this->errors << m_error << "Server has different document open" << std::endl;
+        this->errors << m_error_prefix << "Server has different document open" << std::endl;
         return false;
     }
 
@@ -466,13 +473,13 @@ bool ServerImpl::handleSymbolsRequest(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        this->errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -487,7 +494,7 @@ bool ServerImpl::handleSymbolsRequest(
 
     if ( document_path != this->document_path )
     {
-        this->errors << m_error << "Server has different document open" << std::endl;
+        this->errors << m_error_prefix << "Server has different document open" << std::endl;
         return false;
     }
 
@@ -508,13 +515,13 @@ bool ServerImpl::handleDidCloseNotification(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        this->errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -528,7 +535,7 @@ bool ServerImpl::handleDidCloseNotification(
 
     if ( document_path != this->document_path )
     {
-        this->errors << m_error << "Server has different document open" << std::endl;
+        this->errors << m_error_prefix << "Server has different document open" << std::endl;
         return false;
     }
 
@@ -543,13 +550,13 @@ bool ServerImpl::handleShutdownRequest(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (this->is_document_open)
     {
-        this->errors << m_error << "Server document needs to be closed" << std::endl;
+        this->errors << m_error_prefix << "Server document needs to be closed" << std::endl;
         return false;
     }
 
@@ -573,7 +580,7 @@ bool ServerImpl::handleExitNotification(
 {
     if (this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be shutdown" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be shutdown" << std::endl;
         return false;
     }
 

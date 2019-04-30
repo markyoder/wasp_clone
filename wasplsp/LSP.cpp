@@ -85,14 +85,14 @@ bool checkPosition( std::ostream & errors    ,
 
     if ( line < 0 )
     {
-        errors << m_error << "Line number must be non-negative - received: "
+        errors << m_error_prefix << "Line number must be non-negative - received: "
                << line << std::endl;
         pass = false;
     }
 
     if ( character < 0 )
     {
-        errors << m_error << "Column number must be non-negative - received: "
+        errors << m_error_prefix << "Column number must be non-negative - received: "
                << character << std::endl;
         pass = false;
     }
@@ -111,7 +111,7 @@ bool checkRange( std::ostream & errors          ,
     if (( start_line  > end_line ) ||
         ( start_line == end_line && start_character > end_character ))
     {
-        errors << m_error << "Range start ( line:" << start_line << " column:"
+        errors << m_error_prefix << "Range start ( line:" << start_line << " column:"
                << start_character << " ) must be less than range end ( line:"
                << end_line << " column:" << end_character << " )" << std::endl;
         pass = false;
@@ -1594,6 +1594,43 @@ bool dissectSymbolsResponse( const DataObject   & object           ,
     wasp_check( object[m_result].is_array() );
 
     document_symbols = *(object[m_result].to_array());
+
+    return pass;
+}
+
+bool buildErrorResponse( DataObject        & object ,
+                         int                 code   ,
+                         const std::string & errors )
+{
+    bool pass = true;
+
+    DataObject error;
+
+    error[m_code]    = code;
+    error[m_message] = errors;
+
+    object[m_error] = error;
+
+    return pass;
+}
+
+bool checkErrorResponse( const DataObject   & object ,
+                               std::ostream & errors )
+{
+    bool pass = true;
+
+    if ( object.contains(m_error) )
+    {
+        wasp_check( object[m_error].is_object() );
+
+        const DataObject& error = *(object[m_error].to_object());
+
+        wasp_check( error[m_message].is_string() );
+
+        errors << error[m_message].to_string();
+
+        pass = false;
+    }
 
     return pass;
 }

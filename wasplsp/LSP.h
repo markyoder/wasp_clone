@@ -451,6 +451,15 @@ bool dissectSymbolsResponse( const DataObject   & object                  ,
                                    DataArray    & document_symbol_objects );
 
 WASP_PUBLIC
+bool buildErrorResponse( DataObject        & object ,
+                         int                 code   ,
+                         const std::string & errors );
+
+WASP_PUBLIC
+bool checkErrorResponse( const DataObject   & object ,
+                               std::ostream & errors );
+
+WASP_PUBLIC
 bool verifyInitializeResponse( const DataObject & object );
 
 WASP_PUBLIC
@@ -496,7 +505,7 @@ static const char m_rpc_content_len_key[]   = "Content-Length:";
 static const char m_rpc_separator[]         = "\r\n\r\n";
 static const char m_rpc_jsonrpc_key[]       = "jsonrpc";
 static const char m_rpc_jsonrpc_val[]       = "2.0";
-static const char m_error[]                 = "Error:: ";
+static const char m_error_prefix[]          = "Error:: ";
 static const char m_id[]                    = "id";
 static const char m_method_initialize[]     = "initialize";
 static const char m_method_initialized[]    = "initialized";
@@ -514,6 +523,7 @@ static const char m_method_exit[]           = "exit";
 static const char m_method[]                = "method";
 static const char m_params[]                = "params";
 static const char m_result[]                = "result";
+static const char m_error[]                 = "error";
 static const char m_process_id[]            = "processId";
 static const char m_root_uri[]              = "rootUri";
 static const char m_capabilities[]          = "capabilities";
@@ -553,6 +563,11 @@ static const char m_is_incomplete[]         = "isIncomplete";
 static const char m_name[]                  = "name";
 static const char m_selection_range[]       = "selectionRange";
 static const char m_children[]              = "children";
+static const int  m_parse_error             = -32700;
+static const int  m_invalid_request_error   = -32600;
+static const int  m_method_not_found_error  = -32601;
+static const int  m_invalid_params_error    = -32602;
+static const int  m_internal_error          = -32603;
 
 } // namespace lsp
 } // namespace wasp

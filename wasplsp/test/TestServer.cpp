@@ -8,13 +8,13 @@ bool TestServer::parseDocumentForDiagnostics(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        this->errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -106,13 +106,13 @@ bool TestServer::updateDocumentTextChanges(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        this->errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -138,13 +138,13 @@ bool TestServer::gatherDocumentCompletionItems(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        this->errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -216,13 +216,13 @@ bool TestServer::gatherDocumentDefinitionLocations(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        this->errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -275,13 +275,13 @@ bool TestServer::gatherDocumentReferencesLocations(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        this->errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -328,13 +328,13 @@ bool TestServer::gatherDocumentFormattingTextEdits(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        this->errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -388,13 +388,13 @@ bool TestServer::gatherDocumentSymbols(
 {
     if (!this->is_initialized)
     {
-        this->errors << m_error << "Server needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
         return false;
     }
 
     if (!this->is_document_open)
     {
-        this->errors << m_error << "Server has no open document" << std::endl;
+        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 

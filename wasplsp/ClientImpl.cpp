@@ -11,11 +11,12 @@ bool ClientImpl::connect( Connection::SP connection )
 
     if ( this->is_connected )
     {
-        this->errors << m_error << "Client already connected" << std::endl;
+        this->errors << m_error_prefix << "Client already connected" << std::endl;
 
         pass = false;
     }
-    else
+
+    if ( pass )
     {
         this->connection = connection;
 
@@ -29,14 +30,14 @@ bool ClientImpl::doInitialize()
 {
     if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not connected" << std::endl;
+        this->errors << m_error_prefix << "Client not connected" << std::endl;
 
         return false;
     }
 
     if ( this->is_initialized )
     {
-        this->errors << m_error << "Connection already initialized" << std::endl;
+        this->errors << m_error_prefix << "Connection already initialized" << std::endl;
 
         return false;
     }
@@ -61,11 +62,16 @@ bool ClientImpl::doInitialize()
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    pass &= checkErrorResponse( *(this->response) , this->errors );
+
     wasp_check( verifyInitializeResponse( *(this->response) ) );
 
-    this->response_type = INITIALIZE;
+    if ( pass )
+    {
+        this->response_type = INITIALIZE;
 
-    this->is_initialized = true;
+        this->is_initialized = true;
+    }
 
     return pass;
 }
@@ -74,14 +80,14 @@ bool ClientImpl::doInitialized()
 {
     if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not connected" << std::endl;
+        this->errors << m_error_prefix << "Client not connected" << std::endl;
 
         return false;
     }
 
     if ( !this->is_initialized )
     {
-        this->errors << m_error << "Connection not initialized" << std::endl;
+        this->errors << m_error_prefix << "Connection not initialized" << std::endl;
 
         return false;
     }
@@ -104,21 +110,21 @@ bool ClientImpl::doDocumentOpen( const std::string & document_path        ,
 {
     if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not connected" << std::endl;
+        this->errors << m_error_prefix << "Client not connected" << std::endl;
 
         return false;
     }
 
     if ( !this->is_initialized )
     {
-        this->errors << m_error << "Connection not initialized" << std::endl;
+        this->errors << m_error_prefix << "Connection not initialized" << std::endl;
 
         return false;
     }
 
     if ( this->is_document_open )
     {
-        this->errors << m_error << "Document already open" << std::endl;
+        this->errors << m_error_prefix << "Document already open" << std::endl;
 
         return false;
     }
@@ -144,11 +150,16 @@ bool ClientImpl::doDocumentOpen( const std::string & document_path        ,
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    pass &= checkErrorResponse( *(this->response) , this->errors );
+
     wasp_check( verifyDiagnosticResponse( *(this->response) ) );
 
-    this->response_type = DIAGNOSTIC;
+    if ( pass )
+    {
+        this->response_type = DIAGNOSTIC;
 
-    this->is_document_open = true;
+        this->is_document_open = true;
+    }
 
     return pass;
 }
@@ -162,21 +173,21 @@ bool ClientImpl::doDocumentChange( int                 start_line        ,
 {
     if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not connected" << std::endl;
+        this->errors << m_error_prefix << "Client not connected" << std::endl;
 
         return false;
     }
 
     if ( !this->is_initialized )
     {
-        this->errors << m_error << "Connection not initialized" << std::endl;
+        this->errors << m_error_prefix << "Connection not initialized" << std::endl;
 
         return false;
     }
 
     if ( !this->is_document_open )
     {
-        this->errors << m_error << "Document not open" << std::endl;
+        this->errors << m_error_prefix << "Document not open" << std::endl;
 
         return false;
     }
@@ -204,9 +215,14 @@ bool ClientImpl::doDocumentChange( int                 start_line        ,
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    pass &= checkErrorResponse( *(this->response) , this->errors );
+
     wasp_check( verifyDiagnosticResponse( *(this->response) ) );
 
-    this->response_type = DIAGNOSTIC;
+    if ( pass )
+    {
+        this->response_type = DIAGNOSTIC;
+    }
 
     return pass;
 }
@@ -216,21 +232,21 @@ bool ClientImpl::doDocumentCompletion( int line      ,
 {
     if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not connected" << std::endl;
+        this->errors << m_error_prefix << "Client not connected" << std::endl;
 
         return false;
     }
 
     if ( !this->is_initialized )
     {
-        this->errors << m_error << "Connection not initialized" << std::endl;
+        this->errors << m_error_prefix << "Connection not initialized" << std::endl;
 
         return false;
     }
 
     if ( !this->is_document_open )
     {
-        this->errors << m_error << "Document not open" << std::endl;
+        this->errors << m_error_prefix << "Document not open" << std::endl;
 
         return false;
     }
@@ -254,9 +270,14 @@ bool ClientImpl::doDocumentCompletion( int line      ,
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    pass &= checkErrorResponse( *(this->response) , this->errors );
+
     wasp_check( verifyCompletionResponse( *(this->response) ) );
 
-    this->response_type = COMPLETION;
+    if ( pass )
+    {
+        this->response_type = COMPLETION;
+    }
 
     return pass;
 }
@@ -266,21 +287,21 @@ bool ClientImpl::doDocumentDefinition( int line      ,
 {
     if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not connected" << std::endl;
+        this->errors << m_error_prefix << "Client not connected" << std::endl;
 
         return false;
     }
 
     if ( !this->is_initialized )
     {
-        this->errors << m_error << "Connection not initialized" << std::endl;
+        this->errors << m_error_prefix << "Connection not initialized" << std::endl;
 
         return false;
     }
 
     if ( !this->is_document_open )
     {
-        this->errors << m_error << "Document not open" << std::endl;
+        this->errors << m_error_prefix << "Document not open" << std::endl;
 
         return false;
     }
@@ -304,9 +325,14 @@ bool ClientImpl::doDocumentDefinition( int line      ,
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    pass &= checkErrorResponse( *(this->response) , this->errors );
+
     wasp_check( verifyDefinitionResponse( *(this->response) ) );
 
-    this->response_type = DEFINITION;
+    if ( pass )
+    {
+        this->response_type = DEFINITION;
+    }
 
     return pass;
 }
@@ -317,21 +343,21 @@ bool ClientImpl::doDocumentReferences( int  line                ,
 {
     if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not connected" << std::endl;
+        this->errors << m_error_prefix << "Client not connected" << std::endl;
 
         return false;
     }
 
     if ( !this->is_initialized )
     {
-        this->errors << m_error << "Connection not initialized" << std::endl;
+        this->errors << m_error_prefix << "Connection not initialized" << std::endl;
 
         return false;
     }
 
     if ( !this->is_document_open )
     {
-        this->errors << m_error << "Document not open" << std::endl;
+        this->errors << m_error_prefix << "Document not open" << std::endl;
 
         return false;
     }
@@ -356,9 +382,14 @@ bool ClientImpl::doDocumentReferences( int  line                ,
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    pass &= checkErrorResponse( *(this->response) , this->errors );
+
     wasp_check( verifyReferencesResponse( *(this->response) ) );
 
-    this->response_type = REFERENCES;
+    if ( pass )
+    {
+        this->response_type = REFERENCES;
+    }
 
     return pass;
 }
@@ -372,21 +403,21 @@ bool ClientImpl::doDocumentFormatting( int  start_line      ,
 {
     if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not connected" << std::endl;
+        this->errors << m_error_prefix << "Client not connected" << std::endl;
 
         return false;
     }
 
     if ( !this->is_initialized )
     {
-        this->errors << m_error << "Connection not initialized" << std::endl;
+        this->errors << m_error_prefix << "Connection not initialized" << std::endl;
 
         return false;
     }
 
     if ( !this->is_document_open )
     {
-        this->errors << m_error << "Document not open" << std::endl;
+        this->errors << m_error_prefix << "Document not open" << std::endl;
 
         return false;
     }
@@ -414,9 +445,14 @@ bool ClientImpl::doDocumentFormatting( int  start_line      ,
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    pass &= checkErrorResponse( *(this->response) , this->errors );
+
     wasp_check( verifyFormattingResponse( *(this->response) ) );
 
-    this->response_type = FORMATTING;
+    if ( pass )
+    {
+        this->response_type = FORMATTING;
+    }
 
     return pass;
 }
@@ -425,21 +461,21 @@ bool ClientImpl::doDocumentSymbols()
 {
     if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not connected" << std::endl;
+        this->errors << m_error_prefix << "Client not connected" << std::endl;
 
         return false;
     }
 
     if ( !this->is_initialized )
     {
-        this->errors << m_error << "Connection not initialized" << std::endl;
+        this->errors << m_error_prefix << "Connection not initialized" << std::endl;
 
         return false;
     }
 
     if ( !this->is_document_open )
     {
-        this->errors << m_error << "Document not open" << std::endl;
+        this->errors << m_error_prefix << "Document not open" << std::endl;
 
         return false;
     }
@@ -461,9 +497,14 @@ bool ClientImpl::doDocumentSymbols()
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    pass &= checkErrorResponse( *(this->response) , this->errors );
+
     wasp_check( verifySymbolsResponse( *(this->response) ) );
 
-    this->response_type = SYMBOLS;
+    if ( pass )
+    {
+        this->response_type = SYMBOLS;
+    }
 
     return pass;
 }
@@ -472,21 +513,21 @@ bool ClientImpl::doDocumentClose()
 {
     if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not connected" << std::endl;
+        this->errors << m_error_prefix << "Client not connected" << std::endl;
 
         return false;
     }
 
     if ( !this->is_initialized )
     {
-        this->errors << m_error << "Connection not initialized" << std::endl;
+        this->errors << m_error_prefix << "Connection not initialized" << std::endl;
 
         return false;
     }
 
     if ( !this->is_document_open )
     {
-        this->errors << m_error << "Document not open" << std::endl;
+        this->errors << m_error_prefix << "Document not open" << std::endl;
 
         return false;
     }
@@ -501,7 +542,10 @@ bool ClientImpl::doDocumentClose()
 
     pass &= connection->write( client_object , this->errors );
 
-    this->is_document_open = false;
+    if ( pass )
+    {
+        this->is_document_open = false;
+    }
 
     return pass;
 }
@@ -510,21 +554,21 @@ bool ClientImpl::doShutdown()
 {
     if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not connected" << std::endl;
+        this->errors << m_error_prefix << "Client not connected" << std::endl;
 
         return false;
     }
 
     if ( !this->is_initialized )
     {
-        this->errors << m_error << "Connection needs to be initialized" << std::endl;
+        this->errors << m_error_prefix << "Connection needs to be initialized" << std::endl;
 
         return false;
     }
 
     if ( this->is_document_open )
     {
-        this->errors << m_error << "Document needs to be closed" << std::endl;
+        this->errors << m_error_prefix << "Document needs to be closed" << std::endl;
 
         return false;
     }
@@ -545,11 +589,16 @@ bool ClientImpl::doShutdown()
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    pass &= checkErrorResponse( *(this->response) , this->errors );
+
     wasp_check( verifyShutdownResponse( *(this->response) ) );
 
-    this->response_type = SHUTDOWN;
+    if ( pass )
+    {
+        this->response_type = SHUTDOWN;
 
-    this->is_initialized = false;
+        this->is_initialized = false;
+    }
 
     return pass;
 }
@@ -560,14 +609,14 @@ bool ClientImpl::doExit()
 
     if ( !this->is_connected )
     {
-        this->errors << m_error << "Client not connected" << std::endl;
+        this->errors << m_error_prefix << "Client not connected" << std::endl;
 
         return false;
     }
 
     if ( this->is_initialized )
     {
-        this->errors << m_error << "Connection needs to be shutdown" << std::endl;
+        this->errors << m_error_prefix << "Connection needs to be shutdown" << std::endl;
 
         return false;
     }
@@ -579,7 +628,10 @@ bool ClientImpl::doExit()
 
     pass &= connection->write( client_object , this->errors );
 
-    this->is_connected = false;
+    if ( pass )
+    {
+        this->is_connected = false;
+    }
 
     return pass;
 }
@@ -656,14 +708,14 @@ bool ClientImpl::getDiagnosticAt( int           index           ,
 {
     if ( this->response_type != DIAGNOSTIC )
     {
-        this->errors << m_error << "No diagnostics currently stored" << std::endl;
+        this->errors << m_error_prefix << "No diagnostics currently stored" << std::endl;
 
         return false;
     }
 
     if ( index >= this->getDiagnosticSize() )
     {
-        this->errors << m_error << "Diagnostics index out of bounds" << std::endl;
+        this->errors << m_error_prefix << "Diagnostics index out of bounds" << std::endl;
 
         return false;
     }
@@ -702,14 +754,14 @@ bool ClientImpl::getCompletionAt( int           index           ,
 {
     if ( this->response_type != COMPLETION )
     {
-        this->errors << m_error << "No completions currently stored" << std::endl;
+        this->errors << m_error_prefix << "No completions currently stored" << std::endl;
 
         return false;
     }
 
     if ( index >= this->getCompletionSize() )
     {
-        this->errors << m_error << "Completions index out of bounds" << std::endl;
+        this->errors << m_error_prefix << "Completions index out of bounds" << std::endl;
 
         return false;
     }
@@ -744,14 +796,14 @@ bool ClientImpl::getDefinitionAt( int   index           ,
 {
     if ( this->response_type != DEFINITION )
     {
-        this->errors << m_error << "No definitions currently stored" << std::endl;
+        this->errors << m_error_prefix << "No definitions currently stored" << std::endl;
 
         return false;
     }
 
     if ( index >= this->getDefinitionSize() )
     {
-        this->errors << m_error << "Definitions index out of bounds" << std::endl;
+        this->errors << m_error_prefix << "Definitions index out of bounds" << std::endl;
 
         return false;
     }
@@ -773,7 +825,7 @@ bool ClientImpl::getDefinitionAt( int   index           ,
 
     if ( response_document_path != this->document_path )
     {
-        this->errors << m_error << "Definition path mismatch" << std::endl;
+        this->errors << m_error_prefix << "Definition path mismatch" << std::endl;
 
         pass = false;
     }
@@ -789,14 +841,14 @@ bool ClientImpl::getReferencesAt( int   index           ,
 {
     if ( this->response_type != REFERENCES )
     {
-        this->errors << m_error << "No references currently stored" << std::endl;
+        this->errors << m_error_prefix << "No references currently stored" << std::endl;
 
         return false;
     }
 
     if ( index >= this->getReferencesSize() )
     {
-        this->errors << m_error << "References index out of bounds" << std::endl;
+        this->errors << m_error_prefix << "References index out of bounds" << std::endl;
 
         return false;
     }
@@ -818,7 +870,7 @@ bool ClientImpl::getReferencesAt( int   index           ,
 
     if ( response_document_path != this->document_path )
     {
-        this->errors << m_error << "Refererences path mismatch" << std::endl;
+        this->errors << m_error_prefix << "Refererences path mismatch" << std::endl;
 
         pass = false;
     }
@@ -835,14 +887,14 @@ bool ClientImpl::getFormattingAt( int           index           ,
 {
     if ( this->response_type != FORMATTING )
     {
-        this->errors << m_error << "No formattings currently stored" << std::endl;
+        this->errors << m_error_prefix << "No formattings currently stored" << std::endl;
 
         return false;
     }
 
     if ( index >= this->getFormattingSize() )
     {
-        this->errors << m_error << "Formattings index out of bounds" << std::endl;
+        this->errors << m_error_prefix << "Formattings index out of bounds" << std::endl;
 
         return false;
     }
