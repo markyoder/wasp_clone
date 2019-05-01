@@ -257,9 +257,9 @@ class WASP_PUBLIC Client
         return Impl.getCurrentDocumentVersion();
     }
 
-    SymbolsInterrogator::SP getSymbolsInterrogator()
+    SymbolIterator::SP getSymbolIterator()
     {
-        return Impl.getSymbolsInterrogator();
+        return Impl.getSymbolIterator();
     }
 
   private:

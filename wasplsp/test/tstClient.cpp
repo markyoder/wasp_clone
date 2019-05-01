@@ -4,7 +4,7 @@
 #include "wasplsp/Client.h"
 #include "wasplsp/LSP.h"
 #include "wasplsp/Connection.h"
-#include "wasplsp/SymbolsInterrogator.h"
+#include "wasplsp/SymbolIterator.h"
 #include "gtest/gtest.h"
 #include <thread>
 #include <vector>
@@ -623,7 +623,7 @@ TEST(client, document_symbols_and_responses)
 // -               -
 // - - - - - - - - -
 
-    SymbolsInterrogator::SP si = test_client.getSymbolsInterrogator();
+    SymbolIterator::SP si = test_client.getSymbolIterator();
 
     int order = 0;
 

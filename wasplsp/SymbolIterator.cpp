@@ -1,9 +1,9 @@
-#include "SymbolsInterrogator.h"
+#include "SymbolIterator.h"
 
 namespace wasp {
 namespace lsp  {
 
-size_t SymbolsInterrogator::getChildSize() const
+size_t SymbolIterator::getChildSize() const
 {
     DataArray * children = getSymbolChildrenArray( *this->symbols_lineage.back() );
 
@@ -12,7 +12,7 @@ size_t SymbolsInterrogator::getChildSize() const
     return children->size();
 }
 
-std::string SymbolsInterrogator::getPath() const
+std::string SymbolIterator::getPath() const
 {
     std::string path;
 
@@ -24,7 +24,7 @@ std::string SymbolsInterrogator::getPath() const
     return path;
 }
 
-bool SymbolsInterrogator::moveToChildAt( size_t index )
+bool SymbolIterator::moveToChildAt( size_t index )
 {
     bool pass = true;
 
@@ -44,7 +44,7 @@ bool SymbolsInterrogator::moveToChildAt( size_t index )
     return pass;
 }
 
-bool SymbolsInterrogator::moveToParent()
+bool SymbolIterator::moveToParent()
 {
     bool pass = true;
 
@@ -60,7 +60,7 @@ bool SymbolsInterrogator::moveToParent()
     return pass;
 }
 
-bool SymbolsInterrogator::dissectCurrentSymbol( std::string  & name  ,
+bool SymbolIterator::dissectCurrentSymbol( std::string  & name  ,
                            std::string  & detail                    ,
                            int          & kind                      ,
                            bool         & deprecated                ,

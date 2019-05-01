@@ -1,5 +1,5 @@
-#ifndef WASPLSP_SYMBOLS_INTERROGATOR_H
-#define WASPLSP_SYMBOLS_INTERROGATOR_H
+#ifndef WASPLSP_SYMBOL_ITERATOR_H
+#define WASPLSP_SYMBOL_ITERATOR_H
 
 #include <vector>
 #include <string>
@@ -11,18 +11,20 @@
 namespace wasp {
 namespace lsp  {
 
-class WASP_PUBLIC SymbolsInterrogator
+class WASP_PUBLIC SymbolIterator
 {
   public:
 
-    SymbolsInterrogator( DataObject::SP response )
+    SymbolIterator( DataObject::SP response )
     {
         this->symbols_lineage.push_back( &*response );
+
+        m_response = response;
     }
 
-    ~SymbolsInterrogator(){}
+    ~SymbolIterator(){}
 
-    typedef std::shared_ptr<SymbolsInterrogator> SP;
+    typedef std::shared_ptr<SymbolIterator> SP;
 
     size_t getChildSize() const;
 
@@ -47,6 +49,8 @@ class WASP_PUBLIC SymbolsInterrogator
 
   private:
 
+      DataObject::SP m_response;
+
       std::vector<DataObject *> symbols_lineage;
 
       std::stringstream errors;
@@ -55,4 +59,4 @@ class WASP_PUBLIC SymbolsInterrogator
 } // namespace lsp
 } // namespace wasp
 
-#endif // WASPLSP_SYMBOLS_INTERROGATOR_H
+#endif // WASPLSP_SYMBOL_ITERATOR_H

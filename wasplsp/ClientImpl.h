@@ -5,7 +5,7 @@
 #include <sstream>
 #include "wasplsp/LSP.h"
 #include "wasplsp/Connection.h"
-#include "wasplsp/SymbolsInterrogator.h"
+#include "wasplsp/SymbolIterator.h"
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
 
@@ -150,11 +150,11 @@ class WASP_PUBLIC ClientImpl
         return this->document_version;
     }
 
-    SymbolsInterrogator::SP getSymbolsInterrogator()
+    SymbolIterator::SP getSymbolIterator()
     {
         wasp_check( verifySymbolsResponse( *(this->response) ) );
 
-        return std::make_shared<SymbolsInterrogator>( this->response );
+        return std::make_shared<SymbolIterator>( this->response );
     }
 
   private:

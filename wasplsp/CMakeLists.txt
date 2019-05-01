@@ -35,7 +35,7 @@ SET(SOURCES
 LSP.cpp
 ServerImpl.cpp
 ClientImpl.cpp
-SymbolsInterrogator.cpp
+SymbolIterator.cpp
 )
 
 ##---------------------------------------------------------------------------##
