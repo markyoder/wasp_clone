@@ -116,6 +116,36 @@ HIVE validation messages that occur when validating the failing input shown abov
 
   - ***Notes:*** This input fails to validate against the provided schema because, as described above, neither `/test/should_not_exist_one` nor `/test/should_not_exist_two` exist in the schema.  Also, an element exists in the input that has an invalid rule, named `BadRuleName` in the schema.
 
+#### Unknown Node Validation
+There are instances where the input parser can generate a parse tree that has unknown nodes. I.e., the syntax is correct, but the data is unknown. 
+
+In this situation the element can be added to the schema and explicitly tagged as `UNKNOWN`. An example schema follows:
+
+```javascript
+test{
+    some_element(UNKNOWN) { ... }
+}
+```
+When this schema is applied to an input where `test/some_element` exists a validation error will be emitted for each occurrence of `/test/some_element` within
+the input. An example validation error message follows:
+
+```javascript
+line: 4 column: 5 - Validation Error: some_element is unknown
+line: 5 column: 5 - Validation Error: some_element is unknown
+```
+
+When the element tagged as `UNKNOWN` is a terminal element, I.e. no children, the element's data is included in the message.
+
+```javascript
+test{
+    some_element { value(UNKNOWN) {} }
+}
+```
+
+```javascript
+line: 4 column: 16 - Validation Error: value 'data1' is unknown
+line: 5 column: 16 - Validation Error: value 'data2' is unknown
+```
 
 ### MinOccurs Details and Examples
 
