@@ -61,6 +61,22 @@ bool HIVE::traverse_schema(SchemaAdapter&            schema_node,
     {
         return false;
     }
+
+    /*
+     * Determine if this schema input node is marked as UNKNOWN
+     */
+    SchemaAdapter schema_node_id = schema_node.id_child();
+    if (selection.size() != 0 && !schema_node_id.is_null()
+            && schema_node_id.data() == "UNKNOWN")
+    {
+        for( size_t i_input = 0; i_input < selection.size(); ++i_input)
+        {
+            const auto& input_node_instance = selection.adapted(i_input);
+            errors.push_back(Error::UnknownInputNode(input_node_instance));
+        }
+        pass &= false;
+    }
+
     const typename SchemaAdapter::Collection& children =
         schema_node.non_decorative_children();
     bool                  hasToDo = false;
@@ -203,7 +219,7 @@ bool HIVE::traverse_schema(SchemaAdapter&            schema_node,
             /* Only continue child schema traversal if this node exists in input
              */
             if (selection.size() != 0)
-            {
+            {                
                 pass &= traverse_schema(tmpNode, input_node, errors);
             }
             definitionChildren.insert(tmpNodeName);

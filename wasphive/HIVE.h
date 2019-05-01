@@ -829,6 +829,20 @@ class WASP_PUBLIC HIVE
 
         //// Input Errors ////
 
+        /**
+         * Produce an error message indicating the give node is unknown
+         */
+        template<class InputAdapter>
+        static std::string
+        UnknownInputNode(const InputAdapter& input_node)
+        {
+            return "line: "+ std::to_string(input_node.line()) +
+                    " column: "+ std::to_string(input_node.column()) +
+                    " - Validation Error: "+ input_node.name() +
+                    (input_node.is_leaf() ? " '"+input_node.data()+"'" : "") +
+                    " is unknown";
+        }
+
         static std::string
         NotExistInSchema(int line, int col, const std::string& path)
         {
