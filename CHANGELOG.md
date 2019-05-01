@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - GCC 5.4 compiler compatibility CI job.
+- HIVE UNKNOWN input node validation capability (See HIVE readme for details).
 
 ## [1.0.2] - 07-16-2018
 ### Added
