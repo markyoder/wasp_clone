@@ -3,8 +3,14 @@
 namespace wasp {
 namespace lsp  {
 
-template <class INPUT , class INPUTNV, class SCHEMA , class SCHEMANV, class VALIDATOR>
-bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::setValidator(
+template < class INPUT      ,
+           class INPUTNV    ,
+           class SCHEMA     ,
+           class SCHEMANV   ,
+           class VALIDATOR  ,
+           class CONNECTION >
+bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
+    setValidator(
                 std::shared_ptr<VALIDATOR> & validator ,
                 std::shared_ptr<SCHEMA>    & schema    )
 {
@@ -17,8 +23,14 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::setValidator(
     return pass;
 }
 
-template <class INPUT , class INPUTNV, class SCHEMA , class SCHEMANV, class VALIDATOR>
-bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::parseDocumentForDiagnostics(
+template < class INPUT      ,
+           class INPUTNV    ,
+           class SCHEMA     ,
+           class SCHEMANV   ,
+           class VALIDATOR  ,
+           class CONNECTION >
+bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
+    parseDocumentForDiagnostics(
                       DataArray & diagnosticsList )
 {
     if (!this->is_initialized)
@@ -149,8 +161,14 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::parseDocumentForDiagno
     return pass;
 }
 
-template <class INPUT , class INPUTNV, class SCHEMA , class SCHEMANV, class VALIDATOR>
-bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::updateDocumentTextChanges(
+template < class INPUT      ,
+           class INPUTNV    ,
+           class SCHEMA     ,
+           class SCHEMANV   ,
+           class VALIDATOR  ,
+           class CONNECTION >
+bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
+    updateDocumentTextChanges(
                 const std::string & replacement_text ,
                       int           start_line       ,
                       int           start_character  ,
@@ -179,8 +197,14 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::updateDocumentTextChan
     return pass;
 }
 
-template <class INPUT , class INPUTNV, class SCHEMA , class SCHEMANV, class VALIDATOR>
-bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::gatherDocumentCompletionItems(
+template < class INPUT      ,
+           class INPUTNV    ,
+           class SCHEMA     ,
+           class SCHEMANV   ,
+           class VALIDATOR  ,
+           class CONNECTION >
+bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
+    gatherDocumentCompletionItems(
                       DataArray & completionItems  ,
                       bool      & is_incomplete    ,
                       int         line             ,
@@ -207,8 +231,14 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::gatherDocumentCompleti
     return pass;
 }
 
-template <class INPUT , class INPUTNV, class SCHEMA , class SCHEMANV, class VALIDATOR>
-bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::gatherDocumentDefinitionLocations(
+template < class INPUT      ,
+           class INPUTNV    ,
+           class SCHEMA     ,
+           class SCHEMANV   ,
+           class VALIDATOR  ,
+           class CONNECTION >
+bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
+    gatherDocumentDefinitionLocations(
                       DataArray & definitionLocations ,
                       int         line                ,
                       int         character           )
@@ -232,8 +262,14 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::gatherDocumentDefiniti
     return pass;
 }
 
-template <class INPUT , class INPUTNV, class SCHEMA , class SCHEMANV, class VALIDATOR>
-bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::gatherDocumentReferencesLocations(
+template < class INPUT      ,
+           class INPUTNV    ,
+           class SCHEMA     ,
+           class SCHEMANV   ,
+           class VALIDATOR  ,
+           class CONNECTION >
+bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
+    gatherDocumentReferencesLocations(
                       DataArray & referencesLocations ,
                       int         line                ,
                       int         character           ,
@@ -258,8 +294,14 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::gatherDocumentReferenc
     return pass;
 }
 
-template <class INPUT , class INPUTNV, class SCHEMA , class SCHEMANV, class VALIDATOR>
-bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::gatherDocumentFormattingTextEdits(
+template < class INPUT      ,
+           class INPUTNV    ,
+           class SCHEMA     ,
+           class SCHEMANV   ,
+           class VALIDATOR  ,
+           class CONNECTION >
+bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
+    gatherDocumentFormattingTextEdits(
                       DataArray & formattingTextEdits ,
                       int         start_line          ,
                       int         start_character     ,
@@ -287,8 +329,14 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::gatherDocumentFormatti
     return pass;
 }
 
-template <class INPUT , class INPUTNV, class SCHEMA , class SCHEMANV, class VALIDATOR>
-bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::gatherDocumentSymbols(
+template < class INPUT      ,
+           class INPUTNV    ,
+           class SCHEMA     ,
+           class SCHEMANV   ,
+           class VALIDATOR  ,
+           class CONNECTION >
+bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
+    gatherDocumentSymbols(
                       DataArray & documentSymbols )
 {
     if (!this->is_initialized)
@@ -338,8 +386,14 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::gatherDocumentSymbols(
     return pass;
 }
 
-template <class INPUT , class INPUTNV, class SCHEMA , class SCHEMANV, class VALIDATOR>
-bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::traverseParseTreeAndFillSymbols(
+template < class INPUT      ,
+           class INPUTNV    ,
+           class SCHEMA     ,
+           class SCHEMANV   ,
+           class VALIDATOR  ,
+           class CONNECTION >
+bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
+    traverseParseTreeAndFillSymbols(
                       INPUTNV      node   ,
                       DataObject & parent )
 {

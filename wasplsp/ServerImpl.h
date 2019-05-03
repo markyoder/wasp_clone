@@ -4,7 +4,6 @@
 #include <string>
 #include <sstream>
 #include "wasplsp/LSP.h"
-#include "wasplsp/ThreadConnection.h"
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
 
@@ -15,10 +14,7 @@ class WASP_PUBLIC ServerImpl
 {
   public:
 
-    ServerImpl() : is_initialized(false) , is_document_open(false)
-    {
-        connection = std::make_shared<ThreadConnection<ServerImpl>>(this);
-    }
+    ServerImpl() : is_initialized(false) , is_document_open(false) {}
 
     ~ServerImpl(){}
 
@@ -68,11 +64,6 @@ class WASP_PUBLIC ServerImpl
 
     bool handleExitNotification(
                     const DataObject & exitNotification );
-
-    std::shared_ptr<ThreadConnection<ServerImpl>> getConnection()
-    {
-        return connection;
-    }
 
     bool isRunning()
     {
@@ -126,9 +117,12 @@ class WASP_PUBLIC ServerImpl
     virtual bool gatherDocumentSymbols(
                           DataArray & documentSymbols ) = 0;
 
+    virtual bool connectionRead( DataObject & object ) = 0;
+
+    virtual bool connectionWrite( DataObject & object ) = 0;
+
   protected:
 
-    std::shared_ptr<ThreadConnection<ServerImpl>> connection;
     std::stringstream                             errors;
 
     bool                                          is_initialized;

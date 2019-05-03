@@ -1,9 +1,11 @@
 #include "wasplsp/WaspServer.h"
 #include "wasplsp/Server.h"
-#include "wasplsp/ClientImpl.h"
+#include "wasplsp/ServerImpl.h"
 #include "wasplsp/Client.h"
+#include "wasplsp/ClientImpl.h"
 #include "wasplsp/LSP.h"
 #include "wasplsp/Connection.h"
+#include "wasplsp/ThreadConnection.h"
 #include "wasplsp/SymbolIterator.h"
 #include "waspson/SONInterpreter.h"
 #include "waspson/SONNodeView.h"
@@ -20,11 +22,12 @@ namespace lsp  {
 
 Client<ClientImpl> client;
 std::thread server_thread;
-Server<WaspServer<DefaultSONInterpreter,
-                  SONNodeView,
-                  DefaultSONInterpreter,
-                  SONNodeView,
-                  HIVE>> wasp_server;
+Server<WaspServer< DefaultSONInterpreter        ,
+                   SONNodeView                  ,
+                   DefaultSONInterpreter        ,
+                   SONNodeView                  ,
+                   HIVE                         ,
+                   ThreadConnection<ServerImpl> > > wasp_server;
 
 TEST(client, launch_server_thread_and_connnect_client)
 {
@@ -81,11 +84,12 @@ object
 
     server_thread = std::thread
     (
-        &Server<WaspServer<DefaultSONInterpreter,
-                           SONNodeView,
-                           DefaultSONInterpreter,
-                           SONNodeView,
-                           HIVE>>::run ,
+        &Server<WaspServer< DefaultSONInterpreter        ,
+                            SONNodeView                  ,
+                            DefaultSONInterpreter        ,
+                            SONNodeView                  ,
+                            HIVE                         ,
+                            ThreadConnection<ServerImpl> > >::run ,
         &wasp_server
     );
 

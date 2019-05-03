@@ -3,6 +3,7 @@
 
 #include "waspcore/decl.h"
 #include "wasplsp/Connection.h"
+#include "wasplsp/SymbolIterator.h"
 #include "waspcore/Object.h"
 
 namespace wasp {

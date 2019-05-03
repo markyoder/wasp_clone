@@ -4,6 +4,7 @@
 #include <string>
 #include "wasplsp/LSP.h"
 #include "wasplsp/ServerImpl.h"
+#include "wasplsp/ThreadConnection.h"
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
 
@@ -12,8 +13,20 @@ namespace lsp  {
 
 class WASP_PUBLIC TestServer : public ServerImpl
 {
+  public:
+
+    TestServer()
+    {
+        connection = std::make_shared<ThreadConnection<ServerImpl>>(this);
+    }
+
+    std::shared_ptr<ThreadConnection<ServerImpl>> getConnection()
+    {
+        return connection;
+    }
+
   private:
-      
+
     bool parseDocumentForDiagnostics(
                           DataArray  & diagnosticsList );
 
@@ -54,6 +67,17 @@ class WASP_PUBLIC TestServer : public ServerImpl
     bool gatherDocumentSymbols(
                           DataArray & documentSymbols );
 
+    bool connectionRead( DataObject & object )
+    {
+       return this->connection->read( object , this->errors );
+    }
+
+    bool connectionWrite( DataObject & object )
+    {
+       return this->connection->write( object , this->errors );
+    }
+
+    std::shared_ptr<ThreadConnection<ServerImpl>> connection;
 };
 
 } // namespace lsp
