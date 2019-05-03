@@ -341,6 +341,48 @@ object
     }
 }
 
+TEST(client, document_symbols_and_responses)
+{
+    // document symbols
+
+    ASSERT_TRUE ( client.doDocumentSymbols() );
+
+    ASSERT_TRUE ( client.getConnection()->getServerErrors().empty() );
+
+    ASSERT_TRUE ( client.getErrors().empty() );
+
+    // symbols responses
+
+    SymbolIterator::SP si = client.getSymbolIterator();
+
+    std::stringstream paths;
+
+    paths << std::endl;
+
+    for( std::vector<int> indices{ 0 } ; indices.back() < (int) si->getChildSize() ; indices.back()++ )
+    {
+        si->moveToChildAt( indices.back() );
+
+        indices.push_back( -1 );
+
+        paths << si->getPath() << std::endl;
+
+        if ( si->getChildSize() == 0 )
+        {
+            while ( indices.back()+1 == (int) si->getChildSize() && si->moveToParent() )
+            {
+                indices.pop_back();
+            }
+        }
+    }
+
+    std::stringstream expected_paths;
+    expected_paths << R"INPUT(
+)INPUT";
+
+    ASSERT_EQ( paths.str() , expected_paths.str() );
+}
+
 TEST(client, document_close)
 {
     // document close

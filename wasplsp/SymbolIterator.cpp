@@ -18,7 +18,36 @@ std::string SymbolIterator::getPath() const
 
     for ( size_t i = 1 ; i < this->symbols_lineage.size() ; i++ )
     {
+        wasp_check( (*this->symbols_lineage[i])[m_name].is_string() );
+
         path += "/" + (*this->symbols_lineage[i])[m_name].to_string();
+
+        if ( i+1 == this->symbols_lineage.size() )
+        {
+            DataObject * leaf = this->symbols_lineage[i];
+
+            wasp_check( (*leaf)[m_range].is_object() );
+
+            const DataObject& range = *(*leaf)[m_range].to_object();
+
+            wasp_check( range[m_start].is_object() );
+
+            const DataObject& start = *(range[m_start].to_object());
+
+            wasp_check( start[m_line].is_int() );
+
+            int line = start[m_line].to_int();
+
+            wasp_check( start[m_character].is_int() );
+
+            int character = start[m_character].to_int();
+
+            path += std::string(" (")         +
+                    std::to_string(line)      +
+                    std::string(":")          +
+                    std::to_string(character) +
+                    std::string(")");
+        }
     }
 
     return path;

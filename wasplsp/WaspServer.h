@@ -61,9 +61,11 @@ class WASP_PUBLIC WaspServer : public ServerImpl
     bool gatherDocumentSymbols(
                           DataArray & documentSymbols );
 
+    std::shared_ptr<INPUT>     parser;
+
     std::shared_ptr<VALIDATOR> validator;
 
-    std::shared_ptr<SCHEMA> schema;
+    std::shared_ptr<SCHEMA>    schema;
 };
 
 } // namespace lsp

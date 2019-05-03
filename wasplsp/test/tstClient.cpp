@@ -799,14 +799,14 @@ TEST(client, document_symbols_and_responses)
 
     std::stringstream expected_paths;
     expected_paths << R"INPUT(
-/test_symbol_name_object_1
-/test_symbol_name_object_1/test_symbol_name_object_2
-/test_symbol_name_object_1/test_symbol_name_object_3
-/test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4
-/test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4/test_symbol_name_object_5
-/test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4/test_symbol_name_object_5/test_symbol_name_object_6
-/test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4/test_symbol_name_object_7
-/test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4/test_symbol_name_object_8
+/test_symbol_name_object_1 (10:11)
+/test_symbol_name_object_1/test_symbol_name_object_2 (20:21)
+/test_symbol_name_object_1/test_symbol_name_object_3 (30:31)
+/test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4 (40:41)
+/test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4/test_symbol_name_object_5 (50:51)
+/test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4/test_symbol_name_object_5/test_symbol_name_object_6 (60:61)
+/test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4/test_symbol_name_object_7 (70:71)
+/test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4/test_symbol_name_object_8 (80:81)
 )INPUT";
 
     ASSERT_EQ( paths.str() , expected_paths.str() );

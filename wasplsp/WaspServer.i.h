@@ -34,12 +34,12 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::parseDocumentForDiagno
     }
 
     bool pass = true;
-    
-    std::stringstream parse_errors;
-    
-    INPUT parser( parse_errors );
 
-    if ( !parser.parseString( this->document_text , "" ) )
+    std::stringstream parse_errors;
+
+    this->parser = std::make_shared<INPUT>(parse_errors);
+
+    if ( !this->parser->parseString( this->document_text , "" ) )
     {
         while( parse_errors.good() )
         {
@@ -92,13 +92,13 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::parseDocumentForDiagno
         }
     }
 
-    INPUTNV  schema_root = schema->root();
+    INPUTNV  schema_root = this->schema->root();
 
-    SCHEMANV input_root  = parser.root();
+    SCHEMANV input_root  = this->parser->root();
 
     std::vector<std::string> validation_errors;
-    
-    if ( !validator->validate(schema_root, input_root, validation_errors) )
+
+    if ( !this->validator->validate(schema_root, input_root, validation_errors) )
     {
         for (auto i : validation_errors)
         {
