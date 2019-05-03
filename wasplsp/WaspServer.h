@@ -16,8 +16,8 @@ class WASP_PUBLIC WaspServer : public ServerImpl
 {
   public:
 
-    bool setValidator( std::shared_ptr<VALIDATOR> validator ,
-                       std::shared_ptr<SCHEMA>    schema    );
+    bool setValidator( std::shared_ptr<VALIDATOR> & validator ,
+                       std::shared_ptr<SCHEMA>    & schema    );
 
   private:
 
@@ -60,6 +60,10 @@ class WASP_PUBLIC WaspServer : public ServerImpl
 
     bool gatherDocumentSymbols(
                           DataArray & documentSymbols );
+
+    bool traverseParseTreeAndFillSymbols(
+                          INPUTNV      node   ,
+                          DataObject & parent );
 
     std::shared_ptr<INPUT>     parser;
 

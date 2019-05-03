@@ -378,6 +378,22 @@ TEST(client, document_symbols_and_responses)
 
     std::stringstream expected_paths;
     expected_paths << R"INPUT(
+/object (3:1)
+/object/key (5:5)
+/object/key/value (5:12)
+/object/list (6:5)
+/object/list/value (6:14)
+/object/list/value (6:16)
+/object/list/value (6:19)
+/object/list/value (6:21)
+/object/list/value (6:23)
+/object (9:1)
+/object/key (11:5)
+/object/key/value (11:12)
+/object/list (12:5)
+/object/list/value (12:14)
+/object/list/value (12:16)
+/object/list/value (12:18)
 )INPUT";
 
     ASSERT_EQ( paths.str() , expected_paths.str() );

@@ -5,8 +5,8 @@ namespace lsp  {
 
 template <class INPUT , class INPUTNV, class SCHEMA , class SCHEMANV, class VALIDATOR>
 bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::setValidator(
-                std::shared_ptr<VALIDATOR> validator ,
-                std::shared_ptr<SCHEMA>    schema    )
+                std::shared_ptr<VALIDATOR> & validator ,
+                std::shared_ptr<SCHEMA>    & schema    )
 {
     bool pass = true;
 
@@ -172,6 +172,8 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::updateDocumentTextChan
 
     bool pass = true;
 
+    // TODO - replace text using line and column
+
     this->document_text = replacement_text;
 
     return pass;
@@ -303,7 +305,73 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::gatherDocumentSymbols(
 
     bool pass = true;
 
-    // TODO
+    const auto & children = this->parser->root().non_decorative_children();
+
+    for( size_t i = 0; i < children.size(); i++ )
+    {
+        std::string name   = children[i].name();
+        int         line   = children[i].line();
+        int         column = children[i].column();
+
+        documentSymbols.push_back( DataObject() );
+
+        DataObject * child = documentSymbols.back().to_object();
+
+        pass &= buildDocumentSymbolObject( *child        ,
+                                            this->errors ,
+                                            name         ,
+                                            name         ,
+                                            1            ,
+                                            false        ,
+                                            line         ,
+                                            column       ,
+                                            line         ,
+                                            column       ,
+                                            line         ,
+                                            column       ,
+                                            line         ,
+                                            column       );
+
+      this->traverseParseTreeAndFillSymbols( children[i] , *child );
+    }
+
+    return pass;
+}
+
+template <class INPUT , class INPUTNV, class SCHEMA , class SCHEMANV, class VALIDATOR>
+bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR>::traverseParseTreeAndFillSymbols(
+                      INPUTNV      node   ,
+                      DataObject & parent )
+{
+    bool pass = true;
+
+    const auto & children = node.non_decorative_children();
+
+    for( size_t i = 0; i < children.size(); i++ )
+    {
+        std::string name   = children[i].name();
+        int         line   = children[i].line();
+        int         column = children[i].column();
+
+        DataObject & child = addDocumentSymbolChild( parent );
+
+        pass &= buildDocumentSymbolObject( child        ,
+                                           this->errors ,
+                                           name         ,
+                                           name         ,
+                                           1            ,
+                                           false        ,
+                                           line         ,
+                                           column       ,
+                                           line         ,
+                                           column       ,
+                                           line         ,
+                                           column       ,
+                                           line         ,
+                                           column       );
+
+      this->traverseParseTreeAndFillSymbols( children[i] , child );
+    }
 
     return pass;
 }
