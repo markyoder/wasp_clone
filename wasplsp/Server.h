@@ -128,6 +128,11 @@ class WASP_PUBLIC Server
         return Impl.getErrors();
     }
 
+    T * getImpl()
+    {
+        return &Impl;
+    }
+
   private:
 
       T Impl;
