@@ -76,11 +76,11 @@ object
     std::shared_ptr<DefaultSONInterpreter> schema =
             std::make_shared<DefaultSONInterpreter>();
 
-    schema->parseString( schema_text );
+    ASSERT_TRUE ( schema->parseString( schema_text ) );
 
     std::shared_ptr<HIVE> validator = std::make_shared<HIVE>();
 
-    wasp_server.getImpl()->setValidator( validator , schema );
+    ASSERT_TRUE ( wasp_server.getImpl()->setValidator( validator , schema ) );
 
     server_thread = std::thread
     (
