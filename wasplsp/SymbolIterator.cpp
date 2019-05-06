@@ -66,7 +66,11 @@ bool SymbolIterator::moveToChildAt( size_t index )
 
     DataArray * children = getSymbolChildrenArray( *this->symbols_lineage.back() );
 
+    wasp_check( children != nullptr );
+
     DataObject * object = children->at(index).to_object();
+
+    wasp_check( object != nullptr );
 
     this->symbols_lineage.push_back( object );
 
