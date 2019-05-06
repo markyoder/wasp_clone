@@ -46,12 +46,12 @@ int main(int argc, char** argv)
 
     schema->parseString( schema_text );
 
-    Server<WaspServer< DefaultSONInterpreter          ,
-                       SONNodeView                    ,
-                       DefaultSONInterpreter          ,
-                       SONNodeView                    ,
-                       HIVE                           ,
-                       IOStreamConnection<ServerImpl> > > wasp_server;
+    Server<WaspServer< DefaultSONInterpreter ,
+                       SONNodeView           ,
+                       DefaultSONInterpreter ,
+                       SONNodeView           ,
+                       HIVE                  ,
+                       IOStreamConnection    > > wasp_server;
 
     std::shared_ptr<HIVE> validator = std::make_shared<HIVE>();
 

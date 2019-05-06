@@ -5,9 +5,9 @@
 #include <sstream>
 #include <mutex>
 #include <condition_variable>
-
 #include "wasplsp/LSP.h"
 #include "wasplsp/Connection.h"
+#include "wasplsp/ServerImpl.h"
 #include "waspcore/decl.h"
 
 namespace wasp {
@@ -16,12 +16,11 @@ class DataObject;
 
 namespace lsp  {
 
-template<class SERVER>
 class WASP_PUBLIC ThreadConnection : public Connection
 {
   public:
 
-    ThreadConnection(SERVER * server){ this->server = server; }
+    ThreadConnection(ServerImpl * server){ this->server = server; }
 
     ~ThreadConnection(){}
 
@@ -80,7 +79,7 @@ class WASP_PUBLIC ThreadConnection : public Connection
 
   private:
 
-    SERVER * server;
+    ServerImpl * server;
 
     std::mutex              mutex_lock;
 

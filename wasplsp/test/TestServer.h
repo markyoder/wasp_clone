@@ -17,10 +17,10 @@ class WASP_PUBLIC TestServer : public ServerImpl
 
     TestServer()
     {
-        connection = std::make_shared<ThreadConnection<ServerImpl>>(this);
+        connection = std::make_shared<ThreadConnection>(this);
     }
 
-    std::shared_ptr<ThreadConnection<ServerImpl>> getConnection()
+    std::shared_ptr<ThreadConnection> getConnection()
     {
         return connection;
     }
@@ -77,7 +77,7 @@ class WASP_PUBLIC TestServer : public ServerImpl
        return this->connection->write( object , this->errors );
     }
 
-    std::shared_ptr<ThreadConnection<ServerImpl>> connection;
+    std::shared_ptr<ThreadConnection> connection;
 };
 
 } // namespace lsp

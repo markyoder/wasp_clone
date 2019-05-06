@@ -6,6 +6,7 @@
 #include <sstream>
 #include "wasplsp/LSP.h"
 #include "wasplsp/Connection.h"
+#include "wasplsp/ServerImpl.h"
 #include "waspcore/decl.h"
 
 namespace wasp {
@@ -14,12 +15,11 @@ class DataObject;
 
 namespace lsp  {
 
-template<class SERVER>
 class WASP_PUBLIC IOStreamConnection : public Connection
 {
   public:
 
-    IOStreamConnection(SERVER * server){ this->server = server; }
+    IOStreamConnection(ServerImpl * server){ this->server = server; }
 
     ~IOStreamConnection(){}
 
@@ -75,7 +75,7 @@ class WASP_PUBLIC IOStreamConnection : public Connection
 
   private:
 
-    SERVER *      server;
+    ServerImpl * server;
 };
 
 } // namespace lsp

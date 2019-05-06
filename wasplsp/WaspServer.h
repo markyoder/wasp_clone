@@ -12,12 +12,12 @@
 namespace wasp {
 namespace lsp  {
 
-template < class INPUT                                     ,
-           class INPUTNV                                   ,
-           class SCHEMA                                    ,
-           class SCHEMANV                                  ,
-           class VALIDATOR                                 ,
-           class CONNECTION = ThreadConnection<ServerImpl> >
+template < class INPUT                         ,
+           class INPUTNV                       ,
+           class SCHEMA                        ,
+           class SCHEMANV                      ,
+           class VALIDATOR                     ,
+           class CONNECTION = ThreadConnection >
 
 class WASP_PUBLIC WaspServer : public ServerImpl
 {

@@ -22,12 +22,12 @@ namespace lsp  {
 
 Client<ClientImpl> client;
 std::thread server_thread;
-Server<WaspServer< DefaultSONInterpreter        ,
-                   SONNodeView                  ,
-                   DefaultSONInterpreter        ,
-                   SONNodeView                  ,
-                   HIVE                         ,
-                   ThreadConnection<ServerImpl> > > wasp_server;
+Server<WaspServer< DefaultSONInterpreter ,
+                   SONNodeView           ,
+                   DefaultSONInterpreter ,
+                   SONNodeView           ,
+                   HIVE                  ,
+                   ThreadConnection      > > wasp_server;
 
 TEST(client, launch_server_thread_and_connnect_client)
 {
@@ -84,12 +84,12 @@ object
 
     server_thread = std::thread
     (
-        &Server<WaspServer< DefaultSONInterpreter        ,
-                            SONNodeView                  ,
-                            DefaultSONInterpreter        ,
-                            SONNodeView                  ,
-                            HIVE                         ,
-                            ThreadConnection<ServerImpl> > >::run ,
+        &Server<WaspServer< DefaultSONInterpreter ,
+                            SONNodeView           ,
+                            DefaultSONInterpreter ,
+                            SONNodeView           ,
+                            HIVE                  ,
+                            ThreadConnection      > >::run ,
         &wasp_server
     );
 
