@@ -33,13 +33,19 @@ class WASP_PUBLIC IOStreamConnection : public Connection
 
         std::cin >> content_length_key;
 
+        wasp_check( content_length_key == m_rpc_content_len_key );
+
         int content_length_val;
 
         std::cin >> content_length_val;
 
+        std::cerr << "*** content_length_val = ::START::" << content_length_val << "::END::" << std::endl; // remove this
+
         std::string content( content_length_val+4 , ' ' );
 
         std::cin.read( &content[0] , content_length_val+4 );
+
+        std::cerr << "*** content = ::START::" << content << "::END::" << std::endl; // remove this
 
         std::stringstream rpc_stream;
 
