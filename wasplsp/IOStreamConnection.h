@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <memory>
 #include "wasplsp/LSP.h"
 #include "wasplsp/Connection.h"
 #include "wasplsp/ServerImpl.h"
@@ -39,13 +40,11 @@ class WASP_PUBLIC IOStreamConnection : public Connection
 
         std::cin >> content_length_val;
 
-        std::cerr << "*** content_length_val = ::START::" << content_length_val << "::END::" << std::endl; // remove this
+        wasp_check( content_length_val > 0 );
 
         std::string content( content_length_val+4 , ' ' );
 
         std::cin.read( &content[0] , content_length_val+4 );
-
-        std::cerr << "*** content = ::START::" << content << "::END::" << std::endl; // remove this
 
         std::stringstream rpc_stream;
 

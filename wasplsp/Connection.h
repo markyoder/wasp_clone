@@ -3,6 +3,7 @@
 
 #include <string>
 #include <sstream>
+#include <memory>
 #include "waspcore/decl.h"
 
 namespace wasp {

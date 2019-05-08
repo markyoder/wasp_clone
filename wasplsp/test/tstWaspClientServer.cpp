@@ -14,6 +14,7 @@
 #include <thread>
 #include <vector>
 #include <sstream>
+#include <memory>
 
 namespace wasp {
 namespace lsp  {

@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <memory>
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
 #include "wasplsp/LSP.h"

@@ -130,22 +130,22 @@ class WASP_PUBLIC ClientImpl
         return this->connection;
     }
 
-    std::string getErrors()
+    std::string getErrors() const
     {
         return this->errors.str();
     }
 
-    int getPreviousRequestID()
+    int getPreviousRequestID() const
     {
         return this->request_id;
     }
 
-    bool isDocumentOpen()
+    bool isDocumentOpen() const
     {
         return this->is_document_open;
     }
 
-    int getCurrentDocumentVersion()
+    int getCurrentDocumentVersion() const
     {
         return this->document_version;
     }

@@ -238,22 +238,22 @@ class WASP_PUBLIC Client
         return Impl.getConnection();
     }
 
-    std::string getErrors()
+    std::string getErrors() const
     {
         return Impl.getErrors();
     }
 
-    int getPreviousRequestID()
+    int getPreviousRequestID() const
     {
         return Impl.getPreviousRequestID();
     }
 
-    bool isDocumentOpen()
+    bool isDocumentOpen() const
     {
         return Impl.isDocumentOpen();
     }
 
-    int getCurrentDocumentVersion()
+    int getCurrentDocumentVersion() const
     {
         return Impl.getCurrentDocumentVersion();
     }

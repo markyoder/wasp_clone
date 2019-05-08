@@ -5,6 +5,7 @@
 #include <sstream>
 #include <mutex>
 #include <condition_variable>
+#include <memory>
 #include "wasplsp/LSP.h"
 #include "wasplsp/Connection.h"
 #include "wasplsp/ServerImpl.h"
