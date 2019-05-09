@@ -23,19 +23,19 @@ InputDefinition::InputDefinition(SchemaAdapter schRoot,
     UniqueOptions   = { "Abs", "Zero", "AbsZero"                 };
     IncDecOptions   = { "Strict", "Mono"                         };
     CCEOptions      = { "IfExists", "EvenNone"                   };
-    DecorativeNames = { "decl"           ,
-                        "term"           ,
-                        "assign"         ,
-                        "comma"          ,
-                        "minus"          ,
-                        "lparen"         ,
-                        "rparen"         ,
-                        "lbrack"         ,
-                        "rbrack"         ,
-                        "scale_comment"  ,
-                        "file_injection" ,
-                        "element_count"  ,
-                        "value"          };
+    DecorativeNames.insert( "decl"           );
+    DecorativeNames.insert( "term"           );
+    DecorativeNames.insert( "assign"         );
+    DecorativeNames.insert( "comma"          );
+    DecorativeNames.insert( "minus"          );
+    DecorativeNames.insert( "lparen"         );
+    DecorativeNames.insert( "rparen"         );
+    DecorativeNames.insert( "lbrack"         );
+    DecorativeNames.insert( "rbrack"         );
+    DecorativeNames.insert( "scale_comment"  );
+    DecorativeNames.insert( "file_injection" );
+    DecorativeNames.insert( "element_count"  );
+    DecorativeNames.insert( "value"          );
 
     setOutputStream(outputStream);
     setErrorStream(errorStream);

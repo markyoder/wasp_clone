@@ -291,14 +291,14 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     // create set of found lookup nodes using a custom lambda comparator
 
-    auto compare = []( const std::shared_ptr<NodeView> & l ,
-                       const std::shared_ptr<NodeView> & r )
-    {
-        return ( l->line() <  r->line() ||
-               ( l->line() == r->line() && l->column() < r->column() ) );
-    };
-
-    std::set<std::shared_ptr<NodeView>, decltype(compare)> found_nodes(compare);
+    std::set< std::shared_ptr<NodeView> ,
+              std::function < bool ( const std::shared_ptr<NodeView> & ,
+                                     const std::shared_ptr<NodeView> & ) > >
+                   found_nodes( [] ( const std::shared_ptr<NodeView> & l ,
+                                     const std::shared_ptr<NodeView> & r )
+                                   { return ( l->line()   <  r->line()    ||
+                                            ( l->line()   == r->line()    &&
+                                              l->column() <  r->column() ) ); } );
 
     // if no definition, existsin, or lookups - just use info for selected node
 
