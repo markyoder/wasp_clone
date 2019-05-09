@@ -70,6 +70,14 @@ object
             MaxValExc=NoLimit
         }
     }
+
+    use
+    {
+        MinOccurs=1
+        MaxOccurs=1
+        ValType=Int
+        ExistsIn(Abs)=[ "../list/value" ]
+    }
 }
 
 )INPUT";
@@ -139,13 +147,15 @@ object
 {
     key  = 19.6
     key  = 12.6
-    list = [ 1 -2 4 5 9 8 ]
+    list = [ 9 -2 -9 5 009 8 ]
+    use  = -09
 }
 
 object
 {
     key  = -4.6
     list = [ 5 6 7
+    use  = 6
 }
 
 )INPUT";
@@ -166,7 +176,7 @@ object
 
     // diagnostic responses
 
-    ASSERT_EQ   ( client.getDiagnosticSize(), 5 );
+    ASSERT_EQ   ( client.getDiagnosticSize(), 6 );
 
     for (int index = 0; index < client.getDiagnosticSize(); index++)
     {
@@ -190,9 +200,9 @@ object
                                               message         ) );
         if ( index == 0 )
         {
-            ASSERT_EQ ( start_line      , 14       );
+            ASSERT_EQ ( start_line      , 16       );
             ASSERT_EQ ( start_character , 01       );
-            ASSERT_EQ ( end_line        , 14       );
+            ASSERT_EQ ( end_line        , 16       );
             ASSERT_EQ ( end_character   , 01       );
             ASSERT_EQ ( severity        , 01       );
             ASSERT_EQ ( code            , "parse"  );
@@ -243,6 +253,17 @@ object
             ASSERT_EQ ( source          , "validator" );
             ASSERT_EQ ( message         , "Validation Error: list value \"-2\" is less than the allowed minimum inclusive value of 0" );
         }
+        else if ( index == 5 )
+        {
+            ASSERT_EQ ( start_line      , 07          );
+            ASSERT_EQ ( start_character , 19          );
+            ASSERT_EQ ( end_line        , 07          );
+            ASSERT_EQ ( end_character   , 19          );
+            ASSERT_EQ ( severity        , 01          );
+            ASSERT_EQ ( code            , "validate"  );
+            ASSERT_EQ ( source          , "validator" );
+            ASSERT_EQ ( message         , "Validation Error: list value \"-9\" is less than the allowed minimum inclusive value of 0" );
+        }
     }
 }
 
@@ -260,13 +281,15 @@ TEST(client, document_change_and_diagnostics)
 object
 {
     key  = 19.6
-    list = [ 1 -2 4 5 9 ]
+    list = [ 9 -2 -9 5 009 ]
+    use  = -09
 }
 
 object
 {
     key  = -4.6
     list = [ 5 6 7 ]
+    use  = 6
 }
 
 )INPUT";
@@ -288,7 +311,7 @@ object
 
     // diagnostic responses
 
-    ASSERT_EQ   ( client.getDiagnosticSize(), 3 );
+    ASSERT_EQ   ( client.getDiagnosticSize(), 4 );
 
     for (int index = 0; index < client.getDiagnosticSize(); index++)
     {
@@ -334,9 +357,20 @@ object
         }
         else if ( index == 2 )
         {
-            ASSERT_EQ ( start_line      , 11          );
+            ASSERT_EQ ( start_line      , 06          );
+            ASSERT_EQ ( start_character , 19          );
+            ASSERT_EQ ( end_line        , 06          );
+            ASSERT_EQ ( end_character   , 19          );
+            ASSERT_EQ ( severity        , 01          );
+            ASSERT_EQ ( code            , "validate"  );
+            ASSERT_EQ ( source          , "validator" );
+            ASSERT_EQ ( message         , "Validation Error: list value \"-9\" is less than the allowed minimum inclusive value of 0" );
+        }
+        else if ( index == 3 )
+        {
+            ASSERT_EQ ( start_line      , 12          );
             ASSERT_EQ ( start_character , 12          );
-            ASSERT_EQ ( end_line        , 11          );
+            ASSERT_EQ ( end_line        , 12          );
             ASSERT_EQ ( end_character   , 12          );
             ASSERT_EQ ( severity        , 01          );
             ASSERT_EQ ( code            , "validate"  );
@@ -390,18 +424,76 @@ TEST(client, document_symbols_and_responses)
 /object/list/value (6:14)
 /object/list/value (6:16)
 /object/list/value (6:19)
-/object/list/value (6:21)
-/object/list/value (6:23)
-/object (9:1)
-/object/key (11:5)
-/object/key/value (11:12)
-/object/list (12:5)
-/object/list/value (12:14)
-/object/list/value (12:16)
-/object/list/value (12:18)
+/object/list/value (6:22)
+/object/list/value (6:24)
+/object/use (7:5)
+/object/use/value (7:12)
+/object (10:1)
+/object/key (12:5)
+/object/key/value (12:12)
+/object/list (13:5)
+/object/list/value (13:14)
+/object/list/value (13:16)
+/object/list/value (13:18)
+/object/use (14:5)
+/object/use/value (14:12)
 )INPUT";
 
     ASSERT_EQ( paths.str() , expected_paths.str() );
+}
+
+TEST(client, document_definition)
+{
+    // document definition
+
+    int line       = 07;
+    int character  = 12;
+
+    ASSERT_TRUE ( client.doDocumentDefinition( line     ,
+                                               character) );
+
+    ASSERT_TRUE ( client.getConnection()->getServerErrors().empty() );
+
+    ASSERT_TRUE ( client.getErrors().empty() );
+
+    // definition responses
+
+    ASSERT_EQ   ( client.getDefinitionSize(), 3 );
+
+    for (int index = 0; index < client.getDefinitionSize(); index++)
+    {
+        int         start_line;
+        int         start_character;
+        int         end_line;
+        int         end_character;
+
+        ASSERT_TRUE ( client.getDefinitionAt( index           ,
+                                              start_line      ,
+                                              start_character ,
+                                              end_line        ,
+                                              end_character   ) );
+        if ( index == 0 )
+        {
+            ASSERT_EQ ( start_line      , 06 );
+            ASSERT_EQ ( start_character , 14 );
+            ASSERT_EQ ( end_line        , 06 );
+            ASSERT_EQ ( end_character   , 14 );
+        }
+        else if ( index == 1 )
+        {
+            ASSERT_EQ ( start_line      , 06 );
+            ASSERT_EQ ( start_character , 19 );
+            ASSERT_EQ ( end_line        , 06 );
+            ASSERT_EQ ( end_character   , 20 );
+        }
+        else if ( index == 2 )
+        {
+            ASSERT_EQ ( start_line      , 06 );
+            ASSERT_EQ ( start_character , 24 );
+            ASSERT_EQ ( end_line        , 06 );
+            ASSERT_EQ ( end_character   , 26 );
+        }
+    }
 }
 
 TEST(client, document_close)

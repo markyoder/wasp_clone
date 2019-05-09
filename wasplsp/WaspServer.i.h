@@ -1,4 +1,5 @@
 #include "waspson/SONNodeView.h"
+#include "waspcore/utils.h"
 
 namespace wasp {
 namespace lsp  {
@@ -19,6 +20,12 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
     this->validator = validator;
 
     this->schema = schema;
+
+    SCHEMANV schema_root = this->schema->root();
+
+    this->inputdefinition = std::make_shared<InputDefinition>( schema_root  ,
+                                                               this->errors ,
+                                                               this->errors );
 
     return pass;
 }
@@ -104,9 +111,9 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         }
     }
 
-    INPUTNV  schema_root = this->schema->root();
+    SCHEMANV schema_root = this->schema->root();
 
-    SCHEMANV input_root  = this->parser->root();
+    INPUTNV  input_root  = this->parser->root();
 
     std::vector<std::string> validation_errors;
 
@@ -257,7 +264,86 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     bool pass = true;
 
-    // TODO
+    std::shared_ptr<NodeView> selectedNode = wasp::findNodeUnderLineColumn(
+                           std::make_shared<NodeView>( this->parser->root() ) ,
+                           line                                               ,
+                           character                                          );
+
+    wasp_check( selectedNode );
+
+    // get the input definition node for this input node's path
+
+    wasp_check( this->inputdefinition );
+
+    auto def = this->inputdefinition->pathLookup( selectedNode->path() );
+
+    // make lookup copy and move to parent if node is "value" and not in schema
+
+    NodeView lookup_node = *selectedNode;
+
+    if ( lookup_node.type() == wasp::VALUE && def->getObjectName() != "value" )
+    {
+        if( lookup_node.has_parent() )
+        {
+            lookup_node = lookup_node.parent();
+        }
+    }
+
+    // create set of found lookup nodes using a custom lambda comparator
+
+    auto compare = []( const std::shared_ptr<NodeView> & l ,
+                       const std::shared_ptr<NodeView> & r )
+    {
+        return ( l->line() <  r->line() ||
+               ( l->line() == r->line() && l->column() < r->column() ) );
+    };
+
+    std::set<std::shared_ptr<NodeView>, decltype(compare)> found_nodes(compare);
+
+    // if no definition, existsin, or lookups - just use info for selected node
+
+    if( def == nullptr  || def->getExistsIn() == nullptr  ||
+        def->getExistsIn()->lookupNodesByValue(lookup_node, found_nodes) == 0 )
+    {
+        int start_line      = selectedNode->line();
+        int start_character = selectedNode->column();
+        int end_line        = selectedNode->last_line();
+        int end_character   = selectedNode->last_column();
+
+        definitionLocations.push_back( DataObject() );
+
+        DataObject * location = definitionLocations.back().to_object();
+
+        pass &= buildLocationObject( *location            ,
+                                      this->errors        ,
+                                      this->document_path ,
+                                      start_line          ,
+                                      start_character     ,
+                                      end_line            ,
+                                      end_character       );
+    }
+    else
+    {
+        for( auto iterate_node : found_nodes )
+        {
+            int start_line      = iterate_node->line();
+            int start_character = iterate_node->column();
+            int end_line        = iterate_node->last_line();
+            int end_character   = iterate_node->last_column();
+
+            definitionLocations.push_back( DataObject() );
+
+            DataObject * location = definitionLocations.back().to_object();
+
+            pass &= buildLocationObject( *location            ,
+                                          this->errors        ,
+                                          this->document_path ,
+                                          start_line          ,
+                                          start_character     ,
+                                          end_line            ,
+                                          end_character       );
+        }
+    }
 
     return pass;
 }

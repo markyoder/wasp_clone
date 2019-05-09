@@ -15,6 +15,8 @@
 #include <map>
 #include <set>
 #include <algorithm>
+#include "waspsiren/SIRENInterpreter.h"
+#include "waspsiren/SIRENResultSet.h"
 
 namespace wasp
 {
@@ -40,167 +42,6 @@ class ChildExactlyOneRule;
 class ChildAtLeastOneRule;
 class ChildCountEqualRule;
 class ChildUniquenessRule;
-
-class InputDefinition{
-
-    public:
-        static const int POSINF;
-        static const int NEGINF;
-
-        template<class SchemaAdapter>
-        InputDefinition(SchemaAdapter schRoot,
-                        std::ostream & outputStream = std::cout,
-                        std::ostream & errorStream  = std::cerr);
-        ~InputDefinition();
-
-        void setInitialized(bool yes_or_no){
-            this->initialized = yes_or_no;
-        }
-        bool isInitialized(){
-            return this->initialized;
-        }
-
-        void setRootObject(IDObject * object){
-            this->rootObject = object;
-        }
-        IDObject * getRootObject()const{
-            return this->rootObject;
-        }
-        
-        std::map< std::string, std::vector<std::string> > * getEnumRefs(){
-            return &(this->enumRefs);
-        }
-        void setErrorStream(std::ostream & error_stream){
-            this->errorStream = &error_stream;
-        }
-        std::ostream * getErrorStream(){
-            return this->errorStream;
-        }
-        void setOutputStream(std::ostream & outputStream){
-            this->xout = &outputStream;
-        }
-        
-        template<class SchemaAdapter>
-        bool fillEnumReferences(SchemaAdapter);
-
-        template<class SchemaAdapter>
-        bool fillInputDefinition(IDObject *, SchemaAdapter);
-
-        template<class SchemaAdapter>
-        bool addEnumRef(SchemaAdapter);
-
-        bool isInt(const std::string& value){
-            std::istringstream issRV(value);
-            int ftest;
-            issRV >> std::noskipws >> ftest;
-            if (issRV.eof() && !issRV.fail()) return true;
-            else return false;
-        }
-        bool isReal(const std::string& value){
-            std::istringstream issRV(value);
-            float ftest;
-            issRV >> std::noskipws >> ftest;
-            if (issRV.eof() && !issRV.fail()) return true;
-            else return false;
-        }
-        
-        template<class SchemaAdapter>
-        bool isValidPath(const std::string& path, SchemaAdapter node){
-
-            std::string pathCopy = path;
-            auto tmpNode = node;
-            int levels = std::count(pathCopy.begin(), pathCopy.end(), '/') + 1;
-
-            for(int i = 0; i < levels; i++){
-
-                std::string subPath = pathCopy.substr(0, pathCopy.find("/"));
-                pathCopy = pathCopy.substr(pathCopy.find("/") + 1);
-
-                if (std::count(subPath.begin(), subPath.end(), '[') == 1){
-                    if (std::count(subPath.begin(), subPath.end(), ']') != 1) return false;
-                    if (subPath.find("[") >= subPath.find("]")) return false;
-                    subPath = subPath.substr(0, subPath.find("["));
-                }
-                if (subPath == ".."){
-                    tmpNode = tmpNode.parent();
-                    if(tmpNode.is_null()) return false;
-                }
-                else if (std::count(subPath.begin(), subPath.end(), '.') != 0){
-                    return false;
-                }
-                else{
-                    auto tmp = tmpNode.first_non_decorative_child_by_name(subPath);
-
-                    if (tmp.is_null()){
-                        tmp = tmpNode.first_non_decorative_child_by_name("*");
-
-                        if (tmp.is_null()){
-                            tmp = tmpNode.first_child_by_name(subPath);
-                        }
-                    }
-
-                    if (tmp.is_null()) return false;
-                    tmpNode = tmp;
-                }
-
-            }
-
-            return true;
-        }
-
-        template<class SchemaAdapter>
-        void streamErrorMessage(SchemaAdapter node, std::string errorMessage){
-            (*this->getErrorStream()) << node.name() <<
-                                      " :: line: " << node.line() <<
-                                      " column: " << node.column() <<
-                                      " - " << errorMessage << std::endl;
-        }
-
-        const std::vector<std::string> & getValTypeOptions(){
-            return this->ValTypeOptions;
-        }
-        const std::vector<std::string> & getExistsInOptions(){
-            return this->ExistsInOptions;
-        }
-        const std::vector<std::string> & getUniqueOptions(){
-            return this->UniqueOptions;
-        }
-        const std::vector<std::string> & getIncDecOptions(){
-            return this->IncDecOptions;
-        }
-        const std::vector<std::string> & getCCEOptions(){
-            return this->CCEOptions;
-        }
-        
-        bool getAbsolutePath(IDObject * node, std::string& relativePath,
-                                              std::string& absolutePath)const;
-        void printMarkdownAll();
-        void printMarkdownTableOfContents(IDObject *, int level);
-        void printMarkdownDocumentation(IDObject *);
-        void printMarkdownReferencedLists();
-        void addReferenceUsage(std::string refName){
-            this->referencesUsed.insert(refName);
-        }
-
-        std::string createBreadcrumbString(IDObject * node);
-
-        std::string howManyString(IDObject * IDNode, int minOccurs);
-
-    private:
-
-        bool initialized;
-        //std::string filename;
-        IDObject * rootObject;
-        std::map< std::string, std::vector<std::string> > enumRefs;
-        std::set<std::string> referencesUsed;
-        std::ostream * errorStream;
-        std::ostream * xout;
-        std::vector<std::string> ValTypeOptions;
-        std::vector<std::string> ExistsInOptions;
-        std::vector<std::string> UniqueOptions;
-        std::vector<std::string> IncDecOptions;
-        std::vector<std::string> CCEOptions;
-};
 
 class IDObject{
 
@@ -557,6 +398,222 @@ class IDObject{
         
         template<class SchemaAdapter>
         bool addChildUniquenessRule (SchemaAdapter, InputDefinition *);
+};
+
+class InputDefinition{
+
+    public:
+        static const int POSINF;
+        static const int NEGINF;
+
+        template<class SchemaAdapter>
+        InputDefinition(SchemaAdapter schRoot,
+                        std::ostream & outputStream = std::cout,
+                        std::ostream & errorStream  = std::cerr);
+        ~InputDefinition();
+
+        void setInitialized(bool yes_or_no){
+            this->initialized = yes_or_no;
+        }
+        bool isInitialized(){
+            return this->initialized;
+        }
+
+        void setRootObject(IDObject * object){
+            this->rootObject = object;
+        }
+        IDObject * getRootObject()const{
+            return this->rootObject;
+        }
+
+        IDObject * pathLookup(const std::string& path) const
+        {
+            // current child (root)
+            auto id = getRootObject();
+
+            // selecting root, return it
+            if(path == "/")
+            {
+                return id;
+            }
+
+            // list of node names, stream used to populate it
+            std::stringstream ss(path);
+
+            for(std::string name; std::getline(ss, name, '/');)
+            {
+                // skip empty name (consecutive separators)
+                if(name.empty())
+                {
+                    continue;
+                }
+
+                // matching child
+                IDObject *match = nullptr;
+
+                // look for matching child
+                for(auto child : id->getIDChildren())
+                {
+                    // if there is a "*" grab that one in case there is no name match
+                    if (child->getObjectName() == "*") match = child;
+
+                    // child's name matches, stop this loop
+                    else if(child->getObjectName() == name)
+                    {
+                        match = child;
+                        break;
+                    }
+                }
+
+                // no match found, stop
+                if(match == nullptr)
+                {
+                    bool is_dec = (DecorativeNames.find(name) != DecorativeNames.end());
+
+                    return is_dec ? id : nullptr;;
+                }
+
+                // update id
+                id = match;
+            }
+
+            return id;
+        }
+
+        std::map< std::string, std::vector<std::string> > * getEnumRefs(){
+            return &(this->enumRefs);
+        }
+        void setErrorStream(std::ostream & error_stream){
+            this->errorStream = &error_stream;
+        }
+        std::ostream * getErrorStream(){
+            return this->errorStream;
+        }
+        void setOutputStream(std::ostream & outputStream){
+            this->xout = &outputStream;
+        }
+
+        template<class SchemaAdapter>
+        bool fillEnumReferences(SchemaAdapter);
+
+        template<class SchemaAdapter>
+        bool fillInputDefinition(IDObject *, SchemaAdapter);
+
+        template<class SchemaAdapter>
+        bool addEnumRef(SchemaAdapter);
+
+        bool isInt(const std::string& value){
+            std::istringstream issRV(value);
+            int ftest;
+            issRV >> std::noskipws >> ftest;
+            if (issRV.eof() && !issRV.fail()) return true;
+            else return false;
+        }
+        bool isReal(const std::string& value){
+            std::istringstream issRV(value);
+            float ftest;
+            issRV >> std::noskipws >> ftest;
+            if (issRV.eof() && !issRV.fail()) return true;
+            else return false;
+        }
+
+        template<class SchemaAdapter>
+        bool isValidPath(const std::string& path, SchemaAdapter node){
+
+            std::string pathCopy = path;
+            auto tmpNode = node;
+            int levels = std::count(pathCopy.begin(), pathCopy.end(), '/') + 1;
+
+            for(int i = 0; i < levels; i++){
+
+                std::string subPath = pathCopy.substr(0, pathCopy.find("/"));
+                pathCopy = pathCopy.substr(pathCopy.find("/") + 1);
+
+                if (std::count(subPath.begin(), subPath.end(), '[') == 1){
+                    if (std::count(subPath.begin(), subPath.end(), ']') != 1) return false;
+                    if (subPath.find("[") >= subPath.find("]")) return false;
+                    subPath = subPath.substr(0, subPath.find("["));
+                }
+                if (subPath == ".."){
+                    tmpNode = tmpNode.parent();
+                    if(tmpNode.is_null()) return false;
+                }
+                else if (std::count(subPath.begin(), subPath.end(), '.') != 0){
+                    return false;
+                }
+                else{
+                    auto tmp = tmpNode.first_non_decorative_child_by_name(subPath);
+
+                    if (tmp.is_null()){
+                        tmp = tmpNode.first_non_decorative_child_by_name("*");
+
+                        if (tmp.is_null()){
+                            tmp = tmpNode.first_child_by_name(subPath);
+                        }
+                    }
+
+                    if (tmp.is_null()) return false;
+                    tmpNode = tmp;
+                }
+
+            }
+
+            return true;
+        }
+
+        template<class SchemaAdapter>
+        void streamErrorMessage(SchemaAdapter node, std::string errorMessage){
+            (*this->getErrorStream()) << node.name() <<
+                                      " :: line: " << node.line() <<
+                                      " column: " << node.column() <<
+                                      " - " << errorMessage << std::endl;
+        }
+
+        const std::vector<std::string> & getValTypeOptions(){
+            return this->ValTypeOptions;
+        }
+        const std::vector<std::string> & getExistsInOptions(){
+            return this->ExistsInOptions;
+        }
+        const std::vector<std::string> & getUniqueOptions(){
+            return this->UniqueOptions;
+        }
+        const std::vector<std::string> & getIncDecOptions(){
+            return this->IncDecOptions;
+        }
+        const std::vector<std::string> & getCCEOptions(){
+            return this->CCEOptions;
+        }
+
+        bool getAbsolutePath(IDObject * node, std::string& relativePath,
+                                              std::string& absolutePath)const;
+        void printMarkdownAll();
+        void printMarkdownTableOfContents(IDObject *, int level);
+        void printMarkdownDocumentation(IDObject *);
+        void printMarkdownReferencedLists();
+        void addReferenceUsage(std::string refName){
+            this->referencesUsed.insert(refName);
+        }
+
+        std::string createBreadcrumbString(IDObject * node);
+
+        std::string howManyString(IDObject * IDNode, int minOccurs);
+
+    private:
+
+        bool initialized;
+        //std::string filename;
+        IDObject * rootObject;
+        std::map< std::string, std::vector<std::string> > enumRefs;
+        std::set<std::string> referencesUsed;
+        std::ostream * errorStream;
+        std::ostream * xout;
+        std::vector<std::string> ValTypeOptions;
+        std::vector<std::string> ExistsInOptions;
+        std::vector<std::string> UniqueOptions;
+        std::vector<std::string> IncDecOptions;
+        std::vector<std::string> CCEOptions;
+        std::set   <std::string> DecorativeNames;
 };
 
 class MinOccursRule{
@@ -1174,6 +1231,75 @@ class ExistsInRule{
         }
         std::string getRawConstantsAt(size_t index){
             return constantsList.at(index);  
+        }
+
+        template<class INPUTNV, typename NODESET>
+        size_t lookupNodesByValue(INPUTNV & given_node, NODESET & found_nodes) const
+        {
+            size_t original_size = found_nodes.size();
+
+            std::string givenModString = given_node.last_as_string();
+
+            if ( this->modifierFlag == "Abs" &&
+               ( givenModString.at(0) == '-' ||
+                 givenModString.at(0) == '+' ))
+            {
+                givenModString.erase(givenModString.begin());
+            }
+
+            size_t zeroIndex = givenModString.find_first_not_of('0');
+            if ( zeroIndex != 0 && zeroIndex != std::string::npos )
+            {
+                try
+                {
+                    std::stoi(givenModString);
+                    givenModString.erase(0, zeroIndex);
+                }
+                catch(...){}
+            }
+
+            for (auto path : this->lookupPathsList)
+            {
+                SIRENInterpreter<> selector;
+
+                if( !selector.parseString( path ) ) break;
+
+                SIRENResultSet<INPUTNV> results;
+
+                auto selected = selector.evaluate( given_node , results );
+
+                for(size_t i = 0; i < selected; i++)
+                {
+                    INPUTNV node = results.adapted(i);
+
+                    std::string selectModString = node.last_as_string();
+
+                    if ( this->modifierFlag == "Abs"  &&
+                       ( selectModString.at(0) == '-' ||
+                         selectModString.at(0) == '+' ))
+                    {
+                        selectModString.erase(selectModString.begin());
+                    }
+
+                    size_t zeroIndex = selectModString.find_first_not_of('0');
+                    if ( zeroIndex != 0 && zeroIndex != std::string::npos )
+                    {
+                        try
+                        {
+                            std::stoi(selectModString);
+                            selectModString.erase(0, zeroIndex);
+                        }
+                        catch(...){}
+                    }
+
+                    if (selectModString == givenModString)
+                    {
+                        found_nodes.insert( std::make_shared<INPUTNV>( node ) );
+                    }
+                }
+            }
+
+            return found_nodes.size() - original_size;
         }
 
     private:

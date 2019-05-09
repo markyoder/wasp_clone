@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iomanip>
 #include <stdio.h>  // windows exponent configure
+#include <memory>
 #include "waspcore/decl.h"
 
 namespace wasp
@@ -430,5 +431,147 @@ WASP_PUBLIC void node_paths(const TAdapter& node, std::ostream& out)
         node_paths(node.child_at(i),out);
     }
 }
+
+template<class TAdapter> WASP_PUBLIC
+std::shared_ptr<TAdapter> findNodeUnderLineColumn( std::shared_ptr<TAdapter> root  ,
+                                                   size_t line , size_t column     )
+{
+    // node under line and column
+    std::shared_ptr<TAdapter> node = find( root , line , column );
+
+    // node is valid and we're at the beginning
+    if( node != nullptr && line == node->line() && column == node->column() )
+    {
+        return node;
+    }
+
+    // node at previous character
+    std::shared_ptr<TAdapter> prev = find( root , line , --column );
+
+    // failed to find previous node ( past the document end ) - return root
+    if( prev == nullptr )
+    {
+        return root;
+    }
+
+    // found a valid previous node
+    if( prev != nullptr )
+    {
+        // we're asking for the end of the previous node
+        if( line == prev->last_line() && column == prev->last_column() )
+        {
+            return prev;
+        }
+    }
+
+
+    return node;
+}
+
+template<class TAdapter> WASP_PUBLIC
+std::shared_ptr<TAdapter> find( std::shared_ptr<TAdapter> node  ,
+                                size_t line , size_t column     )
+{
+    // node's last line
+    auto lastLine = node->last_line();
+
+    // if the ending line is prior to current node we return no find (nullptr)
+    if(lastLine < line)
+    {
+        return nullptr;
+    }
+
+    // node's child count
+    auto childCount = node->child_count();
+
+    // is the given node on the same line and the column within the context of the node?
+    if( node->line()        == line   &&
+        node->column()      <= column &&
+        node->last_column() >= column &&
+        childCount          == 0      )
+    {
+        return node;
+    }
+
+    else if( childCount > 0 )
+    {
+        return findChild(node, 0, childCount, line, column);
+    }
+
+    return nullptr;
+}
+
+template<class TAdapter> WASP_PUBLIC
+std::shared_ptr<TAdapter> findChild( std::shared_ptr<TAdapter> node          ,
+                                     size_t start      , size_t end          ,
+                                     size_t searchLine , size_t searchColumn )
+{
+    // invalid input
+    if(start > end)
+    {
+        return nullptr;
+    }
+
+    // node's child count
+    auto childCount = node->child_count();
+
+    // no children, delegate to find
+    if(childCount == 0)
+    {
+        return find(node, searchLine, searchColumn);
+    }
+
+    // midpoint index
+    size_t mid = start + (end - start) / 2;
+
+    // invalid index
+    if(mid >= childCount)
+    {
+        return nullptr;
+    }
+
+    // midpoint child
+    std::shared_ptr<TAdapter> child = std::make_shared<TAdapter>(node->child_at(mid));
+
+    // child metadata
+    auto startLine   = child->line();
+    auto startColumn = child->column();
+    auto lastLine    = child->last_line();
+    auto lastColumn  = child->last_column();
+
+    // should we search left/right?
+    auto searchLeft  = ( startLine >  searchLine ||
+                       ( startLine == searchLine && startColumn > searchColumn ) );
+    auto searchRight = ( lastLine  <  searchLine ||
+                       ( lastLine  == searchLine && lastColumn  < searchColumn ) );
+
+    // can't search anymore
+    if(start == end && (searchLeft || searchRight))
+    {
+        return nullptr;
+    }
+
+    // child to return
+    std::shared_ptr<TAdapter> found;
+
+    // searching left
+    if(searchLeft)
+    {
+        found = findChild(node, start, mid, searchLine, searchColumn);
+    }
+    // searching right
+    else if(searchRight)
+    {
+        found = findChild(node, mid + 1, end, searchLine, searchColumn);
+    }
+    // search deeper
+    else
+    {
+        found = findChild(child, 0, child->child_count(), searchLine, searchColumn);
+    }
+
+    return found ? found : node;
+}
+
 }
 #endif

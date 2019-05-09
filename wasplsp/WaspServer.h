@@ -6,6 +6,7 @@
 #include "wasplsp/LSP.h"
 #include "wasplsp/ServerImpl.h"
 #include "wasplsp/ThreadConnection.h"
+#include "wasphive/InputDefinition.h"
 #include "waspcore/Object.h"
 #include "waspcore/Interpreter.h"
 #include "waspcore/decl.h"
@@ -93,13 +94,15 @@ class WASP_PUBLIC WaspServer : public ServerImpl
        return this->connection->write( object , this->errors );
     }
 
-    std::shared_ptr<INPUT>      parser;
+    std::shared_ptr<INPUT>           parser;
 
-    std::shared_ptr<VALIDATOR>  validator;
+    std::shared_ptr<VALIDATOR>       validator;
 
-    std::shared_ptr<SCHEMA>     schema;
+    std::shared_ptr<SCHEMA>          schema;
 
-    std::shared_ptr<CONNECTION> connection;
+    std::shared_ptr<CONNECTION>      connection;
+
+    std::shared_ptr<InputDefinition> inputdefinition;
 };
 
 } // namespace lsp
