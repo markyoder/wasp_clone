@@ -1233,6 +1233,33 @@ class ExistsInRule{
             return constantsList.at(index);  
         }
 
+        template<class INPUTNV>
+        size_t lookupNodesCollectByValue(INPUTNV               & given_node ,
+                                         std::set<std::string> & found_keys ) const
+        {
+            size_t original_size = found_keys.size();
+
+            for (auto path : this->lookupPathsList)
+            {
+                SIRENInterpreter<> selector;
+
+                if( !selector.parseString( path ) ) break;
+
+                SIRENResultSet<INPUTNV> results;
+
+                auto selected = selector.evaluate( given_node , results );
+
+                for(size_t i = 0; i < selected; i++)
+                {
+                    INPUTNV node = results.adapted(i);
+
+                    found_keys.insert( node.last_as_string() );
+                }
+            }
+
+            return found_keys.size() - original_size;
+        }
+
         template<class INPUTNV, typename NODESET>
         size_t lookupNodesByValue(INPUTNV & given_node, NODESET & found_nodes) const
         {

@@ -78,6 +78,14 @@ object
         ValType=Int
         ExistsIn(Abs)=[ "../list/value" ]
     }
+
+    food
+    {
+        MinOccurs=0
+        MaxOccurs=1
+        ValType=String
+        ValEnums=[ apple orange kiwi potato tomato ]
+    }
 }
 
 )INPUT";
@@ -290,6 +298,7 @@ object
     key  = -4.6
     list = [ 5 6 7 ]
     use  = 6
+    food = red
 }
 
 )INPUT";
@@ -311,7 +320,7 @@ object
 
     // diagnostic responses
 
-    ASSERT_EQ   ( client.getDiagnosticSize(), 4 );
+    ASSERT_EQ   ( client.getDiagnosticSize(), 5 );
 
     for (int index = 0; index < client.getDiagnosticSize(); index++)
     {
@@ -377,6 +386,17 @@ object
             ASSERT_EQ ( source          , "validator" );
             ASSERT_EQ ( message         , "Validation Error: key value \"-4.6\" is less than the allowed minimum inclusive value of 0" );
         }
+        else if ( index == 4 )
+        {
+            ASSERT_EQ ( start_line      , 15          );
+            ASSERT_EQ ( start_character , 5           );
+            ASSERT_EQ ( end_line        , 15          );
+            ASSERT_EQ ( end_character   , 5           );
+            ASSERT_EQ ( severity        , 01          );
+            ASSERT_EQ ( code            , "validate"  );
+            ASSERT_EQ ( source          , "validator" );
+            ASSERT_EQ ( message         , "Validation Error: food value \"red\" is not one of the allowed values: [ \"apple\" \"kiwi\" \"orange\" \"potato\" \"tomato\" ]" );
+        }
     }
 }
 
@@ -437,9 +457,245 @@ TEST(client, document_symbols_and_responses)
 /object/list/value (13:18)
 /object/use (14:5)
 /object/use/value (14:12)
+/object/food (15:5)
+/object/food/value (15:12)
 )INPUT";
 
     ASSERT_EQ( paths.str() , expected_paths.str() );
+}
+
+TEST(client, document_completion_existsin)
+{
+    // document completion
+
+    int line       = 07;
+    int character  = 12;
+
+    ASSERT_TRUE ( client.doDocumentCompletion( line     ,
+                                               character) );
+
+    ASSERT_TRUE ( client.getConnection()->getServerErrors().empty() );
+
+    ASSERT_TRUE ( client.getErrors().empty() );
+
+    // completion responses
+
+    ASSERT_EQ   ( client.getCompletionSize(), 5 );
+
+    for (int index = 0; index < client.getCompletionSize(); index++)
+    {
+        std::string label;
+        int         start_line;
+        int         start_character;
+        int         end_line;
+        int         end_character;
+        std::string new_text;
+        int         kind;
+        std::string detail;
+        std::string documentation;
+        bool        deprecated;
+        bool        preselect;
+
+        ASSERT_TRUE ( client.getCompletionAt( index           ,
+                                              label           ,
+                                              start_line      ,
+                                              start_character ,
+                                              end_line        ,
+                                              end_character   ,
+                                              new_text        ,
+                                              kind            ,
+                                              detail          ,
+                                              documentation   ,
+                                              deprecated      ,
+                                              preselect       ) );
+        if ( index == 0 )
+        {
+            ASSERT_EQ ( label           , "-2"       );
+            ASSERT_EQ ( start_line      , 07         );
+            ASSERT_EQ ( start_character , 12         );
+            ASSERT_EQ ( end_line        , 07         );
+            ASSERT_EQ ( end_character   , 12         );
+            ASSERT_EQ ( new_text        , "-2"       );
+            ASSERT_EQ ( kind            , 1          );
+            ASSERT_EQ ( detail          , "existsin" );
+            ASSERT_EQ ( documentation   , "-2"       );
+            ASSERT_EQ ( deprecated      , false      );
+            ASSERT_EQ ( preselect       , false      );
+        }
+        if ( index == 1 )
+        {
+            ASSERT_EQ ( label           , "-9"       );
+            ASSERT_EQ ( start_line      , 07         );
+            ASSERT_EQ ( start_character , 12         );
+            ASSERT_EQ ( end_line        , 07         );
+            ASSERT_EQ ( end_character   , 12         );
+            ASSERT_EQ ( new_text        , "-9"       );
+            ASSERT_EQ ( kind            , 1          );
+            ASSERT_EQ ( detail          , "existsin" );
+            ASSERT_EQ ( documentation   , "-9"       );
+            ASSERT_EQ ( deprecated      , false      );
+            ASSERT_EQ ( preselect       , false      );
+        }
+        if ( index == 2 )
+        {
+            ASSERT_EQ ( label           , "009"      );
+            ASSERT_EQ ( start_line      , 07         );
+            ASSERT_EQ ( start_character , 12         );
+            ASSERT_EQ ( end_line        , 07         );
+            ASSERT_EQ ( end_character   , 12         );
+            ASSERT_EQ ( new_text        , "009"      );
+            ASSERT_EQ ( kind            , 1          );
+            ASSERT_EQ ( detail          , "existsin" );
+            ASSERT_EQ ( documentation   , "009"      );
+            ASSERT_EQ ( deprecated      , false      );
+            ASSERT_EQ ( preselect       , false      );
+        }
+        if ( index == 3 )
+        {
+            ASSERT_EQ ( label           , "5"        );
+            ASSERT_EQ ( start_line      , 07         );
+            ASSERT_EQ ( start_character , 12         );
+            ASSERT_EQ ( end_line        , 07         );
+            ASSERT_EQ ( end_character   , 12         );
+            ASSERT_EQ ( new_text        , "5"        );
+            ASSERT_EQ ( kind            , 1          );
+            ASSERT_EQ ( detail          , "existsin" );
+            ASSERT_EQ ( documentation   , "5"        );
+            ASSERT_EQ ( deprecated      , false      );
+            ASSERT_EQ ( preselect       , false      );
+        }
+        if ( index == 4 )
+        {
+            ASSERT_EQ ( label           , "9"        );
+            ASSERT_EQ ( start_line      , 07         );
+            ASSERT_EQ ( start_character , 12         );
+            ASSERT_EQ ( end_line        , 07         );
+            ASSERT_EQ ( end_character   , 12         );
+            ASSERT_EQ ( new_text        , "9"        );
+            ASSERT_EQ ( kind            , 1          );
+            ASSERT_EQ ( detail          , "existsin" );
+            ASSERT_EQ ( documentation   , "9"        );
+            ASSERT_EQ ( deprecated      , false      );
+            ASSERT_EQ ( preselect       , false      );
+        }
+    }
+}
+
+TEST(client, document_completion_valenums)
+{
+    // document completion
+
+    int line       = 15;
+    int character  = 12;
+
+    ASSERT_TRUE ( client.doDocumentCompletion( line     ,
+                                               character) );
+
+    ASSERT_TRUE ( client.getConnection()->getServerErrors().empty() );
+
+    ASSERT_TRUE ( client.getErrors().empty() );
+
+    // completion responses
+
+    ASSERT_EQ   ( client.getCompletionSize(), 5 );
+
+    for (int index = 0; index < client.getCompletionSize(); index++)
+    {
+        std::string label;
+        int         start_line;
+        int         start_character;
+        int         end_line;
+        int         end_character;
+        std::string new_text;
+        int         kind;
+        std::string detail;
+        std::string documentation;
+        bool        deprecated;
+        bool        preselect;
+
+        ASSERT_TRUE ( client.getCompletionAt( index           ,
+                                              label           ,
+                                              start_line      ,
+                                              start_character ,
+                                              end_line        ,
+                                              end_character   ,
+                                              new_text        ,
+                                              kind            ,
+                                              detail          ,
+                                              documentation   ,
+                                              deprecated      ,
+                                              preselect       ) );
+        if ( index == 0 )
+        {
+            ASSERT_EQ ( label           , "apple"    );
+            ASSERT_EQ ( start_line      , 15         );
+            ASSERT_EQ ( start_character , 12         );
+            ASSERT_EQ ( end_line        , 15         );
+            ASSERT_EQ ( end_character   , 12         );
+            ASSERT_EQ ( new_text        , "apple"    );
+            ASSERT_EQ ( kind            , 1          );
+            ASSERT_EQ ( detail          , "valenums" );
+            ASSERT_EQ ( documentation   , "apple"    );
+            ASSERT_EQ ( deprecated      , false      );
+            ASSERT_EQ ( preselect       , false      );
+        }
+        if ( index == 1 )
+        {
+            ASSERT_EQ ( label           , "orange"   );
+            ASSERT_EQ ( start_line      , 15         );
+            ASSERT_EQ ( start_character , 12         );
+            ASSERT_EQ ( end_line        , 15         );
+            ASSERT_EQ ( end_character   , 12         );
+            ASSERT_EQ ( new_text        , "orange"   );
+            ASSERT_EQ ( kind            , 1          );
+            ASSERT_EQ ( detail          , "valenums" );
+            ASSERT_EQ ( documentation   , "orange"   );
+            ASSERT_EQ ( deprecated      , false      );
+            ASSERT_EQ ( preselect       , false      );
+        }
+        if ( index == 2 )
+        {
+            ASSERT_EQ ( label           , "kiwi"     );
+            ASSERT_EQ ( start_line      , 15         );
+            ASSERT_EQ ( start_character , 12         );
+            ASSERT_EQ ( end_line        , 15         );
+            ASSERT_EQ ( end_character   , 12         );
+            ASSERT_EQ ( new_text        , "kiwi"     );
+            ASSERT_EQ ( kind            , 1          );
+            ASSERT_EQ ( detail          , "valenums" );
+            ASSERT_EQ ( documentation   , "kiwi"     );
+            ASSERT_EQ ( deprecated      , false      );
+            ASSERT_EQ ( preselect       , false      );
+        }
+        if ( index == 3 )
+        {
+            ASSERT_EQ ( label           , "potato"   );
+            ASSERT_EQ ( start_line      , 15         );
+            ASSERT_EQ ( start_character , 12         );
+            ASSERT_EQ ( end_line        , 15         );
+            ASSERT_EQ ( end_character   , 12         );
+            ASSERT_EQ ( new_text        , "potato"   );
+            ASSERT_EQ ( kind            , 1          );
+            ASSERT_EQ ( detail          , "valenums" );
+            ASSERT_EQ ( documentation   , "potato"   );
+            ASSERT_EQ ( deprecated      , false      );
+            ASSERT_EQ ( preselect       , false      );
+        }
+        if ( index == 4 )
+        {
+            ASSERT_EQ ( label           , "tomato"   );
+            ASSERT_EQ ( start_line      , 15         );
+            ASSERT_EQ ( start_character , 12         );
+            ASSERT_EQ ( end_line        , 15         );
+            ASSERT_EQ ( end_character   , 12         );
+            ASSERT_EQ ( new_text        , "tomato"   );
+            ASSERT_EQ ( kind            , 1          );
+            ASSERT_EQ ( detail          , "valenums" );
+            ASSERT_EQ ( documentation   , "tomato"   );
+            ASSERT_EQ ( deprecated      , false      );
+            ASSERT_EQ ( preselect       , false      );
+        }
+    }
 }
 
 TEST(client, document_definition)

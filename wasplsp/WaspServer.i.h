@@ -231,9 +231,234 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     bool pass = true;
 
-    // TODO
+    wasp_check( this->inputdefinition );
 
-    is_incomplete = false;
+    std::shared_ptr<NodeView> node = wasp::findNodeUnderLineColumn(
+                           std::make_shared<NodeView>( this->parser->root() ) ,
+                           line                                               ,
+                           character                                          );
+
+    // list of context nodes to investigate for autocomplete options
+
+    std::vector<std::shared_ptr<NodeView>> contexts;
+    {
+        // current node's path
+
+        auto path = node ? node->path() : "/";
+
+        // ascend hierarchy, gathering context nodes, only push non-decorative contexts
+
+        for ( auto tmp = node                                             ;
+              tmp && tmp->path().find(path) == 0 && !tmp->is_terminator() ;
+              tmp = std::make_shared<NodeView>( tmp->parent() )           )
+        {
+            if ( !tmp->is_decorative() && tmp->type() != wasp::VALUE )
+            {
+                contexts.push_back( tmp );
+            }
+        }
+
+        // no context nodes, just use the node under the given line and column
+
+        if ( contexts.empty() )
+        {
+            contexts.push_back( node );
+        }
+    }
+
+    // list of options prioritized by indentation
+
+    using ItemPair = std::pair<int, std::vector<std::string>>;
+
+    std::vector<ItemPair> prioritized_options;
+
+    std::string complete_type;
+
+    // process each context node
+
+    for ( const auto & context : contexts )
+    {
+        // input definition for the given node
+
+        IDObject * def = nullptr;
+
+        // if context is valid, then try to use its input definition
+
+        if ( context )
+        {
+            def = this->inputdefinition->pathLookup( context->path() );
+        }
+
+        // if context is not valid, then use input definition for root
+
+        else
+        {
+            def = this->inputdefinition->getRootObject();
+        }
+
+        // if context is valid but its definition is not, then continue to next context
+
+        if ( !def )
+        {
+            continue;
+        }
+
+        // list of items to populate
+
+        std::vector<std::string> options;
+
+        // exists-in from input definition
+        if ( auto ei = def->getExistsIn() )
+        {
+            complete_type = "existsin";
+
+            // make lookup copy and move to parent if node is "value" and not in schema
+
+            NodeView lookup_node = *context;
+
+            if ( lookup_node.type() == wasp::VALUE && def->getObjectName() != "value" )
+            {
+                if ( lookup_node.has_parent() )
+                {
+                    lookup_node = lookup_node.parent();
+                }
+            }
+
+            // retrieve allowable values
+
+            std::set<std::string> values;
+
+            ei->lookupNodesCollectByValue( lookup_node , values );
+
+            // populate string list
+
+            for ( const std::string & iterate_value : values )
+            {
+                options.push_back( iterate_value );
+            }
+
+            // add constants
+
+            for ( size_t i = 0 , ie = ei->getConstantsCount() ; i < ie ; i++ )
+            {
+                options.push_back( ei->getConstantsAt(i) );
+            }
+        }
+
+        // enum listing
+
+        else if( auto ve = def->getValEnums() )
+        {
+            complete_type = "valenums";
+
+            // populate string list
+
+            for ( size_t i = 0 , ie = ve->getEnumsCount() ; i < ie ; i++ )
+            {
+                options.push_back( ve->getEnumsAt(i) );
+            }
+        }
+
+        // if no enums and if this is a "value" node, then try the parent for enums
+
+        else if ( def->getIDParent() != nullptr && def->getIDParent()->getValEnums() )
+        {
+            if ( def->getObjectName() == "value" )
+            {
+                complete_type = "valenums";
+
+                auto ve = def->getIDParent()->getValEnums();
+
+                // populate string list
+
+                for ( size_t i = 0, ie = ve->getEnumsCount(); i < ie; i++ )
+                {
+                    options.push_back( ve->getEnumsAt(i) );
+                }
+            }
+        }
+
+        // input choice listing / used for autocomplete but not validation
+
+        else if ( auto ic = def->getInputChoices() )
+        {
+            complete_type = "inputchoices";
+
+            // populate string list
+
+            for ( size_t i = 0 , ie = ic->getEnumsCount() ; i < ie ; i++ )
+            {
+                options.push_back( ic->getEnumsAt(i) );
+            }
+        }
+
+        // autocomplete templates for the current context
+
+        else
+        {
+            // TODO - ADD TEMPLATES CODE
+        }
+
+        // only add if we found autocomplete options
+
+        if ( !options.empty() )
+        {
+            // int pnc = context ? context->column() : 1;
+            // int cc  = cursor.positionInBlock() + 1;
+            // prioritized_options.push_back( { pnc - cc , options } );
+
+            int pnc = context ? context->column() : 1;
+            prioritized_options.push_back( { pnc , options } );
+        }
+    }
+
+    // prioritize bynegative values in descending order
+    // then non-negative values in ascending order
+
+    auto negative = std::stable_partition( prioritized_options.begin() ,
+                                           prioritized_options.end()   ,
+                                           []( const ItemPair & ip     )
+                                             { return ip.first < 0;  } );
+
+    std::stable_sort( prioritized_options.begin()                 ,
+                      negative                                    ,
+                      []( const ItemPair & l , const ItemPair & r )
+                        { return l.first > r.first;             } );
+
+    std::stable_sort( negative                                    ,
+                      prioritized_options.end()                   ,
+                      []( const ItemPair & l , const ItemPair & r )
+                        { return l.first <= r.first;            } );
+
+    // add options sorted by priority to ordered items list
+
+    for ( const auto & option_vec : prioritized_options )
+    {
+        for ( const std::string & option_val : option_vec.second )
+        {
+            completionItems.push_back( DataObject() );
+
+            DataObject * item = completionItems.back().to_object();
+
+            pass &= buildCompletionObject( *item          ,
+                                            this->errors  ,
+                                            option_val    ,
+                                            line          ,
+                                            character     ,
+                                            line          ,
+                                            character     ,
+                                            option_val    ,
+                                            1             ,
+                                            complete_type ,
+                                            option_val    ,
+                                            false         ,
+                                            false         );
+        }
+    }
+
+    // set is_incomplete flag to same as pass / fail and return
+
+    is_incomplete = pass;
 
     return pass;
 }
