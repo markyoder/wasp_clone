@@ -1,4 +1,3 @@
-#include "waspson/SONNodeView.h"
 #include "waspcore/utils.h"
 
 namespace wasp {
@@ -233,13 +232,13 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     wasp_check( this->inputdefinition );
 
-    NodeView node = wasp::findNodeUnderLineColumn( this->parser->root() ,
-                                                   line                 ,
-                                                   character            );
+    INPUTNV node = wasp::findNodeUnderLineColumn( this->parser->root() ,
+                                                  line                 ,
+                                                  character            );
 
     // list of context nodes to investigate for autocomplete options
 
-    std::vector<NodeView> contexts;
+    std::vector<INPUTNV> contexts;
     {
         // ascend hierarchy, gathering context nodes, only push non-decorative contexts
 
@@ -295,7 +294,7 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
             // make lookup copy and move to parent if node is "value" and not in schema
 
-            NodeView lookup_node = context;
+            INPUTNV lookup_node = context;
 
             if ( lookup_node.type() == wasp::VALUE && def->getObjectName() != "value" )
             {
@@ -469,9 +468,9 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     bool pass = true;
 
-    NodeView selectedNode = wasp::findNodeUnderLineColumn( this->parser->root() ,
-                                                           line                 ,
-                                                           character            );
+    INPUTNV selectedNode = wasp::findNodeUnderLineColumn( this->parser->root() ,
+                                                          line                 ,
+                                                          character            );
 
     // get the input definition node for this input node's path
 
@@ -481,7 +480,7 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     // make lookup copy and move to parent if node is "value" and not in schema
 
-    NodeView lookup_node = selectedNode;
+    INPUTNV lookup_node = selectedNode;
 
     if ( lookup_node.type() == wasp::VALUE && def->getObjectName() != "value" )
     {
@@ -493,8 +492,8 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     // create set of found lookup nodes using a custom lambda comparator
 
-    std::set<NodeView, std::function<bool(const NodeView & , const NodeView &)>>
-                found_nodes( [] ( const NodeView & l , const NodeView & r )
+    std::set<INPUTNV, std::function<bool(const INPUTNV & , const INPUTNV &)>>
+                found_nodes( [] ( const INPUTNV & l , const INPUTNV & r )
                                 { return ( l.line()   <  r.line() ||
                                          ( l.line()   == r.line() &&
                                            l.column() <  r.column() ) ); } );
