@@ -433,62 +433,55 @@ WASP_PUBLIC void node_paths(const TAdapter& node, std::ostream& out)
 }
 
 template<class TAdapter> WASP_PUBLIC
-std::shared_ptr<TAdapter> findNodeUnderLineColumn( std::shared_ptr<TAdapter> root  ,
-                                                   size_t line , size_t column     )
+TAdapter findNodeUnderLineColumn( TAdapter root , size_t line , size_t column )
 {
     // node under line and column
-    std::shared_ptr<TAdapter> node = find( root , line , column );
+    TAdapter node = find( root , line , column );
 
     // node is valid and we're at the beginning
-    if( node != nullptr && line == node->line() && column == node->column() )
+    if( line == node.line() && column == node.column() )
     {
         return node;
     }
 
     // node at previous character
-    std::shared_ptr<TAdapter> prev = find( root , line , --column );
+    TAdapter prev = find( root , line , --column );
 
     // failed to find previous node ( past the document end ) - return root
-    if( prev == nullptr )
+    if( prev == root )
     {
         return root;
     }
 
-    // found a valid previous node
-    if( prev != nullptr )
+    // we're asking for the end of the previous node
+    if( line == prev.last_line() && column == prev.last_column() )
     {
-        // we're asking for the end of the previous node
-        if( line == prev->last_line() && column == prev->last_column() )
-        {
-            return prev;
-        }
+        return prev;
     }
-
 
     return node;
 }
 
 template<class TAdapter> WASP_PUBLIC
-std::shared_ptr<TAdapter> find( std::shared_ptr<TAdapter> node  ,
-                                size_t line , size_t column     )
+TAdapter find( TAdapter node , size_t line , size_t column )
 {
     // node's last line
-    auto lastLine = node->last_line();
+    auto lastLine = node.last_line();
 
-    // if the ending line is prior to current node we return no find (nullptr)
+    // if the ending line is prior to current node we return node
     if(lastLine < line)
     {
-        return nullptr;
+        return node;
     }
 
     // node's child count
-    auto childCount = node->child_count();
+    auto childCount = node.child_count();
 
     // is the given node on the same line and the column within the context of the node?
-    if( node->line()        == line   &&
-        node->column()      <= column &&
-        node->last_column() >= column &&
-        childCount          == 0      )
+    if( node.line()        == line   &&
+        node.column()      <= column &&
+        node.last_column() >= column &&
+        childCount         == 0      )
     {
         return node;
     }
@@ -498,46 +491,38 @@ std::shared_ptr<TAdapter> find( std::shared_ptr<TAdapter> node  ,
         return findChild(node, 0, childCount, line, column);
     }
 
-    return nullptr;
+    return node;
 }
 
 template<class TAdapter> WASP_PUBLIC
-std::shared_ptr<TAdapter> findChild( std::shared_ptr<TAdapter> node          ,
-                                     size_t start      , size_t end          ,
-                                     size_t searchLine , size_t searchColumn )
+TAdapter findChild( TAdapter node , size_t start , size_t end ,
+                    size_t searchLine , size_t searchColumn   )
 {
-    // invalid input
-    if(start > end)
-    {
-        return nullptr;
-    }
+    wasp_check( start <= end );
 
     // node's child count
-    auto childCount = node->child_count();
+    auto childCount = node.child_count();
 
     // no children, delegate to find
     if(childCount == 0)
     {
-        return find(node, searchLine, searchColumn);
+        return find( node , searchLine , searchColumn );
     }
 
     // midpoint index
     size_t mid = start + (end - start) / 2;
 
     // invalid index
-    if(mid >= childCount)
-    {
-        return nullptr;
-    }
+    wasp_check( mid < childCount );
 
     // midpoint child
-    std::shared_ptr<TAdapter> child = std::make_shared<TAdapter>(node->child_at(mid));
+    TAdapter child = node.child_at(mid);
 
     // child metadata
-    auto startLine   = child->line();
-    auto startColumn = child->column();
-    auto lastLine    = child->last_line();
-    auto lastColumn  = child->last_column();
+    auto startLine   = child.line();
+    auto startColumn = child.column();
+    auto lastLine    = child.last_line();
+    auto lastColumn  = child.last_column();
 
     // should we search left/right?
     auto searchLeft  = ( startLine >  searchLine ||
@@ -548,29 +533,24 @@ std::shared_ptr<TAdapter> findChild( std::shared_ptr<TAdapter> node          ,
     // can't search anymore
     if(start == end && (searchLeft || searchRight))
     {
-        return nullptr;
+        return node;
     }
-
-    // child to return
-    std::shared_ptr<TAdapter> found;
 
     // searching left
     if(searchLeft)
     {
-        found = findChild(node, start, mid, searchLine, searchColumn);
+        return findChild(node, start, mid, searchLine, searchColumn);
     }
     // searching right
     else if(searchRight)
     {
-        found = findChild(node, mid + 1, end, searchLine, searchColumn);
+        return findChild(node, mid + 1, end, searchLine, searchColumn);
     }
     // search deeper
     else
     {
-        found = findChild(child, 0, child->child_count(), searchLine, searchColumn);
+        return findChild(child, 0, child.child_count(), searchLine, searchColumn);
     }
-
-    return found ? found : node;
 }
 
 }

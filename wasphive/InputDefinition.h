@@ -1321,7 +1321,7 @@ class ExistsInRule{
 
                     if (selectModString == givenModString)
                     {
-                        found_nodes.insert( std::make_shared<INPUTNV>( node ) );
+                        found_nodes.insert( node );
                     }
                 }
             }

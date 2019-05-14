@@ -233,26 +233,21 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     wasp_check( this->inputdefinition );
 
-    std::shared_ptr<NodeView> node = wasp::findNodeUnderLineColumn(
-                           std::make_shared<NodeView>( this->parser->root() ) ,
-                           line                                               ,
-                           character                                          );
+    NodeView node = wasp::findNodeUnderLineColumn( this->parser->root() ,
+                                                   line                 ,
+                                                   character            );
 
     // list of context nodes to investigate for autocomplete options
 
-    std::vector<std::shared_ptr<NodeView>> contexts;
+    std::vector<NodeView> contexts;
     {
-        // current node's path
-
-        auto path = node ? node->path() : "/";
-
         // ascend hierarchy, gathering context nodes, only push non-decorative contexts
 
         for ( auto tmp = node                                             ;
-              tmp && tmp->path().find(path) == 0 && !tmp->is_terminator() ;
-              tmp = std::make_shared<NodeView>( tmp->parent() )           )
+              tmp.path().find( node.path() ) == 0 && !tmp.is_terminator() ;
+              tmp = tmp.parent()                                          )
         {
-            if ( !tmp->is_decorative() && tmp->type() != wasp::VALUE )
+            if ( !tmp.is_decorative() && tmp.type() != wasp::VALUE )
             {
                 contexts.push_back( tmp );
             }
@@ -280,23 +275,9 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
     {
         // input definition for the given node
 
-        IDObject * def = nullptr;
+        IDObject * def = this->inputdefinition->pathLookup( context.path() );
 
-        // if context is valid, then try to use its input definition
-
-        if ( context )
-        {
-            def = this->inputdefinition->pathLookup( context->path() );
-        }
-
-        // if context is not valid, then use input definition for root
-
-        else
-        {
-            def = this->inputdefinition->getRootObject();
-        }
-
-        // if context is valid but its definition is not, then continue to next context
+        // if context is valid but its definition is not, then continue to next
 
         if ( !def )
         {
@@ -314,7 +295,7 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
             // make lookup copy and move to parent if node is "value" and not in schema
 
-            NodeView lookup_node = *context;
+            NodeView lookup_node = context;
 
             if ( lookup_node.type() == wasp::VALUE && def->getObjectName() != "value" )
             {
@@ -407,8 +388,7 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
             // int cc  = cursor.positionInBlock() + 1;
             // prioritized_options.push_back( { pnc - cc , options } );
 
-            int pnc = context ? context->column() : 1;
-            prioritized_options.push_back( { pnc , options } );
+            prioritized_options.push_back( { context.column() , options } );
         }
     }
 
@@ -489,22 +469,19 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     bool pass = true;
 
-    std::shared_ptr<NodeView> selectedNode = wasp::findNodeUnderLineColumn(
-                           std::make_shared<NodeView>( this->parser->root() ) ,
-                           line                                               ,
-                           character                                          );
-
-    wasp_check( selectedNode );
+    NodeView selectedNode = wasp::findNodeUnderLineColumn( this->parser->root() ,
+                                                           line                 ,
+                                                           character            );
 
     // get the input definition node for this input node's path
 
     wasp_check( this->inputdefinition );
 
-    auto def = this->inputdefinition->pathLookup( selectedNode->path() );
+    auto def = this->inputdefinition->pathLookup( selectedNode.path() );
 
     // make lookup copy and move to parent if node is "value" and not in schema
 
-    NodeView lookup_node = *selectedNode;
+    NodeView lookup_node = selectedNode;
 
     if ( lookup_node.type() == wasp::VALUE && def->getObjectName() != "value" )
     {
@@ -516,24 +493,21 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     // create set of found lookup nodes using a custom lambda comparator
 
-    std::set< std::shared_ptr<NodeView> ,
-              std::function < bool ( const std::shared_ptr<NodeView> & ,
-                                     const std::shared_ptr<NodeView> & ) > >
-                   found_nodes( [] ( const std::shared_ptr<NodeView> & l ,
-                                     const std::shared_ptr<NodeView> & r )
-                                   { return ( l->line()   <  r->line()    ||
-                                            ( l->line()   == r->line()    &&
-                                              l->column() <  r->column() ) ); } );
+    std::set<NodeView, std::function<bool(const NodeView & , const NodeView &)>>
+                found_nodes( [] ( const NodeView & l , const NodeView & r )
+                                { return ( l.line()   <  r.line() ||
+                                         ( l.line()   == r.line() &&
+                                           l.column() <  r.column() ) ); } );
 
     // if no definition, existsin, or lookups - just use info for selected node
 
     if( def == nullptr  || def->getExistsIn() == nullptr  ||
         def->getExistsIn()->lookupNodesByValue(lookup_node, found_nodes) == 0 )
     {
-        int start_line      = selectedNode->line();
-        int start_character = selectedNode->column();
-        int end_line        = selectedNode->last_line();
-        int end_character   = selectedNode->last_column();
+        int start_line      = selectedNode.line();
+        int start_character = selectedNode.column();
+        int end_line        = selectedNode.last_line();
+        int end_character   = selectedNode.last_column();
 
         definitionLocations.push_back( DataObject() );
 
@@ -551,10 +525,10 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
     {
         for( auto iterate_node : found_nodes )
         {
-            int start_line      = iterate_node->line();
-            int start_character = iterate_node->column();
-            int end_line        = iterate_node->last_line();
-            int end_character   = iterate_node->last_column();
+            int start_line      = iterate_node.line();
+            int start_character = iterate_node.column();
+            int end_line        = iterate_node.last_line();
+            int end_character   = iterate_node.last_column();
 
             definitionLocations.push_back( DataObject() );
 
