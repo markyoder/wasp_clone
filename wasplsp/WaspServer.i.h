@@ -10,9 +10,9 @@ template < class INPUT      ,
            class VALIDATOR  ,
            class CONNECTION >
 bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
-    setValidator(
-                std::shared_ptr<VALIDATOR> & validator ,
-                std::shared_ptr<SCHEMA>    & schema    )
+   setup( std::shared_ptr<VALIDATOR> & validator    ,
+          std::shared_ptr<SCHEMA>    & schema       ,
+          const std::string          & template_dir )
 {
     bool pass = true;
 
@@ -25,6 +25,8 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
     this->inputdefinition = std::make_shared<InputDefinition>( schema_root  ,
                                                                this->errors ,
                                                                this->errors );
+
+    this->template_dir = template_dir;
 
     return pass;
 }
@@ -241,7 +243,6 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
     std::vector<INPUTNV> contexts;
     {
         // ascend hierarchy, gathering context nodes, only push non-decorative contexts
-
         for ( auto tmp = node                                             ;
               tmp.path().find( node.path() ) == 0 && !tmp.is_terminator() ;
               tmp = tmp.parent()                                          )
@@ -250,6 +251,8 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
             {
                 contexts.push_back( tmp );
             }
+
+            if ( !tmp.has_parent() ) break;
         }
 
         // no context nodes, just use the node under the given line and column
@@ -262,15 +265,13 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     // list of options prioritized by indentation
 
-    using ItemPair = std::pair<int, std::vector<std::string>>;
+    using ItemPair = std::pair<int, std::vector<AutoComplete>>;
 
     std::vector<ItemPair> prioritized_options;
 
-    std::string complete_type;
-
     // process each context node
 
-    for ( const auto & context : contexts )
+    for ( auto & context : contexts )
     {
         // input definition for the given node
 
@@ -285,13 +286,11 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
         // list of items to populate
 
-        std::vector<std::string> options;
+        std::vector<AutoComplete> options;
 
         // exists-in from input definition
         if ( auto ei = def->getExistsIn() )
         {
-            complete_type = "existsin";
-
             // make lookup copy and move to parent if node is "value" and not in schema
 
             INPUTNV lookup_node = context;
@@ -314,14 +313,32 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
             for ( const std::string & iterate_value : values )
             {
-                options.push_back( iterate_value );
+                const std::string & text_value = iterate_value;
+
+                options.push_back( AutoComplete() );
+
+                AutoComplete & ac = options.back();
+
+                ac.label         = text_value;
+                ac.new_text      = text_value;
+                ac.description   = text_value;
+                ac.complete_type = "existsin";
             }
 
             // add constants
 
             for ( size_t i = 0 , ie = ei->getConstantsCount() ; i < ie ; i++ )
             {
-                options.push_back( ei->getConstantsAt(i) );
+                const std::string & text_value = ei->getConstantsAt(i);
+
+                options.push_back( AutoComplete() );
+
+                AutoComplete & ac = options.back();
+
+                ac.label         = text_value;
+                ac.new_text      = text_value;
+                ac.description   = text_value;
+                ac.complete_type = "existsin";
             }
         }
 
@@ -329,13 +346,20 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
         else if( auto ve = def->getValEnums() )
         {
-            complete_type = "valenums";
-
             // populate string list
 
             for ( size_t i = 0 , ie = ve->getEnumsCount() ; i < ie ; i++ )
             {
-                options.push_back( ve->getEnumsAt(i) );
+                const std::string & text_value = ve->getEnumsAt(i);
+
+                options.push_back( AutoComplete() );
+
+                AutoComplete & ac = options.back();
+
+                ac.label         = text_value;
+                ac.new_text      = text_value;
+                ac.description   = text_value;
+                ac.complete_type = "valenums";
             }
         }
 
@@ -345,15 +369,22 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         {
             if ( def->getObjectName() == "value" )
             {
-                complete_type = "valenums";
-
                 auto ve = def->getIDParent()->getValEnums();
 
                 // populate string list
 
                 for ( size_t i = 0, ie = ve->getEnumsCount(); i < ie; i++ )
                 {
-                    options.push_back( ve->getEnumsAt(i) );
+                    const std::string & text_value = ve->getEnumsAt(i);
+
+                    options.push_back( AutoComplete() );
+
+                    AutoComplete & ac = options.back();
+
+                    ac.label         = text_value;
+                    ac.new_text      = text_value;
+                    ac.description   = text_value;
+                    ac.complete_type = "valenums";
                 }
             }
         }
@@ -362,13 +393,20 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
         else if ( auto ic = def->getInputChoices() )
         {
-            complete_type = "inputchoices";
-
             // populate string list
 
             for ( size_t i = 0 , ie = ic->getEnumsCount() ; i < ie ; i++ )
             {
-                options.push_back( ic->getEnumsAt(i) );
+                const std::string & text_value = ic->getEnumsAt(i);
+
+                options.push_back( AutoComplete() );
+
+                AutoComplete & ac = options.back();
+
+                ac.label         = text_value;
+                ac.new_text      = text_value;
+                ac.description   = text_value;
+                ac.complete_type = "inputchoices";
             }
         }
 
@@ -376,7 +414,19 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
         else
         {
-            // TODO - ADD TEMPLATES CODE
+            const auto & children = def->getIDChildren();
+
+            // look for templates supported by the current context
+
+            for( IDObject * child : children )
+            {
+                // is this child allowed in the input context
+
+                if( this->isAllowed( &context, child ) )
+                {
+                    this->addTemplate( child , options );
+                }
+            }
         }
 
         // only add if we found autocomplete options
@@ -411,27 +461,27 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     // add options sorted by priority to ordered items list
 
-    for ( const auto & option_vec : prioritized_options )
+    for ( const auto & options_vec : prioritized_options )
     {
-        for ( const std::string & option_val : option_vec.second )
+        for ( auto options : options_vec.second )
         {
             completionItems.push_back( DataObject() );
 
             DataObject * item = completionItems.back().to_object();
 
-            pass &= buildCompletionObject( *item          ,
-                                            this->errors  ,
-                                            option_val    ,
-                                            line          ,
-                                            character     ,
-                                            line          ,
-                                            character     ,
-                                            option_val    ,
-                                            1             ,
-                                            complete_type ,
-                                            option_val    ,
-                                            false         ,
-                                            false         );
+            pass &= buildCompletionObject( *item                  ,
+                                            this->errors          ,
+                                            options.label         ,
+                                            line                  ,
+                                            character             ,
+                                            line                  ,
+                                            character             ,
+                                            options.new_text      ,
+                                            1                     ,
+                                            options.complete_type ,
+                                            options.description   ,
+                                            false                 ,
+                                            false                 );
         }
     }
 
@@ -710,6 +760,232 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
       this->traverseParseTreeAndFillSymbols( children[i] , child );
     }
+
+    return pass;
+}
+
+template < class INPUT      ,
+           class INPUTNV    ,
+           class SCHEMA     ,
+           class SCHEMANV   ,
+           class VALIDATOR  ,
+           class CONNECTION >
+bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
+    isAllowed( INPUTNV * node , IDObject * def )
+{
+    wasp_require( node != nullptr );
+
+    wasp_require( def != nullptr );
+
+    // number of definition instances
+
+    auto count = node->child_by_name( def->getObjectName() ).size();
+
+    // max-occurrences definition
+
+    auto maxOccurs = def->getMaxOccurs();
+
+    // failed max-occurrences check
+
+    if( maxOccurs != nullptr && static_cast<int>( count ) >= maxOccurs->getConstantValue() )
+    {
+        // if the above failed, then we should only return false for unallowed autocomplete
+        // if there actually is a constant value or there are no input lookup paths associated
+
+        if ( maxOccurs->hasConstantValue() || maxOccurs->getLookupPathCount() == 0 )
+        {
+            return false;
+        }
+    }
+
+    //get the definition node's parent
+
+    auto defParent = def->getIDParent();
+
+    if( defParent != nullptr )
+    {
+        // child-exactly-one check
+
+        for( size_t i = 0, ie = defParent->getChildExactlyOneCount(); i < ie; i++ )
+        {
+            if( !defParent->getChildExactlyOneAt( i )->isChildAllowed( def->getObjectName(), node ) )
+            {
+                return false;
+            }
+        }
+
+        // child-at-most-one check
+
+        for( size_t i = 0, ie = defParent->getChildAtMostOneCount(); i < ie; i++ )
+        {
+            if( !defParent->getChildAtMostOneAt( i )->isChildAllowed( def->getObjectName(), node ) )
+            {
+                return false;
+            }
+        }
+    }
+
+    // if none of the above checks indicated not-allowed - then allowed
+
+    return true;
+}
+
+template < class INPUT      ,
+           class INPUTNV    ,
+           class SCHEMA     ,
+           class SCHEMANV   ,
+           class VALIDATOR  ,
+           class CONNECTION >
+bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
+    addTemplate( IDObject  * def                     ,
+                 std::vector<AutoComplete> & options )
+{
+    wasp_require( def != nullptr );
+
+    bool pass = true;
+
+    // child's metadata
+
+    std::string name        = def->getObjectName();
+    std::string inputtype   = def->getObjectType();
+    std::string inputname   = def->getInputName();
+    std::string description = def->getObjectDescription();
+
+    // definition's value node, defaults to definition node
+
+    IDObject * valdef = def;
+
+    // definition's value node isn't null and has the needed input value info
+
+    if( IDObject * vn = def->getValueNode() )
+    {
+        if ( ( vn->hasInputDefault()                                                       ) ||
+             ( vn->hasValEnumsRule() && !def->hasInputDefault()                            ) ||
+             ( vn->hasValTypeRule()  && !def->hasInputDefault() && !def->hasValEnumsRule() ) )
+        {
+            valdef = vn;
+        }
+    }
+
+    // set inputvalue for template parameter payload based on schema
+
+    std::string inputvalue = "0";
+
+    if ( valdef->hasInputDefault() )
+    {
+        inputvalue = valdef->getInputDefault();
+    }
+    else if( valdef->hasValEnumsRule() &&
+             valdef->getValEnums()->getEnumsCount() > 0 )
+    {
+        inputvalue = valdef->getValEnums()->getEnumsAt( 0 );
+    }
+    else if( valdef->hasValTypeRule() )
+    {
+        const std::string & valtype = valdef->getValType()->getType();
+        if      ( valtype == "String" ) inputvalue = "insert_string_here";
+        else if ( valtype == "Int"    ) inputvalue = "1";
+        else if ( valtype == "Real"   ) inputvalue = "0.0";
+    }
+
+    // template paramters
+
+    std::string json_parameters = "{  \"Name\":       \"" + name       + "\","
+                                  "   \"InputType\":  \"" + inputtype  + "\","
+                                  "   \"InputName\":  \"" + inputname  + "\","
+                                  "   \"InputValue\": \"" + inputvalue + "\"}";
+
+    std::string temp_json_file_path = std::tmpnam(nullptr);
+
+    ofstream myfile;
+    myfile.open (temp_json_file_path);
+    myfile << json_parameters;
+    myfile.close();
+
+    // account for possible input variants
+
+    if( def->getInputVariantCount() > 0 )
+    {
+        // add item for each variant
+
+        for( size_t i = 0, ie = def->getInputVariantCount(); i < ie; i++ )
+        {
+            // variant name
+
+            const std::string & variant = def->getInputVariantAt( i );
+
+            // variant file path
+
+            std::string variant_path = this->template_dir + "/" +
+                                       name + "." + variant + ".tmpl";
+
+            // replace ' ' and + with underscores to map to its file name
+
+            std::replace( variant_path.begin(), variant_path.end(), ' ', '_');
+            std::replace( variant_path.begin(), variant_path.end(), '+', '_');
+
+            // if variant file exists then expand template using json payload
+
+            if ( wasp::file_exists( variant_path ) )
+            {
+
+                // if template expansion passes then add display and result
+
+                std::stringstream expanded_result;
+
+                if ( wasp::expand_template( expanded_result     ,
+                                            this->errors        ,
+                                            this->errors        ,
+                                            variant_path        ,
+                                            temp_json_file_path ) )
+                {
+                    options.push_back( AutoComplete() );
+
+                    AutoComplete & ac = options.back();
+
+                    ac.label         = inputname + " - " + variant;
+                    ac.new_text      = expanded_result.str() ;
+                    ac.description   = description;
+                    ac.complete_type = "inputvariants";
+                }
+            }
+        }
+    }
+
+    // account for possible input template
+
+    if( def->hasInputTmpl() )
+    {
+        const std::string & template_path = this->template_dir + "/" +
+                                            def->getInputTmpl() + ".tmpl";
+
+        // if template file exists then expand template using  json payload
+
+        if ( wasp::file_exists( template_path ) )
+        {
+            // if template expansion passes then add display and result
+
+            std::stringstream expanded_result;
+
+            if ( wasp::expand_template( expanded_result     ,
+                                        this->errors        ,
+                                        this->errors        ,
+                                        template_path       ,
+                                        temp_json_file_path ) )
+            {
+                options.push_back( AutoComplete() );
+
+                AutoComplete & ac = options.back();
+
+                ac.label         = inputname;
+                ac.new_text      = expanded_result.str() ;
+                ac.description   = description;
+                ac.complete_type = "inputtmpl";
+            }
+        }
+    }
+
+    std::remove( temp_json_file_path.c_str() );
 
     return pass;
 }

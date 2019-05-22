@@ -7,6 +7,7 @@
 #include "wasplsp/Connection.h"
 #include "wasplsp/ThreadConnection.h"
 #include "wasplsp/SymbolIterator.h"
+#include "wasplsp/test/Paths.h"
 #include "waspson/SONInterpreter.h"
 #include "waspson/SONNodeView.h"
 #include "wasphive/HIVE.h"
@@ -34,70 +35,18 @@ TEST(client, launch_server_thread_and_connnect_client)
 {
     // launch server thread and connect test client to server's communication
 
-    std::string schema_text = R"INPUT(
-
-object
-{
-    MinOccurs=3
-    MaxOccurs=NoLimit
-
-    key
-    {
-        MinOccurs=0
-        MaxOccurs=1
-
-        value
-        {
-            MinOccurs=1
-            MaxOccurs=1
-            ValType=Real
-            MinValInc=0
-            MaxValExc=NoLimit
-        }
-    }
-
-    list
-    {
-        MinOccurs=1
-        MaxOccurs=1
-
-        value
-        {
-            MinOccurs=1
-            MaxOccurs=5
-            ValType=Int
-            MinValInc=0
-            MaxValExc=NoLimit
-        }
-    }
-
-    use
-    {
-        MinOccurs=1
-        MaxOccurs=1
-        ValType=Int
-        ExistsIn(Abs)=[ "../list/value" ]
-    }
-
-    food
-    {
-        MinOccurs=0
-        MaxOccurs=1
-        ValType=String
-        ValEnums=[ apple orange kiwi potato tomato ]
-    }
-}
-
-)INPUT";
-
     std::shared_ptr<DefaultSONInterpreter> schema =
             std::make_shared<DefaultSONInterpreter>();
 
-    ASSERT_TRUE ( schema->parseString( schema_text ) );
+    ASSERT_TRUE( schema->parseFile( TEST_SCHEMA_DIR + "/schema.sch" ) );
 
     std::shared_ptr<HIVE> validator = std::make_shared<HIVE>();
 
-    ASSERT_TRUE ( wasp_server.getImpl()->setValidator( validator , schema ) );
+    std::string template_dir = TEST_TMPL_DIR;
+
+    ASSERT_TRUE ( wasp_server.getImpl()->setup( validator    ,
+                                                schema       ,
+                                                template_dir ) );
 
     server_thread = std::thread
     (
@@ -694,6 +643,123 @@ TEST(client, document_completion_valenums)
             ASSERT_EQ ( documentation   , "tomato"   );
             ASSERT_EQ ( deprecated      , false      );
             ASSERT_EQ ( preselect       , false      );
+        }
+    }
+}
+
+TEST(client, document_completion_templates)
+{
+    // document completion
+
+    int line       = 2;
+    int character  = 1;
+
+    ASSERT_TRUE ( client.doDocumentCompletion( line     ,
+                                               character) );
+
+    ASSERT_TRUE ( client.getConnection()->getServerErrors().empty() );
+
+    ASSERT_TRUE ( client.getErrors().empty() );
+
+    // completion responses
+
+    ASSERT_EQ   ( client.getCompletionSize(), 5 );
+
+    for (int index = 0; index < client.getCompletionSize(); index++)
+    {
+        std::string label;
+        int         start_line;
+        int         start_character;
+        int         end_line;
+        int         end_character;
+        std::string new_text;
+        int         kind;
+        std::string detail;
+        std::string documentation;
+        bool        deprecated;
+        bool        preselect;
+
+        ASSERT_TRUE ( client.getCompletionAt( index           ,
+                                              label           ,
+                                              start_line      ,
+                                              start_character ,
+                                              end_line        ,
+                                              end_character   ,
+                                              new_text        ,
+                                              kind            ,
+                                              detail          ,
+                                              documentation   ,
+                                              deprecated      ,
+                                              preselect       ) );
+        if ( index == 0 )
+        {
+            ASSERT_EQ ( label           , "key_string"                            );
+            ASSERT_EQ ( start_line      , line                                    );
+            ASSERT_EQ ( start_character , character                               );
+            ASSERT_EQ ( end_line        , line                                    );
+            ASSERT_EQ ( end_character   , character                               );
+            ASSERT_EQ ( new_text        , "key_string = \"insert_string_here\"\n" );
+            ASSERT_EQ ( kind            , 1                                       );
+            ASSERT_EQ ( detail          , "inputtmpl"                             );
+            ASSERT_EQ ( documentation   , "Key_string description here for test"  );
+            ASSERT_EQ ( deprecated      , false                                   );
+            ASSERT_EQ ( preselect       , false                                   );
+        }
+        if ( index == 1 )
+        {
+            ASSERT_EQ ( label           , "array_overwrite"                     );
+            ASSERT_EQ ( start_line      , line                                  );
+            ASSERT_EQ ( start_character , character                             );
+            ASSERT_EQ ( end_line        , line                                  );
+            ASSERT_EQ ( end_character   , character                             );
+            ASSERT_EQ ( new_text        , "array_overwrite = [ 9.9 9.9 9.9 ]\n" );
+            ASSERT_EQ ( kind            , 1                                     );
+            ASSERT_EQ ( detail          , "inputtmpl"                           );
+            ASSERT_EQ ( documentation   , "Key_list description here for test"  );
+            ASSERT_EQ ( deprecated      , false                                 );
+            ASSERT_EQ ( preselect       , false                                 );
+        }
+        if ( index == 2 )
+        {
+            ASSERT_EQ ( label           , "object - variant 1"               );
+            ASSERT_EQ ( start_line      , line                               );
+            ASSERT_EQ ( start_character , character                          );
+            ASSERT_EQ ( end_line        , line                               );
+            ASSERT_EQ ( end_character   , character                          );
+            ASSERT_EQ ( new_text        , "object\n{\n    key  =   1.0\n    list = [ 11 12 13 14 15 ]\n    use  =   11\n}\n" );
+            ASSERT_EQ ( kind            , 1                                  );
+            ASSERT_EQ ( detail          , "inputvariants"                    );
+            ASSERT_EQ ( documentation   , "Object description here For test" );
+            ASSERT_EQ ( deprecated      , false                              );
+            ASSERT_EQ ( preselect       , false                              );
+        }
+        if ( index == 3 )
+        {
+            ASSERT_EQ ( label           , "object - variant 2"               );
+            ASSERT_EQ ( start_line      , line                               );
+            ASSERT_EQ ( start_character , character                          );
+            ASSERT_EQ ( end_line        , line                               );
+            ASSERT_EQ ( end_character   , character                          );
+            ASSERT_EQ ( new_text        ,"object\n{\n    key  =   2.0\n    list = [ 21 22 23 24 25 ]\n    use  =   21\n}\n" );
+            ASSERT_EQ ( kind            , 1                                  );
+            ASSERT_EQ ( detail          , "inputvariants"                    );
+            ASSERT_EQ ( documentation   , "Object description here For test" );
+            ASSERT_EQ ( deprecated      , false                              );
+            ASSERT_EQ ( preselect       , false                              );
+        }
+        if ( index == 4 )
+        {
+            ASSERT_EQ ( label           , "object - variant 3"               );
+            ASSERT_EQ ( start_line      , line                               );
+            ASSERT_EQ ( start_character , character                          );
+            ASSERT_EQ ( end_line        , line                               );
+            ASSERT_EQ ( end_character   , character                          );
+            ASSERT_EQ ( new_text        , "object\n{\n    key  =   3.0\n    list = [ 31 32 33 34 35 ]\n    use  =   31\n}\n" );
+            ASSERT_EQ ( kind            , 1                                  );
+            ASSERT_EQ ( detail          , "inputvariants"                    );
+            ASSERT_EQ ( documentation   , "Object description here For test" );
+            ASSERT_EQ ( deprecated      , false                              );
+            ASSERT_EQ ( preselect       , false                              );
         }
     }
 }

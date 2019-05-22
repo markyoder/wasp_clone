@@ -177,6 +177,12 @@ bool InputDefinition::fillInputDefinition(IDObject * IDNode,
                 tmpIDObject->setObjectType("flagvalue");
             }
 
+            SchemaAdapter inputTypeNode = child.first_non_decorative_child_by_name("InputType");
+            if (!inputTypeNode.is_null())
+            {
+                tmpIDObject->setObjectType(inputTypeNode.last_as_string());
+            }
+
             SchemaAdapter unitsNode = child.first_non_decorative_child_by_name("Units");
             if (!unitsNode.is_null())
             {

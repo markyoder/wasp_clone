@@ -1632,6 +1632,73 @@ class ChildAtMostOneRule{
             return pathValuePairList.at(index);
         }
 
+        template<class INPUTNV>
+        bool isChildAllowed(const std::string & name, INPUTNV * node)
+        {
+            // if name is not in the list then allowed
+
+            bool name_found = false;
+
+            for( size_t i = 0 ; i < pathValuePairList.size() ; i++ )
+            {
+                if ( name == pathValuePairList[i].first ){
+                    name_found = true;
+                    break;
+                }
+            }
+
+            if ( !name_found ) return true;
+
+            for(const auto & path_value_pair : pathValuePairList)
+            {
+                const std::string & pair_path  = path_value_pair.first;
+                const std::string & pair_value = path_value_pair.second;
+
+                // ignore the path for the given name
+
+                if( pair_path == name )
+                {
+                    continue;
+                }
+
+                // lookup other paths in the input
+
+                SIRENInterpreter<> selector;
+
+                if( !selector.parseString( pair_path ) ) continue;
+
+                SIRENResultSet<INPUTNV> results;
+
+                auto selected = selector.evaluate( *node , results );
+
+                if( selected > 0 )
+                {
+                    // if found and no value provided for path - not allowed
+
+                    if( pair_value == "" )
+                    {
+                        return false;
+                    }
+
+                    // if found and path value matches input value - not allowed
+
+                    for( size_t i = 0 ; i < selected ; i++ )
+                    {
+                        INPUTNV result = results.adapted(i);
+
+                        if ( result.last_as_string() == pair_value )
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            // if none of the above was met - allowed
+
+            return true;
+        }
+
     private:
         InputDefinition * thisID;
         std::vector< std::pair <std::string,std::string> > pathValuePairList;
@@ -1666,6 +1733,73 @@ class ChildExactlyOneRule{
         }
         std::pair <std::string,std::string> getPathValuePairAt(size_t index){
             return pathValuePairList.at(index);
+        }
+
+        template<class INPUTNV>
+        bool isChildAllowed(const std::string & name, INPUTNV * node)
+        {
+            // if name is not in the list then allowed
+
+            bool name_found = false;
+
+            for( size_t i = 0 ; i < pathValuePairList.size() ; i++ )
+            {
+                if ( name == pathValuePairList[i].first ){
+                    name_found = true;
+                    break;
+                }
+            }
+
+            if ( !name_found ) return true;
+
+            for(const auto & path_value_pair : pathValuePairList)
+            {
+                const std::string & pair_path  = path_value_pair.first;
+                const std::string & pair_value = path_value_pair.second;
+
+                // ignore the path for the given name
+
+                if( pair_path == name )
+                {
+                    continue;
+                }
+
+                // lookup other paths in the input
+
+                SIRENInterpreter<> selector;
+
+                if( !selector.parseString( pair_path ) ) continue;
+
+                SIRENResultSet<INPUTNV> results;
+
+                auto selected = selector.evaluate( *node , results );
+
+                if( selected > 0 )
+                {
+                    // if found and no value provided for path - not allowed
+
+                    if( pair_value == "" )
+                    {
+                        return false;
+                    }
+
+                    // if found and path value matches input value - not allowed
+
+                    for( size_t i = 0 ; i < selected ; i++ )
+                    {
+                        INPUTNV result = results.adapted(i);
+
+                        if ( result.last_as_string() == pair_value )
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            // if none of the above was met - allowed
+
+            return true;
         }
 
     private:

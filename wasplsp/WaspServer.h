@@ -3,10 +3,14 @@
 
 #include <string>
 #include <memory>
+#include <sstream>
+#include <fstream>
+#include <cstdio>
 #include "wasplsp/LSP.h"
 #include "wasplsp/ServerImpl.h"
 #include "wasplsp/ThreadConnection.h"
 #include "wasphive/InputDefinition.h"
+#include "wasphalite/HaliteInterpreter.h"
 #include "waspcore/Object.h"
 #include "waspcore/Interpreter.h"
 #include "waspcore/decl.h"
@@ -35,8 +39,18 @@ class WASP_PUBLIC WaspServer : public ServerImpl
         return connection;
     }
 
-    bool setValidator( std::shared_ptr<VALIDATOR> & validator ,
-                       std::shared_ptr<SCHEMA>    & schema    );
+    bool setup( std::shared_ptr<VALIDATOR> & validator    ,
+                std::shared_ptr<SCHEMA>    & schema       ,
+                const std::string          & template_dir );
+
+    struct AutoComplete
+    {
+        std::string label;
+        std::string new_text;
+        std::string description;
+        std::string complete_type;
+        AutoComplete(){}
+    };
 
   private:
 
@@ -84,6 +98,11 @@ class WASP_PUBLIC WaspServer : public ServerImpl
                           INPUTNV      node   ,
                           DataObject & parent );
 
+    bool isAllowed( INPUTNV * node , IDObject * def );
+
+    bool addTemplate( IDObject  * def                     ,
+                      std::vector<AutoComplete> & options );
+
     bool connectionRead( DataObject & object )
     {
        return this->connection->read( object , this->errors );
@@ -103,6 +122,8 @@ class WASP_PUBLIC WaspServer : public ServerImpl
     std::shared_ptr<CONNECTION>      connection;
 
     std::shared_ptr<InputDefinition> inputdefinition;
+
+    std::string                      template_dir;
 };
 
 } // namespace lsp

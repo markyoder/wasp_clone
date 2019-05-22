@@ -22,10 +22,12 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    if (argc != 2)
+    if ( argc != 3 )
     {
-        std::cerr << "Usage: " << argv[0] << "/path/to/schema" << std::endl
-                  << "Usage: " << argv[0] << " --version"      << std::endl;
+        std::cerr << "Usage: " << argv[0]
+                  << "/path/to/schema /template/directory" << std::endl
+                  << "Usage: " << argv[0]
+                  << " --version" << std::endl;
         return 1;
     }
 
@@ -46,6 +48,8 @@ int main(int argc, char** argv)
 
     schema->parseString( schema_text );
 
+    const std::string & template_dir = argv[2];
+
     Server<WaspServer< DefaultSONInterpreter ,
                        SONNodeView           ,
                        DefaultSONInterpreter ,
@@ -55,7 +59,7 @@ int main(int argc, char** argv)
 
     std::shared_ptr<HIVE> validator = std::make_shared<HIVE>();
 
-    wasp_server.getImpl()->setValidator( validator , schema );
+    wasp_server.getImpl()->setup( validator , schema , template_dir );
 
     wasp_server.run();
 
