@@ -65,6 +65,8 @@ class WASP_PUBLIC IOStreamConnection : public Connection
 
         std::cout << rpc_string;
 
+        std::cout.flush();
+
         return true;
     }
 
