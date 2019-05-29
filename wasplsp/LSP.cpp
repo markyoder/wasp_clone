@@ -50,7 +50,7 @@ bool RPCStringToObject( const std::string  & rpcstr ,
 
     full_buffer >> content_length_val;
 
-    content_length_val+=4;
+    full_buffer >> std::ws;
 
     char * content_buffer = new char[ content_length_val ];
 

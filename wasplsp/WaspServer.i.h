@@ -895,7 +895,7 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
                                   "   \"InputName\":  \"" + inputname  + "\","
                                   "   \"InputValue\": \"" + inputvalue + "\"}";
 
-    std::string temp_json_file_path = std::tmpnam(nullptr);
+    std::string temp_json_file_path = tempnam("tmp", "json");
 
     ofstream myfile;
     myfile.open (temp_json_file_path);

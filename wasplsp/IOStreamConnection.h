@@ -42,13 +42,19 @@ class WASP_PUBLIC IOStreamConnection : public Connection
 
         wasp_check( content_length_val > 0 );
 
-        std::string content( content_length_val+4 , ' ' );
+        std::cin >> std::ws;
 
-        std::cin.read( &content[0] , content_length_val+4 );
+        std::string content( content_length_val , ' ' );
+
+        std::cin.read( &content[0] , content_length_val );
 
         std::stringstream rpc_stream;
 
-        rpc_stream << content_length_key << " " << content_length_val << content;
+        rpc_stream << content_length_key
+                   << " "
+                   << content_length_val
+                   << m_rpc_separator
+                   << content;
 
         pass &= RPCStringToObject( rpc_stream.str() , object , errors );
 
