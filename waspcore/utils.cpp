@@ -56,43 +56,45 @@ bool file_exists(const std::string &path)
 }
 std::string json_escape_string(const std::string& src)
 {
-    std::stringstream dst;
+    std::string dst;
+    dst.reserve(src.size());
     for (char ch : src)
     {
         switch (ch)
         {
             case '\\':
-                dst << "\\\\";
+                dst.append("\\\\");
                 break;
             case '"':
-                dst << "\\\"";
+                dst.append("\\\"");
                 break;
             case '\b':
-                dst << "\\b";
+                dst.append("\\b");
                 break;
             case '\f':
-                dst << "\\f";
+                dst.append("\\f");
                 break;
             case '\n':
-                dst << "\\n";
+                dst.append("\\n");
                 break;
             case '\r':
-                dst << "\\r";
+                dst.append("\\r");
                 break;
             case '\t':
-                dst << "\\t";
+                dst.append("\\t");
                 break;
             default:
-                dst << ch;
+                dst.push_back(ch);
                 break;
         }
     }
-    return dst.str();
+    return dst;
 }  // json_escape_string
 
 std::string json_unescape_string(const std::string& src)
 {
-    std::stringstream dst;
+    std::string dst;
+    dst.reserve(src.size());
     bool escape_state = false;
     for (char ch : src)
     {
@@ -105,38 +107,39 @@ std::string json_unescape_string(const std::string& src)
             switch (ch)
             {
                 case '\\':
-                    dst << "\\";
+                    dst.append("\\");
                     break;
                 case '"' :
-                    dst << "\"";
+                    dst.append("\"");
                     break;
                 case 'b' :
-                    dst << "\b";
+                    dst.append("\b");
                     break;
                 case 'f' :
-                    dst << "\f";
+                    dst.append("\f");
                     break;
                 case 'n' :
-                    dst << "\n";
+                    dst.append("\n");
                     break;
                 case 'r' :
-                    dst << "\r";
+                    dst.append("\r");
                     break;
                 case 't' :
-                    dst << "\t";
+                    dst.append("\t");
                     break;
                 default:
-                    dst << "\\" << ch;
+                    dst.append("\\");
+                    dst.push_back(ch);
                     break;
             }
             escape_state = false;
         }
         else
         {
-            dst << ch;
+            dst.push_back(ch);
         }
     }
-    return dst.str();
+    return dst;
 }  // json_unescape_string
 
 std::string xml_escape_data(const std::string& src)
