@@ -29,7 +29,7 @@ class WASP_PUBLIC WaspServer : public ServerImpl
 {
   public:
 
-    WaspServer()
+    WaspServer() : is_setup(false)
     {
         connection = std::make_shared<CONNECTION>(this);
     }
@@ -112,6 +112,8 @@ class WASP_PUBLIC WaspServer : public ServerImpl
     {
        return this->connection->write( object , this->errors );
     }
+
+    bool                             is_setup;
 
     std::shared_ptr<INPUT>           parser;
 

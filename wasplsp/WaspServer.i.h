@@ -28,6 +28,8 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     this->template_dir = template_dir;
 
+    this->is_setup = true;
+
     return pass;
 }
 
@@ -41,6 +43,12 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
     parseDocumentForDiagnostics(
                       DataArray & diagnosticsList )
 {
+    if (!this->is_setup)
+    {
+        this->errors << m_error_prefix << "Server needs to be setup" << std::endl;
+        return false;
+    }
+
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
@@ -184,6 +192,12 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
                       int           end_character    ,
                       int           range_length     )
 {
+    if (!this->is_setup)
+    {
+        this->errors << m_error_prefix << "Server needs to be setup" << std::endl;
+        return false;
+    }
+
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
@@ -218,6 +232,12 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
                       int         line             ,
                       int         character        )
 {
+    if (!this->is_setup)
+    {
+        this->errors << m_error_prefix << "Server needs to be setup" << std::endl;
+        return false;
+    }
+
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
@@ -504,6 +524,12 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
                       int         line                ,
                       int         character           )
 {
+    if (!this->is_setup)
+    {
+        this->errors << m_error_prefix << "Server needs to be setup" << std::endl;
+        return false;
+    }
+
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
@@ -609,6 +635,12 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
                       int         character           ,
                       bool        include_declaration )
 {
+    if (!this->is_setup)
+    {
+        this->errors << m_error_prefix << "Server needs to be setup" << std::endl;
+        return false;
+    }
+
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
@@ -644,6 +676,12 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
                       int         tab_size            ,
                       bool        insert_spaces       )
 {
+    if (!this->is_setup)
+    {
+        this->errors << m_error_prefix << "Server needs to be setup" << std::endl;
+        return false;
+    }
+
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
@@ -673,6 +711,12 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
     gatherDocumentSymbols(
                       DataArray & documentSymbols )
 {
+    if (!this->is_setup)
+    {
+        this->errors << m_error_prefix << "Server needs to be setup" << std::endl;
+        return false;
+    }
+
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;

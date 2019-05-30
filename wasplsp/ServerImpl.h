@@ -123,21 +123,21 @@ class WASP_PUBLIC ServerImpl
 
   protected:
 
-    std::stringstream                             errors;
+    std::stringstream errors;
 
-    bool                                          is_initialized;
-    bool                                          is_document_open;
+    bool              is_initialized;
+    bool              is_document_open;
 
-    DataObject                                    server_capabilities;
-    DataObject                                    client_capabilities;
-    std::string                                   client_root_path;
-    int                                           client_process_id;
-    int                                           client_request_id;
+    DataObject        server_capabilities;
+    DataObject        client_capabilities;
+    std::string       client_root_path;
+    int               client_process_id;
+    int               client_request_id;
 
-    std::string                                   document_path;
-    std::string                                   document_language_id;
-    std::string                                   document_text;
-    int                                           document_version;
+    std::string       document_path;
+    std::string       document_language_id;
+    std::string       document_text;
+    int               document_version;
 };
 
 } // namespace lsp
