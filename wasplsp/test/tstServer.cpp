@@ -43,7 +43,7 @@ TEST(server, handle_initialize)
   }
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ ( json_expected.str() , json.str() );
 }
 
 TEST(server, handle_initialized)
@@ -140,7 +140,7 @@ TEST(server, handle_didopen)
   }
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ ( json_expected.str() , json.str() );
 }
 
 TEST(server, handle_didchange)
@@ -218,7 +218,7 @@ TEST(server, handle_didchange)
   }
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ ( json_expected.str() , json.str() );
 }
 
 TEST(server, handle_completion)
@@ -319,7 +319,7 @@ TEST(server, handle_completion)
   }
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ ( json_expected.str() , json.str() );
 }
 
 TEST(server, handle_definition)
@@ -393,7 +393,7 @@ TEST(server, handle_definition)
   ]
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ ( json_expected.str() , json.str() );
 }
 
 TEST(server, handle_references)
@@ -456,7 +456,7 @@ TEST(server, handle_references)
   ]
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ ( json_expected.str() , json.str() );
 }
 
 TEST(server, handle_formatting)
@@ -538,7 +538,7 @@ TEST(server, handle_formatting)
   ]
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ ( json_expected.str() , json.str() );
 }
 
 TEST(server, handle_symbols)
@@ -789,7 +789,7 @@ TEST(server, handle_symbols)
   ]
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ ( json_expected.str() , json.str() );
 }
 
 TEST(server, handle_didclose)
@@ -831,7 +831,7 @@ TEST(server, handle_shutdown)
   ,"result" : {}
 })INPUT";
 
-    ASSERT_EQ(json.str() , json_expected.str());
+    ASSERT_EQ ( json_expected.str() , json.str() );
 }
 
 TEST(server, handle_exit)

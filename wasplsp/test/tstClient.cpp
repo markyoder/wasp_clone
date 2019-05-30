@@ -45,7 +45,7 @@ TEST(client, initialize)
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
+    ASSERT_EQ   ( 1 , test_client.getPreviousRequestID() );
 }
 
 TEST(client, initialized)
@@ -58,7 +58,7 @@ TEST(client, initialized)
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
+    ASSERT_EQ   ( 1 , test_client.getPreviousRequestID() );
 }
 
 TEST(client, document_open_and_diagnostics)
@@ -77,17 +77,17 @@ TEST(client, document_open_and_diagnostics)
 
     ASSERT_TRUE ( test_client.isDocumentOpen() );
 
-    ASSERT_EQ   ( test_client.getCurrentDocumentVersion() , 1 );
+    ASSERT_EQ   ( 1 , test_client.getCurrentDocumentVersion() );
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
+    ASSERT_EQ   ( 1 , test_client.getPreviousRequestID() );
 
     // diagnostic responses
 
-    ASSERT_EQ   ( test_client.getDiagnosticSize(), 3 );
+    ASSERT_EQ   ( 3 , test_client.getDiagnosticSize() );
 
     for (int index = 0; index < test_client.getDiagnosticSize(); index++)
     {
@@ -111,36 +111,36 @@ TEST(client, document_open_and_diagnostics)
                                                    message         ) );
         if ( index == 0 )
         {
-            ASSERT_EQ ( start_line      , 20                 );
-            ASSERT_EQ ( start_character , 16                 );
-            ASSERT_EQ ( end_line        , 20                 );
-            ASSERT_EQ ( end_character   , 27                 );
-            ASSERT_EQ ( severity        , 1                  );
-            ASSERT_EQ ( code            , "test.code.11"     );
-            ASSERT_EQ ( source          , "test_source_11"   );
-            ASSERT_EQ ( message         , "Test message 11." );
+            ASSERT_EQ ( 20                 , start_line      );
+            ASSERT_EQ ( 16                 , start_character );
+            ASSERT_EQ ( 20                 , end_line        );
+            ASSERT_EQ ( 27                 , end_character   );
+            ASSERT_EQ ( 1                  , severity        );
+            ASSERT_EQ ( "test.code.11"     , code            );
+            ASSERT_EQ ( "test_source_11"   , source          );
+            ASSERT_EQ ( "Test message 11." , message         );
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( start_line      , 28                 );
-            ASSERT_EQ ( start_character , 56                 );
-            ASSERT_EQ ( end_line        , 34                 );
-            ASSERT_EQ ( end_character   , 27                 );
-            ASSERT_EQ ( severity        , 2                  );
-            ASSERT_EQ ( code            , "test.code.22"     );
-            ASSERT_EQ ( source          , "test_source_22"   );
-            ASSERT_EQ ( message         , "Test message 22." );
+            ASSERT_EQ ( 28                 , start_line      );
+            ASSERT_EQ ( 56                 , start_character );
+            ASSERT_EQ ( 34                 , end_line        );
+            ASSERT_EQ ( 27                 , end_character   );
+            ASSERT_EQ ( 2                  , severity        );
+            ASSERT_EQ ( "test.code.22"     , code            );
+            ASSERT_EQ ( "test_source_22"   , source          );
+            ASSERT_EQ ( "Test message 22." , message         );
         }
         else if ( index == 2 )
         {
-            ASSERT_EQ ( start_line      , 47                 );
-            ASSERT_EQ ( start_character , 36                 );
-            ASSERT_EQ ( end_line        , 47                 );
-            ASSERT_EQ ( end_character   , 43                 );
-            ASSERT_EQ ( severity        , 3                  );
-            ASSERT_EQ ( code            , "test.code.33"     );
-            ASSERT_EQ ( source          , "test_source_33"   );
-            ASSERT_EQ ( message         , "Test message 33." );
+            ASSERT_EQ ( 47                 , start_line      );
+            ASSERT_EQ ( 36                 , start_character );
+            ASSERT_EQ ( 47                 , end_line        );
+            ASSERT_EQ ( 43                 , end_character   );
+            ASSERT_EQ ( 3                  , severity        );
+            ASSERT_EQ ( "test.code.33"     , code            );
+            ASSERT_EQ ( "test_source_33"   , source          );
+            ASSERT_EQ ( "Test message 33." , message         );
         }
     }
 }
@@ -156,7 +156,7 @@ TEST(client, document_change_and_diagnostics)
     int         range_length      = 0;
     std::string new_document_text = "test\ntext\n2\nstring\n";
 
-    ASSERT_EQ   ( test_client.getCurrentDocumentVersion() , 1 );
+    ASSERT_EQ   ( 1 , test_client.getCurrentDocumentVersion() );
 
     ASSERT_TRUE ( test_client.doDocumentChange( start_line        ,
                                                 start_character   ,
@@ -165,17 +165,17 @@ TEST(client, document_change_and_diagnostics)
                                                 range_length      ,
                                                 new_document_text ) );
 
-    ASSERT_EQ   ( test_client.getCurrentDocumentVersion() , 2 );
+    ASSERT_EQ   ( 2 , test_client.getCurrentDocumentVersion() );
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 1 );
+    ASSERT_EQ   ( 1 , test_client.getPreviousRequestID() );
 
     // diagnostic responses
 
-    ASSERT_EQ   ( test_client.getDiagnosticSize(), 2 );
+    ASSERT_EQ   ( 2 , test_client.getDiagnosticSize() );
 
     for (int index = 0; index < test_client.getDiagnosticSize(); index++)
     {
@@ -199,25 +199,25 @@ TEST(client, document_change_and_diagnostics)
                                                    message         ) );
         if ( index == 0 )
         {
-            ASSERT_EQ ( start_line      , 67                 );
-            ASSERT_EQ ( start_character , 45                 );
-            ASSERT_EQ ( end_line        , 68                 );
-            ASSERT_EQ ( end_character   , 16                 );
-            ASSERT_EQ ( severity        , 4                  );
-            ASSERT_EQ ( code            , "test.code.44"     );
-            ASSERT_EQ ( source          , "test_source_44"   );
-            ASSERT_EQ ( message         , "Test message 44." );
+            ASSERT_EQ ( 67                 , start_line      );
+            ASSERT_EQ ( 45                 , start_character );
+            ASSERT_EQ ( 68                 , end_line        );
+            ASSERT_EQ ( 16                 , end_character   );
+            ASSERT_EQ ( 4                  , severity        );
+            ASSERT_EQ ( "test.code.44"     , code            );
+            ASSERT_EQ ( "test_source_44"   , source          );
+            ASSERT_EQ ( "Test message 44." , message         );
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( start_line      , 87                 );
-            ASSERT_EQ ( start_character , 17                 );
-            ASSERT_EQ ( end_line        , 88                 );
-            ASSERT_EQ ( end_character   , 12                 );
-            ASSERT_EQ ( severity        , 1                  );
-            ASSERT_EQ ( code            , "test.code.55"     );
-            ASSERT_EQ ( source          , "test_source_55"   );
-            ASSERT_EQ ( message         , "Test message 55." );
+            ASSERT_EQ ( 87                 , start_line      );
+            ASSERT_EQ ( 17                 , start_character );
+            ASSERT_EQ ( 88                 , end_line        );
+            ASSERT_EQ ( 12                 , end_character   );
+            ASSERT_EQ ( 1                  , severity        );
+            ASSERT_EQ ( "test.code.55"     , code            );
+            ASSERT_EQ ( "test_source_55"   , source          );
+            ASSERT_EQ ( "Test message 55." , message         );
         }
     }
 }
@@ -236,11 +236,11 @@ TEST(client, document_completion_and_responses)
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 2 );
+    ASSERT_EQ   ( 2 , test_client.getPreviousRequestID() );
 
     // completion responses
 
-    ASSERT_EQ   ( test_client.getCompletionSize(), 3 );
+    ASSERT_EQ   ( 3 , test_client.getCompletionSize() );
 
     for (int index = 0; index < test_client.getCompletionSize(); index++)
     {
@@ -270,45 +270,45 @@ TEST(client, document_completion_and_responses)
                                                    preselect       ) );
         if ( index == 0 )
         {
-            ASSERT_EQ ( label           , "test-label-1"         );
-            ASSERT_EQ ( start_line      , 11                     );
-            ASSERT_EQ ( start_character , 11                     );
-            ASSERT_EQ ( end_line        , 11                     );
-            ASSERT_EQ ( end_character   , 11                     );
-            ASSERT_EQ ( new_text        , "test-insert-text-1"   );
-            ASSERT_EQ ( kind            , 1                      );
-            ASSERT_EQ ( detail          , "test type info 1"     );
-            ASSERT_EQ ( documentation   , "test documentation 1" );
-            ASSERT_EQ ( deprecated      , false                  );
-            ASSERT_EQ ( preselect       , true                   );
+            ASSERT_EQ ( "test-label-1"         , label           );
+            ASSERT_EQ ( 11                     , start_line      );
+            ASSERT_EQ ( 11                     , start_character );
+            ASSERT_EQ ( 11                     , end_line        );
+            ASSERT_EQ ( 11                     , end_character   );
+            ASSERT_EQ ( "test-insert-text-1"   , new_text        );
+            ASSERT_EQ ( 1                      , kind            );
+            ASSERT_EQ ( "test type info 1"     , detail          );
+            ASSERT_EQ ( "test documentation 1" , documentation   );
+            ASSERT_EQ ( false                  , deprecated      );
+            ASSERT_EQ ( true                   , preselect       );
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( label           , "test-label-2"         );
-            ASSERT_EQ ( start_line      , 22                     );
-            ASSERT_EQ ( start_character , 22                     );
-            ASSERT_EQ ( end_line        , 22                     );
-            ASSERT_EQ ( end_character   , 22                     );
-            ASSERT_EQ ( new_text        , "test-insert-text-2"   );
-            ASSERT_EQ ( kind            , 2                      );
-            ASSERT_EQ ( detail          , "test type info 2"     );
-            ASSERT_EQ ( documentation   , "test documentation 2" );
-            ASSERT_EQ ( deprecated      , false                  );
-            ASSERT_EQ ( preselect       , false                  );
+            ASSERT_EQ ( "test-label-2"         , label           );
+            ASSERT_EQ ( 22                     , start_line      );
+            ASSERT_EQ ( 22                     , start_character );
+            ASSERT_EQ ( 22                     , end_line        );
+            ASSERT_EQ ( 22                     , end_character   );
+            ASSERT_EQ ( "test-insert-text-2"   , new_text        );
+            ASSERT_EQ ( 2                      , kind            );
+            ASSERT_EQ ( "test type info 2"     , detail          );
+            ASSERT_EQ ( "test documentation 2" , documentation   );
+            ASSERT_EQ ( false                  , deprecated      );
+            ASSERT_EQ ( false                  , preselect       );
         }
         else if ( index == 2 )
         {
-            ASSERT_EQ ( label           , "test-label-3"         );
-            ASSERT_EQ ( start_line      , 33                     );
-            ASSERT_EQ ( start_character , 33                     );
-            ASSERT_EQ ( end_line        , 33                     );
-            ASSERT_EQ ( end_character   , 33                     );
-            ASSERT_EQ ( new_text        , "test-insert-text-3"   );
-            ASSERT_EQ ( kind            , 3                      );
-            ASSERT_EQ ( detail          , "test type info 3"     );
-            ASSERT_EQ ( documentation   , "test documentation 3" );
-            ASSERT_EQ ( deprecated      , false                  );
-            ASSERT_EQ ( preselect       , false                  );
+            ASSERT_EQ ( "test-label-3"         , label           );
+            ASSERT_EQ ( 33                     , start_line      );
+            ASSERT_EQ ( 33                     , start_character );
+            ASSERT_EQ ( 33                     , end_line        );
+            ASSERT_EQ ( 33                     , end_character   );
+            ASSERT_EQ ( "test-insert-text-3"   , new_text        );
+            ASSERT_EQ ( 3                      , kind            );
+            ASSERT_EQ ( "test type info 3"     , detail          );
+            ASSERT_EQ ( "test documentation 3" , documentation   );
+            ASSERT_EQ ( false                  , deprecated      );
+            ASSERT_EQ ( false                  , preselect       );
         }
     }
 }
@@ -327,11 +327,11 @@ TEST(client, document_definition_and_responses)
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 3 );
+    ASSERT_EQ   ( 3 , test_client.getPreviousRequestID() );
 
     // definition responses
 
-    ASSERT_EQ   ( test_client.getDefinitionSize(), 3 );
+    ASSERT_EQ   ( 3 , test_client.getDefinitionSize() );
 
     for (int index = 0; index < test_client.getDefinitionSize(); index++)
     {
@@ -347,24 +347,24 @@ TEST(client, document_definition_and_responses)
                                                    end_character   ) );
         if ( index == 0 )
         {
-            ASSERT_EQ ( start_line      , 11 );
-            ASSERT_EQ ( start_character , 11 );
-            ASSERT_EQ ( end_line        , 11 );
-            ASSERT_EQ ( end_character   , 11 );
+            ASSERT_EQ ( 11 , start_line      );
+            ASSERT_EQ ( 11 , start_character );
+            ASSERT_EQ ( 11 , end_line        );
+            ASSERT_EQ ( 11 , end_character   );
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( start_line      , 22 );
-            ASSERT_EQ ( start_character , 22 );
-            ASSERT_EQ ( end_line        , 22 );
-            ASSERT_EQ ( end_character   , 22 );
+            ASSERT_EQ ( 22 , start_line      );
+            ASSERT_EQ ( 22 , start_character );
+            ASSERT_EQ ( 22 , end_line        );
+            ASSERT_EQ ( 22 , end_character   );
         }
         else if ( index == 2 )
         {
-            ASSERT_EQ ( start_line      , 33 );
-            ASSERT_EQ ( start_character , 33 );
-            ASSERT_EQ ( end_line        , 33 );
-            ASSERT_EQ ( end_character   , 33 );
+            ASSERT_EQ ( 33 , start_line      );
+            ASSERT_EQ ( 33 , start_character );
+            ASSERT_EQ ( 33 , end_line        );
+            ASSERT_EQ ( 33 , end_character   );
         }
     }
 }
@@ -385,11 +385,11 @@ TEST(client, document_references_and_responses)
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 4 );
+    ASSERT_EQ   ( 4 , test_client.getPreviousRequestID() );
 
     // references responses
 
-    ASSERT_EQ   ( test_client.getReferencesSize(), 2 );
+    ASSERT_EQ   ( 2 , test_client.getReferencesSize() );
 
     for (int index = 0; index < test_client.getReferencesSize(); index++)
     {
@@ -405,17 +405,17 @@ TEST(client, document_references_and_responses)
                                                    end_character   ) );
         if ( index == 0 )
         {
-            ASSERT_EQ ( start_line      , 44 );
-            ASSERT_EQ ( start_character , 44 );
-            ASSERT_EQ ( end_line        , 44 );
-            ASSERT_EQ ( end_character   , 44 );
+            ASSERT_EQ ( 44 , start_line      );
+            ASSERT_EQ ( 44 , start_character );
+            ASSERT_EQ ( 44 , end_line        );
+            ASSERT_EQ ( 44 , end_character   );
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( start_line      , 55 );
-            ASSERT_EQ ( start_character , 55 );
-            ASSERT_EQ ( end_line        , 55 );
-            ASSERT_EQ ( end_character   , 55 );
+            ASSERT_EQ ( 55 , start_line      );
+            ASSERT_EQ ( 55 , start_character );
+            ASSERT_EQ ( 55 , end_line        );
+            ASSERT_EQ ( 55 , end_character   );
         }
     }
 }
@@ -442,11 +442,11 @@ TEST(client, document_formatting_and_responses)
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 5 );
+    ASSERT_EQ   ( 5 , test_client.getPreviousRequestID() );
 
     // formatting responses
 
-    ASSERT_EQ   ( test_client.getFormattingSize(), 3 );
+    ASSERT_EQ   ( 3 , test_client.getFormattingSize() );
 
     for (int index = 0; index < test_client.getFormattingSize(); index++)
     {
@@ -464,27 +464,27 @@ TEST(client, document_formatting_and_responses)
                                                    new_text        ) );
         if ( index == 0 )
         {
-            ASSERT_EQ ( start_line      , 10                                   );
-            ASSERT_EQ ( start_character , 01                                   );
-            ASSERT_EQ ( end_line        , 14                                   );
-            ASSERT_EQ ( end_character   , 03                                   );
-            ASSERT_EQ ( new_text        , "test\n  new\n  text\n  format\n  1" );
+            ASSERT_EQ ( 10                                   , start_line      );
+            ASSERT_EQ ( 01                                   , start_character );
+            ASSERT_EQ ( 14                                   , end_line        );
+            ASSERT_EQ ( 03                                   , end_character   );
+            ASSERT_EQ ( "test\n  new\n  text\n  format\n  1" , new_text        );
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( start_line      , 20                                   );
-            ASSERT_EQ ( start_character , 01                                   );
-            ASSERT_EQ ( end_line        , 24                                   );
-            ASSERT_EQ ( end_character   , 03                                   );
-            ASSERT_EQ ( new_text        , "test\n  new\n  text\n  format\n  2" );
+            ASSERT_EQ ( 20                                   , start_line      );
+            ASSERT_EQ ( 01                                   , start_character );
+            ASSERT_EQ ( 24                                   , end_line        );
+            ASSERT_EQ ( 03                                   , end_character   );
+            ASSERT_EQ ( "test\n  new\n  text\n  format\n  2" , new_text        );
         }
         else if ( index == 2 )
         {
-            ASSERT_EQ ( start_line      , 30                                   );
-            ASSERT_EQ ( start_character , 01                                   );
-            ASSERT_EQ ( end_line        , 34                                   );
-            ASSERT_EQ ( end_character   , 03                                   );
-            ASSERT_EQ ( new_text        , "test\n  new\n  text\n  format\n  3" );
+            ASSERT_EQ ( 30                                   , start_line      );
+            ASSERT_EQ ( 01                                   , start_character );
+            ASSERT_EQ ( 34                                   , end_line        );
+            ASSERT_EQ ( 03                                   , end_character   );
+            ASSERT_EQ ( "test\n  new\n  text\n  format\n  3" , new_text        );
         }
     }
 }
@@ -499,7 +499,7 @@ TEST(client, document_symbols_and_responses)
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 6 );
+    ASSERT_EQ   ( 6 , test_client.getPreviousRequestID() );
 
     // symbols responses
 
@@ -669,123 +669,123 @@ TEST(client, document_symbols_and_responses)
 
         if ( order == 1 )
         {
-            ASSERT_EQ ( o_name                      , expected_o1_name                      );
-            ASSERT_EQ ( o_detail                    , expected_o1_detail                    );
-            ASSERT_EQ ( o_kind                      , expected_o1_kind                      );
-            ASSERT_EQ ( o_deprecated                , expected_o1_deprecated                );
-            ASSERT_EQ ( o_start_line                , expected_o1_start_line                );
-            ASSERT_EQ ( o_start_character           , expected_o1_start_character           );
-            ASSERT_EQ ( o_end_line                  , expected_o1_end_line                  );
-            ASSERT_EQ ( o_end_character             , expected_o1_end_character             );
-            ASSERT_EQ ( o_selection_start_line      , expected_o1_selection_start_line      );
-            ASSERT_EQ ( o_selection_start_character , expected_o1_selection_start_character );
-            ASSERT_EQ ( o_selection_end_line        , expected_o1_selection_end_line        );
-            ASSERT_EQ ( o_selection_end_character   , expected_o1_selection_end_character   );
+            ASSERT_EQ ( expected_o1_name                      , o_name                      );
+            ASSERT_EQ ( expected_o1_detail                    , o_detail                    );
+            ASSERT_EQ ( expected_o1_kind                      , o_kind                      );
+            ASSERT_EQ ( expected_o1_deprecated                , o_deprecated                );
+            ASSERT_EQ ( expected_o1_start_line                , o_start_line                );
+            ASSERT_EQ ( expected_o1_start_character           , o_start_character           );
+            ASSERT_EQ ( expected_o1_end_line                  , o_end_line                  );
+            ASSERT_EQ ( expected_o1_end_character             , o_end_character             );
+            ASSERT_EQ ( expected_o1_selection_start_line      , o_selection_start_line      );
+            ASSERT_EQ ( expected_o1_selection_start_character , o_selection_start_character );
+            ASSERT_EQ ( expected_o1_selection_end_line        , o_selection_end_line        );
+            ASSERT_EQ ( expected_o1_selection_end_character   , o_selection_end_character   );
         }
         else if ( order == 2 )
         {
-            ASSERT_EQ ( o_name                      , expected_o2_name                      );
-            ASSERT_EQ ( o_detail                    , expected_o2_detail                    );
-            ASSERT_EQ ( o_kind                      , expected_o2_kind                      );
-            ASSERT_EQ ( o_deprecated                , expected_o2_deprecated                );
-            ASSERT_EQ ( o_start_line                , expected_o2_start_line                );
-            ASSERT_EQ ( o_start_character           , expected_o2_start_character           );
-            ASSERT_EQ ( o_end_line                  , expected_o2_end_line                  );
-            ASSERT_EQ ( o_end_character             , expected_o2_end_character             );
-            ASSERT_EQ ( o_selection_start_line      , expected_o2_selection_start_line      );
-            ASSERT_EQ ( o_selection_start_character , expected_o2_selection_start_character );
-            ASSERT_EQ ( o_selection_end_line        , expected_o2_selection_end_line        );
-            ASSERT_EQ ( o_selection_end_character   , expected_o2_selection_end_character   );
+            ASSERT_EQ ( expected_o2_name                      , o_name                      );
+            ASSERT_EQ ( expected_o2_detail                    , o_detail                    );
+            ASSERT_EQ ( expected_o2_kind                      , o_kind                      );
+            ASSERT_EQ ( expected_o2_deprecated                , o_deprecated                );
+            ASSERT_EQ ( expected_o2_start_line                , o_start_line                );
+            ASSERT_EQ ( expected_o2_start_character           , o_start_character           );
+            ASSERT_EQ ( expected_o2_end_line                  , o_end_line                  );
+            ASSERT_EQ ( expected_o2_end_character             , o_end_character             );
+            ASSERT_EQ ( expected_o2_selection_start_line      , o_selection_start_line      );
+            ASSERT_EQ ( expected_o2_selection_start_character , o_selection_start_character );
+            ASSERT_EQ ( expected_o2_selection_end_line        , o_selection_end_line        );
+            ASSERT_EQ ( expected_o2_selection_end_character   , o_selection_end_character   );
         }
         else if ( order == 3 )
         {
-            ASSERT_EQ ( o_name                      , expected_o3_name                      );
-            ASSERT_EQ ( o_detail                    , expected_o3_detail                    );
-            ASSERT_EQ ( o_kind                      , expected_o3_kind                      );
-            ASSERT_EQ ( o_deprecated                , expected_o3_deprecated                );
-            ASSERT_EQ ( o_start_line                , expected_o3_start_line                );
-            ASSERT_EQ ( o_start_character           , expected_o3_start_character           );
-            ASSERT_EQ ( o_end_line                  , expected_o3_end_line                  );
-            ASSERT_EQ ( o_end_character             , expected_o3_end_character             );
-            ASSERT_EQ ( o_selection_start_line      , expected_o3_selection_start_line      );
-            ASSERT_EQ ( o_selection_start_character , expected_o3_selection_start_character );
-            ASSERT_EQ ( o_selection_end_line        , expected_o3_selection_end_line        );
-            ASSERT_EQ ( o_selection_end_character   , expected_o3_selection_end_character   );
+            ASSERT_EQ ( expected_o3_name                      , o_name                      );
+            ASSERT_EQ ( expected_o3_detail                    , o_detail                    );
+            ASSERT_EQ ( expected_o3_kind                      , o_kind                      );
+            ASSERT_EQ ( expected_o3_deprecated                , o_deprecated                );
+            ASSERT_EQ ( expected_o3_start_line                , o_start_line                );
+            ASSERT_EQ ( expected_o3_start_character           , o_start_character           );
+            ASSERT_EQ ( expected_o3_end_line                  , o_end_line                  );
+            ASSERT_EQ ( expected_o3_end_character             , o_end_character             );
+            ASSERT_EQ ( expected_o3_selection_start_line      , o_selection_start_line      );
+            ASSERT_EQ ( expected_o3_selection_start_character , o_selection_start_character );
+            ASSERT_EQ ( expected_o3_selection_end_line        , o_selection_end_line        );
+            ASSERT_EQ ( expected_o3_selection_end_character   , o_selection_end_character   );
         }
         else if ( order == 4 )
         {
-            ASSERT_EQ ( o_name                      , expected_o4_name                      );
-            ASSERT_EQ ( o_detail                    , expected_o4_detail                    );
-            ASSERT_EQ ( o_kind                      , expected_o4_kind                      );
-            ASSERT_EQ ( o_deprecated                , expected_o4_deprecated                );
-            ASSERT_EQ ( o_start_line                , expected_o4_start_line                );
-            ASSERT_EQ ( o_start_character           , expected_o4_start_character           );
-            ASSERT_EQ ( o_end_line                  , expected_o4_end_line                  );
-            ASSERT_EQ ( o_end_character             , expected_o4_end_character             );
-            ASSERT_EQ ( o_selection_start_line      , expected_o4_selection_start_line      );
-            ASSERT_EQ ( o_selection_start_character , expected_o4_selection_start_character );
-            ASSERT_EQ ( o_selection_end_line        , expected_o4_selection_end_line        );
-            ASSERT_EQ ( o_selection_end_character   , expected_o4_selection_end_character   );
+            ASSERT_EQ ( expected_o4_name                      , o_name                      );
+            ASSERT_EQ ( expected_o4_detail                    , o_detail                    );
+            ASSERT_EQ ( expected_o4_kind                      , o_kind                      );
+            ASSERT_EQ ( expected_o4_deprecated                , o_deprecated                );
+            ASSERT_EQ ( expected_o4_start_line                , o_start_line                );
+            ASSERT_EQ ( expected_o4_start_character           , o_start_character           );
+            ASSERT_EQ ( expected_o4_end_line                  , o_end_line                  );
+            ASSERT_EQ ( expected_o4_end_character             , o_end_character             );
+            ASSERT_EQ ( expected_o4_selection_start_line      , o_selection_start_line      );
+            ASSERT_EQ ( expected_o4_selection_start_character , o_selection_start_character );
+            ASSERT_EQ ( expected_o4_selection_end_line        , o_selection_end_line        );
+            ASSERT_EQ ( expected_o4_selection_end_character   , o_selection_end_character   );
         }
         else if ( order == 5 )
         {
-            ASSERT_EQ ( o_name                      , expected_o5_name                      );
-            ASSERT_EQ ( o_detail                    , expected_o5_detail                    );
-            ASSERT_EQ ( o_kind                      , expected_o5_kind                      );
-            ASSERT_EQ ( o_deprecated                , expected_o5_deprecated                );
-            ASSERT_EQ ( o_start_line                , expected_o5_start_line                );
-            ASSERT_EQ ( o_start_character           , expected_o5_start_character           );
-            ASSERT_EQ ( o_end_line                  , expected_o5_end_line                  );
-            ASSERT_EQ ( o_end_character             , expected_o5_end_character             );
-            ASSERT_EQ ( o_selection_start_line      , expected_o5_selection_start_line      );
-            ASSERT_EQ ( o_selection_start_character , expected_o5_selection_start_character );
-            ASSERT_EQ ( o_selection_end_line        , expected_o5_selection_end_line        );
-            ASSERT_EQ ( o_selection_end_character   , expected_o5_selection_end_character   );
+            ASSERT_EQ ( expected_o5_name                      , o_name                      );
+            ASSERT_EQ ( expected_o5_detail                    , o_detail                    );
+            ASSERT_EQ ( expected_o5_kind                      , o_kind                      );
+            ASSERT_EQ ( expected_o5_deprecated                , o_deprecated                );
+            ASSERT_EQ ( expected_o5_start_line                , o_start_line                );
+            ASSERT_EQ ( expected_o5_start_character           , o_start_character           );
+            ASSERT_EQ ( expected_o5_end_line                  , o_end_line                  );
+            ASSERT_EQ ( expected_o5_end_character             , o_end_character             );
+            ASSERT_EQ ( expected_o5_selection_start_line      , o_selection_start_line      );
+            ASSERT_EQ ( expected_o5_selection_start_character , o_selection_start_character );
+            ASSERT_EQ ( expected_o5_selection_end_line        , o_selection_end_line        );
+            ASSERT_EQ ( expected_o5_selection_end_character   , o_selection_end_character   );
         }
         else if ( order == 6 )
         {
-            ASSERT_EQ ( o_name                      , expected_o6_name                      );
-            ASSERT_EQ ( o_detail                    , expected_o6_detail                    );
-            ASSERT_EQ ( o_kind                      , expected_o6_kind                      );
-            ASSERT_EQ ( o_deprecated                , expected_o6_deprecated                );
-            ASSERT_EQ ( o_start_line                , expected_o6_start_line                );
-            ASSERT_EQ ( o_start_character           , expected_o6_start_character           );
-            ASSERT_EQ ( o_end_line                  , expected_o6_end_line                  );
-            ASSERT_EQ ( o_end_character             , expected_o6_end_character             );
-            ASSERT_EQ ( o_selection_start_line      , expected_o6_selection_start_line      );
-            ASSERT_EQ ( o_selection_start_character , expected_o6_selection_start_character );
-            ASSERT_EQ ( o_selection_end_line        , expected_o6_selection_end_line        );
-            ASSERT_EQ ( o_selection_end_character   , expected_o6_selection_end_character   );
+            ASSERT_EQ ( expected_o6_name                      , o_name                      );
+            ASSERT_EQ ( expected_o6_detail                    , o_detail                    );
+            ASSERT_EQ ( expected_o6_kind                      , o_kind                      );
+            ASSERT_EQ ( expected_o6_deprecated                , o_deprecated                );
+            ASSERT_EQ ( expected_o6_start_line                , o_start_line                );
+            ASSERT_EQ ( expected_o6_start_character           , o_start_character           );
+            ASSERT_EQ ( expected_o6_end_line                  , o_end_line                  );
+            ASSERT_EQ ( expected_o6_end_character             , o_end_character             );
+            ASSERT_EQ ( expected_o6_selection_start_line      , o_selection_start_line      );
+            ASSERT_EQ ( expected_o6_selection_start_character , o_selection_start_character );
+            ASSERT_EQ ( expected_o6_selection_end_line        , o_selection_end_line        );
+            ASSERT_EQ ( expected_o6_selection_end_character   , o_selection_end_character   );
         }
         else if ( order == 7 )
         {
-            ASSERT_EQ ( o_name                      , expected_o7_name                      );
-            ASSERT_EQ ( o_detail                    , expected_o7_detail                    );
-            ASSERT_EQ ( o_kind                      , expected_o7_kind                      );
-            ASSERT_EQ ( o_deprecated                , expected_o7_deprecated                );
-            ASSERT_EQ ( o_start_line                , expected_o7_start_line                );
-            ASSERT_EQ ( o_start_character           , expected_o7_start_character           );
-            ASSERT_EQ ( o_end_line                  , expected_o7_end_line                  );
-            ASSERT_EQ ( o_end_character             , expected_o7_end_character             );
-            ASSERT_EQ ( o_selection_start_line      , expected_o7_selection_start_line      );
-            ASSERT_EQ ( o_selection_start_character , expected_o7_selection_start_character );
-            ASSERT_EQ ( o_selection_end_line        , expected_o7_selection_end_line        );
-            ASSERT_EQ ( o_selection_end_character   , expected_o7_selection_end_character   );
+            ASSERT_EQ ( expected_o7_name                      , o_name                      );
+            ASSERT_EQ ( expected_o7_detail                    , o_detail                    );
+            ASSERT_EQ ( expected_o7_kind                      , o_kind                      );
+            ASSERT_EQ ( expected_o7_deprecated                , o_deprecated                );
+            ASSERT_EQ ( expected_o7_start_line                , o_start_line                );
+            ASSERT_EQ ( expected_o7_start_character           , o_start_character           );
+            ASSERT_EQ ( expected_o7_end_line                  , o_end_line                  );
+            ASSERT_EQ ( expected_o7_end_character             , o_end_character             );
+            ASSERT_EQ ( expected_o7_selection_start_line      , o_selection_start_line      );
+            ASSERT_EQ ( expected_o7_selection_start_character , o_selection_start_character );
+            ASSERT_EQ ( expected_o7_selection_end_line        , o_selection_end_line        );
+            ASSERT_EQ ( expected_o7_selection_end_character   , o_selection_end_character   );
         }
         else if ( order == 8 )
         {
-            ASSERT_EQ ( o_name                      , expected_o8_name                      );
-            ASSERT_EQ ( o_detail                    , expected_o8_detail                    );
-            ASSERT_EQ ( o_kind                      , expected_o8_kind                      );
-            ASSERT_EQ ( o_deprecated                , expected_o8_deprecated                );
-            ASSERT_EQ ( o_start_line                , expected_o8_start_line                );
-            ASSERT_EQ ( o_start_character           , expected_o8_start_character           );
-            ASSERT_EQ ( o_end_line                  , expected_o8_end_line                  );
-            ASSERT_EQ ( o_end_character             , expected_o8_end_character             );
-            ASSERT_EQ ( o_selection_start_line      , expected_o8_selection_start_line      );
-            ASSERT_EQ ( o_selection_start_character , expected_o8_selection_start_character );
-            ASSERT_EQ ( o_selection_end_line        , expected_o8_selection_end_line        );
-            ASSERT_EQ ( o_selection_end_character   , expected_o8_selection_end_character   );
+            ASSERT_EQ ( expected_o8_name                      , o_name                      );
+            ASSERT_EQ ( expected_o8_detail                    , o_detail                    );
+            ASSERT_EQ ( expected_o8_kind                      , o_kind                      );
+            ASSERT_EQ ( expected_o8_deprecated                , o_deprecated                );
+            ASSERT_EQ ( expected_o8_start_line                , o_start_line                );
+            ASSERT_EQ ( expected_o8_start_character           , o_start_character           );
+            ASSERT_EQ ( expected_o8_end_line                  , o_end_line                  );
+            ASSERT_EQ ( expected_o8_end_character             , o_end_character             );
+            ASSERT_EQ ( expected_o8_selection_start_line      , o_selection_start_line      );
+            ASSERT_EQ ( expected_o8_selection_start_character , o_selection_start_character );
+            ASSERT_EQ ( expected_o8_selection_end_line        , o_selection_end_line        );
+            ASSERT_EQ ( expected_o8_selection_end_character   , o_selection_end_character   );
         }
 
         if ( si->getChildSize() == 0 )
@@ -809,7 +809,7 @@ TEST(client, document_symbols_and_responses)
 /test_symbol_name_object_1/test_symbol_name_object_3/test_symbol_name_object_4/test_symbol_name_object_8 (80:81)
 )INPUT";
 
-    ASSERT_EQ( paths.str() , expected_paths.str() );
+    ASSERT_EQ ( expected_paths.str() , paths.str() );
 }
 
 TEST(client, document_close)
@@ -826,7 +826,7 @@ TEST(client, document_close)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 6 );
+    ASSERT_EQ   ( 6 , test_client.getPreviousRequestID() );
 }
 
 TEST(client, shutdown)
@@ -843,7 +843,7 @@ TEST(client, shutdown)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 7 );
+    ASSERT_EQ   ( 7 , test_client.getPreviousRequestID() );
 }
 
 TEST(client, exit)
@@ -856,7 +856,7 @@ TEST(client, exit)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( test_client.getPreviousRequestID() , 7 );
+    ASSERT_EQ   ( 7 , test_client.getPreviousRequestID() );
 }
 
 TEST(client, server_thread_join)

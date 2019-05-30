@@ -42,7 +42,7 @@ TEST(lsp, bad_ranges)
                                              tab_size         ,
                                              insert_spaces    ));
 
-        ASSERT_EQ( errors.str() , expected_errors );
+        ASSERT_EQ ( expected_errors , errors.str() );
     }
     {
         DataObject        object;
@@ -73,7 +73,7 @@ TEST(lsp, bad_ranges)
                                              tab_size         ,
                                              insert_spaces    ));
 
-        ASSERT_EQ( errors.str() , expected_errors );
+        ASSERT_EQ ( expected_errors , errors.str() );
     }
 }
 
@@ -94,7 +94,7 @@ TEST(lsp, initialize_request)
                                         root_uri            ,
                                         client_capabilities ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 3 );
+    ASSERT_EQ  ( (size_t) 3 , object.size() );
 
     ASSERT_TRUE( object[m_id].is_int()              );
     ASSERT_EQ  ( object[m_id].to_int() , request_id );
@@ -131,7 +131,7 @@ TEST(lsp, initialize_request)
   }
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -153,10 +153,10 @@ TEST(lsp, initialize_request)
                                           tst_root_uri            ,
                                           tst_client_capabilities ));
 
-    ASSERT_EQ( tst_request_id                 , request_id );
-    ASSERT_EQ( tst_process_id                 , process_id );
-    ASSERT_EQ( tst_root_uri                   , root_uri   );
-    ASSERT_EQ( tst_client_capabilities.size() , (size_t) 0 );
+    ASSERT_EQ ( request_id , tst_request_id                 );
+    ASSERT_EQ ( process_id , tst_process_id                 );
+    ASSERT_EQ ( root_uri   , tst_root_uri                   );
+    ASSERT_EQ ( (size_t) 0 , tst_client_capabilities.size() );
 }
 
 TEST(lsp, initialized_notification)
@@ -167,7 +167,7 @@ TEST(lsp, initialized_notification)
     ASSERT_TRUE(buildInitializedNotification( object ,
                                               errors ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( (size_t) 2 , object.size() );
 
     ASSERT_TRUE( object[m_method].is_string()                        );
     ASSERT_EQ  ( object[m_method].to_string() , m_method_initialized );
@@ -187,7 +187,7 @@ TEST(lsp, initialized_notification)
   ,"params" : {}
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -218,7 +218,7 @@ TEST(lsp, didopen_notification)
                                           version      ,
                                           text         ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( (size_t) 2 , object.size() );
 
     ASSERT_TRUE( object[m_method].is_string()                    );
     ASSERT_EQ  ( object[m_method].to_string() , m_method_didopen );
@@ -260,7 +260,7 @@ TEST(lsp, didopen_notification)
   }
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -282,10 +282,10 @@ TEST(lsp, didopen_notification)
                                             tst_version     ,
                                             tst_text        ));
 
-    ASSERT_EQ( tst_uri         , uri         );
-    ASSERT_EQ( tst_language_id , language_id );
-    ASSERT_EQ( tst_version     , version     );
-    ASSERT_EQ( tst_text        , text        );
+    ASSERT_EQ ( uri         , tst_uri         );
+    ASSERT_EQ ( language_id , tst_language_id );
+    ASSERT_EQ ( version     , tst_version     );
+    ASSERT_EQ ( text        , tst_text        );
 
 }
 
@@ -314,7 +314,7 @@ TEST(lsp, didchange_notification)
                                             range_length    ,
                                             text            ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( (size_t) 2 , object.size() );
 
     ASSERT_TRUE( object[m_method].is_string()                      );
     ASSERT_EQ  ( object[m_method].to_string() , m_method_didchange );
@@ -392,7 +392,7 @@ TEST(lsp, didchange_notification)
   }
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -422,14 +422,14 @@ TEST(lsp, didchange_notification)
                                               tst_range_length    ,
                                               tst_text            ));
 
-    ASSERT_EQ( tst_uri             , uri             );
-    ASSERT_EQ( tst_version         , version         );
-    ASSERT_EQ( tst_start_line      , start_line      );
-    ASSERT_EQ( tst_start_character , start_character );
-    ASSERT_EQ( tst_end_line        , end_line        );
-    ASSERT_EQ( tst_end_character   , end_character   );
-    ASSERT_EQ( tst_range_length    , range_length    );
-    ASSERT_EQ( tst_text            , text            );
+    ASSERT_EQ ( uri             , tst_uri             );
+    ASSERT_EQ ( version         , tst_version         );
+    ASSERT_EQ ( start_line      , tst_start_line      );
+    ASSERT_EQ ( start_character , tst_start_character );
+    ASSERT_EQ ( end_line        , tst_end_line        );
+    ASSERT_EQ ( end_character   , tst_end_character   );
+    ASSERT_EQ ( range_length    , tst_range_length    );
+    ASSERT_EQ ( text            , tst_text            );
 }
 
 TEST(lsp, completion_request)
@@ -449,7 +449,7 @@ TEST(lsp, completion_request)
                                         line       ,
                                         character  ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 3 );
+    ASSERT_EQ  ( (size_t) 3 , object.size() );
 
     ASSERT_TRUE( object[m_id].is_int()              );
     ASSERT_EQ  ( object[m_id].to_int() , request_id );
@@ -496,7 +496,7 @@ TEST(lsp, completion_request)
   }
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -518,10 +518,10 @@ TEST(lsp, completion_request)
                                           tst_line       ,
                                           tst_character  ));
 
-    ASSERT_EQ( tst_request_id , request_id );
-    ASSERT_EQ( tst_uri        , uri        );
-    ASSERT_EQ( tst_line       , line       );
-    ASSERT_EQ( tst_character  , character  );
+    ASSERT_EQ ( request_id , tst_request_id );
+    ASSERT_EQ ( uri        , tst_uri        );
+    ASSERT_EQ ( line       , tst_line       );
+    ASSERT_EQ ( character  , tst_character  );
 
 }
 
@@ -542,7 +542,7 @@ TEST(lsp, definition_request)
                                         line       ,
                                         character  ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 3 );
+    ASSERT_EQ  ( (size_t) 3 , object.size() );
 
     ASSERT_TRUE( object[m_id].is_int()              );
     ASSERT_EQ  ( object[m_id].to_int() , request_id );
@@ -589,7 +589,7 @@ TEST(lsp, definition_request)
   }
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -611,10 +611,10 @@ TEST(lsp, definition_request)
                                           tst_line       ,
                                           tst_character  ));
 
-    ASSERT_EQ( tst_request_id , request_id );
-    ASSERT_EQ( tst_uri        , uri        );
-    ASSERT_EQ( tst_line       , line       );
-    ASSERT_EQ( tst_character  , character  );
+    ASSERT_EQ ( request_id , tst_request_id );
+    ASSERT_EQ ( uri        , tst_uri        );
+    ASSERT_EQ ( line       , tst_line       );
+    ASSERT_EQ ( character  , tst_character  );
 }
 
 TEST(lsp, references_request)
@@ -636,7 +636,7 @@ TEST(lsp, references_request)
                                         character           ,
                                         include_declaration ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 3 );
+    ASSERT_EQ  ( (size_t) 3 , object.size() );
 
     ASSERT_TRUE( object[m_id].is_int()              );
     ASSERT_EQ  ( object[m_id].to_int() , request_id );
@@ -692,7 +692,7 @@ TEST(lsp, references_request)
   }
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -716,11 +716,11 @@ TEST(lsp, references_request)
                                           tst_character           ,
                                           tst_include_declaration ));
 
-    ASSERT_EQ( tst_request_id          , request_id           );
-    ASSERT_EQ( tst_uri                 , uri                  );
-    ASSERT_EQ( tst_line                , line                 );
-    ASSERT_EQ( tst_character           , character            );
-    ASSERT_EQ( tst_include_declaration , include_declaration  );
+    ASSERT_EQ ( request_id           , tst_request_id          );
+    ASSERT_EQ ( uri                  , tst_uri                 );
+    ASSERT_EQ ( line                 , tst_line                );
+    ASSERT_EQ ( character            , tst_character           );
+    ASSERT_EQ ( include_declaration  , tst_include_declaration );
 }
 
 TEST(lsp, formatting_request)
@@ -748,7 +748,7 @@ TEST(lsp, formatting_request)
                                         tab_size        ,
                                         insert_spaces   ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 3 );
+    ASSERT_EQ  ( (size_t) 3 , object.size() );
 
     ASSERT_TRUE( object[m_id].is_int()              );
     ASSERT_EQ  ( object[m_id].to_int() , request_id );
@@ -826,7 +826,7 @@ TEST(lsp, formatting_request)
   }
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -856,14 +856,14 @@ TEST(lsp, formatting_request)
                                           tst_tab_size        ,
                                           tst_insert_spaces   ));
 
-    ASSERT_EQ( tst_request_id      , request_id      );
-    ASSERT_EQ( tst_uri             , uri             );
-    ASSERT_EQ( tst_start_line      , start_line      );
-    ASSERT_EQ( tst_start_character , start_character );
-    ASSERT_EQ( tst_end_line        , end_line        );
-    ASSERT_EQ( tst_end_character   , end_character   );
-    ASSERT_EQ( tst_tab_size        , tab_size        );
-    ASSERT_EQ( tst_insert_spaces   , insert_spaces   );
+    ASSERT_EQ ( request_id      , tst_request_id      );
+    ASSERT_EQ ( uri             , tst_uri             );
+    ASSERT_EQ ( start_line      , tst_start_line      );
+    ASSERT_EQ ( start_character , tst_start_character );
+    ASSERT_EQ ( end_line        , tst_end_line        );
+    ASSERT_EQ ( end_character   , tst_end_character   );
+    ASSERT_EQ ( tab_size        , tst_tab_size        );
+    ASSERT_EQ ( insert_spaces   , tst_insert_spaces   );
 }
 
 TEST(lsp, symbols_request)
@@ -879,7 +879,7 @@ TEST(lsp, symbols_request)
                                      request_id ,
                                      uri        ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 3 );
+    ASSERT_EQ  ( (size_t) 3 , object.size() );
 
     ASSERT_TRUE( object[m_id].is_int()              );
     ASSERT_EQ  ( object[m_id].to_int() , request_id );
@@ -913,7 +913,7 @@ TEST(lsp, symbols_request)
   }
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -931,8 +931,8 @@ TEST(lsp, symbols_request)
                                        tst_request_id ,
                                        tst_uri        ));
 
-    ASSERT_EQ( tst_request_id      , request_id      );
-    ASSERT_EQ( tst_uri             , uri             );
+    ASSERT_EQ ( request_id      , tst_request_id      );
+    ASSERT_EQ ( uri             , tst_uri             );
 }
 
 TEST(lsp, didclose_notification)
@@ -946,7 +946,7 @@ TEST(lsp, didclose_notification)
                                            errors ,
                                            uri    ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( (size_t) 2 , object.size() );
 
     ASSERT_TRUE( object[m_method].is_string()                     );
     ASSERT_EQ  ( object[m_method].to_string() , m_method_didclose );
@@ -978,7 +978,7 @@ TEST(lsp, didclose_notification)
   }
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -994,7 +994,7 @@ TEST(lsp, didclose_notification)
                                              errors  ,
                                              tst_uri ));
 
-    ASSERT_EQ( tst_uri , uri );
+    ASSERT_EQ ( uri , tst_uri );
 }
 
 TEST(lsp, shutdown_request)
@@ -1008,7 +1008,7 @@ TEST(lsp, shutdown_request)
                                       errors     ,
                                       request_id ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 3 );
+    ASSERT_EQ  ( (size_t) 3 , object.size() );
 
     ASSERT_TRUE( object[m_id].is_int()              );
     ASSERT_EQ  ( object[m_id].to_int() , request_id );
@@ -1032,7 +1032,7 @@ TEST(lsp, shutdown_request)
   ,"params" : {}
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -1048,7 +1048,7 @@ TEST(lsp, shutdown_request)
                                         errors         ,
                                         tst_request_id ));
 
-    ASSERT_EQ( tst_request_id , request_id );
+    ASSERT_EQ ( request_id , tst_request_id );
 }
 
 TEST(lsp, exit_notification)
@@ -1059,7 +1059,7 @@ TEST(lsp, exit_notification)
     ASSERT_TRUE(buildExitNotification( object ,
                                        errors ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( (size_t) 2 , object.size() );
 
     ASSERT_TRUE( object[m_method].is_string()                 );
     ASSERT_EQ  ( object[m_method].to_string() , m_method_exit );
@@ -1079,7 +1079,7 @@ TEST(lsp, exit_notification)
   ,"params" : {}
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -1118,7 +1118,7 @@ TEST(lsp, diagnostic_object)
                                        source          ,
                                        message         ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 5 );
+    ASSERT_EQ  ( (size_t) 5 , object.size() );
 
     ASSERT_TRUE( object[m_range].is_object()         );
     ASSERT_EQ  ( object[m_range].size() , (size_t) 2 );
@@ -1174,7 +1174,7 @@ TEST(lsp, diagnostic_object)
   ,"source" : "test_source"
 })INPUT";
 
-    ASSERT_EQ( json.str() , json_expected.str() );
+    ASSERT_EQ ( json_expected.str() , json.str() );
 
     int         tst_start_line;
     int         tst_start_character;
@@ -1196,14 +1196,14 @@ TEST(lsp, diagnostic_object)
                                          tst_source          ,
                                          tst_message         ));
 
-    ASSERT_EQ( tst_start_line      , start_line      );
-    ASSERT_EQ( tst_start_character , start_character );
-    ASSERT_EQ( tst_end_line        , end_line        );
-    ASSERT_EQ( tst_end_character   , end_character   );
-    ASSERT_EQ( tst_severity        , severity        );
-    ASSERT_EQ( tst_code            , code            );
-    ASSERT_EQ( tst_source          , source          );
-    ASSERT_EQ( tst_message         , message         );
+    ASSERT_EQ ( start_line      , tst_start_line      );
+    ASSERT_EQ ( start_character , tst_start_character );
+    ASSERT_EQ ( end_line        , tst_end_line        );
+    ASSERT_EQ ( end_character   , tst_end_character   );
+    ASSERT_EQ ( severity        , tst_severity        );
+    ASSERT_EQ ( code            , tst_code            );
+    ASSERT_EQ ( source          , tst_source          );
+    ASSERT_EQ ( message         , tst_message         );
 }
 
 TEST(lsp, publishdiagnostics_notification)
@@ -1285,7 +1285,7 @@ TEST(lsp, publishdiagnostics_notification)
                                                      uri         ,
                                                      diagnostics ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( (size_t) 2 , object.size() );
 
     ASSERT_TRUE( object[m_method].is_string()                           );
     ASSERT_EQ  ( object[m_method].to_string() , m_method_pubdiagnostics );
@@ -1443,7 +1443,7 @@ TEST(lsp, publishdiagnostics_notification)
   }
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -1461,8 +1461,8 @@ TEST(lsp, publishdiagnostics_notification)
                                                        tst_uri         ,
                                                        tst_diagnostics ));
 
-    ASSERT_EQ( tst_uri                , uri        );
-    ASSERT_EQ( tst_diagnostics.size() , (size_t) 5 );
+    ASSERT_EQ ( uri        , tst_uri                );
+    ASSERT_EQ ( (size_t) 5 , tst_diagnostics.size() );
 
     int         tst_start_line;
     int         tst_start_character;
@@ -1528,14 +1528,14 @@ TEST(lsp, publishdiagnostics_notification)
                                            tst_source                      ,
                                            tst_message                     ));
 
-    ASSERT_EQ( tst_start_line      , 87                 );
-    ASSERT_EQ( tst_start_character , 17                 );
-    ASSERT_EQ( tst_end_line        , 88                 );
-    ASSERT_EQ( tst_end_character   , 12                 );
-    ASSERT_EQ( tst_severity        , 1                  );
-    ASSERT_EQ( tst_code            , "test.code.55"     );
-    ASSERT_EQ( tst_source          , "test_source_55"   );
-    ASSERT_EQ( tst_message         , "Test message 55." );
+    ASSERT_EQ ( 87                 , tst_start_line      );
+    ASSERT_EQ ( 17                 , tst_start_character );
+    ASSERT_EQ ( 88                 , tst_end_line        );
+    ASSERT_EQ ( 12                 , tst_end_character   );
+    ASSERT_EQ ( 1                  , tst_severity        );
+    ASSERT_EQ ( "test.code.55"     , tst_code            );
+    ASSERT_EQ ( "test_source_55"   , tst_source          );
+    ASSERT_EQ ( "Test message 55." , tst_message         );
 }
 
 TEST(lsp, initialize_response)
@@ -1551,7 +1551,7 @@ TEST(lsp, initialize_response)
                                          request_id          ,
                                          server_capabilities ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( (size_t) 2 , object.size() );
 
     ASSERT_TRUE( object[m_id].is_int()              );
     ASSERT_EQ  ( object[m_id].to_int() , request_id );
@@ -1576,7 +1576,7 @@ TEST(lsp, initialize_response)
   }
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -1593,8 +1593,8 @@ TEST(lsp, initialize_response)
                                            tst_request_id          ,
                                            tst_server_capabilities ));
 
-    ASSERT_EQ( tst_request_id                 , request_id );
-    ASSERT_EQ( tst_server_capabilities.size() , (size_t) 0 );
+    ASSERT_EQ ( request_id , tst_request_id                 );
+    ASSERT_EQ ( (size_t) 0 , tst_server_capabilities.size() );
 }
 
 TEST(lsp, completion_object)
@@ -1628,7 +1628,7 @@ TEST(lsp, completion_object)
                                        deprecated      ,
                                        preselect       ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 7 );
+    ASSERT_EQ  ( (size_t) 7 , object.size() );
 
     ASSERT_TRUE( object[m_label].is_string()         );
     ASSERT_EQ  ( object[m_label].to_string() , label );
@@ -1701,7 +1701,7 @@ TEST(lsp, completion_object)
   }
 })INPUT";
 
-    ASSERT_EQ( json.str() , json_expected.str() );
+    ASSERT_EQ ( json_expected.str() , json.str() );
 
     std::string tst_label;
     int         tst_start_line;
@@ -1729,17 +1729,17 @@ TEST(lsp, completion_object)
                                          tst_deprecated      ,
                                          tst_preselect       ));
 
-    ASSERT_EQ( tst_label           , label           );
-    ASSERT_EQ( tst_start_line      , start_line      );
-    ASSERT_EQ( tst_start_character , start_character );
-    ASSERT_EQ( tst_end_line        , end_line        );
-    ASSERT_EQ( tst_end_character   , end_character   );
-    ASSERT_EQ( tst_new_text        , new_text        );
-    ASSERT_EQ( tst_kind            , kind            );
-    ASSERT_EQ( tst_detail          , detail          );
-    ASSERT_EQ( tst_documentation   , documentation   );
-    ASSERT_EQ( tst_deprecated      , deprecated      );
-    ASSERT_EQ( tst_preselect       , preselect       );
+    ASSERT_EQ ( label           , tst_label           );
+    ASSERT_EQ ( start_line      , tst_start_line      );
+    ASSERT_EQ ( start_character , tst_start_character );
+    ASSERT_EQ ( end_line        , tst_end_line        );
+    ASSERT_EQ ( end_character   , tst_end_character   );
+    ASSERT_EQ ( new_text        , tst_new_text        );
+    ASSERT_EQ ( kind            , tst_kind            );
+    ASSERT_EQ ( detail          , tst_detail          );
+    ASSERT_EQ ( documentation   , tst_documentation   );
+    ASSERT_EQ ( deprecated      , tst_deprecated      );
+    ASSERT_EQ ( preselect       , tst_preselect       );
 }
 
 TEST(lsp, completion_response)
@@ -1838,7 +1838,7 @@ TEST(lsp, completion_response)
                                          is_incomplete    ,
                                          completion_items ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( (size_t) 2 , object.size() );
 
     ASSERT_TRUE( object[m_id].is_int()              );
     ASSERT_EQ  ( object[m_id].to_int() , request_id );
@@ -2033,7 +2033,7 @@ TEST(lsp, completion_response)
   }
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -2052,9 +2052,9 @@ TEST(lsp, completion_response)
                                            tst_is_incomplete    ,
                                            tst_completion_items ));
 
-    ASSERT_EQ( tst_request_id              , tst_request_id    );
-    ASSERT_EQ( tst_is_incomplete           , tst_is_incomplete );
-    ASSERT_EQ( tst_completion_items.size() , (size_t) 5        );
+    ASSERT_EQ ( tst_request_id    , tst_request_id              );
+    ASSERT_EQ ( tst_is_incomplete , tst_is_incomplete           );
+    ASSERT_EQ ( (size_t) 5        , tst_completion_items.size() );
 
     std::string tst_label;
     int         tst_start_line;
@@ -2138,17 +2138,17 @@ TEST(lsp, completion_response)
                                            tst_deprecated                       ,
                                            tst_preselect                        ));
 
-    ASSERT_EQ( tst_label           , "test-label-5"         );
-    ASSERT_EQ( tst_start_line      , 55                     );
-    ASSERT_EQ( tst_start_character , 55                     );
-    ASSERT_EQ( tst_end_line        , 55                     );
-    ASSERT_EQ( tst_end_character   , 55                     );
-    ASSERT_EQ( tst_new_text        , "test-insert-text-5"   );
-    ASSERT_EQ( tst_kind            , 5                      );
-    ASSERT_EQ( tst_detail          , "test type info 5"     );
-    ASSERT_EQ( tst_documentation   , "test documentation 5" );
-    ASSERT_EQ( tst_deprecated      , false                  );
-    ASSERT_EQ( tst_preselect       , false                  );
+    ASSERT_EQ ( "test-label-5"         , tst_label           );
+    ASSERT_EQ ( 55                     , tst_start_line      );
+    ASSERT_EQ ( 55                     , tst_start_character );
+    ASSERT_EQ ( 55                     , tst_end_line        );
+    ASSERT_EQ ( 55                     , tst_end_character   );
+    ASSERT_EQ ( "test-insert-text-5"   , tst_new_text        );
+    ASSERT_EQ ( 5                      , tst_kind            );
+    ASSERT_EQ ( "test type info 5"     , tst_detail          );
+    ASSERT_EQ ( "test documentation 5" , tst_documentation   );
+    ASSERT_EQ ( false                  , tst_deprecated      );
+    ASSERT_EQ ( false                  , tst_preselect       );
 }
 
 TEST(lsp, location_object)
@@ -2170,7 +2170,7 @@ TEST(lsp, location_object)
                                      end_line        ,
                                      end_character   ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( (size_t) 2 , object.size() );
 
     ASSERT_TRUE( object[m_uri].is_string()       );
     ASSERT_EQ  ( object[m_uri].to_string() , uri );
@@ -2214,7 +2214,7 @@ TEST(lsp, location_object)
   ,"uri" : "test/document/uri/string"
 })INPUT";
 
-    ASSERT_EQ( json.str() , json_expected.str() );
+    ASSERT_EQ ( json_expected.str() , json.str() );
 
     std::string tst_uri;
     int         tst_start_line;
@@ -2230,11 +2230,11 @@ TEST(lsp, location_object)
                                        tst_end_line        ,
                                        tst_end_character   ));
 
-    ASSERT_EQ( tst_uri             , uri             );
-    ASSERT_EQ( tst_start_line      , start_line      );
-    ASSERT_EQ( tst_start_character , start_character );
-    ASSERT_EQ( tst_end_line        , end_line        );
-    ASSERT_EQ( tst_end_character   , end_character   );
+    ASSERT_EQ ( uri             , tst_uri             );
+    ASSERT_EQ ( start_line      , tst_start_line      );
+    ASSERT_EQ ( start_character , tst_start_character );
+    ASSERT_EQ ( end_line        , tst_end_line        );
+    ASSERT_EQ ( end_character   , tst_end_character   );
 }
 
 TEST(lsp, locations_response)
@@ -2301,7 +2301,7 @@ TEST(lsp, locations_response)
                                         request_id ,
                                         locations  ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( (size_t) 2 , object.size() );
 
     ASSERT_TRUE( object[m_id].is_int()              );
     ASSERT_EQ  ( object[m_id].to_int() , request_id );
@@ -2426,7 +2426,7 @@ TEST(lsp, locations_response)
   ]
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -2443,8 +2443,8 @@ TEST(lsp, locations_response)
                                           tst_request_id ,
                                           tst_locations  ));
 
-    ASSERT_EQ( tst_request_id       , tst_request_id    );
-    ASSERT_EQ( tst_locations.size() , (size_t) 5        );
+    ASSERT_EQ ( tst_request_id    , tst_request_id       );
+    ASSERT_EQ ( (size_t) 5        , tst_locations.size() );
 
     std::string tst_uri;
     int         tst_start_line;
@@ -2492,11 +2492,11 @@ TEST(lsp, locations_response)
                                          tst_end_line                  ,
                                          tst_end_character             ));
 
-    ASSERT_EQ( tst_uri             , "test/document/uri/5" );
-    ASSERT_EQ( tst_start_line      ,  55                   );
-    ASSERT_EQ( tst_start_character ,  55                   );
-    ASSERT_EQ( tst_end_line        ,  55                   );
-    ASSERT_EQ( tst_end_character   ,  55                   );
+    ASSERT_EQ ( "test/document/uri/5" , tst_uri             );
+    ASSERT_EQ ( 55                   ,  tst_start_line      );
+    ASSERT_EQ ( 55                   ,  tst_start_character );
+    ASSERT_EQ ( 55                   ,  tst_end_line        );
+    ASSERT_EQ ( 55                   ,  tst_end_character   );
 }
 
 TEST(lsp, textedit_object)
@@ -2518,7 +2518,7 @@ TEST(lsp, textedit_object)
                                      end_character   ,
                                      new_text        ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( (size_t) 2 , object.size() );
 
     ASSERT_TRUE( object[m_range].is_object()         );
     ASSERT_EQ  ( object[m_range].size() , (size_t) 2 );
@@ -2562,7 +2562,7 @@ TEST(lsp, textedit_object)
   }
 })INPUT";
 
-    ASSERT_EQ( json.str() , json_expected.str() );
+    ASSERT_EQ ( json_expected.str() , json.str() );
 
     int         tst_start_line;
     int         tst_start_character;
@@ -2578,11 +2578,11 @@ TEST(lsp, textedit_object)
                                        tst_end_character   ,
                                        tst_new_text        ));
 
-    ASSERT_EQ( tst_start_line      , start_line      );
-    ASSERT_EQ( tst_start_character , start_character );
-    ASSERT_EQ( tst_end_line        , end_line        );
-    ASSERT_EQ( tst_end_character   , end_character   );
-    ASSERT_EQ( tst_new_text        , new_text        );
+    ASSERT_EQ ( start_line      , tst_start_line      );
+    ASSERT_EQ ( start_character , tst_start_character );
+    ASSERT_EQ ( end_line        , tst_end_line        );
+    ASSERT_EQ ( end_character   , tst_end_character   );
+    ASSERT_EQ ( new_text        , tst_new_text        );
 }
 
 TEST(lsp, formatting_response)
@@ -2649,7 +2649,7 @@ TEST(lsp, formatting_response)
                                          request_id ,
                                          textedits  ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( (size_t) 2 , object.size() );
 
     ASSERT_TRUE( object[m_id].is_int()              );
     ASSERT_EQ  ( object[m_id].to_int() , request_id );
@@ -2774,7 +2774,7 @@ TEST(lsp, formatting_response)
   ]
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -2791,8 +2791,8 @@ TEST(lsp, formatting_response)
                                            tst_request_id ,
                                            tst_textedits  ));
 
-    ASSERT_EQ( tst_request_id       , tst_request_id    );
-    ASSERT_EQ( tst_textedits.size() , (size_t) 5        );
+    ASSERT_EQ ( tst_request_id    , tst_request_id       );
+    ASSERT_EQ ( (size_t) 5        , tst_textedits.size() );
 
     int         tst_start_line;
     int         tst_start_character;
@@ -2840,11 +2840,11 @@ TEST(lsp, formatting_response)
                                          tst_end_character             ,
                                          tst_new_text                  ));
 
-    ASSERT_EQ( tst_start_line      , 50                                   );
-    ASSERT_EQ( tst_start_character , 01                                   );
-    ASSERT_EQ( tst_end_line        , 54                                   );
-    ASSERT_EQ( tst_end_character   , 03                                   );
-    ASSERT_EQ( tst_new_text        , "new\n  \"text\"\n  f\tor\\mat\n  5" );
+    ASSERT_EQ ( 50                                   , tst_start_line      );
+    ASSERT_EQ ( 01                                   , tst_start_character );
+    ASSERT_EQ ( 54                                   , tst_end_line        );
+    ASSERT_EQ ( 03                                   , tst_end_character   );
+    ASSERT_EQ ( "new\n  \"text\"\n  f\tor\\mat\n  5" , tst_new_text        );
 }
 
 TEST(lsp, documentsymbol_object)
@@ -2936,7 +2936,7 @@ TEST(lsp, documentsymbol_object)
                                            o3_selection_end_line                 ,
                                            o3_selection_end_character            ));
 
-    ASSERT_EQ  ( root_object.size() , (size_t) 7 );
+    ASSERT_EQ  ( (size_t) 7 , root_object.size() );
 
     ASSERT_TRUE( root_object[m_name].is_string()           );
     ASSERT_EQ  ( root_object[m_name].to_string() , o1_name );
@@ -3202,7 +3202,7 @@ TEST(lsp, documentsymbol_object)
   }
 })INPUT";
 
-    ASSERT_EQ( json.str() , json_expected.str() );
+    ASSERT_EQ ( json_expected.str() , json.str() );
 
     std::string tst_o1_name;
     std::string tst_o1_detail;
@@ -3258,18 +3258,18 @@ TEST(lsp, documentsymbol_object)
                                              tst_o1_selection_end_line        ,
                                              tst_o1_selection_end_character   ));
 
-    ASSERT_EQ ( tst_o1_name                      , o1_name                      );
-    ASSERT_EQ ( tst_o1_detail                    , o1_detail                    );
-    ASSERT_EQ ( tst_o1_kind                      , o1_kind                      );
-    ASSERT_EQ ( tst_o1_deprecated                , o1_deprecated                );
-    ASSERT_EQ ( tst_o1_start_line                , o1_start_line                );
-    ASSERT_EQ ( tst_o1_start_character           , o1_start_character           );
-    ASSERT_EQ ( tst_o1_end_line                  , o1_end_line                  );
-    ASSERT_EQ ( tst_o1_end_character             , o1_end_character             );
-    ASSERT_EQ ( tst_o1_selection_start_line      , o1_selection_start_line      );
-    ASSERT_EQ ( tst_o1_selection_start_character , o1_selection_start_character );
-    ASSERT_EQ ( tst_o1_selection_end_line        , o1_selection_end_line        );
-    ASSERT_EQ ( tst_o1_selection_end_character   , o1_selection_end_character   );
+    ASSERT_EQ ( o1_name                      , tst_o1_name                      );
+    ASSERT_EQ ( o1_detail                    , tst_o1_detail                    );
+    ASSERT_EQ ( o1_kind                      , tst_o1_kind                      );
+    ASSERT_EQ ( o1_deprecated                , tst_o1_deprecated                );
+    ASSERT_EQ ( o1_start_line                , tst_o1_start_line                );
+    ASSERT_EQ ( o1_start_character           , tst_o1_start_character           );
+    ASSERT_EQ ( o1_end_line                  , tst_o1_end_line                  );
+    ASSERT_EQ ( o1_end_character             , tst_o1_end_character             );
+    ASSERT_EQ ( o1_selection_start_line      , tst_o1_selection_start_line      );
+    ASSERT_EQ ( o1_selection_start_character , tst_o1_selection_start_character );
+    ASSERT_EQ ( o1_selection_end_line        , tst_o1_selection_end_line        );
+    ASSERT_EQ ( o1_selection_end_character   , tst_o1_selection_end_character   );
 
     ASSERT_EQ ( getDocumentSymbolChildren( root_object )->size() , (size_t) 2 );
 
@@ -3291,18 +3291,18 @@ TEST(lsp, documentsymbol_object)
                                              tst_o2_selection_end_line        ,
                                              tst_o2_selection_end_character   ));
 
-    ASSERT_EQ ( tst_o2_name                      , o2_name                      );
-    ASSERT_EQ ( tst_o2_detail                    , o2_detail                    );
-    ASSERT_EQ ( tst_o2_kind                      , o2_kind                      );
-    ASSERT_EQ ( tst_o2_deprecated                , o2_deprecated                );
-    ASSERT_EQ ( tst_o2_start_line                , o2_start_line                );
-    ASSERT_EQ ( tst_o2_start_character           , o2_start_character           );
-    ASSERT_EQ ( tst_o2_end_line                  , o2_end_line                  );
-    ASSERT_EQ ( tst_o2_end_character             , o2_end_character             );
-    ASSERT_EQ ( tst_o2_selection_start_line      , o2_selection_start_line      );
-    ASSERT_EQ ( tst_o2_selection_start_character , o2_selection_start_character );
-    ASSERT_EQ ( tst_o2_selection_end_line        , o2_selection_end_line        );
-    ASSERT_EQ ( tst_o2_selection_end_character   , o2_selection_end_character   );
+    ASSERT_EQ ( o2_name                      , tst_o2_name                      );
+    ASSERT_EQ ( o2_detail                    , tst_o2_detail                    );
+    ASSERT_EQ ( o2_kind                      , tst_o2_kind                      );
+    ASSERT_EQ ( o2_deprecated                , tst_o2_deprecated                );
+    ASSERT_EQ ( o2_start_line                , tst_o2_start_line                );
+    ASSERT_EQ ( o2_start_character           , tst_o2_start_character           );
+    ASSERT_EQ ( o2_end_line                  , tst_o2_end_line                  );
+    ASSERT_EQ ( o2_end_character             , tst_o2_end_character             );
+    ASSERT_EQ ( o2_selection_start_line      , tst_o2_selection_start_line      );
+    ASSERT_EQ ( o2_selection_start_character , tst_o2_selection_start_character );
+    ASSERT_EQ ( o2_selection_end_line        , tst_o2_selection_end_line        );
+    ASSERT_EQ ( o2_selection_end_character   , tst_o2_selection_end_character   );
 
     const DataObject & child_object_3 =
                 *(getDocumentSymbolChildren( root_object )->at(1).to_object());
@@ -3322,18 +3322,18 @@ TEST(lsp, documentsymbol_object)
                                              tst_o3_selection_end_line        ,
                                              tst_o3_selection_end_character   ));
 
-    ASSERT_EQ ( tst_o3_name                      , o3_name                      );
-    ASSERT_EQ ( tst_o3_detail                    , o3_detail                    );
-    ASSERT_EQ ( tst_o3_kind                      , o3_kind                      );
-    ASSERT_EQ ( tst_o3_deprecated                , o3_deprecated                );
-    ASSERT_EQ ( tst_o3_start_line                , o3_start_line                );
-    ASSERT_EQ ( tst_o3_start_character           , o3_start_character           );
-    ASSERT_EQ ( tst_o3_end_line                  , o3_end_line                  );
-    ASSERT_EQ ( tst_o3_end_character             , o3_end_character             );
-    ASSERT_EQ ( tst_o3_selection_start_line      , o3_selection_start_line      );
-    ASSERT_EQ ( tst_o3_selection_start_character , o3_selection_start_character );
-    ASSERT_EQ ( tst_o3_selection_end_line        , o3_selection_end_line        );
-    ASSERT_EQ ( tst_o3_selection_end_character   , o3_selection_end_character   );
+    ASSERT_EQ ( o3_name                      , tst_o3_name                      );
+    ASSERT_EQ ( o3_detail                    , tst_o3_detail                    );
+    ASSERT_EQ ( o3_kind                      , tst_o3_kind                      );
+    ASSERT_EQ ( o3_deprecated                , tst_o3_deprecated                );
+    ASSERT_EQ ( o3_start_line                , tst_o3_start_line                );
+    ASSERT_EQ ( o3_start_character           , tst_o3_start_character           );
+    ASSERT_EQ ( o3_end_line                  , tst_o3_end_line                  );
+    ASSERT_EQ ( o3_end_character             , tst_o3_end_character             );
+    ASSERT_EQ ( o3_selection_start_line      , tst_o3_selection_start_line      );
+    ASSERT_EQ ( o3_selection_start_character , tst_o3_selection_start_character );
+    ASSERT_EQ ( o3_selection_end_line        , tst_o3_selection_end_line        );
+    ASSERT_EQ ( o3_selection_end_character   , tst_o3_selection_end_character   );
 }
 
 TEST(lsp, symbols_response)
@@ -3367,7 +3367,7 @@ TEST(lsp, symbols_response)
                                       request_id       ,
                                       document_symbols ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( (size_t) 2 , object.size() );
 
     ASSERT_TRUE( object[m_id].is_int()              );
     ASSERT_EQ  ( object[m_id].to_int() , request_id );
@@ -3475,7 +3475,7 @@ TEST(lsp, symbols_response)
   ]
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -3492,8 +3492,8 @@ TEST(lsp, symbols_response)
                                         tst_request_id        ,
                                         tst_document_symbols  ));
 
-    ASSERT_EQ( tst_request_id              , tst_request_id    );
-    ASSERT_EQ( tst_document_symbols.size() , (size_t) 1        );
+    ASSERT_EQ ( tst_request_id    , tst_request_id              );
+    ASSERT_EQ ( (size_t) 1        , tst_document_symbols.size() );
 
     std::string tst_name;
     std::string tst_detail;
@@ -3523,18 +3523,18 @@ TEST(lsp, symbols_response)
                                              tst_selection_end_line                 ,
                                              tst_selection_end_character            ));
 
-    ASSERT_EQ( tst_name                      , "document_symbol_name"     );
-    ASSERT_EQ( tst_detail                    , "document::symbol::detail" );
-    ASSERT_EQ( tst_kind                      , 13                         );
-    ASSERT_EQ( tst_deprecated                , true                       );
-    ASSERT_EQ( tst_start_line                , 30                         );
-    ASSERT_EQ( tst_start_character           , 15                         );
-    ASSERT_EQ( tst_end_line                  , 60                         );
-    ASSERT_EQ( tst_end_character             , 45                         );
-    ASSERT_EQ( tst_selection_start_line      , 40                         );
-    ASSERT_EQ( tst_selection_start_character , 25                         );
-    ASSERT_EQ( tst_selection_end_line        , 50                         );
-    ASSERT_EQ( tst_selection_end_character   , 35                         );
+    ASSERT_EQ ( "document_symbol_name"     , tst_name                      );
+    ASSERT_EQ ( "document::symbol::detail" , tst_detail                    );
+    ASSERT_EQ ( 13                         , tst_kind                      );
+    ASSERT_EQ ( true                       , tst_deprecated                );
+    ASSERT_EQ ( 30                         , tst_start_line                );
+    ASSERT_EQ ( 15                         , tst_start_character           );
+    ASSERT_EQ ( 60                         , tst_end_line                  );
+    ASSERT_EQ ( 45                         , tst_end_character             );
+    ASSERT_EQ ( 40                         , tst_selection_start_line      );
+    ASSERT_EQ ( 25                         , tst_selection_start_character );
+    ASSERT_EQ ( 50                         , tst_selection_end_line        );
+    ASSERT_EQ ( 35                         , tst_selection_end_character   );
 }
 
 TEST(lsp, shutdown_response)
@@ -3548,7 +3548,7 @@ TEST(lsp, shutdown_response)
                                        errors     ,
                                        request_id ));
 
-    ASSERT_EQ  ( object.size() , (size_t) 2 );
+    ASSERT_EQ  ( (size_t) 2 , object.size() );
 
     ASSERT_TRUE( object[m_id].is_int()              );
     ASSERT_EQ  ( object[m_id].to_int() , request_id );
@@ -3568,7 +3568,7 @@ TEST(lsp, shutdown_response)
   ,"result" : {}
 })INPUT";
 
-    ASSERT_EQ( rpcstr , rpc_expected.str() );
+    ASSERT_EQ ( rpc_expected.str() , rpcstr );
 
     DataObject tst_object;
     ASSERT_TRUE( RPCStringToObject( rpcstr     ,
@@ -3583,7 +3583,7 @@ TEST(lsp, shutdown_response)
                                          errors         ,
                                          tst_request_id ));
 
-    ASSERT_EQ( tst_request_id , request_id );
+    ASSERT_EQ ( request_id , tst_request_id );
 }
 
 } // namespace lsp

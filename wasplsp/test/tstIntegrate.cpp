@@ -57,8 +57,8 @@ TEST(integrate, test_initialize)
                                             response_request_id   ,
                                             response_capabilities ) );
 
-    ASSERT_EQ( response_request_id          , client_request_id );
-    ASSERT_EQ( response_capabilities.size() , (size_t) 0        );
+    ASSERT_EQ ( client_request_id , response_request_id          );
+    ASSERT_EQ ( (size_t) 0        , response_capabilities.size() );
 }
 
 TEST(integrate, test_initialized)
@@ -116,8 +116,8 @@ TEST(integrate, test_didopen)
                                                         response_uri         ,
                                                         response_diagnostics ) );
 
-    ASSERT_EQ( response_uri                , document_uri );
-    ASSERT_EQ( response_diagnostics.size() , (size_t) 3   );
+    ASSERT_EQ ( document_uri , response_uri                );
+    ASSERT_EQ ( (size_t) 3   , response_diagnostics.size() );
 
     ASSERT_TRUE( dissectDiagnosticObject( *(response_diagnostics[2].to_object()) ,
                                             client_errors                        ,
@@ -130,14 +130,14 @@ TEST(integrate, test_didopen)
                                             response_3_source                    ,
                                             response_3_message                   ) );
 
-    ASSERT_EQ( response_3_start_line      , 47                 );
-    ASSERT_EQ( response_3_start_character , 36                 );
-    ASSERT_EQ( response_3_end_line        , 47                 );
-    ASSERT_EQ( response_3_end_character   , 43                 );
-    ASSERT_EQ( response_3_severity        , 3                  );
-    ASSERT_EQ( response_3_code            , "test.code.33"     );
-    ASSERT_EQ( response_3_source          , "test_source_33"   );
-    ASSERT_EQ( response_3_message         , "Test message 33." );
+    ASSERT_EQ ( 47                 , response_3_start_line      );
+    ASSERT_EQ ( 36                 , response_3_start_character );
+    ASSERT_EQ ( 47                 , response_3_end_line        );
+    ASSERT_EQ ( 43                 , response_3_end_character   );
+    ASSERT_EQ ( 3                  , response_3_severity        );
+    ASSERT_EQ ( "test.code.33"     , response_3_code            );
+    ASSERT_EQ ( "test_source_33"   , response_3_source          );
+    ASSERT_EQ ( "Test message 33." , response_3_message         );
 }
 
 TEST(integrate, test_didchange)
@@ -189,8 +189,8 @@ TEST(integrate, test_didchange)
                                                         response_uri         ,
                                                         response_diagnostics ) );
 
-    ASSERT_EQ( response_uri                , document_uri );
-    ASSERT_EQ( response_diagnostics.size() , (size_t) 2   );
+    ASSERT_EQ ( document_uri , response_uri                );
+    ASSERT_EQ ( (size_t) 2   , response_diagnostics.size() );
 
     ASSERT_TRUE( dissectDiagnosticObject( *(response_diagnostics[1].to_object()) ,
                                             client_errors                        ,
@@ -203,14 +203,14 @@ TEST(integrate, test_didchange)
                                             response_2_source                    ,
                                             response_2_message                   ) );
 
-    ASSERT_EQ( response_2_start_line      , 87                 );
-    ASSERT_EQ( response_2_start_character , 17                 );
-    ASSERT_EQ( response_2_end_line        , 88                 );
-    ASSERT_EQ( response_2_end_character   , 12                 );
-    ASSERT_EQ( response_2_severity        , 1                  );
-    ASSERT_EQ( response_2_code            , "test.code.55"     );
-    ASSERT_EQ( response_2_source          , "test_source_55"   );
-    ASSERT_EQ( response_2_message         , "Test message 55." );
+    ASSERT_EQ ( 87                 , response_2_start_line      );
+    ASSERT_EQ ( 17                 , response_2_start_character );
+    ASSERT_EQ ( 88                 , response_2_end_line        );
+    ASSERT_EQ ( 12                 , response_2_end_character   );
+    ASSERT_EQ ( 1                  , response_2_severity        );
+    ASSERT_EQ ( "test.code.55"     , response_2_code            );
+    ASSERT_EQ ( "test_source_55"   , response_2_source          );
+    ASSERT_EQ ( "Test message 55." , response_2_message         );
 }
 
 TEST(integrate, test_completion)
@@ -259,9 +259,9 @@ TEST(integrate, test_completion)
                                             response_is_incomplete ,
                                             response_completions   ) );
 
-    ASSERT_EQ( response_request_id         , client_request_id );
-    ASSERT_EQ( response_is_incomplete      , false             );
-    ASSERT_EQ( response_completions.size() , (size_t) 3        );
+    ASSERT_EQ ( client_request_id , response_request_id         );
+    ASSERT_EQ ( false             , response_is_incomplete      );
+    ASSERT_EQ ( (size_t) 3        , response_completions.size() );
 
     ASSERT_TRUE( dissectCompletionObject( *(response_completions[2].to_object()) ,
                                             client_errors                        ,
@@ -277,17 +277,17 @@ TEST(integrate, test_completion)
                                             response_3_deprecated                ,
                                             response_3_preselect                 ) );
 
-    ASSERT_EQ( response_3_label           , "test-label-3"         );
-    ASSERT_EQ( response_3_start_line      , 33                     );
-    ASSERT_EQ( response_3_start_character , 33                     );
-    ASSERT_EQ( response_3_end_line        , 33                     );
-    ASSERT_EQ( response_3_end_character   , 33                     );
-    ASSERT_EQ( response_3_new_text        , "test-insert-text-3"   );
-    ASSERT_EQ( response_3_kind            , 3                      );
-    ASSERT_EQ( response_3_detail          , "test type info 3"     );
-    ASSERT_EQ( response_3_documentation   , "test documentation 3" );
-    ASSERT_EQ( response_3_deprecated      , false                  );
-    ASSERT_EQ( response_3_preselect       , false                  );
+    ASSERT_EQ ( "test-label-3"         , response_3_label           );
+    ASSERT_EQ ( 33                     , response_3_start_line      );
+    ASSERT_EQ ( 33                     , response_3_start_character );
+    ASSERT_EQ ( 33                     , response_3_end_line        );
+    ASSERT_EQ ( 33                     , response_3_end_character   );
+    ASSERT_EQ ( "test-insert-text-3"   , response_3_new_text        );
+    ASSERT_EQ ( 3                      , response_3_kind            );
+    ASSERT_EQ ( "test type info 3"     , response_3_detail          );
+    ASSERT_EQ ( "test documentation 3" , response_3_documentation   );
+    ASSERT_EQ ( false                  , response_3_deprecated      );
+    ASSERT_EQ ( false                  , response_3_preselect       );
 }
 
 TEST(integrate, test_definition)
@@ -328,8 +328,8 @@ TEST(integrate, test_definition)
                                            response_request_id  ,
                                            response_locations   ) );
 
-    ASSERT_EQ( response_request_id       , client_request_id );
-    ASSERT_EQ( response_locations.size() , (size_t) 3        );
+    ASSERT_EQ ( client_request_id , response_request_id       );
+    ASSERT_EQ ( (size_t) 3        , response_locations.size() );
 
     ASSERT_TRUE( dissectLocationObject( *(response_locations[2].to_object()) ,
                                           client_errors                      ,
@@ -339,11 +339,11 @@ TEST(integrate, test_definition)
                                           response_3_end_line                ,
                                           response_3_end_character           ) );
 
-    ASSERT_EQ( response_3_uri             , "test/document/uri/string" );
-    ASSERT_EQ( response_3_start_line      ,  33                        );
-    ASSERT_EQ( response_3_start_character ,  33                        );
-    ASSERT_EQ( response_3_end_line        ,  33                        );
-    ASSERT_EQ( response_3_end_character   ,  33                        );
+    ASSERT_EQ ( "test/document/uri/string" , response_3_uri             );
+    ASSERT_EQ ( 33                        ,  response_3_start_line      );
+    ASSERT_EQ ( 33                        ,  response_3_start_character );
+    ASSERT_EQ ( 33                        ,  response_3_end_line        );
+    ASSERT_EQ ( 33                        ,  response_3_end_character   );
 }
 
 TEST(integrate, test_references)
@@ -386,8 +386,8 @@ TEST(integrate, test_references)
                                            response_request_id  ,
                                            response_locations   ) );
 
-    ASSERT_EQ( response_request_id       , client_request_id );
-    ASSERT_EQ( response_locations.size() , (size_t) 2        );
+    ASSERT_EQ ( client_request_id , response_request_id       );
+    ASSERT_EQ ( (size_t) 2        , response_locations.size() );
 
     ASSERT_TRUE( dissectLocationObject( *(response_locations[1].to_object()) ,
                                           client_errors                      ,
@@ -397,11 +397,11 @@ TEST(integrate, test_references)
                                           response_2_end_line                ,
                                           response_2_end_character           ) );
 
-    ASSERT_EQ( response_2_uri             , "test/document/uri/string" );
-    ASSERT_EQ( response_2_start_line      ,  55                        );
-    ASSERT_EQ( response_2_start_character ,  55                        );
-    ASSERT_EQ( response_2_end_line        ,  55                        );
-    ASSERT_EQ( response_2_end_character   ,  55                        );
+    ASSERT_EQ ( "test/document/uri/string" , response_2_uri             );
+    ASSERT_EQ ( 55                        ,  response_2_start_line      );
+    ASSERT_EQ ( 55                        ,  response_2_start_character );
+    ASSERT_EQ ( 55                        ,  response_2_end_line        );
+    ASSERT_EQ ( 55                        ,  response_2_end_character   );
 }
 
 TEST(integrate, test_formatting)
@@ -450,8 +450,8 @@ TEST(integrate, test_formatting)
                                             response_request_id ,
                                             response_textedits  ) );
 
-    ASSERT_EQ( response_request_id       , client_request_id );
-    ASSERT_EQ( response_textedits.size() , (size_t) 3        );
+    ASSERT_EQ ( client_request_id , response_request_id       );
+    ASSERT_EQ ( (size_t) 3        , response_textedits.size() );
 
     ASSERT_TRUE( dissectTextEditObject( *(response_textedits[2].to_object()) ,
                                           client_errors                      ,
@@ -461,11 +461,11 @@ TEST(integrate, test_formatting)
                                           response_3_end_character           ,
                                           response_3_new_text                ) );
 
-    ASSERT_EQ( response_3_start_line      , 30                                   );
-    ASSERT_EQ( response_3_start_character , 01                                   );
-    ASSERT_EQ( response_3_end_line        , 34                                   );
-    ASSERT_EQ( response_3_end_character   , 03                                   );
-    ASSERT_EQ( response_3_new_text        , "test\n  new\n  text\n  format\n  3" );
+    ASSERT_EQ ( 30                                   , response_3_start_line      );
+    ASSERT_EQ ( 01                                   , response_3_start_character );
+    ASSERT_EQ ( 34                                   , response_3_end_line        );
+    ASSERT_EQ ( 03                                   , response_3_end_character   );
+    ASSERT_EQ ( "test\n  new\n  text\n  format\n  3" , response_3_new_text        );
 }
 
 TEST(integrate, test_symbols)
@@ -535,9 +535,9 @@ TEST(integrate, test_symbols)
                                          response_request_id ,
                                          response_symbols    ) );
 
-    ASSERT_EQ( response_request_id     , client_request_id );
+    ASSERT_EQ ( client_request_id , response_request_id     );
 
-    ASSERT_EQ( response_symbols.size() , (size_t) 1        );
+    ASSERT_EQ ( (size_t) 1        , response_symbols.size() );
 
     const DataObject & object_1 = *response_symbols[0].to_object();
 
@@ -598,44 +598,44 @@ TEST(integrate, test_symbols)
                                               o3_selection_end_line        ,
                                               o3_selection_end_character   ) );
 
-    ASSERT_EQ( o1_name                      , "test_symbol_name_object_1"       );
-    ASSERT_EQ( o1_detail                    , "test::symbol::detail::object::1" );
-    ASSERT_EQ( o1_kind                      , 15                                );
-    ASSERT_EQ( o1_deprecated                , false                             );
-    ASSERT_EQ( o1_start_line                , 10                                );
-    ASSERT_EQ( o1_start_character           , 11                                );
-    ASSERT_EQ( o1_end_line                  , 10                                );
-    ASSERT_EQ( o1_end_character             , 17                                );
-    ASSERT_EQ( o1_selection_start_line      , 10                                );
-    ASSERT_EQ( o1_selection_start_character , 13                                );
-    ASSERT_EQ( o1_selection_end_line        , 10                                );
-    ASSERT_EQ( o1_selection_end_character   , 15                                );
+    ASSERT_EQ ( "test_symbol_name_object_1"       , o1_name                      );
+    ASSERT_EQ ( "test::symbol::detail::object::1" , o1_detail                    );
+    ASSERT_EQ ( 15                                , o1_kind                      );
+    ASSERT_EQ ( false                             , o1_deprecated                );
+    ASSERT_EQ ( 10                                , o1_start_line                );
+    ASSERT_EQ ( 11                                , o1_start_character           );
+    ASSERT_EQ ( 10                                , o1_end_line                  );
+    ASSERT_EQ ( 17                                , o1_end_character             );
+    ASSERT_EQ ( 10                                , o1_selection_start_line      );
+    ASSERT_EQ ( 13                                , o1_selection_start_character );
+    ASSERT_EQ ( 10                                , o1_selection_end_line        );
+    ASSERT_EQ ( 15                                , o1_selection_end_character   );
 
-    ASSERT_EQ( o2_name                      , "test_symbol_name_object_2"       );
-    ASSERT_EQ( o2_detail                    , "test::symbol::detail::object::2" );
-    ASSERT_EQ( o2_kind                      , 20                                );
-    ASSERT_EQ( o2_deprecated                , false                             );
-    ASSERT_EQ( o2_start_line                , 20                                );
-    ASSERT_EQ( o2_start_character           , 21                                );
-    ASSERT_EQ( o2_end_line                  , 20                                );
-    ASSERT_EQ( o2_end_character             , 27                                );
-    ASSERT_EQ( o2_selection_start_line      , 20                                );
-    ASSERT_EQ( o2_selection_start_character , 23                                );
-    ASSERT_EQ( o2_selection_end_line        , 20                                );
-    ASSERT_EQ( o2_selection_end_character   , 25                                );
+    ASSERT_EQ ( "test_symbol_name_object_2"       , o2_name                      );
+    ASSERT_EQ ( "test::symbol::detail::object::2" , o2_detail                    );
+    ASSERT_EQ ( 20                                , o2_kind                      );
+    ASSERT_EQ ( false                             , o2_deprecated                );
+    ASSERT_EQ ( 20                                , o2_start_line                );
+    ASSERT_EQ ( 21                                , o2_start_character           );
+    ASSERT_EQ ( 20                                , o2_end_line                  );
+    ASSERT_EQ ( 27                                , o2_end_character             );
+    ASSERT_EQ ( 20                                , o2_selection_start_line      );
+    ASSERT_EQ ( 23                                , o2_selection_start_character );
+    ASSERT_EQ ( 20                                , o2_selection_end_line        );
+    ASSERT_EQ ( 25                                , o2_selection_end_character   );
 
-    ASSERT_EQ( o3_name                      , "test_symbol_name_object_3"       );
-    ASSERT_EQ( o3_detail                    , "test::symbol::detail::object::3" );
-    ASSERT_EQ( o3_kind                      , 22                                );
-    ASSERT_EQ( o3_deprecated                , false                             );
-    ASSERT_EQ( o3_start_line                , 30                                );
-    ASSERT_EQ( o3_start_character           , 31                                );
-    ASSERT_EQ( o3_end_line                  , 30                                );
-    ASSERT_EQ( o3_end_character             , 37                                );
-    ASSERT_EQ( o3_selection_start_line      , 30                                );
-    ASSERT_EQ( o3_selection_start_character , 33                                );
-    ASSERT_EQ( o3_selection_end_line        , 30                                );
-    ASSERT_EQ( o3_selection_end_character   , 35                                );
+    ASSERT_EQ ( "test_symbol_name_object_3"       , o3_name                      );
+    ASSERT_EQ ( "test::symbol::detail::object::3" , o3_detail                    );
+    ASSERT_EQ ( 22                                , o3_kind                      );
+    ASSERT_EQ ( false                             , o3_deprecated                );
+    ASSERT_EQ ( 30                                , o3_start_line                );
+    ASSERT_EQ ( 31                                , o3_start_character           );
+    ASSERT_EQ ( 30                                , o3_end_line                  );
+    ASSERT_EQ ( 37                                , o3_end_character             );
+    ASSERT_EQ ( 30                                , o3_selection_start_line      );
+    ASSERT_EQ ( 33                                , o3_selection_start_character );
+    ASSERT_EQ ( 30                                , o3_selection_end_line        );
+    ASSERT_EQ ( 35                                , o3_selection_end_character   );
 }
 
 TEST(integrate, test_didclose)
@@ -678,7 +678,7 @@ TEST(integrate, test_shutdown)
                                           client_errors       ,
                                           response_request_id ) );
 
-    ASSERT_EQ( response_request_id , client_request_id );
+    ASSERT_EQ ( client_request_id , response_request_id );
 }
 
 TEST(integrate, test_exit)
@@ -731,7 +731,7 @@ TEST(client, server_response_error)
 
     ASSERT_FALSE( errors.str().empty() );
 
-    ASSERT_EQ   ( errors.str() , expected_error.str() );
+    ASSERT_EQ   ( expected_error.str() , errors.str() );
 
     ASSERT_FALSE( test_connection->getServerErrors().empty() );
 
