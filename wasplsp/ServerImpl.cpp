@@ -95,6 +95,8 @@ bool ServerImpl::run()
             buildErrorResponse( output_object      ,
                                 m_internal_error   ,
                                 this->errors.str() );
+
+            this->is_initialized = false;
         }
 
         if ( !output_object.empty() )

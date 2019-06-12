@@ -8,6 +8,7 @@
 #include <cstdio>
 #include "wasplsp/LSP.h"
 #include "wasplsp/ServerImpl.h"
+#include "wasplsp/Connection.h"
 #include "wasplsp/ThreadConnection.h"
 #include "wasphive/InputDefinition.h"
 #include "wasphalite/HaliteInterpreter.h"
@@ -34,7 +35,7 @@ class WASP_PUBLIC WaspServer : public ServerImpl
         connection = std::make_shared<CONNECTION>(this);
     }
 
-    std::shared_ptr<CONNECTION> getConnection()
+    std::shared_ptr<Connection> getConnection()
     {
         return connection;
     }

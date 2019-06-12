@@ -5,6 +5,7 @@
 #include <memory>
 #include "wasplsp/LSP.h"
 #include "wasplsp/ServerImpl.h"
+#include "wasplsp/Connection.h"
 #include "wasplsp/ThreadConnection.h"
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
@@ -21,7 +22,7 @@ class WASP_PUBLIC TestServer : public ServerImpl
         connection = std::make_shared<ThreadConnection>(this);
     }
 
-    std::shared_ptr<ThreadConnection> getConnection()
+    std::shared_ptr<Connection> getConnection()
     {
         return connection;
     }

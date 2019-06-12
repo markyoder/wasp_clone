@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include "wasplsp/LSP.h"
+#include "wasplsp/Connection.h"
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
 
@@ -74,6 +75,8 @@ class WASP_PUBLIC ServerImpl
     {
         return errors.str();
     }
+
+    virtual std::shared_ptr<Connection> getConnection() = 0;
 
   private:
 
