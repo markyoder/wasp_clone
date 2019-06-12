@@ -31,15 +31,17 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<S>
     {
         if ( client.isDocumentOpen() )
         {
-            wasp_check( client.doDocumentClose() );
+            client.doDocumentClose();
         }
 
         if ( server->isRunning() )
         {
-            wasp_check( client.doShutdown() );
+            client.doShutdown();
 
-            wasp_check( client.doExit() );
+            client.doExit();
         }
+
+        this->checkClientServerErrors();
 
         if ( server_running )
         {
