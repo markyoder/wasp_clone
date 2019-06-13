@@ -41,7 +41,7 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<S>
             client.doExit();
         }
 
-        this->checkClientServerErrors();
+        checkClientServerErrors();
 
         if ( server_running )
         {
@@ -71,38 +71,38 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<S>
 
         pass &= client.doInitialized();
 
-        this->checkClientServerErrors();
+        checkClientServerErrors();
 
         server_running = pass;
 
         return pass;
     }
 
-    bool parse( std::istream & inp_stream     ,
-                size_t         startLine = 1u ,
-                size_t         startCol  = 1u )
+    bool parse( std::istream & inp_stream      ,
+                size_t         start_line = 1u ,
+                size_t         start_col  = 1u )
     {
         std::ostringstream oss;
 
         oss << inp_stream.rdbuf();
 
-        return parseString( oss.str() , "stream input" , startLine , startCol );
+        return parseImpl( oss.str() , "stream input" , start_line , start_col );
     }
 
-    bool parseStream( std::istream       & inp_stream                 ,
-                      const std::string  & sname     = "stream input" ,
-                      size_t               startLine = 1u             ,
-                      size_t               startCol  = 1u             )
+    bool parseStream( std::istream       & inp_stream                  ,
+                      const std::string  & sname      = "stream input" ,
+                      size_t               start_line = 1u             ,
+                      size_t               start_col  = 1u             )
     {
         std::ostringstream oss;
 
         oss << inp_stream.rdbuf();
 
-        return parseString( oss.str() , sname , startLine , startCol );
+        return parseImpl( oss.str() , sname , start_line , start_col );
     }
 
-    bool parseFile( const std::string & filename       ,
-                    size_t              startLine = 1u )
+    bool parseFile( const std::string & filename        ,
+                    size_t              start_line = 1u )
     {
         std::ifstream ifs( filename.c_str() );
 
@@ -118,13 +118,41 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<S>
 
         oss << ifs.rdbuf();
 
-        return parseString( oss.str() , filename , startLine );
+        return parseImpl( oss.str() , filename , start_line );
     }
 
-    bool parseString( const std::string & input                       ,
-                      const std::string & sname     = "string stream" ,
-                      size_t              startLine = 1u              ,
-                      size_t              startCol  = 1u              )
+    bool parseString( const std::string & input                        ,
+                      const std::string & sname      = "string stream" ,
+                      size_t              start_line = 1u              ,
+                      size_t              start_col  = 1u              )
+    {
+        return parseImpl( input , sname , start_line , start_col );
+    }
+
+  private:
+
+    bool parseImpl( const std::string & input                          ,
+                    const std::string & stream_name = "string stream" ,
+                    size_t              start_line  = 1u              ,
+                    size_t              start_col   = 1u              )
+    {
+        Interpreter<S>::m_stream_name = stream_name;
+
+        Interpreter<S>::set_start_line( start_line );
+
+        Interpreter<S>::set_start_column( start_col );
+
+        bool parsed = parseLSP( input , stream_name );
+
+        Interpreter<S>::commit_stages();
+
+        Interpreter<S>::set_failed( parsed );
+
+        return parsed;
+    }
+
+    bool parseLSP( const std::string & input                         ,
+                   const std::string & stream_name = "string stream" )
     {
         bool pass = true;
 
@@ -136,55 +164,49 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<S>
             return false;
         }
 
-        pass &= client.doDocumentOpen( sname     ,
-                                       "wasplsp" ,
-                                       input     );
+        pass &= client.doDocumentOpen( stream_name ,
+                                       "wasplsp"   ,
+                                       input       );
 
         size_t diagnostics_size = client.getDiagnosticSize();
 
         for ( size_t index = 0 ; index < diagnostics_size ; index++ )
         {
             int         start_line;
-            int         start_character;
+            int         start_char;
             int         end_line;
-            int         end_character;
+            int         end_char;
             int         severity;
             std::string code;
             std::string source;
             std::string message;
 
-            client.getDiagnosticAt( index           ,
-                                    start_line      ,
-                                    start_character ,
-                                    end_line        ,
-                                    end_character   ,
-                                    severity        ,
-                                    code            ,
-                                    source          ,
-                                    message         );
+            client.getDiagnosticAt( index      ,
+                                    start_line ,
+                                    start_char ,
+                                    end_line   ,
+                                    end_char   ,
+                                    severity   ,
+                                    code       ,
+                                    source     ,
+                                    message    );
 
-            Interpreter<S>::error_stream() << " line: "   << start_line
-                                           << " column: " << start_character
-                                           << " - "      << message
+            int report_line = start_line + Interpreter<S>::m_start_line - 1;
+
+            int report_col = start_char + Interpreter<S>::m_start_column - 1;
+
+            Interpreter<S>::error_stream() << " line: "   << report_line
+                                           << " column: " << report_col
+                                           << " - "       << message
                                            << std::endl;
         }
 
-        this->checkClientServerErrors();
+        checkClientServerErrors();
 
         pass &= ( diagnostics_size == 0 );
 
         return pass;
     }
-
-  private:
-
-    bool server_running;
-
-    ServerImpl * server;
-
-    std::thread server_thread;
-
-    ClientImpl client;
 
     void checkClientServerErrors()
     {
@@ -204,6 +226,14 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<S>
                                            << std::endl;
         }
     }
+
+    bool server_running;
+
+    ServerImpl * server;
+
+    std::thread server_thread;
+
+    ClientImpl client;
 };
 
 typedef LSPInterpreter<> DefaultLSPInterpreter;
