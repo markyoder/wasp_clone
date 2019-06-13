@@ -8,9 +8,17 @@
 #include "gtest/gtest.h"
 #include <sstream>
 #include <string>
+#include <thread>
 
 namespace wasp {
 namespace lsp  {
+
+typedef WaspServer< DefaultSONInterpreter ,
+                    SONNodeView           ,
+                    DefaultSONInterpreter ,
+                    SONNodeView           ,
+                    HIVE                  ,
+                    ThreadConnection      > SONThreadServer;
 
 TEST(LSP, wasp_server_son)
 {
@@ -44,22 +52,17 @@ object
 
     std::string template_dir = TEST_TMPL_DIR;
 
-    WaspServer< DefaultSONInterpreter ,
-                SONNodeView           ,
-                DefaultSONInterpreter ,
-                SONNodeView           ,
-                HIVE                  ,
-                ThreadConnection      > server;
+    SONThreadServer server;
 
     ASSERT_TRUE ( server.setup( validator , schema , template_dir ) );
 
-    std::stringstream parse_errors;
+    std::thread server_thread = std::thread( &SONThreadServer::run , &server );
 
-    parse_errors << std::endl;
+    std::stringstream parse_errors;
 
     DefaultLSPInterpreter lsp_interpreter( parse_errors );
 
-    ASSERT_TRUE ( lsp_interpreter.setupServer( &server ) );
+    ASSERT_TRUE ( lsp_interpreter.connect( server.getConnection() ) );
 
     ASSERT_FALSE( lsp_interpreter.parse( input ) );
 
@@ -72,7 +75,11 @@ object
  line: 7 column: 18 - Validation Error: list value "-9" is less than the allowed minimum inclusive value of 0
 )INPUT";
 
-    ASSERT_EQ   ( expected_errors, parse_errors.str() );
+    ASSERT_EQ   ( expected_errors, "\n" + parse_errors.str() );
+
+    ASSERT_TRUE ( lsp_interpreter.disconnect() );
+
+    server_thread.join();
 }
 
 } // namespace lsp

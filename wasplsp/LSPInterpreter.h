@@ -4,8 +4,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <thread>
-#include "wasplsp/ServerImpl.h"
+#include "wasplsp/Connection.h"
 #include "wasplsp/ClientImpl.h"
 #include "waspcore/Interpreter.h"
 #include "waspcore/TreeNodePool.h"
@@ -21,51 +20,29 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<S>
 
     LSPInterpreter()
         : Interpreter<S> (       )
-        , server_running ( false ) {}
+        , is_connected   ( false ) {}
 
     LSPInterpreter( std::ostream & error )
         : Interpreter<S> ( error )
-        , server_running ( false ) {}
+        , is_connected   ( false ) {}
 
-    ~LSPInterpreter()
+    ~LSPInterpreter() {}
+
+    bool connect( std::shared_ptr<Connection> connection )
     {
-        if ( client.isDocumentOpen() )
-        {
-            client.doDocumentClose();
-        }
-
-        if ( server->isRunning() )
-        {
-            client.doShutdown();
-
-            client.doExit();
-        }
-
-        checkClientServerErrors();
-
-        if ( server_running )
-        {
-            server_thread.join();
-        }
-    }
-
-    bool setupServer( ServerImpl * server )
-    {
-        if ( server_running )
+        if ( is_connected )
         {
             Interpreter<S>::error_stream() << m_error_prefix
-                                           << "Server already setup and running"
+                                           << "LSPInterpreter already connected"
                                            << std::endl;
             return false;
         }
 
         bool pass = true;
 
-        this->server = server;
+        this->connection = connection;
 
-        server_thread = std::thread( &ServerImpl::run , this->server );
-
-        pass &= client.connect( this->server->getConnection() );
+        pass &= client.connect( connection );
 
         pass &= client.doInitialize();
 
@@ -73,7 +50,28 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<S>
 
         checkClientServerErrors();
 
-        server_running = pass;
+        is_connected = pass;
+
+        return pass;
+    }
+
+    bool disconnect()
+    {
+        bool pass = true;
+
+        if ( client.isDocumentOpen() )
+        {
+            pass &= client.doDocumentClose();
+        }
+
+        if ( connection->isServerRunning() )
+        {
+            pass &= client.doShutdown();
+
+            pass &= client.doExit();
+        }
+
+        checkClientServerErrors();
 
         return pass;
     }
@@ -156,10 +154,18 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<S>
     {
         bool pass = true;
 
-        if ( !server_running )
+        if ( !is_connected )
         {
             Interpreter<S>::error_stream() << m_error_prefix
-                                           << "Server is not setup and running"
+                                           << "LSPInterpreter not yet connected"
+                                           << std::endl;
+            return false;
+        }
+
+        if ( !connection->isServerRunning() )
+        {
+            Interpreter<S>::error_stream() << m_error_prefix
+                                           << "Connection server is not running"
                                            << std::endl;
             return false;
         }
@@ -218,20 +224,18 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<S>
                                            << std::endl;
         }
 
-        if ( !server->getErrors().empty() )
+        if ( !connection->getServerErrors().empty() )
         {
             Interpreter<S>::error_stream() << "lsp server-side errors:"
                                            << std::endl
-                                           << server->getErrors()
+                                           << connection->getServerErrors()
                                            << std::endl;
         }
     }
 
-    bool server_running;
+    bool is_connected;
 
-    ServerImpl * server;
-
-    std::thread server_thread;
+    std::shared_ptr<Connection> connection;
 
     ClientImpl client;
 };
