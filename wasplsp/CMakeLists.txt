@@ -36,6 +36,7 @@ LSP.cpp
 ServerImpl.cpp
 ClientImpl.cpp
 SymbolIterator.cpp
+LSPInterpreter.cpp
 )
 
 ##---------------------------------------------------------------------------##

@@ -108,12 +108,12 @@ object
     // check that the PARSE_ERORRS from the LSPInterpreter PARSE are as expected
 
     std::string expected_errors = R"INPUT(
- line: 3 column: 1 - Validation Error: document has 2 "object" occurrences - when there should be a minimum occurrence of 3
- line: 3 column: 1 - Validation Error: object has 2 "key" occurrences - when there should be a maximum occurrence of 1
- line: 7 column: 4 - Validation Error: list has 6 "value" occurrences - when there should be a maximum occurrence of 5
- line: 7 column: 15 - Validation Error: list value "-2" is less than the allowed minimum inclusive value of 0
- line: 7 column: 18 - Validation Error: list value "-9" is less than the allowed minimum inclusive value of 0
- line: 13 column: 11 - Validation Error: key value "-4.6" is less than the allowed minimum inclusive value of 0
+stream input:3.1: Validation Error: document has 2 "object" occurrences - when there should be a minimum occurrence of 3
+stream input:3.1: Validation Error: object has 2 "key" occurrences - when there should be a maximum occurrence of 1
+stream input:7.4: Validation Error: list has 6 "value" occurrences - when there should be a maximum occurrence of 5
+stream input:7.15: Validation Error: list value "-2" is less than the allowed minimum inclusive value of 0
+stream input:7.18: Validation Error: list value "-9" is less than the allowed minimum inclusive value of 0
+stream input:13.11: Validation Error: key value "-4.6" is less than the allowed minimum inclusive value of 0
 )INPUT";
 
     ASSERT_EQ ( expected_errors, "\n" + actual_errors.str() );
