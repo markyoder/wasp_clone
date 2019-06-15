@@ -735,9 +735,14 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     for( size_t i = 0; i < children.size(); i++ )
     {
-        std::string name   = children[i].name();
-        int         line   = children[i].line();
-        int         column = children[i].column();
+        auto node = children[i];
+
+        std::string name        = node.name();
+        std::string detail      = node.is_leaf() ? node.data() : name;
+        int         line        = node.line();
+        int         column      = node.column();
+        int         last_line   = node.last_line();
+        int         last_column = node.last_column();
 
         documentSymbols.push_back( DataObject() );
 
@@ -746,19 +751,19 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         pass &= buildDocumentSymbolObject( *child        ,
                                             this->errors ,
                                             name         ,
-                                            name         ,
+                                            detail       ,
                                             1            ,
                                             false        ,
                                             line         ,
                                             column       ,
+                                            last_line    ,
+                                            last_column  ,
                                             line         ,
                                             column       ,
-                                            line         ,
-                                            column       ,
-                                            line         ,
-                                            column       );
+                                            last_line    ,
+                                            last_column  );
 
-      this->traverseParseTreeAndFillSymbols( children[i] , *child );
+      this->traverseParseTreeAndFillSymbols( node , *child );
     }
 
     return pass;
@@ -781,28 +786,33 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     for( size_t i = 0; i < children.size(); i++ )
     {
-        std::string name   = children[i].name();
-        int         line   = children[i].line();
-        int         column = children[i].column();
+        auto node = children[i];
+
+        std::string name        = node.name();
+        std::string detail      = node.is_leaf() ? node.data() : name;
+        int         line        = node.line();
+        int         column      = node.column();
+        int         last_line   = node.last_line();
+        int         last_column = node.last_column();
 
         DataObject & child = addDocumentSymbolChild( parent );
 
         pass &= buildDocumentSymbolObject( child        ,
                                            this->errors ,
                                            name         ,
-                                           name         ,
+                                           detail       ,
                                            1            ,
                                            false        ,
                                            line         ,
                                            column       ,
+                                           last_line    ,
+                                           last_column  ,
                                            line         ,
                                            column       ,
-                                           line         ,
-                                           column       ,
-                                           line         ,
-                                           column       );
+                                           last_line    ,
+                                           last_column  );
 
-      this->traverseParseTreeAndFillSymbols( children[i] , child );
+      this->traverseParseTreeAndFillSymbols( node , child );
     }
 
     return pass;

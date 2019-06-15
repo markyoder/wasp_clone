@@ -48,7 +48,7 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<S>
 
         pass &= client.doInitialized();
 
-        checkClientServerErrors();
+        if ( !pass ) checkClientServerErrors();
 
         is_connected = pass;
 
@@ -71,7 +71,7 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<S>
             pass &= client.doExit();
         }
 
-        checkClientServerErrors();
+        if ( !pass ) checkClientServerErrors();
 
         return pass;
     }
@@ -207,9 +207,188 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<S>
                                            << std::endl;
         }
 
-        checkClientServerErrors();
-
         pass &= ( diagnostics_size == 0 );
+
+        pass &= createParseTree();
+
+        if ( !pass ) checkClientServerErrors();
+
+        return pass;
+    }
+
+    bool createParseTree()
+    {
+        // make the document symbols lsp call to the server
+
+        if ( !client.doDocumentSymbols() )
+        {
+            Interpreter<S>::error_stream() << m_error_prefix
+                                           << "Document symbol creation failed"
+                                           << std::endl;
+            return false;
+        }
+
+        bool pass = true;
+
+        // initialize the global_node_index / global_byte_offset / location info
+
+        global_node_index = 0;
+
+        global_byte_offset = 0;
+
+        previous_symbol_end_line = 1;
+
+        previous_symbol_end_char = 0;
+
+        // get the root document symbol iterator
+
+        SymbolIterator::SP si = client.getSymbolIterator();
+
+        // traverse further into root children and pushing as staged children
+
+        for( size_t i = 0 ; i < si->getChildSize() ; i++ )
+        {
+            pass &= si->moveToChildAt( i );
+
+            pass &= addSymbolsToTree( si );
+
+            this->push_staged_child( global_node_index-1 );
+
+            pass &= si->moveToParent();
+        }
+
+        return pass;
+    }
+
+    bool addSymbolsToTree( SymbolIterator::SP & si )
+    {
+        bool pass = true;
+
+        // dissect current document symbol so the info can be used for insertion
+
+        std::string symbol_name;
+        std::string symbol_detail;
+        int         symbol_kind;
+        bool        symbol_deprecated;
+        int         symbol_start_line;
+        int         symbol_start_char;
+        int         symbol_end_line;
+        int         symbol_end_char;
+        int         symbol_selection_start_line;
+        int         symbol_selection_start_char;
+        int         symbol_selection_end_line;
+        int         symbol_selection_end_char;
+
+        pass &= si->dissectCurrentSymbol( symbol_name                 ,
+                                          symbol_detail               ,
+                                          symbol_kind                 ,
+                                          symbol_deprecated           ,
+                                          symbol_start_line           ,
+                                          symbol_start_char           ,
+                                          symbol_end_line             ,
+                                          symbol_end_char             ,
+                                          symbol_selection_start_line ,
+                                          symbol_selection_start_char ,
+                                          symbol_selection_end_line   ,
+                                          symbol_selection_end_char   );
+
+        // if this is a leaf node with no children - push_token and push_leaf
+
+        if ( si->getChildSize() == 0 )
+        {
+            // check that this leaf token does not span multiple lines
+
+            wasp_check( symbol_start_line == symbol_end_line );
+
+            // check that this leaf token end column is not before start column
+
+            wasp_check( symbol_end_char >= symbol_start_char );
+
+            // number of newlines that needs to be added since last token
+
+            size_t additional_new_lines = symbol_start_line - previous_symbol_end_line;
+
+            // add calculated number of newlines and increase global_byte_offset
+
+            for(int i = 0 ; i < additional_new_lines ; i++ )
+            {
+                global_byte_offset++;
+
+                this->push_line_offset( global_byte_offset );
+            }
+
+            // increase global_byte_offset to the starting character of token
+
+            global_byte_offset += symbol_start_char;
+
+            // if the same line as last token - adjust based on previous token
+
+            if ( additional_new_lines == 0 )
+            {
+                global_byte_offset -= previous_symbol_end_char + 1;
+            }
+
+            // calculate the token length based on start and end character
+
+            size_t token_length = symbol_end_char - symbol_start_char + 1;
+
+            // since lsp doesn't give data - make dummy data of correct length
+
+            std::string token_data = std::string(token_length , ' ');
+
+            // push correct length dummy token data at calculated byte offset
+
+            this->push_token( token_data.c_str() , wasp::UNKNOWN , global_byte_offset );
+
+            // push leaf with the symbol name and the previous token push index
+
+            this->push_leaf( wasp::VALUE , symbol_name.c_str() , this->token_count() - 1 );
+
+            // increase global_byte_offset to point to the end of inserted token
+
+            global_byte_offset += token_length;
+
+            // save the inserted token's end line as previous_symbol_end_line
+
+            previous_symbol_end_line = symbol_end_line;
+
+            // save the inserted token's end column as previous_symbol_end_char
+
+            previous_symbol_end_char = symbol_end_char;
+
+            // increase the global_node_index since we inserted a node
+
+            global_node_index++;
+
+            // this was a leaf node - so we can return and not traverse further
+
+            return pass;
+        }
+
+        // this is not a leaf - so traverse further but cache child node indices
+
+        std::vector<size_t> child_indices;
+
+        for( size_t i = 0 ; i < si->getChildSize() ; i++ )
+        {
+            pass &= si->moveToChildAt( i );
+
+            pass &= addSymbolsToTree( si );
+
+            child_indices.push_back( global_node_index-1 );
+
+            pass &= si->moveToParent();
+        }
+
+        // push parent with the symbol name and its cached child node indices
+
+        this->push_parent( wasp::UNKNOWN , symbol_name.c_str() , child_indices );
+
+        // increase the global_node_index since we inserted a node
+
+        global_node_index++;
+
+        // return to parent caller
 
         return pass;
     }
@@ -238,6 +417,14 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<S>
     std::shared_ptr<Connection> connection;
 
     ClientImpl client;
+
+    size_t global_node_index;
+
+    size_t global_byte_offset;
+
+    size_t previous_symbol_end_line;
+
+    size_t previous_symbol_end_char;
 };
 
 typedef LSPInterpreter<> DefaultLSPInterpreter;

@@ -13,6 +13,8 @@
 namespace wasp {
 namespace lsp  {
 
+// convenient template typedef for SON WaspServer with a ThreadConnection
+
 typedef WaspServer< DefaultSONInterpreter ,
                     SONNodeView           ,
                     DefaultSONInterpreter ,
@@ -20,8 +22,27 @@ typedef WaspServer< DefaultSONInterpreter ,
                     HIVE                  ,
                     ThreadConnection      > SONThreadServer;
 
+// test recursive method for walking the tree and building line / column info
+
+void walk_tree_for_info( wasp::NodeView node , std::stringstream & info )
+{
+    info << " name: "       << std::setw(9) << std::left << node.name()
+         << " start_line: " << std::setw(2) << std::left << node.line()
+         << " start_col: "  << std::setw(2) << std::left << node.column()
+         << " last_line: "  << std::setw(2) << std::left << node.last_line()
+         << " last_col: "   << std::setw(2) << std::left << node.last_column()
+         << std::endl;
+
+    for( int i = 0 ; i < node.child_count() ; i++ )
+    {
+        walk_tree_for_info( node.child_at(i) , info );
+    }
+}
+
 TEST(LSP, wasp_server_son)
 {
+    // this INPUT stream has some VALIDATION errors but no PARSE errors
+
     std::stringstream input;
 
     input << R"INPUT(
@@ -37,11 +58,13 @@ object
 object
 {
    key  = -4.6
-   list = [ 5 6 7
+   list = [ 5 6 7 ]
    use  = 6
 }
 
 )INPUT";
+
+    // setup the VALIDATOR / SCHEMA / TEMPLATE_DIR for the WASP_SERVER
 
     std::shared_ptr<HIVE> validator = std::make_shared<HIVE>();
 
@@ -56,28 +79,137 @@ object
 
     ASSERT_TRUE ( server.setup( validator , schema , template_dir ) );
 
+    // start the WASP_SERVER on a thread - calls server.run() waiting for input
+
     std::thread server_thread = std::thread( &SONThreadServer::run , &server );
 
-    std::stringstream parse_errors;
+    // instantiate an LSPInterpreter object capturing errors in actual_errors
 
-    DefaultLSPInterpreter lsp_interpreter( parse_errors );
+    std::stringstream actual_errors;
+
+    DefaultLSPInterpreter lsp_interpreter( actual_errors );
+
+    // CONNECT the LSPInterpreter to the server's connection - this:
+    // - CONNECTS the interpreter's CLIENT to the connection
+    // - calls INITIALIZE on the server
+    // - calls INITIALIZED on the server
 
     ASSERT_TRUE ( lsp_interpreter.connect( server.getConnection() ) );
 
-    ASSERT_FALSE( lsp_interpreter.parse( input ) );
+    // call the LSPInterpreter's PARSE on the INPUT stream above - this:
+    // - calls DOCUMENT_OPEN on the server with the INPUT
+    // - calls GET_DIAGNOSTIC_SIZE - and if there are any DIAGNOSTICS:
+    //   - walks over them and adds each to the ERROR_STREAM with line / column
+    // - gets the DOCUMENT_SYMBOLS from the server and if there are any:
+    //   - walks over the DOCUMENT_SYMBOL_TREE creating the parse tree
+
+    ASSERT_FALSE ( lsp_interpreter.parse( input ) );
+
+    // check that the PARSE_ERORRS from the LSPInterpreter PARSE are as expected
 
     std::string expected_errors = R"INPUT(
- line: 16 column: 1 - syntax error, unexpected }
- line: 3 column: 1 - Validation Error: document has 1 "object" occurrences - when there should be a minimum occurrence of 3
+ line: 3 column: 1 - Validation Error: document has 2 "object" occurrences - when there should be a minimum occurrence of 3
  line: 3 column: 1 - Validation Error: object has 2 "key" occurrences - when there should be a maximum occurrence of 1
  line: 7 column: 4 - Validation Error: list has 6 "value" occurrences - when there should be a maximum occurrence of 5
  line: 7 column: 15 - Validation Error: list value "-2" is less than the allowed minimum inclusive value of 0
  line: 7 column: 18 - Validation Error: list value "-9" is less than the allowed minimum inclusive value of 0
+ line: 13 column: 11 - Validation Error: key value "-4.6" is less than the allowed minimum inclusive value of 0
 )INPUT";
 
-    ASSERT_EQ   ( expected_errors, "\n" + parse_errors.str() );
+    ASSERT_EQ ( expected_errors, "\n" + actual_errors.str() );
+
+    // check that the LSPInterpreter's NODE_COUNT ( all nodes ) are as expected
+
+    ASSERT_EQ ( static_cast<size_t>( 24 ) , lsp_interpreter.node_count() );
+
+    // get the LSPInterpreter's DOCUMENT ROOT
+
+    wasp::NodeView document = lsp_interpreter.root();
+
+    // check that there are two children of the DOCUMENT ROOT (the two objects)
+
+    ASSERT_EQ ( static_cast<size_t>( 2 ) , document.child_count() );
+
+    // get the PATHS from the DOCUMENT ROOT
+
+    std::stringstream actual_paths;
+
+    document.paths( actual_paths );
+
+    // check that the PATHS from the DOCUMENT ROOT are as expected
+
+    std::string expected_paths = R"INPUT(
+/
+/object
+/object/key
+/object/key/value (    )
+/object/key
+/object/key/value (    )
+/object/list
+/object/list/value ( )
+/object/list/value (  )
+/object/list/value (  )
+/object/list/value ( )
+/object/list/value (   )
+/object/list/value ( )
+/object/use
+/object/use/value (   )
+/object
+/object/key
+/object/key/value (    )
+/object/list
+/object/list/value ( )
+/object/list/value ( )
+/object/list/value ( )
+/object/use
+/object/use/value ( )
+)INPUT";
+
+    ASSERT_EQ ( expected_paths, "\n" + actual_paths.str() );
+
+    // check document LINE / COLUMN info built from recursive tree walk method
+
+    std::stringstream actual_info;
+
+    walk_tree_for_info( document , actual_info );
+
+std::string expected_info = R"INPUT(
+ name: document  start_line: 5  start_col: 11 last_line: 15 last_col: 11
+ name: object    start_line: 5  start_col: 11 last_line: 8  last_col: 13
+ name: key       start_line: 5  start_col: 11 last_line: 5  last_col: 14
+ name: value     start_line: 5  start_col: 11 last_line: 5  last_col: 14
+ name: key       start_line: 6  start_col: 11 last_line: 6  last_col: 14
+ name: value     start_line: 6  start_col: 11 last_line: 6  last_col: 14
+ name: list      start_line: 7  start_col: 13 last_line: 7  last_col: 27
+ name: value     start_line: 7  start_col: 13 last_line: 7  last_col: 13
+ name: value     start_line: 7  start_col: 15 last_line: 7  last_col: 16
+ name: value     start_line: 7  start_col: 18 last_line: 7  last_col: 19
+ name: value     start_line: 7  start_col: 21 last_line: 7  last_col: 21
+ name: value     start_line: 7  start_col: 23 last_line: 7  last_col: 25
+ name: value     start_line: 7  start_col: 27 last_line: 7  last_col: 27
+ name: use       start_line: 8  start_col: 11 last_line: 8  last_col: 13
+ name: value     start_line: 8  start_col: 11 last_line: 8  last_col: 13
+ name: object    start_line: 13 start_col: 11 last_line: 15 last_col: 11
+ name: key       start_line: 13 start_col: 11 last_line: 13 last_col: 14
+ name: value     start_line: 13 start_col: 11 last_line: 13 last_col: 14
+ name: list      start_line: 14 start_col: 13 last_line: 14 last_col: 17
+ name: value     start_line: 14 start_col: 13 last_line: 14 last_col: 13
+ name: value     start_line: 14 start_col: 15 last_line: 14 last_col: 15
+ name: value     start_line: 14 start_col: 17 last_line: 14 last_col: 17
+ name: use       start_line: 15 start_col: 11 last_line: 15 last_col: 11
+ name: value     start_line: 15 start_col: 11 last_line: 15 last_col: 11
+)INPUT";
+
+    ASSERT_EQ ( expected_info, "\n" + actual_info.str() );
+
+    // DISCONNECT the LSPInterpreter - this:
+    // - calls DOCUMENT_CLOSE on the server
+    // - calls SHUTDOWN on the server
+    // - calls EXIT on the server
 
     ASSERT_TRUE ( lsp_interpreter.disconnect() );
+
+    // join the server thread to make sure that the server finished
 
     server_thread.join();
 }
