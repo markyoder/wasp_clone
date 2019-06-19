@@ -1016,7 +1016,7 @@ TEST(lsp, shutdown_request)
     ASSERT_TRUE( object[m_method].is_string()                     );
     ASSERT_EQ  ( object[m_method].to_string() , m_method_shutdown );
 
-    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_TRUE( object[m_params].is_null()           );
     ASSERT_EQ  ( object[m_params].size() , (size_t) 0 );
 
     std::string rpcstr;
@@ -1025,11 +1025,11 @@ TEST(lsp, shutdown_request)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << "Content-Length: 77\r\n\r\n" << R"INPUT({
+    rpc_expected << "Content-Length: 79\r\n\r\n" << R"INPUT({
   "id" : 7
   ,"jsonrpc" : "2.0"
   ,"method" : "shutdown"
-  ,"params" : {}
+  ,"params" : null
 })INPUT";
 
     ASSERT_EQ ( rpc_expected.str() , rpcstr );
@@ -1064,7 +1064,7 @@ TEST(lsp, exit_notification)
     ASSERT_TRUE( object[m_method].is_string()                 );
     ASSERT_EQ  ( object[m_method].to_string() , m_method_exit );
 
-    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_TRUE( object[m_params].is_null()           );
     ASSERT_EQ  ( object[m_params].size() , (size_t) 0 );
 
     std::string rpcstr;
@@ -1073,10 +1073,10 @@ TEST(lsp, exit_notification)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << "Content-Length: 61\r\n\r\n" << R"INPUT({
+    rpc_expected << "Content-Length: 63\r\n\r\n" << R"INPUT({
   "jsonrpc" : "2.0"
   ,"method" : "exit"
-  ,"params" : {}
+  ,"params" : null
 })INPUT";
 
     ASSERT_EQ ( rpc_expected.str() , rpcstr );

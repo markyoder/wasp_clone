@@ -49,13 +49,19 @@ bool ClientImpl::doInitialize()
     DataObject client_object;
     DataObject client_capabilities;
 
+    client_capabilities[m_text_document] = DataObject();
+
+    client_capabilities[m_text_document][m_document_symbol] = DataObject();
+
+    client_capabilities[m_text_document][m_document_symbol][m_hierarchical_symbols] = true;
+
     this->response = std::make_shared<DataObject>();
 
     pass &= buildInitializeRequest( client_object       ,
                                     this->errors        ,
                                     this->request_id    ,
-                                    0000                ,
-                                    "temp-root-uri"     ,
+                                    -1                  ,
+                                    ""                  ,
                                     client_capabilities );
 
     pass &= connection->write( client_object , this->errors );
@@ -541,6 +547,12 @@ bool ClientImpl::doDocumentClose()
                                        this->document_path );
 
     pass &= connection->write( client_object , this->errors );
+
+    // pass &= connection->read( *(this->response) , this->errors );
+    //
+    // pass &= checkErrorResponse( *(this->response) , this->errors );
+    //
+    // wasp_check( verifyDiagnosticResponse( *(this->response) ) );
 
     if ( pass )
     {

@@ -7,10 +7,11 @@ namespace lsp  {
  * @brief connect - connects the LSPInterpreter to a server's connection
  * Connection is for a server that is already running and waiting for input
  * (1) Connects a local client to a server's connection
- * (2) Calls INITIALIZE on the server (through the local client)
- * (3) Waits for the INITIALIZE response from the server
- * (4) Calls INITIALIZED on the server (through the local client)
- * (5) If any of the LSP calls fail - adds any client or server errors
+ * (2) Creates and saves a temporary path for the input file to live
+ * (3) Calls INITIALIZE on the server (through the local client)
+ * (4) Waits for the INITIALIZE response from the server
+ * (5) Calls INITIALIZED on the server (through the local client)
+ * (6) If any of the LSP calls fail - adds any client or server errors
  * @param connection - shared_ptr to Connection object for a running server
  * @return           - true if successfully connected and server initialized
  */
@@ -28,6 +29,8 @@ bool LSPInterpreter::connect( Connection::SP connection )
 
     this->connection = connection;
 
+    temp_input_file_path = tempnam("", "") + std::string( m_extension );
+
     pass &= client.connect( connection );
 
     pass &= client.doInitialize();
@@ -44,10 +47,11 @@ bool LSPInterpreter::connect( Connection::SP connection )
 /**
  * @brief disconnect - disconnects the LSPInterpreter and shutsdown server
  * (1) Calls DOCUMENT CLOSE on the server - if a document is open
- * (2) Calls SHUTDOWN on the server - if the server is running
- * (3) Waits for the SHUTDOWH response from the server
- * (4) alls EXIT on the server - if the server is running
- * (5) If any of the LSP calls fail - adds any client or server errors
+ * (2) Removes the temporary input file - if a document is open
+ * (3) Calls SHUTDOWN on the server - if the server is running
+ * (4) Waits for the SHUTDOWH response from the server
+ * (5) alls EXIT on the server - if the server is running
+ * (6) If any of the LSP calls fail - adds any client or server errors
  * @return - true if successfully disconnected and server shutdown
  */
 bool LSPInterpreter::disconnect()
@@ -57,6 +61,8 @@ bool LSPInterpreter::disconnect()
     if ( client.isDocumentOpen() )
     {
         pass &= client.doDocumentClose();
+
+        std::remove( temp_input_file_path.c_str() );
     }
 
     if ( connection->isServerRunning() )
@@ -214,11 +220,38 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
         return false;
     }
 
-    // call DOCUMENT_OPEN on the server through the client with the given input
+    // if the document is not yet open then create it and call DOCUMENT_OPEN
 
-    pass &= client.doDocumentOpen( stream_name ,
-                                   "wasplsp"   ,
-                                   input       );
+    if ( !client.isDocumentOpen() )
+    {
+        // write the given input string to the temp file for the language server
+
+        std::ofstream temp_input_file;
+
+        temp_input_file.open( temp_input_file_path );
+
+        temp_input_file << input;
+
+        temp_input_file.close();
+
+        // call DOCUMENT_OPEN on the server through the client with the input
+
+        pass &= client.doDocumentOpen( temp_input_file_path ,
+                                       "wasplsp"            ,
+                                       input                );
+    }
+
+    // otherwise - this is not the first parse - so just use DOCUMENT_CHANGE
+
+    else
+    {
+        // TODO - add DOCUMENT_CHANGE if not the first parse removing overhead
+
+        Interpreter::error_stream() << m_error_prefix
+                                       << "Document change not yet implemented"
+                                       << std::endl;
+        return false;
+    }
 
     // get the DIAGNOSTICS size from the server after the open and parse
 

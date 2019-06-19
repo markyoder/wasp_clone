@@ -152,6 +152,11 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<TreeNodePool<>>
     bool is_connected;
 
     /**
+     * @brief std::string temp_input_file_path - temp file path for the server
+     */
+    std::string temp_input_file_path;
+
+    /**
      * @brief connection - running (awaiting input) server connection shared_ptr
      */
     Connection::SP connection;

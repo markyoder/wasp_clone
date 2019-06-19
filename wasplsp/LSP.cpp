@@ -38,7 +38,11 @@ bool RPCStringToObject( const std::string  & rpcstr ,
 {
     bool pass = true;
 
+    // put the given string into a stringstream
+
     std::stringstream full_buffer( rpcstr );
+
+    // read and DBC check the "Content-Length:" key off the stream
 
     std::string content_length_key;
 
@@ -46,21 +50,34 @@ bool RPCStringToObject( const std::string  & rpcstr ,
 
     wasp_check( content_length_key == m_rpc_content_len_key );
 
+    // read the Content-Length value off the stream
+
     int content_length_val;
 
     full_buffer >> content_length_val;
 
+    // skip all whitespace (newlines) after the Content-Length value
+
     full_buffer >> std::ws;
 
-    char * content_buffer = new char[ content_length_val ];
+    // check that there is exactly content_length_val bytes left on the stream
 
-    full_buffer.read(content_buffer, content_length_val);
+    if ( full_buffer.eof() || rpcstr.size() - full_buffer.tellg() != content_length_val )
+    {
+        errors << m_error_prefix << "JSON-RPC packet of wrong length ( "
+               << ( full_buffer.eof() ? 0 : rpcstr.size()-full_buffer.tellg() )
+               << " ) passed when expecting length ( " << content_length_val
+               << " )" << std::endl;
+        return false;
+    }
 
-    std::istringstream packet(std::string(content_buffer,content_length_val));
+    // make an istringstream JSON-RPC packet of the content_length_val bytes
 
-    delete[] content_buffer;
+    std::istringstream packet( rpcstr.substr( full_buffer.tellg() ) );
 
     DataObject::SP json_ptr;
+
+    // parse the JSON-RPC packet into a DataObject
 
     JSONObjectParser generator(json_ptr, packet, errors, nullptr);
 
@@ -69,6 +86,8 @@ bool RPCStringToObject( const std::string  & rpcstr ,
     wasp_check( json_ptr != nullptr );
 
     object = *(json_ptr.get());
+
+    // DBC check that "jsonrpc" : "2.0" appears in the JSON DataObject
 
     wasp_check( object[m_rpc_jsonrpc_key].is_string() );
 
@@ -238,8 +257,10 @@ bool buildInitializeRequest( DataObject        & object              ,
     bool pass = true;
 
     DataObject params;
-    params[m_process_id]   = process_id;
-    params[m_root_uri]     = root_uri;
+    if ( process_id == -1 ) params[m_process_id] = Value();
+    else                    params[m_process_id] = process_id;
+    if ( root_uri.empty() ) params[m_root_uri] = Value();
+    else                    params[m_root_uri] = root_uri;
     params[m_capabilities] = client_capabilities;
 
     object[m_params] =  params;
@@ -270,13 +291,15 @@ bool dissectInitializeRequest( const DataObject        & object              ,
 
     const DataObject& params = *(object[m_params].to_object());
 
-    wasp_check( params[m_process_id].is_int() );
+    if ( params.contains(m_process_id) && params[m_process_id].is_int() )
+    {
+        process_id = params[m_process_id].to_int();
+    }
 
-    process_id = params[m_process_id].to_int();
-
-    wasp_check( params[m_root_uri].is_string() );
-
-    root_uri = params[m_root_uri].to_string();
+    if ( params.contains(m_root_uri) && params[m_root_uri].is_string() )
+    {
+        root_uri = params[m_root_uri].to_string();
+    }
 
     wasp_check( params[m_capabilities].is_object() );
 
@@ -897,7 +920,7 @@ bool buildShutdownRequest( DataObject   & object     ,
 
     DataObject params;
 
-    object[m_params] =  params;
+    object[m_params] =  Value();
     object[m_id]     =  request_id;
     object[m_method] = m_method_shutdown;
 
@@ -918,7 +941,7 @@ bool dissectShutdownRequest( const DataObject   & object     ,
 
     request_id = object[m_id].to_int();
 
-    wasp_check( object[m_params].is_object() );
+    wasp_check( object[m_params].is_null() );
 
     return pass;
 }
@@ -930,7 +953,7 @@ bool buildExitNotification( DataObject   & object ,
 
     DataObject params;
 
-    object[m_params] =  params;
+    object[m_params] =  Value();
     object[m_method] = m_method_exit;
 
     return pass;
@@ -945,7 +968,7 @@ bool dissectExitNotification( const DataObject   & object ,
 
     wasp_check( object[m_method].to_string() == m_method_exit );
 
-    wasp_check( object[m_params].is_object() );
+    wasp_check( object[m_params].is_null() );
 
     return pass;
 }
@@ -1011,9 +1034,10 @@ bool dissectDiagnosticObject( const DataObject   & object          ,
 
     code = object[m_code].to_string();
 
-    wasp_check( object[m_source].is_string() );
-
-    source = object[m_source].to_string();
+    if ( object.contains(m_source) && object[m_source].is_string() )
+    {
+        source = object[m_source].to_string();
+    }
 
     wasp_check( object[m_message].is_string() );
 

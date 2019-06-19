@@ -90,9 +90,12 @@ object
     DefaultLSPInterpreter lsp_interpreter( actual_errors );
 
     // CONNECT the LSPInterpreter to the server's connection - this:
-    // - CONNECTS the interpreter's CLIENT to the connection
-    // - calls INITIALIZE on the server
-    // - calls INITIALIZED on the server
+    // * (1) Connects a local client to a server's connection
+    // * (2) Creates and saves a temporary path for the input file to live
+    // * (3) Calls INITIALIZE on the server (through the local client)
+    // * (4) Waits for the INITIALIZE response from the server
+    // * (5) Calls INITIALIZED on the server (through the local client)
+    // * (6) If any of the LSP calls fail - adds any client or server errors
 
     ASSERT_TRUE ( lsp_interpreter.connect( server.getConnection() ) );
 
@@ -203,9 +206,12 @@ std::string expected_info = R"INPUT(
     ASSERT_EQ ( expected_info, "\n" + actual_info.str() );
 
     // DISCONNECT the LSPInterpreter - this:
-    // - calls DOCUMENT_CLOSE on the server
-    // - calls SHUTDOWN on the server
-    // - calls EXIT on the server
+    // * (1) Calls DOCUMENT CLOSE on the server - if a document is open
+    // * (2) Removes the temporary input file - if a document is open
+    // * (3) Calls SHUTDOWN on the server - if the server is running
+    // * (4) Waits for the SHUTDOWH response from the server
+    // * (5) alls EXIT on the server - if the server is running
+    // * (6) If any of the LSP calls fail - adds any client or server errors
 
     ASSERT_TRUE ( lsp_interpreter.disconnect() );
 
