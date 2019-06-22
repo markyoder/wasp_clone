@@ -26,7 +26,13 @@ class WASP_PUBLIC ClientImpl
 
     ~ClientImpl(){}
 
+    typedef std::shared_ptr<ClientImpl> SP;
+
     bool connect( Connection::SP connection );
+
+    bool startUpCleanly();
+
+    bool wrapUpCleanly();
 
     bool doInitialize();
 
@@ -143,6 +149,11 @@ class WASP_PUBLIC ClientImpl
     bool isDocumentOpen() const
     {
         return this->is_document_open;
+    }
+
+    std::string getDocumentPath() const
+    {
+        return this->document_path;
     }
 
     int getCurrentDocumentVersion() const

@@ -26,6 +26,45 @@ bool ClientImpl::connect( Connection::SP connection )
     return pass;
 }
 
+bool ClientImpl::startUpCleanly()
+{
+    if ( !this->is_connected )
+    {
+        this->errors << m_error_prefix << "Client not connected" << std::endl;
+
+        return false;
+    }
+
+    bool pass = true;
+
+    pass &= this->doInitialize();
+
+    pass &= this->doInitialized();
+
+    return pass;
+}
+
+bool ClientImpl::wrapUpCleanly()
+{
+    bool pass = true;
+
+    if ( this->is_connected )
+    {
+        if ( this->isDocumentOpen() )
+        {
+            pass &= this->doDocumentClose();
+
+            std::remove( this->document_path.c_str() );
+        }
+
+        pass &= this->doShutdown();
+
+        pass &= this->doExit();
+    }
+
+    return pass;
+}
+
 bool ClientImpl::doInitialize()
 {
     if ( !this->is_connected )

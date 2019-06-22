@@ -331,35 +331,38 @@ TEST(lsp, didchange_notification)
     ASSERT_TRUE( object[m_params][m_text_document][m_version].is_int()           );
     ASSERT_EQ  ( object[m_params][m_text_document][m_version].to_int() , version );
 
-    ASSERT_TRUE( object[m_params][m_content_changes].is_object()         );
-    ASSERT_EQ  ( object[m_params][m_content_changes].size() , (size_t) 3 );
+    ASSERT_TRUE( object[m_params][m_content_changes].is_array()          );
+    ASSERT_EQ  ( object[m_params][m_content_changes].size() , (size_t) 1 );
 
-    ASSERT_TRUE( object[m_params][m_content_changes][m_range].is_object()         );
-    ASSERT_EQ  ( object[m_params][m_content_changes][m_range].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_content_changes][0].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_content_changes][0].size() , (size_t) 3 );
 
-    ASSERT_TRUE( object[m_params][m_content_changes][m_range][m_start].is_object()         );
-    ASSERT_EQ  ( object[m_params][m_content_changes][m_range][m_start].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_content_changes][0][m_range].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_content_changes][0][m_range].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[m_params][m_content_changes][m_range][m_start][m_line].is_int()              );
-    ASSERT_EQ  ( object[m_params][m_content_changes][m_range][m_start][m_line].to_int() , start_line );
+    ASSERT_TRUE( object[m_params][m_content_changes][0][m_range][m_start].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_content_changes][0][m_range][m_start].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[m_params][m_content_changes][m_range][m_start][m_character].is_int()                   );
-    ASSERT_EQ  ( object[m_params][m_content_changes][m_range][m_start][m_character].to_int() , start_character );
+    ASSERT_TRUE( object[m_params][m_content_changes][0][m_range][m_start][m_line].is_int()              );
+    ASSERT_EQ  ( object[m_params][m_content_changes][0][m_range][m_start][m_line].to_int() , start_line );
 
-    ASSERT_TRUE( object[m_params][m_content_changes][m_range][m_end].is_object()         );
-    ASSERT_EQ  ( object[m_params][m_content_changes][m_range][m_end].size() , (size_t) 2 );
+    ASSERT_TRUE( object[m_params][m_content_changes][0][m_range][m_start][m_character].is_int()                   );
+    ASSERT_EQ  ( object[m_params][m_content_changes][0][m_range][m_start][m_character].to_int() , start_character );
 
-    ASSERT_TRUE( object[m_params][m_content_changes][m_range][m_end][m_line].is_int()            );
-    ASSERT_EQ  ( object[m_params][m_content_changes][m_range][m_end][m_line].to_int() , end_line );
+    ASSERT_TRUE( object[m_params][m_content_changes][0][m_range][m_end].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_content_changes][0][m_range][m_end].size() , (size_t) 2 );
 
-    ASSERT_TRUE( object[m_params][m_content_changes][m_range][m_end][m_character].is_int()                 );
-    ASSERT_EQ  ( object[m_params][m_content_changes][m_range][m_end][m_character].to_int() , end_character );
+    ASSERT_TRUE( object[m_params][m_content_changes][0][m_range][m_end][m_line].is_int()            );
+    ASSERT_EQ  ( object[m_params][m_content_changes][0][m_range][m_end][m_line].to_int() , end_line );
 
-    ASSERT_TRUE( object[m_params][m_content_changes][m_range_length].is_int()                );
-    ASSERT_EQ  ( object[m_params][m_content_changes][m_range_length].to_int() , range_length );
+    ASSERT_TRUE( object[m_params][m_content_changes][0][m_range][m_end][m_character].is_int()                 );
+    ASSERT_EQ  ( object[m_params][m_content_changes][0][m_range][m_end][m_character].to_int() , end_character );
 
-    ASSERT_TRUE( object[m_params][m_content_changes][m_text].is_string()        );
-    ASSERT_EQ  ( object[m_params][m_content_changes][m_text].to_string() , text );
+    ASSERT_TRUE( object[m_params][m_content_changes][0][m_range_length].is_int()                );
+    ASSERT_EQ  ( object[m_params][m_content_changes][0][m_range_length].to_int() , range_length );
+
+    ASSERT_TRUE( object[m_params][m_content_changes][0][m_text].is_string()        );
+    ASSERT_EQ  ( object[m_params][m_content_changes][0][m_text].to_string() , text );
 
     std::string rpcstr;
     ASSERT_TRUE( objectToRPCString( object ,
@@ -367,11 +370,12 @@ TEST(lsp, didchange_notification)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << "Content-Length: 415\r\n\r\n" << R"INPUT({
+    rpc_expected << "Content-Length: 425\r\n\r\n" << R"INPUT({
   "jsonrpc" : "2.0"
   ,"method" : "textDocument/didChange"
   ,"params" : {
-    "contentChanges" : {
+    "contentChanges" : [
+    {
     "range" : {
     "end" : {
     "character" : 12
@@ -385,6 +389,7 @@ TEST(lsp, didchange_notification)
     ,"range_length" : 37
     ,"text" : "test text replacement string"
   }
+  ]
     ,"textDocument" : {
       "uri" : "test/document/uri/string"
       ,"version" : 14

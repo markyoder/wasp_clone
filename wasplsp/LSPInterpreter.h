@@ -4,7 +4,6 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "wasplsp/Connection.h"
 #include "wasplsp/ClientImpl.h"
 #include "waspcore/Interpreter.h"
 #include "waspcore/TreeNodePool.h"
@@ -17,39 +16,15 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<TreeNodePool<>>
 {
   public:
 
-    LSPInterpreter()
-        : Interpreter  (       )
-        , is_connected ( false ) {}
+    LSPInterpreter( ClientImpl::SP client )
+        : Interpreter (        )
+        , client      ( client ) {}
 
-    LSPInterpreter( std::ostream & error )
-        : Interpreter  ( error )
-        , is_connected ( false ) {}
+    LSPInterpreter( ClientImpl::SP client , std::ostream & error )
+        : Interpreter ( error  )
+        , client      ( client ) {}
 
     ~LSPInterpreter() {}
-
-    /**
-     * @brief connect - connects the LSPInterpreter to a server's connection
-     * Connection is for a server that is already running and waiting for input
-     * (1) Connects a local client to a server's connection
-     * (2) Calls INITIALIZE on the server (through the local client)
-     * (3) Waits for the INITIALIZE response from the server
-     * (4) Calls INITIALIZED on the server (through the local client)
-     * (5) If any of the LSP calls fail - adds any client or server errors
-     * @param connection - shared_ptr to Connection object for a running server
-     * @return           - true if successfully connected and server initialized
-     */
-    bool connect( Connection::SP connection );
-
-    /**
-     * @brief disconnect - disconnects the LSPInterpreter and shutsdown server
-     * (1) Calls DOCUMENT CLOSE on the server - if a document is open
-     * (2) Calls SHUTDOWN on the server - if the server is running
-     * (3) Waits for the SHUTDOWH response from the server
-     * (4) alls EXIT on the server - if the server is running
-     * (5) If any of the LSP calls fail - adds any client or server errors
-     * @return - true if successfully disconnected and server shutdown
-     */
-    bool disconnect();
 
     /** Invoke the lexer and parser for a stream
      * @param in         - input stream
@@ -147,24 +122,14 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<TreeNodePool<>>
     void checkClientServerErrors();
 
     /**
-     * @brief is_connected - indicates if connect() has been called with success
-     */
-    bool is_connected;
-
-    /**
      * @brief std::string temp_input_file_path - temp file path for the server
      */
     std::string temp_input_file_path;
 
     /**
-     * @brief connection - running (awaiting input) server connection shared_ptr
+     * @brief client - shared_ptr to ClientImpl object connected to server
      */
-    Connection::SP connection;
-
-    /**
-     * @brief connection - client used to talk to the server with the Connection
-     */
-    ClientImpl client;
+    ClientImpl::SP client;
 
     /**
      * @brief global_node_index - updated on all node pushs for children indices

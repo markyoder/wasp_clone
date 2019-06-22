@@ -3,80 +3,6 @@
 namespace wasp {
 namespace lsp  {
 
-/**
- * @brief connect - connects the LSPInterpreter to a server's connection
- * Connection is for a server that is already running and waiting for input
- * (1) Connects a local client to a server's connection
- * (2) Creates and saves a temporary path for the input file to live
- * (3) Calls INITIALIZE on the server (through the local client)
- * (4) Waits for the INITIALIZE response from the server
- * (5) Calls INITIALIZED on the server (through the local client)
- * (6) If any of the LSP calls fail - adds any client or server errors
- * @param connection - shared_ptr to Connection object for a running server
- * @return           - true if successfully connected and server initialized
- */
-bool LSPInterpreter::connect( Connection::SP connection )
-{
-    if ( is_connected )
-    {
-        Interpreter::error_stream() << m_error_prefix
-                                       << "LSPInterpreter already connected"
-                                       << std::endl;
-        return false;
-    }
-
-    bool pass = true;
-
-    this->connection = connection;
-
-    temp_input_file_path = tempnam("", "") + std::string( m_extension );
-
-    pass &= client.connect( connection );
-
-    pass &= client.doInitialize();
-
-    pass &= client.doInitialized();
-
-    if ( !pass ) checkClientServerErrors();
-
-    is_connected = pass;
-
-    return pass;
-}
-
-/**
- * @brief disconnect - disconnects the LSPInterpreter and shutsdown server
- * (1) Calls DOCUMENT CLOSE on the server - if a document is open
- * (2) Removes the temporary input file - if a document is open
- * (3) Calls SHUTDOWN on the server - if the server is running
- * (4) Waits for the SHUTDOWH response from the server
- * (5) alls EXIT on the server - if the server is running
- * (6) If any of the LSP calls fail - adds any client or server errors
- * @return - true if successfully disconnected and server shutdown
- */
-bool LSPInterpreter::disconnect()
-{
-    bool pass = true;
-
-    if ( client.isDocumentOpen() )
-    {
-        pass &= client.doDocumentClose();
-
-        std::remove( temp_input_file_path.c_str() );
-    }
-
-    if ( connection->isServerRunning() )
-    {
-        pass &= client.doShutdown();
-
-        pass &= client.doExit();
-    }
-
-    if ( !pass ) checkClientServerErrors();
-
-    return pass;
-}
-
 /** Invoke the lexer and parser for a stream
  * @param in         - input stream
  * @param start_line - optional start line for offset if not entire document
@@ -202,60 +128,50 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
 
     // check that the LSPInterpreter has bveen successfully connected
 
-    if ( !is_connected )
+    if ( !client )
     {
         Interpreter::error_stream() << m_error_prefix
-                                       << "LSPInterpreter not yet connected"
-                                       << std::endl;
+                                    << "LSPInterpreter client not yet set"
+                                    << std::endl;
         return false;
     }
 
-    // check that the connection is for a server running and awaiting input
+    // get temporary file path from the client (if already open) or create new
 
-    if ( !connection->isServerRunning() )
+    this->temp_input_file_path = client->isDocumentOpen()  ?
+                                 client->getDocumentPath() :
+                                 tempnam("","") + std::string(m_extension);
+
+    // write contents to parse to the temporary input file that the server uses
+
+    std::ofstream temp_input_file;
+
+    temp_input_file.open( this->temp_input_file_path );
+
+    temp_input_file << input;
+
+    temp_input_file.close();
+
+    // if the document is not yet open - first parse so call DOCUMENT_OPEN
+
+    if ( !client->isDocumentOpen() )
     {
-        Interpreter::error_stream() << m_error_prefix
-                                       << "Connection server is not running"
-                                       << std::endl;
-        return false;
+        pass &= client->doDocumentOpen( this->temp_input_file_path ,
+                                        "wasplsp"                  ,
+                                        input                      );
     }
 
-    // if the document is not yet open then create it and call DOCUMENT_OPEN
-
-    if ( !client.isDocumentOpen() )
-    {
-        // write the given input string to the temp file for the language server
-
-        std::ofstream temp_input_file;
-
-        temp_input_file.open( temp_input_file_path );
-
-        temp_input_file << input;
-
-        temp_input_file.close();
-
-        // call DOCUMENT_OPEN on the server through the client with the input
-
-        pass &= client.doDocumentOpen( temp_input_file_path ,
-                                       "wasplsp"            ,
-                                       input                );
-    }
-
-    // otherwise - this is not the first parse - so just use DOCUMENT_CHANGE
+    // if the document is already open - not first parse so call DOCUMENT_CHANGE
+    // the -1s for range values indicate that the input is the entire document
 
     else
     {
-        // TODO - add DOCUMENT_CHANGE if not the first parse removing overhead
-
-        Interpreter::error_stream() << m_error_prefix
-                                       << "Document change not yet implemented"
-                                       << std::endl;
-        return false;
+        pass &= client->doDocumentChange( -1 , -1 , -1 , -1 , -1 , input );
     }
 
     // get the DIAGNOSTICS size from the server after the open and parse
 
-    size_t diagnostics_size = client.getDiagnosticSize();
+    size_t diagnostics_size = client->getDiagnosticSize();
 
     // if there are DIAGNOSTICS - add each to error_stream with line and column
 
@@ -272,15 +188,15 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
         std::string source;
         std::string message;
 
-        client.getDiagnosticAt( index      ,
-                                start_line ,
-                                start_char ,
-                                end_line   ,
-                                end_char   ,
-                                severity   ,
-                                code       ,
-                                source     ,
-                                message    );
+        client->getDiagnosticAt( index      ,
+                                 start_line ,
+                                 start_char ,
+                                 end_line   ,
+                                 end_char   ,
+                                 severity   ,
+                                 code       ,
+                                 source     ,
+                                 message    );
 
         // calculate report line / column using the start_line / start_column                        
 
@@ -322,7 +238,7 @@ bool LSPInterpreter::createParseTree()
 {
     // make the document symbols lsp call to the server
 
-    if ( !client.doDocumentSymbols() )
+    if ( !client->doDocumentSymbols() )
     {
         Interpreter::error_stream() << m_error_prefix
                                        << "Document symbol creation failed"
@@ -344,7 +260,7 @@ bool LSPInterpreter::createParseTree()
 
     // get the root document symbol iterator
 
-    SymbolIterator::SP si = client.getSymbolIterator();
+    SymbolIterator::SP si = client->getSymbolIterator();
 
     // traverse further into root children and pushing as staged children
 
@@ -509,22 +425,22 @@ void LSPInterpreter::checkClientServerErrors()
 {
     // if the client has any errors - add to the base Interpreter::error_stream
 
-    if ( !client.getErrors().empty() )
+    if ( client && !client->getErrors().empty() )
     {
         Interpreter::error_stream() << "lsp client-side errors:"
-                                       << std::endl
-                                       << client.getErrors()
-                                       << std::endl;
+                                    << std::endl
+                                    << client->getErrors()
+                                    << std::endl;
     }
 
     // if the server has any errors - add to the base Interpreter::error_stream
 
-    if ( !connection->getServerErrors().empty() )
+    if ( client && !client->getConnection()->getServerErrors().empty() )
     {
         Interpreter::error_stream() << "lsp server-side errors:"
-                                       << std::endl
-                                       << connection->getServerErrors()
-                                       << std::endl;
+                                    << std::endl
+                                    << client->getConnection()->getServerErrors()
+                                    << std::endl;
     }
 }
 

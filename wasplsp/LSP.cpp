@@ -412,17 +412,31 @@ bool buildDidChangeNotification( DataObject        & object          ,
 {
     bool pass = true;
 
-    DataObject content_changes;
-    content_changes[m_range]        = DataObject();
-    content_changes[m_range_length] = range_length;
-    content_changes[m_text]         = text;
+    DataArray content_changes;
 
-    pass &= buildRangeObject( *(content_changes[m_range].to_object()) ,
-                                errors                                ,
-                                start_line                            ,
-                                start_character                       ,
-                                end_line                              ,
-                                end_character                         );
+    content_changes.push_back( DataObject() );
+
+    DataObject * change = content_changes.back().to_object();
+
+    (*change)[m_text] = text;
+
+    if ( ! ( start_line      == -1 &&
+             start_character == -1 &&
+             end_line        == -1 &&
+             end_character   == -1 &&
+             range_length    == -1 ) )
+    {
+        (*change)[m_range_length] = range_length;
+
+        (*change)[m_range] = DataObject();
+
+        pass &= buildRangeObject( *((*change)[m_range].to_object()) ,
+                                    errors                          ,
+                                    start_line                      ,
+                                    start_character                 ,
+                                    end_line                        ,
+                                    end_character                   );
+    }
 
     DataObject text_document;
     text_document[m_uri]     = uri;
@@ -471,28 +485,47 @@ bool dissectDidChangeNotification( const DataObject   & object          ,
 
     version = text_document[m_version].to_int();
 
-    wasp_check( params[m_content_changes].is_object() );
+    wasp_check( params[m_content_changes].is_array() );
 
-    const DataObject& content_changes = *(params[m_content_changes].to_object());
+    const DataArray & content_changes = *(params[m_content_changes].to_array());
 
-    wasp_check( content_changes[m_range].is_object() );
+    wasp_check( content_changes.size() == 1 );
 
-    const DataObject& range = *(content_changes[m_range].to_object());
+    wasp_check( content_changes.at(0).is_object() );
 
-    pass &= dissectRangeObject( range           ,
-                                errors          ,
-                                start_line      ,
-                                start_character ,
-                                end_line        ,
-                                end_character   );
+    const DataObject & change = *(content_changes.at(0).to_object());
 
-    wasp_check( content_changes[m_range_length].is_int() );
+    if ( change.contains(m_range) && change[m_range].is_object() )
+    {
+        const DataObject& range = *(change[m_range].to_object());
 
-    range_length = content_changes[m_range_length].to_int();
+        pass &= dissectRangeObject( range           ,
+                                    errors          ,
+                                    start_line      ,
+                                    start_character ,
+                                    end_line        ,
+                                    end_character   );
+    }
+    else
+    {
+        start_line      = -1;
+        start_character = -1;
+        end_line        = -1;
+        end_character   = -1;
+    }
 
-    wasp_check( content_changes[m_text].is_string() );
+    if ( change.contains(m_range_length) && change[m_range_length].is_int() )
+    {
+        range_length = change[m_range_length].to_int();
+    }
+    else
+    {
+        range_length = -1;
+    }
 
-    text = content_changes[m_text].to_string();
+    wasp_check( change[m_text].is_string() );
+
+    text = change[m_text].to_string();
 
     return pass;
 }

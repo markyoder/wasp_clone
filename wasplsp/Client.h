@@ -1,6 +1,7 @@
 #ifndef WASPLSP_CLIENT_H
 #define WASPLSP_CLIENT_H
 
+#include <string>
 #include "waspcore/decl.h"
 #include "wasplsp/Connection.h"
 #include "wasplsp/SymbolIterator.h"
@@ -251,6 +252,11 @@ class WASP_PUBLIC Client
     bool isDocumentOpen() const
     {
         return Impl.isDocumentOpen();
+    }
+
+    std::string getDocumentPath() const
+    {
+        return Impl.getDocumentPath();
     }
 
     int getCurrentDocumentVersion() const
