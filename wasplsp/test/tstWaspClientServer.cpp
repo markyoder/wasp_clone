@@ -228,11 +228,11 @@ TEST(client, document_change_and_diagnostics)
 {
     // document change
 
-    int         start_line        = 0;
-    int         start_character   = 0;
-    int         end_line          = 0;
-    int         end_character     = 0;
-    int         range_length      = 0;
+    int         start_line        = -1;
+    int         start_character   = -1;
+    int         end_line          = -1;
+    int         end_character     = -1;
+    int         range_length      = -1;
     std::string new_document_text = R"INPUT(
 
 object

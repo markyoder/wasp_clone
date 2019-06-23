@@ -214,6 +214,16 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     // TODO - replace text using line and column
 
+    if ( ! (start_line      == -1 &&
+            start_character == -1 &&
+            end_line        == -1 &&
+            end_character   == -1 &&
+            range_length    == -1 ) )
+    {
+        this->errors << m_error_prefix << "WASPServer only currently supports full document changes" << std::endl;
+        return false;
+    }
+
     this->document_text = replacement_text;
 
     return pass;
