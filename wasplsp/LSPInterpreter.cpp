@@ -1,4 +1,5 @@
 #include "wasplsp/LSPInterpreter.h"
+#include "wasphive/AlphaNum.h"
 
 namespace wasp {
 namespace lsp  {
@@ -175,6 +176,8 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
 
     // if there are DIAGNOSTICS - add each to error_stream with line and column
 
+    std::vector<std::string> diagnostic_list;
+
     for ( size_t index = 0 ; index < diagnostics_size ; index++ )
     {
         // dissect each diagnostic to get the line / column / message info
@@ -211,14 +214,31 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
 
         int report_col = start_char + Interpreter::m_start_column - 1;
 
-        // add each message with line / column to error_stream in correct format
+        // add each correct format message with line / column to diagnostic_list
 
-        Interpreter::error_stream() << Interpreter::stream_name()
-                                    << ":"
-                                    << report_line << "." << report_col
-                                    << ": "
-                                    << message
-                                    << std::endl;
+        std::stringstream diagnostic_message;
+
+        diagnostic_message << Interpreter::stream_name()
+                           << ":"
+                           << report_line << "." << report_col
+                           << ": "
+                           << message
+                           << std::endl;
+
+        diagnostic_list.push_back( diagnostic_message.str() );
+    }
+
+    // sort diagnostic messages by line / column using alphanum
+
+    std::sort( diagnostic_list.begin()           ,
+               diagnostic_list.end()             ,
+               doj::alphanum_less<std::string>() );
+
+    // add each diagnostic message to error_stream in new alphanum sorted order
+
+    for ( auto diagnostic_message : diagnostic_list )
+    {
+        Interpreter::error_stream() << diagnostic_message;
     }
 
     // update the pass boolean based on if there were any diagnostics
