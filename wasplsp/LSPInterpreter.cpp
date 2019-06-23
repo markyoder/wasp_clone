@@ -323,6 +323,17 @@ bool LSPInterpreter::addSymbolsToTree( SymbolIterator::SP & si )
                                       symbol_selection_end_line   ,
                                       symbol_selection_end_char   );
 
+      // the protocol line / col zero based - but the intepreter is one based
+
+      symbol_start_line++;
+      symbol_start_char++;
+      symbol_end_line++;
+      symbol_end_char++;
+      symbol_selection_start_line++;
+      symbol_selection_start_char++;
+      symbol_selection_end_line++;
+      symbol_selection_end_char++;
+
     // if this is a leaf node with no children - push_token and push_leaf
 
     if ( si->getChildSize() == 0 )

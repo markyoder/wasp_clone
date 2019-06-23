@@ -106,7 +106,6 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
             // according to the protocol - line and column number are zero based
 
             line--;
-
             column--;
 
             DataObject diagnostic;
@@ -165,7 +164,6 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
             // according to the protocol - line and column number are zero based
 
             line--;
-
             column--;
 
             DataObject diagnostic;
@@ -766,6 +764,13 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         int         last_line   = node.last_line();
         int         last_column = node.last_column();
 
+        // according to the protocol - line and column number are zero based
+
+        line--;
+        column--;
+        last_line--;
+        last_column--;
+
         documentSymbols.push_back( DataObject() );
 
         DataObject * child = documentSymbols.back().to_object();
@@ -816,6 +821,13 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         int         column      = node.column();
         int         last_line   = node.last_line();
         int         last_column = node.last_column();
+
+        // according to the protocol - line and column number are zero based
+
+        line--;
+        column--;
+        last_line--;
+        last_column--;
 
         DataObject & child = addDocumentSymbolChild( parent );
 
