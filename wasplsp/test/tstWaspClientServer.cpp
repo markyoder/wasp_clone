@@ -157,10 +157,10 @@ object
                                               message         ) );
         if ( index == 0 )
         {
-            ASSERT_EQ ( 16       , start_line      );
-            ASSERT_EQ ( 01       , start_character );
-            ASSERT_EQ ( 16       , end_line        );
-            ASSERT_EQ ( 01       , end_character   );
+            ASSERT_EQ ( 15       , start_line      );
+            ASSERT_EQ ( 00       , start_character );
+            ASSERT_EQ ( 15       , end_line        );
+            ASSERT_EQ ( 00       , end_character   );
             ASSERT_EQ ( 01       , severity        );
             ASSERT_EQ ( "parse"  , code            );
             ASSERT_EQ ( "parser" , source          );
@@ -168,10 +168,10 @@ object
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( 03          , start_line      );
-            ASSERT_EQ ( 01          , start_character );
-            ASSERT_EQ ( 03          , end_line        );
-            ASSERT_EQ ( 01          , end_character   );
+            ASSERT_EQ ( 02          , start_line      );
+            ASSERT_EQ ( 00          , start_character );
+            ASSERT_EQ ( 02          , end_line        );
+            ASSERT_EQ ( 00          , end_character   );
             ASSERT_EQ ( 01          , severity        );
             ASSERT_EQ ( "validate"  , code            );
             ASSERT_EQ ( "validator" , source          );
@@ -179,10 +179,10 @@ object
         }
         else if ( index == 2 )
         {
-            ASSERT_EQ ( 03          , start_line      );
-            ASSERT_EQ ( 01          , start_character );
-            ASSERT_EQ ( 03          , end_line        );
-            ASSERT_EQ ( 01          , end_character   );
+            ASSERT_EQ ( 02          , start_line      );
+            ASSERT_EQ ( 00          , start_character );
+            ASSERT_EQ ( 02          , end_line        );
+            ASSERT_EQ ( 00          , end_character   );
             ASSERT_EQ ( 01          , severity        );
             ASSERT_EQ ( "validate"  , code            );
             ASSERT_EQ ( "validator" , source          );
@@ -190,10 +190,10 @@ object
         }
         else if ( index == 3 )
         {
-            ASSERT_EQ ( 07          , start_line      );
-            ASSERT_EQ ( 05          , start_character );
-            ASSERT_EQ ( 07          , end_line        );
-            ASSERT_EQ ( 05          , end_character   );
+            ASSERT_EQ ( 06          , start_line      );
+            ASSERT_EQ ( 04          , start_character );
+            ASSERT_EQ ( 06          , end_line        );
+            ASSERT_EQ ( 04          , end_character   );
             ASSERT_EQ ( 01          , severity        );
             ASSERT_EQ ( "validate"  , code            );
             ASSERT_EQ ( "validator" , source          );
@@ -201,10 +201,10 @@ object
         }
         else if ( index == 4 )
         {
-            ASSERT_EQ ( 07          , start_line      );
-            ASSERT_EQ ( 16          , start_character );
-            ASSERT_EQ ( 07          , end_line        );
-            ASSERT_EQ ( 16          , end_character   );
+            ASSERT_EQ ( 06          , start_line      );
+            ASSERT_EQ ( 15          , start_character );
+            ASSERT_EQ ( 06          , end_line        );
+            ASSERT_EQ ( 15          , end_character   );
             ASSERT_EQ ( 01          , severity        );
             ASSERT_EQ ( "validate"  , code            );
             ASSERT_EQ ( "validator" , source          );
@@ -212,10 +212,10 @@ object
         }
         else if ( index == 5 )
         {
-            ASSERT_EQ ( 07          , start_line      );
-            ASSERT_EQ ( 19          , start_character );
-            ASSERT_EQ ( 07          , end_line        );
-            ASSERT_EQ ( 19          , end_character   );
+            ASSERT_EQ ( 06          , start_line      );
+            ASSERT_EQ ( 18          , start_character );
+            ASSERT_EQ ( 06          , end_line        );
+            ASSERT_EQ ( 18          , end_character   );
             ASSERT_EQ ( 01          , severity        );
             ASSERT_EQ ( "validate"  , code            );
             ASSERT_EQ ( "validator" , source          );
@@ -293,10 +293,10 @@ object
                                               message         ) );
         if ( index == 0 )
         {
-            ASSERT_EQ ( 03          , start_line      );
-            ASSERT_EQ ( 01          , start_character );
-            ASSERT_EQ ( 03          , end_line        );
-            ASSERT_EQ ( 01          , end_character   );
+            ASSERT_EQ ( 02          , start_line      );
+            ASSERT_EQ ( 00          , start_character );
+            ASSERT_EQ ( 02          , end_line        );
+            ASSERT_EQ ( 00          , end_character   );
             ASSERT_EQ ( 01          , severity        );
             ASSERT_EQ ( "validate"  , code            );
             ASSERT_EQ ( "validator" , source          );
@@ -304,10 +304,10 @@ object
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( 06          , start_line      );
-            ASSERT_EQ ( 16          , start_character );
-            ASSERT_EQ ( 06          , end_line        );
-            ASSERT_EQ ( 16          , end_character   );
+            ASSERT_EQ ( 05          , start_line      );
+            ASSERT_EQ ( 15          , start_character );
+            ASSERT_EQ ( 05          , end_line        );
+            ASSERT_EQ ( 15          , end_character   );
             ASSERT_EQ ( 01          , severity        );
             ASSERT_EQ ( "validate"  , code            );
             ASSERT_EQ ( "validator" , source          );
@@ -315,10 +315,10 @@ object
         }
         else if ( index == 2 )
         {
-            ASSERT_EQ ( 06          , start_line      );
-            ASSERT_EQ ( 19          , start_character );
-            ASSERT_EQ ( 06          , end_line        );
-            ASSERT_EQ ( 19          , end_character   );
+            ASSERT_EQ ( 05          , start_line      );
+            ASSERT_EQ ( 18          , start_character );
+            ASSERT_EQ ( 05          , end_line        );
+            ASSERT_EQ ( 18          , end_character   );
             ASSERT_EQ ( 01          , severity        );
             ASSERT_EQ ( "validate"  , code            );
             ASSERT_EQ ( "validator" , source          );
@@ -326,10 +326,10 @@ object
         }
         else if ( index == 3 )
         {
-            ASSERT_EQ ( 12          , start_line      );
-            ASSERT_EQ ( 12          , start_character );
-            ASSERT_EQ ( 12          , end_line        );
-            ASSERT_EQ ( 12          , end_character   );
+            ASSERT_EQ ( 11          , start_line      );
+            ASSERT_EQ ( 11          , start_character );
+            ASSERT_EQ ( 11          , end_line        );
+            ASSERT_EQ ( 11          , end_character   );
             ASSERT_EQ ( 01          , severity        );
             ASSERT_EQ ( "validate"  , code            );
             ASSERT_EQ ( "validator" , source          );
@@ -337,10 +337,10 @@ object
         }
         else if ( index == 4 )
         {
-            ASSERT_EQ ( 15          , start_line      );
-            ASSERT_EQ ( 5           , start_character );
-            ASSERT_EQ ( 15          , end_line        );
-            ASSERT_EQ ( 5           , end_character   );
+            ASSERT_EQ ( 14          , start_line      );
+            ASSERT_EQ ( 04          , start_character );
+            ASSERT_EQ ( 14          , end_line        );
+            ASSERT_EQ ( 04          , end_character   );
             ASSERT_EQ ( 01          , severity        );
             ASSERT_EQ ( "validate"  , code            );
             ASSERT_EQ ( "validator" , source          );

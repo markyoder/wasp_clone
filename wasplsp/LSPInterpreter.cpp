@@ -198,6 +198,13 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
                                  source     ,
                                  message    );
 
+        // the protocol line / col zero based - but the intepreter is one based
+
+        start_line++;
+        start_char++;
+        end_line++;
+        end_char++;
+
         // calculate report line / column using the start_line / start_column                        
 
         int report_line = start_line + Interpreter::m_start_line - 1;

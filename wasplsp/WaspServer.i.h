@@ -103,6 +103,12 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
             wasp_check( !message.empty() );
 
+            // according to the protocol - line and column number are zero based
+
+            line--;
+
+            column--;
+
             DataObject diagnostic;
 
             pass &= buildDiagnosticObject( diagnostic   ,
@@ -155,6 +161,12 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
             wasp_check( column > 0 );
 
             wasp_check( !message.empty() );
+
+            // according to the protocol - line and column number are zero based
+
+            line--;
+
+            column--;
 
             DataObject diagnostic;
 
