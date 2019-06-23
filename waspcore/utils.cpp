@@ -96,10 +96,22 @@ std::string json_unescape_string(const std::string& src)
     std::string dst;
     dst.reserve(src.size());
     bool escape_state = false;
-    for (char ch : src)
+    for ( int i = 0 ; i < src.length() ; i++ )
     {
+        char ch = src[i];
         if (!escape_state && ch == '\\')
         {
+            if ( i + 5 < src.length() &&
+                 src[i+1] == 'u'      &&
+                 src[i+2] == '0'      &&
+                 src[i+3] == '0'      &&
+                 src[i+4] == '2'      &&
+                 src[i+5] == '7'      )
+            {
+                dst.append("'");
+                i+=5;
+                continue;
+            }
             escape_state = true;
         }
         else if (escape_state)
