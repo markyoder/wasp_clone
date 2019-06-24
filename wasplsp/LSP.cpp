@@ -1266,25 +1266,30 @@ bool dissectCompletionObject( const DataObject   & object          ,
 
     label = object[m_label].to_string();
 
-    wasp_check( object[m_kind].is_int() );
+    if ( object.contains(m_kind) && object[m_kind].is_int() )
+    {
+        kind = object[m_kind].to_int();
+    }
 
-    kind = object[m_kind].to_int();
+    if ( object.contains(m_detail) && object[m_detail].is_string() )
+    {
+        detail = object[m_detail].to_string();
+    }
 
-    wasp_check( object[m_detail].is_string() );
+    if ( object.contains(m_documentation) && object[m_documentation].is_string() )
+    {
+        documentation = object[m_documentation].to_string();
+    }
 
-    detail = object[m_detail].to_string();
+    if ( object.contains(m_deprecated) && object[m_deprecated].is_bool() )
+    {
+        deprecated = object[m_deprecated].to_bool();
+    }
 
-    wasp_check( object[m_documentation].is_string() );
-
-    documentation = object[m_documentation].to_string();
-
-    wasp_check( object[m_deprecated].is_bool() );
-
-    deprecated = object[m_deprecated].to_bool();
-
-    wasp_check( object[m_preselect].is_bool() );
-
-    preselect = object[m_preselect].to_bool();
+    if ( object.contains(m_preselect) && object[m_preselect].is_bool() )
+    {
+        preselect = object[m_preselect].to_bool();
+    }
 
     return pass;
 }
