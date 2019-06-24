@@ -112,6 +112,28 @@ std::string json_unescape_string(const std::string& src)
                 i+=5;
                 continue;
             }
+            if ( i + 5 < src.length() &&
+                 src[i+1] == 'u'      &&
+                 src[i+2] == '0'      &&
+                 src[i+3] == '0'      &&
+                 src[i+4] == '3'      &&
+                 src[i+5] == 'c'      )
+            {
+                dst.append("<");
+                i+=5;
+                continue;
+            }
+            if ( i + 5 < src.length() &&
+                 src[i+1] == 'u'      &&
+                 src[i+2] == '0'      &&
+                 src[i+3] == '0'      &&
+                 src[i+4] == '3'      &&
+                 src[i+5] == 'e'      )
+            {
+                dst.append(">");
+                i+=5;
+                continue;
+            }
             escape_state = true;
         }
         else if (escape_state)
