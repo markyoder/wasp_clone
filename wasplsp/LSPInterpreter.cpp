@@ -358,14 +358,6 @@ bool LSPInterpreter::addSymbolsToTree( SymbolIterator::SP & si )
 
     if ( si->getChildSize() == 0 )
     {
-        // check that this leaf token does not span multiple lines
-
-        wasp_check( symbol_start_line == symbol_end_line );
-
-        // check that this leaf token end column is not before start column
-
-        wasp_check( symbol_end_char >= symbol_start_char );
-
         // number of newlines that needs to be added since last token
 
         size_t additional_new_lines = symbol_start_line - previous_symbol_end_line;
@@ -385,18 +377,39 @@ bool LSPInterpreter::addSymbolsToTree( SymbolIterator::SP & si )
 
         // if the same line as last token - adjust based on previous token
 
-        if ( additional_new_lines == 0 )
+        if ( additional_new_lines == 0 && ( symbol_end_line == symbol_start_line ) )
         {
-            global_byte_offset -= previous_symbol_end_char + 1;
+            global_byte_offset -= previous_symbol_end_char;
         }
 
         // calculate the token length based on start and end character
 
-        size_t token_length = symbol_end_char - symbol_start_char + 1;
+        size_t token_length;
+
+        if ( symbol_end_line == symbol_start_line )
+        {
+            token_length = symbol_end_char - symbol_start_char;
+        }
+        else
+        {
+            token_length = symbol_end_char - 1;
+        }
 
         // since lsp doesn't give data - make dummy data of correct length
 
         std::string token_data = std::string(token_length , ' ');
+
+        // since lsp just gives us start and end lines and column - prepend
+        // spaces + newlines so that the last line ends in correct column
+
+        for ( size_t i = 0 ; i < ( symbol_end_line - symbol_start_line ) ; i++ )
+        {
+            token_data.insert( 0 , " \n" );
+        }
+
+        // update token_length (to update global_byte_offset) with any newlines
+
+        token_length = token_data.size();
 
         // push correct length dummy token data at calculated byte offset
 

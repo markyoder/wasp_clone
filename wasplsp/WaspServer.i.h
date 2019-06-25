@@ -771,6 +771,10 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         last_line--;
         last_column--;
 
+        // according to the protocol - last_column is right AFTER last character
+
+        last_column++;
+
         documentSymbols.push_back( DataObject() );
 
         DataObject * child = documentSymbols.back().to_object();
@@ -828,6 +832,10 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         column--;
         last_line--;
         last_column--;
+
+        // according to the protocol - last_column is right AFTER last character
+
+        last_column++;
 
         DataObject & child = addDocumentSymbolChild( parent );
 
