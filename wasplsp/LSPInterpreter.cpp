@@ -1,9 +1,5 @@
 #include "wasplsp/LSPInterpreter.h"
 
-#define doj wasp
-#include "wasphive/AlphaNum.h"
-#undef doj
-
 namespace wasp {
 namespace lsp  {
 
@@ -179,7 +175,14 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
 
     // if there are DIAGNOSTICS - add each to error_stream with line and column
 
-    std::vector<std::string> diagnostic_list;
+    struct diagnostic
+    {
+      int         line;
+      int         column;
+      std::string message;
+    };
+
+    std::vector<diagnostic> diagnostic_list;
 
     for ( size_t index = 0 ; index < diagnostics_size ; index++ )
     {
@@ -217,31 +220,40 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
 
         int report_col = start_char + Interpreter::m_start_column - 1;
 
-        // add each correct format message with line / column to diagnostic_list
+        // add diagnostic struct with line / column / message to diagnostic_list
 
-        std::stringstream diagnostic_message;
+        diagnostic diag;
+        diag.line    = report_line;
+        diag.column  = report_col;
+        diag.message = message;
 
-        diagnostic_message << Interpreter::stream_name()
-                           << ":"
-                           << report_line << "." << report_col
-                           << ": "
-                           << message
-                           << std::endl;
-
-        diagnostic_list.push_back( diagnostic_message.str() );
+        diagnostic_list.push_back( diag );
     }
 
-    // sort diagnostic messages by line / column using alphanum
+    // sort diagnostic messages by line / column using custom comparator
 
-    std::sort( diagnostic_list.begin()      ,
-               diagnostic_list.end()        ,
-               alphanum_less<std::string>() );
+    struct less_than
+    {
+        inline bool operator() (const diagnostic & l, const diagnostic & r)
+        {
+            return (l.line < r.line || (l.line == r.line && l.column < r.column));
+        }
+    };
 
-    // add each diagnostic message to error_stream in new alphanum sorted order
+    std::sort( diagnostic_list.begin() , diagnostic_list.end() , less_than() );
+
+    // add each diagnostic message to error_stream in correct format and order
 
     for ( auto diagnostic_message : diagnostic_list )
     {
-        Interpreter::error_stream() << diagnostic_message;
+        Interpreter::error_stream() << Interpreter::stream_name()
+                                    << ":"
+                                    << diagnostic_message.line
+                                    << "."
+                                    << diagnostic_message.column
+                                    << ": "
+                                    << diagnostic_message.message
+                                    << std::endl;
     }
 
     // update the pass boolean based on if there were any diagnostics
