@@ -1573,7 +1573,7 @@ bool dissectDocumentSymbolObject( const DataObject   & object                   
     if ( !object.contains(m_range)    &&
           object.contains("location") && object["location"].is_object() )
     {
-        errors << m_error_prefix << "Tierarchical document symbols not provided by server"
+        errors << m_error_prefix << "Hierarchical document symbols not provided by server"
                << std::endl;
         return false;
     }

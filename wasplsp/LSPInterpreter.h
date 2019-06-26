@@ -16,13 +16,18 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<TreeNodePool<>>
 {
   public:
 
-    LSPInterpreter( ClientImpl::SP client )
-        : Interpreter (        )
-        , client      ( client ) {}
+    LSPInterpreter( ClientImpl::SP client                           ,
+                    const std::string & temp_file_extension = "inp" )
+        : Interpreter         (                                        )
+        , client              ( client                                 )
+        , temp_file_extension ( std::string(".") + temp_file_extension ) {}
 
-    LSPInterpreter( ClientImpl::SP client , std::ostream & error )
-        : Interpreter ( error  )
-        , client      ( client ) {}
+    LSPInterpreter( ClientImpl::SP client                           ,
+                    std::ostream & error                            ,
+                    const std::string & temp_file_extension = "inp" )
+        : Interpreter         ( error                                  )
+        , client              ( client                                 )
+        , temp_file_extension ( std::string(".") + temp_file_extension ) {}
 
     ~LSPInterpreter() {}
 
@@ -150,6 +155,11 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<TreeNodePool<>>
      * @brief previous_symbol_end_char - end column of previously inserted token
      */
     size_t previous_symbol_end_char;
+
+    /**
+     * @brief temp_file_extension - file extension for temporary file for server
+     */
+    std::string temp_file_extension;
 };
 
 typedef LSPInterpreter DefaultLSPInterpreter;

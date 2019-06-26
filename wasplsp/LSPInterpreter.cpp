@@ -140,7 +140,7 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
 
     this->temp_input_file_path = client->isDocumentOpen()  ?
                                  client->getDocumentPath() :
-                                 tempnam("","") + std::string(m_extension);
+                                 tempnam("","") + this->temp_file_extension;
 
     // write contents to parse to the temporary input file that the server uses
 

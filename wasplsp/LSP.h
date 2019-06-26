@@ -565,7 +565,6 @@ static const char m_selection_range[]       = "selectionRange";
 static const char m_children[]              = "children";
 static const char m_document_symbol[]       = "documentSymbol";
 static const char m_hierarchical_symbols[]  = "hierarchicalDocumentSymbolSupport";
-static const char m_extension[]             = ".wasplsp";
 static const int  m_parse_error             = -32700;
 static const int  m_invalid_request_error   = -32600;
 static const int  m_method_not_found_error  = -32601;
