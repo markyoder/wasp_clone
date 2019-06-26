@@ -1,5 +1,8 @@
 #include "wasplsp/LSPInterpreter.h"
+
+#define doj wasp
 #include "wasphive/AlphaNum.h"
+#undef doj
 
 namespace wasp {
 namespace lsp  {
@@ -230,9 +233,9 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
 
     // sort diagnostic messages by line / column using alphanum
 
-    std::sort( diagnostic_list.begin()           ,
-               diagnostic_list.end()             ,
-               doj::alphanum_less<std::string>() );
+    std::sort( diagnostic_list.begin()      ,
+               diagnostic_list.end()        ,
+               alphanum_less<std::string>() );
 
     // add each diagnostic message to error_stream in new alphanum sorted order
 
