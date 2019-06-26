@@ -1570,6 +1570,14 @@ bool dissectDocumentSymbolObject( const DataObject   & object                   
 {
     bool pass = true;
 
+    if ( !object.contains(m_range)    &&
+          object.contains("location") && object["location"].is_object() )
+    {
+        errors << m_error_prefix << "Tierarchical document symbols not provided by server"
+               << std::endl;
+        return false;
+    }
+
     wasp_check( object[m_range].is_object() );
 
     const DataObject& range = *(object[m_range].to_object());

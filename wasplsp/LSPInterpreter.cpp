@@ -312,6 +312,8 @@ bool LSPInterpreter::createParseTree()
 
         pass &= addSymbolsToTree( si );
 
+        if ( !pass ) break;
+
         this->push_staged_child( global_node_index-1 );
 
         pass &= si->moveToParent();
@@ -345,29 +347,33 @@ bool LSPInterpreter::addSymbolsToTree( SymbolIterator::SP & si )
     int         symbol_selection_end_line;
     int         symbol_selection_end_char;
 
-    pass &= si->dissectCurrentSymbol( symbol_name                 ,
-                                      symbol_detail               ,
-                                      symbol_kind                 ,
-                                      symbol_deprecated           ,
-                                      symbol_start_line           ,
-                                      symbol_start_char           ,
-                                      symbol_end_line             ,
-                                      symbol_end_char             ,
-                                      symbol_selection_start_line ,
-                                      symbol_selection_start_char ,
-                                      symbol_selection_end_line   ,
-                                      symbol_selection_end_char   );
+    if ( !si->dissectCurrentSymbol( symbol_name                 ,
+                                    symbol_detail               ,
+                                    symbol_kind                 ,
+                                    symbol_deprecated           ,
+                                    symbol_start_line           ,
+                                    symbol_start_char           ,
+                                    symbol_end_line             ,
+                                    symbol_end_char             ,
+                                    symbol_selection_start_line ,
+                                    symbol_selection_start_char ,
+                                    symbol_selection_end_line   ,
+                                    symbol_selection_end_char   ) )
+    {
+        Interpreter::error_stream() << si->getErrors();
+        return false;
+    }
 
-      // the protocol line / col zero based - but the intepreter is one based
+    // the protocol line / col zero based - but the intepreter is one based
 
-      symbol_start_line++;
-      symbol_start_char++;
-      symbol_end_line++;
-      symbol_end_char++;
-      symbol_selection_start_line++;
-      symbol_selection_start_char++;
-      symbol_selection_end_line++;
-      symbol_selection_end_char++;
+    symbol_start_line++;
+    symbol_start_char++;
+    symbol_end_line++;
+    symbol_end_char++;
+    symbol_selection_start_line++;
+    symbol_selection_start_char++;
+    symbol_selection_end_line++;
+    symbol_selection_end_char++;
 
     // if this is a leaf node with no children - push_token and push_leaf
 
@@ -375,11 +381,11 @@ bool LSPInterpreter::addSymbolsToTree( SymbolIterator::SP & si )
     {
         // number of newlines that needs to be added since last token
 
-        size_t additional_new_lines = symbol_start_line - previous_symbol_end_line;
+        int additional_new_lines = symbol_start_line - previous_symbol_end_line;
 
         // add calculated number of newlines and increase global_byte_offset
 
-        for( size_t i = 0 ; i < additional_new_lines ; i++ )
+        for( int i = 0 ; i < additional_new_lines ; i++ )
         {
             global_byte_offset++;
 
@@ -417,7 +423,7 @@ bool LSPInterpreter::addSymbolsToTree( SymbolIterator::SP & si )
         // since lsp just gives us start and end lines and column - prepend
         // spaces + newlines so that the last line ends in correct column
 
-        for ( size_t i = 0 ; i < ( symbol_end_line - symbol_start_line ) ; i++ )
+        for ( int i = 0 ; i < ( symbol_end_line - symbol_start_line ) ; i++ )
         {
             token_data.insert( 0 , " \n" );
         }

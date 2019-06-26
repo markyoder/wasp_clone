@@ -48,6 +48,8 @@ class WASP_PUBLIC SymbolIterator
                                int          & selection_end_line        ,
                                int          & selection_end_character   );
 
+    std::string getErrors() const { return this->errors.str(); }
+
   private:
 
       DataObject::SP m_response;
