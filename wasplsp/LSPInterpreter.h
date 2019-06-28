@@ -127,9 +127,9 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<TreeNodePool<>>
     void checkClientServerErrors();
 
     /**
-     * @brief std::string temp_input_file_path - temp file path for the server
+     * @brief std::string temp_input_file_uri - temp file uri for the server
      */
-    std::string temp_input_file_path;
+    std::string temp_input_file_uri;
 
     /**
      * @brief client - shared_ptr to ClientImpl object connected to server

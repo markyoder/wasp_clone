@@ -17,7 +17,7 @@ bool objectToRPCString( DataObject   & object ,
 
     std::stringstream body;
 
-    object.format_json(body);
+    object.pack_json(body);
 
     std::stringstream full_buffer;
 

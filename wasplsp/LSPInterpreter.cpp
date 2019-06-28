@@ -136,17 +136,28 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
         return false;
     }
 
-    // get temporary file path from the client (if already open) or create new
+    // get temporary file uri from the client (if open) or create new file uri
 
-    this->temp_input_file_path = client->isDocumentOpen()  ?
-                                 client->getDocumentPath() :
-                                 tempnam("","") + this->temp_file_extension;
+    if ( !client->isDocumentOpen() )
+    {
+        std::string temp_file_path = tempnam("","");
+
+        std::replace(temp_file_path.begin(), temp_file_path.end(), '\\', '/');
+
+        this->temp_input_file_uri = m_file_uri_prefix +
+                                    temp_file_path +
+                                    this->temp_file_extension;
+    }
+    else
+    {
+        this->temp_input_file_uri = client->getDocumentPath();
+    }
 
     // write contents to parse to the temporary input file that the server uses
 
     std::ofstream temp_input_file;
 
-    temp_input_file.open( this->temp_input_file_path );
+    temp_input_file.open( this->temp_input_file_uri );
 
     temp_input_file << input;
 
@@ -156,9 +167,9 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
 
     if ( !client->isDocumentOpen() )
     {
-        pass &= client->doDocumentOpen( this->temp_input_file_path ,
-                                        "wasplsp"                  ,
-                                        input                      );
+        pass &= client->doDocumentOpen( this->temp_input_file_uri ,
+                                        "wasplsp"                 ,
+                                        input                     );
     }
 
     // if the document is already open - not first parse so call DOCUMENT_CHANGE
