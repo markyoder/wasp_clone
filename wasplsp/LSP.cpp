@@ -1571,7 +1571,7 @@ bool dissectDocumentSymbolObject( const DataObject   & object                   
     bool pass = true;
 
     if ( !object.contains(m_range)    &&
-          object.contains("location") && object["location"].is_object() )
+          object.contains(m_location) && object[m_location].is_object() )
     {
         errors << m_error_prefix << "Hierarchical document symbols not provided by server"
                << std::endl;
@@ -1842,9 +1842,6 @@ DataArray * getFormattingResponseArray( const DataObject & object )
 
 DataArray * getSymbolChildrenArray( const DataObject & object )
 {
-    wasp_check( ( object.contains(m_result)   && object[m_result].is_array()   ) ||
-                ( object.contains(m_children) && object[m_children].is_array() ) );
-
     if ( object.contains(m_children) )
     {
         return object[m_children].to_array();

@@ -534,6 +534,7 @@ static const char m_language_id[]           = "languageId";
 static const char m_version[]               = "version";
 static const char m_text[]                  = "text";
 static const char m_content_changes[]       = "contentChanges";
+static const char m_location[]              = "location";
 static const char m_range[]                 = "range";
 static const char m_start[]                 = "start";
 static const char m_end[]                   = "end";

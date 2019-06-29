@@ -7,7 +7,7 @@ size_t SymbolIterator::getChildSize() const
 {
     DataArray * children = getSymbolChildrenArray( *this->symbols_lineage.back() );
 
-    wasp_check( children != nullptr );
+    if ( children == nullptr ) return 0;
 
     return children->size();
 }
@@ -122,6 +122,112 @@ bool SymbolIterator::dissectCurrentSymbol( std::string  & name  ,
                                          selection_start_character    ,
                                          selection_end_line           ,
                                          selection_end_character      );
+
+    return pass;
+}
+
+bool positionChildSort( Value & lv , Value & rv )
+{
+    DataObject * lo = lv.to_object();
+
+    std::stringstream lo_errors;
+    std::string       lo_name;
+    std::string       lo_detail;
+    int               lo_kind;
+    bool              lo_deprecated;
+    int               lo_start_line;
+    int               lo_start_character;
+    int               lo_end_line;
+    int               lo_end_character;
+    int               lo_selection_start_line;
+    int               lo_selection_start_character;
+    int               lo_selection_end_line;
+    int               lo_selection_end_character;
+
+    dissectDocumentSymbolObject( *lo                           ,
+                                  lo_errors                    ,
+                                  lo_name                      ,
+                                  lo_detail                    ,
+                                  lo_kind                      ,
+                                  lo_deprecated                ,
+                                  lo_start_line                ,
+                                  lo_start_character           ,
+                                  lo_end_line                  ,
+                                  lo_end_character             ,
+                                  lo_selection_start_line      ,
+                                  lo_selection_start_character ,
+                                  lo_selection_end_line        ,
+                                  lo_selection_end_character   );
+
+    DataObject * ro = rv.to_object();
+
+    std::stringstream ro_errors;
+    std::string       ro_name;
+    std::string       ro_detail;
+    int               ro_kind;
+    bool              ro_deprecated;
+    int               ro_start_line;
+    int               ro_start_character;
+    int               ro_end_line;
+    int               ro_end_character;
+    int               ro_selection_start_line;
+    int               ro_selection_start_character;
+    int               ro_selection_end_line;
+    int               ro_selection_end_character;
+
+    dissectDocumentSymbolObject( *ro                           ,
+                                  ro_errors                    ,
+                                  ro_name                      ,
+                                  ro_detail                    ,
+                                  ro_kind                      ,
+                                  ro_deprecated                ,
+                                  ro_start_line                ,
+                                  ro_start_character           ,
+                                  ro_end_line                  ,
+                                  ro_end_character             ,
+                                  ro_selection_start_line      ,
+                                  ro_selection_start_character ,
+                                  ro_selection_end_line        ,
+                                  ro_selection_end_character   );
+
+    return ( lo_start_line      <  ro_start_line      ||
+           ( lo_start_line      == ro_start_line      &&
+             lo_start_character <  ro_start_character ));
+}
+
+bool SymbolIterator::recursiveSortByPosition()
+{
+    bool pass = true;
+
+    DataObject * root = this->symbols_lineage.back();
+
+    size_t child_size = this->getChildSize();
+
+    if ( child_size > 1 )
+    {
+        DataArray * children = getSymbolChildrenArray( *this->symbols_lineage.back() );
+
+        if ( !children->at(0).is_object()                           ||
+           ( !children->at(0).to_object()->contains(m_range)        &&
+              children->at(0).to_object()->contains(m_location)     &&
+           ( *children->at(0).to_object() )[m_location].is_object() ) )
+        {
+            this->errors << m_error_prefix << "Not sorting non-hierarchical symbols"
+                          << std::endl;
+            return false;
+        }
+
+        std::sort( children->begin() , children->end() , positionChildSort );
+    }
+
+    for( size_t i = 0 ; i < child_size ; i++ )
+    {
+        pass &= this->moveToChildAt( i );
+
+        pass &= this->recursiveSortByPosition();
+
+        pass &= this->moveToParent();
+    }
 
     return pass;
 }

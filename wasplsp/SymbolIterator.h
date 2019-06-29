@@ -21,6 +21,8 @@ class WASP_PUBLIC SymbolIterator
         this->symbols_lineage.push_back( &*response );
 
         m_response = response;
+
+        this->recursiveSortByPosition();
     }
 
     ~SymbolIterator(){}
@@ -57,6 +59,8 @@ class WASP_PUBLIC SymbolIterator
       std::vector<DataObject *> symbols_lineage;
 
       std::stringstream errors;
+
+      bool recursiveSortByPosition();
 };
 
 } // namespace lsp
