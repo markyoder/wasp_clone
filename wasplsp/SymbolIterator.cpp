@@ -126,7 +126,7 @@ bool SymbolIterator::dissectCurrentSymbol( std::string  & name  ,
     return pass;
 }
 
-bool positionChildSort( Value & lv , Value & rv )
+bool positionChildSort( const Value & lv , const Value & rv )
 {
     DataObject * lo = lv.to_object();
 
