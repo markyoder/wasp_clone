@@ -67,6 +67,10 @@ bool ClientImpl::wrapUpCleanly()
 
 bool ClientImpl::doInitialize()
 {
+    if ( this->already_in_call ) return false;
+
+    this->already_in_call = true;
+
     if ( !this->is_connected )
     {
         this->errors << m_error_prefix << "Client not connected" << std::endl;
@@ -118,11 +122,17 @@ bool ClientImpl::doInitialize()
         this->is_initialized = true;
     }
 
+    this->already_in_call = false;
+
     return pass;
 }
 
 bool ClientImpl::doInitialized()
 {
+    if ( this->already_in_call ) return false;
+
+    this->already_in_call = true;
+
     if ( !this->is_connected )
     {
         this->errors << m_error_prefix << "Client not connected" << std::endl;
@@ -146,6 +156,8 @@ bool ClientImpl::doInitialized()
 
     pass &= connection->write( client_object , this->errors );
 
+    this->already_in_call = false;
+
     return pass;
 }
 
@@ -153,6 +165,10 @@ bool ClientImpl::doDocumentOpen( const std::string & document_path        ,
                                  const std::string & document_language_id ,
                                  const std::string & document_text        )
 {
+    if ( this->already_in_call ) return false;
+
+    this->already_in_call = true;
+
     if ( !this->is_connected )
     {
         this->errors << m_error_prefix << "Client not connected" << std::endl;
@@ -206,6 +222,8 @@ bool ClientImpl::doDocumentOpen( const std::string & document_path        ,
         this->is_document_open = true;
     }
 
+    this->already_in_call = false;
+
     return pass;
 }
 
@@ -216,6 +234,10 @@ bool ClientImpl::doDocumentChange( int                 start_line        ,
                                    int                 range_length      ,
                                    const std::string & new_document_text )
 {
+    if ( this->already_in_call ) return false;
+
+    this->already_in_call = true;
+
     if ( !this->is_connected )
     {
         this->errors << m_error_prefix << "Client not connected" << std::endl;
@@ -269,12 +291,18 @@ bool ClientImpl::doDocumentChange( int                 start_line        ,
         this->response_type = DIAGNOSTIC;
     }
 
+    this->already_in_call = false;
+
     return pass;
 }
 
 bool ClientImpl::doDocumentCompletion( int line      ,
                                        int character )
 {
+    if ( this->already_in_call ) return false;
+
+    this->already_in_call = true;
+
     if ( !this->is_connected )
     {
         this->errors << m_error_prefix << "Client not connected" << std::endl;
@@ -324,12 +352,18 @@ bool ClientImpl::doDocumentCompletion( int line      ,
         this->response_type = COMPLETION;
     }
 
+    this->already_in_call = false;
+
     return pass;
 }
 
 bool ClientImpl::doDocumentDefinition( int line      ,
                                        int character )
 {
+    if ( this->already_in_call ) return false;
+
+    this->already_in_call = true;
+
     if ( !this->is_connected )
     {
         this->errors << m_error_prefix << "Client not connected" << std::endl;
@@ -379,6 +413,8 @@ bool ClientImpl::doDocumentDefinition( int line      ,
         this->response_type = DEFINITION;
     }
 
+    this->already_in_call = false;
+
     return pass;
 }
 
@@ -386,6 +422,10 @@ bool ClientImpl::doDocumentReferences( int  line                ,
                                        int  character           ,
                                        bool include_declaration )
 {
+    if ( this->already_in_call ) return false;
+
+    this->already_in_call = true;
+
     if ( !this->is_connected )
     {
         this->errors << m_error_prefix << "Client not connected" << std::endl;
@@ -436,6 +476,8 @@ bool ClientImpl::doDocumentReferences( int  line                ,
         this->response_type = REFERENCES;
     }
 
+    this->already_in_call = false;
+
     return pass;
 }
 
@@ -446,6 +488,10 @@ bool ClientImpl::doDocumentFormatting( int  start_line      ,
                                        int  tab_size        ,
                                        bool insert_spaces   )
 {
+    if ( this->already_in_call ) return false;
+
+    this->already_in_call = true;
+
     if ( !this->is_connected )
     {
         this->errors << m_error_prefix << "Client not connected" << std::endl;
@@ -499,11 +545,17 @@ bool ClientImpl::doDocumentFormatting( int  start_line      ,
         this->response_type = FORMATTING;
     }
 
+    this->already_in_call = false;
+
     return pass;
 }
 
 bool ClientImpl::doDocumentSymbols()
 {
+    if ( this->already_in_call ) return false;
+
+    this->already_in_call = true;
+
     if ( !this->is_connected )
     {
         this->errors << m_error_prefix << "Client not connected" << std::endl;
@@ -551,11 +603,17 @@ bool ClientImpl::doDocumentSymbols()
         this->response_type = SYMBOLS;
     }
 
+    this->already_in_call = false;
+
     return pass;
 }
 
 bool ClientImpl::doDocumentClose()
 {
+    if ( this->already_in_call ) return false;
+
+    this->already_in_call = true;
+
     if ( !this->is_connected )
     {
         this->errors << m_error_prefix << "Client not connected" << std::endl;
@@ -598,11 +656,17 @@ bool ClientImpl::doDocumentClose()
         this->is_document_open = false;
     }
 
+    this->already_in_call = false;
+
     return pass;
 }
 
 bool ClientImpl::doShutdown()
 {
+    if ( this->already_in_call ) return false;
+
+    this->already_in_call = true;
+
     if ( !this->is_connected )
     {
         this->errors << m_error_prefix << "Client not connected" << std::endl;
@@ -651,11 +715,17 @@ bool ClientImpl::doShutdown()
         this->is_initialized = false;
     }
 
+    this->already_in_call = false;
+
     return pass;
 }
 
 bool ClientImpl::doExit()
 {
+    if ( this->already_in_call ) return false;
+
+    this->already_in_call = true;
+
     bool pass = true;
 
     if ( !this->is_connected )
@@ -683,6 +753,8 @@ bool ClientImpl::doExit()
     {
         this->is_connected = false;
     }
+
+    this->already_in_call = false;
 
     return pass;
 }

@@ -20,6 +20,7 @@ class WASP_PUBLIC ClientImpl
         is_connected(false)      ,
         is_initialized(false)    ,
         is_document_open(false)  ,
+        already_in_call(false)   ,
         request_id(0)            ,
         document_version(0)      ,
         response_type(NONE){}
@@ -176,6 +177,7 @@ class WASP_PUBLIC ClientImpl
       bool              is_connected;
       bool              is_initialized;
       bool              is_document_open;
+      bool              already_in_call;
       int               request_id;
       int               document_version;
       std::string       document_path;
