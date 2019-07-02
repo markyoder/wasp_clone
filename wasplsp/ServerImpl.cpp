@@ -15,7 +15,7 @@ bool ServerImpl::run()
 
         pass &= this->connectionRead( input_object );
 
-        if ( input_object[m_method].is_string() )
+        if ( input_object.contains(m_method) && input_object[m_method].is_string() )
         {
             method_name = input_object[m_method].to_string();
         }
