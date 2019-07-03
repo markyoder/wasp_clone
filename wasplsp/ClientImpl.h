@@ -171,6 +171,20 @@ class WASP_PUBLIC ClientImpl
 
   private:
 
+      struct InsideClientCall
+      {
+          InsideClientCall(bool & already_in_call)
+          {
+               this->already_in_call = &already_in_call;
+              *this->already_in_call = true;
+          }
+          ~InsideClientCall()
+          {
+              *this->already_in_call = false;
+          }
+          bool * already_in_call;
+      };
+
       Connection::SP    connection;
       std::stringstream errors;
 

@@ -69,7 +69,7 @@ bool ClientImpl::doInitialize()
 {
     if ( this->already_in_call ) return false;
 
-    this->already_in_call = true;
+    InsideClientCall scoped_guard = InsideClientCall( this->already_in_call );
 
     if ( !this->is_connected )
     {
@@ -122,8 +122,6 @@ bool ClientImpl::doInitialize()
         this->is_initialized = true;
     }
 
-    this->already_in_call = false;
-
     return pass;
 }
 
@@ -131,7 +129,7 @@ bool ClientImpl::doInitialized()
 {
     if ( this->already_in_call ) return false;
 
-    this->already_in_call = true;
+    InsideClientCall scoped_guard = InsideClientCall( this->already_in_call );
 
     if ( !this->is_connected )
     {
@@ -156,8 +154,6 @@ bool ClientImpl::doInitialized()
 
     pass &= connection->write( client_object , this->errors );
 
-    this->already_in_call = false;
-
     return pass;
 }
 
@@ -167,7 +163,7 @@ bool ClientImpl::doDocumentOpen( const std::string & document_path        ,
 {
     if ( this->already_in_call ) return false;
 
-    this->already_in_call = true;
+    InsideClientCall scoped_guard = InsideClientCall( this->already_in_call );
 
     if ( !this->is_connected )
     {
@@ -222,8 +218,6 @@ bool ClientImpl::doDocumentOpen( const std::string & document_path        ,
         this->is_document_open = true;
     }
 
-    this->already_in_call = false;
-
     return pass;
 }
 
@@ -236,7 +230,7 @@ bool ClientImpl::doDocumentChange( int                 start_line        ,
 {
     if ( this->already_in_call ) return false;
 
-    this->already_in_call = true;
+    InsideClientCall scoped_guard = InsideClientCall( this->already_in_call );
 
     if ( !this->is_connected )
     {
@@ -291,8 +285,6 @@ bool ClientImpl::doDocumentChange( int                 start_line        ,
         this->response_type = DIAGNOSTIC;
     }
 
-    this->already_in_call = false;
-
     return pass;
 }
 
@@ -301,7 +293,7 @@ bool ClientImpl::doDocumentCompletion( int line      ,
 {
     if ( this->already_in_call ) return false;
 
-    this->already_in_call = true;
+    InsideClientCall scoped_guard = InsideClientCall( this->already_in_call );
 
     if ( !this->is_connected )
     {
@@ -351,8 +343,6 @@ bool ClientImpl::doDocumentCompletion( int line      ,
     {
         this->response_type = COMPLETION;
     }
-
-    this->already_in_call = false;
 
     return pass;
 }
@@ -424,7 +414,7 @@ bool ClientImpl::doDocumentReferences( int  line                ,
 {
     if ( this->already_in_call ) return false;
 
-    this->already_in_call = true;
+    InsideClientCall scoped_guard = InsideClientCall( this->already_in_call );
 
     if ( !this->is_connected )
     {
@@ -476,8 +466,6 @@ bool ClientImpl::doDocumentReferences( int  line                ,
         this->response_type = REFERENCES;
     }
 
-    this->already_in_call = false;
-
     return pass;
 }
 
@@ -490,7 +478,7 @@ bool ClientImpl::doDocumentFormatting( int  start_line      ,
 {
     if ( this->already_in_call ) return false;
 
-    this->already_in_call = true;
+    InsideClientCall scoped_guard = InsideClientCall( this->already_in_call );
 
     if ( !this->is_connected )
     {
@@ -545,8 +533,6 @@ bool ClientImpl::doDocumentFormatting( int  start_line      ,
         this->response_type = FORMATTING;
     }
 
-    this->already_in_call = false;
-
     return pass;
 }
 
@@ -554,7 +540,7 @@ bool ClientImpl::doDocumentSymbols()
 {
     if ( this->already_in_call ) return false;
 
-    this->already_in_call = true;
+    InsideClientCall scoped_guard = InsideClientCall( this->already_in_call );
 
     if ( !this->is_connected )
     {
@@ -603,8 +589,6 @@ bool ClientImpl::doDocumentSymbols()
         this->response_type = SYMBOLS;
     }
 
-    this->already_in_call = false;
-
     return pass;
 }
 
@@ -612,7 +596,7 @@ bool ClientImpl::doDocumentClose()
 {
     if ( this->already_in_call ) return false;
 
-    this->already_in_call = true;
+    InsideClientCall scoped_guard = InsideClientCall( this->already_in_call );
 
     if ( !this->is_connected )
     {
@@ -656,8 +640,6 @@ bool ClientImpl::doDocumentClose()
         this->is_document_open = false;
     }
 
-    this->already_in_call = false;
-
     return pass;
 }
 
@@ -665,7 +647,7 @@ bool ClientImpl::doShutdown()
 {
     if ( this->already_in_call ) return false;
 
-    this->already_in_call = true;
+    InsideClientCall scoped_guard = InsideClientCall( this->already_in_call );
 
     if ( !this->is_connected )
     {
@@ -715,8 +697,6 @@ bool ClientImpl::doShutdown()
         this->is_initialized = false;
     }
 
-    this->already_in_call = false;
-
     return pass;
 }
 
@@ -724,7 +704,7 @@ bool ClientImpl::doExit()
 {
     if ( this->already_in_call ) return false;
 
-    this->already_in_call = true;
+    InsideClientCall scoped_guard = InsideClientCall( this->already_in_call );
 
     bool pass = true;
 
@@ -753,8 +733,6 @@ bool ClientImpl::doExit()
     {
         this->is_connected = false;
     }
-
-    this->already_in_call = false;
 
     return pass;
 }
