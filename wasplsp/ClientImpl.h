@@ -173,16 +173,15 @@ class WASP_PUBLIC ClientImpl
 
       struct InsideClientCall
       {
-          InsideClientCall(bool & already_in_call)
+          InsideClientCall( bool & in_call ) : in_call( in_call )
           {
-               this->already_in_call = &already_in_call;
-              *this->already_in_call = true;
+              this->in_call = true;
           }
           ~InsideClientCall()
           {
-              *this->already_in_call = false;
+              this->in_call = false;
           }
-          bool * already_in_call;
+          bool & in_call;
       };
 
       Connection::SP    connection;
