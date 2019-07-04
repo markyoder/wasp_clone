@@ -53,8 +53,6 @@ bool ClientImpl::wrapUpCleanly()
         if ( this->isDocumentOpen() )
         {
             pass &= this->doDocumentClose();
-
-            std::remove( this->document_path.c_str() );
         }
 
         pass &= this->doShutdown();

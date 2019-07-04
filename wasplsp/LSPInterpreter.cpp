@@ -136,44 +136,19 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
         return false;
     }
 
-    // get temporary file uri from the client (if open) or create new file uri
-
-    if ( !client->isDocumentOpen() )
-    {
-        std::string temp_file_path = tempnam("","");
-
-        std::replace(temp_file_path.begin(), temp_file_path.end(), '\\', '/');
-
-        this->temp_input_file_uri = m_file_uri_prefix +
-                                    temp_file_path +
-                                    this->temp_file_extension;
-    }
-    else
-    {
-        this->temp_input_file_uri = client->getDocumentPath();
-    }
-
-    // write contents to parse to the temporary input file that the server uses
-
-    std::ofstream temp_input_file;
-
-    temp_input_file.open( this->temp_input_file_uri );
-
-    temp_input_file << input;
-
-    temp_input_file.close();
-
     // if the document is not yet open - first parse so call DOCUMENT_OPEN
-
-    if ( !client->isDocumentOpen() )
-    {
-        pass &= client->doDocumentOpen( this->temp_input_file_uri ,
-                                        "wasplsp"                 ,
-                                        input                     );
-    }
-
+    // create an identifying space-free uri - does not need to be a file on disk
     // if the document is already open - not first parse so call DOCUMENT_CHANGE
     // the -1s for range values indicate that the input is the entire document
+
+    if ( !client->isDocumentOpen() )
+    {
+        std::string doc_uri = m_uri_prefix + stream_name + this->uri_extension;
+
+        std::replace( doc_uri.begin() , doc_uri.end() , ' ' , '_' );
+
+        pass &= client->doDocumentOpen( doc_uri , m_wasp_language_id , input );
+    }
 
     else
     {
@@ -257,7 +232,7 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
 
     for ( auto diagnostic_message : diagnostic_list )
     {
-        Interpreter::error_stream() << Interpreter::stream_name()
+        Interpreter::error_stream() << stream_name
                                     << ":"
                                     << diagnostic_message.line
                                     << "."

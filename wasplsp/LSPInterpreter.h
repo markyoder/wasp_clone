@@ -16,18 +16,18 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<TreeNodePool<>>
 {
   public:
 
-    LSPInterpreter( ClientImpl::SP client                           ,
-                    const std::string & temp_file_extension = "inp" )
-        : Interpreter         (                                        )
-        , client              ( client                                 )
-        , temp_file_extension ( std::string(".") + temp_file_extension ) {}
+    LSPInterpreter( ClientImpl::SP client                     ,
+                    const std::string & uri_extension = "inp" )
+           : Interpreter   (                                  )
+           , client        ( client                           )
+           , uri_extension ( std::string(".") + uri_extension ) {}
 
-    LSPInterpreter( ClientImpl::SP client                           ,
-                    std::ostream & error                            ,
-                    const std::string & temp_file_extension = "inp" )
-        : Interpreter         ( error                                  )
-        , client              ( client                                 )
-        , temp_file_extension ( std::string(".") + temp_file_extension ) {}
+    LSPInterpreter( ClientImpl::SP client                     ,
+                    std::ostream & error                      ,
+                    const std::string & uri_extension = "inp" )
+           : Interpreter   ( error                            )
+           , client        ( client                           )
+           , uri_extension ( std::string(".") + uri_extension ) {}
 
     ~LSPInterpreter() {}
 
@@ -127,11 +127,6 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<TreeNodePool<>>
     void checkClientServerErrors();
 
     /**
-     * @brief std::string temp_input_file_uri - temp file uri for the server
-     */
-    std::string temp_input_file_uri;
-
-    /**
      * @brief client - shared_ptr to ClientImpl object connected to server
      */
     ClientImpl::SP client;
@@ -157,9 +152,9 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<TreeNodePool<>>
     size_t previous_symbol_end_char;
 
     /**
-     * @brief temp_file_extension - file extension for temporary file for server
+     * @brief uri_extension - uri extension for the language server to recognize
      */
-    std::string temp_file_extension;
+    std::string uri_extension;
 };
 
 typedef LSPInterpreter DefaultLSPInterpreter;
