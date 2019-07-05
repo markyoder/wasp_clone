@@ -137,7 +137,7 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
     }
 
     // if the document is not yet open - first parse so call DOCUMENT_OPEN
-    // create an identifying space-free uri - does not need to be a file on disk
+    // create a valid and unique uri id - does not need to be a file on disk
     // if the document is already open - not first parse so call DOCUMENT_CHANGE
     // the -1s for range values indicate that the input is the entire document
 
@@ -145,7 +145,9 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
     {
         std::string doc_uri = m_uri_prefix + stream_name + this->uri_extension;
 
-        std::replace( doc_uri.begin() , doc_uri.end() , ' ' , '_' );
+        std::replace( doc_uri.begin() , doc_uri.end() , '\\' , '/' );
+
+        std::replace( doc_uri.begin() , doc_uri.end() , ' '  , '_' );
 
         pass &= client->doDocumentOpen( doc_uri , m_wasp_language_id , input );
     }
