@@ -151,83 +151,72 @@ bool SymbolIterator::dissectCurrentSymbol( std::string  & name  ,
     return pass;
 }
 
-bool positionChildSort( const Value & lv , const Value & rv )
+bool positionChildSort( const Value & left_value , const Value & right_value )
 {
-    // convert the left Value to a DataObject
+    // default the left and right start line and start columns to zero
 
-    DataObject * lo = lv.to_object();
+    int left_start_line       = 0;
+    int left_start_character  = 0;
+    int right_start_line      = 0;
+    int right_start_character = 0;
 
-    std::stringstream lo_errors;
-    std::string       lo_name;
-    std::string       lo_detail;
-    int               lo_kind;
-    bool              lo_deprecated;
-    int               lo_start_line;
-    int               lo_start_character;
-    int               lo_end_line;
-    int               lo_end_character;
-    int               lo_selection_start_line;
-    int               lo_selection_start_character;
-    int               lo_selection_end_line;
-    int               lo_selection_end_character;
+    // get only the needed start_line and start_character from the left value
 
-    // dissect the left DataObject to get the start_line and start_character
+    if ( left_value.is_object() )
+    {
+        const DataObject & left_object = *(left_value.to_object());
 
-    dissectDocumentSymbolObject( *lo                           ,
-                                  lo_errors                    ,
-                                  lo_name                      ,
-                                  lo_detail                    ,
-                                  lo_kind                      ,
-                                  lo_deprecated                ,
-                                  lo_start_line                ,
-                                  lo_start_character           ,
-                                  lo_end_line                  ,
-                                  lo_end_character             ,
-                                  lo_selection_start_line      ,
-                                  lo_selection_start_character ,
-                                  lo_selection_end_line        ,
-                                  lo_selection_end_character   );
+        if ( left_object.contains(m_range) && left_object[m_range].is_object() )
+        {
+            const DataObject & left_range = *(left_object[m_range].to_object());
 
-    // convert the right Value to a DataObject
+            if ( left_range.contains(m_start) && left_range[m_start].is_object() )
+            {
+                const DataObject & left_start = *(left_range[m_start].to_object());
 
-    DataObject * ro = rv.to_object();
+                if ( left_start.contains(m_line) && left_start[m_line].is_int() )
+                {
+                    left_start_line = left_start[m_line].to_int();
+                }
+                if ( left_start.contains(m_character) && left_start[m_character].is_int() )
+                {
+                    left_start_character = left_start[m_character].to_int();
+                }
+            }
+        }
+    }
 
-    std::stringstream ro_errors;
-    std::string       ro_name;
-    std::string       ro_detail;
-    int               ro_kind;
-    bool              ro_deprecated;
-    int               ro_start_line;
-    int               ro_start_character;
-    int               ro_end_line;
-    int               ro_end_character;
-    int               ro_selection_start_line;
-    int               ro_selection_start_character;
-    int               ro_selection_end_line;
-    int               ro_selection_end_character;
+    // get only the needed start_line and start_character from the right value
 
-    // dissect the right DataObject to get the start_line and start_character
+    if ( right_value.is_object() )
+    {
+        const DataObject & right_object = *(right_value.to_object());
 
-    dissectDocumentSymbolObject( *ro                           ,
-                                  ro_errors                    ,
-                                  ro_name                      ,
-                                  ro_detail                    ,
-                                  ro_kind                      ,
-                                  ro_deprecated                ,
-                                  ro_start_line                ,
-                                  ro_start_character           ,
-                                  ro_end_line                  ,
-                                  ro_end_character             ,
-                                  ro_selection_start_line      ,
-                                  ro_selection_start_character ,
-                                  ro_selection_end_line        ,
-                                  ro_selection_end_character   );
+        if ( right_object.contains(m_range) && right_object[m_range].is_object() )
+        {
+            const DataObject & right_range = *(right_object[m_range].to_object());
+
+            if ( right_range.contains(m_start) && right_range[m_start].is_object() )
+            {
+                const DataObject & right_start = *(right_range[m_start].to_object());
+
+                if ( right_start.contains(m_line) && right_start[m_line].is_int() )
+                {
+                    right_start_line = right_start[m_line].to_int();
+                }
+                if ( right_start.contains(m_character) && right_start[m_character].is_int() )
+                {
+                    right_start_character = right_start[m_character].to_int();
+                }
+            }
+        }
+    }
 
     // return true if left object comes before right object in the document
 
-    return ( lo_start_line      <  ro_start_line      ||
-           ( lo_start_line      == ro_start_line      &&
-             lo_start_character <  ro_start_character ));
+    return ( left_start_line      <  right_start_line      ||
+           ( left_start_line      == right_start_line      &&
+             left_start_character <  right_start_character ));
 }
 
 bool SymbolIterator::recursiveSortByPosition()
