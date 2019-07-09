@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - GCC 5.4 compiler compatibility CI job.
+- wasplsp (Language Server Protocol) package with WaspServer and LSPInterpreter
 
 ## [1.0.2] - 07-16-2018
 ### Added
