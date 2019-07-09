@@ -10,7 +10,7 @@
 namespace wasp {
 namespace lsp  {
 
-// handles for server, server-thread, and thread-safe communication
+// handles for server-thread, test server, and thread-safe communication
 
 std::thread        server_thread;
 Server<TestServer> test_server;

@@ -16,6 +16,8 @@ bool ClientImpl::connect( Connection::SP connection )
         pass = false;
     }
 
+    // set the client's connection shared_ptr to the provided connection
+
     if ( pass )
     {
         this->connection = connection;
@@ -37,7 +39,11 @@ bool ClientImpl::startUpCleanly()
 
     bool pass = true;
 
+    // handle the initialize lsp request to the server
+
     pass &= this->doInitialize();
+
+    // handle the initialized lsp notification to the server
 
     pass &= this->doInitialized();
 
@@ -50,12 +56,18 @@ bool ClientImpl::wrapUpCleanly()
 
     if ( this->is_connected )
     {
+        // if connected and open document - handle document close lsp request
+
         if ( this->isDocumentOpen() )
         {
             pass &= this->doDocumentClose();
         }
 
+        // if connected - handle the shutdown lsp request to the server
+
         pass &= this->doShutdown();
+
+        // if connected - handle the shutdown lsp request to the server
 
         pass &= this->doExit();
     }
@@ -66,6 +78,8 @@ bool ClientImpl::wrapUpCleanly()
 bool ClientImpl::doInitialize()
 {
     if ( this->already_in_call ) return false;
+
+    // turn on client already_in_call state so another call will not interfere
 
     InsideClientCall scoped_guard ( this->already_in_call );
 
@@ -85,10 +99,14 @@ bool ClientImpl::doInitialize()
 
     bool pass = true;
 
+    // increment the request id which should increase for each lsp request
+
     this->incrementRequestID();
 
     DataObject client_object;
     DataObject client_capabilities;
+
+    // set the client capabilities hierarchical document symbols to true
 
     client_capabilities[m_text_document] = DataObject();
 
@@ -98,6 +116,8 @@ bool ClientImpl::doInitialize()
 
     this->response = std::make_shared<DataObject>();
 
+    // build initialize request - the -1 process_id and empty root_uri mean null
+
     pass &= buildInitializeRequest( client_object       ,
                                     this->errors        ,
                                     this->request_id    ,
@@ -105,13 +125,19 @@ bool ClientImpl::doInitialize()
                                     ""                  ,
                                     client_capabilities );
 
+    // write initialize request to the connection and wait and read response
+
     pass &= connection->write( client_object , this->errors );
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    // check to see if the server response was an error
+
     pass &= checkErrorResponse( *(this->response) , this->errors );
 
     wasp_check( verifyInitializeResponse( *(this->response) ) );
+
+    // if everything passed - set the client response_type enum to INITIALIZE
 
     if ( pass )
     {
@@ -126,6 +152,8 @@ bool ClientImpl::doInitialize()
 bool ClientImpl::doInitialized()
 {
     if ( this->already_in_call ) return false;
+
+    // turn on client already_in_call state so another call will not interfere
 
     InsideClientCall scoped_guard ( this->already_in_call );
 
@@ -147,8 +175,12 @@ bool ClientImpl::doInitialized()
 
     DataObject client_object;
 
+    // build initialized notification object
+
     pass &= buildInitializedNotification( client_object ,
                                           this->errors  );
+
+    // write initialized notification to the connection - expecting no response
 
     pass &= connection->write( client_object , this->errors );
 
@@ -160,6 +192,8 @@ bool ClientImpl::doDocumentOpen( const std::string & document_path        ,
                                  const std::string & document_text        )
 {
     if ( this->already_in_call ) return false;
+
+    // turn on client already_in_call state so another call will not interfere
 
     InsideClientCall scoped_guard ( this->already_in_call );
 
@@ -188,11 +222,15 @@ bool ClientImpl::doDocumentOpen( const std::string & document_path        ,
 
     this->document_path = document_path;
 
+    // increment the document version id which should increase for each change
+
     this->incrementDocumentVersion();
 
     DataObject  client_object;
     this->response = std::make_shared<DataObject>();
     std::string response_document_path;
+
+    // build didopen notification object
 
     pass &= buildDidOpenNotification( client_object          ,
                                       this->errors           ,
@@ -201,13 +239,19 @@ bool ClientImpl::doDocumentOpen( const std::string & document_path        ,
                                       this->document_version ,
                                       document_text          );
 
+    // write didopen notification to the connection and read diagnostics
+
     pass &= connection->write( client_object , this->errors );
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    // check to see if the server response was an error
+
     pass &= checkErrorResponse( *(this->response) , this->errors );
 
     wasp_check( verifyDiagnosticResponse( *(this->response) ) );
+
+    // if everything passed - set the client response_type enum to DIAGNOSTIC
 
     if ( pass )
     {
@@ -228,6 +272,8 @@ bool ClientImpl::doDocumentChange( int                 start_line        ,
 {
     if ( this->already_in_call ) return false;
 
+    // turn on client already_in_call state so another call will not interfere
+
     InsideClientCall scoped_guard ( this->already_in_call );
 
     if ( !this->is_connected )
@@ -253,11 +299,15 @@ bool ClientImpl::doDocumentChange( int                 start_line        ,
 
     bool pass = true;
 
+    // increment the document version id which should increase for each change
+
     this->incrementDocumentVersion();
 
     DataObject  client_object;
     this->response = std::make_shared<DataObject>();
     std::string response_document_path;
+
+    // build didchange notification object
 
     pass &= buildDidChangeNotification( client_object          ,
                                         this->errors           ,
@@ -270,13 +320,19 @@ bool ClientImpl::doDocumentChange( int                 start_line        ,
                                         range_length           ,
                                         new_document_text      );
 
+    // write didchange notification to the connection and read diagnostics
+
     pass &= connection->write( client_object , this->errors );
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    // check to see if the server response was an error
+
     pass &= checkErrorResponse( *(this->response) , this->errors );
 
     wasp_check( verifyDiagnosticResponse( *(this->response) ) );
+
+    // if everything passed - set the client response_type enum to DIAGNOSTIC
 
     if ( pass )
     {
@@ -291,6 +347,8 @@ bool ClientImpl::doDocumentCompletion( int line      ,
 {
     if ( this->already_in_call ) return false;
 
+    // turn on client already_in_call state so another call will not interfere
+
     InsideClientCall scoped_guard ( this->already_in_call );
 
     if ( !this->is_connected )
@@ -316,11 +374,15 @@ bool ClientImpl::doDocumentCompletion( int line      ,
 
     bool pass = true;
 
+    // increment the request id which should increase for each lsp request
+
     this->incrementRequestID();
 
     DataObject client_object;
 
     this->response = std::make_shared<DataObject>();
+
+    // build completion request object
 
     pass &= buildCompletionRequest( client_object       ,
                                     this->errors        ,
@@ -329,13 +391,19 @@ bool ClientImpl::doDocumentCompletion( int line      ,
                                     line                ,
                                     character           );
 
+    // write completion request to the connection and wait and read response
+
     pass &= connection->write( client_object , this->errors );
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    // check to see if the server response was an error
+
     pass &= checkErrorResponse( *(this->response) , this->errors );
 
     wasp_check( verifyCompletionResponse( *(this->response) ) );
+
+    // if everything passed - set the client response_type enum to COMPLETION
 
     if ( pass )
     {
@@ -350,6 +418,8 @@ bool ClientImpl::doDocumentDefinition( int line      ,
 {
     if ( this->already_in_call ) return false;
 
+    // turn on client already_in_call state so another call will not interfere
+
     InsideClientCall scoped_guard ( this->already_in_call );
 
     if ( !this->is_connected )
@@ -375,11 +445,15 @@ bool ClientImpl::doDocumentDefinition( int line      ,
 
     bool pass = true;
 
+    // increment the request id which should increase for each lsp request
+
     this->incrementRequestID();
 
     DataObject client_object;
 
     this->response = std::make_shared<DataObject>();
+
+    // build definition request object
 
     pass &= buildDefinitionRequest( client_object       ,
                                     this->errors        ,
@@ -388,13 +462,19 @@ bool ClientImpl::doDocumentDefinition( int line      ,
                                     line                ,
                                     character           );
 
+    // write definition request to the connection and wait and read response
+
     pass &= connection->write( client_object , this->errors );
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    // check to see if the server response was an error
+
     pass &= checkErrorResponse( *(this->response) , this->errors );
 
     wasp_check( verifyDefinitionResponse( *(this->response) ) );
+
+    // if everything passed - set the client response_type enum to DEFINITION
 
     if ( pass )
     {
@@ -412,6 +492,8 @@ bool ClientImpl::doDocumentReferences( int  line                ,
 {
     if ( this->already_in_call ) return false;
 
+    // turn on client already_in_call state so another call will not interfere
+
     InsideClientCall scoped_guard ( this->already_in_call );
 
     if ( !this->is_connected )
@@ -437,11 +519,15 @@ bool ClientImpl::doDocumentReferences( int  line                ,
 
     bool pass = true;
 
+    // increment the request id which should increase for each lsp request
+
     this->incrementRequestID();
 
     DataObject client_object;
 
     this->response = std::make_shared<DataObject>();
+
+    // build references request object
 
     pass &= buildReferencesRequest( client_object       ,
                                     this->errors        ,
@@ -451,13 +537,19 @@ bool ClientImpl::doDocumentReferences( int  line                ,
                                     character           ,
                                     include_declaration );
 
+    // write references request to the connection and wait and read response
+
     pass &= connection->write( client_object , this->errors );
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    // check to see if the server response was an error
+
     pass &= checkErrorResponse( *(this->response) , this->errors );
 
     wasp_check( verifyReferencesResponse( *(this->response) ) );
+
+    // if everything passed - set the client response_type enum to REFERENCES
 
     if ( pass )
     {
@@ -476,6 +568,8 @@ bool ClientImpl::doDocumentFormatting( int  start_line      ,
 {
     if ( this->already_in_call ) return false;
 
+    // turn on client already_in_call state so another call will not interfere
+
     InsideClientCall scoped_guard ( this->already_in_call );
 
     if ( !this->is_connected )
@@ -501,11 +595,15 @@ bool ClientImpl::doDocumentFormatting( int  start_line      ,
 
     bool pass = true;
 
+    // increment the request id which should increase for each lsp request
+
     this->incrementRequestID();
 
     DataObject client_object;
 
     this->response = std::make_shared<DataObject>();
+
+    // build formatting request object
 
     pass &= buildFormattingRequest( client_object       ,
                                     this->errors        ,
@@ -518,13 +616,19 @@ bool ClientImpl::doDocumentFormatting( int  start_line      ,
                                     tab_size            ,
                                     insert_spaces       );
 
+    // write formatting request to the connection and wait and read response
+
     pass &= connection->write( client_object , this->errors );
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    // check to see if the server response was an error
+
     pass &= checkErrorResponse( *(this->response) , this->errors );
 
     wasp_check( verifyFormattingResponse( *(this->response) ) );
+
+    // if everything passed - set the client response_type enum to FORMATTING
 
     if ( pass )
     {
@@ -538,6 +642,8 @@ bool ClientImpl::doDocumentSymbols()
 {
     if ( this->already_in_call ) return false;
 
+    // turn on client already_in_call state so another call will not interfere
+
     InsideClientCall scoped_guard ( this->already_in_call );
 
     if ( !this->is_connected )
@@ -563,24 +669,34 @@ bool ClientImpl::doDocumentSymbols()
 
     bool pass = true;
 
+    // increment the request id which should increase for each lsp request
+
     this->incrementRequestID();
 
     DataObject client_object;
 
     this->response = std::make_shared<DataObject>();
 
+    // build symbols request object
+
     pass &= buildSymbolsRequest( client_object       ,
                                  this->errors        ,
                                  this->request_id    ,
                                  this->document_path );
 
+    // write symbols request to the connection and wait and read response
+
     pass &= connection->write( client_object , this->errors );
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    // check to see if the server response was an error
+
     pass &= checkErrorResponse( *(this->response) , this->errors );
 
     wasp_check( verifySymbolsResponse( *(this->response) ) );
+
+    // if everything passed - set the client response_type enum to SYMBOLS
 
     if ( pass )
     {
@@ -594,6 +710,8 @@ bool ClientImpl::doDocumentClose()
 {
     if ( this->already_in_call ) return false;
 
+    // turn on client already_in_call state so another call will not interfere
+
     InsideClientCall scoped_guard ( this->already_in_call );
 
     if ( !this->is_connected )
@@ -621,9 +739,13 @@ bool ClientImpl::doDocumentClose()
 
     DataObject client_object;
 
+    // build didclose notification object
+
     pass &= buildDidCloseNotification( client_object       ,
                                        this->errors        ,
                                        this->document_path );
+
+    // write didclose notification to the connection - expecting no response
 
     pass &= connection->write( client_object , this->errors );
 
@@ -644,6 +766,8 @@ bool ClientImpl::doDocumentClose()
 bool ClientImpl::doShutdown()
 {
     if ( this->already_in_call ) return false;
+
+    // turn on client already_in_call state so another call will not interfere
 
     InsideClientCall scoped_guard ( this->already_in_call );
 
@@ -670,23 +794,33 @@ bool ClientImpl::doShutdown()
 
     bool pass = true;
 
+    // increment the request id which should increase for each lsp request
+
     this->incrementRequestID();
 
     DataObject client_object;
 
     this->response = std::make_shared<DataObject>();
 
+    // build shutdown request object
+
     pass &= buildShutdownRequest( client_object    ,
                                   this->errors     ,
                                   this->request_id );
+
+    // write shutdown request to the connection and wait and read response
 
     pass &= connection->write( client_object , this->errors );
 
     pass &= connection->read( *(this->response) , this->errors );
 
+    // check to see if the server response was an error
+
     pass &= checkErrorResponse( *(this->response) , this->errors );
 
     wasp_check( verifyShutdownResponse( *(this->response) ) );
+
+    // if everything passed - set the client response_type enum to SHUTDOWN
 
     if ( pass )
     {
@@ -701,6 +835,8 @@ bool ClientImpl::doShutdown()
 bool ClientImpl::doExit()
 {
     if ( this->already_in_call ) return false;
+
+    // turn on client already_in_call state so another call will not interfere
 
     InsideClientCall scoped_guard ( this->already_in_call );
 
@@ -722,8 +858,12 @@ bool ClientImpl::doExit()
 
     DataObject client_object;
 
+    // build exit notification object
+
     pass &= buildExitNotification( client_object ,
                                    this->errors  );
+
+    // write exit notification to the connection - expecting no response
 
     pass &= connection->write( client_object , this->errors );
 
@@ -739,6 +879,8 @@ int ClientImpl::getDiagnosticSize()
 {
     int size = 0;
 
+    // if response_type is DIAGNOSTIC - return size of the diagnostics array
+
     if ( this->response_type == DIAGNOSTIC )
     {
         size = getDiagnosticResponseArray(*this->response)->size();
@@ -750,6 +892,8 @@ int ClientImpl::getDiagnosticSize()
 int ClientImpl::getCompletionSize()
 {
     int size = 0;
+
+    // if response_type is COMPLETION - return size of the completion array
 
     if ( this->response_type == COMPLETION )
     {
@@ -763,6 +907,8 @@ int ClientImpl::getDefinitionSize()
 {
     int size = 0;
 
+    // if response_type is DEFINITION - return size of the definition array
+
     if ( this->response_type == DEFINITION )
     {
         size = getDefinitionResponseArray(*this->response)->size();
@@ -775,6 +921,8 @@ int ClientImpl::getReferencesSize()
 {
     int size = 0;
 
+    // if response_type is REFERENCES - return size of the references array
+
     if ( this->response_type == REFERENCES )
     {
         size = getReferencesResponseArray(*this->response)->size();
@@ -786,6 +934,8 @@ int ClientImpl::getReferencesSize()
 int ClientImpl::getFormattingSize()
 {
     int size = 0;
+
+    // if response_type is FORMATTING - return size of the formatting array
 
     if ( this->response_type == FORMATTING )
     {
@@ -820,6 +970,9 @@ bool ClientImpl::getDiagnosticAt( int           index           ,
     }
 
     bool pass = true;
+
+    // if reponse type is DIAGNOSTICS and the given index is not out of range
+    // then get the diagnostics array and dissect the object at the given index
 
     const DataObject & diagnosticObject =
             *getDiagnosticResponseArray(*this->response)->at(index).to_object();
@@ -867,6 +1020,9 @@ bool ClientImpl::getCompletionAt( int           index           ,
 
     bool pass = true;
 
+    // if reponse type is COMPLETION and the given index is not out of range
+    // then get the completion array and dissect the object at the given index
+
     const DataObject & completionObject =
             *getCompletionResponseArray(*this->response)->at(index).to_object();
 
@@ -910,6 +1066,9 @@ bool ClientImpl::getDefinitionAt( int   index           ,
     bool pass = true;
 
     std::string response_document_path;
+
+    // if reponse type is DEFINITION and the given index is not out of range
+    // then get the location array and dissect the object at the given index
 
     const DataObject & locationObject =
             *getDefinitionResponseArray(*this->response)->at(index).to_object();
@@ -956,6 +1115,9 @@ bool ClientImpl::getReferencesAt( int   index           ,
 
     std::string response_document_path;
 
+    // if reponse type is REFERENCES and the given index is not out of range
+    // then get the location array and dissect the object at the given index
+
     const DataObject & locationObject =
             *getReferencesResponseArray(*this->response)->at(index).to_object();
 
@@ -999,6 +1161,9 @@ bool ClientImpl::getFormattingAt( int           index           ,
     }
 
     bool pass = true;
+
+    // if reponse type is FORMATTING and the given index is not out of range
+    // then get the textedit array and dissect the object at the given index
 
     const DataObject & textEditObject =
             *getFormattingResponseArray(*this->response)->at(index).to_object();

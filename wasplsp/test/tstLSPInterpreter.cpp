@@ -13,7 +13,7 @@
 namespace wasp {
 namespace lsp  {
 
-// convenient template typedef for SON WaspServer with a ThreadConnection
+// convenient template typedef for a SON WASPserver with a thread connection
 
 typedef WaspServer< DefaultSONInterpreter ,
                     SONNodeView           ,

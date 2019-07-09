@@ -12,7 +12,7 @@
 namespace wasp {
 namespace lsp  {
 
-// handles for client, server, and server thread
+// handles for client, test server, and server thread
 
 Client<ClientImpl> test_client;
 Server<TestServer> test_server;

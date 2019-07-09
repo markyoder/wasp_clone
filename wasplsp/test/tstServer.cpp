@@ -8,6 +8,8 @@
 namespace wasp {
 namespace lsp  {
 
+// handle for test server used for all of the tests
+
 Server<TestServer> test_server;
 
 TEST(server, handle_initialize)
@@ -15,10 +17,14 @@ TEST(server, handle_initialize)
     DataObject        initializeRequest;
     std::stringstream errors;
 
+    // initialize test parameters
+
     int               client_request_id =  1;
     int               client_process_id =  12345;
     std::string       client_root_path  = "test/root/uri/string";
     DataObject        client_capabilities;
+
+    // build initialize request with the test parameters
 
     ASSERT_TRUE(buildInitializeRequest( initializeRequest   ,
                                         errors              ,
@@ -29,8 +35,12 @@ TEST(server, handle_initialize)
 
     DataObject initializeResponse;
 
+    // handle the built initialize request with the test_server
+
     ASSERT_TRUE(test_server.handleInitializeRequest( initializeRequest  ,
                                                      initializeResponse ));
+
+    // check the formatted json from the test_server's response object
 
     std::stringstream json;
     initializeResponse.format_json(json);
@@ -51,8 +61,12 @@ TEST(server, handle_initialized)
     DataObject        initializedNotification;
     std::stringstream errors;
 
+    // build initialized notification
+
     ASSERT_TRUE(buildInitializedNotification( initializedNotification ,
                                               errors                  ));
+
+    // handle the built initialized notification with the test_server
 
     ASSERT_TRUE(test_server.handleInitializedNotification( initializedNotification ));
 }
@@ -62,10 +76,14 @@ TEST(server, handle_didopen)
     DataObject        didOpenNotification;
     std::stringstream errors;
 
+    // didopen test parameters
+
     std::string       document_path        = "test/document/uri/string";
     std::string       document_language_id = "test_language_id_string";
     int               document_version     =  1;
     std::string       document_text        = "test\ntext\n1\nstring\n";
+
+    // build didopen notification with the test parameters
 
     ASSERT_TRUE(buildDidOpenNotification( didOpenNotification  ,
                                           errors               ,
@@ -76,8 +94,12 @@ TEST(server, handle_didopen)
 
     DataObject publishDiagnosticsNotification;
 
+    // handle the built didopen notification with the test_server
+
     ASSERT_TRUE(test_server.handleDidOpenNotification( didOpenNotification ,
                                                        publishDiagnosticsNotification ));
+
+    // check the formatted json from the test_server's diagnostics object
 
     std::stringstream json;
     publishDiagnosticsNotification.format_json(json);
@@ -148,6 +170,8 @@ TEST(server, handle_didchange)
     DataObject        didChangeNotification;
     std::stringstream errors;
 
+    // didchange test parameters
+
     std::string       document_path    = "test/document/uri/string";
     int               document_version =  2;
     int               start_line       =  0;
@@ -156,6 +180,8 @@ TEST(server, handle_didchange)
     int               end_character    =  7;
     int               range_length     =  0;
     std::string       text             = "test\ntext\n2\nstring\n";
+
+    // build didchange notification with the test parameters
 
     ASSERT_TRUE(buildDidChangeNotification( didChangeNotification ,
                                             errors                ,
@@ -170,8 +196,12 @@ TEST(server, handle_didchange)
 
     DataObject publishDiagnosticsNotification;
 
+    // handle the built didchange notification with the test_server
+
     ASSERT_TRUE(test_server.handleDidChangeNotification( didChangeNotification          ,
                                                          publishDiagnosticsNotification ));
+
+    // check the formatted json from the test_server's diagnostics object
 
     std::stringstream json;
     publishDiagnosticsNotification.format_json(json);
@@ -226,10 +256,14 @@ TEST(server, handle_completion)
     DataObject        completionRequest;
     std::stringstream errors;
 
+    // completion test parameters
+
     int               client_request_id =  2;
     std::string       document_path     = "test/document/uri/string";
     int               line              =  4;
     int               character         =  2;
+
+    // build completion request with the test parameters
 
     ASSERT_TRUE(buildCompletionRequest( completionRequest  ,
                                         errors             ,
@@ -240,8 +274,12 @@ TEST(server, handle_completion)
 
     DataObject completionResponse;
 
+    // handle the built completion request with the test_server
+
     ASSERT_TRUE(test_server.handleCompletionRequest( completionRequest  ,
                                                      completionResponse ));
+
+    // check the formatted json from the test_server's response object
 
     std::stringstream json;
     completionResponse.format_json(json);
@@ -327,10 +365,14 @@ TEST(server, handle_definition)
     DataObject        definitionRequest;
     std::stringstream errors;
 
+    // definition test parameters
+
     int               client_request_id =  3;
     std::string       document_path     = "test/document/uri/string";
     int               line              =  2;
     int               character         =  5;
+
+    // build definition request with the test parameters
 
     ASSERT_TRUE(buildDefinitionRequest( definitionRequest  ,
                                         errors             ,
@@ -341,8 +383,12 @@ TEST(server, handle_definition)
 
     DataObject definitionResponse;
 
+    // handle the built definition request with the test_server
+
     ASSERT_TRUE(test_server.handleDefinitionRequest( definitionRequest  ,
                                                      definitionResponse ));
+
+    // check the formatted json from the test_server's response object
 
     std::stringstream json;
     definitionResponse.format_json(json);
@@ -401,11 +447,15 @@ TEST(server, handle_references)
     DataObject        referencesRequest;
     std::stringstream errors;
 
+    // references test parameters
+
     int               client_request_id   =  4;
     std::string       document_path       = "test/document/uri/string";
     int               line                =  1;
     int               character           =  3;
     bool              include_declaration = false;
+
+    // build references request with the test parameters
 
     ASSERT_TRUE(buildReferencesRequest( referencesRequest   ,
                                         errors              ,
@@ -417,8 +467,12 @@ TEST(server, handle_references)
 
     DataObject referencesResponse;
 
+    // handle the built references request with the test_server
+
     ASSERT_TRUE(test_server.handleReferencesRequest( referencesRequest  ,
                                                      referencesResponse ));
+
+    // check the formatted json from the test_server's response object
 
     std::stringstream json;
     referencesResponse.format_json(json);
@@ -464,6 +518,8 @@ TEST(server, handle_formatting)
     DataObject        formattingRequest;
     std::stringstream errors;
 
+    // formatting test parameters
+
     int               client_request_id =  5;
     std::string       document_path     = "test/document/uri/string";
     int               start_line        =  2;
@@ -472,6 +528,8 @@ TEST(server, handle_formatting)
     int               end_character     =  3;
     int               tab_size          =  4;
     bool              insert_spaces     =  true;
+
+    // build formatting request with the test parameters
 
     ASSERT_TRUE(buildFormattingRequest( formattingRequest ,
                                         errors            ,
@@ -486,8 +544,12 @@ TEST(server, handle_formatting)
 
     DataObject formattingResponse;
 
+    // handle the built formatting request with the test_server
+
     ASSERT_TRUE(test_server.handleFormattingRequest( formattingRequest  ,
                                                      formattingResponse ));
+
+    // check the formatted json from the test_server's response object
 
     std::stringstream json;
     formattingResponse.format_json(json);
@@ -546,8 +608,12 @@ TEST(server, handle_symbols)
     DataObject        symbolsRequest;
     std::stringstream errors;
 
+    // symbols test parameters
+
     int               client_request_id =  6;
     std::string       document_path     = "test/document/uri/string";
+
+    // build symbols request with the test parameters
 
     ASSERT_TRUE(buildSymbolsRequest( symbolsRequest    ,
                                      errors            ,
@@ -556,8 +622,12 @@ TEST(server, handle_symbols)
 
     DataObject symbolsResponse;
 
+    // handle the built symbols request with the test_server
+
     ASSERT_TRUE(test_server.handleSymbolsRequest( symbolsRequest  ,
                                                   symbolsResponse ));
+
+    // check the formatted json from the test_server's response object
 
     std::stringstream json;
     symbolsResponse.format_json(json);
@@ -797,11 +867,17 @@ TEST(server, handle_didclose)
     DataObject        didCloseNotification;
     std::stringstream errors;
 
-    std::string       document_path = "test/document/uri/string";
+    // didclose test parameter
+
+    std::string  document_path = "test/document/uri/string";
+
+    // build didclose notification with the test parameter
 
     ASSERT_TRUE(buildDidCloseNotification( didCloseNotification   ,
                                            errors                 ,
                                            document_path          ));
+
+    // handle the built didclose notification with the test_server
 
     ASSERT_TRUE(test_server.handleDidCloseNotification( didCloseNotification ));
 }
@@ -811,7 +887,11 @@ TEST(server, handle_shutdown)
     DataObject        shutdownRequest;
     std::stringstream errors;
 
-    int               client_request_id =  7;
+    // shutdown test parameter
+
+    int client_request_id =  7;
+
+    // build shutdown request with the test parameters
 
     ASSERT_TRUE(buildShutdownRequest( shutdownRequest   ,
                                       errors            ,
@@ -819,8 +899,12 @@ TEST(server, handle_shutdown)
 
     DataObject shutdownResponse;
 
+    // handle the built shutdown request with the test_server
+
     ASSERT_TRUE(test_server.handleShutdownRequest( shutdownRequest  ,
                                                    shutdownResponse ));
+
+    // check the formatted json from the test_server's response object
 
     std::stringstream json;
     shutdownResponse.format_json(json);
@@ -839,8 +923,12 @@ TEST(server, handle_exit)
     DataObject        exitNotification;
     std::stringstream errors;
 
+    // build initialize notification with the test parameters
+
     ASSERT_TRUE(buildExitNotification( exitNotification ,
                                        errors           ));
+
+    // handle the built exit notification with the test_server
 
     ASSERT_TRUE(test_server.handleExitNotification( exitNotification ));
 }

@@ -16,17 +16,29 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 {
     bool pass = true;
 
+    // set the server's validator shared_ptr to the provided validator
+
     this->validator = validator;
+
+    // set the server's schema shared_ptr to the provided schema
 
     this->schema = schema;
 
+    // get the root of the schema parse tree to make the input definition
+
     SCHEMANV schema_root = this->schema->root();
+
+    // make the input definition using the schema and store on the server
 
     this->inputdefinition = std::make_shared<InputDefinition>( schema_root  ,
                                                                this->errors ,
                                                                this->errors );
 
+    // set the server's template_dir string to the provided template directory
+
     this->template_dir = template_dir;
+
+    // the required server setup is now finished
 
     this->is_setup = true;
 
@@ -63,15 +75,23 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     bool pass = true;
 
+    // make a new parser capturing errors to a stream and set the server parser
+
     std::stringstream parse_errors;
 
     this->parser = std::make_shared<INPUT>(parse_errors);
 
+    // use the parser to parse the entire currently set document text
+
     if ( !this->parser->parseString( this->document_text , "" ) )
     {
+        // walk over parse_errors stream if there are any parse errors
+
         while( parse_errors.good() )
         {
             std::string error;
+
+            // get each parse error line
 
             std::getline( parse_errors, error );
 
@@ -81,17 +101,23 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
             size_t colon = error.find(':' , 1);
 
+            // parse line number out of the parse error and convert to integer
+
             std::string line_str = error.substr( 1, dot - 1 );
 
             int line;
 
             std::stringstream( line_str ) >> line;
 
+            // parse column number out of the parse error and convert to integer
+
             std::string column_str = error.substr( dot + 1, colon - dot - 1 );
 
             int column;
 
             std::stringstream( column_str ) >> column;
+
+            // parse the actual message content out of the parse error
 
             std::string message  = error.substr( colon + 1 );
 
@@ -108,6 +134,8 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
             line--;
             column--;
 
+            // build a diagnostics object out of the line, column, and message
+
             DataObject diagnostic;
 
             pass &= buildDiagnosticObject( diagnostic   ,
@@ -121,6 +149,8 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
                                            "parser"     ,
                                            message      );
 
+            // push the created diagnostic object onto the diagnostics list
+
             diagnosticsList.push_back(diagnostic);
         }
     }
@@ -131,8 +161,12 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     std::vector<std::string> validation_errors;
 
+    // use the validator and schema to validate the currently set document text
+
     if ( !this->validator->validate(schema_root, input_root, validation_errors) )
     {
+        // walk over the validation errors vector if the document is not valid
+
         for (auto i : validation_errors)
         {
             std::size_t foundline   = i.find( "line:" );
@@ -141,17 +175,23 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
             std::size_t founddash   = i.find( " - " );
 
+            // parse line number out of the message and convert to integer
+
             std::string line_str = i.substr( foundline + 5, foundcolumn - (foundline + 5) );
 
             int line;
 
             std::stringstream( line_str ) >> line;
 
+            // parse column number out of the message and convert to integer
+
             std::string column_str = i.substr( foundcolumn + 8, founddash - (foundcolumn + 8) );
 
             int column;
 
             std::stringstream( column_str ) >> column;
+
+            // parse the actual message content out of the validation error
 
             std::string message = i.substr( founddash + 3 );
 
@@ -166,6 +206,8 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
             line--;
             column--;
 
+            // build a diagnostics object out of the line, column, and message
+
             DataObject diagnostic;
 
             pass &= buildDiagnosticObject( diagnostic   ,
@@ -178,6 +220,8 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
                                            "validate"   ,
                                            "validator"  ,
                                            message      );
+
+            // push the created diagnostic object onto the diagnostics list
 
             diagnosticsList.push_back(diagnostic);
         }
@@ -222,7 +266,8 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     bool pass = true;
 
-    // TODO - replace text using line and column
+    // TODO - in the future add logic to replace text using line and column
+    // but for now expect all parameters to be -1 and replace entire document
 
     if ( ! (start_line      == -1 &&
             start_character == -1 &&
@@ -283,6 +328,7 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
     std::vector<INPUTNV> contexts;
     {
         // ascend hierarchy, gathering context nodes, only push non-decorative contexts
+
         for ( auto tmp = node                                             ;
               tmp.path().find( node.path() ) == 0 && !tmp.is_terminator() ;
               tmp = tmp.parent()                                          )
@@ -481,7 +527,7 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         }
     }
 
-    // prioritize bynegative values in descending order
+    // prioritize by negative values in descending order
     // then non-negative values in ascending order
 
     auto negative = std::stable_partition( prioritized_options.begin() ,
@@ -595,6 +641,7 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
                                            l.column() <  r.column() ) ); } );
 
     // if no definition, existsin, or lookups - just use info for selected node
+    // otherwise iterate through all found nodes building definition locations
 
     if( def == nullptr  || def->getExistsIn() == nullptr  ||
         def->getExistsIn()->lookupNodesByValue(lookup_node, found_nodes) == 0 )
@@ -751,11 +798,21 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
     bool pass = true;
 
+    // store the non decorative children of the root and cache the size
+
     const auto & children = this->parser->root().non_decorative_children();
 
-    for( size_t i = 0; i < children.size(); i++ )
+    size_t children_size = children.size();
+
+    // walk over non decorative children of the root
+
+    for( size_t i = 0; i < children_size; i++ )
     {
+        // store the current child node
+
         auto node = children[i];
+
+        // get the node name / detail / line / column / last_line / last_column
 
         std::string name        = node.name();
         std::string detail      = node.is_leaf() ? node.data() : name;
@@ -774,6 +831,8 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         // according to the protocol - last_column is right AFTER last character
 
         last_column++;
+
+        // build a document symbol object from the node info and push onto array
 
         documentSymbols.push_back( DataObject() );
 
@@ -794,7 +853,9 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
                                             last_line    ,
                                             last_column  );
 
-      this->traverseParseTreeAndFillSymbols( node , *child );
+        // call method to recursively fill document symbols for each child node
+
+        this->traverseParseTreeAndFillSymbols( node , *child );
     }
 
     return pass;
@@ -813,11 +874,21 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 {
     bool pass = true;
 
+    // store the non decorative children of the given node and cache the size
+
     const auto & children = node.non_decorative_children();
 
-    for( size_t i = 0; i < children.size(); i++ )
+    size_t children_size = children.size();
+
+    // walk over non decorative children of the given node
+
+    for( size_t i = 0; i < children_size; i++ )
     {
+        // store the current child node
+
         auto node = children[i];
+
+        // get the node name / detail / line / column / last_line / last_column
 
         std::string name        = node.name();
         std::string detail      = node.is_leaf() ? node.data() : name;
@@ -837,6 +908,8 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
         last_column++;
 
+        // build a document symbol object from the node info and push onto array
+
         DataObject & child = addDocumentSymbolChild( parent );
 
         pass &= buildDocumentSymbolObject( child        ,
@@ -854,7 +927,9 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
                                            last_line    ,
                                            last_column  );
 
-      this->traverseParseTreeAndFillSymbols( node , child );
+        // call method to recursively fill document symbols for each child node
+
+        this->traverseParseTreeAndFillSymbols( node , child );
     }
 
     return pass;
@@ -991,7 +1066,11 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
                                   "   \"InputName\":  \"" + inputname  + "\","
                                   "   \"InputValue\": \"" + inputvalue + "\"}";
 
+    // get a unique filepath for the temporary json payload file
+
     std::string temp_json_file_path = tempnam("tmp", "json");
+
+    // open the temporary json payload file and write the parameters
 
     ofstream myfile;
     myfile.open (temp_json_file_path);
@@ -1080,6 +1159,8 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
             }
         }
     }
+
+    // delete the temporary json payload file since it is no longer needed
 
     std::remove( temp_json_file_path.c_str() );
 

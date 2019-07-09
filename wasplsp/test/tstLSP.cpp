@@ -9,6 +9,8 @@ namespace lsp  {
 
 TEST(lsp, bad_ranges)
 {
+    // test bad ranges - negative values and wrong ordering
+
     {
         DataObject        object;
         std::stringstream errors;
@@ -79,6 +81,8 @@ TEST(lsp, bad_ranges)
 
 TEST(lsp, initialize_request)
 {
+    // test initialize request object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -161,6 +165,8 @@ TEST(lsp, initialize_request)
 
 TEST(lsp, initialized_notification)
 {
+    // test initialized notification object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -203,6 +209,8 @@ TEST(lsp, initialized_notification)
 
 TEST(lsp, didopen_notification)
 {
+    // test didopen notification object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -291,6 +299,8 @@ TEST(lsp, didopen_notification)
 
 TEST(lsp, didchange_notification)
 {
+    // test didchange notification object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -439,6 +449,8 @@ TEST(lsp, didchange_notification)
 
 TEST(lsp, completion_request)
 {
+    // test completion request object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -532,6 +544,8 @@ TEST(lsp, completion_request)
 
 TEST(lsp, definition_request)
 {
+    // test definition request object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -624,6 +638,8 @@ TEST(lsp, definition_request)
 
 TEST(lsp, references_request)
 {
+    // test references request object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -730,6 +746,8 @@ TEST(lsp, references_request)
 
 TEST(lsp, formatting_request)
 {
+    // test formatting request object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -873,6 +891,8 @@ TEST(lsp, formatting_request)
 
 TEST(lsp, symbols_request)
 {
+    // test symbols request object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -942,6 +962,8 @@ TEST(lsp, symbols_request)
 
 TEST(lsp, didclose_notification)
 {
+    // test didclose notification object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -1004,6 +1026,8 @@ TEST(lsp, didclose_notification)
 
 TEST(lsp, shutdown_request)
 {
+    // test shutdown request object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -1058,6 +1082,8 @@ TEST(lsp, shutdown_request)
 
 TEST(lsp, exit_notification)
 {
+    // test exit notification object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -1100,6 +1126,8 @@ TEST(lsp, exit_notification)
 
 TEST(lsp, diagnostic_object)
 {
+    // test diagnostic object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -1213,6 +1241,8 @@ TEST(lsp, diagnostic_object)
 
 TEST(lsp, publishdiagnostics_notification)
 {
+    // test publish diagnostics object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -1545,6 +1575,8 @@ TEST(lsp, publishdiagnostics_notification)
 
 TEST(lsp, initialize_response)
 {
+    // test initialize response object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -1604,6 +1636,8 @@ TEST(lsp, initialize_response)
 
 TEST(lsp, completion_object)
 {
+    // test completion object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -1749,6 +1783,8 @@ TEST(lsp, completion_object)
 
 TEST(lsp, completion_response)
 {
+    // test completion response object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -2158,6 +2194,8 @@ TEST(lsp, completion_response)
 
 TEST(lsp, location_object)
 {
+    // test location object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -2244,6 +2282,8 @@ TEST(lsp, location_object)
 
 TEST(lsp, locations_response)
 {
+    // test locations response object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -2506,6 +2546,8 @@ TEST(lsp, locations_response)
 
 TEST(lsp, textedit_object)
 {
+    // test text edit object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -2592,6 +2634,8 @@ TEST(lsp, textedit_object)
 
 TEST(lsp, formatting_response)
 {
+    // test formatting response object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -2854,6 +2898,8 @@ TEST(lsp, formatting_response)
 
 TEST(lsp, documentsymbol_object)
 {
+    // test document symbol object building and dissection round trip
+
     std::stringstream errors;
     DataObject        root_object;
 
@@ -3343,6 +3389,8 @@ TEST(lsp, documentsymbol_object)
 
 TEST(lsp, symbols_response)
 {
+    // test symbols response object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 
@@ -3544,6 +3592,8 @@ TEST(lsp, symbols_response)
 
 TEST(lsp, shutdown_response)
 {
+    // test shutdown response object building and dissection round trip
+
     DataObject        object;
     std::stringstream errors;
 

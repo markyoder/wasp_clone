@@ -6,6 +6,8 @@ namespace lsp  {
 bool TestServer::parseDocumentForDiagnostics(
                       DataArray & diagnosticsList )
 {
+    // create diagnostics for unit testing
+
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
@@ -104,6 +106,8 @@ bool TestServer::updateDocumentTextChanges(
                       int           end_character    ,
                       int           range_length     )
 {
+    // replace the document's text for unit testing
+
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
@@ -136,6 +140,8 @@ bool TestServer::gatherDocumentCompletionItems(
                       int         line             ,
                       int         character        )
 {
+    // create completion items for unit testing
+
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
@@ -214,6 +220,8 @@ bool TestServer::gatherDocumentDefinitionLocations(
                       int         line                ,
                       int         character           )
 {
+    // create definition locations for unit testing
+
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
@@ -273,6 +281,8 @@ bool TestServer::gatherDocumentReferencesLocations(
                       int         character           ,
                       bool        include_declaration )
 {
+    // create document references for unit testing
+
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
@@ -326,6 +336,8 @@ bool TestServer::gatherDocumentFormattingTextEdits(
                       int         tab_size            ,
                       bool        insert_spaces       )
 {
+    // create document formatting text edits for unit testing
+
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
@@ -386,6 +398,8 @@ bool TestServer::gatherDocumentFormattingTextEdits(
 bool TestServer::gatherDocumentSymbols(
                       DataArray & documentSymbols )
 {
+    // create document symbols for unit testing
+
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;

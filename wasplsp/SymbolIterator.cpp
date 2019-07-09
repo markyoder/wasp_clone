@@ -5,6 +5,8 @@ namespace lsp  {
 
 size_t SymbolIterator::getChildSize() const
 {
+    // get array of children at the currently set lineage level and return size
+
     DataArray * children = getSymbolChildrenArray( *this->symbols_lineage.back() );
 
     if ( children == nullptr ) return 0;
@@ -16,12 +18,18 @@ std::string SymbolIterator::getPath() const
 {
     std::string path;
 
+    // walk through the current symbol lineage walking from root to leaf
+
     for ( size_t i = 1 ; i < this->symbols_lineage.size() ; i++ )
     {
         wasp_check( (*this->symbols_lineage[i]).contains(m_name) &&
                     (*this->symbols_lineage[i])[m_name].is_string() );
 
+        // append '/' + name to the path - building it as we go
+
         path += "/" + (*this->symbols_lineage[i])[m_name].to_string();
+
+        // if this is the leaf node then add the line and column to the end
 
         if ( i+1 == this->symbols_lineage.size() )
         {
@@ -51,12 +59,16 @@ std::string SymbolIterator::getPath() const
         }
     }
 
+    // return the built path for the current symbol from root to leaf
+
     return path;
 }
 
 bool SymbolIterator::moveToChildAt( size_t index )
 {
     bool pass = true;
+
+    // check that the index is not more than the size of the current children
 
     if ( index >= this->getChildSize() )
     {
@@ -65,13 +77,19 @@ bool SymbolIterator::moveToChildAt( size_t index )
         return false;
     }
 
+    // get the children of the current document symbol
+
     DataArray * children = getSymbolChildrenArray( *this->symbols_lineage.back() );
 
     wasp_check( children != nullptr );
 
+    // convert the child at the given index to a DataObject
+
     DataObject * object = children->at(index).to_object();
 
     wasp_check( object != nullptr );
+
+    // push a pointer to the child object at the given index onto the lineage
 
     this->symbols_lineage.push_back( object );
 
@@ -82,12 +100,16 @@ bool SymbolIterator::moveToParent()
 {
     bool pass = true;
 
+    // check that we are not currently at the root object in the lineage
+
     if ( this->symbols_lineage.size() == 1 )
     {
         this->errors << m_error_prefix << "Already at root" << std::endl;
 
         return false;
     }
+
+    // pop the end of the symbol lineage making the new end the parent object
 
     this->symbols_lineage.pop_back();
 
@@ -109,6 +131,8 @@ bool SymbolIterator::dissectCurrentSymbol( std::string  & name  ,
 {
     bool pass = true;
 
+    // dissect the document symbol that is currently at the end of the lineage
+
     pass = dissectDocumentSymbolObject( *this->symbols_lineage.back() ,
                                          this->errors                 ,
                                          name                         ,
@@ -129,6 +153,8 @@ bool SymbolIterator::dissectCurrentSymbol( std::string  & name  ,
 
 bool positionChildSort( const Value & lv , const Value & rv )
 {
+    // convert the left Value to a DataObject
+
     DataObject * lo = lv.to_object();
 
     std::stringstream lo_errors;
@@ -145,6 +171,8 @@ bool positionChildSort( const Value & lv , const Value & rv )
     int               lo_selection_end_line;
     int               lo_selection_end_character;
 
+    // dissect the left DataObject to get the start_line and start_character
+
     dissectDocumentSymbolObject( *lo                           ,
                                   lo_errors                    ,
                                   lo_name                      ,
@@ -159,6 +187,8 @@ bool positionChildSort( const Value & lv , const Value & rv )
                                   lo_selection_start_character ,
                                   lo_selection_end_line        ,
                                   lo_selection_end_character   );
+
+    // convert the right Value to a DataObject
 
     DataObject * ro = rv.to_object();
 
@@ -176,6 +206,8 @@ bool positionChildSort( const Value & lv , const Value & rv )
     int               ro_selection_end_line;
     int               ro_selection_end_character;
 
+    // dissect the right DataObject to get the start_line and start_character
+
     dissectDocumentSymbolObject( *ro                           ,
                                   ro_errors                    ,
                                   ro_name                      ,
@@ -191,6 +223,8 @@ bool positionChildSort( const Value & lv , const Value & rv )
                                   ro_selection_end_line        ,
                                   ro_selection_end_character   );
 
+    // return true if left object comes before right object in the document
+
     return ( lo_start_line      <  ro_start_line      ||
            ( lo_start_line      == ro_start_line      &&
              lo_start_character <  ro_start_character ));
@@ -200,13 +234,18 @@ bool SymbolIterator::recursiveSortByPosition()
 {
     bool pass = true;
 
-    DataObject * root = this->symbols_lineage.back();
+    // get the size of the children of the current symbol lineage object
 
     size_t child_size = this->getChildSize();
+
+    // if there is more than one child - then sort them by line and column
 
     if ( child_size > 1 )
     {
         DataArray * children = getSymbolChildrenArray( *this->symbols_lineage.back() );
+
+        // if there is not a range object but there is a location object in the
+        // first child - bail out now because these are not hierarchical symbols
 
         if ( !children->at(0).is_object()                           ||
            ( !children->at(0).to_object()->contains(m_range)        &&
@@ -220,6 +259,8 @@ bool SymbolIterator::recursiveSortByPosition()
 
         std::sort( children->begin() , children->end() , positionChildSort );
     }
+
+    // recursively call this method to sort all children levels
 
     for( size_t i = 0 ; i < child_size ; i++ )
     {

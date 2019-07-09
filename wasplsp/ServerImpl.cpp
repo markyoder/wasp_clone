@@ -7,18 +7,26 @@ bool ServerImpl::run()
 {
     bool pass = true;
 
+    // loop reading from connection and handling methods until error or exit
+
     while(1)
     {
         DataObject  input_object;
         std::string method_name;
         DataObject  output_object;
 
+        // read from the connection into the input_object
+
         pass &= this->connectionRead( input_object );
+
+        // get the method name from the input_object if it exists
 
         if ( input_object.contains(m_method) && input_object[m_method].is_string() )
         {
             method_name = input_object[m_method].to_string();
         }
+
+        // call the specific handler on the input_object for the method read
 
         if ( method_name == m_method_initialize )
         {
@@ -90,6 +98,8 @@ bool ServerImpl::run()
                                "\"" << method_name << "\"" << std::endl;
         }
 
+        // if anything failed in the process, then build an error response
+
         if ( !pass )
         {
             buildErrorResponse( output_object      ,
@@ -99,10 +109,14 @@ bool ServerImpl::run()
             this->is_initialized = false;
         }
 
+        // if there was a response object built then write it to the connection
+
         if ( !output_object.empty() )
         {
             pass &= this->connectionWrite( output_object );
         }
+
+        // if anything failed or if the method was 'exit' - then stop reading
 
         if ( !pass || method_name == m_method_exit ) break;
     }
@@ -116,6 +130,8 @@ bool ServerImpl::handleInitializeRequest(
 {
     bool pass = true;
 
+    // dissect initialize request object
+
     pass &= dissectInitializeRequest( initializeRequest         ,
                                       this->errors              ,
                                       this->client_request_id   ,
@@ -124,6 +140,8 @@ bool ServerImpl::handleInitializeRequest(
                                       this->client_capabilities );
 
     this->is_initialized = true;
+
+    // build initialize response object
 
     pass &= buildInitializeResponse( initializeResponse        ,
                                      this->errors              ,
@@ -144,6 +162,8 @@ bool ServerImpl::handleInitializedNotification(
 
     bool pass = true;
 
+    // dissect initialized notification object - no response is needed
+
     pass &= dissectInitializedNotification( initializedNotification ,
                                             this->errors            );
 
@@ -162,6 +182,8 @@ bool ServerImpl::handleDidOpenNotification(
 
     bool pass = true;
 
+    // dissect didopen notification object
+
     pass &= dissectDidOpenNotification( didOpenNotification        ,
                                         this->errors               ,
                                         this->document_path        ,
@@ -173,7 +195,11 @@ bool ServerImpl::handleDidOpenNotification(
 
     DataArray document_diagnostics;
 
+    // call server specific method to parse the document and gather diagnostics
+
     pass &= this->parseDocumentForDiagnostics( document_diagnostics );
+
+    // build diagnostics notification object
 
     pass &= buildPublishDiagnosticsNotification( publishDiagnosticsNotification ,
                                                  this->errors                   ,
@@ -210,6 +236,8 @@ bool ServerImpl::handleDidChangeNotification(
     int         range_length;
     std::string replacement_text;
 
+    // dissect didchange notification object
+
     pass &= dissectDidChangeNotification( didChangeNotification  ,
                                           this->errors           ,
                                           document_path          ,
@@ -235,6 +263,8 @@ bool ServerImpl::handleDidChangeNotification(
 
     this->document_version = document_version;
 
+    // call server specific method to update in-memory document with changes
+
     pass &= this->updateDocumentTextChanges( replacement_text ,
                                              start_line       ,
                                              start_character  ,
@@ -244,7 +274,11 @@ bool ServerImpl::handleDidChangeNotification(
 
     DataArray document_diagnostics;
 
+    // call server specific method to parse the document and gather diagnostics
+
     pass &= this->parseDocumentForDiagnostics( document_diagnostics );
+
+    // build diagnostics notification object
 
     pass &= buildPublishDiagnosticsNotification( publishDiagnosticsNotification ,
                                                  this->errors                   ,
@@ -276,6 +310,8 @@ bool ServerImpl::handleCompletionRequest(
     int         line;
     int         character;
 
+    // dissect completion request object
+
     pass &= dissectCompletionRequest( completionRequest       ,
                                       this->errors            ,
                                       this->client_request_id ,
@@ -292,10 +328,14 @@ bool ServerImpl::handleCompletionRequest(
     DataArray completion_items;
     bool      is_incomplete;
 
+    // call server specific method to gather the document completions items
+
     pass &= this->gatherDocumentCompletionItems( completion_items,
                                                  is_incomplete   ,
                                                  line            ,
                                                  character       );
+
+    // build completion response object
 
     pass &= buildCompletionResponse( completionResponse      ,
                                      this->errors            ,
@@ -328,6 +368,8 @@ bool ServerImpl::handleDefinitionRequest(
     int         line;
     int         character;
 
+    // dissect definition request object
+
     pass &= dissectDefinitionRequest( definitionRequest       ,
                                       this->errors            ,
                                       this->client_request_id ,
@@ -343,10 +385,13 @@ bool ServerImpl::handleDefinitionRequest(
 
     DataArray definition_locations;
 
+    // call server specific method to gather the document definition locations
+
     pass &= this->gatherDocumentDefinitionLocations( definition_locations ,
                                                      line                 ,
                                                      character            );
 
+    // build definition response object
 
     pass &= buildLocationsResponse( definitionResponse      ,
                                     this->errors            ,
@@ -379,6 +424,8 @@ bool ServerImpl::handleReferencesRequest(
     int         character;
     bool        include_declaration;
 
+    // dissect references request object
+
     pass &= dissectReferencesRequest( referencesRequest       ,
                                       this->errors            ,
                                       this->client_request_id ,
@@ -395,10 +442,14 @@ bool ServerImpl::handleReferencesRequest(
 
     DataArray references_locations;
 
+    // call server specific method to gather the document references locations
+
     pass &= this->gatherDocumentReferencesLocations( references_locations ,
                                                      line                 ,
                                                      character            ,
                                                      include_declaration  );
+
+    // build references response object
 
     pass &= buildLocationsResponse( referencesResponse      ,
                                     this->errors            ,
@@ -434,6 +485,8 @@ bool ServerImpl::handleFormattingRequest(
     int         tab_size;
     bool        insert_spaces;
 
+    // dissect formatting request object
+
     pass &= dissectFormattingRequest( formattingRequest       ,
                                       this->errors            ,
                                       this->client_request_id ,
@@ -453,6 +506,8 @@ bool ServerImpl::handleFormattingRequest(
 
     DataArray formatting_textedits;
 
+    // call server specific method to gather the document formatting edits
+
     pass &= this->gatherDocumentFormattingTextEdits( formatting_textedits ,
                                                      start_line           ,
                                                      start_character      ,
@@ -460,6 +515,8 @@ bool ServerImpl::handleFormattingRequest(
                                                      end_character        ,
                                                      tab_size             ,
                                                      insert_spaces        );
+
+    // build formatting response object
 
     pass &= buildFormattingResponse( formattingResponse      ,
                                      this->errors            ,
@@ -489,6 +546,8 @@ bool ServerImpl::handleSymbolsRequest(
 
     std::string document_path;
 
+    // dissect symbol request object
+
     pass &= dissectSymbolsRequest( symbolsRequest          ,
                                    this->errors            ,
                                    this->client_request_id ,
@@ -502,7 +561,11 @@ bool ServerImpl::handleSymbolsRequest(
 
     DataArray document_symbols;
 
+    // call server specific method to gather the document symbols
+
     pass &= this->gatherDocumentSymbols( document_symbols );
+
+    // build symbol response object
 
     pass &= buildSymbolsResponse( symbolsResponse         ,
                                   this->errors            ,
@@ -530,6 +593,8 @@ bool ServerImpl::handleDidCloseNotification(
     bool pass = true;
 
     std::string document_path;
+
+    // dissect didclose notification object - no response is needed
 
     pass &= dissectDidCloseNotification( didCloseNotification ,
                                          this->errors         ,
@@ -564,11 +629,15 @@ bool ServerImpl::handleShutdownRequest(
 
     bool pass = true;
 
+    // dissect shutdown request object
+
     pass &= dissectShutdownRequest( shutdownRequest         ,
                                     this->errors            ,
                                     this->client_request_id );
 
     this->is_initialized = false;
+
+    // build shutdown response object
 
     pass &= buildShutdownResponse( shutdownResponse        ,
                                    this->errors            ,
@@ -587,6 +656,8 @@ bool ServerImpl::handleExitNotification(
     }
 
     bool pass = true;
+
+    // dissect exit notification object - no response is needed
 
     pass &= dissectExitNotification( exitNotification ,
                                      this->errors     );

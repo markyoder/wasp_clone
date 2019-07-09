@@ -20,7 +20,7 @@
 namespace wasp {
 namespace lsp  {
 
-// handles for client, server, and server thread
+// handles for client, server thread, and a son server with a thread connection
 
 Client<ClientImpl> client;
 std::thread server_thread;

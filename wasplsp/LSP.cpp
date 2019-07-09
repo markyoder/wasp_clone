@@ -13,19 +13,27 @@ bool objectToRPCString( DataObject   & object ,
 {
     bool pass = true;
 
+    // set "jsonrpc" : "2.0" in the object
+
     object[m_rpc_jsonrpc_key] = m_rpc_jsonrpc_val;
 
     std::stringstream body;
 
+    // create the packed json rpc body from the object
+
     object.pack_json(body);
 
     std::stringstream full_buffer;
+
+    // compose the full stream buffer from Content-Length: Length + \r\n + body
 
     full_buffer << m_rpc_content_len_key
                 << " "
                 << body.str().size()
                 << m_rpc_separator
                 << body.str();
+
+    // set the rpcstr reference to a copy of the fullly composed buffer string
 
     rpcstr = full_buffer.str();
 
@@ -102,6 +110,8 @@ bool checkPosition( std::ostream & errors    ,
 {
     bool pass = true;
 
+    // check that the position's line and character numbers are not negative
+
     if ( line < 0 )
     {
         errors << m_error_prefix << "Line number must be non-negative - received: "
@@ -127,6 +137,8 @@ bool checkRange( std::ostream & errors          ,
 {
     bool pass = true;
 
+    // check that the range's end line / char is not before start line / char
+
     if (( start_line  > end_line ) ||
         ( start_line == end_line && start_character > end_character ))
     {
@@ -146,6 +158,8 @@ bool buildPositionObject( DataObject   & object    ,
 {
     bool pass = true;
 
+    // check the position's line and character before building
+
     pass &= checkPosition( errors    ,
                            line      ,
                            character );
@@ -163,6 +177,8 @@ bool dissectPositionObject( const DataObject   & object    ,
 {
     bool pass = true;
 
+    // get the line and character from the position object
+
     wasp_check( object.contains(m_line) && object[m_line].is_int() );
 
     line = object[m_line].to_int();
@@ -170,6 +186,8 @@ bool dissectPositionObject( const DataObject   & object    ,
     wasp_check( object.contains(m_character) && object[m_character].is_int() );
 
     character = object[m_character].to_int();
+
+    // check that the position's line and character are not negative
 
     pass &= checkPosition( errors    ,
                            line      ,
@@ -187,11 +205,15 @@ bool buildRangeObject( DataObject   & object          ,
 {
     bool pass = true;
 
+    // check the range's start and end line / char before building
+
     pass &= checkRange( errors          ,
                         start_line      ,
                         start_character ,
                         end_line        ,
                         end_character   );
+
+    // build the start and end position objects to compose the range object
 
     DataObject start;
     pass &= buildPositionObject( start           ,
@@ -220,6 +242,8 @@ bool dissectRangeObject( const DataObject      & object          ,
 {
     bool pass = true;
 
+    // dissect the start and end position objects from the range object
+
     wasp_check( object.contains(m_start) && object[m_start].is_object() );
 
     const DataObject& start = *(object[m_start].to_object());
@@ -237,6 +261,9 @@ bool dissectRangeObject( const DataObject      & object          ,
                                    errors        ,
                                    end_line      ,
                                    end_character );
+
+
+    // check that the range end line / char are not before the start line / char
 
     pass &= checkRange( errors          ,
                         start_line      ,
@@ -256,12 +283,17 @@ bool buildInitializeRequest( DataObject        & object              ,
 {
     bool pass = true;
 
+    // if -1 was passed for process_id then set to null in json object
+    // if empty string was passed for root_uri then set to null in json object
+
     DataObject params;
     if ( process_id == -1 ) params[m_process_id] = Value();
     else                    params[m_process_id] = process_id;
     if ( root_uri.empty() ) params[m_root_uri] = Value();
     else                    params[m_root_uri] = root_uri;
     params[m_capabilities] = client_capabilities;
+
+    // set object's params, id, and method name
 
     object[m_params] =  params;
     object[m_id]     =  request_id;
@@ -315,6 +347,8 @@ bool buildInitializedNotification( DataObject   & object ,
 
     DataObject params;
 
+    // set object's params and method name
+
     object[m_params] =  params;
     object[m_method] = m_method_initialized;
 
@@ -352,6 +386,8 @@ bool buildDidOpenNotification( DataObject        & object      ,
 
     DataObject params;
     params[m_text_document] = text_document;
+
+    // set object's params and method name
 
     object[m_params] =  params;
     object[m_method] = m_method_didopen;
@@ -420,6 +456,10 @@ bool buildDidChangeNotification( DataObject        & object          ,
 
     (*change)[m_text] = text;
 
+    // if any of the line / column / range length parameters are not -1
+    // then add range object and range length to the didchange notification
+    // but if all values are -1 then leave out the range and range length
+
     if ( ! ( start_line      == -1 &&
              start_character == -1 &&
              end_line        == -1 &&
@@ -445,6 +485,8 @@ bool buildDidChangeNotification( DataObject        & object          ,
     DataObject params;
     params[m_content_changes] = content_changes;
     params[m_text_document]   = text_document;
+
+    // set object's params and method name
 
     object[m_params] =  params;
     object[m_method] = m_method_didchange;
@@ -495,6 +537,9 @@ bool dissectDidChangeNotification( const DataObject   & object          ,
 
     const DataObject & change = *(content_changes.at(0).to_object());
 
+    // if range is present in change - dissect the start and end line / char
+    // if range is not present in change - set these values to -1 to indicate
+
     if ( change.contains(m_range) && change[m_range].is_object() )
     {
         const DataObject& range = *(change[m_range].to_object());
@@ -539,6 +584,8 @@ bool buildCompletionRequest( DataObject        & object     ,
 {
     bool pass = true;
 
+    // build the position object for the completion request
+
     DataObject position;
     pass &= buildPositionObject( position  ,
                                  errors    ,
@@ -551,6 +598,8 @@ bool buildCompletionRequest( DataObject        & object     ,
     DataObject params;
     params[m_position]      = position;
     params[m_text_document] = text_document;
+
+    // set object's params, id, and method name
 
     object[m_params] =  params;
     object[m_id]     =  request_id;
@@ -588,6 +637,8 @@ bool dissectCompletionRequest( const DataObject   & object     ,
 
     uri = text_document[m_uri].to_string();
 
+    // dissect the line and char from the completion request's position object
+
     wasp_check( params.contains(m_position) && params[m_position].is_object() );
 
     const DataObject& position = *(params[m_position].to_object());
@@ -609,6 +660,8 @@ bool buildDefinitionRequest( DataObject        & object     ,
 {
     bool pass = true;
 
+    // build the position object for the definition request
+
     DataObject position;
     pass &= buildPositionObject( position  ,
                                  errors    ,
@@ -621,6 +674,8 @@ bool buildDefinitionRequest( DataObject        & object     ,
     DataObject params;
     params[m_position]      = position;
     params[m_text_document] = text_document;
+
+    // set object's params, id, and method name
 
     object[m_params] =  params;
     object[m_id]     =  request_id;
@@ -658,6 +713,8 @@ bool dissectDefinitionRequest( const DataObject   & object     ,
 
     uri = text_document[m_uri].to_string();
 
+    // dissect the line and char from the definition request's position object
+
     wasp_check( params.contains(m_position) && params[m_position].is_object() );
 
     const DataObject& position = *(params[m_position].to_object());
@@ -680,6 +737,8 @@ bool buildReferencesRequest( DataObject        & object              ,
 {
     bool pass = true;
 
+    // build the position object for the references request
+
     DataObject position;
     pass &= buildPositionObject( position  ,
                                  errors    ,
@@ -696,6 +755,8 @@ bool buildReferencesRequest( DataObject        & object              ,
     params[m_position]      = position;
     params[m_text_document] = text_document;
     params[m_context]       = context;
+
+    // set object's params, id, and method name
 
     object[m_params] =  params;
     object[m_id]     =  request_id;
@@ -733,6 +794,8 @@ bool dissectReferencesRequest( const DataObject   & object              ,
     wasp_check( text_document.contains(m_uri) && text_document[m_uri].is_string() );
 
     uri = text_document[m_uri].to_string();
+
+    // dissect the line and char from the references request's position object
 
     wasp_check( params.contains(m_position) && params[m_position].is_object() );
 
@@ -779,12 +842,16 @@ bool buildFormattingRequest( DataObject        & object          ,
     params[m_options]       = options;
     params[m_text_document] = text_document;
 
+    // build range object for the formatting params
+
     pass &= buildRangeObject( *(params[m_range].to_object()) ,
                                 errors                       ,
                                 start_line                   ,
                                 start_character              ,
                                 end_line                     ,
                                 end_character                );
+
+    // set object's params, id, and method name
 
     object[m_params] =  params;
     object[m_id]     =  request_id;
@@ -826,6 +893,8 @@ bool dissectFormattingRequest( const DataObject   & object          ,
 
     uri = text_document[m_uri].to_string();
 
+    // dissect the start and end line / char range from the params object
+
     wasp_check( params.contains(m_range) && params[m_range].is_object() );
 
     const DataObject& range = *(params[m_range].to_object());
@@ -864,6 +933,8 @@ bool buildSymbolsRequest( DataObject        & object     ,
 
     DataObject params;
     params[m_text_document] = text_document;
+
+    // set object's params, id, and method name
 
     object[m_params] =  params;
     object[m_id]     =  request_id;
@@ -914,6 +985,8 @@ bool buildDidCloseNotification( DataObject        & object ,
     DataObject params;
     params[m_text_document] = text_document;
 
+    // set object's params and method name
+
     object[m_params] =  params;
     object[m_method] = m_method_didclose;
 
@@ -953,6 +1026,8 @@ bool buildShutdownRequest( DataObject   & object     ,
 
     DataObject params;
 
+    // set object's params, id, and method name
+
     object[m_params] =  Value();
     object[m_id]     =  request_id;
     object[m_method] = m_method_shutdown;
@@ -985,6 +1060,8 @@ bool buildExitNotification( DataObject   & object ,
     bool pass = true;
 
     DataObject params;
+
+    // set object's params and method name
 
     object[m_params] =  Value();
     object[m_method] = m_method_exit;
@@ -1025,6 +1102,8 @@ bool buildDiagnosticObject( DataObject        & object          ,
     object[m_source]   = source;
     object[m_message]  = message;
 
+    // build range object for the diagnostic object
+
     pass &= buildRangeObject( *(object[m_range].to_object()) ,
                                 errors                       ,
                                 start_line                   ,
@@ -1047,6 +1126,8 @@ bool dissectDiagnosticObject( const DataObject   & object          ,
                                     std::string  & message         )
 {
     bool pass = true;
+
+    // dissect the start and end line / char range from the diagnostic object
 
     wasp_check( object.contains(m_range) && object[m_range].is_object() );
 
@@ -1090,6 +1171,8 @@ bool buildPublishDiagnosticsNotification( DataObject        & object      ,
     params[m_uri]         = uri;
     params[m_diagnostics] = diagnostics;
 
+    // set object's params and method name
+
     object[m_params] =  params;
     object[m_method] = m_method_pubdiagnostics;
 
@@ -1132,6 +1215,8 @@ bool buildInitializeResponse( DataObject        & object              ,
     DataObject result;
     result[m_capabilities] = server_capabilities;
 
+    // set object's result and id
+
     object[m_result] = result;
     object[m_id]     = request_id;
 
@@ -1160,35 +1245,6 @@ bool dissectInitializeResponse( const DataObject   & object              ,
     return pass;
 }
 
-bool buildShutdownResponse( DataObject        & object     ,
-                            std::ostream      & errors     ,
-                            int                 request_id )
-{
-    bool pass = true;
-
-    DataObject result;
-
-    object[m_result] = result;
-    object[m_id]     = request_id;
-
-    return pass;
-}
-
-bool dissectShutdownResponse( const DataObject   & object     ,
-                                    std::ostream & errors     ,
-                                    int          & request_id )
-{
-    bool pass = true;
-
-    wasp_check( object.contains(m_id) && object[m_id].is_int() );
-
-    request_id = object[m_id].to_int();
-
-    wasp_check( object.contains(m_result) && object[m_result].is_object() );
-
-    return pass;
-}
-
 bool buildCompletionObject( DataObject        & object          ,
                             std::ostream      & errors          ,
                             const std::string & label           ,
@@ -1208,6 +1264,8 @@ bool buildCompletionObject( DataObject        & object          ,
     DataObject text_edit;
     text_edit[m_range]    = DataObject();
     text_edit[m_new_text] = new_text;
+
+    // build range object for the text edit object
 
     pass &= buildRangeObject( *(text_edit[m_range].to_object()) ,
                                 errors                          ,
@@ -1246,6 +1304,8 @@ bool dissectCompletionObject( const DataObject   & object          ,
     wasp_check( object.contains(m_text_edit) && object[m_text_edit].is_object() );
 
     const DataObject& text_edit = *(object[m_text_edit].to_object());
+
+    // dissect the start and end line / char range from the textedit object
 
     wasp_check( text_edit.contains(m_range) && text_edit[m_range].is_object() );
 
@@ -1306,6 +1366,8 @@ bool buildCompletionResponse( DataObject        & object           ,
     result[m_is_incomplete] = is_incomplete;
     result[m_items]         = completion_items;
 
+    // set object's result and id
+
     object[m_result] = result;
     object[m_id]     = request_id;
 
@@ -1352,6 +1414,8 @@ bool buildLocationObject( DataObject        & object          ,
     object[m_range] = DataObject();
     object[m_uri]   = uri;
 
+    // build range object for the location object
+
     pass &= buildRangeObject( *(object[m_range].to_object()) ,
                                 errors                       ,
                                 start_line                   ,
@@ -1376,6 +1440,8 @@ bool dissectLocationObject( const DataObject   & object          ,
 
     uri = object[m_uri].to_string();
 
+    // dissect the start and end line / char range from the location object
+
     wasp_check( object.contains(m_range) && object[m_range].is_object() );
 
     const DataObject& range = *(object[m_range].to_object());
@@ -1398,6 +1464,8 @@ bool buildLocationsResponse( DataObject        & object           ,
     bool pass = true;
 
     DataObject result;
+
+    // set object's result and id
 
     object[m_result] = location_objects;
     object[m_id]     = request_id;
@@ -1436,6 +1504,8 @@ bool buildTextEditObject( DataObject        & object          ,
     object[m_range]    = DataObject();
     object[m_new_text] = new_text;
 
+    // build range object for the text edit object
+
     pass &= buildRangeObject( *(object[m_range].to_object()) ,
                                 errors                       ,
                                 start_line                   ,
@@ -1455,6 +1525,8 @@ bool dissectTextEditObject( const DataObject   & object          ,
                                   std::string  & new_text        )
 {
     bool pass = true;
+
+    // dissect the start and end line / char range from the textedit object
 
     wasp_check( object.contains(m_range) && object[m_range].is_object() );
 
@@ -1482,6 +1554,8 @@ bool buildFormattingResponse( DataObject        & object           ,
     bool pass = true;
 
     DataObject result;
+
+    // set object's result and id
 
     object[m_result] = textedit_objects;
     object[m_id]     = request_id;
@@ -1536,12 +1610,16 @@ bool buildDocumentSymbolObject( DataObject        & object                    ,
         object[m_children] = DataArray();
     }
 
+    // build range object for the symbol object
+
     pass &= buildRangeObject( *(object[m_range].to_object()) ,
                                 errors                       ,
                                 start_line                   ,
                                 start_character              ,
                                 end_line                     ,
                                 end_character                );
+
+    // build selection range object for the symbol object
 
     pass &= buildRangeObject( *(object[m_selection_range].to_object())  ,
                                 errors                                  ,
@@ -1578,6 +1656,8 @@ bool dissectDocumentSymbolObject( const DataObject   & object                   
         return false;
     }
 
+    // dissect the start and end line / char range from the symbol object
+
     wasp_check( object.contains(m_range) && object[m_range].is_object() );
 
     const DataObject& range = *(object[m_range].to_object());
@@ -1588,6 +1668,8 @@ bool dissectDocumentSymbolObject( const DataObject   & object                   
                                 start_character ,
                                 end_line        ,
                                 end_character   );
+
+    // dissect the selection start and end line / char range from the symbol
 
     wasp_check( object.contains(m_selection_range) && object[m_selection_range].is_object() );
 
@@ -1644,6 +1726,8 @@ bool buildSymbolsResponse( DataObject      & object           ,
 
     DataObject result;
 
+    // set object's result and id
+
     object[m_result] = document_symbols;
     object[m_id]     = request_id;
 
@@ -1668,6 +1752,37 @@ bool dissectSymbolsResponse( const DataObject   & object           ,
     return pass;
 }
 
+bool buildShutdownResponse( DataObject        & object     ,
+                            std::ostream      & errors     ,
+                            int                 request_id )
+{
+    bool pass = true;
+
+    DataObject result;
+
+    // set object's result and id
+
+    object[m_result] = result;
+    object[m_id]     = request_id;
+
+    return pass;
+}
+
+bool dissectShutdownResponse( const DataObject   & object     ,
+                                    std::ostream & errors     ,
+                                    int          & request_id )
+{
+    bool pass = true;
+
+    wasp_check( object.contains(m_id) && object[m_id].is_int() );
+
+    request_id = object[m_id].to_int();
+
+    wasp_check( object.contains(m_result) && object[m_result].is_object() );
+
+    return pass;
+}
+
 bool buildErrorResponse( DataObject        & object ,
                          int                 code   ,
                          const std::string & errors )
@@ -1676,8 +1791,12 @@ bool buildErrorResponse( DataObject        & object ,
 
     DataObject error;
 
+    // set error's code and error string
+
     error[m_code]    = code;
     error[m_message] = errors;
+
+    // set object's error
 
     object[m_error] = error;
 
@@ -1853,6 +1972,8 @@ DataArray * getFormattingResponseArray( const DataObject & object )
 
 DataArray * getSymbolChildrenArray( const DataObject & object )
 {
+    // symbol children array can either be 'children' or 'result' if at root
+
     if ( object.contains(m_children) && object[m_children].is_array() )
     {
         return object[m_children].to_array();

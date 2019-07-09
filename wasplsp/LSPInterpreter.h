@@ -95,7 +95,7 @@ class WASP_PUBLIC LSPInterpreter : public Interpreter<TreeNodePool<>>
                     size_t              start_col   = 1u              );
 
     /** Wraps the parseLSP implementation method with Interpreter methods
-     * (1) Calls DOCUMENT_OPEN on the server with the INPUT
+     * (1) Calls DOCUMENT_OPEN on the server with the INPUT string
      * (2) Gets any DIAGNOSTICS from server and adds each to the error_stream
      * (3) Gets DOCUMENT_SYMBOLS from server and traverses creating parse tree
      * @param input - input string

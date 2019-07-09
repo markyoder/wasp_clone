@@ -7,9 +7,13 @@ bool LSPInterpreter::parse( std::istream & inp_stream ,
                             size_t         start_line ,
                             size_t         start_col  )
 {
+    // create an ostringstream from the given istream
+
     std::ostringstream oss;
 
     oss << inp_stream.rdbuf();
+
+    // call parseImpl with the ostringstream's string and "stream input"
 
     return parseImpl( oss.str() , "stream input" , start_line , start_col );
 }
@@ -19,9 +23,13 @@ bool LSPInterpreter::parseStream( std::istream       & inp_stream ,
                                   size_t               start_line ,
                                   size_t               start_col  )
 {
+    // create an ostringstream from the given istream
+
     std::ostringstream oss;
 
     oss << inp_stream.rdbuf();
+
+    // call parseImpl with the ostringstream's string and the given stream name
 
     return parseImpl( oss.str() , sname , start_line , start_col );
 }
@@ -29,7 +37,11 @@ bool LSPInterpreter::parseStream( std::istream       & inp_stream ,
 bool LSPInterpreter::parseFile( const std::string & filename   ,
                                 size_t              start_line )
 {
+    // open the given file
+
     std::ifstream ifs( filename.c_str() );
+
+    // make sure the file stream is good and the file opened
 
     if ( !ifs.good() )
     {
@@ -39,9 +51,13 @@ bool LSPInterpreter::parseFile( const std::string & filename   ,
         return false;
     }
 
+    // read the entire file into an ostringstream
+
     std::ostringstream oss;
 
     oss << ifs.rdbuf();
+
+    // call parseImpl with the ostringstream's string and the given filename
 
     return parseImpl( oss.str() , filename , start_line );
 }
@@ -51,6 +67,8 @@ bool LSPInterpreter::parseString( const std::string & input      ,
                                   size_t              start_line ,
                                   size_t              start_col  )
 {
+    // call parseImpl with the given string and the given string name
+
     return parseImpl( input , sname , start_line , start_col );
 }
 
@@ -59,15 +77,28 @@ bool LSPInterpreter::parseImpl( const std::string & input       ,
                                 size_t              start_line  ,
                                 size_t              start_col   )
 {
+    // set the base interpreter stream_name
+
     Interpreter::m_stream_name = stream_name;
+
+    // set the base interpreter start_line
 
     Interpreter::set_start_line( start_line );
 
+    // set the base interpreter start_column
+
     Interpreter::set_start_column( start_col );
+
+    // call parseLSP to use the connection / server to parse the document
+    // store any diagnostics, and build the parse tree from document symbols
 
     bool parsed = parseLSP( input , stream_name );
 
+    // call the base interpreter commit_stages to finish the parse tree
+
     Interpreter::commit_stages();
+
+    // set the failed flag on the base interpreter to the proper value
 
     Interpreter::set_failed( parsed );
 
@@ -79,7 +110,7 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
 {
     bool pass = true;
 
-    // check that the LSPInterpreter has bveen successfully connected
+    // check that the LSPInterpreter has been successfully connected
 
     if ( !client )
     {
@@ -148,14 +179,14 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
                                  source     ,
                                  message    );
 
-        // the protocol line / col zero based - but the intepreter is one based
+        // protocol line / col zero is based - but the intepreter is one based
 
         start_line++;
         start_char++;
         end_line++;
         end_char++;
 
-        // calculate report line / column using the start_line / start_column                        
+        // calculate report line / column using the start_line / start_column
 
         int report_line = start_line + Interpreter::m_start_line - 1;
 
@@ -294,7 +325,7 @@ bool LSPInterpreter::addSymbolsToTree( SymbolIterator::SP & si )
         return false;
     }
 
-    // the protocol line / col zero based - but the intepreter is one based
+    // protocol line / col zero is based - but the intepreter is one based
 
     symbol_start_line++;
     symbol_start_char++;
