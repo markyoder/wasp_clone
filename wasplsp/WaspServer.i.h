@@ -1066,17 +1066,6 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
                                   "   \"InputName\":  \"" + inputname  + "\","
                                   "   \"InputValue\": \"" + inputvalue + "\"}";
 
-    // get a unique filepath for the temporary json payload file
-
-    std::string temp_json_file_path = tempnam("tmp", "json");
-
-    // open the temporary json payload file and write the parameters
-
-    ofstream myfile;
-    myfile.open (temp_json_file_path);
-    myfile << json_parameters;
-    myfile.close();
-
     // account for possible input variants
 
     if( def->getInputVariantCount() > 0 )
@@ -1108,11 +1097,11 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
                 std::stringstream expanded_result;
 
-                if ( wasp::expand_template( expanded_result     ,
-                                            this->errors        ,
-                                            this->errors        ,
-                                            variant_path        ,
-                                            temp_json_file_path ) )
+                if ( wasp::expand_template( expanded_result ,
+                                            this->errors    ,
+                                            this->errors    ,
+                                            variant_path    ,
+                                            json_parameters ) )
                 {
                     options.push_back( AutoComplete() );
 
@@ -1142,11 +1131,11 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
             std::stringstream expanded_result;
 
-            if ( wasp::expand_template( expanded_result     ,
-                                        this->errors        ,
-                                        this->errors        ,
-                                        template_path       ,
-                                        temp_json_file_path ) )
+            if ( wasp::expand_template( expanded_result ,
+                                        this->errors    ,
+                                        this->errors    ,
+                                        template_path   ,
+                                        json_parameters ) )
             {
                 options.push_back( AutoComplete() );
 
@@ -1159,10 +1148,6 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
             }
         }
     }
-
-    // delete the temporary json payload file since it is no longer needed
-
-    std::remove( temp_json_file_path.c_str() );
 
     return pass;
 }
