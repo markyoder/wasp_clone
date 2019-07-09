@@ -17,6 +17,7 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
     * [DDI](/waspddi/README.md#definition-driven-interpreter)
     * [VII](/waspvii/README.md#vera-input-interpreter)
     * [HALITE](/wasphalite/README.md#halite-engine)
+    * [LSP](/wasplsp/README.md#language-server-protocol)
     * [Utils](/wasputils/README.md#command-line-utilities)
 2. [Getting Started](#getting-started) - code compilation requirements and instructions
     * [Requirements](#requirements)
@@ -98,7 +99,10 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
             * [Iterative File Import using an Array](/wasphalite/README.md#iterative-file-import-using-an-array-or-ranges)
     * [Conditional Blocks](/wasphalite/README.md#conditional-blocks)
 11. [INI](/waspson/README.md#standard-object-notation-son) - configuration file format 
-12. [Utils](/wasputils/README.md#command-line-utilities) - utilities for command line file interaction (listing, validating, selecting, etc.)
+12. [LSP](/wasplsp/README.md#language-server-protocol) - Language Server Protocol support
+    * [WASP Language Server](/wasplsp/README.md#wasp-language-server)
+    * [LSPInterpreter](/wasplsp/README.md#lspinterpreter)
+13. [Utils](/wasputils/README.md#command-line-utilities) - utilities for command line file interaction (listing, validating, selecting, etc.)
     * [File Listing Utilities](/wasputils/README.md#file-listing-utilities)
     * [File Component Selection Utilities](/wasputils/README.md#file-component-selection-utilities)
     * [XML Utilities](/wasputils/README.md#xml-utilities)
@@ -156,7 +160,8 @@ WASP is composed of the following primary components:
     * Supports attribute and expression evaluations.
     * Supports template imports.
     * Supports conditional action blocks.
-12. [__INI__](/waspson/README.md#standard-object-notation-son): configuration file format, supported by SON.
+11. [__INI__](/waspson/README.md#standard-object-notation-son): configuration file format, supported by SON.
+12. [__LSP__](/wasplsp/README.md#language-server-protocol): Language Server Protocol support
 13. [__Utils__](/wasputils/README.md#command-line-utilities) - the wasputils package contains executable utilities for listing/viewing, selecting, validating, and transforming WASP-supported grammars.
     * List: lists paths to each file element.
     * Select: allows using SIREN expression to select pieces of input.
