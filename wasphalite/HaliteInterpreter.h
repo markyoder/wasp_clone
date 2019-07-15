@@ -620,28 +620,25 @@ inline WASP_PUBLIC bool expand_template(std::ostream&      result,
         return true;
     }
 
-    // - if json_parameter_file is a filepath and can be opened by the ifstream,
-    // then use it as the file and parse file contents with the JSONObjectParser
-    // - however, if json_parameter_file cannot be opened as a filepath, then
-    // attempt to treat it as a literal string holding the json parameter file
-    // contents and parse that json string with the JSONObjectParser instead
-    // - this way code calling expand_template() does not needed to write the
-    // json parameter payload file to a temporary file on disk to be read right
-    // back in if it has the json parameter contents already in memory
+    // if json_parameter_file starts with '{' and ends with '}' then treat it as
+    // a string holding the json parameter file contents to parse - otherwise
+    // treat it as a filepath to the json parametr file
 
     DataObject::SP obj_ptr;
     bool json_failed = true;
-    std::ifstream json_file_stream(json_parameter_file);
 
-    if (json_file_stream)
+    if ( json_parameter_file.size()  >   2  &&
+         json_parameter_file.front() == '{' &&
+         json_parameter_file.back()  == '}' )
     {
-        JSONObjectParser generator(obj_ptr, json_file_stream, elog, nullptr);
+        std::istringstream json_input_stream(json_parameter_file);
+        JSONObjectParser generator(obj_ptr, json_input_stream, elog, nullptr);
         json_failed = generator.parse() != 0;
     }
     else
     {
-        std::istringstream iss(json_parameter_file);
-        JSONObjectParser generator(obj_ptr, iss, elog, nullptr);
+        std::ifstream json_file_stream(json_parameter_file);
+        JSONObjectParser generator(obj_ptr, json_file_stream, elog, nullptr);
         json_failed = generator.parse() != 0;
     }
     if (json_failed)
