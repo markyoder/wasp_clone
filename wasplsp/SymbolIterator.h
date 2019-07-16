@@ -22,6 +22,10 @@ class WASP_PUBLIC SymbolIterator
 
         this->symbols_lineage.push_back( &*response );
 
+        // store shared_ptr to response root to prevent dangling pointer
+
+        m_response = response;
+
         // recusively sort each level of symbol tree
 
         this->recursiveSortByPosition();
@@ -86,6 +90,11 @@ class WASP_PUBLIC SymbolIterator
     std::string getErrors() const { return this->errors.str(); }
 
   private:
+
+    /**
+     * @brief m_response - response root shared_ptr to prevent dangling pointer
+     */
+    DataObject::SP m_response;
 
     /**
      * @brief symbols_lineage - vector from root symbol to current set symbol
