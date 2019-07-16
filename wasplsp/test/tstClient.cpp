@@ -91,56 +91,42 @@ TEST(client, document_open_and_diagnostics)
 
     for (int index = 0; index < test_client.getDiagnosticSize(); index++)
     {
-        int         start_line;
-        int         start_character;
-        int         end_line;
-        int         end_character;
-        int         severity;
-        std::string code;
-        std::string source;
-        std::string message;
+        clientDiagnostic diagnostic;
 
-        ASSERT_TRUE ( test_client.getDiagnosticAt( index           ,
-                                                   start_line      ,
-                                                   start_character ,
-                                                   end_line        ,
-                                                   end_character   ,
-                                                   severity        ,
-                                                   code            ,
-                                                   source          ,
-                                                   message         ) );
+        ASSERT_TRUE ( test_client.getDiagnosticAt( index , diagnostic ) );
+
         if ( index == 0 )
         {
-            ASSERT_EQ ( 20                 , start_line      );
-            ASSERT_EQ ( 16                 , start_character );
-            ASSERT_EQ ( 20                 , end_line        );
-            ASSERT_EQ ( 27                 , end_character   );
-            ASSERT_EQ ( 1                  , severity        );
-            ASSERT_EQ ( "test.code.11"     , code            );
-            ASSERT_EQ ( "test_source_11"   , source          );
-            ASSERT_EQ ( "Test message 11." , message         );
+            ASSERT_EQ ( 20                 , diagnostic.start_line      );
+            ASSERT_EQ ( 16                 , diagnostic.start_character );
+            ASSERT_EQ ( 20                 , diagnostic.end_line        );
+            ASSERT_EQ ( 27                 , diagnostic.end_character   );
+            ASSERT_EQ ( 1                  , diagnostic.severity        );
+            ASSERT_EQ ( "test.code.11"     , diagnostic.code            );
+            ASSERT_EQ ( "test_source_11"   , diagnostic.source          );
+            ASSERT_EQ ( "Test message 11." , diagnostic.message         );
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( 28                 , start_line      );
-            ASSERT_EQ ( 56                 , start_character );
-            ASSERT_EQ ( 34                 , end_line        );
-            ASSERT_EQ ( 27                 , end_character   );
-            ASSERT_EQ ( 2                  , severity        );
-            ASSERT_EQ ( "test.code.22"     , code            );
-            ASSERT_EQ ( "test_source_22"   , source          );
-            ASSERT_EQ ( "Test message 22." , message         );
+            ASSERT_EQ ( 28                 , diagnostic.start_line      );
+            ASSERT_EQ ( 56                 , diagnostic.start_character );
+            ASSERT_EQ ( 34                 , diagnostic.end_line        );
+            ASSERT_EQ ( 27                 , diagnostic.end_character   );
+            ASSERT_EQ ( 2                  , diagnostic.severity        );
+            ASSERT_EQ ( "test.code.22"     , diagnostic.code            );
+            ASSERT_EQ ( "test_source_22"   , diagnostic.source          );
+            ASSERT_EQ ( "Test message 22." , diagnostic.message         );
         }
         else if ( index == 2 )
         {
-            ASSERT_EQ ( 47                 , start_line      );
-            ASSERT_EQ ( 36                 , start_character );
-            ASSERT_EQ ( 47                 , end_line        );
-            ASSERT_EQ ( 43                 , end_character   );
-            ASSERT_EQ ( 3                  , severity        );
-            ASSERT_EQ ( "test.code.33"     , code            );
-            ASSERT_EQ ( "test_source_33"   , source          );
-            ASSERT_EQ ( "Test message 33." , message         );
+            ASSERT_EQ ( 47                 , diagnostic.start_line      );
+            ASSERT_EQ ( 36                 , diagnostic.start_character );
+            ASSERT_EQ ( 47                 , diagnostic.end_line        );
+            ASSERT_EQ ( 43                 , diagnostic.end_character   );
+            ASSERT_EQ ( 3                  , diagnostic.severity        );
+            ASSERT_EQ ( "test.code.33"     , diagnostic.code            );
+            ASSERT_EQ ( "test_source_33"   , diagnostic.source          );
+            ASSERT_EQ ( "Test message 33." , diagnostic.message         );
         }
     }
 }
@@ -179,45 +165,31 @@ TEST(client, document_change_and_diagnostics)
 
     for (int index = 0; index < test_client.getDiagnosticSize(); index++)
     {
-        int         start_line;
-        int         start_character;
-        int         end_line;
-        int         end_character;
-        int         severity;
-        std::string code;
-        std::string source;
-        std::string message;
+        clientDiagnostic diagnostic;
 
-        ASSERT_TRUE ( test_client.getDiagnosticAt( index           ,
-                                                   start_line      ,
-                                                   start_character ,
-                                                   end_line        ,
-                                                   end_character   ,
-                                                   severity        ,
-                                                   code            ,
-                                                   source          ,
-                                                   message         ) );
+        ASSERT_TRUE ( test_client.getDiagnosticAt( index , diagnostic ) );
+
         if ( index == 0 )
         {
-            ASSERT_EQ ( 67                 , start_line      );
-            ASSERT_EQ ( 45                 , start_character );
-            ASSERT_EQ ( 68                 , end_line        );
-            ASSERT_EQ ( 16                 , end_character   );
-            ASSERT_EQ ( 4                  , severity        );
-            ASSERT_EQ ( "test.code.44"     , code            );
-            ASSERT_EQ ( "test_source_44"   , source          );
-            ASSERT_EQ ( "Test message 44." , message         );
+            ASSERT_EQ ( 67                 , diagnostic.start_line      );
+            ASSERT_EQ ( 45                 , diagnostic.start_character );
+            ASSERT_EQ ( 68                 , diagnostic.end_line        );
+            ASSERT_EQ ( 16                 , diagnostic.end_character   );
+            ASSERT_EQ ( 4                  , diagnostic.severity        );
+            ASSERT_EQ ( "test.code.44"     , diagnostic.code            );
+            ASSERT_EQ ( "test_source_44"   , diagnostic.source          );
+            ASSERT_EQ ( "Test message 44." , diagnostic.message         );
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( 87                 , start_line      );
-            ASSERT_EQ ( 17                 , start_character );
-            ASSERT_EQ ( 88                 , end_line        );
-            ASSERT_EQ ( 12                 , end_character   );
-            ASSERT_EQ ( 1                  , severity        );
-            ASSERT_EQ ( "test.code.55"     , code            );
-            ASSERT_EQ ( "test_source_55"   , source          );
-            ASSERT_EQ ( "Test message 55." , message         );
+            ASSERT_EQ ( 87                 , diagnostic.start_line      );
+            ASSERT_EQ ( 17                 , diagnostic.start_character );
+            ASSERT_EQ ( 88                 , diagnostic.end_line        );
+            ASSERT_EQ ( 12                 , diagnostic.end_character   );
+            ASSERT_EQ ( 1                  , diagnostic.severity        );
+            ASSERT_EQ ( "test.code.55"     , diagnostic.code            );
+            ASSERT_EQ ( "test_source_55"   , diagnostic.source          );
+            ASSERT_EQ ( "Test message 55." , diagnostic.message         );
         }
     }
 }
@@ -244,71 +216,51 @@ TEST(client, document_completion_and_responses)
 
     for (int index = 0; index < test_client.getCompletionSize(); index++)
     {
-        std::string label;
-        int         start_line;
-        int         start_character;
-        int         end_line;
-        int         end_character;
-        std::string new_text;
-        int         kind;
-        std::string detail;
-        std::string documentation;
-        bool        deprecated;
-        bool        preselect;
+        clientCompletion completion;
 
-        ASSERT_TRUE ( test_client.getCompletionAt( index           ,
-                                                   label           ,
-                                                   start_line      ,
-                                                   start_character ,
-                                                   end_line        ,
-                                                   end_character   ,
-                                                   new_text        ,
-                                                   kind            ,
-                                                   detail          ,
-                                                   documentation   ,
-                                                   deprecated      ,
-                                                   preselect       ) );
+        ASSERT_TRUE ( test_client.getCompletionAt( index , completion ) );
+
         if ( index == 0 )
         {
-            ASSERT_EQ ( "test-label-1"         , label           );
-            ASSERT_EQ ( 11                     , start_line      );
-            ASSERT_EQ ( 11                     , start_character );
-            ASSERT_EQ ( 11                     , end_line        );
-            ASSERT_EQ ( 11                     , end_character   );
-            ASSERT_EQ ( "test-insert-text-1"   , new_text        );
-            ASSERT_EQ ( 1                      , kind            );
-            ASSERT_EQ ( "test type info 1"     , detail          );
-            ASSERT_EQ ( "test documentation 1" , documentation   );
-            ASSERT_EQ ( false                  , deprecated      );
-            ASSERT_EQ ( true                   , preselect       );
+            ASSERT_EQ ( "test-label-1"         , completion.label           );
+            ASSERT_EQ ( 11                     , completion.start_line      );
+            ASSERT_EQ ( 11                     , completion.start_character );
+            ASSERT_EQ ( 11                     , completion.end_line        );
+            ASSERT_EQ ( 11                     , completion.end_character   );
+            ASSERT_EQ ( "test-insert-text-1"   , completion.new_text        );
+            ASSERT_EQ ( 1                      , completion.kind            );
+            ASSERT_EQ ( "test type info 1"     , completion.detail          );
+            ASSERT_EQ ( "test documentation 1" , completion.documentation   );
+            ASSERT_EQ ( false                  , completion.deprecated      );
+            ASSERT_EQ ( true                   , completion.preselect       );
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( "test-label-2"         , label           );
-            ASSERT_EQ ( 22                     , start_line      );
-            ASSERT_EQ ( 22                     , start_character );
-            ASSERT_EQ ( 22                     , end_line        );
-            ASSERT_EQ ( 22                     , end_character   );
-            ASSERT_EQ ( "test-insert-text-2"   , new_text        );
-            ASSERT_EQ ( 2                      , kind            );
-            ASSERT_EQ ( "test type info 2"     , detail          );
-            ASSERT_EQ ( "test documentation 2" , documentation   );
-            ASSERT_EQ ( false                  , deprecated      );
-            ASSERT_EQ ( false                  , preselect       );
+            ASSERT_EQ ( "test-label-2"         , completion.label           );
+            ASSERT_EQ ( 22                     , completion.start_line      );
+            ASSERT_EQ ( 22                     , completion.start_character );
+            ASSERT_EQ ( 22                     , completion.end_line        );
+            ASSERT_EQ ( 22                     , completion.end_character   );
+            ASSERT_EQ ( "test-insert-text-2"   , completion.new_text        );
+            ASSERT_EQ ( 2                      , completion.kind            );
+            ASSERT_EQ ( "test type info 2"     , completion.detail          );
+            ASSERT_EQ ( "test documentation 2" , completion.documentation   );
+            ASSERT_EQ ( false                  , completion.deprecated      );
+            ASSERT_EQ ( false                  , completion.preselect       );
         }
         else if ( index == 2 )
         {
-            ASSERT_EQ ( "test-label-3"         , label           );
-            ASSERT_EQ ( 33                     , start_line      );
-            ASSERT_EQ ( 33                     , start_character );
-            ASSERT_EQ ( 33                     , end_line        );
-            ASSERT_EQ ( 33                     , end_character   );
-            ASSERT_EQ ( "test-insert-text-3"   , new_text        );
-            ASSERT_EQ ( 3                      , kind            );
-            ASSERT_EQ ( "test type info 3"     , detail          );
-            ASSERT_EQ ( "test documentation 3" , documentation   );
-            ASSERT_EQ ( false                  , deprecated      );
-            ASSERT_EQ ( false                  , preselect       );
+            ASSERT_EQ ( "test-label-3"         , completion.label           );
+            ASSERT_EQ ( 33                     , completion.start_line      );
+            ASSERT_EQ ( 33                     , completion.start_character );
+            ASSERT_EQ ( 33                     , completion.end_line        );
+            ASSERT_EQ ( 33                     , completion.end_character   );
+            ASSERT_EQ ( "test-insert-text-3"   , completion.new_text        );
+            ASSERT_EQ ( 3                      , completion.kind            );
+            ASSERT_EQ ( "test type info 3"     , completion.detail          );
+            ASSERT_EQ ( "test documentation 3" , completion.documentation   );
+            ASSERT_EQ ( false                  , completion.deprecated      );
+            ASSERT_EQ ( false                  , completion.preselect       );
         }
     }
 }
@@ -335,36 +287,30 @@ TEST(client, document_definition_and_responses)
 
     for (int index = 0; index < test_client.getDefinitionSize(); index++)
     {
-        int         start_line;
-        int         start_character;
-        int         end_line;
-        int         end_character;
+        clientDefinition definition;
 
-        ASSERT_TRUE ( test_client.getDefinitionAt( index           ,
-                                                   start_line      ,
-                                                   start_character ,
-                                                   end_line        ,
-                                                   end_character   ) );
+        ASSERT_TRUE ( test_client.getDefinitionAt( index , definition ) );
+
         if ( index == 0 )
         {
-            ASSERT_EQ ( 11 , start_line      );
-            ASSERT_EQ ( 11 , start_character );
-            ASSERT_EQ ( 11 , end_line        );
-            ASSERT_EQ ( 11 , end_character   );
+            ASSERT_EQ ( 11 , definition.start_line      );
+            ASSERT_EQ ( 11 , definition.start_character );
+            ASSERT_EQ ( 11 , definition.end_line        );
+            ASSERT_EQ ( 11 , definition.end_character   );
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( 22 , start_line      );
-            ASSERT_EQ ( 22 , start_character );
-            ASSERT_EQ ( 22 , end_line        );
-            ASSERT_EQ ( 22 , end_character   );
+            ASSERT_EQ ( 22 , definition.start_line      );
+            ASSERT_EQ ( 22 , definition.start_character );
+            ASSERT_EQ ( 22 , definition.end_line        );
+            ASSERT_EQ ( 22 , definition.end_character   );
         }
         else if ( index == 2 )
         {
-            ASSERT_EQ ( 33 , start_line      );
-            ASSERT_EQ ( 33 , start_character );
-            ASSERT_EQ ( 33 , end_line        );
-            ASSERT_EQ ( 33 , end_character   );
+            ASSERT_EQ ( 33 , definition.start_line      );
+            ASSERT_EQ ( 33 , definition.start_character );
+            ASSERT_EQ ( 33 , definition.end_line        );
+            ASSERT_EQ ( 33 , definition.end_character   );
         }
     }
 }
@@ -393,29 +339,23 @@ TEST(client, document_references_and_responses)
 
     for (int index = 0; index < test_client.getReferencesSize(); index++)
     {
-        int         start_line;
-        int         start_character;
-        int         end_line;
-        int         end_character;
+        clientReference references;
 
-        ASSERT_TRUE ( test_client.getReferencesAt( index           ,
-                                                   start_line      ,
-                                                   start_character ,
-                                                   end_line        ,
-                                                   end_character   ) );
+        ASSERT_TRUE ( test_client.getReferencesAt( index , references ) );
+
         if ( index == 0 )
         {
-            ASSERT_EQ ( 44 , start_line      );
-            ASSERT_EQ ( 44 , start_character );
-            ASSERT_EQ ( 44 , end_line        );
-            ASSERT_EQ ( 44 , end_character   );
+            ASSERT_EQ ( 44 , references.start_line      );
+            ASSERT_EQ ( 44 , references.start_character );
+            ASSERT_EQ ( 44 , references.end_line        );
+            ASSERT_EQ ( 44 , references.end_character   );
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( 55 , start_line      );
-            ASSERT_EQ ( 55 , start_character );
-            ASSERT_EQ ( 55 , end_line        );
-            ASSERT_EQ ( 55 , end_character   );
+            ASSERT_EQ ( 55 , references.start_line      );
+            ASSERT_EQ ( 55 , references.start_character );
+            ASSERT_EQ ( 55 , references.end_line        );
+            ASSERT_EQ ( 55 , references.end_character   );
         }
     }
 }
@@ -450,41 +390,33 @@ TEST(client, document_formatting_and_responses)
 
     for (int index = 0; index < test_client.getFormattingSize(); index++)
     {
-        int         start_line;
-        int         start_character;
-        int         end_line;
-        int         end_character;
-        std::string new_text;
+        clientFormatting formatting;
 
-        ASSERT_TRUE ( test_client.getFormattingAt( index           ,
-                                                   start_line      ,
-                                                   start_character ,
-                                                   end_line        ,
-                                                   end_character   ,
-                                                   new_text        ) );
+        ASSERT_TRUE ( test_client.getFormattingAt( index , formatting ) );
+
         if ( index == 0 )
         {
-            ASSERT_EQ ( 10                                   , start_line      );
-            ASSERT_EQ ( 01                                   , start_character );
-            ASSERT_EQ ( 14                                   , end_line        );
-            ASSERT_EQ ( 03                                   , end_character   );
-            ASSERT_EQ ( "test\n  new\n  text\n  format\n  1" , new_text        );
+            ASSERT_EQ ( 10                                   , formatting.start_line      );
+            ASSERT_EQ ( 01                                   , formatting.start_character );
+            ASSERT_EQ ( 14                                   , formatting.end_line        );
+            ASSERT_EQ ( 03                                   , formatting.end_character   );
+            ASSERT_EQ ( "test\n  new\n  text\n  format\n  1" , formatting.new_text        );
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( 20                                   , start_line      );
-            ASSERT_EQ ( 01                                   , start_character );
-            ASSERT_EQ ( 24                                   , end_line        );
-            ASSERT_EQ ( 03                                   , end_character   );
-            ASSERT_EQ ( "test\n  new\n  text\n  format\n  2" , new_text        );
+            ASSERT_EQ ( 20                                   , formatting.start_line      );
+            ASSERT_EQ ( 01                                   , formatting.start_character );
+            ASSERT_EQ ( 24                                   , formatting.end_line        );
+            ASSERT_EQ ( 03                                   , formatting.end_character   );
+            ASSERT_EQ ( "test\n  new\n  text\n  format\n  2" , formatting.new_text        );
         }
         else if ( index == 2 )
         {
-            ASSERT_EQ ( 30                                   , start_line      );
-            ASSERT_EQ ( 01                                   , start_character );
-            ASSERT_EQ ( 34                                   , end_line        );
-            ASSERT_EQ ( 03                                   , end_character   );
-            ASSERT_EQ ( "test\n  new\n  text\n  format\n  3" , new_text        );
+            ASSERT_EQ ( 30                                   , formatting.start_line      );
+            ASSERT_EQ ( 01                                   , formatting.start_character );
+            ASSERT_EQ ( 34                                   , formatting.end_line        );
+            ASSERT_EQ ( 03                                   , formatting.end_character   );
+            ASSERT_EQ ( "test\n  new\n  text\n  format\n  3" , formatting.new_text        );
         }
     }
 }

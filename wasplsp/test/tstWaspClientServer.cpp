@@ -137,89 +137,75 @@ object
 
     for (int index = 0; index < client.getDiagnosticSize(); index++)
     {
-        int         start_line;
-        int         start_character;
-        int         end_line;
-        int         end_character;
-        int         severity;
-        std::string code;
-        std::string source;
-        std::string message;
+        clientDiagnostic diagnostic;
 
-        ASSERT_TRUE ( client.getDiagnosticAt( index           ,
-                                              start_line      ,
-                                              start_character ,
-                                              end_line        ,
-                                              end_character   ,
-                                              severity        ,
-                                              code            ,
-                                              source          ,
-                                              message         ) );
+        ASSERT_TRUE ( client.getDiagnosticAt( index , diagnostic ) );
+
         if ( index == 0 )
         {
-            ASSERT_EQ ( 15       , start_line      );
-            ASSERT_EQ ( 00       , start_character );
-            ASSERT_EQ ( 15       , end_line        );
-            ASSERT_EQ ( 00       , end_character   );
-            ASSERT_EQ ( 01       , severity        );
-            ASSERT_EQ ( "parse"  , code            );
-            ASSERT_EQ ( "parser" , source          );
-            ASSERT_EQ ( "syntax error, unexpected }" , message         );
+            ASSERT_EQ ( 15       , diagnostic.start_line      );
+            ASSERT_EQ ( 00       , diagnostic.start_character );
+            ASSERT_EQ ( 15       , diagnostic.end_line        );
+            ASSERT_EQ ( 00       , diagnostic.end_character   );
+            ASSERT_EQ ( 01       , diagnostic.severity        );
+            ASSERT_EQ ( "parse"  , diagnostic.code            );
+            ASSERT_EQ ( "parser" , diagnostic.source          );
+            ASSERT_EQ ( "syntax error, unexpected }" , diagnostic.message );
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( 02          , start_line      );
-            ASSERT_EQ ( 00          , start_character );
-            ASSERT_EQ ( 02          , end_line        );
-            ASSERT_EQ ( 00          , end_character   );
-            ASSERT_EQ ( 01          , severity        );
-            ASSERT_EQ ( "validate"  , code            );
-            ASSERT_EQ ( "validator" , source          );
-            ASSERT_EQ ( "Validation Error: document has 1 \"object\" occurrences - when there should be a minimum occurrence of 3" , message         );
+            ASSERT_EQ ( 02          , diagnostic.start_line      );
+            ASSERT_EQ ( 00          , diagnostic.start_character );
+            ASSERT_EQ ( 02          , diagnostic.end_line        );
+            ASSERT_EQ ( 00          , diagnostic.end_character   );
+            ASSERT_EQ ( 01          , diagnostic.severity        );
+            ASSERT_EQ ( "validate"  , diagnostic.code            );
+            ASSERT_EQ ( "validator" , diagnostic.source          );
+            ASSERT_EQ ( "Validation Error: document has 1 \"object\" occurrences - when there should be a minimum occurrence of 3" , diagnostic.message );
         }
         else if ( index == 2 )
         {
-            ASSERT_EQ ( 02          , start_line      );
-            ASSERT_EQ ( 00          , start_character );
-            ASSERT_EQ ( 02          , end_line        );
-            ASSERT_EQ ( 00          , end_character   );
-            ASSERT_EQ ( 01          , severity        );
-            ASSERT_EQ ( "validate"  , code            );
-            ASSERT_EQ ( "validator" , source          );
-            ASSERT_EQ ( "Validation Error: object has 2 \"key\" occurrences - when there should be a maximum occurrence of 1" , message         );
+            ASSERT_EQ ( 02          , diagnostic.start_line      );
+            ASSERT_EQ ( 00          , diagnostic.start_character );
+            ASSERT_EQ ( 02          , diagnostic.end_line        );
+            ASSERT_EQ ( 00          , diagnostic.end_character   );
+            ASSERT_EQ ( 01          , diagnostic.severity        );
+            ASSERT_EQ ( "validate"  , diagnostic.code            );
+            ASSERT_EQ ( "validator" , diagnostic.source          );
+            ASSERT_EQ ( "Validation Error: object has 2 \"key\" occurrences - when there should be a maximum occurrence of 1" , diagnostic.message );
         }
         else if ( index == 3 )
         {
-            ASSERT_EQ ( 06          , start_line      );
-            ASSERT_EQ ( 04          , start_character );
-            ASSERT_EQ ( 06          , end_line        );
-            ASSERT_EQ ( 04          , end_character   );
-            ASSERT_EQ ( 01          , severity        );
-            ASSERT_EQ ( "validate"  , code            );
-            ASSERT_EQ ( "validator" , source          );
-            ASSERT_EQ ( "Validation Error: list has 6 \"value\" occurrences - when there should be a maximum occurrence of 5" , message         );
+            ASSERT_EQ ( 06          , diagnostic.start_line      );
+            ASSERT_EQ ( 04          , diagnostic.start_character );
+            ASSERT_EQ ( 06          , diagnostic.end_line        );
+            ASSERT_EQ ( 04          , diagnostic.end_character   );
+            ASSERT_EQ ( 01          , diagnostic.severity        );
+            ASSERT_EQ ( "validate"  , diagnostic.code            );
+            ASSERT_EQ ( "validator" , diagnostic.source          );
+            ASSERT_EQ ( "Validation Error: list has 6 \"value\" occurrences - when there should be a maximum occurrence of 5" , diagnostic.message );
         }
         else if ( index == 4 )
         {
-            ASSERT_EQ ( 06          , start_line      );
-            ASSERT_EQ ( 15          , start_character );
-            ASSERT_EQ ( 06          , end_line        );
-            ASSERT_EQ ( 15          , end_character   );
-            ASSERT_EQ ( 01          , severity        );
-            ASSERT_EQ ( "validate"  , code            );
-            ASSERT_EQ ( "validator" , source          );
-            ASSERT_EQ ( "Validation Error: list value \"-2\" is less than the allowed minimum inclusive value of 0" , message         );
+            ASSERT_EQ ( 06          , diagnostic.start_line      );
+            ASSERT_EQ ( 15          , diagnostic.start_character );
+            ASSERT_EQ ( 06          , diagnostic.end_line        );
+            ASSERT_EQ ( 15          , diagnostic.end_character   );
+            ASSERT_EQ ( 01          , diagnostic.severity        );
+            ASSERT_EQ ( "validate"  , diagnostic.code            );
+            ASSERT_EQ ( "validator" , diagnostic.source          );
+            ASSERT_EQ ( "Validation Error: list value \"-2\" is less than the allowed minimum inclusive value of 0" , diagnostic.message );
         }
         else if ( index == 5 )
         {
-            ASSERT_EQ ( 06          , start_line      );
-            ASSERT_EQ ( 18          , start_character );
-            ASSERT_EQ ( 06          , end_line        );
-            ASSERT_EQ ( 18          , end_character   );
-            ASSERT_EQ ( 01          , severity        );
-            ASSERT_EQ ( "validate"  , code            );
-            ASSERT_EQ ( "validator" , source          );
-            ASSERT_EQ ( "Validation Error: list value \"-9\" is less than the allowed minimum inclusive value of 0" , message         );
+            ASSERT_EQ ( 06          , diagnostic.start_line      );
+            ASSERT_EQ ( 18          , diagnostic.start_character );
+            ASSERT_EQ ( 06          , diagnostic.end_line        );
+            ASSERT_EQ ( 18          , diagnostic.end_character   );
+            ASSERT_EQ ( 01          , diagnostic.severity        );
+            ASSERT_EQ ( "validate"  , diagnostic.code            );
+            ASSERT_EQ ( "validator" , diagnostic.source          );
+            ASSERT_EQ ( "Validation Error: list value \"-9\" is less than the allowed minimum inclusive value of 0" , diagnostic.message );
         }
     }
 }
@@ -273,78 +259,64 @@ object
 
     for (int index = 0; index < client.getDiagnosticSize(); index++)
     {
-        int         start_line;
-        int         start_character;
-        int         end_line;
-        int         end_character;
-        int         severity;
-        std::string code;
-        std::string source;
-        std::string message;
+        clientDiagnostic diagnostic;
 
-        ASSERT_TRUE ( client.getDiagnosticAt( index           ,
-                                              start_line      ,
-                                              start_character ,
-                                              end_line        ,
-                                              end_character   ,
-                                              severity        ,
-                                              code            ,
-                                              source          ,
-                                              message         ) );
+        ASSERT_TRUE ( client.getDiagnosticAt( index , diagnostic ) );
+
         if ( index == 0 )
         {
-            ASSERT_EQ ( 02          , start_line      );
-            ASSERT_EQ ( 00          , start_character );
-            ASSERT_EQ ( 02          , end_line        );
-            ASSERT_EQ ( 00          , end_character   );
-            ASSERT_EQ ( 01          , severity        );
-            ASSERT_EQ ( "validate"  , code            );
-            ASSERT_EQ ( "validator" , source          );
-            ASSERT_EQ ( "Validation Error: document has 2 \"object\" occurrences - when there should be a minimum occurrence of 3" , message         );
+            ASSERT_EQ ( 02          , diagnostic.start_line      );
+            ASSERT_EQ ( 00          , diagnostic.start_character );
+            ASSERT_EQ ( 02          , diagnostic.end_line        );
+            ASSERT_EQ ( 00          , diagnostic.end_character   );
+            ASSERT_EQ ( 01          , diagnostic.severity        );
+            ASSERT_EQ ( "validate"  , diagnostic.code            );
+            ASSERT_EQ ( "validator" , diagnostic.source          );
+            ASSERT_EQ ( "Validation Error: document has 2 \"object\" occurrences - when there should be a minimum occurrence of 3" , diagnostic.message );
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( 05          , start_line      );
-            ASSERT_EQ ( 15          , start_character );
-            ASSERT_EQ ( 05          , end_line        );
-            ASSERT_EQ ( 15          , end_character   );
-            ASSERT_EQ ( 01          , severity        );
-            ASSERT_EQ ( "validate"  , code            );
-            ASSERT_EQ ( "validator" , source          );
-            ASSERT_EQ ( "Validation Error: list value \"-2\" is less than the allowed minimum inclusive value of 0" , message         );
+            ASSERT_EQ ( 05          , diagnostic.start_line      );
+            ASSERT_EQ ( 15          , diagnostic.start_character );
+            ASSERT_EQ ( 05          , diagnostic.end_line        );
+            ASSERT_EQ ( 15          , diagnostic.end_character   );
+            ASSERT_EQ ( 01          , diagnostic.severity        );
+            ASSERT_EQ ( "validate"  , diagnostic.code            );
+            ASSERT_EQ ( "validator" , diagnostic.source          );
+            ASSERT_EQ ( "Validation Error: list value \"-2\" is less than the allowed minimum inclusive value of 0" , diagnostic.message );
         }
         else if ( index == 2 )
         {
-            ASSERT_EQ ( 05          , start_line      );
-            ASSERT_EQ ( 18          , start_character );
-            ASSERT_EQ ( 05          , end_line        );
-            ASSERT_EQ ( 18          , end_character   );
-            ASSERT_EQ ( 01          , severity        );
-            ASSERT_EQ ( "validate"  , code            );
-            ASSERT_EQ ( "validator" , source          );
-            ASSERT_EQ ( "Validation Error: list value \"-9\" is less than the allowed minimum inclusive value of 0" , message         );
+            ASSERT_EQ ( 05          , diagnostic.start_line      );
+            ASSERT_EQ ( 18          , diagnostic.start_character );
+            ASSERT_EQ ( 05          , diagnostic.end_line        );
+            ASSERT_EQ ( 18          , diagnostic.end_character   );
+            ASSERT_EQ ( 01          , diagnostic.severity        );
+            ASSERT_EQ ( "validate"  , diagnostic.code            );
+            ASSERT_EQ ( "validator" , diagnostic.source          );
+            ASSERT_EQ ( "Validation Error: list value \"-9\" is less than the allowed minimum inclusive value of 0" , diagnostic.message );
         }
         else if ( index == 3 )
         {
-            ASSERT_EQ ( 11          , start_line      );
-            ASSERT_EQ ( 11          , start_character );
-            ASSERT_EQ ( 11          , end_line        );
-            ASSERT_EQ ( 11          , end_character   );
-            ASSERT_EQ ( 01          , severity        );
-            ASSERT_EQ ( "validate"  , code            );
-            ASSERT_EQ ( "validator" , source          );
-            ASSERT_EQ ( "Validation Error: key value \"-4.6\" is less than the allowed minimum inclusive value of 0" , message         );
+            ASSERT_EQ ( 11          , diagnostic.start_line      );
+            ASSERT_EQ ( 11          , diagnostic.start_character );
+            ASSERT_EQ ( 11          , diagnostic.end_line        );
+            ASSERT_EQ ( 11          , diagnostic.end_character   );
+            ASSERT_EQ ( 01          , diagnostic.severity        );
+            ASSERT_EQ ( "validate"  , diagnostic.code            );
+            ASSERT_EQ ( "validator" , diagnostic.source          );
+            ASSERT_EQ ( "Validation Error: key value \"-4.6\" is less than the allowed minimum inclusive value of 0" , diagnostic.message );
         }
         else if ( index == 4 )
         {
-            ASSERT_EQ ( 14          , start_line      );
-            ASSERT_EQ ( 04          , start_character );
-            ASSERT_EQ ( 14          , end_line        );
-            ASSERT_EQ ( 04          , end_character   );
-            ASSERT_EQ ( 01          , severity        );
-            ASSERT_EQ ( "validate"  , code            );
-            ASSERT_EQ ( "validator" , source          );
-            ASSERT_EQ ( "Validation Error: food value \"red\" is not one of the allowed values: [ \"apple\" \"kiwi\" \"orange\" \"potato\" \"tomato\" ]" , message         );
+            ASSERT_EQ ( 14          , diagnostic.start_line      );
+            ASSERT_EQ ( 04          , diagnostic.start_character );
+            ASSERT_EQ ( 14          , diagnostic.end_line        );
+            ASSERT_EQ ( 04          , diagnostic.end_character   );
+            ASSERT_EQ ( 01          , diagnostic.severity        );
+            ASSERT_EQ ( "validate"  , diagnostic.code            );
+            ASSERT_EQ ( "validator" , diagnostic.source          );
+            ASSERT_EQ ( "Validation Error: food value \"red\" is not one of the allowed values: [ \"apple\" \"kiwi\" \"orange\" \"potato\" \"tomato\" ]" , diagnostic.message );
         }
     }
 }
@@ -433,99 +405,79 @@ TEST(client, document_completion_existsin)
 
     for (int index = 0; index < client.getCompletionSize(); index++)
     {
-        std::string label;
-        int         start_line;
-        int         start_character;
-        int         end_line;
-        int         end_character;
-        std::string new_text;
-        int         kind;
-        std::string detail;
-        std::string documentation;
-        bool        deprecated;
-        bool        preselect;
+        clientCompletion completion;
 
-        ASSERT_TRUE ( client.getCompletionAt( index           ,
-                                              label           ,
-                                              start_line      ,
-                                              start_character ,
-                                              end_line        ,
-                                              end_character   ,
-                                              new_text        ,
-                                              kind            ,
-                                              detail          ,
-                                              documentation   ,
-                                              deprecated      ,
-                                              preselect       ) );
+        ASSERT_TRUE ( client.getCompletionAt( index , completion ) );
+
         if ( index == 0 )
         {
-            ASSERT_EQ ( "-2"       , label           );
-            ASSERT_EQ ( 07         , start_line      );
-            ASSERT_EQ ( 12         , start_character );
-            ASSERT_EQ ( 07         , end_line        );
-            ASSERT_EQ ( 12         , end_character   );
-            ASSERT_EQ ( "-2"       , new_text        );
-            ASSERT_EQ ( 1          , kind            );
-            ASSERT_EQ ( "existsin" , detail          );
-            ASSERT_EQ ( "-2"       , documentation   );
-            ASSERT_EQ ( false      , deprecated      );
-            ASSERT_EQ ( false      , preselect       );
+            ASSERT_EQ ( "-2"       , completion.label           );
+            ASSERT_EQ ( 07         , completion.start_line      );
+            ASSERT_EQ ( 12         , completion.start_character );
+            ASSERT_EQ ( 07         , completion.end_line        );
+            ASSERT_EQ ( 12         , completion.end_character   );
+            ASSERT_EQ ( "-2"       , completion.new_text        );
+            ASSERT_EQ ( 1          , completion.kind            );
+            ASSERT_EQ ( "existsin" , completion.detail          );
+            ASSERT_EQ ( "-2"       , completion.documentation   );
+            ASSERT_EQ ( false      , completion.deprecated      );
+            ASSERT_EQ ( false      , completion.preselect       );
         }
         if ( index == 1 )
         {
-            ASSERT_EQ ( "-9"       , label           );
-            ASSERT_EQ ( 07         , start_line      );
-            ASSERT_EQ ( 12         , start_character );
-            ASSERT_EQ ( 07         , end_line        );
-            ASSERT_EQ ( 12         , end_character   );
-            ASSERT_EQ ( "-9"       , new_text        );
-            ASSERT_EQ ( 1          , kind            );
-            ASSERT_EQ ( "existsin" , detail          );
-            ASSERT_EQ ( "-9"       , documentation   );
-            ASSERT_EQ ( false      , deprecated      );
-            ASSERT_EQ ( false      , preselect       );
+            ASSERT_EQ ( "-9"       , completion.label           );
+            ASSERT_EQ ( 07         , completion.start_line      );
+            ASSERT_EQ ( 12         , completion.start_character );
+            ASSERT_EQ ( 07         , completion.end_line        );
+            ASSERT_EQ ( 12         , completion.end_character   );
+            ASSERT_EQ ( "-9"       , completion.new_text        );
+            ASSERT_EQ ( 1          , completion.kind            );
+            ASSERT_EQ ( "existsin" , completion.detail          );
+            ASSERT_EQ ( "-9"       , completion.documentation   );
+            ASSERT_EQ ( false      , completion.deprecated      );
+            ASSERT_EQ ( false      , completion.preselect       );
         }
         if ( index == 2 )
         {
-            ASSERT_EQ ( "009"      , label           );
-            ASSERT_EQ ( 07         , start_line      );
-            ASSERT_EQ ( 12         , start_character );
-            ASSERT_EQ ( 07         , end_line        );
-            ASSERT_EQ ( 12         , end_character   );
-            ASSERT_EQ ( "009"      , new_text        );
-            ASSERT_EQ ( 1          , kind            );
-            ASSERT_EQ ( "existsin" , detail          );
-            ASSERT_EQ ( "009"      , documentation   );
-            ASSERT_EQ ( false      , deprecated      );
-            ASSERT_EQ ( false      , preselect       );
+            ASSERT_EQ ( "009"      , completion.label           );
+            ASSERT_EQ ( 07         , completion.start_line      );
+            ASSERT_EQ ( 12         , completion.start_character );
+            ASSERT_EQ ( 07         , completion.end_line        );
+            ASSERT_EQ ( 12         , completion.end_character   );
+            ASSERT_EQ ( "009"      , completion.new_text        );
+            ASSERT_EQ ( 1          , completion.kind            );
+            ASSERT_EQ ( "existsin" , completion.detail          );
+            ASSERT_EQ ( "009"      , completion.documentation   );
+            ASSERT_EQ ( false      , completion.deprecated      );
+            ASSERT_EQ ( false      , completion.preselect       );
         }
         if ( index == 3 )
         {
-            ASSERT_EQ ( "5"        , label           );
-            ASSERT_EQ ( 07         , start_line      );
-            ASSERT_EQ ( 12         , start_character );
-            ASSERT_EQ ( 07         , end_line        );
-            ASSERT_EQ ( 12         , end_character   );
-            ASSERT_EQ ( "5"        , new_text        );
-            ASSERT_EQ ( 1          , kind            );
-            ASSERT_EQ ( "existsin" , detail          );
-            ASSERT_EQ ( "5"        , documentation   );
-            ASSERT_EQ ( false      , deprecated      );
-            ASSERT_EQ ( false      , preselect       );
+            ASSERT_EQ ( "5"        , completion.label           );
+            ASSERT_EQ ( 07         , completion.start_line      );
+            ASSERT_EQ ( 12         , completion.start_character );
+            ASSERT_EQ ( 07         , completion.end_line        );
+            ASSERT_EQ ( 12         , completion.end_character   );
+            ASSERT_EQ ( "5"        , completion.new_text        );
+            ASSERT_EQ ( 1          , completion.kind            );
+            ASSERT_EQ ( "existsin" , completion.detail          );
+            ASSERT_EQ ( "5"        , completion.documentation   );
+            ASSERT_EQ ( false      , completion.deprecated      );
+            ASSERT_EQ ( false      , completion.preselect       );
         }
         if ( index == 4 )
         {
-            ASSERT_EQ ( "9"        , label           );
-            ASSERT_EQ ( 07         , start_line      );
-            ASSERT_EQ ( 12         , start_character );
-            ASSERT_EQ ( 07         , end_line        );
-            ASSERT_EQ ( 12         , end_character   );
-            ASSERT_EQ ( "9"        , new_text        );
-            ASSERT_EQ ( 1          , kind            );
-            ASSERT_EQ ( "existsin" , detail          );
-            ASSERT_EQ ( "9"        , documentation   );
-            ASSERT_EQ ( false      , deprecated      );
-            ASSERT_EQ ( false      , preselect       );
+            ASSERT_EQ ( "9"        , completion.label           );
+            ASSERT_EQ ( 07         , completion.start_line      );
+            ASSERT_EQ ( 12         , completion.start_character );
+            ASSERT_EQ ( 07         , completion.end_line        );
+            ASSERT_EQ ( 12         , completion.end_character   );
+            ASSERT_EQ ( "9"        , completion.new_text        );
+            ASSERT_EQ ( 1          , completion.kind            );
+            ASSERT_EQ ( "existsin" , completion.detail          );
+            ASSERT_EQ ( "9"        , completion.documentation   );
+            ASSERT_EQ ( false      , completion.deprecated      );
+            ASSERT_EQ ( false      , completion.preselect       );
         }
     }
 }
@@ -550,99 +502,79 @@ TEST(client, document_completion_valenums)
 
     for (int index = 0; index < client.getCompletionSize(); index++)
     {
-        std::string label;
-        int         start_line;
-        int         start_character;
-        int         end_line;
-        int         end_character;
-        std::string new_text;
-        int         kind;
-        std::string detail;
-        std::string documentation;
-        bool        deprecated;
-        bool        preselect;
+        clientCompletion completion;
 
-        ASSERT_TRUE ( client.getCompletionAt( index           ,
-                                              label           ,
-                                              start_line      ,
-                                              start_character ,
-                                              end_line        ,
-                                              end_character   ,
-                                              new_text        ,
-                                              kind            ,
-                                              detail          ,
-                                              documentation   ,
-                                              deprecated      ,
-                                              preselect       ) );
+        ASSERT_TRUE ( client.getCompletionAt( index , completion ) );
+
         if ( index == 0 )
         {
-            ASSERT_EQ ( "apple"    , label           );
-            ASSERT_EQ ( 15         , start_line      );
-            ASSERT_EQ ( 12         , start_character );
-            ASSERT_EQ ( 15         , end_line        );
-            ASSERT_EQ ( 12         , end_character   );
-            ASSERT_EQ ( "apple"    , new_text        );
-            ASSERT_EQ ( 1          , kind            );
-            ASSERT_EQ ( "valenums" , detail          );
-            ASSERT_EQ ( "apple"    , documentation   );
-            ASSERT_EQ ( false      , deprecated      );
-            ASSERT_EQ ( false      , preselect       );
+            ASSERT_EQ ( "apple"    , completion.label           );
+            ASSERT_EQ ( 15         , completion.start_line      );
+            ASSERT_EQ ( 12         , completion.start_character );
+            ASSERT_EQ ( 15         , completion.end_line        );
+            ASSERT_EQ ( 12         , completion.end_character   );
+            ASSERT_EQ ( "apple"    , completion.new_text        );
+            ASSERT_EQ ( 1          , completion.kind            );
+            ASSERT_EQ ( "valenums" , completion.detail          );
+            ASSERT_EQ ( "apple"    , completion.documentation   );
+            ASSERT_EQ ( false      , completion.deprecated      );
+            ASSERT_EQ ( false      , completion.preselect       );
         }
         if ( index == 1 )
         {
-            ASSERT_EQ ( "orange"   , label           );
-            ASSERT_EQ ( 15         , start_line      );
-            ASSERT_EQ ( 12         , start_character );
-            ASSERT_EQ ( 15         , end_line        );
-            ASSERT_EQ ( 12         , end_character   );
-            ASSERT_EQ ( "orange"   , new_text        );
-            ASSERT_EQ ( 1          , kind            );
-            ASSERT_EQ ( "valenums" , detail          );
-            ASSERT_EQ ( "orange"   , documentation   );
-            ASSERT_EQ ( false      , deprecated      );
-            ASSERT_EQ ( false      , preselect       );
+            ASSERT_EQ ( "orange"   , completion.label           );
+            ASSERT_EQ ( 15         , completion.start_line      );
+            ASSERT_EQ ( 12         , completion.start_character );
+            ASSERT_EQ ( 15         , completion.end_line        );
+            ASSERT_EQ ( 12         , completion.end_character   );
+            ASSERT_EQ ( "orange"   , completion.new_text        );
+            ASSERT_EQ ( 1          , completion.kind            );
+            ASSERT_EQ ( "valenums" , completion.detail          );
+            ASSERT_EQ ( "orange"   , completion.documentation   );
+            ASSERT_EQ ( false      , completion.deprecated      );
+            ASSERT_EQ ( false      , completion.preselect       );
         }
         if ( index == 2 )
         {
-            ASSERT_EQ ( "kiwi"     , label           );
-            ASSERT_EQ ( 15         , start_line      );
-            ASSERT_EQ ( 12         , start_character );
-            ASSERT_EQ ( 15         , end_line        );
-            ASSERT_EQ ( 12         , end_character   );
-            ASSERT_EQ ( "kiwi"     , new_text        );
-            ASSERT_EQ ( 1          , kind            );
-            ASSERT_EQ ( "valenums" , detail          );
-            ASSERT_EQ ( "kiwi"     , documentation   );
-            ASSERT_EQ ( false      , deprecated      );
-            ASSERT_EQ ( false      , preselect       );
+            ASSERT_EQ ( "kiwi"     , completion.label           );
+            ASSERT_EQ ( 15         , completion.start_line      );
+            ASSERT_EQ ( 12         , completion.start_character );
+            ASSERT_EQ ( 15         , completion.end_line        );
+            ASSERT_EQ ( 12         , completion.end_character   );
+            ASSERT_EQ ( "kiwi"     , completion.new_text        );
+            ASSERT_EQ ( 1          , completion.kind            );
+            ASSERT_EQ ( "valenums" , completion.detail          );
+            ASSERT_EQ ( "kiwi"     , completion.documentation   );
+            ASSERT_EQ ( false      , completion.deprecated      );
+            ASSERT_EQ ( false      , completion.preselect       );
         }
         if ( index == 3 )
         {
-            ASSERT_EQ ( "potato"   , label           );
-            ASSERT_EQ ( 15         , start_line      );
-            ASSERT_EQ ( 12         , start_character );
-            ASSERT_EQ ( 15         , end_line        );
-            ASSERT_EQ ( 12         , end_character   );
-            ASSERT_EQ ( "potato"   , new_text        );
-            ASSERT_EQ ( 1          , kind            );
-            ASSERT_EQ ( "valenums" , detail          );
-            ASSERT_EQ ( "potato"   , documentation   );
-            ASSERT_EQ ( false      , deprecated      );
-            ASSERT_EQ ( false      , preselect       );
+            ASSERT_EQ ( "potato"   , completion.label           );
+            ASSERT_EQ ( 15         , completion.start_line      );
+            ASSERT_EQ ( 12         , completion.start_character );
+            ASSERT_EQ ( 15         , completion.end_line        );
+            ASSERT_EQ ( 12         , completion.end_character   );
+            ASSERT_EQ ( "potato"   , completion.new_text        );
+            ASSERT_EQ ( 1          , completion.kind            );
+            ASSERT_EQ ( "valenums" , completion.detail          );
+            ASSERT_EQ ( "potato"   , completion.documentation   );
+            ASSERT_EQ ( false      , completion.deprecated      );
+            ASSERT_EQ ( false      , completion.preselect       );
         }
         if ( index == 4 )
         {
-            ASSERT_EQ ( "tomato"   , label           );
-            ASSERT_EQ ( 15         , start_line      );
-            ASSERT_EQ ( 12         , start_character );
-            ASSERT_EQ ( 15         , end_line        );
-            ASSERT_EQ ( 12         , end_character   );
-            ASSERT_EQ ( "tomato"   , new_text        );
-            ASSERT_EQ ( 1          , kind            );
-            ASSERT_EQ ( "valenums" , detail          );
-            ASSERT_EQ ( "tomato"   , documentation   );
-            ASSERT_EQ ( false      , deprecated      );
-            ASSERT_EQ ( false      , preselect       );
+            ASSERT_EQ ( "tomato"   , completion.label           );
+            ASSERT_EQ ( 15         , completion.start_line      );
+            ASSERT_EQ ( 12         , completion.start_character );
+            ASSERT_EQ ( 15         , completion.end_line        );
+            ASSERT_EQ ( 12         , completion.end_character   );
+            ASSERT_EQ ( "tomato"   , completion.new_text        );
+            ASSERT_EQ ( 1          , completion.kind            );
+            ASSERT_EQ ( "valenums" , completion.detail          );
+            ASSERT_EQ ( "tomato"   , completion.documentation   );
+            ASSERT_EQ ( false      , completion.deprecated      );
+            ASSERT_EQ ( false      , completion.preselect       );
         }
     }
 }
@@ -667,99 +599,79 @@ TEST(client, document_completion_templates)
 
     for (int index = 0; index < client.getCompletionSize(); index++)
     {
-        std::string label;
-        int         start_line;
-        int         start_character;
-        int         end_line;
-        int         end_character;
-        std::string new_text;
-        int         kind;
-        std::string detail;
-        std::string documentation;
-        bool        deprecated;
-        bool        preselect;
+        clientCompletion completion;
 
-        ASSERT_TRUE ( client.getCompletionAt( index           ,
-                                              label           ,
-                                              start_line      ,
-                                              start_character ,
-                                              end_line        ,
-                                              end_character   ,
-                                              new_text        ,
-                                              kind            ,
-                                              detail          ,
-                                              documentation   ,
-                                              deprecated      ,
-                                              preselect       ) );
+        ASSERT_TRUE ( client.getCompletionAt( index , completion ) );
+
         if ( index == 0 )
         {
-            ASSERT_EQ ( "key_string"                            , label           );
-            ASSERT_EQ ( line                                    , start_line      );
-            ASSERT_EQ ( character                               , start_character );
-            ASSERT_EQ ( line                                    , end_line        );
-            ASSERT_EQ ( character                               , end_character   );
-            ASSERT_EQ ( "key_string = \"insert_string_here\"\n" , new_text        );
-            ASSERT_EQ ( 1                                       , kind            );
-            ASSERT_EQ ( "inputtmpl"                             , detail          );
-            ASSERT_EQ ( "Key_string description here for test"  , documentation   );
-            ASSERT_EQ ( false                                   , deprecated      );
-            ASSERT_EQ ( false                                   , preselect       );
+            ASSERT_EQ ( "key_string"                            , completion.label           );
+            ASSERT_EQ ( line                                    , completion.start_line      );
+            ASSERT_EQ ( character                               , completion.start_character );
+            ASSERT_EQ ( line                                    , completion.end_line        );
+            ASSERT_EQ ( character                               , completion.end_character   );
+            ASSERT_EQ ( "key_string = \"insert_string_here\"\n" , completion.new_text        );
+            ASSERT_EQ ( 1                                       , completion.kind            );
+            ASSERT_EQ ( "inputtmpl"                             , completion.detail          );
+            ASSERT_EQ ( "Key_string description here for test"  , completion.documentation   );
+            ASSERT_EQ ( false                                   , completion.deprecated      );
+            ASSERT_EQ ( false                                   , completion.preselect       );
         }
         if ( index == 1 )
         {
-            ASSERT_EQ ( "array_overwrite"                     , label           );
-            ASSERT_EQ ( line                                  , start_line      );
-            ASSERT_EQ ( character                             , start_character );
-            ASSERT_EQ ( line                                  , end_line        );
-            ASSERT_EQ ( character                             , end_character   );
-            ASSERT_EQ ( "array_overwrite = [ 9.9 9.9 9.9 ]\n" , new_text        );
-            ASSERT_EQ ( 1                                     , kind            );
-            ASSERT_EQ ( "inputtmpl"                           , detail          );
-            ASSERT_EQ ( "Key_list description here for test"  , documentation   );
-            ASSERT_EQ ( false                                 , deprecated      );
-            ASSERT_EQ ( false                                 , preselect       );
+            ASSERT_EQ ( "array_overwrite"                     , completion.label           );
+            ASSERT_EQ ( line                                  , completion.start_line      );
+            ASSERT_EQ ( character                             , completion.start_character );
+            ASSERT_EQ ( line                                  , completion.end_line        );
+            ASSERT_EQ ( character                             , completion.end_character   );
+            ASSERT_EQ ( "array_overwrite = [ 9.9 9.9 9.9 ]\n" , completion.new_text        );
+            ASSERT_EQ ( 1                                     , completion.kind            );
+            ASSERT_EQ ( "inputtmpl"                           , completion.detail          );
+            ASSERT_EQ ( "Key_list description here for test"  , completion.documentation   );
+            ASSERT_EQ ( false                                 , completion.deprecated      );
+            ASSERT_EQ ( false                                 , completion.preselect       );
         }
         if ( index == 2 )
         {
-            ASSERT_EQ ( "object - variant 1"               , label           );
-            ASSERT_EQ ( line                               , start_line      );
-            ASSERT_EQ ( character                          , start_character );
-            ASSERT_EQ ( line                               , end_line        );
-            ASSERT_EQ ( character                          , end_character   );
-            ASSERT_EQ ( "object\n{\n    key  =   1.0\n    list = [ 11 12 13 14 15 ]\n    use  =   11\n}\n" , new_text        );
-            ASSERT_EQ ( 1                                  , kind            );
-            ASSERT_EQ ( "inputvariants"                    , detail          );
-            ASSERT_EQ ( "Object description here For test" , documentation   );
-            ASSERT_EQ ( false                              , deprecated      );
-            ASSERT_EQ ( false                              , preselect       );
+            ASSERT_EQ ( "object - variant 1"               , completion.label           );
+            ASSERT_EQ ( line                               , completion.start_line      );
+            ASSERT_EQ ( character                          , completion.start_character );
+            ASSERT_EQ ( line                               , completion.end_line        );
+            ASSERT_EQ ( character                          , completion.end_character   );
+            ASSERT_EQ ( "object\n{\n    key  =   1.0\n    list = [ 11 12 13 14 15 ]\n    use  =   11\n}\n" , completion.new_text );
+            ASSERT_EQ ( 1                                  , completion.kind            );
+            ASSERT_EQ ( "inputvariants"                    , completion.detail          );
+            ASSERT_EQ ( "Object description here For test" , completion.documentation   );
+            ASSERT_EQ ( false                              , completion.deprecated      );
+            ASSERT_EQ ( false                              , completion.preselect       );
         }
         if ( index == 3 )
         {
-            ASSERT_EQ ( "object - variant 2"               , label           );
-            ASSERT_EQ ( line                               , start_line      );
-            ASSERT_EQ ( character                          , start_character );
-            ASSERT_EQ ( line                               , end_line        );
-            ASSERT_EQ ( character                          , end_character   );
-            ASSERT_EQ ( "object\n{\n    key  =   2.0\n    list = [ 21 22 23 24 25 ]\n    use  =   21\n}\n" ,new_text        );
-            ASSERT_EQ ( 1                                  , kind            );
-            ASSERT_EQ ( "inputvariants"                    , detail          );
-            ASSERT_EQ ( "Object description here For test" , documentation   );
-            ASSERT_EQ ( false                              , deprecated      );
-            ASSERT_EQ ( false                              , preselect       );
+            ASSERT_EQ ( "object - variant 2"               , completion.label           );
+            ASSERT_EQ ( line                               , completion.start_line      );
+            ASSERT_EQ ( character                          , completion.start_character );
+            ASSERT_EQ ( line                               , completion.end_line        );
+            ASSERT_EQ ( character                          , completion.end_character   );
+            ASSERT_EQ ( "object\n{\n    key  =   2.0\n    list = [ 21 22 23 24 25 ]\n    use  =   21\n}\n" , completion.new_text );
+            ASSERT_EQ ( 1                                  , completion.kind            );
+            ASSERT_EQ ( "inputvariants"                    , completion.detail          );
+            ASSERT_EQ ( "Object description here For test" , completion.documentation   );
+            ASSERT_EQ ( false                              , completion.deprecated      );
+            ASSERT_EQ ( false                              , completion.preselect       );
         }
         if ( index == 4 )
         {
-            ASSERT_EQ ( "object - variant 3"               , label           );
-            ASSERT_EQ ( line                               , start_line      );
-            ASSERT_EQ ( character                          , start_character );
-            ASSERT_EQ ( line                               , end_line        );
-            ASSERT_EQ ( character                          , end_character   );
-            ASSERT_EQ ( "object\n{\n    key  =   3.0\n    list = [ 31 32 33 34 35 ]\n    use  =   31\n}\n" , new_text        );
-            ASSERT_EQ ( 1                                  , kind            );
-            ASSERT_EQ ( "inputvariants"                    , detail          );
-            ASSERT_EQ ( "Object description here For test" , documentation   );
-            ASSERT_EQ ( false                              , deprecated      );
-            ASSERT_EQ ( false                              , preselect       );
+            ASSERT_EQ ( "object - variant 3"               , completion.label           );
+            ASSERT_EQ ( line                               , completion.start_line      );
+            ASSERT_EQ ( character                          , completion.start_character );
+            ASSERT_EQ ( line                               , completion.end_line        );
+            ASSERT_EQ ( character                          , completion.end_character   );
+            ASSERT_EQ ( "object\n{\n    key  =   3.0\n    list = [ 31 32 33 34 35 ]\n    use  =   31\n}\n" , completion.new_text );
+            ASSERT_EQ ( 1                                  , completion.kind            );
+            ASSERT_EQ ( "inputvariants"                    , completion.detail          );
+            ASSERT_EQ ( "Object description here For test" , completion.documentation   );
+            ASSERT_EQ ( false                              , completion.deprecated      );
+            ASSERT_EQ ( false                              , completion.preselect       );
         }
     }
 }
@@ -784,36 +696,30 @@ TEST(client, document_definition)
 
     for (int index = 0; index < client.getDefinitionSize(); index++)
     {
-        int         start_line;
-        int         start_character;
-        int         end_line;
-        int         end_character;
+        clientDefinition definition;
 
-        ASSERT_TRUE ( client.getDefinitionAt( index           ,
-                                              start_line      ,
-                                              start_character ,
-                                              end_line        ,
-                                              end_character   ) );
+        ASSERT_TRUE ( client.getDefinitionAt( index , definition ) );
+
         if ( index == 0 )
         {
-            ASSERT_EQ ( 06 , start_line      );
-            ASSERT_EQ ( 14 , start_character );
-            ASSERT_EQ ( 06 , end_line        );
-            ASSERT_EQ ( 14 , end_character   );
+            ASSERT_EQ ( 06 , definition.start_line      );
+            ASSERT_EQ ( 14 , definition.start_character );
+            ASSERT_EQ ( 06 , definition.end_line        );
+            ASSERT_EQ ( 14 , definition.end_character   );
         }
         else if ( index == 1 )
         {
-            ASSERT_EQ ( 06 , start_line      );
-            ASSERT_EQ ( 19 , start_character );
-            ASSERT_EQ ( 06 , end_line        );
-            ASSERT_EQ ( 20 , end_character   );
+            ASSERT_EQ ( 06 , definition.start_line      );
+            ASSERT_EQ ( 19 , definition.start_character );
+            ASSERT_EQ ( 06 , definition.end_line        );
+            ASSERT_EQ ( 20 , definition.end_character   );
         }
         else if ( index == 2 )
         {
-            ASSERT_EQ ( 06 , start_line      );
-            ASSERT_EQ ( 24 , start_character );
-            ASSERT_EQ ( 06 , end_line        );
-            ASSERT_EQ ( 26 , end_character   );
+            ASSERT_EQ ( 06 , definition.start_line      );
+            ASSERT_EQ ( 24 , definition.start_character );
+            ASSERT_EQ ( 06 , definition.end_line        );
+            ASSERT_EQ ( 26 , definition.end_character   );
         }
     }
 }

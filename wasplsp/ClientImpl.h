@@ -178,15 +178,8 @@ class WASP_PUBLIC ClientImpl
      * @param message - reference to diagnostic message string
      * @return - true if response type right / index valid / parameters are set
      */
-    bool getDiagnosticAt( int           index           ,
-                          int         & start_line      ,
-                          int         & start_character ,
-                          int         & end_line        ,
-                          int         & end_character   ,
-                          int         & severity        ,
-                          std::string & code            ,
-                          std::string & source          ,
-                          std::string & message         );
+    bool getDiagnosticAt( int                index      ,
+                          clientDiagnostic & diagnostic );
 
     /** get parameters at index into references if response type is COMPLETION
      * @param index - index of completion object in response array to dissect
@@ -203,18 +196,8 @@ class WASP_PUBLIC ClientImpl
      * @param preselect - flag indicating if completion should be pre-selected
      * @return - true if response type right / index valid / parameters are set
      */
-    bool getCompletionAt( int           index           ,
-                          std::string & label           ,
-                          int         & start_line      ,
-                          int         & start_character ,
-                          int         & end_line        ,
-                          int         & end_character   ,
-                          std::string & new_text        ,
-                          int         & kind            ,
-                          std::string & detail          ,
-                          std::string & documentation   ,
-                          bool        & deprecated      ,
-                          bool        & preselect       );
+    bool getCompletionAt( int               index       ,
+                          clientCompletion & completion );
 
     /** get parameters at index into references if response type is DEFINITION
      * @param index - index of definition object in response array to dissect
@@ -224,11 +207,8 @@ class WASP_PUBLIC ClientImpl
      * @param end_character - ending column for definition ( zero-based )
      * @return - true if response type right / index valid / parameters are set
      */
-    bool getDefinitionAt( int   index           ,
-                          int & start_line      ,
-                          int & start_character ,
-                          int & end_line        ,
-                          int & end_character   );
+    bool getDefinitionAt( int                index      ,
+                          clientDefinition & definition );
 
     /** get parameters at index into references if response type is REFERENCES
      * @param index - index of references object in response array to dissect
@@ -238,11 +218,8 @@ class WASP_PUBLIC ClientImpl
      * @param end_character - ending column for reference ( zero-based )
      * @return - true if response type right / index valid / parameters are set
      */
-    bool getReferencesAt( int   index           ,
-                          int & start_line      ,
-                          int & start_character ,
-                          int & end_line        ,
-                          int & end_character   );
+    bool getReferencesAt( int                index     ,
+                          clientReference & references );
 
     /** get parameters at index into references if response type is FORMATTING
      * @param index - index of text edit object in response array to dissect
@@ -253,12 +230,8 @@ class WASP_PUBLIC ClientImpl
      * @param new_text - new text that belongs over the given range
      * @return - true if response type right / index valid / parameters are set
      */
-    bool getFormattingAt( int           index           ,
-                          int         & start_line      ,
-                          int         & start_character ,
-                          int         & end_line        ,
-                          int         & end_character   ,
-                          std::string & new_text        );
+    bool getFormattingAt( int                index      ,
+                          clientFormatting & formatting );
 
     /** check if the client is properly connected for reading / writing
      * @return - true if the client is properly connected for reading / writing

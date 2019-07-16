@@ -160,44 +160,31 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
     {
         // dissect each diagnostic to get the line / column / message info
 
-        int         start_line;
-        int         start_char;
-        int         end_line;
-        int         end_char;
-        int         severity;
-        std::string code;
-        std::string source;
-        std::string message;
+        clientDiagnostic client_diag;
 
-        client->getDiagnosticAt( index      ,
-                                 start_line ,
-                                 start_char ,
-                                 end_line   ,
-                                 end_char   ,
-                                 severity   ,
-                                 code       ,
-                                 source     ,
-                                 message    );
+        client->getDiagnosticAt( index , client_diag );
 
         // protocol line / col zero is based - but the intepreter is one based
 
-        start_line++;
-        start_char++;
-        end_line++;
-        end_char++;
+        client_diag.start_line++;
+        client_diag.start_character++;
+        client_diag.end_line++;
+        client_diag.end_character++;
 
         // calculate report line / column using the start_line / start_column
 
-        int report_line = start_line + Interpreter::m_start_line - 1;
+        int report_line = client_diag.start_line
+                        + Interpreter::m_start_line - 1;
 
-        int report_col = start_char + Interpreter::m_start_column - 1;
+        int report_col = client_diag.start_character
+                       + Interpreter::m_start_column - 1;
 
         // add diagnostic struct with line / column / message to diagnostic_list
 
         diagnostic diag;
         diag.line    = report_line;
         diag.column  = report_col;
-        diag.message = message;
+        diag.message = client_diag.message;
 
         diagnostic_list.push_back( diag );
     }

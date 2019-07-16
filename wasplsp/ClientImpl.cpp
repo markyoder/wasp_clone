@@ -945,15 +945,8 @@ int ClientImpl::getFormattingSize()
     return size;
 }
 
-bool ClientImpl::getDiagnosticAt( int           index           ,
-                                  int         & start_line      ,
-                                  int         & start_character ,
-                                  int         & end_line        ,
-                                  int         & end_character   ,
-                                  int         & severity        ,
-                                  std::string & code            ,
-                                  std::string & source          ,
-                                  std::string & message         )
+bool ClientImpl::getDiagnosticAt( int                index      ,
+                                  clientDiagnostic & diagnostic )
 {
     if ( this->response_type != DIAGNOSTIC )
     {
@@ -977,32 +970,22 @@ bool ClientImpl::getDiagnosticAt( int           index           ,
     const DataObject & diagnosticObject =
             *getDiagnosticResponseArray(*this->response)->at(index).to_object();
 
-    pass &= dissectDiagnosticObject( diagnosticObject ,
-                                     this->errors     ,
-                                     start_line       ,
-                                     start_character  ,
-                                     end_line         ,
-                                     end_character    ,
-                                     severity         ,
-                                     code             ,
-                                     source           ,
-                                     message          );
+    pass &= dissectDiagnosticObject( diagnosticObject           ,
+                                     this->errors               ,
+                                     diagnostic.start_line      ,
+                                     diagnostic.start_character ,
+                                     diagnostic.end_line        ,
+                                     diagnostic.end_character   ,
+                                     diagnostic.severity        ,
+                                     diagnostic.code            ,
+                                     diagnostic.source          ,
+                                     diagnostic.message         );
 
     return pass;
 }
 
-bool ClientImpl::getCompletionAt( int           index           ,
-                                  std::string & label           ,
-                                  int         & start_line      ,
-                                  int         & start_character ,
-                                  int         & end_line        ,
-                                  int         & end_character   ,
-                                  std::string & new_text        ,
-                                  int         & kind            ,
-                                  std::string & detail          ,
-                                  std::string & documentation   ,
-                                  bool        & deprecated      ,
-                                  bool        & preselect       )
+bool ClientImpl::getCompletionAt( int               index       ,
+                                  clientCompletion & completion )
 {
     if ( this->response_type != COMPLETION )
     {
@@ -1026,28 +1009,26 @@ bool ClientImpl::getCompletionAt( int           index           ,
     const DataObject & completionObject =
             *getCompletionResponseArray(*this->response)->at(index).to_object();
 
-    pass &= dissectCompletionObject( completionObject ,
-                                     this->errors     ,
-                                     label            ,
-                                     start_line       ,
-                                     start_character  ,
-                                     end_line         ,
-                                     end_character    ,
-                                     new_text         ,
-                                     kind             ,
-                                     detail           ,
-                                     documentation    ,
-                                     deprecated       ,
-                                     preselect        );
+    pass &= dissectCompletionObject( completionObject           ,
+                                     this->errors               ,
+                                     completion.label           ,
+                                     completion.start_line      ,
+                                     completion.start_character ,
+                                     completion.end_line        ,
+                                     completion.end_character   ,
+                                     completion.new_text        ,
+                                     completion.kind            ,
+                                     completion.detail          ,
+                                     completion.documentation   ,
+                                     completion.deprecated      ,
+                                     completion.preselect       );
 
     return pass;
 }
 
-bool ClientImpl::getDefinitionAt( int   index           ,
-                                  int & start_line      ,
-                                  int & start_character ,
-                                  int & end_line        ,
-                                  int & end_character   )
+bool ClientImpl::getDefinitionAt( int                index      ,
+                                  clientDefinition & definition )
+
 {
     if ( this->response_type != DEFINITION )
     {
@@ -1073,13 +1054,13 @@ bool ClientImpl::getDefinitionAt( int   index           ,
     const DataObject & locationObject =
             *getDefinitionResponseArray(*this->response)->at(index).to_object();
 
-    pass &= dissectLocationObject( locationObject         ,
-                                   this->errors           ,
-                                   response_document_path ,
-                                   start_line             ,
-                                   start_character        ,
-                                   end_line               ,
-                                   end_character          );
+    pass &= dissectLocationObject( locationObject             ,
+                                   this->errors               ,
+                                   response_document_path     ,
+                                   definition.start_line      ,
+                                   definition.start_character ,
+                                   definition.end_line        ,
+                                   definition.end_character   );
 
     if ( response_document_path != this->document_path )
     {
@@ -1091,11 +1072,8 @@ bool ClientImpl::getDefinitionAt( int   index           ,
     return pass;
 }
 
-bool ClientImpl::getReferencesAt( int   index           ,
-                                  int & start_line      ,
-                                  int & start_character ,
-                                  int & end_line        ,
-                                  int & end_character   )
+bool ClientImpl::getReferencesAt( int                index     ,
+                                  clientReference & references )
 {
     if ( this->response_type != REFERENCES )
     {
@@ -1121,13 +1099,13 @@ bool ClientImpl::getReferencesAt( int   index           ,
     const DataObject & locationObject =
             *getReferencesResponseArray(*this->response)->at(index).to_object();
 
-    pass &= dissectLocationObject( locationObject         ,
-                                   this->errors           ,
-                                   response_document_path ,
-                                   start_line             ,
-                                   start_character        ,
-                                   end_line               ,
-                                   end_character          );
+    pass &= dissectLocationObject( locationObject             ,
+                                   this->errors               ,
+                                   response_document_path     ,
+                                   references.start_line      ,
+                                   references.start_character ,
+                                   references.end_line        ,
+                                   references.end_character   );
 
     if ( response_document_path != this->document_path )
     {
@@ -1139,12 +1117,8 @@ bool ClientImpl::getReferencesAt( int   index           ,
     return pass;
 }
 
-bool ClientImpl::getFormattingAt( int           index           ,
-                                  int         & start_line      ,
-                                  int         & start_character ,
-                                  int         & end_line        ,
-                                  int         & end_character   ,
-                                  std::string & new_text        )
+bool ClientImpl::getFormattingAt( int                index      ,
+                                  clientFormatting & formatting )
 {
     if ( this->response_type != FORMATTING )
     {
@@ -1168,13 +1142,13 @@ bool ClientImpl::getFormattingAt( int           index           ,
     const DataObject & textEditObject =
             *getFormattingResponseArray(*this->response)->at(index).to_object();
 
-    pass &= dissectTextEditObject( textEditObject  ,
-                                   this->errors    ,
-                                   start_line      ,
-                                   start_character ,
-                                   end_line        ,
-                                   end_character   ,
-                                   new_text        );
+    pass &= dissectTextEditObject( textEditObject             ,
+                                   this->errors               ,
+                                   formatting.start_line      ,
+                                   formatting.start_character ,
+                                   formatting.end_line        ,
+                                   formatting.end_character   ,
+                                   formatting.new_text        );
 
     return pass;
 }

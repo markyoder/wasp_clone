@@ -1067,6 +1067,73 @@ WASP_PUBLIC
 DataArray * getSymbolChildrenArray( const DataObject & object );
 
 /**
+ * @brief convenience parameter struct used for client getDiagnosticAt call
+ */
+struct clientDiagnostic
+{
+    int         start_line;
+    int         start_character;
+    int         end_line;
+    int         end_character;
+    int         severity;
+    std::string code;
+    std::string source;
+    std::string message;
+};
+
+/**
+ * @brief convenience parameter struct used for client getCompletionAt call
+ */
+struct clientCompletion
+{
+    std::string label;
+    int         start_line;
+    int         start_character;
+    int         end_line;
+    int         end_character;
+    std::string new_text;
+    int         kind;
+    std::string detail;
+    std::string documentation;
+    bool        deprecated;
+    bool        preselect;
+};
+
+/**
+ * @brief convenience parameter struct used for client getDefinitionAt call
+ */
+struct clientDefinition
+{
+    int start_line;
+    int start_character;
+    int end_line;
+    int end_character;
+};
+
+/**
+ * @brief convenience parameter struct used for client getDiagnosticAt call
+ */
+struct clientReference
+{
+    int start_line;
+    int start_character;
+    int end_line;
+    int end_character;
+};
+
+/**
+ * @brief convenience parameter struct used for client getFormattingAt call
+ */
+struct clientFormatting
+{
+    int         start_line;
+    int         start_character;
+    int         end_line;
+    int         end_character;
+    std::string new_text;
+};
+
+/**
  * @brief static const char strings and ints that are used for many purposes
  */
 static const char m_rpc_content_len_key[]   = "Content-Length:";

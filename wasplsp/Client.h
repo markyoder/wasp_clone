@@ -243,25 +243,11 @@ class WASP_PUBLIC Client
      * @param message - reference to diagnostic message string
      * @return - true if response type right / index valid / parameters are set
      */
-    bool getDiagnosticAt( int           index           ,
-                          int         & start_line      ,
-                          int         & start_character ,
-                          int         & end_line        ,
-                          int         & end_character   ,
-                          int         & severity        ,
-                          std::string & code            ,
-                          std::string & source          ,
-                          std::string & message         )
+    bool getDiagnosticAt( int                index      ,
+                          clientDiagnostic & diagnostic )
     {
-        return Impl.getDiagnosticAt( index           ,
-                                     start_line      ,
-                                     start_character ,
-                                     end_line        ,
-                                     end_character   ,
-                                     severity        ,
-                                     code            ,
-                                     source          ,
-                                     message         );
+        return Impl.getDiagnosticAt( index      ,
+                                     diagnostic );
     }
 
     /** get parameters at index into references if response type is COMPLETION
@@ -279,31 +265,11 @@ class WASP_PUBLIC Client
      * @param preselect - flag indicating if completion should be pre-selected
      * @return - true if response type right / index valid / parameters are set
      */
-    bool getCompletionAt( int           index           ,
-                          std::string & label           ,
-                          int         & start_line      ,
-                          int         & start_character ,
-                          int         & end_line        ,
-                          int         & end_character   ,
-                          std::string & new_text        ,
-                          int         & kind            ,
-                          std::string & detail          ,
-                          std::string & documentation   ,
-                          bool        & deprecated      ,
-                          bool        & preselect       )
+    bool getCompletionAt( int                index      ,
+                          clientCompletion & completion )
     {
-        return Impl.getCompletionAt( index           ,
-                                     label           ,
-                                     start_line      ,
-                                     start_character ,
-                                     end_line        ,
-                                     end_character   ,
-                                     new_text        ,
-                                     kind            ,
-                                     detail          ,
-                                     documentation   ,
-                                     deprecated      ,
-                                     preselect       );
+        return Impl.getCompletionAt( index      ,
+                                     completion );
     }
 
     /** get parameters at index into references if response type is DEFINITION
@@ -314,17 +280,11 @@ class WASP_PUBLIC Client
      * @param end_character - ending column for definition ( zero-based )
      * @return - true if response type right / index valid / parameters are set
      */
-    bool getDefinitionAt( int   index           ,
-                          int & start_line      ,
-                          int & start_character ,
-                          int & end_line        ,
-                          int & end_character   )
+    bool getDefinitionAt( int                index      ,
+                          clientDefinition & definition )
     {
-        return Impl.getDefinitionAt( index           ,
-                                     start_line      ,
-                                     start_character ,
-                                     end_line        ,
-                                     end_character   );
+        return Impl.getDefinitionAt( index      ,
+                                     definition );
     }
 
     /** get parameters at index into references if response type is REFERENCES
@@ -335,17 +295,11 @@ class WASP_PUBLIC Client
      * @param end_character - ending column for reference ( zero-based )
      * @return - true if response type right / index valid / parameters are set
      */
-    bool getReferencesAt( int   index           ,
-                          int & start_line      ,
-                          int & start_character ,
-                          int & end_line        ,
-                          int & end_character   )
+    bool getReferencesAt( int                index     ,
+                          clientReference & references )
     {
-        return Impl.getReferencesAt( index           ,
-                                     start_line      ,
-                                     start_character ,
-                                     end_line        ,
-                                     end_character   );
+        return Impl.getReferencesAt( index      ,
+                                     references );
     }
 
     /** get parameters at index into references if response type is FORMATTING
@@ -357,19 +311,11 @@ class WASP_PUBLIC Client
      * @param new_text - new text that belongs over the given range
      * @return - true if response type right / index valid / parameters are set
      */
-    bool getFormattingAt( int           index           ,
-                          int         & start_line      ,
-                          int         & start_character ,
-                          int         & end_line        ,
-                          int         & end_character   ,
-                          std::string & new_text        )
+    bool getFormattingAt( int                index      ,
+                          clientFormatting & formatting )
     {
-        return Impl.getFormattingAt( index           ,
-                                     start_line      ,
-                                     start_character ,
-                                     end_line        ,
-                                     end_character   ,
-                                     new_text        );
+        return Impl.getFormattingAt( index      ,
+                                     formatting );
     }
 
     /** check if the client is properly connected for reading / writing
