@@ -101,6 +101,7 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
 11. [INI](/waspson/README.md#standard-object-notation-son) - configuration file format 
 12. [LSP](/wasplsp/README.md#language-server-protocol) - Language Server Protocol support
     * [WASP Language Server](/wasplsp/README.md#wasp-language-server)
+    * [Client](/wasplsp/README.md#client)
     * [LSPInterpreter](/wasplsp/README.md#lspinterpreter)
 13. [Utils](/wasputils/README.md#command-line-utilities) - utilities for command line file interaction (listing, validating, selecting, etc.)
     * [File Listing Utilities](/wasputils/README.md#file-listing-utilities)

@@ -4,7 +4,7 @@ The Language Server Protocol (LSP) package in WASP provides support for most fea
 
 For the details of the official protocol specifications including requests, responses, parameters, error handling, etc., please see [https://microsoft.github.io/language-server-protocol/specification].
 
-For code examples using the WASP LSP features such as the WASP Language Server, LSPInterpreter, LSP Connection Base, Document Symbol Navigator, etc. see the LSP tests in the code repository.
+For code examples using the WASP LSP features such as the WASP Language Server, Client, LSPInterpreter, LSP Connection Base, Document Symbol Navigator, etc. see the LSP tests in the code repository.
 
 ## WASP Language Server
 
@@ -27,6 +27,41 @@ The WASP Language Server class allows all WASP input processing packages to be u
 | handleExitNotification        | Handle exit notification from a client cleanly stopping the server with no response |
 
 * NOTE: Currently the WASP Language Server's handling of the document/didChange notification requires that all range values are "-1" and replaces the entire text of the document with the provides changes. Updates over specific line / column ranges are not yet supported by the WASP Language Server.
+
+## Client
+
+The WASP Client class allows direct interaction with a language server over a provided input / output connection.
+
+These methods have been tested specifically against the [Xtext](https://github.com/eclipse/xtext-core) 2.16 language server backend.
+
+| Method               | Notes                |
+| -------------------- | -------------------- |
+| connect              | Connect the client to the language server's read / write connection  |
+| startUpCleanly       | Convenience method used to handle the initialize / initialized handshake |
+| wrapUpCleanly        | Convenience method used to handle the document-close / shutdown / exit |
+| doInitialize         | Build initialize request / write to connection / read response |
+| doInitialized        | Build initialized notification / write to connection / no read |
+| doDocumentOpen       | Build didOpen notification / write to connection / read diagnostics |
+| doDocumentChange     | Build didChange notification / write to connection / read diagnostics |
+| getDiagnosticSize    | Get the number of items in the diagnostic response |
+| getDiagnosticAt      | Get the diagnostic response at a given index |
+| doDocumentCompletion | Build completion request / write to connection / read response |
+| getCompletionSize    | Get the number of items in the completion response |
+| getCompletionAt      | Get the completion response at a given index |
+| doDocumentDefinition | Build definition request / write to connection / read response |
+| getDefinitionSize    | Get the number of items in the definition response |
+| getDefinitionAt      | Get the definition response at a given index |
+| doDocumentReferences | Build references request / write to connection / read response |
+| getReferencesSize    | Get the number of items in the references response |
+| getReferencesAt      | Get the references response at a given index |
+| doDocumentFormatting | Build formatting request / write to connection / read response |
+| getFormattingSize    | Get the number of items in the formatting response |
+| getFormattingAt      | Get the formatting response at a given index |
+| doDocumentSymbols    | Build document symbols request / write to connection / read response |
+| getSymbolIterator    | Get an iterator to traverse the hierarchical document symbol response |
+| doDocumentClose      | Build didClose notification / write to connection / no read |
+| doShutdown           | Build shutdown request / write to connection / read response |
+| doExit               | Build exit notification / write to connection / no read |
 
 ## LSPInterpreter
 
