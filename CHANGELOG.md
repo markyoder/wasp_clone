@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+### Added
+- GCC 5.4 compiler compatibility CI job.
+- wasplsp - Language Server Protocol package with WaspServer and LSPInterpreter. See WASPLSP readme for details.
+- HIVE UNKNOWN input node validation capability. See HIVE readme for details.
+
 ### Changed
 - wasvii hanging comment (comment 1 or more lines below last parameter) logic to reparent to the block
 
@@ -11,9 +16,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - wasppy inablility to handle file paths with whitespaces. 
 - CMake package logic to allow for incorporation into a Fortran project.
 
-### Added
-- GCC 5.4 compiler compatibility CI job.
-- wasplsp (Language Server Protocol) package with WaspServer and LSPInterpreter
 
 ## [1.0.2] - 07-16-2018
 ### Added

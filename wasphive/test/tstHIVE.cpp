@@ -210,3 +210,8 @@ TEST(HIVE, SumOverGroup)
 {
     do_test("SumOverGroup");
 }
+
+TEST(HIVE, UnknownNode)
+{
+    do_test("UnknownNode");
+}
