@@ -167,7 +167,7 @@ class WASP_PUBLIC ClientImpl
     int getFormattingSize();
 
     /** get parameters at index into references if response type is DIAGNOSTICS
-     * @param index - index of diagnostic object in response array to dissect
+     * @param index - index of diagnostic object in response array to obtain
      * @param start_line - starting line number of diagnostic ( zero-based )
      * @param start_character - starting column number of diagnostic ( zero-based )
      * @param end_line - ending line number of diagnostic ( zero-based )
@@ -182,7 +182,7 @@ class WASP_PUBLIC ClientImpl
                           clientDiagnostic & diagnostic );
 
     /** get parameters at index into references if response type is COMPLETION
-     * @param index - index of completion object in response array to dissect
+     * @param index - index of completion object in response array to obtain
      * @param label - label to be used for completion in autocomplete list
      * @param start_line - starting line for completion ( zero-based )
      * @param start_character - starting column for completion( zero-based )
@@ -200,7 +200,7 @@ class WASP_PUBLIC ClientImpl
                           clientCompletion & completion );
 
     /** get parameters at index into references if response type is DEFINITION
-     * @param index - index of definition object in response array to dissect
+     * @param index - index of definition object in response array to obtain
      * @param start_line - starting line for definition ( zero-based )
      * @param start_character - starting column for definition ( zero-based )
      * @param end_line - ending line for definition ( zero-based )
@@ -211,7 +211,7 @@ class WASP_PUBLIC ClientImpl
                           clientDefinition & definition );
 
     /** get parameters at index into references if response type is REFERENCES
-     * @param index - index of references object in response array to dissect
+     * @param index - index of references object in response array to obtain
      * @param start_line - starting line for reference ( zero-based )
      * @param start_character - starting column for reference ( zero-based )
      * @param end_line - ending line for reference ( zero-based )
@@ -222,7 +222,7 @@ class WASP_PUBLIC ClientImpl
                           clientReference & references );
 
     /** get parameters at index into references if response type is FORMATTING
-     * @param index - index of text edit object in response array to dissect
+     * @param index - index of text edit object in response array to obtain
      * @param start_line - starting line for text edit ( zero-based )
      * @param start_character - starting column for text edit ( zero-based )
      * @param end_line - ending line for text edit ( zero-based )
