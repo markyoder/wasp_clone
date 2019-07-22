@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - waspdakota: a package for the Dakota UQ coupling. Specifically, support for the Dakota Parameter file format
-- wasputils/substitute: a utilities that allows direct use of the Dakota parameter file for template substitution
+- wasputils/substitute: a utility that allows direct use of the Dakota parameter file for template attribute substitution
 
 ### Changed
 - wasvii hanging comment (comment 1 or more lines below last parameter) logic to reparent to the block
