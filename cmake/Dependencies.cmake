@@ -6,10 +6,11 @@ TRIBITS_PACKAGE_DEFINE_DEPENDENCIES(
      son   waspson     PT OPTIONAL
      ddi   waspddi     PT OPTIONAL
      vii   waspvii     PT OPTIONAL
-     json   waspjson     PT OPTIONAL
+     json   waspjson   PT OPTIONAL
      hive  wasphive    PT OPTIONAL
      getpot waspgetpot PT OPTIONAL     
      halite wasphalite PT OPTIONAL          
+     dakota waspdakota PT OPTIONAL          
      utils wasputils   PT OPTIONAL
      py wasppy         PT OPTIONAL
 )

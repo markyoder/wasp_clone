@@ -122,7 +122,7 @@ std::string getpot_get_name(size_t object_decl_i
 
 
 // Suppress unused-variable warnings by "using" E.
-#define YYUSE(E) ((void) (E))
+//#define YYUSE(E) ((void) (E))
 
 // Enable debugging if requested.
 #if YYDEBUG

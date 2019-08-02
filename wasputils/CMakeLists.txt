@@ -44,6 +44,16 @@ IF ( wasp_ENABLE_wasphalite  AND wasp_ENABLE_waspjson  )
     )
 ENDIF()
 
+
+IF ( wasp_ENABLE_wasphalite  AND wasp_ENABLE_waspdakota  )
+    TRIBITS_ADD_EXECUTABLE(substitute
+      SOURCES substitute.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
+ENDIF()
+
 IF ( wasp_ENABLE_waspddi )
     TRIBITS_ADD_EXECUTABLE(ddilist
       SOURCES ddilist.cpp

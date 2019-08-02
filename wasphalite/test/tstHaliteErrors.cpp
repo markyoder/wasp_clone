@@ -11,6 +11,7 @@
 #include <functional>
 #include "wasphalite/HaliteInterpreter.h"
 #include "wasphalite/DataAccessor.h"
+#include "waspcore/utils.h"
 #include "waspcore/Object.h"
 
 #include "gtest/gtest.h"
@@ -133,23 +134,7 @@ struct error_test
     {
     }
 };
-bool load_file(const std::string& path, std::stringstream& s)
-{
-    std::ifstream f(path);
-    bool          first = true;
-    while (!f.eof() && f.good())
-    {
-        std::string line;
-        std::getline(f, line);
-        if (!first)
-        {
-            s << std::endl;
-        }
-        s << line;
-        first = false;
-    }
-    return f.eof() && !f.bad();
-}
+
 void test_template(const error_test& t)
 {
     std::string tp = SOURCE_DIR + "/data/" + t.template_path;
@@ -163,9 +148,9 @@ void test_template(const error_test& t)
     std::stringstream result;
     std::stringstream errors;
     bool expanded = wasp::expand_template(result, errors, errors, tp, json);
-    ASSERT_FALSE(expanded);
     if (errors.rdbuf()->in_avail() > 0)
         std::cout << errors.str() << std::endl;
+    ASSERT_FALSE(expanded);
     ASSERT_TRUE(load_file(bd + t.expected_path, expected_result));
     ASSERT_EQ(expected_result.str(), errors.str());
 }
