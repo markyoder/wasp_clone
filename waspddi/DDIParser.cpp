@@ -132,7 +132,7 @@ bool adjust_interpreter_stages( wasp::AbstractInterpreter & interpreter
 
 
 // Suppress unused-variable warnings by "using" E.
-#define YYUSE(E) ((void) (E))
+//#define YYUSE(E) ((void) (E))
 
 // Enable debugging if requested.
 #if YYDEBUG

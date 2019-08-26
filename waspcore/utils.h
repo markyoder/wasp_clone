@@ -14,6 +14,9 @@
 
 namespace wasp
 {
+
+WASP_PUBLIC bool load_file(const std::string& path, std::stringstream& s);
+
 /**
  * @brief strip_quotes removes single or double quotes
  * @param s the string to have the quotes removes from.

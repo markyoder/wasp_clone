@@ -7,7 +7,6 @@ GetPotNodeView::GetPotNodeView(std::size_t                node_index,
                                const AbstractInterpreter& data)
     : m_node_index(node_index), m_pool(&data)
 {
-    wasp_require(!this->is_null());
 }
 GetPotNodeView::GetPotNodeView(const GetPotNodeView& orig)
     : m_node_index(orig.m_node_index), m_pool(orig.m_pool)

@@ -7,7 +7,6 @@ HaliteNodeView::HaliteNodeView(std::size_t                node_index,
                          const AbstractInterpreter& pool)
     : m_node_index(node_index), m_pool(&pool)
 {
-    wasp_require(!this->is_null());
 }
 
 HaliteNodeView::HaliteNodeView(const HaliteNodeView& orig)

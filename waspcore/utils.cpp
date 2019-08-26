@@ -3,6 +3,25 @@
 
 namespace wasp
 {
+
+bool load_file(const std::string& path, std::stringstream& s)
+{
+    std::ifstream f(path);
+    bool          first = true;
+    while (!f.eof() && f.good())
+    {
+        std::string line;
+        std::getline(f, line);
+        if (!first)
+        {
+            s << std::endl;
+        }
+        s << line;
+        first = false;
+    }
+    return f.eof() && !f.bad();
+}
+
 std::string strip_quotes(const std::string& src)
 {
     std::string s = src;
