@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - waspdakota: a package for the Dakota UQ coupling. Specifically, support for the Dakota Parameter file format
 - wasputils/substitute: a utility that allows direct use of the Dakota parameter file for template attribute substitution
+- GCC 5.4 compiler compatibility CI job.
+- HIVE UNKNOWN input node validation capability (See HIVE readme for details).
 
 ### Changed
 - wasvii hanging comment (comment 1 or more lines below last parameter) logic to reparent to the block
@@ -14,10 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - wasppy inablility to handle file paths with whitespaces. 
 - CMake package logic to allow for incorporation into a Fortran project.
-
-### Added
-- GCC 5.4 compiler compatibility CI job.
-- HIVE UNKNOWN input node validation capability (See HIVE readme for details).
+- Missing support for apostrophe in xml element name effecting the getpotxml utility.
 
 ## [1.0.2] - 07-16-2018
 ### Added
