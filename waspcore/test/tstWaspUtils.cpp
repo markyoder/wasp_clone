@@ -61,3 +61,19 @@ TEST(utils, file_exists)
     EXPECT_TRUE(file_exists(__FILE__));
     EXPECT_FALSE(file_exists("/this/doesnt/exist/anywhere/ever"));
 }
+TEST(utils, xml_escape_name)
+{
+    EXPECT_EQ("LBCxmlMINUSnameRBC", xml_escape_name("{xml-name}"));
+    EXPECT_EQ("LPxmlAPOSnameAPOSRP", xml_escape_name("(xml'name')"));
+    EXPECT_EQ("LBKxmlASSIGNnameRBK", xml_escape_name("[xml=name]"));
+    EXPECT_EQ("xmlCOLONnaCOMMAme", xml_escape_name("xml:na,me"));
+    EXPECT_EQ("xmlFWDSLSHnaBCKSLSHme", xml_escape_name("xml/na\\me"));
+}
+TEST(utils, xml_escape_data)
+{
+    EXPECT_EQ("ampersand &amp; ampersand", xml_escape_data("ampersand & ampersand"));
+    EXPECT_EQ("apostrophe &apos; apostrophe", xml_escape_data("apostrophe ' apostrophe"));
+    EXPECT_EQ("quote &quot; quote", xml_escape_data("quote \" quote"));
+    EXPECT_EQ("lessthan &lt; lessthan", xml_escape_data("lessthan < lessthan"));
+    EXPECT_EQ("greaterthan &gt; greaterthan", xml_escape_data("greaterthan > greaterthan"));
+}
