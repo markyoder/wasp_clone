@@ -4,13 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 10-07-2019
 ### Added
 - GCC 5.4 compiler compatibility CI job.
 - wasplsp - Language Server Protocol package with WaspServer and LSPInterpreter. See WASPLSP readme for details.
-- HIVE UNKNOWN input node validation capability. See HIVE readme for details.
 - waspdakota: a package for the Dakota UQ coupling. Specifically, support for the Dakota Parameter file format
 - wasputils/substitute: a utility that allows direct use of the Dakota parameter file for template attribute substitution
-- GCC 5.4 compiler compatibility CI job.
 - HIVE UNKNOWN input node validation capability (See HIVE readme for details).
 
 
