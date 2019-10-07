@@ -130,7 +130,7 @@ primitive : TOKEN_NULL
             $$ = new Value($1);
         }| QSTRING
         {
-            $$ = new Value(wasp::strip_quotes(*$1));
+            $$ = new Value(wasp::json_unescape_string(wasp::strip_quotes(*$1)));
             delete $1;
         }
 decl : QSTRING

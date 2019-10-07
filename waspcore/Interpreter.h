@@ -567,6 +567,26 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
     void pop_line() { m_nodes.pop_line(); }
 
     /**
+     * @brief set_start_line sets the line to start parsing
+     * @param line parsing start line
+     */
+    void set_start_line( size_t line )
+    {
+        m_start_line = line;
+        m_nodes.set_start_line( line );
+    }
+
+    /**
+     * @brief set_start_column sets the column to start parsing
+     * @param column parsing start column
+     */
+    void set_start_column( size_t column )
+    {
+        m_start_column = column;
+        m_nodes.set_start_column( column );
+    }
+
+    /**
      * @brief line_count acquire the number of lines processed by this
      * interpreter
      * @return the number of lines processed

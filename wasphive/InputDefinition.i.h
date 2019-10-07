@@ -23,6 +23,19 @@ InputDefinition::InputDefinition(SchemaAdapter schRoot,
     UniqueOptions   = { "Abs", "Zero", "AbsZero"                 };
     IncDecOptions   = { "Strict", "Mono"                         };
     CCEOptions      = { "IfExists", "EvenNone"                   };
+    DecorativeNames.insert( "decl"           );
+    DecorativeNames.insert( "term"           );
+    DecorativeNames.insert( "assign"         );
+    DecorativeNames.insert( "comma"          );
+    DecorativeNames.insert( "minus"          );
+    DecorativeNames.insert( "lparen"         );
+    DecorativeNames.insert( "rparen"         );
+    DecorativeNames.insert( "lbrack"         );
+    DecorativeNames.insert( "rbrack"         );
+    DecorativeNames.insert( "scale_comment"  );
+    DecorativeNames.insert( "file_injection" );
+    DecorativeNames.insert( "element_count"  );
+    DecorativeNames.insert( "value"          );
 
     setOutputStream(outputStream);
     setErrorStream(errorStream);
@@ -162,6 +175,12 @@ bool InputDefinition::fillInputDefinition(IDObject * IDNode,
             else
             {
                 tmpIDObject->setObjectType("flagvalue");
+            }
+
+            SchemaAdapter inputTypeNode = child.first_non_decorative_child_by_name("InputType");
+            if (!inputTypeNode.is_null())
+            {
+                tmpIDObject->setObjectType(inputTypeNode.last_as_string());
             }
 
             SchemaAdapter unitsNode = child.first_non_decorative_child_by_name("Units");

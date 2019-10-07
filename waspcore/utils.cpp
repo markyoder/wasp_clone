@@ -75,24 +75,125 @@ bool file_exists(const std::string &path)
 }
 std::string json_escape_string(const std::string& src)
 {
-    std::stringstream dst;
+    std::string dst;
+    dst.reserve(src.size());
     for (char ch : src)
     {
         switch (ch)
         {
             case '\\':
-                dst << "\\\\";
+                dst.append("\\\\");
                 break;
             case '"':
-                dst << "\\\"";
+                dst.append("\\\"");
+                break;
+            case '\b':
+                dst.append("\\b");
+                break;
+            case '\f':
+                dst.append("\\f");
+                break;
+            case '\n':
+                dst.append("\\n");
+                break;
+            case '\r':
+                dst.append("\\r");
+                break;
+            case '\t':
+                dst.append("\\t");
                 break;
             default:
-                dst << ch;
+                dst.push_back(ch);
                 break;
         }
     }
-    return dst.str();
-}  // json_escape_data
+    return dst;
+}  // json_escape_string
+
+std::string json_unescape_string(const std::string& src)
+{
+    std::string dst;
+    dst.reserve(src.size());
+    bool escape_state = false;
+    for ( int i = 0 ; i < src.length() ; i++ )
+    {
+        char ch = src[i];
+        if (!escape_state && ch == '\\')
+        {
+            if ( i + 5 < src.length() &&
+                 src[i+1] == 'u'      &&
+                 src[i+2] == '0'      &&
+                 src[i+3] == '0'      &&
+                 src[i+4] == '2'      &&
+                 src[i+5] == '7'      )
+            {
+                dst.append("'");
+                i+=5;
+                continue;
+            }
+            if ( i + 5 < src.length() &&
+                 src[i+1] == 'u'      &&
+                 src[i+2] == '0'      &&
+                 src[i+3] == '0'      &&
+                 src[i+4] == '3'      &&
+                 src[i+5] == 'c'      )
+            {
+                dst.append("<");
+                i+=5;
+                continue;
+            }
+            if ( i + 5 < src.length() &&
+                 src[i+1] == 'u'      &&
+                 src[i+2] == '0'      &&
+                 src[i+3] == '0'      &&
+                 src[i+4] == '3'      &&
+                 src[i+5] == 'e'      )
+            {
+                dst.append(">");
+                i+=5;
+                continue;
+            }
+            escape_state = true;
+        }
+        else if (escape_state)
+        {
+            switch (ch)
+            {
+                case '\\':
+                    dst.append("\\");
+                    break;
+                case '"' :
+                    dst.append("\"");
+                    break;
+                case 'b' :
+                    dst.append("\b");
+                    break;
+                case 'f' :
+                    dst.append("\f");
+                    break;
+                case 'n' :
+                    dst.append("\n");
+                    break;
+                case 'r' :
+                    dst.append("\r");
+                    break;
+                case 't' :
+                    dst.append("\t");
+                    break;
+                default:
+                    dst.append("\\");
+                    dst.push_back(ch);
+                    break;
+            }
+            escape_state = false;
+        }
+        else
+        {
+            dst.push_back(ch);
+        }
+    }
+    return dst;
+}  // json_unescape_string
 
 std::string xml_escape_data(const std::string& src)
 {

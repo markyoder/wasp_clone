@@ -243,8 +243,11 @@ double JSONNodeView::to_double(bool* ok) const
 
 std::string JSONNodeView::to_string(bool* ok) const
 {
-    NodeView view(value_node_index(), *node_pool());
-    return view.to_string(ok);
+    std::string result;
+    to_type(result, data(), ok);
+    result = strip_quotes(result);
+    result = json_unescape_string(result);
+    return result;
 }
 
 std::string JSONNodeView::last_as_string(bool* ok) const

@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iomanip>
 #include <stdio.h>  // windows exponent configure
+#include <memory>
 #include "waspcore/decl.h"
 
 namespace wasp
@@ -50,13 +51,21 @@ WASP_PUBLIC bool file_exists(const std::string& path);
  */
 WASP_PUBLIC std::string xml_escape_data(const std::string& src);
 /**
- * @brief json_escape_string replaces string with escaped versions of the two
- * characters that must be escaped in JSON document string ( \, " )
+ * @brief json_escape_string replaces string with escaped versions of the
+ * characters that must be escaped in JSON document string
  * to be used on json data
  * @param src the string in which to have the characters escaped
  * @return a string with characters escaped
  */
 WASP_PUBLIC std::string json_escape_string(const std::string& src);
+/**
+ * @brief json_unescape_string replaces string with unescaped versions of the
+ * characters that must be escaped in JSON document string
+ * to be used on json data
+ * @param src the string in which to have the characters unescaped
+ * @return a string with characters unescaped
+ */
+WASP_PUBLIC std::string json_unescape_string(const std::string& src);
 /**
  * @brief xml_escape_name replaces string with versions that will parse
  * as node names in xml
@@ -425,5 +434,127 @@ WASP_PUBLIC void node_paths(const TAdapter& node, std::ostream& out)
         node_paths(node.child_at(i),out);
     }
 }
+
+template<class TAdapter> WASP_PUBLIC
+TAdapter findNodeUnderLineColumn( TAdapter root , size_t line , size_t column )
+{
+    // node under line and column
+    TAdapter node = find( root , line , column );
+
+    // node is valid and we're at the beginning
+    if( line == node.line() && column == node.column() )
+    {
+        return node;
+    }
+
+    // node at previous character
+    TAdapter prev = find( root , line , --column );
+
+    // failed to find previous node ( past the document end ) - return root
+    if( prev == root )
+    {
+        return root;
+    }
+
+    // we're asking for the end of the previous node
+    if( line == prev.last_line() && column == prev.last_column() )
+    {
+        return prev;
+    }
+
+    return node;
+}
+
+template<class TAdapter> WASP_PUBLIC
+TAdapter find( TAdapter node , size_t line , size_t column )
+{
+    // node's last line
+    auto lastLine = node.last_line();
+
+    // if the ending line is prior to current node we return node
+    if(lastLine < line)
+    {
+        return node;
+    }
+
+    // node's child count
+    auto childCount = node.child_count();
+
+    // is the given node on the same line and the column within the context of the node?
+    if( node.line()        == line   &&
+        node.column()      <= column &&
+        node.last_column() >= column &&
+        childCount         == 0      )
+    {
+        return node;
+    }
+
+    else if( childCount > 0 )
+    {
+        return findChild(node, 0, childCount, line, column);
+    }
+
+    return node;
+}
+
+template<class TAdapter> WASP_PUBLIC
+TAdapter findChild( TAdapter node , size_t start , size_t end ,
+                    size_t searchLine , size_t searchColumn   )
+{
+    wasp_check( start <= end );
+
+    // node's child count
+    auto childCount = node.child_count();
+
+    // no children, delegate to find
+    if(childCount == 0)
+    {
+        return find( node , searchLine , searchColumn );
+    }
+
+    // midpoint index
+    size_t mid = start + (end - start) / 2;
+
+    // invalid index
+    wasp_check( mid < childCount );
+
+    // midpoint child
+    TAdapter child = node.child_at(mid);
+
+    // child metadata
+    auto startLine   = child.line();
+    auto startColumn = child.column();
+    auto lastLine    = child.last_line();
+    auto lastColumn  = child.last_column();
+
+    // should we search left/right?
+    auto searchLeft  = ( startLine >  searchLine ||
+                       ( startLine == searchLine && startColumn > searchColumn ) );
+    auto searchRight = ( lastLine  <  searchLine ||
+                       ( lastLine  == searchLine && lastColumn  < searchColumn ) );
+
+    // can't search anymore
+    if(start == end && (searchLeft || searchRight))
+    {
+        return node;
+    }
+
+    // searching left
+    if(searchLeft)
+    {
+        return findChild(node, start, mid, searchLine, searchColumn);
+    }
+    // searching right
+    else if(searchRight)
+    {
+        return findChild(node, mid + 1, end, searchLine, searchColumn);
+    }
+    // search deeper
+    else
+    {
+        return findChild(child, 0, child.child_count(), searchLine, searchColumn);
+    }
+}
+
 }
 #endif

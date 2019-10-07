@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.0.4.
+// A Bison parser, made by GNU Bison 3.1.
 
 // Skeleton interface for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@
 #ifndef YY_YY_JSONOBJECTPARSER_HPP_INCLUDED
 # define YY_YY_JSONOBJECTPARSER_HPP_INCLUDED
 // //                    "%code requires" blocks.
-#line 10 "JSONObjectParser.bison" // lalr1.cc:377
+#line 10 "JSONObjectParser.bison" // lalr1.cc:380
 
 #include <memory>
 #include <utility>
@@ -48,7 +48,7 @@
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
 
-#line 51 "JSONObjectParser.hpp" // lalr1.cc:377
+#line 52 "JSONObjectParser.hpp" // lalr1.cc:380
 
 
 # include <cstdlib> // std::abort
@@ -94,7 +94,7 @@
 # define YYUSE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
+#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
 # define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN \
     _Pragma ("GCC diagnostic push") \
@@ -113,14 +113,21 @@
 # define YY_INITIAL_VALUE(Value) /* Nothing. */
 #endif
 
+# ifndef YY_NULLPTR
+#  if defined __cplusplus && 201103L <= __cplusplus
+#   define YY_NULLPTR nullptr
+#  else
+#   define YY_NULLPTR 0
+#  endif
+# endif
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
 #endif
 
-#line 35 "JSONObjectParser.bison" // lalr1.cc:377
+#line 36 "JSONObjectParser.bison" // lalr1.cc:380
 namespace wasp {
-#line 123 "JSONObjectParser.hpp" // lalr1.cc:377
+#line 131 "JSONObjectParser.hpp" // lalr1.cc:380
 
 
 
@@ -134,7 +141,7 @@ namespace wasp {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 63 "JSONObjectParser.bison" // lalr1.cc:377
+    #line 64 "JSONObjectParser.bison" // lalr1.cc:380
 
     bool boolean;
     int integer;
@@ -144,7 +151,7 @@ namespace wasp {
     std::vector<Value*>* values;
     std::vector<std::pair<std::string,Value*>>* keyed_values;
 
-#line 147 "JSONObjectParser.hpp" // lalr1.cc:377
+#line 155 "JSONObjectParser.hpp" // lalr1.cc:380
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -380,7 +387,7 @@ namespace wasp {
     static const char* const yytname_[];
 #if YYDEBUG
   // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-  static const unsigned short int yyrline_[];
+  static const unsigned short yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r);
     /// Print the state stack on the debug stream.
@@ -445,6 +452,8 @@ namespace wasp {
       typedef basic_symbol<by_state> super_type;
       /// Construct an empty symbol.
       stack_symbol_type ();
+      /// Copy construct (for efficiency).
+      stack_symbol_type (const stack_symbol_type& that);
       /// Steal the contents from \a sym to build this.
       stack_symbol_type (state_type s, symbol_type& sym);
       /// Assignment, needed by push_back.
@@ -473,7 +482,7 @@ namespace wasp {
     void yypush_ (const char* m, state_type s, symbol_type& sym);
 
     /// Pop \a n symbols the three stacks.
-    void yypop_ (unsigned int n = 1);
+    void yypop_ (unsigned n = 1);
 
     /// Constants.
     enum
@@ -496,9 +505,9 @@ namespace wasp {
   };
 
 
-#line 35 "JSONObjectParser.bison" // lalr1.cc:377
+#line 36 "JSONObjectParser.bison" // lalr1.cc:380
 } // wasp
-#line 501 "JSONObjectParser.hpp" // lalr1.cc:377
+#line 511 "JSONObjectParser.hpp" // lalr1.cc:380
 
 
 

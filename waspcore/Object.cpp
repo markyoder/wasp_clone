@@ -1,6 +1,7 @@
 #include "waspcore/Object.h"
 
 #include "waspcore/wasp_bug.h"
+#include "waspcore/utils.h"
 #include <string.h>  // strdup, free
 #include <cstdlib>   // atoi/atof, etc
 #include <sstream>
@@ -517,7 +518,7 @@ bool Value::format_json(std::ostream& out, int indent_level, int level) const
         switch (type())
         {
             case TYPE_STRING:
-                out << "\"" << to_string() << "\"";
+                out << "\"" << json_escape_string(to_string()) << "\"";
                 break;
             case TYPE_BOOLEAN:
                 out << std::boolalpha << to_bool();
@@ -553,7 +554,7 @@ bool Value::pack_json(std::ostream& out) const
         switch (type())
         {
             case TYPE_STRING:
-                out << "\"" << to_string() << "\"";
+                out << "\"" << json_escape_string(to_string()) << "\"";
                 break;
             case TYPE_BOOLEAN:
                 out << std::boolalpha << to_bool();

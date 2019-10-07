@@ -620,15 +620,27 @@ inline WASP_PUBLIC bool expand_template(std::ostream&      result,
         return true;
     }
 
-    std::ifstream json_file_stream(json_parameter_file);
-    if (!json_file_stream)
+    // if json_parameter_file starts with '{' and ends with '}' then treat it as
+    // a string holding the json parameter file contents to parse - otherwise
+    // treat it as a filepath to the json parametr file
+
+    DataObject::SP obj_ptr;
+    bool json_failed = true;
+
+    if ( json_parameter_file.size()  >   2  &&
+         json_parameter_file.front() == '{' &&
+         json_parameter_file.back()  == '}' )
     {
-        elog << "***Error : JSON file could not be opened!" << std::endl;
-        return false;
+        std::istringstream json_input_stream(json_parameter_file);
+        JSONObjectParser generator(obj_ptr, json_input_stream, elog, nullptr);
+        json_failed = generator.parse() != 0;
     }
-    DataObject::SP   obj_ptr;
-    JSONObjectParser generator(obj_ptr, json_file_stream, elog, nullptr);
-    bool             json_failed = generator.parse() != 0;
+    else
+    {
+        std::ifstream json_file_stream(json_parameter_file);
+        JSONObjectParser generator(obj_ptr, json_file_stream, elog, nullptr);
+        json_failed = generator.parse() != 0;
+    }
     if (json_failed)
     {
         elog << "***Error : Parsing of data " << json_parameter_file
