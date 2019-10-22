@@ -67,7 +67,7 @@ TEST(utils, xml_escape_name)
     EXPECT_EQ("LPxmlAPOSnameAPOSRP", xml_escape_name("(xml'name')"));
     EXPECT_EQ("LBKxmlASSIGNnameRBK", xml_escape_name("[xml=name]"));
     EXPECT_EQ("xmlCOLONnaCOMMAme", xml_escape_name("xml:na,me"));
-    EXPECT_EQ("xmlFWDSLSHnaBCKSLSHme", xml_escape_name("xml/na\\me"));
+    EXPECT_EQ("xmlDOTFWDSLSHnaBCKSLSHme", xml_escape_name("xml./na\\me"));
 }
 TEST(utils, xml_escape_data)
 {
