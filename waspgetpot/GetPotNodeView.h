@@ -62,6 +62,17 @@ class WASP_PUBLIC GetPotNodeView
     bool has_parent() const;
 
     /**
+     * @brief id will return an empty string as it doesn't apply to GetPot nodes
+     * @return empty string
+     */
+    std::string id() const { return ""; }
+    /**
+     * @brief id_child will return a null view as it doesn't apply to GetPOt nodes
+     * @return null view
+     */
+    GetPotNodeView id_child() const { return GetPotNodeView(); }
+
+    /**
      * @brief is_decorative determine if this node is decorative
      * @return true, iff the node is a decorative '(','[','{', etc.
      * Declarators and terminators are decorative

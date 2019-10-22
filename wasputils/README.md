@@ -199,11 +199,15 @@ sonvalidjson /path/to/schema.sch /path/to/input.son
 ddivalidjson /path/to/schema.sch /path/to/input.ddi
 ```
 
+```
+getpotvalidjson /path/to/schema.sch /path/to/input.i
+```
+
 `sonjson` takes the SON input and converts it to a JSON with the results on stdout.
 
 `sonvalidjson` takes the SON input, validates it against the provided schema, and converts it to a JSON with the results on stdout. If there are any validation errors, the JSON conversion still takes place with the results on stdout and any validation messages on stdderr.  If there are any validiation errors, this utility returns a non-zero code.
 
-`ddivalidjson` takes the DDI input and validates it agasint the provided schema. If the input is not valid, then the utility will output the validation messages on stdderr and exit with a non-zero code. If there are no validation errors, then this utility converts the DDI input to JSON with the results on stdout.
+`ddivalidjson` takes the DDI input and validates it against the provided schema. If the input is not valid, then the utility will output the validation messages on stdderr and exit with a non-zero code. If there are no validation errors, then this utility converts the DDI input to JSON with the results on stdout.
 
 The schema is used during the conversion so that if multiple input components of a given name are available at any level, then this is represented by a single JSON array of that given name with each element of that array being the input components.
 
