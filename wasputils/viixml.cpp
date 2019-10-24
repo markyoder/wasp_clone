@@ -29,16 +29,22 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    if (argc != 3)
+    if (argc != 3 && (argc != 2 || std::string(argv[3]) != "--dec"))
     {
         std::cout << "Usage: " << std::endl;
-        std::cout << "\t" << argv[0] << " schema inputFile " << std::endl;
+        std::cout << "\t" << argv[0] << " schema inputFile [--dec]" << std::endl;
         std::cout << "\ti.e., " << argv[0]
                   << " /path/to/definition.son /path/to/some/input "
                   << std::endl;
         std::cout << " Usage : " << argv[0]
                   << " --version\t(print version info)" << std::endl;
         return 1;
+    }
+
+    bool emit_dec = false;
+    if (std::string(argv[argc - 1]) == "--dec")
+    {
+        emit_dec = true;
     }
 
     DefaultVIInterpreter parser;
@@ -67,6 +73,6 @@ int main(int argc, char** argv)
                   << std::endl;
         return 1;
     }
-    wasp::to_xml((VIINodeView)parser.root(), std::cout);
+    wasp::to_xml((VIINodeView)parser.root(), std::cout, emit_dec);
     return 0;
 }

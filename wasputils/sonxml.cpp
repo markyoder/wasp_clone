@@ -26,15 +26,21 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    if (argc != 2)
+    if (argc != 2 && (argc != 3 || std::string(argv[2]) != "--dec"))
     {
         std::cout << "Usage: " << std::endl;
-        std::cout << "\t" << argv[0] << " inputFile " << std::endl;
+        std::cout << "\t" << argv[0] << " inputFile [--dec]" << std::endl;
         std::cout << "\ti.e., " << argv[0] << " /path/to/some/input "
                   << std::endl;
         std::cout << " Usage : " << argv[0]
                   << " --version\t(print version info)" << std::endl;
         return 1;
+    }
+
+    bool emit_dec = false;
+    if (std::string(argv[argc - 1]) == "--dec")
+    {
+        emit_dec = true;
     }
 
     DefaultSONInterpreter parser;
@@ -46,6 +52,6 @@ int main(int argc, char** argv)
         return 1;
     }
     SONNodeView root = parser.root();
-    wasp::to_xml(root, std::cout);
+    wasp::to_xml(root, std::cout, emit_dec);
     return 0;
 }

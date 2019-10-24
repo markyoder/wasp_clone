@@ -13,7 +13,7 @@ if os.name == 'nt':
 else:    
     schema_filepath = os.path.dirname(__file__)+"/schema.sch"
     son_input_filepath = os.path.dirname(__file__)+"/input.son"
-cmd = sonvalidxml+' '+schema_filepath+' '+son_input_filepath+" --xml"
+cmd = sonvalidxml+' '+schema_filepath+' '+son_input_filepath+" --xml --dec"
 xmlresult = subprocess.check_output(cmd, shell=True)
 
 ### obtain pieces of input by name for convenience
