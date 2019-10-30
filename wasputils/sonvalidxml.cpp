@@ -28,8 +28,8 @@ int main(int argc, char** argv)
 
     if ( ( argc != 3 ) &&
          ( argc != 4 || std::string(argv[3]) != "--xml" ) &&
-         ( argc != 4 || std::string(argv[3]) != "--dec" ) &&
-         ( argc != 5 || std::string(argv[3]) != "--xml" || std::string(argv[4]) != "--dec" ) )
+         ( argc != 4 || std::string(argv[3]) != "--nondec" ) &&
+         ( argc != 5 || std::string(argv[3]) != "--xml" || std::string(argv[4]) != "--nondec" ) )
     {
         std::cerr << "Workbench Analysis Sequence Processor (SON) Validator "
                      "and XML printer"
@@ -41,7 +41,7 @@ int main(int argc, char** argv)
                   << std::endl
                   << "      Usage : " << argv[0]
                   << " path/to/SON/formatted/schema "
-                     "path/to/SON/formatted/input [--xml] [--dec]" << std::endl;
+                     "path/to/SON/formatted/input [--xml] [--nondec]" << std::endl;
         std::cout << " Usage : " << argv[0]
                   << " --version\t(print version info)" << std::endl;
         return 1;
@@ -53,10 +53,10 @@ int main(int argc, char** argv)
         msgType = HIVE::MessagePrintType::XML;
     }
 
-    bool emit_dec = false;
-    if (std::string(argv[argc - 1]) == "--dec")
+    bool omit_dec = false;
+    if (std::string(argv[argc - 1]) == "--nondec")
     {
-        emit_dec = true;
+        omit_dec = true;
     }
 
     std::ifstream schema(argv[1]);
@@ -110,7 +110,7 @@ int main(int argc, char** argv)
                   << std::endl;
         return 1;
     }
-    wasp::to_xml(input_root, std::cout, emit_dec);
+    wasp::to_xml(input_root, std::cout, !omit_dec);
 
     if (!valid)
     {

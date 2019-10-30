@@ -29,10 +29,10 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    if (argc != 3 && (argc != 4 || std::string(argv[3]) != "--dec"))
+    if (argc != 3 && (argc != 4 || std::string(argv[3]) != "--nondec"))
     {
         std::cout << "Usage: " << std::endl;
-        std::cout << "\t" << argv[0] << " schema inputFile [--dec]" << std::endl;
+        std::cout << "\t" << argv[0] << " schema inputFile [--nondec]" << std::endl;
         std::cout << "\ti.e., " << argv[0]
                   << " /path/to/definition.son /path/to/some/input "
                   << std::endl;
@@ -41,10 +41,10 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    bool emit_dec = false;
-    if (std::string(argv[argc - 1]) == "--dec")
+    bool omit_dec = false;
+    if (std::string(argv[argc - 1]) == "--nondec")
     {
-        emit_dec = true;
+        omit_dec = true;
     }
 
     DefaultDDInterpreter parser;
@@ -73,6 +73,6 @@ int main(int argc, char** argv)
                   << std::endl;
         return 1;
     }
-    wasp::to_xml((DDINodeView)parser.root(), std::cout, emit_dec);
+    wasp::to_xml((DDINodeView)parser.root(), std::cout, !omit_dec);
     return 0;
 }

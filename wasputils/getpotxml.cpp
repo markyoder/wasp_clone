@@ -27,17 +27,17 @@ int main(int argc, char* argv[])
             << " : An application for listing GetPot formatted input as xml."
             << std::endl;
         std::cout << " Usage : " << argv[0] << " path/to/GetPot/formatted/input"
-                  " [--dec]" << std::endl;
+                  " [--nondec]" << std::endl;
         std::cout << " Usage : " << argv[0]
                   << " --version\t(print version info)" << std::endl;
         return 1;
     }
 
     int inp_count = argc;
-    bool emit_dec = false;
-    if (std::string(argv[argc - 1]) == "--dec")
+    bool omit_dec = false;
+    if (std::string(argv[argc - 1]) == "--nondec")
     {
-        emit_dec = true;
+        omit_dec = true;
         inp_count--;
     }
 
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
                          << "Parse Timer duration: " << parse_time.duration()
                          << " nanoseconds with " << parse_time.intervals()
                          << " invervals" << std::endl);
-        wasp::to_xml((GetPotNodeView)interpreter.root(), std::cout, emit_dec);
+        wasp::to_xml((GetPotNodeView)interpreter.root(), std::cout, !omit_dec);
         if (!parsed)
         {
             std::cout << errors.str() << std::endl;

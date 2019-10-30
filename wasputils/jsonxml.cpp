@@ -25,10 +25,10 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    if (argc != 2 && (argc != 3 || std::string(argv[2]) != "--dec"))
+    if (argc != 2 && (argc != 3 || std::string(argv[2]) != "--nondec"))
     {
         std::cout << "Usage: " << std::endl;
-        std::cout << "\t" << argv[0] << " inputFile [--dec]" << std::endl;
+        std::cout << "\t" << argv[0] << " inputFile [--nondec]" << std::endl;
         std::cout << "\ti.e., " << argv[0] << " /path/to/some/input "
                   << std::endl;
         std::cout << " Usage : " << argv[0]
@@ -36,10 +36,10 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    bool emit_dec = false;
-    if (std::string(argv[argc - 1]) == "--dec")
+    bool omit_dec = false;
+    if (std::string(argv[argc - 1]) == "--nondec")
     {
-        emit_dec = true;
+        omit_dec = true;
     }
 
     DefaultJSONInterpreter parser;
@@ -50,6 +50,6 @@ int main(int argc, char** argv)
                   << std::endl;
         return 1;
     }
-    wasp::to_xml(parser.root(), std::cout, emit_dec);
+    wasp::to_xml(parser.root(), std::cout, !omit_dec);
     return 0;
 }
