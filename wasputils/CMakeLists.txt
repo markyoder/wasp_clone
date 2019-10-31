@@ -137,6 +137,12 @@ IF ( wasp_ENABLE_waspgetpot )
       NOEXESUFFIX
       INSTALLABLE
     )
+    TRIBITS_ADD_EXECUTABLE(getpotvalidjson
+      SOURCES getpotvalidjson.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
 ENDIF()
 IF ( wasp_ENABLE_waspson )
     TRIBITS_ADD_EXECUTABLE(sonlist

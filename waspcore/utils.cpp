@@ -257,6 +257,9 @@ std::string xml_escape_name(const std::string& src)
             case '-':
                 dst << "MINUS";
                 break;
+            case '.':
+                dst << "DOT";
+                break;
             case '\'':
                 dst << "APOS";
                 break;
