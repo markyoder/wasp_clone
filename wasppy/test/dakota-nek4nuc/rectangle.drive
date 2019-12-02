@@ -1,0 +1,6 @@
+application "/home/mxd/NEAMS+VisIt-rev67bd6a14e-Linux/rte/entry.sh /home/mxd/NEAMS+VisIt-rev67bd6a14e-Linux/rte/nek4nuc.py -i rectangle.parn -e /software/tools/apps/openmpi/gcc4/1.10.2/bin/mpirun -v 0 -nek '/home/mxd/Nek5000'"
+            input_file 'rectangle.parn'
+            input_tmpl 'rectangle.tmpl'
+
+extract_from 'rectangle.dragLogic/rectangle.frctVel.txt'  find last_line # add optional integer N to grab the last N lines 
+column 1 delimiter ' ' 

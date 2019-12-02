@@ -1,4 +1,4 @@
-import subprocess, os, json
+import subprocess, os, json, time
 import re
 import wasp2py as w2py
 from itertools import islice
@@ -29,10 +29,41 @@ def run_external_app(document, application_json_parameters):
     if rtncode != 0:
         return rtncode
 
-    print "Running external simulation..."
-    print " -- ",external_app
-    
-    rtncode = os.system(external_app) 
+#    print "Running external simulation..."
+#    print " -- ",external_app
+
+### Begin new code
+    submission_json_file = "submission_script.json"
+    with open(submission_json_file, 'w') as outfile:
+      f=json.dump(document,  outfile, default=lambda o: o.__dict__)
+
+    input_file="submission_script" #
+    tmpl_file="submission_script.tmpl" #
+    args = "{} {} {} > {}".format(template_engine, tmpl_file, submission_json_file, input_file)
+    print "Executing template engine..."
+    print "-- ",args
+    rtncode = os.system(args)
+    print "Template expansion completed. Return code ",rtncode
+    if rtncode != 0:
+        return rtncode
+
+    args = "qsub {}".format(input_file)
+    qsub_output = subprocess.check_output(args,shell=True)
+    args = "qstat {}"
+    isRunning = True
+    while(isRunning):
+      #print isRunning
+      qstat_output = subprocess.check_output(args.format(qsub_output),shell=True)
+      qstat_output_lines = qstat_output.splitlines()
+      #print qstat_output_lines[-1].split()
+      if 'C' in qstat_output_lines[-1].split():
+        isRunning = False
+      else:
+        time.sleep(10)
+## End new code
+
+    #rtncode = os.system(external_app)
+
     print "External simulation complete. Return code ",rtncode
     return rtncode
 

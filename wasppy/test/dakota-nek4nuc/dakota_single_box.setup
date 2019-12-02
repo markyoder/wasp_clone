@@ -1,0 +1,21 @@
+
+setup_properties {
+
+    runtime_command = "/home/mxd/NEAMS+VisIt-rev67bd6a14e-Linux/rte/entry.sh /home/mxd/NEAMS+VisIt-rev67bd6a14e-Linux/rte/dakota.py"
+    application_path = "/home/mxd/packages/dakota-6.10.0.Linux.x86_64/bin/dakota"
+    hostname = "mod-condo-login"
+    username = "mxd"
+    remote_execution_home = "/home/mxd"
+    application_name = "dakota_nek4nuc_panacea"
+    upload_patterns = ["${BASENAME}.exo", "${BASENAME}.in", "${BASENAME}.drive", "${BASENAME}.tmpl"] % using Python's glob syntax https://docs.python.org/2/library/glob.html
+    download_patterns = ["dakota_tabular.dat"] % using Python's glob syntax https://docs.python.org/2/library/glob.html
+
+    version_number = "1.0.0"
+
+    scheduler_type = single_box
+    scheduler_header [
+         "module load mpi/openmpi/gcc4/1.10.2"
+         "which mpirun"
+    ]
+
+}
