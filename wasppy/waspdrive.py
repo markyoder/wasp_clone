@@ -1,5 +1,13 @@
-import subprocess, os, json, time
+# Python import
+import subprocess
+import os
+import json
+import sys
+import time
+import threading
 import re
+
+# Workbench tools
 import wasp2py as w2py
 from itertools import islice
 from collections import deque
@@ -14,58 +22,61 @@ def process_drive_input(file_extract_driver):
 
 def run_external_app(document, application_json_parameters):    
     """Runs the external application as listed in the given document.
-    Expands the application input template using the provided application_json_parameters prior to application execution.    
+    Expands the application input template using the provided application_json_parameters prior to application execution.
     """ 
-    external_app=document['application']['value'] #
-    input_file=document['application']['input_file']['value'] #
-    tmpl_file=document['application']['input_tmpl']['value'] #
+
+    # Path to 'halite' engine for creating files from templates and json file
     template_engine = w2py.get_wasp_utility_path("halite")
 
+    # Generate input file from template and Dakota parameters using halite
+    input_file=document['application']['input_file']['value']
+    tmpl_file=document['application']['input_tmpl']['value']
     args = "{} {} {} > {}".format(template_engine, tmpl_file, application_json_parameters, input_file)
-    print "Executing template engine..."
-    print "-- ",args
-    rtncode = os.system(args)
-    print "Template expansion completed. Return code ",rtncode
-    if rtncode != 0:
-        return rtncode
+    process = subprocess.check_output(args,shell=True)
 
-#    print "Running external simulation..."
-#    print " -- ",external_app
+    # Jobs are being submitted on a cluster using a scheduler. A submission 
+    # script is generated from the 'scheduler_head' parameters provided by
+    # the user in the *.drive file.
+    if 'scheduler_header' in document.keys():
+        # Get working directory and store it in 'document'
+        document['working_dir'] = os.getcwd()
+        # Get Dakota job id from workding directory and store it in 'document'
+        document['job_id'] = document['working_dir'].split(".")[-1]
+        # Store all information in 'submission_script.json' to generate
+        # submission script
+        submission_json_file = "submission_script.json"
+        with open(submission_json_file, 'w') as outfile:
+            f=json.dump(document, outfile, default=lambda o: o.__dict__)
+        # Create the submission script from a template submission script using
+        # halite
+        input_file="submission_script"
+        tmpl_file=os.path.dirname(__file__)+"/drive/templates/submission_script.tmpl"
+        args = "{} {} {} > {}".format(template_engine, tmpl_file, submission_json_file, input_file)
+        process = subprocess.check_output(args,shell=True)
+        # Set 'external_app' to submit the submission script
+        external_app = [str(document['submit_path']['value']), input_file]
+        process = subprocess.Popen(external_app)
+    # The jobs are not submitted to a schedule but run locally.
+    else:
+        external_app = document['application']['value']
+        rtncode = os.system(external_app)
+        if rtncode != 0:
+            errorMsg = "Application could be run and returned code {} "
+            raise IOError(errorMsg.format(rtncode))
 
-### Begin new code
-    submission_json_file = "submission_script.json"
-    with open(submission_json_file, 'w') as outfile:
-      f=json.dump(document,  outfile, default=lambda o: o.__dict__)
-
-    input_file="submission_script" #
-    tmpl_file="submission_script.tmpl" #
-    args = "{} {} {} > {}".format(template_engine, tmpl_file, submission_json_file, input_file)
-    print "Executing template engine..."
-    print "-- ",args
-    rtncode = os.system(args)
-    print "Template expansion completed. Return code ",rtncode
-    if rtncode != 0:
-        return rtncode
-
-    args = "qsub {}".format(input_file)
-    qsub_output = subprocess.check_output(args,shell=True)
-    args = "qstat {}"
-    isRunning = True
-    while(isRunning):
-      #print isRunning
-      qstat_output = subprocess.check_output(args.format(qsub_output),shell=True)
-      qstat_output_lines = qstat_output.splitlines()
-      #print qstat_output_lines[-1].split()
-      if 'C' in qstat_output_lines[-1].split():
-        isRunning = False
-      else:
-        time.sleep(10)
-## End new code
-
-    #rtncode = os.system(external_app)
-
-    print "External simulation complete. Return code ",rtncode
-    return rtncode
+    # The following is only run when using scheduler options in the drive file.
+    # Look for 'exit_file_<id>.txt' file in the working directory. If not found,
+    # the job on the scheduler has not completed and the python script needs to
+    # be paused.
+    if 'scheduler_header' in document.keys():
+        isRunning = True
+        exitFile = "exit_file_" + document['job_id'] + ".txt"
+        exitFile = os.path.join(document['working_dir'], exitFile)
+        while(isRunning):
+            if os.path.isfile(exitFile):
+                isRunning = False
+            else:
+                time.sleep(10)
 
 def first_n_lines(str_file, n):
     #return the first n lines from a file as a list
@@ -85,7 +96,6 @@ def first_n_lines(str_file, n):
     else:
         print "No such file in "+ os.getcwd()+ "!"
     return lines
-
 
 def last_n_lines(str_file, n):
     #return the last n lines from a file as a list

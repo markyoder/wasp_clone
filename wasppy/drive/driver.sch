@@ -43,7 +43,7 @@ extract_from{
         MaxOccurs=1
         ValType=String
     }
-    ChildExactlyOne[ find using ] 
+    ChildExactlyOne[ find using ]
     using{
         MinOccurs=0
         MaxOccurs=NoLimit
@@ -147,3 +147,26 @@ extract_from{
 
 }
 
+scheduler_header {
+    Description="List of commands to execute before the analysis starts"
+    InputTmpl=flagvalue
+    InputType=header
+    MinOccurs=0
+    MaxOccurs=1
+    value
+    {
+        ValType=String
+        MinOccurs=1
+        MaxOccurs=NoLimit
+    }
+}
+
+submit_path {
+    Description="Command to submit a job"
+    InputTmpl=flagvalue
+    InputType=quoted
+    MinOccurs=0
+    MaxOccurs=1
+    ValType=String
+    InputDefault="/usr/local/bin/qsub"
+}
