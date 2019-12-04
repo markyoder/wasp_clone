@@ -17,7 +17,7 @@ from collections import deque
 def process_drive_input(file_extract_driver):
     """Process and obtain the driver document data"""
     drive_schema =  os.path.dirname(__file__)+"/drive/driver.sch"
-    document=w2py.get_json_dict(drive_schema, file_extract_driver, ext="ddi" )    
+    document=w2py.get_json_dict(drive_schema, file_extract_driver, ext="ddi" )
     return document
 
 def run_external_app(document, application_json_parameters):    
@@ -37,7 +37,7 @@ def run_external_app(document, application_json_parameters):
     # Jobs are being submitted on a cluster using a scheduler. A submission 
     # script is generated from the 'scheduler_head' parameters provided by
     # the user in the *.drive file.
-    if 'scheduler_header' in document.keys():
+    if 'scheduler' in document.keys():
         # Get working directory and store it in 'document'
         document['working_dir'] = os.getcwd()
         # Get Dakota job id from workding directory and store it in 'document'
@@ -54,7 +54,7 @@ def run_external_app(document, application_json_parameters):
         args = "{} {} {} > {}".format(template_engine, tmpl_file, submission_json_file, input_file)
         process = subprocess.check_output(args,shell=True)
         # Set 'external_app' to submit the submission script
-        external_app = [str(document['submit_path']['value']), input_file]
+        external_app = [str(document['scheduler']['submit_path']['value']), input_file]
         process = subprocess.Popen(external_app)
     # The jobs are not submitted to a schedule but run locally.
     else:
@@ -68,7 +68,7 @@ def run_external_app(document, application_json_parameters):
     # Look for 'exit_file_<id>.txt' file in the working directory. If not found,
     # the job on the scheduler has not completed and the python script needs to
     # be paused.
-    if 'scheduler_header' in document.keys():
+    if 'scheduler' in document.keys():
         isRunning = True
         exitFile = "exit_file_" + document['job_id'] + ".txt"
         exitFile = os.path.join(document['working_dir'], exitFile)

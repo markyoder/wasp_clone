@@ -1,0 +1,8 @@
+scheduler
+    scheduler_header = "#!/bin/bash"
+                       "#PBS -m bea"
+                       "#PBS -M mxd@ornl.gov"
+                       "#PBS -l nodes=1:ppn=1"
+                       "#PBS -N DakNek"
+                       "#PBS -l walltime=00:10:00"
+    submit_path = "/usr/local/bin/qsub"

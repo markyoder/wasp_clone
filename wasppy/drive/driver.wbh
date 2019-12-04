@@ -30,7 +30,7 @@ rule("keyword") {
         green = 0
         blue = 0
     }
-    pattern = "(between|first_line|last_line|delimiter|input_file|input_tmpl|extract_from|columns|find|pattern|application)"
+    pattern = "(between|first_line|last_line|delimiter|input_file|input_tmpl|extract_from|columns|find|pattern|application|scheduler|scheduler_header|submit_path)"
 }
 rule("Number") {
     bold = true
