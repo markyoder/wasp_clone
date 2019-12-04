@@ -1,0 +1,45 @@
+#
+# nek parameter file
+#
+[GENERAL] 
+stopAt = numSteps
+numSteps = 10
+#endTime = 1e-01
+dt = -1e-01
+variableDt = yes
+targetCFL = 0.8
+timeStepper = bdf3
+writeInterval = 10
+
+[PROBLEMTYPE]
+equation = incompNS
+variableProperties = no
+
+[PRESSURE]
+residualTol = 1e-08
+residualProj = yes
+
+[VELOCITY]
+residualTol = 1e-11
+density = 1.0
+viscosity = -1000
+residualProj = yes
+u_bc=[ v O W ]
+v=[<dak_vx> 0.0 0.0]
+
+[RUNTIME]
+runGenmap = yes
+genmapTol = 0.2
+nbProcs = 1
+compileSession = yes
+runVisnek = yes
+runExo2nek = yes
+numBoundaryConditions = 3
+referenceLength = 1.0
+numScalarEquations = 0
+polyOrder = 5
+offset_bc_index = 0
+
+[DRAG]
+#drag_type = uniform
+# insert DRAG components above this line
