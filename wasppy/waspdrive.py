@@ -34,6 +34,9 @@ def run_external_app(document, application_json_parameters):
     args = "{} {} {} > {}".format(template_engine, tmpl_file, application_json_parameters, input_file)
     process = subprocess.check_output(args,shell=True)
 
+    # Assume return code of 0, AKA OK    
+    rtncode = 0
+
     # Jobs are being submitted on a cluster using a scheduler. A submission 
     # script is generated from the 'scheduler_head' parameters provided by
     # the user in the *.drive file.
@@ -62,7 +65,6 @@ def run_external_app(document, application_json_parameters):
         rtncode = os.system(external_app)
         if rtncode != 0:
             errorMsg = "Application could be run and returned code {} "
-            raise IOError(errorMsg.format(rtncode))
 
     # The following is only run when using scheduler options in the drive file.
     # Look for 'exit_file_<id>.txt' file in the working directory. If not found,
@@ -76,8 +78,10 @@ def run_external_app(document, application_json_parameters):
             if os.path.isfile(exitFile):
                 isRunning = False
             else:
-                time.sleep(10)
-
+                time.sleep(5)
+        with open(exitFile, "r") as ef:
+            rtncode = int(ef.readline().trim())
+    return rtncode 
 def first_n_lines(str_file, n):
     #return the first n lines from a file as a list
     #if n > max line number, return all lines in the file
