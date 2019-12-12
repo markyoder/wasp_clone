@@ -43,22 +43,40 @@ def run_external_app(document, application_json_parameters):
     if 'scheduler' in document.keys():
         # Get working directory and store it in 'document'
         document['working_dir'] = os.getcwd()
-        # Get Dakota job id from workding directory and store it in 'document'
-        document['job_id'] = document['working_dir'].split(".")[-1]
+        # Get job id and store it in 'document' for use by submission script
+        import uuid
+        session_id = str(uuid.uuid4().hex)
+        input_basename = os.path.splitext(os.path.basename(input_file))[0]
+        document['job_status_file'] = os.path.join(os.getcwd(),input_basename + "." + session_id + ".stat")
         # Store all information in 'submission_script.json' to generate
         # submission script
-        submission_json_file = "submission_script.json"
+        submission_json_file = input_basename + "_" + session_id + ".submit.json"
         with open(submission_json_file, 'w') as outfile:
             f=json.dump(document, outfile, default=lambda o: o.__dict__)
         # Create the submission script from a template submission script using
         # halite
-        input_file="submission_script"
-        tmpl_file=os.path.dirname(__file__)+"/drive/templates/submission_script.tmpl"
-        args = "{} {} {} > {}".format(template_engine, tmpl_file, submission_json_file, input_file)
+        input_submission_script=input_basename + "_" + session_id + ".sh"
+        tmpl_file=os.path.dirname(__file__) + "/drive/templates/submission_script.tmpl"
+        args = "{} {} {} > {}".format(template_engine, tmpl_file, submission_json_file, input_submission_script)
         process = subprocess.check_output(args,shell=True)
         # Set 'external_app' to submit the submission script
-        external_app = [str(document['scheduler']['submit_path']['value']), input_file]
+        external_app = [str(document['scheduler']['submit_path']['value']), input_submission_script]
         process = subprocess.Popen(external_app)
+        # Look for the statusfile in the working directory. If not found,
+        # the job on the scheduler has not completed and the python script needs to
+        # be paused.
+        isRunning = True
+        while(isRunning):
+            if os.path.isfile(document['job_status_file']):
+               isRunning = False
+            else:
+                time.sleep(5)
+        with open(document['job_status_file'], "r") as ef:
+            rtncode = int(ef.readline().strip())
+        # Remove session files
+        os.remove(document['job_status_file'])
+        os.remove(input_submission_script)
+        os.remove(submission_json_file)
     # The jobs are not submitted to a schedule but run locally.
     else:
         external_app = document['application']['value']
@@ -66,22 +84,8 @@ def run_external_app(document, application_json_parameters):
         if rtncode != 0:
             errorMsg = "Application could be run and returned code {} "
 
-    # The following is only run when using scheduler options in the drive file.
-    # Look for 'exit_file_<id>.txt' file in the working directory. If not found,
-    # the job on the scheduler has not completed and the python script needs to
-    # be paused.
-    if 'scheduler' in document.keys():
-        isRunning = True
-        exitFile = "exit_file_" + document['job_id'] + ".txt"
-        exitFile = os.path.join(document['working_dir'], exitFile)
-        while(isRunning):
-            if os.path.isfile(exitFile):
-                isRunning = False
-            else:
-                time.sleep(5)
-        with open(exitFile, "r") as ef:
-            rtncode = int(ef.readline().trim())
     return rtncode 
+
 def first_n_lines(str_file, n):
     #return the first n lines from a file as a list
     #if n > max line number, return all lines in the file

@@ -4,4 +4,5 @@ cd <working_dir>
 
 <application.value>
 
-touch exit_file_<job_id>.txt
+echo $? > <job_status_file>
+
