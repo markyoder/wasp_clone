@@ -1,7 +1,7 @@
 ## Apollo
 application "/home/mxd/NEAMS+VisIt-rev67bd6a14e-Linux/rte/entry.sh /home/mxd/NEAMS+VisIt-rev67bd6a14e-Linux/rte/nek4nuc.py -i rectangle.parn -e /opt/openmpi-3.1.1-gcc-4.8.5/bin/mpirun -v 0 -nek '/home/mxd/Nek5000-v17'"
 ## Panacea
-#application "/Users/mxd/ORNL-Research/Workbench/Workbench-Darwin/rte/entry.sh /Users/mxd/ORNL-Research/Workbench/Workbench-Darwin/rte/nek4nuc.py -i rectangle.parn -e /usr/local/bin/mpirun -v 0 -nek '/Users/mxd/ORNL-Research/Nek5000-project/Nek5000'"
+#application "/home/mxd/NEAMS+VisIt-rev67bd6a14e-Linux/rte/entry.sh /home/mxd/NEAMS+VisIt-rev67bd6a14e-Linux/rte/nek4nuc.py -i rectangle.parn -e /software/tools/apps/openmpi/gcc4/1.10.2/bin/mpirun -v 0 -nek '/home/mxd/Nek5000-v17'"
             input_file 'rectangle.parn'
             input_tmpl 'rectangle.tmpl'
 
@@ -29,4 +29,5 @@ scheduler
 #                       "#PBS -l nodes=1:ppn=1"
 #                       "#PBS -l walltime=00:10:00"
 #                       "#PBS -N DakNek"
+#                       "module load mpi/openmpi/gcc4/1.10.2"
 #    submit_path = "/opt/torque/bin/qsub"
