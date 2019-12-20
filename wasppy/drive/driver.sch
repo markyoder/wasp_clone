@@ -153,8 +153,8 @@ scheduler{
     InputTmpl="scheduler"
     Description="Scheduler specifications"
 
-    scheduler_header {
-        Description="List of commands to execute before the analysis starts"
+    header {
+        Description="List of commands to execute before the application is executed"
         InputTmpl=flagvalue
         InputType=header
         MinOccurs=1
@@ -167,7 +167,7 @@ scheduler{
         }
     }
     submit_path {
-        Description="Command to submit a job"
+        Description="Path to the scheduler job submission program"
         InputTmpl=flagvalue
         InputType=quoted
         MinOccurs=1

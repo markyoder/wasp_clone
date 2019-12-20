@@ -4,7 +4,6 @@ application "python fake_scheduled_app.py"
 extract_from 'fake_scheduled_input.txt' using 'python -c "with open(\"fake_scheduled_input.txt\") as f: print f.read()"'
 
 scheduler
-    scheduler_header = "#!/bin/bash"
+    header = "#!/bin/bash"
     submit_path = "/usr/local/bin/qsub"
-
     polling_frequency=2
