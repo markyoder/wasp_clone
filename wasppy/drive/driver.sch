@@ -175,4 +175,12 @@ scheduler{
         ValType=String
         InputDefault="/usr/local/bin/qsub"
     }
+    
+    polling_frequency {
+        Description="Seconds between calls to check job status"
+        ValType=Int
+        MinValInc=1
+        MinOccurs=0
+        MaxOccurs=1
+    }
 }
