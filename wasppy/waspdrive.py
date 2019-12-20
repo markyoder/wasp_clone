@@ -66,7 +66,12 @@ def run_external_app(document, application_json_parameters):
 		polling_frequency = int(document['scheduler']['polling_frequency']['value'])
        
         # Set 'external_app' to submit the submission script
-        external_app = [str(document['scheduler']['submit_path']['value']), input_submission_script]
+        submit_path = str(document['scheduler']['submit_path']['value'])
+        if  not os.path.exists(submit_path):
+            print "***Error: submit_path '",submit_path,"' doesn't exist!"
+            rtncode = 1
+            return rtncode
+        external_app = [submit_path, input_submission_script]
         process = subprocess.Popen(external_app)
         # Look for the statusfile in the working directory. If not found,
         # the job on the scheduler has not completed and the python script needs to
