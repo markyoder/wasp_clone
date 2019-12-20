@@ -59,6 +59,12 @@ def run_external_app(document, application_json_parameters):
         tmpl_file=os.path.dirname(__file__) + "/drive/templates/submission_script.tmpl"
         args = "{} {} {} > {}".format(template_engine, tmpl_file, submission_json_file, input_submission_script)
         process = subprocess.check_output(args,shell=True)
+
+        # Obtain the status file polling frequency
+	polling_frequency = 5 # default of 5 seconds
+        if 'polling_frequency' in document['scheduler'].keys():
+		polling_frequency = int(document['scheduler']['polling_frequency']['value'])
+       
         # Set 'external_app' to submit the submission script
         external_app = [str(document['scheduler']['submit_path']['value']), input_submission_script]
         process = subprocess.Popen(external_app)
@@ -70,7 +76,7 @@ def run_external_app(document, application_json_parameters):
             if os.path.isfile(document['job_status_file']):
                isRunning = False
             else:
-                time.sleep(5)
+                time.sleep(polling_frequency)
         with open(document['job_status_file'], "r") as ef:
             rtncode = int(ef.readline().strip())
         # Remove session files

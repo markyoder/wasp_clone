@@ -7,3 +7,4 @@ scheduler
     scheduler_header = "#!/bin/bash"
     submit_path = "/usr/local/bin/qsub"
 
+    polling_frequency=2
