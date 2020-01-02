@@ -6,6 +6,8 @@ cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Release-${CI_BUILD_REF_NAME}" \
       -Dwasp_ENABLE_TESTS=ON \
       -DBUILD_SHARED_LIBS:BOOL=ON \
       -Dwasp_ENABLE_ALL_PACKAGES=ON \
+      -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+      -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
       ..
 
 ctest -D ExperimentalStart \
@@ -32,6 +34,8 @@ cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Bundle-${CI_BUILD_REF_NAME}" \
 	  -Dwasp_ENABLE_INSTALL_CMAKE_CONFIG_FILES:BOOL=ON \
 	  -Dwasp_GENERATE_EXPORT_FILE_DEPENDENCIES:BOOL=ON \
 	  -Dwasp_ENABLE_CPACK_PACKAGING:BOOL=ON \
+      -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+      -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
       ..
 
 make -j 8 package

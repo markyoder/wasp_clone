@@ -1,4 +1,7 @@
-import os, unittest, wasp2py
+import sys,os
+# MAKE SURE THE wasppy MODULE IS IN THE PATH
+sys.path.insert(0, os.path.dirname(__file__)+"/..")
+import unittest, wasp2py
 
 if os.name == 'nt' :
     schema_filepath = os.path.dirname(__file__)+"\\DDI2Python_schema.sch"

@@ -1,5 +1,13 @@
-import subprocess, os, json
+# Python import
+import subprocess
+import os
+import json
+import sys
+import time
+import threading
 import re
+
+# Workbench tools
 import wasp2py as w2py
 from itertools import islice
 from collections import deque
@@ -9,32 +17,85 @@ from collections import deque
 def process_drive_input(file_extract_driver):
     """Process and obtain the driver document data"""
     drive_schema =  os.path.dirname(__file__)+"/drive/driver.sch"
-    document=w2py.get_json_dict(drive_schema, file_extract_driver, ext="ddi" )    
+    document=w2py.get_json_dict(drive_schema, file_extract_driver, ext="ddi" )
     return document
 
 def run_external_app(document, application_json_parameters):    
     """Runs the external application as listed in the given document.
-    Expands the application input template using the provided application_json_parameters prior to application execution.    
+    Expands the application input template using the provided application_json_parameters prior to application execution.
     """ 
-    external_app=document['application']['value'] #
-    input_file=document['application']['input_file']['value'] #
-    tmpl_file=document['application']['input_tmpl']['value'] #
+
+    # Path to 'halite' engine for creating files from templates and json file
     template_engine = w2py.get_wasp_utility_path("halite")
 
+    # Generate input file from template and Dakota parameters using halite
+    input_file=document['application']['input_file']['value']
+    tmpl_file=document['application']['input_tmpl']['value']
     args = "{} {} {} > {}".format(template_engine, tmpl_file, application_json_parameters, input_file)
-    print "Executing template engine..."
-    print "-- ",args
-    rtncode = os.system(args)
-    print "Template expansion completed. Return code ",rtncode
-    if rtncode != 0:
-        return rtncode
+    process = subprocess.check_output(args,shell=True)
 
-    print "Running external simulation..."
-    print " -- ",external_app
-    
-    rtncode = os.system(external_app) 
-    print "External simulation complete. Return code ",rtncode
-    return rtncode
+    # Assume return code of 0, AKA OK    
+    rtncode = 0
+
+    # Jobs are being submitted on a cluster using a scheduler. A submission 
+    # script is generated from the 'scheduler_head' parameters provided by
+    # the user in the *.drive file.
+    if 'scheduler' in document.keys():
+        # Get working directory and store it in 'document'
+        document['working_dir'] = os.getcwd()
+        # Get job id and store it in 'document' for use by submission script
+        import uuid
+        session_id = str(uuid.uuid4().hex)
+        input_basename = os.path.splitext(os.path.basename(input_file))[0]
+        document['job_status_file'] = os.path.join(os.getcwd(),input_basename + "." + session_id + ".stat")
+        # Store all information in 'submission_script.json' to generate
+        # submission script
+        submission_json_file = input_basename + "_" + session_id + ".submit.json"
+        with open(submission_json_file, 'w') as outfile:
+            f=json.dump(document, outfile, default=lambda o: o.__dict__)
+        # Create the submission script from a template submission script using
+        # halite
+        input_submission_script=input_basename + "_" + session_id + ".sh"
+        tmpl_file=os.path.dirname(__file__) + "/drive/templates/submission_script.tmpl"
+        args = "{} {} {} > {}".format(template_engine, tmpl_file, submission_json_file, input_submission_script)
+        process = subprocess.check_output(args,shell=True)
+
+        # Obtain the status file polling frequency
+	polling_frequency = 5 # default of 5 seconds
+        if 'polling_frequency' in document['scheduler'].keys():
+		polling_frequency = int(document['scheduler']['polling_frequency']['value'])
+       
+        # Set 'external_app' to submit the submission script
+        submit_path = str(document['scheduler']['submit_path']['value'])
+        if  not os.path.exists(submit_path):
+            print "***Error: submit_path '",submit_path,"' doesn't exist!"
+            rtncode = 1
+            return rtncode
+        external_app = [submit_path, input_submission_script]
+        process = subprocess.Popen(external_app)
+        # Look for the statusfile in the working directory. If not found,
+        # the job on the scheduler has not completed and the python script needs to
+        # be paused.
+        isRunning = True
+        while(isRunning):
+            if os.path.isfile(document['job_status_file']):
+               isRunning = False
+            else:
+                time.sleep(polling_frequency)
+        with open(document['job_status_file'], "r") as ef:
+            rtncode = int(ef.readline().strip())
+        # Remove session files
+        os.remove(document['job_status_file'])
+        os.remove(input_submission_script)
+        os.remove(submission_json_file)
+    # The jobs are not submitted to a schedule but run locally.
+    else:
+        external_app = document['application']['value']
+        rtncode = os.system(external_app)
+        if rtncode != 0:
+            errorMsg = "Application could be run and returned code {} "
+
+    return rtncode 
 
 def first_n_lines(str_file, n):
     #return the first n lines from a file as a list
@@ -54,7 +115,6 @@ def first_n_lines(str_file, n):
     else:
         print "No such file in "+ os.getcwd()+ "!"
     return lines
-
 
 def last_n_lines(str_file, n):
     #return the last n lines from a file as a list
