@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
  - waspdrive scheduler capability.
 
+### Fixed
+- wasplsp compile error in certain configurations caused by missing `#include <functional>`.
+
 ## [1.0.3] - 10-07-2019
 ### Added
 - GCC 5.4 compiler compatibility CI job.
@@ -16,10 +19,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - HIVE UNKNOWN input node validation capability (See HIVE readme for details).
 
 ### Changed
-- wasvii hanging comment (comment 1 or more lines below last parameter) logic to reparent to the block
+- waspvii hanging comment (comment 1 or more lines below last parameter) logic to reparent to the block
 
 ### Fixed
-- wasppy inablility to handle file paths with whitespaces. 
+- wasppy inability to handle file paths with whitespaces.
 - CMake package logic to allow for incorporation into a Fortran project.
 - Missing support for apostrophe in xml element name effecting the getpotxml utility.
 
