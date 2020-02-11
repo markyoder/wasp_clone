@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - waspdrive scheduler capability.
 
 ### Fixed
-- wasplsp compile error in certain configurations caused by missing `#include <functional>`.
+- wasplsp compile error in certain configurations caused by missing include of `functional`.
 
 ## [1.0.3] - 10-07-2019
 ### Added
