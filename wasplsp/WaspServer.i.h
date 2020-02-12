@@ -1,3 +1,4 @@
+#include <functional>
 #include "waspcore/utils.h"
 
 namespace wasp {
