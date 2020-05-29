@@ -73,8 +73,6 @@ enum NODE : unsigned char
     ,
     RBRACKET  // ]
     ,
-    SUB_OBJECT_TERM,
-    SUB_OBJECT,
     DOT_SLASH,
     WASP_TRUE  // disambiguated for cross-platform macro avoidance
     ,

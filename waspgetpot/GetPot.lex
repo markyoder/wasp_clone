@@ -40,21 +40,8 @@ typedef wasp::GetPotParser::token_type token_type;
  /* enables the use of start condition stacks */
 %option stack
 %s execution_unit
- /* want to capture everthing except whitespace as the object's name
-  * [ object_name ]
-  */
-%x object_decl
 %s object
-%s subobject
-  /* want to capture everthing except whitespace and './' as the object's name
-   * [ ./ object_name ]
-   */
-%x subobject_decl
- /*
-  * When a declarator is pushed the following token must be a './'
-  * This exclusive state should ensure this is present
-  */
-%x subobject_dot_slash
+%x lbracket
 
 INT [0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INT}
@@ -93,13 +80,13 @@ NEQ \!=
 AND &&
 OR \|\|
 LBRACKET \[
-OBJECT_NAME [^" "\n\[\]]+
-SUBOBJECT_NAME [^" ""./"\n\[\]]+
+OBJECT_NAME [^" ""."\n\[\]]+
 STRING (\$\{([^\"\n\t\r])*\})|([^" "\'\"\=\n\t\r\[\]\#\,]+)
 RBRACKET \]
 COMMA ,
-OBJECT_TERM \[" "*\]
+TOP_OBJECT_TERM \[" "*\]
 SUB_OBJECT_TERM \[" "*\.?\.\/" "*\]
+OBJECT_TERM {TOP_OBJECT_TERM}|{SUB_OBJECT_TERM}
 DOT_SLASH \.\/
 
 
@@ -136,15 +123,6 @@ DOT_SLASH \.\/
     capture_token(yylval,wasp::WASP_COMMA);
     return token::COMMA;
 }
-<subobject_dot_slash>{DOT_SLASH} {
-    yy_pop_state();
-    capture_token(yylval,wasp::DOT_SLASH);
-    return token::DOT_SLASH;
-}
-{SUB_OBJECT_TERM} {
-    capture_token(yylval,wasp::SUB_OBJECT_TERM);
-    return token::SUB_OBJECT_TERM;
-}
 <object>{OBJECT_TERM} {
     yy_pop_state();
     capture_token(yylval,wasp::OBJECT_TERM);
@@ -154,43 +132,31 @@ DOT_SLASH \.\/
     capture_token(yylval,wasp::QUOTE);
     return token::QUOTE;
 }
-
-<object>{LBRACKET} {
-    yy_push_state(subobject_dot_slash);
+<INITIAL,object>{LBRACKET} {
+    yy_push_state(lbracket);
     capture_token(yylval,wasp::LBRACKET);
     return token::LBRACKET;
 }
-<INITIAL>{LBRACKET} {
-    yy_push_state(object_decl);
-    capture_token(yylval,wasp::LBRACKET);
-    return token::LBRACKET;
+<lbracket>{DOT_SLASH} {
+    capture_token(yylval,wasp::DOT_SLASH);
+    return token::DOT_SLASH;
 }
-<object_decl,subobject_decl>{OBJECT_NAME} {
+<lbracket>{OBJECT_NAME} {
     capture_token(yylval,wasp::STRING);
     return token::STRING;
 }
-<object_decl>{RBRACKET} {
+<lbracket>{RBRACKET} {
     yy_pop_state();
     yy_push_state(object);
     capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
 }
-<subobject_decl>{RBRACKET} {
-    yy_pop_state();
-    yy_push_state(subobject);
-    capture_token(yylval,wasp::RBRACKET);
-    return token::RBRACKET;
-}
-{RBRACKET} {
-    capture_token(yylval,wasp::RBRACKET);
-    return token::RBRACKET;
-}
-<INITIAL,execution_unit,object,subobject>{INT} {
+<INITIAL,execution_unit,object>{INT} {
     capture_token(yylval,wasp::INT);
     return token::INTEGER;
 }
 
-<INITIAL,execution_unit,object,subobject>{REAL} {
+<INITIAL,execution_unit,object>{REAL} {
     capture_token(yylval,wasp::REAL);
     return token::REAL;
 }
@@ -207,15 +173,6 @@ DOT_SLASH \.\/
 {COMMENT} {
     capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
-}
- /* if we are expecting a './' and find a string
-  * This is actually an early terminating object declaration*/
-<subobject_dot_slash>{SUBOBJECT_NAME} {
-  // pop subobject state and push object_decl
-  yy_pop_state();
-  yy_push_state(object_decl);
-  capture_token(yylval,wasp::STRING);
-  return token::STRING;
 }
 {STRING} {
     capture_token(yylval,wasp::STRING);

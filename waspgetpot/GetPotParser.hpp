@@ -179,8 +179,7 @@ namespace wasp {
         COMMENT = 269,
         EXECUTION_UNIT_START = 270,
         EXECUTION_UNIT_END = 271,
-        OBJECT_TERM = 272,
-        SUB_OBJECT_TERM = 273
+        OBJECT_TERM = 272
       };
     };
 
@@ -368,7 +367,7 @@ namespace wasp {
   // number is the opposite.  If YYTABLE_NINF, syntax error.
   static const signed char yytable_[];
 
-  static const signed char yycheck_[];
+  static const unsigned char yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -488,12 +487,12 @@ namespace wasp {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 78,     ///< Last index in yytable_.
-      yynnts_ = 32,  ///< Number of nonterminal symbols.
+      yylast_ = 48,     ///< Last index in yytable_.
+      yynnts_ = 27,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 23  ///< Number of tokens.
+      yyntokens_ = 22  ///< Number of tokens.
     };
 
 
@@ -506,7 +505,7 @@ namespace wasp {
 
 #line 35 "GetPot.bison" // lalr1.cc:377
 } // wasp
-#line 510 "GetPotParser.hpp" // lalr1.cc:377
+#line 509 "GetPotParser.hpp" // lalr1.cc:377
 
 
 
