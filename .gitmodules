@@ -1,0 +1,10 @@
+[submodule "googletest"]
+	path = googletest
+	url = https://code.ornl.gov/jap/googletest
+[submodule "TriBITS"]
+	path = TriBITS
+	url = https://github.com/lefebvre/TriBITS
+[submodule "testframework"]
+	path = testframework
+	url = https://github.com/lefebvre/testframework
+    

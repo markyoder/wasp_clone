@@ -3,7 +3,5 @@
 *.output
 *.dot
 *.swp
-TriBITS
-googletest
 testframework
 

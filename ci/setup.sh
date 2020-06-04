@@ -1,10 +1,9 @@
  which git
- git --version
- git clone https://github.com/lefebvre/TriBITS.git TriBITS
+ git submodule init
+ git submodule update
  module load cmake
  which cmake
  which python
  python --version
- python TriBITS/tribits/ci_support/clone_extra_repos.py
  mkdir build
  env
