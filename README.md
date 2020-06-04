@@ -188,10 +188,8 @@ For individuals wanting to compile the code from source, below are the tested re
 * Save the ssh-key in [code-int.ornl.gov](https://code-int.ornl.gov/profile/keys).
 * Clone wasp `git clone git@code-int.ornl.gov:lefebvre/wasp.git ~/wasp`
 * Change directory into wasp `cd ~/wasp`
-* Initialize git submodules
-`git submodule init`
-* Update git submodules
-`git submodule update`
+* Initialize and update git submodules
+`git submodule update --init`
 
 * Create a build directory `mkdir -p ~/build/wasp`
 * Change into the build `cd ~/build/wasp`

@@ -1,6 +1,5 @@
  which git
- git submodule init
- git submodule update
+ git submodule update --init
  module load cmake
  which cmake
  which python
