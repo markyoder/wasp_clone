@@ -1,5 +1,5 @@
 
-export PATH=/projects/gcc-5.4.0/common_tools/anaconda2/bin/:$PATH 
+export PATH=/projects/gcc-5.4.0/common_tools/anaconda2/bin/:$PATH
 . /projects/gcc-5.4.0/load_dev_env.sh
 
 . ci/setup.sh
@@ -13,8 +13,10 @@ cmake -DBUILDNAME="$(uname -s)-GCC-5.4-Release-${CI_BUILD_REF_NAME}" \
       -Dwasp_ENABLE_ALL_PACKAGES=ON \
       ..
 
-ctest -D ExperimentalStart \
+ctest --output-on-failure \
+      -D ExperimentalStart \
       -D ExperimentalBuild -j 8\
       -D ExperimentalSubmit \
-      -D ExperimentalTest -j 8 \
-      -D ExperimentalSubmit
+      -D ExperimentalTest -j 8
+
+#      -D ExperimentalSubmit
