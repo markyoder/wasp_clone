@@ -37,7 +37,6 @@ doc_gen:
     - which cmake
     - which python
     - python --version
-    - python TriBITS/tribits/ci_support/clone_extra_repos.py
     - mkdir build
     - cd build
     - cmake -DBUILDNAME="$(uname -s)-DocGen-${CI_BUILD_REF_NAME}" -DCMAKE_BUILD_TYPE=DEBUG -Dwasp_ENABLE_ALL_PACKAGES=ON ..
