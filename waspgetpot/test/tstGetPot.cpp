@@ -372,7 +372,60 @@ TEST(GetPotInterpreter, object_array)
     }
 }
 
-TEST(GetPotInterpreter, object_array_commas)
+TEST(GetPotInterpreter, double_quoted_value)
+{
+    std::stringstream input;
+    // Simple parse
+    // document
+    //  |_object
+    //    |_ object_decl 'ted'
+    //      |_ [ '['
+    //      |_ string 'ted'
+    //      |_ ] ']'
+    //    |_key
+    //      |_ decl 'key'
+    //      |_ = '='
+    //      |_ value '"quotedvalue"'
+    //    |_ object_term '[]'
+
+    input << "[ted]key = \"quotedvalue\"[]";
+    DefaultGetPotInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(10, interpreter.node_count());
+
+    // object decl
+    std::vector<wasp::NODE> node_types = {wasp::LBRACKET,
+                                          wasp::DECL,
+                                          wasp::RBRACKET
+                                          // keyed value
+                                          ,
+                                          wasp::DECL,
+                                          wasp::ASSIGN,
+                                          wasp::VALUE,
+                                          wasp::KEYED_VALUE
+                                          // object term
+                                          ,
+                                          wasp::OBJECT_TERM
+                                          // object
+                                          ,
+                                          wasp::OBJECT
+                                          // document root
+                                          ,
+                                          wasp::DOCUMENT_ROOT};
+    std::vector<std::string> node_names = {
+        "[", "decl", "]", "decl", "=", "value", "key", "term", "ted", "document"};
+    ASSERT_EQ(node_types.size(), node_names.size());
+    for (std::size_t i = 0; i < interpreter.node_count(); ++i)
+    {
+        {
+            SCOPED_TRACE(i);
+            ASSERT_EQ(node_types[i], interpreter.type(i));
+            ASSERT_EQ(node_names[i], interpreter.name(i));
+        }
+    }
+}
+
+TEST(GetPotInterpreter, object_array_semicolons)
 {
     std::stringstream input;
     // Simple parse
@@ -387,21 +440,21 @@ TEST(GetPotInterpreter, object_array_commas)
     //      |_ = '='
     //      |_ ' '''
     //      |_ value basic
-    //      |_ , wasp_comma
+    //      |_ , semicolon
     //      |_ value 201
-    //      |_ , wasp_comma
+    //      |_ , semicolon
     //      |_ value again
-    //      |_ , wasp_comma
+    //      |_ , semicolon
     //      |_ value here
-    //      |_ , wasp_comma
+    //      |_ , semicolon
     //      |_ value close
-    //      |_ , wasp_comma
+    //      |_ , semicolon
     //      |_ value far
     //      |_ value lu
     //      |_ ' '''
     //    |_ object_term '[]'
 
-    input << "[ted]data='basic,201 , again,here,close , far lu'[]";
+    input << "[ted]data='basic;201 ; again;here;close ; far lu'[]";
     DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(23, interpreter.node_count());
@@ -415,15 +468,15 @@ TEST(GetPotInterpreter, object_array_commas)
                                           wasp::ASSIGN,
                                           wasp::QUOTE,
                                           wasp::VALUE,
-                                          wasp::WASP_COMMA,
+                                          wasp::SEMICOLON,
                                           wasp::VALUE,
-                                          wasp::WASP_COMMA,
+                                          wasp::SEMICOLON,
                                           wasp::VALUE,
-                                          wasp::WASP_COMMA,
+                                          wasp::SEMICOLON,
                                           wasp::VALUE,
-                                          wasp::WASP_COMMA,
+                                          wasp::SEMICOLON,
                                           wasp::VALUE,
-                                          wasp::WASP_COMMA,
+                                          wasp::SEMICOLON,
                                           wasp::VALUE,
                                           wasp::VALUE,
                                           wasp::QUOTE,
@@ -441,23 +494,23 @@ TEST(GetPotInterpreter, object_array_commas)
                                            ,
                                            "value"  // basic
                                            ,
-                                           ","  // wasp_comma
+                                           ";"  // semicolon
                                            ,
                                            "value"  // 201
                                            ,
-                                           ","  // wasp_comma
+                                           ";"  // semicolon
                                            ,
                                            "value"  // again
                                            ,
-                                           ","  // wasp_comma
+                                           ";"  // semicolon
                                            ,
                                            "value"  // here
                                            ,
-                                           ","  // wasp_comma
+                                           ";"  // semicolon
                                            ,
                                            "value"  // close
                                            ,
-                                           ","  // wasp_comma
+                                           ";"  // semicolon
                                            ,
                                            "value"  // far
                                            ,
@@ -723,17 +776,17 @@ TEST(GetPotInterpreter, expression)
 {
     std::stringstream input;
     input << R"INPUT(
-function = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)
+function = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c),(gr0^2+gr1^2+gr2^2+gr3^2)
              -4*(2-c)*(gr0^3+gr1^3+gr2^3+gr3^3)
-             +3*(gr0^2+gr1^2+gr2^2+gr3^2)^2)'
+             +3*(gr0^2+gr1^2,gr2^2+gr3^2)^2)'
 )INPUT";
     std::vector<std::string> data = {
         "function",
         "=",
         "'",
-        "A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)",
+        "A*c^2*(1-c)^2+B*(c^2+6*(1-c),(gr0^2+gr1^2+gr2^2+gr3^2)",
         "-4*(2-c)*(gr0^3+gr1^3+gr2^3+gr3^3)",
-        "+3*(gr0^2+gr1^2+gr2^2+gr3^2)^2)",
+        "+3*(gr0^2+gr1^2,gr2^2+gr3^2)^2)",
         "'"};
 
     DefaultGetPotInterpreter interpreter;

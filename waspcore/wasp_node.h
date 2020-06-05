@@ -23,6 +23,7 @@ enum NODE : unsigned char
     KEYED_VALUE,
     OBJECT_TERM,
     OBJECT,
+    SEMICOLON,  // ;
     WASP_COMMA  // ,
     ,
     COLON,

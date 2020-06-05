@@ -79,9 +79,7 @@
 %token                 '{'
 %token                 '}'
 %token <token_index>   ASSIGN           "="
-%token <token_index>   COMMA            ","
-
-
+%token <token_index>   SEMICOLON        ";"
 %token <token_index>   DOT_SLASH        "subblock indicator ./"
 %token <token_index>   QUOTE            "'"
 %token <token_index>   INTEGER         "integer"
@@ -94,7 +92,7 @@
 %token <token_index>   OBJECT_TERM  "block terminator"
 %type <token_index>   DECL "declarator"
 %type <token_index>   VALUE "value"
-%type <node_index>  integer real string lbracket rbracket quote assign comma
+%type <node_index>  integer real string lbracket rbracket quote assign semicolon
 %type <node_index>  object_term
 %type <node_index>  object
 %type <node_index>  unquoted_string
@@ -145,9 +143,9 @@ std::string getpot_get_name(size_t object_decl_i
 
  /*** BEGIN - Change the GetPot grammar rules below ***/
 
-comma : COMMA
+semicolon : SEMICOLON
     {
-        size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
+        size_t token_index = ($1);$$ = interpreter.push_leaf(wasp::SEMICOLON,";",token_index);
     }
 assign : ASSIGN
     {
@@ -285,7 +283,7 @@ unquoted_string : STRING
         $$ = interpreter.push_leaf(wasp::STRING,"string"
                          ,token_index);
     }
-VALUE : INTEGER | REAL | STRING
+VALUE : INTEGER | REAL | STRING | QSTRING
 value : VALUE
     {
         size_t token_index = ($1);
@@ -311,7 +309,7 @@ primitive : integer
            | real
            | string
 
-array_member : comma | value | assign
+array_member : semicolon | value | assign
 
 array_members : array_member
     {

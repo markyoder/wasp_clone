@@ -169,7 +169,7 @@ namespace wasp {
         LBRACKET = 259,
         RBRACKET = 260,
         ASSIGN = 261,
-        COMMA = 262,
+        SEMICOLON = 262,
         DOT_SLASH = 263,
         QUOTE = 264,
         INTEGER = 265,
@@ -487,7 +487,7 @@ namespace wasp {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 48,     ///< Last index in yytable_.
+      yylast_ = 50,     ///< Last index in yytable_.
       yynnts_ = 27,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,

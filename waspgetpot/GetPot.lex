@@ -81,9 +81,9 @@ AND &&
 OR \|\|
 LBRACKET \[
 OBJECT_NAME [^" ""."\n\[\]]+
-STRING (\$\{([^\"\n\t\r])*\})|([^" "\'\"\=\n\t\r\[\]\#\,]+)
+STRING (\$\{([^\"\n\t\r])*\})|([^" "\'\"\=\n\t\r\[\]\#\;]+)
 RBRACKET \]
-COMMA ,
+SEMICOLON ;
 TOP_OBJECT_TERM \[" "*\]
 SUB_OBJECT_TERM \[" "*\.?\.\/" "*\]
 OBJECT_TERM {TOP_OBJECT_TERM}|{SUB_OBJECT_TERM}
@@ -119,9 +119,9 @@ DOT_SLASH \.\/
     capture_token(yylval,wasp::ASSIGN);
     return token::ASSIGN;
 }
-{COMMA} {
-    capture_token(yylval,wasp::WASP_COMMA);
-    return token::COMMA;
+{SEMICOLON} {
+    capture_token(yylval,wasp::SEMICOLON);
+    return token::SEMICOLON;
 }
 <object>{OBJECT_TERM} {
     yy_pop_state();
@@ -177,6 +177,10 @@ DOT_SLASH \.\/
 {STRING} {
     capture_token(yylval,wasp::STRING);
     return token::STRING;
+}
+{DOUBLE_QUOTED_STRING} {
+    capture_token(yylval,wasp::QUOTED_STRING);
+    return token::QSTRING;
 }
 
  /* pass all other characters up to GetPot*/
