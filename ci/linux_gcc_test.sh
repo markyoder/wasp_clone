@@ -14,9 +14,8 @@ ctest --output-on-failure \
       -D ExperimentalStart \
       -D ExperimentalBuild -j 8\
       -D ExperimentalSubmit \
-      -D ExperimentalTest -j 8
-
-# -D ExperimentalSubmit
+      -D ExperimentalTest -j 8 \
+      -D ExperimentalSubmit
 
 # clean up prior config for the next bundle config
 rm -rf CMake*

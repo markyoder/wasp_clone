@@ -17,6 +17,5 @@ ctest --output-on-failure \
       -D ExperimentalStart \
       -D ExperimentalBuild -j 8\
       -D ExperimentalSubmit \
-      -D ExperimentalTest -j 8
-
-#      -D ExperimentalSubmit
+      -D ExperimentalTest -j 8 \
+      -D ExperimentalSubmit
