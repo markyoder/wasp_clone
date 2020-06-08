@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
  - waspdrive scheduler capability.
 
+### Changed
+ - Gtest dependence from TriBITS to vanilla version
+ - Extra repository logic from TriBITS to Git submodule 
+
 ### Fixed
 - wasplsp compile error in certain configurations caused by missing include of `functional`.
 

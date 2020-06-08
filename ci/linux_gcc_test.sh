@@ -10,7 +10,8 @@ cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Release-${CI_BUILD_REF_NAME}" \
       -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
       ..
 
-ctest -D ExperimentalStart \
+ctest --output-on-failure \
+      -D ExperimentalStart \
       -D ExperimentalBuild -j 8\
       -D ExperimentalSubmit \
       -D ExperimentalTest -j 8 \

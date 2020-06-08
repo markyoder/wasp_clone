@@ -67,7 +67,18 @@ IF (NOT TRIBITS_PROCESSING_PACKAGE)
   # to place all *dll and *exe in the same directory so unit tests will work
   IF("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" AND BUILD_SHARED_LIBS)
     IF(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+      MESSAGE(STATUS "Setting CMAKE_RUNTIME_OUTPUT_DIRECTORY to: ${CMAKE_CURRENT_BINARY_DIR}/cmake_runtime_output")
       SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/cmake_runtime_output" CACHE STRING "")
+    ENDIF()
+  ENDIF()
+  IF(wasp_ENABLE_TESTS)
+    OPTION(BUILD_GMOCK "Builds the googlemock subproject" OFF)
+    OPTION(gtest_force_shared_crt "Force googletest to link /MD instead of /MT on Windows." ON)
+    MESSAGE(STATUS "Adding googletest submodule directory.")
+    ADD_SUBDIRECTORY(googletest)
+    IF(CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+      #google test doesn't handle dynamic windows environment properly
+      SET_TARGET_PROPERTIES(gtest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
     ENDIF()
   ENDIF()
 

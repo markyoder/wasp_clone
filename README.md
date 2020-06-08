@@ -188,8 +188,9 @@ For individuals wanting to compile the code from source, below are the tested re
 * Save the ssh-key in [code-int.ornl.gov](https://code-int.ornl.gov/profile/keys).
 * Clone wasp `git clone git@code-int.ornl.gov:lefebvre/wasp.git ~/wasp`
 * Change directory into wasp `cd ~/wasp`
-* Clone TriBITS `git clone https://github.com/lefebvre/TriBITS.git TriBITS` [TriBITS documentation](https://tribits.org/doc/TribitsDevelopersGuide.html)
-* Clone extra repos `./TriBITS/tribits/ci_support/clone_extra_repos.py`
+* Initialize and update git submodules
+`git submodule update --init`
+
 * Create a build directory `mkdir -p ~/build/wasp`
 * Change into the build `cd ~/build/wasp`
 * Create a configuration script in ~/build/. Let's call it ../configure.sh(linux)
