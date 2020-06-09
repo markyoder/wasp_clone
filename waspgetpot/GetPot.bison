@@ -111,13 +111,20 @@
 
 #include "GetPotInterpreter.h"
 #include "GetPotLexer.h"
-std::string getpot_get_name(size_t object_decl_i
+// Obtain the GetPot name for an object_term
+// I.e., 
+// [name]
+//     type=foo
+//     ...
+// has a rename occur equivalent to [foo_type].
+// @return true, iff the name conversion occurs
+bool getpot_get_name(std::string& name,
+                            size_t object_decl_i
                             , wasp::AbstractInterpreter & interpreter
                             , std::pair<size_t, std::vector<size_t>*>* object_members)
 {
     bool has_type = object_members->first != object_members->second->size();
     auto name_i = object_decl_i;
-    std::string name;
     if( has_type )
     { // update/promote
         // should be type = value
@@ -126,10 +133,8 @@ std::string getpot_get_name(size_t object_decl_i
         //TODO - conduct checks
         name_i = interpreter.child_index_at(name_i,interpreter.child_count(name_i)-1);
         name = interpreter.data(name_i) + "_type";
-    }else{
-        name = interpreter.data(name_i);
     }
-    return name;
+    return has_type; 
 }
 
 size_t push_object(wasp::AbstractInterpreter & interpreter,
@@ -148,7 +153,7 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
         for( size_t child_i: *object_members->second ) child_indices.push_back(child_i);
 
         // update name to <type>_type if type is present
-        names.back() = getpot_get_name(object_decl_i
+        getpot_get_name(names.back(), object_decl_i
                                   ,interpreter
                                   ,object_members);
     }
@@ -415,10 +420,10 @@ start   : /** empty **/
             // [0] = '[', [1] = 'name', [2] = ']'
             size_t object_decl_i = children[1];
             for( size_t child_i: *$object_members->second ) children.push_back(child_i);
-            const std::string& name
-                    = getpot_get_name(object_decl_i
-                                      ,interpreter
-                                      ,$object_members);
+            std::string name = interpreter.data(object_decl_i).c_str();
+            getpot_get_name(name, object_decl_i
+                            ,interpreter ,$object_members);
+
             delete $object_members->second;
             delete $object_members;
 
