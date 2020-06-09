@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <stdio.h>  // windows exponent configure
 #include <memory>
+#include <vector>
 #include "waspcore/decl.h"
 
 namespace wasp
@@ -23,6 +24,9 @@ WASP_PUBLIC bool load_file(const std::string& path, std::stringstream& s);
  * @return a string with 1 set of single or double quotes removed
  */
 WASP_PUBLIC std::string strip_quotes(const std::string& s);
+
+// split the 'str' on the given delimiter
+WASP_PUBLIC  std::vector<std::string> split(const std::string& delim, const std::string& str);
 
 /**
  * @brief trim removes the given character set leading and trailing from the

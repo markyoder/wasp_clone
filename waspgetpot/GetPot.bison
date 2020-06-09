@@ -12,6 +12,7 @@
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h"
 #include "waspcore/decl.h"
+#include "waspcore/utils.h"
 }
 
 /* Require biGetPot 3 or later */
@@ -131,6 +132,52 @@ std::string getpot_get_name(size_t object_decl_i
     return name;
 }
 
+size_t push_object(wasp::AbstractInterpreter & interpreter,
+                   std::vector<size_t>& object_decl, 
+                   std::pair<size_t, std::vector<size_t>*>* object_members,  
+                   size_t object_term)
+{
+    std::vector<size_t> &child_indices = object_decl;
+    size_t object_decl_i = child_indices.rbegin()[1];
+    std::string name = interpreter.data(object_decl_i).c_str();
+
+    // handle 'x/y/z' names becoming tree hierarchy
+    std::vector<std::string> names = wasp::split("/", name);
+    if (object_members != nullptr && !object_members->second->empty())
+    {
+        for( size_t child_i: *object_members->second ) child_indices.push_back(child_i);
+
+        // update name to <type>_type if type is present
+        names.back() = getpot_get_name(object_decl_i
+                                  ,interpreter
+                                  ,object_members);
+    }
+    child_indices.push_back(object_term);
+
+    
+    size_t result_index = 0;
+
+    // if '///' or some illegal mess, use the full name
+    // so we still have a node on the tree
+    if (names.empty() ) names.push_back(name);
+
+    // push children first and add children
+    // to new parent
+    while( !names.empty() )
+    {
+        // skip empty names
+        if (names.back().empty()) continue;        
+        result_index = interpreter.push_parent(wasp::OBJECT
+                                    ,names.back().c_str()
+                                    ,child_indices);        
+        child_indices.clear();
+        child_indices.push_back(result_index);
+        names.pop_back();
+    }
+    
+    return result_index;
+}
+
 /* this "connects" the GetPot parser in the interpreter to the flex GetPotLexer class
  * object. it defines the yylex() function call to pull the next token from the
  * current lexer object of the interpreter context. */
@@ -233,36 +280,18 @@ object_members : object_member
             $1->first = $1->second->size()+1;
         }
         $1->second->push_back(($object_member));
+        $$ = $1;
     }
 
 
 object : object_decl object_term
-        { // empty object
-        std::vector<size_t> &child_indices = *$object_decl;
-        size_t object_decl_i = child_indices.rbegin()[1];
-        size_t object_term_i = ($object_term);
-        child_indices.push_back(object_term_i);
-
-        $$ = interpreter.push_parent(wasp::OBJECT
-                                        ,interpreter.data(object_decl_i).c_str()
-                                        ,child_indices);
+        { // empty object        
+        $$ = push_object(interpreter, *$object_decl, nullptr, $object_term);
         delete $1;
         }
         | object_decl object_members object_term
         {
-        std::vector<size_t> & children = *$object_decl;
-        size_t object_decl_i = children.rbegin()[1];
-        for( size_t child_i: *$object_members->second ) children.push_back(child_i);
-        children.push_back(($object_term));
-        const std::string& name
-                = getpot_get_name(object_decl_i
-                                  ,interpreter
-                                  ,$object_members);
-        delete $object_members->second;
-        delete $object_members;
-        $$ = interpreter.push_parent(wasp::OBJECT
-                                        ,name.c_str()
-                                        ,children);
+        $$ = push_object(interpreter, *$object_decl, $object_members, $object_term);        
         delete $1;
         }
 integer : INTEGER
@@ -319,6 +348,7 @@ array_members : array_member
     }| array_members array_member
     {
         $1->push_back(($array_member));
+        $$ = $1;
     }
 
 array : quote array_members quote
