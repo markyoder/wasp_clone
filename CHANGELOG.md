@@ -4,8 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+### Changed 
+ - GetPot block and subblock to be equivalent
+ - GetPot comma is no longer a valid array separator
+ - GetPot semicolon is now an allowed array separator
+
 ### Added
  - waspdrive scheduler capability.
+ - support for GetPot shorthand object notation '[x/y/z]'
+ - support for commas in GetPot strings
+ - support for double-quoted strings in GetPot documents
 
 ### Changed
  - Gtest dependence from TriBITS to vanilla version
@@ -13,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - wasplsp compile error in certain configurations caused by missing include of `functional`.
+
 
 ## [1.0.3] - 10-07-2019
 ### Added

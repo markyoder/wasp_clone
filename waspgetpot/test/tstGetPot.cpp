@@ -16,10 +16,7 @@ disp_z = disp_z
 [../])INPUT";
     std::stringstream        error;
     DefaultGetPotInterpreter interpreter(error);
-    ASSERT_FALSE(interpreter.parse(input));
-    ASSERT_EQ(
-        "stream input:5.1-5: syntax error, unexpected subblock terminator\n",
-        error.str());
+    ASSERT_TRUE(interpreter.parse(input));
     std::stringstream tree_print;
     auto              root_view = interpreter.root();
     ASSERT_FALSE(root_view.is_null());
@@ -43,7 +40,7 @@ disp_z = disp_z
 /GlobalParams/disp_z/decl (disp_z)
 /GlobalParams/disp_z/= (=)
 /GlobalParams/disp_z/value (disp_z)
-/GlobalParams/[../] ([../])
+/GlobalParams/term ([../])
 )INPUT";
     ASSERT_EQ(expected_tree.str(), tree_print.str());
 }
@@ -136,7 +133,7 @@ TEST(GetPotInterpreter, empty_object)
                                           wasp::RBRACKET, wasp::OBJECT_TERM,
                                           wasp::OBJECT,   wasp::DOCUMENT_ROOT};
     std::vector<std::string> node_names = {"[",  "decl", "]",
-                                           "[]", "ted",  "document"};
+                                           "term", "ted",  "document"};
     ASSERT_EQ(node_types.size(), node_names.size());
     for (std::size_t i = 0; i < interpreter.node_count(); ++i)
     {
@@ -189,7 +186,7 @@ TEST(GetPotInterpreter, simple_object)
                                           ,
                                           wasp::DOCUMENT_ROOT};
     std::vector<std::string> node_names = {
-        "[", "decl", "]", "decl", "=", "value", "key", "[]", "ted", "document"};
+        "[", "decl", "]", "decl", "=", "value", "key", "term", "ted", "document"};
     ASSERT_EQ(node_types.size(), node_names.size());
     for (std::size_t i = 0; i < interpreter.node_count(); ++i)
     {
@@ -289,7 +286,7 @@ TEST(GetPotInterpreter, less_simple_object)
                                            "value"  // key
                                            ,
                                            "key",
-                                           "[]",
+                                           "term",
                                            "ted",
                                            "document"};
     ASSERT_EQ(node_types.size(), node_names.size());
@@ -361,7 +358,7 @@ TEST(GetPotInterpreter, object_array)
                                            "'"  // terminator
                                            ,
                                            "data",
-                                           "[]",
+                                           "term",
                                            "ted",
                                            "document"};
     ASSERT_EQ(node_types.size(), node_names.size());
@@ -375,7 +372,60 @@ TEST(GetPotInterpreter, object_array)
     }
 }
 
-TEST(GetPotInterpreter, object_array_commas)
+TEST(GetPotInterpreter, double_quoted_value)
+{
+    std::stringstream input;
+    // Simple parse
+    // document
+    //  |_object
+    //    |_ object_decl 'ted'
+    //      |_ [ '['
+    //      |_ string 'ted'
+    //      |_ ] ']'
+    //    |_key
+    //      |_ decl 'key'
+    //      |_ = '='
+    //      |_ value '"quotedvalue"'
+    //    |_ object_term '[]'
+
+    input << "[ted]key = \"quotedvalue\"[]";
+    DefaultGetPotInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(10, interpreter.node_count());
+
+    // object decl
+    std::vector<wasp::NODE> node_types = {wasp::LBRACKET,
+                                          wasp::DECL,
+                                          wasp::RBRACKET
+                                          // keyed value
+                                          ,
+                                          wasp::DECL,
+                                          wasp::ASSIGN,
+                                          wasp::VALUE,
+                                          wasp::KEYED_VALUE
+                                          // object term
+                                          ,
+                                          wasp::OBJECT_TERM
+                                          // object
+                                          ,
+                                          wasp::OBJECT
+                                          // document root
+                                          ,
+                                          wasp::DOCUMENT_ROOT};
+    std::vector<std::string> node_names = {
+        "[", "decl", "]", "decl", "=", "value", "key", "term", "ted", "document"};
+    ASSERT_EQ(node_types.size(), node_names.size());
+    for (std::size_t i = 0; i < interpreter.node_count(); ++i)
+    {
+        {
+            SCOPED_TRACE(i);
+            ASSERT_EQ(node_types[i], interpreter.type(i));
+            ASSERT_EQ(node_names[i], interpreter.name(i));
+        }
+    }
+}
+
+TEST(GetPotInterpreter, object_array_semicolons)
 {
     std::stringstream input;
     // Simple parse
@@ -390,21 +440,21 @@ TEST(GetPotInterpreter, object_array_commas)
     //      |_ = '='
     //      |_ ' '''
     //      |_ value basic
-    //      |_ , wasp_comma
+    //      |_ , semicolon
     //      |_ value 201
-    //      |_ , wasp_comma
+    //      |_ , semicolon
     //      |_ value again
-    //      |_ , wasp_comma
+    //      |_ , semicolon
     //      |_ value here
-    //      |_ , wasp_comma
+    //      |_ , semicolon
     //      |_ value close
-    //      |_ , wasp_comma
+    //      |_ , semicolon
     //      |_ value far
     //      |_ value lu
     //      |_ ' '''
     //    |_ object_term '[]'
 
-    input << "[ted]data='basic,201 , again,here,close , far lu'[]";
+    input << "[ted]data='basic;201 ; again;here;close ; far lu'[]";
     DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(23, interpreter.node_count());
@@ -418,15 +468,15 @@ TEST(GetPotInterpreter, object_array_commas)
                                           wasp::ASSIGN,
                                           wasp::QUOTE,
                                           wasp::VALUE,
-                                          wasp::WASP_COMMA,
+                                          wasp::SEMICOLON,
                                           wasp::VALUE,
-                                          wasp::WASP_COMMA,
+                                          wasp::SEMICOLON,
                                           wasp::VALUE,
-                                          wasp::WASP_COMMA,
+                                          wasp::SEMICOLON,
                                           wasp::VALUE,
-                                          wasp::WASP_COMMA,
+                                          wasp::SEMICOLON,
                                           wasp::VALUE,
-                                          wasp::WASP_COMMA,
+                                          wasp::SEMICOLON,
                                           wasp::VALUE,
                                           wasp::VALUE,
                                           wasp::QUOTE,
@@ -444,23 +494,23 @@ TEST(GetPotInterpreter, object_array_commas)
                                            ,
                                            "value"  // basic
                                            ,
-                                           ","  // wasp_comma
+                                           ";"  // semicolon
                                            ,
                                            "value"  // 201
                                            ,
-                                           ","  // wasp_comma
+                                           ";"  // semicolon
                                            ,
                                            "value"  // again
                                            ,
-                                           ","  // wasp_comma
+                                           ";"  // semicolon
                                            ,
                                            "value"  // here
                                            ,
-                                           ","  // wasp_comma
+                                           ";"  // semicolon
                                            ,
                                            "value"  // close
                                            ,
-                                           ","  // wasp_comma
+                                           ";"  // semicolon
                                            ,
                                            "value"  // far
                                            ,
@@ -469,7 +519,7 @@ TEST(GetPotInterpreter, object_array_commas)
                                            "'"  // terminator
                                            ,
                                            "data",
-                                           "[]",
+                                           "term",
                                            "ted",
                                            "document"};
     ASSERT_EQ(node_types.size(), node_names.size());
@@ -499,7 +549,7 @@ TEST(GetPotInterpreter, object_empty_subobject)
     //          |_ ./ './'
     //          |_ string 'fred'
     //          |_ ] ']'
-    //        |_ sub_object_term '[../]'
+    //        |_ object_term '[../]'
     //    |_ object_term '[]'
 
     input << "[ted][./fred][../][]";
@@ -516,14 +566,14 @@ TEST(GetPotInterpreter, object_empty_subobject)
                                           wasp::DOT_SLASH,
                                           wasp::DECL,
                                           wasp::RBRACKET,
-                                          wasp::SUB_OBJECT_TERM,
-                                          wasp::SUB_OBJECT,
+                                          wasp::OBJECT_TERM,
+                                          wasp::OBJECT,
                                           wasp::OBJECT_TERM,
                                           wasp::OBJECT,
                                           wasp::DOCUMENT_ROOT};
     std::vector<std::string> node_names = {"[",    "decl", "]",   "[",
-                                           "./",   "decl", "]",   "[../]",
-                                           "fred", "[]",   "ted", "document"};
+                                           "./",   "decl", "]",   "term",
+                                           "fred", "term",   "ted", "document"};
     ASSERT_EQ(node_types.size(), node_names.size());
     for (std::size_t i = 0; i < interpreter.node_count(); ++i)
     {
@@ -555,7 +605,7 @@ TEST(GetPotInterpreter, object_subobject)
     //            |_ decl 'key'
     //            |_ = '='
     //            |_ value '3.421'
-    //              |_ sub_object_term '[../]'
+    //              |_ object_term '[../]'
     //    |_ object_term '[]'
 
     input << "[ted][./fred]key=3.4321[../][]";
@@ -578,8 +628,8 @@ TEST(GetPotInterpreter, object_subobject)
                                           wasp::ASSIGN,
                                           wasp::VALUE,
                                           wasp::KEYED_VALUE,
-                                          wasp::SUB_OBJECT_TERM,
-                                          wasp::SUB_OBJECT,
+                                          wasp::OBJECT_TERM,
+                                          wasp::OBJECT,
                                           wasp::OBJECT_TERM,
                                           wasp::OBJECT,
                                           wasp::DOCUMENT_ROOT};
@@ -595,9 +645,9 @@ TEST(GetPotInterpreter, object_subobject)
                                            "value"  // key
                                            ,
                                            "key",
-                                           "[../]",
+                                           "term",
                                            "fred",
-                                           "[]",
+                                           "term",
                                            "ted",
                                            "document"};
     ASSERT_EQ(node_types.size(), node_names.size());
@@ -704,8 +754,8 @@ TEST(GetPotInterpreter, paths)
 /Problem/child/./ (./)
 /Problem/child/decl (child)
 /Problem/child/] (])
-/Problem/child/[../] ([../])
-/Problem/[] ([])
+/Problem/child/term ([../])
+/Problem/term ([])
 )INPUT";
 
     DefaultGetPotInterpreter interpreter;
@@ -726,17 +776,17 @@ TEST(GetPotInterpreter, expression)
 {
     std::stringstream input;
     input << R"INPUT(
-function = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)
+function = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c),(gr0^2+gr1^2+gr2^2+gr3^2)
              -4*(2-c)*(gr0^3+gr1^3+gr2^3+gr3^3)
-             +3*(gr0^2+gr1^2+gr2^2+gr3^2)^2)'
+             +3*(gr0^2+gr1^2,gr2^2+gr3^2)^2)'
 )INPUT";
     std::vector<std::string> data = {
         "function",
         "=",
         "'",
-        "A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)",
+        "A*c^2*(1-c)^2+B*(c^2+6*(1-c),(gr0^2+gr1^2+gr2^2+gr3^2)",
         "-4*(2-c)*(gr0^3+gr1^3+gr2^3+gr3^3)",
-        "+3*(gr0^2+gr1^2+gr2^2+gr3^2)^2)",
+        "+3*(gr0^2+gr1^2,gr2^2+gr3^2)^2)",
         "'"};
 
     DefaultGetPotInterpreter interpreter;
@@ -778,92 +828,6 @@ TEST(GetPotInterpreter, comments)
         }
     }
 }
-/**
- * @brief TEST GetPot has the unfortunate ability to terminate blocks via a new
- * block
- * Test to ensure this functions as expected.
- */
-TEST(GetPotInterpreter, early_terminated_object)
-{
-    std::stringstream input;
-    // The following file has the first_block
-    // with a missing terminator, explicitly terminated by
-    // the [new_block].
-    // The new_block has a subblock2 with a missing terminator,
-    // explicitly terminated by the new_block terminator
-    input << R"INPUT([first_block]
-  [./subblock]
-    foo=bar
-  [../]
- # block terminates others
-[new_block]
-    # comment in new block
-    [./subblock1]
-        bar=foo    [../]
-    [./subblock2]
-        f=b
-[])INPUT";
-
-    DefaultGetPotInterpreter interpreter;
-    ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(41, interpreter.node_count());
-    auto document = interpreter.root();
-    ASSERT_EQ(2, document.child_count());
-    {
-        auto first_block = document.child_at(0);
-        ASSERT_EQ(5, first_block.child_count());
-        std::string name = first_block.name();
-        ASSERT_EQ("first_block", name);
-        std::vector<std::string> names = {"[", "decl", "]", "subblock",
-                                          "comment"};
-        std::vector<wasp::NODE> types = {wasp::LBRACKET, wasp::DECL,
-                                         wasp::RBRACKET, wasp::SUB_OBJECT,
-                                         wasp::COMMENT};
-        std::vector<std::size_t> line   = {1, 1, 1, 2, 5};
-        std::vector<std::size_t> column = {1, 2, 13, 3, 2};
-        ASSERT_EQ(names.size(), types.size());
-        ASSERT_EQ(names.size(), line.size());
-        ASSERT_EQ(names.size(), column.size());
-        for (std::size_t i = 0; i < first_block.child_count(); ++i)
-        {
-            {
-                SCOPED_TRACE(i);
-                auto child = first_block.child_at(i);
-                ASSERT_EQ(names[i], child.name());
-                ASSERT_EQ(types[i], child.type());
-                ASSERT_EQ(line[i], child.line());
-                ASSERT_EQ(column[i], child.column());
-            }
-        }
-    }
-    {
-        auto new_block = document.child_at(1);
-        ASSERT_EQ(7, new_block.child_count());
-        std::string name = new_block.name();
-        ASSERT_EQ("new_block", name);
-        std::vector<std::string> names = {
-            "[", "decl", "]", "comment", "subblock1", "subblock2", "[]"};
-        std::vector<wasp::NODE> types = {
-            wasp::LBRACKET,   wasp::DECL,       wasp::RBRACKET,   wasp::COMMENT,
-            wasp::SUB_OBJECT, wasp::SUB_OBJECT, wasp::OBJECT_TERM};
-        std::vector<std::size_t> line   = {6, 6, 6, 7, 8, 10, 12};
-        std::vector<std::size_t> column = {1, 2, 11, 5, 5, 5, 1};
-        ASSERT_EQ(names.size(), types.size());
-        ASSERT_EQ(names.size(), line.size());
-        ASSERT_EQ(names.size(), column.size());
-        for (std::size_t i = 0; i < new_block.child_count(); ++i)
-        {
-            {
-                SCOPED_TRACE(i);
-                auto child = new_block.child_at(i);
-                ASSERT_EQ(names[i], child.name());
-                ASSERT_EQ(types[i], child.type());
-                ASSERT_EQ(line[i], child.line());
-                ASSERT_EQ(column[i], child.column());
-            }
-        }
-    }
-}
 
 /**
  * @brief TEST nested subblocks (subblocks within subblocks)
@@ -888,11 +852,11 @@ TEST(GetPotInterpreter, nested_subblocks)
     ASSERT_EQ(5, block.child_count());
     auto subblock = block.child_at(3);
     ASSERT_EQ("subblock", std::string(subblock.name()));
-    ASSERT_EQ(wasp::SUB_OBJECT, subblock.type());
+    ASSERT_EQ(wasp::OBJECT, subblock.type());
     ASSERT_EQ(6, subblock.child_count());
     auto nestedsubblock = subblock.child_at(4);
     ASSERT_EQ("nested_subblock", std::string(nestedsubblock.name()));
-    ASSERT_EQ(wasp::SUB_OBJECT, nestedsubblock.type());
+    ASSERT_EQ(wasp::OBJECT, nestedsubblock.type());
     ASSERT_EQ(3, nestedsubblock.line());
     ASSERT_EQ(5, nestedsubblock.column());
 }
@@ -936,7 +900,7 @@ TEST(GetPotInterpreter, multiple_objects)
 /Problem/coord_type/decl (coord_type)
 /Problem/coord_type/= (=)
 /Problem/coord_type/value (RZ)
-/Problem/[] ([])
+/Problem/term ([])
 /Mesh
 /Mesh/[ ([)
 /Mesh/decl (Mesh)
@@ -957,7 +921,7 @@ TEST(GetPotInterpreter, multiple_objects)
 /Mesh/patch_size/= (=)
 /Mesh/patch_size/value (1000)
 /Mesh/comment (# For contact algorithm)
-/Mesh/[] ([])
+/Mesh/term ([])
 /1
 /1/[ ([)
 /1/decl (1)
@@ -979,8 +943,8 @@ TEST(GetPotInterpreter, multiple_objects)
 /1/2/sliceheight/decl (sliceheight)
 /1/2/sliceheight/= (=)
 /1/2/sliceheight/value (${/ ${fuelheight} ${numslices}})
-/1/2/[../] ([../])
-/1/[] ([])
+/1/2/term ([../])
+/1/term ([])
 )INPUT";
     std::stringstream paths;
     document.paths(paths);
@@ -1015,8 +979,8 @@ TEST(GetPotInterpreter, multiple_objects)
  * 2. block with type = value and other stuff
  * 3. subblock with only type = value
  * 4. subblock with type = value and other stuff
- * 5. subblock with type = value but no subblock terminator
- * 6. block with type = value but no block terminator
+ * 5. subblock with type = value
+ * 6. block with type = value
  */
 TEST(GetPotInterpreter, type_promotion)
 {
@@ -1029,16 +993,18 @@ TEST(GetPotInterpreter, type_promotion)
 []
 [p1]
     type = t1
+[]
 [p2]
    type = t2
     [./s3]
         type = us3
+    [../]
 []
 )INPUT";
 
     DefaultGetPotInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(61, interpreter.node_count());
+    ASSERT_EQ(63, interpreter.node_count());
     GetPotNodeView document = interpreter.root();
     ASSERT_EQ(3, document.child_count());  // problem and mesh
     ASSERT_EQ(3, interpreter.child_count(document.node_index()));
@@ -1061,7 +1027,7 @@ TEST(GetPotInterpreter, type_promotion)
 /ted_type/fred_type/type/decl (type)
 /ted_type/fred_type/type/= (=)
 /ted_type/fred_type/type/value (fred)
-/ted_type/fred_type/[../] ([../])
+/ted_type/fred_type/term ([../])
 /ted_type/x_type
 /ted_type/x_type/[ ([)
 /ted_type/x_type/./ (./)
@@ -1075,8 +1041,8 @@ TEST(GetPotInterpreter, type_promotion)
 /ted_type/x_type/y/decl (y)
 /ted_type/x_type/y/= (=)
 /ted_type/x_type/y/value (1)
-/ted_type/x_type/[../] ([../])
-/ted_type/[] ([])
+/ted_type/x_type/term ([../])
+/ted_type/term ([])
 /t1_type
 /t1_type/[ ([)
 /t1_type/decl (p1)
@@ -1085,6 +1051,7 @@ TEST(GetPotInterpreter, type_promotion)
 /t1_type/type/decl (type)
 /t1_type/type/= (=)
 /t1_type/type/value (t1)
+/t1_type/term ([])
 /t2_type
 /t2_type/[ ([)
 /t2_type/decl (p2)
@@ -1102,7 +1069,8 @@ TEST(GetPotInterpreter, type_promotion)
 /t2_type/us3_type/type/decl (type)
 /t2_type/us3_type/type/= (=)
 /t2_type/us3_type/type/value (us3)
-/t2_type/[] ([])
+/t2_type/us3_type/term ([../])
+/t2_type/term ([])
 )INPUT";
     std::stringstream paths;
     document.paths(paths);
@@ -1114,4 +1082,233 @@ TEST(GetPotInterpreter, type_promotion)
     ASSERT_EQ(8, ted_view.child_count());
     // ted/type and ted/fred
     ASSERT_EQ(3, ted_view.non_decorative_children_count());
+}
+
+/**
+ * @brief Test HIT syntax
+ *
+ * MOOSE's new HIT parser relaxes the declarator and terminator syntax
+ * for blocks and subblocks and all blocks are considered the same type
+ *
+ * Blocks and subblocks may be started with:
+ *  - Block declarator syntax    ( i.e. "[blockname]")
+ *  - Subblock declarator syntax ( i.e. "[./blockname]")
+ *
+ * Blocks and subblocks may be terminated with:
+ *  - Block terminator syntax    ( i.e. "[]")
+ *  - Subblock terminator syntax ( i.e. "[../]")
+ */
+TEST(GetPotInterpreter, hit_syntax)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[TopLevelBlock]
+
+  [./sub-decl-sub-term-no-type]
+    flag01  = 1.1
+    array01 = name11 name12 name13
+  [../]
+
+  [./sub-decl-top-term-no-type]
+    flag02  = 2.2
+    array02 = name21 name22 name23
+  []
+
+  [top-decl-sub-term-no-type]
+    flag03  = 3.3
+    array03 = name31 name32 name33
+  [../]
+
+  [top-decl-top-term-no-type]
+    flag04  = 4.4
+    array04 = name41 name42 name43
+  []
+
+  [./sub-decl-sub-term-wt-type]
+    type    = SubDeclSubTerm
+    flag05  = 5.5
+    array05 = name51 name42 name53
+  [../]
+
+  [./sub-decl-top-term-wt-type]
+    type    = SubDeclTopTerm
+    flag06  = 6.6
+    array06 = name61 name62 name63
+  []
+
+  [top-decl-sub-term-wt-type]
+    type    = TopDeclSubTerm
+    flag07  = 7.7
+    array07 = name71 name72 name73
+  [../]
+
+  [top-decl-top-term-wt-type]
+    type    = TopDeclTopTerm
+    flag08  = 8.8
+    array08 = name81 name82 name83
+  []
+
+[]
+)INPUT";
+
+    DefaultGetPotInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(146, interpreter.node_count());
+    GetPotNodeView document = interpreter.root();
+    ASSERT_EQ(1, document.child_count());
+    ASSERT_EQ(1, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/TopLevelBlock
+/TopLevelBlock/[ ([)
+/TopLevelBlock/decl (TopLevelBlock)
+/TopLevelBlock/] (])
+/TopLevelBlock/sub-decl-sub-term-no-type
+/TopLevelBlock/sub-decl-sub-term-no-type/[ ([)
+/TopLevelBlock/sub-decl-sub-term-no-type/./ (./)
+/TopLevelBlock/sub-decl-sub-term-no-type/decl (sub-decl-sub-term-no-type)
+/TopLevelBlock/sub-decl-sub-term-no-type/] (])
+/TopLevelBlock/sub-decl-sub-term-no-type/flag01
+/TopLevelBlock/sub-decl-sub-term-no-type/flag01/decl (flag01)
+/TopLevelBlock/sub-decl-sub-term-no-type/flag01/= (=)
+/TopLevelBlock/sub-decl-sub-term-no-type/flag01/value (1.1)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/decl (array01)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/= (=)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/value (name11)
+/TopLevelBlock/sub-decl-sub-term-no-type/string (name12)
+/TopLevelBlock/sub-decl-sub-term-no-type/string (name13)
+/TopLevelBlock/sub-decl-sub-term-no-type/term ([../])
+/TopLevelBlock/sub-decl-top-term-no-type
+/TopLevelBlock/sub-decl-top-term-no-type/[ ([)
+/TopLevelBlock/sub-decl-top-term-no-type/./ (./)
+/TopLevelBlock/sub-decl-top-term-no-type/decl (sub-decl-top-term-no-type)
+/TopLevelBlock/sub-decl-top-term-no-type/] (])
+/TopLevelBlock/sub-decl-top-term-no-type/flag02
+/TopLevelBlock/sub-decl-top-term-no-type/flag02/decl (flag02)
+/TopLevelBlock/sub-decl-top-term-no-type/flag02/= (=)
+/TopLevelBlock/sub-decl-top-term-no-type/flag02/value (2.2)
+/TopLevelBlock/sub-decl-top-term-no-type/array02
+/TopLevelBlock/sub-decl-top-term-no-type/array02/decl (array02)
+/TopLevelBlock/sub-decl-top-term-no-type/array02/= (=)
+/TopLevelBlock/sub-decl-top-term-no-type/array02/value (name21)
+/TopLevelBlock/sub-decl-top-term-no-type/string (name22)
+/TopLevelBlock/sub-decl-top-term-no-type/string (name23)
+/TopLevelBlock/sub-decl-top-term-no-type/term ([])
+/TopLevelBlock/top-decl-sub-term-no-type
+/TopLevelBlock/top-decl-sub-term-no-type/[ ([)
+/TopLevelBlock/top-decl-sub-term-no-type/decl (top-decl-sub-term-no-type)
+/TopLevelBlock/top-decl-sub-term-no-type/] (])
+/TopLevelBlock/top-decl-sub-term-no-type/flag03
+/TopLevelBlock/top-decl-sub-term-no-type/flag03/decl (flag03)
+/TopLevelBlock/top-decl-sub-term-no-type/flag03/= (=)
+/TopLevelBlock/top-decl-sub-term-no-type/flag03/value (3.3)
+/TopLevelBlock/top-decl-sub-term-no-type/array03
+/TopLevelBlock/top-decl-sub-term-no-type/array03/decl (array03)
+/TopLevelBlock/top-decl-sub-term-no-type/array03/= (=)
+/TopLevelBlock/top-decl-sub-term-no-type/array03/value (name31)
+/TopLevelBlock/top-decl-sub-term-no-type/string (name32)
+/TopLevelBlock/top-decl-sub-term-no-type/string (name33)
+/TopLevelBlock/top-decl-sub-term-no-type/term ([../])
+/TopLevelBlock/top-decl-top-term-no-type
+/TopLevelBlock/top-decl-top-term-no-type/[ ([)
+/TopLevelBlock/top-decl-top-term-no-type/decl (top-decl-top-term-no-type)
+/TopLevelBlock/top-decl-top-term-no-type/] (])
+/TopLevelBlock/top-decl-top-term-no-type/flag04
+/TopLevelBlock/top-decl-top-term-no-type/flag04/decl (flag04)
+/TopLevelBlock/top-decl-top-term-no-type/flag04/= (=)
+/TopLevelBlock/top-decl-top-term-no-type/flag04/value (4.4)
+/TopLevelBlock/top-decl-top-term-no-type/array04
+/TopLevelBlock/top-decl-top-term-no-type/array04/decl (array04)
+/TopLevelBlock/top-decl-top-term-no-type/array04/= (=)
+/TopLevelBlock/top-decl-top-term-no-type/array04/value (name41)
+/TopLevelBlock/top-decl-top-term-no-type/string (name42)
+/TopLevelBlock/top-decl-top-term-no-type/string (name43)
+/TopLevelBlock/top-decl-top-term-no-type/term ([])
+/TopLevelBlock/SubDeclSubTerm_type
+/TopLevelBlock/SubDeclSubTerm_type/[ ([)
+/TopLevelBlock/SubDeclSubTerm_type/./ (./)
+/TopLevelBlock/SubDeclSubTerm_type/decl (sub-decl-sub-term-wt-type)
+/TopLevelBlock/SubDeclSubTerm_type/] (])
+/TopLevelBlock/SubDeclSubTerm_type/type
+/TopLevelBlock/SubDeclSubTerm_type/type/decl (type)
+/TopLevelBlock/SubDeclSubTerm_type/type/= (=)
+/TopLevelBlock/SubDeclSubTerm_type/type/value (SubDeclSubTerm)
+/TopLevelBlock/SubDeclSubTerm_type/flag05
+/TopLevelBlock/SubDeclSubTerm_type/flag05/decl (flag05)
+/TopLevelBlock/SubDeclSubTerm_type/flag05/= (=)
+/TopLevelBlock/SubDeclSubTerm_type/flag05/value (5.5)
+/TopLevelBlock/SubDeclSubTerm_type/array05
+/TopLevelBlock/SubDeclSubTerm_type/array05/decl (array05)
+/TopLevelBlock/SubDeclSubTerm_type/array05/= (=)
+/TopLevelBlock/SubDeclSubTerm_type/array05/value (name51)
+/TopLevelBlock/SubDeclSubTerm_type/string (name42)
+/TopLevelBlock/SubDeclSubTerm_type/string (name53)
+/TopLevelBlock/SubDeclSubTerm_type/term ([../])
+/TopLevelBlock/SubDeclTopTerm_type
+/TopLevelBlock/SubDeclTopTerm_type/[ ([)
+/TopLevelBlock/SubDeclTopTerm_type/./ (./)
+/TopLevelBlock/SubDeclTopTerm_type/decl (sub-decl-top-term-wt-type)
+/TopLevelBlock/SubDeclTopTerm_type/] (])
+/TopLevelBlock/SubDeclTopTerm_type/type
+/TopLevelBlock/SubDeclTopTerm_type/type/decl (type)
+/TopLevelBlock/SubDeclTopTerm_type/type/= (=)
+/TopLevelBlock/SubDeclTopTerm_type/type/value (SubDeclTopTerm)
+/TopLevelBlock/SubDeclTopTerm_type/flag06
+/TopLevelBlock/SubDeclTopTerm_type/flag06/decl (flag06)
+/TopLevelBlock/SubDeclTopTerm_type/flag06/= (=)
+/TopLevelBlock/SubDeclTopTerm_type/flag06/value (6.6)
+/TopLevelBlock/SubDeclTopTerm_type/array06
+/TopLevelBlock/SubDeclTopTerm_type/array06/decl (array06)
+/TopLevelBlock/SubDeclTopTerm_type/array06/= (=)
+/TopLevelBlock/SubDeclTopTerm_type/array06/value (name61)
+/TopLevelBlock/SubDeclTopTerm_type/string (name62)
+/TopLevelBlock/SubDeclTopTerm_type/string (name63)
+/TopLevelBlock/SubDeclTopTerm_type/term ([])
+/TopLevelBlock/TopDeclSubTerm_type
+/TopLevelBlock/TopDeclSubTerm_type/[ ([)
+/TopLevelBlock/TopDeclSubTerm_type/decl (top-decl-sub-term-wt-type)
+/TopLevelBlock/TopDeclSubTerm_type/] (])
+/TopLevelBlock/TopDeclSubTerm_type/type
+/TopLevelBlock/TopDeclSubTerm_type/type/decl (type)
+/TopLevelBlock/TopDeclSubTerm_type/type/= (=)
+/TopLevelBlock/TopDeclSubTerm_type/type/value (TopDeclSubTerm)
+/TopLevelBlock/TopDeclSubTerm_type/flag07
+/TopLevelBlock/TopDeclSubTerm_type/flag07/decl (flag07)
+/TopLevelBlock/TopDeclSubTerm_type/flag07/= (=)
+/TopLevelBlock/TopDeclSubTerm_type/flag07/value (7.7)
+/TopLevelBlock/TopDeclSubTerm_type/array07
+/TopLevelBlock/TopDeclSubTerm_type/array07/decl (array07)
+/TopLevelBlock/TopDeclSubTerm_type/array07/= (=)
+/TopLevelBlock/TopDeclSubTerm_type/array07/value (name71)
+/TopLevelBlock/TopDeclSubTerm_type/string (name72)
+/TopLevelBlock/TopDeclSubTerm_type/string (name73)
+/TopLevelBlock/TopDeclSubTerm_type/term ([../])
+/TopLevelBlock/TopDeclTopTerm_type
+/TopLevelBlock/TopDeclTopTerm_type/[ ([)
+/TopLevelBlock/TopDeclTopTerm_type/decl (top-decl-top-term-wt-type)
+/TopLevelBlock/TopDeclTopTerm_type/] (])
+/TopLevelBlock/TopDeclTopTerm_type/type
+/TopLevelBlock/TopDeclTopTerm_type/type/decl (type)
+/TopLevelBlock/TopDeclTopTerm_type/type/= (=)
+/TopLevelBlock/TopDeclTopTerm_type/type/value (TopDeclTopTerm)
+/TopLevelBlock/TopDeclTopTerm_type/flag08
+/TopLevelBlock/TopDeclTopTerm_type/flag08/decl (flag08)
+/TopLevelBlock/TopDeclTopTerm_type/flag08/= (=)
+/TopLevelBlock/TopDeclTopTerm_type/flag08/value (8.8)
+/TopLevelBlock/TopDeclTopTerm_type/array08
+/TopLevelBlock/TopDeclTopTerm_type/array08/decl (array08)
+/TopLevelBlock/TopDeclTopTerm_type/array08/= (=)
+/TopLevelBlock/TopDeclTopTerm_type/array08/value (name81)
+/TopLevelBlock/TopDeclTopTerm_type/string (name82)
+/TopLevelBlock/TopDeclTopTerm_type/string (name83)
+/TopLevelBlock/TopDeclTopTerm_type/term ([])
+/TopLevelBlock/term ([])
+)INPUT";
+
+    std::stringstream paths;
+    document.paths(paths);
+    ASSERT_EQ(expected_paths, paths.str());
 }

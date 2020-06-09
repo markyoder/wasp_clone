@@ -62,9 +62,8 @@ bool GetPotNodeView::is_decorative() const
         case wasp::COMMENT:
         case wasp::IDENTIFIER:
         case wasp::OBJECT_TERM:
-        case wasp::SUB_OBJECT_TERM:  // [./] | [../]
         case wasp::DOT_SLASH:        // sub block component '[./subblock]'
-        case wasp::WASP_COMMA:       // ,
+        case wasp::SEMICOLON:        // ;
         case wasp::COLON:
         case wasp::QUOTE:     // delimits arrays, e.g., ' 1 2 3 '
         case wasp::LBRACKET:  // [
@@ -85,7 +84,6 @@ bool GetPotNodeView::is_terminator() const
     {
         case wasp::TERM:
         case wasp::OBJECT_TERM:
-        case wasp::SUB_OBJECT_TERM:  // [./] | [../]
             return true;
         default:
             return false;

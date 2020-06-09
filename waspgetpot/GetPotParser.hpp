@@ -46,8 +46,9 @@
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h"
 #include "waspcore/decl.h"
+#include "waspcore/utils.h"
 
-#line 51 "GetPotParser.hpp" // lalr1.cc:377
+#line 52 "GetPotParser.hpp" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -117,9 +118,9 @@
 # define YYDEBUG 0
 #endif
 
-#line 35 "GetPot.bison" // lalr1.cc:377
+#line 36 "GetPot.bison" // lalr1.cc:377
 namespace wasp {
-#line 123 "GetPotParser.hpp" // lalr1.cc:377
+#line 124 "GetPotParser.hpp" // lalr1.cc:377
 
 
 
@@ -133,7 +134,7 @@ namespace wasp {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 63 "GetPot.bison" // lalr1.cc:377
+    #line 64 "GetPot.bison" // lalr1.cc:377
 
     std::size_t token_index;
     std::size_t node_index;
@@ -144,7 +145,7 @@ namespace wasp {
     // the pair.first (index) = pair.second (vector>.size()
     std::pair<size_t, std::vector<size_t>*>* object_children;
 
-#line 148 "GetPotParser.hpp" // lalr1.cc:377
+#line 149 "GetPotParser.hpp" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -169,7 +170,7 @@ namespace wasp {
         LBRACKET = 259,
         RBRACKET = 260,
         ASSIGN = 261,
-        COMMA = 262,
+        SEMICOLON = 262,
         DOT_SLASH = 263,
         QUOTE = 264,
         INTEGER = 265,
@@ -179,8 +180,7 @@ namespace wasp {
         COMMENT = 269,
         EXECUTION_UNIT_START = 270,
         EXECUTION_UNIT_END = 271,
-        OBJECT_TERM = 272,
-        SUB_OBJECT_TERM = 273
+        OBJECT_TERM = 272
       };
     };
 
@@ -368,7 +368,7 @@ namespace wasp {
   // number is the opposite.  If YYTABLE_NINF, syntax error.
   static const signed char yytable_[];
 
-  static const signed char yycheck_[];
+  static const unsigned char yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -488,12 +488,12 @@ namespace wasp {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 78,     ///< Last index in yytable_.
-      yynnts_ = 32,  ///< Number of nonterminal symbols.
+      yylast_ = 50,     ///< Last index in yytable_.
+      yynnts_ = 27,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 23  ///< Number of tokens.
+      yyntokens_ = 22  ///< Number of tokens.
     };
 
 
@@ -504,7 +504,7 @@ namespace wasp {
   };
 
 
-#line 35 "GetPot.bison" // lalr1.cc:377
+#line 36 "GetPot.bison" // lalr1.cc:377
 } // wasp
 #line 510 "GetPotParser.hpp" // lalr1.cc:377
 

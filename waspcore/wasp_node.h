@@ -23,6 +23,7 @@ enum NODE : unsigned char
     KEYED_VALUE,
     OBJECT_TERM,
     OBJECT,
+    SEMICOLON,  // ;
     WASP_COMMA  // ,
     ,
     COLON,
@@ -73,8 +74,6 @@ enum NODE : unsigned char
     ,
     RBRACKET  // ]
     ,
-    SUB_OBJECT_TERM,
-    SUB_OBJECT,
     DOT_SLASH,
     WASP_TRUE  // disambiguated for cross-platform macro avoidance
     ,
