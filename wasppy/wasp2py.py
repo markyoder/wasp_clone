@@ -1,3 +1,4 @@
+from future import print_function
 import subprocess, os, json
 from subprocess import Popen, PIPE
 

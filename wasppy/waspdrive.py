@@ -1,4 +1,5 @@
 # Python import
+from future import print_function
 import subprocess
 import os
 import json
@@ -8,7 +9,7 @@ import threading
 import re
 
 # Workbench tools
-import wasp2py as w2py
+from . import wasp2py as w2py
 from itertools import islice
 from collections import deque
 
@@ -40,7 +41,7 @@ def run_external_app(document, application_json_parameters):
     # Jobs are being submitted on a cluster using a scheduler. A submission 
     # script is generated from the 'scheduler_head' parameters provided by
     # the user in the *.drive file.
-    if 'scheduler' in document.keys():
+    if 'scheduler' in list(document.keys()):
         # Get working directory and store it in 'document'
         document['working_dir'] = os.getcwd()
         # Get job id and store it in 'document' for use by submission script
@@ -62,13 +63,13 @@ def run_external_app(document, application_json_parameters):
 
         # Obtain the status file polling frequency
 	polling_frequency = 5 # default of 5 seconds
-        if 'polling_frequency' in document['scheduler'].keys():
+        if 'polling_frequency' in list(document['scheduler'].keys()):
 		polling_frequency = int(document['scheduler']['polling_frequency']['value'])
        
         # Set 'external_app' to submit the submission script
         submit_path = str(document['scheduler']['submit_path']['value'])
         if  not os.path.exists(submit_path):
-            print "***Error: submit_path '",submit_path,"' doesn't exist!"
+            print("***Error: submit_path '",submit_path,"' doesn't exist!")
             rtncode = 1
             return rtncode
         external_app = [submit_path, input_submission_script]
@@ -109,11 +110,11 @@ def first_n_lines(str_file, n):
                     lines.append(line)
                     line_count+=1
                 if n > line_count :
-                    print "Line index > max line number, return all lines!"
+                    print("Line index > max line number, return all lines!")
             except:
-                print "File reading error on" + os.getcwd()+ "/" + str_file +"!"
+                print("File reading error on" + os.getcwd()+ "/" + str_file +"!")
     else:
-        print "No such file in "+ os.getcwd()+ "!"
+        print("No such file in "+ os.getcwd()+ "!")
     return lines
 
 def last_n_lines(str_file, n):
@@ -124,15 +125,15 @@ def last_n_lines(str_file, n):
         line_count = len(open(str_file).readlines())
         if n > line_count:
             lines=open(str_file).readlines()
-            print "Line index > max line number, return all lines in file!"
+            print("Line index > max line number, return all lines in file!")
         else:
             with open(str_file) as f:
                 try:
                     lines=list(deque(f, maxlen=n))
                 except:
-                    print "File reading error on" + os.getcwd()+ "/" + str_file +"!"
+                    print("File reading error on" + os.getcwd()+ "/" + str_file +"!")
     else:
-        print "No such file in "+ os.getcwd()+ "!"
+        print("No such file in "+ os.getcwd()+ "!")
     return lines
 
 def first_n_line(str_file, n):
@@ -148,11 +149,11 @@ def first_n_line(str_file, n):
                     line_count+=1
                 if n > line_count :
                     last_line=""
-                    print "Line index > max line number!"
+                    print("Line index > max line number!")
             except:
-                print "File reading error on" + os.getcwd()+ "/" + str_file +"!"
+                print("File reading error on" + os.getcwd()+ "/" + str_file +"!")
     else:
-        print "No such file in "+ os.getcwd()+ "!"
+        print("No such file in "+ os.getcwd()+ "!")
     return last_line
 
 def last_n_line(str_file, n):
@@ -162,15 +163,15 @@ def last_n_line(str_file, n):
     if os.path.exists(str_file):
         line_count = len(open(str_file).readlines())
         if n > line_count:
-            print "Line index > max line number!"
+            print("Line index > max line number!")
         else:
             with open(str_file) as f:
                 try:
                     first_line=deque(f, maxlen=n).popleft()
                 except:
-                    print "File reading error on" + os.getcwd()+ "/" + str_file +"!"
+                    print("File reading error on" + os.getcwd()+ "/" + str_file +"!")
     else:
-        print "No such file in "+ os.getcwd()+ "!"
+        print("No such file in "+ os.getcwd()+ "!")
     return first_line
 
 def between_lines(str_file, start_n, end_n):
@@ -182,20 +183,20 @@ def between_lines(str_file, start_n, end_n):
         with open(str_file) as f:
             try:
                 if int(start_n)==0:
-                    print "start index must be integer > 0"
+                    print("start index must be integer > 0")
                     pass
                 elif int(end_n)==-1:#read the whole file if end_n=-1
                     lines=f.read();
                 elif int(start_n)>int(end_n) and int(end_n)>0:
-                    print "line index must be 0 < start_n <= end_n"
+                    print("line index must be 0 < start_n <= end_n")
                     pass
                 else:
                     for line in islice(f, start_n-1, end_n):
                         lines+=line
             except:
-                print "File reading error on" + os.getcwd()+ "/" + str_file +"!"
+                print("File reading error on" + os.getcwd()+ "/" + str_file +"!")
     else:
-        print "No such file in "+ os.getcwd()+ "!"
+        print("No such file in "+ os.getcwd()+ "!")
 
     return lines
 
@@ -226,9 +227,9 @@ def between_patterns(str_file, start_pattern, end_pattern):
                                         + ("\n" if (content[ends[0]-1] != "\n") else "")
                             ends.pop(0)#remove this matched end
             except:
-                print "File reading error on" + os.getcwd()+ "/" + str_file +"!"
+                print("File reading error on" + os.getcwd()+ "/" + str_file +"!")
     else:
-        print "No such file in "+ os.getcwd()+ "!"
+        print("No such file in "+ os.getcwd()+ "!")
     return section
 
 def grep_string(str_file, pattern):
@@ -242,13 +243,13 @@ def grep_string(str_file, pattern):
                     if m:
                        lines+=line
             except:
-                print "File reading error on" + os.getcwd()+ "/" + str_file +"!"
+                print("File reading error on" + os.getcwd()+ "/" + str_file +"!")
     else:
-        print "No such file in "+ os.getcwd()+ "!"
+        print("No such file in "+ os.getcwd()+ "!")
     return lines
 
 def print_column_error(idx_column):
-    print "Column " + str(idx_column) + " is wrong or type mismatch!"
+    print("Column " + str(idx_column) + " is wrong or type mismatch!")
 
 def line_count(line):
     if 'value' in line:
@@ -271,9 +272,9 @@ def extract_results(document):
             if 'using' in extract: # run the user provided script
                 for using in extract['using']:            
                     using_what = using['value']
-                    print "Using '"+using_what+"'"
+                    print("Using '"+using_what+"'")
                     output = subprocess.check_output(using_what,shell=True).strip()            
-                    print "Using produced '"+output+"'"
+                    print("Using produced '"+output+"'")
                     res_output.extend([float(r) for r in output.split("\n")])
             
             elif 'find' in extract: # Finding pattern or line
@@ -316,7 +317,7 @@ def extract_results(document):
                             res_output.append(str((between_patterns(output_file[i], str_pattern_start, str_pattern_end)).strip('\n')))
                     elif len(each_find)==2: #two layers of extraction command
                         if ("column" in each_find) and ("last_line" in each_find):
-                            print each_find["last_line"]
+                            print(each_find["last_line"])
                             int_line="-"+str(line_count(each_find['last_line']))
                             delimiter=str(each_find["column"][0]["delimiter"]["value"])
                             #str_last_n_line=last_n_line(output_file[i],int(line_count(each_find['last_line'])))
@@ -369,7 +370,7 @@ def extract_results(document):
                                     except:
                                         print_column_error(each_column["value"][0])
         else:
-            print "No such file: "+os.getcwd()+"/"+ extract['value'] + "!"
+            print("No such file: "+os.getcwd()+"/"+ extract['value'] + "!")
 
         i+=1
     return res_output
@@ -377,19 +378,19 @@ def extract_results(document):
 def drive(driver_input_path, application_parameter_json_path):
     document = process_drive_input(sys.argv[1])
     if None == document :
-        print "***Error: Failed to process driver input in '",sys.argv[1]
+        print("***Error: Failed to process driver input in '",sys.argv[1])
 
     rtncode = run_external_app(document, sys.argv[2])
     if rtncode != 0:
-        print "***Error: Failed to run application"
+        print("***Error: Failed to run application")
 
-    print extract_results(document)
+    print(extract_results(document))
 
 if __name__ == "__main__":
     import sys
     if len(sys.argv) != 3:
-        print "Usage: "
-        print __file__+" /path/to/input /path/to/parameters"
+        print("Usage: ")
+        print(__file__+" /path/to/input /path/to/parameters")
 
     drive(sys.argv[1], sys.argv[2])
 
