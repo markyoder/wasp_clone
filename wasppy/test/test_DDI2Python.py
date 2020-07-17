@@ -1,4 +1,4 @@
-from future import print_function
+from __future__ import print_function
 import sys,os
 # MAKE SURE THE wasppy MODULE IS IN THE PATH
 sys.path.insert(0, os.path.dirname(__file__)+"/..")

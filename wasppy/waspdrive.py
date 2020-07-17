@@ -1,5 +1,5 @@
 # Python import
-from future import print_function
+from __future__ import print_function
 import subprocess
 import os
 import json

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #write three columns data here
 #def rst_render():
-from future import print_function
+from __future__ import print_function
 import random
 seed = 0
 with open("fake_app_input", "r") as input:
