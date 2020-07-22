@@ -21,12 +21,12 @@ application{
     }
     input_tmpl{
         MinOccurs=1
-        MaxOccurs=NoLimit
+        MaxOccurs=1
         InputTmpl="input_tmpl"
         Description="specify input template name"
         value{
             MinOccurs=1
-            MaxOccurs=1
+            MaxOccurs=NoLimit
             ValType=String
         }
     }
