@@ -15,13 +15,13 @@ application{
         Description="specify application's input file name"
         value{
             MinOccurs=1
-            MaxOccurs=1
+            MaxOccurs=NoLimit
             ValType=String
         }
     }
     input_tmpl{
         MinOccurs=1
-        MaxOccurs=1
+        MaxOccurs=NoLimit
         InputTmpl="input_tmpl"
         Description="specify input template name"
         value{
