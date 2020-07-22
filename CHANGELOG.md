@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - support for GetPot shorthand object notation '[x/y/z]'
  - support for commas in GetPot strings
  - support for double-quoted strings in GetPot documents
+ - support for more than one input and template file in waspdrive input 
 
 ### Changed
  - Gtest dependence from TriBITS to vanilla version
