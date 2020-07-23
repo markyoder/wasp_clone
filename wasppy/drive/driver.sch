@@ -11,7 +11,7 @@ application{
     ChildCountEqual(EvenNone) = [input_file/value input_tmpl/value]
     input_file{
         MinOccurs=1
-        MaxOccurs=NoLimit
+        MaxOccurs=1
         InputTmpl="input_file"
         Description="specify application's input file name"
         value{
@@ -22,7 +22,7 @@ application{
     }
     input_tmpl{
         MinOccurs=1
-        MaxOccurs=NoLimit
+        MaxOccurs=1
         InputTmpl="input_tmpl"
         Description="specify input template name"
         value{
