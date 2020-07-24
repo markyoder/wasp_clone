@@ -1,6 +1,6 @@
 # Python import
 from __future__ import print_function
-from __future__ import absolute_import
+#from __future__ import absolute_import
 import subprocess
 import os
 import json
@@ -10,7 +10,8 @@ import threading
 import re
 
 # Workbench tools
-from __main__ import wasp2py as w2py
+#from wasp2py import wasp2py as w2py
+import wasp2py as w2py
 from itertools import islice
 from collections import deque
 
@@ -63,9 +64,10 @@ def run_external_app(document, application_json_parameters):
         process = subprocess.check_output(args,shell=True)
 
         # Obtain the status file polling frequency
-	polling_frequency = 5 # default of 5 seconds
+        # default of 5 second
+        polling_frequency = 5 
         if 'polling_frequency' in list(document['scheduler'].keys()):
-		polling_frequency = int(document['scheduler']['polling_frequency']['value'])
+            polling_frequency = int(document['scheduler']['polling_frequency']['value'])
        
         # Set 'external_app' to submit the submission script
         submit_path = str(document['scheduler']['submit_path']['value'])
