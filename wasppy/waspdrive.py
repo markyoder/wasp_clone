@@ -11,7 +11,7 @@ import re
 
 # Workbench tools
 #from wasp2py import wasp2py as w2py
-import wasp2py as w2py
+from . import wasp2py as w2py
 from itertools import islice
 from collections import deque
 
