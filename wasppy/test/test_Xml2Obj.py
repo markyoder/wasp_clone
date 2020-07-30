@@ -1,7 +1,8 @@
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 import subprocess, os, sys
 # MAKE SURE THE xml2obj MODULE IS IN THE PATH
 sys.path.insert(0, os.path.dirname(__file__)+"/..")
+sys.path.append("..")
 import xml2obj, wasp2py
 import unittest
 
