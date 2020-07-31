@@ -277,7 +277,17 @@ def extract_results(document):
                     using_what = using['value']
                     print("Using '"+using_what+"'")
                     output = subprocess.check_output(using_what,shell=True).strip()            
-                    print("Using produced '"+output+"'")
+                    #print("Using produced '"+output+"'")
+                    if isinstance( output, bytes ):
+                      print( "Using produced '" + output.decode( 'utf-8' ) + "'" )
+                    else:
+                      print( "Using produced '" + str( output ) + "'" )
+                    res_output.extend([float(r) for r in output.split("\n")])
+
+
+
+
+
                     res_output.extend([float(r) for r in output.split("\n")])
             
             elif 'find' in extract: # Finding pattern or line

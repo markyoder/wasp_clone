@@ -1,7 +1,7 @@
 application "python fake_scheduled_app.py"
             input_file 'fake_scheduled_input.txt'
             input_tmpl 'using.tmpl'
-extract_from 'fake_scheduled_input.txt' using 'python -c "with open(\"fake_scheduled_input.txt\") as f: print f.read()"'
+extract_from 'fake_scheduled_input.txt' using 'python -c "with open(\"fake_scheduled_input.txt\") as f: print(f.read())"'
 
 scheduler
     header = "#!/bin/bash"
