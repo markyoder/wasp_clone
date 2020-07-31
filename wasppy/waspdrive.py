@@ -279,9 +279,13 @@ def extract_results(document):
                     output = subprocess.check_output(using_what,shell=True).strip()            
                     #print("Using produced '"+output+"'")
                     if isinstance( output, bytes ):
-                      print( "Using produced '" + output.decode( 'utf-8' ) + "'" )
+#                      print( "Using produced '" + output.decode( 'utf-8' ) + "'" )
+                       output = output.decode( 'utf-8' )
                     else:
-                      print( "Using produced '" + str( output ) + "'" )
+#                      print( "Using produced '" + str( output ) + "'" )
+                       output = str( output )
+                    print("Using produced '"+output+"'")
+
                     res_output.extend([float(r) for r in output.split("\n")])
 
 
