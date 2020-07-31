@@ -1,4 +1,4 @@
-from __future__ import print_function, absolute_import
+from __future__ import print_function, absolute_import, unicode_literals
 import subprocess, os, sys
 # MAKE SURE THE xml2obj MODULE IS IN THE PATH
 sys.path.insert(0, os.path.dirname(__file__)+"/..")
