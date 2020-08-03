@@ -17,7 +17,7 @@ else:
     son_input_filepath = os.path.dirname(__file__)+"/input.son"
 cmd = sonvalidxml+' '+schema_filepath+' '+son_input_filepath+" --xml"
 xmlresult = subprocess.check_output(cmd, shell=True)
-xmlresult = xmlresult.decode( 'utf-8' ) if xmlresult  else ''
+#xmlresult = xmlresult.decode( 'utf-8' ) if xmlresult  else ''
 
 
 ### obtain pieces of input by name for convenience
