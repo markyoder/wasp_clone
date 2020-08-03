@@ -1,7 +1,7 @@
 from __future__ import print_function
 import re
 import xml.sax.handler
-#from builtins import str
+from builtins import str
 
 try:
     str = str
