@@ -15,7 +15,7 @@ def rnd_string(iCol):
     strLine=""
     for x in range(iCol):
         if six.PY3:
-         strLine=strLine + str((int(random.random() * 101) + 1)*(int(random.random() * x+2) + 1)*0.25) + " "
+         strLine=strLine + str((int(random.random()*101)+1)*(int(random.random()*(x+2))+1)*0.25) + " "
         else: 
          strLine=strLine + str(random.randint(1,101)*random.randint(1,x+2)*0.25) + " "
     return strLine + "\n"
