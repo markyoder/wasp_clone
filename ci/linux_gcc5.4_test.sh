@@ -1,6 +1,6 @@
 
-export PATH=/projects/gcc-5.4.0/common_tools/anaconda3/bin/:$PATH
-. /projects/gcc-5.4.0/load_dev_env_python3.sh
+export PATH=/projects/gcc-5.4.0/common_tools/anaconda2/bin/:$PATH
+. /projects/gcc-5.4.0/load_dev_env.sh
 
 . ci/setup.sh
 cd build
