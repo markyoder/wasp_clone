@@ -24,7 +24,7 @@ class TestDrive(unittest.TestCase):
     
           results = waspdrive.extract_results(self.document)
           self.assertListEqual(
-            [123456789], results) 
+            [123456789,123456789], results) 
         finally:
            os.chdir("../") 
 
