@@ -2,11 +2,11 @@
 PYTHON_VERSION=$1
 echo "${PYTHON_VERSION}"
 if [[ ${PYTHON_VERSION} = "python3" ]]; then
-export PATH=/projects/gcc-5.4.0/common_tools/anaconda3/bin/:$PATH
-  ./projects/gcc-5.4.0/load_dev_env_python3.sh
-  echo "VER ${PYTHON_VERSION}"
+ export PATH=/projects/gcc-5.4.0/common_tools/anaconda3/bin/:$PATH
+ . /projects/gcc-5.4.0/load_dev_env_python3.sh
+ echo "VER ${PYTHON_VERSION}"
 else
-export PATH=/projects/gcc-5.4.0/common_tools/anaconda2/bin/:$PATH
+ export PATH=/projects/gcc-5.4.0/common_tools/anaconda2/bin/:$PATH
  . /projects/gcc-5.4.0/load_dev_env.sh
  echo "VER ${PYTHON_VERSION}"
 fi
