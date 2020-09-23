@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 9-7-2020
+### Added
+ - support for Python 3 interpreter 
+
 ### Changed 
  - GetPot block and subblock to be equivalent
  - GetPot comma is no longer a valid array separator
@@ -110,3 +114,5 @@ the alternative boolean operator (7.gt.8=> 7.ERROR, instead of 7.gt.8=> 7 > 8)
 - utilities for listing input formats
 - utilities for validating input data
 - utilities for input format conversion
+
+
