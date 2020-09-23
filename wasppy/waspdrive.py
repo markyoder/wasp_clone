@@ -29,10 +29,11 @@ def run_external_app(document, application_json_parameters):
     template_engine = w2py.get_wasp_utility_path("halite")
 
     # Generate input file from template and Dakota parameters using halite
-    input_file=document['application']['input_file']['value']
-    tmpl_file=document['application']['input_tmpl']['value']
-    args = "{} {} {} > {}".format(template_engine, tmpl_file, application_json_parameters, input_file)
-    process = subprocess.check_output(args,shell=True)
+    input_file_list = document['application']['input_file']['value']
+    tmpl_file_list = document['application']['input_tmpl']['value']
+    for input_file, tmpl_file in zip(input_file_list, tmpl_file_list):
+        args = "{} {} {} > {}".format(template_engine, tmpl_file, application_json_parameters, input_file)
+        process = subprocess.check_output(args,shell=True)
 
     # Assume return code of 0, AKA OK    
     rtncode = 0

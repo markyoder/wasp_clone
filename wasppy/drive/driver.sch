@@ -8,6 +8,7 @@ application{
         MaxOccurs=1
         ValType=String
     }
+    ChildCountEqual(EvenNone) = [input_file/value input_tmpl/value]
     input_file{
         MinOccurs=1
         MaxOccurs=1
@@ -15,7 +16,7 @@ application{
         Description="specify application's input file name"
         value{
             MinOccurs=1
-            MaxOccurs=1
+            MaxOccurs=NoLimit
             ValType=String
         }
     }
@@ -26,7 +27,7 @@ application{
         Description="specify input template name"
         value{
             MinOccurs=1
-            MaxOccurs=1
+            MaxOccurs=NoLimit
             ValType=String
         }
     }

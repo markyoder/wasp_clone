@@ -1,4 +1,4 @@
-. ci/setup.sh
+mkdir build
 cd build
 cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Debug-${CI_BUILD_REF_NAME}" \
        -DCMAKE_BUILD_TYPE=DEBUG \
