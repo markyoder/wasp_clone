@@ -1,6 +1,8 @@
 PYTHON_VERSION=$1
 if [[ ${PYTHON_VERSION} = "python3" ]]; then
   export PATH=/Library/Frameworks/Python.framework/Versions/3.7/bin:$PATH
+  ls -lrt /Library/Frameworks/Python.framework/Versions/3.7/bin 
+  alias python=python3
 # pip install builtins
  echo "VER ${PYTHON_VERSION}"
 else
