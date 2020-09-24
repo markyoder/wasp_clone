@@ -21,7 +21,10 @@ mac_clang_testing:
   tags:
     - mac
   script:
-    - . ci/mac_clang_test.sh
+    - RTN_DIR=${PWD}
+    - . ci/mac_clang_test.sh python2
+    - cd ${RTN_DIR} 
+    - . ci/mac_clang_test.sh python3
   artifacts:
     paths:
       - "WASP*Darwin.sh"

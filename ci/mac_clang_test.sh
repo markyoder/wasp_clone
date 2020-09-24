@@ -1,3 +1,12 @@
+PYTHON_VERSION=$1
+if [[ ${PYTHON_VERSION} = "python2" ]]; then
+ pip install builtins
+ echo "VER ${PYTHON_VERSION}"
+else
+ alias python=python3
+ echo "VER ${PYTHON_VERSION}"
+fi
+
 . ci/setup.sh
 cd build
 cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Debug-${CI_BUILD_REF_NAME}" \
