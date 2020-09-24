@@ -1,6 +1,6 @@
 PYTHON_VERSION=$1
 if [[ ${PYTHON_VERSION} = "python2" ]]; then
- pip install builtins
+# pip install builtins
  echo "VER ${PYTHON_VERSION}"
 else
  alias python=python3
