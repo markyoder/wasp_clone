@@ -2773,7 +2773,7 @@ HIVE validation messages that occur when validating the failing input shown abov
 
 ## **Input Assistance Details**
 
-Six of the previously described validation rules (`MaxOccurs`, `ChildAtMostOne`, `ChildExactlyOne`, `ValEnums`, `ExistsIn`, and `ValType`) and six new rules (`InputTmpl`, `InputName`, `InputType`, `InputVariants`, `InputDefault`, and `Description`) may also be used by graphical user interfaces to aid with input creation. They may be use for autocompletion assistance or input introspection.
+Six of the previously described validation rules (`MaxOccurs`, `ChildAtMostOne`, `ChildExactlyOne`, `ValEnums`, `ExistsIn`, and `ValType`) and seven new rules (`InputTmpl`, `InputName`, `InputType`, `InputVariants`, `InputDefault`, `InputChoices`, and `Description`) may also be used by graphical user interfaces to aid with input creation. They may be use for autocompletion assistance or input introspection.
 
 ### MaxOccurs Assistance Details
 
@@ -2793,7 +2793,7 @@ The ***Value Enumerations*** rule may be used by input assistance application lo
 
 ### ExistsIn Assistance Details
 
-The ***Exists In*** rule may be used by input assistance application logic to provide a set of choices that are legal at a given context based on values supplied elsewhere in the input. For example, if an element has `ExistsIn = [ "../../some/context1" "../../some/context2" ]`, and the values `1`, `2`, `3`, and `4` exist in the input at that relative context, then those values could be provided as autocompletion options.
+The ***Exists In*** rule may be used by input assistance application logic to provide a set of choices that are legal at a given context based on values supplied elsewhere in the input. For example, if an element has `ExistsIn = [ "../../some/context1" "../../some/context2" ]`, and the values `1`, `2`, `3`, and `4` exist in the input at those relative contexts, then those values could be provided as autocompletion options.
 
 ### ValType Assistance Details
 
@@ -2833,7 +2833,7 @@ Alternately, the application can let the same template know it is dealing, inste
 ```javascript
     flag_array_node{
         InputType = "FlagArray"
-        InputTmple = "FlagType"
+        InputTmpl = "FlagType"
     }
 ```
 
@@ -2844,6 +2844,12 @@ The ***Input Variants*** rule may be used by input assistance application logic 
 ### InputDefault Assistance Details
 
 The ***Input Default*** rule may be used by input assistance application logic to explicitly tell a template what value should be dropped in for flag-values and flag-arrays via `InputDefault = 'explicit_default_value'`. This should override the `ValType` logic described in [ValType Assistance Details](#valtype-assistance-details).
+
+### InputChoices Assistance Details
+
+The ***Input Choices*** rule is useful if there is a set of recommended choices (static or relative path lookups) for a parameter's value, but it is still technically legal to use a different arbitrary value. It may be used by input assistance application logic to provide a set of choices that are legal at a given context based on a static set of values supplied in the schema. For example, if an element has `InputChoices = [ "a" "b" "c" "d" ]`, then those values could be provided as autocompletion options. For autocompletion purposes, this usage is similar to the `ValEnums` logic described in [ValEnums Assistance Details](#valenums-assistance-details), however it should only be used for input autocompletion assistance and not for input validation.
+
+The `PATH:` tag may be used within `InputChoices` by input assistance application logic to provide a set of choices that are legal at a given context based on values supplied elsewhere in the input. For example, if an element has `InputChoices = [ PATH:"../../some/context1" PATH:"../../some/context2" ]`, and the values `1`, `2`, `3`, and `4` exist in the input at those relative contexts, then those values could be provided as autocompletion options. For autocompletion purposes, this `PATH:` usage is similar to the `ExistsIn` logic described in [ExistsIn Assistance Details](#existsin-assistance-details), however, it should only be used for input autocompletion assistance and not for input validation.
 
 ### Description Assistance Details
 
