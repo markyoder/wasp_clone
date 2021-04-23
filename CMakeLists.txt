@@ -97,6 +97,11 @@ ELSE()
   TRIBITS_PACKAGE_POSTPROCESS()
 ENDIF()
 
+# Copy script/test_moose_app_integration.sh to the build tree and install
+FILE(GLOB SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_moose_app_integration.sh)
+FILE(COPY ${SCRIPTS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/scripts)
+INSTALL(PROGRAMS ${SCRIPTS} DESTINATION scripts)
+
 # NOTE: In order to allow the `wasp/` directory to be both a TriBITS
 # package (for inclusion in other TriBITS projects) and to be a TriBITS
 # project itself, you only have to put in a simple if statement in this
