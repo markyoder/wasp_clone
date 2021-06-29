@@ -246,6 +246,17 @@ Interpreter<NodeStorage>::push_staged(size_t                     node_type,
     back.m_type          = node_type;
     back.m_name          = node_name;
     back.m_child_indices = child_indices;
+    size_t staged_child_count = 0;
+    for (const auto&  c_index : child_indices)
+    {
+        auto child_node_type = this->type(c_index);
+        
+        if (!this->is_decorative(child_node_type))
+        {
+            ++staged_child_count;
+        }
+    }
+    back.m_non_decorative_child_count = staged_child_count;
     return m_staged.size() - 1;
 }
 
@@ -255,6 +266,12 @@ size_t Interpreter<NodeStorage>::push_staged_child(size_t child_index)
     wasp_require(m_staged.empty() == false);
     auto& back = m_staged.back();
     back.m_child_indices.push_back(child_index);
+    // Update the non-decorative child count
+    auto child_node_type = this->type(child_index);
+    if (!is_decorative(child_node_type))
+    {
+        ++back.m_non_decorative_child_count;
+    }
     return back.m_child_indices.size();
 }
 template<class NodeStorage>

@@ -186,7 +186,7 @@ void VIILexerImpl::set_debug(bool b)
 }
 void VIILexerImpl::rewind()
 {
-    yyin->seekg(-yyleng,std::ios_base::cur);
+    yyin.seekg(-yyleng,std::ios_base::cur);
     yyless(0);
 }
 void VIILexerImpl::capture_token(

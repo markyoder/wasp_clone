@@ -166,7 +166,7 @@ void JSONLexerImpl::set_debug(bool b)
 }
 void JSONLexerImpl::rewind()
 {
-    yyin->seekg(-yyleng,std::ios_base::cur);
+    yyin.seekg(-yyleng,std::ios_base::cur);
     yyless(0);
 }
 void JSONLexerImpl::capture_token(

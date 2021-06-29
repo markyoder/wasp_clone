@@ -214,7 +214,7 @@ void GetPotLexerImpl::set_debug(bool b)
 }
 void GetPotLexerImpl::rewind()
 {
-    yyin->seekg(-yyleng,std::ios_base::cur);
+    yyin.seekg(-yyleng,std::ios_base::cur);
     yyless(0);
 }
 void GetPotLexerImpl::capture_token(

@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.0.4.
+// A Bison parser, made by GNU Bison 3.7.6.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018-2021 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // As a special exception, you may create a larger work that contains
 // part or all of the Bison parser skeleton and distribute that work
@@ -30,9 +30,14 @@
 // This special exception was added by the Free Software Foundation in
 // version 2.2 of Bison.
 
+// DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+// especially those whose name start with YY_ or yy_.  They are
+// private implementation details that can be changed or removed.
 
-// First part of user declarations.
-#line 1 "DDIParser.bison" // lalr1.cc:404
+
+
+// First part of user prologue.
+#line 1 "DDIParser.bison"
  /*** C/C++ Declarations ***/
 
 #include <stdio.h>
@@ -40,20 +45,13 @@
 #include <vector>
 
 
-#line 44 "DDIParser.cpp" // lalr1.cc:404
+#line 49 "DDIParser.cpp"
 
-# ifndef YY_NULLPTR
-#  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
-#  else
-#   define YY_NULLPTR 0
-#  endif
-# endif
 
 #include "DDIParser.hpp"
 
-// User implementation prologue.
-#line 98 "DDIParser.bison" // lalr1.cc:412
+// Second part of user prologue.
+#line 96 "DDIParser.bison"
 
 
 #include "DDInterpreter.h"
@@ -95,7 +93,8 @@ bool adjust_interpreter_stages( wasp::AbstractInterpreter & interpreter
 #define yylex lexer->lex
 
 
-#line 99 "DDIParser.cpp" // lalr1.cc:412
+#line 97 "DDIParser.cpp"
+
 
 
 #ifndef YY_
@@ -107,6 +106,16 @@ bool adjust_interpreter_stages( wasp::AbstractInterpreter & interpreter
 # endif
 # ifndef YY_
 #  define YY_(msgid) msgid
+# endif
+#endif
+
+
+// Whether we are compiled with exception support.
+#ifndef YY_EXCEPTIONS
+# if defined __GNUC__ && !defined __EXCEPTIONS
+#  define YY_EXCEPTIONS 0
+# else
+#  define YY_EXCEPTIONS 1
 # endif
 #endif
 
@@ -127,12 +136,9 @@ bool adjust_interpreter_stages( wasp::AbstractInterpreter & interpreter
         {                                                               \
           (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;      \
         }                                                               \
-    while (/*CONSTCOND*/ false)
+    while (false)
 # endif
 
-
-// Suppress unused-variable warnings by "using" E.
-//#define YYUSE(E) ((void) (E))
 
 // Enable debugging if requested.
 #if YYDEBUG
@@ -146,7 +152,7 @@ bool adjust_interpreter_stages( wasp::AbstractInterpreter & interpreter
     {                                           \
       *yycdebug_ << Title << ' ';               \
       yy_print_ (*yycdebug_, Symbol);           \
-      *yycdebug_ << std::endl;                  \
+      *yycdebug_ << '\n';                       \
     }                                           \
   } while (false)
 
@@ -159,15 +165,15 @@ bool adjust_interpreter_stages( wasp::AbstractInterpreter & interpreter
 # define YY_STACK_PRINT()               \
   do {                                  \
     if (yydebug_)                       \
-      yystack_print_ ();                \
+      yy_stack_print_ ();                \
   } while (false)
 
 #else // !YYDEBUG
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Symbol)  YYUSE(Symbol)
-# define YY_REDUCE_PRINT(Rule)           static_cast<void>(0)
-# define YY_STACK_PRINT()                static_cast<void>(0)
+# define YY_SYMBOL_PRINT(Title, Symbol)  YY_USE (Symbol)
+# define YY_REDUCE_PRINT(Rule)           static_cast<void> (0)
+# define YY_STACK_PRINT()                static_cast<void> (0)
 
 #endif // !YYDEBUG
 
@@ -179,54 +185,17 @@ bool adjust_interpreter_stages( wasp::AbstractInterpreter & interpreter
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-#line 35 "DDIParser.bison" // lalr1.cc:479
+#line 33 "DDIParser.bison"
 namespace wasp {
-#line 185 "DDIParser.cpp" // lalr1.cc:479
-
-  /* Return YYSTR after stripping away unnecessary quotes and
-     backslashes, so that it's suitable for yyerror.  The heuristic is
-     that double-quoting is unnecessary unless the string contains an
-     apostrophe, a comma, or backslash (other than backslash-backslash).
-     YYSTR is taken from yytname.  */
-  std::string
-  DDIParser::yytnamerr_ (const char *yystr)
-  {
-    if (*yystr == '"')
-      {
-        std::string yyr = "";
-        char const *yyp = yystr;
-
-        for (;;)
-          switch (*++yyp)
-            {
-            case '\'':
-            case ',':
-              goto do_not_strip_quotes;
-
-            case '\\':
-              if (*++yyp != '\\')
-                goto do_not_strip_quotes;
-              // Fall through.
-            default:
-              yyr += *yyp;
-              break;
-
-            case '"':
-              return yyr;
-            }
-      do_not_strip_quotes: ;
-      }
-
-    return yystr;
-  }
-
+#line 191 "DDIParser.cpp"
 
   /// Build a parser object.
   DDIParser::DDIParser (class AbstractInterpreter& interpreter_yyarg, std::istream &input_stream_yyarg, std::shared_ptr<class DDILexerImpl> lexer_yyarg)
-    :
 #if YYDEBUG
-      yydebug_ (false),
+    : yydebug_ (false),
       yycdebug_ (&std::cerr),
+#else
+    :
 #endif
       interpreter (interpreter_yyarg),
       input_stream (input_stream_yyarg),
@@ -236,144 +205,122 @@ namespace wasp {
   DDIParser::~DDIParser ()
   {}
 
+  DDIParser::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
+  {}
 
   /*---------------.
-  | Symbol types.  |
+  | symbol kinds.  |
   `---------------*/
-
-  inline
-  DDIParser::syntax_error::syntax_error (const location_type& l, const std::string& m)
-    : std::runtime_error (m)
-    , location (l)
-  {}
 
   // basic_symbol.
   template <typename Base>
-  inline
-  DDIParser::basic_symbol<Base>::basic_symbol ()
-    : value ()
-  {}
-
-  template <typename Base>
-  inline
-  DDIParser::basic_symbol<Base>::basic_symbol (const basic_symbol& other)
-    : Base (other)
-    , value ()
-    , location (other.location)
-  {
-    value = other.value;
-  }
-
-
-  template <typename Base>
-  inline
-  DDIParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const semantic_type& v, const location_type& l)
-    : Base (t)
-    , value (v)
-    , location (l)
+  DDIParser::basic_symbol<Base>::basic_symbol (const basic_symbol& that)
+    : Base (that)
+    , value (that.value)
+    , location (that.location)
   {}
 
 
   /// Constructor for valueless symbols.
   template <typename Base>
-  inline
-  DDIParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const location_type& l)
+  DDIParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_MOVE_REF (location_type) l)
     : Base (t)
     , value ()
     , location (l)
   {}
 
   template <typename Base>
-  inline
-  DDIParser::basic_symbol<Base>::~basic_symbol ()
+  DDIParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_RVREF (semantic_type) v, YY_RVREF (location_type) l)
+    : Base (t)
+    , value (YY_MOVE (v))
+    , location (YY_MOVE (l))
+  {}
+
+  template <typename Base>
+  DDIParser::symbol_kind_type
+  DDIParser::basic_symbol<Base>::type_get () const YY_NOEXCEPT
   {
-    clear ();
+    return this->kind ();
   }
 
   template <typename Base>
-  inline
-  void
-  DDIParser::basic_symbol<Base>::clear ()
-  {
-    Base::clear ();
-  }
-
-  template <typename Base>
-  inline
   bool
-  DDIParser::basic_symbol<Base>::empty () const
+  DDIParser::basic_symbol<Base>::empty () const YY_NOEXCEPT
   {
-    return Base::type_get () == empty_symbol;
+    return this->kind () == symbol_kind::S_YYEMPTY;
   }
 
   template <typename Base>
-  inline
   void
   DDIParser::basic_symbol<Base>::move (basic_symbol& s)
   {
-    super_type::move(s);
-    value = s.value;
-    location = s.location;
+    super_type::move (s);
+    value = YY_MOVE (s.value);
+    location = YY_MOVE (s.location);
   }
 
-  // by_type.
-  inline
-  DDIParser::by_type::by_type ()
-    : type (empty_symbol)
+  // by_kind.
+  DDIParser::by_kind::by_kind ()
+    : kind_ (symbol_kind::S_YYEMPTY)
   {}
 
-  inline
-  DDIParser::by_type::by_type (const by_type& other)
-    : type (other.type)
-  {}
-
-  inline
-  DDIParser::by_type::by_type (token_type t)
-    : type (yytranslate_ (t))
-  {}
-
-  inline
-  void
-  DDIParser::by_type::clear ()
+#if 201103L <= YY_CPLUSPLUS
+  DDIParser::by_kind::by_kind (by_kind&& that)
+    : kind_ (that.kind_)
   {
-    type = empty_symbol;
+    that.clear ();
+  }
+#endif
+
+  DDIParser::by_kind::by_kind (const by_kind& that)
+    : kind_ (that.kind_)
+  {}
+
+  DDIParser::by_kind::by_kind (token_kind_type t)
+    : kind_ (yytranslate_ (t))
+  {}
+
+  void
+  DDIParser::by_kind::clear () YY_NOEXCEPT
+  {
+    kind_ = symbol_kind::S_YYEMPTY;
   }
 
-  inline
   void
-  DDIParser::by_type::move (by_type& that)
+  DDIParser::by_kind::move (by_kind& that)
   {
-    type = that.type;
+    kind_ = that.kind_;
     that.clear ();
   }
 
-  inline
-  int
-  DDIParser::by_type::type_get () const
+  DDIParser::symbol_kind_type
+  DDIParser::by_kind::kind () const YY_NOEXCEPT
   {
-    return type;
+    return kind_;
+  }
+
+  DDIParser::symbol_kind_type
+  DDIParser::by_kind::type_get () const YY_NOEXCEPT
+  {
+    return this->kind ();
   }
 
 
   // by_state.
-  inline
-  DDIParser::by_state::by_state ()
+  DDIParser::by_state::by_state () YY_NOEXCEPT
     : state (empty_state)
   {}
 
-  inline
-  DDIParser::by_state::by_state (const by_state& other)
-    : state (other.state)
+  DDIParser::by_state::by_state (const by_state& that) YY_NOEXCEPT
+    : state (that.state)
   {}
 
-  inline
   void
-  DDIParser::by_state::clear ()
+  DDIParser::by_state::clear () YY_NOEXCEPT
   {
     state = empty_state;
   }
 
-  inline
   void
   DDIParser::by_state::move (by_state& that)
   {
@@ -381,36 +328,39 @@ namespace wasp {
     that.clear ();
   }
 
-  inline
-  DDIParser::by_state::by_state (state_type s)
+  DDIParser::by_state::by_state (state_type s) YY_NOEXCEPT
     : state (s)
   {}
 
-  inline
-  DDIParser::symbol_number_type
-  DDIParser::by_state::type_get () const
+  DDIParser::symbol_kind_type
+  DDIParser::by_state::kind () const YY_NOEXCEPT
   {
     if (state == empty_state)
-      return empty_symbol;
+      return symbol_kind::S_YYEMPTY;
     else
-      return yystos_[state];
+      return YY_CAST (symbol_kind_type, yystos_[+state]);
   }
 
-  inline
   DDIParser::stack_symbol_type::stack_symbol_type ()
   {}
 
-
-  inline
-  DDIParser::stack_symbol_type::stack_symbol_type (state_type s, symbol_type& that)
-    : super_type (s, that.location)
+  DDIParser::stack_symbol_type::stack_symbol_type (YY_RVREF (stack_symbol_type) that)
+    : super_type (YY_MOVE (that.state), YY_MOVE (that.value), YY_MOVE (that.location))
   {
-    value = that.value;
+#if 201103L <= YY_CPLUSPLUS
     // that is emptied.
-    that.type = empty_symbol;
+    that.state = empty_state;
+#endif
   }
 
-  inline
+  DDIParser::stack_symbol_type::stack_symbol_type (state_type s, YY_MOVE_REF (symbol_type) that)
+    : super_type (s, YY_MOVE (that.value), YY_MOVE (that.location))
+  {
+    // that is emptied.
+    that.kind_ = symbol_kind::S_YYEMPTY;
+  }
+
+#if YY_CPLUSPLUS < 201103L
   DDIParser::stack_symbol_type&
   DDIParser::stack_symbol_type::operator= (const stack_symbol_type& that)
   {
@@ -420,9 +370,19 @@ namespace wasp {
     return *this;
   }
 
+  DDIParser::stack_symbol_type&
+  DDIParser::stack_symbol_type::operator= (stack_symbol_type& that)
+  {
+    state = that.state;
+    value = that.value;
+    location = that.location;
+    // that is emptied.
+    that.state = empty_state;
+    return *this;
+  }
+#endif
 
   template <typename Base>
-  inline
   void
   DDIParser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
   {
@@ -430,15 +390,13 @@ namespace wasp {
       YY_SYMBOL_PRINT (yymsg, yysym);
 
     // User destructor.
-    switch (yysym.type_get ())
+    switch (yysym.kind ())
     {
-            case 18: // value_list
-
-#line 96 "DDIParser.bison" // lalr1.cc:614
-        { delete (yysym.value.node_indices); }
-#line 440 "DDIParser.cpp" // lalr1.cc:614
+      case symbol_kind::S_value_list: // value_list
+#line 94 "DDIParser.bison"
+                    { delete (yysym.value.node_indices); }
+#line 399 "DDIParser.cpp"
         break;
-
 
       default:
         break;
@@ -448,44 +406,45 @@ namespace wasp {
 #if YYDEBUG
   template <typename Base>
   void
-  DDIParser::yy_print_ (std::ostream& yyo,
-                                     const basic_symbol<Base>& yysym) const
+  DDIParser::yy_print_ (std::ostream& yyo, const basic_symbol<Base>& yysym) const
   {
     std::ostream& yyoutput = yyo;
-    YYUSE (yyoutput);
-    symbol_number_type yytype = yysym.type_get ();
-    // Avoid a (spurious) G++ 4.8 warning about "array subscript is
-    // below array bounds".
+    YY_USE (yyoutput);
     if (yysym.empty ())
-      std::abort ();
-    yyo << (yytype < yyntokens_ ? "token" : "nterm")
-        << ' ' << yytname_[yytype] << " ("
-        << yysym.location << ": ";
-    YYUSE (yytype);
-    yyo << ')';
+      yyo << "empty symbol";
+    else
+      {
+        symbol_kind_type yykind = yysym.kind ();
+        yyo << (yykind < YYNTOKENS ? "token" : "nterm")
+            << ' ' << yysym.name () << " ("
+            << yysym.location << ": ";
+        YY_USE (yykind);
+        yyo << ')';
+      }
   }
 #endif
 
-  inline
   void
-  DDIParser::yypush_ (const char* m, state_type s, symbol_type& sym)
-  {
-    stack_symbol_type t (s, sym);
-    yypush_ (m, t);
-  }
-
-  inline
-  void
-  DDIParser::yypush_ (const char* m, stack_symbol_type& s)
+  DDIParser::yypush_ (const char* m, YY_MOVE_REF (stack_symbol_type) sym)
   {
     if (m)
-      YY_SYMBOL_PRINT (m, s);
-    yystack_.push (s);
+      YY_SYMBOL_PRINT (m, sym);
+    yystack_.push (YY_MOVE (sym));
   }
 
-  inline
   void
-  DDIParser::yypop_ (unsigned int n)
+  DDIParser::yypush_ (const char* m, state_type s, YY_MOVE_REF (symbol_type) sym)
+  {
+#if 201103L <= YY_CPLUSPLUS
+    yypush_ (m, stack_symbol_type (s, std::move (sym)));
+#else
+    stack_symbol_type ss (s, sym);
+    yypush_ (m, ss);
+#endif
+  }
+
+  void
+  DDIParser::yypop_ (int n)
   {
     yystack_.pop (n);
   }
@@ -517,32 +476,37 @@ namespace wasp {
   }
 #endif // YYDEBUG
 
-  inline DDIParser::state_type
+  DDIParser::state_type
   DDIParser::yy_lr_goto_state_ (state_type yystate, int yysym)
   {
-    int yyr = yypgoto_[yysym - yyntokens_] + yystate;
+    int yyr = yypgoto_[yysym - YYNTOKENS] + yystate;
     if (0 <= yyr && yyr <= yylast_ && yycheck_[yyr] == yystate)
       return yytable_[yyr];
     else
-      return yydefgoto_[yysym - yyntokens_];
+      return yydefgoto_[yysym - YYNTOKENS];
   }
 
-  inline bool
+  bool
   DDIParser::yy_pact_value_is_default_ (int yyvalue)
   {
     return yyvalue == yypact_ninf_;
   }
 
-  inline bool
+  bool
   DDIParser::yy_table_value_is_error_ (int yyvalue)
   {
     return yyvalue == yytable_ninf_;
   }
 
   int
+  DDIParser::operator() ()
+  {
+    return parse ();
+  }
+
+  int
   DDIParser::parse ()
   {
-    // State.
     int yyn;
     /// Length of the RHS of the rule being reduced.
     int yylen = 0;
@@ -560,15 +524,15 @@ namespace wasp {
     /// The return value of parse ().
     int yyresult;
 
-    // FIXME: This shoud be completely indented.  It is not yet to
-    // avoid gratuitous conflicts when merging into the master branch.
+#if YY_EXCEPTIONS
     try
+#endif // YY_EXCEPTIONS
       {
-    YYCDEBUG << "Starting parse" << std::endl;
+    YYCDEBUG << "Starting parse\n";
 
 
     // User initialization code.
-    #line 43 "DDIParser.bison" // lalr1.cc:741
+#line 41 "DDIParser.bison"
 {
     // initialize the initial location object
     yyla.location.begin.filename = yyla.location.end.filename = &interpreter.stream_name();
@@ -577,54 +541,77 @@ namespace wasp {
     lexer = std::make_shared<DDILexerImpl>(interpreter,&input_stream);
 }
 
-#line 581 "DDIParser.cpp" // lalr1.cc:741
+#line 545 "DDIParser.cpp"
+
 
     /* Initialize the stack.  The initial state will be set in
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
        stacks with a primary value.  */
     yystack_.clear ();
-    yypush_ (YY_NULLPTR, 0, yyla);
+    yypush_ (YY_NULLPTR, 0, YY_MOVE (yyla));
 
-    // A new symbol was pushed on the stack.
+  /*-----------------------------------------------.
+  | yynewstate -- push a new symbol on the stack.  |
+  `-----------------------------------------------*/
   yynewstate:
-    YYCDEBUG << "Entering state " << yystack_[0].state << std::endl;
+    YYCDEBUG << "Entering state " << int (yystack_[0].state) << '\n';
+    YY_STACK_PRINT ();
 
     // Accept?
     if (yystack_[0].state == yyfinal_)
-      goto yyacceptlab;
+      YYACCEPT;
 
     goto yybackup;
 
-    // Backup.
-  yybackup:
 
+  /*-----------.
+  | yybackup.  |
+  `-----------*/
+  yybackup:
     // Try to take a decision without lookahead.
-    yyn = yypact_[yystack_[0].state];
+    yyn = yypact_[+yystack_[0].state];
     if (yy_pact_value_is_default_ (yyn))
       goto yydefault;
 
     // Read a lookahead token.
     if (yyla.empty ())
       {
-        YYCDEBUG << "Reading a token: ";
+        YYCDEBUG << "Reading a token\n";
+#if YY_EXCEPTIONS
         try
+#endif // YY_EXCEPTIONS
           {
-            yyla.type = yytranslate_ (yylex (&yyla.value, &yyla.location));
+            yyla.kind_ = yytranslate_ (yylex (&yyla.value, &yyla.location));
           }
+#if YY_EXCEPTIONS
         catch (const syntax_error& yyexc)
           {
+            YYCDEBUG << "Caught exception: " << yyexc.what() << '\n';
             error (yyexc);
             goto yyerrlab1;
           }
+#endif // YY_EXCEPTIONS
       }
     YY_SYMBOL_PRINT ("Next token is", yyla);
 
+    if (yyla.kind () == symbol_kind::S_YYerror)
+    {
+      // The scanner already issued an error message, process directly
+      // to error recovery.  But do not keep the error token as
+      // lookahead, it is too special and may lead us to an endless
+      // loop in error recovery. */
+      yyla.kind_ = symbol_kind::S_YYUNDEF;
+      goto yyerrlab1;
+    }
+
     /* If the proper action on seeing token YYLA.TYPE is to reduce or
        to detect an error, take that action.  */
-    yyn += yyla.type_get ();
-    if (yyn < 0 || yylast_ < yyn || yycheck_[yyn] != yyla.type_get ())
-      goto yydefault;
+    yyn += yyla.kind ();
+    if (yyn < 0 || yylast_ < yyn || yycheck_[yyn] != yyla.kind ())
+      {
+        goto yydefault;
+      }
 
     // Reduce or error.
     yyn = yytable_[yyn];
@@ -641,26 +628,28 @@ namespace wasp {
       --yyerrstatus_;
 
     // Shift the lookahead token.
-    yypush_ ("Shifting", yyn, yyla);
+    yypush_ ("Shifting", state_type (yyn), YY_MOVE (yyla));
     goto yynewstate;
+
 
   /*-----------------------------------------------------------.
   | yydefault -- do the default action for the current state.  |
   `-----------------------------------------------------------*/
   yydefault:
-    yyn = yydefact_[yystack_[0].state];
+    yyn = yydefact_[+yystack_[0].state];
     if (yyn == 0)
       goto yyerrlab;
     goto yyreduce;
 
+
   /*-----------------------------.
-  | yyreduce -- Do a reduction.  |
+  | yyreduce -- do a reduction.  |
   `-----------------------------*/
   yyreduce:
     yylen = yyr2_[yyn];
     {
       stack_symbol_type yylhs;
-      yylhs.state = yy_lr_goto_state_(yystack_[yylen].state, yyr1_[yyn]);
+      yylhs.state = yy_lr_goto_state_ (yystack_[yylen].state, yyr1_[yyn]);
       /* If YYLEN is nonzero, implement the default value of the
          action: '$$ = $1'.  Otherwise, use the top of the stack.
 
@@ -672,39 +661,60 @@ namespace wasp {
       else
         yylhs.value = yystack_[0].value;
 
-      // Compute the default @$.
+      // Default location.
       {
-        slice<stack_symbol_type, stack_type> slice (yystack_, yylen);
-        YYLLOC_DEFAULT (yylhs.location, slice, yylen);
+        stack_type::slice range (yystack_, yylen);
+        YYLLOC_DEFAULT (yylhs.location, range, yylen);
+        yyerror_range[1].location = yylhs.location;
       }
 
       // Perform the reduction.
       YY_REDUCE_PRINT (yyn);
+#if YY_EXCEPTIONS
       try
+#endif // YY_EXCEPTIONS
         {
           switch (yyn)
             {
-  case 2:
-#line 145 "DDIParser.bison" // lalr1.cc:859
+  case 2: // comma: ","
+#line 143 "DDIParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
     }
-#line 694 "DDIParser.cpp" // lalr1.cc:859
+#line 686 "DDIParser.cpp"
     break;
 
-  case 6:
-#line 153 "DDIParser.bison" // lalr1.cc:859
-    {
+  case 3: // PRIMITIVE: "quoted string"
+#line 148 "DDIParser.bison"
+           { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
+#line 692 "DDIParser.cpp"
+    break;
+
+  case 4: // PRIMITIVE: "integer"
+#line 148 "DDIParser.bison"
+                     { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
+#line 698 "DDIParser.cpp"
+    break;
+
+  case 5: // PRIMITIVE: "double"
+#line 148 "DDIParser.bison"
+                               { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
+#line 704 "DDIParser.cpp"
+    break;
+
+  case 6: // value: PRIMITIVE
+#line 151 "DDIParser.bison"
+{
     size_t token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                      ,token_index);
 }
-#line 704 "DDIParser.cpp" // lalr1.cc:859
+#line 714 "DDIParser.cpp"
     break;
 
-  case 7:
-#line 160 "DDIParser.bison" // lalr1.cc:859
+  case 7: // decl: "string"
+#line 158 "DDIParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         std::string quote_less_data = interpreter.token_data(token_index);
@@ -713,56 +723,62 @@ namespace wasp {
                                    ,"decl"
                                    ,token_index);
     }
-#line 717 "DDIParser.cpp" // lalr1.cc:859
+#line 727 "DDIParser.cpp"
     break;
 
-  case 9:
-#line 169 "DDIParser.bison" // lalr1.cc:859
-    {
+  case 8: // ASSIGNMENT: "="
+#line 166 "DDIParser.bison"
+             { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
+#line 733 "DDIParser.cpp"
+    break;
+
+  case 9: // assignment: ASSIGNMENT
+#line 167 "DDIParser.bison"
+                        {
              auto token_index = ((yystack_[0].value.token_index));
              (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,"=",token_index);
             }
-#line 726 "DDIParser.cpp" // lalr1.cc:859
+#line 742 "DDIParser.cpp"
     break;
 
-  case 10:
-#line 174 "DDIParser.bison" // lalr1.cc:859
-    {
+  case 10: // value_list: value
+#line 172 "DDIParser.bison"
+        {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 735 "DDIParser.cpp" // lalr1.cc:859
+#line 751 "DDIParser.cpp"
     break;
 
-  case 11:
-#line 179 "DDIParser.bison" // lalr1.cc:859
-    {
+  case 11: // value_list: value_list value
+#line 177 "DDIParser.bison"
+        {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 744 "DDIParser.cpp" // lalr1.cc:859
+#line 760 "DDIParser.cpp"
     break;
 
-  case 12:
-#line 184 "DDIParser.bison" // lalr1.cc:859
-    {
+  case 12: // value_list: value_list comment
+#line 182 "DDIParser.bison"
+        {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 753 "DDIParser.cpp" // lalr1.cc:859
+#line 769 "DDIParser.cpp"
     break;
 
-  case 13:
-#line 189 "DDIParser.bison" // lalr1.cc:859
-    {
+  case 13: // value_list: value_list comma
+#line 187 "DDIParser.bison"
+        {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
         }
-#line 762 "DDIParser.cpp" // lalr1.cc:859
+#line 778 "DDIParser.cpp"
     break;
 
-  case 14:
-#line 194 "DDIParser.bison" // lalr1.cc:859
+  case 14: // definition_section: decl value_list
+#line 192 "DDIParser.bison"
     {
         bool is_array = (yystack_[0].value.node_indices)->size() > 1;
         (yystack_[0].value.node_indices)->insert((yystack_[0].value.node_indices)->begin(),(yystack_[1].value.node_index));
@@ -789,11 +805,11 @@ namespace wasp {
         }
         delete (yystack_[0].value.node_indices);
     }
-#line 793 "DDIParser.cpp" // lalr1.cc:859
+#line 809 "DDIParser.cpp"
     break;
 
-  case 15:
-#line 221 "DDIParser.bison" // lalr1.cc:859
+  case 15: // definition_section: decl assignment value_list
+#line 219 "DDIParser.bison"
     {
         bool is_array = (yystack_[0].value.node_indices)->size() > 1;
         (yystack_[0].value.node_indices)->insert((yystack_[0].value.node_indices)->begin(),(yystack_[1].value.node_index));
@@ -820,12 +836,12 @@ else{
 }
         delete (yystack_[0].value.node_indices);
     }
-#line 824 "DDIParser.cpp" // lalr1.cc:859
+#line 840 "DDIParser.cpp"
     break;
 
-  case 16:
-#line 247 "DDIParser.bison" // lalr1.cc:859
-    {
+  case 16: // definition_section: decl
+#line 245 "DDIParser.bison"
+           {
 
         std::string quote_less_data = interpreter.data((yystack_[0].value.node_index));
         quote_less_data = wasp::strip_quotes(quote_less_data);
@@ -842,12 +858,12 @@ else{
                                     ,child_indices);
         }
     }
-#line 846 "DDIParser.cpp" // lalr1.cc:859
+#line 862 "DDIParser.cpp"
     break;
 
-  case 17:
-#line 264 "DDIParser.bison" // lalr1.cc:859
-    {
+  case 17: // definition_section: decl comma
+#line 262 "DDIParser.bison"
+                 {
 
         std::string quote_less_data = interpreter.data((yystack_[1].value.node_index));
         quote_less_data = wasp::strip_quotes(quote_less_data);
@@ -864,56 +880,60 @@ else{
                                     ,child_indices);
         }
     }
-#line 868 "DDIParser.cpp" // lalr1.cc:859
+#line 884 "DDIParser.cpp"
     break;
 
-  case 18:
-#line 284 "DDIParser.bison" // lalr1.cc:859
-    {
+  case 18: // comment: "comment"
+#line 282 "DDIParser.bison"
+        {
             auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
-#line 877 "DDIParser.cpp" // lalr1.cc:859
+#line 893 "DDIParser.cpp"
     break;
 
-  case 20:
-#line 290 "DDIParser.bison" // lalr1.cc:859
-    {interpreter.push_staged_child(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
-#line 883 "DDIParser.cpp" // lalr1.cc:859
+  case 20: // start: start comment
+#line 288 "DDIParser.bison"
+                       {interpreter.push_staged_child(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
+#line 899 "DDIParser.cpp"
     break;
 
-  case 21:
-#line 291 "DDIParser.bison" // lalr1.cc:859
-    {
+  case 21: // start: start definition_section
+#line 289 "DDIParser.bison"
+                                  {
             if(interpreter.single_parse() )
             {
                 lexer->rewind();
                 YYACCEPT;
             }
         }
-#line 895 "DDIParser.cpp" // lalr1.cc:859
+#line 911 "DDIParser.cpp"
     break;
 
 
-#line 899 "DDIParser.cpp" // lalr1.cc:859
+#line 915 "DDIParser.cpp"
+
             default:
               break;
             }
         }
+#if YY_EXCEPTIONS
       catch (const syntax_error& yyexc)
         {
+          YYCDEBUG << "Caught exception: " << yyexc.what() << '\n';
           error (yyexc);
           YYERROR;
         }
+#endif // YY_EXCEPTIONS
       YY_SYMBOL_PRINT ("-> $$ =", yylhs);
       yypop_ (yylen);
       yylen = 0;
-      YY_STACK_PRINT ();
 
       // Shift the result of the reduction.
-      yypush_ (YY_NULLPTR, yylhs);
+      yypush_ (YY_NULLPTR, YY_MOVE (yylhs));
     }
     goto yynewstate;
+
 
   /*--------------------------------------.
   | yyerrlab -- here on detecting error.  |
@@ -923,7 +943,9 @@ else{
     if (!yyerrstatus_)
       {
         ++yynerrs_;
-        error (yyla.location, yysyntax_error_ (yystack_[0].state, yyla));
+        context yyctx (*this, yyla);
+        std::string msg = yysyntax_error_ (yyctx);
+        error (yyla.location, YY_MOVE (msg));
       }
 
 
@@ -934,7 +956,7 @@ else{
            error, discard it.  */
 
         // Return failure if at end of input.
-        if (yyla.type_get () == yyeof_)
+        if (yyla.kind () == symbol_kind::S_YYEOF)
           YYABORT;
         else if (!yyla.empty ())
           {
@@ -951,69 +973,81 @@ else{
   | yyerrorlab -- error raised explicitly by YYERROR.  |
   `---------------------------------------------------*/
   yyerrorlab:
-
-    /* Pacify compilers like GCC when the user code never invokes
-       YYERROR and the label yyerrorlab therefore never appears in user
-       code.  */
+    /* Pacify compilers when the user code never invokes YYERROR and
+       the label yyerrorlab therefore never appears in user code.  */
     if (false)
-      goto yyerrorlab;
-    yyerror_range[1].location = yystack_[yylen - 1].location;
+      YYERROR;
+
     /* Do not reclaim the symbols of the rule whose action triggered
        this YYERROR.  */
     yypop_ (yylen);
     yylen = 0;
+    YY_STACK_PRINT ();
     goto yyerrlab1;
+
 
   /*-------------------------------------------------------------.
   | yyerrlab1 -- common code for both syntax error and YYERROR.  |
   `-------------------------------------------------------------*/
   yyerrlab1:
     yyerrstatus_ = 3;   // Each real token shifted decrements this.
+    // Pop stack until we find a state that shifts the error token.
+    for (;;)
+      {
+        yyn = yypact_[+yystack_[0].state];
+        if (!yy_pact_value_is_default_ (yyn))
+          {
+            yyn += symbol_kind::S_YYerror;
+            if (0 <= yyn && yyn <= yylast_
+                && yycheck_[yyn] == symbol_kind::S_YYerror)
+              {
+                yyn = yytable_[yyn];
+                if (0 < yyn)
+                  break;
+              }
+          }
+
+        // Pop the current state because it cannot handle the error token.
+        if (yystack_.size () == 1)
+          YYABORT;
+
+        yyerror_range[1].location = yystack_[0].location;
+        yy_destroy_ ("Error: popping", yystack_[0]);
+        yypop_ ();
+        YY_STACK_PRINT ();
+      }
     {
       stack_symbol_type error_token;
-      for (;;)
-        {
-          yyn = yypact_[yystack_[0].state];
-          if (!yy_pact_value_is_default_ (yyn))
-            {
-              yyn += yyterror_;
-              if (0 <= yyn && yyn <= yylast_ && yycheck_[yyn] == yyterror_)
-                {
-                  yyn = yytable_[yyn];
-                  if (0 < yyn)
-                    break;
-                }
-            }
-
-          // Pop the current state because it cannot handle the error token.
-          if (yystack_.size () == 1)
-            YYABORT;
-
-          yyerror_range[1].location = yystack_[0].location;
-          yy_destroy_ ("Error: popping", yystack_[0]);
-          yypop_ ();
-          YY_STACK_PRINT ();
-        }
 
       yyerror_range[2].location = yyla.location;
       YYLLOC_DEFAULT (error_token.location, yyerror_range, 2);
 
       // Shift the error token.
-      error_token.state = yyn;
-      yypush_ ("Shifting", error_token);
+      error_token.state = state_type (yyn);
+      yypush_ ("Shifting", YY_MOVE (error_token));
     }
     goto yynewstate;
 
-    // Accept.
+
+  /*-------------------------------------.
+  | yyacceptlab -- YYACCEPT comes here.  |
+  `-------------------------------------*/
   yyacceptlab:
     yyresult = 0;
     goto yyreturn;
 
-    // Abort.
+
+  /*-----------------------------------.
+  | yyabortlab -- YYABORT comes here.  |
+  `-----------------------------------*/
   yyabortlab:
     yyresult = 1;
     goto yyreturn;
 
+
+  /*-----------------------------------------------------.
+  | yyreturn -- parsing is finished, return the result.  |
+  `-----------------------------------------------------*/
   yyreturn:
     if (!yyla.empty ())
       yy_destroy_ ("Cleanup: discarding lookahead", yyla);
@@ -1021,6 +1055,7 @@ else{
     /* Do not reclaim the symbols of the rule whose action triggered
        this YYABORT or YYACCEPT.  */
     yypop_ (yylen);
+    YY_STACK_PRINT ();
     while (1 < yystack_.size ())
       {
         yy_destroy_ ("Cleanup: popping", yystack_[0]);
@@ -1029,12 +1064,12 @@ else{
 
     return yyresult;
   }
+#if YY_EXCEPTIONS
     catch (...)
       {
-        YYCDEBUG << "Exception caught: cleaning lookahead and stack"
-                 << std::endl;
+        YYCDEBUG << "Exception caught: cleaning lookahead and stack\n";
         // Do not try to display the values of the reclaimed symbols,
-        // as their printer might throw an exception.
+        // as their printers might throw an exception.
         if (!yyla.empty ())
           yy_destroy_ (YY_NULLPTR, yyla);
 
@@ -1045,26 +1080,109 @@ else{
           }
         throw;
       }
+#endif // YY_EXCEPTIONS
   }
 
   void
   DDIParser::error (const syntax_error& yyexc)
   {
-    error (yyexc.location, yyexc.what());
+    error (yyexc.location, yyexc.what ());
   }
 
-  // Generate an error message.
+  /* Return YYSTR after stripping away unnecessary quotes and
+     backslashes, so that it's suitable for yyerror.  The heuristic is
+     that double-quoting is unnecessary unless the string contains an
+     apostrophe, a comma, or backslash (other than backslash-backslash).
+     YYSTR is taken from yytname.  */
   std::string
-  DDIParser::yysyntax_error_ (state_type yystate, const symbol_type& yyla) const
+  DDIParser::yytnamerr_ (const char *yystr)
   {
-    // Number of reported tokens (one for the "unexpected", one per
-    // "expected").
-    size_t yycount = 0;
-    // Its maximum.
-    enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
-    // Arguments of yyformat.
-    char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
+    if (*yystr == '"')
+      {
+        std::string yyr;
+        char const *yyp = yystr;
 
+        for (;;)
+          switch (*++yyp)
+            {
+            case '\'':
+            case ',':
+              goto do_not_strip_quotes;
+
+            case '\\':
+              if (*++yyp != '\\')
+                goto do_not_strip_quotes;
+              else
+                goto append;
+
+            append:
+            default:
+              yyr += *yyp;
+              break;
+
+            case '"':
+              return yyr;
+            }
+      do_not_strip_quotes: ;
+      }
+
+    return yystr;
+  }
+
+  std::string
+  DDIParser::symbol_name (symbol_kind_type yysymbol)
+  {
+    return yytnamerr_ (yytname_[yysymbol]);
+  }
+
+
+
+  // DDIParser::context.
+  DDIParser::context::context (const DDIParser& yyparser, const symbol_type& yyla)
+    : yyparser_ (yyparser)
+    , yyla_ (yyla)
+  {}
+
+  int
+  DDIParser::context::expected_tokens (symbol_kind_type yyarg[], int yyargn) const
+  {
+    // Actual number of expected tokens
+    int yycount = 0;
+
+    int yyn = yypact_[+yyparser_.yystack_[0].state];
+    if (!yy_pact_value_is_default_ (yyn))
+      {
+        /* Start YYX at -YYN if negative to avoid negative indexes in
+           YYCHECK.  In other words, skip the first -YYN actions for
+           this state because they are default actions.  */
+        int yyxbegin = yyn < 0 ? -yyn : 0;
+        // Stay within bounds of both yycheck and yytname.
+        int yychecklim = yylast_ - yyn + 1;
+        int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
+        for (int yyx = yyxbegin; yyx < yyxend; ++yyx)
+          if (yycheck_[yyx + yyn] == yyx && yyx != symbol_kind::S_YYerror
+              && !yy_table_value_is_error_ (yytable_[yyx + yyn]))
+            {
+              if (!yyarg)
+                ++yycount;
+              else if (yycount == yyargn)
+                return 0;
+              else
+                yyarg[yycount++] = YY_CAST (symbol_kind_type, yyx);
+            }
+      }
+
+    if (yyarg && yycount == 0 && 0 < yyargn)
+      yyarg[0] = symbol_kind::S_YYEMPTY;
+    return yycount;
+  }
+
+
+
+  int
+  DDIParser::yy_syntax_error_arguments_ (const context& yyctx,
+                                                 symbol_kind_type yyarg[], int yyargn) const
+  {
     /* There are many possibilities here to consider:
        - If this state is a consistent state with a default action, then
          the only way this function was invoked is if the default action
@@ -1083,41 +1201,32 @@ else{
        - Of course, the expected token list depends on states to have
          correct lookahead information, and it depends on the parser not
          to perform extra reductions after fetching a lookahead from the
-         scanner and before detecting a syntax error.  Thus, state
-         merging (from LALR or IELR) and default reductions corrupt the
-         expected token list.  However, the list is correct for
-         canonical LR with one exception: it will still contain any
-         token that will not be accepted due to an error action in a
-         later state.
+         scanner and before detecting a syntax error.  Thus, state merging
+         (from LALR or IELR) and default reductions corrupt the expected
+         token list.  However, the list is correct for canonical LR with
+         one exception: it will still contain any token that will not be
+         accepted due to an error action in a later state.
     */
-    if (!yyla.empty ())
+
+    if (!yyctx.lookahead ().empty ())
       {
-        int yytoken = yyla.type_get ();
-        yyarg[yycount++] = yytname_[yytoken];
-        int yyn = yypact_[yystate];
-        if (!yy_pact_value_is_default_ (yyn))
-          {
-            /* Start YYX at -YYN if negative to avoid negative indexes in
-               YYCHECK.  In other words, skip the first -YYN actions for
-               this state because they are default actions.  */
-            int yyxbegin = yyn < 0 ? -yyn : 0;
-            // Stay within bounds of both yycheck and yytname.
-            int yychecklim = yylast_ - yyn + 1;
-            int yyxend = yychecklim < yyntokens_ ? yychecklim : yyntokens_;
-            for (int yyx = yyxbegin; yyx < yyxend; ++yyx)
-              if (yycheck_[yyx + yyn] == yyx && yyx != yyterror_
-                  && !yy_table_value_is_error_ (yytable_[yyx + yyn]))
-                {
-                  if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
-                    {
-                      yycount = 1;
-                      break;
-                    }
-                  else
-                    yyarg[yycount++] = yytname_[yyx];
-                }
-          }
+        if (yyarg)
+          yyarg[0] = yyctx.token ();
+        int yyn = yyctx.expected_tokens (yyarg ? yyarg + 1 : yyarg, yyargn - 1);
+        return yyn + 1;
       }
+    return 0;
+  }
+
+  // Generate an error message.
+  std::string
+  DDIParser::yysyntax_error_ (const context& yyctx) const
+  {
+    // Its maximum.
+    enum { YYARGS_MAX = 5 };
+    // Arguments of yyformat.
+    symbol_kind_type yyarg[YYARGS_MAX];
+    int yycount = yy_syntax_error_arguments_ (yyctx, yyarg, YYARGS_MAX);
 
     char const* yyformat = YY_NULLPTR;
     switch (yycount)
@@ -1126,22 +1235,23 @@ else{
         case N:                               \
           yyformat = S;                       \
         break
-        YYCASE_(0, YY_("syntax error"));
-        YYCASE_(1, YY_("syntax error, unexpected %s"));
-        YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
-        YYCASE_(3, YY_("syntax error, unexpected %s, expecting %s or %s"));
-        YYCASE_(4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
-        YYCASE_(5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
+      default: // Avoid compiler warnings.
+        YYCASE_ (0, YY_("syntax error"));
+        YYCASE_ (1, YY_("syntax error, unexpected %s"));
+        YYCASE_ (2, YY_("syntax error, unexpected %s, expecting %s"));
+        YYCASE_ (3, YY_("syntax error, unexpected %s, expecting %s or %s"));
+        YYCASE_ (4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
+        YYCASE_ (5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
 #undef YYCASE_
       }
 
     std::string yyres;
     // Argument number.
-    size_t yyi = 0;
+    std::ptrdiff_t yyi = 0;
     for (char const* yyp = yyformat; *yyp; ++yyp)
       if (yyp[0] == '%' && yyp[1] == 's' && yyi < yycount)
         {
-          yyres += yytnamerr_ (yyarg[yyi++]);
+          yyres += symbol_name (yyarg[yyi++]);
           ++yyp;
         }
       else
@@ -1162,7 +1272,7 @@ else{
      -13,   -13,   -13
   };
 
-  const unsigned char
+  const signed char
   DDIParser::yydefact_[] =
   {
       19,     0,     1,     7,    18,    16,    21,    20,     8,     2,
@@ -1180,11 +1290,11 @@ else{
   const signed char
   DDIParser::yydefgoto_[] =
   {
-      -1,    20,    14,    15,     5,    16,    17,    18,     6,    22,
+       0,    20,    14,    15,     5,    16,    17,    18,     6,    22,
        1
   };
 
-  const unsigned char
+  const signed char
   DDIParser::yytable_[] =
   {
        2,     8,     9,    10,    11,    19,    12,    13,     3,     7,
@@ -1200,7 +1310,7 @@ else{
        9,    18,    19
   };
 
-  const unsigned char
+  const signed char
   DDIParser::yystos_[] =
   {
        0,    21,     0,     8,    10,    15,    19,    20,     4,     5,
@@ -1208,7 +1318,7 @@ else{
       12,    14,    20
   };
 
-  const unsigned char
+  const signed char
   DDIParser::yyr1_[] =
   {
        0,    11,    12,    13,    13,    13,    14,    15,    16,    17,
@@ -1216,7 +1326,7 @@ else{
       21,    21
   };
 
-  const unsigned char
+  const signed char
   DDIParser::yyr2_[] =
   {
        0,     2,     1,     1,     1,     1,     1,     1,     1,     1,
@@ -1225,50 +1335,50 @@ else{
   };
 
 
-
+#if YYDEBUG || 1
   // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
-  // First, the terminals, then, starting at \a yyntokens_, nonterminals.
+  // First, the terminals, then, starting at \a YYNTOKENS, nonterminals.
   const char*
   const DDIParser::yytname_[] =
   {
-  "\"end of file\"", "error", "$undefined", "\"end of line\"", "\"=\"",
-  "\",\"", "\"integer\"", "\"double\"", "\"string\"", "\"quoted string\"",
-  "\"comment\"", "$accept", "comma", "PRIMITIVE", "value", "decl",
-  "ASSIGNMENT", "assignment", "value_list", "definition_section",
-  "comment", "start", YY_NULLPTR
+  "\"end of file\"", "error", "\"invalid token\"", "\"end of line\"",
+  "\"=\"", "\",\"", "\"integer\"", "\"double\"", "\"string\"",
+  "\"quoted string\"", "\"comment\"", "$accept", "comma", "PRIMITIVE",
+  "value", "decl", "ASSIGNMENT", "assignment", "value_list",
+  "definition_section", "comment", "start", YY_NULLPTR
   };
+#endif
+
 
 #if YYDEBUG
-  const unsigned short int
+  const short
   DDIParser::yyrline_[] =
   {
-       0,   144,   144,   150,   150,   150,   152,   159,   168,   169,
-     173,   178,   183,   188,   193,   220,   247,   264,   283,   289,
-     290,   291
+       0,   142,   142,   148,   148,   148,   150,   157,   166,   167,
+     171,   176,   181,   186,   191,   218,   245,   262,   281,   287,
+     288,   289
   };
 
-  // Print the state stack on the debug stream.
   void
-  DDIParser::yystack_print_ ()
+  DDIParser::yy_stack_print_ () const
   {
     *yycdebug_ << "Stack now";
     for (stack_type::const_iterator
            i = yystack_.begin (),
            i_end = yystack_.end ();
          i != i_end; ++i)
-      *yycdebug_ << ' ' << i->state;
-    *yycdebug_ << std::endl;
+      *yycdebug_ << ' ' << int (i->state);
+    *yycdebug_ << '\n';
   }
 
-  // Report on the debug stream that the rule \a yyrule is going to be reduced.
   void
-  DDIParser::yy_reduce_print_ (int yyrule)
+  DDIParser::yy_reduce_print_ (int yyrule) const
   {
-    unsigned int yylno = yyrline_[yyrule];
+    int yylno = yyrline_[yyrule];
     int yynrhs = yyr2_[yyrule];
     // Print the symbols being reduced, and their result.
     *yycdebug_ << "Reducing stack by rule " << yyrule - 1
-               << " (line " << yylno << "):" << std::endl;
+               << " (line " << yylno << "):\n";
     // The symbols being reduced.
     for (int yyi = 0; yyi < yynrhs; yyi++)
       YY_SYMBOL_PRINT ("   $" << yyi + 1 << " =",
@@ -1276,16 +1386,16 @@ else{
   }
 #endif // YYDEBUG
 
-  // Symbol number corresponding to token number t.
-  inline
-  DDIParser::token_number_type
+  DDIParser::symbol_kind_type
   DDIParser::yytranslate_ (int t)
   {
+    // YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to
+    // TOKEN-NUM as returned by yylex.
     static
-    const token_number_type
+    const signed char
     translate_table[] =
     {
-     0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1313,21 +1423,22 @@ else{
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10
     };
-    const unsigned int user_token_number_max_ = 265;
-    const token_number_type undef_token_ = 2;
+    // Last valid token kind.
+    const int code_max = 265;
 
-    if (static_cast<int>(t) <= yyeof_)
-      return yyeof_;
-    else if (static_cast<unsigned int> (t) <= user_token_number_max_)
-      return translate_table[t];
+    if (t <= 0)
+      return symbol_kind::S_YYEOF;
+    else if (t <= code_max)
+      return YY_CAST (symbol_kind_type, translate_table[t]);
     else
-      return undef_token_;
+      return symbol_kind::S_YYUNDEF;
   }
 
-#line 35 "DDIParser.bison" // lalr1.cc:1167
+#line 33 "DDIParser.bison"
 } // wasp
-#line 1330 "DDIParser.cpp" // lalr1.cc:1167
-#line 303 "DDIParser.bison" // lalr1.cc:1168
+#line 1440 "DDIParser.cpp"
+
+#line 301 "DDIParser.bison"
  /*** Additional Code ***/
 
 void wasp::DDIParser::error(const DDIParser::location_type& l,

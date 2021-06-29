@@ -174,7 +174,7 @@ COMMA ,
  /* gobble up end-of-lines */
 \n {
     yylloc->lines(yyleng); yylloc->step();
-    std::size_t offset = yyin->tellg();
+    std::size_t offset = yyin.tellg();
     offset-=yyleng;
     interpreter.push_line_offset(offset);
 }
@@ -218,7 +218,7 @@ void ExprLexerImpl::set_debug(bool b)
 }
 void ExprLexerImpl::rewind()
 {
-    yyin->seekg(-yyleng,std::ios_base::cur);
+    yyin.seekg(-yyleng,std::ios_base::cur);
     yyless(0);
 }
 void ExprLexerImpl::capture_token(

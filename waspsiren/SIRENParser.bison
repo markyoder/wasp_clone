@@ -14,7 +14,7 @@
 }
 
 /* Require BISON 3 or later */
-%require "3"
+
 %output "SIRENParser.cpp"
 /* add debug output code to generated parser. disable this for release
  * versions. */
@@ -34,7 +34,7 @@
 /* %name-prefix "wasp" */
 
 /* set the parser's class identifier */
-%define parser_class_name {SIRENParser}
+%define api.parser.class {SIRENParser}
 
 /* keep track of the current position within the input */
 %locations
@@ -56,7 +56,7 @@
              {std::shared_ptr<class SIRENLexerImpl> lexer}
 
 /* verbose error messages */
-%error-verbose
+%define parse.error verbose
 
  /*** BEGIN EXAMPLE - Change the wasp grammar's tokens below ***/
 

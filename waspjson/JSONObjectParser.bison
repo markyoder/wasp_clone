@@ -16,7 +16,7 @@
 }
 
 /* Require bison 3 or later */
-%require "3"
+
 %output "JSONObjectParser.cpp"
 /* add debug output code to generated parser. disable this for release
  * versions. */
@@ -36,7 +36,7 @@
 %define api.namespace {wasp}
 
 /* set the parser's class identifier */
-%define parser_class_name {JSONObjectParser}
+%define api.parser.class {JSONObjectParser}
 
 /* keep track of the current position within the input */
 %locations
@@ -57,7 +57,7 @@
              {std::shared_ptr<class JSONObjectLexerImpl> lexer}
 
 /* verbose error messages */
-%error-verbose
+%define parse.error verbose
 
  /*** BEGIN EXAMPLE - Change the wasp grammar's tokens below ***/
 

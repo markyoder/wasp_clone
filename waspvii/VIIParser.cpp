@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.0.4.
+// A Bison parser, made by GNU Bison 3.7.6.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018-2021 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // As a special exception, you may create a larger work that contains
 // part or all of the Bison parser skeleton and distribute that work
@@ -30,9 +30,14 @@
 // This special exception was added by the Free Software Foundation in
 // version 2.2 of Bison.
 
+// DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+// especially those whose name start with YY_ or yy_.  They are
+// private implementation details that can be changed or removed.
 
-// First part of user declarations.
-#line 1 "VIIParser.bison" // lalr1.cc:404
+
+
+// First part of user prologue.
+#line 1 "VIIParser.bison"
  /*** C/C++ Declarations ***/
 
 #include <stdio.h>
@@ -40,20 +45,13 @@
 #include <vector>
 
 
-#line 44 "VIIParser.cpp" // lalr1.cc:404
+#line 49 "VIIParser.cpp"
 
-# ifndef YY_NULLPTR
-#  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
-#  else
-#   define YY_NULLPTR 0
-#  endif
-# endif
 
 #include "VIIParser.hpp"
 
-// User implementation prologue.
-#line 95 "VIIParser.bison" // lalr1.cc:412
+// Second part of user prologue.
+#line 93 "VIIParser.bison"
 
 
 #include "VIInterpreter.h"
@@ -69,7 +67,8 @@
 #define yylex lexer->lex
 
 
-#line 73 "VIIParser.cpp" // lalr1.cc:412
+#line 71 "VIIParser.cpp"
+
 
 
 #ifndef YY_
@@ -81,6 +80,16 @@
 # endif
 # ifndef YY_
 #  define YY_(msgid) msgid
+# endif
+#endif
+
+
+// Whether we are compiled with exception support.
+#ifndef YY_EXCEPTIONS
+# if defined __GNUC__ && !defined __EXCEPTIONS
+#  define YY_EXCEPTIONS 0
+# else
+#  define YY_EXCEPTIONS 1
 # endif
 #endif
 
@@ -101,12 +110,9 @@
         {                                                               \
           (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;      \
         }                                                               \
-    while (/*CONSTCOND*/ false)
+    while (false)
 # endif
 
-
-// Suppress unused-variable warnings by "using" E.
-//#define YYUSE(E) ((void) (E))
 
 // Enable debugging if requested.
 #if YYDEBUG
@@ -120,7 +126,7 @@
     {                                           \
       *yycdebug_ << Title << ' ';               \
       yy_print_ (*yycdebug_, Symbol);           \
-      *yycdebug_ << std::endl;                  \
+      *yycdebug_ << '\n';                       \
     }                                           \
   } while (false)
 
@@ -133,15 +139,15 @@
 # define YY_STACK_PRINT()               \
   do {                                  \
     if (yydebug_)                       \
-      yystack_print_ ();                \
+      yy_stack_print_ ();                \
   } while (false)
 
 #else // !YYDEBUG
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Symbol)  YYUSE(Symbol)
-# define YY_REDUCE_PRINT(Rule)           static_cast<void>(0)
-# define YY_STACK_PRINT()                static_cast<void>(0)
+# define YY_SYMBOL_PRINT(Title, Symbol)  YY_USE (Symbol)
+# define YY_REDUCE_PRINT(Rule)           static_cast<void> (0)
+# define YY_STACK_PRINT()                static_cast<void> (0)
 
 #endif // !YYDEBUG
 
@@ -153,54 +159,17 @@
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-#line 35 "VIIParser.bison" // lalr1.cc:479
+#line 33 "VIIParser.bison"
 namespace wasp {
-#line 159 "VIIParser.cpp" // lalr1.cc:479
-
-  /* Return YYSTR after stripping away unnecessary quotes and
-     backslashes, so that it's suitable for yyerror.  The heuristic is
-     that double-quoting is unnecessary unless the string contains an
-     apostrophe, a comma, or backslash (other than backslash-backslash).
-     YYSTR is taken from yytname.  */
-  std::string
-  VIIParser::yytnamerr_ (const char *yystr)
-  {
-    if (*yystr == '"')
-      {
-        std::string yyr = "";
-        char const *yyp = yystr;
-
-        for (;;)
-          switch (*++yyp)
-            {
-            case '\'':
-            case ',':
-              goto do_not_strip_quotes;
-
-            case '\\':
-              if (*++yyp != '\\')
-                goto do_not_strip_quotes;
-              // Fall through.
-            default:
-              yyr += *yyp;
-              break;
-
-            case '"':
-              return yyr;
-            }
-      do_not_strip_quotes: ;
-      }
-
-    return yystr;
-  }
-
+#line 165 "VIIParser.cpp"
 
   /// Build a parser object.
   VIIParser::VIIParser (class AbstractInterpreter& interpreter_yyarg, std::istream &input_stream_yyarg, std::shared_ptr<class VIILexerImpl> lexer_yyarg)
-    :
 #if YYDEBUG
-      yydebug_ (false),
+    : yydebug_ (false),
       yycdebug_ (&std::cerr),
+#else
+    :
 #endif
       interpreter (interpreter_yyarg),
       input_stream (input_stream_yyarg),
@@ -210,144 +179,122 @@ namespace wasp {
   VIIParser::~VIIParser ()
   {}
 
+  VIIParser::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
+  {}
 
   /*---------------.
-  | Symbol types.  |
+  | symbol kinds.  |
   `---------------*/
-
-  inline
-  VIIParser::syntax_error::syntax_error (const location_type& l, const std::string& m)
-    : std::runtime_error (m)
-    , location (l)
-  {}
 
   // basic_symbol.
   template <typename Base>
-  inline
-  VIIParser::basic_symbol<Base>::basic_symbol ()
-    : value ()
-  {}
-
-  template <typename Base>
-  inline
-  VIIParser::basic_symbol<Base>::basic_symbol (const basic_symbol& other)
-    : Base (other)
-    , value ()
-    , location (other.location)
-  {
-    value = other.value;
-  }
-
-
-  template <typename Base>
-  inline
-  VIIParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const semantic_type& v, const location_type& l)
-    : Base (t)
-    , value (v)
-    , location (l)
+  VIIParser::basic_symbol<Base>::basic_symbol (const basic_symbol& that)
+    : Base (that)
+    , value (that.value)
+    , location (that.location)
   {}
 
 
   /// Constructor for valueless symbols.
   template <typename Base>
-  inline
-  VIIParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const location_type& l)
+  VIIParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_MOVE_REF (location_type) l)
     : Base (t)
     , value ()
     , location (l)
   {}
 
   template <typename Base>
-  inline
-  VIIParser::basic_symbol<Base>::~basic_symbol ()
+  VIIParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_RVREF (semantic_type) v, YY_RVREF (location_type) l)
+    : Base (t)
+    , value (YY_MOVE (v))
+    , location (YY_MOVE (l))
+  {}
+
+  template <typename Base>
+  VIIParser::symbol_kind_type
+  VIIParser::basic_symbol<Base>::type_get () const YY_NOEXCEPT
   {
-    clear ();
+    return this->kind ();
   }
 
   template <typename Base>
-  inline
-  void
-  VIIParser::basic_symbol<Base>::clear ()
-  {
-    Base::clear ();
-  }
-
-  template <typename Base>
-  inline
   bool
-  VIIParser::basic_symbol<Base>::empty () const
+  VIIParser::basic_symbol<Base>::empty () const YY_NOEXCEPT
   {
-    return Base::type_get () == empty_symbol;
+    return this->kind () == symbol_kind::S_YYEMPTY;
   }
 
   template <typename Base>
-  inline
   void
   VIIParser::basic_symbol<Base>::move (basic_symbol& s)
   {
-    super_type::move(s);
-    value = s.value;
-    location = s.location;
+    super_type::move (s);
+    value = YY_MOVE (s.value);
+    location = YY_MOVE (s.location);
   }
 
-  // by_type.
-  inline
-  VIIParser::by_type::by_type ()
-    : type (empty_symbol)
+  // by_kind.
+  VIIParser::by_kind::by_kind ()
+    : kind_ (symbol_kind::S_YYEMPTY)
   {}
 
-  inline
-  VIIParser::by_type::by_type (const by_type& other)
-    : type (other.type)
-  {}
-
-  inline
-  VIIParser::by_type::by_type (token_type t)
-    : type (yytranslate_ (t))
-  {}
-
-  inline
-  void
-  VIIParser::by_type::clear ()
+#if 201103L <= YY_CPLUSPLUS
+  VIIParser::by_kind::by_kind (by_kind&& that)
+    : kind_ (that.kind_)
   {
-    type = empty_symbol;
+    that.clear ();
+  }
+#endif
+
+  VIIParser::by_kind::by_kind (const by_kind& that)
+    : kind_ (that.kind_)
+  {}
+
+  VIIParser::by_kind::by_kind (token_kind_type t)
+    : kind_ (yytranslate_ (t))
+  {}
+
+  void
+  VIIParser::by_kind::clear () YY_NOEXCEPT
+  {
+    kind_ = symbol_kind::S_YYEMPTY;
   }
 
-  inline
   void
-  VIIParser::by_type::move (by_type& that)
+  VIIParser::by_kind::move (by_kind& that)
   {
-    type = that.type;
+    kind_ = that.kind_;
     that.clear ();
   }
 
-  inline
-  int
-  VIIParser::by_type::type_get () const
+  VIIParser::symbol_kind_type
+  VIIParser::by_kind::kind () const YY_NOEXCEPT
   {
-    return type;
+    return kind_;
+  }
+
+  VIIParser::symbol_kind_type
+  VIIParser::by_kind::type_get () const YY_NOEXCEPT
+  {
+    return this->kind ();
   }
 
 
   // by_state.
-  inline
-  VIIParser::by_state::by_state ()
+  VIIParser::by_state::by_state () YY_NOEXCEPT
     : state (empty_state)
   {}
 
-  inline
-  VIIParser::by_state::by_state (const by_state& other)
-    : state (other.state)
+  VIIParser::by_state::by_state (const by_state& that) YY_NOEXCEPT
+    : state (that.state)
   {}
 
-  inline
   void
-  VIIParser::by_state::clear ()
+  VIIParser::by_state::clear () YY_NOEXCEPT
   {
     state = empty_state;
   }
 
-  inline
   void
   VIIParser::by_state::move (by_state& that)
   {
@@ -355,36 +302,39 @@ namespace wasp {
     that.clear ();
   }
 
-  inline
-  VIIParser::by_state::by_state (state_type s)
+  VIIParser::by_state::by_state (state_type s) YY_NOEXCEPT
     : state (s)
   {}
 
-  inline
-  VIIParser::symbol_number_type
-  VIIParser::by_state::type_get () const
+  VIIParser::symbol_kind_type
+  VIIParser::by_state::kind () const YY_NOEXCEPT
   {
     if (state == empty_state)
-      return empty_symbol;
+      return symbol_kind::S_YYEMPTY;
     else
-      return yystos_[state];
+      return YY_CAST (symbol_kind_type, yystos_[+state]);
   }
 
-  inline
   VIIParser::stack_symbol_type::stack_symbol_type ()
   {}
 
-
-  inline
-  VIIParser::stack_symbol_type::stack_symbol_type (state_type s, symbol_type& that)
-    : super_type (s, that.location)
+  VIIParser::stack_symbol_type::stack_symbol_type (YY_RVREF (stack_symbol_type) that)
+    : super_type (YY_MOVE (that.state), YY_MOVE (that.value), YY_MOVE (that.location))
   {
-    value = that.value;
+#if 201103L <= YY_CPLUSPLUS
     // that is emptied.
-    that.type = empty_symbol;
+    that.state = empty_state;
+#endif
   }
 
-  inline
+  VIIParser::stack_symbol_type::stack_symbol_type (state_type s, YY_MOVE_REF (symbol_type) that)
+    : super_type (s, YY_MOVE (that.value), YY_MOVE (that.location))
+  {
+    // that is emptied.
+    that.kind_ = symbol_kind::S_YYEMPTY;
+  }
+
+#if YY_CPLUSPLUS < 201103L
   VIIParser::stack_symbol_type&
   VIIParser::stack_symbol_type::operator= (const stack_symbol_type& that)
   {
@@ -394,9 +344,19 @@ namespace wasp {
     return *this;
   }
 
+  VIIParser::stack_symbol_type&
+  VIIParser::stack_symbol_type::operator= (stack_symbol_type& that)
+  {
+    state = that.state;
+    value = that.value;
+    location = that.location;
+    // that is emptied.
+    that.state = empty_state;
+    return *this;
+  }
+#endif
 
   template <typename Base>
-  inline
   void
   VIIParser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
   {
@@ -404,50 +364,51 @@ namespace wasp {
       YY_SYMBOL_PRINT (yymsg, yysym);
 
     // User destructor.
-    YYUSE (yysym.type_get ());
+    YY_USE (yysym.kind ());
   }
 
 #if YYDEBUG
   template <typename Base>
   void
-  VIIParser::yy_print_ (std::ostream& yyo,
-                                     const basic_symbol<Base>& yysym) const
+  VIIParser::yy_print_ (std::ostream& yyo, const basic_symbol<Base>& yysym) const
   {
     std::ostream& yyoutput = yyo;
-    YYUSE (yyoutput);
-    symbol_number_type yytype = yysym.type_get ();
-    // Avoid a (spurious) G++ 4.8 warning about "array subscript is
-    // below array bounds".
+    YY_USE (yyoutput);
     if (yysym.empty ())
-      std::abort ();
-    yyo << (yytype < yyntokens_ ? "token" : "nterm")
-        << ' ' << yytname_[yytype] << " ("
-        << yysym.location << ": ";
-    YYUSE (yytype);
-    yyo << ')';
+      yyo << "empty symbol";
+    else
+      {
+        symbol_kind_type yykind = yysym.kind ();
+        yyo << (yykind < YYNTOKENS ? "token" : "nterm")
+            << ' ' << yysym.name () << " ("
+            << yysym.location << ": ";
+        YY_USE (yykind);
+        yyo << ')';
+      }
   }
 #endif
 
-  inline
   void
-  VIIParser::yypush_ (const char* m, state_type s, symbol_type& sym)
-  {
-    stack_symbol_type t (s, sym);
-    yypush_ (m, t);
-  }
-
-  inline
-  void
-  VIIParser::yypush_ (const char* m, stack_symbol_type& s)
+  VIIParser::yypush_ (const char* m, YY_MOVE_REF (stack_symbol_type) sym)
   {
     if (m)
-      YY_SYMBOL_PRINT (m, s);
-    yystack_.push (s);
+      YY_SYMBOL_PRINT (m, sym);
+    yystack_.push (YY_MOVE (sym));
   }
 
-  inline
   void
-  VIIParser::yypop_ (unsigned int n)
+  VIIParser::yypush_ (const char* m, state_type s, YY_MOVE_REF (symbol_type) sym)
+  {
+#if 201103L <= YY_CPLUSPLUS
+    yypush_ (m, stack_symbol_type (s, std::move (sym)));
+#else
+    stack_symbol_type ss (s, sym);
+    yypush_ (m, ss);
+#endif
+  }
+
+  void
+  VIIParser::yypop_ (int n)
   {
     yystack_.pop (n);
   }
@@ -479,32 +440,37 @@ namespace wasp {
   }
 #endif // YYDEBUG
 
-  inline VIIParser::state_type
+  VIIParser::state_type
   VIIParser::yy_lr_goto_state_ (state_type yystate, int yysym)
   {
-    int yyr = yypgoto_[yysym - yyntokens_] + yystate;
+    int yyr = yypgoto_[yysym - YYNTOKENS] + yystate;
     if (0 <= yyr && yyr <= yylast_ && yycheck_[yyr] == yystate)
       return yytable_[yyr];
     else
-      return yydefgoto_[yysym - yyntokens_];
+      return yydefgoto_[yysym - YYNTOKENS];
   }
 
-  inline bool
+  bool
   VIIParser::yy_pact_value_is_default_ (int yyvalue)
   {
     return yyvalue == yypact_ninf_;
   }
 
-  inline bool
+  bool
   VIIParser::yy_table_value_is_error_ (int yyvalue)
   {
     return yyvalue == yytable_ninf_;
   }
 
   int
+  VIIParser::operator() ()
+  {
+    return parse ();
+  }
+
+  int
   VIIParser::parse ()
   {
-    // State.
     int yyn;
     /// Length of the RHS of the rule being reduced.
     int yylen = 0;
@@ -522,15 +488,15 @@ namespace wasp {
     /// The return value of parse ().
     int yyresult;
 
-    // FIXME: This shoud be completely indented.  It is not yet to
-    // avoid gratuitous conflicts when merging into the master branch.
+#if YY_EXCEPTIONS
     try
+#endif // YY_EXCEPTIONS
       {
-    YYCDEBUG << "Starting parse" << std::endl;
+    YYCDEBUG << "Starting parse\n";
 
 
     // User initialization code.
-    #line 43 "VIIParser.bison" // lalr1.cc:741
+#line 41 "VIIParser.bison"
 {
     // initialize the initial location object
     yyla.location.begin.filename = yyla.location.end.filename = &interpreter.stream_name();
@@ -539,54 +505,77 @@ namespace wasp {
     lexer = std::make_shared<VIILexerImpl>(interpreter,&input_stream);
 }
 
-#line 543 "VIIParser.cpp" // lalr1.cc:741
+#line 509 "VIIParser.cpp"
+
 
     /* Initialize the stack.  The initial state will be set in
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
        stacks with a primary value.  */
     yystack_.clear ();
-    yypush_ (YY_NULLPTR, 0, yyla);
+    yypush_ (YY_NULLPTR, 0, YY_MOVE (yyla));
 
-    // A new symbol was pushed on the stack.
+  /*-----------------------------------------------.
+  | yynewstate -- push a new symbol on the stack.  |
+  `-----------------------------------------------*/
   yynewstate:
-    YYCDEBUG << "Entering state " << yystack_[0].state << std::endl;
+    YYCDEBUG << "Entering state " << int (yystack_[0].state) << '\n';
+    YY_STACK_PRINT ();
 
     // Accept?
     if (yystack_[0].state == yyfinal_)
-      goto yyacceptlab;
+      YYACCEPT;
 
     goto yybackup;
 
-    // Backup.
-  yybackup:
 
+  /*-----------.
+  | yybackup.  |
+  `-----------*/
+  yybackup:
     // Try to take a decision without lookahead.
-    yyn = yypact_[yystack_[0].state];
+    yyn = yypact_[+yystack_[0].state];
     if (yy_pact_value_is_default_ (yyn))
       goto yydefault;
 
     // Read a lookahead token.
     if (yyla.empty ())
       {
-        YYCDEBUG << "Reading a token: ";
+        YYCDEBUG << "Reading a token\n";
+#if YY_EXCEPTIONS
         try
+#endif // YY_EXCEPTIONS
           {
-            yyla.type = yytranslate_ (yylex (&yyla.value, &yyla.location));
+            yyla.kind_ = yytranslate_ (yylex (&yyla.value, &yyla.location));
           }
+#if YY_EXCEPTIONS
         catch (const syntax_error& yyexc)
           {
+            YYCDEBUG << "Caught exception: " << yyexc.what() << '\n';
             error (yyexc);
             goto yyerrlab1;
           }
+#endif // YY_EXCEPTIONS
       }
     YY_SYMBOL_PRINT ("Next token is", yyla);
 
+    if (yyla.kind () == symbol_kind::S_YYerror)
+    {
+      // The scanner already issued an error message, process directly
+      // to error recovery.  But do not keep the error token as
+      // lookahead, it is too special and may lead us to an endless
+      // loop in error recovery. */
+      yyla.kind_ = symbol_kind::S_YYUNDEF;
+      goto yyerrlab1;
+    }
+
     /* If the proper action on seeing token YYLA.TYPE is to reduce or
        to detect an error, take that action.  */
-    yyn += yyla.type_get ();
-    if (yyn < 0 || yylast_ < yyn || yycheck_[yyn] != yyla.type_get ())
-      goto yydefault;
+    yyn += yyla.kind ();
+    if (yyn < 0 || yylast_ < yyn || yycheck_[yyn] != yyla.kind ())
+      {
+        goto yydefault;
+      }
 
     // Reduce or error.
     yyn = yytable_[yyn];
@@ -603,26 +592,28 @@ namespace wasp {
       --yyerrstatus_;
 
     // Shift the lookahead token.
-    yypush_ ("Shifting", yyn, yyla);
+    yypush_ ("Shifting", state_type (yyn), YY_MOVE (yyla));
     goto yynewstate;
+
 
   /*-----------------------------------------------------------.
   | yydefault -- do the default action for the current state.  |
   `-----------------------------------------------------------*/
   yydefault:
-    yyn = yydefact_[yystack_[0].state];
+    yyn = yydefact_[+yystack_[0].state];
     if (yyn == 0)
       goto yyerrlab;
     goto yyreduce;
 
+
   /*-----------------------------.
-  | yyreduce -- Do a reduction.  |
+  | yyreduce -- do a reduction.  |
   `-----------------------------*/
   yyreduce:
     yylen = yyr2_[yyn];
     {
       stack_symbol_type yylhs;
-      yylhs.state = yy_lr_goto_state_(yystack_[yylen].state, yyr1_[yyn]);
+      yylhs.state = yy_lr_goto_state_ (yystack_[yylen].state, yyr1_[yyn]);
       /* If YYLEN is nonzero, implement the default value of the
          action: '$$ = $1'.  Otherwise, use the top of the stack.
 
@@ -634,124 +625,157 @@ namespace wasp {
       else
         yylhs.value = yystack_[0].value;
 
-      // Compute the default @$.
+      // Default location.
       {
-        slice<stack_symbol_type, stack_type> slice (yystack_, yylen);
-        YYLLOC_DEFAULT (yylhs.location, slice, yylen);
+        stack_type::slice range (yystack_, yylen);
+        YYLLOC_DEFAULT (yylhs.location, range, yylen);
+        yyerror_range[1].location = yylhs.location;
       }
 
       // Perform the reduction.
       YY_REDUCE_PRINT (yyn);
+#if YY_EXCEPTIONS
       try
+#endif // YY_EXCEPTIONS
         {
           switch (yyn)
             {
-  case 2:
-#line 115 "VIIParser.bison" // lalr1.cc:859
-    {
+  case 2: // include: "file include"
+#line 113 "VIIParser.bison"
+        {
             auto token_index = (yystack_[0].value.token_index);
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::FILE,"decl",token_index);
         }
-#line 656 "VIIParser.cpp" // lalr1.cc:859
+#line 650 "VIIParser.cpp"
     break;
 
-  case 3:
-#line 120 "VIIParser.bison" // lalr1.cc:859
-    {
+  case 3: // comma: ","
+#line 118 "VIIParser.bison"
+        {
             auto token_index = (yystack_[0].value.token_index);
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
         }
-#line 665 "VIIParser.cpp" // lalr1.cc:859
+#line 659 "VIIParser.cpp"
     break;
 
-  case 4:
-#line 125 "VIIParser.bison" // lalr1.cc:859
-    {
+  case 4: // semicolon: ";"
+#line 123 "VIIParser.bison"
+        {
             auto token_index = (yystack_[0].value.token_index);
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::TERM,";",token_index);
         }
-#line 674 "VIIParser.cpp" // lalr1.cc:859
+#line 668 "VIIParser.cpp"
     break;
 
-  case 5:
-#line 130 "VIIParser.bison" // lalr1.cc:859
-    {
+  case 5: // assign: "="
+#line 128 "VIIParser.bison"
+        {
             auto token_index = (yystack_[0].value.token_index);
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,"=",token_index);
         }
-#line 683 "VIIParser.cpp" // lalr1.cc:859
+#line 677 "VIIParser.cpp"
     break;
 
-  case 6:
-#line 136 "VIIParser.bison" // lalr1.cc:859
+  case 6: // fslash: "forward slash"
+#line 134 "VIIParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DIVIDE,"/",token_index);
     }
-#line 692 "VIIParser.cpp" // lalr1.cc:859
+#line 686 "VIIParser.cpp"
     break;
 
-  case 7:
-#line 141 "VIIParser.bison" // lalr1.cc:859
+  case 7: // rbracket: "right bracket"
+#line 139 "VIIParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RBRACKET,"]",token_index);
     }
-#line 701 "VIIParser.cpp" // lalr1.cc:859
+#line 695 "VIIParser.cpp"
     break;
 
-  case 8:
-#line 146 "VIIParser.bison" // lalr1.cc:859
+  case 8: // lbracket: "left bracket"
+#line 144 "VIIParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACKET,"[",token_index);
     }
-#line 710 "VIIParser.cpp" // lalr1.cc:859
+#line 704 "VIIParser.cpp"
     break;
 
-  case 13:
-#line 154 "VIIParser.bison" // lalr1.cc:859
-    {
+  case 9: // PRIMITIVE: "quoted string"
+#line 149 "VIIParser.bison"
+            { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
+#line 710 "VIIParser.cpp"
+    break;
+
+  case 10: // PRIMITIVE: "integer"
+#line 149 "VIIParser.bison"
+                      { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
+#line 716 "VIIParser.cpp"
+    break;
+
+  case 11: // PRIMITIVE: "double"
+#line 149 "VIIParser.bison"
+                                { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
+#line 722 "VIIParser.cpp"
+    break;
+
+  case 12: // PRIMITIVE: "-"
+#line 149 "VIIParser.bison"
+                                         { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
+#line 728 "VIIParser.cpp"
+    break;
+
+  case 13: // value: PRIMITIVE
+#line 152 "VIIParser.bison"
+{
     size_t token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                      ,token_index);
 }
-#line 720 "VIIParser.cpp" // lalr1.cc:859
+#line 738 "VIIParser.cpp"
     break;
 
-  case 15:
-#line 161 "VIIParser.bison" // lalr1.cc:859
-    {
+  case 14: // key_value: value
+#line 157 "VIIParser.bison"
+            { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
+#line 744 "VIIParser.cpp"
+    break;
+
+  case 15: // key_value: "string"
+#line 159 "VIIParser.bison"
+{
     size_t token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                      ,token_index);
 }
-#line 730 "VIIParser.cpp" // lalr1.cc:859
+#line 754 "VIIParser.cpp"
     break;
 
-  case 16:
-#line 168 "VIIParser.bison" // lalr1.cc:859
-    {
+  case 16: // path: "string"
+#line 166 "VIIParser.bison"
+        {
             size_t token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"path"
                              ,token_index);
         }
-#line 740 "VIIParser.cpp" // lalr1.cc:859
+#line 764 "VIIParser.cpp"
     break;
 
-  case 17:
-#line 174 "VIIParser.bison" // lalr1.cc:859
-    {
+  case 17: // path: "quoted string"
+#line 172 "VIIParser.bison"
+        {
             size_t token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"path"
                              ,token_index);
         }
-#line 750 "VIIParser.cpp" // lalr1.cc:859
+#line 774 "VIIParser.cpp"
     break;
 
-  case 18:
-#line 181 "VIIParser.bison" // lalr1.cc:859
-    {
+  case 18: // include_file: include path
+#line 179 "VIIParser.bison"
+        {
 
             std::vector<size_t> child_indices = {(yystack_[1].value.node_index),(yystack_[0].value.node_index)};
             (yylhs.value.node_index) = interpreter.push_parent(wasp::FILE
@@ -762,11 +786,11 @@ namespace wasp {
                                         ,child_indices);
             interpreter.load_document((yylhs.value.node_index), wasp::trim(interpreter.data((yystack_[0].value.node_index))," "));
         }
-#line 766 "VIIParser.cpp" // lalr1.cc:859
+#line 790 "VIIParser.cpp"
     break;
 
-  case 19:
-#line 195 "VIIParser.bison" // lalr1.cc:859
+  case 19: // decl: "string"
+#line 193 "VIIParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         std::string quote_less_data = interpreter.token_data(token_index);
@@ -775,12 +799,12 @@ namespace wasp {
                                    ,"decl"
                                    ,token_index);
     }
-#line 779 "VIIParser.cpp" // lalr1.cc:859
+#line 803 "VIIParser.cpp"
     break;
 
-  case 20:
-#line 204 "VIIParser.bison" // lalr1.cc:859
-    {
+  case 20: // decl_or_key_value: decl assign key_value
+#line 202 "VIIParser.bison"
+        {
             std::string quote_less_data = interpreter.data((yystack_[2].value.node_index));
             quote_less_data = wasp::strip_quotes(quote_less_data);
             std::vector<size_t> child_indices = {(yystack_[2].value.node_index),(yystack_[1].value.node_index),(yystack_[0].value.node_index)};
@@ -794,12 +818,54 @@ namespace wasp {
                                         ,quote_less_data.c_str()
                                         ,child_indices);
         }
-#line 798 "VIIParser.cpp" // lalr1.cc:859
+#line 822 "VIIParser.cpp"
     break;
 
-  case 28:
-#line 221 "VIIParser.bison" // lalr1.cc:859
-    {
+  case 21: // decl_or_key_value: decl
+#line 215 "VIIParser.bison"
+            { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
+#line 828 "VIIParser.cpp"
+    break;
+
+  case 22: // part: value
+#line 216 "VIIParser.bison"
+       { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
+#line 834 "VIIParser.cpp"
+    break;
+
+  case 23: // part: fslash
+#line 216 "VIIParser.bison"
+               { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
+#line 840 "VIIParser.cpp"
+    break;
+
+  case 24: // part: comment
+#line 216 "VIIParser.bison"
+                        { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
+#line 846 "VIIParser.cpp"
+    break;
+
+  case 25: // part: decl_or_key_value
+#line 217 "VIIParser.bison"
+          { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
+#line 852 "VIIParser.cpp"
+    break;
+
+  case 26: // part: comma
+#line 217 "VIIParser.bison"
+                              { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
+#line 858 "VIIParser.cpp"
+    break;
+
+  case 27: // part: semicolon
+#line 217 "VIIParser.bison"
+                                      { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
+#line 864 "VIIParser.cpp"
+    break;
+
+  case 28: // command_part: part
+#line 219 "VIIParser.bison"
+                    {
 
         auto token_type = interpreter.node_token_type((yystack_[0].value.node_index));
         auto node_type = interpreter.type((yystack_[0].value.node_index));
@@ -808,22 +874,14 @@ namespace wasp {
         bool is_key_value = node_type == wasp::KEYED_VALUE;
         // If this is a potential start of a new command        
         wasp_check(interpreter.definition());
-        const auto& child_indices = interpreter.staged_child_indices(interpreter.staged_count()-1);
+        auto staged_index = interpreter.staged_count()-1;
+        const auto& child_indices = interpreter.staged_child_indices(staged_index);
 
         // Accumulate non-decorative staged child count
         // This cannot be done with the node view because the node is staged and
         // has not been committed to the tree, yet.
-        size_t staged_child_count = 0;
-        for ( const auto&  c_index : child_indices)
-        {
-            auto child_node_type = interpreter.type(c_index);
-            if ( child_node_type != wasp::COMMENT
-                    && child_node_type != wasp::WASP_COMMA
-                    && child_node_type != wasp::TERM)
-            {
-                ++staged_child_count;
-            }
-        }
+        size_t staged_child_count = interpreter.staged_non_decorative_child_count(staged_index);
+        
         auto prev_part_line = yystack_[0].location.end.line;  // initialize to current line
         if (!child_indices.empty())
         {
@@ -844,7 +902,7 @@ namespace wasp {
         {
             // this comment belongs to parent scope
             // terminate the current staged data
-            interpreter.commit_staged(interpreter.staged_count()-1);
+            interpreter.commit_staged(staged_index);
 
             // Stage
             (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
@@ -858,7 +916,7 @@ namespace wasp {
             if ( wasp::TERM == token_type && staged_child_count > 0
                  && interpreter.staged_count() > 1)
             {
-                interpreter.commit_staged(interpreter.staged_count()-1);
+                interpreter.commit_staged(staged_index);
             }
         }
         // if there are stages, and the existing stage only contains
@@ -979,30 +1037,30 @@ namespace wasp {
             (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
         }
     }
-#line 983 "VIIParser.cpp" // lalr1.cc:859
+#line 1041 "VIIParser.cpp"
     break;
 
-  case 29:
-#line 402 "VIIParser.bison" // lalr1.cc:859
+  case 29: // command_part: include_file
+#line 392 "VIIParser.bison"
     {
         // assume the included content will be a child of the existing
         // staged content.
         (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
     }
-#line 993 "VIIParser.cpp" // lalr1.cc:859
+#line 1051 "VIIParser.cpp"
     break;
 
-  case 30:
-#line 409 "VIIParser.bison" // lalr1.cc:859
-    {
+  case 30: // comment: "comment"
+#line 399 "VIIParser.bison"
+        {
             auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
-#line 1002 "VIIParser.cpp" // lalr1.cc:859
+#line 1060 "VIIParser.cpp"
     break;
 
-  case 31:
-#line 414 "VIIParser.bison" // lalr1.cc:859
+  case 31: // block: lbracket decl rbracket
+#line 404 "VIIParser.bison"
     {
         // Block is top level parse construct
         // It closes/commits existing stages
@@ -1026,53 +1084,57 @@ namespace wasp {
                                         ,child_indices);
         }
     }
-#line 1030 "VIIParser.cpp" // lalr1.cc:859
+#line 1088 "VIIParser.cpp"
     break;
 
-  case 33:
-#line 439 "VIIParser.bison" // lalr1.cc:859
-    {
+  case 33: // start: start block
+#line 429 "VIIParser.bison"
+                    {
            if(interpreter.single_parse() )
            {
                lexer->rewind();
                YYACCEPT;
            }
        }
-#line 1042 "VIIParser.cpp" // lalr1.cc:859
+#line 1100 "VIIParser.cpp"
     break;
 
-  case 34:
-#line 446 "VIIParser.bison" // lalr1.cc:859
-    {
+  case 34: // start: start command_part
+#line 436 "VIIParser.bison"
+                            {
             if(interpreter.single_parse() )
             {
                 lexer->rewind();
                 YYACCEPT;
             }
         }
-#line 1054 "VIIParser.cpp" // lalr1.cc:859
+#line 1112 "VIIParser.cpp"
     break;
 
 
-#line 1058 "VIIParser.cpp" // lalr1.cc:859
+#line 1116 "VIIParser.cpp"
+
             default:
               break;
             }
         }
+#if YY_EXCEPTIONS
       catch (const syntax_error& yyexc)
         {
+          YYCDEBUG << "Caught exception: " << yyexc.what() << '\n';
           error (yyexc);
           YYERROR;
         }
+#endif // YY_EXCEPTIONS
       YY_SYMBOL_PRINT ("-> $$ =", yylhs);
       yypop_ (yylen);
       yylen = 0;
-      YY_STACK_PRINT ();
 
       // Shift the result of the reduction.
-      yypush_ (YY_NULLPTR, yylhs);
+      yypush_ (YY_NULLPTR, YY_MOVE (yylhs));
     }
     goto yynewstate;
+
 
   /*--------------------------------------.
   | yyerrlab -- here on detecting error.  |
@@ -1082,7 +1144,9 @@ namespace wasp {
     if (!yyerrstatus_)
       {
         ++yynerrs_;
-        error (yyla.location, yysyntax_error_ (yystack_[0].state, yyla));
+        context yyctx (*this, yyla);
+        std::string msg = yysyntax_error_ (yyctx);
+        error (yyla.location, YY_MOVE (msg));
       }
 
 
@@ -1093,7 +1157,7 @@ namespace wasp {
            error, discard it.  */
 
         // Return failure if at end of input.
-        if (yyla.type_get () == yyeof_)
+        if (yyla.kind () == symbol_kind::S_YYEOF)
           YYABORT;
         else if (!yyla.empty ())
           {
@@ -1110,69 +1174,81 @@ namespace wasp {
   | yyerrorlab -- error raised explicitly by YYERROR.  |
   `---------------------------------------------------*/
   yyerrorlab:
-
-    /* Pacify compilers like GCC when the user code never invokes
-       YYERROR and the label yyerrorlab therefore never appears in user
-       code.  */
+    /* Pacify compilers when the user code never invokes YYERROR and
+       the label yyerrorlab therefore never appears in user code.  */
     if (false)
-      goto yyerrorlab;
-    yyerror_range[1].location = yystack_[yylen - 1].location;
+      YYERROR;
+
     /* Do not reclaim the symbols of the rule whose action triggered
        this YYERROR.  */
     yypop_ (yylen);
     yylen = 0;
+    YY_STACK_PRINT ();
     goto yyerrlab1;
+
 
   /*-------------------------------------------------------------.
   | yyerrlab1 -- common code for both syntax error and YYERROR.  |
   `-------------------------------------------------------------*/
   yyerrlab1:
     yyerrstatus_ = 3;   // Each real token shifted decrements this.
+    // Pop stack until we find a state that shifts the error token.
+    for (;;)
+      {
+        yyn = yypact_[+yystack_[0].state];
+        if (!yy_pact_value_is_default_ (yyn))
+          {
+            yyn += symbol_kind::S_YYerror;
+            if (0 <= yyn && yyn <= yylast_
+                && yycheck_[yyn] == symbol_kind::S_YYerror)
+              {
+                yyn = yytable_[yyn];
+                if (0 < yyn)
+                  break;
+              }
+          }
+
+        // Pop the current state because it cannot handle the error token.
+        if (yystack_.size () == 1)
+          YYABORT;
+
+        yyerror_range[1].location = yystack_[0].location;
+        yy_destroy_ ("Error: popping", yystack_[0]);
+        yypop_ ();
+        YY_STACK_PRINT ();
+      }
     {
       stack_symbol_type error_token;
-      for (;;)
-        {
-          yyn = yypact_[yystack_[0].state];
-          if (!yy_pact_value_is_default_ (yyn))
-            {
-              yyn += yyterror_;
-              if (0 <= yyn && yyn <= yylast_ && yycheck_[yyn] == yyterror_)
-                {
-                  yyn = yytable_[yyn];
-                  if (0 < yyn)
-                    break;
-                }
-            }
-
-          // Pop the current state because it cannot handle the error token.
-          if (yystack_.size () == 1)
-            YYABORT;
-
-          yyerror_range[1].location = yystack_[0].location;
-          yy_destroy_ ("Error: popping", yystack_[0]);
-          yypop_ ();
-          YY_STACK_PRINT ();
-        }
 
       yyerror_range[2].location = yyla.location;
       YYLLOC_DEFAULT (error_token.location, yyerror_range, 2);
 
       // Shift the error token.
-      error_token.state = yyn;
-      yypush_ ("Shifting", error_token);
+      error_token.state = state_type (yyn);
+      yypush_ ("Shifting", YY_MOVE (error_token));
     }
     goto yynewstate;
 
-    // Accept.
+
+  /*-------------------------------------.
+  | yyacceptlab -- YYACCEPT comes here.  |
+  `-------------------------------------*/
   yyacceptlab:
     yyresult = 0;
     goto yyreturn;
 
-    // Abort.
+
+  /*-----------------------------------.
+  | yyabortlab -- YYABORT comes here.  |
+  `-----------------------------------*/
   yyabortlab:
     yyresult = 1;
     goto yyreturn;
 
+
+  /*-----------------------------------------------------.
+  | yyreturn -- parsing is finished, return the result.  |
+  `-----------------------------------------------------*/
   yyreturn:
     if (!yyla.empty ())
       yy_destroy_ ("Cleanup: discarding lookahead", yyla);
@@ -1180,6 +1256,7 @@ namespace wasp {
     /* Do not reclaim the symbols of the rule whose action triggered
        this YYABORT or YYACCEPT.  */
     yypop_ (yylen);
+    YY_STACK_PRINT ();
     while (1 < yystack_.size ())
       {
         yy_destroy_ ("Cleanup: popping", yystack_[0]);
@@ -1188,12 +1265,12 @@ namespace wasp {
 
     return yyresult;
   }
+#if YY_EXCEPTIONS
     catch (...)
       {
-        YYCDEBUG << "Exception caught: cleaning lookahead and stack"
-                 << std::endl;
+        YYCDEBUG << "Exception caught: cleaning lookahead and stack\n";
         // Do not try to display the values of the reclaimed symbols,
-        // as their printer might throw an exception.
+        // as their printers might throw an exception.
         if (!yyla.empty ())
           yy_destroy_ (YY_NULLPTR, yyla);
 
@@ -1204,26 +1281,109 @@ namespace wasp {
           }
         throw;
       }
+#endif // YY_EXCEPTIONS
   }
 
   void
   VIIParser::error (const syntax_error& yyexc)
   {
-    error (yyexc.location, yyexc.what());
+    error (yyexc.location, yyexc.what ());
   }
 
-  // Generate an error message.
+  /* Return YYSTR after stripping away unnecessary quotes and
+     backslashes, so that it's suitable for yyerror.  The heuristic is
+     that double-quoting is unnecessary unless the string contains an
+     apostrophe, a comma, or backslash (other than backslash-backslash).
+     YYSTR is taken from yytname.  */
   std::string
-  VIIParser::yysyntax_error_ (state_type yystate, const symbol_type& yyla) const
+  VIIParser::yytnamerr_ (const char *yystr)
   {
-    // Number of reported tokens (one for the "unexpected", one per
-    // "expected").
-    size_t yycount = 0;
-    // Its maximum.
-    enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
-    // Arguments of yyformat.
-    char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
+    if (*yystr == '"')
+      {
+        std::string yyr;
+        char const *yyp = yystr;
 
+        for (;;)
+          switch (*++yyp)
+            {
+            case '\'':
+            case ',':
+              goto do_not_strip_quotes;
+
+            case '\\':
+              if (*++yyp != '\\')
+                goto do_not_strip_quotes;
+              else
+                goto append;
+
+            append:
+            default:
+              yyr += *yyp;
+              break;
+
+            case '"':
+              return yyr;
+            }
+      do_not_strip_quotes: ;
+      }
+
+    return yystr;
+  }
+
+  std::string
+  VIIParser::symbol_name (symbol_kind_type yysymbol)
+  {
+    return yytnamerr_ (yytname_[yysymbol]);
+  }
+
+
+
+  // VIIParser::context.
+  VIIParser::context::context (const VIIParser& yyparser, const symbol_type& yyla)
+    : yyparser_ (yyparser)
+    , yyla_ (yyla)
+  {}
+
+  int
+  VIIParser::context::expected_tokens (symbol_kind_type yyarg[], int yyargn) const
+  {
+    // Actual number of expected tokens
+    int yycount = 0;
+
+    int yyn = yypact_[+yyparser_.yystack_[0].state];
+    if (!yy_pact_value_is_default_ (yyn))
+      {
+        /* Start YYX at -YYN if negative to avoid negative indexes in
+           YYCHECK.  In other words, skip the first -YYN actions for
+           this state because they are default actions.  */
+        int yyxbegin = yyn < 0 ? -yyn : 0;
+        // Stay within bounds of both yycheck and yytname.
+        int yychecklim = yylast_ - yyn + 1;
+        int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
+        for (int yyx = yyxbegin; yyx < yyxend; ++yyx)
+          if (yycheck_[yyx + yyn] == yyx && yyx != symbol_kind::S_YYerror
+              && !yy_table_value_is_error_ (yytable_[yyx + yyn]))
+            {
+              if (!yyarg)
+                ++yycount;
+              else if (yycount == yyargn)
+                return 0;
+              else
+                yyarg[yycount++] = YY_CAST (symbol_kind_type, yyx);
+            }
+      }
+
+    if (yyarg && yycount == 0 && 0 < yyargn)
+      yyarg[0] = symbol_kind::S_YYEMPTY;
+    return yycount;
+  }
+
+
+
+  int
+  VIIParser::yy_syntax_error_arguments_ (const context& yyctx,
+                                                 symbol_kind_type yyarg[], int yyargn) const
+  {
     /* There are many possibilities here to consider:
        - If this state is a consistent state with a default action, then
          the only way this function was invoked is if the default action
@@ -1242,41 +1402,32 @@ namespace wasp {
        - Of course, the expected token list depends on states to have
          correct lookahead information, and it depends on the parser not
          to perform extra reductions after fetching a lookahead from the
-         scanner and before detecting a syntax error.  Thus, state
-         merging (from LALR or IELR) and default reductions corrupt the
-         expected token list.  However, the list is correct for
-         canonical LR with one exception: it will still contain any
-         token that will not be accepted due to an error action in a
-         later state.
+         scanner and before detecting a syntax error.  Thus, state merging
+         (from LALR or IELR) and default reductions corrupt the expected
+         token list.  However, the list is correct for canonical LR with
+         one exception: it will still contain any token that will not be
+         accepted due to an error action in a later state.
     */
-    if (!yyla.empty ())
+
+    if (!yyctx.lookahead ().empty ())
       {
-        int yytoken = yyla.type_get ();
-        yyarg[yycount++] = yytname_[yytoken];
-        int yyn = yypact_[yystate];
-        if (!yy_pact_value_is_default_ (yyn))
-          {
-            /* Start YYX at -YYN if negative to avoid negative indexes in
-               YYCHECK.  In other words, skip the first -YYN actions for
-               this state because they are default actions.  */
-            int yyxbegin = yyn < 0 ? -yyn : 0;
-            // Stay within bounds of both yycheck and yytname.
-            int yychecklim = yylast_ - yyn + 1;
-            int yyxend = yychecklim < yyntokens_ ? yychecklim : yyntokens_;
-            for (int yyx = yyxbegin; yyx < yyxend; ++yyx)
-              if (yycheck_[yyx + yyn] == yyx && yyx != yyterror_
-                  && !yy_table_value_is_error_ (yytable_[yyx + yyn]))
-                {
-                  if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
-                    {
-                      yycount = 1;
-                      break;
-                    }
-                  else
-                    yyarg[yycount++] = yytname_[yyx];
-                }
-          }
+        if (yyarg)
+          yyarg[0] = yyctx.token ();
+        int yyn = yyctx.expected_tokens (yyarg ? yyarg + 1 : yyarg, yyargn - 1);
+        return yyn + 1;
       }
+    return 0;
+  }
+
+  // Generate an error message.
+  std::string
+  VIIParser::yysyntax_error_ (const context& yyctx) const
+  {
+    // Its maximum.
+    enum { YYARGS_MAX = 5 };
+    // Arguments of yyformat.
+    symbol_kind_type yyarg[YYARGS_MAX];
+    int yycount = yy_syntax_error_arguments_ (yyctx, yyarg, YYARGS_MAX);
 
     char const* yyformat = YY_NULLPTR;
     switch (yycount)
@@ -1285,22 +1436,23 @@ namespace wasp {
         case N:                               \
           yyformat = S;                       \
         break
-        YYCASE_(0, YY_("syntax error"));
-        YYCASE_(1, YY_("syntax error, unexpected %s"));
-        YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
-        YYCASE_(3, YY_("syntax error, unexpected %s, expecting %s or %s"));
-        YYCASE_(4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
-        YYCASE_(5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
+      default: // Avoid compiler warnings.
+        YYCASE_ (0, YY_("syntax error"));
+        YYCASE_ (1, YY_("syntax error, unexpected %s"));
+        YYCASE_ (2, YY_("syntax error, unexpected %s, expecting %s"));
+        YYCASE_ (3, YY_("syntax error, unexpected %s, expecting %s or %s"));
+        YYCASE_ (4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
+        YYCASE_ (5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
 #undef YYCASE_
       }
 
     std::string yyres;
     // Argument number.
-    size_t yyi = 0;
+    std::ptrdiff_t yyi = 0;
     for (char const* yyp = yyformat; *yyp; ++yyp)
       if (yyp[0] == '%' && yyp[1] == 's' && yyi < yycount)
         {
-          yyres += yytnamerr_ (yyarg[yyi++]);
+          yyres += symbol_name (yyarg[yyi++]);
           ++yyp;
         }
       else
@@ -1322,7 +1474,7 @@ namespace wasp {
      -12,    -8,   -12,     9,   -12,   -12,   -12,   -12,   -12
   };
 
-  const unsigned char
+  const signed char
   VIIParser::yydefact_[] =
   {
       32,     0,     1,    12,     3,     4,    10,    11,    19,     9,
@@ -1341,11 +1493,11 @@ namespace wasp {
   const signed char
   VIIParser::yydefgoto_[] =
   {
-      -1,    14,    15,    16,    33,    17,    35,    18,    19,    20,
+       0,    14,    15,    16,    33,    17,    35,    18,    19,    20,
       38,    30,    21,    22,    23,    24,    25,    26,    27,     1
   };
 
-  const unsigned char
+  const signed char
   VIIParser::yytable_[] =
   {
        2,    28,    29,     8,     3,    34,     4,     5,     6,     7,
@@ -1353,7 +1505,7 @@ namespace wasp {
        9,    32,    37,    31
   };
 
-  const unsigned char
+  const signed char
   VIIParser::yycheck_[] =
   {
        0,    10,    11,    10,     4,    13,     6,     7,     8,     9,
@@ -1361,7 +1513,7 @@ namespace wasp {
       11,     5,    33,    18
   };
 
-  const unsigned char
+  const signed char
   VIIParser::yystos_[] =
   {
        0,    36,     0,     4,     6,     7,     8,     9,    10,    11,
@@ -1370,7 +1522,7 @@ namespace wasp {
       28,    30,     5,    21,    13,    23,    10,    26,    27
   };
 
-  const unsigned char
+  const signed char
   VIIParser::yyr1_[] =
   {
        0,    17,    18,    19,    20,    21,    22,    23,    24,    25,
@@ -1379,7 +1531,7 @@ namespace wasp {
       34,    35,    36,    36,    36
   };
 
-  const unsigned char
+  const signed char
   VIIParser::yyr2_[] =
   {
        0,     2,     1,     1,     1,     1,     1,     1,     1,     1,
@@ -1389,54 +1541,54 @@ namespace wasp {
   };
 
 
-
+#if YYDEBUG || 1
   // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
-  // First, the terminals, then, starting at \a yyntokens_, nonterminals.
+  // First, the terminals, then, starting at \a YYNTOKENS, nonterminals.
   const char*
   const VIIParser::yytname_[] =
   {
-  "\"end of file\"", "error", "$undefined", "\"end of line\"", "\"-\"",
-  "\"=\"", "\",\"", "\";\"", "\"integer\"", "\"double\"", "\"string\"",
-  "\"quoted string\"", "\"comment\"", "\"right bracket\"",
+  "\"end of file\"", "error", "\"invalid token\"", "\"end of line\"",
+  "\"-\"", "\"=\"", "\",\"", "\";\"", "\"integer\"", "\"double\"",
+  "\"string\"", "\"quoted string\"", "\"comment\"", "\"right bracket\"",
   "\"left bracket\"", "\"forward slash\"", "\"file include\"", "$accept",
   "include", "comma", "semicolon", "assign", "fslash", "rbracket",
   "lbracket", "PRIMITIVE", "value", "key_value", "path", "include_file",
   "decl", "decl_or_key_value", "part", "command_part", "comment", "block",
   "start", YY_NULLPTR
   };
+#endif
+
 
 #if YYDEBUG
-  const unsigned short int
+  const short
   VIIParser::yyrline_[] =
   {
-       0,   114,   114,   119,   124,   129,   135,   140,   145,   151,
-     151,   151,   151,   153,   159,   160,   167,   173,   180,   194,
-     203,   217,   218,   218,   218,   219,   219,   219,   221,   401,
-     408,   413,   438,   439,   446
+       0,   112,   112,   117,   122,   127,   133,   138,   143,   149,
+     149,   149,   149,   151,   157,   158,   165,   171,   178,   192,
+     201,   215,   216,   216,   216,   217,   217,   217,   219,   391,
+     398,   403,   428,   429,   436
   };
 
-  // Print the state stack on the debug stream.
   void
-  VIIParser::yystack_print_ ()
+  VIIParser::yy_stack_print_ () const
   {
     *yycdebug_ << "Stack now";
     for (stack_type::const_iterator
            i = yystack_.begin (),
            i_end = yystack_.end ();
          i != i_end; ++i)
-      *yycdebug_ << ' ' << i->state;
-    *yycdebug_ << std::endl;
+      *yycdebug_ << ' ' << int (i->state);
+    *yycdebug_ << '\n';
   }
 
-  // Report on the debug stream that the rule \a yyrule is going to be reduced.
   void
-  VIIParser::yy_reduce_print_ (int yyrule)
+  VIIParser::yy_reduce_print_ (int yyrule) const
   {
-    unsigned int yylno = yyrline_[yyrule];
+    int yylno = yyrline_[yyrule];
     int yynrhs = yyr2_[yyrule];
     // Print the symbols being reduced, and their result.
     *yycdebug_ << "Reducing stack by rule " << yyrule - 1
-               << " (line " << yylno << "):" << std::endl;
+               << " (line " << yylno << "):\n";
     // The symbols being reduced.
     for (int yyi = 0; yyi < yynrhs; yyi++)
       YY_SYMBOL_PRINT ("   $" << yyi + 1 << " =",
@@ -1444,16 +1596,16 @@ namespace wasp {
   }
 #endif // YYDEBUG
 
-  // Symbol number corresponding to token number t.
-  inline
-  VIIParser::token_number_type
+  VIIParser::symbol_kind_type
   VIIParser::yytranslate_ (int t)
   {
+    // YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to
+    // TOKEN-NUM as returned by yylex.
     static
-    const token_number_type
+    const signed char
     translate_table[] =
     {
-     0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1482,21 +1634,22 @@ namespace wasp {
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16
     };
-    const unsigned int user_token_number_max_ = 271;
-    const token_number_type undef_token_ = 2;
+    // Last valid token kind.
+    const int code_max = 271;
 
-    if (static_cast<int>(t) <= yyeof_)
-      return yyeof_;
-    else if (static_cast<unsigned int> (t) <= user_token_number_max_)
-      return translate_table[t];
+    if (t <= 0)
+      return symbol_kind::S_YYEOF;
+    else if (t <= code_max)
+      return YY_CAST (symbol_kind_type, translate_table[t]);
     else
-      return undef_token_;
+      return symbol_kind::S_YYUNDEF;
   }
 
-#line 35 "VIIParser.bison" // lalr1.cc:1167
+#line 33 "VIIParser.bison"
 } // wasp
-#line 1499 "VIIParser.cpp" // lalr1.cc:1167
-#line 458 "VIIParser.bison" // lalr1.cc:1168
+#line 1651 "VIIParser.cpp"
+
+#line 448 "VIIParser.bison"
  /*** Additional Code ***/
 
 void wasp::VIIParser::error(const VIIParser::location_type& l,

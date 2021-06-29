@@ -1,5 +1,6 @@
 #ifndef WASP_INTERPRETER_H
 #define WASP_INTERPRETER_H
+#include <algorithm>
 #include <vector>
 #include <map>
 #include <string>
@@ -386,6 +387,8 @@ class WASP_PUBLIC AbstractInterpreter
     virtual const std::string& staged_name(size_t staged_index) const = 0;
     virtual std::string& staged_name(size_t staged_index)             = 0;
     virtual size_t staged_child_count(size_t staged_index)      const = 0;
+
+    virtual size_t staged_non_decorative_child_count(size_t staged_index) const = 0;
 
     virtual size_t staged_count() const = 0;
 
@@ -781,6 +784,19 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
         wasp_require(staged_index <m_staged.size());
         return m_staged[staged_index].m_child_indices.size();
     }
+    bool is_decorative(size_t node_type) const
+    {
+        return std::find(m_decorative_node_types.begin(), 
+                        m_decorative_node_types.end(),
+                        node_type)
+                != m_decorative_node_types.end();
+    }
+    // Obtain non-decorative child count
+    virtual size_t staged_non_decorative_child_count(size_t staged_index) const
+    {
+        wasp_require(staged_index <m_staged.size());
+        return m_staged[staged_index].m_non_decorative_child_count;
+    }
 
     /**
      * @brief commit_staged commits the staged tree node
@@ -855,25 +871,31 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      */
     std::ostream&     m_error_stream;
 
-    TreeNodePool_type m_nodes;
+    TreeNodePool_type m_nodes;    
     bool m_failed;
 
   protected:
     struct Stage
     {
-        Stage() : m_type(wasp::UNKNOWN) {}
+        Stage() : m_type(wasp::UNKNOWN),
+                  m_non_decorative_child_count(0) {}
         Stage(const Stage& orig)
             : m_type(orig.m_type)
+            , m_non_decorative_child_count(orig.m_non_decorative_child_count)
             , m_name(orig.m_name)
             , m_child_indices(orig.m_child_indices)
         {
         }
 
         size_t              m_type;
+        size_t              m_non_decorative_child_count;
         std::string         m_name;
         std::vector<size_t> m_child_indices;
     };
     std::vector<Stage> m_staged;
+    // Decorative node types
+    // Note: requires subclass to provide type set
+    std::vector<wasp::NODE> m_decorative_node_types;
     size_t             m_root_index;
     InterpNodeMap m_interp_node;
     NodeInterpMap m_node_interp;

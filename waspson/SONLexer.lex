@@ -313,7 +313,7 @@ void SONLexerImpl::set_debug(bool b)
 }
 void SONLexerImpl::rewind()
 {
-    yyin->seekg(-yyleng,std::ios_base::cur);
+    yyin.seekg(-yyleng,std::ios_base::cur);
     yyless(0);
 }
 void SONLexerImpl::capture_token(

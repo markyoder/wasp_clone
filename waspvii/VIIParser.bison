@@ -14,8 +14,6 @@
 #include "waspcore/decl.h"
 }
 
-/* Require bison 3 or later */
-%require "3"
 %output "VIIParser.cpp"
 /* add debug output code to generated parser. disable this for release
  * versions. */
@@ -35,7 +33,7 @@
 %define api.namespace {wasp}
 
 /* set the parser's class identifier */
-%define parser_class_name {VIIParser}
+%define api.parser.class {VIIParser}
 
 /* keep track of the current position within the input */
 %locations
@@ -56,7 +54,7 @@
              {std::shared_ptr<class VIILexerImpl> lexer}
 
 /* verbose error messages */
-%error-verbose
+%define parse.error verbose
 
  /*** BEGIN EXAMPLE - Change the wasp grammar's tokens below ***/
 
@@ -227,22 +225,14 @@ command_part : part {
         bool is_key_value = node_type == wasp::KEYED_VALUE;
         // If this is a potential start of a new command        
         wasp_check(interpreter.definition());
-        const auto& child_indices = interpreter.staged_child_indices(interpreter.staged_count()-1);
+        auto staged_index = interpreter.staged_count()-1;
+        const auto& child_indices = interpreter.staged_child_indices(staged_index);
 
         // Accumulate non-decorative staged child count
         // This cannot be done with the node view because the node is staged and
         // has not been committed to the tree, yet.
-        size_t staged_child_count = 0;
-        for ( const auto&  c_index : child_indices)
-        {
-            auto child_node_type = interpreter.type(c_index);
-            if ( child_node_type != wasp::COMMENT
-                    && child_node_type != wasp::WASP_COMMA
-                    && child_node_type != wasp::TERM)
-            {
-                ++staged_child_count;
-            }
-        }
+        size_t staged_child_count = interpreter.staged_non_decorative_child_count(staged_index);
+        
         auto prev_part_line = @1.end.line;  // initialize to current line
         if (!child_indices.empty())
         {
@@ -263,7 +253,7 @@ command_part : part {
         {
             // this comment belongs to parent scope
             // terminate the current staged data
-            interpreter.commit_staged(interpreter.staged_count()-1);
+            interpreter.commit_staged(staged_index);
 
             // Stage
             $$ = interpreter.push_staged_child($1);
@@ -277,7 +267,7 @@ command_part : part {
             if ( wasp::TERM == token_type && staged_child_count > 0
                  && interpreter.staged_count() > 1)
             {
-                interpreter.commit_staged(interpreter.staged_count()-1);
+                interpreter.commit_staged(staged_index);
             }
         }
         // if there are stages, and the existing stage only contains

@@ -12,6 +12,9 @@ VIInterpreter<S>::VIInterpreter()
     , mHasFile(false)
 {
     definition();  // create empty definition needed by interpreter
+    this->m_decorative_node_types = {wasp::COMMENT, 
+                               wasp::WASP_COMMA, 
+                               wasp::TERM};
 }
 template<class S>
 VIInterpreter<S>::VIInterpreter(std::ostream& err)
@@ -24,6 +27,9 @@ VIInterpreter<S>::VIInterpreter(std::ostream& err)
     , mHasFile(false)
 {
     definition();  // create empty definition needed by interpreter
+    this->m_decorative_node_types = {wasp::COMMENT, 
+                               wasp::WASP_COMMA, 
+                               wasp::TERM};
 }
 template<class S>
 VIInterpreter<S>::~VIInterpreter()
