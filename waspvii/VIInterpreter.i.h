@@ -194,5 +194,211 @@ bool VIInterpreter<S>::load_document(size_t node_index, const std::string& path)
     }
 
     return passed;
+} // end of load_document
+
+//---------------------------------------------------------------------------//
+template<class S>
+bool VIInterpreter<S>::process_staged_node(size_t& new_staged_index,
+                                    const std::string& stage_name,
+                                    size_t node_index,
+                                    const location& loc,
+                                    std::ostream& err)
+{
+
+    if (stage_name == "command_part")
+    {
+        return process_document_command(new_staged_index,
+                                        node_index,
+                                        loc,
+                                        err);
+    }
+    else
+    {
+        wasp_not_implemented(stage_name);
+    }
+    return true;
+}                                    
+
+//---------------------------------------------------------------------------//
+template<class S>
+bool VIInterpreter<S>::process_document_command(size_t& new_staged_index, 
+                                size_t node_index, 
+                                const location& loc,
+                                std::ostream& err)
+{
+    bool failed_processing = false;
+    auto token_type = this->node_token_type(node_index);
+    auto node_type = this->type(node_index);
+    auto staged_type = this->staged_type(this->staged_count()-1);
+
+    bool is_key_value = node_type == wasp::KEYED_VALUE;
+    // If this is a potential start of a new command        
+    wasp_check(this->definition());
+    auto staged_index = this->staged_count()-1;
+    const auto& child_indices = this->staged_child_indices(staged_index);
+
+    // Accumulate non-decorative staged child count
+    // This cannot be done with the node view because the node is staged and
+    // has not been committed to the tree, yet.
+    size_t staged_child_count = this->staged_non_decorative_child_count(staged_index);
+    
+    auto prev_part_line = loc.end.line;  // initialize to current line
+    if (!child_indices.empty())
+    {
+        prev_part_line = this->node_token_line(child_indices.back());
+    }
+    bool is_named = this->definition()->has("_name");
+
+    std::string index_name = is_named ? "_"+std::to_string(staged_child_count-1)
+                                        : "_"+std::to_string(staged_child_count);
+    std::string even_odd_name = (is_named?staged_child_count:staged_child_count-1)%2 == 0
+                                ? "_even" : "_odd";
+
+    // Check for scenario where comment is trailing on a different line
+    if ( wasp::COMMENT == token_type
+            && loc.end.line !=  prev_part_line
+            && staged_type  != wasp::OBJECT
+            && this->staged_count() > 1)
+    {
+        // this comment belongs to parent scope
+        // terminate the current staged data
+        this->commit_staged(staged_index);
+
+        // Stage
+        new_staged_index = this->push_staged_child(node_index);
+    }
+    else if ( wasp::COMMENT == token_type
+            || wasp::WASP_COMMA == token_type
+            || wasp::TERM == token_type)
+    {
+        new_staged_index = this->push_staged_child(node_index);
+        // terminator ';' commits the current stage
+        if ( wasp::TERM == token_type && staged_child_count > 0
+                && this->staged_count() > 1)
+        {
+            this->commit_staged(staged_index);
+        }
+    }
+    // if there are stages, and the existing stage only contains
+    // the declarator (child_count==1), and the block/command is named
+    // we need to consume/recast the first child as the '_name' node
+    else if ( this->staged_count() > 1
+            && staged_child_count == 1
+            && is_named )
+    {
+        this->set_type(node_index, wasp::IDENTIFIER);
+        bool name_set_success = this->set_name(node_index, "_name");
+        wasp_check(name_set_success);
+        new_staged_index = this->push_staged_child(node_index);
+    }
+    // If staged child index is aliased to a named component
+    // we need to capture it appropriately
+    else if (this->staged_count() > 1
+            && staged_child_count >= 1
+            && this->definition()->has(index_name) )
+    {
+        this->definition()->delta(index_name, index_name);
+        this->set_type(node_index, wasp::VALUE);
+        bool name_set_success = this->set_name(node_index, index_name.c_str());
+        wasp_check(name_set_success);
+        new_staged_index = this->push_staged_child(node_index);
+    }
+    else if ( is_key_value ||
+                token_type == wasp::STRING ||
+                token_type == wasp::QUOTED_STRING)
+    {
+        std::string data = is_key_value ? this->name(node_index)
+                                        : this->data(node_index);
+        int delta = this->definition()->delta(data, data);
+        if( -1 == delta ) // no adjustment, not a command
+        {
+            // TODO cleanup duplicate code
+            if (this->staged_count() > 1
+                    && staged_child_count >= 1
+                    && this->definition()->has(even_odd_name) )
+            {
+                this->definition()->delta(even_odd_name, even_odd_name);
+                this->set_type(node_index, wasp::VALUE);
+                bool name_set_success = this->set_name(node_index, even_odd_name.c_str());
+                wasp_check(name_set_success);
+                new_staged_index = this->push_staged_child(node_index);
+            }
+            // the string is not a new command, capture as a value
+            // correct part name and type to be decl
+            // must occur prior to prior stage commital
+            else{
+                this->set_type(node_index, wasp::VALUE);
+                bool name_set_success = this->set_name(node_index, "value");
+                wasp_check(name_set_success);
+                new_staged_index = this->push_staged_child(node_index);
+            }
+        }
+        else{
+            // if nothing has been staged and we are a nested document
+            // we need to update definition
+            if( staged_child_count == 0 && this->staged_count() == 1
+                    && this->document_parent() != nullptr)
+            {
+                auto* parent_doc = this->document_parent();
+                while (delta > 0)
+                {
+                    auto* parent_definition = this->definition()->parent();
+                    this->set_current_definition(parent_definition);
+                    wasp_check(static_cast<int>(parent_doc->staged_count()) > delta);
+                    parent_doc->commit_staged(parent_doc->staged_count()-1);
+                    --delta;
+                }
+            }
+            else
+            {
+                wasp_ensure( delta < static_cast<int>(this->staged_count()) );
+                // commit prior stages
+                while( delta > 0 ){
+                    if ( this->staged_count() == 0 ) // user error
+                    {
+                        err << "'" << data << "' has been identified, but belongs to a different scope." << std::endl;
+                        failed_processing = true;
+                        this->set_failed(failed_processing);
+                    }
+                    else
+                    {
+                        this->commit_staged(this->staged_count()-1);
+                    }
+                    --delta;
+                }
+            }
+
+            if ( is_key_value )
+            {
+                new_staged_index = this->push_staged_child(node_index);
+            }
+            else
+            {
+                std::vector<size_t> child_indices = {node_index};
+                new_staged_index = this->push_staged(wasp::ARRAY // commands are
+                                        ,data.c_str()
+                                        ,child_indices);
+            }
+        }        
+    }
+    // if staged index
+    else if (this->staged_count() > 1
+            && staged_child_count >= 1
+            && this->definition()->has(even_odd_name) )
+    {
+        this->definition()->delta(even_odd_name, even_odd_name);
+        this->set_type(node_index, wasp::VALUE);
+        bool name_set_success = this->set_name(node_index, even_odd_name.c_str());
+        wasp_check(name_set_success);
+        new_staged_index = this->push_staged_child(node_index);
+    }
+    // This is a part of a command, stage in existing stage
+    else
+    {
+        new_staged_index = this->push_staged_child(node_index);
+    }
+    return !failed_processing;
 }
+
+//---------------------------------------------------------------------------//                                
 #endif

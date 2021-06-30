@@ -866,201 +866,37 @@ namespace wasp {
   case 28: // command_part: part
 #line 219 "VIIParser.bison"
                     {
-
-        auto token_type = interpreter.node_token_type((yystack_[0].value.node_index));
-        auto node_type = interpreter.type((yystack_[0].value.node_index));
-        auto staged_type = interpreter.staged_type(interpreter.staged_count()-1);
-
-        bool is_key_value = node_type == wasp::KEYED_VALUE;
-        // If this is a potential start of a new command        
-        wasp_check(interpreter.definition());
-        auto staged_index = interpreter.staged_count()-1;
-        const auto& child_indices = interpreter.staged_child_indices(staged_index);
-
-        // Accumulate non-decorative staged child count
-        // This cannot be done with the node view because the node is staged and
-        // has not been committed to the tree, yet.
-        size_t staged_child_count = interpreter.staged_non_decorative_child_count(staged_index);
-        
-        auto prev_part_line = yystack_[0].location.end.line;  // initialize to current line
-        if (!child_indices.empty())
+        std::ostringstream err;
+        if (!interpreter.process_staged_node((yylhs.value.stage_index), "command_part",
+                                            (yystack_[0].value.node_index), yystack_[0].location, err))
         {
-            prev_part_line = interpreter.node_token_line(child_indices.back());
-        }
-        bool is_named = interpreter.definition()->has("_name");
-
-        std::string index_name = is_named ? "_"+std::to_string(staged_child_count-1)
-                                          : "_"+std::to_string(staged_child_count);
-        std::string even_odd_name = (is_named?staged_child_count:staged_child_count-1)%2 == 0
-                                    ? "_even" : "_odd";
-
-        // Check for scenario where comment is trailing on a different line
-        if ( wasp::COMMENT == token_type
-                && yystack_[0].location.end.line !=  prev_part_line
-                && staged_type  != wasp::OBJECT
-                && interpreter.staged_count() > 1)
-        {
-            // this comment belongs to parent scope
-            // terminate the current staged data
-            interpreter.commit_staged(staged_index);
-
-            // Stage
-            (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
-        }
-        else if ( wasp::COMMENT == token_type
-                || wasp::WASP_COMMA == token_type
-                || wasp::TERM == token_type)
-        {
-            (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
-            // terminator ';' commits the current stage
-            if ( wasp::TERM == token_type && staged_child_count > 0
-                 && interpreter.staged_count() > 1)
-            {
-                interpreter.commit_staged(staged_index);
-            }
-        }
-        // if there are stages, and the existing stage only contains
-        // the declarator (child_count==1), and the block/command is named
-        // we need to consume/recast the first child as the '_name' node
-        else if ( interpreter.staged_count() > 1
-             && staged_child_count == 1
-             && is_named )
-        {
-            interpreter.set_type((yystack_[0].value.node_index), wasp::IDENTIFIER);
-            bool name_set_success = interpreter.set_name((yystack_[0].value.node_index), "_name");
-            wasp_check(name_set_success);
-            (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
-        }
-        // If staged child index is aliased to a named component
-        // we need to capture it appropriately
-        else if (interpreter.staged_count() > 1
-                && staged_child_count >= 1
-                && interpreter.definition()->has(index_name) )
-        {
-           interpreter.definition()->delta(index_name, index_name);
-           interpreter.set_type((yystack_[0].value.node_index), wasp::VALUE);
-           bool name_set_success = interpreter.set_name((yystack_[0].value.node_index), index_name.c_str());
-           wasp_check(name_set_success);
-           (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
-        }
-        else if ( is_key_value ||
-                  token_type == wasp::STRING ||
-                  token_type == wasp::QUOTED_STRING)
-        {
-            std::string data = is_key_value ? interpreter.name((yystack_[0].value.node_index))
-                                            : interpreter.data((yystack_[0].value.node_index));
-            int delta = interpreter.definition()->delta(data, data);
-            if( -1 == delta ) // no adjustment, not a command
-            {
-                // TODO cleanup duplicate code
-                if (interpreter.staged_count() > 1
-                        && staged_child_count >= 1
-                        && interpreter.definition()->has(even_odd_name) )
-                {
-                   interpreter.definition()->delta(even_odd_name, even_odd_name);
-                   interpreter.set_type((yystack_[0].value.node_index), wasp::VALUE);
-                   bool name_set_success = interpreter.set_name((yystack_[0].value.node_index), even_odd_name.c_str());
-                   wasp_check(name_set_success);
-                   (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
-                }
-                // the string is not a new command, capture as a value
-                // correct part name and type to be decl
-                // must occur prior to prior stage commital
-                else{
-                    interpreter.set_type((yystack_[0].value.node_index), wasp::VALUE);
-                    bool name_set_success = interpreter.set_name((yystack_[0].value.node_index), "value");
-                    wasp_check(name_set_success);
-                    (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
-                }
-            }
-            else{
-                // if nothing has been staged and we are a nested document
-                // we need to update definition
-                if( staged_child_count == 0 && interpreter.staged_count() == 1
-                        && interpreter.document_parent() != nullptr)
-                {
-                    auto* parent_doc = interpreter.document_parent();
-                    while (delta > 0)
-                    {
-                        auto* parent_definition = interpreter.definition()->parent();
-                        interpreter.set_current_definition(parent_definition);
-                        wasp_check(static_cast<int>(parent_doc->staged_count()) > delta);
-                        parent_doc->commit_staged(parent_doc->staged_count()-1);
-                        --delta;
-                    }
-                }
-                else
-                {
-                    wasp_ensure( delta < static_cast<int>(interpreter.staged_count()) );
-                    // commit prior stages
-                    while( delta > 0 ){
-                        if ( interpreter.staged_count() == 0 ) // user error
-                        {
-                            error(yystack_[0].location, "'"+data+"' has been identified, but belongs to a different scope.");
-                            interpreter.set_failed(true);
-                        }
-                        else
-                        {
-                            interpreter.commit_staged(interpreter.staged_count()-1);
-                        }
-                        --delta;
-                    }
-                }
-
-                if ( is_key_value )
-                {
-                    (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
-                }
-                else
-                {
-                    std::vector<size_t> child_indices = {(yystack_[0].value.node_index)};
-                    (yylhs.value.stage_index) = interpreter.push_staged(wasp::ARRAY // commands are
-                                            ,data.c_str()
-                                            ,child_indices);
-                }
-            }
-        }
-        // if staged index
-        else if (interpreter.staged_count() > 1
-                && staged_child_count >= 1
-                && interpreter.definition()->has(even_odd_name) )
-        {
-           interpreter.definition()->delta(even_odd_name, even_odd_name);
-           interpreter.set_type((yystack_[0].value.node_index), wasp::VALUE);
-           bool name_set_success = interpreter.set_name((yystack_[0].value.node_index), even_odd_name.c_str());
-           wasp_check(name_set_success);
-           (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
-        }
-        // This is a part of a command, stage in existing stage
-        else
-        {
-            (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
+            error(yystack_[0].location, err.str());
         }
     }
-#line 1041 "VIIParser.cpp"
+#line 877 "VIIParser.cpp"
     break;
 
   case 29: // command_part: include_file
-#line 392 "VIIParser.bison"
+#line 228 "VIIParser.bison"
     {
         // assume the included content will be a child of the existing
         // staged content.
         (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
     }
-#line 1051 "VIIParser.cpp"
+#line 887 "VIIParser.cpp"
     break;
 
   case 30: // comment: "comment"
-#line 399 "VIIParser.bison"
+#line 235 "VIIParser.bison"
         {
             auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
-#line 1060 "VIIParser.cpp"
+#line 896 "VIIParser.cpp"
     break;
 
   case 31: // block: lbracket decl rbracket
-#line 404 "VIIParser.bison"
+#line 240 "VIIParser.bison"
     {
         // Block is top level parse construct
         // It closes/commits existing stages
@@ -1084,11 +920,11 @@ namespace wasp {
                                         ,child_indices);
         }
     }
-#line 1088 "VIIParser.cpp"
+#line 924 "VIIParser.cpp"
     break;
 
   case 33: // start: start block
-#line 429 "VIIParser.bison"
+#line 265 "VIIParser.bison"
                     {
            if(interpreter.single_parse() )
            {
@@ -1096,11 +932,11 @@ namespace wasp {
                YYACCEPT;
            }
        }
-#line 1100 "VIIParser.cpp"
+#line 936 "VIIParser.cpp"
     break;
 
   case 34: // start: start command_part
-#line 436 "VIIParser.bison"
+#line 272 "VIIParser.bison"
                             {
             if(interpreter.single_parse() )
             {
@@ -1108,11 +944,11 @@ namespace wasp {
                 YYACCEPT;
             }
         }
-#line 1112 "VIIParser.cpp"
+#line 948 "VIIParser.cpp"
     break;
 
 
-#line 1116 "VIIParser.cpp"
+#line 952 "VIIParser.cpp"
 
             default:
               break;
@@ -1565,8 +1401,8 @@ namespace wasp {
   {
        0,   112,   112,   117,   122,   127,   133,   138,   143,   149,
      149,   149,   149,   151,   157,   158,   165,   171,   178,   192,
-     201,   215,   216,   216,   216,   217,   217,   217,   219,   391,
-     398,   403,   428,   429,   436
+     201,   215,   216,   216,   216,   217,   217,   217,   219,   227,
+     234,   239,   264,   265,   272
   };
 
   void
@@ -1647,9 +1483,9 @@ namespace wasp {
 
 #line 33 "VIIParser.bison"
 } // wasp
-#line 1651 "VIIParser.cpp"
+#line 1487 "VIIParser.cpp"
 
-#line 448 "VIIParser.bison"
+#line 284 "VIIParser.bison"
  /*** Additional Code ***/
 
 void wasp::VIIParser::error(const VIIParser::location_type& l,
