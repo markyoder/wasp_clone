@@ -27,8 +27,6 @@ ExprParser.hpp
 ExprInterpreter.h
 ExprInterpreter.i.h
 location.hh
-position.hh
-stack.hh
 Expr.lex
 Expr.bison
 )
