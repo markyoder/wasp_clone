@@ -699,6 +699,135 @@ TEST(VIInterpreter, commas_semicolons)
     }
 }
 
-// TODO TEST
-// commands containing the 'slash' construct
-//
+
+TEST(VIInterpreter, sections1)
+{
+    std::stringstream input;
+    input << R"I(        
+ a 1 / 2 / 3
+ b 5 6 / 7 8
+ c name 9 / 0
+)I";
+    DefaultVIInterpreter vii;
+    vii.definition()->create("a");
+    
+
+    auto* index_aliased = vii.definition()->create("b");
+    index_aliased->create_aliased("_1", index_aliased->create("first"));
+    index_aliased->create_aliased("_2", index_aliased->create("second"));
+    index_aliased->create_aliased("_3", index_aliased->create("third"));
+
+    vii.definition()->create("c")->create("_name");
+
+    ASSERT_TRUE(vii.parse(input));
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected<<R"I(/
+/a
+/a/decl (a)
+/a/value (1)
+/a// (/)
+/a/value (2)
+/a// (/)
+/a/value (3)
+/b
+/b/decl (b)
+/b/first (5)
+/b/second (6)
+/b// (/)
+/b/third (7)
+/b/value (8)
+/c
+/c/decl (c)
+/c/_name (name)
+/c/value (9)
+/c// (/)
+/c/value (0)
+)I";
+    ASSERT_EQ(expected.str(), paths.str());
+}
+
+TEST(VIInterpreter, sections2)
+{
+    std::stringstream input;
+    input << R"I(        
+ a 1 / zirc / 3.0 
+ a 1 2 / zirc  / 7 8 e
+ c name ohio florida / 3.14 2.71
+ c name ohio florida / 3.14 2.71 / 1 2 3
+ a !
+   1 ! 
+   / zirc !
+   / 3.0
+)I";
+    DefaultVIInterpreter vii;
+
+    
+
+    auto* sect_aliased = vii.definition()->create("a");
+    sect_aliased->create_aliased("s_1", sect_aliased->create("radius"));
+    sect_aliased->create_aliased("s_2", sect_aliased->create("material"));
+    sect_aliased->create_aliased("s_3", sect_aliased->create("density"));
+
+    auto* c = vii.definition()->create("c");
+    c->create("_name");    
+    c->create_aliased("s_1", c->create("state"));
+    c->create_aliased("s_2", c->create("constant"));
+    
+
+    ASSERT_TRUE(vii.parse(input));
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected<<R"I(/
+/a
+/a/decl (a)
+/a/radius (1)
+/a// (/)
+/a/material (zirc)
+/a// (/)
+/a/density (3.0)
+/a
+/a/decl (a)
+/a/radius (1)
+/a/radius (2)
+/a// (/)
+/a/material (zirc)
+/a// (/)
+/a/density (7)
+/a/density (8)
+/a/density (e)
+/c
+/c/decl (c)
+/c/_name (name)
+/c/state (ohio)
+/c/state (florida)
+/c// (/)
+/c/constant (3.14)
+/c/constant (2.71)
+/c
+/c/decl (c)
+/c/_name (name)
+/c/state (ohio)
+/c/state (florida)
+/c// (/)
+/c/constant (3.14)
+/c/constant (2.71)
+/c// (/)
+/c/value (1)
+/c/value (2)
+/c/value (3)
+/a
+/a/decl (a)
+/a/comment (!)
+/a/radius (1)
+/a/comment (! )
+/a// (/)
+/a/material (zirc)
+/a/comment (!)
+/a// (/)
+/a/density (3.0)
+)I";
+    ASSERT_EQ(expected.str(), paths.str());
+}

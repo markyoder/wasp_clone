@@ -13,7 +13,8 @@ VIInterpreter<S>::VIInterpreter()
 {
     definition();  // create empty definition needed by interpreter
     this->m_decorative_node_types = {wasp::COMMENT, 
-                               wasp::WASP_COMMA, 
+                               wasp::WASP_COMMA,
+                               wasp::DIVIDE, 
                                wasp::TERM};
 }
 template<class S>
@@ -28,7 +29,8 @@ VIInterpreter<S>::VIInterpreter(std::ostream& err)
 {
     definition();  // create empty definition needed by interpreter
     this->m_decorative_node_types = {wasp::COMMENT, 
-                               wasp::WASP_COMMA, 
+                               wasp::WASP_COMMA,
+                               wasp::DIVIDE, 
                                wasp::TERM};
 }
 template<class S>
@@ -118,6 +120,11 @@ size_t VIInterpreter<S>::push_staged(size_t                     node_type,
         {
             ++staged_child_count;
         }
+        // Sections are delimited via '/'
+        if (child_node_type == DIVIDE)
+        {
+            this->m_staged.back().m_section_count++;
+        }
     }
     this->m_staged.back().m_non_decorative_child_count = staged_child_count;
     return stage_count;
@@ -135,6 +142,11 @@ size_t VIInterpreter<S>::push_staged_child(size_t child_index)
     if (!this->is_decorative(child_node_type))
     {
         this->m_staged.back().m_non_decorative_child_count++;
+    }
+    // Sections are delimited via '/'
+    if (child_node_type == DIVIDE)
+    {
+        this->m_staged.back().m_section_count++;
     }
     return stage_count;
 }
@@ -237,11 +249,10 @@ bool VIInterpreter<S>::process_document_command(size_t& new_staged_index,
     auto staged_index = this->staged_count()-1;
     const auto& child_indices = this->staged_child_indices(staged_index);
 
-    // Accumulate non-decorative staged child count
-    // This cannot be done with the node view because the node is staged and
-    // has not been committed to the tree, yet.
+    // Obtain count of children that are not decorative
     size_t staged_child_count = this->staged_non_decorative_child_count(staged_index);
-    
+    size_t staged_section_count = this->staged_section_count(staged_index);
+
     auto prev_part_line = loc.end.line;  // initialize to current line
     if (!child_indices.empty())
     {
@@ -251,9 +262,43 @@ bool VIInterpreter<S>::process_document_command(size_t& new_staged_index,
 
     std::string index_name = is_named ? "_"+std::to_string(staged_child_count-1)
                                         : "_"+std::to_string(staged_child_count);
+    std::string section_name = "s_" + std::to_string(staged_section_count+1);                                        
     std::string even_odd_name = (is_named?staged_child_count:staged_child_count-1)%2 == 0
                                 ? "_even" : "_odd";
 
+    // Lambdas for deduplicate logic
+    auto is_index = [&]()
+    {
+        return this->staged_count() > 1
+            && staged_child_count >= 1
+            && this->definition()->has(even_odd_name);
+    };
+    auto do_index = [&]()
+    {
+        std::string actual_name;
+        this->definition()->delta(even_odd_name, actual_name);
+        this->set_type(node_index, wasp::VALUE);
+        bool name_set_success = this->set_name(node_index, actual_name.c_str());
+        wasp_check(name_set_success);
+        return this->push_staged_child(node_index);        
+    };
+    auto is_section = [&]()
+    {
+        return this->staged_count() > 1
+            && staged_child_count >= 1
+            && this->definition()->has(section_name);
+    };
+    auto do_section = [&]()
+    {
+        // If staged child index is aliased to a named component
+        // we need to capture it appropriately
+        std::string actual_name;
+        this->definition()->delta(section_name, actual_name);
+        this->set_type(node_index, wasp::VALUE);
+        bool name_set_success = this->set_name(node_index, actual_name.c_str());
+        wasp_check(name_set_success);
+        return this->push_staged_child(node_index);
+    };
     // Check for scenario where comment is trailing on a different line
     if ( wasp::COMMENT == token_type
             && loc.end.line !=  prev_part_line
@@ -263,12 +308,12 @@ bool VIInterpreter<S>::process_document_command(size_t& new_staged_index,
         // this comment belongs to parent scope
         // terminate the current staged data
         this->commit_staged(staged_index);
-
         // Stage
         new_staged_index = this->push_staged_child(node_index);
     }
     else if ( wasp::COMMENT == token_type
             || wasp::WASP_COMMA == token_type
+            || wasp::DIVIDE == token_type
             || wasp::TERM == token_type)
     {
         new_staged_index = this->push_staged_child(node_index);
@@ -290,19 +335,19 @@ bool VIInterpreter<S>::process_document_command(size_t& new_staged_index,
         bool name_set_success = this->set_name(node_index, "_name");
         wasp_check(name_set_success);
         new_staged_index = this->push_staged_child(node_index);
-    }
-    // If staged child index is aliased to a named component
-    // we need to capture it appropriately
+    }    
     else if (this->staged_count() > 1
             && staged_child_count >= 1
             && this->definition()->has(index_name) )
     {
+        // If staged child index is aliased to a named component
+        // we need to capture it appropriately
         this->definition()->delta(index_name, index_name);
         this->set_type(node_index, wasp::VALUE);
         bool name_set_success = this->set_name(node_index, index_name.c_str());
         wasp_check(name_set_success);
         new_staged_index = this->push_staged_child(node_index);
-    }
+    }    
     else if ( is_key_value ||
                 token_type == wasp::STRING ||
                 token_type == wasp::QUOTED_STRING)
@@ -312,17 +357,14 @@ bool VIInterpreter<S>::process_document_command(size_t& new_staged_index,
         int delta = this->definition()->delta(data, data);
         if( -1 == delta ) // no adjustment, not a command
         {
-            // TODO cleanup duplicate code
-            if (this->staged_count() > 1
-                    && staged_child_count >= 1
-                    && this->definition()->has(even_odd_name) )
+            if (is_index())
             {
-                this->definition()->delta(even_odd_name, even_odd_name);
-                this->set_type(node_index, wasp::VALUE);
-                bool name_set_success = this->set_name(node_index, even_odd_name.c_str());
-                wasp_check(name_set_success);
-                new_staged_index = this->push_staged_child(node_index);
+                new_staged_index = do_index();
             }
+            else if (is_section())
+            {   
+                new_staged_index = do_section();
+            } 
             // the string is not a new command, capture as a value
             // correct part name and type to be decl
             // must occur prior to prior stage commital
@@ -377,21 +419,19 @@ bool VIInterpreter<S>::process_document_command(size_t& new_staged_index,
                 std::vector<size_t> child_indices = {node_index};
                 new_staged_index = this->push_staged(wasp::ARRAY // commands are
                                         ,data.c_str()
-                                        ,child_indices);
+                                        ,child_indices);                                      
             }
         }        
     }
     // if staged index
-    else if (this->staged_count() > 1
-            && staged_child_count >= 1
-            && this->definition()->has(even_odd_name) )
+    else if (is_index())
     {
-        this->definition()->delta(even_odd_name, even_odd_name);
-        this->set_type(node_index, wasp::VALUE);
-        bool name_set_success = this->set_name(node_index, even_odd_name.c_str());
-        wasp_check(name_set_success);
-        new_staged_index = this->push_staged_child(node_index);
+        new_staged_index = do_index();
     }
+    else if (is_section())
+    {
+        new_staged_index = do_section();
+    }    
     // This is a part of a command, stage in existing stage
     else
     {
