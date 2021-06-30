@@ -98,7 +98,7 @@
 #else
 # define YY_CONSTEXPR
 #endif
-# include "location.hh"
+# include "../waspcore/location.hh"
 
 
 #ifndef YY_ATTRIBUTE_PURE

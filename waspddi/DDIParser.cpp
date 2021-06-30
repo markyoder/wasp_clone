@@ -51,7 +51,7 @@
 #include "DDIParser.hpp"
 
 // Second part of user prologue.
-#line 96 "DDIParser.bison"
+#line 97 "DDIParser.bison"
 
 
 #include "DDInterpreter.h"
@@ -393,7 +393,7 @@ namespace wasp {
     switch (yysym.kind ())
     {
       case symbol_kind::S_value_list: // value_list
-#line 94 "DDIParser.bison"
+#line 95 "DDIParser.bison"
                     { delete (yysym.value.node_indices); }
 #line 399 "DDIParser.cpp"
         break;
@@ -532,7 +532,7 @@ namespace wasp {
 
 
     // User initialization code.
-#line 41 "DDIParser.bison"
+#line 42 "DDIParser.bison"
 {
     // initialize the initial location object
     yyla.location.begin.filename = yyla.location.end.filename = &interpreter.stream_name();
@@ -677,7 +677,7 @@ namespace wasp {
           switch (yyn)
             {
   case 2: // comma: ","
-#line 143 "DDIParser.bison"
+#line 144 "DDIParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
@@ -686,25 +686,25 @@ namespace wasp {
     break;
 
   case 3: // PRIMITIVE: "quoted string"
-#line 148 "DDIParser.bison"
+#line 149 "DDIParser.bison"
            { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 692 "DDIParser.cpp"
     break;
 
   case 4: // PRIMITIVE: "integer"
-#line 148 "DDIParser.bison"
+#line 149 "DDIParser.bison"
                      { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 698 "DDIParser.cpp"
     break;
 
   case 5: // PRIMITIVE: "double"
-#line 148 "DDIParser.bison"
+#line 149 "DDIParser.bison"
                                { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 704 "DDIParser.cpp"
     break;
 
   case 6: // value: PRIMITIVE
-#line 151 "DDIParser.bison"
+#line 152 "DDIParser.bison"
 {
     size_t token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
@@ -714,7 +714,7 @@ namespace wasp {
     break;
 
   case 7: // decl: "string"
-#line 158 "DDIParser.bison"
+#line 159 "DDIParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         std::string quote_less_data = interpreter.token_data(token_index);
@@ -727,13 +727,13 @@ namespace wasp {
     break;
 
   case 8: // ASSIGNMENT: "="
-#line 166 "DDIParser.bison"
+#line 167 "DDIParser.bison"
              { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 733 "DDIParser.cpp"
     break;
 
   case 9: // assignment: ASSIGNMENT
-#line 167 "DDIParser.bison"
+#line 168 "DDIParser.bison"
                         {
              auto token_index = ((yystack_[0].value.token_index));
              (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,"=",token_index);
@@ -742,7 +742,7 @@ namespace wasp {
     break;
 
   case 10: // value_list: value
-#line 172 "DDIParser.bison"
+#line 173 "DDIParser.bison"
         {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -751,7 +751,7 @@ namespace wasp {
     break;
 
   case 11: // value_list: value_list value
-#line 177 "DDIParser.bison"
+#line 178 "DDIParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -760,7 +760,7 @@ namespace wasp {
     break;
 
   case 12: // value_list: value_list comment
-#line 182 "DDIParser.bison"
+#line 183 "DDIParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -769,7 +769,7 @@ namespace wasp {
     break;
 
   case 13: // value_list: value_list comma
-#line 187 "DDIParser.bison"
+#line 188 "DDIParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -778,7 +778,7 @@ namespace wasp {
     break;
 
   case 14: // definition_section: decl value_list
-#line 192 "DDIParser.bison"
+#line 193 "DDIParser.bison"
     {
         bool is_array = (yystack_[0].value.node_indices)->size() > 1;
         (yystack_[0].value.node_indices)->insert((yystack_[0].value.node_indices)->begin(),(yystack_[1].value.node_index));
@@ -809,7 +809,7 @@ namespace wasp {
     break;
 
   case 15: // definition_section: decl assignment value_list
-#line 219 "DDIParser.bison"
+#line 220 "DDIParser.bison"
     {
         bool is_array = (yystack_[0].value.node_indices)->size() > 1;
         (yystack_[0].value.node_indices)->insert((yystack_[0].value.node_indices)->begin(),(yystack_[1].value.node_index));
@@ -840,7 +840,7 @@ else{
     break;
 
   case 16: // definition_section: decl
-#line 245 "DDIParser.bison"
+#line 246 "DDIParser.bison"
            {
 
         std::string quote_less_data = interpreter.data((yystack_[0].value.node_index));
@@ -862,7 +862,7 @@ else{
     break;
 
   case 17: // definition_section: decl comma
-#line 262 "DDIParser.bison"
+#line 263 "DDIParser.bison"
                  {
 
         std::string quote_less_data = interpreter.data((yystack_[1].value.node_index));
@@ -884,7 +884,7 @@ else{
     break;
 
   case 18: // comment: "comment"
-#line 282 "DDIParser.bison"
+#line 283 "DDIParser.bison"
         {
             auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
@@ -893,13 +893,13 @@ else{
     break;
 
   case 20: // start: start comment
-#line 288 "DDIParser.bison"
+#line 289 "DDIParser.bison"
                        {interpreter.push_staged_child(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
 #line 899 "DDIParser.cpp"
     break;
 
   case 21: // start: start definition_section
-#line 289 "DDIParser.bison"
+#line 290 "DDIParser.bison"
                                   {
             if(interpreter.single_parse() )
             {
@@ -1354,9 +1354,9 @@ else{
   const short
   DDIParser::yyrline_[] =
   {
-       0,   142,   142,   148,   148,   148,   150,   157,   166,   167,
-     171,   176,   181,   186,   191,   218,   245,   262,   281,   287,
-     288,   289
+       0,   143,   143,   149,   149,   149,   151,   158,   167,   168,
+     172,   177,   182,   187,   192,   219,   246,   263,   282,   288,
+     289,   290
   };
 
   void
@@ -1438,7 +1438,7 @@ else{
 } // wasp
 #line 1440 "DDIParser.cpp"
 
-#line 301 "DDIParser.bison"
+#line 302 "DDIParser.bison"
  /*** Additional Code ***/
 
 void wasp::DDIParser::error(const DDIParser::location_type& l,

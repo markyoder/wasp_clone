@@ -24,13 +24,14 @@
 
 /* write out a header file containing the token defines */
 %defines
-
+%require "3.7"
 /* use newer C++ skeleton file */
 %skeleton "lalr1.cc"
 
 /* namespace to enclose parser in */
 /* %name-prefix "wasp" */
 %define api.namespace {wasp}
+%define api.location.file "../waspcore/location.hh"
 
 /* set the parser's class identifier */
 %define api.parser.class {DDIParser}

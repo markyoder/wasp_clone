@@ -49,7 +49,7 @@
 #include "ExprParser.hpp"
 
 // Second part of user prologue.
-#line 117 "Expr.bison"
+#line 118 "Expr.bison"
 
 
 #include "ExprInterpreter.h"
@@ -491,7 +491,7 @@ namespace wasp {
 
 
     // User initialization code.
-#line 42 "Expr.bison"
+#line 43 "Expr.bison"
 {
     // initialize the initial location object
     yyla.location.begin.filename = yyla.location.end.filename = &interpreter.stream_name();
@@ -636,109 +636,109 @@ namespace wasp {
           switch (yyn)
             {
   case 2: // bang: "!"
-#line 134 "Expr.bison"
+#line 135 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::BANG      ,"!",token_index);}
 #line 642 "ExprParser.cpp"
     break;
 
   case 3: // gt: ">"
-#line 135 "Expr.bison"
+#line 136 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::GT      ,">",token_index);}
 #line 648 "ExprParser.cpp"
     break;
 
   case 4: // lt: "<"
-#line 136 "Expr.bison"
+#line 137 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::LT      ,"<",token_index);}
 #line 654 "ExprParser.cpp"
     break;
 
   case 5: // gte: ">="
-#line 137 "Expr.bison"
+#line 138 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::GTE      ,">=",token_index);}
 #line 660 "ExprParser.cpp"
     break;
 
   case 6: // lte: "<="
-#line 138 "Expr.bison"
+#line 139 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::LTE      ,"<=",token_index);}
 #line 666 "ExprParser.cpp"
     break;
 
   case 7: // neq: "!="
-#line 139 "Expr.bison"
+#line 140 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::NEQ      ,"!=",token_index);}
 #line 672 "ExprParser.cpp"
     break;
 
   case 8: // eq: "=="
-#line 140 "Expr.bison"
+#line 141 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::EQ       ,"==",token_index);}
 #line 678 "ExprParser.cpp"
     break;
 
   case 9: // and: "&&"
-#line 141 "Expr.bison"
+#line 142 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_AND      ,"&&",token_index);}
 #line 684 "ExprParser.cpp"
     break;
 
   case 10: // or: "||"
-#line 142 "Expr.bison"
+#line 143 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_OR       ,"||",token_index);}
 #line 690 "ExprParser.cpp"
     break;
 
   case 11: // multiply: "*"
-#line 143 "Expr.bison"
+#line 144 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::MULTIPLY , "*",token_index);}
 #line 696 "ExprParser.cpp"
     break;
 
   case 12: // divide: "/"
-#line 144 "Expr.bison"
+#line 145 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::DIVIDE   ,"/" ,token_index);}
 #line 702 "ExprParser.cpp"
     break;
 
   case 13: // plus: "+"
-#line 145 "Expr.bison"
+#line 146 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::PLUS     ,"+" ,token_index);}
 #line 708 "ExprParser.cpp"
     break;
 
   case 14: // minus: "-"
-#line 146 "Expr.bison"
+#line 147 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::MINUS    ,"-" ,token_index);}
 #line 714 "ExprParser.cpp"
     break;
 
   case 15: // exponent: "^"
-#line 147 "Expr.bison"
+#line 148 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::EXPONENT ,"^" ,token_index);}
 #line 720 "ExprParser.cpp"
     break;
 
   case 16: // lparen: "("
-#line 148 "Expr.bison"
+#line 149 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::LPAREN   ,"(" ,token_index);}
 #line 726 "ExprParser.cpp"
     break;
 
   case 17: // rparen: ")"
-#line 149 "Expr.bison"
+#line 150 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::RPAREN   ,")" ,token_index);}
 #line 732 "ExprParser.cpp"
     break;
 
   case 18: // comma: ","
-#line 150 "Expr.bison"
+#line 151 "Expr.bison"
                     {size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_COMMA    ,"," ,token_index);}
 #line 738 "ExprParser.cpp"
     break;
 
   case 19: // function_name: DECL
-#line 159 "Expr.bison"
+#line 160 "Expr.bison"
                      {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DECL,"name"
@@ -748,13 +748,13 @@ namespace wasp {
     break;
 
   case 20: // function_args: %empty
-#line 164 "Expr.bison"
+#line 165 "Expr.bison"
                           { (yylhs.value.node_indices) = nullptr;}
 #line 754 "ExprParser.cpp"
     break;
 
   case 21: // function_args: math_exp
-#line 166 "Expr.bison"
+#line 167 "Expr.bison"
     {
         size_t node_index = ((yystack_[0].value.node_index));
         (yylhs.value.node_indices) = new std::vector<size_t>();
@@ -764,7 +764,7 @@ namespace wasp {
     break;
 
   case 22: // function_args: function_args comma math_exp
-#line 172 "Expr.bison"
+#line 173 "Expr.bison"
     {
         if( (yystack_[2].value.node_indices) == nullptr )
         {
@@ -777,13 +777,13 @@ namespace wasp {
     break;
 
   case 23: // function: value
-#line 183 "Expr.bison"
+#line 184 "Expr.bison"
            { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 783 "ExprParser.cpp"
     break;
 
   case 24: // function: function_name lparen function_args rparen
-#line 185 "Expr.bison"
+#line 186 "Expr.bison"
     {
         size_t name_index = ((yystack_[3].value.node_index));
         size_t left_index = ((yystack_[2].value.node_index));
@@ -809,7 +809,7 @@ namespace wasp {
     break;
 
   case 25: // function: function_name lbracket math_exp rbracket
-#line 207 "Expr.bison"
+#line 208 "Expr.bison"
      {
          std::vector<size_t> child_indices = {(yystack_[3].value.node_index),(yystack_[2].value.node_index),(yystack_[1].value.node_index),(yystack_[0].value.node_index)};
 
@@ -822,7 +822,7 @@ namespace wasp {
     break;
 
   case 26: // function: function_name lbracket math_exp rbracket assign math_exp
-#line 216 "Expr.bison"
+#line 217 "Expr.bison"
      {
          std::vector<size_t> child_indices = {(yystack_[5].value.node_index),(yystack_[4].value.node_index),(yystack_[3].value.node_index),(yystack_[2].value.node_index),(yystack_[1].value.node_index),(yystack_[0].value.node_index)};
 
@@ -835,13 +835,13 @@ namespace wasp {
     break;
 
   case 27: // math_exp: function
-#line 224 "Expr.bison"
+#line 225 "Expr.bison"
            { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 841 "ExprParser.cpp"
     break;
 
   case 28: // math_exp: minus math_exp
-#line 226 "Expr.bison"
+#line 227 "Expr.bison"
     {
         size_t left_index = ((yystack_[1].value.node_index));
         size_t op_index = ((yystack_[0].value.node_index));
@@ -855,7 +855,7 @@ namespace wasp {
     break;
 
   case 29: // math_exp: bang math_exp
-#line 236 "Expr.bison"
+#line 237 "Expr.bison"
    {
        size_t left_index = ((yystack_[1].value.node_index));
        size_t op_index = ((yystack_[0].value.node_index));
@@ -869,7 +869,7 @@ namespace wasp {
     break;
 
   case 30: // math_exp: lparen math_exp rparen
-#line 246 "Expr.bison"
+#line 247 "Expr.bison"
     {
         size_t left_index = ((yystack_[2].value.node_index));
         size_t op_index = ((yystack_[1].value.node_index));
@@ -885,7 +885,7 @@ namespace wasp {
     break;
 
   case 31: // math_exp: math_exp multiply math_exp
-#line 258 "Expr.bison"
+#line 259 "Expr.bison"
     {
         size_t left_index = ((yystack_[2].value.node_index));
         size_t op_index = ((yystack_[1].value.node_index));
@@ -901,7 +901,7 @@ namespace wasp {
     break;
 
   case 32: // math_exp: math_exp divide math_exp
-#line 270 "Expr.bison"
+#line 271 "Expr.bison"
    {
        size_t left_index = ((yystack_[2].value.node_index));
        size_t op_index = ((yystack_[1].value.node_index));
@@ -917,7 +917,7 @@ namespace wasp {
     break;
 
   case 33: // math_exp: math_exp plus math_exp
-#line 282 "Expr.bison"
+#line 283 "Expr.bison"
    {
       size_t left_index = ((yystack_[2].value.node_index));
       size_t op_index = ((yystack_[1].value.node_index));
@@ -933,7 +933,7 @@ namespace wasp {
     break;
 
   case 34: // math_exp: math_exp minus math_exp
-#line 294 "Expr.bison"
+#line 295 "Expr.bison"
    {
       size_t left_index = ((yystack_[2].value.node_index));
       size_t op_index = ((yystack_[1].value.node_index));
@@ -949,7 +949,7 @@ namespace wasp {
     break;
 
   case 35: // math_exp: math_exp exponent math_exp
-#line 306 "Expr.bison"
+#line 307 "Expr.bison"
    {
       size_t left_index = ((yystack_[2].value.node_index));
       size_t op_index = ((yystack_[1].value.node_index));
@@ -965,7 +965,7 @@ namespace wasp {
     break;
 
   case 36: // math_exp: math_exp eq math_exp
-#line 318 "Expr.bison"
+#line 319 "Expr.bison"
    {
       size_t left_index = ((yystack_[2].value.node_index));
       size_t op_index = ((yystack_[1].value.node_index));
@@ -981,7 +981,7 @@ namespace wasp {
     break;
 
   case 37: // math_exp: math_exp neq math_exp
-#line 330 "Expr.bison"
+#line 331 "Expr.bison"
    {
       size_t left_index = ((yystack_[2].value.node_index));
       size_t op_index = ((yystack_[1].value.node_index));
@@ -997,7 +997,7 @@ namespace wasp {
     break;
 
   case 38: // math_exp: math_exp and math_exp
-#line 342 "Expr.bison"
+#line 343 "Expr.bison"
    {
       size_t left_index = ((yystack_[2].value.node_index));
       size_t op_index = ((yystack_[1].value.node_index));
@@ -1013,7 +1013,7 @@ namespace wasp {
     break;
 
   case 39: // math_exp: math_exp or math_exp
-#line 354 "Expr.bison"
+#line 355 "Expr.bison"
    {
       size_t left_index = ((yystack_[2].value.node_index));
       size_t op_index = ((yystack_[1].value.node_index));
@@ -1029,7 +1029,7 @@ namespace wasp {
     break;
 
   case 40: // math_exp: math_exp gte math_exp
-#line 366 "Expr.bison"
+#line 367 "Expr.bison"
    {
       size_t left_index = ((yystack_[2].value.node_index));
       size_t op_index = ((yystack_[1].value.node_index));
@@ -1045,7 +1045,7 @@ namespace wasp {
     break;
 
   case 41: // math_exp: math_exp gt math_exp
-#line 378 "Expr.bison"
+#line 379 "Expr.bison"
    {
       size_t left_index = ((yystack_[2].value.node_index));
       size_t op_index = ((yystack_[1].value.node_index));
@@ -1061,7 +1061,7 @@ namespace wasp {
     break;
 
   case 42: // math_exp: math_exp lte math_exp
-#line 390 "Expr.bison"
+#line 391 "Expr.bison"
    {
       size_t left_index = ((yystack_[2].value.node_index));
       size_t op_index = ((yystack_[1].value.node_index));
@@ -1077,7 +1077,7 @@ namespace wasp {
     break;
 
   case 43: // math_exp: math_exp lt math_exp
-#line 402 "Expr.bison"
+#line 403 "Expr.bison"
    {
       size_t left_index = ((yystack_[2].value.node_index));
       size_t op_index = ((yystack_[1].value.node_index));
@@ -1093,7 +1093,7 @@ namespace wasp {
     break;
 
   case 44: // assign: "="
-#line 414 "Expr.bison"
+#line 415 "Expr.bison"
     {
         size_t assign_token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,"="
@@ -1103,7 +1103,7 @@ namespace wasp {
     break;
 
   case 45: // lbracket: "["
-#line 421 "Expr.bison"
+#line 422 "Expr.bison"
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACKET,"["
@@ -1113,7 +1113,7 @@ namespace wasp {
     break;
 
   case 46: // rbracket: "]"
-#line 427 "Expr.bison"
+#line 428 "Expr.bison"
     {
 
         size_t token_index = ((yystack_[0].value.token_index));
@@ -1124,31 +1124,31 @@ namespace wasp {
     break;
 
   case 47: // VALUE: "integer"
-#line 452 "Expr.bison"
+#line 453 "Expr.bison"
         { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 1130 "ExprParser.cpp"
     break;
 
   case 48: // VALUE: "real"
-#line 452 "Expr.bison"
+#line 453 "Expr.bison"
                   { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 1136 "ExprParser.cpp"
     break;
 
   case 49: // VALUE: "string"
-#line 452 "Expr.bison"
+#line 453 "Expr.bison"
                          { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 1142 "ExprParser.cpp"
     break;
 
   case 50: // VALUE: "quoted string"
-#line 452 "Expr.bison"
+#line 453 "Expr.bison"
                                   { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 1148 "ExprParser.cpp"
     break;
 
   case 51: // value: VALUE
-#line 454 "Expr.bison"
+#line 455 "Expr.bison"
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
@@ -1158,19 +1158,19 @@ namespace wasp {
     break;
 
   case 52: // DECL: "string"
-#line 459 "Expr.bison"
+#line 460 "Expr.bison"
        { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 1164 "ExprParser.cpp"
     break;
 
   case 53: // DECL: "quoted string"
-#line 459 "Expr.bison"
+#line 460 "Expr.bison"
                 { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 1170 "ExprParser.cpp"
     break;
 
   case 54: // decl: "string"
-#line 461 "Expr.bison"
+#line 462 "Expr.bison"
     {
         size_t decl_token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DECL,"decl"
@@ -1180,7 +1180,7 @@ namespace wasp {
     break;
 
   case 55: // keyedvalue: decl assign math_exp
-#line 469 "Expr.bison"
+#line 470 "Expr.bison"
     {
 
         size_t key_index = ((yystack_[2].value.node_index));
@@ -1197,7 +1197,7 @@ namespace wasp {
     break;
 
   case 57: // start: keyedvalue
-#line 484 "Expr.bison"
+#line 485 "Expr.bison"
                     {
             interpreter.push_staged_child((yystack_[0].value.node_index));
         }
@@ -1205,7 +1205,7 @@ namespace wasp {
     break;
 
   case 58: // start: math_exp
-#line 487 "Expr.bison"
+#line 488 "Expr.bison"
                   {
             interpreter.push_staged_child((yystack_[0].value.node_index));
         }
@@ -1714,12 +1714,12 @@ namespace wasp {
   const short
   ExprParser::yyrline_[] =
   {
-       0,   134,   134,   135,   136,   137,   138,   139,   140,   141,
-     142,   143,   144,   145,   146,   147,   148,   149,   150,   159,
-     164,   165,   171,   183,   184,   206,   215,   224,   225,   235,
-     245,   257,   269,   281,   293,   305,   317,   329,   341,   353,
-     365,   377,   389,   401,   413,   420,   426,   452,   452,   452,
-     452,   453,   459,   459,   460,   468,   483,   484,   487
+       0,   135,   135,   136,   137,   138,   139,   140,   141,   142,
+     143,   144,   145,   146,   147,   148,   149,   150,   151,   160,
+     165,   166,   172,   184,   185,   207,   216,   225,   226,   236,
+     246,   258,   270,   282,   294,   306,   318,   330,   342,   354,
+     366,   378,   390,   402,   414,   421,   427,   453,   453,   453,
+     453,   454,   460,   460,   461,   469,   484,   485,   488
   };
 
   void
@@ -1803,7 +1803,7 @@ namespace wasp {
 } // wasp
 #line 1805 "ExprParser.cpp"
 
-#line 494 "Expr.bison"
+#line 495 "Expr.bison"
  /*** Additional Code ***/
 namespace wasp{
 void ExprParser::error(const ExprParser::location_type& l,

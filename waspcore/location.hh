@@ -31,12 +31,12 @@
 // version 2.2 of Bison.
 
 /**
- ** \file location.hh
+ ** \file ../waspcore/location.hh
  ** Define the wasp::location class.
  */
 
-#ifndef YY_YY_LOCATION_HH_INCLUDED
-# define YY_YY_LOCATION_HH_INCLUDED
+#ifndef YY_YY_WASPCORE_LOCATION_HH_INCLUDED
+# define YY_YY_WASPCORE_LOCATION_HH_INCLUDED
 
 # include <iostream>
 # include <string>
@@ -53,9 +53,9 @@
 #  endif
 # endif
 
-#line 32 "SONParser.bison"
+#line 34 "Expr.bison"
 namespace wasp {
-#line 59 "location.hh"
+#line 59 "../waspcore/location.hh"
 
   /// A point in a source file.
   class position
@@ -299,8 +299,8 @@ namespace wasp {
     return ostr;
   }
 
-#line 32 "SONParser.bison"
+#line 34 "Expr.bison"
 } // wasp
-#line 305 "location.hh"
+#line 305 "../waspcore/location.hh"
 
-#endif // !YY_YY_LOCATION_HH_INCLUDED
+#endif // !YY_YY_WASPCORE_LOCATION_HH_INCLUDED

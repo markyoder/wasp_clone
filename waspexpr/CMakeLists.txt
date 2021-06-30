@@ -26,7 +26,6 @@ ExprLexer.h
 ExprParser.hpp
 ExprInterpreter.h
 ExprInterpreter.i.h
-location.hh
 Expr.lex
 Expr.bison
 )

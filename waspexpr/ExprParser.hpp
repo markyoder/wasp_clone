@@ -97,7 +97,7 @@
 #else
 # define YY_CONSTEXPR
 #endif
-# include "location.hh"
+# include "../waspcore/location.hh"
 
 
 #ifndef YY_ATTRIBUTE_PURE
@@ -195,7 +195,7 @@ namespace wasp {
     /// Symbol semantic values.
     union semantic_type
     {
-#line 62 "Expr.bison"
+#line 63 "Expr.bison"
 
     std::size_t token_index;
     std::size_t node_index;
