@@ -106,6 +106,36 @@ size_t VIInterpreter<S>::push_staged(size_t                     node_type,
         Interpreter<S>::push_staged(node_type, node_name, child_indices);
     wasp_check(m_current->has(node_name));
     m_current = m_current->get(node_name);  // push new definition
+
+    // Increment non-decorative child count
+    // for purpose of index'd aliasing
+    size_t staged_child_count = 0;
+    for (const auto&  c_index : child_indices)
+    {
+        auto child_node_type = this->type(c_index);
+        
+        if (!this->is_decorative(child_node_type))
+        {
+            ++staged_child_count;
+        }
+    }
+    this->m_staged.back().m_non_decorative_child_count = staged_child_count;
+    return stage_count;
+}
+
+template<class S>
+size_t VIInterpreter<S>::push_staged_child(size_t child_index)
+{
+    auto stage_count =
+        Interpreter<S>::push_staged_child(child_index);
+
+    // Update the non-decorative child count
+    // for purposes of index'd aliasing
+    auto child_node_type = this->type(child_index);
+    if (!this->is_decorative(child_node_type))
+    {
+        this->m_staged.back().m_non_decorative_child_count++;
+    }
     return stage_count;
 }
 template<class S>

@@ -191,6 +191,11 @@ class WASP_PUBLIC VIInterpreter : public Interpreter<S>
                                const std::string&         node_name,
                                const std::vector<size_t>& child_indices);
     /**
+     * Override from parent class in order to manage non-decorative child counts
+     * for the purpose of index'd aliasing
+     */ 
+    virtual size_t push_staged_child(size_t child_index);
+    /**
      * Override from parent class in order to manage definition selection
      * Pops the existing definition
      */
