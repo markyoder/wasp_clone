@@ -11,6 +11,7 @@
 #include "waspcore/wasp_node.h"  // for UNKNOWN, DOCUMENT_ROOT NODE types
 #include "waspcore/wasp_bug.h"
 #include "waspcore/Definition.h"
+#include "waspcore/location.hh"
 
 namespace wasp
 {
@@ -389,7 +390,8 @@ class WASP_PUBLIC AbstractInterpreter
     virtual size_t staged_child_count(size_t staged_index)      const = 0;
 
     virtual size_t staged_non_decorative_child_count(size_t staged_index) const = 0;
-
+    virtual size_t staged_section_count(size_t staged_index) const = 0;
+    
     virtual size_t staged_count() const = 0;
 
     virtual bool failed() const                     = 0;
@@ -461,7 +463,26 @@ class WASP_PUBLIC AbstractInterpreter
 
     virtual AbstractInterpreter* document_parent() const = 0;
 
-};
+    /**
+     * Process a node into a new staged node for committal to the parse tree
+     * @param new_staged_index is the stage_index of the newly pushed staged node
+     *                      this staged node will contain the process'd node_index
+     * @param stage_name the name of the stage being processed.
+     *                   This is a contractual name between the parser and interpreter
+     *                   and provides a mapping to specific pattern processing logic
+     * @param node_index the index of the node being processed
+     *                  This provides access to node type, children, etc.
+     *                  from which the state information can be used to determine
+     * @param loc the location for position tracking info in the parse-tree
+     * @param err an error stream for capturing error messages
+     * @return true, iff the staged_node is successfully processed
+     */                   
+    virtual bool process_staged_node(size_t& new_staged_index,
+                                    const std::string& stage_name,
+                                    size_t node_index,
+                                    const location& loc,
+                                    std::ostream& err) {return true;}
+}; 
 
 template<class NodeStorage = TreeNodePool<>>
 class WASP_PUBLIC Interpreter : public AbstractInterpreter
@@ -797,6 +818,13 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
         wasp_require(staged_index <m_staged.size());
         return m_staged[staged_index].m_non_decorative_child_count;
     }
+    // Obtain section count
+    // Child nodes can be separated by 'section' delimiters.
+    virtual size_t staged_section_count(size_t staged_index) const
+    {
+        wasp_require(staged_index <m_staged.size());
+        return m_staged[staged_index].m_section_count;
+    }
 
     /**
      * @brief commit_staged commits the staged tree node
@@ -878,10 +906,12 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
     struct Stage
     {
         Stage() : m_type(wasp::UNKNOWN),
-                  m_non_decorative_child_count(0) {}
+                  m_non_decorative_child_count(0),
+                  m_section_count(0) {}
         Stage(const Stage& orig)
             : m_type(orig.m_type)
             , m_non_decorative_child_count(orig.m_non_decorative_child_count)
+            , m_section_count(orig.m_section_count)
             , m_name(orig.m_name)
             , m_child_indices(orig.m_child_indices)
         {
@@ -889,6 +919,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
 
         size_t              m_type;
         size_t              m_non_decorative_child_count;
+        size_t              m_section_count;
         std::string         m_name;
         std::vector<size_t> m_child_indices;
     };
