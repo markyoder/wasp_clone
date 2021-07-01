@@ -81,11 +81,12 @@
 %token <token_index>    LBRACKET           "left bracket"
 %token <token_index>    FSLASH             "forward slash"
 %token <token_index>    FILE              "file include"
+%token <token_index>    FILL_EXPR         "list expression"
 
 %type <token_index> PRIMITIVE
 
 %type <node_index>  decl lbracket rbracket fslash assign
-%type <node_index>  comma semicolon
+%type <node_index>  comma semicolon fill_expr
 %type <node_index>  value key_value part path decl_or_key_value
 %type <stage_index>  command_part block
 %type <node_index>  comment include include_file
@@ -109,6 +110,11 @@
 %% /*** Grammar Rules ***/
 
  /*** BEGIN - Change the wasp grammar rules below ***/
+fill_expr : FILL_EXPR
+        {
+            auto token_index = $1;
+            $$ = interpreter.push_leaf(wasp::FILL_EXPR,"list",token_index);
+        }
 include : FILE
         {
             auto token_index = $1;
@@ -213,8 +219,8 @@ decl_or_key_value :  decl assign key_value
                                         ,quote_less_data.c_str()
                                         ,child_indices);
         } | decl
-part : value | fslash | comment
-        | decl_or_key_value | comma | semicolon
+part : value | fslash | comment | fill_expr
+        | decl_or_key_value | comma | semicolon 
 
 command_part : part {
         std::ostringstream err;

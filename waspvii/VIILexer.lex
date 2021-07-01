@@ -65,6 +65,8 @@ LBRACKET \[
 RBRACKET \]
 FSLASH \/
 INCLUDE_PATH [^ \t\n][^\n!]*
+FILL_EXPR <[^>]*> 
+
 
  /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
@@ -81,6 +83,10 @@ INCLUDE_PATH [^ \t\n][^\n!]*
 %}
  /*** BEGIN EXAMPLE - Change the wasp lexer rules below ***/
 
+{FILL_EXPR} {
+    capture_token(yylval,wasp::FILL_EXPR);
+    return token::FILL_EXPR;
+}
 {MINUS} {
     capture_token(yylval,wasp::MINUS);
     return token::MINUS;

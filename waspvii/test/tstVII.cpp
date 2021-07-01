@@ -831,3 +831,47 @@ TEST(VIInterpreter, sections2)
 )I";
     ASSERT_EQ(expected.str(), paths.str());
 }
+
+// Test the parsing of list expressions
+// TODO - add understanding of ListMaker syntax
+// https://metacpan.org/release/DCONWAY/List-Maker-0.005/view/lib/List/Maker.pm
+TEST(VIInterpreter, list_expr)
+{
+    std::stringstream input;
+    input << R"I(        
+ a <1..10x2> < ^10 >
+ a < ^$max : !allocated{\$_} >
+ a <1..1000 : /7$/ > <1..100 : \$_ % 2 != 0 >
+ a <^10> / <10..20x2> 20.3 / <40..50> 
+)I";
+    DefaultVIInterpreter vii;
+
+    auto* a = vii.definition()->create("a");
+    a->create_aliased("s_2", a->create("sec"));
+    ASSERT_TRUE(vii.parse(input));
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected<<R"I(/
+/a
+/a/decl (a)
+/a/list (<1..10x2>)
+/a/list (< ^10 >)
+/a
+/a/decl (a)
+/a/list (< ^$max : !allocated{\$_} >)
+/a
+/a/decl (a)
+/a/list (<1..1000 : /7$/ >)
+/a/list (<1..100 : \$_ % 2 != 0 >)
+/a
+/a/decl (a)
+/a/list (<^10>)
+/a// (/)
+/a/sec (<10..20x2>)
+/a/sec (20.3)
+/a// (/)
+/a/list (<40..50>)
+)I";
+    ASSERT_EQ(expected.str(), paths.str());
+}

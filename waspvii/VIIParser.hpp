@@ -249,7 +249,8 @@ namespace wasp {
     RBRACKET = 268,                // "right bracket"
     LBRACKET = 269,                // "left bracket"
     FSLASH = 270,                  // "forward slash"
-    FILE = 271                     // "file include"
+    FILE = 271,                    // "file include"
+    FILL_EXPR = 272                // "list expression"
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -266,7 +267,7 @@ namespace wasp {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 17, ///< Number of tokens.
+        YYNTOKENS = 18, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -285,26 +286,28 @@ namespace wasp {
         S_LBRACKET = 14,                         // "left bracket"
         S_FSLASH = 15,                           // "forward slash"
         S_FILE = 16,                             // "file include"
-        S_YYACCEPT = 17,                         // $accept
-        S_include = 18,                          // include
-        S_comma = 19,                            // comma
-        S_semicolon = 20,                        // semicolon
-        S_assign = 21,                           // assign
-        S_fslash = 22,                           // fslash
-        S_rbracket = 23,                         // rbracket
-        S_lbracket = 24,                         // lbracket
-        S_PRIMITIVE = 25,                        // PRIMITIVE
-        S_value = 26,                            // value
-        S_key_value = 27,                        // key_value
-        S_path = 28,                             // path
-        S_include_file = 29,                     // include_file
-        S_decl = 30,                             // decl
-        S_decl_or_key_value = 31,                // decl_or_key_value
-        S_part = 32,                             // part
-        S_command_part = 33,                     // command_part
-        S_comment = 34,                          // comment
-        S_block = 35,                            // block
-        S_start = 36                             // start
+        S_FILL_EXPR = 17,                        // "list expression"
+        S_YYACCEPT = 18,                         // $accept
+        S_fill_expr = 19,                        // fill_expr
+        S_include = 20,                          // include
+        S_comma = 21,                            // comma
+        S_semicolon = 22,                        // semicolon
+        S_assign = 23,                           // assign
+        S_fslash = 24,                           // fslash
+        S_rbracket = 25,                         // rbracket
+        S_lbracket = 26,                         // lbracket
+        S_PRIMITIVE = 27,                        // PRIMITIVE
+        S_value = 28,                            // value
+        S_key_value = 29,                        // key_value
+        S_path = 30,                             // path
+        S_include_file = 31,                     // include_file
+        S_decl = 32,                             // decl
+        S_decl_or_key_value = 33,                // decl_or_key_value
+        S_part = 34,                             // part
+        S_command_part = 35,                     // command_part
+        S_comment = 36,                          // comment
+        S_block = 37,                            // block
+        S_start = 38                             // start
       };
     };
 
@@ -812,8 +815,8 @@ namespace wasp {
     /// Constants.
     enum
     {
-      yylast_ = 23,     ///< Last index in yytable_.
-      yynnts_ = 20,  ///< Number of nonterminal symbols.
+      yylast_ = 25,     ///< Last index in yytable_.
+      yynnts_ = 21,  ///< Number of nonterminal symbols.
       yyfinal_ = 2 ///< Termination state number.
     };
 
@@ -828,7 +831,7 @@ namespace wasp {
 
 #line 33 "VIIParser.bison"
 } // wasp
-#line 832 "VIIParser.hpp"
+#line 835 "VIIParser.hpp"
 
 
 
