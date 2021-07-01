@@ -53,7 +53,7 @@
 #  endif
 # endif
 
-#line 34 "Expr.bison"
+#line 33 "VIIParser.bison"
 namespace wasp {
 #line 59 "../waspcore/location.hh"
 
@@ -299,7 +299,7 @@ namespace wasp {
     return ostr;
   }
 
-#line 34 "Expr.bison"
+#line 33 "VIIParser.bison"
 } // wasp
 #line 305 "../waspcore/location.hh"
 

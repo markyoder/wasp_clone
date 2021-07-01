@@ -74,16 +74,16 @@ TEST(VIInterpreter, indexed)
     auto*                block1   = vii.definition()->create("block");
     auto*                command1 = block1->create("command1");
     auto* b = command1->create("b");
-    command1->create_aliased("_2",b);
+    command1->create_aliased("_1",b);
     auto* command2 = block1->create("command2");
     auto * x = command2->create("x");
     // create named index at 1st
-    command2->create_aliased("_1", x);
+    command2->create_aliased("_0", x);
     auto* command3 = block1->create("command3");
     command3->create("_name");
     // create named index at 2nd child of named
     auto* y = command3->create("y");
-    command3->create_aliased("_1", y);
+    command3->create_aliased("_0", y);
     EXPECT_TRUE(vii.parse(input));
     std::stringstream paths;
     vii.root().paths(paths);
@@ -622,7 +622,7 @@ TEST(VIInterpreter, commas_semicolons)
     odd_even->create_aliased("_even", odd_even->create("e"));
 
     auto* index_aliased = vii.definition()->create("com_index_aliased");
-    index_aliased->create_aliased("_1", index_aliased->create("one"));
+    index_aliased->create_aliased("_0", index_aliased->create("one"));
 
     vii.definition()->create("com_named")->create("_name");
 
@@ -713,9 +713,9 @@ TEST(VIInterpreter, sections1)
     
 
     auto* index_aliased = vii.definition()->create("b");
-    index_aliased->create_aliased("_1", index_aliased->create("first"));
-    index_aliased->create_aliased("_2", index_aliased->create("second"));
-    index_aliased->create_aliased("_3", index_aliased->create("third"));
+    index_aliased->create_aliased("_0", index_aliased->create("first"));
+    index_aliased->create_aliased("_1", index_aliased->create("second"));
+    index_aliased->create_aliased("_2", index_aliased->create("third"));
 
     vii.definition()->create("c")->create("_name");
 
@@ -766,14 +766,14 @@ TEST(VIInterpreter, sections2)
     
 
     auto* sect_aliased = vii.definition()->create("a");
-    sect_aliased->create_aliased("s_1", sect_aliased->create("radius"));
-    sect_aliased->create_aliased("s_2", sect_aliased->create("material"));
-    sect_aliased->create_aliased("s_3", sect_aliased->create("density"));
+    sect_aliased->create_aliased("s_0", sect_aliased->create("radius"));
+    sect_aliased->create_aliased("s_1", sect_aliased->create("material"));
+    sect_aliased->create_aliased("s_2", sect_aliased->create("density"));
 
     auto* c = vii.definition()->create("c");
     c->create("_name");    
-    c->create_aliased("s_1", c->create("state"));
-    c->create_aliased("s_2", c->create("constant"));
+    c->create_aliased("s_0", c->create("state"));
+    c->create_aliased("s_1", c->create("constant"));
     
 
     ASSERT_TRUE(vii.parse(input));
@@ -839,7 +839,7 @@ TEST(VIInterpreter, list_expr)
 {
     std::stringstream input;
     input << R"I(        
- a <1..10x2> < ^10 >
+ a <1..10x2> 10*2 < ^10 > 193*3
  a < ^$max : !allocated{\$_} >
  a <1..1000 : /7$/ > <1..100 : \$_ % 2 != 0 >
  a <^10> / <10..20x2> 20.3 / <40..50> 
@@ -847,7 +847,7 @@ TEST(VIInterpreter, list_expr)
     DefaultVIInterpreter vii;
 
     auto* a = vii.definition()->create("a");
-    a->create_aliased("s_2", a->create("sec"));
+    a->create_aliased("s_1", a->create("sec"));
     ASSERT_TRUE(vii.parse(input));
     std::stringstream paths;
     vii.root().paths(paths);
@@ -856,7 +856,9 @@ TEST(VIInterpreter, list_expr)
 /a
 /a/decl (a)
 /a/list (<1..10x2>)
+/a/list (10*2)
 /a/list (< ^10 >)
+/a/list (193*3)
 /a
 /a/decl (a)
 /a/list (< ^$max : !allocated{\$_} >)

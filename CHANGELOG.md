@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - support for double-quoted strings in GetPot documents
  - support for more than one input and template file in waspdrive input 
  - support for VERA input section naming and validation
- - support for parsing VERA input list syntax `<n..m x i>` etc.
+ - support for parsing VERA input list syntax `<n..m x i> 193*10` etc.
 
 
 ### Fixed

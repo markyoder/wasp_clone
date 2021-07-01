@@ -49,7 +49,7 @@ INTEGER {WHOLE}
 EXPONENT [eE]{WHOLE}
 
 DOUBLE {WHOLE}?\.{FRAC}?{EXPONENT}?|{WHOLE}\.({FRAC}?{EXPONENT}?)?|{WHOLE}\.?{EXPONENT}
-
+NUMBER {DOUBLE}|{INTEGER}
 STRING ([A-Za-z0-9_\.\-])+
 
 
@@ -65,7 +65,7 @@ LBRACKET \[
 RBRACKET \]
 FSLASH \/
 INCLUDE_PATH [^ \t\n][^\n!]*
-FILL_EXPR <[^>]*> 
+FILL_EXPR <[^>]*>|{NUMBER}\*{NUMBER} 
 
 
  /* The following paragraph suffices to track locations accurately. Each time

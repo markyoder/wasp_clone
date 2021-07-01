@@ -260,12 +260,14 @@ bool VIInterpreter<S>::process_document_command(size_t& new_staged_index,
     }
     bool is_named = this->definition()->has("_name");
 
-    std::string index_name = is_named ? "_"+std::to_string(staged_child_count-1)
-                                        : "_"+std::to_string(staged_child_count);
-    std::string section_name = "s_" + std::to_string(staged_section_count+1);                                        
+    // Account for the part's name (if it is named) in the staged child count
+    // I.e., the name and subsequent part will have been staged, so if named
+    // the staged index should go from 2->0, etc.
+    std::string index_name = is_named ? "_"+std::to_string(staged_child_count-2)
+                                        : "_"+std::to_string(staged_child_count-1);
+    std::string section_name = "s_" + std::to_string(staged_section_count);                                        
     std::string even_odd_name = (is_named?staged_child_count:staged_child_count-1)%2 == 0
                                 ? "_even" : "_odd";
-
     // Lambdas for deduplicate logic
     auto is_index = [&]()
     {
