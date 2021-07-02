@@ -1,7 +1,7 @@
 # VERA Input Interpreter 
-The vera input interpreter (VII) provides a input processing capability which requires very little syntax.
+The vera input interpreter (VII) provides an input processing capability which requires very little syntax.
 
-Specifically, VII supports comments, data blocks, arrays, and scalar values. 
+Specifically, VII supports comments, data blocks, arrays, sectioned/indexed/named values, and file includes. 
 
 
 The pattern is as follows:

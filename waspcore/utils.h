@@ -3,6 +3,7 @@
 #include "waspcore/wasp_bug.h"
 #include <algorithm>
 #include <cmath>
+#include <cstdlib>
 #include <string>
 #include <cstring>
 #include <sstream>
@@ -13,8 +14,58 @@
 #include <vector>
 #include "waspcore/decl.h"
 
+#ifdef _WIN32
+#include <direct.h>
+#include <windows.h>
+#include <sys/stat.h>
+#else
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
 namespace wasp
 {
+
+/**
+ * @brief obtain the value of the given environment variable
+ * @return the variable's value iff if the variable exists
+ * Note: empty string can result if the variable exists with empty value
+ *       or because the variable doesn't exist
+ */ 
+inline WASP_PUBLIC std::string get_env(const std::string& var)
+{
+    std::string result;
+    if (char* value = std::getenv(var.c_str()))
+    {
+        result = value;
+    }
+    return result;
+}
+
+/**
+ * @brief assign the given environment variable the given value
+ */  
+inline WASP_PUBLIC void set_env( const std::string& var, const std::string& value )
+{
+#ifndef _WIN32
+    ::setenv( var.c_str(), value.c_str(), 1 );
+#else
+    std::string temp = var + "=" + value;
+    _putenv( temp.c_str() );
+#endif
+}  // set_env
+
+/**
+ * @brief make the directory
+ */ 
+inline WASP_PUBLIC bool mkdir(const std::string& path)
+{
+#if defined( _WIN32 )
+    return ::_mkdir( path.c_str() ) == 0;
+#else
+    return ::mkdir( path.c_str(), 0777 ) == 0;  
+#endif
+}  // mkdir
 
 WASP_PUBLIC bool load_file(const std::string& path, std::stringstream& s);
 

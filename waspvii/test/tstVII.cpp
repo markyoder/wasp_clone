@@ -486,7 +486,16 @@ TEST(VIInterpreter, includes)
      include block1.2.txt
      include _block1.2.txt ! trailing comment
      block1.3
+   include default.txt
 )I" << std::endl;
+    {
+        // export VERA_DIR as the current directory
+        wasp::set_env("VERA_DIR", "./");
+        wasp::mkdir("./Init");
+        std::ofstream default_file("./Init/default.txt");
+        default_file << "  default"<<std::endl;
+        default_file.close();
+    }
 
     DefaultVIInterpreter vii;
     auto b1 = vii.definition()->create("block1");
@@ -494,8 +503,10 @@ TEST(VIInterpreter, includes)
     b1->create("block1.2");
     b1->create("block1.3");
 
+    vii.definition()->create("default");
+
     ASSERT_TRUE(vii.parseStream(input, "./"));
-    ASSERT_EQ(3, vii.document_count());
+    ASSERT_EQ(4, vii.document_count());
     std::stringstream paths;
     vii.root().paths(paths);
     std::stringstream expected;
@@ -518,6 +529,9 @@ TEST(VIInterpreter, includes)
 /block1/comment (! trailing comment)
 /block1/block1.3
 /block1/block1.3/decl (block1.3)
+/incl
+/incl/decl (include)
+/incl/path (default.txt)
 )I";
 
     ASSERT_EQ(expected.str(), paths.str());
@@ -585,7 +599,12 @@ TEST(VIInterpreter, includes)
 /block1/comment (! trailing comment)
 /block1/block1.3
 /block1/block1.3/decl (block1.3)
+/incl
+/default
+/default/decl (default)
 )I";
+    // TODO - fix this such that 'default' is recognized in the definition
+    // and child'd appropriately the root node
     ASSERT_EQ(expected_explicit.str(), paths.str());
     VIINodeView blocktxt_root = viiroot.child_at(0);
     ASSERT_EQ(wasp::FILE, blocktxt_root.type());
@@ -603,6 +622,7 @@ TEST(VIInterpreter, includes)
     std::remove("block.txt");
     std::remove("block1.2.txt");
     std::remove("_block1.2.txt");
+    std::remove("Init/default.txt");
     }
 }
 
