@@ -11,13 +11,26 @@ TEST(VIInterpreter, comments)
     input << R"I( ! comments
  !comments here
  !comments there
+ ! Cold, 20   °C (68 °F)
 
  ! comments everywhere
 )I" << std::endl;
     DefaultVIInterpreter vii;
     ASSERT_TRUE(vii.parse(input));
-    ASSERT_EQ(4, vii.root().child_count());
+    ASSERT_EQ(5, vii.root().child_count());
 
+std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected << R"I(/
+/comment (! comments)
+/comment (!comments here)
+/comment (!comments there)
+/comment (! Cold, 20   °C (68 °F))
+/comment (! comments everywhere)
+)I";
+
+    ASSERT_EQ(expected.str(), paths.str());
 }
 
 TEST(VIInterpreter, named)
@@ -774,7 +787,7 @@ TEST(VIInterpreter, sections2)
     input << R"I(        
  a 1 / zirc / 3.0 
  a 1 2 / zirc  / 7 8 e
- c name ohio florida / 3.14 2.71
+ c name oh+o florida / 3.14 2.71
  c name ohio florida / 3.14 2.71 / 1 2 3
  a !
    1 ! 
@@ -821,7 +834,7 @@ TEST(VIInterpreter, sections2)
 /c
 /c/decl (c)
 /c/_name (name)
-/c/state (ohio)
+/c/state (oh+o)
 /c/state (florida)
 /c// (/)
 /c/constant (3.14)
@@ -859,7 +872,7 @@ TEST(VIInterpreter, list_expr)
 {
     std::stringstream input;
     input << R"I(        
- a <1..10x2> 10*2 < ^10 > 193*3
+ a <1..10x2> 10*TWO < ^10 > 193*3
  a < ^$max : !allocated{\$_} >
  a <1..1000 : /7$/ > <1..100 : \$_ % 2 != 0 >
  a <^10> / <10..20x2> 20.3 / <40..50> 
@@ -876,7 +889,7 @@ TEST(VIInterpreter, list_expr)
 /a
 /a/decl (a)
 /a/list (<1..10x2>)
-/a/list (10*2)
+/a/list (10*TWO)
 /a/list (< ^10 >)
 /a/list (193*3)
 /a

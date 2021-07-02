@@ -50,13 +50,14 @@ EXPONENT [eE]{WHOLE}
 
 DOUBLE {WHOLE}?\.{FRAC}?{EXPONENT}?|{WHOLE}\.({FRAC}?{EXPONENT}?)?|{WHOLE}\.?{EXPONENT}
 NUMBER {DOUBLE}|{INTEGER}
-STRING ([A-Za-z0-9_\.\-])+
+STRING ([A-Za-z0-9_\.\-\+])+
 
 
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
 SINGLE_QUOTED_STRING \'([^\'\n])*\'
 QSTRING {DOUBLE_QUOTED_STRING}|{SINGLE_QUOTED_STRING}
-COMMENT ![^\n]*
+UNICODE [^\x00-\x7F]+
+COMMENT !([^\n]|{UNICODE})*
 MINUS -
 COMMA ,
 SEMICOLON ;
@@ -65,7 +66,7 @@ LBRACKET \[
 RBRACKET \]
 FSLASH \/
 INCLUDE_PATH [^ \t\n][^\n!]*
-FILL_EXPR <[^>]*>|{NUMBER}\*{NUMBER} 
+FILL_EXPR <[^>]*>|{NUMBER}\*({NUMBER}|{STRING}) 
 
 
  /* The following paragraph suffices to track locations accurately. Each time
@@ -125,11 +126,6 @@ FILL_EXPR <[^>]*>|{NUMBER}\*{NUMBER}
     return token::INTEGER;
 }
 
- /* gobble up white-spaces */
-<*>[ \t\r]+ {
-    yylloc->step();
-}
-
  /* gobble up end-of-lines */
 \n {
     yylloc->lines(yyleng); yylloc->step();
@@ -159,6 +155,11 @@ include {
 {COMMENT} {
     capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
+}
+
+ /* gobble up white-spaces */
+<*>[ \t\r]+|{UNICODE} {
+    yylloc->step();
 }
 
  /* pass all other characters up to bison*/

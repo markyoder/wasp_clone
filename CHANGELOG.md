@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - Extra repository logic from TriBITS to Git submodule 
  - FlexLexer version from 2.5.37 to 2.6.4
  - GNU BISON version from 3.0.4 to 3.7.6
- - VERA input parser to cache staged non decorative nodes to avoid expensive node-count loop  
+ - VERA input parser to cache staged non decorative nodes to avoid expensive node-count loop
+ - VERA Input Lexer to be 8-bit to support identifying unicode characters 
 
 ### Added
  - waspdrive scheduler capability.
@@ -23,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - support for VERA input section naming and validation
  - support for parsing VERA input list syntax `<n..m x i> 193*10` etc.
  - support for parsing VERA include files located in $VERA_DIR/Init. Requires export of VERA_DIR environment variable such that $VERA_DIR/Init exists
+ - support for VERA strings that contain '+' and comments containing unicode characters
 
 
 ### Fixed
