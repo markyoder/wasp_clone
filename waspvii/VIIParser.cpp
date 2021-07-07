@@ -644,7 +644,7 @@ namespace wasp {
 #line 114 "VIIParser.bison"
         {
             auto token_index = (yystack_[0].value.token_index);
-            (yylhs.value.node_index) = interpreter.push_leaf(wasp::FILL_EXPR,"list",token_index);
+            (yylhs.value.node_index) = interpreter.push_leaf(wasp::FILL_EXPR,"value",token_index);
         }
 #line 650 "VIIParser.cpp"
     break;

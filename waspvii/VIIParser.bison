@@ -113,7 +113,7 @@
 fill_expr : FILL_EXPR
         {
             auto token_index = $1;
-            $$ = interpreter.push_leaf(wasp::FILL_EXPR,"list",token_index);
+            $$ = interpreter.push_leaf(wasp::FILL_EXPR,"value",token_index);
         }
 include : FILE
         {

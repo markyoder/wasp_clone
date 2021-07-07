@@ -788,7 +788,7 @@ TEST(VIInterpreter, sections2)
  a 1 / zirc / 3.0 
  a 1 2 / zirc  / 7 8 e
  c name oh+o florida / 3.14 2.71
- c name ohio florida / 3.14 2.71 / 1 2 3
+ c name ohio flor:da / 3.14 2.71 / 1 2 3
  a !
    1 ! 
    / zirc !
@@ -843,7 +843,7 @@ TEST(VIInterpreter, sections2)
 /c/decl (c)
 /c/_name (name)
 /c/state (ohio)
-/c/state (florida)
+/c/state (flor:da)
 /c// (/)
 /c/constant (3.14)
 /c/constant (2.71)
@@ -888,25 +888,25 @@ TEST(VIInterpreter, list_expr)
     expected<<R"I(/
 /a
 /a/decl (a)
-/a/list (<1..10x2>)
-/a/list (10*TWO)
-/a/list (< ^10 >)
-/a/list (193*3)
+/a/value (<1..10x2>)
+/a/value (10*TWO)
+/a/value (< ^10 >)
+/a/value (193*3)
 /a
 /a/decl (a)
-/a/list (< ^$max : !allocated{\$_} >)
+/a/value (< ^$max : !allocated{\$_} >)
 /a
 /a/decl (a)
-/a/list (<1..1000 : /7$/ >)
-/a/list (<1..100 : \$_ % 2 != 0 >)
+/a/value (<1..1000 : /7$/ >)
+/a/value (<1..100 : \$_ % 2 != 0 >)
 /a
 /a/decl (a)
-/a/list (<^10>)
+/a/value (<^10>)
 /a// (/)
 /a/sec (<10..20x2>)
 /a/sec (20.3)
 /a// (/)
-/a/list (<40..50>)
+/a/value (<40..50>)
 )I";
     ASSERT_EQ(expected.str(), paths.str());
 }
