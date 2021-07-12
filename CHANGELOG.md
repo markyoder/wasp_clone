@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - support for parsing VERA input list syntax `<n..m x i> 193*10` etc.
  - support for parsing VERA include files located in $VERA_DIR/Init. Requires export of VERA_DIR environment variable such that $VERA_DIR/Init exists
  - support for VERA strings that contain '+' and comments containing unicode characters
+ - InputAliases STRIDE construct to support strided aliases as dictated by VERA input
 
 
 ### Fixed

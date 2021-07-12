@@ -910,3 +910,210 @@ TEST(VIInterpreter, list_expr)
 )I";
     ASSERT_EQ(expected.str(), paths.str());
 }
+
+TEST(VIInterpreter, strided_0_1)
+{
+    std::stringstream input;
+    input << R"I(data 0 1 2 3 4 5 6)I" << std::endl;
+    DefaultVIInterpreter vii;
+    auto* d = vii.definition()->create("data");
+    d->create_strided_aliased(0, 1, d->create("v"));
+    ASSERT_TRUE(vii.parse(input));
+
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected << R"I(/
+/data
+/data/decl (data)
+/data/v (0)
+/data/v (1)
+/data/v (2)
+/data/v (3)
+/data/v (4)
+/data/v (5)
+/data/v (6)
+)I";
+
+    ASSERT_EQ(expected.str(), paths.str());
+}
+// Test capturing strided aliases for only
+// half the children...
+TEST(VIInterpreter, strided_1_2_single)
+{
+    std::stringstream input;
+    input << R"I(data 0 1 2 3 4 5 6)I" << std::endl;
+    DefaultVIInterpreter vii;
+    auto* d = vii.definition()->create("data");
+    d->create_strided_aliased(1, 2, d->create("v"));
+    ASSERT_TRUE(vii.parse(input));
+
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected << R"I(/
+/data
+/data/decl (data)
+/data/value (0)
+/data/v (1)
+/data/value (2)
+/data/v (3)
+/data/value (4)
+/data/v (5)
+/data/value (6)
+)I";
+
+    ASSERT_EQ(expected.str(), paths.str());
+}
+TEST(VIInterpreter, strided_2)
+{
+    std::stringstream input;
+    input << R"I(data 0 1 2 3 4 5 6)I" << std::endl;
+    DefaultVIInterpreter vii;
+    auto* d = vii.definition()->create("data");
+    d->create_strided_aliased(1, 2, d->create("a"));
+    d->create_strided_aliased(2, 2, d->create("b"));
+    ASSERT_TRUE(vii.parse(input));
+
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected << R"I(/
+/data
+/data/decl (data)
+/data/value (0)
+/data/a (1)
+/data/b (2)
+/data/a (3)
+/data/b (4)
+/data/a (5)
+/data/b (6)
+)I";
+
+    ASSERT_EQ(expected.str(), paths.str());
+}
+
+TEST(VIInterpreter, strided_3)
+{
+    std::stringstream input;
+    input << R"I(data 0 1 2 3 4 5 6)I" << std::endl;
+    DefaultVIInterpreter vii;
+    auto* d = vii.definition()->create("data");
+    d->create_strided_aliased(1, 3, d->create("a"));
+    d->create_strided_aliased(2, 3, d->create("b"));
+    d->create_strided_aliased(3, 3, d->create("c"));
+    ASSERT_TRUE(vii.parse(input));
+
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected << R"I(/
+/data
+/data/decl (data)
+/data/value (0)
+/data/a (1)
+/data/b (2)
+/data/c (3)
+/data/a (4)
+/data/b (5)
+/data/c (6)
+)I";
+
+    ASSERT_EQ(expected.str(), paths.str());
+}
+TEST(VIInterpreter, strided_0_3)
+{
+    std::stringstream input;
+    input << R"I(data 0 1 2 3 4 5 6)I" << std::endl;
+    DefaultVIInterpreter vii;
+    auto* d = vii.definition()->create("data");
+    d->create_strided_aliased(0, 3, d->create("a"));
+    d->create_strided_aliased(1, 3, d->create("b"));
+    d->create_strided_aliased(2, 3, d->create("c"));
+    ASSERT_TRUE(vii.parse(input));
+
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected << R"I(/
+/data
+/data/decl (data)
+/data/a (0)
+/data/b (1)
+/data/c (2)
+/data/a (3)
+/data/b (4)
+/data/c (5)
+/data/a (6)
+)I";
+
+    ASSERT_EQ(expected.str(), paths.str());
+}
+
+TEST(VIInterpreter, strided_3_2)
+{
+    std::stringstream input;
+    input << R"I(data 0 1 2 3 4 5 6)I" << std::endl;
+    DefaultVIInterpreter vii;
+    auto* d = vii.definition()->create("data");
+    d->create_strided_aliased(2, 2, d->create("a"));
+    d->create_strided_aliased(3, 2, d->create("b"));
+    ASSERT_TRUE(vii.parse(input));
+
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected << R"I(/
+/data
+/data/decl (data)
+/data/value (0)
+/data/value (1)
+/data/a (2)
+/data/b (3)
+/data/a (4)
+/data/b (5)
+/data/a (6)
+)I";
+
+    ASSERT_EQ(expected.str(), paths.str());
+}
+
+TEST(VIInterpreter, strided_0_7)
+{
+    std::stringstream input;
+    input << R"I(data 0 1 2 3 4 5 6 7 8 9 10 11 12 13)I" << std::endl;
+    DefaultVIInterpreter vii;
+    auto* d = vii.definition()->create("data");
+    d->create_strided_aliased(0, 7, d->create("a"));
+    d->create_strided_aliased(1, 7, d->create("b"));
+    d->create_strided_aliased(2, 7, d->create("c"));
+    d->create_strided_aliased(3, 7, d->create("d"));
+    d->create_strided_aliased(4, 7, d->create("e"));
+    d->create_strided_aliased(5, 7, d->create("f"));
+    d->create_strided_aliased(6, 7, d->create("g"));
+    ASSERT_TRUE(vii.parse(input));
+
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected << R"I(/
+/data
+/data/decl (data)
+/data/a (0)
+/data/b (1)
+/data/c (2)
+/data/d (3)
+/data/e (4)
+/data/f (5)
+/data/g (6)
+/data/a (7)
+/data/b (8)
+/data/c (9)
+/data/d (10)
+/data/e (11)
+/data/f (12)
+/data/g (13)
+)I";
+
+    ASSERT_EQ(expected.str(), paths.str());
+}

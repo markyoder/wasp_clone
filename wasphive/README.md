@@ -1,6 +1,6 @@
 # HIVE
 
-The Hierarchical Input Validation Engine (HIVE) uses a set of rules to describe the schema of an application's input. These rules describe scalar and relational input restrictions. They can use a [Sequence Input Retrieval Engine (SIREN) Expression](/waspsiren/README.md#sequence-input-retrieval-engine-siren) paths to define restrictions related to relative sets of input elements. Schema files for HIVE are written using the [Standard Object Notation (SON) Syntax](/waspson/README.md#standard-object-notation-son). Applications use HIVE and schema files to facilitate input validation, introspection, and input creation assistance. SIREN Expressions, SON Syntax, and Template Files are beyond the scope of this section.
+The Hierarchical Input Validation Engine (HIVE) uses a set of rules to describe the schema of an application's input. These rules describe scalar and relational input restrictions. They can use a [Sequence Input Retrieval Engine (SIREN) Expression](/waspsiren/README.md#sequence-input-retrieval-engine-siren) path to define restrictions related to relative sets of input elements. Schema files for HIVE are written using the [Standard Object Notation (SON) Syntax](/waspson/README.md#standard-object-notation-son). Applications use HIVE and schema files to facilitate input validation, introspection, and input creation assistance. SIREN Expressions, SON Syntax, and Template Files are beyond the scope of this section.
 
 The section layout is as follows:
 
@@ -2855,3 +2855,63 @@ The `PATH:` tag may be used within `InputChoices` by input assistance applicatio
 
 The ***Input Description*** rule may be used by input assistance application logic to give a short one line description in the autocompletion dropdown list via `Description = 'autocomplete dropdown description'`. These descriptions can be very useful to novice users unfamiliar with all of the parameters at a given context.
 
+### Input Aliases
+
+The ***Input Aliases*** rule is harnessed by definition driven interpreters (DDI, VII, etc.) to accommodate name-aliases or position-depedent named components. 
+
+#### Name-Aliased 
+e.g., `d 1 2 3` may be a shorthand for `data 1 2 3`. 
+
+The `InputAliases` can accommodate this via the following snippet:
+
+```javascript
+data{ InputAliases["d"] }
+```
+
+#### Index-Aliased
+Alternatively, for index-aliased, e.g., `data 3.14 carbon 3.52` 
+
+is a data array with 3 values `3.14`, `carbon`, `3.52`. These are by default generically named `value`. However, this
+generic name prevents specific rules from being applied to them. `InputAliases` allow for naming these components.
+
+e.g., the following snippet defines radius, material, and density as index 0, 1, and 2 respectively. 
+
+```javascript
+data{
+   radius  { InputAliases["_0"] ... }
+   material{ InputAliases["_1"] ... }
+   density { InputAliases["_2"] ... }
+}
+```
+> Note: Index-Aliases are only supported by VII
+
+### Strided-Aliased
+Alternatively, if the data is strided by the `InputAliases` supports the `STRIDED[<start>, <stride>]` construct
+
+e.g., the following `InputAliases` allows the data array to be arbitrarily long but still apply `radius`, `material`, and `density` naming and associated rules.
+
+```javascript
+data{
+   radius  { InputAliases[STRIDE[0,3]] ... }
+   material{ InputAliases[STRIDE[1,3]] ... }
+   density { InputAliases[STRIDE[2,3]] ... }
+}
+```
+
+> Note: The `STRIDE`'s stride must match across strided children of `data`.
+> Note: Strided-aliases are only supported by VII
+
+### Section-Aliased
+The VIInterpreter additionally supports 'section' input, delimited by `/`. This facilitate visual aggregation of an array's components. 
+
+E.g., `data 3.14  3.5 / carbon graphite / 3.52  2.26` describes arbitrary-length tuples of `radius`, `material`, and `density`. Such an example can be properly defined via the section `InputAliases` construct, `s_<section>`.
+
+The following aliased input definition names the indices between the section `/` delimeters: 
+
+```javascript
+data{
+    radius  { InputAliases["s_0"] }
+    material{ InputAliases["s_1"] }
+    density { InputAliases["s_3"] }
+}
+```

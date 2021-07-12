@@ -308,11 +308,47 @@ class WASP_PUBLIC HIVE
                     const auto& alias_view = child_view.child_at(a);
                     if (alias_view.is_decorative())
                         continue;
-                    // must be a scalar value - i.e. a string
-                    wasp_check(alias_view.child_count() == 0);
-                    const std::string& alias_name = alias_view.to_string();
-                    definition_model->parent()->create_aliased(
-                        alias_name, definition_model);
+                    // Capture strided aliases
+                    if (strcmp(alias_view.name(),"STRIDE") == 0)
+                    {
+                        // These are to be input as STRIDE [Start, Stride]
+                        int start = 0;
+                        int stride = 1;
+                        const auto& stride_nodes = alias_view.non_decorative_children();
+                        wasp_insist(stride_nodes.size() == 2, "STRIDE listed on line " 
+                                                            << alias_view.line()
+                                                            << " is expected to have 2 children "
+                                                            "(start, stride) but was found to have "
+                                                            << stride_nodes.size() <<"!");
+                        const auto& start_node = stride_nodes.front();
+                        if (!start_node.is_null())
+                        {
+                            bool stride_start_ok = true;
+                            start = start_node.to_int(&stride_start_ok);
+                            wasp_insist(stride_start_ok, 
+                                "stride's start value (" << start_node.data() 
+                                << ") specified on line " 
+                                << start_node.line()
+                                << " failed to be evaluated as an integer!");
+                        }
+                        const auto& stride_node = stride_nodes.back();
+                        bool stride_ok = true;
+                        stride = stride_node.to_int(&stride_ok);
+                        wasp_insist(stride_ok, 
+                                "stride's value (" << stride_node.data() 
+                                << ") specified on line " 
+                                << stride_node.line()
+                                << " failed to be evaluated as an integer!");
+                        definition_model->parent()->create_strided_aliased(start, stride, definition_model);
+                    }
+                    else
+                    {
+                        // must be a scalar value - i.e. a string
+                        wasp_check(alias_view.child_count() == 0);
+                        const std::string& alias_name = alias_view.to_string();
+                        definition_model->parent()->create_aliased(
+                            alias_name, definition_model);
+                    }
                 }
                 continue;  // skip aliases
             }
