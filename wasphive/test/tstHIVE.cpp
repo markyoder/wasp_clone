@@ -1,5 +1,6 @@
 #include "waspson/SONInterpreter.h"
 #include "wasphive/HIVE.h"
+#include "waspcore/utils.h"
 #include "waspcore/TreeNodePool.h"
 #include "waspson/SONNodeView.h"
 #include "gtest/gtest.h"
@@ -33,22 +34,10 @@ struct HIVETest
     std::shared_ptr<std::stringstream> output_data;  // expected output
 };
 
-bool load_file_as_string(std::ifstream&                      f,
+bool load_file_as_string(const std::string&                  file_path,
                          std::shared_ptr<std::stringstream>& s)
 {
-    bool first = true;
-    while (!f.eof() && f.good())
-    {
-        std::string line;
-        std::getline(f, line);
-        if (!first)
-        {
-            *s << std::endl;
-        }
-        *s << line;
-        first = false;
-    }
-    return f.eof() && !f.bad();
+    return load_file(file_path, *s.get());
 }
 
 bool load_streams(HIVETest&          t,
@@ -72,9 +61,8 @@ bool load_streams(HIVETest&          t,
     {
         std::string output_path = test_dir + "/outputs/" + oname;
         SCOPED_TRACE(output_path);
-        std::ifstream output_file(output_path);
         t.output_data = std::make_shared<std::stringstream>();
-        EXPECT_TRUE(load_file_as_string(output_file, t.output_data));
+        EXPECT_TRUE(load_file_as_string(output_path, t.output_data));
         file_bad = t.output_data->bad() || t.output_data->fail();
         std::cout << " -Loaded output (gold) :: " << output_path << std::endl;
         EXPECT_FALSE(file_bad);
