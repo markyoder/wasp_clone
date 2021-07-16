@@ -363,17 +363,6 @@ bool VIInterpreter<S>::process_document_command(size_t& new_staged_index,
         wasp_check(name_set_success);
         new_staged_index = this->push_staged_child(node_index);
     }
-    else if (this->staged_count() > 1
-            && staged_child_count >= 1
-            && strided_definition )
-    {
-        // If staged child index is aliased to a strided component
-        // we need to capture it appropriately        
-        this->set_type(node_index, wasp::VALUE);
-        bool name_set_success = this->set_name(node_index, strided_definition->actual_name().c_str());
-        wasp_check(name_set_success);
-        new_staged_index = this->push_staged_child(node_index);
-    }
     else if ( is_key_value ||
                 token_type == wasp::STRING ||
                 token_type == wasp::QUOTED_STRING)
@@ -448,6 +437,17 @@ bool VIInterpreter<S>::process_document_command(size_t& new_staged_index,
                                         ,child_indices);                                      
             }
         }        
+    }
+    else if (this->staged_count() > 1
+            && staged_child_count >= 1
+            && strided_definition )
+    {
+        // If staged child index is aliased to a strided component
+        // we need to capture it appropriately        
+        this->set_type(node_index, wasp::VALUE);
+        bool name_set_success = this->set_name(node_index, strided_definition->actual_name().c_str());
+        wasp_check(name_set_success);
+        new_staged_index = this->push_staged_child(node_index);
     }
     else if (is_index())
     {
