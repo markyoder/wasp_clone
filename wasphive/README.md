@@ -2886,7 +2886,7 @@ data{
 > Note: Index-Aliases are only supported by VII
 
 ### Strided-Aliased
-Alternatively, if the data is strided by the `InputAliases` supports the `STRIDED[<start>, <stride>]` construct
+Alternatively, if the data is strided by the `InputAliases` supports the `STRIDE[<start>, <stride>]` construct
 
 e.g., the following `InputAliases` allows the data array to be arbitrarily long but still apply `radius`, `material`, and `density` naming and associated rules.
 
@@ -2897,6 +2897,7 @@ data{
    density { InputAliases[STRIDE[2,3]] ... }
 }
 ```
+
 
 > Note: The `STRIDE`'s stride must match across strided children of `data`.
 > Note: Strided-aliases are only supported by VII
