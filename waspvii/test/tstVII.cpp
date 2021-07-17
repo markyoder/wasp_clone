@@ -1024,12 +1024,18 @@ TEST(VIInterpreter, strided_3)
 TEST(VIInterpreter, strided_0_3)
 {
     std::stringstream input;
-    input << R"I(data 0 1 2 3 4 5 6)I" << std::endl;
+    input << R"I(data 0 1 2 3 4 5 6
+bravo 0 1 2 3 4 5 6)I" << std::endl;
     DefaultVIInterpreter vii;
     auto* d = vii.definition()->create("data");
     d->create_strided_aliased(0, 3, d->create("a"));
     d->create_strided_aliased(1, 3, d->create("b"));
     d->create_strided_aliased(2, 3, d->create("c"));
+
+    auto* b = vii.definition()->create("bravo");
+    b->create_strided_aliased(2, 3, d->create("3"));
+    b->create_strided_aliased(1, 3, d->create("2"));
+    b->create_strided_aliased(0, 3, d->create("1"));
     ASSERT_TRUE(vii.parse(input));
 
     std::stringstream paths;
@@ -1045,6 +1051,15 @@ TEST(VIInterpreter, strided_0_3)
 /data/b (4)
 /data/c (5)
 /data/a (6)
+/bravo
+/bravo/decl (bravo)
+/bravo/1 (0)
+/bravo/2 (1)
+/bravo/3 (2)
+/bravo/1 (3)
+/bravo/2 (4)
+/bravo/3 (5)
+/bravo/1 (6)
 )I";
 
     ASSERT_EQ(expected.str(), paths.str());
