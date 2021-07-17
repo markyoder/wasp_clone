@@ -380,13 +380,16 @@ bool VIInterpreter<S>::process_document_command(size_t& new_staged_index,
             {   
                 new_staged_index = do_section();
             } 
-            // the string is not a new command, capture as a value
-            // correct part name and type to be decl
-            // must occur prior to prior stage commital
             else{
+                // the string is not a new command, capture as a value
+                // correct part name and type to be decl
+                // must occur prior to prior stage commital
                 this->set_type(node_index, wasp::VALUE);
-                bool name_set_success = this->set_name(node_index, "value");
-                wasp_check(name_set_success);
+                if (std::strcmp(this->name(node_index), "decl") == 0)
+                {
+                    bool name_set_success = this->set_name(node_index, "value");
+                    wasp_check(name_set_success);
+                }
                 new_staged_index = this->push_staged_child(node_index);
             }
         }
