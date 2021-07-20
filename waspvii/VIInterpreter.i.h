@@ -382,7 +382,7 @@ bool VIInterpreter<S>::process_document_command(size_t& new_staged_index,
             } 
             else{
                 // the string is not a new command, capture as a value
-                // correct part name and type to be decl
+                // correcting part name and type to be decl
                 // must occur prior to prior stage commital
                 this->set_type(node_index, wasp::VALUE);
                 if (std::strcmp(this->name(node_index), "decl") == 0)
@@ -430,6 +430,9 @@ bool VIInterpreter<S>::process_document_command(size_t& new_staged_index,
 
             if ( is_key_value )
             {
+                // Ensure Aliased' key-value are named by their definition
+                bool name_set_success = this->set_name(node_index, data.c_str());
+                wasp_check(name_set_success);
                 new_staged_index = this->push_staged_child(node_index);
             }
             else

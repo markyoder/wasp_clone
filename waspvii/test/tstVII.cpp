@@ -1132,3 +1132,33 @@ TEST(VIInterpreter, strided_0_7)
 
     ASSERT_EQ(expected.str(), paths.str());
 }
+
+TEST(VIInterpreter, aliased_keyed_value)
+{
+    std::stringstream input;
+    input << R"I(data foo=boo foo1=boo1)I" << std::endl;
+    DefaultVIInterpreter vii;
+    auto* d = vii.definition()->create("data");
+    auto* k = d->create("key");
+    d->create_aliased("foo", k);
+    d->create_aliased("foo1", k);
+    ASSERT_TRUE(vii.parse(input));
+
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected << R"I(/
+/data
+/data/decl (data)
+/data/key
+/data/key/decl (foo)
+/data/key/= (=)
+/data/key/value (boo)
+/data/key
+/data/key/decl (foo1)
+/data/key/= (=)
+/data/key/value (boo1)
+)I";
+
+    ASSERT_EQ(expected.str(), paths.str());
+}
