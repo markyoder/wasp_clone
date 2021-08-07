@@ -102,6 +102,7 @@ class WASP_PUBLIC VIInterpreter : public Interpreter<S>
   public:
     typedef S                              Storage_type;
     typedef std::shared_ptr<VIInterpreter> SharedPtr;
+    typedef Interpreter<S>                 Super;
     VIInterpreter();
     VIInterpreter(std::ostream& err);
     virtual ~VIInterpreter();

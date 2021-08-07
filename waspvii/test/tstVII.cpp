@@ -501,16 +501,16 @@ TEST(VIInterpreter, includes)
      block1.3
    include default.txt
 )I" << std::endl;
+    DefaultVIInterpreter vii;
     {
         // export VERA_DIR as the current directory
-        wasp::set_env("VERA_DIR", "./");
+        vii.search_paths().push_back("./Init");
         wasp::mkdir("./Init");
         std::ofstream default_file("./Init/default.txt");
         default_file << "  default"<<std::endl;
         default_file.close();
     }
-
-    DefaultVIInterpreter vii;
+    
     auto b1 = vii.definition()->create("block1");
     b1->create_aliased("block_1.1",b1->create("block1.1"));
     b1->create("block1.2");

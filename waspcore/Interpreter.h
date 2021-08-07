@@ -268,6 +268,9 @@ class WASP_PUBLIC AbstractInterpreter
     virtual size_t token_count() const = 0;
     virtual size_t line_count() const  = 0;
 
+    virtual const std::vector<std::string>& search_paths() const = 0;
+    virtual std::vector<std::string>& search_paths() = 0;
+
     virtual void pop_line() = 0;
     /**
      * @brief push appends a token
@@ -511,6 +514,10 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @param path the relative or absolute path to the subdocument
      */
     virtual void add_document_path(size_t node_index, const std::string& path);
+
+    const std::vector<std::string>& search_paths() const {return m_search_paths;}
+    std::vector<std::string>& search_paths() {return m_search_paths;};
+
     virtual size_t document_count() const;
     /**
      * @brief load_document interprets document at the given node and path
@@ -898,8 +905,11 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @brief err - the error stream to report on
      */
     std::ostream&     m_error_stream;
-
-    TreeNodePool_type m_nodes;    
+    // paths to search for files that are being included
+    std::vector<std::string> m_search_paths;
+    // Parsed tree nodes
+    TreeNodePool_type m_nodes;
+    // Parsed failed?
     bool m_failed;
 
   protected:

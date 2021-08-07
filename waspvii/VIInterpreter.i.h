@@ -171,13 +171,13 @@ bool VIInterpreter<S>::load_document(size_t node_index, const std::string& path)
     if (directory_name == Interpreter<S>::stream_name()) directory_name=".";
     auto document_relative_path  = directory_name + "/" + path;
     // if immediately adjacent path doesn't exist
-    // check the VERA's Init directory
+    // check the search paths
     if (!wasp::file_exists(document_relative_path))
     {
-        std::string vera_dir = wasp::get_env("VERA_DIR");
-        if (!vera_dir.empty())
+        for (const auto& dir : Super::search_paths())
         {
-            document_relative_path = vera_dir + "/Init/" + path;
+            document_relative_path = dir + "/" + path;
+            if (wasp::file_exists(document_relative_path)) break;
         }
     }
     
@@ -211,7 +211,7 @@ bool VIInterpreter<S>::load_document(size_t node_index, const std::string& path)
                                       <<" column:"
                                       <<Interpreter<S>::column(node_index)
                                       <<" : could not find '"
-                                      <<document_relative_path<<"'"
+                                      <<path<<"'"
                                       <<std::endl;
         passed &= false;
     }
