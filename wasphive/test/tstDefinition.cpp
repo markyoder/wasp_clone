@@ -47,11 +47,18 @@ TEST(HIVE, definition_strided)
                                                             {2, "z"},
                                                             {3, "x"},
                                                             {4, "y"},
-                                                            {5, "z"}
+                                                            {5, "z"},
+                                                            {6, "i"},
+                                                            {7, "j"}, 
+                                                            {8, "k"},
+                                                            {9, "i"},
+                                                            {10, "j"},
+                                                            {11, "k"}
                                                             };
 
     for (auto part : aliased_parts)
     {
+        SCOPED_TRACE(part.first);
         auto part_def = a->get(part.first);
         ASSERT_TRUE(part_def != nullptr);
         EXPECT_EQ(part.second, part_def->name());

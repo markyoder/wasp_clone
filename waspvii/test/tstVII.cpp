@@ -1093,6 +1093,39 @@ TEST(VIInterpreter, strided_3_2)
     ASSERT_EQ(expected.str(), paths.str());
 }
 
+// Test stride override
+// E.g., stride of 2 starts at 0,1, and 4,5
+TEST(VIInterpreter, strided_0145_2)
+{
+    std::stringstream input;
+    input << R"I(data 0 1 2 3 4 5 6 7)I" << std::endl;
+    DefaultVIInterpreter vii;
+    auto* d = vii.definition()->create("data");
+    d->create_strided_aliased(0, 2, d->create("a"));
+    d->create_strided_aliased(1, 2, d->create("b"));
+    d->create_strided_aliased(4, 2, d->create("x"));
+    d->create_strided_aliased(5, 2, d->create("y"));
+    ASSERT_TRUE(vii.parse(input));
+
+    std::stringstream paths;
+    vii.root().paths(paths);
+    std::stringstream expected;
+    expected << R"I(/
+/data
+/data/decl (data)
+/data/a (0)
+/data/b (1)
+/data/a (2)
+/data/b (3)
+/data/x (4)
+/data/y (5)
+/data/x (6)
+/data/y (7)
+)I";
+
+    ASSERT_EQ(expected.str(), paths.str());
+}
+
 TEST(VIInterpreter, strided_0_7)
 {
     std::stringstream input;

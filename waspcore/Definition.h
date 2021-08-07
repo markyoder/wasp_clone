@@ -147,22 +147,28 @@ class WASP_PUBLIC Definition : public AbstractDefinition
         int stride = 1;
         // start->Definition mapping
         std::map<int, AbstractDefinition*> indexed;
-
+        // Obtain the strided-definition given an index        
         AbstractDefinition* get(int index) const
         {
-            wasp_require(!indexed.empty());            
-            int start = indexed.begin()->first;
-            int last_start = indexed.rbegin()->first;
-            if (index < start) return nullptr;
-            int offset = index % stride;
-            // account for when start is greater or equal to the stride
-            // by displacing the offset 
-            if (start >= stride) offset += start;
-            else if (offset == 0 && last_start >= stride) offset += last_start;
-            auto itr = indexed.find(offset);
-            if (itr != indexed.end())
+            wasp_require(index >= 0);
+            wasp_require(!indexed.empty());
+            if (index < indexed.begin()->first) return nullptr;
+            int remainder = index % stride;
+            for(auto itr = indexed.rbegin(); itr != indexed.rend(); itr++)
             {
-                return itr->second;
+                // if the start is beyond the stride we also need to mod
+                // the start. This allows differentiation between definitions with
+                // a start of 1 and a start of 9 where stride is 2
+                int start = itr->first;
+                if (start > index) continue;
+                if (start > stride) start = itr->first % stride;
+
+                // for 0-based starts the remainder == start
+                // for non-zero-based starts the start-sride == remainder
+                if (remainder == start || (start - stride) == remainder)
+                {
+                    return itr->second;
+                }
             }
             return nullptr;
         }
