@@ -39,7 +39,7 @@ int main(int argc, char** argv)
                   << " : An application for selecting VII formatted input."
                   << std::endl;
         std::cout << " Usage : " << argv[0]
-                  << " path/to/VII/formatted/input /path/to/definition.son "
+                  << " path/to/VII/formatted/input /path/to/definition.son [-I/path/to/include]"
                      "'siren select statement'..."
                   << std::endl
                   << "Subsequent siren statements select from previously "
@@ -49,9 +49,17 @@ int main(int argc, char** argv)
                   << " --version\t(print version info)" << std::endl;
         return 1;
     }
-
+    int path_arg_start = 3; // program, input, definition
     DefaultVIInterpreter parser;
-
+    if (argc > 3)
+    {
+        std::string argI = argv[3];
+        if (argI.size() > 2 && argI.substr(0,2) == "-I")
+        {
+            parser.search_paths().push_back(argI.substr(2));
+            ++path_arg_start; // acount for include path
+        } 
+    }
     DefaultSONInterpreter schema;
     bool                  schema_failed = !schema.parseFile(argv[1]);
     if (schema_failed)
@@ -81,7 +89,7 @@ int main(int argc, char** argv)
 
     std::vector<decltype(viiroot)> select_from_node;
     select_from_node.push_back(viiroot);
-    for (int j = 3; j < argc; ++j)
+    for (int j = path_arg_start; j < argc; ++j)
     {
         std::stringstream select_statement_errors;
         std::string       select_statement = argv[j];
