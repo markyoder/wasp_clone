@@ -50,7 +50,7 @@
 #include "SONParser.hpp"
 
 // Second part of user prologue.
-#line 133 "SONParser.bison"
+#line 134 "SONParser.bison"
 
 
 #include "SONInterpreter.h"
@@ -363,31 +363,31 @@ namespace wasp {
     switch (yysym.kind ())
     {
       case symbol_kind::S_key_declaration: // key_declaration
-#line 132 "SONParser.bison"
+#line 133 "SONParser.bison"
                     { delete (yysym.value.node_indices); }
 #line 369 "SONParser.cpp"
         break;
 
       case symbol_kind::S_declaration: // declaration
-#line 132 "SONParser.bison"
+#line 133 "SONParser.bison"
                     { delete (yysym.value.node_indices); }
 #line 375 "SONParser.cpp"
         break;
 
       case symbol_kind::S_tag: // tag
-#line 131 "SONParser.bison"
+#line 132 "SONParser.bison"
                     { delete (yysym.value.node_indices); }
 #line 381 "SONParser.cpp"
         break;
 
       case symbol_kind::S_members: // members
-#line 131 "SONParser.bison"
+#line 132 "SONParser.bison"
                     { delete (yysym.value.node_indices); }
 #line 387 "SONParser.cpp"
         break;
 
       case symbol_kind::S_array_members: // array_members
-#line 131 "SONParser.bison"
+#line 132 "SONParser.bison"
                     { delete (yysym.value.node_indices); }
 #line 393 "SONParser.cpp"
         break;
@@ -526,7 +526,7 @@ namespace wasp {
 
 
     // User initialization code.
-#line 40 "SONParser.bison"
+#line 41 "SONParser.bison"
 {
     // initialize the initial location object
     yyla.location.begin.filename = yyla.location.end.filename = &interpreter.stream_name();
@@ -671,7 +671,7 @@ namespace wasp {
           switch (yyn)
             {
   case 2: // filler: "filler"
-#line 150 "SONParser.bison"
+#line 151 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::FILL_EXPR,"filler",token_index);
@@ -680,7 +680,7 @@ namespace wasp {
     break;
 
   case 3: // comma: ","
-#line 155 "SONParser.bison"
+#line 156 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
@@ -689,7 +689,7 @@ namespace wasp {
     break;
 
   case 4: // multiply: "*"
-#line 165 "SONParser.bison"
+#line 166 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::MULTIPLY,"*",token_index);
@@ -698,7 +698,7 @@ namespace wasp {
     break;
 
   case 5: // divide: "/"
-#line 170 "SONParser.bison"
+#line 171 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DIVIDE,"/",token_index);
@@ -707,19 +707,19 @@ namespace wasp {
     break;
 
   case 6: // multiply_divide: multiply
-#line 174 "SONParser.bison"
+#line 175 "SONParser.bison"
                   { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 713 "SONParser.cpp"
     break;
 
   case 7: // multiply_divide: divide
-#line 174 "SONParser.bison"
+#line 175 "SONParser.bison"
                              { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 719 "SONParser.cpp"
     break;
 
   case 8: // plus: "+"
-#line 176 "SONParser.bison"
+#line 177 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::PLUS,"+",token_index);
@@ -728,7 +728,7 @@ namespace wasp {
     break;
 
   case 9: // minus: "-"
-#line 181 "SONParser.bison"
+#line 182 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::MINUS,"-",token_index);
@@ -737,7 +737,7 @@ namespace wasp {
     break;
 
   case 10: // exponent: "^"
-#line 187 "SONParser.bison"
+#line 188 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::EXPONENT,"^",token_index);
@@ -746,55 +746,55 @@ namespace wasp {
     break;
 
   case 11: // BOOLEAN: "true"
-#line 191 "SONParser.bison"
+#line 192 "SONParser.bison"
           { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 752 "SONParser.cpp"
     break;
 
   case 12: // BOOLEAN: "false"
-#line 191 "SONParser.bison"
+#line 192 "SONParser.bison"
                        { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 758 "SONParser.cpp"
     break;
 
   case 13: // boolean_numeric_op: eq
-#line 193 "SONParser.bison"
+#line 194 "SONParser.bison"
                      { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 764 "SONParser.cpp"
     break;
 
   case 14: // boolean_numeric_op: neq
-#line 193 "SONParser.bison"
+#line 194 "SONParser.bison"
                           { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 770 "SONParser.cpp"
     break;
 
   case 15: // boolean_numeric_op: gt
-#line 193 "SONParser.bison"
+#line 194 "SONParser.bison"
                                 { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 776 "SONParser.cpp"
     break;
 
   case 16: // boolean_numeric_op: lt
-#line 193 "SONParser.bison"
+#line 194 "SONParser.bison"
                                      { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 782 "SONParser.cpp"
     break;
 
   case 17: // boolean_numeric_op: gte
-#line 193 "SONParser.bison"
+#line 194 "SONParser.bison"
                                           { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 788 "SONParser.cpp"
     break;
 
   case 18: // boolean_numeric_op: lte
-#line 193 "SONParser.bison"
+#line 194 "SONParser.bison"
                                                 { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 794 "SONParser.cpp"
     break;
 
   case 19: // eq: "=="
-#line 196 "SONParser.bison"
+#line 197 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::EQ,"==",token_index);
@@ -803,7 +803,7 @@ namespace wasp {
     break;
 
   case 20: // neq: "!="
-#line 201 "SONParser.bison"
+#line 202 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::NEQ,"!=",token_index);
@@ -812,7 +812,7 @@ namespace wasp {
     break;
 
   case 21: // gte: ">="
-#line 206 "SONParser.bison"
+#line 207 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::GTE,">=",token_index);
@@ -821,7 +821,7 @@ namespace wasp {
     break;
 
   case 22: // gt: ">"
-#line 211 "SONParser.bison"
+#line 212 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::GT,">",token_index);
@@ -830,7 +830,7 @@ namespace wasp {
     break;
 
   case 23: // lte: "<="
-#line 216 "SONParser.bison"
+#line 217 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LTE,"<=",token_index);
@@ -839,7 +839,7 @@ namespace wasp {
     break;
 
   case 24: // lt: "<"
-#line 221 "SONParser.bison"
+#line 222 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LT,"<",token_index);
@@ -848,19 +848,19 @@ namespace wasp {
     break;
 
   case 25: // boolean_logic_op: and
-#line 225 "SONParser.bison"
+#line 226 "SONParser.bison"
                    { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 854 "SONParser.cpp"
     break;
 
   case 26: // boolean_logic_op: or
-#line 225 "SONParser.bison"
+#line 226 "SONParser.bison"
                          { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 860 "SONParser.cpp"
     break;
 
   case 27: // and: "&&"
-#line 227 "SONParser.bison"
+#line 228 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_AND,"&&",token_index);
@@ -869,7 +869,7 @@ namespace wasp {
     break;
 
   case 28: // or: "||"
-#line 232 "SONParser.bison"
+#line 233 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_OR,"||",token_index);
@@ -878,7 +878,7 @@ namespace wasp {
     break;
 
   case 29: // unary_not: "!"
-#line 238 "SONParser.bison"
+#line 239 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::UNARY_NOT,"!",token_index);
@@ -887,7 +887,7 @@ namespace wasp {
     break;
 
   case 30: // lparen: "("
-#line 244 "SONParser.bison"
+#line 245 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LPAREN,"(",token_index);
@@ -896,7 +896,7 @@ namespace wasp {
     break;
 
   case 31: // rparen: ")"
-#line 249 "SONParser.bison"
+#line 250 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RPAREN,")",token_index);
@@ -905,7 +905,7 @@ namespace wasp {
     break;
 
   case 32: // lbrace: "{"
-#line 254 "SONParser.bison"
+#line 255 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACE,"{",token_index);
@@ -914,7 +914,7 @@ namespace wasp {
     break;
 
   case 33: // rbrace: "}"
-#line 259 "SONParser.bison"
+#line 260 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RBRACE,"}",token_index);
@@ -923,7 +923,7 @@ namespace wasp {
     break;
 
   case 34: // lbracket: "["
-#line 264 "SONParser.bison"
+#line 265 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACKET,"[",token_index);
@@ -932,7 +932,7 @@ namespace wasp {
     break;
 
   case 35: // rbracket: "]"
-#line 269 "SONParser.bison"
+#line 270 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RBRACKET,"]",token_index);
@@ -941,49 +941,49 @@ namespace wasp {
     break;
 
   case 36: // ANY_STRING: "string"
-#line 274 "SONParser.bison"
+#line 275 "SONParser.bison"
              { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 947 "SONParser.cpp"
     break;
 
   case 37: // ANY_STRING: "quoted string"
-#line 274 "SONParser.bison"
+#line 275 "SONParser.bison"
                       { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 953 "SONParser.cpp"
     break;
 
   case 38: // PRIMITIVE: "string"
-#line 275 "SONParser.bison"
+#line 276 "SONParser.bison"
             { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 959 "SONParser.cpp"
     break;
 
   case 39: // PRIMITIVE: "quoted string"
-#line 275 "SONParser.bison"
+#line 276 "SONParser.bison"
                      { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 965 "SONParser.cpp"
     break;
 
   case 40: // PRIMITIVE: "integer"
-#line 275 "SONParser.bison"
+#line 276 "SONParser.bison"
                                { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 971 "SONParser.cpp"
     break;
 
   case 41: // PRIMITIVE: "double"
-#line 275 "SONParser.bison"
+#line 276 "SONParser.bison"
                                          { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 977 "SONParser.cpp"
     break;
 
   case 42: // PRIMITIVE: BOOLEAN
-#line 275 "SONParser.bison"
+#line 276 "SONParser.bison"
                                                   { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 983 "SONParser.cpp"
     break;
 
   case 43: // value: PRIMITIVE
-#line 278 "SONParser.bison"
+#line 279 "SONParser.bison"
 {
     size_t token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
@@ -993,19 +993,19 @@ namespace wasp {
     break;
 
   case 44: // component: value
-#line 295 "SONParser.bison"
+#line 296 "SONParser.bison"
             { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 999 "SONParser.cpp"
     break;
 
   case 45: // exp: component
-#line 297 "SONParser.bison"
+#line 298 "SONParser.bison"
       { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 1005 "SONParser.cpp"
     break;
 
   case 46: // exp: exp multiply_divide exp
-#line 299 "SONParser.bison"
+#line 300 "SONParser.bison"
     {
           size_t left_i = ((yystack_[2].value.node_index));
           size_t op_i = ((yystack_[1].value.node_index));
@@ -1023,7 +1023,7 @@ namespace wasp {
     break;
 
   case 47: // exp: exp plus exp
-#line 313 "SONParser.bison"
+#line 314 "SONParser.bison"
     {
         size_t left_i = ((yystack_[2].value.node_index));
         size_t op_i = ((yystack_[1].value.node_index));
@@ -1041,7 +1041,7 @@ namespace wasp {
     break;
 
   case 48: // exp: exp minus exp
-#line 327 "SONParser.bison"
+#line 328 "SONParser.bison"
     {
         size_t left_i = ((yystack_[2].value.node_index));
         size_t op_i = ((yystack_[1].value.node_index));
@@ -1059,7 +1059,7 @@ namespace wasp {
     break;
 
   case 49: // exp: exp exponent exp
-#line 341 "SONParser.bison"
+#line 342 "SONParser.bison"
     {
         size_t left_i = ((yystack_[2].value.node_index));
         size_t op_i = ((yystack_[1].value.node_index));
@@ -1077,7 +1077,7 @@ namespace wasp {
     break;
 
   case 50: // exp: exp boolean_numeric_op exp
-#line 355 "SONParser.bison"
+#line 356 "SONParser.bison"
     {
         size_t left_i = ((yystack_[2].value.node_index));
         size_t op_i = ((yystack_[1].value.node_index));
@@ -1095,7 +1095,7 @@ namespace wasp {
     break;
 
   case 51: // exp: exp boolean_logic_op exp
-#line 370 "SONParser.bison"
+#line 371 "SONParser.bison"
     {
         size_t left_i = ((yystack_[2].value.node_index));
         size_t op_i = ((yystack_[1].value.node_index));
@@ -1113,7 +1113,7 @@ namespace wasp {
     break;
 
   case 52: // exp: lparen exp rparen
-#line 384 "SONParser.bison"
+#line 385 "SONParser.bison"
     {
         size_t left_i = ((yystack_[2].value.node_index));
         size_t center_i = ((yystack_[1].value.node_index));
@@ -1131,7 +1131,7 @@ namespace wasp {
     break;
 
   case 53: // exp: minus exp
-#line 398 "SONParser.bison"
+#line 399 "SONParser.bison"
     {
         size_t op_i = ((yystack_[1].value.node_index));
         size_t right_i = ((yystack_[0].value.node_index));
@@ -1147,7 +1147,7 @@ namespace wasp {
     break;
 
   case 54: // exp: unary_not exp
-#line 410 "SONParser.bison"
+#line 411 "SONParser.bison"
     {
         size_t op_i = ((yystack_[1].value.node_index));
         size_t right_i = ((yystack_[0].value.node_index));
@@ -1163,7 +1163,7 @@ namespace wasp {
     break;
 
   case 55: // execution_unit_end: "end of unit of execution"
-#line 423 "SONParser.bison"
+#line 424 "SONParser.bison"
 {
     auto token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::EXECUTION_UNIT_END,"uoe_end",token_index);
@@ -1172,7 +1172,7 @@ namespace wasp {
     break;
 
   case 56: // execution_unit_start: "start of unit of execution"
-#line 428 "SONParser.bison"
+#line 429 "SONParser.bison"
 {
     auto token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::EXECUTION_UNIT_START,"uoe_start",token_index);
@@ -1181,7 +1181,7 @@ namespace wasp {
     break;
 
   case 57: // identifier: exp
-#line 434 "SONParser.bison"
+#line 435 "SONParser.bison"
     {
         interpreter.set_type((yystack_[0].value.node_index), wasp::IDENTIFIER);
         interpreter.set_name((yystack_[0].value.node_index), "id");
@@ -1191,7 +1191,7 @@ namespace wasp {
     break;
 
   case 58: // decl: PRIMITIVE
-#line 440 "SONParser.bison"
+#line 441 "SONParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         std::string quote_less_data = interpreter.token_data(token_index);
@@ -1204,19 +1204,19 @@ namespace wasp {
     break;
 
   case 59: // ASSIGNMENT: "="
-#line 448 "SONParser.bison"
+#line 449 "SONParser.bison"
              { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 1210 "SONParser.cpp"
     break;
 
   case 60: // ASSIGNMENT: ":"
-#line 448 "SONParser.bison"
+#line 449 "SONParser.bison"
                       { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
 #line 1216 "SONParser.cpp"
     break;
 
   case 61: // assignment: ASSIGNMENT
-#line 449 "SONParser.bison"
+#line 450 "SONParser.bison"
                         {
              auto token_index = ((yystack_[0].value.token_index));
              (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,"=",token_index);
@@ -1225,7 +1225,7 @@ namespace wasp {
     break;
 
   case 62: // key_declaration: tag assignment
-#line 454 "SONParser.bison"
+#line 455 "SONParser.bison"
         {
              (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
              (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1235,19 +1235,19 @@ namespace wasp {
     break;
 
   case 63: // declaration: key_declaration
-#line 459 "SONParser.bison"
+#line 460 "SONParser.bison"
               { (yylhs.value.node_indices) = (yystack_[0].value.node_indices); }
 #line 1241 "SONParser.cpp"
     break;
 
   case 64: // declaration: tag
-#line 459 "SONParser.bison"
+#line 460 "SONParser.bison"
                                 { (yylhs.value.node_indices) = (yystack_[0].value.node_indices); }
 #line 1247 "SONParser.cpp"
     break;
 
   case 65: // tag: decl
-#line 461 "SONParser.bison"
+#line 462 "SONParser.bison"
         {
              (yylhs.value.node_indices) = new std::vector<size_t>();
              (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1256,7 +1256,7 @@ namespace wasp {
     break;
 
   case 66: // tag: decl lparen identifier rparen
-#line 466 "SONParser.bison"
+#line 467 "SONParser.bison"
         {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[3].value.node_index));
@@ -1268,7 +1268,7 @@ namespace wasp {
     break;
 
   case 67: // array: declaration lbracket rbracket
-#line 475 "SONParser.bison"
+#line 476 "SONParser.bison"
     {
         (yystack_[2].value.node_indices)->push_back((yystack_[1].value.node_index));
         (yystack_[2].value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1281,7 +1281,7 @@ namespace wasp {
     break;
 
   case 68: // array: declaration lbracket "end of file"
-#line 484 "SONParser.bison"
+#line 485 "SONParser.bison"
     {
         (yystack_[2].value.node_indices)->push_back((yystack_[1].value.node_index));
         std::string name = interpreter.name((yystack_[2].value.node_indices)->front());
@@ -1296,7 +1296,7 @@ namespace wasp {
     break;
 
   case 69: // array: declaration lbracket array_members "end of file"
-#line 495 "SONParser.bison"
+#line 496 "SONParser.bison"
     {
         std::string name = interpreter.name((yystack_[3].value.node_indices)->front());
         auto last_component_type = interpreter.type((yystack_[3].value.node_indices)->back());
@@ -1312,7 +1312,7 @@ namespace wasp {
     break;
 
   case 70: // array: declaration lbracket execution_unit_end
-#line 507 "SONParser.bison"
+#line 508 "SONParser.bison"
     {
         // TODO capture partial definition
         std::string name = interpreter.name((yystack_[2].value.node_indices)->front());
@@ -1324,7 +1324,7 @@ namespace wasp {
     break;
 
   case 71: // array: declaration lbracket array_members execution_unit_end
-#line 515 "SONParser.bison"
+#line 516 "SONParser.bison"
     {
         std::string name = interpreter.name((yystack_[3].value.node_indices)->front());
         auto last_component_type = interpreter.type((yystack_[3].value.node_indices)->back());
@@ -1341,7 +1341,7 @@ namespace wasp {
     break;
 
   case 72: // array: declaration lbracket array_members rbracket
-#line 528 "SONParser.bison"
+#line 529 "SONParser.bison"
     {
         (yystack_[3].value.node_indices)->push_back((yystack_[2].value.node_index));
         for( std::size_t i = 0; i < (yystack_[1].value.node_indices)->size(); ++i )
@@ -1360,7 +1360,7 @@ namespace wasp {
     break;
 
   case 73: // object: declaration lbrace rbrace
-#line 543 "SONParser.bison"
+#line 544 "SONParser.bison"
     {
         (yystack_[2].value.node_indices)->push_back((yystack_[1].value.node_index));
         (yystack_[2].value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1373,7 +1373,7 @@ namespace wasp {
     break;
 
   case 74: // object: declaration lbrace "end of file"
-#line 552 "SONParser.bison"
+#line 553 "SONParser.bison"
     {
         (yystack_[2].value.node_indices)->push_back((yystack_[1].value.node_index));
         std::string name = interpreter.data((yystack_[2].value.node_indices)->front());
@@ -1388,7 +1388,7 @@ namespace wasp {
     break;
 
   case 75: // object: declaration lbrace members "end of file"
-#line 563 "SONParser.bison"
+#line 564 "SONParser.bison"
     {
         // TODO capture partial definition
         std::string name = interpreter.data((yystack_[3].value.node_indices)->front());
@@ -1404,7 +1404,7 @@ namespace wasp {
     break;
 
   case 76: // object: declaration lbrace execution_unit_end
-#line 575 "SONParser.bison"
+#line 576 "SONParser.bison"
     {
         (yystack_[2].value.node_indices)->push_back((yystack_[1].value.node_index));
         std::string name = interpreter.data((yystack_[2].value.node_indices)->front());
@@ -1419,7 +1419,7 @@ namespace wasp {
     break;
 
   case 77: // object: declaration lbrace members execution_unit_end
-#line 586 "SONParser.bison"
+#line 587 "SONParser.bison"
     {
         // TODO capture partial definition
         std::string name = interpreter.data((yystack_[3].value.node_indices)->front());
@@ -1436,7 +1436,7 @@ namespace wasp {
     break;
 
   case 78: // object: declaration lbrace members rbrace
-#line 599 "SONParser.bison"
+#line 600 "SONParser.bison"
     {
         (yystack_[3].value.node_indices)->push_back((yystack_[2].value.node_index));
         for( std::size_t i = 0; i < (yystack_[1].value.node_indices)->size(); ++i )
@@ -1454,7 +1454,7 @@ namespace wasp {
     break;
 
   case 79: // keyedvalue: key_declaration exp
-#line 615 "SONParser.bison"
+#line 616 "SONParser.bison"
     {
         (yystack_[1].value.node_indices)->push_back((yystack_[0].value.node_index));
         std::string quote_less_data = interpreter.data((yystack_[1].value.node_indices)->front());
@@ -1474,7 +1474,7 @@ namespace wasp {
     break;
 
   case 80: // members: filler
-#line 633 "SONParser.bison"
+#line 634 "SONParser.bison"
         {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1483,7 +1483,7 @@ namespace wasp {
     break;
 
   case 81: // members: members filler
-#line 638 "SONParser.bison"
+#line 639 "SONParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1492,7 +1492,7 @@ namespace wasp {
     break;
 
   case 82: // members: object
-#line 643 "SONParser.bison"
+#line 644 "SONParser.bison"
         {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1501,7 +1501,7 @@ namespace wasp {
     break;
 
   case 83: // members: members object
-#line 648 "SONParser.bison"
+#line 649 "SONParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1510,7 +1510,7 @@ namespace wasp {
     break;
 
   case 84: // members: array
-#line 653 "SONParser.bison"
+#line 654 "SONParser.bison"
         {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1519,7 +1519,7 @@ namespace wasp {
     break;
 
   case 85: // members: members array
-#line 658 "SONParser.bison"
+#line 659 "SONParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1528,7 +1528,7 @@ namespace wasp {
     break;
 
   case 86: // members: keyedvalue
-#line 663 "SONParser.bison"
+#line 664 "SONParser.bison"
         {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1537,7 +1537,7 @@ namespace wasp {
     break;
 
   case 87: // members: members keyedvalue
-#line 668 "SONParser.bison"
+#line 669 "SONParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1546,7 +1546,7 @@ namespace wasp {
     break;
 
   case 88: // members: comment
-#line 673 "SONParser.bison"
+#line 674 "SONParser.bison"
         {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1555,7 +1555,7 @@ namespace wasp {
     break;
 
   case 89: // members: members comment
-#line 678 "SONParser.bison"
+#line 679 "SONParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1564,7 +1564,7 @@ namespace wasp {
     break;
 
   case 90: // members: members comma
-#line 683 "SONParser.bison"
+#line 684 "SONParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1573,7 +1573,7 @@ namespace wasp {
     break;
 
   case 91: // array_members: exp
-#line 690 "SONParser.bison"
+#line 691 "SONParser.bison"
         {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1582,7 +1582,7 @@ namespace wasp {
     break;
 
   case 92: // array_members: array_members exp
-#line 695 "SONParser.bison"
+#line 696 "SONParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1591,7 +1591,7 @@ namespace wasp {
     break;
 
   case 93: // array_members: filler
-#line 701 "SONParser.bison"
+#line 702 "SONParser.bison"
         {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1600,7 +1600,7 @@ namespace wasp {
     break;
 
   case 94: // array_members: array_members filler
-#line 706 "SONParser.bison"
+#line 707 "SONParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1609,7 +1609,7 @@ namespace wasp {
     break;
 
   case 95: // array_members: object
-#line 711 "SONParser.bison"
+#line 712 "SONParser.bison"
         {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1618,7 +1618,7 @@ namespace wasp {
     break;
 
   case 96: // array_members: array_members object
-#line 716 "SONParser.bison"
+#line 717 "SONParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1627,7 +1627,7 @@ namespace wasp {
     break;
 
   case 97: // array_members: array
-#line 721 "SONParser.bison"
+#line 722 "SONParser.bison"
         {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1636,7 +1636,7 @@ namespace wasp {
     break;
 
   case 98: // array_members: array_members array
-#line 726 "SONParser.bison"
+#line 727 "SONParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1645,7 +1645,7 @@ namespace wasp {
     break;
 
   case 99: // array_members: keyedvalue
-#line 731 "SONParser.bison"
+#line 732 "SONParser.bison"
         {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1654,7 +1654,7 @@ namespace wasp {
     break;
 
   case 100: // array_members: array_members keyedvalue
-#line 736 "SONParser.bison"
+#line 737 "SONParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1663,7 +1663,7 @@ namespace wasp {
     break;
 
   case 101: // array_members: comment
-#line 741 "SONParser.bison"
+#line 742 "SONParser.bison"
         {
             (yylhs.value.node_indices) = new std::vector<size_t>();
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1672,7 +1672,7 @@ namespace wasp {
     break;
 
   case 102: // array_members: array_members comment
-#line 746 "SONParser.bison"
+#line 747 "SONParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1681,7 +1681,7 @@ namespace wasp {
     break;
 
   case 103: // array_members: array_members comma
-#line 751 "SONParser.bison"
+#line 752 "SONParser.bison"
         {
             (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
             (yylhs.value.node_indices)->push_back((yystack_[0].value.node_index));
@@ -1690,7 +1690,7 @@ namespace wasp {
     break;
 
   case 104: // comment: "comment"
-#line 757 "SONParser.bison"
+#line 758 "SONParser.bison"
         {
             auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
@@ -1699,7 +1699,7 @@ namespace wasp {
     break;
 
   case 105: // execution_unit_name: ANY_STRING
-#line 762 "SONParser.bison"
+#line 763 "SONParser.bison"
         {
             auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::DECL,"name",token_index);
@@ -1708,7 +1708,7 @@ namespace wasp {
     break;
 
   case 106: // execution_unit: execution_unit_start execution_unit_name execution_unit_end
-#line 767 "SONParser.bison"
+#line 768 "SONParser.bison"
        { // account for an empty execution unit
             size_t start_i = ((yystack_[2].value.node_index));
             size_t name_i = ((yystack_[1].value.node_index));
@@ -1726,7 +1726,7 @@ namespace wasp {
     break;
 
   case 107: // execution_unit: execution_unit_start execution_unit_name members execution_unit_end
-#line 781 "SONParser.bison"
+#line 782 "SONParser.bison"
       { // execution unit with members
             size_t start_i = ((yystack_[3].value.node_index));
             size_t name_i = ((yystack_[2].value.node_index));
@@ -1748,7 +1748,7 @@ namespace wasp {
     break;
 
   case 108: // block: lbracket decl rbracket
-#line 801 "SONParser.bison"
+#line 802 "SONParser.bison"
       {
           // Check for prior staged blocks that may need to be committed.
           // Because blocks are the only SON construct that are staged (in addition to the root)
@@ -1780,37 +1780,37 @@ namespace wasp {
     break;
 
   case 110: // start: start comment
-#line 829 "SONParser.bison"
+#line 830 "SONParser.bison"
                        {interpreter.push_staged_child(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
 #line 1786 "SONParser.cpp"
     break;
 
   case 111: // start: start array
-#line 830 "SONParser.bison"
+#line 831 "SONParser.bison"
                      {interpreter.push_staged_child(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
 #line 1792 "SONParser.cpp"
     break;
 
   case 112: // start: start keyedvalue
-#line 831 "SONParser.bison"
+#line 832 "SONParser.bison"
                           {interpreter.push_staged_child(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
 #line 1798 "SONParser.cpp"
     break;
 
   case 113: // start: start object
-#line 832 "SONParser.bison"
+#line 833 "SONParser.bison"
                       {interpreter.push_staged_child(((yystack_[0].value.node_index))); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
 #line 1804 "SONParser.cpp"
     break;
 
   case 114: // start: start execution_unit
-#line 833 "SONParser.bison"
+#line 834 "SONParser.bison"
                               {interpreter.push_staged_child(((yystack_[0].value.node_index)));if(interpreter.single_parse() ) {YYACCEPT;}}
 #line 1810 "SONParser.cpp"
     break;
 
   case 115: // start: start block
-#line 834 "SONParser.bison"
+#line 835 "SONParser.bison"
                      { /*Node staging occurs in block rule*/;if(interpreter.single_parse() ) {YYACCEPT;}}
 #line 1816 "SONParser.cpp"
     break;
@@ -2388,18 +2388,18 @@ namespace wasp {
   const short
   SONParser::yyrline_[] =
   {
-       0,   149,   149,   154,   164,   169,   174,   174,   175,   180,
-     186,   191,   191,   193,   193,   193,   193,   193,   193,   195,
-     200,   205,   210,   215,   220,   225,   225,   226,   231,   237,
-     243,   248,   253,   258,   263,   268,   274,   274,   275,   275,
-     275,   275,   275,   277,   295,   297,   298,   312,   326,   340,
-     354,   369,   383,   397,   409,   422,   427,   433,   439,   448,
-     448,   449,   453,   459,   459,   460,   465,   474,   483,   494,
-     506,   514,   527,   542,   551,   562,   574,   585,   598,   614,
-     632,   637,   642,   647,   652,   657,   662,   667,   672,   677,
-     682,   689,   694,   700,   705,   710,   715,   720,   725,   730,
-     735,   740,   745,   750,   756,   761,   766,   780,   800,   828,
-     829,   830,   831,   832,   833,   834
+       0,   150,   150,   155,   165,   170,   175,   175,   176,   181,
+     187,   192,   192,   194,   194,   194,   194,   194,   194,   196,
+     201,   206,   211,   216,   221,   226,   226,   227,   232,   238,
+     244,   249,   254,   259,   264,   269,   275,   275,   276,   276,
+     276,   276,   276,   278,   296,   298,   299,   313,   327,   341,
+     355,   370,   384,   398,   410,   423,   428,   434,   440,   449,
+     449,   450,   454,   460,   460,   461,   466,   475,   484,   495,
+     507,   515,   528,   543,   552,   563,   575,   586,   599,   615,
+     633,   638,   643,   648,   653,   658,   663,   668,   673,   678,
+     683,   690,   695,   701,   706,   711,   716,   721,   726,   731,
+     736,   741,   746,   751,   757,   762,   767,   781,   801,   829,
+     830,   831,   832,   833,   834,   835
   };
 
   void
@@ -2484,7 +2484,7 @@ namespace wasp {
 } // wasp
 #line 2486 "SONParser.cpp"
 
-#line 838 "SONParser.bison"
+#line 839 "SONParser.bison"
  /*** Additional Code ***/
 
 void wasp::SONParser::error(const SONParser::location_type& l,

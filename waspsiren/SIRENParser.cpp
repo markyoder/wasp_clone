@@ -952,7 +952,7 @@ namespace wasp {
 #line 277 "SIRENParser.bison"
                   {
         size_t token_index = ((yystack_[0].value.token_index));
-        (yylhs.value.node_index) = interpreter.push_leaf(wasp::INT,"int"
+        (yylhs.value.node_index) = interpreter.push_leaf(wasp::INTEGER,"int"
                          ,token_index);
     }
 #line 959 "SIRENParser.cpp"

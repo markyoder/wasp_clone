@@ -194,7 +194,7 @@ namespace wasp {
     /// Symbol semantic values.
     union semantic_type
     {
-#line 60 "SONParser.bison"
+#line 61 "SONParser.bison"
 
         std::size_t token_index;
         std::size_t node_index;

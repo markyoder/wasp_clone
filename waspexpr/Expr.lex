@@ -39,9 +39,9 @@ typedef wasp::ExprParser::token_type token_type;
 
  /* enables the use of start condition stacks */
 
-INT [0-9]+
-EXPONENT [eE][\+\-]?{INT}
-REAL {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)|{INT}\.[^lgenao]|{INT}{EXPONENT}
+INTEGER [0-9]+
+EXPONENT [eE][\+\-]?{INTEGER}
+REAL {INTEGER}?\.{INTEGER}{EXPONENT}?|{INTEGER}\.({INTEGER}{EXPONENT}?)|{INTEGER}\.[^lgenao]|{INTEGER}{EXPONENT}
 STRING [A-Za-z_]([A-Za-z0-9\._%])*
 
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
@@ -82,8 +82,8 @@ COMMA ,
     capture_token(yylval,wasp::WASP_COMMA);
     return token::COMMA;
 }
-{INT} {
-    capture_token(yylval,wasp::INT);
+{INTEGER} {
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 {REAL} {

@@ -1830,7 +1830,7 @@ case 2:
 YY_RULE_SETUP
 #line 86 "Expr.lex"
 {
-    capture_token(yylval,wasp::INT);
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 	YY_BREAK

@@ -2192,7 +2192,7 @@ case 11:
 YY_RULE_SETUP
 #line 155 "GetPot.lex"
 {
-    capture_token(yylval,wasp::INT);
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 	YY_BREAK

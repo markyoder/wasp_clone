@@ -5462,7 +5462,7 @@ case 10:
 YY_RULE_SETUP
 #line 125 "VIILexer.lex"
 {
-    capture_token(yylval,wasp::INT);
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 	YY_BREAK

@@ -276,7 +276,7 @@ ANY_STRING : DECL | QSTRING
 PRIMITIVE : DECL | QSTRING | INTEGER | DOUBLE
 integer : INTEGER {
         size_t token_index = ($1);
-        $$ = interpreter.push_leaf(wasp::INT,"int"
+        $$ = interpreter.push_leaf(wasp::INTEGER,"int"
                          ,token_index);
     }
 value : PRIMITIVE

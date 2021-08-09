@@ -302,7 +302,7 @@ object : object_decl object_term
 integer : INTEGER
     {
         size_t token_index = ($1);
-        $$ = interpreter.push_leaf(wasp::INT,"int"
+        $$ = interpreter.push_leaf(wasp::INTEGER,"int"
                          ,token_index);
     }
 real : REAL

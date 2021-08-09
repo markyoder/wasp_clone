@@ -11,7 +11,7 @@ enum NODE : unsigned char
     DOCUMENT_ROOT,
     DECL,
     TERM,
-    INT,
+    INTEGER,
     REAL,
     KEY,
     ASSIGN,

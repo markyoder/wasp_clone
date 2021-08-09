@@ -88,7 +88,7 @@ ASSIGN =
     return token::DOUBLE;
 }
 {INTEGER} {
-    capture_token(yylval,wasp::INT);
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 

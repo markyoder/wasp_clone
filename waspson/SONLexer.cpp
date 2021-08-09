@@ -6956,7 +6956,7 @@ YY_RULE_SETUP
 #line 225 "SONLexer.lex"
 {
     yy_push_state(subtraction); // if we have a minus sign immediately following, subtraction is occurring
-    capture_token(yylval,wasp::INT);
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 	YY_BREAK
@@ -6964,7 +6964,7 @@ case 29:
 YY_RULE_SETUP
 #line 230 "SONLexer.lex"
 {
-    capture_token(yylval,wasp::INT);
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 	YY_BREAK

@@ -1681,7 +1681,7 @@ inline Result& Result::evaluate(const T& tree_view, Context& context)
             m_type   = Context::Type::WEC_ERROR;
             string() = error_msg(tree_view, "unable to interpret");
             break;
-        case wasp::INT:
+        case wasp::INTEGER:
             m_type        = Context::Type::INTEGER;
             m_value.m_int = tree_view.to_int();
             break;

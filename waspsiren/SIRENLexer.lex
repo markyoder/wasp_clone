@@ -51,9 +51,9 @@ typedef wasp::SIRENParser::token_type token_type;
  // declarators that are multi word
 DECL ([0-9A-Za-z_\*?]((\.|[^\n/<>:\[=])*[A-Za-z_0-9?])?\*?)|\.
 
-INT [0-9]+([eE]\+?[0-9]+)?
-EXPONENT [eE][\+\-]?{INT}
-DOUBLE {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
+INTEGER [0-9]+([eE]\+?[0-9]+)?
+EXPONENT [eE][\+\-]?{INTEGER}
+DOUBLE {INTEGER}?\.{INTEGER}{EXPONENT}?|{INTEGER}\.({INTEGER}{EXPONENT}?)?|{INTEGER}\.?[eE]\-{INTEGER}
 
 
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
@@ -191,8 +191,8 @@ COLON :
     return token::MINUS;
 }
 
-{INT} {
-    capture_token(yylval,wasp::INT);
+{INTEGER} {
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 
