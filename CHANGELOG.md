@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - GNU BISON version from 3.0.4 to 3.7.6
  - VERA input parser to cache staged non decorative nodes to avoid expensive node-count loop
  - VERA Input Lexer to be 8-bit to support identifying unicode characters 
+ - WASP Node type of INT to INTEGER (potentially break compatibility with 1.x if you using wasp::INT)
 
 ### Added
  - waspdrive scheduler capability.
