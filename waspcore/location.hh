@@ -58,7 +58,7 @@ namespace wasp {
 #line 59 "../waspcore/location.hh"
 
   /// A point in a source file.
-  class position
+  class WASP_PUBLIC position
   {
   public:
     /// Type for file name.
@@ -163,7 +163,7 @@ namespace wasp {
   }
 
   /// Two points in a source file.
-  class location
+  class WASP_PUBLIC  location
   {
   public:
     /// Type for file name.
