@@ -42,9 +42,9 @@ typedef wasp::JSONObjectParser::token_type token_type;
  /*%x exclusive*/
  /*%s inclusive*/
 
-INT \-?[0-9]+
-EXPONENT [eE][\+\-]?{INT}
-DOUBLE {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}{EXPONENT}
+INTEGER \-?[0-9]+
+EXPONENT [eE][\+\-]?{INTEGER}
+DOUBLE {INTEGER}?\.{INTEGER}{EXPONENT}?|{INTEGER}\.({INTEGER}{EXPONENT}?)?|{INTEGER}{EXPONENT}
 
 
 TOKEN_TRUE true
@@ -72,7 +72,7 @@ SINGLE_QUOTED_STRING \'(\\.|[^'\n])*\'
     wasp::to_type(yylval->real,yytext);
     return token::DOUBLE;
 }
-{INT}  {
+{INTEGER}  {
     wasp::to_type(yylval->integer,yytext);
     return token::INTEGER;
 }

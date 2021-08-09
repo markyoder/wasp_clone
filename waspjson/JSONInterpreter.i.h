@@ -227,7 +227,7 @@ bool JSONInterpreter<S>::generate_value_internal(const NodeView& value_view,
         case wasp::WASP_NULL:
             value = Value();  // null value
             break;
-        case wasp::INT:
+        case wasp::INTEGER:
             value = value_view.to_int();
             break;
         case wasp::REAL:
