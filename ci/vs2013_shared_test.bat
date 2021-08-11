@@ -7,7 +7,7 @@ cmake -DBUILD_SHARED_LIBS=ON ^
       -Dwasp_ENABLE_TESTS:BOOL=ON ^
       -Dwasp_ENABLE_ALL_PACKAGES:BOOL=ON ^
       -G "Visual Studio 12 2013 Win64" ..
-ctest --verbose --output-on-failure ^
+ctest --output-on-failure ^
       -D ExperimentalStart ^
       -D ExperimentalBuild ^
       -D ExperimentalTest ^
