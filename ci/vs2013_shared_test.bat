@@ -1,5 +1,6 @@
 call .\ci\setup.bat
 cd build
+set "PATH=C:/Python27;%PATH%"
 call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86_amd64
 cmake -DBUILD_SHARED_LIBS=ON ^
       -DBUILDNAME="Windows-CL-18-Shared-Release-%CI_BUILD_REF_NAME%" ^
