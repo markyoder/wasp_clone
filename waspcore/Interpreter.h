@@ -1,5 +1,6 @@
 #ifndef WASP_INTERPRETER_H
 #define WASP_INTERPRETER_H
+#include <algorithm>
 #include <vector>
 #include <map>
 #include <string>
@@ -10,6 +11,7 @@
 #include "waspcore/wasp_node.h"  // for UNKNOWN, DOCUMENT_ROOT NODE types
 #include "waspcore/wasp_bug.h"
 #include "waspcore/Definition.h"
+#include "waspcore/location.hh"
 
 namespace wasp
 {
@@ -266,6 +268,9 @@ class WASP_PUBLIC AbstractInterpreter
     virtual size_t token_count() const = 0;
     virtual size_t line_count() const  = 0;
 
+    virtual const std::vector<std::string>& search_paths() const = 0;
+    virtual std::vector<std::string>& search_paths() = 0;
+
     virtual void pop_line() = 0;
     /**
      * @brief push appends a token
@@ -387,6 +392,9 @@ class WASP_PUBLIC AbstractInterpreter
     virtual std::string& staged_name(size_t staged_index)             = 0;
     virtual size_t staged_child_count(size_t staged_index)      const = 0;
 
+    virtual size_t staged_non_decorative_child_count(size_t staged_index) const = 0;
+    virtual size_t staged_section_count(size_t staged_index) const = 0;
+    
     virtual size_t staged_count() const = 0;
 
     virtual bool failed() const                     = 0;
@@ -458,7 +466,26 @@ class WASP_PUBLIC AbstractInterpreter
 
     virtual AbstractInterpreter* document_parent() const = 0;
 
-};
+    /**
+     * Process a node into a new staged node for committal to the parse tree
+     * @param new_staged_index is the stage_index of the newly pushed staged node
+     *                      this staged node will contain the process'd node_index
+     * @param stage_name the name of the stage being processed.
+     *                   This is a contractual name between the parser and interpreter
+     *                   and provides a mapping to specific pattern processing logic
+     * @param node_index the index of the node being processed
+     *                  This provides access to node type, children, etc.
+     *                  from which the state information can be used to determine
+     * @param loc the location for position tracking info in the parse-tree
+     * @param err an error stream for capturing error messages
+     * @return true, iff the staged_node is successfully processed
+     */                   
+    virtual bool process_staged_node(size_t& new_staged_index,
+                                    const std::string& stage_name,
+                                    size_t node_index,
+                                    const location& loc,
+                                    std::ostream& err) {return true;}
+}; 
 
 template<class NodeStorage = TreeNodePool<>>
 class WASP_PUBLIC Interpreter : public AbstractInterpreter
@@ -487,6 +514,10 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @param path the relative or absolute path to the subdocument
      */
     virtual void add_document_path(size_t node_index, const std::string& path);
+
+    const std::vector<std::string>& search_paths() const {return m_search_paths;}
+    std::vector<std::string>& search_paths() {return m_search_paths;};
+
     virtual size_t document_count() const;
     /**
      * @brief load_document interprets document at the given node and path
@@ -781,6 +812,26 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
         wasp_require(staged_index <m_staged.size());
         return m_staged[staged_index].m_child_indices.size();
     }
+    bool is_decorative(size_t node_type) const
+    {
+        return std::find(m_decorative_node_types.begin(), 
+                        m_decorative_node_types.end(),
+                        node_type)
+                != m_decorative_node_types.end();
+    }
+    // Obtain non-decorative child count
+    virtual size_t staged_non_decorative_child_count(size_t staged_index) const
+    {
+        wasp_require(staged_index <m_staged.size());
+        return m_staged[staged_index].m_non_decorative_child_count;
+    }
+    // Obtain section count
+    // Child nodes can be separated by 'section' delimiters.
+    virtual size_t staged_section_count(size_t staged_index) const
+    {
+        wasp_require(staged_index <m_staged.size());
+        return m_staged[staged_index].m_section_count;
+    }
 
     /**
      * @brief commit_staged commits the staged tree node
@@ -854,26 +905,38 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @brief err - the error stream to report on
      */
     std::ostream&     m_error_stream;
-
+    // paths to search for files that are being included
+    std::vector<std::string> m_search_paths;
+    // Parsed tree nodes
     TreeNodePool_type m_nodes;
+    // Parsed failed?
     bool m_failed;
 
   protected:
     struct Stage
     {
-        Stage() : m_type(wasp::UNKNOWN) {}
+        Stage() : m_type(wasp::UNKNOWN),
+                  m_non_decorative_child_count(0),
+                  m_section_count(0) {}
         Stage(const Stage& orig)
             : m_type(orig.m_type)
+            , m_non_decorative_child_count(orig.m_non_decorative_child_count)
+            , m_section_count(orig.m_section_count)
             , m_name(orig.m_name)
             , m_child_indices(orig.m_child_indices)
         {
         }
 
         size_t              m_type;
+        size_t              m_non_decorative_child_count;
+        size_t              m_section_count;
         std::string         m_name;
         std::vector<size_t> m_child_indices;
     };
     std::vector<Stage> m_staged;
+    // Decorative node types
+    // Note: requires subclass to provide type set
+    std::vector<wasp::NODE> m_decorative_node_types;
     size_t             m_root_index;
     InterpNodeMap m_interp_node;
     NodeInterpMap m_node_interp;

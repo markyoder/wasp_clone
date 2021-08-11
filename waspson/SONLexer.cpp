@@ -1,13 +1,9 @@
-#line 2 "SONLexer.cpp"
-#line 2 "SONLexer.lex"
+#line 1 "SONLexer.cpp"
 /* This disables inclusion of unistd.h, which is not available under Visual C++
  * on Win32. The C++ scanner uses STL streams instead. */
 #define YY_NO_UNISTD_H
 
-
-
-
-#line 11 "SONLexer.cpp"
+#line 6 "SONLexer.cpp"
 
 #define  YY_INT_ALIGNED long int
 
@@ -15,8 +11,8 @@
 
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
-#define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 37
+#define YY_FLEX_MINOR_VERSION 6
+#define YY_FLEX_SUBMINOR_VERSION 4
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -28,6 +24,24 @@
      * altogether.
      */
     #define yyFlexLexer SONFlexLexer
+
+#ifdef yyalloc
+#define SONalloc_ALREADY_DEFINED
+#else
+#define yyalloc SONalloc
+#endif
+
+#ifdef yyrealloc
+#define SONrealloc_ALREADY_DEFINED
+#else
+#define yyrealloc SONrealloc
+#endif
+
+#ifdef yyfree
+#define SONfree_ALREADY_DEFINED
+#else
+#define yyfree SONfree
+#endif
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
 
@@ -95,73 +109,67 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
+#ifndef SIZE_MAX
+#define SIZE_MAX               (~(size_t)0)
+#endif
+
 #endif /* ! C99 */
 
 #endif /* ! FLEXINT_H */
 
 /* begin standard C++ headers. */
-#include <iostream> 
+#include <iostream>
 #include <errno.h>
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
 /* end standard C++ headers. */
 
-#ifdef __cplusplus
-
-/* The "const" storage-class-modifier is valid. */
-#define YY_USE_CONST
-
-#else	/* ! __cplusplus */
-
-/* C99 requires __STDC__ to be defined as 1. */
-#if defined (__STDC__)
-
-#define YY_USE_CONST
-
-#endif	/* defined (__STDC__) */
-#endif	/* ! __cplusplus */
-
-#ifdef YY_USE_CONST
+/* TODO: this is always defined, so inline it */
 #define yyconst const
+
+#if defined(__GNUC__) && __GNUC__ >= 3
+#define yynoreturn __attribute__((__noreturn__))
 #else
-#define yyconst
+#define yynoreturn
 #endif
 
 /* Returned upon end-of-file. */
 #define YY_NULL 0
 
-/* Promotes a possibly negative, possibly signed char to an unsigned
- * integer for use as an array index.  If the signed char is negative,
- * we want to instead treat it as an 8-bit unsigned char, hence the
- * double cast.
+/* Promotes a possibly negative, possibly signed char to an
+ *   integer in range [0..255] for use as an array index.
  */
-#define YY_SC_TO_UI(c) ((unsigned int) (unsigned char) c)
+#define YY_SC_TO_UI(c) ((YY_CHAR) (c))
 
 /* Enter a start condition.  This macro really ought to take a parameter,
  * but we do it the disgusting crufty way forced on us by the ()-less
  * definition of BEGIN.
  */
 #define BEGIN (yy_start) = 1 + 2 *
-
 /* Translate the current start state into a value that can be later handed
  * to BEGIN to return to the state.  The YYSTATE alias is for lex
  * compatibility.
  */
 #define YY_START (((yy_start) - 1) / 2)
 #define YYSTATE YY_START
-
 /* Action number for EOF rule of a given start state. */
 #define YY_STATE_EOF(state) (YY_END_OF_BUFFER + state + 1)
-
 /* Special action meaning "start processing a new file". */
 #define YY_NEW_FILE yyrestart( yyin  )
-
 #define YY_END_OF_BUFFER_CHAR 0
 
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k.
+ * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
+ * Ditto for the __ia64__ case accordingly.
+ */
+#define YY_BUF_SIZE 32768
+#else
 #define YY_BUF_SIZE 16384
+#endif /* __ia64__ */
 #endif
 
 /* The state buf must be large enough to hold one state per character in the main buffer.
@@ -178,13 +186,14 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 typedef size_t yy_size_t;
 #endif
 
-extern yy_size_t yyleng;
+extern int yyleng;
 
 #define EOB_ACT_CONTINUE_SCAN 0
 #define EOB_ACT_END_OF_FILE 1
 #define EOB_ACT_LAST_MATCH 2
-
+    
     #define YY_LESS_LINENO(n)
+    #define YY_LINENO_REWIND_TO(ptr)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -199,7 +208,6 @@ extern yy_size_t yyleng;
 		YY_DO_BEFORE_ACTION; /* set up yytext again */ \
 		} \
 	while ( 0 )
-
 #define unput(c) yyunput( c, (yytext_ptr)  )
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
@@ -207,7 +215,7 @@ extern yy_size_t yyleng;
 struct yy_buffer_state
 	{
 
-	std::istream* yy_input_file;
+	std::streambuf* yy_input_file;
 
 	char *yy_ch_buf;		/* input buffer */
 	char *yy_buf_pos;		/* current position in input buffer */
@@ -215,12 +223,12 @@ struct yy_buffer_state
 	/* Size of input buffer in bytes, not including room for EOB
 	 * characters.
 	 */
-	yy_size_t yy_buf_size;
+	int yy_buf_size;
 
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
 	 */
-	yy_size_t yy_n_chars;
+	int yy_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -243,7 +251,7 @@ struct yy_buffer_state
 
     int yy_bs_lineno; /**< The line count. */
     int yy_bs_column; /**< The column count. */
-    
+
 	/* Whether to try to fill the input buffer when we reach the
 	 * end of it.
 	 */
@@ -277,18 +285,16 @@ struct yy_buffer_state
 #define YY_CURRENT_BUFFER ( (yy_buffer_stack) \
                           ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
                           : NULL)
-
 /* Same as previous macro, but useful when we know that the buffer stack is not
  * NULL or when we need an lvalue. For internal use only.
  */
 #define YY_CURRENT_BUFFER_LVALUE (yy_buffer_stack)[(yy_buffer_stack_top)]
 
-void *SONalloc (yy_size_t  );
-void *SONrealloc (void *,yy_size_t  );
-void SONfree (void *  );
+void *yyalloc ( yy_size_t  );
+void *yyrealloc ( void *, yy_size_t  );
+void yyfree ( void *  );
 
 #define yy_new_buffer yy_create_buffer
-
 #define yy_set_interactive(is_interactive) \
 	{ \
 	if ( ! YY_CURRENT_BUFFER ){ \
@@ -298,7 +304,6 @@ void SONfree (void *  );
 	} \
 	YY_CURRENT_BUFFER_LVALUE->yy_is_interactive = is_interactive; \
 	}
-
 #define yy_set_bol(at_bol) \
 	{ \
 	if ( ! YY_CURRENT_BUFFER ){\
@@ -308,17 +313,16 @@ void SONfree (void *  );
 	} \
 	YY_CURRENT_BUFFER_LVALUE->yy_at_bol = at_bol; \
 	}
-
 #define YY_AT_BOL() (YY_CURRENT_BUFFER_LVALUE->yy_at_bol)
 
 /* Begin user sect3 */
-
-typedef char YY_CHAR;
+typedef flex_uint8_t YY_CHAR;
 
 #define yytext_ptr yytext
 
 #include "waspcore/FlexLexer.h"
-static yyconst flex_int32_t yy_nxt[][128] =
+
+static const flex_int32_t yy_nxt[][128] =
     {
     {
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
@@ -6382,11 +6386,10 @@ static yyconst flex_int32_t yy_nxt[][128] =
  */
 #define YY_DO_BEFORE_ACTION \
 	(yytext_ptr) = yy_bp; \
-	yyleng = (size_t) (yy_cp - yy_bp); \
+	yyleng = (int) (yy_cp - yy_bp); \
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-
 #define YY_NUM_RULES 41
 #define YY_END_OF_BUFFER 42
 /* This struct is not used in this scanner,
@@ -6396,7 +6399,7 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int32_t yy_accept[350] =
+static const flex_int32_t yy_accept[350] =
     {   0,
         0,    0,    0,    0,    0,    0,   42,   40,   32,   33,
        12,   40,   39,   40,   40,   26,   27,   22,   24,    5,
@@ -6438,7 +6441,7 @@ static yyconst flex_int32_t yy_accept[350] =
         4,    0,    0,    0,    4,    0,    0,    0,    0
     } ;
 
-static yyconst yy_state_type yy_NUL_trans[350] =
+static const yy_state_type yy_NUL_trans[350] =
     {   0,
         8,    8,   45,   45,    8,    8,    0,    0,    0,    0,
         0,   52,   54,    0,   56,    0,    0,    0,    0,    0,
@@ -6504,32 +6507,34 @@ typedef wasp::SONParser::token_type token_type;
  * by default returns 0, which is not of token_type. */
 #define yyterminate() return token::END
 
-/*** Flex Declarations and Options ***/
-/* enable c++ scanner class generation */
-/* change the name of the scanner class. results in "SONFlexLexer" */
-/*%option yyclass="wasp::SONLexerImpl"*/
-/* enable scanner to generate debug output. disable this for release
-* versions. */
-/*%option debug*/
-/* no support for include files is planned */
-/* enables the use of start condition stacks */
+#line 6510 "SONLexer.cpp"
+#line 25 "SONLexer.lex"
+ /*** Flex Declarations and Options ***/
+ /* enable c++ scanner class generation */
+ /* change the name of the scanner class. results in "SONFlexLexer" */
+ /*%option yyclass="wasp::SONLexerImpl"*/
+ /* enable scanner to generate debug output. disable this for release
+ * versions. */
+ /*%option debug*/
+ /* no support for include files is planned */
+ /* enables the use of start condition stacks */
 
 
-/* This string does not allow special characters '-','/'
-*  and should only occur in the context of reference
-*/
-/*
-* The 'execution unit' is a rebranded SCALE sequence construct
-* where the sequence started with the unit_start rule below
-* and terminated with unit_end rule below.
-* We reproduce it here to account for the input construct
-* while in transition...
-*/
-/* The following paragraph suffices to track locations accurately. Each time
-* yylex is invoked, the begin position is moved onto the end position. */
-#line 100 "SONLexer.lex"
+ /* This string does not allow special characters '-','/'
+ *  and should only occur in the context of reference
+ */
+ /*
+ * The 'execution unit' is a rebranded SCALE sequence construct
+ * where the sequence started with the unit_start rule below
+ * and terminated with unit_end rule below.
+ * We reproduce it here to account for the input construct
+ * while in transition...
+ */
+ /* The following paragraph suffices to track locations accurately. Each time
+ * yylex is invoked, the begin position is moved onto the end position. */
 #define YY_USER_ACTION  yylloc->columns(yyleng); file_offset+=yyleng;
-#line 6533 "SONLexer.cpp"
+#line 6536 "SONLexer.cpp"
+#line 6537 "SONLexer.cpp"
 
 #define INITIAL 0
 #define subtraction 1
@@ -6548,11 +6553,11 @@ typedef wasp::SONParser::token_type token_type;
 #endif
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy (char *,yyconst char *,int );
+static void yy_flex_strncpy ( char *, const char *, int );
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen (yyconst char * );
+static int yy_flex_strlen ( const char * );
 #endif
 
 #ifndef YY_NO_INPUT
@@ -6561,7 +6566,12 @@ static int yy_flex_strlen (yyconst char * );
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k */
+#define YY_READ_BUF_SIZE 16384
+#else
 #define YY_READ_BUF_SIZE 8192
+#endif /* __ia64__ */
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -6575,7 +6585,7 @@ static int yy_flex_strlen (yyconst char * );
 #ifndef YY_INPUT
 #define YY_INPUT(buf,result,max_size) \
 \
-	if ( (result = LexerInput( (char *) buf, max_size )) < 0 ) \
+	if ( (int)(result = LexerInput( (char *) buf, max_size )) < 0 ) \
 		YY_FATAL_ERROR( "input in flex scanner failed" );
 
 #endif
@@ -6617,7 +6627,7 @@ static int yy_flex_strlen (yyconst char * );
 
 /* Code executed at the end of each rule. */
 #ifndef YY_BREAK
-#define YY_BREAK break;
+#define YY_BREAK /*LINTED*/break;
 #endif
 
 #define YY_RULE_SETUP \
@@ -6630,22 +6640,10 @@ static int yy_flex_strlen (yyconst char * );
  */
 YY_DECL
 {
-	register yy_state_type yy_current_state;
-	register char *yy_cp, *yy_bp;
-	register int yy_act;
+	yy_state_type yy_current_state;
+	char *yy_cp, *yy_bp;
+	int yy_act;
     
-#line 103 "SONLexer.lex"
-
-
- /* code to place at the beginning of yylex() */
-
-    // reset location
-    yylloc->step();
-
- /*** BEGIN EXAMPLE - Change the wasp lexer rules below ***/
-
-#line 6648 "SONLexer.cpp"
-
 	if ( !(yy_init) )
 		{
 		(yy_init) = 1;
@@ -6658,10 +6656,10 @@ YY_DECL
 			(yy_start) = 1;	/* first start state */
 
 		if ( ! yyin )
-			yyin = & std::cin;
+			yyin.rdbuf(std::cin.rdbuf());
 
 		if ( ! yyout )
-			yyout = & std::cout;
+			yyout.rdbuf(std::cout.rdbuf());
 
 		if ( ! YY_CURRENT_BUFFER ) {
 			yyensure_buffer_stack ();
@@ -6672,7 +6670,21 @@ YY_DECL
 		yy_load_buffer_state(  );
 		}
 
-	while ( 1 )		/* loops until end-of-file is reached */
+	{
+#line 103 "SONLexer.lex"
+
+
+#line 106 "SONLexer.lex"
+ /* code to place at the beginning of yylex() */
+
+    // reset location
+    yylloc->step();
+
+ /*** BEGIN EXAMPLE - Change the wasp lexer rules below ***/
+
+#line 6685 "SONLexer.cpp"
+
+	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
 		yy_cp = (yy_c_buf_p);
 
@@ -6718,7 +6730,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 112 "SONLexer.lex"
+#line 113 "SONLexer.lex"
 {
     yy_push_state(execution_unit); // enter the 'unit' of execution
         capture_token(yylval,wasp::EXECUTION_UNIT_START);
@@ -6727,7 +6739,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 117 "SONLexer.lex"
+#line 118 "SONLexer.lex"
 {
     yy_pop_state(); // pop the execution state
     capture_token(yylval,wasp::EXECUTION_UNIT_END);
@@ -6736,7 +6748,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 122 "SONLexer.lex"
+#line 123 "SONLexer.lex"
 { // capture the subtraction, return the literal '-'
     yy_pop_state();
     capture_token(yylval,wasp::MINUS);
@@ -6745,7 +6757,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 127 "SONLexer.lex"
+#line 128 "SONLexer.lex"
 {
     capture_token(yylval,wasp::FILL_EXPR);
     return token::FILLER;
@@ -6753,7 +6765,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 131 "SONLexer.lex"
+#line 132 "SONLexer.lex"
 {
     capture_token(yylval,wasp::WASP_COMMA);
     return token::COMMA;
@@ -6761,7 +6773,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 135 "SONLexer.lex"
+#line 136 "SONLexer.lex"
 {
     capture_token(yylval,wasp::COLON);
     return token::COLON;
@@ -6769,7 +6781,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 139 "SONLexer.lex"
+#line 140 "SONLexer.lex"
 {
     capture_token(yylval,wasp::LTE);
     return token::LTE;
@@ -6777,7 +6789,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 143 "SONLexer.lex"
+#line 144 "SONLexer.lex"
 {
     capture_token(yylval,wasp::GTE);
     return token::GTE;
@@ -6785,7 +6797,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 147 "SONLexer.lex"
+#line 148 "SONLexer.lex"
 {
     capture_token(yylval,wasp::LT);
     return token::LT;
@@ -6793,7 +6805,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 151 "SONLexer.lex"
+#line 152 "SONLexer.lex"
 {
     capture_token(yylval,wasp::GT);
     return token::GT;
@@ -6801,7 +6813,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 155 "SONLexer.lex"
+#line 156 "SONLexer.lex"
 {
     capture_token(yylval,wasp::EQ);
     return token::EQ;
@@ -6809,7 +6821,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 159 "SONLexer.lex"
+#line 160 "SONLexer.lex"
 {
     capture_token(yylval,wasp::BANG);
     return token::BANG;
@@ -6817,7 +6829,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 163 "SONLexer.lex"
+#line 164 "SONLexer.lex"
 {
     capture_token(yylval,wasp::ASSIGN);
     return token::ASSIGN;
@@ -6825,7 +6837,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 167 "SONLexer.lex"
+#line 168 "SONLexer.lex"
 {
     capture_token(yylval,wasp::NEQ);
     return token::NEQ;
@@ -6833,7 +6845,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 171 "SONLexer.lex"
+#line 172 "SONLexer.lex"
 {
     capture_token(yylval,wasp::WASP_AND);
     return token::AND;
@@ -6841,7 +6853,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 175 "SONLexer.lex"
+#line 176 "SONLexer.lex"
 {
     capture_token(yylval,wasp::WASP_OR);
     return token::OR;
@@ -6849,7 +6861,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 179 "SONLexer.lex"
+#line 180 "SONLexer.lex"
 {
     capture_token(yylval,wasp::LBRACKET);
     return token::LBRACKET;
@@ -6857,7 +6869,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 183 "SONLexer.lex"
+#line 184 "SONLexer.lex"
 {
     capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
@@ -6865,7 +6877,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 187 "SONLexer.lex"
+#line 188 "SONLexer.lex"
 {
     capture_token(yylval,wasp::LBRACE);
     return token::LBRACE;
@@ -6873,7 +6885,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 191 "SONLexer.lex"
+#line 192 "SONLexer.lex"
 {
     capture_token(yylval,wasp::RBRACE);
     return token::RBRACE;
@@ -6881,7 +6893,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 195 "SONLexer.lex"
+#line 196 "SONLexer.lex"
 {
     capture_token(yylval,wasp::EXPONENT);
     return token::EXPONENT;
@@ -6889,7 +6901,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 199 "SONLexer.lex"
+#line 200 "SONLexer.lex"
 {
     capture_token(yylval,wasp::MULTIPLY);
     return token::MULTIPLY;
@@ -6897,7 +6909,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 203 "SONLexer.lex"
+#line 204 "SONLexer.lex"
 {
   capture_token(yylval,wasp::DIVIDE);
   return token::DIVIDE;
@@ -6905,7 +6917,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 207 "SONLexer.lex"
+#line 208 "SONLexer.lex"
 {
   capture_token(yylval,wasp::PLUS);
   return token::PLUS;
@@ -6913,7 +6925,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 211 "SONLexer.lex"
+#line 212 "SONLexer.lex"
 {
     capture_token(yylval,wasp::MINUS);
     return token::MINUS;
@@ -6921,7 +6933,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 215 "SONLexer.lex"
+#line 216 "SONLexer.lex"
 {
   capture_token(yylval,wasp::LPAREN);
   return token::LPAREN;
@@ -6929,7 +6941,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 219 "SONLexer.lex"
+#line 220 "SONLexer.lex"
 {
  capture_token(yylval,wasp::RPAREN);
  return token::RPAREN;
@@ -6941,18 +6953,18 @@ case 28:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 224 "SONLexer.lex"
+#line 225 "SONLexer.lex"
 {
     yy_push_state(subtraction); // if we have a minus sign immediately following, subtraction is occurring
-    capture_token(yylval,wasp::INT);
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 229 "SONLexer.lex"
+#line 230 "SONLexer.lex"
 {
-    capture_token(yylval,wasp::INT);
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 	YY_BREAK
@@ -6962,7 +6974,7 @@ case 30:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 234 "SONLexer.lex"
+#line 235 "SONLexer.lex"
 {
    // if we have a minus sign immediately following, subtraction is occurring
     yy_push_state(subtraction);
@@ -6972,7 +6984,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 241 "SONLexer.lex"
+#line 242 "SONLexer.lex"
 {
     capture_token(yylval,wasp::REAL);
     return token::DOUBLE;
@@ -6981,7 +6993,7 @@ YY_RULE_SETUP
 /* gobble up white-spaces */
 case 32:
 YY_RULE_SETUP
-#line 246 "SONLexer.lex"
+#line 247 "SONLexer.lex"
 {
     yylloc->step();
 }
@@ -6990,7 +7002,7 @@ YY_RULE_SETUP
 case 33:
 /* rule 33 can match eol */
 YY_RULE_SETUP
-#line 251 "SONLexer.lex"
+#line 252 "SONLexer.lex"
 {
     yylloc->lines(yyleng); yylloc->step();
     interpreter.push_line_offset(file_offset-yyleng);
@@ -6998,7 +7010,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 256 "SONLexer.lex"
+#line 257 "SONLexer.lex"
 {
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
@@ -7006,7 +7018,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 260 "SONLexer.lex"
+#line 261 "SONLexer.lex"
 {
     capture_token(yylval,wasp::WASP_TRUE);
     return token::TOKEN_TRUE;
@@ -7014,7 +7026,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 264 "SONLexer.lex"
+#line 265 "SONLexer.lex"
 {
     capture_token(yylval,wasp::WASP_FALSE);
     return token::TOKEN_FALSE;
@@ -7022,7 +7034,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 269 "SONLexer.lex"
+#line 270 "SONLexer.lex"
 {
     capture_token(yylval,wasp::STRING);
     return token::STRING;
@@ -7033,7 +7045,7 @@ case 38:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 273 "SONLexer.lex"
+#line 274 "SONLexer.lex"
 {
    // if we have a minus sign immediately following, subtraction is occurring
     yy_push_state(subtraction);
@@ -7043,7 +7055,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 279 "SONLexer.lex"
+#line 280 "SONLexer.lex"
 {
     capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
@@ -7053,7 +7065,7 @@ YY_RULE_SETUP
   * NOTE: references do not support whitespace */
 case 40:
 YY_RULE_SETUP
-#line 286 "SONLexer.lex"
+#line 287 "SONLexer.lex"
 {
     return static_cast<token_type>(*yytext);
 }
@@ -7061,10 +7073,10 @@ YY_RULE_SETUP
 /*** END EXAMPLE - Change the wasp lexer rules above ***/
 case 41:
 YY_RULE_SETUP
-#line 292 "SONLexer.lex"
+#line 293 "SONLexer.lex"
 ECHO;
 	YY_BREAK
-#line 7068 "SONLexer.cpp"
+#line 7079 "SONLexer.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(subtraction):
 case YY_STATE_EOF(execution_unit):
@@ -7091,7 +7103,7 @@ case YY_STATE_EOF(execution_unit):
 			 * back-up) that will match for the new input source.
 			 */
 			(yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_n_chars;
-			YY_CURRENT_BUFFER_LVALUE->yy_input_file = yyin;
+			YY_CURRENT_BUFFER_LVALUE->yy_input_file = yyin.rdbuf();
 			YY_CURRENT_BUFFER_LVALUE->yy_buffer_status = YY_BUFFER_NORMAL;
 			}
 
@@ -7197,14 +7209,33 @@ case YY_STATE_EOF(execution_unit):
 			"fatal flex scanner internal error--no action found" );
 	} /* end of action switch */
 		} /* end of scanning one token */
+	} /* end of user's declarations */
 } /* end of yylex */
 
 /* The contents of this function are C++ specific, so the () macro is not used.
+ * This constructor simply maintains backward compatibility.
+ * DEPRECATED
  */
-yyFlexLexer::yyFlexLexer( std::istream* arg_yyin, std::ostream* arg_yyout )
+yyFlexLexer::yyFlexLexer( std::istream* arg_yyin, std::ostream* arg_yyout ):
+	yyin(arg_yyin ? arg_yyin->rdbuf() : std::cin.rdbuf()),
+	yyout(arg_yyout ? arg_yyout->rdbuf() : std::cout.rdbuf())
 {
-	yyin = arg_yyin;
-	yyout = arg_yyout;
+	ctor_common();
+}
+
+/* The contents of this function are C++ specific, so the () macro is not used.
+ */
+yyFlexLexer::yyFlexLexer( std::istream& arg_yyin, std::ostream& arg_yyout ):
+	yyin(arg_yyin.rdbuf()),
+	yyout(arg_yyout.rdbuf())
+{
+	ctor_common();
+}
+
+/* The contents of this function are C++ specific, so the () macro is not used.
+ */
+void yyFlexLexer::ctor_common()
+{
 	yy_c_buf_p = 0;
 	yy_init = 0;
 	yy_start = 0;
@@ -7221,7 +7252,7 @@ yyFlexLexer::yyFlexLexer( std::istream* arg_yyin, std::ostream* arg_yyout )
 	yy_start_stack_ptr = yy_start_stack_depth = 0;
 	yy_start_stack = NULL;
 
-	yy_buffer_stack = 0;
+	yy_buffer_stack = NULL;
 	yy_buffer_stack_top = 0;
 	yy_buffer_stack_max = 0;
 
@@ -7234,23 +7265,36 @@ yyFlexLexer::yyFlexLexer( std::istream* arg_yyin, std::ostream* arg_yyout )
 yyFlexLexer::~yyFlexLexer()
 {
 	delete [] yy_state_buf;
-	SONfree(yy_start_stack  );
+	yyfree( yy_start_stack  );
 	yy_delete_buffer( YY_CURRENT_BUFFER );
-	SONfree(yy_buffer_stack  );
+	yyfree( yy_buffer_stack  );
+}
+
+/* The contents of this function are C++ specific, so the () macro is not used.
+ */
+void yyFlexLexer::switch_streams( std::istream& new_in, std::ostream& new_out )
+{
+	// was if( new_in )
+	yy_delete_buffer( YY_CURRENT_BUFFER );
+	yy_switch_to_buffer( yy_create_buffer( new_in, YY_BUF_SIZE  ) );
+
+	// was if( new_out )
+	yyout.rdbuf(new_out.rdbuf());
 }
 
 /* The contents of this function are C++ specific, so the () macro is not used.
  */
 void yyFlexLexer::switch_streams( std::istream* new_in, std::ostream* new_out )
 {
-	if ( new_in )
-		{
-		yy_delete_buffer( YY_CURRENT_BUFFER );
-		yy_switch_to_buffer( yy_create_buffer( new_in, YY_BUF_SIZE  ) );
-		}
+	if( ! new_in ) {
+		new_in = &yyin;
+	}
 
-	if ( new_out )
-		yyout = new_out;
+	if ( ! new_out ) {
+		new_out = &yyout;
+	}
+
+	switch_streams(*new_in, *new_out);
 }
 
 #ifdef YY_INTERACTIVE
@@ -7259,33 +7303,33 @@ int yyFlexLexer::LexerInput( char* buf, int /* max_size */ )
 int yyFlexLexer::LexerInput( char* buf, int max_size )
 #endif
 {
-	if ( yyin->eof() || yyin->fail() )
+	if ( yyin.eof() || yyin.fail() )
 		return 0;
 
 #ifdef YY_INTERACTIVE
-	yyin->get( buf[0] );
+	yyin.get( buf[0] );
 
-	if ( yyin->eof() )
+	if ( yyin.eof() )
 		return 0;
 
-	if ( yyin->bad() )
+	if ( yyin.bad() )
 		return -1;
 
 	return 1;
 
 #else
-	(void) yyin->read( buf, max_size );
+	(void) yyin.read( buf, max_size );
 
-	if ( yyin->bad() )
+	if ( yyin.bad() )
 		return -1;
 	else
-		return yyin->gcount();
+		return yyin.gcount();
 #endif
 }
 
 void yyFlexLexer::LexerOutput( const char* buf, int size )
 {
-	(void) yyout->write( buf, size );
+	(void) yyout.write( buf, size );
 }
 
 /* yy_get_next_buffer - try to read in a new buffer
@@ -7297,9 +7341,9 @@ void yyFlexLexer::LexerOutput( const char* buf, int size )
  */
 int yyFlexLexer::yy_get_next_buffer()
 {
-    	register char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
-	register char *source = (yytext_ptr);
-	register int number_to_move, i;
+    	char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
+	char *source = (yytext_ptr);
+	int number_to_move, i;
 	int ret_val;
 
 	if ( (yy_c_buf_p) > &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars) + 1] )
@@ -7328,7 +7372,7 @@ int yyFlexLexer::yy_get_next_buffer()
 	/* Try to read more data. */
 
 	/* First move last chars to start of buffer. */
-	number_to_move = (int) ((yy_c_buf_p) - (yytext_ptr)) - 1;
+	number_to_move = (int) ((yy_c_buf_p) - (yytext_ptr) - 1);
 
 	for ( i = 0; i < number_to_move; ++i )
 		*(dest++) = *(source++);
@@ -7341,7 +7385,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 	else
 		{
-			yy_size_t num_to_read =
+			int num_to_read =
 			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
@@ -7355,7 +7399,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 			if ( b->yy_is_our_buffer )
 				{
-				yy_size_t new_size = b->yy_buf_size * 2;
+				int new_size = b->yy_buf_size * 2;
 
 				if ( new_size <= 0 )
 					b->yy_buf_size += b->yy_buf_size / 8;
@@ -7364,11 +7408,12 @@ int yyFlexLexer::yy_get_next_buffer()
 
 				b->yy_ch_buf = (char *)
 					/* Include room in for 2 EOB chars. */
-					SONrealloc((void *) b->yy_ch_buf,b->yy_buf_size + 2  );
+					yyrealloc( (void *) b->yy_ch_buf,
+							 (yy_size_t) (b->yy_buf_size + 2)  );
 				}
 			else
 				/* Can't grow it, we don't own it. */
-				b->yy_ch_buf = 0;
+				b->yy_ch_buf = NULL;
 
 			if ( ! b->yy_ch_buf )
 				YY_FATAL_ERROR(
@@ -7410,12 +7455,15 @@ int yyFlexLexer::yy_get_next_buffer()
 	else
 		ret_val = EOB_ACT_CONTINUE_SCAN;
 
-	if ((yy_size_t) ((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
+	if (((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
 		/* Extend the array by 50%, plus the number we really need. */
-		yy_size_t new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
-		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) SONrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size  );
+		int new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
+		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyrealloc(
+			(void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, (yy_size_t) new_size  );
 		if ( ! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
 			YY_FATAL_ERROR( "out of dynamic memory in yy_get_next_buffer()" );
+		/* "- 2" to take care of EOB's */
+		YY_CURRENT_BUFFER_LVALUE->yy_buf_size = (int) (new_size - 2);
 	}
 
 	(yy_n_chars) += number_to_move;
@@ -7431,8 +7479,8 @@ int yyFlexLexer::yy_get_next_buffer()
 
     yy_state_type yyFlexLexer::yy_get_previous_state()
 {
-	register yy_state_type yy_current_state;
-	register char *yy_cp;
+	yy_state_type yy_current_state;
+	char *yy_cp;
     
 	yy_current_state = (yy_start);
 	yy_current_state += YY_AT_BOL();
@@ -7462,8 +7510,8 @@ int yyFlexLexer::yy_get_next_buffer()
  */
     yy_state_type yyFlexLexer::yy_try_NUL_trans( yy_state_type yy_current_state )
 {
-	register int yy_is_jam;
-    	register char *yy_cp = (yy_c_buf_p);
+	int yy_is_jam;
+    	char *yy_cp = (yy_c_buf_p);
 
 	yy_current_state = yy_NUL_trans[yy_current_state];
 	yy_is_jam = (yy_current_state == 0);
@@ -7480,9 +7528,10 @@ int yyFlexLexer::yy_get_next_buffer()
 		return yy_is_jam ? 0 : yy_current_state;
 }
 
-    void yyFlexLexer::yyunput( int c, register char* yy_bp)
+#ifndef YY_NO_UNPUT
+    void yyFlexLexer::yyunput( int c, char* yy_bp)
 {
-	register char *yy_cp;
+	char *yy_cp;
     
     yy_cp = (yy_c_buf_p);
 
@@ -7492,10 +7541,10 @@ int yyFlexLexer::yy_get_next_buffer()
 	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		register yy_size_t number_to_move = (yy_n_chars) + 2;
-		register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
+		int number_to_move = (yy_n_chars) + 2;
+		char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
 					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
-		register char *source =
+		char *source =
 				&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move];
 
 		while ( source > YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
@@ -7504,7 +7553,7 @@ int yyFlexLexer::yy_get_next_buffer()
 		yy_cp += (int) (dest - source);
 		yy_bp += (int) (dest - source);
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars =
-			(yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
+			(yy_n_chars) = (int) YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
 
 		if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 			YY_FATAL_ERROR( "flex scanner push-back overflow" );
@@ -7516,6 +7565,7 @@ int yyFlexLexer::yy_get_next_buffer()
 	(yy_hold_char) = *yy_cp;
 	(yy_c_buf_p) = yy_cp;
 }
+#endif
 
     int yyFlexLexer::yyinput()
 {
@@ -7535,7 +7585,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 		else
 			{ /* need more input */
-			yy_size_t offset = (yy_c_buf_p) - (yytext_ptr);
+			int offset = (int) ((yy_c_buf_p) - (yytext_ptr));
 			++(yy_c_buf_p);
 
 			switch ( yy_get_next_buffer(  ) )
@@ -7559,7 +7609,7 @@ int yyFlexLexer::yy_get_next_buffer()
 				case EOB_ACT_END_OF_FILE:
 					{
 					if ( yywrap(  ) )
-						return EOF;
+						return 0;
 
 					if ( ! (yy_did_buffer_switch_on_eof) )
 						YY_NEW_FILE;
@@ -7591,7 +7641,7 @@ int yyFlexLexer::yy_get_next_buffer()
  * 
  * @note This function does not reset the start condition to @c INITIAL .
  */
-    void yyFlexLexer::yyrestart( std::istream* input_file )
+    void yyFlexLexer::yyrestart( std::istream& input_file )
 {
     
 	if ( ! YY_CURRENT_BUFFER ){
@@ -7602,6 +7652,19 @@ int yyFlexLexer::yy_get_next_buffer()
 
 	yy_init_buffer( YY_CURRENT_BUFFER, input_file );
 	yy_load_buffer_state(  );
+}
+
+/** Delegate to the new version that takes an istream reference.
+ * @param input_file A readable stream.
+ * 
+ * @note This function does not reset the start condition to @c INITIAL .
+ */
+void yyFlexLexer::yyrestart( std::istream* input_file )
+{
+	if( ! input_file ) {
+		input_file = &yyin;
+	}
+	yyrestart( *input_file );
 }
 
 /** Switch to a different input buffer.
@@ -7643,7 +7706,7 @@ int yyFlexLexer::yy_get_next_buffer()
 {
     	(yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_n_chars;
 	(yytext_ptr) = (yy_c_buf_p) = YY_CURRENT_BUFFER_LVALUE->yy_buf_pos;
-	yyin = YY_CURRENT_BUFFER_LVALUE->yy_input_file;
+	yyin.rdbuf(YY_CURRENT_BUFFER_LVALUE->yy_input_file);
 	(yy_hold_char) = *(yy_c_buf_p);
 }
 
@@ -7653,11 +7716,11 @@ int yyFlexLexer::yy_get_next_buffer()
  * 
  * @return the allocated buffer state.
  */
-    YY_BUFFER_STATE yyFlexLexer::yy_create_buffer( std::istream* file, int size )
+    YY_BUFFER_STATE yyFlexLexer::yy_create_buffer( std::istream& file, int size )
 {
 	YY_BUFFER_STATE b;
     
-	b = (YY_BUFFER_STATE) SONalloc(sizeof( struct yy_buffer_state )  );
+	b = (YY_BUFFER_STATE) yyalloc( sizeof( struct yy_buffer_state )  );
 	if ( ! b )
 		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
@@ -7666,7 +7729,7 @@ int yyFlexLexer::yy_get_next_buffer()
 	/* yy_ch_buf has to be 2 characters longer than the size given because
 	 * we need to put in 2 end-of-buffer characters.
 	 */
-	b->yy_ch_buf = (char *) SONalloc(b->yy_buf_size + 2  );
+	b->yy_ch_buf = (char *) yyalloc( (yy_size_t) (b->yy_buf_size + 2)  );
 	if ( ! b->yy_ch_buf )
 		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
@@ -7675,6 +7738,17 @@ int yyFlexLexer::yy_get_next_buffer()
 	yy_init_buffer( b, file );
 
 	return b;
+}
+
+/** Delegate creation of buffers to the new version that takes an istream reference.
+ * @param file A readable stream.
+ * @param size The character buffer size in bytes. When in doubt, use @c YY_BUF_SIZE.
+ * 
+ * @return the allocated buffer state.
+ */
+	YY_BUFFER_STATE yyFlexLexer::yy_create_buffer( std::istream* file, int size )
+{
+	return yy_create_buffer( *file, size );
 }
 
 /** Destroy the buffer.
@@ -7691,23 +7765,23 @@ int yyFlexLexer::yy_get_next_buffer()
 		YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE) 0;
 
 	if ( b->yy_is_our_buffer )
-		SONfree((void *) b->yy_ch_buf  );
+		yyfree( (void *) b->yy_ch_buf  );
 
-	SONfree((void *) b  );
+	yyfree( (void *) b  );
 }
 
 /* Initializes or reinitializes a buffer.
  * This function is sometimes called more than once on the same buffer,
  * such as during a yyrestart() or at EOF.
  */
-    void yyFlexLexer::yy_init_buffer( YY_BUFFER_STATE b, std::istream* file )
+    void yyFlexLexer::yy_init_buffer( YY_BUFFER_STATE b, std::istream& file )
 
 {
 	int oerrno = errno;
     
 	yy_flush_buffer( b );
 
-	b->yy_input_file = file;
+	b->yy_input_file = file.rdbuf();
 	b->yy_fill_buffer = 1;
 
     /* If b is the current buffer, then yy_init_buffer was _probably_
@@ -7815,15 +7889,15 @@ void yyFlexLexer::yyensure_buffer_stack(void)
 		 * scanner will even need a stack. We use 2 instead of 1 to avoid an
 		 * immediate realloc on the next call.
          */
-		num_to_alloc = 1;
-		(yy_buffer_stack) = (struct yy_buffer_state**)SONalloc
+      num_to_alloc = 1; /* After all that talk, this was set to 1 anyways... */
+		(yy_buffer_stack) = (struct yy_buffer_state**)yyalloc
 								(num_to_alloc * sizeof(struct yy_buffer_state*)
 								);
 		if ( ! (yy_buffer_stack) )
 			YY_FATAL_ERROR( "out of dynamic memory in yyensure_buffer_stack()" );
-								  
+
 		memset((yy_buffer_stack), 0, num_to_alloc * sizeof(struct yy_buffer_state*));
-				
+
 		(yy_buffer_stack_max) = num_to_alloc;
 		(yy_buffer_stack_top) = 0;
 		return;
@@ -7832,10 +7906,10 @@ void yyFlexLexer::yyensure_buffer_stack(void)
 	if ((yy_buffer_stack_top) >= ((yy_buffer_stack_max)) - 1){
 
 		/* Increase the buffer to prepare for a possible push. */
-		int grow_size = 8 /* arbitrary grow size */;
+		yy_size_t grow_size = 8 /* arbitrary grow size */;
 
 		num_to_alloc = (yy_buffer_stack_max) + grow_size;
-		(yy_buffer_stack) = (struct yy_buffer_state**)SONrealloc
+		(yy_buffer_stack) = (struct yy_buffer_state**)yyrealloc
 								((yy_buffer_stack),
 								num_to_alloc * sizeof(struct yy_buffer_state*)
 								);
@@ -7848,20 +7922,21 @@ void yyFlexLexer::yyensure_buffer_stack(void)
 	}
 }
 
-    void yyFlexLexer::yy_push_state( int new_state )
+    void yyFlexLexer::yy_push_state( int _new_state )
 {
     	if ( (yy_start_stack_ptr) >= (yy_start_stack_depth) )
 		{
 		yy_size_t new_size;
 
 		(yy_start_stack_depth) += YY_START_STACK_INCR;
-		new_size = (yy_start_stack_depth) * sizeof( int );
+		new_size = (yy_size_t) (yy_start_stack_depth) * sizeof( int );
 
 		if ( ! (yy_start_stack) )
-			(yy_start_stack) = (int *) SONalloc(new_size  );
+			(yy_start_stack) = (int *) yyalloc( new_size  );
 
 		else
-			(yy_start_stack) = (int *) SONrealloc((void *) (yy_start_stack),new_size  );
+			(yy_start_stack) = (int *) yyrealloc(
+					(void *) (yy_start_stack), new_size  );
 
 		if ( ! (yy_start_stack) )
 			YY_FATAL_ERROR( "out of memory expanding start-condition stack" );
@@ -7869,7 +7944,7 @@ void yyFlexLexer::yyensure_buffer_stack(void)
 
 	(yy_start_stack)[(yy_start_stack_ptr)++] = YY_START;
 
-	BEGIN(new_state);
+	BEGIN(_new_state);
 }
 
     void yyFlexLexer::yy_pop_state()
@@ -7889,7 +7964,7 @@ void yyFlexLexer::yyensure_buffer_stack(void)
 #define YY_EXIT_FAILURE 2
 #endif
 
-void yyFlexLexer::LexerError( yyconst char msg[] )
+void yyFlexLexer::LexerError( const char* msg )
 {
     	std::cerr << msg << std::endl;
 	exit( YY_EXIT_FAILURE );
@@ -7919,18 +7994,19 @@ void yyFlexLexer::LexerError( yyconst char msg[] )
  */
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy (char* s1, yyconst char * s2, int n )
+static void yy_flex_strncpy (char* s1, const char * s2, int n )
 {
-	register int i;
+		
+	int i;
 	for ( i = 0; i < n; ++i )
 		s1[i] = s2[i];
 }
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen (yyconst char * s )
+static int yy_flex_strlen (const char * s )
 {
-	register int n;
+	int n;
 	for ( n = 0; s[n]; ++n )
 		;
 
@@ -7938,13 +8014,14 @@ static int yy_flex_strlen (yyconst char * s )
 }
 #endif
 
-void *SONalloc (yy_size_t  size )
+void *yyalloc (yy_size_t  size )
 {
-	return (void *) malloc( size );
+			return malloc(size);
 }
 
-void *SONrealloc  (void * ptr, yy_size_t  size )
+void *yyrealloc  (void * ptr, yy_size_t  size )
 {
+		
 	/* The cast to (char *) in the following accommodates both
 	 * implementations that use char* generic pointers, and those
 	 * that use void* generic pointers.  It works with the latter
@@ -7952,18 +8029,17 @@ void *SONrealloc  (void * ptr, yy_size_t  size )
 	 * any pointer type to void*, and deal with argument conversions
 	 * as though doing an assignment.
 	 */
-	return (void *) realloc( (char *) ptr, size );
+	return realloc(ptr, size);
 }
 
-void SONfree (void * ptr )
+void yyfree (void * ptr )
 {
-	free( (char *) ptr );	/* see SONrealloc() for (char *) cast */
+			free( (char *) ptr );	/* see yyrealloc() for (char *) cast */
 }
 
 #define YYTABLES_NAME "yytables"
 
-#line 292 "SONLexer.lex"
-
+#line 293 "SONLexer.lex"
 
 
 namespace wasp {
@@ -7988,7 +8064,7 @@ void SONLexerImpl::set_debug(bool b)
 }
 void SONLexerImpl::rewind()
 {
-    yyin->seekg(-yyleng,std::ios_base::cur);
+    yyin.seekg(-yyleng,std::ios_base::cur);
     yyless(0);
 }
 void SONLexerImpl::capture_token(

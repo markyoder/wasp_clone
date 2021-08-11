@@ -49,14 +49,15 @@ INTEGER {WHOLE}
 EXPONENT [eE]{WHOLE}
 
 DOUBLE {WHOLE}?\.{FRAC}?{EXPONENT}?|{WHOLE}\.({FRAC}?{EXPONENT}?)?|{WHOLE}\.?{EXPONENT}
-
-STRING ([A-Za-z0-9_\.\-])+
+NUMBER {DOUBLE}|{INTEGER}
+STRING ([A-Za-z0-9_\.\-\+:])+
 
 
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
 SINGLE_QUOTED_STRING \'([^\'\n])*\'
 QSTRING {DOUBLE_QUOTED_STRING}|{SINGLE_QUOTED_STRING}
-COMMENT ![^\n]*
+UNICODE [^\x00-\x7F]+
+COMMENT !([^\n]|{UNICODE})*
 MINUS -
 COMMA ,
 SEMICOLON ;
@@ -65,6 +66,8 @@ LBRACKET \[
 RBRACKET \]
 FSLASH \/
 INCLUDE_PATH [^ \t\n][^\n!]*
+FILL_EXPR <[^>]*>|{NUMBER}\*({NUMBER}|{STRING}) 
+
 
  /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
@@ -81,6 +84,10 @@ INCLUDE_PATH [^ \t\n][^\n!]*
 %}
  /*** BEGIN EXAMPLE - Change the wasp lexer rules below ***/
 
+{FILL_EXPR} {
+    capture_token(yylval,wasp::FILL_EXPR);
+    return token::FILL_EXPR;
+}
 {MINUS} {
     capture_token(yylval,wasp::MINUS);
     return token::MINUS;
@@ -115,13 +122,8 @@ INCLUDE_PATH [^ \t\n][^\n!]*
     return token::DOUBLE;
 }
 {INTEGER} {
-    capture_token(yylval,wasp::INT);
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
-}
-
- /* gobble up white-spaces */
-<*>[ \t\r]+ {
-    yylloc->step();
 }
 
  /* gobble up end-of-lines */
@@ -155,6 +157,11 @@ include {
     return token::COMMENT;
 }
 
+ /* gobble up white-spaces */
+<*>[ \t\r]+|{UNICODE} {
+    yylloc->step();
+}
+
  /* pass all other characters up to bison*/
 . {
     return static_cast<token_type>(*yytext);
@@ -186,7 +193,7 @@ void VIILexerImpl::set_debug(bool b)
 }
 void VIILexerImpl::rewind()
 {
-    yyin->seekg(-yyleng,std::ios_base::cur);
+    yyin.seekg(-yyleng,std::ios_base::cur);
     yyless(0);
 }
 void VIILexerImpl::capture_token(

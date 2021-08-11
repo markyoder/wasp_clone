@@ -1,4 +1,4 @@
-flex -Caf -v VIILexer.lex
+flex -Caf -8 -v VIILexer.lex
 sed -i '' 's/#include <FlexLexer.h>/#include \"waspcore\/FlexLexer.h\"/' VIILexer.cpp 
 bison --version
 bison VIIParser.bison --report=state --report=lookahead --report=solved  -g

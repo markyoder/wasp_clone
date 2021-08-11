@@ -29,10 +29,10 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    if (argc != 3 && (argc != 2 || std::string(argv[3]) != "--nondec"))
+    if (argc < 3)
     {
         std::cout << "Usage: " << std::endl;
-        std::cout << "\t" << argv[0] << " schema inputFile [--nondec]" << std::endl;
+        std::cout << "\t" << argv[0] << " schema inputFile [-I/path/to/include] [--nondec]" << std::endl;
         std::cout << "\ti.e., " << argv[0]
                   << " /path/to/definition.son /path/to/some/input "
                   << std::endl;
@@ -42,12 +42,17 @@ int main(int argc, char** argv)
     }
 
     bool omit_dec = false;
+    int arg_count = argc;
     if (std::string(argv[argc - 1]) == "--nondec")
     {
         omit_dec = true;
+        --arg_count;
     }
-
     DefaultVIInterpreter parser;
+    if (std::string(argv[arg_count-1]).substr(0,2) == "-I")
+    {
+        parser.search_paths().push_back(std::string(argv[arg_count-1]).substr(2));
+    }
 
     DefaultSONInterpreter schema;
     bool                  schema_failed = !schema.parseFile(argv[1]);

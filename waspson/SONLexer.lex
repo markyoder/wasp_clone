@@ -43,16 +43,16 @@ typedef wasp::SONParser::token_type token_type;
 %x subtraction
 %s execution_unit
 
-INT \-?[0-9]+
-EXPONENT [eE][\+\-]?{INT}
-DOUBLE {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}{EXPONENT}|\-\.{INT}{EXPONENT}?
+INTEGER \-?[0-9]+
+EXPONENT [eE][\+\-]?{INTEGER}
+DOUBLE {INTEGER}?\.{INTEGER}{EXPONENT}?|{INTEGER}\.({INTEGER}{EXPONENT}?)?|{INTEGER}{EXPONENT}|\-\.{INTEGER}{EXPONENT}?
 
 STRING [A-Za-z_]([A-Za-z0-9_])*
-FILLER_REPEAT [0-9]+[rR][' ']*({INT}|{DOUBLE})
-FILLER_ALTERNATE [0-9]+[pP][' ']*({INT}|{DOUBLE})
-FILLER_FILL [fF]({INT}|{DOUBLE})
-FILLER_LINEAR_INTERP [0-9]+[iI][' ']*({INT}|{DOUBLE})[' ']+({INT}|{DOUBLE})
-FILLER_LOG_INTERP [0-9]+[lL][' ']*({INT}|{DOUBLE})[' ']+({INT}|{DOUBLE})
+FILLER_REPEAT [0-9]+[rR][' ']*({INTEGER}|{DOUBLE})
+FILLER_ALTERNATE [0-9]+[pP][' ']*({INTEGER}|{DOUBLE})
+FILLER_FILL [fF]({INTEGER}|{DOUBLE})
+FILLER_LINEAR_INTERP [0-9]+[iI][' ']*({INTEGER}|{DOUBLE})[' ']+({INTEGER}|{DOUBLE})
+FILLER_LOG_INTERP [0-9]+[lL][' ']*({INTEGER}|{DOUBLE})[' ']+({INTEGER}|{DOUBLE})
 FILLER {FILLER_REPEAT}|{FILLER_ALTERNATE}|{FILLER_FILL}|{FILLER_LINEAR_INTERP}|{FILLER_LOG_INTERP}
 
 
@@ -221,13 +221,13 @@ COLON :
  return token::RPAREN;
 }
  /* Cannot match this rule when in the subtraction state, it will override as a longer match */
-<INITIAL,execution_unit>{INT}/\- {
+<INITIAL,execution_unit>{INTEGER}/\- {
     yy_push_state(subtraction); // if we have a minus sign immediately following, subtraction is occurring
-    capture_token(yylval,wasp::INT);
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
-<INITIAL,execution_unit>{INT} {
-    capture_token(yylval,wasp::INT);
+<INITIAL,execution_unit>{INTEGER} {
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
  /* Cannot match this rule when in the subtraction state, it will override as a longer match */
@@ -313,7 +313,7 @@ void SONLexerImpl::set_debug(bool b)
 }
 void SONLexerImpl::rewind()
 {
-    yyin->seekg(-yyleng,std::ios_base::cur);
+    yyin.seekg(-yyleng,std::ios_base::cur);
     yyless(0);
 }
 void SONLexerImpl::capture_token(

@@ -18,7 +18,6 @@ using namespace wasp;
 
 typedef TokenPool<unsigned int, unsigned int, unsigned int> TP;
 typedef TreeNodePool<unsigned int, unsigned int, TP>        TNP;
-typedef DefaultVIInterpreter           VIInterp;
 typedef DefaultSONInterpreter          SONInterp;
 typedef VIINodeView                    VIINV;
 typedef SONNodeView                    SONNV;
@@ -33,19 +32,27 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    if (argc != 3)
+    if (argc < 3)
     {
         std::cerr
             << "Workbench Analysis Sequence Processor - VII to JSON Converter"
             << std::endl
             << " Usage: " << argv[0]
-            << " path/to/SON/formatted/schema path/to/VII/formatted/input"
+            << " path/to/SON/formatted/schema path/to/VII/formatted/input [-I/path/to/include]"
             << std::endl
             << " Usage: " << argv[0] << " --version\t(print version info)"
             << std::endl;
         return 1;
     }
-
+    DefaultVIInterpreter parser;
+    if (argc == 4)
+    {
+        std::string argI = argv[3];
+        if (argI.size() > 2 && argI.substr(0,2) == "-I")
+        {
+            parser.search_paths().push_back(argI.substr(2));
+        } 
+    }
     // open schema - if opening of file fails, return 1
     std::ifstream schema_file(argv[1]);
     if (schema_file.fail() || schema_file.bad())
@@ -70,7 +77,6 @@ int main(int argc, char** argv)
 
     
     // Construct the definition - if construction fails, return 1
-    VIInterp parser;
     std::stringstream                    definition_errors;
     if (!HIVE::create_definition(parser.definition(), schema_root, definition_errors, false))
     {

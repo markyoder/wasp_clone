@@ -21,6 +21,7 @@
 #include "waspcore/Definition.h"
 
 #include "waspcore/decl.h"
+#include "waspcore/location.hh"
 
 /** The wasp namespace is used to encapsulate the three parser classes
  * wasp::VIIParser, wasp::VIILexerImpl and wasp::VIIInterpreter */
@@ -101,6 +102,7 @@ class WASP_PUBLIC VIInterpreter : public Interpreter<S>
   public:
     typedef S                              Storage_type;
     typedef std::shared_ptr<VIInterpreter> SharedPtr;
+    typedef Interpreter<S>                 Super;
     VIInterpreter();
     VIInterpreter(std::ostream& err);
     virtual ~VIInterpreter();
@@ -138,6 +140,32 @@ class WASP_PUBLIC VIInterpreter : public Interpreter<S>
     void setSingleParse(bool s) { singleParse = s; }
     bool                     single_parse() const { return singleParse; }
 
+    virtual bool process_staged_node(size_t& new_staged_index,
+                                    const std::string& stage_name,
+                                    size_t node_index,
+                                    const location& loc,
+                                    std::ostream& err);
+    /**
+     * Processes the document command statement
+     * The command statement is composed of a document part
+     * (value, forward slash, comment, declarator or keyed-balue, comma
+     *  or semicolon). Depending on the state of the parse these parts
+     * are captured into the parse-tree differently. 
+     * If the part is aliased to an index or even-or-odd, etc, the 
+     * resulting staged node is named appropriately as dictated by the 
+     * definition.
+     * @param new_staged_index the index of the newly staged node to be assigned
+     * @param node_index the index of the part being processed
+     *                  This enables access to name, type, etc. 
+     * @param loc the location of the part being processed
+     *                  This facilitates error reporting
+     * @param err stream for reporting errors 
+     * @return true, iff no error occurred
+     */
+    bool process_document_command(size_t& new_staged_index, 
+                                size_t node_index, 
+                                const location& loc,
+                                std::ostream& err);
   public:  // public variables
     /**
      * @brief setStreamName sets the name of this stream and indicates whether
@@ -190,6 +218,11 @@ class WASP_PUBLIC VIInterpreter : public Interpreter<S>
     virtual size_t push_staged(size_t                     node_type,
                                const std::string&         node_name,
                                const std::vector<size_t>& child_indices);
+    /**
+     * Override from parent class in order to manage non-decorative child counts
+     * for the purpose of index'd aliasing
+     */ 
+    virtual size_t push_staged_child(size_t child_index);
     /**
      * Override from parent class in order to manage definition selection
      * Pops the existing definition

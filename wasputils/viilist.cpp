@@ -29,19 +29,26 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    if (argc != 3)
+    if (argc < 3)
     {
         std::cout << "Usage: " << std::endl;
         std::cout << "\t" << argv[0] << "schema inputFile " << std::endl;
         std::cout << "\ti.e., " << argv[0]
-                  << " /path/to/definition.son /path/to/some/input "
+                  << " /path/to/definition.son /path/to/some/input [-I/path/to/search/includes]"
                   << std::endl;
         std::cout << " Usage : " << argv[0]
                   << " --version\t(print version info)" << std::endl;
         return 1;
     }
-
     DefaultVIInterpreter parser;
+    if (argc == 4)
+    {
+        std::string argI = argv[3];
+        if (argI.size() > 2 && argI.substr(0,2) == "-I")
+        {
+            parser.search_paths().push_back(argI.substr(2));
+        } 
+    }
 
     DefaultSONInterpreter schema;
     bool                  schema_failed = !schema.parseFile(argv[1]);

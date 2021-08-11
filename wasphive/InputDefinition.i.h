@@ -5,6 +5,7 @@
  */
 #include "InputDefinition.h"
 #include "waspcore/wasp_node.h"
+#include "waspcore/wasp_bug.h"
 using namespace std;
 
 #define TOCTAB   4
@@ -139,7 +140,11 @@ bool InputDefinition::fillInputDefinition(IDObject * IDNode,
                 const vector<SchemaAdapter>& children = inputAliasesNode.non_decorative_children();
                 for(size_t i = 0; i < children.size(); i++)
                 {
-                    tmpIDObject->addInputAlias(children[i].last_as_string());
+                    const auto& child = children[i];
+                    if (child.name() != "STRIDE")
+                    {
+                        tmpIDObject->addInputAlias(child.last_as_string());
+                    }
                 }
             }
 

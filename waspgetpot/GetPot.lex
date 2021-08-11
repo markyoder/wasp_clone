@@ -43,9 +43,9 @@ typedef wasp::GetPotParser::token_type token_type;
 %s object
 %x lbracket
 
-INT [0-9]+([eE]\+?[0-9]+)?
-EXPONENT [eE][\+\-]?{INT}
-REAL {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}\.?[eE]\-{INT}
+INTEGER [0-9]+([eE]\+?[0-9]+)?
+EXPONENT [eE][\+\-]?{INTEGER}
+REAL {INTEGER}?\.{INTEGER}{EXPONENT}?|{INTEGER}\.({INTEGER}{EXPONENT}?)?|{INTEGER}\.?[eE]\-{INTEGER}
 
 
 
@@ -151,8 +151,8 @@ DOT_SLASH \.\/
     capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
 }
-<INITIAL,execution_unit,object>{INT} {
-    capture_token(yylval,wasp::INT);
+<INITIAL,execution_unit,object>{INTEGER} {
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 
@@ -214,7 +214,7 @@ void GetPotLexerImpl::set_debug(bool b)
 }
 void GetPotLexerImpl::rewind()
 {
-    yyin->seekg(-yyleng,std::ios_base::cur);
+    yyin.seekg(-yyleng,std::ios_base::cur);
     yyless(0);
 }
 void GetPotLexerImpl::capture_token(

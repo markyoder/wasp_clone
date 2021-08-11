@@ -462,12 +462,12 @@ TEST(SON, int_array)
         wasp::LBRACKET, wasp::VALUE,    wasp::VALUE,    wasp::VALUE,
         wasp::VALUE,    wasp::RBRACKET, wasp::ARRAY,    wasp::DOCUMENT_ROOT};
     std::vector<wasp::NODE> token = {
-        wasp::STRING,   wasp::ASSIGN,   wasp::LBRACKET, wasp::INT,
+        wasp::STRING,   wasp::ASSIGN,   wasp::LBRACKET, wasp::INTEGER,
         wasp::RBRACKET, wasp::UNKNOWN,  wasp::STRING,   wasp::ASSIGN,
-        wasp::LBRACKET, wasp::INT,      wasp::INT,      wasp::INT,
-        wasp::INT,      wasp::RBRACKET, wasp::UNKNOWN,  wasp::QUOTED_STRING,
-        wasp::LBRACKET, wasp::INT,      wasp::INT,      wasp::INT,
-        wasp::INT,      wasp::RBRACKET, wasp::UNKNOWN,  wasp::UNKNOWN};
+        wasp::LBRACKET, wasp::INTEGER,      wasp::INTEGER,      wasp::INTEGER,
+        wasp::INTEGER,      wasp::RBRACKET, wasp::UNKNOWN,  wasp::QUOTED_STRING,
+        wasp::LBRACKET, wasp::INTEGER,      wasp::INTEGER,      wasp::INTEGER,
+        wasp::INTEGER,      wasp::RBRACKET, wasp::UNKNOWN,  wasp::UNKNOWN};
     ASSERT_EQ(types.size(), interpreter.node_count());
     ASSERT_EQ(token.size(), interpreter.node_count());
     for (std::size_t i = 0; i < types.size(); ++i)
@@ -532,7 +532,7 @@ TEST(SON, real_array)
         wasp::VALUE,    wasp::RBRACKET, wasp::ARRAY,    wasp::DECL,
         wasp::LBRACKET, wasp::VALUE,    wasp::VALUE,    wasp::VALUE,
         wasp::VALUE,    wasp::RBRACKET, wasp::ARRAY,    wasp::DOCUMENT_ROOT};
-    std::vector<wasp::NODE> token = {wasp::INT  // decl
+    std::vector<wasp::NODE> token = {wasp::INTEGER  // decl
                                      ,
                                      wasp::ASSIGN,
                                      wasp::LBRACKET,

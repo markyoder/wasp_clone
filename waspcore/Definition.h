@@ -5,6 +5,7 @@
 #include "waspcore/decl.h"
 #include <set>
 #include <string>
+#include <map>
 #include <memory>
 namespace wasp
 {
@@ -29,12 +30,15 @@ class WASP_PUBLIC AbstractDefinition
     virtual AbstractDefinition* create(const std::string& name) = 0;
     virtual AbstractDefinition* create_aliased(const std::string&  name,
                                                AbstractDefinition* def) = 0;
+    virtual AbstractDefinition* create_strided_aliased(int start, int stride,
+                                               AbstractDefinition* def) = 0;
     virtual const std::string& name() const                             = 0;
     virtual bool has(const std::string& name) const                     = 0;
     virtual int delta(const std::string& name,
                       std::string&       actual_name) const        = 0;
     virtual AbstractDefinition* parent() const                     = 0;
     virtual AbstractDefinition* get(const std::string& name) const = 0;
+    virtual AbstractDefinition* get(int index) const = 0;
     virtual const std::string& actual_name() const                 = 0;
 };
 
@@ -61,6 +65,15 @@ class WASP_PUBLIC Definition : public AbstractDefinition
      * @return the new AliasedDefinition
      */
     AbstractDefinition* create_aliased(const std::string&  name,
+                                       AbstractDefinition* definition);
+
+    /**
+     * @brief create_strided_aliased creates a new aliased definition map
+     * @param start the start of the stride
+     * @param stride the stride
+     * @return the new StridedAliasedDefinition if and only if it doesn't already exist
+     */ 
+    AbstractDefinition* create_strided_aliased(int start, int stride,
                                        AbstractDefinition* definition);
     template<class TreeView>
     Definition* create_from(const TreeView& view)
@@ -100,6 +113,13 @@ class WASP_PUBLIC Definition : public AbstractDefinition
      * definition with given name exists
      */
     AbstractDefinition* get(const std::string& name) const;
+    /**
+     * @brief get acquire the requested definition given a child index
+     * @param index the index of the child definition
+     * @return AbstractDefinition * - pointer to requested, nullptr iff no
+     * definition exists at the given index within a specified strided alias
+     */
+    AbstractDefinition* get(int index) const;
 
     /**
      * @brief parent acquires the parent definition of this definition
@@ -117,6 +137,44 @@ class WASP_PUBLIC Definition : public AbstractDefinition
      *  @brief Child node name to definition map
      */
     std::set<AbstractDefinition*, def_compare<AbstractDefinition>> m_children;
+
+    // Struct or tracking stride-based aliased definitions
+    // Requires that all strided child definitions have the 
+    // same stride so as to not have overlap. Only the start
+    // of the stride changes
+    struct StridedAliased
+    {
+        int stride = 1;
+        // start->Definition mapping
+        std::map<int, AbstractDefinition*> indexed;
+        // Obtain the strided-definition given an index        
+        AbstractDefinition* get(int index) const
+        {
+            wasp_require(index >= 0);
+            wasp_require(!indexed.empty());
+            if (index < indexed.begin()->first) return nullptr;
+            int remainder = index % stride;
+            for(auto itr = indexed.rbegin(); itr != indexed.rend(); itr++)
+            {
+                // if the start is beyond the stride we also need to mod
+                // the start. This allows differentiation between definitions with
+                // a start of 1 and a start of 9 where stride is 2
+                int start = itr->first;
+                if (start > index) continue;
+                if (start > stride) start = itr->first % stride;
+
+                // for 0-based starts the remainder == start
+                // for non-zero-based starts the start-sride == remainder
+                if (remainder == start || (start - stride) == remainder)
+                {
+                    return itr->second;
+                }
+            }
+            return nullptr;
+        }
+    };
+
+    std::unique_ptr<StridedAliased> m_strided;
 };
 class WASP_PUBLIC AliasedDefinition : public AbstractDefinition
 {
@@ -134,6 +192,10 @@ class WASP_PUBLIC AliasedDefinition : public AbstractDefinition
     {
         return m_definition->get(name);
     }
+    AbstractDefinition* get(int index) const
+    {
+        return m_definition->get(index);
+    }
     bool has(const std::string& name) const { return m_definition->has(name); }
     int delta(const std::string& name, std::string& actual_name) const
     {
@@ -147,6 +209,11 @@ class WASP_PUBLIC AliasedDefinition : public AbstractDefinition
                                        AbstractDefinition* definition)
     {
         return m_definition->create_aliased(name, definition);
+    }
+    AbstractDefinition* create_strided_aliased(int start, int stride,
+                                       AbstractDefinition* definition)
+    {
+        return m_definition->create_strided_aliased(start, stride, definition);
     }
 
   private:

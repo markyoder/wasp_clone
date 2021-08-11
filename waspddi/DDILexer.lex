@@ -88,7 +88,7 @@ ASSIGN =
     return token::DOUBLE;
 }
 {INTEGER} {
-    capture_token(yylval,wasp::INT);
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 
@@ -149,7 +149,7 @@ void DDILexerImpl::set_debug(bool b)
 }
 void DDILexerImpl::rewind()
 {
-    yyin->seekg(-yyleng,std::ios_base::cur);
+    yyin.seekg(-yyleng,std::ios_base::cur);
     yyless(0);
 }
 void DDILexerImpl::capture_token(

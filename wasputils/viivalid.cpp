@@ -35,7 +35,7 @@ int main(int argc, char** argv)
         std::cout << "\t" << argv[0] << "schema inputFile(s) " << std::endl;
         std::cout
             << "\ti.e., " << argv[0]
-            << " /path/to/definition.son /path/to/some/input(s)... [--xml]"
+            << " /path/to/definition.son /path/to/some/input(s)... [-I/path/to/include] [--xml]"
             << std::endl;
         std::cout << " Usage : " << argv[0]
                   << " --version\t(print version info)" << std::endl;
@@ -47,7 +47,17 @@ int main(int argc, char** argv)
     if (argc > 3 && std::string(argv[argc - 1]) == "--xml")
     {
         msgType  = HIVE::MessagePrintType::XML;
-        argcount = argc - 1;
+        --argcount;
+    }
+    std::string search_include;
+    if (argc > 3)
+    {
+        std::string argI = argv[argcount-1];
+        if (argI.size() > 2 && argI.substr(0,2) == "-I")
+        {
+            search_include = argI.substr(2);
+            --argcount;
+        } 
     }
 
     DefaultSONInterpreter schema;
@@ -73,6 +83,7 @@ int main(int argc, char** argv)
     for (int i = 2; i < argcount; ++i)
     {
         DefaultVIInterpreter parser;
+        if (!search_include.empty()) parser.search_paths().push_back(search_include);
         parser.set_definition_store(definition);
         bool failed = !parser.parseFile(argv[i]);
         if (failed)

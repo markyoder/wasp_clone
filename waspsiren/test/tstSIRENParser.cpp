@@ -112,7 +112,7 @@ TEST(SIREN, parse_simple_root_w_index_predicated_child)
         {"[", LBRACKET}
 
         ,
-        {"int", INT},
+        {"int", INTEGER},
         {"I", INDEX}
 
         ,
@@ -159,9 +159,9 @@ TEST(SIREN, parse_simple_root_w_indices_predicated_child)
         {"[", LBRACKET}
 
         ,
-        {"int", INT},
+        {"int", INTEGER},
         {":", COLON},
-        {"int", INT},
+        {"int", INTEGER},
         {"I", INDEX}
 
         ,
@@ -208,13 +208,13 @@ TEST(SIREN, parse_simple_root_w_strided_indices_predicated_child)
         {"[", LBRACKET}
 
         ,
-        {"int", INT}  // start
+        {"int", INTEGER}  // start
         ,
         {":", COLON},
-        {"int", INT}  // end
+        {"int", INTEGER}  // end
         ,
         {":", COLON},
-        {"int", INT}  // stride
+        {"int", INTEGER}  // stride
         ,
         {"I", INDEX}
 
