@@ -22,8 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
  - waspdrive scheduler capability.
  - support for HIT shorthand object notation '[x/y/z]'
- - support for commas in GetPot strings
- - support for double-quoted strings in GetPot documents
+ - support for commas in HIT strings
+ - support for double-quoted strings in HIT documents
  - support for more than one input and template file in waspdrive input 
  - support for EDDI input section naming and validation
  - support for parsing EDDI input list syntax `<n..m x i> 193*10` etc.
