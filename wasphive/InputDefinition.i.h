@@ -141,7 +141,7 @@ bool InputDefinition::fillInputDefinition(IDObject * IDNode,
                 for(size_t i = 0; i < children.size(); i++)
                 {
                     const auto& child = children[i];
-                    if (child.name() != "STRIDE")
+                    if (std::strcmp(child.name(),"STRIDE") != 0)
                     {
                         tmpIDObject->addInputAlias(child.last_as_string());
                     }
