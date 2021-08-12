@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 8-12-2021
 ### Changed 
  - GetPot block and subblock to be equivalent
  - GetPot comma is no longer a valid array separator
@@ -15,8 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - VERA input parser to cache staged non decorative nodes to avoid expensive node-count loop
  - VERA Input Lexer to be 8-bit to support identifying unicode characters 
  - WASP Node type of INT to INTEGER (potentially break compatibility with 1.x if you using wasp::INT)
- - Refactored VII into more generic Extra Definition Driven Interpreter (EDDI)
- - Refacted GetPot into latest MOOSE-revised Hierarchical Input Text (HIT) 
+ - Refactored VII into more generic Extra Definition Driven Interpreter (EDDI) - breaks backward compatibility
+ - Refacted GetPot into latest MOOSE-revised Hierarchical Input Text (HIT) - breaks backward compatibility
 
 ### Added
  - waspdrive scheduler capability.
