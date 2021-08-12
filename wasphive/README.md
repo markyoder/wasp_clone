@@ -2857,7 +2857,7 @@ The ***Input Description*** rule may be used by input assistance application log
 
 ### Input Aliases
 
-The ***Input Aliases*** rule is harnessed by definition driven interpreters (DDI, VII, etc.) to accommodate name-aliases or position-depedent named components. 
+The ***Input Aliases*** rule is harnessed by definition driven interpreters (DDI, EDDI, etc.) to accommodate name-aliases or position-depedent named components. 
 
 #### Name-Aliased 
 e.g., `d 1 2 3` may be a shorthand for `data 1 2 3`. 
@@ -2883,7 +2883,7 @@ data{
    density { InputAliases["_2"] ... }
 }
 ```
-> Note: Index-Aliases are only supported by VII
+> Note: Index-Aliases are only supported by EDDI
 
 ### Strided-Aliased
 Alternatively, if the data is strided by the `InputAliases` supports the `STRIDE[<start>, <stride>]` construct
@@ -2900,10 +2900,10 @@ data{
 
 
 > Note: The `STRIDE`'s stride must match across strided children of `data`.
-> Note: Strided-aliases are only supported by VII
+> Note: Strided-aliases are only supported by EDDI
 
 ### Section-Aliased
-The VIInterpreter additionally supports 'section' input, delimited by `/`. This facilitate visual aggregation of an array's components. 
+The EDDInterpreter additionally supports 'section' input, delimited by `/`. This facilitate visual aggregation of an array's components. 
 
 E.g., `data 3.14  3.5 / carbon graphite / 3.52  2.26` describes arbitrary-length tuples of `radius`, `material`, and `density`. Such an example can be properly defined via the section `InputAliases` construct, `s_<section>`.
 

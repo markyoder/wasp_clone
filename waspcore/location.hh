@@ -53,12 +53,12 @@
 #  endif
 # endif
 
-#line 34 "JSONParser.bison"
+#line 36 "HIT.bison"
 namespace wasp {
 #line 59 "../waspcore/location.hh"
 
   /// A point in a source file.
-  class WASP_PUBLIC position
+  class position
   {
   public:
     /// Type for file name.
@@ -163,7 +163,7 @@ namespace wasp {
   }
 
   /// Two points in a source file.
-  class WASP_PUBLIC  location
+  class location
   {
   public:
     /// Type for file name.
@@ -299,7 +299,7 @@ namespace wasp {
     return ostr;
   }
 
-#line 34 "JSONParser.bison"
+#line 36 "HIT.bison"
 } // wasp
 #line 305 "../waspcore/location.hh"
 

@@ -80,65 +80,65 @@ IF ( wasp_ENABLE_waspddi )
       INSTALLABLE
     )
 ENDIF()
-IF ( wasp_ENABLE_waspvii )
-    TRIBITS_ADD_EXECUTABLE(viilist
-      SOURCES viilist.cpp
+IF ( wasp_ENABLE_waspeddi )
+    TRIBITS_ADD_EXECUTABLE(eddilist
+      SOURCES eddilist.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE
     )
-    TRIBITS_ADD_EXECUTABLE(viixml
-      SOURCES viixml.cpp
+    TRIBITS_ADD_EXECUTABLE(eddixml
+      SOURCES eddixml.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE
     )
-    TRIBITS_ADD_EXECUTABLE(viivalid
-      SOURCES viivalid.cpp
+    TRIBITS_ADD_EXECUTABLE(eddivalid
+      SOURCES eddivalid.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE
     )
-    TRIBITS_ADD_EXECUTABLE(viivalidjson
-      SOURCES viivalidjson.cpp
+    TRIBITS_ADD_EXECUTABLE(eddivalidjson
+      SOURCES eddivalidjson.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE
     )
-    TRIBITS_ADD_EXECUTABLE(viiselect
-      SOURCES viiselect.cpp
+    TRIBITS_ADD_EXECUTABLE(eddiselect
+      SOURCES eddiselect.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE
     )
 ENDIF()
-IF ( wasp_ENABLE_waspgetpot )
-    TRIBITS_ADD_EXECUTABLE(getpotlist
-      SOURCES getpotlist.cpp
+IF ( wasp_ENABLE_wasphit )
+    TRIBITS_ADD_EXECUTABLE(hitlist
+      SOURCES hitlist.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE
     )
-    TRIBITS_ADD_EXECUTABLE(getpotxml
-      SOURCES getpotxml.cpp
+    TRIBITS_ADD_EXECUTABLE(hitxml
+      SOURCES hitxml.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE
     )
-    TRIBITS_ADD_EXECUTABLE(getpotvalid
-      SOURCES getpotvalid.cpp
+    TRIBITS_ADD_EXECUTABLE(hitvalid
+      SOURCES hitvalid.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE
     )
-    TRIBITS_ADD_EXECUTABLE(getpotselect
-      SOURCES getpotselect.cpp
+    TRIBITS_ADD_EXECUTABLE(hitselect
+      SOURCES hitselect.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE
     )
-    TRIBITS_ADD_EXECUTABLE(getpotvalidjson
-      SOURCES getpotvalidjson.cpp
+    TRIBITS_ADD_EXECUTABLE(hitvalidjson
+      SOURCES hitvalidjson.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE
