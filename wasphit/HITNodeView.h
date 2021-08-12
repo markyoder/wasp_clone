@@ -67,7 +67,7 @@ class WASP_PUBLIC HITNodeView
      */
     std::string id() const { return ""; }
     /**
-     * @brief id_child will return a null view as it doesn't apply to GetPOt nodes
+     * @brief id_child will return a null view as it doesn't apply to HIT nodes
      * @return null view
      */
     HITNodeView id_child() const { return HITNodeView(); }
