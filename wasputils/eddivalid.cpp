@@ -1,5 +1,5 @@
 /*
- * File:   viivalid.cpp
+ * File:   eddivalid.cpp
  * Author: Robert A. Lefebvre
  *
  */
@@ -7,8 +7,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
-#include "waspvii/VIInterpreter.h"
-#include "waspvii/VIINodeView.h"
+#include "waspeddi/EDDInterpreter.h"
+#include "waspeddi/EDDINodeView.h"
 #include "waspson/SONInterpreter.h"
 #include "waspson/SONNodeView.h"
 #include "wasphive/HIVE.h"
@@ -82,7 +82,7 @@ int main(int argc, char** argv)
     int return_code = 0;
     for (int i = 2; i < argcount; ++i)
     {
-        DefaultVIInterpreter parser;
+        DefaultEDDInterpreter parser;
         if (!search_include.empty()) parser.search_paths().push_back(search_include);
         parser.set_definition_store(definition);
         bool failed = !parser.parseFile(argv[i]);
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
                       << std::endl;
             return 1;
         }
-        VIINodeView              input_root  = parser.root();
+        EDDINodeView              input_root  = parser.root();
         SONNodeView              schema_root = schema.root();
         HIVE                     validation_engine;
         std::vector<std::string> validation_errors;

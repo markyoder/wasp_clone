@@ -1,5 +1,5 @@
 /*
- * File:   viilist.cpp
+ * File:   eddilist.cpp
  * Author: raq
  *
  */
@@ -7,8 +7,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
-#include "waspvii/VIInterpreter.h"
-#include "waspvii/VIINodeView.h"
+#include "waspeddi/EDDInterpreter.h"
+#include "waspeddi/EDDINodeView.h"
 #include "waspson/SONInterpreter.h"
 #include "waspson/SONNodeView.h"
 #include "wasphive/HIVE.h"
@@ -32,22 +32,26 @@ int main(int argc, char** argv)
     if (argc < 3)
     {
         std::cout << "Usage: " << std::endl;
-        std::cout << "\t" << argv[0] << "schema inputFile " << std::endl;
+        std::cout << "\t" << argv[0] << " schema inputFile [-I/path/to/include] [--nondec]" << std::endl;
         std::cout << "\ti.e., " << argv[0]
-                  << " /path/to/definition.son /path/to/some/input [-I/path/to/search/includes]"
+                  << " /path/to/definition.son /path/to/some/input "
                   << std::endl;
         std::cout << " Usage : " << argv[0]
                   << " --version\t(print version info)" << std::endl;
         return 1;
     }
-    DefaultVIInterpreter parser;
-    if (argc == 4)
+
+    bool omit_dec = false;
+    int arg_count = argc;
+    if (std::string(argv[argc - 1]) == "--nondec")
     {
-        std::string argI = argv[3];
-        if (argI.size() > 2 && argI.substr(0,2) == "-I")
-        {
-            parser.search_paths().push_back(argI.substr(2));
-        } 
+        omit_dec = true;
+        --arg_count;
+    }
+    DefaultEDDInterpreter parser;
+    if (std::string(argv[arg_count-1]).substr(0,2) == "-I")
+    {
+        parser.search_paths().push_back(std::string(argv[arg_count-1]).substr(2));
     }
 
     DefaultSONInterpreter schema;
@@ -74,8 +78,6 @@ int main(int argc, char** argv)
                   << std::endl;
         return 1;
     }
-    VIINodeView viiroot = parser.root();
-    viiroot.paths(std::cout);
-
+    wasp::to_xml((EDDINodeView)parser.root(), std::cout, !omit_dec);
     return 0;
 }

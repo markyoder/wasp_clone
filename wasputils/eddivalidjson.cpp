@@ -1,5 +1,5 @@
 /*
- * File:   viivalidson.cpp
+ * File:   eddivalidson.cpp
  * Author: orl
  */
 
@@ -10,8 +10,8 @@
 #include "waspcore/TreeNodePool.h"
 #include "waspson/SONInterpreter.h"
 #include "waspson/SONNodeView.h"
-#include "waspvii/VIInterpreter.h"
-#include "waspvii/VIINodeView.h"
+#include "waspeddi/EDDInterpreter.h"
+#include "waspeddi/EDDINodeView.h"
 #include "waspcore/version.h"
 #include "wasphive/HIVE.h"
 using namespace wasp;
@@ -19,7 +19,7 @@ using namespace wasp;
 typedef TokenPool<unsigned int, unsigned int, unsigned int> TP;
 typedef TreeNodePool<unsigned int, unsigned int, TP>        TNP;
 typedef DefaultSONInterpreter          SONInterp;
-typedef VIINodeView                    VIINV;
+typedef EDDINodeView                    EDDINV;
 typedef SONNodeView                    SONNV;
 
 int main(int argc, char** argv)
@@ -35,16 +35,16 @@ int main(int argc, char** argv)
     if (argc < 3)
     {
         std::cerr
-            << "Workbench Analysis Sequence Processor - VII to JSON Converter"
+            << "Workbench Analysis Sequence Processor - EDDI to JSON Converter"
             << std::endl
             << " Usage: " << argv[0]
-            << " path/to/SON/formatted/schema path/to/VII/formatted/input [-I/path/to/include]"
+            << " path/to/SON/formatted/schema path/to/EDDI/formatted/input [-I/path/to/include]"
             << std::endl
             << " Usage: " << argv[0] << " --version\t(print version info)"
             << std::endl;
         return 1;
     }
-    DefaultVIInterpreter parser;
+    DefaultEDDInterpreter parser;
     if (argc == 4)
     {
         std::string argI = argv[3];
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    // parse VII input - if input parsing fails, return 1
+    // parse EDDI input - if input parsing fails, return 1
     // save input_root
     bool failed = !parser.parseFile(argv[2]);
     if (failed)
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
         std::cout << "***Error : Parsing of " << argv[2] << " failed!" << std::endl;
         return 1;
     }
-    VIINV input_root = parser.root();
+    EDDINV input_root = parser.root();
 
     // validate against schema - if validation fails, return 1
     HIVE                     validation_engine;

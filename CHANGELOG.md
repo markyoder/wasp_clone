@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - VERA input parser to cache staged non decorative nodes to avoid expensive node-count loop
  - VERA Input Lexer to be 8-bit to support identifying unicode characters 
  - WASP Node type of INT to INTEGER (potentially break compatibility with 1.x if you using wasp::INT)
+ - Refactored VII into more generic Extra Definition Driven Interpreter (EDDI)
 
 ### Added
  - waspdrive scheduler capability.
@@ -42,7 +43,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - HIVE UNKNOWN input node validation capability (See HIVE readme for details).
 
 ### Changed
-- waspvii hanging comment (comment 1 or more lines below last parameter) logic to reparent to the block
+- waspeddi hanging comment (comment 1 or more lines below last parameter) logic to reparent to the block
 
 ### Fixed
 - wasppy inability to handle file paths with whitespaces.

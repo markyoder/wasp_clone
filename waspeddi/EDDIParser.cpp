@@ -37,7 +37,7 @@
 
 
 // First part of user prologue.
-#line 1 "VIIParser.bison"
+#line 1 "EDDIParser.bison"
  /*** C/C++ Declarations ***/
 
 #include <stdio.h>
@@ -45,29 +45,29 @@
 #include <vector>
 
 
-#line 49 "VIIParser.cpp"
+#line 49 "EDDIParser.cpp"
 
 
-#include "VIIParser.hpp"
+#include "EDDIParser.hpp"
 
 // Second part of user prologue.
-#line 94 "VIIParser.bison"
+#line 94 "EDDIParser.bison"
 
 
-#include "VIInterpreter.h"
-#include "VIINodeView.h"
-#include "VIILexer.h"
+#include "EDDInterpreter.h"
+#include "EDDINodeView.h"
+#include "EDDILexer.h"
 
 #include "waspcore/wasp_bug.h"
 
-/* this "connects" the bison parser in the interpreter to the flex VIILexer class
+/* this "connects" the bison parser in the interpreter to the flex EDDILexer class
  * object. it defines the yylex() function call to pull the next token from the
  * current lexer object of the interpreter context. */
 #undef yylex
 #define yylex lexer->lex
 
 
-#line 71 "VIIParser.cpp"
+#line 71 "EDDIParser.cpp"
 
 
 
@@ -159,12 +159,12 @@
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-#line 33 "VIIParser.bison"
+#line 33 "EDDIParser.bison"
 namespace wasp {
-#line 165 "VIIParser.cpp"
+#line 165 "EDDIParser.cpp"
 
   /// Build a parser object.
-  VIIParser::VIIParser (class AbstractInterpreter& interpreter_yyarg, std::istream &input_stream_yyarg, std::shared_ptr<class VIILexerImpl> lexer_yyarg)
+  EDDIParser::EDDIParser (class AbstractInterpreter& interpreter_yyarg, std::istream &input_stream_yyarg, std::shared_ptr<class EDDILexerImpl> lexer_yyarg)
 #if YYDEBUG
     : yydebug_ (false),
       yycdebug_ (&std::cerr),
@@ -176,10 +176,10 @@ namespace wasp {
       lexer (lexer_yyarg)
   {}
 
-  VIIParser::~VIIParser ()
+  EDDIParser::~EDDIParser ()
   {}
 
-  VIIParser::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
+  EDDIParser::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
   {}
 
   /*---------------.
@@ -188,7 +188,7 @@ namespace wasp {
 
   // basic_symbol.
   template <typename Base>
-  VIIParser::basic_symbol<Base>::basic_symbol (const basic_symbol& that)
+  EDDIParser::basic_symbol<Base>::basic_symbol (const basic_symbol& that)
     : Base (that)
     , value (that.value)
     , location (that.location)
@@ -197,36 +197,36 @@ namespace wasp {
 
   /// Constructor for valueless symbols.
   template <typename Base>
-  VIIParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_MOVE_REF (location_type) l)
+  EDDIParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_MOVE_REF (location_type) l)
     : Base (t)
     , value ()
     , location (l)
   {}
 
   template <typename Base>
-  VIIParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_RVREF (semantic_type) v, YY_RVREF (location_type) l)
+  EDDIParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_RVREF (semantic_type) v, YY_RVREF (location_type) l)
     : Base (t)
     , value (YY_MOVE (v))
     , location (YY_MOVE (l))
   {}
 
   template <typename Base>
-  VIIParser::symbol_kind_type
-  VIIParser::basic_symbol<Base>::type_get () const YY_NOEXCEPT
+  EDDIParser::symbol_kind_type
+  EDDIParser::basic_symbol<Base>::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
 
   template <typename Base>
   bool
-  VIIParser::basic_symbol<Base>::empty () const YY_NOEXCEPT
+  EDDIParser::basic_symbol<Base>::empty () const YY_NOEXCEPT
   {
     return this->kind () == symbol_kind::S_YYEMPTY;
   }
 
   template <typename Base>
   void
-  VIIParser::basic_symbol<Base>::move (basic_symbol& s)
+  EDDIParser::basic_symbol<Base>::move (basic_symbol& s)
   {
     super_type::move (s);
     value = YY_MOVE (s.value);
@@ -234,80 +234,80 @@ namespace wasp {
   }
 
   // by_kind.
-  VIIParser::by_kind::by_kind ()
+  EDDIParser::by_kind::by_kind ()
     : kind_ (symbol_kind::S_YYEMPTY)
   {}
 
 #if 201103L <= YY_CPLUSPLUS
-  VIIParser::by_kind::by_kind (by_kind&& that)
+  EDDIParser::by_kind::by_kind (by_kind&& that)
     : kind_ (that.kind_)
   {
     that.clear ();
   }
 #endif
 
-  VIIParser::by_kind::by_kind (const by_kind& that)
+  EDDIParser::by_kind::by_kind (const by_kind& that)
     : kind_ (that.kind_)
   {}
 
-  VIIParser::by_kind::by_kind (token_kind_type t)
+  EDDIParser::by_kind::by_kind (token_kind_type t)
     : kind_ (yytranslate_ (t))
   {}
 
   void
-  VIIParser::by_kind::clear () YY_NOEXCEPT
+  EDDIParser::by_kind::clear () YY_NOEXCEPT
   {
     kind_ = symbol_kind::S_YYEMPTY;
   }
 
   void
-  VIIParser::by_kind::move (by_kind& that)
+  EDDIParser::by_kind::move (by_kind& that)
   {
     kind_ = that.kind_;
     that.clear ();
   }
 
-  VIIParser::symbol_kind_type
-  VIIParser::by_kind::kind () const YY_NOEXCEPT
+  EDDIParser::symbol_kind_type
+  EDDIParser::by_kind::kind () const YY_NOEXCEPT
   {
     return kind_;
   }
 
-  VIIParser::symbol_kind_type
-  VIIParser::by_kind::type_get () const YY_NOEXCEPT
+  EDDIParser::symbol_kind_type
+  EDDIParser::by_kind::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
 
 
   // by_state.
-  VIIParser::by_state::by_state () YY_NOEXCEPT
+  EDDIParser::by_state::by_state () YY_NOEXCEPT
     : state (empty_state)
   {}
 
-  VIIParser::by_state::by_state (const by_state& that) YY_NOEXCEPT
+  EDDIParser::by_state::by_state (const by_state& that) YY_NOEXCEPT
     : state (that.state)
   {}
 
   void
-  VIIParser::by_state::clear () YY_NOEXCEPT
+  EDDIParser::by_state::clear () YY_NOEXCEPT
   {
     state = empty_state;
   }
 
   void
-  VIIParser::by_state::move (by_state& that)
+  EDDIParser::by_state::move (by_state& that)
   {
     state = that.state;
     that.clear ();
   }
 
-  VIIParser::by_state::by_state (state_type s) YY_NOEXCEPT
+  EDDIParser::by_state::by_state (state_type s) YY_NOEXCEPT
     : state (s)
   {}
 
-  VIIParser::symbol_kind_type
-  VIIParser::by_state::kind () const YY_NOEXCEPT
+  EDDIParser::symbol_kind_type
+  EDDIParser::by_state::kind () const YY_NOEXCEPT
   {
     if (state == empty_state)
       return symbol_kind::S_YYEMPTY;
@@ -315,10 +315,10 @@ namespace wasp {
       return YY_CAST (symbol_kind_type, yystos_[+state]);
   }
 
-  VIIParser::stack_symbol_type::stack_symbol_type ()
+  EDDIParser::stack_symbol_type::stack_symbol_type ()
   {}
 
-  VIIParser::stack_symbol_type::stack_symbol_type (YY_RVREF (stack_symbol_type) that)
+  EDDIParser::stack_symbol_type::stack_symbol_type (YY_RVREF (stack_symbol_type) that)
     : super_type (YY_MOVE (that.state), YY_MOVE (that.value), YY_MOVE (that.location))
   {
 #if 201103L <= YY_CPLUSPLUS
@@ -327,7 +327,7 @@ namespace wasp {
 #endif
   }
 
-  VIIParser::stack_symbol_type::stack_symbol_type (state_type s, YY_MOVE_REF (symbol_type) that)
+  EDDIParser::stack_symbol_type::stack_symbol_type (state_type s, YY_MOVE_REF (symbol_type) that)
     : super_type (s, YY_MOVE (that.value), YY_MOVE (that.location))
   {
     // that is emptied.
@@ -335,8 +335,8 @@ namespace wasp {
   }
 
 #if YY_CPLUSPLUS < 201103L
-  VIIParser::stack_symbol_type&
-  VIIParser::stack_symbol_type::operator= (const stack_symbol_type& that)
+  EDDIParser::stack_symbol_type&
+  EDDIParser::stack_symbol_type::operator= (const stack_symbol_type& that)
   {
     state = that.state;
     value = that.value;
@@ -344,8 +344,8 @@ namespace wasp {
     return *this;
   }
 
-  VIIParser::stack_symbol_type&
-  VIIParser::stack_symbol_type::operator= (stack_symbol_type& that)
+  EDDIParser::stack_symbol_type&
+  EDDIParser::stack_symbol_type::operator= (stack_symbol_type& that)
   {
     state = that.state;
     value = that.value;
@@ -358,7 +358,7 @@ namespace wasp {
 
   template <typename Base>
   void
-  VIIParser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
+  EDDIParser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
   {
     if (yymsg)
       YY_SYMBOL_PRINT (yymsg, yysym);
@@ -370,7 +370,7 @@ namespace wasp {
 #if YYDEBUG
   template <typename Base>
   void
-  VIIParser::yy_print_ (std::ostream& yyo, const basic_symbol<Base>& yysym) const
+  EDDIParser::yy_print_ (std::ostream& yyo, const basic_symbol<Base>& yysym) const
   {
     std::ostream& yyoutput = yyo;
     YY_USE (yyoutput);
@@ -389,7 +389,7 @@ namespace wasp {
 #endif
 
   void
-  VIIParser::yypush_ (const char* m, YY_MOVE_REF (stack_symbol_type) sym)
+  EDDIParser::yypush_ (const char* m, YY_MOVE_REF (stack_symbol_type) sym)
   {
     if (m)
       YY_SYMBOL_PRINT (m, sym);
@@ -397,7 +397,7 @@ namespace wasp {
   }
 
   void
-  VIIParser::yypush_ (const char* m, state_type s, YY_MOVE_REF (symbol_type) sym)
+  EDDIParser::yypush_ (const char* m, state_type s, YY_MOVE_REF (symbol_type) sym)
   {
 #if 201103L <= YY_CPLUSPLUS
     yypush_ (m, stack_symbol_type (s, std::move (sym)));
@@ -408,40 +408,40 @@ namespace wasp {
   }
 
   void
-  VIIParser::yypop_ (int n)
+  EDDIParser::yypop_ (int n)
   {
     yystack_.pop (n);
   }
 
 #if YYDEBUG
   std::ostream&
-  VIIParser::debug_stream () const
+  EDDIParser::debug_stream () const
   {
     return *yycdebug_;
   }
 
   void
-  VIIParser::set_debug_stream (std::ostream& o)
+  EDDIParser::set_debug_stream (std::ostream& o)
   {
     yycdebug_ = &o;
   }
 
 
-  VIIParser::debug_level_type
-  VIIParser::debug_level () const
+  EDDIParser::debug_level_type
+  EDDIParser::debug_level () const
   {
     return yydebug_;
   }
 
   void
-  VIIParser::set_debug_level (debug_level_type l)
+  EDDIParser::set_debug_level (debug_level_type l)
   {
     yydebug_ = l;
   }
 #endif // YYDEBUG
 
-  VIIParser::state_type
-  VIIParser::yy_lr_goto_state_ (state_type yystate, int yysym)
+  EDDIParser::state_type
+  EDDIParser::yy_lr_goto_state_ (state_type yystate, int yysym)
   {
     int yyr = yypgoto_[yysym - YYNTOKENS] + yystate;
     if (0 <= yyr && yyr <= yylast_ && yycheck_[yyr] == yystate)
@@ -451,25 +451,25 @@ namespace wasp {
   }
 
   bool
-  VIIParser::yy_pact_value_is_default_ (int yyvalue)
+  EDDIParser::yy_pact_value_is_default_ (int yyvalue)
   {
     return yyvalue == yypact_ninf_;
   }
 
   bool
-  VIIParser::yy_table_value_is_error_ (int yyvalue)
+  EDDIParser::yy_table_value_is_error_ (int yyvalue)
   {
     return yyvalue == yytable_ninf_;
   }
 
   int
-  VIIParser::operator() ()
+  EDDIParser::operator() ()
   {
     return parse ();
   }
 
   int
-  VIIParser::parse ()
+  EDDIParser::parse ()
   {
     int yyn;
     /// Length of the RHS of the rule being reduced.
@@ -496,16 +496,16 @@ namespace wasp {
 
 
     // User initialization code.
-#line 41 "VIIParser.bison"
+#line 41 "EDDIParser.bison"
 {
     // initialize the initial location object
     yyla.location.begin.filename = yyla.location.end.filename = &interpreter.stream_name();
     yyla.location.begin.line = yyla.location.end.line = interpreter.start_line();
     yyla.location.begin.column = yyla.location.end.column = interpreter.start_column();
-    lexer = std::make_shared<VIILexerImpl>(interpreter,&input_stream);
+    lexer = std::make_shared<EDDILexerImpl>(interpreter,&input_stream);
 }
 
-#line 509 "VIIParser.cpp"
+#line 509 "EDDIParser.cpp"
 
 
     /* Initialize the stack.  The initial state will be set in
@@ -641,149 +641,149 @@ namespace wasp {
           switch (yyn)
             {
   case 2: // fill_expr: "list expression"
-#line 114 "VIIParser.bison"
+#line 114 "EDDIParser.bison"
         {
             auto token_index = (yystack_[0].value.token_index);
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::FILL_EXPR,"value",token_index);
         }
-#line 650 "VIIParser.cpp"
+#line 650 "EDDIParser.cpp"
     break;
 
   case 3: // include: "file include"
-#line 119 "VIIParser.bison"
+#line 119 "EDDIParser.bison"
         {
             auto token_index = (yystack_[0].value.token_index);
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::FILE,"decl",token_index);
         }
-#line 659 "VIIParser.cpp"
+#line 659 "EDDIParser.cpp"
     break;
 
   case 4: // comma: ","
-#line 124 "VIIParser.bison"
+#line 124 "EDDIParser.bison"
         {
             auto token_index = (yystack_[0].value.token_index);
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::WASP_COMMA,",",token_index);
         }
-#line 668 "VIIParser.cpp"
+#line 668 "EDDIParser.cpp"
     break;
 
   case 5: // semicolon: ";"
-#line 129 "VIIParser.bison"
+#line 129 "EDDIParser.bison"
         {
             auto token_index = (yystack_[0].value.token_index);
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::TERM,";",token_index);
         }
-#line 677 "VIIParser.cpp"
+#line 677 "EDDIParser.cpp"
     break;
 
   case 6: // assign: "="
-#line 134 "VIIParser.bison"
+#line 134 "EDDIParser.bison"
         {
             auto token_index = (yystack_[0].value.token_index);
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,"=",token_index);
         }
-#line 686 "VIIParser.cpp"
+#line 686 "EDDIParser.cpp"
     break;
 
   case 7: // fslash: "forward slash"
-#line 140 "VIIParser.bison"
+#line 140 "EDDIParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DIVIDE,"/",token_index);
     }
-#line 695 "VIIParser.cpp"
+#line 695 "EDDIParser.cpp"
     break;
 
   case 8: // rbracket: "right bracket"
-#line 145 "VIIParser.bison"
+#line 145 "EDDIParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RBRACKET,"]",token_index);
     }
-#line 704 "VIIParser.cpp"
+#line 704 "EDDIParser.cpp"
     break;
 
   case 9: // lbracket: "left bracket"
-#line 150 "VIIParser.bison"
+#line 150 "EDDIParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACKET,"[",token_index);
     }
-#line 713 "VIIParser.cpp"
+#line 713 "EDDIParser.cpp"
     break;
 
   case 10: // PRIMITIVE: "quoted string"
-#line 155 "VIIParser.bison"
+#line 155 "EDDIParser.bison"
             { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 719 "VIIParser.cpp"
+#line 719 "EDDIParser.cpp"
     break;
 
   case 11: // PRIMITIVE: "integer"
-#line 155 "VIIParser.bison"
+#line 155 "EDDIParser.bison"
                       { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 725 "VIIParser.cpp"
+#line 725 "EDDIParser.cpp"
     break;
 
   case 12: // PRIMITIVE: "double"
-#line 155 "VIIParser.bison"
+#line 155 "EDDIParser.bison"
                                 { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 731 "VIIParser.cpp"
+#line 731 "EDDIParser.cpp"
     break;
 
   case 13: // PRIMITIVE: "-"
-#line 155 "VIIParser.bison"
+#line 155 "EDDIParser.bison"
                                          { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 737 "VIIParser.cpp"
+#line 737 "EDDIParser.cpp"
     break;
 
   case 14: // value: PRIMITIVE
-#line 158 "VIIParser.bison"
+#line 158 "EDDIParser.bison"
 {
     size_t token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                      ,token_index);
 }
-#line 747 "VIIParser.cpp"
+#line 747 "EDDIParser.cpp"
     break;
 
   case 15: // key_value: value
-#line 163 "VIIParser.bison"
+#line 163 "EDDIParser.bison"
             { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 753 "VIIParser.cpp"
+#line 753 "EDDIParser.cpp"
     break;
 
   case 16: // key_value: "string"
-#line 165 "VIIParser.bison"
+#line 165 "EDDIParser.bison"
 {
     size_t token_index = ((yystack_[0].value.token_index));
     (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                      ,token_index);
 }
-#line 763 "VIIParser.cpp"
+#line 763 "EDDIParser.cpp"
     break;
 
   case 17: // path: "string"
-#line 172 "VIIParser.bison"
+#line 172 "EDDIParser.bison"
         {
             size_t token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"path"
                              ,token_index);
         }
-#line 773 "VIIParser.cpp"
+#line 773 "EDDIParser.cpp"
     break;
 
   case 18: // path: "quoted string"
-#line 178 "VIIParser.bison"
+#line 178 "EDDIParser.bison"
         {
             size_t token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"path"
                              ,token_index);
         }
-#line 783 "VIIParser.cpp"
+#line 783 "EDDIParser.cpp"
     break;
 
   case 19: // include_file: include path
-#line 185 "VIIParser.bison"
+#line 185 "EDDIParser.bison"
         {
 
             std::vector<size_t> child_indices = {(yystack_[1].value.node_index),(yystack_[0].value.node_index)};
@@ -795,11 +795,11 @@ namespace wasp {
                                         ,child_indices);
             interpreter.load_document((yylhs.value.node_index), wasp::trim(interpreter.data((yystack_[0].value.node_index))," "));
         }
-#line 799 "VIIParser.cpp"
+#line 799 "EDDIParser.cpp"
     break;
 
   case 20: // decl: "string"
-#line 199 "VIIParser.bison"
+#line 199 "EDDIParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         std::string quote_less_data = interpreter.token_data(token_index);
@@ -808,11 +808,11 @@ namespace wasp {
                                    ,"decl"
                                    ,token_index);
     }
-#line 812 "VIIParser.cpp"
+#line 812 "EDDIParser.cpp"
     break;
 
   case 21: // decl_or_key_value: decl assign key_value
-#line 208 "VIIParser.bison"
+#line 208 "EDDIParser.bison"
         {
             std::string quote_less_data = interpreter.data((yystack_[2].value.node_index));
             quote_less_data = wasp::strip_quotes(quote_less_data);
@@ -827,59 +827,59 @@ namespace wasp {
                                         ,quote_less_data.c_str()
                                         ,child_indices);
         }
-#line 831 "VIIParser.cpp"
+#line 831 "EDDIParser.cpp"
     break;
 
   case 22: // decl_or_key_value: decl
-#line 221 "VIIParser.bison"
+#line 221 "EDDIParser.bison"
             { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 837 "VIIParser.cpp"
+#line 837 "EDDIParser.cpp"
     break;
 
   case 23: // part: value
-#line 222 "VIIParser.bison"
+#line 222 "EDDIParser.bison"
        { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 843 "VIIParser.cpp"
+#line 843 "EDDIParser.cpp"
     break;
 
   case 24: // part: fslash
-#line 222 "VIIParser.bison"
+#line 222 "EDDIParser.bison"
                { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 849 "VIIParser.cpp"
+#line 849 "EDDIParser.cpp"
     break;
 
   case 25: // part: comment
-#line 222 "VIIParser.bison"
+#line 222 "EDDIParser.bison"
                         { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 855 "VIIParser.cpp"
+#line 855 "EDDIParser.cpp"
     break;
 
   case 26: // part: fill_expr
-#line 222 "VIIParser.bison"
+#line 222 "EDDIParser.bison"
                                   { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 861 "VIIParser.cpp"
+#line 861 "EDDIParser.cpp"
     break;
 
   case 27: // part: decl_or_key_value
-#line 223 "VIIParser.bison"
+#line 223 "EDDIParser.bison"
           { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 867 "VIIParser.cpp"
+#line 867 "EDDIParser.cpp"
     break;
 
   case 28: // part: comma
-#line 223 "VIIParser.bison"
+#line 223 "EDDIParser.bison"
                               { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 873 "VIIParser.cpp"
+#line 873 "EDDIParser.cpp"
     break;
 
   case 29: // part: semicolon
-#line 223 "VIIParser.bison"
+#line 223 "EDDIParser.bison"
                                       { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 879 "VIIParser.cpp"
+#line 879 "EDDIParser.cpp"
     break;
 
   case 30: // command_part: part
-#line 225 "VIIParser.bison"
+#line 225 "EDDIParser.bison"
                     {
         std::ostringstream err;
         if (!interpreter.process_staged_node((yylhs.value.stage_index), "command_part",
@@ -888,30 +888,30 @@ namespace wasp {
             error(yystack_[0].location, err.str());
         }
     }
-#line 892 "VIIParser.cpp"
+#line 892 "EDDIParser.cpp"
     break;
 
   case 31: // command_part: include_file
-#line 234 "VIIParser.bison"
+#line 234 "EDDIParser.bison"
     {
         // assume the included content will be a child of the existing
         // staged content.
         (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
     }
-#line 902 "VIIParser.cpp"
+#line 902 "EDDIParser.cpp"
     break;
 
   case 32: // comment: "comment"
-#line 241 "VIIParser.bison"
+#line 241 "EDDIParser.bison"
         {
             auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
-#line 911 "VIIParser.cpp"
+#line 911 "EDDIParser.cpp"
     break;
 
   case 33: // block: lbracket decl rbracket
-#line 246 "VIIParser.bison"
+#line 246 "EDDIParser.bison"
     {
         // Block is top level parse construct
         // It closes/commits existing stages
@@ -935,11 +935,11 @@ namespace wasp {
                                         ,child_indices);
         }
     }
-#line 939 "VIIParser.cpp"
+#line 939 "EDDIParser.cpp"
     break;
 
   case 35: // start: start block
-#line 271 "VIIParser.bison"
+#line 271 "EDDIParser.bison"
                     {
            if(interpreter.single_parse() )
            {
@@ -947,11 +947,11 @@ namespace wasp {
                YYACCEPT;
            }
        }
-#line 951 "VIIParser.cpp"
+#line 951 "EDDIParser.cpp"
     break;
 
   case 36: // start: start command_part
-#line 278 "VIIParser.bison"
+#line 278 "EDDIParser.bison"
                             {
             if(interpreter.single_parse() )
             {
@@ -959,11 +959,11 @@ namespace wasp {
                 YYACCEPT;
             }
         }
-#line 963 "VIIParser.cpp"
+#line 963 "EDDIParser.cpp"
     break;
 
 
-#line 967 "VIIParser.cpp"
+#line 967 "EDDIParser.cpp"
 
             default:
               break;
@@ -1136,7 +1136,7 @@ namespace wasp {
   }
 
   void
-  VIIParser::error (const syntax_error& yyexc)
+  EDDIParser::error (const syntax_error& yyexc)
   {
     error (yyexc.location, yyexc.what ());
   }
@@ -1147,7 +1147,7 @@ namespace wasp {
      apostrophe, a comma, or backslash (other than backslash-backslash).
      YYSTR is taken from yytname.  */
   std::string
-  VIIParser::yytnamerr_ (const char *yystr)
+  EDDIParser::yytnamerr_ (const char *yystr)
   {
     if (*yystr == '"')
       {
@@ -1182,21 +1182,21 @@ namespace wasp {
   }
 
   std::string
-  VIIParser::symbol_name (symbol_kind_type yysymbol)
+  EDDIParser::symbol_name (symbol_kind_type yysymbol)
   {
     return yytnamerr_ (yytname_[yysymbol]);
   }
 
 
 
-  // VIIParser::context.
-  VIIParser::context::context (const VIIParser& yyparser, const symbol_type& yyla)
+  // EDDIParser::context.
+  EDDIParser::context::context (const EDDIParser& yyparser, const symbol_type& yyla)
     : yyparser_ (yyparser)
     , yyla_ (yyla)
   {}
 
   int
-  VIIParser::context::expected_tokens (symbol_kind_type yyarg[], int yyargn) const
+  EDDIParser::context::expected_tokens (symbol_kind_type yyarg[], int yyargn) const
   {
     // Actual number of expected tokens
     int yycount = 0;
@@ -1232,7 +1232,7 @@ namespace wasp {
 
 
   int
-  VIIParser::yy_syntax_error_arguments_ (const context& yyctx,
+  EDDIParser::yy_syntax_error_arguments_ (const context& yyctx,
                                                  symbol_kind_type yyarg[], int yyargn) const
   {
     /* There are many possibilities here to consider:
@@ -1272,7 +1272,7 @@ namespace wasp {
 
   // Generate an error message.
   std::string
-  VIIParser::yysyntax_error_ (const context& yyctx) const
+  EDDIParser::yysyntax_error_ (const context& yyctx) const
   {
     // Its maximum.
     enum { YYARGS_MAX = 5 };
@@ -1312,12 +1312,12 @@ namespace wasp {
   }
 
 
-  const signed char VIIParser::yypact_ninf_ = -17;
+  const signed char EDDIParser::yypact_ninf_ = -17;
 
-  const signed char VIIParser::yytable_ninf_ = -1;
+  const signed char EDDIParser::yytable_ninf_ = -1;
 
   const signed char
-  VIIParser::yypact_[] =
+  EDDIParser::yypact_[] =
   {
      -17,     0,   -17,   -17,   -17,   -17,   -17,   -17,   -17,   -17,
      -17,   -17,   -17,   -17,   -17,   -17,    -9,   -17,   -17,   -17,
@@ -1327,7 +1327,7 @@ namespace wasp {
   };
 
   const signed char
-  VIIParser::yydefact_[] =
+  EDDIParser::yydefact_[] =
   {
       34,     0,     1,    13,     4,     5,    11,    12,    20,    10,
       32,     9,     7,     3,     2,    26,     0,    28,    29,    24,
@@ -1337,7 +1337,7 @@ namespace wasp {
   };
 
   const signed char
-  VIIParser::yypgoto_[] =
+  EDDIParser::yypgoto_[] =
   {
      -17,   -17,   -17,   -17,   -17,   -17,   -17,   -17,   -17,   -17,
      -16,   -17,   -17,   -17,     1,   -17,   -17,   -17,   -17,   -17,
@@ -1345,7 +1345,7 @@ namespace wasp {
   };
 
   const signed char
-  VIIParser::yydefgoto_[] =
+  EDDIParser::yydefgoto_[] =
   {
        0,    15,    16,    17,    18,    35,    19,    37,    20,    21,
       22,    40,    32,    23,    24,    25,    26,    27,    28,    29,
@@ -1353,7 +1353,7 @@ namespace wasp {
   };
 
   const signed char
-  VIIParser::yytable_[] =
+  EDDIParser::yytable_[] =
   {
        2,    30,    31,     8,     3,    36,     4,     5,     6,     7,
        8,     9,    10,    34,    11,    12,    13,    14,     3,    39,
@@ -1361,7 +1361,7 @@ namespace wasp {
   };
 
   const signed char
-  VIIParser::yycheck_[] =
+  EDDIParser::yycheck_[] =
   {
        0,    10,    11,    10,     4,    13,     6,     7,     8,     9,
       10,    11,    12,     5,    14,    15,    16,    17,     4,    35,
@@ -1369,7 +1369,7 @@ namespace wasp {
   };
 
   const signed char
-  VIIParser::yystos_[] =
+  EDDIParser::yystos_[] =
   {
        0,    38,     0,     4,     6,     7,     8,     9,    10,    11,
       12,    14,    15,    16,    17,    19,    20,    21,    22,    24,
@@ -1379,7 +1379,7 @@ namespace wasp {
   };
 
   const signed char
-  VIIParser::yyr1_[] =
+  EDDIParser::yyr1_[] =
   {
        0,    18,    19,    20,    21,    22,    23,    24,    25,    26,
       27,    27,    27,    27,    28,    29,    29,    30,    30,    31,
@@ -1388,7 +1388,7 @@ namespace wasp {
   };
 
   const signed char
-  VIIParser::yyr2_[] =
+  EDDIParser::yyr2_[] =
   {
        0,     2,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     2,
@@ -1401,7 +1401,7 @@ namespace wasp {
   // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
   // First, the terminals, then, starting at \a YYNTOKENS, nonterminals.
   const char*
-  const VIIParser::yytname_[] =
+  const EDDIParser::yytname_[] =
   {
   "\"end of file\"", "error", "\"invalid token\"", "\"end of line\"",
   "\"-\"", "\"=\"", "\",\"", "\";\"", "\"integer\"", "\"double\"",
@@ -1417,7 +1417,7 @@ namespace wasp {
 
 #if YYDEBUG
   const short
-  VIIParser::yyrline_[] =
+  EDDIParser::yyrline_[] =
   {
        0,   113,   113,   118,   123,   128,   133,   139,   144,   149,
      155,   155,   155,   155,   157,   163,   164,   171,   177,   184,
@@ -1426,7 +1426,7 @@ namespace wasp {
   };
 
   void
-  VIIParser::yy_stack_print_ () const
+  EDDIParser::yy_stack_print_ () const
   {
     *yycdebug_ << "Stack now";
     for (stack_type::const_iterator
@@ -1438,7 +1438,7 @@ namespace wasp {
   }
 
   void
-  VIIParser::yy_reduce_print_ (int yyrule) const
+  EDDIParser::yy_reduce_print_ (int yyrule) const
   {
     int yylno = yyrline_[yyrule];
     int yynrhs = yyr2_[yyrule];
@@ -1452,8 +1452,8 @@ namespace wasp {
   }
 #endif // YYDEBUG
 
-  VIIParser::symbol_kind_type
-  VIIParser::yytranslate_ (int t)
+  EDDIParser::symbol_kind_type
+  EDDIParser::yytranslate_ (int t)
   {
     // YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to
     // TOKEN-NUM as returned by yylex.
@@ -1501,14 +1501,14 @@ namespace wasp {
       return symbol_kind::S_YYUNDEF;
   }
 
-#line 33 "VIIParser.bison"
+#line 33 "EDDIParser.bison"
 } // wasp
-#line 1507 "VIIParser.cpp"
+#line 1507 "EDDIParser.cpp"
 
-#line 290 "VIIParser.bison"
+#line 290 "EDDIParser.bison"
  /*** Additional Code ***/
 
-void wasp::VIIParser::error(const VIIParser::location_type& l,
+void wasp::EDDIParser::error(const EDDIParser::location_type& l,
                            const std::string& m)
 {
     interpreter.error_stream()<<l<<": "<<m<<std::endl;

@@ -32,7 +32,7 @@
 
 
 /**
- ** \file VIIParser.hpp
+ ** \file EDDIParser.hpp
  ** Define the wasp::parser class.
  */
 
@@ -42,16 +42,16 @@
 // especially those whose name start with YY_ or yy_.  They are
 // private implementation details that can be changed or removed.
 
-#ifndef YY_YY_VIIPARSER_HPP_INCLUDED
-# define YY_YY_VIIPARSER_HPP_INCLUDED
+#ifndef YY_YY_EDDIPARSER_HPP_INCLUDED
+# define YY_YY_EDDIPARSER_HPP_INCLUDED
 // "%code requires" blocks.
-#line 11 "VIIParser.bison"
+#line 11 "EDDIParser.bison"
 
 #include <memory>
 #include "waspcore/utils.h"
 #include "waspcore/decl.h"
 
-#line 55 "VIIParser.hpp"
+#line 55 "EDDIParser.hpp"
 
 
 # include <cstdlib> // std::abort
@@ -179,28 +179,28 @@
 # define YYDEBUG 0
 #endif
 
-#line 33 "VIIParser.bison"
+#line 33 "EDDIParser.bison"
 namespace wasp {
-#line 185 "VIIParser.hpp"
+#line 185 "EDDIParser.hpp"
 
 
 
 
   /// A Bison parser.
-  class WASP_PUBLIC VIIParser
+  class WASP_PUBLIC EDDIParser
   {
   public:
 #ifndef YYSTYPE
     /// Symbol semantic values.
     union semantic_type
     {
-#line 61 "VIIParser.bison"
+#line 61 "EDDIParser.bison"
 
         std::size_t token_index;
         std::size_t node_index;
         std::size_t stage_index;
 
-#line 204 "VIIParser.hpp"
+#line 204 "EDDIParser.hpp"
 
     };
 #else
@@ -370,7 +370,7 @@ namespace wasp {
       /// The user-facing name of this symbol.
       std::string name () const YY_NOEXCEPT
       {
-        return VIIParser::symbol_name (this->kind ());
+        return EDDIParser::symbol_name (this->kind ());
       }
 
       /// Backward compatibility (Bison 3.6).
@@ -441,14 +441,14 @@ namespace wasp {
     {};
 
     /// Build a parser object.
-    VIIParser (class AbstractInterpreter& interpreter_yyarg, std::istream &input_stream_yyarg, std::shared_ptr<class VIILexerImpl> lexer_yyarg);
-    virtual ~VIIParser ();
+    EDDIParser (class AbstractInterpreter& interpreter_yyarg, std::istream &input_stream_yyarg, std::shared_ptr<class EDDILexerImpl> lexer_yyarg);
+    virtual ~EDDIParser ();
 
 #if 201103L <= YY_CPLUSPLUS
     /// Non copyable.
-    VIIParser (const VIIParser&) = delete;
+    EDDIParser (const EDDIParser&) = delete;
     /// Non copyable.
-    VIIParser& operator= (const VIIParser&) = delete;
+    EDDIParser& operator= (const EDDIParser&) = delete;
 #endif
 
     /// Parse.  An alias for parse ().
@@ -490,7 +490,7 @@ namespace wasp {
     class context
     {
     public:
-      context (const VIIParser& yyparser, const symbol_type& yyla);
+      context (const EDDIParser& yyparser, const symbol_type& yyla);
       const symbol_type& lookahead () const YY_NOEXCEPT { return yyla_; }
       symbol_kind_type token () const YY_NOEXCEPT { return yyla_.kind (); }
       const location_type& location () const YY_NOEXCEPT { return yyla_.location; }
@@ -501,16 +501,16 @@ namespace wasp {
       int expected_tokens (symbol_kind_type yyarg[], int yyargn) const;
 
     private:
-      const VIIParser& yyparser_;
+      const EDDIParser& yyparser_;
       const symbol_type& yyla_;
     };
 
   private:
 #if YY_CPLUSPLUS < 201103L
     /// Non copyable.
-    VIIParser (const VIIParser&);
+    EDDIParser (const EDDIParser&);
     /// Non copyable.
-    VIIParser& operator= (const VIIParser&);
+    EDDIParser& operator= (const EDDIParser&);
 #endif
 
 
@@ -824,16 +824,16 @@ namespace wasp {
     // User arguments.
     class AbstractInterpreter& interpreter;
     std::istream &input_stream;
-    std::shared_ptr<class VIILexerImpl> lexer;
+    std::shared_ptr<class EDDILexerImpl> lexer;
 
   };
 
 
-#line 33 "VIIParser.bison"
+#line 33 "EDDIParser.bison"
 } // wasp
-#line 835 "VIIParser.hpp"
+#line 835 "EDDIParser.hpp"
 
 
 
 
-#endif // !YY_YY_VIIPARSER_HPP_INCLUDED
+#endif // !YY_YY_EDDIPARSER_HPP_INCLUDED

@@ -80,33 +80,33 @@ IF ( wasp_ENABLE_waspddi )
       INSTALLABLE
     )
 ENDIF()
-IF ( wasp_ENABLE_waspvii )
-    TRIBITS_ADD_EXECUTABLE(viilist
-      SOURCES viilist.cpp
+IF ( wasp_ENABLE_waspeddi )
+    TRIBITS_ADD_EXECUTABLE(eddilist
+      SOURCES eddilist.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE
     )
-    TRIBITS_ADD_EXECUTABLE(viixml
-      SOURCES viixml.cpp
+    TRIBITS_ADD_EXECUTABLE(eddixml
+      SOURCES eddixml.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE
     )
-    TRIBITS_ADD_EXECUTABLE(viivalid
-      SOURCES viivalid.cpp
+    TRIBITS_ADD_EXECUTABLE(eddivalid
+      SOURCES eddivalid.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE
     )
-    TRIBITS_ADD_EXECUTABLE(viivalidjson
-      SOURCES viivalidjson.cpp
+    TRIBITS_ADD_EXECUTABLE(eddivalidjson
+      SOURCES eddivalidjson.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE
     )
-    TRIBITS_ADD_EXECUTABLE(viiselect
-      SOURCES viiselect.cpp
+    TRIBITS_ADD_EXECUTABLE(eddiselect
+      SOURCES eddiselect.cpp
       NOEXEPREFIX
       NOEXESUFFIX
       INSTALLABLE

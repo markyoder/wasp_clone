@@ -78,7 +78,7 @@ MACRO(TRIBITS_REPOSITORY_SETUP_EXTRA_OPTIONS)
     PDF_FILE "${wasp_BINARY_DIR}/WorkbenchAnalysisSequenceProcessor.pdf"
     MD_FILES README.md waspcore/README.md waspexpr/README.md 
              wasphive/README.md waspsiren/README.md
-              waspson/README.md waspddi/README.md waspvii/README.md
+              waspson/README.md waspddi/README.md waspeddi/README.md
                wasphalite/README.md wasputils/README.md
   )
 

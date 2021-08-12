@@ -1,5 +1,5 @@
-#ifndef WASP_VIINODE_VIEW_H
-#define WASP_VIINODE_VIEW_H
+#ifndef WASP_EDDINODE_VIEW_H
+#define WASP_EDDINODE_VIEW_H
 
 #include <string>
 #include <sstream>
@@ -10,39 +10,39 @@
 namespace wasp
 {
 /**
- * @brief The VIINodeView class provides light weight interface to VII Nodes
+ * @brief The EDDINodeView class provides light weight interface to EDDI Nodes
  * Allows traversing child nodes and parent as well as acquire node information
  * *
  */
-class WASP_PUBLIC VIINodeView
+class WASP_PUBLIC EDDINodeView
 {
   public:
-    using Collection = std::vector<VIINodeView>;
-    VIINodeView() : m_node_index(-1), m_pool(nullptr) {}
-    VIINodeView(std::size_t node_index, const AbstractInterpreter& nodes);
+    using Collection = std::vector<EDDINodeView>;
+    EDDINodeView() : m_node_index(-1), m_pool(nullptr) {}
+    EDDINodeView(std::size_t node_index, const AbstractInterpreter& nodes);
     template<class NV>
-    VIINodeView(const NV& orig);
-    VIINodeView(const VIINodeView& orig);
+    EDDINodeView(const NV& orig);
+    EDDINodeView(const EDDINodeView& orig);
 
-    ~VIINodeView();
+    ~EDDINodeView();
 
-    VIINodeView& operator=(const VIINodeView& b);
+    EDDINodeView& operator=(const EDDINodeView& b);
     template<class NV>
-    VIINodeView& operator=(const NV& b);
+    EDDINodeView& operator=(const NV& b);
 
-    bool operator==(const VIINodeView& b) const;
-    bool operator!=(const VIINodeView& b) const { return !(*this == b); }
+    bool operator==(const EDDINodeView& b) const;
+    bool operator!=(const EDDINodeView& b) const { return !(*this == b); }
     /**
      * @brief operator < orders by pool index
      * @param b the node to compare pool index
      * @return true, iff this views index is strictly less than b.index
      */
-    bool operator<(const VIINodeView& b) const;
+    bool operator<(const EDDINodeView& b) const;
     /**
-     * @brief equal determines if this is equal to the provides VIINodeView
+     * @brief equal determines if this is equal to the provides EDDINodeView
      * @return true, iff and only if the nodes are the same
      */
-    bool equal(const VIINodeView& b) const { return *this == b; }
+    bool equal(const EDDINodeView& b) const { return *this == b; }
 
     /**
      * @brief data acquire the node's data
@@ -53,7 +53,7 @@ class WASP_PUBLIC VIINodeView
      * @brief parent acquire the parent view of the current node
      * @return
      */
-    VIINodeView parent() const;
+    EDDINodeView parent() const;
     /**
      * @brief has_parent determine if this node has a parent
      * @return true, iff this node has a parent
@@ -69,7 +69,7 @@ class WASP_PUBLIC VIINodeView
      * @brief id_child will return the _name node iff _name exists and is child(1)
      * @return null view iff _name node doesn't exist
      */
-    VIINodeView id_child() const;
+    EDDINodeView id_child() const;
 
     /**
      * @brief is_decorative determine if this node is decorative
@@ -95,15 +95,15 @@ class WASP_PUBLIC VIINodeView
 
     /**
      * @brief non_decorative_children acquires all non decorative children
-     * @return collection of VIINodeViews
+     * @return collection of EDDINodeViews
      */
-    VIINodeView::Collection non_decorative_children() const;
+    EDDINodeView::Collection non_decorative_children() const;
     /**
      * @brief first_non_decorative_child_by_name acquires the first non
      * decorative child
-     * @return VIINodeView - need to check is_null to ensure valid node
+     * @return EDDINodeView - need to check is_null to ensure valid node
      */
-    VIINodeView
+    EDDINodeView
     first_non_decorative_child_by_name(const std::string& name) const;
     /**
      * @brief non_decorative_children_count convenience to determine number of
@@ -152,9 +152,9 @@ class WASP_PUBLIC VIINodeView
     /**
      * @brief child_at acquire the child node view at the given index
      * @param index the index of the child [0-child_count())
-     * @return VIINodeView describing the child node
+     * @return EDDINodeView describing the child node
      */
-    VIINodeView child_at(std::size_t index) const;
+    EDDINodeView child_at(std::size_t index) const;
 
     /**
      * @brief child_by_name acquire child nodes by the given name
@@ -162,7 +162,7 @@ class WASP_PUBLIC VIINodeView
      * @param limit the limit on the number of children ( 0 := no limit )
      * @return A collection of views. Empty if no match occurrs
      */
-    VIINodeView::Collection child_by_name(const std::string& name,
+    EDDINodeView::Collection child_by_name(const std::string& name,
                                           size_t             limit = 0) const;
     /**
      * @brief first_child_by_name acquires the first child with the given name
@@ -170,7 +170,7 @@ class WASP_PUBLIC VIINodeView
      * @return Named NodeView as requestd. is_null indicates if none was
      * found
      */
-    VIINodeView first_child_by_name(const std::string& name) const;
+    EDDINodeView first_child_by_name(const std::string& name) const;
     /**
      * @brief type acquire the type of the node
      * @return the node's type
@@ -253,9 +253,9 @@ class WASP_PUBLIC VIINodeView
 
     // Friendly stream operator
     friend std::ostream& operator<<(std::ostream&            str,
-                                    const wasp::VIINodeView& view)
+                                    const wasp::EDDINodeView& view)
     {
-        str << "VIINodeView(node_index=" << view.m_node_index
+        str << "EDDINodeView(node_index=" << view.m_node_index
             << ", &pool=" << view.m_pool << ")";
         return str;
     }
@@ -279,7 +279,7 @@ class WASP_PUBLIC VIINodeView
      */
     size_t value_node_index() const;
 };
-#include "waspvii/VIINodeView.i.h"
+#include "waspeddi/EDDINodeView.i.h"
 }  // end of namespace
 
 #endif

@@ -1,4 +1,4 @@
-#include "waspvii/VIINodeView.h"
+#include "waspeddi/EDDINodeView.h"
 #include "waspcore/utils.h"
 
 namespace wasp
@@ -22,62 +22,62 @@ public:
         return T(); // null deref
     }
 };
-VIINodeView::VIINodeView(std::size_t                node_index,
+EDDINodeView::EDDINodeView(std::size_t                node_index,
                          const AbstractInterpreter& pool)
     : m_node_index(node_index), m_pool(&pool)
 {
 }
 
-VIINodeView::VIINodeView(const VIINodeView& orig)
+EDDINodeView::EDDINodeView(const EDDINodeView& orig)
     : m_node_index(orig.m_node_index), m_pool(orig.m_pool)
 {
 }
 
-VIINodeView::~VIINodeView()
+EDDINodeView::~EDDINodeView()
 {
 }
 
-VIINodeView& VIINodeView::operator=(const VIINodeView& b)
+EDDINodeView& EDDINodeView::operator=(const EDDINodeView& b)
 {
     m_node_index = b.node_index();
     m_pool       = b.node_pool();
     return *this;
 }
 
-bool VIINodeView::operator==(const VIINodeView& b) const
+bool EDDINodeView::operator==(const EDDINodeView& b) const
 {
     return m_pool == b.m_pool && m_node_index == b.m_node_index;
 }
 
-bool VIINodeView::operator<(const VIINodeView& b) const
+bool EDDINodeView::operator<(const EDDINodeView& b) const
 {
     return m_node_index < b.m_node_index;
 }
 
-VIINodeView VIINodeView::parent() const
+EDDINodeView EDDINodeView::parent() const
 {    
-    VIINodeView view;
+    EDDINodeView view;
 
     if( m_pool->document_parent() != nullptr )
     {
         if( type() != wasp::DOCUMENT_ROOT )
         {
-            view = VIINodeView(m_pool->parent_node_index(m_node_index), *m_pool);
+            view = EDDINodeView(m_pool->parent_node_index(m_node_index), *m_pool);
             if ( view.type() == wasp::DOCUMENT_ROOT )
             {
-                view = wasp::parent_document_node<VIINodeView,
+                view = wasp::parent_document_node<EDDINodeView,
                                                     AbstractInterpreter>(m_pool);
             }
         }
     }
     else
     {
-        view = VIINodeView(m_pool->parent_node_index(m_node_index), *m_pool);
+        view = EDDINodeView(m_pool->parent_node_index(m_node_index), *m_pool);
     }
     return view;
 }
 
-bool VIINodeView::has_parent() const
+bool EDDINodeView::has_parent() const
 {
     bool _has_parent = m_pool->has_parent(m_node_index);
     if (m_pool->document_parent() != nullptr)
@@ -87,18 +87,18 @@ bool VIINodeView::has_parent() const
     return _has_parent;
 }
 
-bool VIINodeView::is_leaf() const
+bool EDDINodeView::is_leaf() const
 {
     NodeView view(node_index(), *node_pool());
     return view.is_leaf();
 }
 
-bool VIINodeView::is_decorative() const
+bool EDDINodeView::is_decorative() const
 {
     auto t = type();
     return is_type_decorative(t);
 }
-bool VIINodeView::is_type_decorative(std::size_t t)
+bool EDDINodeView::is_type_decorative(std::size_t t)
 {
     switch (t)
     {
@@ -115,12 +115,12 @@ bool VIINodeView::is_type_decorative(std::size_t t)
     return false;
 }
 
-bool VIINodeView::is_declarator() const
+bool EDDINodeView::is_declarator() const
 {
     return type() == wasp::DECL;
 }
 
-bool VIINodeView::is_terminator() const
+bool EDDINodeView::is_terminator() const
 {
     switch (type())
     {
@@ -131,18 +131,18 @@ bool VIINodeView::is_terminator() const
     }
 }
 
-std::string VIINodeView::id() const {
+std::string EDDINodeView::id() const {
      if(child_count() > 2 && child_at(1).type() == wasp::IDENTIFIER)
          return child_at(1).to_string();
      return "";
 }
-VIINodeView VIINodeView::id_child() const {
+EDDINodeView EDDINodeView::id_child() const {
      if(child_count() > 2 && child_at(1).type() == wasp::IDENTIFIER)
          return child_at(1);
-     return VIINodeView();
+     return EDDINodeView();
 }
 
-VIINodeView::Collection VIINodeView::non_decorative_children() const
+EDDINodeView::Collection EDDINodeView::non_decorative_children() const
 {    
     Collection results;
 
@@ -154,7 +154,7 @@ VIINodeView::Collection VIINodeView::non_decorative_children() const
             auto * interp = m_pool->document(child.node_index());
             if ( interp != nullptr )
             {
-                auto children = VIINodeView(interp->root()).non_decorative_children();
+                auto children = EDDINodeView(interp->root()).non_decorative_children();
                 results.insert(results.end(), children.begin(),children.end());
             }
         }
@@ -164,8 +164,8 @@ VIINodeView::Collection VIINodeView::non_decorative_children() const
     return results;
 }
 
-VIINodeView
-VIINodeView::first_non_decorative_child_by_name(const std::string& name) const
+EDDINodeView
+EDDINodeView::first_non_decorative_child_by_name(const std::string& name) const
 {
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
     {
@@ -176,7 +176,7 @@ VIINodeView::first_non_decorative_child_by_name(const std::string& name) const
             auto * interp = m_pool->document(child.node_index());
             if ( interp != nullptr )
             {
-                auto child = VIINodeView(interp->root()).first_non_decorative_child_by_name(name);
+                auto child = EDDINodeView(interp->root()).first_non_decorative_child_by_name(name);
                 if (child.is_null() == false) return child;
             }
         }
@@ -188,10 +188,10 @@ VIINodeView::first_non_decorative_child_by_name(const std::string& name) const
             }
         }
     }
-    return VIINodeView();  // null node
+    return EDDINodeView();  // null node
 }
 
-size_t VIINodeView::non_decorative_children_count() const
+size_t EDDINodeView::non_decorative_children_count() const
 {
     size_t result = 0;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
@@ -202,7 +202,7 @@ size_t VIINodeView::non_decorative_children_count() const
             auto * interp = m_pool->document(child.node_index());
             if ( interp != nullptr )
             {
-                result+=VIINodeView(interp->root()).non_decorative_children_count();
+                result+=EDDINodeView(interp->root()).non_decorative_children_count();
             }
         }
         else if (!child.is_decorative())
@@ -213,38 +213,38 @@ size_t VIINodeView::non_decorative_children_count() const
     return result;
 }
 
-std::string VIINodeView::data() const
+std::string EDDINodeView::data() const
 {
     std::stringstream str;
     m_pool->data(m_node_index, str);
     return str.str();
 }
 
-std::string VIINodeView::path() const
+std::string EDDINodeView::path() const
 {
     return wasp::node_path(*this);
 }
 
-void VIINodeView::paths(std::ostream& out) const
+void EDDINodeView::paths(std::ostream& out) const
 {
     wasp::node_paths(*this, out);
 }
 
-std::size_t VIINodeView::child_count() const
+std::size_t EDDINodeView::child_count() const
 {
     if( type() == wasp::FILE )
     {
         auto * interp = m_pool->document(m_node_index);
         if ( interp != nullptr )
         {
-            return VIINodeView(interp->root()).child_count();
+            return EDDINodeView(interp->root()).child_count();
         }
     }
     return m_pool->child_count(m_node_index);
 }
 
 std::size_t  // return type
-    VIINodeView::child_count_by_name(const std::string& name,
+    EDDINodeView::child_count_by_name(const std::string& name,
                                      std::size_t        limit) const
 {
     size_t result = 0;
@@ -257,7 +257,7 @@ std::size_t  // return type
             auto * interp = m_pool->document(child.node_index());
             if ( interp != nullptr )
             {
-                result+=VIINodeView(interp->root()).child_count_by_name(name,
+                result+=EDDINodeView(interp->root()).child_count_by_name(name,
                                                     limit==0?limit:limit-result);
             }
         }
@@ -269,25 +269,25 @@ std::size_t  // return type
     return result;
 }
 
-VIINodeView VIINodeView::child_at(std::size_t index) const
+EDDINodeView EDDINodeView::child_at(std::size_t index) const
 {
     if( type() == wasp::FILE )
     {
         auto * interp = m_pool->document(m_node_index);
         if ( interp != nullptr )
         {
-            VIINodeView view = VIINodeView(interp->root());
+            EDDINodeView view = EDDINodeView(interp->root());
             wasp_check(view.is_null() == false);
             wasp_check(view.child_count() > index);
             return view.child_at(index);
         }
     }
     auto child_node_pool_index = m_pool->child_at(m_node_index, index);
-    return VIINodeView(child_node_pool_index, *m_pool);
+    return EDDINodeView(child_node_pool_index, *m_pool);
 }
 
-VIINodeView::Collection  // return type
-    VIINodeView::child_by_name(const std::string& name, std::size_t limit) const
+EDDINodeView::Collection  // return type
+    EDDINodeView::child_by_name(const std::string& name, std::size_t limit) const
 {
     Collection results;
     for (std::size_t i = 0, count = child_count(); i < count; ++i)
@@ -299,7 +299,7 @@ VIINodeView::Collection  // return type
             auto * interp = m_pool->document(child.node_index());
             if ( interp != nullptr )
             {
-                auto children = VIINodeView(interp->root()).child_by_name(name,limit);
+                auto children = EDDINodeView(interp->root()).child_by_name(name,limit);
                 results.insert(results.end(), children.begin(), children.end());
             }
         }
@@ -313,15 +313,15 @@ VIINodeView::Collection  // return type
     }
     return results;
 }
-VIINodeView  // return type
-    VIINodeView::first_child_by_name(const std::string& name) const
+EDDINodeView  // return type
+    EDDINodeView::first_child_by_name(const std::string& name) const
 {
     if( type() == wasp::FILE )
     {
         auto * interp = m_pool->document(m_node_index);
         if ( interp != nullptr )
         {
-            VIINodeView view = VIINodeView(interp->root());
+            EDDINodeView view = EDDINodeView(interp->root());
             wasp_check(view.is_null() == false);
             return view.first_child_by_name(name);
         }
@@ -330,66 +330,66 @@ VIINodeView  // return type
     return view.first_child_by_name(name);
 }
 
-std::size_t VIINodeView::type() const
+std::size_t EDDINodeView::type() const
 {
     return m_pool->type(m_node_index);
 }
 
-const char* VIINodeView::name() const
+const char* EDDINodeView::name() const
 {
     return m_pool->name(m_node_index);
 }
 
-std::size_t VIINodeView::line() const
+std::size_t EDDINodeView::line() const
 {
     return m_pool->line(m_node_index);
 }
 
-std::size_t VIINodeView::column() const
+std::size_t EDDINodeView::column() const
 {
     return m_pool->column(m_node_index);
 }
 
-std::size_t VIINodeView::last_line() const
+std::size_t EDDINodeView::last_line() const
 {
     return m_pool->last_line(m_node_index);
 }
 
-std::size_t VIINodeView::last_column() const
+std::size_t EDDINodeView::last_column() const
 {
     return m_pool->last_column(m_node_index);
 }
 
-bool VIINodeView::to_bool(bool* ok) const
+bool EDDINodeView::to_bool(bool* ok) const
 {
     NodeView view(value_node_index(), *node_pool());
     return view.to_bool(ok);
 }
 
-int VIINodeView::to_int(bool* ok) const
+int EDDINodeView::to_int(bool* ok) const
 {
     NodeView view(value_node_index(), *node_pool());
     return view.to_int(ok);
 }
 
-double VIINodeView::to_double(bool* ok) const
+double EDDINodeView::to_double(bool* ok) const
 {
     NodeView view(value_node_index(), *node_pool());
     return view.to_double(ok);
 }
 
-std::string VIINodeView::to_string(bool* ok) const
+std::string EDDINodeView::to_string(bool* ok) const
 {
     NodeView view(value_node_index(), *node_pool());
     return view.to_string(ok);
 }
 
-std::string VIINodeView::last_as_string(bool* ok) const
+std::string EDDINodeView::last_as_string(bool* ok) const
 {
     return wasp::last_as_string(*this, ok);
 }
 
-size_t VIINodeView::value_node_index() const
+size_t EDDINodeView::value_node_index() const
 {
     /// TODO - could push this lower to NodeView ?
     if (type() == wasp::KEYED_VALUE && child_count() > 0)

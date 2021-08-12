@@ -1,5 +1,5 @@
 /*
- * File:   viiselect.cpp
+ * File:   eddiselect.cpp
  * Author: orl
  *
  */
@@ -7,8 +7,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
-#include "waspvii/VIInterpreter.h"
-#include "waspvii/VIINodeView.h"
+#include "waspeddi/EDDInterpreter.h"
+#include "waspeddi/EDDINodeView.h"
 #include "waspson/SONInterpreter.h"
 #include "waspson/SONNodeView.h"
 #include "wasphive/HIVE.h"
@@ -34,12 +34,12 @@ int main(int argc, char** argv)
 
     if (argc < 3)
     {
-        std::cout << "Workbench Analysis Sequence Processor (VII)" << std::endl
+        std::cout << "Workbench Analysis Sequence Processor (EDDI)" << std::endl
                   << argv[0]
-                  << " : An application for selecting VII formatted input."
+                  << " : An application for selecting EDDI formatted input."
                   << std::endl;
         std::cout << " Usage : " << argv[0]
-                  << " path/to/VII/formatted/input /path/to/definition.son [-I/path/to/include]"
+                  << " path/to/EDDI/formatted/input /path/to/definition.son [-I/path/to/include]"
                      "'siren select statement'..."
                   << std::endl
                   << "Subsequent siren statements select from previously "
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
         return 1;
     }
     int path_arg_start = 3; // program, input, definition
-    DefaultVIInterpreter parser;
+    DefaultEDDInterpreter parser;
     if (argc > 3)
     {
         std::string argI = argv[3];
@@ -85,10 +85,10 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    VIINodeView viiroot = parser.root();
+    EDDINodeView eddiroot = parser.root();
 
-    std::vector<decltype(viiroot)> select_from_node;
-    select_from_node.push_back(viiroot);
+    std::vector<decltype(eddiroot)> select_from_node;
+    select_from_node.push_back(eddiroot);
     for (int j = path_arg_start; j < argc; ++j)
     {
         std::stringstream select_statement_errors;
@@ -104,7 +104,7 @@ int main(int argc, char** argv)
             std::cout << select_statement_errors.str() << std::endl;
             continue;
         }
-        std::vector<decltype(viiroot)> new_select_from;
+        std::vector<decltype(eddiroot)> new_select_from;
         for (size_t i = 0; i < select_from_node.size(); ++i)
         {
             auto                              context = select_from_node.at(i);

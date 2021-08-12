@@ -8,12 +8,12 @@
 
 #include <string>
 #include <sstream>
-#include "VIILexer.h"
-#include "VIInterpreter.h"
+#include "EDDILexer.h"
+#include "EDDInterpreter.h"
 
 /* import the parser's token type into a local typedef */
-typedef wasp::VIIParser::token token;
-typedef wasp::VIIParser::token_type token_type;
+typedef wasp::EDDIParser::token token;
+typedef wasp::EDDIParser::token_type token_type;
 
 /* By default yylex returns int, we use token_type. Unfortunately yyterminate
  * by default returns 0, which is not of token_type. */
@@ -26,10 +26,10 @@ typedef wasp::VIIParser::token_type token_type;
  /* enable c++ scanner class generation */
 %option c++
 
- /* change the name of the scanner class. results in "VIIFlexLexer" */
-%option prefix="VII"
-%option outfile="VIILexer.cpp"
- /*%option yyclass="wasp::VIILexerImpl"*/
+ /* change the name of the scanner class. results in "EDDIFlexLexer" */
+%option prefix="EDDI"
+%option outfile="EDDILexer.cpp"
+ /*%option yyclass="wasp::EDDILexerImpl"*/
 
  /* enable scanner to generate debug output. disable this for release
  * versions. */
@@ -173,31 +173,31 @@ include {
 
 namespace wasp {
 
-VIILexerImpl::VIILexerImpl(
+EDDILexerImpl::EDDILexerImpl(
                 AbstractInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
-    : VIIFlexLexer(in, out)
+    : EDDIFlexLexer(in, out)
     , interpreter(interpreter)
     , file_offset(0)
 {
 }
 
-VIILexerImpl::~VIILexerImpl()
+EDDILexerImpl::~EDDILexerImpl()
 {
 }
 
-void VIILexerImpl::set_debug(bool b)
+void EDDILexerImpl::set_debug(bool b)
 {
     yy_flex_debug = b;
 }
-void VIILexerImpl::rewind()
+void EDDILexerImpl::rewind()
 {
     yyin.seekg(-yyleng,std::ios_base::cur);
     yyless(0);
 }
-void VIILexerImpl::capture_token(
-        wasp::VIIParser::semantic_type* yylval
+void EDDILexerImpl::capture_token(
+        wasp::EDDIParser::semantic_type* yylval
         ,wasp::NODE type)
 {
     std::size_t offset = file_offset - yyleng;
@@ -206,17 +206,17 @@ void VIILexerImpl::capture_token(
 }
 }
 
-/* This implementation of VIIFlexLexer::yylex() is required to fill the
- * vtable of the class VIIFlexLexer. We define the scanner's main yylex
- * function via YY_DECL to reside in the VIILexerImpl class instead. */
+/* This implementation of EDDIFlexLexer::yylex() is required to fill the
+ * vtable of the class EDDIFlexLexer. We define the scanner's main yylex
+ * function via YY_DECL to reside in the EDDILexerImpl class instead. */
 
 #ifdef yylex
 #undef yylex
 #endif
 
-int VIIFlexLexer::yylex()
+int EDDIFlexLexer::yylex()
 {
-    std::cerr << "in VIIFlexLexer::yylex() !" << std::endl;
+    std::cerr << "in EDDIFlexLexer::yylex() !" << std::endl;
     return 0;
 }
 
@@ -226,7 +226,7 @@ int VIIFlexLexer::yylex()
  * another input file, and scanning continues. If it returns true (non-zero),
  * then the scanner terminates, returning 0 to its caller. */
 
-int VIIFlexLexer::yywrap()
+int EDDIFlexLexer::yywrap()
 {
     return 1;
 }

@@ -1,9 +1,9 @@
-#line 1 "VIILexer.cpp"
+#line 1 "EDDILexer.cpp"
 /* This disables inclusion of unistd.h, which is not available under Visual C++
  * on Win32. The C++ scanner uses STL streams instead. */
 #define YY_NO_UNISTD_H
 
-#line 6 "VIILexer.cpp"
+#line 6 "EDDILexer.cpp"
 
 #define  YY_INT_ALIGNED long int
 
@@ -23,24 +23,24 @@
      * We will address this in a future release of flex, or omit the C++ scanner
      * altogether.
      */
-    #define yyFlexLexer VIIFlexLexer
+    #define yyFlexLexer EDDIFlexLexer
 
 #ifdef yyalloc
-#define VIIalloc_ALREADY_DEFINED
+#define EDDIalloc_ALREADY_DEFINED
 #else
-#define yyalloc VIIalloc
+#define yyalloc EDDIalloc
 #endif
 
 #ifdef yyrealloc
-#define VIIrealloc_ALREADY_DEFINED
+#define EDDIrealloc_ALREADY_DEFINED
 #else
-#define yyrealloc VIIrealloc
+#define yyrealloc EDDIrealloc
 #endif
 
 #ifdef yyfree
-#define VIIfree_ALREADY_DEFINED
+#define EDDIfree_ALREADY_DEFINED
 #else
-#define yyfree VIIfree
+#define yyfree EDDIfree
 #endif
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
@@ -5162,29 +5162,29 @@ static const yy_state_type yy_NUL_trans[151] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "VIILexer.lex"
+#line 1 "EDDILexer.lex"
 
-#line 8 "VIILexer.lex"
+#line 8 "EDDILexer.lex"
 
 #include <string>
 #include <sstream>
-#include "VIILexer.h"
-#include "VIInterpreter.h"
+#include "EDDILexer.h"
+#include "EDDInterpreter.h"
 
 /* import the parser's token type into a local typedef */
-typedef wasp::VIIParser::token token;
-typedef wasp::VIIParser::token_type token_type;
+typedef wasp::EDDIParser::token token;
+typedef wasp::EDDIParser::token_type token_type;
 
 /* By default yylex returns int, we use token_type. Unfortunately yyterminate
  * by default returns 0, which is not of token_type. */
 #define yyterminate() return token::END
 
-#line 5182 "VIILexer.cpp"
-#line 25 "VIILexer.lex"
+#line 5182 "EDDILexer.cpp"
+#line 25 "EDDILexer.lex"
  /*** Flex Declarations and Options ***/
  /* enable c++ scanner class generation */
- /* change the name of the scanner class. results in "VIIFlexLexer" */
- /*%option yyclass="wasp::VIILexerImpl"*/
+ /* change the name of the scanner class. results in "EDDIFlexLexer" */
+ /*%option yyclass="wasp::EDDILexerImpl"*/
  /* enable scanner to generate debug output. disable this for release
  * versions. */
  /*%option debug*/
@@ -5195,8 +5195,8 @@ typedef wasp::VIIParser::token_type token_type;
  /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
 #define YY_USER_ACTION  yylloc->columns(yyleng); file_offset+=yyleng;
-#line 5198 "VIILexer.cpp"
-#line 5199 "VIILexer.cpp"
+#line 5198 "EDDILexer.cpp"
+#line 5199 "EDDILexer.cpp"
 
 #define INITIAL 0
 #define file_include 1
@@ -5329,10 +5329,10 @@ YY_DECL
 		}
 
 	{
-#line 78 "VIILexer.lex"
+#line 78 "EDDILexer.lex"
 
 
-#line 81 "VIILexer.lex"
+#line 81 "EDDILexer.lex"
  /* code to place at the beginning of yylex() */
 
     // reset location
@@ -5340,7 +5340,7 @@ YY_DECL
 
  /*** BEGIN EXAMPLE - Change the wasp lexer rules below ***/
 
-#line 5343 "VIILexer.cpp"
+#line 5343 "EDDILexer.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -5388,7 +5388,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 88 "VIILexer.lex"
+#line 88 "EDDILexer.lex"
 {
     capture_token(yylval,wasp::FILL_EXPR);
     return token::FILL_EXPR;
@@ -5396,7 +5396,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 92 "VIILexer.lex"
+#line 92 "EDDILexer.lex"
 {
     capture_token(yylval,wasp::MINUS);
     return token::MINUS;
@@ -5404,7 +5404,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 96 "VIILexer.lex"
+#line 96 "EDDILexer.lex"
 {
     capture_token(yylval,wasp::WASP_COMMA);
     return token::WASP_COMMA;
@@ -5412,7 +5412,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 100 "VIILexer.lex"
+#line 100 "EDDILexer.lex"
 {
     capture_token(yylval,wasp::TERM);
     return token::SEMICOLON;
@@ -5420,7 +5420,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 104 "VIILexer.lex"
+#line 104 "EDDILexer.lex"
 {
     capture_token(yylval,wasp::ASSIGN);
     return token::ASSIGN;
@@ -5428,7 +5428,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 108 "VIILexer.lex"
+#line 108 "EDDILexer.lex"
 {
     capture_token(yylval,wasp::LBRACKET);
     return token::LBRACKET;
@@ -5436,7 +5436,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 112 "VIILexer.lex"
+#line 112 "EDDILexer.lex"
 {
     capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
@@ -5444,7 +5444,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 116 "VIILexer.lex"
+#line 116 "EDDILexer.lex"
 {
     capture_token(yylval,wasp::DIVIDE);
     return token::FSLASH;
@@ -5452,7 +5452,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 121 "VIILexer.lex"
+#line 121 "EDDILexer.lex"
 {
     capture_token(yylval,wasp::REAL);
     return token::DOUBLE;
@@ -5460,7 +5460,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 125 "VIILexer.lex"
+#line 125 "EDDILexer.lex"
 {
     capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
@@ -5470,7 +5470,7 @@ YY_RULE_SETUP
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 131 "VIILexer.lex"
+#line 131 "EDDILexer.lex"
 {
     yylloc->lines(yyleng); yylloc->step();
     interpreter.push_line_offset(file_offset-yyleng);
@@ -5478,7 +5478,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 136 "VIILexer.lex"
+#line 136 "EDDILexer.lex"
 {
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
@@ -5486,7 +5486,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 140 "VIILexer.lex"
+#line 140 "EDDILexer.lex"
 {
     yy_push_state(file_include);
     capture_token(yylval,wasp::FILE);
@@ -5495,7 +5495,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 145 "VIILexer.lex"
+#line 145 "EDDILexer.lex"
 {
     // file includes grab everyting starting after 'include' to
     // either a newline '\n' or a comment '!'
@@ -5506,7 +5506,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 152 "VIILexer.lex"
+#line 152 "EDDILexer.lex"
 {
     capture_token(yylval,wasp::STRING);
     return token::STRING;
@@ -5514,7 +5514,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 156 "VIILexer.lex"
+#line 156 "EDDILexer.lex"
 {
     capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
@@ -5523,7 +5523,7 @@ YY_RULE_SETUP
 /* gobble up white-spaces */
 case 17:
 YY_RULE_SETUP
-#line 162 "VIILexer.lex"
+#line 162 "EDDILexer.lex"
 {
     yylloc->step();
 }
@@ -5531,7 +5531,7 @@ YY_RULE_SETUP
 /* pass all other characters up to bison*/
 case 18:
 YY_RULE_SETUP
-#line 167 "VIILexer.lex"
+#line 167 "EDDILexer.lex"
 {
     return static_cast<token_type>(*yytext);
 }
@@ -5539,10 +5539,10 @@ YY_RULE_SETUP
 /*** END EXAMPLE - Change the wasp lexer rules above ***/
 case 19:
 YY_RULE_SETUP
-#line 173 "VIILexer.lex"
+#line 173 "EDDILexer.lex"
 ECHO;
 	YY_BREAK
-#line 5545 "VIILexer.cpp"
+#line 5545 "EDDILexer.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(file_include):
 	yyterminate();
@@ -6501,36 +6501,36 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 173 "VIILexer.lex"
+#line 173 "EDDILexer.lex"
 
 
 namespace wasp {
 
-VIILexerImpl::VIILexerImpl(
+EDDILexerImpl::EDDILexerImpl(
                 AbstractInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
-    : VIIFlexLexer(in, out)
+    : EDDIFlexLexer(in, out)
     , interpreter(interpreter)
     , file_offset(0)
 {
 }
 
-VIILexerImpl::~VIILexerImpl()
+EDDILexerImpl::~EDDILexerImpl()
 {
 }
 
-void VIILexerImpl::set_debug(bool b)
+void EDDILexerImpl::set_debug(bool b)
 {
     yy_flex_debug = b;
 }
-void VIILexerImpl::rewind()
+void EDDILexerImpl::rewind()
 {
     yyin.seekg(-yyleng,std::ios_base::cur);
     yyless(0);
 }
-void VIILexerImpl::capture_token(
-        wasp::VIIParser::semantic_type* yylval
+void EDDILexerImpl::capture_token(
+        wasp::EDDIParser::semantic_type* yylval
         ,wasp::NODE type)
 {
     std::size_t offset = file_offset - yyleng;
@@ -6539,17 +6539,17 @@ void VIILexerImpl::capture_token(
 }
 }
 
-/* This implementation of VIIFlexLexer::yylex() is required to fill the
- * vtable of the class VIIFlexLexer. We define the scanner's main yylex
- * function via YY_DECL to reside in the VIILexerImpl class instead. */
+/* This implementation of EDDIFlexLexer::yylex() is required to fill the
+ * vtable of the class EDDIFlexLexer. We define the scanner's main yylex
+ * function via YY_DECL to reside in the EDDILexerImpl class instead. */
 
 #ifdef yylex
 #undef yylex
 #endif
 
-int VIIFlexLexer::yylex()
+int EDDIFlexLexer::yylex()
 {
-    std::cerr << "in VIIFlexLexer::yylex() !" << std::endl;
+    std::cerr << "in EDDIFlexLexer::yylex() !" << std::endl;
     return 0;
 }
 
@@ -6559,7 +6559,7 @@ int VIIFlexLexer::yylex()
  * another input file, and scanning continues. If it returns true (non-zero),
  * then the scanner terminates, returning 0 to its caller. */
 
-int VIIFlexLexer::yywrap()
+int EDDIFlexLexer::yywrap()
 {
     return 1;
 }
