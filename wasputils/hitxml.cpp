@@ -5,8 +5,8 @@
 #include <fstream>
 #include "waspcore/version.h"
 #include "waspcore/wasp_bug.h"
-#include "waspgetpot/GetPotInterpreter.h"
-#include "waspgetpot/GetPotNodeView.h"
+#include "wasphit/HITInterpreter.h"
+#include "wasphit/HITNodeView.h"
 using namespace wasp;
 
 int main(int argc, char* argv[])
@@ -22,11 +22,11 @@ int main(int argc, char* argv[])
     if (argc == 1)
     {
         std::cout
-            << "Workbench Analysis Sequence Processor (GetPot)" << std::endl
+            << "Workbench Analysis Sequence Processor (HIT)" << std::endl
             << argv[0]
-            << " : An application for listing GetPot formatted input as xml."
+            << " : An application for listing HIT formatted input as xml."
             << std::endl;
-        std::cout << " Usage : " << argv[0] << " path/to/GetPot/formatted/input"
+        std::cout << " Usage : " << argv[0] << " path/to/HIT/formatted/input"
                   " [--nondec]" << std::endl;
         std::cout << " Usage : " << argv[0]
                   << " --version\t(print version info)" << std::endl;
@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
             return 1;
         }
         std::stringstream        errors;
-        DefaultGetPotInterpreter interpreter(errors);
+        DefaultHITInterpreter interpreter(errors);
         wasp_timer(parse_time);
         wasp_timer_start(parse_time);
         bool parsed = interpreter.parse(input);
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
                          << "Parse Timer duration: " << parse_time.duration()
                          << " nanoseconds with " << parse_time.intervals()
                          << " invervals" << std::endl);
-        wasp::to_xml((GetPotNodeView)interpreter.root(), std::cout, !omit_dec);
+        wasp::to_xml((HITNodeView)interpreter.root(), std::cout, !omit_dec);
         if (!parsed)
         {
             std::cout << errors.str() << std::endl;

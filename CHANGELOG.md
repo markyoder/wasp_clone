@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - VERA Input Lexer to be 8-bit to support identifying unicode characters 
  - WASP Node type of INT to INTEGER (potentially break compatibility with 1.x if you using wasp::INT)
  - Refactored VII into more generic Extra Definition Driven Interpreter (EDDI)
+ - Refacted GetPot into latest MOOSE-revised Hierarchical Input Text (HIT) 
 
 ### Added
  - waspdrive scheduler capability.

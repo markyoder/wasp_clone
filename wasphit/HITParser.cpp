@@ -37,32 +37,32 @@
 
 
 // First part of user prologue.
-#line 1 "GetPot.bison"
+#line 1 "HIT.bison"
  /*** C/C++ Declarations ***/
 
 #include <stdio.h>
 #include <vector>
 #include <cstring>
 
-#line 48 "GetPotParser.cpp"
+#line 48 "HITParser.cpp"
 
 
-#include "GetPotParser.hpp"
+#include "HITParser.hpp"
 
 // Second part of user prologue.
-#line 110 "GetPot.bison"
+#line 110 "HIT.bison"
 
 
-#include "GetPotInterpreter.h"
-#include "GetPotLexer.h"
-// Obtain the GetPot name for an object_term
+#include "HITInterpreter.h"
+#include "HITLexer.h"
+// Obtain the HIT name for an object_term
 // I.e., 
 // [name]
 //     type=foo
 //     ...
 // has a rename occur equivalent to [foo_type].
 // @return true, iff the name conversion occurs
-bool getpot_get_name(std::string& name,
+bool hit_get_name(std::string& name,
                             size_t object_decl_i
                             , wasp::AbstractInterpreter & interpreter
                             , std::pair<size_t, std::vector<size_t>*>* object_members)
@@ -97,7 +97,7 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
         for( size_t child_i: *object_members->second ) child_indices.push_back(child_i);
 
         // update name to <type>_type if type is present
-        getpot_get_name(names.back(), object_decl_i
+        hit_get_name(names.back(), object_decl_i
                                   ,interpreter
                                   ,object_members);
     }
@@ -127,14 +127,14 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
     return result_index;
 }
 
-/* this "connects" the GetPot parser in the interpreter to the flex GetPotLexer class
+/* this "connects" the HIT parser in the interpreter to the flex HITLexer class
  * object. it defines the yylex() function call to pull the next token from the
  * current lexer object of the interpreter context. */
 #undef yylex
 #define yylex lexer->lex
 
 
-#line 138 "GetPotParser.cpp"
+#line 138 "HITParser.cpp"
 
 
 
@@ -226,12 +226,12 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-#line 36 "GetPot.bison"
+#line 36 "HIT.bison"
 namespace wasp {
-#line 232 "GetPotParser.cpp"
+#line 232 "HITParser.cpp"
 
   /// Build a parser object.
-  GetPotParser::GetPotParser (class AbstractInterpreter& interpreter_yyarg, std::istream &input_stream_yyarg, std::shared_ptr<class GetPotLexerImpl> lexer_yyarg)
+  HITParser::HITParser (class AbstractInterpreter& interpreter_yyarg, std::istream &input_stream_yyarg, std::shared_ptr<class HITLexerImpl> lexer_yyarg)
 #if YYDEBUG
     : yydebug_ (false),
       yycdebug_ (&std::cerr),
@@ -243,10 +243,10 @@ namespace wasp {
       lexer (lexer_yyarg)
   {}
 
-  GetPotParser::~GetPotParser ()
+  HITParser::~HITParser ()
   {}
 
-  GetPotParser::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
+  HITParser::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
   {}
 
   /*---------------.
@@ -255,7 +255,7 @@ namespace wasp {
 
   // basic_symbol.
   template <typename Base>
-  GetPotParser::basic_symbol<Base>::basic_symbol (const basic_symbol& that)
+  HITParser::basic_symbol<Base>::basic_symbol (const basic_symbol& that)
     : Base (that)
     , value (that.value)
     , location (that.location)
@@ -264,36 +264,36 @@ namespace wasp {
 
   /// Constructor for valueless symbols.
   template <typename Base>
-  GetPotParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_MOVE_REF (location_type) l)
+  HITParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_MOVE_REF (location_type) l)
     : Base (t)
     , value ()
     , location (l)
   {}
 
   template <typename Base>
-  GetPotParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_RVREF (semantic_type) v, YY_RVREF (location_type) l)
+  HITParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_RVREF (semantic_type) v, YY_RVREF (location_type) l)
     : Base (t)
     , value (YY_MOVE (v))
     , location (YY_MOVE (l))
   {}
 
   template <typename Base>
-  GetPotParser::symbol_kind_type
-  GetPotParser::basic_symbol<Base>::type_get () const YY_NOEXCEPT
+  HITParser::symbol_kind_type
+  HITParser::basic_symbol<Base>::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
 
   template <typename Base>
   bool
-  GetPotParser::basic_symbol<Base>::empty () const YY_NOEXCEPT
+  HITParser::basic_symbol<Base>::empty () const YY_NOEXCEPT
   {
     return this->kind () == symbol_kind::S_YYEMPTY;
   }
 
   template <typename Base>
   void
-  GetPotParser::basic_symbol<Base>::move (basic_symbol& s)
+  HITParser::basic_symbol<Base>::move (basic_symbol& s)
   {
     super_type::move (s);
     value = YY_MOVE (s.value);
@@ -301,80 +301,80 @@ namespace wasp {
   }
 
   // by_kind.
-  GetPotParser::by_kind::by_kind ()
+  HITParser::by_kind::by_kind ()
     : kind_ (symbol_kind::S_YYEMPTY)
   {}
 
 #if 201103L <= YY_CPLUSPLUS
-  GetPotParser::by_kind::by_kind (by_kind&& that)
+  HITParser::by_kind::by_kind (by_kind&& that)
     : kind_ (that.kind_)
   {
     that.clear ();
   }
 #endif
 
-  GetPotParser::by_kind::by_kind (const by_kind& that)
+  HITParser::by_kind::by_kind (const by_kind& that)
     : kind_ (that.kind_)
   {}
 
-  GetPotParser::by_kind::by_kind (token_kind_type t)
+  HITParser::by_kind::by_kind (token_kind_type t)
     : kind_ (yytranslate_ (t))
   {}
 
   void
-  GetPotParser::by_kind::clear () YY_NOEXCEPT
+  HITParser::by_kind::clear () YY_NOEXCEPT
   {
     kind_ = symbol_kind::S_YYEMPTY;
   }
 
   void
-  GetPotParser::by_kind::move (by_kind& that)
+  HITParser::by_kind::move (by_kind& that)
   {
     kind_ = that.kind_;
     that.clear ();
   }
 
-  GetPotParser::symbol_kind_type
-  GetPotParser::by_kind::kind () const YY_NOEXCEPT
+  HITParser::symbol_kind_type
+  HITParser::by_kind::kind () const YY_NOEXCEPT
   {
     return kind_;
   }
 
-  GetPotParser::symbol_kind_type
-  GetPotParser::by_kind::type_get () const YY_NOEXCEPT
+  HITParser::symbol_kind_type
+  HITParser::by_kind::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
 
 
   // by_state.
-  GetPotParser::by_state::by_state () YY_NOEXCEPT
+  HITParser::by_state::by_state () YY_NOEXCEPT
     : state (empty_state)
   {}
 
-  GetPotParser::by_state::by_state (const by_state& that) YY_NOEXCEPT
+  HITParser::by_state::by_state (const by_state& that) YY_NOEXCEPT
     : state (that.state)
   {}
 
   void
-  GetPotParser::by_state::clear () YY_NOEXCEPT
+  HITParser::by_state::clear () YY_NOEXCEPT
   {
     state = empty_state;
   }
 
   void
-  GetPotParser::by_state::move (by_state& that)
+  HITParser::by_state::move (by_state& that)
   {
     state = that.state;
     that.clear ();
   }
 
-  GetPotParser::by_state::by_state (state_type s) YY_NOEXCEPT
+  HITParser::by_state::by_state (state_type s) YY_NOEXCEPT
     : state (s)
   {}
 
-  GetPotParser::symbol_kind_type
-  GetPotParser::by_state::kind () const YY_NOEXCEPT
+  HITParser::symbol_kind_type
+  HITParser::by_state::kind () const YY_NOEXCEPT
   {
     if (state == empty_state)
       return symbol_kind::S_YYEMPTY;
@@ -382,10 +382,10 @@ namespace wasp {
       return YY_CAST (symbol_kind_type, yystos_[+state]);
   }
 
-  GetPotParser::stack_symbol_type::stack_symbol_type ()
+  HITParser::stack_symbol_type::stack_symbol_type ()
   {}
 
-  GetPotParser::stack_symbol_type::stack_symbol_type (YY_RVREF (stack_symbol_type) that)
+  HITParser::stack_symbol_type::stack_symbol_type (YY_RVREF (stack_symbol_type) that)
     : super_type (YY_MOVE (that.state), YY_MOVE (that.value), YY_MOVE (that.location))
   {
 #if 201103L <= YY_CPLUSPLUS
@@ -394,7 +394,7 @@ namespace wasp {
 #endif
   }
 
-  GetPotParser::stack_symbol_type::stack_symbol_type (state_type s, YY_MOVE_REF (symbol_type) that)
+  HITParser::stack_symbol_type::stack_symbol_type (state_type s, YY_MOVE_REF (symbol_type) that)
     : super_type (s, YY_MOVE (that.value), YY_MOVE (that.location))
   {
     // that is emptied.
@@ -402,8 +402,8 @@ namespace wasp {
   }
 
 #if YY_CPLUSPLUS < 201103L
-  GetPotParser::stack_symbol_type&
-  GetPotParser::stack_symbol_type::operator= (const stack_symbol_type& that)
+  HITParser::stack_symbol_type&
+  HITParser::stack_symbol_type::operator= (const stack_symbol_type& that)
   {
     state = that.state;
     value = that.value;
@@ -411,8 +411,8 @@ namespace wasp {
     return *this;
   }
 
-  GetPotParser::stack_symbol_type&
-  GetPotParser::stack_symbol_type::operator= (stack_symbol_type& that)
+  HITParser::stack_symbol_type&
+  HITParser::stack_symbol_type::operator= (stack_symbol_type& that)
   {
     state = that.state;
     value = that.value;
@@ -425,7 +425,7 @@ namespace wasp {
 
   template <typename Base>
   void
-  GetPotParser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
+  HITParser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
   {
     if (yymsg)
       YY_SYMBOL_PRINT (yymsg, yysym);
@@ -434,27 +434,27 @@ namespace wasp {
     switch (yysym.kind ())
     {
       case symbol_kind::S_object_decl: // object_decl
-#line 107 "GetPot.bison"
+#line 107 "HIT.bison"
                     { delete (yysym.value.node_indices); }
-#line 440 "GetPotParser.cpp"
+#line 440 "HITParser.cpp"
         break;
 
       case symbol_kind::S_object_members: // object_members
-#line 109 "GetPot.bison"
+#line 109 "HIT.bison"
                     { delete (yysym.value.object_children)->second; delete (yysym.value.object_children); }
-#line 446 "GetPotParser.cpp"
+#line 446 "HITParser.cpp"
         break;
 
       case symbol_kind::S_array_members: // array_members
-#line 108 "GetPot.bison"
+#line 108 "HIT.bison"
                     { delete (yysym.value.node_indices); }
-#line 452 "GetPotParser.cpp"
+#line 452 "HITParser.cpp"
         break;
 
       case symbol_kind::S_array: // array
-#line 108 "GetPot.bison"
+#line 108 "HIT.bison"
                     { delete (yysym.value.node_indices); }
-#line 458 "GetPotParser.cpp"
+#line 458 "HITParser.cpp"
         break;
 
       default:
@@ -465,7 +465,7 @@ namespace wasp {
 #if YYDEBUG
   template <typename Base>
   void
-  GetPotParser::yy_print_ (std::ostream& yyo, const basic_symbol<Base>& yysym) const
+  HITParser::yy_print_ (std::ostream& yyo, const basic_symbol<Base>& yysym) const
   {
     std::ostream& yyoutput = yyo;
     YY_USE (yyoutput);
@@ -484,7 +484,7 @@ namespace wasp {
 #endif
 
   void
-  GetPotParser::yypush_ (const char* m, YY_MOVE_REF (stack_symbol_type) sym)
+  HITParser::yypush_ (const char* m, YY_MOVE_REF (stack_symbol_type) sym)
   {
     if (m)
       YY_SYMBOL_PRINT (m, sym);
@@ -492,7 +492,7 @@ namespace wasp {
   }
 
   void
-  GetPotParser::yypush_ (const char* m, state_type s, YY_MOVE_REF (symbol_type) sym)
+  HITParser::yypush_ (const char* m, state_type s, YY_MOVE_REF (symbol_type) sym)
   {
 #if 201103L <= YY_CPLUSPLUS
     yypush_ (m, stack_symbol_type (s, std::move (sym)));
@@ -503,40 +503,40 @@ namespace wasp {
   }
 
   void
-  GetPotParser::yypop_ (int n)
+  HITParser::yypop_ (int n)
   {
     yystack_.pop (n);
   }
 
 #if YYDEBUG
   std::ostream&
-  GetPotParser::debug_stream () const
+  HITParser::debug_stream () const
   {
     return *yycdebug_;
   }
 
   void
-  GetPotParser::set_debug_stream (std::ostream& o)
+  HITParser::set_debug_stream (std::ostream& o)
   {
     yycdebug_ = &o;
   }
 
 
-  GetPotParser::debug_level_type
-  GetPotParser::debug_level () const
+  HITParser::debug_level_type
+  HITParser::debug_level () const
   {
     return yydebug_;
   }
 
   void
-  GetPotParser::set_debug_level (debug_level_type l)
+  HITParser::set_debug_level (debug_level_type l)
   {
     yydebug_ = l;
   }
 #endif // YYDEBUG
 
-  GetPotParser::state_type
-  GetPotParser::yy_lr_goto_state_ (state_type yystate, int yysym)
+  HITParser::state_type
+  HITParser::yy_lr_goto_state_ (state_type yystate, int yysym)
   {
     int yyr = yypgoto_[yysym - YYNTOKENS] + yystate;
     if (0 <= yyr && yyr <= yylast_ && yycheck_[yyr] == yystate)
@@ -546,25 +546,25 @@ namespace wasp {
   }
 
   bool
-  GetPotParser::yy_pact_value_is_default_ (int yyvalue)
+  HITParser::yy_pact_value_is_default_ (int yyvalue)
   {
     return yyvalue == yypact_ninf_;
   }
 
   bool
-  GetPotParser::yy_table_value_is_error_ (int yyvalue)
+  HITParser::yy_table_value_is_error_ (int yyvalue)
   {
     return yyvalue == yytable_ninf_;
   }
 
   int
-  GetPotParser::operator() ()
+  HITParser::operator() ()
   {
     return parse ();
   }
 
   int
-  GetPotParser::parse ()
+  HITParser::parse ()
   {
     int yyn;
     /// Length of the RHS of the rule being reduced.
@@ -591,16 +591,16 @@ namespace wasp {
 
 
     // User initialization code.
-#line 44 "GetPot.bison"
+#line 44 "HIT.bison"
 {
     // initialize the initial location object
     yyla.location.begin.filename = yyla.location.end.filename = &interpreter.stream_name();
     yyla.location.begin.line = yyla.location.end.line = interpreter.start_line();
     yyla.location.begin.column = yyla.location.end.column = interpreter.start_column();
-    lexer = std::make_shared<GetPotLexerImpl>(interpreter,&input_stream);
+    lexer = std::make_shared<HITLexerImpl>(interpreter,&input_stream);
 }
 
-#line 604 "GetPotParser.cpp"
+#line 604 "HITParser.cpp"
 
 
     /* Initialize the stack.  The initial state will be set in
@@ -736,67 +736,67 @@ namespace wasp {
           switch (yyn)
             {
   case 2: // semicolon: ";"
-#line 199 "GetPot.bison"
+#line 199 "HIT.bison"
     {
         size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::SEMICOLON,";",token_index);
     }
-#line 744 "GetPotParser.cpp"
+#line 744 "HITParser.cpp"
     break;
 
   case 3: // assign: "="
-#line 203 "GetPot.bison"
+#line 203 "HIT.bison"
     {
         size_t assign_token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,"="
                          ,assign_token_index);
     }
-#line 754 "GetPotParser.cpp"
+#line 754 "HITParser.cpp"
     break;
 
   case 4: // object_term: "block terminator"
-#line 210 "GetPot.bison"
+#line 210 "HIT.bison"
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::OBJECT_TERM,"term"
                          ,token_index);
     }
-#line 764 "GetPotParser.cpp"
+#line 764 "HITParser.cpp"
     break;
 
   case 5: // lbracket: "["
-#line 216 "GetPot.bison"
+#line 216 "HIT.bison"
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACKET,"["
                          ,token_index);
     }
-#line 774 "GetPotParser.cpp"
+#line 774 "HITParser.cpp"
     break;
 
   case 6: // rbracket: "]"
-#line 222 "GetPot.bison"
+#line 222 "HIT.bison"
     {
 
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RBRACKET,"]"
                          ,token_index);
     }
-#line 785 "GetPotParser.cpp"
+#line 785 "HITParser.cpp"
     break;
 
   case 7: // dot_slash: "subblock indicator ./"
-#line 229 "GetPot.bison"
+#line 229 "HIT.bison"
     {
 
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DOT_SLASH,"./"
                          ,token_index);
     }
-#line 796 "GetPotParser.cpp"
+#line 796 "HITParser.cpp"
     break;
 
   case 8: // object_decl: lbracket decl rbracket
-#line 235 "GetPot.bison"
+#line 235 "HIT.bison"
                                      {
         size_t lbracket_index = ((yystack_[2].value.node_index));
         size_t decl_index = ((yystack_[1].value.node_index));
@@ -805,11 +805,11 @@ namespace wasp {
                                                    ,decl_index
                                                    ,rbracket_index};
     }
-#line 809 "GetPotParser.cpp"
+#line 809 "HITParser.cpp"
     break;
 
   case 9: // object_decl: lbracket dot_slash decl rbracket
-#line 243 "GetPot.bison"
+#line 243 "HIT.bison"
     {
         size_t lbracket_index = ((yystack_[3].value.node_index));
         size_t dot_slash_index = ((yystack_[2].value.node_index));
@@ -822,35 +822,35 @@ namespace wasp {
                 ,decl_index
                 ,rbracket_index};
     }
-#line 826 "GetPotParser.cpp"
+#line 826 "HITParser.cpp"
     break;
 
   case 10: // object_member: primitive
-#line 256 "GetPot.bison"
+#line 256 "HIT.bison"
                 { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 832 "GetPotParser.cpp"
+#line 832 "HITParser.cpp"
     break;
 
   case 11: // object_member: keyedvalue
-#line 256 "GetPot.bison"
+#line 256 "HIT.bison"
                             { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 838 "GetPotParser.cpp"
+#line 838 "HITParser.cpp"
     break;
 
   case 12: // object_member: comment
-#line 256 "GetPot.bison"
+#line 256 "HIT.bison"
                                          { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 844 "GetPotParser.cpp"
+#line 844 "HITParser.cpp"
     break;
 
   case 13: // object_member: object
-#line 257 "GetPot.bison"
+#line 257 "HIT.bison"
                   { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 850 "GetPotParser.cpp"
+#line 850 "HITParser.cpp"
     break;
 
   case 14: // object_members: object_member
-#line 260 "GetPot.bison"
+#line 260 "HIT.bison"
     {
         size_t node_index = ((yystack_[0].value.node_index));
         auto indices = new std::vector<size_t>();
@@ -866,11 +866,11 @@ namespace wasp {
                     (indices->size(), indices);
         }
     }
-#line 870 "GetPotParser.cpp"
+#line 870 "HITParser.cpp"
     break;
 
   case 15: // object_members: object_members object_member
-#line 275 "GetPot.bison"
+#line 275 "HIT.bison"
     {
 
         // only if the type has not already be assigned
@@ -886,206 +886,206 @@ namespace wasp {
         (yystack_[1].value.object_children)->second->push_back(((yystack_[0].value.node_index)));
         (yylhs.value.object_children) = (yystack_[1].value.object_children);
     }
-#line 890 "GetPotParser.cpp"
+#line 890 "HITParser.cpp"
     break;
 
   case 16: // object: object_decl object_term
-#line 293 "GetPot.bison"
+#line 293 "HIT.bison"
         { // empty object        
         (yylhs.value.node_index) = push_object(interpreter, *(yystack_[1].value.node_indices), nullptr, (yystack_[0].value.node_index));
         delete (yystack_[1].value.node_indices);
         }
-#line 899 "GetPotParser.cpp"
+#line 899 "HITParser.cpp"
     break;
 
   case 17: // object: object_decl object_members object_term
-#line 298 "GetPot.bison"
+#line 298 "HIT.bison"
         {
         (yylhs.value.node_index) = push_object(interpreter, *(yystack_[2].value.node_indices), (yystack_[1].value.object_children), (yystack_[0].value.node_index));        
         delete (yystack_[2].value.node_indices);
         }
-#line 908 "GetPotParser.cpp"
+#line 908 "HITParser.cpp"
     break;
 
   case 18: // integer: "integer"
-#line 303 "GetPot.bison"
+#line 303 "HIT.bison"
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::INTEGER,"int"
                          ,token_index);
     }
-#line 918 "GetPotParser.cpp"
+#line 918 "HITParser.cpp"
     break;
 
   case 19: // real: "real"
-#line 309 "GetPot.bison"
+#line 309 "HIT.bison"
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::REAL,"real"
                          ,token_index);
     }
-#line 928 "GetPotParser.cpp"
+#line 928 "HITParser.cpp"
     break;
 
   case 20: // unquoted_string: "string"
-#line 315 "GetPot.bison"
+#line 315 "HIT.bison"
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::STRING,"string"
                          ,token_index);
     }
-#line 938 "GetPotParser.cpp"
+#line 938 "HITParser.cpp"
     break;
 
   case 21: // VALUE: "integer"
-#line 320 "GetPot.bison"
+#line 320 "HIT.bison"
         { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 944 "GetPotParser.cpp"
+#line 944 "HITParser.cpp"
     break;
 
   case 22: // VALUE: "real"
-#line 320 "GetPot.bison"
+#line 320 "HIT.bison"
                   { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 950 "GetPotParser.cpp"
+#line 950 "HITParser.cpp"
     break;
 
   case 23: // VALUE: "string"
-#line 320 "GetPot.bison"
+#line 320 "HIT.bison"
                          { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 956 "GetPotParser.cpp"
+#line 956 "HITParser.cpp"
     break;
 
   case 24: // VALUE: "quoted string"
-#line 320 "GetPot.bison"
+#line 320 "HIT.bison"
                                   { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 962 "GetPotParser.cpp"
+#line 962 "HITParser.cpp"
     break;
 
   case 25: // value: VALUE
-#line 322 "GetPot.bison"
+#line 322 "HIT.bison"
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                          ,token_index);
     }
-#line 972 "GetPotParser.cpp"
+#line 972 "HITParser.cpp"
     break;
 
   case 26: // DECL: "string"
-#line 327 "GetPot.bison"
+#line 327 "HIT.bison"
        { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 978 "GetPotParser.cpp"
+#line 978 "HITParser.cpp"
     break;
 
   case 27: // DECL: "integer"
-#line 327 "GetPot.bison"
+#line 327 "HIT.bison"
                 { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 984 "GetPotParser.cpp"
+#line 984 "HITParser.cpp"
     break;
 
   case 28: // decl: DECL
-#line 329 "GetPot.bison"
+#line 329 "HIT.bison"
     {
         size_t decl_token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DECL,"decl"
                          ,decl_token_index);
     }
-#line 994 "GetPotParser.cpp"
+#line 994 "HITParser.cpp"
     break;
 
   case 29: // quote: "'"
-#line 335 "GetPot.bison"
+#line 335 "HIT.bison"
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::QUOTE,"'"
                          ,token_index);
     }
-#line 1004 "GetPotParser.cpp"
+#line 1004 "HITParser.cpp"
     break;
 
   case 30: // string: unquoted_string
-#line 340 "GetPot.bison"
+#line 340 "HIT.bison"
          { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1010 "GetPotParser.cpp"
+#line 1010 "HITParser.cpp"
     break;
 
   case 31: // primitive: integer
-#line 342 "GetPot.bison"
+#line 342 "HIT.bison"
             { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1016 "GetPotParser.cpp"
+#line 1016 "HITParser.cpp"
     break;
 
   case 32: // primitive: real
-#line 343 "GetPot.bison"
+#line 343 "HIT.bison"
              { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1022 "GetPotParser.cpp"
+#line 1022 "HITParser.cpp"
     break;
 
   case 33: // primitive: string
-#line 344 "GetPot.bison"
+#line 344 "HIT.bison"
              { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1028 "GetPotParser.cpp"
+#line 1028 "HITParser.cpp"
     break;
 
   case 34: // array_member: semicolon
-#line 346 "GetPot.bison"
+#line 346 "HIT.bison"
                { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1034 "GetPotParser.cpp"
+#line 1034 "HITParser.cpp"
     break;
 
   case 35: // array_member: value
-#line 346 "GetPot.bison"
+#line 346 "HIT.bison"
                            { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1040 "GetPotParser.cpp"
+#line 1040 "HITParser.cpp"
     break;
 
   case 36: // array_member: assign
-#line 346 "GetPot.bison"
+#line 346 "HIT.bison"
                                    { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1046 "GetPotParser.cpp"
+#line 1046 "HITParser.cpp"
     break;
 
   case 37: // array_members: array_member
-#line 349 "GetPot.bison"
+#line 349 "HIT.bison"
     {
         size_t offset = ((yystack_[0].value.node_index));
         (yylhs.value.node_indices) = new std::vector<size_t>();
         (yylhs.value.node_indices)->push_back(offset);
     }
-#line 1056 "GetPotParser.cpp"
+#line 1056 "HITParser.cpp"
     break;
 
   case 38: // array_members: array_members array_member
-#line 354 "GetPot.bison"
+#line 354 "HIT.bison"
     {
         (yystack_[1].value.node_indices)->push_back(((yystack_[0].value.node_index)));
         (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
     }
-#line 1065 "GetPotParser.cpp"
+#line 1065 "HITParser.cpp"
     break;
 
   case 39: // array: quote array_members quote
-#line 360 "GetPot.bison"
+#line 360 "HIT.bison"
     {
         (yystack_[1].value.node_indices)->insert((yystack_[1].value.node_indices)->begin(),(yystack_[2].value.node_index));
         (yystack_[1].value.node_indices)->push_back(((yystack_[0].value.node_index)));
         (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
     }
-#line 1075 "GetPotParser.cpp"
+#line 1075 "HITParser.cpp"
     break;
 
   case 40: // array: quote quote
-#line 366 "GetPot.bison"
+#line 366 "HIT.bison"
     {
         (yylhs.value.node_indices) = new std::vector<size_t>();
         (yylhs.value.node_indices)->push_back(((yystack_[1].value.node_index)));
         (yylhs.value.node_indices)->push_back(((yystack_[0].value.node_index)));
     }
-#line 1085 "GetPotParser.cpp"
+#line 1085 "HITParser.cpp"
     break;
 
   case 41: // keyedvalue: decl assign value
-#line 374 "GetPot.bison"
+#line 374 "HIT.bison"
     {
         size_t key_index = ((yystack_[2].value.node_index));
         size_t assign_index = ((yystack_[1].value.node_index));
@@ -1097,11 +1097,11 @@ namespace wasp {
                                         ,interpreter.data(key_index).c_str()
                                         ,child_indices);
     }
-#line 1101 "GetPotParser.cpp"
+#line 1101 "HITParser.cpp"
     break;
 
   case 42: // keyedvalue: decl assign array
-#line 386 "GetPot.bison"
+#line 386 "HIT.bison"
     {
 
         size_t key_index = ((yystack_[2].value.node_index));
@@ -1114,52 +1114,52 @@ namespace wasp {
                                         ,interpreter.data(key_index).c_str()
                                         ,child_indices);
     }
-#line 1118 "GetPotParser.cpp"
+#line 1118 "HITParser.cpp"
     break;
 
   case 43: // comment: "comment"
-#line 401 "GetPot.bison"
+#line 401 "HIT.bison"
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment"
                          ,token_index);
     }
-#line 1128 "GetPotParser.cpp"
+#line 1128 "HITParser.cpp"
     break;
 
   case 45: // start: start comment
-#line 408 "GetPot.bison"
+#line 408 "HIT.bison"
                        {
             interpreter.push_staged_child(((yystack_[0].value.node_index)));
         }
-#line 1136 "GetPotParser.cpp"
+#line 1136 "HITParser.cpp"
     break;
 
   case 46: // start: start keyedvalue
-#line 411 "GetPot.bison"
+#line 411 "HIT.bison"
                           {
             interpreter.push_staged_child(((yystack_[0].value.node_index)));
         }
-#line 1144 "GetPotParser.cpp"
+#line 1144 "HITParser.cpp"
     break;
 
   case 47: // start: start object
-#line 414 "GetPot.bison"
+#line 414 "HIT.bison"
                       {
             interpreter.push_staged_child(((yystack_[0].value.node_index)));
         }
-#line 1152 "GetPotParser.cpp"
+#line 1152 "HITParser.cpp"
     break;
 
   case 48: // start: start object_decl object_members object
-#line 418 "GetPot.bison"
+#line 418 "HIT.bison"
         {
             std::vector<size_t> & children = *(yystack_[2].value.node_indices);
             // [0] = '[', [1] = 'name', [2] = ']'
             size_t object_decl_i = children[1];
             for( size_t child_i: *(yystack_[1].value.object_children)->second ) children.push_back(child_i);
             std::string name = interpreter.data(object_decl_i).c_str();
-            getpot_get_name(name, object_decl_i
+            hit_get_name(name, object_decl_i
                             ,interpreter ,(yystack_[1].value.object_children));
 
             delete (yystack_[1].value.object_children)->second;
@@ -1172,11 +1172,11 @@ namespace wasp {
             interpreter.push_staged_child(((yystack_[0].value.node_index)));
             delete (yystack_[2].value.node_indices);
         }
-#line 1176 "GetPotParser.cpp"
+#line 1176 "HITParser.cpp"
     break;
 
 
-#line 1180 "GetPotParser.cpp"
+#line 1180 "HITParser.cpp"
 
             default:
               break;
@@ -1349,7 +1349,7 @@ namespace wasp {
   }
 
   void
-  GetPotParser::error (const syntax_error& yyexc)
+  HITParser::error (const syntax_error& yyexc)
   {
     error (yyexc.location, yyexc.what ());
   }
@@ -1360,7 +1360,7 @@ namespace wasp {
      apostrophe, a comma, or backslash (other than backslash-backslash).
      YYSTR is taken from yytname.  */
   std::string
-  GetPotParser::yytnamerr_ (const char *yystr)
+  HITParser::yytnamerr_ (const char *yystr)
   {
     if (*yystr == '"')
       {
@@ -1395,21 +1395,21 @@ namespace wasp {
   }
 
   std::string
-  GetPotParser::symbol_name (symbol_kind_type yysymbol)
+  HITParser::symbol_name (symbol_kind_type yysymbol)
   {
     return yytnamerr_ (yytname_[yysymbol]);
   }
 
 
 
-  // GetPotParser::context.
-  GetPotParser::context::context (const GetPotParser& yyparser, const symbol_type& yyla)
+  // HITParser::context.
+  HITParser::context::context (const HITParser& yyparser, const symbol_type& yyla)
     : yyparser_ (yyparser)
     , yyla_ (yyla)
   {}
 
   int
-  GetPotParser::context::expected_tokens (symbol_kind_type yyarg[], int yyargn) const
+  HITParser::context::expected_tokens (symbol_kind_type yyarg[], int yyargn) const
   {
     // Actual number of expected tokens
     int yycount = 0;
@@ -1445,7 +1445,7 @@ namespace wasp {
 
 
   int
-  GetPotParser::yy_syntax_error_arguments_ (const context& yyctx,
+  HITParser::yy_syntax_error_arguments_ (const context& yyctx,
                                                  symbol_kind_type yyarg[], int yyargn) const
   {
     /* There are many possibilities here to consider:
@@ -1485,7 +1485,7 @@ namespace wasp {
 
   // Generate an error message.
   std::string
-  GetPotParser::yysyntax_error_ (const context& yyctx) const
+  HITParser::yysyntax_error_ (const context& yyctx) const
   {
     // Its maximum.
     enum { YYARGS_MAX = 5 };
@@ -1525,12 +1525,12 @@ namespace wasp {
   }
 
 
-  const signed char GetPotParser::yypact_ninf_ = -47;
+  const signed char HITParser::yypact_ninf_ = -47;
 
-  const signed char GetPotParser::yytable_ninf_ = -49;
+  const signed char HITParser::yytable_ninf_ = -49;
 
   const signed char
-  GetPotParser::yypact_[] =
+  HITParser::yypact_[] =
   {
      -47,     1,   -47,   -47,   -47,   -47,   -47,    -6,     6,   -47,
      -47,    18,   -47,   -47,   -47,    -3,     9,    19,   -47,    20,
@@ -1542,7 +1542,7 @@ namespace wasp {
   };
 
   const signed char
-  GetPotParser::yydefact_[] =
+  HITParser::yydefact_[] =
   {
       44,     0,     1,     5,    27,    26,    43,     0,     0,    47,
       28,     0,    46,    45,     7,     0,     0,    18,    19,    20,
@@ -1554,7 +1554,7 @@ namespace wasp {
   };
 
   const signed char
-  GetPotParser::yypgoto_[] =
+  HITParser::yypgoto_[] =
   {
      -47,   -47,    32,   -22,   -47,    10,   -47,    43,   -17,    24,
       -1,   -47,   -47,   -47,   -47,    13,   -47,    17,   -46,   -47,
@@ -1562,7 +1562,7 @@ namespace wasp {
   };
 
   const signed char
-  GetPotParser::yydefgoto_[] =
+  HITParser::yydefgoto_[] =
   {
        0,    53,    54,    21,     7,    37,    15,    22,    23,    24,
       25,    26,    27,    28,    47,    55,    10,    11,    49,    29,
@@ -1570,7 +1570,7 @@ namespace wasp {
   };
 
   const signed char
-  GetPotParser::yytable_[] =
+  HITParser::yytable_[] =
   {
        9,     2,    39,    56,    14,     3,     4,    40,     5,     4,
        3,     5,    59,     4,    36,     5,    39,     6,    17,    18,
@@ -1581,7 +1581,7 @@ namespace wasp {
   };
 
   const signed char
-  GetPotParser::yycheck_[] =
+  HITParser::yycheck_[] =
   {
        1,     0,    24,    49,    10,     4,    12,    24,    14,    12,
        4,    14,    58,    12,     5,    14,    38,    16,    12,    13,
@@ -1592,7 +1592,7 @@ namespace wasp {
   };
 
   const signed char
-  GetPotParser::yystos_[] =
+  HITParser::yystos_[] =
   {
        0,    48,     0,     4,    12,    14,    16,    26,    29,    32,
       38,    39,    46,    47,    10,    28,    39,    12,    13,    14,
@@ -1604,7 +1604,7 @@ namespace wasp {
   };
 
   const signed char
-  GetPotParser::yyr1_[] =
+  HITParser::yyr1_[] =
   {
        0,    22,    23,    24,    25,    26,    27,    28,    29,    29,
       30,    30,    30,    30,    31,    31,    32,    32,    33,    34,
@@ -1614,7 +1614,7 @@ namespace wasp {
   };
 
   const signed char
-  GetPotParser::yyr2_[] =
+  HITParser::yyr2_[] =
   {
        0,     2,     1,     1,     1,     1,     1,     1,     3,     4,
        1,     1,     1,     1,     1,     2,     2,     3,     1,     1,
@@ -1628,7 +1628,7 @@ namespace wasp {
   // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
   // First, the terminals, then, starting at \a YYNTOKENS, nonterminals.
   const char*
-  const GetPotParser::yytname_[] =
+  const HITParser::yytname_[] =
   {
   "\"end of file\"", "error", "\"invalid token\"", "\"end of line\"",
   "\"[\"", "\"]\"", "'{'", "'}'", "\"=\"", "\";\"",
@@ -1647,7 +1647,7 @@ namespace wasp {
 
 #if YYDEBUG
   const short
-  GetPotParser::yyrline_[] =
+  HITParser::yyrline_[] =
   {
        0,   198,   198,   202,   209,   215,   221,   228,   235,   242,
      256,   256,   256,   257,   259,   274,   292,   297,   302,   308,
@@ -1657,7 +1657,7 @@ namespace wasp {
   };
 
   void
-  GetPotParser::yy_stack_print_ () const
+  HITParser::yy_stack_print_ () const
   {
     *yycdebug_ << "Stack now";
     for (stack_type::const_iterator
@@ -1669,7 +1669,7 @@ namespace wasp {
   }
 
   void
-  GetPotParser::yy_reduce_print_ (int yyrule) const
+  HITParser::yy_reduce_print_ (int yyrule) const
   {
     int yylno = yyrline_[yyrule];
     int yynrhs = yyr2_[yyrule];
@@ -1683,8 +1683,8 @@ namespace wasp {
   }
 #endif // YYDEBUG
 
-  GetPotParser::symbol_kind_type
-  GetPotParser::yytranslate_ (int t)
+  HITParser::symbol_kind_type
+  HITParser::yytranslate_ (int t)
   {
     // YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to
     // TOKEN-NUM as returned by yylex.
@@ -1732,14 +1732,14 @@ namespace wasp {
       return symbol_kind::S_YYUNDEF;
   }
 
-#line 36 "GetPot.bison"
+#line 36 "HIT.bison"
 } // wasp
-#line 1738 "GetPotParser.cpp"
+#line 1738 "HITParser.cpp"
 
-#line 441 "GetPot.bison"
+#line 441 "HIT.bison"
  /*** Additional Code ***/
 namespace wasp{
-void GetPotParser::error(const GetPotParser::location_type& l,
+void HITParser::error(const HITParser::location_type& l,
                            const std::string& m)
 {
     interpreter.error_stream()<<l<<": "<<m<<std::endl;

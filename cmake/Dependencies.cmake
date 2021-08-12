@@ -8,7 +8,7 @@ TRIBITS_PACKAGE_DEFINE_DEPENDENCIES(
      eddi   waspeddi     PT OPTIONAL
      json   waspjson   PT OPTIONAL
      hive  wasphive    PT OPTIONAL
-     getpot waspgetpot PT OPTIONAL     
+     hit wasphit PT OPTIONAL     
      halite wasphalite PT OPTIONAL          
      lsp   wasplsp     PT OPTIONAL
      dakota waspdakota PT OPTIONAL          

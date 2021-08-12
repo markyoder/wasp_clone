@@ -9,7 +9,7 @@ The sequence processor construct parse trees from which two primary functions ar
 ## File Listing Utilities
 Available Interpreters have corresponding *list utilities. 
 
-SON, GetPot, DDI, and JSON have corresponding sonlist, getpotlist, ddilist, and jsonlist. 
+SON, HIT, DDI, and JSON have corresponding sonlist, hitlist, ddilist, and jsonlist. 
 
 These utilities produce an ordered directory-style listing of each parsed input component.
 
@@ -117,7 +117,7 @@ Subsequently, the relative path `../../../array` is used from `/object/child/x` 
 Notice that the exact user input is reproduced. 
 
 ## XML Utilities
-The XML standard is readily accessible in most programming languages where SON, GetPot, DDI, etc. are not. 
+The XML standard is readily accessible in most programming languages where SON, HIT, DDI, etc. are not. 
 As such, the *xml utilities provide a bridge for prototyping or coupling with higher-level scripts, etc.
 
 ```
@@ -170,8 +170,8 @@ The attribute `loc="line.column"` indicates the input components location in the
 The element's name indicates the name of the input component. The leaf element's data are the data of interest stored in the parse tree.
 
 ## File Validation Utilities
-The SON, DDI, and GetPot interpreters have Hierarchical Input Validation Engine ([HIVE](/wasphive/README.md#hierarchical-input-validation-engine-hive)) adapters allowing them to be validated. 
-As such, there are sonvalid, ddivalid, and getpotvalid utilities. 
+The SON, DDI, and HIT interpreters have Hierarchical Input Validation Engine ([HIVE](/wasphive/README.md#hierarchical-input-validation-engine-hive)) adapters allowing them to be validated. 
+As such, there are sonvalid, ddivalid, and hitvalid utilities. 
 
 Invocation of the validation utilities requires a schema, and an input:
 
@@ -200,7 +200,7 @@ ddivalidjson /path/to/schema.sch /path/to/input.ddi
 ```
 
 ```
-getpotvalidjson /path/to/schema.sch /path/to/input.i
+hitvalidjson /path/to/schema.sch /path/to/input.i
 ```
 
 `sonjson` takes the SON input and converts it to a JSON with the results on stdout.

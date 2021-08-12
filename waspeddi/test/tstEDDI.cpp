@@ -503,7 +503,7 @@ TEST(EDDInterpreter, includes)
 )I" << std::endl;
     DefaultEDDInterpreter eddi;
     {
-        // export VERA_DIR as the current directory
+        // Add directory to search while processing includes
         eddi.search_paths().push_back("./Init");
         wasp::mkdir("./Init");
         std::ofstream default_file("./Init/default.txt");

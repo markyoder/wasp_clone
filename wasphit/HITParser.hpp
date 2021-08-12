@@ -32,7 +32,7 @@
 
 
 /**
- ** \file GetPotParser.hpp
+ ** \file HITParser.hpp
  ** Define the wasp::parser class.
  */
 
@@ -42,10 +42,10 @@
 // especially those whose name start with YY_ or yy_.  They are
 // private implementation details that can be changed or removed.
 
-#ifndef YY_YY_GETPOTPARSER_HPP_INCLUDED
-# define YY_YY_GETPOTPARSER_HPP_INCLUDED
+#ifndef YY_YY_HITPARSER_HPP_INCLUDED
+# define YY_YY_HITPARSER_HPP_INCLUDED
 // "%code requires" blocks.
-#line 10 "GetPot.bison"
+#line 10 "HIT.bison"
 
 #include <memory>
 #include "waspcore/TreeNodePool.h"
@@ -53,7 +53,7 @@
 #include "waspcore/decl.h"
 #include "waspcore/utils.h"
 
-#line 57 "GetPotParser.hpp"
+#line 57 "HITParser.hpp"
 
 
 # include <cstdlib> // std::abort
@@ -181,22 +181,22 @@
 # define YYDEBUG 0
 #endif
 
-#line 36 "GetPot.bison"
+#line 36 "HIT.bison"
 namespace wasp {
-#line 187 "GetPotParser.hpp"
+#line 187 "HITParser.hpp"
 
 
 
 
   /// A Bison parser.
-  class WASP_PUBLIC GetPotParser
+  class WASP_PUBLIC HITParser
   {
   public:
 #ifndef YYSTYPE
     /// Symbol semantic values.
     union semantic_type
     {
-#line 64 "GetPot.bison"
+#line 64 "HIT.bison"
 
     std::size_t token_index;
     std::size_t node_index;
@@ -207,7 +207,7 @@ namespace wasp {
     // the pair.first (index) = pair.second (vector>.size()
     std::pair<size_t, std::vector<size_t>*>* object_children;
 
-#line 211 "GetPotParser.hpp"
+#line 211 "HITParser.hpp"
 
     };
 #else
@@ -387,7 +387,7 @@ namespace wasp {
       /// The user-facing name of this symbol.
       std::string name () const YY_NOEXCEPT
       {
-        return GetPotParser::symbol_name (this->kind ());
+        return HITParser::symbol_name (this->kind ());
       }
 
       /// Backward compatibility (Bison 3.6).
@@ -458,14 +458,14 @@ namespace wasp {
     {};
 
     /// Build a parser object.
-    GetPotParser (class AbstractInterpreter& interpreter_yyarg, std::istream &input_stream_yyarg, std::shared_ptr<class GetPotLexerImpl> lexer_yyarg);
-    virtual ~GetPotParser ();
+    HITParser (class AbstractInterpreter& interpreter_yyarg, std::istream &input_stream_yyarg, std::shared_ptr<class HITLexerImpl> lexer_yyarg);
+    virtual ~HITParser ();
 
 #if 201103L <= YY_CPLUSPLUS
     /// Non copyable.
-    GetPotParser (const GetPotParser&) = delete;
+    HITParser (const HITParser&) = delete;
     /// Non copyable.
-    GetPotParser& operator= (const GetPotParser&) = delete;
+    HITParser& operator= (const HITParser&) = delete;
 #endif
 
     /// Parse.  An alias for parse ().
@@ -507,7 +507,7 @@ namespace wasp {
     class context
     {
     public:
-      context (const GetPotParser& yyparser, const symbol_type& yyla);
+      context (const HITParser& yyparser, const symbol_type& yyla);
       const symbol_type& lookahead () const YY_NOEXCEPT { return yyla_; }
       symbol_kind_type token () const YY_NOEXCEPT { return yyla_.kind (); }
       const location_type& location () const YY_NOEXCEPT { return yyla_.location; }
@@ -518,16 +518,16 @@ namespace wasp {
       int expected_tokens (symbol_kind_type yyarg[], int yyargn) const;
 
     private:
-      const GetPotParser& yyparser_;
+      const HITParser& yyparser_;
       const symbol_type& yyla_;
     };
 
   private:
 #if YY_CPLUSPLUS < 201103L
     /// Non copyable.
-    GetPotParser (const GetPotParser&);
+    HITParser (const HITParser&);
     /// Non copyable.
-    GetPotParser& operator= (const GetPotParser&);
+    HITParser& operator= (const HITParser&);
 #endif
 
 
@@ -841,16 +841,16 @@ namespace wasp {
     // User arguments.
     class AbstractInterpreter& interpreter;
     std::istream &input_stream;
-    std::shared_ptr<class GetPotLexerImpl> lexer;
+    std::shared_ptr<class HITLexerImpl> lexer;
 
   };
 
 
-#line 36 "GetPot.bison"
+#line 36 "HIT.bison"
 } // wasp
-#line 852 "GetPotParser.hpp"
+#line 852 "HITParser.hpp"
 
 
 
 
-#endif // !YY_YY_GETPOTPARSER_HPP_INCLUDED
+#endif // !YY_YY_HITPARSER_HPP_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef WASP_GETPOTINTERPRETER_H
-#define WASP_GETPOTINTERPRETER_H
+#ifndef WASP_HITINTERPRETER_H
+#define WASP_HITINTERPRETER_H
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/Interpreter.h"
 
@@ -8,84 +8,84 @@
 #include <fstream>
 #include <iostream>
 
-#include "waspgetpot/GetPotParser.hpp"
+#include "wasphit/HITParser.hpp"
 
 namespace wasp
 {
-// How many input node type's (section, value, etc.) in a GetPot file
-typedef std::uint8_t GetPotNodeType_t;
+// How many input node type's (section, value, etc.) in a HIT file
+typedef std::uint8_t HITNodeType_t;
 
-// How many input token type's (word, int, real, comma, etc.) in a GetPot file
-typedef std::uint8_t GetPotTokenType_t;
+// How many input token type's (word, int, real, comma, etc.) in a HIT file
+typedef std::uint8_t HITTokenType_t;
 
 // How many bytes in a file
-typedef std::uint8_t  GetPotTinyFileSize_t;
-typedef std::uint16_t GetPotMediumFileSize_t;
-typedef std::uint32_t GetPotFileSize_t;
-typedef std::uint64_t GetPotLargeFileSize_t;
+typedef std::uint8_t  HITTinyFileSize_t;
+typedef std::uint16_t HITMediumFileSize_t;
+typedef std::uint32_t HITFileSize_t;
+typedef std::uint64_t HITLargeFileSize_t;
 
 // How many tokens in a file (5 reals, 100 ints, 50 words, etc.)
-typedef std::uint8_t  GetPotTinyTokenSize_t;
-typedef std::uint16_t GetPotMediumTokenSize_t;
-typedef std::uint32_t GetPotTokenSize_t;
-typedef std::uint64_t GetPotLargeTokenSize_t;
+typedef std::uint8_t  HITTinyTokenSize_t;
+typedef std::uint16_t HITMediumTokenSize_t;
+typedef std::uint32_t HITTokenSize_t;
+typedef std::uint64_t HITLargeTokenSize_t;
 
 // Tiny file TokenPool (less than 256 bytes)
 typedef TokenPool<
     // Token type
-    GetPotTokenType_t,
+    HITTokenType_t,
     // Max number of token
-    GetPotTinyTokenSize_t,
+    HITTinyTokenSize_t,
     // Max number of bytes in the file
-    GetPotTinyFileSize_t>
-    GetPotTinyTokenPool;
+    HITTinyFileSize_t>
+    HITTinyTokenPool;
 
 // Medium file TokenPool (less than 65k bytes)
 typedef TokenPool<
     // Token type
-    GetPotTokenType_t,
+    HITTokenType_t,
     // Max number of token
-    GetPotMediumTokenSize_t,
+    HITMediumTokenSize_t,
     // Max number of bytes in the file
-    GetPotMediumFileSize_t>
-    GetPotMediumTokenPool;
+    HITMediumFileSize_t>
+    HITMediumTokenPool;
 
 // Regular file TokenPool (less than 4b bytes)
 typedef TokenPool<
     // Token type
-    GetPotTokenType_t,
+    HITTokenType_t,
     // Max number of token
-    GetPotTokenSize_t,
+    HITTokenSize_t,
     // Max number of bytes in the file
-    GetPotFileSize_t>
-    GetPotTokenPool;
+    HITFileSize_t>
+    HITTokenPool;
 
 // Large file TokenPool (greater than 4b bytes)
 typedef TokenPool<
     // Token type
-    GetPotTokenType_t,
+    HITTokenType_t,
     // Max number of token
-    GetPotLargeTokenSize_t,
+    HITLargeTokenSize_t,
     // Max number of bytes in the file
-    GetPotLargeFileSize_t>
-    GetPotLargeTokenPool;
+    HITLargeFileSize_t>
+    HITLargeTokenPool;
 
 // Regular NodePool storage
 typedef TreeNodePool<
     // Node type
-    GetPotNodeType_t,
+    HITNodeType_t,
     // Max number of nodes in the file
     std::uint32_t,
     // Regular TokenPool
-    GetPotTokenPool>
-    GetPotNodePool;
+    HITTokenPool>
+    HITNodePool;
 
-template<class S = GetPotNodePool>
-class GetPotInterpreter : public Interpreter<S>
+template<class S = HITNodePool>
+class HITInterpreter : public Interpreter<S>
 {
   public:
-    GetPotInterpreter(std::ostream& error_stream = std::cerr);
-    ~GetPotInterpreter();
+    HITInterpreter(std::ostream& error_stream = std::cerr);
+    ~HITInterpreter();
 
     /**
      * @brief parse parser the given input stream
@@ -107,7 +107,7 @@ class GetPotInterpreter : public Interpreter<S>
     }
     bool parseFile(const std::string& filename, size_t startLine = 1u);
 };
-#include "waspgetpot/GetPotInterpreter.i.h"
-typedef GetPotInterpreter<> DefaultGetPotInterpreter;
+#include "wasphit/HITInterpreter.i.h"
+typedef HITInterpreter<> DefaultHITInterpreter;
 }  // end of namespace
 #endif

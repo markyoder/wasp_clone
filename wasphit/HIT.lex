@@ -8,12 +8,12 @@
 
 #include <string>
 #include <sstream>
-#include "GetPotLexer.h"
-#include "GetPotInterpreter.h"
+#include "HITLexer.h"
+#include "HITInterpreter.h"
 
 /* import the parser's token type into a local typedef */
-typedef wasp::GetPotParser::token token;
-typedef wasp::GetPotParser::token_type token_type;
+typedef wasp::HITParser::token token;
+typedef wasp::HITParser::token_type token_type;
 
 /* By default yylex returns int, we use token_type. Unfortunately yyterminate
  * by default returns 0, which is not of token_type. */
@@ -26,8 +26,8 @@ typedef wasp::GetPotParser::token_type token_type;
  /* enable c++ scanner class generation */
 %option c++
 
-%option prefix="GetPot"
-%option outfile="GetPotLexer.cpp"
+%option prefix="HIT"
+%option outfile="HITLexer.cpp"
 
 
  /* enable scanner to generate debug output. disable this for release
@@ -103,7 +103,7 @@ DOT_SLASH \.\/
     // reset location
     yylloc->step();
 %}
- /*** BEGIN EXAMPLE - Change the GetPot lexer rules below ***/
+ /*** BEGIN EXAMPLE - Change the HIT lexer rules below ***/
 
 {EXECUTION_UNIT_START} {
     yy_push_state(execution_unit); // enter the 'unit' of execution
@@ -183,42 +183,42 @@ DOT_SLASH \.\/
     return token::QSTRING;
 }
 
- /* pass all other characters up to GetPot*/
+ /* pass all other characters up to HIT*/
 <*>. {
     return static_cast<token_type>(*yytext);
 }
 
- /*** END EXAMPLE - Change the GetPot lexer rules above ***/
+ /*** END EXAMPLE - Change the HIT lexer rules above ***/
 
 %% /*** Additional Code ***/
 
 namespace wasp {
 
-GetPotLexerImpl::GetPotLexerImpl(
+HITLexerImpl::HITLexerImpl(
                 AbstractInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
-    : GetPotFlexLexer(in, out)
+    : HITFlexLexer(in, out)
     , interpreter(interpreter)
     , file_offset(0)
 {
 }
 
-GetPotLexerImpl::~GetPotLexerImpl()
+HITLexerImpl::~HITLexerImpl()
 {
 }
 
-void GetPotLexerImpl::set_debug(bool b)
+void HITLexerImpl::set_debug(bool b)
 {
     yy_flex_debug = b;
 }
-void GetPotLexerImpl::rewind()
+void HITLexerImpl::rewind()
 {
     yyin.seekg(-yyleng,std::ios_base::cur);
     yyless(0);
 }
-void GetPotLexerImpl::capture_token(
-        wasp::GetPotParser::semantic_type* yylval
+void HITLexerImpl::capture_token(
+        wasp::HITParser::semantic_type* yylval
         ,wasp::NODE type)
 {
     std::size_t offset = file_offset - yyleng;
@@ -227,15 +227,15 @@ void GetPotLexerImpl::capture_token(
 }
 } // end of namespace
 
-/* This implementation of GetPotFlexLexer::yylex() is required to fill the
- * vtable of the class GetPotFlexLexer. We define the scanner's main yylex
- * function via YY_DECL to reside in the GetPotLexerImpl class instead. */
+/* This implementation of HITFlexLexer::yylex() is required to fill the
+ * vtable of the class HITFlexLexer. We define the scanner's main yylex
+ * function via YY_DECL to reside in the HITLexerImpl class instead. */
 
 #ifdef yylex
 #undef yylex
 #endif
 
-int GetPotFlexLexer::yylex()
+int HITFlexLexer::yylex()
 {    
     return 0;
 }
@@ -246,7 +246,7 @@ int GetPotFlexLexer::yylex()
  * another input file, and scanning continues. If it returns true (non-zero),
  * then the scanner terminates, returning 0 to its caller. */
 
-int GetPotFlexLexer::yywrap()
+int HITFlexLexer::yywrap()
 {
     return 1;
 }

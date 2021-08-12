@@ -1,23 +1,23 @@
-#ifndef WASP_GETPOTINTERPRETER_I_H
-#define WASP_GETPOTINTERPRETER_I_H
+#ifndef WASP_HITINTERPRETER_I_H
+#define WASP_HITINTERPRETER_I_H
 template<class S>
-GetPotInterpreter<S>::GetPotInterpreter(std::ostream& err) : Interpreter<S>(err)
+HITInterpreter<S>::HITInterpreter(std::ostream& err) : Interpreter<S>(err)
 {
 }
 template<class S>
-GetPotInterpreter<S>::~GetPotInterpreter()
+HITInterpreter<S>::~HITInterpreter()
 {
 }
 template<class S>
-bool GetPotInterpreter<S>::parse(std::istream& in,
+bool HITInterpreter<S>::parse(std::istream& in,
                                  std::size_t   startLine,
                                  std::size_t   startColumn)
 {
-    return Interpreter<S>::template parse_impl<GetPotParser>(
+    return Interpreter<S>::template parse_impl<HITParser>(
         in, "stream input", startLine, startColumn);
 }
 template<class S>
-bool GetPotInterpreter<S>::parseFile(const std::string& filename, size_t line)
+bool HITInterpreter<S>::parseFile(const std::string& filename, size_t line)
 {
     std::ifstream in(filename.c_str());
     if (!in.good())

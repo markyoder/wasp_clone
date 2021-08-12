@@ -1,5 +1,5 @@
 /*
- * File:   getpotvalidjson.cpp
+ * File:   hitvalidjson.cpp
  * Author: orl
  */
 
@@ -8,8 +8,8 @@
 #include <fstream>
 #include "waspcore/TokenPool.h"
 #include "waspcore/TreeNodePool.h"
-#include "waspgetpot/GetPotInterpreter.h"
-#include "waspgetpot/GetPotNodeView.h"
+#include "wasphit/HITInterpreter.h"
+#include "wasphit/HITNodeView.h"
 #include "waspson/SONInterpreter.h"
 #include "waspson/SONNodeView.h"
 #include "waspcore/version.h"
@@ -34,10 +34,10 @@ int main(int argc, char** argv)
     if (argc != 3 && (argc != 4 || std::string(argv[3]) != "--json"))
     {
         std::cerr
-            << "Workbench Analysis Sequence Processor - GetPot to JSON Converter"
+            << "Workbench Analysis Sequence Processor - HIT to JSON Converter"
             << std::endl
             << " Usage: " << argv[0] << " path/to/SON/formatted/schema "
-                                        "path/to/GetPot/formatted/input  [--json]"
+                                        "path/to/HIT/formatted/input  [--json]"
             << std::endl
             << " Usage: " << argv[0] << " --version\t(print version info)"
             << std::endl;
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
     }
 
     // parse input
-    DefaultGetPotInterpreter input_interp(errors);
+    DefaultHITInterpreter input_interp(errors);
     bool      parsed_input = input_interp.parse(input);
     if (!parsed_input)
     {
@@ -95,7 +95,7 @@ int main(int argc, char** argv)
     }
 
     // save input root
-    GetPotNodeView input_root = input_interp.root();
+    HITNodeView input_root = input_interp.root();
 
     // validate input
     HIVE                     validation_engine;

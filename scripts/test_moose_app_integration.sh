@@ -89,12 +89,12 @@ TEMP_VALID_FILE="${TESTDIR_ABS_PATH}/.temp-valid-file"
 
 ##### FIND INPUT-ROUNDTRIP AND INPUT-VALIDATOR RELATIVE UTILITIES #####
 
-if [[ -x "${TESTDIR_ABS_PATH}/../wasputils/getpotselect" ]] && \
-   [[ -x "${TESTDIR_ABS_PATH}/../wasputils/getpotvalid"  ]]
+if [[ -x "${TESTDIR_ABS_PATH}/../wasputils/hitselect" ]] && \
+   [[ -x "${TESTDIR_ABS_PATH}/../wasputils/hitvalid"  ]]
 then
     WASP_UTILITY_DIR="${TESTDIR_ABS_PATH}/../wasputils"
-elif [[ -x "${TESTDIR_ABS_PATH}/../bin/getpotselect" ]] && \
-     [[ -x "${TESTDIR_ABS_PATH}/../bin/getpotvalid"  ]]
+elif [[ -x "${TESTDIR_ABS_PATH}/../bin/hitselect" ]] && \
+     [[ -x "${TESTDIR_ABS_PATH}/../bin/hitvalid"  ]]
 then
     WASP_UTILITY_DIR="${TESTDIR_ABS_PATH}/../bin"
 else
@@ -104,8 +104,8 @@ else
     exit 1
 fi
 
-INPUT_ROUNDTRIP="${WASP_UTILITY_DIR}/getpotselect"
-INPUT_VALIDATOR="${WASP_UTILITY_DIR}/getpotvalid"
+INPUT_ROUNDTRIP="${WASP_UTILITY_DIR}/hitselect"
+INPUT_VALIDATOR="${WASP_UTILITY_DIR}/hitvalid"
 
 ##### REMOVE TEMPORARY FILES IN CASE LAST CLEANUP DID NOT HAPPEN ######
 

@@ -15,9 +15,9 @@
 #include "waspcore/utils.h"
 }
 
-/* Require biGetPot 3 or later */
+/* Require biHIT 3 or later */
 
-%output "GetPotParser.cpp"
+%output "HITParser.cpp"
 /* add debug output code to generated parser. disable this for release
  * versions. */
  // %debug
@@ -36,7 +36,7 @@
 %define api.namespace {wasp}
 %define api.location.file "../waspcore/location.hh"
 /* set the parser's class identifier */
-%define api.parser.class {GetPotParser}
+%define api.parser.class {HITParser}
 
 /* keep track of the current position within the input */
 %locations
@@ -46,19 +46,19 @@
     @$.begin.filename = @$.end.filename = &interpreter.stream_name();
     @$.begin.line = @$.end.line = interpreter.start_line();
     @$.begin.column = @$.end.column = interpreter.start_column();
-    lexer = std::make_shared<GetPotLexerImpl>(interpreter,&input_stream);
+    lexer = std::make_shared<HITLexerImpl>(interpreter,&input_stream);
 };
 
-/* The interpreter is passed by reference to the parser and to the GetPotLexer. This
+/* The interpreter is passed by reference to the parser and to the HITLexer. This
  * provides a simple but effective pure interface, not relying on global
  * variables. */
 %parse-param { class AbstractInterpreter& interpreter }
              {std::istream &input_stream}
-             {std::shared_ptr<class GetPotLexerImpl> lexer}
+             {std::shared_ptr<class HITLexerImpl> lexer}
 /* verbose error messages */
 %define parse.error verbose
 
- /*** BEGIN EXAMPLE - Change the GetPot grammar's tokens below ***/
+ /*** BEGIN EXAMPLE - Change the HIT grammar's tokens below ***/
 
 //%define api.value.type {struct YYSTYPE}
 %union{
@@ -109,16 +109,16 @@
 %destructor { delete $$->second; delete $$; } object_members
 %{
 
-#include "GetPotInterpreter.h"
-#include "GetPotLexer.h"
-// Obtain the GetPot name for an object_term
+#include "HITInterpreter.h"
+#include "HITLexer.h"
+// Obtain the HIT name for an object_term
 // I.e., 
 // [name]
 //     type=foo
 //     ...
 // has a rename occur equivalent to [foo_type].
 // @return true, iff the name conversion occurs
-bool getpot_get_name(std::string& name,
+bool hit_get_name(std::string& name,
                             size_t object_decl_i
                             , wasp::AbstractInterpreter & interpreter
                             , std::pair<size_t, std::vector<size_t>*>* object_members)
@@ -153,7 +153,7 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
         for( size_t child_i: *object_members->second ) child_indices.push_back(child_i);
 
         // update name to <type>_type if type is present
-        getpot_get_name(names.back(), object_decl_i
+        hit_get_name(names.back(), object_decl_i
                                   ,interpreter
                                   ,object_members);
     }
@@ -183,7 +183,7 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
     return result_index;
 }
 
-/* this "connects" the GetPot parser in the interpreter to the flex GetPotLexer class
+/* this "connects" the HIT parser in the interpreter to the flex HITLexer class
  * object. it defines the yylex() function call to pull the next token from the
  * current lexer object of the interpreter context. */
 #undef yylex
@@ -193,7 +193,7 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
 
 %% /*** Grammar Rules ***/
 
- /*** BEGIN - Change the GetPot grammar rules below ***/
+ /*** BEGIN - Change the HIT grammar rules below ***/
 
 semicolon : SEMICOLON
     {
@@ -421,7 +421,7 @@ start   : /** empty **/
             size_t object_decl_i = children[1];
             for( size_t child_i: *$object_members->second ) children.push_back(child_i);
             std::string name = interpreter.data(object_decl_i).c_str();
-            getpot_get_name(name, object_decl_i
+            hit_get_name(name, object_decl_i
                             ,interpreter ,$object_members);
 
             delete $object_members->second;
@@ -436,11 +436,11 @@ start   : /** empty **/
         }
 
 
- /*** END RULES - Change the GetPot grammar rules above ***/
+ /*** END RULES - Change the HIT grammar rules above ***/
 
 %% /*** Additional Code ***/
 namespace wasp{
-void GetPotParser::error(const GetPotParser::location_type& l,
+void HITParser::error(const HITParser::location_type& l,
                            const std::string& m)
 {
     interpreter.error_stream()<<l<<": "<<m<<std::endl;

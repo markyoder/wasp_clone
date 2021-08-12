@@ -1,9 +1,9 @@
-#line 1 "GetPotLexer.cpp"
+#line 1 "HITLexer.cpp"
 /* This disables inclusion of unistd.h, which is not available under Visual C++
  * on Win32. The C++ scanner uses STL streams instead. */
 #define YY_NO_UNISTD_H
 
-#line 6 "GetPotLexer.cpp"
+#line 6 "HITLexer.cpp"
 
 #define  YY_INT_ALIGNED long int
 
@@ -23,24 +23,24 @@
      * We will address this in a future release of flex, or omit the C++ scanner
      * altogether.
      */
-    #define yyFlexLexer GetPotFlexLexer
+    #define yyFlexLexer HITFlexLexer
 
 #ifdef yyalloc
-#define GetPotalloc_ALREADY_DEFINED
+#define HITalloc_ALREADY_DEFINED
 #else
-#define yyalloc GetPotalloc
+#define yyalloc HITalloc
 #endif
 
 #ifdef yyrealloc
-#define GetPotrealloc_ALREADY_DEFINED
+#define HITrealloc_ALREADY_DEFINED
 #else
-#define yyrealloc GetPotrealloc
+#define yyrealloc HITrealloc
 #endif
 
 #ifdef yyfree
-#define GetPotfree_ALREADY_DEFINED
+#define HITfree_ALREADY_DEFINED
 #else
-#define yyfree GetPotfree
+#define yyfree HITfree
 #endif
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
@@ -1864,25 +1864,25 @@ static const yy_state_type yy_NUL_trans[86] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "GetPot.lex"
+#line 1 "HIT.lex"
 
-#line 8 "GetPot.lex"
+#line 8 "HIT.lex"
 
 #include <string>
 #include <sstream>
-#include "GetPotLexer.h"
-#include "GetPotInterpreter.h"
+#include "HITLexer.h"
+#include "HITInterpreter.h"
 
 /* import the parser's token type into a local typedef */
-typedef wasp::GetPotParser::token token;
-typedef wasp::GetPotParser::token_type token_type;
+typedef wasp::HITParser::token token;
+typedef wasp::HITParser::token_type token_type;
 
 /* By default yylex returns int, we use token_type. Unfortunately yyterminate
  * by default returns 0, which is not of token_type. */
 #define yyterminate() return token::END
 
-#line 1884 "GetPotLexer.cpp"
-#line 25 "GetPot.lex"
+#line 1884 "HITLexer.cpp"
+#line 25 "HIT.lex"
  /*** Flex Declarations and Options ***/
  /* enable c++ scanner class generation */
  /* enable scanner to generate debug output. disable this for release
@@ -1906,8 +1906,8 @@ typedef wasp::GetPotParser::token_type token_type;
  /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
 #define YY_USER_ACTION  yylloc->columns(yyleng); file_offset+=yyleng;
-#line 1909 "GetPotLexer.cpp"
-#line 1910 "GetPotLexer.cpp"
+#line 1909 "HITLexer.cpp"
+#line 1910 "HITLexer.cpp"
 
 #define INITIAL 0
 #define execution_unit 1
@@ -2045,18 +2045,18 @@ YY_DECL
 		}
 
 	{
-#line 99 "GetPot.lex"
+#line 99 "HIT.lex"
 
 
-#line 102 "GetPot.lex"
+#line 102 "HIT.lex"
  /* code to place at the beginning of yylex() */
 
     // reset location
     yylloc->step();
 
- /*** BEGIN EXAMPLE - Change the GetPot lexer rules below ***/
+ /*** BEGIN EXAMPLE - Change the HIT lexer rules below ***/
 
-#line 2059 "GetPotLexer.cpp"
+#line 2059 "HITLexer.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -2104,7 +2104,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 109 "GetPot.lex"
+#line 109 "HIT.lex"
 {
     yy_push_state(execution_unit); // enter the 'unit' of execution
     capture_token(yylval,wasp::EXECUTION_UNIT_START);
@@ -2113,7 +2113,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 114 "GetPot.lex"
+#line 114 "HIT.lex"
 {
     yy_pop_state(); // pop the execution state
     capture_token(yylval,wasp::EXECUTION_UNIT_END);
@@ -2122,7 +2122,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 119 "GetPot.lex"
+#line 119 "HIT.lex"
 {
     capture_token(yylval,wasp::ASSIGN);
     return token::ASSIGN;
@@ -2130,7 +2130,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 123 "GetPot.lex"
+#line 123 "HIT.lex"
 {
     capture_token(yylval,wasp::SEMICOLON);
     return token::SEMICOLON;
@@ -2138,7 +2138,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 127 "GetPot.lex"
+#line 127 "HIT.lex"
 {
     yy_pop_state();
     capture_token(yylval,wasp::OBJECT_TERM);
@@ -2147,7 +2147,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 132 "GetPot.lex"
+#line 132 "HIT.lex"
 {
     capture_token(yylval,wasp::QUOTE);
     return token::QUOTE;
@@ -2155,7 +2155,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 136 "GetPot.lex"
+#line 136 "HIT.lex"
 {
     yy_push_state(lbracket);
     capture_token(yylval,wasp::LBRACKET);
@@ -2164,7 +2164,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 141 "GetPot.lex"
+#line 141 "HIT.lex"
 {
     capture_token(yylval,wasp::DOT_SLASH);
     return token::DOT_SLASH;
@@ -2172,7 +2172,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 145 "GetPot.lex"
+#line 145 "HIT.lex"
 {
     capture_token(yylval,wasp::STRING);
     return token::STRING;
@@ -2180,7 +2180,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 149 "GetPot.lex"
+#line 149 "HIT.lex"
 {
     yy_pop_state();
     yy_push_state(object);
@@ -2190,7 +2190,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 155 "GetPot.lex"
+#line 155 "HIT.lex"
 {
     capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
@@ -2198,7 +2198,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 160 "GetPot.lex"
+#line 160 "HIT.lex"
 {
     capture_token(yylval,wasp::REAL);
     return token::REAL;
@@ -2207,7 +2207,7 @@ YY_RULE_SETUP
 /* gobble up white-spaces */
 case 13:
 YY_RULE_SETUP
-#line 165 "GetPot.lex"
+#line 165 "HIT.lex"
 {
     yylloc->step();
 }
@@ -2216,7 +2216,7 @@ YY_RULE_SETUP
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 170 "GetPot.lex"
+#line 170 "HIT.lex"
 {
     yylloc->lines(yyleng); yylloc->step();
     interpreter.push_line_offset(file_offset-yyleng);
@@ -2224,7 +2224,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 174 "GetPot.lex"
+#line 174 "HIT.lex"
 {
     capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
@@ -2232,7 +2232,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 178 "GetPot.lex"
+#line 178 "HIT.lex"
 {
     capture_token(yylval,wasp::STRING);
     return token::STRING;
@@ -2240,27 +2240,27 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 182 "GetPot.lex"
+#line 182 "HIT.lex"
 {
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
 }
 	YY_BREAK
-/* pass all other characters up to GetPot*/
+/* pass all other characters up to HIT*/
 case 18:
 YY_RULE_SETUP
-#line 188 "GetPot.lex"
+#line 188 "HIT.lex"
 {
     return static_cast<token_type>(*yytext);
 }
 	YY_BREAK
-/*** END EXAMPLE - Change the GetPot lexer rules above ***/
+/*** END EXAMPLE - Change the HIT lexer rules above ***/
 case 19:
 YY_RULE_SETUP
-#line 194 "GetPot.lex"
+#line 194 "HIT.lex"
 ECHO;
 	YY_BREAK
-#line 2263 "GetPotLexer.cpp"
+#line 2263 "HITLexer.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(execution_unit):
 case YY_STATE_EOF(object):
@@ -3224,36 +3224,36 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 194 "GetPot.lex"
+#line 194 "HIT.lex"
 
 
 namespace wasp {
 
-GetPotLexerImpl::GetPotLexerImpl(
+HITLexerImpl::HITLexerImpl(
                 AbstractInterpreter & interpreter,
                 std::istream* in,
                 std::ostream* out)
-    : GetPotFlexLexer(in, out)
+    : HITFlexLexer(in, out)
     , interpreter(interpreter)
     , file_offset(0)
 {
 }
 
-GetPotLexerImpl::~GetPotLexerImpl()
+HITLexerImpl::~HITLexerImpl()
 {
 }
 
-void GetPotLexerImpl::set_debug(bool b)
+void HITLexerImpl::set_debug(bool b)
 {
     yy_flex_debug = b;
 }
-void GetPotLexerImpl::rewind()
+void HITLexerImpl::rewind()
 {
     yyin.seekg(-yyleng,std::ios_base::cur);
     yyless(0);
 }
-void GetPotLexerImpl::capture_token(
-        wasp::GetPotParser::semantic_type* yylval
+void HITLexerImpl::capture_token(
+        wasp::HITParser::semantic_type* yylval
         ,wasp::NODE type)
 {
     std::size_t offset = file_offset - yyleng;
@@ -3262,15 +3262,15 @@ void GetPotLexerImpl::capture_token(
 }
 } // end of namespace
 
-/* This implementation of GetPotFlexLexer::yylex() is required to fill the
- * vtable of the class GetPotFlexLexer. We define the scanner's main yylex
- * function via YY_DECL to reside in the GetPotLexerImpl class instead. */
+/* This implementation of HITFlexLexer::yylex() is required to fill the
+ * vtable of the class HITFlexLexer. We define the scanner's main yylex
+ * function via YY_DECL to reside in the HITLexerImpl class instead. */
 
 #ifdef yylex
 #undef yylex
 #endif
 
-int GetPotFlexLexer::yylex()
+int HITFlexLexer::yylex()
 {    
     return 0;
 }
@@ -3281,7 +3281,7 @@ int GetPotFlexLexer::yylex()
  * another input file, and scanning continues. If it returns true (non-zero),
  * then the scanner terminates, returning 0 to its caller. */
 
-int GetPotFlexLexer::yywrap()
+int HITFlexLexer::yywrap()
 {
     return 1;
 }

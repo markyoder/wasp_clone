@@ -1,5 +1,5 @@
-#ifndef WASP_GETPOTNODE_VIEW_H
-#define WASP_GETPOTNODE_VIEW_H
+#ifndef WASP_HITNODE_VIEW_H
+#define WASP_HITNODE_VIEW_H
 
 #include <string>
 #include <sstream>
@@ -10,40 +10,40 @@
 namespace wasp
 {
 /**
- * @brief The GetPotNodeView class provides light weight interface to GetPot
+ * @brief The HITNodeView class provides light weight interface to HIT
  * Nodes
  * Allows traversing child nodes and parent as well as acquire node information
  * *
  */
-class WASP_PUBLIC GetPotNodeView
+class WASP_PUBLIC HITNodeView
 {
   public:
-    using Collection = std::vector<GetPotNodeView>;
-    GetPotNodeView() : m_node_index(-1), m_pool(nullptr) {}
-    GetPotNodeView(std::size_t node_index, const AbstractInterpreter& data);
+    using Collection = std::vector<HITNodeView>;
+    HITNodeView() : m_node_index(-1), m_pool(nullptr) {}
+    HITNodeView(std::size_t node_index, const AbstractInterpreter& data);
     template<class NV>
-    GetPotNodeView(const NV& orig);
-    GetPotNodeView(const GetPotNodeView& orig);
+    HITNodeView(const NV& orig);
+    HITNodeView(const HITNodeView& orig);
 
-    ~GetPotNodeView();
+    ~HITNodeView();
 
-    GetPotNodeView& operator=(const GetPotNodeView& b);
+    HITNodeView& operator=(const HITNodeView& b);
     template<class NV>
-    GetPotNodeView& operator=(const NV& b);
+    HITNodeView& operator=(const NV& b);
 
-    bool operator==(const GetPotNodeView& b) const;
-    bool operator!=(const GetPotNodeView& b) const { return !(*this == b); }
+    bool operator==(const HITNodeView& b) const;
+    bool operator!=(const HITNodeView& b) const { return !(*this == b); }
     /**
      * @brief operator < orders by pool index
      * @param b the node to compare pool index
      * @return true, iff this views index is strictly less than b.index
      */
-    bool operator<(const GetPotNodeView& b) const;
+    bool operator<(const HITNodeView& b) const;
     /**
-     * @brief equal determines if this is equal to the provides GetPotNodeView
+     * @brief equal determines if this is equal to the provides HITNodeView
      * @return true, iff and only if the nodes are the same
      */
-    bool equal(const GetPotNodeView& b) const { return *this == b; }
+    bool equal(const HITNodeView& b) const { return *this == b; }
 
     /**
      * @brief data acquire the node's data
@@ -54,7 +54,7 @@ class WASP_PUBLIC GetPotNodeView
      * @brief parent acquire the parent view of the current node
      * @return
      */
-    GetPotNodeView parent() const;
+    HITNodeView parent() const;
     /**
      * @brief has_parent determine if this node has a parent
      * @return true, iff this node has a parent
@@ -62,7 +62,7 @@ class WASP_PUBLIC GetPotNodeView
     bool has_parent() const;
 
     /**
-     * @brief id will return an empty string as it doesn't apply to GetPot nodes
+     * @brief id will return an empty string as it doesn't apply to HIT nodes
      * @return empty string
      */
     std::string id() const { return ""; }
@@ -70,7 +70,7 @@ class WASP_PUBLIC GetPotNodeView
      * @brief id_child will return a null view as it doesn't apply to GetPOt nodes
      * @return null view
      */
-    GetPotNodeView id_child() const { return GetPotNodeView(); }
+    HITNodeView id_child() const { return HITNodeView(); }
 
     /**
      * @brief is_decorative determine if this node is decorative
@@ -95,15 +95,15 @@ class WASP_PUBLIC GetPotNodeView
 
     /**
      * @brief non_decorative_children acquires all non decorative children
-     * @return collection of GetPotNodeViews
+     * @return collection of HITNodeViews
      */
-    GetPotNodeView::Collection non_decorative_children() const;
+    HITNodeView::Collection non_decorative_children() const;
     /**
      * @brief first_non_decorative_child_by_name acquires the first non
      * decorative child
-     * @return GetPotNodeView - need to check is_null to ensure valid node
+     * @return HITNodeView - need to check is_null to ensure valid node
      */
-    GetPotNodeView
+    HITNodeView
     first_non_decorative_child_by_name(const std::string& name) const;
     /**
      * @brief non_decorative_children_count convenience to determine number of
@@ -152,9 +152,9 @@ class WASP_PUBLIC GetPotNodeView
     /**
      * @brief child_at acquire the child node view at the given index
      * @param index the index of the child [0-child_count())
-     * @return GetPotNodeView describing the child node
+     * @return HITNodeView describing the child node
      */
-    GetPotNodeView child_at(std::size_t index) const;
+    HITNodeView child_at(std::size_t index) const;
 
     /**
      * @brief child_by_name acquire child nodes by the given name
@@ -162,7 +162,7 @@ class WASP_PUBLIC GetPotNodeView
      * @param limit the limit on the number of children ( 0 := no limit )
      * @return A collection of views. Empty if no match occurrs
      */
-    GetPotNodeView::Collection child_by_name(const std::string& name,
+    HITNodeView::Collection child_by_name(const std::string& name,
                                              size_t limit = 0) const;
     /**
      * @brief first_child_by_name acquires the first child with the given name
@@ -170,7 +170,7 @@ class WASP_PUBLIC GetPotNodeView
      * @return Named NodeView as requestd. is_null indicates if none was
      * found
      */
-    GetPotNodeView first_child_by_name(const std::string& name) const;
+    HITNodeView first_child_by_name(const std::string& name) const;
     /**
      * @brief type acquire the type of the node
      * @return the node's type
@@ -253,9 +253,9 @@ class WASP_PUBLIC GetPotNodeView
 
     // Friendly stream operator
     friend std::ostream& operator<<(std::ostream&               str,
-                                    const wasp::GetPotNodeView& view)
+                                    const wasp::HITNodeView& view)
     {
-        str << "GetPotNodeView(node_index=" << view.m_node_index
+        str << "HITNodeView(node_index=" << view.m_node_index
             << ", &pool=" << view.m_pool << ")";
         return str;
     }
@@ -279,7 +279,7 @@ class WASP_PUBLIC GetPotNodeView
      */
     size_t value_node_index() const;
 };
-#include "waspgetpot/GetPotNodeView.i.h"
+#include "wasphit/HITNodeView.i.h"
 }  // end of namespace
 
 #endif

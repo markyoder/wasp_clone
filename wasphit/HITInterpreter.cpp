@@ -1,20 +1,20 @@
-#include "GetPotInterpreter.h"
+#include "HITInterpreter.h"
 
 namespace wasp
 {
-GetPotInterpreter::GetPotInterpreter(std::ostream& err)
+HITInterpreter::HITInterpreter(std::ostream& err)
     : Interpreter(err), m_lexer(nullptr)
 {
 }
-GetPotInterpreter::~GetPotInterpreter()
+HITInterpreter::~HITInterpreter()
 {
 }
 
-bool GetPotInterpreter::parse(std::istream& in,
+bool HITInterpreter::parse(std::istream& in,
                               std::size_t   startLine,
                               std::size_t   startColumn)
 {
-    return parse_impl<GetPotLexerImpl, GetPotParser, GetPotInterpreter>(
+    return parse_impl<HITLexerImpl, HITParser, HITInterpreter>(
         m_lexer, in, "input", startLine, startColumn);
 }
 

@@ -1,11 +1,11 @@
-#include "waspgetpot/GetPotInterpreter.h"
-#include "waspgetpot/GetPotNodeView.h"
+#include "wasphit/HITInterpreter.h"
+#include "wasphit/HITNodeView.h"
 #include "gtest/gtest.h"
 #include <iostream>
 #include <string>
 using namespace wasp;
 
-TEST(GetPotInterpreter, bad)
+TEST(HITInterpreter, bad)
 
 {
     std::stringstream input;
@@ -15,7 +15,7 @@ disp_y = disp_y
 disp_z = disp_z
 [../])INPUT";
     std::stringstream        error;
-    DefaultGetPotInterpreter interpreter(error);
+    DefaultHITInterpreter interpreter(error);
     ASSERT_TRUE(interpreter.parse(input));
     std::stringstream tree_print;
     auto              root_view = interpreter.root();
@@ -45,7 +45,7 @@ disp_z = disp_z
     ASSERT_EQ(expected_tree.str(), tree_print.str());
 }
 
-TEST(GetPotInterpreter, simple)
+TEST(HITInterpreter, simple)
 {
     std::stringstream input;
     // Simple parse
@@ -55,7 +55,7 @@ TEST(GetPotInterpreter, simple)
     //    |_ = '='
     //    |_ value '3.421'
     input << "key =  3.421";
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(5, interpreter.node_count());
 
@@ -99,7 +99,7 @@ TEST(GetPotInterpreter, simple)
     }
 }
 
-TEST(GetPotInterpreter, empty_object)
+TEST(HITInterpreter, empty_object)
 {
     std::stringstream input;
     // Simple parse
@@ -112,7 +112,7 @@ TEST(GetPotInterpreter, empty_object)
     //    |_ object_term '[]'
 
     input << "[ted][]";
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(6, interpreter.node_count());
 
@@ -145,7 +145,7 @@ TEST(GetPotInterpreter, empty_object)
     }
 }
 
-TEST(GetPotInterpreter, simple_object)
+TEST(HITInterpreter, simple_object)
 {
     std::stringstream input;
     // Simple parse
@@ -162,7 +162,7 @@ TEST(GetPotInterpreter, simple_object)
     //    |_ object_term '[]'
 
     input << "[ted]key = 3.421[]";
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(10, interpreter.node_count());
 
@@ -198,7 +198,7 @@ TEST(GetPotInterpreter, simple_object)
     }
 }
 
-TEST(GetPotInterpreter, less_simple_object)
+TEST(HITInterpreter, less_simple_object)
 {
     std::stringstream input;
     // Simple parse
@@ -228,7 +228,7 @@ TEST(GetPotInterpreter, less_simple_object)
      fred = 1
      key = 3.421
  [])INPUT";
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(19, interpreter.node_count());
 
@@ -300,7 +300,7 @@ TEST(GetPotInterpreter, less_simple_object)
     }
 }
 
-TEST(GetPotInterpreter, object_array)
+TEST(HITInterpreter, object_array)
 {
     std::stringstream input;
     // Simple parse
@@ -321,7 +321,7 @@ TEST(GetPotInterpreter, object_array)
     //    |_ object_term '[]'
 
     input << "[ted]data='basic 201 lu'[]";
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(14, interpreter.node_count());
 
@@ -372,7 +372,7 @@ TEST(GetPotInterpreter, object_array)
     }
 }
 
-TEST(GetPotInterpreter, double_quoted_value)
+TEST(HITInterpreter, double_quoted_value)
 {
     std::stringstream input;
     // Simple parse
@@ -389,7 +389,7 @@ TEST(GetPotInterpreter, double_quoted_value)
     //    |_ object_term '[]'
 
     input << "[ted]key = \"quotedvalue\"[]";
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(10, interpreter.node_count());
 
@@ -425,7 +425,7 @@ TEST(GetPotInterpreter, double_quoted_value)
     }
 }
 
-TEST(GetPotInterpreter, object_array_semicolons)
+TEST(HITInterpreter, object_array_semicolons)
 {
     std::stringstream input;
     // Simple parse
@@ -455,7 +455,7 @@ TEST(GetPotInterpreter, object_array_semicolons)
     //    |_ object_term '[]'
 
     input << "[ted]data='basic;201 ; again;here;close ; far lu'[]";
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(23, interpreter.node_count());
 
@@ -533,7 +533,7 @@ TEST(GetPotInterpreter, object_array_semicolons)
     }
 }
 
-TEST(GetPotInterpreter, object_empty_subobject)
+TEST(HITInterpreter, object_empty_subobject)
 {
     std::stringstream input;
     // Simple parse
@@ -553,7 +553,7 @@ TEST(GetPotInterpreter, object_empty_subobject)
     //    |_ object_term '[]'
 
     input << "[ted][./fred][../][]";
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(12, interpreter.node_count());
 
@@ -585,7 +585,7 @@ TEST(GetPotInterpreter, object_empty_subobject)
     }
 }
 
-TEST(GetPotInterpreter, object_subobject)
+TEST(HITInterpreter, object_subobject)
 {
     std::stringstream input;
     // Simple parse
@@ -609,7 +609,7 @@ TEST(GetPotInterpreter, object_subobject)
     //    |_ object_term '[]'
 
     input << "[ted][./fred]key=3.4321[../][]";
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(16, interpreter.node_count());
 
@@ -661,7 +661,7 @@ TEST(GetPotInterpreter, object_subobject)
     }
 }
 
-TEST(GetPotInterpreter, simple_view)
+TEST(HITInterpreter, simple_view)
 {
     std::stringstream input;
     // Simple parse
@@ -671,7 +671,7 @@ TEST(GetPotInterpreter, simple_view)
     //    |_ = '='
     //    |_ value '3.421'
     input << "key =  3.421";
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(5, interpreter.node_count());
 
@@ -731,7 +731,7 @@ TEST(GetPotInterpreter, simple_view)
     ASSERT_EQ(expected_paths, paths.str());
 }
 
-TEST(GetPotInterpreter, paths)
+TEST(HITInterpreter, paths)
 {
     std::stringstream input;
     input << R"INPUT([Problem]
@@ -758,7 +758,7 @@ TEST(GetPotInterpreter, paths)
 /Problem/term ([])
 )INPUT";
 
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(16, interpreter.node_count());
     auto document = interpreter.root();
@@ -769,10 +769,10 @@ TEST(GetPotInterpreter, paths)
 }
 
 /**
- * @brief TEST getpot doesn't support expressions natively
+ * @brief TEST hit doesn't support expressions natively
  * It just grabs them as strings
  */
-TEST(GetPotInterpreter, expression)
+TEST(HITInterpreter, expression)
 {
     std::stringstream input;
     input << R"INPUT(
@@ -789,7 +789,7 @@ function = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c),(gr0^2+gr1^2+gr2^2+gr3^2)
         "+3*(gr0^2+gr1^2,gr2^2+gr3^2)^2)",
         "'"};
 
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(9, interpreter.node_count());
     auto document = interpreter.root();
@@ -807,13 +807,13 @@ function = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c),(gr0^2+gr1^2+gr2^2+gr3^2)
 /**
  *  @brief TEST comments that are empty and with content
  */
-TEST(GetPotInterpreter, comments)
+TEST(HITInterpreter, comments)
 {
     std::stringstream input;
     input << R"INPUT(#
 # comment with content
 #)INPUT";
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(4, interpreter.node_count());
     auto document = interpreter.root();
@@ -832,7 +832,7 @@ TEST(GetPotInterpreter, comments)
 /**
  * @brief TEST nested subblocks (subblocks within subblocks)
  */
-TEST(GetPotInterpreter, nested_subblocks)
+TEST(HITInterpreter, nested_subblocks)
 {
     std::stringstream input;
     input << R"INPUT([block]
@@ -841,7 +841,7 @@ TEST(GetPotInterpreter, nested_subblocks)
     [../]
   [../]
 [])INPUT";
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(18, interpreter.node_count());
     auto document = interpreter.root();
@@ -861,7 +861,7 @@ TEST(GetPotInterpreter, nested_subblocks)
     ASSERT_EQ(5, nestedsubblock.column());
 }
 
-TEST(GetPotInterpreter, multiple_objects)
+TEST(HITInterpreter, multiple_objects)
 {
     std::stringstream input;
     input << R"INPUT([Problem]
@@ -882,10 +882,10 @@ TEST(GetPotInterpreter, multiple_objects)
     [../]
 [])INPUT";
 
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(55, interpreter.node_count());
-    GetPotNodeView document = interpreter.root();
+    HITNodeView document = interpreter.root();
     ASSERT_EQ(3, document.child_count());  // problem and mesh
     ASSERT_EQ(3, interpreter.child_count(document.node_index()));
     ASSERT_EQ(document.child_at(0).node_index(),
@@ -969,7 +969,7 @@ TEST(GetPotInterpreter, multiple_objects)
 }
 
 /**
- * @brief TEST getpot type promotion
+ * @brief TEST hit type promotion
  * When a block/subblock has a type field,
  * the block/subblock name becomes the type field's value
  * with "_type" appended.
@@ -982,7 +982,7 @@ TEST(GetPotInterpreter, multiple_objects)
  * 5. subblock with type = value
  * 6. block with type = value
  */
-TEST(GetPotInterpreter, type_promotion)
+TEST(HITInterpreter, type_promotion)
 {
     std::stringstream input;
     input << R"INPUT([Problem]
@@ -1002,10 +1002,10 @@ TEST(GetPotInterpreter, type_promotion)
 []
 )INPUT";
 
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(63, interpreter.node_count());
-    GetPotNodeView document = interpreter.root();
+    HITNodeView document = interpreter.root();
     ASSERT_EQ(3, document.child_count());  // problem and mesh
     ASSERT_EQ(3, interpreter.child_count(document.node_index()));
     std::string       expected_paths = R"INPUT(/
@@ -1098,7 +1098,7 @@ TEST(GetPotInterpreter, type_promotion)
  *  - Block terminator syntax    ( i.e. "[]")
  *  - Subblock terminator syntax ( i.e. "[../]")
  */
-TEST(GetPotInterpreter, hit_syntax)
+TEST(HITInterpreter, hit_syntax)
 {
     std::stringstream input;
     input << R"INPUT(
@@ -1151,10 +1151,10 @@ TEST(GetPotInterpreter, hit_syntax)
 []
 )INPUT";
 
-    DefaultGetPotInterpreter interpreter;
+    DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
     ASSERT_EQ(146, interpreter.node_count());
-    GetPotNodeView document = interpreter.root();
+    HITNodeView document = interpreter.root();
     ASSERT_EQ(1, document.child_count());
     ASSERT_EQ(1, interpreter.child_count(document.node_index()));
     ASSERT_EQ(document.child_at(0).node_index(),

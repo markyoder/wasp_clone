@@ -2,8 +2,8 @@
 #include <fstream>
 #include "waspcore/version.h"
 #include "waspcore/wasp_bug.h"
-#include "waspgetpot/GetPotInterpreter.h"
-#include "waspgetpot/GetPotNodeView.h"
+#include "wasphit/HITInterpreter.h"
+#include "wasphit/HITNodeView.h"
 #include "waspson/SONInterpreter.h"
 #include "waspson/SONNodeView.h"
 #include "wasphive/HIVE.h"
@@ -22,14 +22,14 @@ int main(int argc, char* argv[])
 
     if (argc < 3)
     {
-        std::cout << "Workbench Analysis Sequence Processor (GetPot) Validator"
+        std::cout << "Workbench Analysis Sequence Processor (HIT) Validator"
                   << std::endl
                   << argv[0]
-                  << " : An application for validating GetPot formatted input."
+                  << " : An application for validating HIT formatted input."
                   << std::endl;
         std::cout << " Usage : " << argv[0]
                   << " path/to/SON/formatted/schema "
-                     "path/to/GetPot/formatted/input... [--xml]"
+                     "path/to/HIT/formatted/input... [--xml]"
                   << std::endl;
         std::cout << " Usage : " << argv[0]
                   << " --version\t(print version info)" << std::endl;
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
             input.close();
             return 2;
         }
-        DefaultGetPotInterpreter input_interp(errors);
+        DefaultHITInterpreter input_interp(errors);
         wasp_timer(parse_input_time);
         wasp_timer_start(parse_input_time);
         bool parsed_input = input_interp.parse(input);
@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
             std::cout << errors.str() << std::endl;
             return -1;
         }
-        GetPotNodeView           input_root  = input_interp.root();
+        HITNodeView           input_root  = input_interp.root();
         SONNodeView              schema_root = schema_interp.root();
         HIVE                     validation_engine;
         std::vector<std::string> validation_errors;
