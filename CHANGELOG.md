@@ -6,30 +6,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [2.0.0] - 8-12-2021
 ### Changed 
- - GetPot block and subblock to be equivalent
- - GetPot comma is no longer a valid array separator
- - GetPot semicolon is now an allowed array separator
  - Gtest dependence from TriBITS to vanilla version
  - Extra repository logic from TriBITS to Git submodule 
  - FlexLexer version from 2.5.37 to 2.6.4
  - GNU BISON version from 3.0.4 to 3.7.6
- - VERA input parser to cache staged non decorative nodes to avoid expensive node-count loop
- - VERA Input Lexer to be 8-bit to support identifying unicode characters 
  - WASP Node type of INT to INTEGER (potentially break compatibility with 1.x if you using wasp::INT)
  - Refactored VII into more generic Extra Definition Driven Interpreter (EDDI) - breaks backward compatibility
+ - EDDI input parser to cache staged non decorative nodes to avoid expensive node-count loop
+ - EDDI input Lexer to be 8-bit to support identifying unicode characters 
  - Refacted GetPot into latest MOOSE-revised Hierarchical Input Text (HIT) - breaks backward compatibility
+ - HIT block and subblock to be equivalent
+ - HIT comma is no longer a valid array separator
+ - HIT semicolon is now an allowed array separator
 
 ### Added
  - waspdrive scheduler capability.
- - support for GetPot shorthand object notation '[x/y/z]'
+ - support for HIT shorthand object notation '[x/y/z]'
  - support for commas in GetPot strings
  - support for double-quoted strings in GetPot documents
  - support for more than one input and template file in waspdrive input 
- - support for VERA input section naming and validation
- - support for parsing VERA input list syntax `<n..m x i> 193*10` etc.
- - support for parsing VERA include files located in $VERA_DIR/Init. Requires export of VERA_DIR environment variable such that $VERA_DIR/Init exists
- - support for VERA strings that contain '+' and comments containing unicode characters
- - InputAliases STRIDE construct to support strided aliases as dictated by VERA input
+ - support for EDDI input section naming and validation
+ - support for parsing EDDI input list syntax `<n..m x i> 193*10` etc.
+ - support for parsing EDDI include files via a list of search locations
+ - support for EDDI strings that contain '+' and comments containing unicode characters
+ - InputAliases STRIDE construct to support strided aliases as dictated by EDDI input
 
 
 ### Fixed
