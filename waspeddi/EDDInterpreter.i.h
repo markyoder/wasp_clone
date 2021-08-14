@@ -294,7 +294,7 @@ bool EDDInterpreter<S>::process_document_command(size_t& new_staged_index,
         this->definition()->delta(even_odd_name, actual_name);
         this->set_type(node_index, wasp::VALUE);
         bool name_set_success = this->set_name(node_index, actual_name.c_str());
-        wasp_check(name_set_success);
+        wasp_insist(name_set_success, "Failed to assign name for node at " << loc);
         return this->push_staged_child(node_index);        
     };
     auto is_section = [&]()
@@ -311,7 +311,16 @@ bool EDDInterpreter<S>::process_document_command(size_t& new_staged_index,
         this->definition()->delta(section_name, actual_name);
         this->set_type(node_index, wasp::VALUE);
         bool name_set_success = this->set_name(node_index, actual_name.c_str());
-        wasp_check(name_set_success);
+        wasp_insist(name_set_success, "Failed to assign name for node at " << loc);
+        return this->push_staged_child(node_index);
+    };
+    auto do_stride = [&]()
+    {
+        // If staged child index is aliased to a strided component
+        // we need to capture it appropriately        
+        this->set_type(node_index, wasp::VALUE);
+        bool name_set_success = this->set_name(node_index, strided_definition->actual_name().c_str());
+        wasp_insist(name_set_success, "Failed to assign name for node at " << loc);
         return this->push_staged_child(node_index);
     };
     if ( wasp::COMMENT == token_type
@@ -348,7 +357,7 @@ bool EDDInterpreter<S>::process_document_command(size_t& new_staged_index,
         // we need to consume/recast the first child as the '_name' node
         this->set_type(node_index, wasp::IDENTIFIER);
         bool name_set_success = this->set_name(node_index, "_name");
-        wasp_check(name_set_success);
+        wasp_insist(name_set_success, "Failed to assign name for node at " << loc);
         new_staged_index = this->push_staged_child(node_index);
     }
     else if (this->staged_count() > 1
@@ -360,10 +369,10 @@ bool EDDInterpreter<S>::process_document_command(size_t& new_staged_index,
         this->definition()->delta(index_name, index_name);
         this->set_type(node_index, wasp::VALUE);
         bool name_set_success = this->set_name(node_index, index_name.c_str());
-        wasp_check(name_set_success);
+        wasp_insist(name_set_success, "Failed to assign name for node at " << loc);
         new_staged_index = this->push_staged_child(node_index);
     }
-    else if ( is_key_value ||
+    else if (is_key_value ||
                 token_type == wasp::STRING ||
                 token_type == wasp::QUOTED_STRING)
     {
@@ -379,6 +388,10 @@ bool EDDInterpreter<S>::process_document_command(size_t& new_staged_index,
             else if (is_section())
             {   
                 new_staged_index = do_section();
+            }
+            else if (strided_definition)
+            {
+                new_staged_index = do_stride();
             } 
             else{
                 // the string is not a new command, capture as a value
@@ -388,7 +401,7 @@ bool EDDInterpreter<S>::process_document_command(size_t& new_staged_index,
                 if (std::strcmp(this->name(node_index), "decl") == 0)
                 {
                     bool name_set_success = this->set_name(node_index, "value");
-                    wasp_check(name_set_success);
+                    wasp_insist(name_set_success, "Failed to assign name for node at " << loc);
                 }
                 new_staged_index = this->push_staged_child(node_index);
             }
@@ -431,8 +444,7 @@ bool EDDInterpreter<S>::process_document_command(size_t& new_staged_index,
             if ( is_key_value )
             {
                 // Ensure Aliased' key-value are named by their definition
-                bool name_set_success = this->set_name(node_index, data.c_str());
-                wasp_check(name_set_success);
+                this->set_name(node_index, data.c_str());
                 new_staged_index = this->push_staged_child(node_index);
             }
             else
@@ -448,12 +460,7 @@ bool EDDInterpreter<S>::process_document_command(size_t& new_staged_index,
             && staged_child_count >= 1
             && strided_definition )
     {
-        // If staged child index is aliased to a strided component
-        // we need to capture it appropriately        
-        this->set_type(node_index, wasp::VALUE);
-        bool name_set_success = this->set_name(node_index, strided_definition->actual_name().c_str());
-        wasp_check(name_set_success);
-        new_staged_index = this->push_staged_child(node_index);
+        new_staged_index = do_stride();
     }
     else if (is_index())
     {
