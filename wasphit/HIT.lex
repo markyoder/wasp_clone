@@ -80,7 +80,7 @@ NEQ \!=
 AND &&
 OR \|\|
 LBRACKET \[
-OBJECT_NAME [^" ""."\n\[\]]+
+OBJECT_NAME [^" ""."\n\[\]][^" "\n\[\]]*
 STRING (\$\{([^\"\n\t\r])*\})|([^" "\'\"\=\n\t\r\[\]\#\;]+)
 RBRACKET \]
 SEMICOLON ;

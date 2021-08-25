@@ -1312,3 +1312,96 @@ TEST(HITInterpreter, hit_syntax)
     document.paths(paths);
     ASSERT_EQ(expected_paths, paths.str());
 }
+
+/**
+ * @brief Test HIT syntax - period in block declarators
+ */
+TEST(HITInterpreter, period_in_block_declarators)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[TopBlock]
+  [child.01.period.wt.type]
+    type = Type01
+    var01 = val01
+  []
+  [./child.02.period.wt.type]
+    type = Type02
+    var02 = val02
+  [../]
+  [child.03.period.no.type]
+    var03 = val03
+  [../]
+  [./child.04.period.no.type]
+    var04 = val04
+  []
+[]
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(52, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(1, document.child_count());
+    ASSERT_EQ(1, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/TopBlock
+/TopBlock/[ ([)
+/TopBlock/decl (TopBlock)
+/TopBlock/] (])
+/TopBlock/Type01_type
+/TopBlock/Type01_type/[ ([)
+/TopBlock/Type01_type/decl (child.01.period.wt.type)
+/TopBlock/Type01_type/] (])
+/TopBlock/Type01_type/type
+/TopBlock/Type01_type/type/decl (type)
+/TopBlock/Type01_type/type/= (=)
+/TopBlock/Type01_type/type/value (Type01)
+/TopBlock/Type01_type/var01
+/TopBlock/Type01_type/var01/decl (var01)
+/TopBlock/Type01_type/var01/= (=)
+/TopBlock/Type01_type/var01/value (val01)
+/TopBlock/Type01_type/term ([])
+/TopBlock/Type02_type
+/TopBlock/Type02_type/[ ([)
+/TopBlock/Type02_type/./ (./)
+/TopBlock/Type02_type/decl (child.02.period.wt.type)
+/TopBlock/Type02_type/] (])
+/TopBlock/Type02_type/type
+/TopBlock/Type02_type/type/decl (type)
+/TopBlock/Type02_type/type/= (=)
+/TopBlock/Type02_type/type/value (Type02)
+/TopBlock/Type02_type/var02
+/TopBlock/Type02_type/var02/decl (var02)
+/TopBlock/Type02_type/var02/= (=)
+/TopBlock/Type02_type/var02/value (val02)
+/TopBlock/Type02_type/term ([../])
+/TopBlock/child.03.period.no.type
+/TopBlock/child.03.period.no.type/[ ([)
+/TopBlock/child.03.period.no.type/decl (child.03.period.no.type)
+/TopBlock/child.03.period.no.type/] (])
+/TopBlock/child.03.period.no.type/var03
+/TopBlock/child.03.period.no.type/var03/decl (var03)
+/TopBlock/child.03.period.no.type/var03/= (=)
+/TopBlock/child.03.period.no.type/var03/value (val03)
+/TopBlock/child.03.period.no.type/term ([../])
+/TopBlock/child.04.period.no.type
+/TopBlock/child.04.period.no.type/[ ([)
+/TopBlock/child.04.period.no.type/./ (./)
+/TopBlock/child.04.period.no.type/decl (child.04.period.no.type)
+/TopBlock/child.04.period.no.type/] (])
+/TopBlock/child.04.period.no.type/var04
+/TopBlock/child.04.period.no.type/var04/decl (var04)
+/TopBlock/child.04.period.no.type/var04/= (=)
+/TopBlock/child.04.period.no.type/var04/value (val04)
+/TopBlock/child.04.period.no.type/term ([])
+/TopBlock/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
