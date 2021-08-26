@@ -1407,21 +1407,23 @@ TEST(HITInterpreter, period_in_block_declarators)
 }
 
 /**
- * @brief Test HIT syntax - equals and brackets in arrays
+ * @brief Test HIT syntax - equals, brackets, and double quotes in arrays
  */
-TEST(HITInterpreter, equals_and_brackets_in_arrays)
+TEST(HITInterpreter, equals_brackets_quotes_in_arrays)
 {
     std::stringstream input;
     input << R"INPUT(
 array01 = 'd2F1:=D[F1,eta1,eta1] d2F2:=D[F2,eta1,eta1]'
 [BlockContainer]
   array02 = ' 08.4;; ; -5;;123;abc:=t[e_x]t;;-02.85;  '
+  array03 = 'path/to/real=1.01;path/to/int=10;path/to/string=one;path/to/blank=""
+             path/to/real=2.02;path/to/int=20;path/to/string=two;path/to/blank=""'
 []
 )INPUT";
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(32, interpreter.node_count());
+    ASSERT_EQ(51, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(2, document.child_count());
     ASSERT_EQ(2, interpreter.child_count(document.node_index()));
@@ -1459,6 +1461,25 @@ array01 = 'd2F1:=D[F1,eta1,eta1] d2F2:=D[F2,eta1,eta1]'
 /BlockContainer/array02/value (-02.85)
 /BlockContainer/array02/; (;)
 /BlockContainer/array02/' (')
+/BlockContainer/array03
+/BlockContainer/array03/decl (array03)
+/BlockContainer/array03/= (=)
+/BlockContainer/array03/' (')
+/BlockContainer/array03/value (path/to/real=1.01)
+/BlockContainer/array03/; (;)
+/BlockContainer/array03/value (path/to/int=10)
+/BlockContainer/array03/; (;)
+/BlockContainer/array03/value (path/to/string=one)
+/BlockContainer/array03/; (;)
+/BlockContainer/array03/value (path/to/blank="")
+/BlockContainer/array03/value (path/to/real=2.02)
+/BlockContainer/array03/; (;)
+/BlockContainer/array03/value (path/to/int=20)
+/BlockContainer/array03/; (;)
+/BlockContainer/array03/value (path/to/string=two)
+/BlockContainer/array03/; (;)
+/BlockContainer/array03/value (path/to/blank="")
+/BlockContainer/array03/' (')
 /BlockContainer/term ([])
 )INPUT";
 

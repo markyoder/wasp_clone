@@ -84,7 +84,7 @@ OR \|\|
 LBRACKET \[
 OBJECT_NAME [^" ""."\n\[\]][^" "\n\[\]]*
 STRING (\$\{([^\"\n\t\r])*\})|([^" "\'\"\=\n\t\r\[\]\#\;]+)
-ARRAY_STRING (\$\{([^\"\n\t\r])*\})|([^" "\'\"\n\t\r\#\;]+)
+ARRAY_STRING (\$\{([^\"\n\t\r])*\})|([^ \'\n\t\r\#\;]+)
 RBRACKET \]
 SEMICOLON ;
 TOP_OBJECT_TERM \[" "*\]
