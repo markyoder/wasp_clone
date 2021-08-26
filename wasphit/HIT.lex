@@ -58,7 +58,8 @@ LESSER_STRING [A-Za-z_][A-Za-z0-9_]*
 
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
 SINGLE_QUOTE '
-COMMENT #[^\n]*
+UNICODE [^\x00-\x7F]+
+COMMENT #([^\n]|{UNICODE})*
 
  /*
  * The 'execution unit' is a rebranded SCALE sequence construct
@@ -169,7 +170,7 @@ DOT_SLASH \.\/
     return token::REAL;
 }
  /* gobble up white-spaces */
-<*>[ \t\r]+ {
+<*>[ \t\r]+|{UNICODE} {
     yylloc->step();
 }
 

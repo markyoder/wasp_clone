@@ -1,4 +1,4 @@
-flex -Caf -v HIT.lex
+flex -Caf --8bit -v HIT.lex
 sed -i '' 's/#include <FlexLexer.h>/#include \"waspcore\/FlexLexer.h\"/' HITLexer.cpp 
 bison --version
 bison HIT.bison --report=state --report=lookahead

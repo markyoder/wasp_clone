@@ -1466,3 +1466,77 @@ array01 = 'd2F1:=D[F1,eta1,eta1] d2F2:=D[F2,eta1,eta1]'
     document.paths(actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
+
+/**
+ * @brief Test HIT syntax - non-ascii unicode in comments
+ */
+TEST(HITInterpreter, non_ascii_unicode_in_comments)
+{
+    std::stringstream input;
+    input << R"INPUT(
+######################################################################
+##                                                                  ##
+## Lead off comment with non-ascii unicode degree symbol 600°C      ##
+## Lead off comment with non-ascii unicode “L&R double quotes”      ##
+## Lead off comment with non-ascii unicode ‘L&R single quotes’      ##
+## Lead off comment with non-ascii unicode en dash – character      ##
+##                                                                  ##
+######################################################################
+
+[ObjName]
+  Param01 = val01 # trailing comment with non-ascii unicode degree symbol 600°C
+  Param02 = val02 # trailing comment with non-ascii unicode “L&R double quotes”
+  Param03 = val03 # trailing comment with non-ascii unicode ‘L&R single quotes’
+  Param04 = val04 # trailing comment with non-ascii unicode en dash – character
+[]
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(34, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(9, document.child_count());
+    ASSERT_EQ(9, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/comment (######################################################################)
+/comment (##                                                                  ##)
+/comment (## Lead off comment with non-ascii unicode degree symbol 600°C      ##)
+/comment (## Lead off comment with non-ascii unicode “L&R double quotes”      ##)
+/comment (## Lead off comment with non-ascii unicode ‘L&R single quotes’      ##)
+/comment (## Lead off comment with non-ascii unicode en dash – character      ##)
+/comment (##                                                                  ##)
+/comment (######################################################################)
+/ObjName
+/ObjName/[ ([)
+/ObjName/decl (ObjName)
+/ObjName/] (])
+/ObjName/Param01
+/ObjName/Param01/decl (Param01)
+/ObjName/Param01/= (=)
+/ObjName/Param01/value (val01)
+/ObjName/comment (# trailing comment with non-ascii unicode degree symbol 600°C)
+/ObjName/Param02
+/ObjName/Param02/decl (Param02)
+/ObjName/Param02/= (=)
+/ObjName/Param02/value (val02)
+/ObjName/comment (# trailing comment with non-ascii unicode “L&R double quotes”)
+/ObjName/Param03
+/ObjName/Param03/decl (Param03)
+/ObjName/Param03/= (=)
+/ObjName/Param03/value (val03)
+/ObjName/comment (# trailing comment with non-ascii unicode ‘L&R single quotes’)
+/ObjName/Param04
+/ObjName/Param04/decl (Param04)
+/ObjName/Param04/= (=)
+/ObjName/Param04/value (val04)
+/ObjName/comment (# trailing comment with non-ascii unicode en dash – character)
+/ObjName/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
