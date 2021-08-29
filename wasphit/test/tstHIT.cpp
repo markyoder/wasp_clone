@@ -1561,3 +1561,109 @@ TEST(HITInterpreter, non_ascii_unicode_in_comments)
     document.paths(actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
+
+/**
+ * @brief Test HIT syntax - multi-line and multi-group arrays
+ */
+TEST(HITInterpreter, multi_line_multi_group_arrays)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[Params]
+
+  array01 = '-flag_01 -flag_02 -flag_03   '
+             '  -flag_04'
+             ' -flag_05
+               -flag_06' '-flag_07'
+
+  array02 = '01 02.4 15.6 strain_xx strain_yy strain_zz '
+                           '  19.8 max_principal_stress  96 ' ' more 8.3 vals'
+            ' group_04 line_03 values '
+
+  array03 = '   vonmises_stress hydrostatic_stress stress_xx stress_yy
+       stress_zz '
+
+                           'strain_xx strain_yy strain_zz'
+[]
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(65, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(1, document.child_count());
+    ASSERT_EQ(1, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/Params
+/Params/[ ([)
+/Params/decl (Params)
+/Params/] (])
+/Params/array01
+/Params/array01/decl (array01)
+/Params/array01/= (=)
+/Params/array01/' (')
+/Params/array01/value (-flag_01)
+/Params/array01/value (-flag_02)
+/Params/array01/value (-flag_03)
+/Params/array01/' (')
+/Params/array01/' (')
+/Params/array01/value (-flag_04)
+/Params/array01/' (')
+/Params/array01/' (')
+/Params/array01/value (-flag_05)
+/Params/array01/value (-flag_06)
+/Params/array01/' (')
+/Params/array01/' (')
+/Params/array01/value (-flag_07)
+/Params/array01/' (')
+/Params/array02
+/Params/array02/decl (array02)
+/Params/array02/= (=)
+/Params/array02/' (')
+/Params/array02/value (01)
+/Params/array02/value (02.4)
+/Params/array02/value (15.6)
+/Params/array02/value (strain_xx)
+/Params/array02/value (strain_yy)
+/Params/array02/value (strain_zz)
+/Params/array02/' (')
+/Params/array02/' (')
+/Params/array02/value (19.8)
+/Params/array02/value (max_principal_stress)
+/Params/array02/value (96)
+/Params/array02/' (')
+/Params/array02/' (')
+/Params/array02/value (more)
+/Params/array02/value (8.3)
+/Params/array02/value (vals)
+/Params/array02/' (')
+/Params/array02/' (')
+/Params/array02/value (group_04)
+/Params/array02/value (line_03)
+/Params/array02/value (values)
+/Params/array02/' (')
+/Params/array03
+/Params/array03/decl (array03)
+/Params/array03/= (=)
+/Params/array03/' (')
+/Params/array03/value (vonmises_stress)
+/Params/array03/value (hydrostatic_stress)
+/Params/array03/value (stress_xx)
+/Params/array03/value (stress_yy)
+/Params/array03/value (stress_zz)
+/Params/array03/' (')
+/Params/array03/' (')
+/Params/array03/value (strain_xx)
+/Params/array03/value (strain_yy)
+/Params/array03/value (strain_zz)
+/Params/array03/' (')
+/Params/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}

@@ -368,6 +368,13 @@ array : quote array_members quote
         $$->push_back(($1));
         $$->push_back(($2));
     }
+    | array quote array_members quote
+    {
+        $$ = $1;
+        $$->push_back(($2));
+        $$->insert($$->end(), $3->begin(), $3->end());
+        $$->push_back(($4));
+    }
 
 
 keyedvalue : decl assign value
