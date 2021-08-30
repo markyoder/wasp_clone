@@ -170,7 +170,7 @@ DOT_SLASH \.\/
     return token::REAL;
 }
  /* gobble up white-spaces */
-<*>[ \t\r]+|{UNICODE} {
+<*>[ \t\r]+ {
     yylloc->step();
 }
 

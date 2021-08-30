@@ -374,6 +374,7 @@ array : quote array_members quote
         $$->push_back(($2));
         $$->insert($$->end(), $3->begin(), $3->end());
         $$->push_back(($4));
+        delete $3;
     }
 
 
