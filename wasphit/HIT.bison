@@ -298,6 +298,8 @@ object : object_decl object_term
         {
         $$ = push_object(interpreter, *$object_decl, $object_members, $object_term);        
         delete $1;
+        delete $2->second;
+        delete $2;
         }
 integer : INTEGER
     {
@@ -367,6 +369,14 @@ array : quote array_members quote
         $$ = new std::vector<size_t>();
         $$->push_back(($1));
         $$->push_back(($2));
+    }
+    | array quote array_members quote
+    {
+        $$ = $1;
+        $$->push_back(($2));
+        $$->insert($$->end(), $3->begin(), $3->end());
+        $$->push_back(($4));
+        delete $3;
     }
 
 

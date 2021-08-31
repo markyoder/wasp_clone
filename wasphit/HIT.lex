@@ -41,6 +41,7 @@ typedef wasp::HITParser::token_type token_type;
 %option stack
 %s execution_unit
 %s object
+%s array
 %x lbracket
 
 INTEGER [0-9]+([eE]\+?[0-9]+)?
@@ -57,7 +58,8 @@ LESSER_STRING [A-Za-z_][A-Za-z0-9_]*
 
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
 SINGLE_QUOTE '
-COMMENT #[^\n]*
+UNICODE [^\x00-\x7F]+
+COMMENT #([^\n]|{UNICODE})*
 
  /*
  * The 'execution unit' is a rebranded SCALE sequence construct
@@ -80,8 +82,9 @@ NEQ \!=
 AND &&
 OR \|\|
 LBRACKET \[
-OBJECT_NAME [^" ""."\n\[\]]+
+OBJECT_NAME [^" ""."\n\[\]][^" "\n\[\]]*
 STRING (\$\{([^\"\n\t\r])*\})|([^" "\'\"\=\n\t\r\[\]\#\;]+)
+ARRAY_STRING (\$\{([^\"\n\t\r])*\})|([^ \'\n\t\r\#\;]+)
 RBRACKET \]
 SEMICOLON ;
 TOP_OBJECT_TERM \[" "*\]
@@ -119,7 +122,7 @@ DOT_SLASH \.\/
     capture_token(yylval,wasp::ASSIGN);
     return token::ASSIGN;
 }
-{SEMICOLON} {
+<array>{SEMICOLON} {
     capture_token(yylval,wasp::SEMICOLON);
     return token::SEMICOLON;
 }
@@ -128,7 +131,13 @@ DOT_SLASH \.\/
     capture_token(yylval,wasp::OBJECT_TERM);
     return token::OBJECT_TERM;
 }
-{SINGLE_QUOTE} {
+<INITIAL,execution_unit,object>{SINGLE_QUOTE} {
+    yy_push_state(array);
+    capture_token(yylval,wasp::QUOTE);
+    return token::QUOTE;
+}
+<array>{SINGLE_QUOTE} {
+    yy_pop_state();
     capture_token(yylval,wasp::QUOTE);
     return token::QUOTE;
 }
@@ -151,12 +160,12 @@ DOT_SLASH \.\/
     capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
 }
-<INITIAL,execution_unit,object>{INTEGER} {
+<INITIAL,execution_unit,object,array>{INTEGER} {
     capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 
-<INITIAL,execution_unit,object>{REAL} {
+<INITIAL,execution_unit,object,array>{REAL} {
     capture_token(yylval,wasp::REAL);
     return token::REAL;
 }
@@ -174,13 +183,17 @@ DOT_SLASH \.\/
     capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
 }
-{STRING} {
+<INITIAL,execution_unit,object>{STRING} {
     capture_token(yylval,wasp::STRING);
     return token::STRING;
 }
-{DOUBLE_QUOTED_STRING} {
+<INITIAL,execution_unit,object>{DOUBLE_QUOTED_STRING} {
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
+}
+<array>{ARRAY_STRING} {
+    capture_token(yylval,wasp::STRING);
+    return token::STRING;
 }
 
  /* pass all other characters up to HIT*/

@@ -1312,3 +1312,358 @@ TEST(HITInterpreter, hit_syntax)
     document.paths(paths);
     ASSERT_EQ(expected_paths, paths.str());
 }
+
+/**
+ * @brief Test HIT syntax - period in block declarators
+ */
+TEST(HITInterpreter, period_in_block_declarators)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[TopBlock]
+  [child.01.period.wt.type]
+    type = Type01
+    var01 = val01
+  []
+  [./child.02.period.wt.type]
+    type = Type02
+    var02 = val02
+  [../]
+  [child.03.period.no.type]
+    var03 = val03
+  [../]
+  [./child.04.period.no.type]
+    var04 = val04
+  []
+[]
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(52, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(1, document.child_count());
+    ASSERT_EQ(1, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/TopBlock
+/TopBlock/[ ([)
+/TopBlock/decl (TopBlock)
+/TopBlock/] (])
+/TopBlock/Type01_type
+/TopBlock/Type01_type/[ ([)
+/TopBlock/Type01_type/decl (child.01.period.wt.type)
+/TopBlock/Type01_type/] (])
+/TopBlock/Type01_type/type
+/TopBlock/Type01_type/type/decl (type)
+/TopBlock/Type01_type/type/= (=)
+/TopBlock/Type01_type/type/value (Type01)
+/TopBlock/Type01_type/var01
+/TopBlock/Type01_type/var01/decl (var01)
+/TopBlock/Type01_type/var01/= (=)
+/TopBlock/Type01_type/var01/value (val01)
+/TopBlock/Type01_type/term ([])
+/TopBlock/Type02_type
+/TopBlock/Type02_type/[ ([)
+/TopBlock/Type02_type/./ (./)
+/TopBlock/Type02_type/decl (child.02.period.wt.type)
+/TopBlock/Type02_type/] (])
+/TopBlock/Type02_type/type
+/TopBlock/Type02_type/type/decl (type)
+/TopBlock/Type02_type/type/= (=)
+/TopBlock/Type02_type/type/value (Type02)
+/TopBlock/Type02_type/var02
+/TopBlock/Type02_type/var02/decl (var02)
+/TopBlock/Type02_type/var02/= (=)
+/TopBlock/Type02_type/var02/value (val02)
+/TopBlock/Type02_type/term ([../])
+/TopBlock/child.03.period.no.type
+/TopBlock/child.03.period.no.type/[ ([)
+/TopBlock/child.03.period.no.type/decl (child.03.period.no.type)
+/TopBlock/child.03.period.no.type/] (])
+/TopBlock/child.03.period.no.type/var03
+/TopBlock/child.03.period.no.type/var03/decl (var03)
+/TopBlock/child.03.period.no.type/var03/= (=)
+/TopBlock/child.03.period.no.type/var03/value (val03)
+/TopBlock/child.03.period.no.type/term ([../])
+/TopBlock/child.04.period.no.type
+/TopBlock/child.04.period.no.type/[ ([)
+/TopBlock/child.04.period.no.type/./ (./)
+/TopBlock/child.04.period.no.type/decl (child.04.period.no.type)
+/TopBlock/child.04.period.no.type/] (])
+/TopBlock/child.04.period.no.type/var04
+/TopBlock/child.04.period.no.type/var04/decl (var04)
+/TopBlock/child.04.period.no.type/var04/= (=)
+/TopBlock/child.04.period.no.type/var04/value (val04)
+/TopBlock/child.04.period.no.type/term ([])
+/TopBlock/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - equals, brackets, and double quotes in arrays
+ */
+TEST(HITInterpreter, equals_brackets_quotes_in_arrays)
+{
+    std::stringstream input;
+    input << R"INPUT(
+array01 = 'd2F1:=D[F1,eta1,eta1] d2F2:=D[F2,eta1,eta1]'
+[BlockContainer]
+  array02 = ' 08.4;; ; -5;;123;abc:=t[e_x]t;;-02.85;  '
+  array03 = 'path/to/real=1.01;path/to/int=10;path/to/string=one;path/to/blank=""
+             path/to/real=2.02;path/to/int=20;path/to/string=two;path/to/blank=""'
+[]
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(51, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+    ASSERT_EQ(2, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/array01
+/array01/decl (array01)
+/array01/= (=)
+/array01/' (')
+/array01/value (d2F1:=D[F1,eta1,eta1])
+/array01/value (d2F2:=D[F2,eta1,eta1])
+/array01/' (')
+/BlockContainer
+/BlockContainer/[ ([)
+/BlockContainer/decl (BlockContainer)
+/BlockContainer/] (])
+/BlockContainer/array02
+/BlockContainer/array02/decl (array02)
+/BlockContainer/array02/= (=)
+/BlockContainer/array02/' (')
+/BlockContainer/array02/value (08.4)
+/BlockContainer/array02/; (;)
+/BlockContainer/array02/; (;)
+/BlockContainer/array02/; (;)
+/BlockContainer/array02/value (-5)
+/BlockContainer/array02/; (;)
+/BlockContainer/array02/; (;)
+/BlockContainer/array02/value (123)
+/BlockContainer/array02/; (;)
+/BlockContainer/array02/value (abc:=t[e_x]t)
+/BlockContainer/array02/; (;)
+/BlockContainer/array02/; (;)
+/BlockContainer/array02/value (-02.85)
+/BlockContainer/array02/; (;)
+/BlockContainer/array02/' (')
+/BlockContainer/array03
+/BlockContainer/array03/decl (array03)
+/BlockContainer/array03/= (=)
+/BlockContainer/array03/' (')
+/BlockContainer/array03/value (path/to/real=1.01)
+/BlockContainer/array03/; (;)
+/BlockContainer/array03/value (path/to/int=10)
+/BlockContainer/array03/; (;)
+/BlockContainer/array03/value (path/to/string=one)
+/BlockContainer/array03/; (;)
+/BlockContainer/array03/value (path/to/blank="")
+/BlockContainer/array03/value (path/to/real=2.02)
+/BlockContainer/array03/; (;)
+/BlockContainer/array03/value (path/to/int=20)
+/BlockContainer/array03/; (;)
+/BlockContainer/array03/value (path/to/string=two)
+/BlockContainer/array03/; (;)
+/BlockContainer/array03/value (path/to/blank="")
+/BlockContainer/array03/' (')
+/BlockContainer/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - non-ascii unicode in comments
+ */
+TEST(HITInterpreter, non_ascii_unicode_in_comments)
+{
+    std::stringstream input;
+    input << R"INPUT(
+######################################################################
+##                                                                  ##
+## Lead off comment with non-ascii unicode degree symbol 600°C      ##
+## Lead off comment with non-ascii unicode “L&R double quotes”      ##
+## Lead off comment with non-ascii unicode ‘L&R single quotes’      ##
+## Lead off comment with non-ascii unicode en dash – character      ##
+##                                                                  ##
+######################################################################
+
+[ObjName]
+  Param01 = val01 # trailing comment with non-ascii unicode degree symbol 600°C
+  Param02 = val02 # trailing comment with non-ascii unicode “L&R double quotes”
+  Param03 = val03 # trailing comment with non-ascii unicode ‘L&R single quotes’
+  Param04 = val04 # trailing comment with non-ascii unicode en dash – character
+[]
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(34, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(9, document.child_count());
+    ASSERT_EQ(9, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/comment (######################################################################)
+/comment (##                                                                  ##)
+/comment (## Lead off comment with non-ascii unicode degree symbol 600°C      ##)
+/comment (## Lead off comment with non-ascii unicode “L&R double quotes”      ##)
+/comment (## Lead off comment with non-ascii unicode ‘L&R single quotes’      ##)
+/comment (## Lead off comment with non-ascii unicode en dash – character      ##)
+/comment (##                                                                  ##)
+/comment (######################################################################)
+/ObjName
+/ObjName/[ ([)
+/ObjName/decl (ObjName)
+/ObjName/] (])
+/ObjName/Param01
+/ObjName/Param01/decl (Param01)
+/ObjName/Param01/= (=)
+/ObjName/Param01/value (val01)
+/ObjName/comment (# trailing comment with non-ascii unicode degree symbol 600°C)
+/ObjName/Param02
+/ObjName/Param02/decl (Param02)
+/ObjName/Param02/= (=)
+/ObjName/Param02/value (val02)
+/ObjName/comment (# trailing comment with non-ascii unicode “L&R double quotes”)
+/ObjName/Param03
+/ObjName/Param03/decl (Param03)
+/ObjName/Param03/= (=)
+/ObjName/Param03/value (val03)
+/ObjName/comment (# trailing comment with non-ascii unicode ‘L&R single quotes’)
+/ObjName/Param04
+/ObjName/Param04/decl (Param04)
+/ObjName/Param04/= (=)
+/ObjName/Param04/value (val04)
+/ObjName/comment (# trailing comment with non-ascii unicode en dash – character)
+/ObjName/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - multi-line and multi-group arrays
+ */
+TEST(HITInterpreter, multi_line_multi_group_arrays)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[Params]
+
+  array01 = '-flag_01 -flag_02 -flag_03   '
+             '  -flag_04'
+             ' -flag_05
+               -flag_06' '-flag_07'
+
+  array02 = '01 02.4 15.6 strain_xx strain_yy strain_zz '
+                           '  19.8 max_principal_stress  96 ' ' more 8.3 vals'
+            ' group_04 line_03 values '
+
+  array03 = '   vonmises_stress hydrostatic_stress stress_xx stress_yy
+       stress_zz '
+
+                           'strain_xx strain_yy strain_zz'
+[]
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(65, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(1, document.child_count());
+    ASSERT_EQ(1, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/Params
+/Params/[ ([)
+/Params/decl (Params)
+/Params/] (])
+/Params/array01
+/Params/array01/decl (array01)
+/Params/array01/= (=)
+/Params/array01/' (')
+/Params/array01/value (-flag_01)
+/Params/array01/value (-flag_02)
+/Params/array01/value (-flag_03)
+/Params/array01/' (')
+/Params/array01/' (')
+/Params/array01/value (-flag_04)
+/Params/array01/' (')
+/Params/array01/' (')
+/Params/array01/value (-flag_05)
+/Params/array01/value (-flag_06)
+/Params/array01/' (')
+/Params/array01/' (')
+/Params/array01/value (-flag_07)
+/Params/array01/' (')
+/Params/array02
+/Params/array02/decl (array02)
+/Params/array02/= (=)
+/Params/array02/' (')
+/Params/array02/value (01)
+/Params/array02/value (02.4)
+/Params/array02/value (15.6)
+/Params/array02/value (strain_xx)
+/Params/array02/value (strain_yy)
+/Params/array02/value (strain_zz)
+/Params/array02/' (')
+/Params/array02/' (')
+/Params/array02/value (19.8)
+/Params/array02/value (max_principal_stress)
+/Params/array02/value (96)
+/Params/array02/' (')
+/Params/array02/' (')
+/Params/array02/value (more)
+/Params/array02/value (8.3)
+/Params/array02/value (vals)
+/Params/array02/' (')
+/Params/array02/' (')
+/Params/array02/value (group_04)
+/Params/array02/value (line_03)
+/Params/array02/value (values)
+/Params/array02/' (')
+/Params/array03
+/Params/array03/decl (array03)
+/Params/array03/= (=)
+/Params/array03/' (')
+/Params/array03/value (vonmises_stress)
+/Params/array03/value (hydrostatic_stress)
+/Params/array03/value (stress_xx)
+/Params/array03/value (stress_yy)
+/Params/array03/value (stress_zz)
+/Params/array03/' (')
+/Params/array03/' (')
+/Params/array03/value (strain_xx)
+/Params/array03/value (strain_yy)
+/Params/array03/value (strain_zz)
+/Params/array03/' (')
+/Params/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}

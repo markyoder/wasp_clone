@@ -242,9 +242,10 @@ for FILE in ${PARSE_TEST_FILES} ; do
     #####                                        (1) Selecting /
     #####                                        (2) ---- 1 nodes selected with statement '/' ----
     #####                                        (3) 1) /
-    ##### diff -Bb "${FILE}" -                :: diffs output from above with the actual input file
-    #####                                        -b :: ignore changes in the amount of white space
-    #####                                        -B :: ignore changes where lines are all blank
+    ##### diff -Bb <(sed '1s...' "${FILE}") - :: diffs roundtrip output with the actual input file
+    #####                                        -B :: ignore changes where entire lines are blank
+    #####                                        -b :: ignore changes in number of trailing spaces
+    #####                                        sed '1s/^[[:space:]]*//' :: strip file lead space
     ##### > ${TEMP_ROUND_FILE}                :: if there were any differences from the above
     #####                                     :: statement, this captures them in a temporary file
     ##### PARSEERROR=`cat ${TEMP_PARSE_FILE}` :: capture the most recent parse error into a variable
@@ -252,7 +253,7 @@ for FILE in ${PARSE_TEST_FILES} ; do
     ##### SNIPPET=`sed -n "$((${LINE}-${SN... :: capture the parse error causing text snippet and a
     #####                                        surrounding range for context from the input file
 
-    ${INPUT_ROUNDTRIP} "${FILE}" / 2> ${TEMP_PARSE_FILE} | tail -n +4 | diff -Bb "${FILE}" - > ${TEMP_ROUND_FILE}
+    ${INPUT_ROUNDTRIP} "${FILE}" / 2> ${TEMP_PARSE_FILE} | tail -n +4 | diff -Bb <(sed '1s/^[[:space:]]*//' "${FILE}") - > ${TEMP_ROUND_FILE}
 
     if [[ -s ${TEMP_PARSE_FILE} ]] ; then
 
