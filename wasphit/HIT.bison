@@ -298,6 +298,8 @@ object : object_decl object_term
         {
         $$ = push_object(interpreter, *$object_decl, $object_members, $object_term);        
         delete $1;
+        delete $2->second;
+        delete $2;
         }
 integer : INTEGER
     {
