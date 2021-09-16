@@ -1667,3 +1667,144 @@ TEST(HITInterpreter, multi_line_multi_group_arrays)
     document.paths(actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
+
+/**
+ * @brief Test HIT syntax - equals and double quotes after slash in value
+ */
+TEST(HITInterpreter, equals_and_quotes_after_slash)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[SlashesInValues]
+  [input01]
+    type = DirAndFile
+    directory = some/directory/path01
+    inputfile = file01.i
+    parameter = path/to/a/param01=one
+  []
+  [input02]
+    type = DirAndFile
+    directory = some/directory/path02/
+    inputfile = file02.i
+    parameter = path/to/a/param02/="two"
+  []
+  [input03]
+    type = DirAndFile
+    directory = /some/directory/path03
+    inputfile = file03.i
+    parameter = /path/to/a/param03=3.3
+  []
+  [input04]
+    type = DirAndFile
+    directory = /some/directory/path04/
+    inputfile = file04.i
+    parameter = /path/to/a/param04/=444
+  []
+[]
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(90, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(1, document.child_count());
+    ASSERT_EQ(1, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/SlashesInValues
+/SlashesInValues/[ ([)
+/SlashesInValues/decl (SlashesInValues)
+/SlashesInValues/] (])
+/SlashesInValues/DirAndFile_type
+/SlashesInValues/DirAndFile_type/[ ([)
+/SlashesInValues/DirAndFile_type/decl (input01)
+/SlashesInValues/DirAndFile_type/] (])
+/SlashesInValues/DirAndFile_type/type
+/SlashesInValues/DirAndFile_type/type/decl (type)
+/SlashesInValues/DirAndFile_type/type/= (=)
+/SlashesInValues/DirAndFile_type/type/value (DirAndFile)
+/SlashesInValues/DirAndFile_type/directory
+/SlashesInValues/DirAndFile_type/directory/decl (directory)
+/SlashesInValues/DirAndFile_type/directory/= (=)
+/SlashesInValues/DirAndFile_type/directory/value (some/directory/path01)
+/SlashesInValues/DirAndFile_type/inputfile
+/SlashesInValues/DirAndFile_type/inputfile/decl (inputfile)
+/SlashesInValues/DirAndFile_type/inputfile/= (=)
+/SlashesInValues/DirAndFile_type/inputfile/value (file01.i)
+/SlashesInValues/DirAndFile_type/parameter
+/SlashesInValues/DirAndFile_type/parameter/decl (parameter)
+/SlashesInValues/DirAndFile_type/parameter/= (=)
+/SlashesInValues/DirAndFile_type/parameter/value (path/to/a/param01=one)
+/SlashesInValues/DirAndFile_type/term ([])
+/SlashesInValues/DirAndFile_type
+/SlashesInValues/DirAndFile_type/[ ([)
+/SlashesInValues/DirAndFile_type/decl (input02)
+/SlashesInValues/DirAndFile_type/] (])
+/SlashesInValues/DirAndFile_type/type
+/SlashesInValues/DirAndFile_type/type/decl (type)
+/SlashesInValues/DirAndFile_type/type/= (=)
+/SlashesInValues/DirAndFile_type/type/value (DirAndFile)
+/SlashesInValues/DirAndFile_type/directory
+/SlashesInValues/DirAndFile_type/directory/decl (directory)
+/SlashesInValues/DirAndFile_type/directory/= (=)
+/SlashesInValues/DirAndFile_type/directory/value (some/directory/path02/)
+/SlashesInValues/DirAndFile_type/inputfile
+/SlashesInValues/DirAndFile_type/inputfile/decl (inputfile)
+/SlashesInValues/DirAndFile_type/inputfile/= (=)
+/SlashesInValues/DirAndFile_type/inputfile/value (file02.i)
+/SlashesInValues/DirAndFile_type/parameter
+/SlashesInValues/DirAndFile_type/parameter/decl (parameter)
+/SlashesInValues/DirAndFile_type/parameter/= (=)
+/SlashesInValues/DirAndFile_type/parameter/value (path/to/a/param02/="two")
+/SlashesInValues/DirAndFile_type/term ([])
+/SlashesInValues/DirAndFile_type
+/SlashesInValues/DirAndFile_type/[ ([)
+/SlashesInValues/DirAndFile_type/decl (input03)
+/SlashesInValues/DirAndFile_type/] (])
+/SlashesInValues/DirAndFile_type/type
+/SlashesInValues/DirAndFile_type/type/decl (type)
+/SlashesInValues/DirAndFile_type/type/= (=)
+/SlashesInValues/DirAndFile_type/type/value (DirAndFile)
+/SlashesInValues/DirAndFile_type/directory
+/SlashesInValues/DirAndFile_type/directory/decl (directory)
+/SlashesInValues/DirAndFile_type/directory/= (=)
+/SlashesInValues/DirAndFile_type/directory/value (/some/directory/path03)
+/SlashesInValues/DirAndFile_type/inputfile
+/SlashesInValues/DirAndFile_type/inputfile/decl (inputfile)
+/SlashesInValues/DirAndFile_type/inputfile/= (=)
+/SlashesInValues/DirAndFile_type/inputfile/value (file03.i)
+/SlashesInValues/DirAndFile_type/parameter
+/SlashesInValues/DirAndFile_type/parameter/decl (parameter)
+/SlashesInValues/DirAndFile_type/parameter/= (=)
+/SlashesInValues/DirAndFile_type/parameter/value (/path/to/a/param03=3.3)
+/SlashesInValues/DirAndFile_type/term ([])
+/SlashesInValues/DirAndFile_type
+/SlashesInValues/DirAndFile_type/[ ([)
+/SlashesInValues/DirAndFile_type/decl (input04)
+/SlashesInValues/DirAndFile_type/] (])
+/SlashesInValues/DirAndFile_type/type
+/SlashesInValues/DirAndFile_type/type/decl (type)
+/SlashesInValues/DirAndFile_type/type/= (=)
+/SlashesInValues/DirAndFile_type/type/value (DirAndFile)
+/SlashesInValues/DirAndFile_type/directory
+/SlashesInValues/DirAndFile_type/directory/decl (directory)
+/SlashesInValues/DirAndFile_type/directory/= (=)
+/SlashesInValues/DirAndFile_type/directory/value (/some/directory/path04/)
+/SlashesInValues/DirAndFile_type/inputfile
+/SlashesInValues/DirAndFile_type/inputfile/decl (inputfile)
+/SlashesInValues/DirAndFile_type/inputfile/= (=)
+/SlashesInValues/DirAndFile_type/inputfile/value (file04.i)
+/SlashesInValues/DirAndFile_type/parameter
+/SlashesInValues/DirAndFile_type/parameter/decl (parameter)
+/SlashesInValues/DirAndFile_type/parameter/= (=)
+/SlashesInValues/DirAndFile_type/parameter/value (/path/to/a/param04/=444)
+/SlashesInValues/DirAndFile_type/term ([])
+/SlashesInValues/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
