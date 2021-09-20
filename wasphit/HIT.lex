@@ -83,7 +83,10 @@ AND &&
 OR \|\|
 LBRACKET \[
 OBJECT_NAME [^" ""."\n\[\]][^" "\n\[\]]*
-STRING (\$\{([^\"\n\t\r])*\})|([^" "\'\"\=\n\t\r\[\]\#\;]+)
+SUBSTITUTION_STRING \$\{([^\"\n\t\r])*\}
+CONVENTIONAL_STRING [^ \'\"\=\n\t\r\[\]\#\;]+
+AFTER_FSLASH_STRING [^ \'\n\t\r\[\]\#\;]+
+STRING {SUBSTITUTION_STRING}|{CONVENTIONAL_STRING}(\/{AFTER_FSLASH_STRING})?
 ARRAY_STRING (\$\{([^\"\n\t\r])*\})|([^ \'\n\t\r\#\;]+)
 RBRACKET \]
 SEMICOLON ;
