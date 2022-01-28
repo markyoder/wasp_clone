@@ -31,8 +31,17 @@ def run_external_app(document, application_json_parameters):
     # Generate input file from template and Dakota parameters using halite
     input_file_list = document['application']['input_file']['value']
     tmpl_file_list = document['application']['input_tmpl']['value']
-    for input_file, tmpl_file in zip(input_file_list, tmpl_file_list):
-        args = "{} {} {} > {}".format(template_engine, tmpl_file, application_json_parameters, input_file)
+    left_delimiter_list = document['application']['left_delimiter']['value']
+    right_delimiter_list = document['application']['right_delimiter']['value']
+    # Check size of list
+    input_file_list_size = len(input_file_list)
+    # Loop over each entry in drive file to generate file from templates
+    for i in range(0, input_file_list_size):
+        input_file = input_file_list[i]
+        tmpl_file = tmpl_file_list[i]
+        left_delimiter = left_delimiter_list[i]
+        right_delimiter = right_delimiter_list[i]
+        args = "{} {} {} --ldelim '{}' --rdelim '{}' > {}".format(template_engine, tmpl_file, application_json_parameters, left_delimiter, right_delimiter, input_file)
         process = subprocess.check_output(args,shell=True)
 
     # Assume return code of 0, AKA OK    
