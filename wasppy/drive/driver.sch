@@ -21,10 +21,32 @@ application{
         }
     }
     input_tmpl{
-        MinOccurs=1
+        MinOccurs=0
         MaxOccurs=1
         InputTmpl="input_tmpl"
         Description="specify input template name"
+        value{
+            MinOccurs=1
+            MaxOccurs=NoLimit
+            ValType=String
+        }
+    }
+    left_delimiter{
+        MinOccurs=1
+        MaxOccurs=1
+        InputTmpl="<"
+        Description="specify left delimiter to pass to HALITE executable"
+        value{
+            MinOccurs=1
+            MaxOccurs=NoLimit
+            ValType=String
+        }
+    }
+    right_delimiter{
+        MinOccurs=1
+        MaxOccurs=1
+        InputTmpl=">"
+        Description="specify right delimiter to pass to HALITE executable"
         value{
             MinOccurs=1
             MaxOccurs=NoLimit
