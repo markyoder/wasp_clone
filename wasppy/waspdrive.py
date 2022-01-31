@@ -31,17 +31,22 @@ def run_external_app(document, application_json_parameters):
     # Generate input file from template and Dakota parameters using halite
     input_file_list = document['application']['input_file']['value']
     tmpl_file_list = document['application']['input_tmpl']['value']
-    left_delimiter_list = document['application']['left_delimiter']['value']
-    right_delimiter_list = document['application']['right_delimiter']['value']
-    # Check size of list
     input_file_list_size = len(input_file_list)
+    if 'left_delimiter' in document['application']:
+        left_delimiter_list = document['application']['left_delimiter']['value']
+    else:
+        left_delimiter_list = ['<'] * input_file_list_size
+    if 'right_delimiter' in document['application']:
+        right_delimiter_list = document['application']['right_delimiter']['value']
+    else:
+        right_delimiter_list = ['>'] * input_file_list_size
     # Loop over each entry in drive file to generate file from templates
     for i in range(0, input_file_list_size):
         input_file = input_file_list[i]
         tmpl_file = tmpl_file_list[i]
         left_delimiter = left_delimiter_list[i]
         right_delimiter = right_delimiter_list[i]
-        args = "{} {} {} --ldelim '{}' --rdelim '{}' > {}".format(template_engine, tmpl_file, application_json_parameters, left_delimiter, right_delimiter, input_file)
+        args = "{} {} {} --ldelim \"{}\" --rdelim \"{}\" > {}".format(template_engine, tmpl_file, application_json_parameters, left_delimiter, right_delimiter, input_file)
         process = subprocess.check_output(args,shell=True)
 
     # Assume return code of 0, AKA OK    
