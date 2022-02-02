@@ -31,6 +31,30 @@ application{
             ValType=String
         }
     }
+    left_delimiter{
+        MinOccurs=0
+        MaxOccurs=1
+        InputTmpl="halite_delimiter"
+        Description="specify left delimiter to pass to HALITE executable"
+        InputDefault="'<'"
+        value{
+            MinOccurs=1
+            MaxOccurs=NoLimit
+            ValType=String
+        }
+    }
+    right_delimiter{
+        MinOccurs=0
+        MaxOccurs=1
+        InputTmpl="halite_delimiter"
+        InputDefault="'>'"
+        Description="specify right delimiter to pass to HALITE executable"
+        value{
+            MinOccurs=1
+            MaxOccurs=NoLimit
+            ValType=String
+        }
+    }
 }
 
 extract_from{
