@@ -24,4 +24,30 @@
     [./badflags]
     [./]
 
+    [settings]
+        [override]
+            color=orange
+        []
+    []
+    [settings]
+        [override]
+        []
+        orange_rgb=' 255 165 0 '
+    []
+    [settings]
+        [override]
+            color=yellow
+        []
+        yellow_rgb=' 255 165 0 '
+        yellow_rgb=' 250 170 0 '
+    []
+    [settings]
+        [override]
+            color=yellow
+            color=yellow
+            color=yellow
+        []
+        yellow_rgb=' 255 165 0 '
+    []
+
 []

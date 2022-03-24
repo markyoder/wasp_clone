@@ -21,4 +21,36 @@
     six=calculus
     six=' physics geometry '
 
+    [settings]
+        [override]
+            color=Orange
+        []
+        orange_rgb=' 255 165 0 '
+    []
+    [settings]
+        [override]
+            color=orange
+            color=ORANGE
+        []
+        orange_rgb=' 255 165 0 '
+        orange_rgb=' 250 175 0 '
+    []
+    [settings]
+        [override]
+            color=yellow
+        []
+        yellow_rgb=' 255 165 0 '
+    []
+    [settings]
+        [override]
+        []
+        yellow_rgb=' 255 165 0 '
+        yellow_rgb=' 250 170 0 '
+    []
+    [settings]
+        [override]
+            color=yellow
+        []
+    []
+
 []
