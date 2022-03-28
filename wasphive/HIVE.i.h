@@ -3090,8 +3090,10 @@ bool HIVE::validateChildCountEqual(SchemaAdapter&            schema_node,
         for (int j = 0; j < children.size(); j++)
         {
             DefaultSIRENInterpreter childSelector(look_up_error);
-
-            if (!childSelector.parseString(children[j].to_string()))
+            std::string lookupPath = children[j].child_count() == 0 ?
+                                     children[j].to_string() :
+                                     children[j].name();
+            if (!childSelector.parseString(lookupPath))
             {
                 errors.push_back(Error::SirenParseError(children[j],
                                                         look_up_error.str()));
@@ -3101,7 +3103,27 @@ bool HIVE::validateChildCountEqual(SchemaAdapter&            schema_node,
             InputAdapter                 inode = selection.adapted(i);
             childSelector.evaluate(inode, childSelection);
 
-            int localSumCount = childSelection.size();
+            int localSumCount = 0;
+            if (children[j].child_count() != 0)
+            {
+                std::string chj = children[j].to_string();
+                transform(chj.begin(), chj.end(), chj.begin(), ::tolower);
+
+                for (size_t k = 0; k < childSelection.size(); k++)
+                {
+                    std::string sel = childSelection.adapted(k).to_string();
+                    transform(sel.begin(), sel.end(), sel.begin(), ::tolower);
+
+                    if (sel == chj)
+                    {
+                        localSumCount++;
+                    }
+                }
+            }
+            else
+            {
+                localSumCount = childSelection.size();
+            }
 
             if (!foundError && gotTally && (localSumCount != tallyChildCount) &&
                 ((ruleId == "EvenNone") ||
@@ -3113,8 +3135,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter&            schema_node,
 
                 for (int js = 0; js < choices.size(); js++)
                 {
-                    // childNames += choices[js].data();
-                    childNames += choices[js].to_string();
+                    childNames += choices[js].data();
 
                     if (js + 1 != choices.size())
                         childNames += " ";

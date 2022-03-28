@@ -2207,7 +2207,7 @@ HIVE validation messages that occur when validating the failing input shown abov
 
 ### ChildAtMostOne Details and Examples
 
-The ***Child At Most One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be more than one of these rules for any given element in the schema. Of the given list of elements, *at most one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to that provided in the schema in order for that element to count toward existence.
+The ***Child At Most One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be more than one of these rules for any given element in the schema. Of the given list of elements, *at most one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to that provided in the schema in order for that element to count toward existence. This comparison is case insensitive.
 
 Schema example:
 ```javascript
@@ -2323,7 +2323,7 @@ HIVE validation messages that occur when validating the failing input shown abov
 
 ### ChildExactlyOne Details and Examples
 
-The ***Child Exactly One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be more than one of these rules for any given element in the schema. Of the given list of elements, *exactly one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to that provided in the schema in order for that element to count toward existence.
+The ***Child Exactly One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be more than one of these rules for any given element in the schema. Of the given list of elements, *exactly one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to that provided in the schema in order for that element to count toward existence. This comparison is case insensitive.
 
 Schema example:
 ```javascript
@@ -2428,7 +2428,7 @@ HIVE validation messages that occur when validating the failing input shown abov
 
 ### ChildAtLeastOne Details and Examples
 
-The ***Child At Least One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be more than one of these rules for any given element in the schema. Of the given list of elements, *at least one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to that provided in the schema in order for that element to count toward existence.
+The ***Child At Least One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be more than one of these rules for any given element in the schema. Of the given list of elements, *at least one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to that provided in the schema in order for that element to count toward existence. This comparison is case insensitive.
 
 Schema example:
 ```javascript
@@ -2520,19 +2520,19 @@ HIVE validation messages that occur when validating the failing input shown abov
 
 ### ChildCountEqual Details and Examples
 
-The ***Child Count Equal*** rule is usually used to ensure that arrays in the input have an equal number of value members. There may be more than one of these rules on any given element. This rule contains multiple relative input look paths and a required modifier flag that occurs as a parenthetical identifier. This modifier flag can be either `IfExists` or `EvenNone`. If the modifier flag is `IfExists`, then the pieces of input in the relative lookup paths must be equal only if they actually exist. However, If the modifier flag is `EvenNone`, then this stricter rule denotes that the relative input lookup path nodes in the input must be equal regardless of whether they exist or not.
+The ***Child Count Equal*** rule is usually used to ensure that arrays in the input have an equal number of value members. Each of these lookup paths can optionally have an assigned lookup value. There may be more than one of these rules for any given element in the schema. This rule contains multiple relative input look paths and a required modifier flag that occurs as a parenthetical identifier. This modifier flag can be either `IfExists` or `EvenNone`. If the modifier flag is `IfExists`, then the pieces of input in the relative lookup paths must be equal only if they actually exist. However, If the modifier flag is `EvenNone`, then this stricter rule denotes that the relative input lookup path nodes in the input must be equal regardless of whether they exist or not. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to that provided in the schema in order for that element to count toward existence. This comparison is case insensitive.
 
 Schema example:
 ```javascript
     test{
     
-        ChildCountEqual(IfExists) = [ one/value   two/value  three/value ]
-        ChildCountEqual(EvenNone) = [ four/value  five/value six/value   ]
-    
+        ChildCountEqual(IfExists) = [ "one/value"   'two/value'  "three/value" ]
+        ChildCountEqual(EvenNone) = [ "four/value"  'five/value' "six/value"   ]
+
         badflags{
             inside{
-                ChildCountEqual           = [ three/value six/value ]
-                ChildCountEqual(BadFlag)  = [ one/value   four/value ]
+                ChildCountEqual           = [ "three/value" "six/value"  ]
+                ChildCountEqual(BadFlag)  = [ "one/value"   "four/value" ]
             }
         }
     
@@ -2561,6 +2561,23 @@ Schema example:
             }
         }
     
+        settings{
+            override{
+                ChildCountEqual(EvenNone) = [ color=orange               '../orange_rgb' ]
+                ChildCountEqual(IfExists) = [ '../override/color'=yellow "../yellow_rgb" ]
+                color{
+                }
+            }
+            orange_rgb{
+                value{
+                }
+            }
+            yellow_rgb{
+                value{
+                }
+            }
+        }
+
     }
 ```
 
@@ -2588,6 +2605,38 @@ Input example that **PASSES** validation on schema above:
         six=calculus
         six=[ physics geometry ]
     
+        settings{
+            override{
+                color=Orange
+            }
+            orange_rgb=[ 255 165 0 ]
+        }
+        settings{
+            override{
+                color=orange
+                color=ORANGE
+            }
+            orange_rgb=[ 255 165 0 ]
+            orange_rgb=[ 250 175 0 ]
+        }
+        settings{
+            override{
+                color=yellow
+            }
+            yellow_rgb=[ 255 165 0 ]
+        }
+        settings{
+            override{
+            }
+            yellow_rgb=[ 255 165 0 ]
+            yellow_rgb=[ 250 170 0 ]
+        }
+        settings{
+            override{
+                color=yellow
+            }
+        }
+
     }
 ```
 
@@ -2619,6 +2668,32 @@ Input example that **FAILS** validation on schema above:
         badflags{
         }
     
+        settings{
+            override{
+                color=orange
+            }
+        }
+        settings{
+            override{
+            }
+            orange_rgb=[ 255 165 0 ]
+        }
+        settings{
+            override{
+                color=yellow
+            }
+            yellow_rgb=[ 255 165 0 ]
+            yellow_rgb=[ 250 170 0 ]
+        }
+        settings{
+            override{
+                color=yellow
+                color=yellow
+                color=yellow
+            }
+            yellow_rgb=[ 255 165 0 ]
+        }
+
     }
 ```
 
@@ -2628,9 +2703,17 @@ HIVE validation messages that occur when validating the failing input shown abov
 
     Validation Error: Invalid Schema Rule: Bad ChildCountEqual Option "BadFlag" at line:9 column:43 - Expected [ IfExists EvenNone ]
 
-    line:1 column:1 - Validation Error: test does not have an equal number of existing: [ one/value two/value three/value ]
+    line:1 column:1 - Validation Error: test does not have an equal number of existing: [ "one/value" 'two/value' "three/value" ]
 
-    line:1 column:1 - Validation Error: test does not have an equal number of: [ four/value five/value six/value ]
+    line:1 column:1 - Validation Error: test does not have an equal number of: [ "four/value" 'five/value' "six/value" ]
+
+    line:27 column:9 - Validation Error: override does not have an equal number of: [ color=orange '../orange_rgb' ]
+
+    line:32 column:9 - Validation Error: override does not have an equal number of: [ color=orange '../orange_rgb' ]
+
+    line:37 column:9 - Validation Error: override does not have an equal number of existing: [ '../override/color'=yellow "../yellow_rgb" ]
+
+    line:44 column:9 - Validation Error: override does not have an equal number of existing: [ '../override/color'=yellow "../yellow_rgb" ]
 ```
 
 
