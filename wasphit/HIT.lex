@@ -85,7 +85,7 @@ TOP_OBJECT_TERM \[" "*\]
 SUB_OBJECT_TERM \[" "*\.?\.\/" "*\]
 OBJECT_TERM {TOP_OBJECT_TERM}|{SUB_OBJECT_TERM}
 DOT_SLASH \.\/
-INCLUDE_PATH [^ \t\n][^\n#]*
+INCLUDE_PATH [^ \t\n][^\n#\[]*
 
 
  /* The following paragraph suffices to track locations accurately. Each time
