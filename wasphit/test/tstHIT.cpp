@@ -1808,3 +1808,49 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
     document.paths(actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
+
+/**
+ * @brief standalone file include not found error
+ */
+TEST(HITInterpreter, only_include_not_found)
+{   
+    std::stringstream input;
+    input << R"I(include block_missing.i)I" << std::endl;
+    std::stringstream errors;
+    DefaultHITInterpreter interpreter(errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expected_errors;
+    expected_errors << "stream input line:1 column:1 : could not find 'block_missing.i'" << std::endl;
+    
+    ASSERT_EQ(expected_errors.str(), errors.str());
+}
+
+/**
+ * @brief standalone file include
+ */
+TEST(HITInterpreter, only_include)
+{
+    { // Scope for file buffer to be flushed before reading
+    std::ofstream block_file("block.i");
+    block_file << "[block] " <<std::endl
+               << "  key = 3"<<std::endl
+               << "[]"<<std::endl;
+    block_file.close();
+    }
+    
+    std::stringstream input;
+    input << R"I(include block.i)I" << std::endl;
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::string expected_paths = R"INPUT(/
+/incl
+/incl/decl (include)
+/incl/path (block.i)
+)INPUT";    
+
+    std::stringstream actual_paths;
+    interpreter.root().paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
