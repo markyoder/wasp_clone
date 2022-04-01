@@ -16,6 +16,10 @@ Interpreter<NodeStorage>::Interpreter(std::ostream& err)
 template<class NodeStorage>
 Interpreter<NodeStorage>::~Interpreter()
 {
+    for (auto itr = m_node_interp.begin(); itr != m_node_interp.end(); ++itr)
+    {
+        delete itr->second;
+    }
 }
 template<class NodeStorage>
 NodeView Interpreter<NodeStorage>::root() const
@@ -296,8 +300,58 @@ template<class NodeStorage>
 bool Interpreter<NodeStorage>::load_document(size_t node_index,
                                              const std::string & path)
 {
-    wasp_not_implemented("Generic Interpreter load document");
-    return false;
+    bool passed = true;
+    add_document_path(node_index, path);
+
+    std::stringstream err_msgs;
+
+    std::string directory_name = wasp::dir_name(stream_name());
+    if (directory_name == stream_name()) directory_name=".";
+    auto document_relative_path  = directory_name + "/" + path;
+    // if immediately adjacent path doesn't exist
+    // check the search paths
+    if (!wasp::file_exists(document_relative_path))
+    {
+        for (const auto& dir : search_paths())
+        {
+            document_relative_path = dir + "/" + path;
+            if (wasp::file_exists(document_relative_path)) break;
+        }
+    }
+    
+    if (wasp::file_exists(document_relative_path))
+    {
+        auto * interp = create_nested_interpreter(this);
+        wasp_check(interp);
+        if ( !interp->parseFile(document_relative_path) )
+        {
+            passed &= false;
+            delete interp;
+        }
+        else
+        {
+            wasp_check(m_node_interp.find(node_index)
+                       == m_node_interp.end());
+            wasp_check(m_interp_node.find(interp)
+                       == m_interp_node.end());
+            m_node_interp[node_index] = interp;
+            m_interp_node[interp] = node_index;
+        }
+    }
+    else
+    {
+        error_stream()<<stream_name()
+                                      <<" line:"
+                                      <<line(node_index)
+                                      <<" column:"
+                                      <<column(node_index)
+                                      <<" : could not find '"
+                                      <<path<<"'"
+                                      <<std::endl;
+        passed &= false;
+    }
+
+    return passed;
 }
 
 template<class NodeStorage>

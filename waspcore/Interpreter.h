@@ -256,6 +256,7 @@ class WASP_PUBLIC AbstractInterpreter
 {
   public:
     typedef std::shared_ptr<AbstractInterpreter> SP;
+    virtual ~AbstractInterpreter(){}
     /**
      * @brief root acquire the root of the document
      * @return TreeNodeView view into the document parse tree
@@ -509,6 +510,13 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
     virtual ~Interpreter();
 
     /**
+     * @brief Create a nested interpreter object as needed for included files
+     * 
+     * @return Interpreter* (unmanaged)
+     */
+    virtual Interpreter* create_nested_interpreter(Interpreter* parent)
+        {wasp_not_implemented("Generic Interpreter nested interpreter creation");}
+    /**
      * @brief add_document_path associates the given node with the subdocument path
      * @param node_index the index/id of the input node including/importing the subdocument
      * @param path the relative or absolute path to the subdocument
@@ -571,6 +579,10 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
     virtual bool parse(std::istream& input,
                        size_t        m_start_line   = 1u,
                        size_t        m_start_column = 1u) = 0;
+
+    virtual bool parseFile(const std::string& filename, size_t line = 1) 
+        {wasp_not_implemented("Generic Interpreter parseFile");}
+
     /**
      * @brief token_count acquires the number of tokens so far interpreted
      * @return the number of tokens

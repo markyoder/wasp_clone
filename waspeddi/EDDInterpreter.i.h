@@ -37,7 +37,22 @@ template<class S>
 EDDInterpreter<S>::~EDDInterpreter()
 {
     m_current = nullptr;
-    // TODO delete node interpreters
+}
+
+template<class S>
+EDDInterpreter<S>* EDDInterpreter<S>::create_nested_interpreter(Super* parent)
+{
+    wasp_require(parent);
+    auto* interp = new EDDInterpreter<S>(parent->error_stream());
+    wasp_insist(dynamic_cast<EDDInterpreter<S>*>(parent) != nullptr, 
+        "parent interpreter must be the same type");
+    interp->m_parent = dynamic_cast<EDDInterpreter<S>*>(parent);
+    // Propogate the document definition
+    interp->set_definition_store(this->definition_store());
+    // Ensure the current definition scope is incorporated into nested interpreter
+    interp->m_current = m_current;
+    wasp_check (interp->m_current);
+    return interp;
 }
 template<class S>
 bool EDDInterpreter<S>::parse(std::istream& in,
@@ -158,66 +173,6 @@ size_t EDDInterpreter<S>::commit_staged(size_t stage_index)
     if ( m_current->parent() ) m_current = m_current->parent();  // pops current definition
     return node_index;
 }
-
-template<class S>
-bool EDDInterpreter<S>::load_document(size_t node_index, const std::string& path)
-{
-    bool passed = true;
-    Interpreter<S>::add_document_path(node_index, path);
-
-    std::stringstream err_msgs;
-
-    std::string directory_name = wasp::dir_name(Interpreter<S>::stream_name());
-    if (directory_name == Interpreter<S>::stream_name()) directory_name=".";
-    auto document_relative_path  = directory_name + "/" + path;
-    // if immediately adjacent path doesn't exist
-    // check the search paths
-    if (!wasp::file_exists(document_relative_path))
-    {
-        for (const auto& dir : Super::search_paths())
-        {
-            document_relative_path = dir + "/" + path;
-            if (wasp::file_exists(document_relative_path)) break;
-        }
-    }
-    
-    if (wasp::file_exists(document_relative_path))
-    {
-        auto * interp = new EDDInterpreter<S>(err_msgs);
-        interp->m_parent = this;
-        interp->set_definition_store(this->definition_store());
-        interp->m_current = m_current;
-        wasp_check (interp->m_current);
-        if ( !interp->parseFile(document_relative_path) )
-        {
-            Interpreter<S>::error_stream()<<err_msgs.str()<<std::endl;
-            passed &= false;
-        }
-        else
-        {
-            wasp_check(Interpreter<S>::m_node_interp.find(node_index)
-                       == Interpreter<S>::m_node_interp.end());
-            wasp_check(Interpreter<S>::m_interp_node.find(interp)
-                       == Interpreter<S>::m_interp_node.end());
-            Interpreter<S>::m_node_interp[node_index] = interp;
-            Interpreter<S>::m_interp_node[interp] = node_index;
-        }
-    }
-    else
-    {
-        Interpreter<S>::error_stream()<<Interpreter<S>::stream_name()
-                                      <<" line:"
-                                      <<Interpreter<S>::line(node_index)
-                                      <<" column:"
-                                      <<Interpreter<S>::column(node_index)
-                                      <<" : could not find '"
-                                      <<path<<"'"
-                                      <<std::endl;
-        passed &= false;
-    }
-
-    return passed;
-} // end of load_document
 
 //---------------------------------------------------------------------------//
 template<class S>
