@@ -939,7 +939,7 @@ class WASP_PUBLIC HIVE
                    std::to_string(maxErrors) + " ERRORS FOUND";
         }
 
-        static std::string Occurance(int                line,
+        static std::string Occurrence(int               line,
                                      int                col,
                                      const std::string& nodeName,
                                      int                realOccurs,

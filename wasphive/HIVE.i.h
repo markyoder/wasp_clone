@@ -342,7 +342,7 @@ bool HIVE::validateMinOccurs(SchemaAdapter&            schema_node,
                 else if (childNodeCount <
                          stoi(selectionLookup.adapted(0).to_string()))
                 {
-                    errors.push_back(Error::Occurance(
+                    errors.push_back(Error::Occurrence(
                         selection.adapted(i).line(),
                         selection.adapted(i).column(),
                         selection.adapted(i).name(), childNodeCount, nodeName,
@@ -355,7 +355,7 @@ bool HIVE::validateMinOccurs(SchemaAdapter&            schema_node,
 
         else if (childNodeCount < stoi(ruleValue))
         {
-            errors.push_back(Error::Occurance(
+            errors.push_back(Error::Occurrence(
                 selection.adapted(i).line(), selection.adapted(i).column(),
                 selection.adapted(i).name(), childNodeCount, nodeName, ruleName,
                 ruleValue));
@@ -449,7 +449,7 @@ bool HIVE::validateMaxOccurs(SchemaAdapter&            schema_node,
                 else if (childNodeCount >
                          stoi(selectionLookup.adapted(0).to_string()))
                 {
-                    errors.push_back(Error::Occurance(
+                    errors.push_back(Error::Occurrence(
                         selection.adapted(i).line(),
                         selection.adapted(i).column(),
                         selection.adapted(i).name(), childNodeCount, nodeName,
@@ -462,7 +462,7 @@ bool HIVE::validateMaxOccurs(SchemaAdapter&            schema_node,
 
         else if (childNodeCount > stoi(ruleValue))
         {
-            errors.push_back(Error::Occurance(
+            errors.push_back(Error::Occurrence(
                 selection.adapted(i).line(), selection.adapted(i).column(),
                 selection.adapted(i).name(), childNodeCount, nodeName, ruleName,
                 ruleValue));
