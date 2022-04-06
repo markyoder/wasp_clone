@@ -46,7 +46,7 @@ def run_external_app(document, application_json_parameters):
         tmpl_file = tmpl_file_list[i]
         left_delimiter = left_delimiter_list[i]
         right_delimiter = right_delimiter_list[i]
-        args = "{} {} {} --ldelim \"{}\" --rdelim \"{}\" > {}".format(template_engine, tmpl_file, application_json_parameters, left_delimiter, right_delimiter, input_file)
+        args = "{} {} {} --ldelim '{}' --rdelim '{}' > {}".format(template_engine, tmpl_file, application_json_parameters, left_delimiter, right_delimiter, input_file)
         process = subprocess.check_output(args,shell=True)
 
     # Assume return code of 0, AKA OK    

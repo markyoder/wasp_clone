@@ -34,7 +34,7 @@ application{
     left_delimiter{
         MinOccurs=0
         MaxOccurs=1
-        InputTmpl="halite_delimiter"
+        InputTmpl="left_delimiter"
         Description="specify left delimiter to pass to HALITE executable"
         InputDefault="'<'"
         value{
@@ -46,7 +46,7 @@ application{
     right_delimiter{
         MinOccurs=0
         MaxOccurs=1
-        InputTmpl="halite_delimiter"
+        InputTmpl="right_delimiter"
         InputDefault="'>'"
         Description="specify right delimiter to pass to HALITE executable"
         value{
