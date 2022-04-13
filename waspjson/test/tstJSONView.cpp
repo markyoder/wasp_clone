@@ -50,6 +50,16 @@ TEST(JSON, keyed_value)
     document.paths(paths);
     ASSERT_EQ(expected_paths, paths.str());
 
+    // Test iterator
+    {
+    size_t index = 0;
+    for(auto itr = document.begin(); itr != document.end(); itr.next(), ++index)
+    {
+        SCOPED_TRACE(index);
+        ASSERT_TRUE(index < document.child_count());
+        ASSERT_EQ(document.child_at(index), itr.get());
+    }
+    }
     auto children = document.non_decorative_children();
     // string, integer, real
     ASSERT_EQ(3, children.size());
