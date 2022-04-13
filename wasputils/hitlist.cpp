@@ -6,6 +6,7 @@
 #include "waspcore/version.h"
 #include "waspcore/wasp_bug.h"
 #include "wasphit/HITInterpreter.h"
+#include "wasphit/HITNodeView.h"
 using namespace wasp;
 
 int main(int argc, char* argv[])
@@ -42,6 +43,8 @@ int main(int argc, char* argv[])
         }
         std::stringstream        errors;
         DefaultHITInterpreter interpreter(errors);
+        interpreter.stream_name() = argv[j];
+        interpreter.search_paths().push_back(wasp::dir_name(argv[j]));
         wasp_timer(parse_time);
         wasp_timer_start(parse_time);
         bool parsed = interpreter.parse(input);
@@ -51,7 +54,7 @@ int main(int argc, char* argv[])
                          << " nanoseconds with " << parse_time.intervals()
                          << " invervals" << std::endl);
         std::cout << "Listing for '" << argv[j] << "'" << std::endl;
-        interpreter.root().paths(std::cout);
+        HITNodeView(interpreter.root()).paths(std::cout);
         if (!parsed)
         {
             std::cout << errors.str() << std::endl;

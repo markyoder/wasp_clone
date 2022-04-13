@@ -6,6 +6,7 @@
 #include <ostream>
 #include <iostream>
 #include "waspcore/Interpreter.h"
+#include "waspcore/Iterator.h"
 #include "waspcore/decl.h"
 namespace wasp
 {
@@ -25,6 +26,9 @@ class WASP_PUBLIC JSONNodeView
     JSONNodeView(const JSONNodeView& orig);
 
     ~JSONNodeView();
+
+    Iterator<JSONNodeView> begin() const{return Iterator<JSONNodeView>(*this);}
+    Iterator<JSONNodeView> end() const{return Iterator<JSONNodeView>();}
 
     JSONNodeView& operator=(const JSONNodeView& b);
     template<class NV>
@@ -222,7 +226,7 @@ class WASP_PUBLIC JSONNodeView
 
     /**
      * @brief node_pool acquire the pointer to the backend storage
-     * @return the TreeNodePool that backs this view
+     * @return the document interpreter that backs this view
      */
     const AbstractInterpreter* node_pool() const { return m_pool; }
 

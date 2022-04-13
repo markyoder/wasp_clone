@@ -15,6 +15,7 @@ Format.h
 FlexLexer.h
 Interpreter.h
 Interpreter.i.h
+Iterator.h
 location.hh
 Object.h
 StringPool.h

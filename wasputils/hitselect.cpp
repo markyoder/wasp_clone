@@ -48,6 +48,8 @@ int main(int argc, char* argv[])
     }
     std::stringstream        errors;
     DefaultHITInterpreter interpreter(errors);
+    interpreter.stream_name() = argv[1];
+        interpreter.search_paths().push_back(wasp::dir_name(argv[1]));
     wasp_timer(parse_time);
     wasp_timer_start(parse_time);
     bool parsed = interpreter.parse(input);

@@ -6,6 +6,7 @@
 #include <ostream>
 #include <iostream>
 #include "waspcore/Interpreter.h"
+#include "waspcore/Iterator.h"
 #include "waspcore/decl.h"
 namespace wasp
 {
@@ -26,6 +27,9 @@ class WASP_PUBLIC HITNodeView
     HITNodeView(const HITNodeView& orig);
 
     ~HITNodeView();
+
+    Iterator<HITNodeView, FilePush> begin() const{return Iterator<HITNodeView, FilePush>(*this);}
+    Iterator<HITNodeView, FilePush> end() const{return Iterator<HITNodeView, FilePush>();}
 
     HITNodeView& operator=(const HITNodeView& b);
     template<class NV>
@@ -213,7 +217,7 @@ class WASP_PUBLIC HITNodeView
 
     /**
      * @brief node_pool acquire the pointer to the backend storage
-     * @return the TreeNodePool that backs this view
+     * @return the document interpreter that backs this view
      */
     const AbstractInterpreter* node_pool() const { return m_pool; }
 

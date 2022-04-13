@@ -31,7 +31,7 @@ char root    = 10;
  *    |_ 'end'
  */
 
-TEST(NodeView, child_by_name)
+TEST(NodeView, child)
 {
     //'array (foo) 234 1.2343 end\n' // data
     // 0     67  1011  15     22     // offsets
@@ -143,6 +143,24 @@ TEST(NodeView, child_by_name)
         }
     }
     NodeView root_view(interp.size() - 1, interp);
+    
+    {// Test child at and iterator (using DefaultPush, equivalent to child_at(index))
+        auto itr = root_view.begin();
+        // Root has children so iterator should be valid
+        EXPECT_TRUE(itr);
+        size_t child_index = 0;
+        while(itr)
+        {   
+            SCOPED_TRACE(child_index);
+            // Same node
+            ASSERT_EQ(root_view.child_at(child_index), itr.get());
+            itr.next(); child_index++;
+            bool is_valid = (child_index < root_view.child_count());
+            // if the stack is empty the child count has been exhausted
+            ASSERT_EQ(itr.data().empty(), !is_valid);
+            ASSERT_EQ(itr, is_valid);
+        }
+    }
     std::cout << root_view.data() << std::endl;
     std::stringstream xml;
     wasp::to_xml(root_view, xml);

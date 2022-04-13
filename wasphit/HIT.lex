@@ -48,14 +48,6 @@ INTEGER [0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INTEGER}
 REAL {INTEGER}?\.{INTEGER}{EXPONENT}?|{INTEGER}\.({INTEGER}{EXPONENT}?)?|{INTEGER}\.?[eE]\-{INTEGER}
 
-
-
-
- /* This string does not allow special characters '-','/'
- *  and should only occur in the context of reference
- */
-LESSER_STRING [A-Za-z_][A-Za-z0-9_]*
-
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
 SINGLE_QUOTE '
 UNICODE [^\x00-\x7F]+
@@ -169,13 +161,13 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
 }
-include {
+!include {
     yy_push_state(file_include);
     capture_token(yylval,wasp::FILE);
     return token::FILE;
 }
 <file_include>{INCLUDE_PATH} {
-    // file includes grab everyting starting after 'include' to
+    // file includes grab everyting starting after '!include' to
     // either a newline '\n' or a comment '#'
     yy_pop_state();
     capture_token(yylval,wasp::STRING);

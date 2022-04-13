@@ -402,6 +402,15 @@ blergity_blerg 2
     std::stringstream paths;
     eddi.root().paths(paths);
     ASSERT_EQ(expected.str(), paths.str());
+
+    // Test iterating regular (non-import) nodes
+    EDDINodeView document = eddi.root();
+    size_t index = 0;
+    for(auto itr = document.begin(); itr != document.end(); itr.next(), ++index)
+    {
+        SCOPED_TRACE(index);
+        ASSERT_EQ(document.child_at(index), itr.get());
+    }
 }
 
 
@@ -519,6 +528,25 @@ TEST(EDDInterpreter, includes)
     eddi.definition()->create("default");
 
     ASSERT_TRUE(eddi.parseStream(input, "./"));
+
+    // Test iterating nodes ()
+    {
+        EDDINodeView document = eddi.root();
+        std::vector<std::string> expected_name = {"block1", "block1", "default"};
+        // 'block1.txt' line 1, './' line 2, 'default.txt' line 1
+        std::vector<size_t> expected_line = {1, 2, 1};
+        size_t index = 0;
+        for(auto itr = document.begin(); itr != document.end(); itr.next(), ++index)
+        {
+            SCOPED_TRACE(index);
+            std::cout << itr.get().node_pool()->stream_name()<< std::endl;
+            EXPECT_EQ(expected_name[index], itr.get().name());
+            EXPECT_EQ(expected_line[index], itr.get().line());
+            ASSERT_TRUE(index < document.child_count());
+            std::cout << index << " :  " << itr.get().name() << std::endl;
+        }
+    }
+
     ASSERT_EQ(4, eddi.document_count());
     std::stringstream paths;
     eddi.root().paths(paths);

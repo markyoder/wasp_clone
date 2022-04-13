@@ -85,6 +85,8 @@ int main(int argc, char** argv)
 
     // parse input
     DefaultHITInterpreter input_interp(errors);
+    input_interp.stream_name() = argv[2];
+    input_interp.search_paths().push_back(wasp::dir_name(argv[2]));
     bool      parsed_input = input_interp.parse(input);
     if (!parsed_input)
     {

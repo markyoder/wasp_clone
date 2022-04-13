@@ -214,6 +214,27 @@ class WASP_PUBLIC HIVE
     bool validateChildUniqueness(SchemaAdapter&            schema_node,
                                  InputAdapter&             input_node,
                                  std::vector<std::string>& errors);
+
+    /**
+     * @brief Obtain the scope of the given node
+     * The scope is either an empty string for the current document
+     * or the name of the file as it was actually included from a parent 
+     * document and therefore needs to be differentiated by the file name/scope
+     * @tparam NodeAdapter 
+     * @param node 
+     * @return std::string 
+     */
+    template <class NodeAdapter>
+    static std::string FileScope(NodeAdapter& node)
+    {
+        auto node_pool = node.node_pool();
+
+        if (node_pool != nullptr && node_pool->document_parent() != nullptr)
+        {
+            return node_pool->stream_name() + " - ";
+        }
+        return "";
+    }
     std::string getFullRuleName(const std::string& shortName)
     {
         static std::map<std::string, std::string> fullNames = {

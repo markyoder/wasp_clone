@@ -80,6 +80,8 @@ int main(int argc, char* argv[])
             return 2;
         }
         DefaultHITInterpreter input_interp(errors);
+        input_interp.stream_name() = argv[j];
+        input_interp.search_paths().push_back(wasp::dir_name(argv[j]));
         wasp_timer(parse_input_time);
         wasp_timer_start(parse_input_time);
         bool parsed_input = input_interp.parse(input);

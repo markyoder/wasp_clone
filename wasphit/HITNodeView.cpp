@@ -220,17 +220,21 @@ std::size_t  // return type
 
 HITNodeView HITNodeView::child_at(std::size_t index) const
 {
+
     if( type() == wasp::FILE )
-    {
+    {   
+        std::cout << "Dealing with an included file ... at index " << m_node_index << std::endl;
         auto * interp = m_pool->document(m_node_index);
         if ( interp != nullptr )
         {
+            std::cout << "Looking for child at index " << index << std::endl;
             HITNodeView view = HITNodeView(interp->root());
             wasp_check(view.is_null() == false);
             wasp_check(view.child_count() > index);
             return view.child_at(index);
         }
     }
+    
     auto child_node_pool_index = m_pool->child_at(m_node_index, index);
     return HITNodeView(child_node_pool_index, *m_pool);
 }
@@ -243,6 +247,9 @@ HITNodeView::Collection  // return type
     {
         auto        child      = child_at(i);
         std::string child_name = child.name();
+        std::cout << "Comparing " << child_name << " against " << name
+        <<" where child has file type ? " << std::boolalpha << 
+         (child.type() == wasp::FILE) << std::endl;
         if( child.type() == wasp::FILE )
         {
             auto * interp = m_pool->document(child.node_index());

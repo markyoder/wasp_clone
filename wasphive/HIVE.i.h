@@ -18,7 +18,7 @@ bool HIVE::select_nodes(SIRENResultSet<InputAdapter>& results,
 
     if (!inputSelector.parseString(selection_path))
     {
-        errors.push_back(Error::SirenParseError(schema_node,
+        errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,
                                                 look_up_error.str()));
         return false;
     }
@@ -72,7 +72,7 @@ bool HIVE::traverse_schema(SchemaAdapter&            schema_node,
         for( size_t i_input = 0; i_input < selection.size(); ++i_input)
         {
             const auto& input_node_instance = selection.adapted(i_input);
-            errors.push_back(Error::UnknownInputNode(input_node_instance));
+            errors.push_back(FileScope(input_node_instance) + Error::UnknownInputNode(input_node_instance));
         }
         pass &= false;
     }
@@ -211,7 +211,7 @@ bool HIVE::traverse_schema(SchemaAdapter&            schema_node,
                recognize */
             if (tmpNode.type() != wasp::OBJECT)
             {
-                errors.push_back(Error::BadSchemaRule(
+                errors.push_back(FileScope(tmpNode) + Error::BadSchemaRule(
                     tmpNodeName, tmpNode.line(), tmpNode.column()));
                 return false;
             }
@@ -254,7 +254,7 @@ bool HIVE::traverse_schema(SchemaAdapter&            schema_node,
                     if (definitionChildren.find(inputChild.name()) ==
                         definitionChildren.end())
                     {
-                        errors.push_back(Error::NotExistInSchema(
+                        errors.push_back(FileScope(inputChild) + Error::NotExistInSchema(
                             inputChild.line(), inputChild.column(),
                             inputChild.path()));
                         pass = false;
@@ -311,7 +311,7 @@ bool HIVE::validateMinOccurs(SchemaAdapter&            schema_node,
 
             if (!inputSelectorlookup.parseString(ruleValue.substr(3)))
             {
-                errors.push_back(Error::SirenParseError(schema_node, look_up_error.str()));
+                errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node, look_up_error.str()));
                 return false;
             }
             SIRENResultSet<InputAdapter> selectionLookup;
@@ -320,7 +320,7 @@ bool HIVE::validateMinOccurs(SchemaAdapter&            schema_node,
 
             if (selectionLookup.size() > 1)
             {
-                errors.push_back(
+                errors.push_back(FileScope(inode) + 
                     Error::MoreThanOneValue(inode.line(), inode.column(),
                                             nodeName, ruleName, ruleValue));
                 pass = false;
@@ -330,22 +330,23 @@ bool HIVE::validateMinOccurs(SchemaAdapter&            schema_node,
                 std::istringstream issRV2(
                     selectionLookup.adapted(0).to_string());
                 issRV2 >> std::noskipws >> itestRV;
-
+                auto aNode = selection.adapted(i);
                 if (!issRV2.eof() || issRV2.fail())
                 {
-                    errors.push_back(
-                        Error::NotAValidNumber(selection.adapted(i).line(),
-                                               selection.adapted(i).column(),
+                    errors.push_back(FileScope(aNode) + 
+                        Error::NotAValidNumber(aNode.line(),
+                                               aNode.column(),
                                                nodeName, ruleName, ruleValue));
                     pass = false;
                 }
                 else if (childNodeCount <
                          stoi(selectionLookup.adapted(0).to_string()))
                 {
-                    errors.push_back(Error::Occurrence(
-                        selection.adapted(i).line(),
-                        selection.adapted(i).column(),
-                        selection.adapted(i).name(), childNodeCount, nodeName,
+
+                    errors.push_back(FileScope(aNode) + Error::Occurrence(
+                        aNode.line(),
+                        aNode.column(),
+                        aNode.name(), childNodeCount, nodeName,
                         ruleName, selectionLookup.adapted(0).to_string(),
                         ruleValue));
                     pass = false;
@@ -355,9 +356,10 @@ bool HIVE::validateMinOccurs(SchemaAdapter&            schema_node,
 
         else if (childNodeCount < stoi(ruleValue))
         {
-            errors.push_back(Error::Occurrence(
-                selection.adapted(i).line(), selection.adapted(i).column(),
-                selection.adapted(i).name(), childNodeCount, nodeName, ruleName,
+            auto aNode = selection.adapted(i);
+            errors.push_back(FileScope(aNode) + Error::Occurrence(
+                aNode.line(), aNode.column(),
+                aNode.name(), childNodeCount, nodeName, ruleName,
                 ruleValue));
             pass = false;
         }
@@ -387,7 +389,8 @@ bool HIVE::validateMaxOccurs(SchemaAdapter&            schema_node,
 
     if (!inputSelector.parseString(nodeParentPath))
     {
-        errors.push_back(Error::SirenParseError(schema_node_grandparent,look_up_error.str()));
+        errors.push_back(FileScope(schema_node_grandparent) + 
+                        Error::SirenParseError(schema_node_grandparent,look_up_error.str()));
         return false;
     }
     SIRENResultSet<InputAdapter> selection;
@@ -418,7 +421,7 @@ bool HIVE::validateMaxOccurs(SchemaAdapter&            schema_node,
 
             if (!inputSelectorlookup.parseString(ruleValue.substr(3)))
             {
-                errors.push_back(Error::SirenParseError(schema_node,look_up_error.str()));
+                errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,look_up_error.str()));
                 return false;
             }
             SIRENResultSet<InputAdapter> selectionLookup;
@@ -427,7 +430,7 @@ bool HIVE::validateMaxOccurs(SchemaAdapter&            schema_node,
 
             if (selectionLookup.size() > 1)
             {
-                errors.push_back(Error::MoreThanOneValue(
+                errors.push_back(FileScope(selection.adapted(i)) + Error::MoreThanOneValue(
                     selection.adapted(i).line(), selection.adapted(i).column(),
                     nodeName, ruleName, ruleValue));
                 pass = false;
@@ -440,7 +443,7 @@ bool HIVE::validateMaxOccurs(SchemaAdapter&            schema_node,
 
                 if (!issRV2.eof() || issRV2.fail())
                 {
-                    errors.push_back(
+                    errors.push_back(FileScope(selection.adapted(i)) + 
                         Error::NotAValidNumber(selection.adapted(i).line(),
                                                selection.adapted(i).column(),
                                                nodeName, ruleName, ruleValue));
@@ -449,7 +452,7 @@ bool HIVE::validateMaxOccurs(SchemaAdapter&            schema_node,
                 else if (childNodeCount >
                          stoi(selectionLookup.adapted(0).to_string()))
                 {
-                    errors.push_back(Error::Occurrence(
+                    errors.push_back(FileScope(selection.adapted(i)) + Error::Occurrence(
                         selection.adapted(i).line(),
                         selection.adapted(i).column(),
                         selection.adapted(i).name(), childNodeCount, nodeName,
@@ -462,7 +465,7 @@ bool HIVE::validateMaxOccurs(SchemaAdapter&            schema_node,
 
         else if (childNodeCount > stoi(ruleValue))
         {
-            errors.push_back(Error::Occurrence(
+            errors.push_back(FileScope(selection.adapted(i)) + Error::Occurrence(
                 selection.adapted(i).line(), selection.adapted(i).column(),
                 selection.adapted(i).name(), childNodeCount, nodeName, ruleName,
                 ruleValue));
@@ -488,7 +491,7 @@ bool HIVE::validateValType(SchemaAdapter&            schema_node,
         (ruleValue != "IntOrYesOrNo") && (ruleValue != "IntOrAsterisk") &&
         (ruleValue != "Fido"))
     {
-        errors.push_back(Error::BadOption(
+        errors.push_back(FileScope(schema_node) + Error::BadOption(
             schema_node.name(), ruleValue,
             schema_node.non_decorative_children()[0].line(),
             schema_node.non_decorative_children()[0].column(),
@@ -500,7 +503,7 @@ bool HIVE::validateValType(SchemaAdapter&            schema_node,
 
     if (!inputSelector.parseString(nodePath))
     {
-        errors.push_back(Error::SirenParseError(schema_node,
+        errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,
                                                 look_up_error.str()));
         return false;
     }
@@ -548,7 +551,7 @@ bool HIVE::validateValType(SchemaAdapter&            schema_node,
                     valueNodeName = input_selection.adapted(i).name();
                 }
 
-                errors.push_back(Error::BadValType(
+                errors.push_back(FileScope(input_selection.adapted(i)) + Error::BadValType(
                     input_selection.adapted(i).line(),
                     input_selection.adapted(i).column(), valueNodeName,
                     input_selection.adapted(i).to_string(), ruleValue));
@@ -578,7 +581,7 @@ bool HIVE::validateValType(SchemaAdapter&            schema_node,
                         valueNodeName = input_selection.adapted(i).name();
                     }
 
-                    errors.push_back(Error::BadValType(
+                    errors.push_back(FileScope(input_selection.adapted(i)) + Error::BadValType(
                         input_selection.adapted(i).line(),
                         input_selection.adapted(i).column(), valueNodeName,
                         input_selection.adapted(i).to_string(), ruleValue));
@@ -613,7 +616,7 @@ bool HIVE::validateValType(SchemaAdapter&            schema_node,
                         valueNodeName = input_selection.adapted(i).name();
                     }
 
-                    errors.push_back(Error::BadValType(
+                    errors.push_back(FileScope(input_selection.adapted(i)) + Error::BadValType(
                         input_selection.adapted(i).line(),
                         input_selection.adapted(i).column(), valueNodeName,
                         input_selection.adapted(i).to_string(), ruleValue));
@@ -644,7 +647,7 @@ bool HIVE::validateValType(SchemaAdapter&            schema_node,
                         valueNodeName = input_selection.adapted(i).name();
                     }
 
-                    errors.push_back(Error::BadValType(
+                    errors.push_back(FileScope(input_selection.adapted(i)) + Error::BadValType(
                         input_selection.adapted(i).line(),
                         input_selection.adapted(i).column(), valueNodeName,
                         input_selection.adapted(i).to_string(), ruleValue));
@@ -678,7 +681,7 @@ bool HIVE::validateValEnums(SchemaAdapter&            schema_node,
 
     if (!inputSelector.parseString(nodePath))
     {
-        errors.push_back(Error::SirenParseError(schema_node_parent,
+        errors.push_back(FileScope(schema_node_parent) + Error::SirenParseError(schema_node_parent,
                                                 look_up_error.str()));
         return false;
     }
@@ -729,10 +732,11 @@ bool HIVE::validateValEnums(SchemaAdapter&            schema_node,
 
                     if (tmpschema_node.is_null())
                     {
-                        errors.push_back(Error::BadEnumReference(
+                        auto aNode = schema_node.non_decorative_children()[0];
+                        errors.push_back(FileScope(aNode) + Error::BadEnumReference(
                             refName,
-                            schema_node.non_decorative_children()[0].line(),
-                            schema_node.non_decorative_children()[0].column()));
+                            aNode.line(),
+                            aNode.column()));
                         return false;
                     }
 
@@ -891,7 +895,7 @@ bool HIVE::validateValEnums(SchemaAdapter&            schema_node,
                 }
             }
 
-            errors.push_back(Error::BadEnum(
+            errors.push_back(FileScope(selection.adapted(i)) + Error::BadEnum(
                 selection.adapted(i).line(), selection.adapted(i).column(),
                 valueNodeName, tempString, closestEnums));
             pass = false;
@@ -919,7 +923,7 @@ bool HIVE::validateMinValInc(SchemaAdapter&            schema_node,
 
     if (!inputSelector.parseString(nodePath))
     {
-        errors.push_back(Error::SirenParseError(schema_node,
+        errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,
                                                 look_up_error.str()));
         return false;
     }
@@ -946,7 +950,7 @@ bool HIVE::validateMinValInc(SchemaAdapter&            schema_node,
                 valueNodeName = selection.adapted(i).name();
             }
 
-            errors.push_back(Error::WrongTypeForRule(
+            errors.push_back(FileScope(selection.adapted(i)) + Error::WrongTypeForRule(
                 selection.adapted(i).line(), selection.adapted(i).column(),
                 valueNodeName, selection.adapted(i).to_string(), ruleName));
             pass = false;
@@ -964,7 +968,7 @@ bool HIVE::validateMinValInc(SchemaAdapter&            schema_node,
 
                 if (!inputSelectorlookup.parseString(ruleValue))
                 {
-                    errors.push_back(
+                    errors.push_back(FileScope(schema_node) + 
                         Error::SirenParseError(schema_node,
                                                look_up_error.str()));
                     return false;
@@ -975,7 +979,7 @@ bool HIVE::validateMinValInc(SchemaAdapter&            schema_node,
 
                 if (selectionLookup.size() > 1)
                 {
-                    errors.push_back(Error::MoreThanOneValue(
+                    errors.push_back(FileScope(inode) + Error::MoreThanOneValue(
                         inode.line(), inode.column(), inode.name(), ruleName,
                         ruleValue));
                     pass = false;
@@ -988,7 +992,7 @@ bool HIVE::validateMinValInc(SchemaAdapter&            schema_node,
 
                     if (!issRV2.eof() || issRV2.fail())
                     {
-                        errors.push_back(Error::NotAValidNumber(
+                        errors.push_back(FileScope(selection.adapted(i)) + Error::NotAValidNumber(
                             selection.adapted(i).line(),
                             selection.adapted(i).column(),
                             selection.adapted(i).name(), ruleName, ruleValue));
@@ -1011,7 +1015,7 @@ bool HIVE::validateMinValInc(SchemaAdapter&            schema_node,
                             valueNodeName = selection.adapted(i).name();
                         }
 
-                        errors.push_back(Error::MinMax(
+                        errors.push_back(FileScope(selection.adapted(i)) + Error::MinMax(
                             selection.adapted(i).line(),
                             selection.adapted(i).column(), valueNodeName,
                             selection.adapted(i).to_string(), ruleName,
@@ -1034,7 +1038,7 @@ bool HIVE::validateMinValInc(SchemaAdapter&            schema_node,
                     valueNodeName = selection.adapted(i).name();
                 }
 
-                errors.push_back(Error::MinMax(
+                errors.push_back(FileScope(selection.adapted(i)) + Error::MinMax(
                     selection.adapted(i).line(), selection.adapted(i).column(),
                     valueNodeName, selection.adapted(i).to_string(), ruleName,
                     ruleValue));
@@ -1065,7 +1069,7 @@ bool HIVE::validateMaxValInc(SchemaAdapter&            schema_node,
 
     if (!inputSelector.parseString(nodePath))
     {
-        errors.push_back(Error::SirenParseError(schema_node_parent,
+        errors.push_back(FileScope(schema_node_parent) + Error::SirenParseError(schema_node_parent,
                                                 look_up_error.str()));
         return false;
     }
@@ -1092,7 +1096,7 @@ bool HIVE::validateMaxValInc(SchemaAdapter&            schema_node,
                 valueNodeName = selection.adapted(i).name();
             }
 
-            errors.push_back(Error::WrongTypeForRule(
+            errors.push_back(FileScope(selection.adapted(i)) +Error::WrongTypeForRule(
                 selection.adapted(i).line(), selection.adapted(i).column(),
                 valueNodeName, selection.adapted(i).to_string(), ruleName));
             pass = false;
@@ -1110,7 +1114,7 @@ bool HIVE::validateMaxValInc(SchemaAdapter&            schema_node,
 
                 if (!inputSelectorlookup.parseString(ruleValue))
                 {
-                    errors.push_back(
+                    errors.push_back(FileScope(schema_node) +
                         Error::SirenParseError(schema_node,
                                                look_up_error.str()));
                     return false;
@@ -1121,7 +1125,7 @@ bool HIVE::validateMaxValInc(SchemaAdapter&            schema_node,
 
                 if (selectionLookup.size() > 1)
                 {
-                    errors.push_back(Error::MoreThanOneValue(
+                    errors.push_back(FileScope(selection.adapted(i)) + Error::MoreThanOneValue(
                         selection.adapted(i).line(),
                         selection.adapted(i).column(),
                         selection.adapted(i).name(), ruleName, ruleValue));
@@ -1135,7 +1139,7 @@ bool HIVE::validateMaxValInc(SchemaAdapter&            schema_node,
 
                     if (!issRV2.eof() || issRV2.fail())
                     {
-                        errors.push_back(Error::NotAValidNumber(
+                        errors.push_back(FileScope(selection.adapted(i)) + Error::NotAValidNumber(
                             selection.adapted(i).line(),
                             selection.adapted(i).column(),
                             selection.adapted(i).name(), ruleName, ruleValue));
@@ -1158,7 +1162,7 @@ bool HIVE::validateMaxValInc(SchemaAdapter&            schema_node,
                             valueNodeName = selection.adapted(i).name();
                         }
 
-                        errors.push_back(Error::MinMax(
+                        errors.push_back(FileScope(selection.adapted(i)) + Error::MinMax(
                             selection.adapted(i).line(),
                             selection.adapted(i).column(), valueNodeName,
                             selection.adapted(i).to_string(), ruleName,
@@ -1181,7 +1185,7 @@ bool HIVE::validateMaxValInc(SchemaAdapter&            schema_node,
                     valueNodeName = selection.adapted(i).name();
                 }
 
-                errors.push_back(Error::MinMax(
+                errors.push_back(FileScope(selection.adapted(i)) + Error::MinMax(
                     selection.adapted(i).line(), selection.adapted(i).column(),
                     valueNodeName, selection.adapted(i).to_string(), ruleName,
                     ruleValue));
@@ -1212,7 +1216,7 @@ bool HIVE::validateMinValExc(SchemaAdapter&            schema_node,
 
     if (!inputSelector.parseString(nodePath))
     {
-        errors.push_back(Error::SirenParseError(schema_node_parent,
+        errors.push_back(FileScope(schema_node_parent) + Error::SirenParseError(schema_node_parent,
                                                 look_up_error.str()));
         return false;
     }
@@ -1239,7 +1243,7 @@ bool HIVE::validateMinValExc(SchemaAdapter&            schema_node,
                 valueNodeName = selection.adapted(i).name();
             }
 
-            errors.push_back(Error::WrongTypeForRule(
+            errors.push_back(FileScope(selection.adapted(i)) + Error::WrongTypeForRule(
                 selection.adapted(i).line(), selection.adapted(i).column(),
                 valueNodeName, selection.adapted(i).to_string(), ruleName));
             pass = false;
@@ -1257,7 +1261,7 @@ bool HIVE::validateMinValExc(SchemaAdapter&            schema_node,
 
                 if (!inputSelectorlookup.parseString(ruleValue))
                 {
-                    errors.push_back(
+                    errors.push_back(FileScope(schema_node) + 
                         Error::SirenParseError(schema_node,
                                                look_up_error.str()));
                     return false;
@@ -1268,7 +1272,7 @@ bool HIVE::validateMinValExc(SchemaAdapter&            schema_node,
 
                 if (selectionLookup.size() > 1)
                 {
-                    errors.push_back(Error::MoreThanOneValue(
+                    errors.push_back(FileScope(selection.adapted(i)) + Error::MoreThanOneValue(
                         selection.adapted(i).line(),
                         selection.adapted(i).column(),
                         selection.adapted(i).name(), ruleName, ruleValue));
@@ -1282,7 +1286,7 @@ bool HIVE::validateMinValExc(SchemaAdapter&            schema_node,
 
                     if (!issRV2.eof() || issRV2.fail())
                     {
-                        errors.push_back(Error::NotAValidNumber(
+                        errors.push_back(FileScope(selection.adapted(i)) + Error::NotAValidNumber(
                             selection.adapted(i).line(),
                             selection.adapted(i).column(),
                             selection.adapted(i).name(), ruleName, ruleValue));
@@ -1305,7 +1309,7 @@ bool HIVE::validateMinValExc(SchemaAdapter&            schema_node,
                             valueNodeName = selection.adapted(i).name();
                         }
 
-                        errors.push_back(Error::MinMax(
+                        errors.push_back(FileScope(selection.adapted(i)) + Error::MinMax(
                             selection.adapted(i).line(),
                             selection.adapted(i).column(), valueNodeName,
                             selection.adapted(i).to_string(), ruleName,
@@ -1328,7 +1332,7 @@ bool HIVE::validateMinValExc(SchemaAdapter&            schema_node,
                     valueNodeName = selection.adapted(i).name();
                 }
 
-                errors.push_back(Error::MinMax(
+                errors.push_back(FileScope(selection.adapted(i)) + Error::MinMax(
                     selection.adapted(i).line(), selection.adapted(i).column(),
                     valueNodeName, selection.adapted(i).to_string(), ruleName,
                     ruleValue));
@@ -1359,7 +1363,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter&            schema_node,
 
     if (!inputSelector.parseString(nodePath))
     {
-        errors.push_back(Error::SirenParseError(schema_node_parent,
+        errors.push_back(FileScope(schema_node_parent) + Error::SirenParseError(schema_node_parent,
                                                 look_up_error.str()));
         return false;
     }
@@ -1386,7 +1390,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter&            schema_node,
                 valueNodeName = selection.adapted(i).name();
             }
 
-            errors.push_back(Error::WrongTypeForRule(
+            errors.push_back(FileScope(selection.adapted(i)) + Error::WrongTypeForRule(
                 selection.adapted(i).line(), selection.adapted(i).column(),
                 valueNodeName, selection.adapted(i).to_string(), ruleName));
             pass = false;
@@ -1404,7 +1408,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter&            schema_node,
 
                 if (!inputSelectorLookup.parseString(ruleValue))
                 {
-                    errors.push_back(
+                    errors.push_back(FileScope(schema_node) + 
                         Error::SirenParseError(schema_node,
                                                look_up_error.str()));
                     return false;
@@ -1415,7 +1419,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter&            schema_node,
 
                 if (selectionLookup.size() > 1)
                 {
-                    errors.push_back(Error::MoreThanOneValue(
+                    errors.push_back(FileScope(selection.adapted(i)) + Error::MoreThanOneValue(
                         selection.adapted(i).line(),
                         selection.adapted(i).column(),
                         selection.adapted(i).name(), ruleName, ruleValue));
@@ -1429,7 +1433,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter&            schema_node,
 
                     if (!issRV2.eof() || issRV2.fail())
                     {
-                        errors.push_back(Error::NotAValidNumber(
+                        errors.push_back(FileScope(selection.adapted(i)) + Error::NotAValidNumber(
                             selection.adapted(i).line(),
                             selection.adapted(i).column(),
                             selection.adapted(i).name(), ruleName, ruleValue));
@@ -1452,7 +1456,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter&            schema_node,
                             valueNodeName = selection.adapted(i).name();
                         }
 
-                        errors.push_back(Error::MinMax(
+                        errors.push_back(FileScope(selection.adapted(i)) + Error::MinMax(
                             selection.adapted(i).line(),
                             selection.adapted(i).column(), valueNodeName,
                             selection.adapted(i).to_string(), ruleName,
@@ -1475,7 +1479,7 @@ bool HIVE::validateMaxValExc(SchemaAdapter&            schema_node,
                     valueNodeName = selection.adapted(i).name();
                 }
 
-                errors.push_back(Error::MinMax(
+                errors.push_back(FileScope(selection.adapted(i)) + Error::MinMax(
                     selection.adapted(i).line(), selection.adapted(i).column(),
                     valueNodeName, selection.adapted(i).to_string(), ruleName,
                     ruleValue));
@@ -1504,7 +1508,7 @@ bool HIVE::validateExistsIn(SchemaAdapter&            schema_node,
 
     if (ruleId != "" && ruleId != "Abs" && ruleId != "BeforePeriod")
     {
-        errors.push_back(Error::BadOption(
+        errors.push_back(FileScope(schema_node) + Error::BadOption(
             schema_node.name(), ruleId, schema_node.id_child().line(),
             schema_node.id_child().column(), "Abs BeforePeriod"));
         return false;
@@ -1522,7 +1526,7 @@ bool HIVE::validateExistsIn(SchemaAdapter&            schema_node,
     DefaultSIRENInterpreter inputSelector(look_up_error);
     if (!inputSelector.parseString(nodePath))
     {
-        errors.push_back(Error::SirenParseError(schema_node_parent,
+        errors.push_back(FileScope(schema_node_parent) + Error::SirenParseError(schema_node_parent,
                                                 look_up_error.str()));
         return false;
     }
@@ -1574,10 +1578,11 @@ bool HIVE::validateExistsIn(SchemaAdapter&            schema_node,
 
                 if (tmpschema_node.is_null())
                 {
-                    errors.push_back(Error::BadEnumReference(
+                    auto aNode = schema_node.non_decorative_children()[0];
+                    errors.push_back(FileScope(aNode) + Error::BadEnumReference(
                         refName,
-                        schema_node.non_decorative_children()[0].line(),
-                        schema_node.non_decorative_children()[0].column()));
+                        aNode.line(),
+                        aNode.column()));
                     return false;
                 }
 
@@ -1624,7 +1629,7 @@ bool HIVE::validateExistsIn(SchemaAdapter&            schema_node,
                     children[loop].non_decorative_children();
                 if (rangeChildren.size() != 2)
                 {
-                    errors.push_back(Error::RangeNotTwoVals(
+                    errors.push_back(FileScope(children[loop]) + Error::RangeNotTwoVals(
                         children[loop].line(), children[loop].column()));
                     pass = false;
                 }
@@ -1640,7 +1645,7 @@ bool HIVE::validateExistsIn(SchemaAdapter&            schema_node,
                     rangeStreamEnd >> std::noskipws >> itestEnd;
                     if (!rangeStreamStart.eof() || rangeStreamStart.fail())
                     {
-                        errors.push_back(Error::RangeNotValidNum(
+                        errors.push_back(FileScope(rangeChildren[0]) + Error::RangeNotValidNum(
                             rangeChildren[0].to_string(),
                             rangeChildren[0].line(),
                             rangeChildren[0].column()));
@@ -1648,7 +1653,7 @@ bool HIVE::validateExistsIn(SchemaAdapter&            schema_node,
                     }
                     else if (!rangeStreamEnd.eof() || rangeStreamEnd.fail())
                     {
-                        errors.push_back(Error::RangeNotValidNum(
+                        errors.push_back(FileScope(rangeChildren[1]) + Error::RangeNotValidNum(
                             rangeChildren[1].to_string(),
                             rangeChildren[1].line(),
                             rangeChildren[1].column()));
@@ -1660,7 +1665,7 @@ bool HIVE::validateExistsIn(SchemaAdapter&            schema_node,
                         int rangeEnd   = stoi(rangeChildren[1].to_string());
                         if (rangeStart >= rangeEnd)
                         {
-                            errors.push_back(Error::RangeInvalid(
+                            errors.push_back(FileScope(rangeChildren[0]) + Error::RangeInvalid(
                                 rangeChildren[0].to_string(),
                                 rangeChildren[1].to_string(),
                                 rangeChildren[0].line(),
@@ -1694,7 +1699,7 @@ bool HIVE::validateExistsIn(SchemaAdapter&            schema_node,
                 {
                     if (!tmpParentInputNode.has_parent())
                     {
-                        errors.push_back(Error::BadSchemaPath(
+                        errors.push_back(FileScope(schema_node) + Error::BadSchemaPath(
                             schema_node.name(), ruleValue,
                             children[loop].line(), children[loop].column()));
                         return false;
@@ -1725,7 +1730,7 @@ bool HIVE::validateExistsIn(SchemaAdapter&            schema_node,
                                 look_up_error);
                     if (!inputSelectorLookup->parseString(ruleValue))
                     {
-                        errors.push_back(
+                        errors.push_back(FileScope(schema_node) + 
                             Error::SirenParseError(schema_node,
                                                    look_up_error.str()));
                         return false;
@@ -1839,13 +1844,13 @@ bool HIVE::validateExistsIn(SchemaAdapter&            schema_node,
                 }
             }
 
-            errors.push_back(Error::NotExistsIn(
+            errors.push_back(FileScope(selection.adapted(i)) + Error::NotExistsIn(
                 selection.adapted(i).line(), selection.adapted(i).column(),
                 valueNodeName, lookupString, lookupPaths));
             errorCount++;
             if (errorCount >= MAXERRORS)
             {
-                errors.push_back(Error::ErrorLimit(
+                errors.push_back(FileScope(selection.adapted(i)) + Error::ErrorLimit(
                     selection.adapted(i).line(), selection.adapted(i).column(),
                     nodePath, ruleName, MAXERRORS));
                 return false;
@@ -1874,7 +1879,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter&            schema_node,
     if ((ruleId != "") && (ruleId != "Abs") && (ruleId != "Zero") &&
         (ruleId != "AbsZero"))
     {
-        errors.push_back(Error::BadOption(
+        errors.push_back(FileScope(schema_node) + Error::BadOption(
             schema_node.name(), ruleId, schema_node.id_child().line(),
             schema_node.id_child().column(), "Abs Zero AbsZero"));
         return false;
@@ -1896,7 +1901,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter&            schema_node,
 
     if (!inputSelector.parseString(nodePath))
     {
-        errors.push_back(Error::SirenParseError(schema_node_parent,
+        errors.push_back(FileScope(schema_node_parent) + Error::SirenParseError(schema_node_parent,
                                                 look_up_error.str()));
         return false;
     }
@@ -1918,7 +1923,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter&            schema_node,
 
         if (!childSelector.parseString(lookupPath))
         {
-            errors.push_back(Error::SirenParseError(lookupPaths[j],
+            errors.push_back(FileScope(lookupPaths[j]) + Error::SirenParseError(lookupPaths[j],
                                                     look_up_error.str()));
             return false;
         }
@@ -2070,7 +2075,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter&            schema_node,
                         {
                             valueNodeName = selection.adapted(i).name();
                         }
-                        errors.push_back(Error::AlsoExistsAt(
+                        errors.push_back(FileScope(selection.adapted(i)) + Error::AlsoExistsAt(
                             selection.adapted(i).line(),
                             selection.adapted(i).column(), valueNodeName,
                             lookupString, lookupPath, foundNode.line(),
@@ -2082,7 +2087,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter&            schema_node,
 
                         if (errorCount >= MAXERRORS)
                         {
-                            errors.push_back(Error::ErrorLimit(
+                            errors.push_back(FileScope(selection.adapted(i)) + Error::ErrorLimit(
                                 selection.adapted(i).line(),
                                 selection.adapted(i).column(), nodePath,
                                 ruleName, MAXERRORS));
@@ -2121,7 +2126,7 @@ bool HIVE::validateSumOver(SchemaAdapter&            schema_node,
 
     if (!inputSelector.parseString(nodePath + "/" + ruleId))
     {
-        errors.push_back(Error::SirenParseError(schema_node,
+        errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,
                                                 look_up_error.str()));
         return false;
     }
@@ -2135,7 +2140,7 @@ bool HIVE::validateSumOver(SchemaAdapter&            schema_node,
 
         if (!inputSelectorlookup.parseString(selection.adapted(0).path()))
         {
-            errors.push_back(Error::SirenParseError(schema_node,
+            errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,
                                                     look_up_error.str()));
             return false;
         }
@@ -2150,7 +2155,7 @@ bool HIVE::validateSumOver(SchemaAdapter&            schema_node,
             if (!sumSelector.parseString(
                     nodePath.substr(selection.adapted(0).path().length() + 1)))
             {
-                errors.push_back(Error::SirenParseError(schema_node,
+                errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,
                                                         look_up_error.str()));
                 return false;
             }
@@ -2186,7 +2191,7 @@ bool HIVE::validateSumOver(SchemaAdapter&            schema_node,
                             valueNodeName = sumSelection.adapted(j).name();
                         }
 
-                        errors.push_back(Error::WrongTypeForRule(
+                        errors.push_back(FileScope(sumSelection.adapted(i)) + Error::WrongTypeForRule(
                             sumSelection.adapted(j).line(),
                             sumSelection.adapted(j).column(), valueNodeName,
                             sumSelection.adapted(j).to_string(), ruleName));
@@ -2205,7 +2210,7 @@ bool HIVE::validateSumOver(SchemaAdapter&            schema_node,
                 {
                     std::stringstream tmpsumstream;
                     tmpsumstream << sum;
-                    errors.push_back(Error::SumProd(
+                    errors.push_back(FileScope(selectionLookup.adapted(i)) + Error::SumProd(
                         selectionLookup.adapted(i).line(),
                         selectionLookup.adapted(i).column(),
                         selectionLookup.adapted(i).name(), nodeName,
@@ -2234,7 +2239,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter&            schema_node,
 
     if (compare_path_schema_node.is_null())
     {
-        errors.push_back(
+        errors.push_back(FileScope(schema_node) + 
             Error::MissingArgument(schema_node.name(), "ComparePath",
                                    schema_node.line(), schema_node.column()));
         return false;
@@ -2244,7 +2249,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter&            schema_node,
 
     if (group_divide_schema_node.is_null())
     {
-        errors.push_back(
+        errors.push_back(FileScope(schema_node) + 
             Error::MissingArgument(schema_node.name(), "GroupDivide",
                                    schema_node.line(), schema_node.column()));
         return false;
@@ -2254,7 +2259,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter&            schema_node,
 
     if (group_sum_schema_node.is_null())
     {
-        errors.push_back(Error::MissingArgument(schema_node.name(), "GroupSum",
+        errors.push_back(FileScope(schema_node) + Error::MissingArgument(schema_node.name(), "GroupSum",
                                                 schema_node.line(),
                                                 schema_node.column()));
         return false;
@@ -2269,7 +2274,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter&            schema_node,
 
     if (!inputSelector.parseString(nodePath + "/" + ruleId))
     {
-        errors.push_back(Error::SirenParseError(schema_node.parent(),
+        errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node.parent(),
                                                 look_up_error.str()));
         return false;
     }
@@ -2283,7 +2288,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter&            schema_node,
 
         if (!inputSelectorlookup.parseString(selection.adapted(0).path()))
         {
-            errors.push_back(Error::SirenParseError(schema_node,
+            errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,
                                                     look_up_error.str()));
             return false;
         }
@@ -2295,7 +2300,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter&            schema_node,
         if (!sumSelector.parseString(
                 nodePath.substr(selection.adapted(0).path().length() + 1)))
         {
-            errors.push_back(Error::SirenParseError(schema_node,
+            errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,
                                                     look_up_error.str()));
             return false;
         }
@@ -2303,7 +2308,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter&            schema_node,
 
         if (!comparePathSelector.parseString(comparePath))
         {
-            errors.push_back(Error::SirenParseError(compare_path_schema_node,
+            errors.push_back(FileScope(compare_path_schema_node) + Error::SirenParseError(compare_path_schema_node,
                                                     look_up_error.str()));
             return false;
         }
@@ -2378,7 +2383,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter&            schema_node,
                                     groupAddendsIter->second[k].name();
                             }
 
-                            errors.push_back(Error::WrongTypeForRule(
+                            errors.push_back(FileScope(groupAddendsIter->second[k]) + Error::WrongTypeForRule(
                                 groupAddendsIter->second[k].line(),
                                 groupAddendsIter->second[k].column(),
                                 valueNodeName,
@@ -2402,7 +2407,7 @@ bool HIVE::validateSumOverGroup(SchemaAdapter&            schema_node,
                         tmptsstream << tempSum;
                         std::stringstream tmpgsstream;
                         tmpgsstream << groupSum;
-                        errors.push_back(Error::SumProdGroup(
+                        errors.push_back(FileScope(selectionLookup.adapted(i)) + Error::SumProdGroup(
                             selectionLookup.adapted(i).line(),
                             selectionLookup.adapted(i).column(),
                             selectionLookup.adapted(i).name(), nodeName,
@@ -2433,7 +2438,7 @@ bool HIVE::validateIncreaseOver(SchemaAdapter&            schema_node,
 
     if ((ruleValue != "Mono") && (ruleValue != "Strict"))
     {
-        errors.push_back(Error::BadOption(
+        errors.push_back(FileScope(schema_node) + Error::BadOption(
             schema_node.name(), ruleValue,
             schema_node.non_decorative_children()[0].line(),
             schema_node.non_decorative_children()[0].column(), "Mono Strict"));
@@ -2444,7 +2449,7 @@ bool HIVE::validateIncreaseOver(SchemaAdapter&            schema_node,
 
     if (!inputSelector.parseString(nodePath + "/" + ruleId))
     {
-        errors.push_back(Error::SirenParseError(schema_node.parent(),
+        errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node.parent(),
                                                 look_up_error.str()));
         return false;
     }
@@ -2457,7 +2462,7 @@ bool HIVE::validateIncreaseOver(SchemaAdapter&            schema_node,
 
         if (!inputSelectorLookup.parseString(selection.adapted(0).path()))
         {
-            errors.push_back(Error::SirenParseError(schema_node.parent(),
+            errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node.parent(),
                                                     look_up_error.str()));
             return false;
         }
@@ -2471,7 +2476,7 @@ bool HIVE::validateIncreaseOver(SchemaAdapter&            schema_node,
             if (!incrSelector.parseString(
                     nodePath.substr(selection.adapted(0).path().length() + 1)))
             {
-                errors.push_back(Error::SirenParseError(schema_node.parent(),
+                errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node.parent(),
                                                         look_up_error.str()));
                 return false;
             }
@@ -2508,7 +2513,7 @@ bool HIVE::validateIncreaseOver(SchemaAdapter&            schema_node,
                             valueNodeName = incrSelection.adapted(j).name();
                         }
 
-                        errors.push_back(Error::WrongTypeForRule(
+                        errors.push_back(FileScope(incrSelection.adapted(j)) + Error::WrongTypeForRule(
                             incrSelection.adapted(j).line(),
                             incrSelection.adapted(j).column(), valueNodeName,
                             incrSelection.adapted(j).to_string(), ruleName));
@@ -2538,7 +2543,7 @@ bool HIVE::validateIncreaseOver(SchemaAdapter&            schema_node,
                         valueNodeName = incrSelection.adapted(j + 1).name();
                     }
 
-                    errors.push_back(Error::WrongTypeForRule(
+                    errors.push_back(FileScope(incrSelection.adapted(j+1)) + Error::WrongTypeForRule(
                         incrSelection.adapted(j + 1).line(),
                         incrSelection.adapted(j + 1).column(), valueNodeName,
                         incrSelection.adapted(j + 1).to_string(), ruleName));
@@ -2550,7 +2555,7 @@ bool HIVE::validateIncreaseOver(SchemaAdapter&            schema_node,
                     (stod(incrSelection.adapted(j).to_string()) >
                      stod(incrSelection.adapted(j + 1).to_string())))
                 {
-                    errors.push_back(Error::IncreaseDecrease(
+                    errors.push_back(FileScope(selectionLookup.adapted(i)) + Error::IncreaseDecrease(
                         selectionLookup.adapted(i).line(),
                         selectionLookup.adapted(i).column(),
                         selectionLookup.adapted(i).name(), nodeName, ruleValue,
@@ -2563,7 +2568,7 @@ bool HIVE::validateIncreaseOver(SchemaAdapter&            schema_node,
                          (stod(incrSelection.adapted(j).to_string()) >=
                           stod(incrSelection.adapted(j + 1).to_string())))
                 {
-                    errors.push_back(Error::IncreaseDecrease(
+                    errors.push_back(FileScope(selectionLookup.adapted(i)) + Error::IncreaseDecrease(
                         selectionLookup.adapted(i).line(),
                         selectionLookup.adapted(i).column(),
                         selectionLookup.adapted(i).name(), nodeName, ruleValue,
@@ -2591,7 +2596,7 @@ bool HIVE::validateDecreaseOver(SchemaAdapter&            schema_node,
     bool        pass      = true;
     if ((ruleValue != "Mono") && (ruleValue != "Strict"))
     {
-        errors.push_back(Error::BadOption(
+        errors.push_back(FileScope(schema_node) + Error::BadOption(
             schema_node.name(), ruleValue,
             schema_node.non_decorative_children()[0].line(),
             schema_node.non_decorative_children()[0].column(), "Mono Strict"));
@@ -2603,7 +2608,7 @@ bool HIVE::validateDecreaseOver(SchemaAdapter&            schema_node,
     std::string             path = nodePath + "/" + ruleId;
     if (!inputSelector.parseString(path))
     {
-        errors.push_back(Error::SirenParseError(schema_node,
+        errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,
                                                 look_up_error.str()));
         return false;
     }
@@ -2615,7 +2620,7 @@ bool HIVE::validateDecreaseOver(SchemaAdapter&            schema_node,
 
         if (!inputSelectorlookup.parseString(selection.adapted(0).path()))
         {
-            errors.push_back(Error::SirenParseError(schema_node,
+            errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,
                                                     look_up_error.str()));
             return false;
         }
@@ -2629,7 +2634,7 @@ bool HIVE::validateDecreaseOver(SchemaAdapter&            schema_node,
             if (!decrSelector.parseString(
                     nodePath.substr(selection.adapted(0).path().length() + 1)))
             {
-                errors.push_back(Error::SirenParseError(schema_node,
+                errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,
                                                         look_up_error.str()));
                 return false;
             }
@@ -2666,7 +2671,7 @@ bool HIVE::validateDecreaseOver(SchemaAdapter&            schema_node,
                             valueNodeName = decrSelection.adapted(j).name();
                         }
 
-                        errors.push_back(Error::WrongTypeForRule(
+                        errors.push_back(FileScope(decrSelection.adapted(j)) + Error::WrongTypeForRule(
                             decrSelection.adapted(j).line(),
                             decrSelection.adapted(j).column(), valueNodeName,
                             decrSelection.adapted(j).to_string(), ruleName));
@@ -2696,7 +2701,7 @@ bool HIVE::validateDecreaseOver(SchemaAdapter&            schema_node,
                         valueNodeName = decrSelection.adapted(j + 1).name();
                     }
 
-                    errors.push_back(Error::WrongTypeForRule(
+                    errors.push_back(FileScope(decrSelection.adapted(j+1)) + Error::WrongTypeForRule(
                         decrSelection.adapted(j + 1).line(),
                         decrSelection.adapted(j + 1).column(), valueNodeName,
                         decrSelection.adapted(j + 1).to_string(), ruleName));
@@ -2708,7 +2713,7 @@ bool HIVE::validateDecreaseOver(SchemaAdapter&            schema_node,
                     (stod(decrSelection.adapted(j).to_string()) <
                      stod(decrSelection.adapted(j + 1).to_string())))
                 {
-                    errors.push_back(Error::IncreaseDecrease(
+                    errors.push_back(FileScope(selectionLookup.adapted(i)) + Error::IncreaseDecrease(
                         selectionLookup.adapted(i).line(),
                         selectionLookup.adapted(i).column(),
                         selectionLookup.adapted(i).name(), nodeName, ruleValue,
@@ -2721,7 +2726,7 @@ bool HIVE::validateDecreaseOver(SchemaAdapter&            schema_node,
                          (stod(decrSelection.adapted(j).to_string()) <=
                           stod(decrSelection.adapted(j + 1).to_string())))
                 {
-                    errors.push_back(Error::IncreaseDecrease(
+                    errors.push_back(FileScope(selectionLookup.adapted(i)) + Error::IncreaseDecrease(
                         selectionLookup.adapted(i).line(),
                         selectionLookup.adapted(i).column(),
                         selectionLookup.adapted(i).name(), nodeName, ruleValue,
@@ -2751,7 +2756,7 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter&            schema_node,
 
     if (!inputSelector.parseString(nodePath))
     {
-        errors.push_back(Error::SirenParseError(schema_node.parent(),
+        errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node.parent(),
                                                 look_up_error.str()));
         return false;
     }
@@ -2775,7 +2780,7 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter&            schema_node,
 
         if (!childSelector.parseString(lookupPath))
         {
-            errors.push_back(Error::SirenParseError(schema_node,
+            errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,
                                                     look_up_error.str()));
             return false;
         }
@@ -2826,7 +2831,7 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter&            schema_node,
                 if (js + 1 != choices.size())
                     childNames += " ";
             }
-            errors.push_back(Error::ChildMostExactLeast(
+            errors.push_back(FileScope(selection.adapted(i)) + Error::ChildMostExactLeast(
                 selection.adapted(i).line(), selection.adapted(i).column(),
                 selection.adapted(i).name(), childNames, ruleName));
             pass = false;
@@ -2869,7 +2874,7 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter&            schema_node,
 
         if (!childSelector.parseString(lookupPath))
         {
-            errors.push_back(Error::SirenParseError(schema_node,
+            errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,
                                                     look_up_error.str()));
             return false;
         }
@@ -2920,7 +2925,8 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter&            schema_node,
                 if (js + 1 != choices.size())
                     childNames += " ";
             }
-            errors.push_back(Error::ChildMostExactLeast(
+
+            errors.push_back(FileScope(selection.adapted(i)) + Error::ChildMostExactLeast(
                 selection.adapted(i).line(), selection.adapted(i).column(),
                 selection.adapted(i).name(), childNames, ruleName,
                 "more than one"));
@@ -2938,7 +2944,7 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter&            schema_node,
                 if (js + 1 != choices.size())
                     childNames += " ";
             }
-            errors.push_back(Error::ChildMostExactLeast(
+            errors.push_back(FileScope(selection.adapted(i)) + Error::ChildMostExactLeast(
                 selection.adapted(i).line(), selection.adapted(i).column(),
                 selection.adapted(i).name(), childNames, ruleName, "zero"));
             pass = false;
@@ -2981,7 +2987,7 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter&            schema_node,
 
         if (!childSelector.parseString(lookupPath))
         {
-            errors.push_back(Error::SirenParseError(children[j],
+            errors.push_back(FileScope(children[j]) + Error::SirenParseError(children[j],
                                                     look_up_error.str()));
             return false;
         }
@@ -3037,7 +3043,7 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter&            schema_node,
                 if (js + 1 != choices.size())
                     childNames += " ";
             }
-            errors.push_back(Error::ChildMostExactLeast(
+            errors.push_back(FileScope(selection.adapted(i)) + Error::ChildMostExactLeast(
                 selection.adapted(i).line(), selection.adapted(i).column(),
                 selection.adapted(i).name(), childNames, ruleName));
             pass = false;
@@ -3059,7 +3065,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter&            schema_node,
 
     if ((ruleId != "IfExists") && (ruleId != "EvenNone"))
     {
-        errors.push_back(
+        errors.push_back(FileScope(schema_node) + 
             Error::BadOption(schema_node.name(), ruleId,
                              schema_node.non_decorative_children()[0].line(),
                              schema_node.non_decorative_children()[0].column(),
@@ -3072,7 +3078,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter&            schema_node,
 
     if (!inputSelector.parseString(nodePath))
     {
-        errors.push_back(Error::SirenParseError(schema_node,
+        errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,
                                                 look_up_error.str()));
         return false;
     }
@@ -3095,7 +3101,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter&            schema_node,
                                      children[j].name();
             if (!childSelector.parseString(lookupPath))
             {
-                errors.push_back(Error::SirenParseError(children[j],
+                errors.push_back(FileScope(children[j]) + Error::SirenParseError(children[j],
                                                         look_up_error.str()));
                 return false;
             }
@@ -3140,7 +3146,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter&            schema_node,
                     if (js + 1 != choices.size())
                         childNames += " ";
                 }
-                errors.push_back(Error::ChildCountEqual(
+                errors.push_back(FileScope(selection.adapted(i)) + Error::ChildCountEqual(
                     selection.adapted(i).line(), selection.adapted(i).column(),
                     selection.adapted(i).name(), ruleName, ruleId, childNames));
                 foundError = true;
@@ -3175,7 +3181,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter&            schema_node,
     if ((ruleId != "") && (ruleId != "Abs") && (ruleId != "Zero") &&
         (ruleId != "AbsZero"))
     {
-        errors.push_back(Error::BadOption(
+        errors.push_back(FileScope(schema_node) + Error::BadOption(
             schema_node.name(), ruleId, schema_node.id_child().line(),
             schema_node.id_child().column(), "Abs Zero AbsZero"));
         return false;
@@ -3197,7 +3203,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter&            schema_node,
 
     if (!inputSelector.parseString(nodePath))
     {
-        errors.push_back(Error::SirenParseError(schema_node,
+        errors.push_back(FileScope(schema_node) + Error::SirenParseError(schema_node,
                                                 look_up_error.str()));
         return false;
     }
@@ -3227,7 +3233,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter&            schema_node,
 
             if (!childSelector.parseString(lookupPath))
             {
-                errors.push_back(Error::SirenParseError(lookupPaths[j],
+                errors.push_back(FileScope(lookupPaths[j]) + Error::SirenParseError(lookupPaths[j],
                                                         look_up_error.str()));
                 return false;
             }
@@ -3365,7 +3371,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter&            schema_node,
                             // format the error message and push the std::string
                             // into the std::vector
                             // of all validation error messages
-                            errors.push_back(Error::AlsoExistsAt(
+                            errors.push_back(FileScope(childSelection.adapted(loop)) + Error::AlsoExistsAt(
                                 childSelection.adapted(loop).line(),
                                 childSelection.adapted(loop).column(),
                                 valueNodeName, lookupString, valuePathName,
@@ -3402,7 +3408,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter&            schema_node,
                                 {
                                     valuePathName = lookupPath;
                                 }
-                                errors.push_back(Error::AlsoExistsAt(
+                                errors.push_back(FileScope(foundNode) + Error::AlsoExistsAt(
                                     foundNode.line(), foundNode.column(),
                                     valueNodeName, lookupString, valuePathName,
                                     childSelection.adapted(loop).line(),
@@ -3422,7 +3428,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter&            schema_node,
 
                             if (errorCount >= MAXERRORS)
                             {
-                                errors.push_back(Error::ErrorLimit(
+                                errors.push_back(FileScope(childSelection.adapted(loop)) + Error::ErrorLimit(
                                     childSelection.adapted(loop).line(),
                                     childSelection.adapted(loop).column(),
                                     nodePath, ruleName, MAXERRORS));

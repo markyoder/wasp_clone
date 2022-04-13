@@ -3,7 +3,7 @@ Interpreter<NodeStorage>::Interpreter(std::ostream& err)
     : AbstractInterpreter()
     , m_start_column(1)
     , m_start_line(1)
-    , m_stream_name("stream")
+    , m_stream_name("stream input")
     , m_error_stream(err)
     , m_failed(false)
     , m_root_index(-1)
@@ -318,7 +318,6 @@ bool Interpreter<NodeStorage>::load_document(size_t node_index,
             if (wasp::file_exists(document_relative_path)) break;
         }
     }
-    
     if (wasp::file_exists(document_relative_path))
     {
         auto * interp = create_nested_interpreter(this);

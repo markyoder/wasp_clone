@@ -174,14 +174,16 @@ void SIRENInterpreter<S>::search_child_name(const NodeView&        context,
     for (std::size_t index = 0; index < stage_size; ++index)
     {
         TAdapter node = stage[index];
-        for (std::size_t c = 0; c < node.child_count(); ++c)
+        auto itr = node.begin();
+        while(itr)
         {
-            const TAdapter& child_node = node.child_at(c);
+            const TAdapter& child_node = itr.get();
             // if child is a match, push back onto stage
             if (wildcard_string_match(name, child_node.name()))
             {
                 stage.push_back(child_node);
             }
+            itr.next();
         }
     }
     stage.erase(stage.begin(), stage.begin() + stage_size);

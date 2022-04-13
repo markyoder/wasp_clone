@@ -12,6 +12,7 @@
 #include "waspcore/wasp_bug.h"
 #include "waspcore/Definition.h"
 #include "waspcore/location.hh"
+#include "waspcore/Iterator.h"
 
 namespace wasp
 {
@@ -28,6 +29,11 @@ class WASP_PUBLIC NodeView
     NodeView(std::size_t node_index, const class AbstractInterpreter& data);
     NodeView(const NodeView& orig);
     ~NodeView();
+
+    // Child iterator to the beginning of the node's children
+    Iterator<NodeView> begin() const{return Iterator<NodeView>(*this);}
+    // Child iterator to the end of the node's children
+    Iterator<NodeView> end() const{ return Iterator<NodeView>();}
 
     NodeView& operator=(const NodeView& b);
 
@@ -194,14 +200,14 @@ class WASP_PUBLIC NodeView
     std::size_t last_column() const;
 
     /**
-     * @brief tree_node_index acquire the index into the tree node data pool
+     * @brief node_index acquire the index into the tree node data pool
      * @return the index into the data pool
      */
     std::size_t node_index() const { return m_node_index; }
 
     /**
-     * @brief tree_node_pool acquire the pointer to the backend storage
-     * @return the TreeNodePool that backs this view
+     * @brief node_pool acquire the pointer to the backend storage
+     * @return the document interpreter that backs this view
      */
     const class AbstractInterpreter* node_pool() const { return m_pool; }
 
@@ -465,6 +471,11 @@ class WASP_PUBLIC AbstractInterpreter
      */
     virtual size_t document_node(const AbstractInterpreter* document) const = 0;
 
+    /**
+     * @brief Obtain the parent document's interpreter
+     * 
+     * @return AbstractInterpreter* iff the document is a nested document, nullptr otherwise
+     */
     virtual AbstractInterpreter* document_parent() const = 0;
 
     /**
