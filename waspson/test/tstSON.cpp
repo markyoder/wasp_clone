@@ -103,6 +103,16 @@ TEST(SON, keyed_value)
             ASSERT_EQ(types[i], interpreter.type(i));
         }
     }
+    // Test iterator
+    {
+    size_t index = 0;
+    for(auto itr = document.begin(); itr != document.end(); itr.next(), ++index)
+    {
+        SCOPED_TRACE(index);
+        ASSERT_TRUE(index < document.child_count());
+        ASSERT_EQ(document.child_at(index), itr.get());
+    }
+    }
 }
 TEST(SON, empty_object)
 {
