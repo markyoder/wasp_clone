@@ -168,6 +168,17 @@ sect9  1 2        # comment about sect9 list line 1
 )I";
     std::stringstream paths;
     DDINodeView       root = ddi.root();
+
+    // Test iterator
+    {
+    size_t index = 0;
+    for(auto itr = root.begin(); itr != root.end(); itr.next(), ++index)
+    {
+        SCOPED_TRACE(index);
+        ASSERT_TRUE(index < root.child_count());
+        ASSERT_EQ(root.child_at(index), itr.get());
+    }
+    }
     root.paths(paths);
     ASSERT_EQ(expected.str(), paths.str());
 
