@@ -69,5 +69,14 @@ TEST(Halite, keyed_value)
     ASSERT_EQ(4, children.size());
     ASSERT_EQ(4, document.non_decorative_children_count());
     ASSERT_EQ("<name>", document.first_non_decorative_child_by_name("attr").id());
-
+    // Test iterator
+    {
+    size_t index = 0;
+    for(auto itr = document.begin(); itr != document.end(); itr.next(), ++index)
+    {
+        SCOPED_TRACE(index);
+        ASSERT_TRUE(index < document.child_count());
+        ASSERT_EQ(document.child_at(index), itr.get());
+    }
+    }
 }
