@@ -47,6 +47,6 @@ bool HITInterpreter<S>::parseFile(const std::string& filename, size_t line)
             << std::endl;
         return false;
     }
-    return parse(in, line);
+    return parseStream(in, filename, line);
 }
 #endif
