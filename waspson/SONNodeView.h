@@ -19,6 +19,7 @@ class WASP_PUBLIC SONNodeView
 {
   public:
     using Collection = std::vector<SONNodeView>;
+    using GenericView = NodeView;
     SONNodeView() : m_node_index(-1), m_pool(nullptr) {}
     SONNodeView(std::size_t node_index, const AbstractInterpreter& nodes);
     template<class NV>
@@ -27,8 +28,8 @@ class WASP_PUBLIC SONNodeView
 
     ~SONNodeView();
 
-    Iterator<SONNodeView> begin() const{return Iterator<SONNodeView>(*this);}
-    Iterator<SONNodeView> end() const{return Iterator<SONNodeView>();}
+    Iterator<SONNodeView,FilePush> begin() const{return Iterator<SONNodeView,FilePush>(*this);}
+    Iterator<SONNodeView,FilePush> end() const{return Iterator<SONNodeView,FilePush>();}
 
     SONNodeView& operator=(const SONNodeView& b);
     template<class NV>

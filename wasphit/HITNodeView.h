@@ -20,6 +20,7 @@ class WASP_PUBLIC HITNodeView
 {
   public:
     using Collection = std::vector<HITNodeView>;
+    using GenericView = NodeView;
     HITNodeView() : m_node_index(-1), m_pool(nullptr) {}
     HITNodeView(std::size_t node_index, const AbstractInterpreter& data);
     template<class NV>

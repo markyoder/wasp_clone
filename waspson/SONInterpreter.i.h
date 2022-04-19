@@ -8,6 +8,7 @@ SONInterpreter<S>::SONInterpreter()
     , traceParsing(false)
     , singleParse(false)
     , mHasFile(false)
+    , m_parent(nullptr)
 {
 }
 template<class S>
@@ -17,6 +18,7 @@ SONInterpreter<S>::SONInterpreter(std::ostream& err)
     , traceParsing(false)
     , singleParse(false)
     , mHasFile(false)
+    , m_parent(nullptr)
 {
 }
 template<class S>
@@ -64,5 +66,20 @@ bool SONInterpreter<S>::parseString(const std::string& input,
 {
     std::istringstream iss(input);
     return parseStream(iss, sname, startLine, startColumn);
+}
+
+template<class S>
+SONInterpreter<S>* SONInterpreter<S>::create_nested_interpreter(Interpreter<S>* parent)
+{
+    wasp_require(parent);
+    auto* interp = new SONInterpreter<S>(parent->error_stream());
+    wasp_insist(dynamic_cast<SONInterpreter<S>*>(parent) != nullptr, 
+        "parent interpreter must be the same type");
+    interp->m_parent = dynamic_cast<SONInterpreter<S>*>(parent);
+
+    // Make sure the nested interpreter knows to search relative from
+    // the directory from which it is being included
+    interp->search_paths().push_back(wasp::dir_name(parent->stream_name()));
+    return interp;
 }
 #endif

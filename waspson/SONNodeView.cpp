@@ -37,13 +37,12 @@ bool SONNodeView::operator<(const SONNodeView& b) const
 
 SONNodeView SONNodeView::parent() const
 {
-    SONNodeView view(m_pool->parent_node_index(m_node_index), *m_pool);
-    return view;
+    return wasp::fe_parent<SONNodeView, AbstractInterpreter>(*this);
 }
 
 bool SONNodeView::has_parent() const
 {
-    return m_pool->has_parent(m_node_index);
+    return wasp::fe_has_parent(*this);
 }
 
 std::string SONNodeView::id() const
@@ -120,18 +119,18 @@ bool SONNodeView::is_terminator() const
 
 SONNodeView::Collection SONNodeView::non_decorative_children() const
 {
-    return wasp::non_decorative_children(*this);
+    return wasp::fe_non_decorative_children(*this);
 }
 
 SONNodeView
 SONNodeView::first_non_decorative_child_by_name(const std::string& name) const
 {
-    return wasp::first_non_decorative_child_by_name(*this,name);
+    return wasp::fe_first_non_decorative_child_by_name(*this,name);
 }
 
 size_t SONNodeView::non_decorative_children_count() const
 {
-    return wasp::non_decorative_children_count(*this);
+    return wasp::fe_non_decorative_children_count(*this);
 }
 
 std::string SONNodeView::data() const
@@ -155,38 +154,23 @@ void SONNodeView::paths(std::ostream& out) const
 
 std::size_t SONNodeView::child_count() const
 {
-    return m_pool->child_count(m_node_index);
+    return wasp::fe_child_count(*this);
 }
 std::size_t  // return type
     SONNodeView::child_count_by_name(const std::string& name,
                                      std::size_t        limit) const
 {
-    NodeView view(node_index(), *node_pool());
-    return view.child_count_by_name(name, limit);
+    return wasp::fe_child_count_by_name(*this, name, limit);
 }
 
 SONNodeView SONNodeView::child_at(std::size_t index) const
 {
-    auto child_node_pool_index = m_pool->child_at(m_node_index, index);
-    return SONNodeView(child_node_pool_index, *m_pool);
+    return wasp::fe_child_at(*this, index);
 }
 SONNodeView::Collection  // return type
     SONNodeView::child_by_name(const std::string& name, std::size_t limit) const
 {
-    Collection results;
-    for (std::size_t i = 0, count = child_count(); i < count; ++i)
-    {
-        auto        child      = child_at(i);
-        std::string child_name = child.name();
-        if (child_name == name)
-        {
-            results.push_back(child);
-        }
-        // limit of 0 is reserved as no limit
-        if (limit != 0 && results.size() == limit)
-            break;
-    }
-    return results;
+    return wasp::fe_child_by_name(*this, name, limit);
 }
 SONNodeView::Collection  // return type
     SONNodeView::child_by_type(std::size_t type, std::size_t limit) const
@@ -209,8 +193,7 @@ SONNodeView::Collection  // return type
 SONNodeView  // return type
     SONNodeView::first_child_by_name(const std::string& name) const
 {
-    NodeView view(node_index(), *node_pool());
-    return view.first_child_by_name(name);
+    return wasp::fe_first_non_decorative_child_by_name(*this, name);
 }
 
 std::size_t SONNodeView::type() const

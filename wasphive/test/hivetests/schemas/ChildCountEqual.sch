@@ -11,28 +11,22 @@ test{
     }
 
     one{
-        value{
-        }
+        `import('empty_value.son')
     }
     two{
-        value{
-        }
+        `import('empty_value.son')
     }
     three{
-        value{
-        }
+        `import('empty_value.son')
     }
     four{
-        value{
-        }
+        `import('empty_value.son')
     }
     five{
-        value{
-        }
+        `import('empty_value.son')
     }
     six{
-        value{
-        }
+        `import('empty_value.son')
     }
 
     settings{
@@ -43,12 +37,10 @@ test{
             }
         }
         orange_rgb{
-            value{
-            }
+            `import('empty_value.son')
         }
         yellow_rgb{
-            value{
-            }
+            `import('empty_value.son')
         }
     }
 

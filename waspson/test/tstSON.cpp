@@ -1736,3 +1736,57 @@ TEST(SON, DISABLED_array_expression_identifier)
     ASSERT_FALSE(k_id_view.is_null());
     ASSERT_EQ("id", std::string(k_id_view.name()));
 }
+
+
+/**
+ * @brief standalone file include not found error
+ */
+TEST(SON, only_include_not_found)
+{
+    std::stringstream input;
+    input << R"I(`import('missing.son'))I" << std::endl;
+    std::stringstream errors;
+    DefaultSONInterpreter interpreter(errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expected_errors;
+    expected_errors << "stream input line:1 column:1 : could not find 'missing.son'" << std::endl;
+    
+    ASSERT_EQ(expected_errors.str(), errors.str());
+}
+/**
+ * @brief standalone file include
+ */
+TEST(SON, only_include)
+{
+    { // Scope for file buffer to be flushed before reading
+    std::ofstream block_file("data.son");
+    block_file << "  key = 3" << std::endl;
+    block_file.close();
+    }
+    
+    std::stringstream input;
+    input << R"I(`import ('data.son'))I" << std::endl;
+
+    DefaultSONInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::string expected_paths = R"INPUT(/
+/import
+/import/decl (`import)
+/import/( (()
+/import/path ('data.son')
+/import/) ())
+)INPUT";    
+
+    std::stringstream actual_paths;
+    interpreter.root().paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+
+    std::vector<std::string> expected = {"key"};
+    SONNodeView root = interpreter.root();
+    size_t index = 0;
+    for (auto itr = root.begin(); itr != root.end(); itr.next(), ++index)
+    {
+        ASSERT_EQ(expected[index], itr.get().name());
+    }
+}

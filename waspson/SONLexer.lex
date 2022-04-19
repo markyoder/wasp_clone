@@ -40,6 +40,7 @@ typedef wasp::SONParser::token_type token_type;
 
  /* enables the use of start condition stacks */
 %option stack
+%x file_import
 %x subtraction
 %s execution_unit
 
@@ -91,8 +92,11 @@ LBRACKET \[
 RBRACKET \]
 LBRACE \{
 RBRACE \}
+LPAREN \(
+RPAREN \)
 COMMA ,
 COLON :
+FILE_IMPORT `import
 
  /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
@@ -124,6 +128,26 @@ COLON :
     capture_token(yylval,wasp::MINUS);
     return token::MINUS;
 }
+
+{FILE_IMPORT} {
+    yy_push_state(file_import);
+    capture_token(yylval,wasp::FILE);
+    return token::FILE;
+}
+<file_import>{LPAREN} {
+    capture_token(yylval,wasp::LPAREN);
+    return token::LPAREN;
+}
+<file_import>{QSTRING} {
+    capture_token(yylval,wasp::QUOTED_STRING);
+    return token::QSTRING;
+}
+<file_import>{RPAREN} {
+    yy_pop_state();
+    capture_token(yylval,wasp::RPAREN);
+    return token::RPAREN;
+}
+
 {FILLER} {
     capture_token(yylval,wasp::FILL_EXPR);
     return token::FILLER;

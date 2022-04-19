@@ -19,6 +19,7 @@ class WASP_PUBLIC JSONNodeView
 {
   public:
     using Collection = std::vector<JSONNodeView>;
+    using GenericView = NodeView;
     JSONNodeView() : m_node_index(-1), m_pool(nullptr) {}
     JSONNodeView(std::size_t node_index, const AbstractInterpreter& nodes);
     template<class NV>

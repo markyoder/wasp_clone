@@ -99,6 +99,7 @@
 %token <token_index>    STRING          "string"
 %token <token_index>    QSTRING          "quoted string"
 %token <token_index>    COMMENT           "comment"
+%token <token_index>    FILE              "file import"
 %token <token_index>    EXECUTION_UNIT_START  "start of unit of execution"
 %token <token_index>    EXECUTION_UNIT_END  "end of unit of execution"
 
@@ -113,16 +114,17 @@
 %type <node_index>  lparen rparen plus minus multiply divide exponent
 %type <node_index>  lbracket rbracket
 %type <node_index>  lbrace rbrace
-%type <node_index>  array
+%type <node_index>  array 
 %type <node_index>  block
 %type <node_index>  comma
 %type <node_index>  decl
+%type <node_index>  import path import_file
 %type <node_index>  exp value
 %type <node_index>  filler
 %type <node_index>  identifier
 %type <node_index>  object
 %type <node_index>  keyedvalue
-%type <node_index>  comment
+%type <node_index>  comment 
 %type <node_index>  component execution_unit_end execution_unit_start execution_unit_name
 
 %type <node_index> execution_unit
@@ -431,6 +433,36 @@ execution_unit_start : EXECUTION_UNIT_START
     $$ = interpreter.push_leaf(wasp::EXECUTION_UNIT_START,"uoe_start",token_index);
 }
 
+import : FILE
+    {
+        auto token_index = $1;
+        $$ = interpreter.push_leaf(wasp::FILE,"decl",token_index);
+    }
+path :  QSTRING
+    {
+        size_t token_index = ($1);
+        $$ = interpreter.push_leaf(wasp::VALUE, "path", token_index);
+    }
+
+import_file : import lparen path rparen
+    {
+
+        std::vector<size_t> child_indices = {$1,$2, $3, $4};
+        $$ = interpreter.push_parent(wasp::FILE
+                                        // import
+                                        //  |_ decl (`import)
+                                        //  |_ lparen ('(')
+                                        //  |_ value (path/to/file)
+                                        //  |_ rparen (')')
+                                    ,"import"
+                                    ,child_indices);
+        bool loaded = interpreter.load_document($$, wasp::trim(interpreter.data($3)," "));
+        if (!loaded)
+        {
+            interpreter.set_failed(true);
+        }
+    }
+
 identifier : exp
     {
         interpreter.set_type($exp, wasp::IDENTIFIER);
@@ -685,6 +717,16 @@ members :
             $$ = $1;
             $$->push_back($2);
         }
+        | import_file
+        {
+            $$ = new std::vector<size_t>();
+            $$->push_back($1);
+        }
+        | members import_file
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
 
 array_members :
         exp
@@ -753,7 +795,16 @@ array_members :
             $$ = $1;
             $$->push_back($2);
         }
-
+        | import_file
+        {
+            $$ = new std::vector<size_t>();
+            $$->push_back($1);
+        }
+        | array_members import_file
+        {
+            $$ = $1;
+            $$->push_back($2);
+        }
 comment : COMMENT
         {
             auto token_index = ($1);
@@ -833,6 +884,7 @@ start   : /** empty **/
         | start object{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
         | start execution_unit{interpreter.push_staged_child(($2));if(interpreter.single_parse() ) {YYACCEPT;}}
         | start block{ /*Node staging occurs in block rule*/;if(interpreter.single_parse() ) {YYACCEPT;}}
+        | start import_file{interpreter.push_staged_child(($2)); if(interpreter.single_parse() ) {lexer->rewind();YYACCEPT;}}
 
  /*** END RULES - Change the wasp grammar rules above ***/
 

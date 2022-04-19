@@ -301,20 +301,21 @@ bool Interpreter<NodeStorage>::load_document(size_t node_index,
                                              const std::string & path)
 {
     bool passed = true;
-    add_document_path(node_index, path);
+    std::string clean_path = wasp::strip_quotes(path);
+    add_document_path(node_index, clean_path);
 
     std::stringstream err_msgs;
 
     std::string directory_name = wasp::dir_name(stream_name());
     if (directory_name == stream_name()) directory_name=".";
-    auto document_relative_path  = directory_name + "/" + path;
+    auto document_relative_path  = directory_name + "/" + clean_path;
     // if immediately adjacent path doesn't exist
     // check the search paths
     if (!wasp::file_exists(document_relative_path))
     {
         for (const auto& dir : search_paths())
         {
-            document_relative_path = dir + "/" + path;
+            document_relative_path = dir + "/" + clean_path;
             if (wasp::file_exists(document_relative_path)) break;
         }
     }
@@ -345,7 +346,7 @@ bool Interpreter<NodeStorage>::load_document(size_t node_index,
                                       <<" column:"
                                       <<column(node_index)
                                       <<" : could not find '"
-                                      <<path<<"'"
+                                      <<clean_path<<"'"
                                       <<std::endl;
         passed &= false;
     }

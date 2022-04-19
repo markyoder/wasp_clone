@@ -36,13 +36,12 @@ bool HITNodeView::operator<(const HITNodeView& b) const
 
 HITNodeView HITNodeView::parent() const
 {
-    HITNodeView view(m_pool->parent_node_index(m_node_index), *m_pool);
-    return view;
+    return wasp::fe_parent<HITNodeView, AbstractInterpreter>(*this);
 }
 
 bool HITNodeView::has_parent() const
 {
-    return m_pool->has_parent(m_node_index);
+    return wasp::fe_has_parent(*this);
 }
 
 bool HITNodeView::is_leaf() const
@@ -92,73 +91,18 @@ bool HITNodeView::is_terminator() const
 
 HITNodeView::Collection HITNodeView::non_decorative_children() const
 {
-    Collection results;
-
-    for (std::size_t i = 0, count = child_count(); i < count; ++i)
-    {
-        const auto& child = child_at(i);
-        if( child.type() == wasp::FILE )
-        {
-            auto * interp = m_pool->document(child.node_index());
-            if ( interp != nullptr )
-            {
-                auto children = HITNodeView(interp->root()).non_decorative_children();
-                results.insert(results.end(), children.begin(),children.end());
-            }
-        }
-        else if (!child.is_decorative())
-            results.push_back(child);
-    }
-    return results;
+    return wasp::fe_non_decorative_children(*this);
 }
 
 HITNodeView HITNodeView::first_non_decorative_child_by_name(
     const std::string& name) const
 {
-    for (std::size_t i = 0, count = child_count(); i < count; ++i)
-    {
-        const auto& child = child_at(i);
-
-        if( child.type() == wasp::FILE )
-        {
-            auto * interp = m_pool->document(child.node_index());
-            if ( interp != nullptr )
-            {
-                auto child = HITNodeView(interp->root()).first_non_decorative_child_by_name(name);
-                if (child.is_null() == false) return child;
-            }
-        }
-        else if (!child.is_decorative())
-        {
-            if (name == child.name())
-            {
-                return child;
-            }
-        }
-    }
-    return HITNodeView();  // null node
+    return wasp::fe_first_non_decorative_child_by_name(*this, name);
 }
 
 size_t HITNodeView::non_decorative_children_count() const
 {
-    size_t result = 0;
-    for (std::size_t i = 0, count = child_count(); i < count; ++i)
-    {
-        const auto& child = child_at(i);
-        if( child.type() == wasp::FILE )
-        {
-            auto * interp = m_pool->document(child.node_index());
-            if ( interp != nullptr )
-            {
-                result+=HITNodeView(interp->root()).non_decorative_children_count();
-            }
-        }
-        else if (!child.is_decorative())
-        {
-            ++result;
-        }
-    }
-    return result;
+    return wasp::fe_non_decorative_children_count(*this);
 }
 
 std::string HITNodeView::data() const
@@ -182,103 +126,29 @@ void HITNodeView::paths(std::ostream& out) const
 
 std::size_t HITNodeView::child_count() const
 {
-    if( type() == wasp::FILE )
-    {
-        auto * interp = m_pool->document(m_node_index);
-        if ( interp != nullptr )
-        {
-            return HITNodeView(interp->root()).child_count();
-        }
-    }
-    return m_pool->child_count(m_node_index);
+    return wasp::fe_child_count(*this);
 }
 std::size_t  // return type
     HITNodeView::child_count_by_name(const std::string& name,
                                         std::size_t        limit) const
 {
-    size_t result = 0;
-    for (std::size_t i = 0, count = child_count(); i < count; ++i)
-    {
-        const auto& child = child_at(i);
-        const std::string& child_name = child.name();
-        if( child.type() == wasp::FILE )
-        {
-            auto * interp = m_pool->document(child.node_index());
-            if ( interp != nullptr )
-            {
-                result+=HITNodeView(interp->root()).child_count_by_name(name,
-                                                    limit==0?limit:limit-result);
-            }
-        }
-        else if (child_name == name)
-        {
-            ++result;
-        }
-    }
-    return result;
+    return wasp::fe_child_count_by_name(*this, name, limit);
 }
 
 HITNodeView HITNodeView::child_at(std::size_t index) const
 {
-
-    if( type() == wasp::FILE )
-    {   
-        auto * interp = m_pool->document(m_node_index);
-        if ( interp != nullptr )
-        {
-            HITNodeView view = HITNodeView(interp->root());
-            wasp_check(view.is_null() == false);
-            wasp_check(view.child_count() > index);
-            return view.child_at(index);
-        }
-    }
-    
-    auto child_node_pool_index = m_pool->child_at(m_node_index, index);
-    return HITNodeView(child_node_pool_index, *m_pool);
+    return wasp::fe_child_at(*this, index);
 }
 HITNodeView::Collection  // return type
     HITNodeView::child_by_name(const std::string& name,
                                   std::size_t        limit) const
 {
-    Collection results;
-    for (std::size_t i = 0, count = child_count(); i < count; ++i)
-    {
-        auto        child      = child_at(i);
-        std::string child_name = child.name();
-        if( child.type() == wasp::FILE )
-        {
-            auto * interp = m_pool->document(child.node_index());
-            if ( interp != nullptr )
-            {
-                auto children = HITNodeView(interp->root()).child_by_name(name,limit);
-                results.insert(results.end(), children.begin(), children.end());
-            }
-        }
-        else if (child_name == name)
-        {
-            results.push_back(child);
-        }
-        // limit of 0 is reserved as no limit
-        if (limit != 0 && results.size() == limit)
-            break;
-    }
-    return results;
+    return wasp::fe_child_by_name(*this, name, limit);
 }
 HITNodeView  // return type
     HITNodeView::first_child_by_name(const std::string& name) const
 {
-    if( type() == wasp::FILE )
-    {
-        auto * interp = m_pool->document(m_node_index);
-        if ( interp != nullptr )
-        {
-            HITNodeView view = HITNodeView(interp->root());
-            wasp_check(view.is_null() == false);
-            return view.first_child_by_name(name);
-        }
-    }
-    NodeView view(node_index(), *node_pool());
-    return view.first_child_by_name(name);
+    return wasp::fe_first_child_by_name(*this, name);
 }
 
 std::size_t HITNodeView::type() const

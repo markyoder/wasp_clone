@@ -19,6 +19,7 @@ class WASP_PUBLIC HaliteNodeView
 {
   public:
     using Collection = std::vector<HaliteNodeView>;
+    using GenericView = NodeView;
     HaliteNodeView() : m_node_index(-1), m_pool(nullptr) {}
     HaliteNodeView(std::size_t node_index, const AbstractInterpreter& nodes);
     template<class NV>

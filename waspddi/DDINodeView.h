@@ -19,6 +19,7 @@ class WASP_PUBLIC DDINodeView
 {
   public:
     using Collection = std::vector<DDINodeView>;
+    using GenericView = NodeView;
     DDINodeView() : m_node_index(-1), m_pool(nullptr) {}
     DDINodeView(std::size_t node_index, const AbstractInterpreter& nodes);
     template<class NV>
