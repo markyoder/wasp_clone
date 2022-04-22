@@ -3,4 +3,5 @@
 *.output
 *.dot
 *.swp
-
+build
+install
