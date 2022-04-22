@@ -1,6 +1,5 @@
 #ifndef WASP_TREENODEPOOL_H
 #define WASP_TREENODEPOOL_H
-#include <unordered_map>
 #include <cstdint>
 #include <string>
 #include <sstream>
@@ -8,8 +7,8 @@
 #include <iostream>
 #include "waspcore/StringPool.h"
 #include "waspcore/TokenPool.h"
-#include "waspcore/wasp_node.h"  // for UNKNOWN node/token types
-#include "waspcore/utils.h"      // string quote trimming, to_type
+#include "waspcore/wasp_node.h"
+#include "waspcore/utils.h"
 #include "waspcore/decl.h"
 
 namespace wasp
@@ -73,8 +72,7 @@ class WASP_PUBLIC TreeNodePool
 
     bool is_leaf(size_t node_index) const
     {
-        return m_leaf_token_lookup.find(node_index) !=
-               m_leaf_token_lookup.end();
+        return m_node_basic_data[node_index].is_leaf();
     }
     /**
      * @brief size acquire the number of nodes (leaf and parent)
@@ -134,13 +132,6 @@ class WASP_PUBLIC TreeNodePool
     */
     std::size_t child_at(node_index_size node_index,
                          node_index_size child_index) const;
-
-    /**
-     * @brief leaf_node_count acquire the number of leaf nodes
-     * @return leaf node count
-     * Leaf nodes reference a token
-     */
-    std::size_t leaf_node_count() const { return m_leaf_token_lookup.size(); }
 
     /**
      * @brief child_count acquire the number of child nodes for the given node
@@ -321,20 +312,36 @@ class WASP_PUBLIC TreeNodePool
      */
     struct BasicNodeData
     {
-        BasicNodeData() : m_node_type(-1), m_parent_node_index(-1) {}
+        BasicNodeData(){}
         BasicNodeData(node_type_size type, node_index_size parent_index)
             : m_node_type(type), m_parent_node_index(parent_index)
         {
         }
+
+        bool is_leaf() const {return m_token_index != static_cast<typename TP::token_index_type_size>(-1);}
+        bool has_parent_data() const {return m_node_parent_data_index != static_cast<node_index_size>(-1);}
         /**
          * @brief m_type the node type
          */
-        node_type_size m_node_type;
+        node_type_size m_node_type = -1;
         /**
          * @brief m_parent_node_index the node's parent index into
          * m_node_basic_data
          */
-        node_index_size m_parent_node_index;
+        node_index_size m_parent_node_index = -1;
+
+        /**
+         * @brief m_token_index the node's token data index
+         * Use is_leaf() to determine if this is assigned to
+         * existing token data (m_token_data[m_token_index])
+         */
+        typename TP::token_index_type_size m_token_index = -1;
+        /**
+         * @brief m_node_parent_data_index node's parent data index
+         * Use has_parent_data() to determine if this is assigned to
+         * existing parent-node data (m_node_parent_data[m_node_parent_data_index])
+         */
+        node_index_size m_node_parent_data_index = -1;
     };
     /**
      * @brief m_node_basic_data basic data for all nodes
@@ -373,18 +380,7 @@ class WASP_PUBLIC TreeNodePool
      * parent
      */
     std::vector<node_index_size> m_node_child_indices;
-    /**
-     * @brief m_basic_parent_data_lookup index of basic node to parent node
-     * An entry will only exist when a basic node is also a parent node
-     */
-    std::unordered_map<node_index_size, node_index_size>
-        m_basic_parent_data_lookup;
-    /**
-     * @brief m_leaf_token_lookup basic node index to token data index in pool
-     * An entry will only exist when a basic node is also a leaf node
-     */
-    std::unordered_map<node_index_size, typename TP::token_index_type_size>
-        m_leaf_token_lookup;
+
 };
 
 #include "waspcore/TreeNodePool.i.h"
