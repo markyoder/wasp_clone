@@ -302,12 +302,6 @@ def extract_results(document):
                     print("Using produced '"+output+"'")
 
                     res_output.extend([float(r) for r in output.split("\n")])
-
-
-
-
-
-                    res_output.extend([float(r) for r in output.split("\n")])
             
             elif 'find' in extract: # Finding pattern or line
                 for each_find in extract['find']:
