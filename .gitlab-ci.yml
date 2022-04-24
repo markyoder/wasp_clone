@@ -55,10 +55,7 @@ linux_gcc54_testing:
     - gcc5.4
     - pbs
   script:
-    - RTN_DIR=${PWD}
-    - . ci/linux_gcc5.4_test.sh python3
-    - cd ${RTN_DIR} 
-    - . ci/linux_gcc5.4_test.sh python2
+    - . ci/linux_gcc5.4_test.sh
 
 linux_gcc485_testing:
   tags:
