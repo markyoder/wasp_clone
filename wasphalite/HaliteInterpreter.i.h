@@ -1140,6 +1140,9 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&   data,
         wasp::dir_name(Interpreter<S>::stream_name()) + "/" + path;
     std::ifstream        relative_to_current(relative_to_current_path.c_str());
     HaliteInterpreter<S> nested_interp(Interpreter<S>::error_stream());
+    nested_interp.attr_start_delim() = this->attr_start_delim();
+    nested_interp.attr_end_delim()   = this->attr_end_delim();
+
     bool                 import = false;
     bool                 parsed = false;
     if (!relative_to_working_dir.good())

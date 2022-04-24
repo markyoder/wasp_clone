@@ -34,7 +34,9 @@ ENDIF()
 IF(BUILD_SHARED_LIBS)
    ADD_DEFINITIONS("-DBUILD_SHARED")
 ENDIF()
-
+IF("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+   ADD_DEFINITIONS("-DNOMINMAX")
+ENDIF()
 SET(CMAKE_CXX_STANDARD 11)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -96,6 +98,11 @@ ELSE()
   TRIBITS_PACKAGE_DEF()
   TRIBITS_PACKAGE_POSTPROCESS()
 ENDIF()
+
+# Copy script/test_moose_app_integration.sh to the build tree and install
+FILE(GLOB SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_moose_app_integration.sh)
+FILE(COPY ${SCRIPTS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/scripts)
+INSTALL(PROGRAMS ${SCRIPTS} DESTINATION scripts)
 
 # NOTE: In order to allow the `wasp/` directory to be both a TriBITS
 # package (for inclusion in other TriBITS projects) and to be a TriBITS

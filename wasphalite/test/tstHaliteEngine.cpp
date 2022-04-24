@@ -454,6 +454,29 @@ TEST(Halite, indirect_attribute_delim)
     ASSERT_TRUE(interpreter.evaluate(out, data));
     ASSERT_EQ("obj 3.14159", out.str());
 }
+
+// Ensure that imported templates use the delimiters
+// specified in the parent
+TEST(Halite, inherited_attribute_delim)
+{
+    std::ofstream     import("inherited_delim.tmpl");
+    import << "<<attr>>";
+    import.close();
+    std::stringstream input;
+    input << "#import inherited_delim.tmpl";
+    DefaultHaliteInterpreter interpreter;
+    interpreter.attr_start_delim() = "<<";
+    interpreter.attr_end_delim()   = ">>";
+    ASSERT_TRUE(interpreter.parse(input));
+    std::stringstream out;
+    DataObject        o;
+    DataAccessor      data(&o);
+    o["attr"]   = std::string("what");
+    EXPECT_TRUE(interpreter.evaluate(out, data));
+    EXPECT_EQ("what", out.str());
+    std::remove("inherited_delim.tmpl");
+}
+
 TEST(Halite, indirect_attribute_preceeding_static)
 {
     std::stringstream input;

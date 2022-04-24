@@ -43,9 +43,9 @@ typedef wasp::JSONParser::token_type token_type;
  /*%x exclusive*/
  /*%s inclusive*/
 
-INT \-?[0-9]+
-EXPONENT [eE][\+\-]?{INT}
-DOUBLE {INT}?\.{INT}{EXPONENT}?|{INT}\.({INT}{EXPONENT}?)?|{INT}{EXPONENT}
+INTEGER \-?[0-9]+
+EXPONENT [eE][\+\-]?{INTEGER}
+DOUBLE {INTEGER}?\.{INTEGER}{EXPONENT}?|{INTEGER}\.({INTEGER}{EXPONENT}?)?|{INTEGER}{EXPONENT}
 
 
 TOKEN_TRUE true
@@ -78,8 +78,8 @@ COLON :
     capture_token(yylval,wasp::REAL);
     return token::DOUBLE;
 }
-{INT}  {
-    capture_token(yylval,wasp::INT);
+{INTEGER}  {
+    capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 {COMMA}  {
@@ -166,7 +166,7 @@ void JSONLexerImpl::set_debug(bool b)
 }
 void JSONLexerImpl::rewind()
 {
-    yyin->seekg(-yyleng,std::ios_base::cur);
+    yyin.seekg(-yyleng,std::ios_base::cur);
     yyless(0);
 }
 void JSONLexerImpl::capture_token(

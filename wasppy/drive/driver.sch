@@ -8,6 +8,7 @@ application{
         MaxOccurs=1
         ValType=String
     }
+    ChildCountEqual(EvenNone) = [input_file/value input_tmpl/value]
     input_file{
         MinOccurs=1
         MaxOccurs=1
@@ -15,7 +16,7 @@ application{
         Description="specify application's input file name"
         value{
             MinOccurs=1
-            MaxOccurs=1
+            MaxOccurs=NoLimit
             ValType=String
         }
     }
@@ -26,7 +27,31 @@ application{
         Description="specify input template name"
         value{
             MinOccurs=1
-            MaxOccurs=1
+            MaxOccurs=NoLimit
+            ValType=String
+        }
+    }
+    left_delimiter{
+        MinOccurs=0
+        MaxOccurs=1
+        InputTmpl="left_delimiter"
+        Description="specify left delimiter to pass to HALITE executable"
+        InputDefault="'<'"
+        value{
+            MinOccurs=1
+            MaxOccurs=NoLimit
+            ValType=String
+        }
+    }
+    right_delimiter{
+        MinOccurs=0
+        MaxOccurs=1
+        InputTmpl="right_delimiter"
+        InputDefault="'>'"
+        Description="specify right delimiter to pass to HALITE executable"
+        value{
+            MinOccurs=1
+            MaxOccurs=NoLimit
             ValType=String
         }
     }

@@ -15,7 +15,7 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
     * [SIREN](/waspsiren/README.md#sequence-input-retrieval-engine-siren)
     * [SON](/waspson/README.md#standard-object-notation-son)
     * [DDI](/waspddi/README.md#definition-driven-interpreter)
-    * [VII](/waspvii/README.md#vera-input-interpreter)
+    * [EDDI](/waspeddi/README.md#eddi-input-interpreter)
     * [HALITE](/wasphalite/README.md#halite-engine)
     * [LSP](/wasplsp/README.md#language-server-protocol)
     * [Utils](/wasputils/README.md#command-line-utilities)
@@ -77,7 +77,7 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
     * [Selecting Unknown Nodes](/waspsiren/README.md#selecting-unknown-nodes)
 7. [SON](/waspson/README.md#standard-object-notation-son) - Standard Object Notation (SON) for general input data entry
 8. [DDI](/waspddi/README.md#definition-driven-interpreter) - Definition Driven Interpreter (DDI) for reduced input data entry  
-9. [VII](/waspvii/README.md#vera-input-interpreter) - VERA Input Interpreter (VII) for reduced input data entry  
+9. [EDDI](/waspeddi/README.md#eddi-input-interpreter) - Extra Definition Driven Interpreter (EDDI) for reduced input data entry  
 10. [HALITE](/wasphalite/README.md#halite-engine) - HierarchicAL Input Template Engine (HALITE) 
     * [Template Evaluation Summary](/wasphalite/README.md#template-evaluation-summary)
     * [Attributes and Expressions](/wasphalite/README.md#attributes-and-expressions)
@@ -138,7 +138,7 @@ WASP is composed of the following primary components:
         * exponentiation '\^'
     * Scalar variable assignment, reference, and creation: known variable can be referenced and updated, or new variables created during expression evaluation.
     * Mathematical functions
-3. [__GetPot__](http://getpot.sourceforge.net/documentation-index.html): the waspgetpot package contains lexer, parser, and tree node view for the getpot grammar (http://getpot.sourceforge.net/).
+3. [__HIT__](https://mooseframework.inl.gov/framework_development/sanity_checking.html): the wasphit package contains lexer, parser, and tree node view for the hit grammar.
 4. [__HIVE__](/wasphive/README.md#hive): the Hierarchical Input Validation Engine contains algorithms for validating a parse tree using a document schema/definition file, the flexible scalar and referential rules - supporting 
     * element occurrence,
     * value,
@@ -155,8 +155,9 @@ WASP is composed of the following primary components:
     * identified objects, arrays, and keyed values.
 8. [__DDI__](waspddi/README.md#definition-driven-interpreter): the Definition-Driven Interpreter (DDI) contains a lexer, a parser, and an interpreter for the lightweight input format. 
     * Hierarchical Input format with very little syntax.
-9. [__VII__](waspvii/README.md#vera-input-interpreter): the VERA Input Interpreter (VII) contains a lexer, a parser, and an interpreter for the lightweight VERA input format. 
-    * Hierarchical Input format with VERA syntax representing blocks, and scalar and list commands
+9. [__EDDI__](waspeddi/README.md#eddi-input-interpreter): the Extra Definition Driven Interpreter (EDDI) contains a lexer, a parser, and an interpreter for the lightweight input format. 
+    * Hierarchical Input format with little syntax representing blocks, lists, sections, and scalar data.
+    * Allows input field annotation which greatly enhances input validation capabilities 
 10. [__HALITE__](/wasphalite/README.md#halite-engine): the Hierarchical Input Template Expansion engine provides a data-driven means of expanding patterned input.
     * Supports attribute and expression evaluations.
     * Supports template imports.
@@ -207,14 +208,14 @@ cmake \
  -G "Unix Makefiles" \
  ~/wasp
 ```
-for example, to a script that will enable getpot
+for example, to a script that will enable hit
 ```
 #!/bin/bash
 # Linux bash file example
 rm -rf CMake*
 cmake \
  -D CMAKE_BUILD_TYPE:STRING=RELEASE \
- -D wasp_ENABLE_waspgetpot=ON \
+ -D wasp_ENABLE_wasphit=ON \
  -D wasp_ENABLE_TESTS:BOOL=ON \
  -D CMAKE_INSTALL_PREFIX=`pwd`/install \
  -G "Unix Makefiles" \

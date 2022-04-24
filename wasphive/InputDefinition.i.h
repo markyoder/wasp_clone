@@ -5,7 +5,9 @@
  */
 #include "InputDefinition.h"
 #include "waspcore/wasp_node.h"
-using namespace std;
+#include "waspcore/wasp_bug.h"
+#include <cstring>
+#include <iomanip>
 
 #define TOCTAB   4
 #define MAXDEPTH 3
@@ -92,7 +94,7 @@ bool InputDefinition::addEnumRef(SchemaAdapter enumArray)
     std::vector<std::string> enumList;
     for(const SchemaAdapter &child : enumArray.non_decorative_children())
     {
-        string lowerString = child.to_string();
+        std::string lowerString = child.to_string();
         transform(lowerString.begin(), lowerString.end(),
                   lowerString.begin(), ::tolower);
         enumList.push_back(lowerString);
@@ -126,7 +128,7 @@ bool InputDefinition::fillInputDefinition(IDObject * IDNode,
             SchemaAdapter inputVariantsNode = child.first_non_decorative_child_by_name("InputVariants");
             if (!inputVariantsNode.is_null())
             {
-                const vector<SchemaAdapter>& children = inputVariantsNode.non_decorative_children();
+                const std::vector<SchemaAdapter>& children = inputVariantsNode.non_decorative_children();
                 for(size_t i = 0; i < children.size(); i++)
                 {
                     tmpIDObject->addInputVariant(children[i].last_as_string());
@@ -136,10 +138,14 @@ bool InputDefinition::fillInputDefinition(IDObject * IDNode,
             SchemaAdapter inputAliasesNode = child.first_non_decorative_child_by_name("InputAliases");
             if (!inputAliasesNode.is_null())
             {
-                const vector<SchemaAdapter>& children = inputAliasesNode.non_decorative_children();
+                const std::vector<SchemaAdapter>& children = inputAliasesNode.non_decorative_children();
                 for(size_t i = 0; i < children.size(); i++)
                 {
-                    tmpIDObject->addInputAlias(children[i].last_as_string());
+                    const auto& child = children[i];
+                    if (std::strcmp(child.name(),"STRIDE") != 0)
+                    {
+                        tmpIDObject->addInputAlias(child.last_as_string());
+                    }
                 }
             }
 
@@ -604,7 +610,7 @@ void InputDefinition::printMarkdownDocumentation(IDObject * IDNode)
                         if (valueType == "Real")
                         {
                             std::stringstream stream;
-                            stream << fixed << setprecision(1) << rule->getConstantValue();
+                            stream << std::fixed << std::setprecision(1) << rule->getConstantValue();
                             minVal = stream.str();
                         }
                         else
@@ -642,7 +648,7 @@ void InputDefinition::printMarkdownDocumentation(IDObject * IDNode)
                         if (valueType == "Real")
                         {
                             std::stringstream stream;
-                            stream << fixed << setprecision(1) << rule->getConstantValue();
+                            stream << std::fixed << std::setprecision(1) << rule->getConstantValue();
                             minVal = stream.str();
                         }
                         else
@@ -683,7 +689,7 @@ void InputDefinition::printMarkdownDocumentation(IDObject * IDNode)
                         if (valueType == "Real")
                         {
                             std::stringstream stream;
-                            stream << fixed << setprecision(1) << rule->getConstantValue();
+                            stream << std::fixed << std::setprecision(1) << rule->getConstantValue();
                             maxVal = stream.str();
                         }
                         else
@@ -723,7 +729,7 @@ void InputDefinition::printMarkdownDocumentation(IDObject * IDNode)
                         if (valueType == "Real")
                         {
                             std::stringstream stream;
-                            stream << fixed << setprecision(1) << rule->getConstantValue();
+                            stream << std::fixed << std::setprecision(1) << rule->getConstantValue();
                             maxVal = stream.str();
                         }
                         else
@@ -974,7 +980,7 @@ bool IDObject::addMinOccursRule(SchemaAdapter node, InputDefinition * thisID){
         ruleAlreadyInTree = true;
     }
     else rule = new MinOccursRule(thisID);
-    string ruleValue = node.to_string();
+    std::string ruleValue = node.to_string();
 
     if (ruleValue == "NoLimit"){
         if (rule->hasConstantValue()){
@@ -1032,7 +1038,7 @@ bool IDObject::addMaxOccursRule(SchemaAdapter node, InputDefinition * thisID){
         ruleAlreadyInTree = true;
     }
     else rule = new MaxOccursRule(thisID);
-    string ruleValue = node.to_string();
+    std::string ruleValue = node.to_string();
 
     if (ruleValue == "NoLimit"){
         if (rule->hasConstantValue()){
@@ -1090,7 +1096,7 @@ bool IDObject::addMinValIncRule(SchemaAdapter node, InputDefinition * thisID){
         ruleAlreadyInTree = true;
     }
     else rule = new MinValIncRule(thisID);
-    string ruleValue = node.to_string();
+    std::string ruleValue = node.to_string();
 
     if (ruleValue == "NoLimit"){
         if (rule->hasConstantValue()){
@@ -1143,7 +1149,7 @@ bool IDObject::addMinValExcRule(SchemaAdapter node, InputDefinition * thisID){
         ruleAlreadyInTree = true;
     }
     else rule = new MinValExcRule(thisID);
-    string ruleValue = node.to_string();
+    std::string ruleValue = node.to_string();
 
     if (ruleValue == "NoLimit"){
         if (rule->hasConstantValue()){
@@ -1196,7 +1202,7 @@ bool IDObject::addMaxValIncRule(SchemaAdapter node, InputDefinition * thisID){
         ruleAlreadyInTree = true;
     }
     else rule = new MaxValIncRule(thisID);
-    string ruleValue = node.to_string();
+    std::string ruleValue = node.to_string();
 
     if (ruleValue == "NoLimit"){
         if (rule->hasConstantValue()){
@@ -1249,7 +1255,7 @@ bool IDObject::addMaxValExcRule(SchemaAdapter node, InputDefinition * thisID){
         ruleAlreadyInTree = true;
     }
     else rule = new MaxValExcRule(thisID);
-    string ruleValue = node.to_string();
+    std::string ruleValue = node.to_string();
 
     if (ruleValue == "NoLimit"){
         if (rule->hasConstantValue()){
@@ -1303,7 +1309,7 @@ bool IDObject::addValTypeRule(SchemaAdapter node, InputDefinition * thisID){
     }
     rule = new ValTypeRule(thisID);
 
-    string ruleValue = node.to_string();
+    std::string ruleValue = node.to_string();
     if (rule->isValidOption(ruleValue)){
         rule->setType(ruleValue);
     }
@@ -1354,7 +1360,7 @@ bool IDObject::addValEnumsRule(SchemaAdapter node, InputDefinition * thisID){
             }
         }
         else{
-            string lowerString = children[i].to_string();
+            std::string lowerString = children[i].to_string();
             transform(lowerString.begin(), lowerString.end(),
                                                 lowerString.begin(), ::tolower);
             rule->addEnumValue(lowerString);
@@ -1396,7 +1402,7 @@ bool IDObject::addInputChoicesRule(SchemaAdapter node, InputDefinition * thisID)
             }
         }
         else{
-            string lowerString = children[i].to_string();
+            std::string lowerString = children[i].to_string();
             transform(lowerString.begin(), lowerString.end(),
                                                 lowerString.begin(), ::tolower);
             rule->addEnumValue(lowerString);
@@ -1474,10 +1480,10 @@ bool IDObject::addExistsInRule(SchemaAdapter node, InputDefinition * thisID){
             else{
                 int itestStart;
                 int itestEnd;
-                istringstream rangeStreamStart(rangeChildren[0].to_string());
-                istringstream rangeStreamEnd  (rangeChildren[1].to_string());
-                rangeStreamStart >> noskipws >> itestStart;
-                rangeStreamEnd   >> noskipws >> itestEnd;
+                std::istringstream rangeStreamStart(rangeChildren[0].to_string());
+                std::istringstream rangeStreamEnd  (rangeChildren[1].to_string());
+                rangeStreamStart >> std::noskipws >> itestStart;
+                rangeStreamEnd   >> std::noskipws >> itestEnd;
                 if    (!rangeStreamStart.eof() || rangeStreamStart.fail()){
                     std::string errorMessage = "\"" + rangeChildren[0].to_string() +
                                                "\" start of range not a valid number";
@@ -1763,7 +1769,7 @@ bool IDObject::addIncreaseOverRule(SchemaAdapter node, InputDefinition * thisID)
         }
     }
 
-    string ruleValue = node.to_string();
+    std::string ruleValue = node.to_string();
     if (rule->isValidOption(ruleValue)){
         rule->setType(ruleValue);
     }
@@ -1818,7 +1824,7 @@ bool IDObject::addDecreaseOverRule(SchemaAdapter node, InputDefinition * thisID)
         }
     }
 
-    string ruleValue = node.to_string();
+    std::string ruleValue = node.to_string();
     if (rule->isValidOption(ruleValue)){
         rule->setType(ruleValue);
     }

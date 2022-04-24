@@ -1144,9 +1144,10 @@ bool dissectDiagnosticObject( const DataObject   & object          ,
 
     severity = object[m_severity].to_int();
 
-    wasp_check( object.contains(m_code) && object[m_code].is_string() );
-
-    code = object[m_code].to_string();
+    if ( object.contains(m_code) && object[m_code].is_string() )
+    {
+        code = object[m_code].to_string();
+    }
 
     if ( object.contains(m_source) && object[m_source].is_string() )
     {

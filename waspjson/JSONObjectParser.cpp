@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.1.
+// A Bison parser, made by GNU Bison 3.7.6.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015, 2018 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018-2021 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // As a special exception, you may create a larger work that contains
 // part or all of the Bison parser skeleton and distribute that work
@@ -30,29 +30,27 @@
 // This special exception was added by the Free Software Foundation in
 // version 2.2 of Bison.
 
+// DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+// especially those whose name start with YY_ or yy_.  They are
+// private implementation details that can be changed or removed.
 
-// First part of user declarations.
-#line 1 "JSONObjectParser.bison" // lalr1.cc:407
+
+
+// First part of user prologue.
+#line 1 "JSONObjectParser.bison"
  /*** C/C++ Declarations ***/
 
 #include <stdio.h>
 #include <string>
 #include <vector>
 
-#line 43 "JSONObjectParser.cpp" // lalr1.cc:407
+#line 48 "JSONObjectParser.cpp"
 
-# ifndef YY_NULLPTR
-#  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
-#  else
-#   define YY_NULLPTR 0
-#  endif
-# endif
 
 #include "JSONObjectParser.hpp"
 
-// User implementation prologue.
-#line 99 "JSONObjectParser.bison" // lalr1.cc:415
+// Second part of user prologue.
+#line 99 "JSONObjectParser.bison"
 
 
 #include "JSONObjectLexer.h"
@@ -64,7 +62,8 @@
 #define yylex lexer->lex
 
 
-#line 68 "JSONObjectParser.cpp" // lalr1.cc:415
+#line 66 "JSONObjectParser.cpp"
+
 
 
 #ifndef YY_
@@ -78,6 +77,7 @@
 #  define YY_(msgid) msgid
 # endif
 #endif
+
 
 // Whether we are compiled with exception support.
 #ifndef YY_EXCEPTIONS
@@ -105,12 +105,8 @@
         {                                                               \
           (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;      \
         }                                                               \
-    while (/*CONSTCOND*/ false)
+    while (false)
 # endif
-
-
-// Suppress unused-variable warnings by "using" E.
-//#define YYUSE(E) ((void)(E))
 
 
 // Enable debugging if requested.
@@ -138,13 +134,13 @@
 # define YY_STACK_PRINT()               \
   do {                                  \
     if (yydebug_)                       \
-      yystack_print_ ();                \
+      yy_stack_print_ ();                \
   } while (false)
 
 #else // !YYDEBUG
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Symbol)  YYUSE (Symbol)
+# define YY_SYMBOL_PRINT(Title, Symbol)  YY_USE (Symbol)
 # define YY_REDUCE_PRINT(Rule)           static_cast<void> (0)
 # define YY_STACK_PRINT()                static_cast<void> (0)
 
@@ -158,54 +154,17 @@
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-#line 36 "JSONObjectParser.bison" // lalr1.cc:491
+#line 36 "JSONObjectParser.bison"
 namespace wasp {
-#line 163 "JSONObjectParser.cpp" // lalr1.cc:491
-
-  /* Return YYSTR after stripping away unnecessary quotes and
-     backslashes, so that it's suitable for yyerror.  The heuristic is
-     that double-quoting is unnecessary unless the string contains an
-     apostrophe, a comma, or backslash (other than backslash-backslash).
-     YYSTR is taken from yytname.  */
-  std::string
-  JSONObjectParser::yytnamerr_ (const char *yystr)
-  {
-    if (*yystr == '"')
-      {
-        std::string yyr = "";
-        char const *yyp = yystr;
-
-        for (;;)
-          switch (*++yyp)
-            {
-            case '\'':
-            case ',':
-              goto do_not_strip_quotes;
-
-            case '\\':
-              if (*++yyp != '\\')
-                goto do_not_strip_quotes;
-              // Fall through.
-            default:
-              yyr += *yyp;
-              break;
-
-            case '"':
-              return yyr;
-            }
-      do_not_strip_quotes: ;
-      }
-
-    return yystr;
-  }
-
+#line 160 "JSONObjectParser.cpp"
 
   /// Build a parser object.
   JSONObjectParser::JSONObjectParser (std::shared_ptr<wasp::DataObject>& root_yyarg, std::istream &input_stream_yyarg, std::ostream &error_stream_yyarg, std::shared_ptr<class JSONObjectLexerImpl> lexer_yyarg)
-    :
 #if YYDEBUG
-      yydebug_ (false),
+    : yydebug_ (false),
       yycdebug_ (&std::cerr),
+#else
+    :
 #endif
       root (root_yyarg),
       input_stream (input_stream_yyarg),
@@ -216,65 +175,49 @@ namespace wasp {
   JSONObjectParser::~JSONObjectParser ()
   {}
 
+  JSONObjectParser::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
+  {}
 
   /*---------------.
-  | Symbol types.  |
+  | symbol kinds.  |
   `---------------*/
-
-  JSONObjectParser::syntax_error::syntax_error (const location_type& l, const std::string& m)
-    : std::runtime_error (m)
-    , location (l)
-  {}
 
   // basic_symbol.
   template <typename Base>
-  JSONObjectParser::basic_symbol<Base>::basic_symbol ()
-    : value ()
-    , location ()
-  {}
-
-  template <typename Base>
-  JSONObjectParser::basic_symbol<Base>::basic_symbol (const basic_symbol& other)
-    : Base (other)
-    , value (other.value)
-    , location (other.location)
-  {
-  }
-
-  template <typename Base>
-  JSONObjectParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const semantic_type& v, const location_type& l)
-    : Base (t)
-    , value (v)
-    , location (l)
+  JSONObjectParser::basic_symbol<Base>::basic_symbol (const basic_symbol& that)
+    : Base (that)
+    , value (that.value)
+    , location (that.location)
   {}
 
 
   /// Constructor for valueless symbols.
   template <typename Base>
-  JSONObjectParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const location_type& l)
+  JSONObjectParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_MOVE_REF (location_type) l)
     : Base (t)
     , value ()
     , location (l)
   {}
 
   template <typename Base>
-  JSONObjectParser::basic_symbol<Base>::~basic_symbol ()
-  {
-    clear ();
-  }
+  JSONObjectParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_RVREF (semantic_type) v, YY_RVREF (location_type) l)
+    : Base (t)
+    , value (YY_MOVE (v))
+    , location (YY_MOVE (l))
+  {}
 
   template <typename Base>
-  void
-  JSONObjectParser::basic_symbol<Base>::clear ()
+  JSONObjectParser::symbol_kind_type
+  JSONObjectParser::basic_symbol<Base>::type_get () const YY_NOEXCEPT
   {
-    Base::clear ();
+    return this->kind ();
   }
 
   template <typename Base>
   bool
-  JSONObjectParser::basic_symbol<Base>::empty () const
+  JSONObjectParser::basic_symbol<Base>::empty () const YY_NOEXCEPT
   {
-    return Base::type_get () == empty_symbol;
+    return this->kind () == symbol_kind::S_YYEMPTY;
   }
 
   template <typename Base>
@@ -282,54 +225,68 @@ namespace wasp {
   JSONObjectParser::basic_symbol<Base>::move (basic_symbol& s)
   {
     super_type::move (s);
-    value = s.value;
-    location = s.location;
+    value = YY_MOVE (s.value);
+    location = YY_MOVE (s.location);
   }
 
-  // by_type.
-  JSONObjectParser::by_type::by_type ()
-    : type (empty_symbol)
+  // by_kind.
+  JSONObjectParser::by_kind::by_kind ()
+    : kind_ (symbol_kind::S_YYEMPTY)
   {}
 
-  JSONObjectParser::by_type::by_type (const by_type& other)
-    : type (other.type)
+#if 201103L <= YY_CPLUSPLUS
+  JSONObjectParser::by_kind::by_kind (by_kind&& that)
+    : kind_ (that.kind_)
+  {
+    that.clear ();
+  }
+#endif
+
+  JSONObjectParser::by_kind::by_kind (const by_kind& that)
+    : kind_ (that.kind_)
   {}
 
-  JSONObjectParser::by_type::by_type (token_type t)
-    : type (yytranslate_ (t))
+  JSONObjectParser::by_kind::by_kind (token_kind_type t)
+    : kind_ (yytranslate_ (t))
   {}
 
   void
-  JSONObjectParser::by_type::clear ()
+  JSONObjectParser::by_kind::clear () YY_NOEXCEPT
   {
-    type = empty_symbol;
+    kind_ = symbol_kind::S_YYEMPTY;
   }
 
   void
-  JSONObjectParser::by_type::move (by_type& that)
+  JSONObjectParser::by_kind::move (by_kind& that)
   {
-    type = that.type;
+    kind_ = that.kind_;
     that.clear ();
   }
 
-  int
-  JSONObjectParser::by_type::type_get () const
+  JSONObjectParser::symbol_kind_type
+  JSONObjectParser::by_kind::kind () const YY_NOEXCEPT
   {
-    return type;
+    return kind_;
+  }
+
+  JSONObjectParser::symbol_kind_type
+  JSONObjectParser::by_kind::type_get () const YY_NOEXCEPT
+  {
+    return this->kind ();
   }
 
 
   // by_state.
-  JSONObjectParser::by_state::by_state ()
+  JSONObjectParser::by_state::by_state () YY_NOEXCEPT
     : state (empty_state)
   {}
 
-  JSONObjectParser::by_state::by_state (const by_state& other)
-    : state (other.state)
+  JSONObjectParser::by_state::by_state (const by_state& that) YY_NOEXCEPT
+    : state (that.state)
   {}
 
   void
-  JSONObjectParser::by_state::clear ()
+  JSONObjectParser::by_state::clear () YY_NOEXCEPT
   {
     state = empty_state;
   }
@@ -341,35 +298,39 @@ namespace wasp {
     that.clear ();
   }
 
-  JSONObjectParser::by_state::by_state (state_type s)
+  JSONObjectParser::by_state::by_state (state_type s) YY_NOEXCEPT
     : state (s)
   {}
 
-  JSONObjectParser::symbol_number_type
-  JSONObjectParser::by_state::type_get () const
+  JSONObjectParser::symbol_kind_type
+  JSONObjectParser::by_state::kind () const YY_NOEXCEPT
   {
     if (state == empty_state)
-      return empty_symbol;
+      return symbol_kind::S_YYEMPTY;
     else
-      return yystos_[state];
+      return YY_CAST (symbol_kind_type, yystos_[+state]);
   }
 
   JSONObjectParser::stack_symbol_type::stack_symbol_type ()
   {}
 
-  JSONObjectParser::stack_symbol_type::stack_symbol_type (const stack_symbol_type& that)
-    : super_type (that.state, that.location)
+  JSONObjectParser::stack_symbol_type::stack_symbol_type (YY_RVREF (stack_symbol_type) that)
+    : super_type (YY_MOVE (that.state), YY_MOVE (that.value), YY_MOVE (that.location))
   {
-    value = that.value;
+#if 201103L <= YY_CPLUSPLUS
+    // that is emptied.
+    that.state = empty_state;
+#endif
   }
 
-  JSONObjectParser::stack_symbol_type::stack_symbol_type (state_type s, symbol_type& that)
-    : super_type (s, that.value, that.location)
+  JSONObjectParser::stack_symbol_type::stack_symbol_type (state_type s, YY_MOVE_REF (symbol_type) that)
+    : super_type (s, YY_MOVE (that.value), YY_MOVE (that.location))
   {
     // that is emptied.
-    that.type = empty_symbol;
+    that.kind_ = symbol_kind::S_YYEMPTY;
   }
 
+#if YY_CPLUSPLUS < 201103L
   JSONObjectParser::stack_symbol_type&
   JSONObjectParser::stack_symbol_type::operator= (const stack_symbol_type& that)
   {
@@ -379,6 +340,17 @@ namespace wasp {
     return *this;
   }
 
+  JSONObjectParser::stack_symbol_type&
+  JSONObjectParser::stack_symbol_type::operator= (stack_symbol_type& that)
+  {
+    state = that.state;
+    value = that.value;
+    location = that.location;
+    // that is emptied.
+    that.state = empty_state;
+    return *this;
+  }
+#endif
 
   template <typename Base>
   void
@@ -388,69 +360,61 @@ namespace wasp {
       YY_SYMBOL_PRINT (yymsg, yysym);
 
     // User destructor.
-    switch (yysym.type_get ())
+    switch (yysym.kind ())
     {
-            case 17: // primitive
-
-#line 88 "JSONObjectParser.bison" // lalr1.cc:622
-        { delete (yysym.value.value); }
-#line 397 "JSONObjectParser.cpp" // lalr1.cc:622
+      case symbol_kind::S_primitive: // primitive
+#line 88 "JSONObjectParser.bison"
+                    { delete (yysym.value.value); }
+#line 369 "JSONObjectParser.cpp"
         break;
 
-      case 18: // decl
-
-#line 88 "JSONObjectParser.bison" // lalr1.cc:622
-        { delete (yysym.value.string); }
-#line 404 "JSONObjectParser.cpp" // lalr1.cc:622
+      case symbol_kind::S_decl: // decl
+#line 88 "JSONObjectParser.bison"
+                    { delete (yysym.value.string); }
+#line 375 "JSONObjectParser.cpp"
         break;
 
-      case 19: // array
-
-#line 88 "JSONObjectParser.bison" // lalr1.cc:622
-        { delete (yysym.value.value); }
-#line 411 "JSONObjectParser.cpp" // lalr1.cc:622
+      case symbol_kind::S_array: // array
+#line 88 "JSONObjectParser.bison"
+                    { delete (yysym.value.value); }
+#line 381 "JSONObjectParser.cpp"
         break;
 
-      case 20: // object
-
-#line 88 "JSONObjectParser.bison" // lalr1.cc:622
-        { delete (yysym.value.value); }
-#line 418 "JSONObjectParser.cpp" // lalr1.cc:622
+      case symbol_kind::S_object: // object
+#line 88 "JSONObjectParser.bison"
+                    { delete (yysym.value.value); }
+#line 387 "JSONObjectParser.cpp"
         break;
 
-      case 21: // array_members
-
-#line 89 "JSONObjectParser.bison" // lalr1.cc:622
-        {
+      case symbol_kind::S_array_members: // array_members
+#line 89 "JSONObjectParser.bison"
+                    {
     for(size_t i = 0; i < (yysym.value.values)->size(); ++i)
         delete (*(yysym.value.values))[i];
     delete (yysym.value.values);
 }
-#line 429 "JSONObjectParser.cpp" // lalr1.cc:622
+#line 397 "JSONObjectParser.cpp"
         break;
 
-      case 22: // keyed_member
-
-#line 94 "JSONObjectParser.bison" // lalr1.cc:622
-        {
+      case symbol_kind::S_keyed_member: // keyed_member
+#line 94 "JSONObjectParser.bison"
+                    {
     for(size_t i = 0; i < (yysym.value.keyed_values)->size(); ++i)
         delete (*(yysym.value.keyed_values))[i].second;
     delete (yysym.value.keyed_values);
 }
-#line 440 "JSONObjectParser.cpp" // lalr1.cc:622
+#line 407 "JSONObjectParser.cpp"
         break;
 
-      case 23: // object_members
-
-#line 94 "JSONObjectParser.bison" // lalr1.cc:622
-        {
+      case symbol_kind::S_object_members: // object_members
+#line 94 "JSONObjectParser.bison"
+                    {
     for(size_t i = 0; i < (yysym.value.keyed_values)->size(); ++i)
         delete (*(yysym.value.keyed_values))[i].second;
     delete (yysym.value.keyed_values);
 }
-#line 451 "JSONObjectParser.cpp" // lalr1.cc:622
+#line 417 "JSONObjectParser.cpp"
         break;
-
 
       default:
         break;
@@ -460,41 +424,45 @@ namespace wasp {
 #if YYDEBUG
   template <typename Base>
   void
-  JSONObjectParser::yy_print_ (std::ostream& yyo,
-                                     const basic_symbol<Base>& yysym) const
+  JSONObjectParser::yy_print_ (std::ostream& yyo, const basic_symbol<Base>& yysym) const
   {
     std::ostream& yyoutput = yyo;
-    YYUSE (yyoutput);
-    symbol_number_type yytype = yysym.type_get ();
-    // Avoid a (spurious) G++ 4.8 warning about "array subscript is
-    // below array bounds".
+    YY_USE (yyoutput);
     if (yysym.empty ())
-      std::abort ();
-    yyo << (yytype < yyntokens_ ? "token" : "nterm")
-        << ' ' << yytname_[yytype] << " ("
-        << yysym.location << ": ";
-    YYUSE (yytype);
-    yyo << ')';
+      yyo << "empty symbol";
+    else
+      {
+        symbol_kind_type yykind = yysym.kind ();
+        yyo << (yykind < YYNTOKENS ? "token" : "nterm")
+            << ' ' << yysym.name () << " ("
+            << yysym.location << ": ";
+        YY_USE (yykind);
+        yyo << ')';
+      }
   }
 #endif
 
   void
-  JSONObjectParser::yypush_ (const char* m, state_type s, symbol_type& sym)
-  {
-    stack_symbol_type t (s, sym);
-    yypush_ (m, t);
-  }
-
-  void
-  JSONObjectParser::yypush_ (const char* m, stack_symbol_type& s)
+  JSONObjectParser::yypush_ (const char* m, YY_MOVE_REF (stack_symbol_type) sym)
   {
     if (m)
-      YY_SYMBOL_PRINT (m, s);
-    yystack_.push (s);
+      YY_SYMBOL_PRINT (m, sym);
+    yystack_.push (YY_MOVE (sym));
   }
 
   void
-  JSONObjectParser::yypop_ (unsigned n)
+  JSONObjectParser::yypush_ (const char* m, state_type s, YY_MOVE_REF (symbol_type) sym)
+  {
+#if 201103L <= YY_CPLUSPLUS
+    yypush_ (m, stack_symbol_type (s, std::move (sym)));
+#else
+    stack_symbol_type ss (s, sym);
+    yypush_ (m, ss);
+#endif
+  }
+
+  void
+  JSONObjectParser::yypop_ (int n)
   {
     yystack_.pop (n);
   }
@@ -529,11 +497,11 @@ namespace wasp {
   JSONObjectParser::state_type
   JSONObjectParser::yy_lr_goto_state_ (state_type yystate, int yysym)
   {
-    int yyr = yypgoto_[yysym - yyntokens_] + yystate;
+    int yyr = yypgoto_[yysym - YYNTOKENS] + yystate;
     if (0 <= yyr && yyr <= yylast_ && yycheck_[yyr] == yystate)
       return yytable_[yyr];
     else
-      return yydefgoto_[yysym - yyntokens_];
+      return yydefgoto_[yysym - YYNTOKENS];
   }
 
   bool
@@ -549,9 +517,14 @@ namespace wasp {
   }
 
   int
+  JSONObjectParser::operator() ()
+  {
+    return parse ();
+  }
+
+  int
   JSONObjectParser::parse ()
   {
-    // State.
     int yyn;
     /// Length of the RHS of the rule being reduced.
     int yylen = 0;
@@ -577,7 +550,7 @@ namespace wasp {
 
 
     // User initialization code.
-    #line 44 "JSONObjectParser.bison" // lalr1.cc:746
+#line 44 "JSONObjectParser.bison"
 {
     // initialize the initial location object
     yyla.location.begin.line = yyla.location.end.line = 1;
@@ -585,45 +558,53 @@ namespace wasp {
     lexer = std::make_shared<JSONObjectLexerImpl>(&input_stream);
 }
 
-#line 588 "JSONObjectParser.cpp" // lalr1.cc:746
+#line 562 "JSONObjectParser.cpp"
+
 
     /* Initialize the stack.  The initial state will be set in
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
        stacks with a primary value.  */
     yystack_.clear ();
-    yypush_ (YY_NULLPTR, 0, yyla);
+    yypush_ (YY_NULLPTR, 0, YY_MOVE (yyla));
 
-    // A new symbol was pushed on the stack.
+  /*-----------------------------------------------.
+  | yynewstate -- push a new symbol on the stack.  |
+  `-----------------------------------------------*/
   yynewstate:
-    YYCDEBUG << "Entering state " << yystack_[0].state << '\n';
+    YYCDEBUG << "Entering state " << int (yystack_[0].state) << '\n';
+    YY_STACK_PRINT ();
 
     // Accept?
     if (yystack_[0].state == yyfinal_)
-      goto yyacceptlab;
+      YYACCEPT;
 
     goto yybackup;
 
-    // Backup.
+
+  /*-----------.
+  | yybackup.  |
+  `-----------*/
   yybackup:
     // Try to take a decision without lookahead.
-    yyn = yypact_[yystack_[0].state];
+    yyn = yypact_[+yystack_[0].state];
     if (yy_pact_value_is_default_ (yyn))
       goto yydefault;
 
     // Read a lookahead token.
     if (yyla.empty ())
       {
-        YYCDEBUG << "Reading a token: ";
+        YYCDEBUG << "Reading a token\n";
 #if YY_EXCEPTIONS
         try
 #endif // YY_EXCEPTIONS
           {
-            yyla.type = yytranslate_ (yylex (&yyla.value, &yyla.location));
+            yyla.kind_ = yytranslate_ (yylex (&yyla.value, &yyla.location));
           }
 #if YY_EXCEPTIONS
         catch (const syntax_error& yyexc)
           {
+            YYCDEBUG << "Caught exception: " << yyexc.what() << '\n';
             error (yyexc);
             goto yyerrlab1;
           }
@@ -631,11 +612,23 @@ namespace wasp {
       }
     YY_SYMBOL_PRINT ("Next token is", yyla);
 
+    if (yyla.kind () == symbol_kind::S_YYerror)
+    {
+      // The scanner already issued an error message, process directly
+      // to error recovery.  But do not keep the error token as
+      // lookahead, it is too special and may lead us to an endless
+      // loop in error recovery. */
+      yyla.kind_ = symbol_kind::S_YYUNDEF;
+      goto yyerrlab1;
+    }
+
     /* If the proper action on seeing token YYLA.TYPE is to reduce or
        to detect an error, take that action.  */
-    yyn += yyla.type_get ();
-    if (yyn < 0 || yylast_ < yyn || yycheck_[yyn] != yyla.type_get ())
-      goto yydefault;
+    yyn += yyla.kind ();
+    if (yyn < 0 || yylast_ < yyn || yycheck_[yyn] != yyla.kind ())
+      {
+        goto yydefault;
+      }
 
     // Reduce or error.
     yyn = yytable_[yyn];
@@ -652,20 +645,22 @@ namespace wasp {
       --yyerrstatus_;
 
     // Shift the lookahead token.
-    yypush_ ("Shifting", yyn, yyla);
+    yypush_ ("Shifting", state_type (yyn), YY_MOVE (yyla));
     goto yynewstate;
+
 
   /*-----------------------------------------------------------.
   | yydefault -- do the default action for the current state.  |
   `-----------------------------------------------------------*/
   yydefault:
-    yyn = yydefact_[yystack_[0].state];
+    yyn = yydefact_[+yystack_[0].state];
     if (yyn == 0)
       goto yyerrlab;
     goto yyreduce;
 
+
   /*-----------------------------.
-  | yyreduce -- Do a reduction.  |
+  | yyreduce -- do a reduction.  |
   `-----------------------------*/
   yyreduce:
     yylen = yyr2_[yyn];
@@ -685,8 +680,8 @@ namespace wasp {
 
       // Default location.
       {
-        slice<stack_symbol_type, stack_type> slice (yystack_, yylen);
-        YYLLOC_DEFAULT (yylhs.location, slice, yylen);
+        stack_type::slice range (yystack_, yylen);
+        YYLLOC_DEFAULT (yylhs.location, range, yylen);
         yyerror_range[1].location = yylhs.location;
       }
 
@@ -698,76 +693,82 @@ namespace wasp {
         {
           switch (yyn)
             {
-  case 2:
-#line 116 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 2: // primitive: "null"
+#line 116 "JSONObjectParser.bison"
+        {
             (yylhs.value.value) = new Value();
             wasp_ensure((yylhs.value.value)->is_null());
         }
-#line 707 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 703 "JSONObjectParser.cpp"
     break;
 
-  case 3:
-#line 120 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 3: // primitive: "true"
+#line 120 "JSONObjectParser.bison"
+        {
             (yylhs.value.value) = new Value((yystack_[0].value.boolean));
         }
-#line 715 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 711 "JSONObjectParser.cpp"
     break;
 
-  case 4:
-#line 123 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 4: // primitive: "false"
+#line 123 "JSONObjectParser.bison"
+        {
             (yylhs.value.value) = new Value((yystack_[0].value.boolean));
         }
-#line 723 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 719 "JSONObjectParser.cpp"
     break;
 
-  case 5:
-#line 126 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 5: // primitive: "integer"
+#line 126 "JSONObjectParser.bison"
+        {
             (yylhs.value.value) = new Value((yystack_[0].value.integer));
         }
-#line 731 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 727 "JSONObjectParser.cpp"
     break;
 
-  case 6:
-#line 129 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 6: // primitive: "double"
+#line 129 "JSONObjectParser.bison"
+        {
             (yylhs.value.value) = new Value((yystack_[0].value.real));
         }
-#line 739 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 735 "JSONObjectParser.cpp"
     break;
 
-  case 7:
-#line 132 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 7: // primitive: "quoted string"
+#line 132 "JSONObjectParser.bison"
+        {
             (yylhs.value.value) = new Value(wasp::json_unescape_string(wasp::strip_quotes(*(yystack_[0].value.string))));
             delete (yystack_[0].value.string);
         }
-#line 748 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 744 "JSONObjectParser.cpp"
     break;
 
-  case 9:
-#line 141 "JSONObjectParser.bison" // lalr1.cc:870
+  case 8: // decl: "quoted string"
+#line 136 "JSONObjectParser.bison"
+       { (yylhs.value.string) = (yystack_[0].value.string); }
+#line 750 "JSONObjectParser.cpp"
+    break;
+
+  case 9: // array: '[' ']'
+#line 141 "JSONObjectParser.bison"
     {
         (yylhs.value.value) = new Value(DataArray());
     }
-#line 756 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 758 "JSONObjectParser.cpp"
     break;
 
-  case 10:
-#line 145 "JSONObjectParser.bison" // lalr1.cc:870
+  case 10: // array: '[' "end of file"
+#line 145 "JSONObjectParser.bison"
     {
         error(yystack_[0].location, "array has unmatched left bracket!");
         YYERROR;
         (yylhs.value.value) = nullptr;
     }
-#line 766 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 768 "JSONObjectParser.cpp"
     break;
 
-  case 11:
-#line 151 "JSONObjectParser.bison" // lalr1.cc:870
+  case 11: // array: '[' array_members "end of file"
+#line 151 "JSONObjectParser.bison"
     {
         error(yystack_[2].location, " is an unmatched left bracket!");
         for(size_t i = 0; i < (yystack_[1].value.values)->size(); ++i) delete (yystack_[1].value.values)->at(i);
@@ -775,11 +776,11 @@ namespace wasp {
         YYERROR;
         (yylhs.value.value) = nullptr;
     }
-#line 778 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 780 "JSONObjectParser.cpp"
     break;
 
-  case 12:
-#line 159 "JSONObjectParser.bison" // lalr1.cc:870
+  case 12: // array: '[' array_members ']'
+#line 159 "JSONObjectParser.bison"
     {
         (yylhs.value.value) = new Value();
         DataArray *array = new DataArray();
@@ -793,29 +794,29 @@ namespace wasp {
         delete (yystack_[1].value.values);
         (yylhs.value.value)->assign(array);
     }
-#line 796 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 798 "JSONObjectParser.cpp"
     break;
 
-  case 13:
-#line 173 "JSONObjectParser.bison" // lalr1.cc:870
+  case 13: // object: '{' '}'
+#line 173 "JSONObjectParser.bison"
     {
         (yylhs.value.value) = new Value(DataObject());
     }
-#line 804 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 806 "JSONObjectParser.cpp"
     break;
 
-  case 14:
-#line 177 "JSONObjectParser.bison" // lalr1.cc:870
+  case 14: // object: '{' "end of file"
+#line 177 "JSONObjectParser.bison"
     {
         error(yystack_[0].location, "is an unmatched left brace!");
         YYERROR;
         (yylhs.value.value) = nullptr;
     }
-#line 814 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 816 "JSONObjectParser.cpp"
     break;
 
-  case 15:
-#line 183 "JSONObjectParser.bison" // lalr1.cc:870
+  case 15: // object: '{' object_members "end of file"
+#line 183 "JSONObjectParser.bison"
     {
         error(yystack_[2].location, "is an unmatched left brace!");
         for(size_t i = 0; i < (yystack_[1].value.keyed_values)->size(); ++i) delete (yystack_[1].value.keyed_values)->at(i).second;
@@ -823,11 +824,11 @@ namespace wasp {
         YYERROR;
         (yylhs.value.value) = nullptr;
     }
-#line 826 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 828 "JSONObjectParser.cpp"
     break;
 
-  case 16:
-#line 191 "JSONObjectParser.bison" // lalr1.cc:870
+  case 16: // object: '{' object_members '}'
+#line 191 "JSONObjectParser.bison"
     {
         (yylhs.value.value) = new Value();
         DataObject *object = new DataObject();
@@ -841,116 +842,123 @@ namespace wasp {
         delete (yystack_[1].value.keyed_values);
 
     }
-#line 844 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 846 "JSONObjectParser.cpp"
     break;
 
-  case 17:
-#line 206 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 17: // array_members: object
+#line 206 "JSONObjectParser.bison"
+        {
             (yylhs.value.values) = new std::vector<Value*>();
             (yylhs.value.values)->push_back((yystack_[0].value.value));
         }
-#line 853 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 855 "JSONObjectParser.cpp"
     break;
 
-  case 18:
-#line 211 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 18: // array_members: array_members ',' object
+#line 211 "JSONObjectParser.bison"
+        {
             (yylhs.value.values) = (yystack_[2].value.values);
             (yylhs.value.values)->push_back((yystack_[0].value.value));
         }
-#line 862 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 864 "JSONObjectParser.cpp"
     break;
 
-  case 19:
-#line 216 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 19: // array_members: array
+#line 216 "JSONObjectParser.bison"
+        {
             (yylhs.value.values) = new std::vector<Value*>();
             (yylhs.value.values)->push_back((yystack_[0].value.value));
         }
-#line 871 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 873 "JSONObjectParser.cpp"
     break;
 
-  case 20:
-#line 221 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 20: // array_members: array_members ',' array
+#line 221 "JSONObjectParser.bison"
+        {
            (yylhs.value.values) = (yystack_[2].value.values);
            (yylhs.value.values)->push_back((yystack_[0].value.value));
         }
-#line 880 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 882 "JSONObjectParser.cpp"
     break;
 
-  case 21:
-#line 226 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 21: // array_members: primitive
+#line 226 "JSONObjectParser.bison"
+        {
             (yylhs.value.values) = new std::vector<Value*>();
             (yylhs.value.values)->push_back((yystack_[0].value.value));
         }
-#line 889 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 891 "JSONObjectParser.cpp"
     break;
 
-  case 22:
-#line 231 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 22: // array_members: array_members ',' primitive
+#line 231 "JSONObjectParser.bison"
+        {
             (yylhs.value.values) = (yystack_[2].value.values);
             (yylhs.value.values)->push_back((yystack_[0].value.value));
         }
-#line 898 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 900 "JSONObjectParser.cpp"
     break;
 
-  case 23:
-#line 236 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 23: // keyed_member: decl ':' primitive
+#line 236 "JSONObjectParser.bison"
+        {
             (yylhs.value.keyed_values) = new std::vector<std::pair<std::string,Value*>>();
             (yylhs.value.keyed_values)->push_back(std::make_pair(wasp::strip_quotes(*(yystack_[2].value.string)),(yystack_[0].value.value)));
             delete (yystack_[2].value.string);
         }
-#line 908 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 910 "JSONObjectParser.cpp"
     break;
 
-  case 24:
-#line 241 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 24: // keyed_member: decl ':' array
+#line 241 "JSONObjectParser.bison"
+        {
             (yylhs.value.keyed_values) = new std::vector<std::pair<std::string,Value*>>();
             (yylhs.value.keyed_values)->push_back(std::make_pair(wasp::strip_quotes(*(yystack_[2].value.string)),(yystack_[0].value.value)));
             delete (yystack_[2].value.string);
         }
-#line 918 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 920 "JSONObjectParser.cpp"
     break;
 
-  case 25:
-#line 246 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 25: // keyed_member: decl ':' object
+#line 246 "JSONObjectParser.bison"
+        {
             (yylhs.value.keyed_values) = new std::vector<std::pair<std::string,Value*>>();
             (yylhs.value.keyed_values)->push_back(std::make_pair(wasp::strip_quotes(*(yystack_[2].value.string)),(yystack_[0].value.value)));
             delete (yystack_[2].value.string);
         }
-#line 928 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 930 "JSONObjectParser.cpp"
     break;
 
-  case 27:
-#line 253 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 26: // object_members: keyed_member
+#line 251 "JSONObjectParser.bison"
+                 { (yylhs.value.keyed_values) = (yystack_[0].value.keyed_values); }
+#line 936 "JSONObjectParser.cpp"
+    break;
+
+  case 27: // object_members: object_members ',' keyed_member
+#line 253 "JSONObjectParser.bison"
+        {
             (yylhs.value.keyed_values) = (yystack_[2].value.keyed_values);
             (yylhs.value.keyed_values)->push_back((yystack_[0].value.keyed_values)->front());
             delete (yystack_[0].value.keyed_values);
         }
-#line 938 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 946 "JSONObjectParser.cpp"
     break;
 
-  case 29:
-#line 259 "JSONObjectParser.bison" // lalr1.cc:870
-    {
+  case 29: // start: object
+#line 259 "JSONObjectParser.bison"
+                {
             wasp_check( (yystack_[0].value.value)->is_object() );
             root.reset((yystack_[0].value.value)->to_object());
             (yystack_[0].value.value)->assign((DataObject*)nullptr);
             delete (yystack_[0].value.value);
         }
-#line 949 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 957 "JSONObjectParser.cpp"
     break;
 
 
-#line 953 "JSONObjectParser.cpp" // lalr1.cc:870
+#line 961 "JSONObjectParser.cpp"
+
             default:
               break;
             }
@@ -958,6 +966,7 @@ namespace wasp {
 #if YY_EXCEPTIONS
       catch (const syntax_error& yyexc)
         {
+          YYCDEBUG << "Caught exception: " << yyexc.what() << '\n';
           error (yyexc);
           YYERROR;
         }
@@ -965,12 +974,12 @@ namespace wasp {
       YY_SYMBOL_PRINT ("-> $$ =", yylhs);
       yypop_ (yylen);
       yylen = 0;
-      YY_STACK_PRINT ();
 
       // Shift the result of the reduction.
-      yypush_ (YY_NULLPTR, yylhs);
+      yypush_ (YY_NULLPTR, YY_MOVE (yylhs));
     }
     goto yynewstate;
+
 
   /*--------------------------------------.
   | yyerrlab -- here on detecting error.  |
@@ -980,7 +989,9 @@ namespace wasp {
     if (!yyerrstatus_)
       {
         ++yynerrs_;
-        error (yyla.location, yysyntax_error_ (yystack_[0].state, yyla));
+        context yyctx (*this, yyla);
+        std::string msg = yysyntax_error_ (yyctx);
+        error (yyla.location, YY_MOVE (msg));
       }
 
 
@@ -991,7 +1002,7 @@ namespace wasp {
            error, discard it.  */
 
         // Return failure if at end of input.
-        if (yyla.type_get () == yyeof_)
+        if (yyla.kind () == symbol_kind::S_YYEOF)
           YYABORT;
         else if (!yyla.empty ())
           {
@@ -1008,68 +1019,81 @@ namespace wasp {
   | yyerrorlab -- error raised explicitly by YYERROR.  |
   `---------------------------------------------------*/
   yyerrorlab:
-
-    /* Pacify compilers like GCC when the user code never invokes
-       YYERROR and the label yyerrorlab therefore never appears in user
-       code.  */
+    /* Pacify compilers when the user code never invokes YYERROR and
+       the label yyerrorlab therefore never appears in user code.  */
     if (false)
-      goto yyerrorlab;
+      YYERROR;
+
     /* Do not reclaim the symbols of the rule whose action triggered
        this YYERROR.  */
     yypop_ (yylen);
     yylen = 0;
+    YY_STACK_PRINT ();
     goto yyerrlab1;
+
 
   /*-------------------------------------------------------------.
   | yyerrlab1 -- common code for both syntax error and YYERROR.  |
   `-------------------------------------------------------------*/
   yyerrlab1:
     yyerrstatus_ = 3;   // Each real token shifted decrements this.
+    // Pop stack until we find a state that shifts the error token.
+    for (;;)
+      {
+        yyn = yypact_[+yystack_[0].state];
+        if (!yy_pact_value_is_default_ (yyn))
+          {
+            yyn += symbol_kind::S_YYerror;
+            if (0 <= yyn && yyn <= yylast_
+                && yycheck_[yyn] == symbol_kind::S_YYerror)
+              {
+                yyn = yytable_[yyn];
+                if (0 < yyn)
+                  break;
+              }
+          }
+
+        // Pop the current state because it cannot handle the error token.
+        if (yystack_.size () == 1)
+          YYABORT;
+
+        yyerror_range[1].location = yystack_[0].location;
+        yy_destroy_ ("Error: popping", yystack_[0]);
+        yypop_ ();
+        YY_STACK_PRINT ();
+      }
     {
       stack_symbol_type error_token;
-      for (;;)
-        {
-          yyn = yypact_[yystack_[0].state];
-          if (!yy_pact_value_is_default_ (yyn))
-            {
-              yyn += yyterror_;
-              if (0 <= yyn && yyn <= yylast_ && yycheck_[yyn] == yyterror_)
-                {
-                  yyn = yytable_[yyn];
-                  if (0 < yyn)
-                    break;
-                }
-            }
-
-          // Pop the current state because it cannot handle the error token.
-          if (yystack_.size () == 1)
-            YYABORT;
-
-          yyerror_range[1].location = yystack_[0].location;
-          yy_destroy_ ("Error: popping", yystack_[0]);
-          yypop_ ();
-          YY_STACK_PRINT ();
-        }
 
       yyerror_range[2].location = yyla.location;
       YYLLOC_DEFAULT (error_token.location, yyerror_range, 2);
 
       // Shift the error token.
-      error_token.state = yyn;
-      yypush_ ("Shifting", error_token);
+      error_token.state = state_type (yyn);
+      yypush_ ("Shifting", YY_MOVE (error_token));
     }
     goto yynewstate;
 
-    // Accept.
+
+  /*-------------------------------------.
+  | yyacceptlab -- YYACCEPT comes here.  |
+  `-------------------------------------*/
   yyacceptlab:
     yyresult = 0;
     goto yyreturn;
 
-    // Abort.
+
+  /*-----------------------------------.
+  | yyabortlab -- YYABORT comes here.  |
+  `-----------------------------------*/
   yyabortlab:
     yyresult = 1;
     goto yyreturn;
 
+
+  /*-----------------------------------------------------.
+  | yyreturn -- parsing is finished, return the result.  |
+  `-----------------------------------------------------*/
   yyreturn:
     if (!yyla.empty ())
       yy_destroy_ ("Cleanup: discarding lookahead", yyla);
@@ -1077,6 +1101,7 @@ namespace wasp {
     /* Do not reclaim the symbols of the rule whose action triggered
        this YYABORT or YYACCEPT.  */
     yypop_ (yylen);
+    YY_STACK_PRINT ();
     while (1 < yystack_.size ())
       {
         yy_destroy_ ("Cleanup: popping", yystack_[0]);
@@ -1110,18 +1135,100 @@ namespace wasp {
     error (yyexc.location, yyexc.what ());
   }
 
-  // Generate an error message.
+  /* Return YYSTR after stripping away unnecessary quotes and
+     backslashes, so that it's suitable for yyerror.  The heuristic is
+     that double-quoting is unnecessary unless the string contains an
+     apostrophe, a comma, or backslash (other than backslash-backslash).
+     YYSTR is taken from yytname.  */
   std::string
-  JSONObjectParser::yysyntax_error_ (state_type yystate, const symbol_type& yyla) const
+  JSONObjectParser::yytnamerr_ (const char *yystr)
   {
-    // Number of reported tokens (one for the "unexpected", one per
-    // "expected").
-    size_t yycount = 0;
-    // Its maximum.
-    enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
-    // Arguments of yyformat.
-    char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
+    if (*yystr == '"')
+      {
+        std::string yyr;
+        char const *yyp = yystr;
 
+        for (;;)
+          switch (*++yyp)
+            {
+            case '\'':
+            case ',':
+              goto do_not_strip_quotes;
+
+            case '\\':
+              if (*++yyp != '\\')
+                goto do_not_strip_quotes;
+              else
+                goto append;
+
+            append:
+            default:
+              yyr += *yyp;
+              break;
+
+            case '"':
+              return yyr;
+            }
+      do_not_strip_quotes: ;
+      }
+
+    return yystr;
+  }
+
+  std::string
+  JSONObjectParser::symbol_name (symbol_kind_type yysymbol)
+  {
+    return yytnamerr_ (yytname_[yysymbol]);
+  }
+
+
+
+  // JSONObjectParser::context.
+  JSONObjectParser::context::context (const JSONObjectParser& yyparser, const symbol_type& yyla)
+    : yyparser_ (yyparser)
+    , yyla_ (yyla)
+  {}
+
+  int
+  JSONObjectParser::context::expected_tokens (symbol_kind_type yyarg[], int yyargn) const
+  {
+    // Actual number of expected tokens
+    int yycount = 0;
+
+    int yyn = yypact_[+yyparser_.yystack_[0].state];
+    if (!yy_pact_value_is_default_ (yyn))
+      {
+        /* Start YYX at -YYN if negative to avoid negative indexes in
+           YYCHECK.  In other words, skip the first -YYN actions for
+           this state because they are default actions.  */
+        int yyxbegin = yyn < 0 ? -yyn : 0;
+        // Stay within bounds of both yycheck and yytname.
+        int yychecklim = yylast_ - yyn + 1;
+        int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
+        for (int yyx = yyxbegin; yyx < yyxend; ++yyx)
+          if (yycheck_[yyx + yyn] == yyx && yyx != symbol_kind::S_YYerror
+              && !yy_table_value_is_error_ (yytable_[yyx + yyn]))
+            {
+              if (!yyarg)
+                ++yycount;
+              else if (yycount == yyargn)
+                return 0;
+              else
+                yyarg[yycount++] = YY_CAST (symbol_kind_type, yyx);
+            }
+      }
+
+    if (yyarg && yycount == 0 && 0 < yyargn)
+      yyarg[0] = symbol_kind::S_YYEMPTY;
+    return yycount;
+  }
+
+
+
+  int
+  JSONObjectParser::yy_syntax_error_arguments_ (const context& yyctx,
+                                                 symbol_kind_type yyarg[], int yyargn) const
+  {
     /* There are many possibilities here to consider:
        - If this state is a consistent state with a default action, then
          the only way this function was invoked is if the default action
@@ -1140,41 +1247,32 @@ namespace wasp {
        - Of course, the expected token list depends on states to have
          correct lookahead information, and it depends on the parser not
          to perform extra reductions after fetching a lookahead from the
-         scanner and before detecting a syntax error.  Thus, state
-         merging (from LALR or IELR) and default reductions corrupt the
-         expected token list.  However, the list is correct for
-         canonical LR with one exception: it will still contain any
-         token that will not be accepted due to an error action in a
-         later state.
+         scanner and before detecting a syntax error.  Thus, state merging
+         (from LALR or IELR) and default reductions corrupt the expected
+         token list.  However, the list is correct for canonical LR with
+         one exception: it will still contain any token that will not be
+         accepted due to an error action in a later state.
     */
-    if (!yyla.empty ())
+
+    if (!yyctx.lookahead ().empty ())
       {
-        int yytoken = yyla.type_get ();
-        yyarg[yycount++] = yytname_[yytoken];
-        int yyn = yypact_[yystate];
-        if (!yy_pact_value_is_default_ (yyn))
-          {
-            /* Start YYX at -YYN if negative to avoid negative indexes in
-               YYCHECK.  In other words, skip the first -YYN actions for
-               this state because they are default actions.  */
-            int yyxbegin = yyn < 0 ? -yyn : 0;
-            // Stay within bounds of both yycheck and yytname.
-            int yychecklim = yylast_ - yyn + 1;
-            int yyxend = yychecklim < yyntokens_ ? yychecklim : yyntokens_;
-            for (int yyx = yyxbegin; yyx < yyxend; ++yyx)
-              if (yycheck_[yyx + yyn] == yyx && yyx != yyterror_
-                  && !yy_table_value_is_error_ (yytable_[yyx + yyn]))
-                {
-                  if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
-                    {
-                      yycount = 1;
-                      break;
-                    }
-                  else
-                    yyarg[yycount++] = yytname_[yyx];
-                }
-          }
+        if (yyarg)
+          yyarg[0] = yyctx.token ();
+        int yyn = yyctx.expected_tokens (yyarg ? yyarg + 1 : yyarg, yyargn - 1);
+        return yyn + 1;
       }
+    return 0;
+  }
+
+  // Generate an error message.
+  std::string
+  JSONObjectParser::yysyntax_error_ (const context& yyctx) const
+  {
+    // Its maximum.
+    enum { YYARGS_MAX = 5 };
+    // Arguments of yyformat.
+    symbol_kind_type yyarg[YYARGS_MAX];
+    int yycount = yy_syntax_error_arguments_ (yyctx, yyarg, YYARGS_MAX);
 
     char const* yyformat = YY_NULLPTR;
     switch (yycount)
@@ -1195,11 +1293,11 @@ namespace wasp {
 
     std::string yyres;
     // Argument number.
-    size_t yyi = 0;
+    std::ptrdiff_t yyi = 0;
     for (char const* yyp = yyformat; *yyp; ++yyp)
       if (yyp[0] == '%' && yyp[1] == 's' && yyi < yycount)
         {
-          yyres += yytnamerr_ (yyarg[yyi++]);
+          yyres += symbol_name (yyarg[yyi++]);
           ++yyp;
         }
       else
@@ -1221,7 +1319,7 @@ namespace wasp {
      -17,     2,   -17,   -17,    29,   -17,   -17,   -17
   };
 
-  const unsigned char
+  const signed char
   JSONObjectParser::yydefact_[] =
   {
       28,     0,    29,     0,    14,     8,    13,     0,    26,     0,
@@ -1239,10 +1337,10 @@ namespace wasp {
   const signed char
   JSONObjectParser::yydefgoto_[] =
   {
-      -1,    22,     7,    23,     2,    31,     8,     9,     3
+       0,    22,     7,    23,     2,    31,     8,     9,     3
   };
 
-  const unsigned char
+  const signed char
   JSONObjectParser::yytable_[] =
   {
       24,    12,    32,     1,    10,    28,    29,    11,     4,     5,
@@ -1262,7 +1360,7 @@ namespace wasp {
       -1,    12
   };
 
-  const unsigned char
+  const signed char
   JSONObjectParser::yystos_[] =
   {
        0,    12,    20,    24,     0,     9,    13,    18,    22,    23,
@@ -1271,7 +1369,7 @@ namespace wasp {
       20,    21,     0,    11,    14,    17,    19,    20
   };
 
-  const unsigned char
+  const signed char
   JSONObjectParser::yyr1_[] =
   {
        0,    16,    17,    17,    17,    17,    17,    17,    18,    19,
@@ -1279,7 +1377,7 @@ namespace wasp {
       21,    21,    21,    22,    22,    22,    23,    23,    24,    24
   };
 
-  const unsigned char
+  const signed char
   JSONObjectParser::yyr2_[] =
   {
        0,     2,     1,     1,     1,     1,     1,     1,     1,     2,
@@ -1288,21 +1386,23 @@ namespace wasp {
   };
 
 
-
+#if YYDEBUG || 1
   // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
-  // First, the terminals, then, starting at \a yyntokens_, nonterminals.
+  // First, the terminals, then, starting at \a YYNTOKENS, nonterminals.
   const char*
   const JSONObjectParser::yytname_[] =
   {
-  "\"end of file\"", "error", "$undefined", "\"end of line\"",
+  "\"end of file\"", "error", "\"invalid token\"", "\"end of line\"",
   "\"integer\"", "\"true\"", "\"false\"", "\"null\"", "\"double\"",
   "\"quoted string\"", "'['", "']'", "'{'", "'}'", "','", "':'", "$accept",
   "primitive", "decl", "array", "object", "array_members", "keyed_member",
   "object_members", "start", YY_NULLPTR
   };
+#endif
+
 
 #if YYDEBUG
-  const unsigned short
+  const short
   JSONObjectParser::yyrline_[] =
   {
        0,   115,   115,   119,   122,   125,   128,   131,   136,   140,
@@ -1310,24 +1410,22 @@ namespace wasp {
      220,   225,   230,   235,   240,   245,   251,   252,   258,   259
   };
 
-  // Print the state stack on the debug stream.
   void
-  JSONObjectParser::yystack_print_ ()
+  JSONObjectParser::yy_stack_print_ () const
   {
     *yycdebug_ << "Stack now";
     for (stack_type::const_iterator
            i = yystack_.begin (),
            i_end = yystack_.end ();
          i != i_end; ++i)
-      *yycdebug_ << ' ' << i->state;
+      *yycdebug_ << ' ' << int (i->state);
     *yycdebug_ << '\n';
   }
 
-  // Report on the debug stream that the rule \a yyrule is going to be reduced.
   void
-  JSONObjectParser::yy_reduce_print_ (int yyrule)
+  JSONObjectParser::yy_reduce_print_ (int yyrule) const
   {
-    unsigned yylno = yyrline_[yyrule];
+    int yylno = yyrline_[yyrule];
     int yynrhs = yyr2_[yyrule];
     // Print the symbols being reduced, and their result.
     *yycdebug_ << "Reducing stack by rule " << yyrule - 1
@@ -1339,15 +1437,16 @@ namespace wasp {
   }
 #endif // YYDEBUG
 
-  // Symbol number corresponding to token number t.
-  JSONObjectParser::token_number_type
+  JSONObjectParser::symbol_kind_type
   JSONObjectParser::yytranslate_ (int t)
   {
+    // YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to
+    // TOKEN-NUM as returned by yylex.
     static
-    const token_number_type
+    const signed char
     translate_table[] =
     {
-     0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1375,21 +1474,22 @@ namespace wasp {
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9
     };
-    const unsigned user_token_number_max_ = 264;
-    const token_number_type undef_token_ = 2;
+    // Last valid token kind.
+    const int code_max = 264;
 
-    if (static_cast<int> (t) <= yyeof_)
-      return yyeof_;
-    else if (static_cast<unsigned> (t) <= user_token_number_max_)
-      return translate_table[t];
+    if (t <= 0)
+      return symbol_kind::S_YYEOF;
+    else if (t <= code_max)
+      return YY_CAST (symbol_kind_type, translate_table[t]);
     else
-      return undef_token_;
+      return symbol_kind::S_YYUNDEF;
   }
 
-#line 36 "JSONObjectParser.bison" // lalr1.cc:1181
+#line 36 "JSONObjectParser.bison"
 } // wasp
-#line 1391 "JSONObjectParser.cpp" // lalr1.cc:1181
-#line 268 "JSONObjectParser.bison" // lalr1.cc:1182
+#line 1491 "JSONObjectParser.cpp"
+
+#line 268 "JSONObjectParser.bison"
  /*** Additional Code ***/
 
 void wasp::JSONObjectParser::error(const JSONObjectParser::location_type& l,

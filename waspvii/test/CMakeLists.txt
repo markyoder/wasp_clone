@@ -1,3 +1,0 @@
-INCLUDE(GoogleTest)
-
-ADD_GOOGLE_TEST(tstVII.cpp NP 1)

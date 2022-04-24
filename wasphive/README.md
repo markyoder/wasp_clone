@@ -1,6 +1,6 @@
 # HIVE
 
-The Hierarchical Input Validation Engine (HIVE) uses a set of rules to describe the schema of an application's input. These rules describe scalar and relational input restrictions. They can use a [Sequence Input Retrieval Engine (SIREN) Expression](/waspsiren/README.md#sequence-input-retrieval-engine-siren) paths to define restrictions related to relative sets of input elements. Schema files for HIVE are written using the [Standard Object Notation (SON) Syntax](/waspson/README.md#standard-object-notation-son). Applications use HIVE and schema files to facilitate input validation, introspection, and input creation assistance. SIREN Expressions, SON Syntax, and Template Files are beyond the scope of this section.
+The Hierarchical Input Validation Engine (HIVE) uses a set of rules to describe the schema of an application's input. These rules describe scalar and relational input restrictions. They can use a [Sequence Input Retrieval Engine (SIREN) Expression](/waspsiren/README.md#sequence-input-retrieval-engine-siren) path to define restrictions related to relative sets of input elements. Schema files for HIVE are written using the [Standard Object Notation (SON) Syntax](/waspson/README.md#standard-object-notation-son). Applications use HIVE and schema files to facilitate input validation, introspection, and input creation assistance. SIREN Expressions, SON Syntax, and Template Files are beyond the scope of this section.
 
 The section layout is as follows:
 
@@ -2207,7 +2207,7 @@ HIVE validation messages that occur when validating the failing input shown abov
 
 ### ChildAtMostOne Details and Examples
 
-The ***Child At Most One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be more than one of these rules for any given element in the schema. Of the given list of elements, *at most one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to that provided in the schema in order for that element to count toward existence.
+The ***Child At Most One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be more than one of these rules for any given element in the schema. Of the given list of elements, *at most one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to that provided in the schema in order for that element to count toward existence. This comparison is case insensitive.
 
 Schema example:
 ```javascript
@@ -2323,7 +2323,7 @@ HIVE validation messages that occur when validating the failing input shown abov
 
 ### ChildExactlyOne Details and Examples
 
-The ***Child Exactly One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be more than one of these rules for any given element in the schema. Of the given list of elements, *exactly one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to that provided in the schema in order for that element to count toward existence.
+The ***Child Exactly One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be more than one of these rules for any given element in the schema. Of the given list of elements, *exactly one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to that provided in the schema in order for that element to count toward existence. This comparison is case insensitive.
 
 Schema example:
 ```javascript
@@ -2428,7 +2428,7 @@ HIVE validation messages that occur when validating the failing input shown abov
 
 ### ChildAtLeastOne Details and Examples
 
-The ***Child At Least One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be more than one of these rules for any given element in the schema. Of the given list of elements, *at least one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to that provided in the schema in order for that element to count toward existence.
+The ***Child At Least One*** rule contains multiple relative input lookup paths. Each of these lookup paths can optionally have an assigned lookup value. There may be more than one of these rules for any given element in the schema. Of the given list of elements, *at least one* must exist in the input in order for this rule to pass. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to that provided in the schema in order for that element to count toward existence. This comparison is case insensitive.
 
 Schema example:
 ```javascript
@@ -2520,19 +2520,19 @@ HIVE validation messages that occur when validating the failing input shown abov
 
 ### ChildCountEqual Details and Examples
 
-The ***Child Count Equal*** rule is usually used to ensure that arrays in the input have an equal number of value members. There may be more than one of these rules on any given element. This rule contains multiple relative input look paths and a required modifier flag that occurs as a parenthetical identifier. This modifier flag can be either `IfExists` or `EvenNone`. If the modifier flag is `IfExists`, then the pieces of input in the relative lookup paths must be equal only if they actually exist. However, If the modifier flag is `EvenNone`, then this stricter rule denotes that the relative input lookup path nodes in the input must be equal regardless of whether they exist or not.
+The ***Child Count Equal*** rule is usually used to ensure that arrays in the input have an equal number of value members. Each of these lookup paths can optionally have an assigned lookup value. There may be more than one of these rules for any given element in the schema. This rule contains multiple relative input look paths and a required modifier flag that occurs as a parenthetical identifier. This modifier flag can be either `IfExists` or `EvenNone`. If the modifier flag is `IfExists`, then the pieces of input in the relative lookup paths must be equal only if they actually exist. However, If the modifier flag is `EvenNone`, then this stricter rule denotes that the relative input lookup path nodes in the input must be equal regardless of whether they exist or not. If there is a lookup value associated with the lookup path, then that path's value in the input must be equal to that provided in the schema in order for that element to count toward existence. This comparison is case insensitive.
 
 Schema example:
 ```javascript
     test{
     
-        ChildCountEqual(IfExists) = [ one/value   two/value  three/value ]
-        ChildCountEqual(EvenNone) = [ four/value  five/value six/value   ]
-    
+        ChildCountEqual(IfExists) = [ "one/value"   'two/value'  "three/value" ]
+        ChildCountEqual(EvenNone) = [ "four/value"  'five/value' "six/value"   ]
+
         badflags{
             inside{
-                ChildCountEqual           = [ three/value six/value ]
-                ChildCountEqual(BadFlag)  = [ one/value   four/value ]
+                ChildCountEqual           = [ "three/value" "six/value"  ]
+                ChildCountEqual(BadFlag)  = [ "one/value"   "four/value" ]
             }
         }
     
@@ -2561,6 +2561,23 @@ Schema example:
             }
         }
     
+        settings{
+            override{
+                ChildCountEqual(EvenNone) = [ color=orange               '../orange_rgb' ]
+                ChildCountEqual(IfExists) = [ '../override/color'=yellow "../yellow_rgb" ]
+                color{
+                }
+            }
+            orange_rgb{
+                value{
+                }
+            }
+            yellow_rgb{
+                value{
+                }
+            }
+        }
+
     }
 ```
 
@@ -2588,6 +2605,38 @@ Input example that **PASSES** validation on schema above:
         six=calculus
         six=[ physics geometry ]
     
+        settings{
+            override{
+                color=Orange
+            }
+            orange_rgb=[ 255 165 0 ]
+        }
+        settings{
+            override{
+                color=orange
+                color=ORANGE
+            }
+            orange_rgb=[ 255 165 0 ]
+            orange_rgb=[ 250 175 0 ]
+        }
+        settings{
+            override{
+                color=yellow
+            }
+            yellow_rgb=[ 255 165 0 ]
+        }
+        settings{
+            override{
+            }
+            yellow_rgb=[ 255 165 0 ]
+            yellow_rgb=[ 250 170 0 ]
+        }
+        settings{
+            override{
+                color=yellow
+            }
+        }
+
     }
 ```
 
@@ -2619,6 +2668,32 @@ Input example that **FAILS** validation on schema above:
         badflags{
         }
     
+        settings{
+            override{
+                color=orange
+            }
+        }
+        settings{
+            override{
+            }
+            orange_rgb=[ 255 165 0 ]
+        }
+        settings{
+            override{
+                color=yellow
+            }
+            yellow_rgb=[ 255 165 0 ]
+            yellow_rgb=[ 250 170 0 ]
+        }
+        settings{
+            override{
+                color=yellow
+                color=yellow
+                color=yellow
+            }
+            yellow_rgb=[ 255 165 0 ]
+        }
+
     }
 ```
 
@@ -2628,9 +2703,17 @@ HIVE validation messages that occur when validating the failing input shown abov
 
     Validation Error: Invalid Schema Rule: Bad ChildCountEqual Option "BadFlag" at line:9 column:43 - Expected [ IfExists EvenNone ]
 
-    line:1 column:1 - Validation Error: test does not have an equal number of existing: [ one/value two/value three/value ]
+    line:1 column:1 - Validation Error: test does not have an equal number of existing: [ "one/value" 'two/value' "three/value" ]
 
-    line:1 column:1 - Validation Error: test does not have an equal number of: [ four/value five/value six/value ]
+    line:1 column:1 - Validation Error: test does not have an equal number of: [ "four/value" 'five/value' "six/value" ]
+
+    line:27 column:9 - Validation Error: override does not have an equal number of: [ color=orange '../orange_rgb' ]
+
+    line:32 column:9 - Validation Error: override does not have an equal number of: [ color=orange '../orange_rgb' ]
+
+    line:37 column:9 - Validation Error: override does not have an equal number of existing: [ '../override/color'=yellow "../yellow_rgb" ]
+
+    line:44 column:9 - Validation Error: override does not have an equal number of existing: [ '../override/color'=yellow "../yellow_rgb" ]
 ```
 
 
@@ -2773,7 +2856,7 @@ HIVE validation messages that occur when validating the failing input shown abov
 
 ## **Input Assistance Details**
 
-Six of the previously described validation rules (`MaxOccurs`, `ChildAtMostOne`, `ChildExactlyOne`, `ValEnums`, `ExistsIn`, and `ValType`) and six new rules (`InputTmpl`, `InputName`, `InputType`, `InputVariants`, `InputDefault`, and `Description`) may also be used by graphical user interfaces to aid with input creation. They may be use for autocompletion assistance or input introspection.
+Six of the previously described validation rules (`MaxOccurs`, `ChildAtMostOne`, `ChildExactlyOne`, `ValEnums`, `ExistsIn`, and `ValType`) and seven new rules (`InputTmpl`, `InputName`, `InputType`, `InputVariants`, `InputDefault`, `InputChoices`, and `Description`) may also be used by graphical user interfaces to aid with input creation. They may be use for autocompletion assistance or input introspection.
 
 ### MaxOccurs Assistance Details
 
@@ -2793,7 +2876,7 @@ The ***Value Enumerations*** rule may be used by input assistance application lo
 
 ### ExistsIn Assistance Details
 
-The ***Exists In*** rule may be used by input assistance application logic to provide a set of choices that are legal at a given context based on values supplied elsewhere in the input. For example, if an element has `ExistsIn = [ "../../some/context1" "../../some/context2" ]`, and the values `1`, `2`, `3`, and `4` exist in the input at that relative context, then those values could be provided as autocompletion options.
+The ***Exists In*** rule may be used by input assistance application logic to provide a set of choices that are legal at a given context based on values supplied elsewhere in the input. For example, if an element has `ExistsIn = [ "../../some/context1" "../../some/context2" ]`, and the values `1`, `2`, `3`, and `4` exist in the input at those relative contexts, then those values could be provided as autocompletion options.
 
 ### ValType Assistance Details
 
@@ -2833,7 +2916,7 @@ Alternately, the application can let the same template know it is dealing, inste
 ```javascript
     flag_array_node{
         InputType = "FlagArray"
-        InputTmple = "FlagType"
+        InputTmpl = "FlagType"
     }
 ```
 
@@ -2845,7 +2928,74 @@ The ***Input Variants*** rule may be used by input assistance application logic 
 
 The ***Input Default*** rule may be used by input assistance application logic to explicitly tell a template what value should be dropped in for flag-values and flag-arrays via `InputDefault = 'explicit_default_value'`. This should override the `ValType` logic described in [ValType Assistance Details](#valtype-assistance-details).
 
+### InputChoices Assistance Details
+
+The ***Input Choices*** rule is useful if there is a set of recommended choices (static or relative path lookups) for a parameter's value, but it is still technically legal to use a different arbitrary value. It may be used by input assistance application logic to provide a set of choices that are legal at a given context based on a static set of values supplied in the schema. For example, if an element has `InputChoices = [ "a" "b" "c" "d" ]`, then those values could be provided as autocompletion options. For autocompletion purposes, this usage is similar to the `ValEnums` logic described in [ValEnums Assistance Details](#valenums-assistance-details), however it should only be used for input autocompletion assistance and not for input validation.
+
+The `PATH:` tag may be used within `InputChoices` by input assistance application logic to provide a set of choices that are legal at a given context based on values supplied elsewhere in the input. For example, if an element has `InputChoices = [ PATH:"../../some/context1" PATH:"../../some/context2" ]`, and the values `1`, `2`, `3`, and `4` exist in the input at those relative contexts, then those values could be provided as autocompletion options. For autocompletion purposes, this `PATH:` usage is similar to the `ExistsIn` logic described in [ExistsIn Assistance Details](#existsin-assistance-details), however, it should only be used for input autocompletion assistance and not for input validation.
+
 ### Description Assistance Details
 
 The ***Input Description*** rule may be used by input assistance application logic to give a short one line description in the autocompletion dropdown list via `Description = 'autocomplete dropdown description'`. These descriptions can be very useful to novice users unfamiliar with all of the parameters at a given context.
 
+### Input Aliases
+
+The ***Input Aliases*** rule is harnessed by definition driven interpreters (DDI, EDDI, etc.) to accommodate name-aliases or position-depedent named components. 
+
+#### Name-Aliased 
+e.g., `d 1 2 3` may be a shorthand for `data 1 2 3`. 
+
+The `InputAliases` can accommodate this via the following snippet:
+
+```javascript
+data{ InputAliases["d"] }
+```
+
+#### Index-Aliased
+Alternatively, for index-aliased, e.g., `data 3.14 carbon 3.52` 
+
+is a data array with 3 values `3.14`, `carbon`, `3.52`. These are by default generically named `value`. However, this
+generic name prevents specific rules from being applied to them. `InputAliases` allow for naming these components.
+
+e.g., the following snippet defines radius, material, and density as index 0, 1, and 2 respectively. 
+
+```javascript
+data{
+   radius  { InputAliases["_0"] ... }
+   material{ InputAliases["_1"] ... }
+   density { InputAliases["_2"] ... }
+}
+```
+> Note: Index-Aliases are only supported by EDDI
+
+### Strided-Aliased
+Alternatively, if the data is strided by the `InputAliases` supports the `STRIDE[<start>, <stride>]` construct
+
+e.g., the following `InputAliases` allows the data array to be arbitrarily long but still apply `radius`, `material`, and `density` naming and associated rules.
+
+```javascript
+data{
+   radius  { InputAliases[STRIDE[0,3]] ... }
+   material{ InputAliases[STRIDE[1,3]] ... }
+   density { InputAliases[STRIDE[2,3]] ... }
+}
+```
+
+
+> Note: The `STRIDE`'s stride must match across strided children of `data`.
+> Note: Strided-aliases are only supported by EDDI
+
+### Section-Aliased
+The EDDInterpreter additionally supports 'section' input, delimited by `/`. This facilitate visual aggregation of an array's components. 
+
+E.g., `data 3.14  3.5 / carbon graphite / 3.52  2.26` describes arbitrary-length tuples of `radius`, `material`, and `density`. Such an example can be properly defined via the section `InputAliases` construct, `s_<section>`.
+
+The following aliased input definition names the indices between the section `/` delimeters: 
+
+```javascript
+data{
+    radius  { InputAliases["s_0"] }
+    material{ InputAliases["s_1"] }
+    density { InputAliases["s_3"] }
+}
+```
