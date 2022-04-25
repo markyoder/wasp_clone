@@ -267,7 +267,7 @@ FILE_IMPORT `import
     return token::DOUBLE;
 }
  /* gobble up white-spaces */
-[ \t\r]+ {
+<*>[ \t\r]+ {
     yylloc->step();
 }
 
