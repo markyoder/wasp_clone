@@ -114,14 +114,12 @@ std::string HITNodeView::data() const
 
 std::string HITNodeView::path() const
 {
-    std::stringstream str;
-    m_pool->node_path(m_node_index, str);
-    return str.str();
+    return wasp::node_path(*this);
 }
 
 void HITNodeView::paths(std::ostream& out) const
 {
-    m_pool->node_paths(m_node_index, out);
+    wasp::node_paths(*this, out);
 }
 
 std::size_t HITNodeView::child_count() const

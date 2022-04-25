@@ -142,14 +142,12 @@ std::string SONNodeView::data() const
 
 std::string SONNodeView::path() const
 {
-    std::stringstream str;
-    m_pool->node_path(m_node_index, str);
-    return str.str();
+    return wasp::node_path(*this);
 }
 
 void SONNodeView::paths(std::ostream& out) const
 {
-    m_pool->node_paths(m_node_index, out);
+    wasp::node_paths(*this, out);
 }
 
 std::size_t SONNodeView::child_count() const
