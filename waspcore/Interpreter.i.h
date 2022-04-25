@@ -308,22 +308,29 @@ bool Interpreter<NodeStorage>::load_document(size_t node_index,
 
     std::string directory_name = wasp::dir_name(stream_name());
     if (directory_name == stream_name()) directory_name=".";
-    auto document_relative_path  = directory_name + "/" + clean_path;
+    auto document_path  = directory_name + "/" + clean_path;
     // if immediately adjacent path doesn't exist
     // check the search paths
-    if (!wasp::file_exists(document_relative_path))
+    if (!wasp::file_exists(document_path))
     {
         for (const auto& dir : search_paths())
         {
-            document_relative_path = dir + "/" + clean_path;
-            if (wasp::file_exists(document_relative_path)) break;
+            document_path = dir + "/" + clean_path;
+            if (wasp::file_exists(document_path)) break;
         }
     }
-    if (wasp::file_exists(document_relative_path))
+
+    // if relative file doesn't exist, attempt absolute
+    if (!wasp::file_exists(document_path))
+    {
+        document_path = clean_path;
+    }
+
+    if (wasp::file_exists(document_path))
     {
         auto * interp = create_nested_interpreter(this);
         wasp_check(interp);
-        if ( !interp->parseFile(document_relative_path) )
+        if ( !interp->parseFile(document_path) )
         {
             passed &= false;
             delete interp;
