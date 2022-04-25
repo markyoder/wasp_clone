@@ -233,9 +233,9 @@ inline WASP_PUBLIC void to_xml(const TAdapter& node,
     else
         out << std::endl;
     // recurse into each child
-    for (size_t i = 0; i < child_count; ++i)
+    for (auto itr = node.begin(); itr != node.end(); itr.next())
     {
-        to_xml(node.child_at(i), out, emit_decorative, space + "  ");
+        to_xml(itr.get(), out, emit_decorative, space + "  ");
     }
 
     // close the element
