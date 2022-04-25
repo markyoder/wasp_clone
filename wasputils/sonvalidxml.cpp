@@ -59,17 +59,9 @@ int main(int argc, char** argv)
         omit_dec = true;
     }
 
-    std::ifstream schema(argv[1]);
-    if (schema.fail() || schema.bad())
-    {
-        std::cerr << "Failed to open/read " << argv[1] << std::endl;
-        schema.close();
-        return 1;
-    }
     std::stringstream errors;
-    // TODO - adjust file offset size based on file size
     DefaultSONInterpreter schema_interp(errors);
-    bool                  parsed_schema = schema_interp.parse(schema);
+    bool                  parsed_schema = schema_interp.parseFile(argv[1]);
     if (!parsed_schema)
     {
         std::cerr << "Failed to process schema file '" << argv[1] << "'"
@@ -77,17 +69,8 @@ int main(int argc, char** argv)
         std::cerr << errors.str() << std::endl;
         return -1;
     }
-
-    std::ifstream input(argv[2]);
-    if (input.fail() || input.bad())
-    {
-        std::cerr << "Failed to open/read " << argv[2] << std::endl;
-        input.close();
-        return 2;
-    }
-
     DefaultSONInterpreter input_interp(errors);
-    bool                  parsed_input = input_interp.parse(input);
+    bool                  parsed_input = input_interp.parseFile(argv[2]);
     if (!parsed_input)
     {
         std::cerr << "Failed to process input file '" << argv[2] << "'"

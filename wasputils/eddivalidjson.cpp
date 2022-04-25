@@ -53,23 +53,16 @@ int main(int argc, char** argv)
             parser.search_paths().push_back(argI.substr(2));
         } 
     }
-    // open schema - if opening of file fails, return 1
-    std::ifstream schema_file(argv[1]);
-    if (schema_file.fail() || schema_file.bad())
-    {
-        std::cerr << "Failed to open/read " << argv[1] << std::endl;
-        schema_file.close();
-        return 1;
-    }
 
     // parse schema - if schema parsing fails - return 1
     // save schema_root
+    std::string schema_file_path = argv[1];
     std::stringstream errors;
     SONInterp         schema_interp(errors);
-    bool              parsed_schema = schema_interp.parse(schema_file);
+    bool              parsed_schema = schema_interp.parseFile(schema_file_path);
     if (!parsed_schema)
     {
-        std::cerr << "Failed to process schema file '" << argv[1] << "'" << std::endl;
+        std::cerr << "Failed to process schema file '" << schema_file_path << "'" << std::endl;
         std::cerr << errors.str() << std::endl;
         return 1;
     }

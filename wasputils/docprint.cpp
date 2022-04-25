@@ -34,21 +34,13 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    // open schema
-    std::ifstream schema(argv[1]);
-    if (schema.fail() || schema.bad())
-    {
-        std::cerr << "Failed to open/read " << argv[1] << std::endl;
-        schema.close();
-        return 1;
-    }
-
     // parse schema
+    std::string schema_file_path = argv[1];
     std::stringstream errors;
     SONInterp         schema_interp(errors);
-    if (!schema_interp.parse(schema))
+    if (!schema_interp.parseFile(schema_file_path))
     {
-        std::cerr << "***Error : Parsing of " << argv[1] << " failed!" << std::endl;
+        std::cerr << "***Error : Parsing of " << schema_file_path << " failed!" << std::endl;
         std::cerr << errors.str() << std::endl;
         return 1;
     }
@@ -60,7 +52,7 @@ int main(int argc, char** argv) {
     InputDefinition inpdef(schema_root, std::cout, std::cerr);
     if (!inpdef.isInitialized())
     {
-        std::cerr << "***Error : Schema " << argv[1] << " has errors!" << std::endl;
+        std::cerr << "***Error : Schema " << schema_file_path << " has errors!" << std::endl;
         return 1;
     }
 

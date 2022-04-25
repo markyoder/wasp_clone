@@ -43,20 +43,11 @@ int main(int argc, char* argv[])
 
     for (int j = 1; j < inp_count; ++j)
     {
-        std::ifstream input(argv[j]);
-        if (input.fail() || input.bad())
-        {
-            std::cout << "Failed to open/read " << argv[j] << std::endl;
-            input.close();
-            return 1;
-        }
         std::stringstream        errors;
         DefaultHITInterpreter interpreter(errors);
-        interpreter.stream_name() = argv[j];
-        interpreter.search_paths().push_back(wasp::dir_name(argv[j]));
         wasp_timer(parse_time);
         wasp_timer_start(parse_time);
-        bool parsed = interpreter.parse(input);
+        bool parsed = interpreter.parseFile(argv[j]);
         wasp_timer_stop(parse_time);
         wasp_timer_block(std::cout
                          << "Parse Timer duration: " << parse_time.duration()

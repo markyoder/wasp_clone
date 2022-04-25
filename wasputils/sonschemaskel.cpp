@@ -107,15 +107,8 @@ int main(int argc, char* argv[])
     std::stringstream errors;
     for (int j = 1; j < argc; ++j)
     {
-        std::ifstream input(argv[j]);
-        if (input.fail() || input.bad())
-        {
-            std::cout << "Failed to open/read " << argv[j] << std::endl;
-            input.close();
-            return 2;
-        }
         SONInterp input_interp(errors);
-        if (!input_interp.parse(input))
+        if (!input_interp.parseFile(argv[j]))
         {
             std::cout << "Failed to process input file '" << argv[j] << "'"
                       << std::endl;

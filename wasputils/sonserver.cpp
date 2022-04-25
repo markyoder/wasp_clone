@@ -31,22 +31,10 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    std::ifstream schema_ifs( argv[1] );
-
-    if ( schema_ifs.fail() || schema_ifs.bad() )
-    {
-        std::cerr << "Failed to open/read " << argv[1] << std::endl;
-        schema_ifs.close();
-        return 1;
-    }
-
-    std::string schema_text( (std::istreambuf_iterator<char>(schema_ifs) ),
-                             (std::istreambuf_iterator<char>()           ) );
-
     std::shared_ptr<DefaultSONInterpreter> schema =
             std::make_shared<DefaultSONInterpreter>();
 
-    schema->parseString( schema_text );
+    schema->parseFile( argv[1] );
 
     const std::string & template_dir = argv[2];
 
