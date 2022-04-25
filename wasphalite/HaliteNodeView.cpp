@@ -122,14 +122,12 @@ std::string HaliteNodeView::data() const
 
 std::string HaliteNodeView::path() const
 {
-    std::stringstream str;
-    m_pool->node_path(m_node_index, str);
-    return str.str();
+    return wasp::node_path(*this);
 }
 
 void HaliteNodeView::paths(std::ostream& out) const
 {
-    m_pool->node_paths(m_node_index, out);
+    node_paths(*this, out);
 }
 
 std::size_t HaliteNodeView::child_count() const

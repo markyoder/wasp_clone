@@ -123,14 +123,12 @@ std::string JSONNodeView::data() const
 
 std::string JSONNodeView::path() const
 {
-    std::stringstream str;
-    m_pool->node_path(m_node_index, str);
-    return str.str();
+    return wasp:node_path(*this);
 }
 
 void JSONNodeView::paths(std::ostream& out) const
 {
-    m_pool->node_paths(m_node_index, out);
+    wasp::node_paths(*this, out);
 }
 
 std::size_t JSONNodeView::child_count() const
