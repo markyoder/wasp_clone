@@ -315,18 +315,18 @@ class WASP_PUBLIC HIVE
                                   bool          ambig_error = true)
     {
         wasp_require(definition_model);
-        for (size_t i = 0; i < schema_view.child_count(); ++i)
+        for (auto itr = schema_view.begin(); itr != schema_view.end(); itr.next())
         {
-            const auto& child_view = schema_view.child_at(i);
+            const auto& child_view = itr.get();
             // skip decorative elements
             if (child_view.is_decorative())
                 continue;
             const std::string child_view_name = child_view.name();
             if (child_view_name == "InputAliases")
             {
-                for (size_t a = 0; a < child_view.child_count(); ++a)
+                for (auto citr = child_view.begin(); citr != child_view.end(); citr.next())
                 {
-                    const auto& alias_view = child_view.child_at(a);
+                    const auto& alias_view = citr.get();
                     if (alias_view.is_decorative())
                         continue;
                     // Capture strided aliases
