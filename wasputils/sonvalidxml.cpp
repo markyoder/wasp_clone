@@ -85,14 +85,6 @@ int main(int argc, char** argv)
     bool                     valid =
         validation_engine.validate(schema_root, input_root, validation_errors);
 
-    DefaultSONInterpreter parser;
-    bool                  failed = !parser.parseFile(argv[1]);
-    if (failed)
-    {
-        std::cerr << "***Error : Parsing of " << argv[1] << " failed!"
-                  << std::endl;
-        return 1;
-    }
     wasp::to_xml(input_root, std::cout, !omit_dec);
 
     if (!valid)
