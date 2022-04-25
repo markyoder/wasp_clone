@@ -1896,6 +1896,12 @@ TEST(HITInterpreter, include_block)
     ASSERT_EQ(1, children.size());
     ASSERT_EQ(std::string("nested_block"), children[0].name());
 
+    // Ensure the path produces from a nested document's node includes
+    // the context of the parent document's nodes
+    auto key_node = children[0].first_child_by_name("key");
+    ASSERT_FALSE(key_node.is_null());
+    ASSERT_EQ("/block/nested_block/key", key_node.path());
+
 }
 
 
