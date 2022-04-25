@@ -219,9 +219,9 @@ void SIRENInterpreter<S>::search_conditional_predicated_child(
     for (std::size_t index = 0; index < stage_size; ++index)
     {
         TAdapter node = stage[index];
-        for (std::size_t c = 0; c < node.child_count(); ++c)
+        for (auto citr = node.begin(); citr != node.end(); citr.next())
         {
-            const TAdapter& child_node = node.child_at(c);
+            const TAdapter& child_node = citr.get();
             // if child is a match, push back onto stage
             if (wildcard_string_match(name, child_node.name()))
             {
@@ -232,10 +232,10 @@ void SIRENInterpreter<S>::search_conditional_predicated_child(
                 // string compare fails quickly '1' == '1.0' fails, but should
                 // not considering user is expecting it is a numeric comparison.
                 bool predicate_accepted = false;  // assume predicate fails
-                for (std::size_t gc = 0, gc_count = child_node.child_count();
-                     gc < gc_count; ++gc)
+                for (auto gitr = child_node.begin(); gitr != child_node.end();
+                     gitr.next())
                 {
-                    const TAdapter& g_child_node = child_node.child_at(gc);
+                    const TAdapter& g_child_node = gitr.get();
                     // if grand child name is a match, need to determine
                     // if value matches
                     if (wildcard_string_match(predicate_name,
@@ -313,9 +313,9 @@ void SIRENInterpreter<S>::search_index_predicated_child(
     for (std::size_t index = 0; index < stage_size; ++index)
     {
         TAdapter node = stage[index];
-        for (std::size_t c = 0; c < node.child_count(); ++c)
+        for (auto citr = node.begin(); citr != node.end(); citr.next())
         {
-            const TAdapter& child_node = node.child_at(c);
+            const TAdapter& child_node = citr.get();
             // if child is a match, push back onto stage
             if (strcmp(name, child_node.name()) == 0)
             {
