@@ -9,7 +9,7 @@ file := block*|key_value*|file_include*
 block := '[' name ']' block_members '[]'
 block_members := (block_member | file_include)*
 block_member := block | key_value
-file_include := 'include' string
+file_include := '!include' string
 key_value := name '=' value
 name := string
 value := (number|string|array)
@@ -30,7 +30,7 @@ An example is as follows:
     ...
   []
 []    
-include parts_file.i
+!include parts_file.i
 ```
 
 The above example illustrates arbitrary hierarchy. 
