@@ -1790,4 +1790,19 @@ TEST(SON, only_include)
     {
         ASSERT_EQ(expected[index], itr.get().name());
     }
+
+    // Test conversion to XML
+    // This illustrates that the 'import' is not seen by the conversion
+    // and does not pollute the XML document with extraneous annotations
+    std::stringstream xml;
+    wasp::to_xml(root, xml);
+    std::string expected_xml = R"INPUT(<document>
+  <key>
+    <decl loc="1.3" dec="true">key</decl>
+    <ASSIGN loc="1.7" dec="true">=</ASSIGN>
+    <value loc="1.9">3</value>
+  </key>
+</document>
+)INPUT";
+    ASSERT_EQ(expected_xml, xml.str());
 }
