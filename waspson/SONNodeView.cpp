@@ -193,7 +193,7 @@ SONNodeView::Collection  // return type
 SONNodeView  // return type
     SONNodeView::first_child_by_name(const std::string& name) const
 {
-    return wasp::fe_first_non_decorative_child_by_name(*this, name);
+    return wasp::fe_first_child_by_name(*this, name);
 }
 
 std::size_t SONNodeView::type() const

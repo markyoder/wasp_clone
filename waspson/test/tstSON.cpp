@@ -1403,6 +1403,7 @@ obj(foo){
         const auto& obj_view = objs.front();
         ASSERT_EQ("foo", obj_view.id());
         ASSERT_EQ("foo", obj_view.id_child().data());
+        ASSERT_EQ("foo", obj_view.first_child_by_name("id").data());
         // 4 members + 1 (id is decorative) non decorative
         ASSERT_EQ(4, obj_view.non_decorative_children_count());
         ASSERT_EQ("", document.id());
