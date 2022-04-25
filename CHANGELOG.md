@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
  - HIT support for `!include filepath`
- - SON support for `\`import("filepath")`
+ - SON support for `import("filepath")
  - Approximately 30% memory performance improvement in TreeNodePool
  - NodeView Iterator class to enable SIREN/HIVE iterations involving nested interpreters (E.g., included/imported files)
 
