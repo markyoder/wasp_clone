@@ -5,6 +5,8 @@ The supported constructs are Blocks, Objects, Arrays, and Keyed values. Addition
 
 SON can facilitate simple constructs such as property or configuration files using keyed-values. Blocks allow for top-level grouping.
 
+Lastly, file imports are supported via 
+
 ## Keyed-Value 
 
 The Keyed-Value is the simplest construct for representing information. 
@@ -131,3 +133,28 @@ The example property store file above illustrates potential array use as follows
 ```
  
 Arrays support the same identifier scheme as keyed-values with the one exception that nested arrays cannot have identifiers.
+
+
+## File Import
+Nested or reoccuring components can be included or imported into a parent document via the `import("filepath") syntax.
+
+An example of a file import is as follows:
+
+```
+main{
+    x=544 y=100
+    width = 1920
+    height = 1080
+}
+`import ("settings.son")
+```
+where settings.son contains:
+
+```
+settings{
+    x = 520 y = 800
+    width = 120 height = 120
+}
+```
+
+File imports can occur anywhere in the document with the exception that a file component's syntax cannot be split across file boundaries. E.g., an object cannot have it's starting curly brace `{` in a different file from its terminating curly brace `}`. 
