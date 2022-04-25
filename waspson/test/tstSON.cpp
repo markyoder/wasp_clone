@@ -1789,6 +1789,8 @@ TEST(SON, only_include)
     for (auto itr = root.begin(); itr != root.end(); itr.next(), ++index)
     {
         ASSERT_EQ(expected[index], itr.get().name());
+        // Test that the parent is the parent document's root, not the include'd files root
+        ASSERT_EQ(root, itr.get().parent());
     }
 
     // Test conversion to XML
