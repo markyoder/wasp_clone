@@ -37,18 +37,11 @@ int main(int argc, char* argv[])
                   << " --version\t(print version info)" << std::endl;
         return 1;
     }
-    std::ifstream input(argv[1]);
-    if (input.fail() || input.bad())
-    {
-        std::cout << "Failed to open/read " << argv[1] << std::endl;
-        input.close();
-        return 1;
-    }
     std::stringstream     errors;
     DefaultSONInterpreter interpreter(errors);
     wasp_timer(parse_time);
     wasp_timer_start(parse_time);
-    bool parsed = interpreter.parse(input);
+    bool parsed = interpreter.parseFile(argv[1]);
     wasp_timer_stop(parse_time);
     wasp_timer_block(std::cout
                      << "Parse Timer duration: " << parse_time.duration()

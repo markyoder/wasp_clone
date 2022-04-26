@@ -126,7 +126,9 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
      * const char * TAdapter::name()const - returns the name of the node.
      * size_t TAdapter::child_count()const - returns the number of children.
      * TAdapter TAdapter::parent()const - returns the parent of the node.
-     * TAdapter TAdapter::child_at(size_t index)const - returns the child of the
+     * TAdapter TAdapter::begin()const - returns an iterator to the first child of the
+     * node.
+     * TAdapter TAdapter::end()const - returns an iterator to the just past the last child of the
      * node.
      * bool TAdapter::has_parent()const - indicate the node has a parent.
      * std::string TAdapter::data()const - acquires the data of the node.

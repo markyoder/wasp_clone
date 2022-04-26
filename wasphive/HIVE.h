@@ -214,6 +214,27 @@ class WASP_PUBLIC HIVE
     bool validateChildUniqueness(SchemaAdapter&            schema_node,
                                  InputAdapter&             input_node,
                                  std::vector<std::string>& errors);
+
+    /**
+     * @brief Obtain the scope of the given node
+     * The scope is either an empty string for the current document
+     * or the name of the file as it was actually included from a parent 
+     * document and therefore needs to be differentiated by the file name/scope
+     * @tparam NodeAdapter 
+     * @param node 
+     * @return std::string 
+     */
+    template <class NodeAdapter>
+    static std::string FileScope(NodeAdapter& node)
+    {
+        auto node_pool = node.node_pool();
+
+        if (node_pool != nullptr && node_pool->document_parent() != nullptr)
+        {
+            return node_pool->stream_name() + " - ";
+        }
+        return "";
+    }
     std::string getFullRuleName(const std::string& shortName)
     {
         static std::map<std::string, std::string> fullNames = {
@@ -294,18 +315,18 @@ class WASP_PUBLIC HIVE
                                   bool          ambig_error = true)
     {
         wasp_require(definition_model);
-        for (size_t i = 0; i < schema_view.child_count(); ++i)
+        for (auto itr = schema_view.begin(); itr != schema_view.end(); itr.next())
         {
-            const auto& child_view = schema_view.child_at(i);
+            const auto& child_view = itr.get();
             // skip decorative elements
             if (child_view.is_decorative())
                 continue;
             const std::string child_view_name = child_view.name();
             if (child_view_name == "InputAliases")
             {
-                for (size_t a = 0; a < child_view.child_count(); ++a)
+                for (auto citr = child_view.begin(); citr != child_view.end(); citr.next())
                 {
-                    const auto& alias_view = child_view.child_at(a);
+                    const auto& alias_view = citr.get();
                     if (alias_view.is_decorative())
                         continue;
                     // Capture strided aliases
@@ -939,7 +960,7 @@ class WASP_PUBLIC HIVE
                    std::to_string(maxErrors) + " ERRORS FOUND";
         }
 
-        static std::string Occurance(int                line,
+        static std::string Occurrence(int               line,
                                      int                col,
                                      const std::string& nodeName,
                                      int                realOccurs,

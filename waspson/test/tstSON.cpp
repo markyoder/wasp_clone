@@ -103,6 +103,16 @@ TEST(SON, keyed_value)
             ASSERT_EQ(types[i], interpreter.type(i));
         }
     }
+    // Test iterator
+    {
+    size_t index = 0;
+    for(auto itr = document.begin(); itr != document.end(); itr.next(), ++index)
+    {
+        SCOPED_TRACE(index);
+        ASSERT_TRUE(index < document.child_count());
+        ASSERT_EQ(document.child_at(index), itr.get());
+    }
+    }
 }
 TEST(SON, empty_object)
 {
@@ -1393,6 +1403,7 @@ obj(foo){
         const auto& obj_view = objs.front();
         ASSERT_EQ("foo", obj_view.id());
         ASSERT_EQ("foo", obj_view.id_child().data());
+        ASSERT_EQ("foo", obj_view.first_child_by_name("id").data());
         // 4 members + 1 (id is decorative) non decorative
         ASSERT_EQ(4, obj_view.non_decorative_children_count());
         ASSERT_EQ("", document.id());
@@ -1725,4 +1736,75 @@ TEST(SON, DISABLED_array_expression_identifier)
     auto k_id_view = k_view.id_child();
     ASSERT_FALSE(k_id_view.is_null());
     ASSERT_EQ("id", std::string(k_id_view.name()));
+}
+
+
+/**
+ * @brief standalone file include not found error
+ */
+TEST(SON, only_include_not_found)
+{
+    std::stringstream input;
+    input << R"I(`import('missing.son'))I" << std::endl;
+    std::stringstream errors;
+    DefaultSONInterpreter interpreter(errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expected_errors;
+    expected_errors << "stream input line:1 column:1 : could not find 'missing.son'" << std::endl;
+    
+    ASSERT_EQ(expected_errors.str(), errors.str());
+}
+/**
+ * @brief standalone file include
+ */
+TEST(SON, only_include)
+{
+    { // Scope for file buffer to be flushed before reading
+    std::ofstream block_file("data.son");
+    block_file << "  key = 3" << std::endl;
+    block_file.close();
+    }
+    
+    std::stringstream input;
+    input << R"I(`import ('data.son'))I" << std::endl;
+
+    DefaultSONInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::string expected_paths = R"INPUT(/
+/import
+/import/decl (`import)
+/import/( (()
+/import/path ('data.son')
+/import/) ())
+)INPUT";    
+
+    std::stringstream actual_paths;
+    interpreter.root().paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+
+    std::vector<std::string> expected = {"key"};
+    SONNodeView root = interpreter.root();
+    size_t index = 0;
+    for (auto itr = root.begin(); itr != root.end(); itr.next(), ++index)
+    {
+        ASSERT_EQ(expected[index], itr.get().name());
+        // Test that the parent is the parent document's root, not the include'd files root
+        ASSERT_EQ(root, itr.get().parent());
+    }
+
+    // Test conversion to XML
+    // This illustrates that the 'import' is not seen by the conversion
+    // and does not pollute the XML document with extraneous annotations
+    std::stringstream xml;
+    wasp::to_xml(root, xml);
+    std::string expected_xml = R"INPUT(<document>
+  <key>
+    <decl loc="1.3" dec="true">key</decl>
+    <ASSIGN loc="1.7" dec="true">=</ASSIGN>
+    <value loc="1.9">3</value>
+  </key>
+</document>
+)INPUT";
+    ASSERT_EQ(expected_xml, xml.str());
 }

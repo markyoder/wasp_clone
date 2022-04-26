@@ -203,3 +203,9 @@ TEST(HIVE, UnknownNode)
 {
     do_test("UnknownNode");
 }
+
+TEST(HIVE, validation_with_imports)
+{
+    SCOPED_TRACE("imports");
+    do_test("imports");
+}

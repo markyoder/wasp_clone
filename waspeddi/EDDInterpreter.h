@@ -107,7 +107,8 @@ class WASP_PUBLIC EDDInterpreter : public Interpreter<S>
     EDDInterpreter(std::ostream& err);
     virtual ~EDDInterpreter();
 
-    bool load_document(size_t node_index, const std::string& path);
+    EDDInterpreter* create_nested_interpreter(Super* parent);
+
     EDDInterpreter* document_parent() const {return m_parent;}
 
     /** Invoke the lexer and parser for a stream.

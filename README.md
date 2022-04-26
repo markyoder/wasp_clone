@@ -138,7 +138,7 @@ WASP is composed of the following primary components:
         * exponentiation '\^'
     * Scalar variable assignment, reference, and creation: known variable can be referenced and updated, or new variables created during expression evaluation.
     * Mathematical functions
-3. [__HIT__](https://mooseframework.inl.gov/framework_development/sanity_checking.html): the wasphit package contains lexer, parser, and tree node view for the hit grammar.
+3. [__HIT__](https://mooseframework.inl.gov/framework_development/sanity_checking.html): the [wasphit package](/wasphit/README.md) contains lexer, parser, and tree node view for the hit grammar.
 4. [__HIVE__](/wasphive/README.md#hive): the Hierarchical Input Validation Engine contains algorithms for validating a parse tree using a document schema/definition file, the flexible scalar and referential rules - supporting 
     * element occurrence,
     * value,

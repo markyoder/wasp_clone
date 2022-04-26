@@ -255,9 +255,8 @@ namespace wasp {
     STRING = 267,                  // "string"
     QSTRING = 268,                 // "quoted string"
     COMMENT = 269,                 // "comment"
-    EXECUTION_UNIT_START = 270,    // "start of unit of execution"
-    EXECUTION_UNIT_END = 271,      // "end of unit of execution"
-    OBJECT_TERM = 272              // "block terminator"
+    OBJECT_TERM = 270,             // "block terminator"
+    FILE = 273                     // "file include"
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -274,7 +273,7 @@ namespace wasp {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 22, ///< Number of tokens.
+        YYNTOKENS = 21, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -293,18 +292,18 @@ namespace wasp {
         S_STRING = 14,                           // "string"
         S_QSTRING = 15,                          // "quoted string"
         S_COMMENT = 16,                          // "comment"
-        S_EXECUTION_UNIT_START = 17,             // "start of unit of execution"
-        S_EXECUTION_UNIT_END = 18,               // "end of unit of execution"
-        S_OBJECT_TERM = 19,                      // "block terminator"
-        S_20_declarator_ = 20,                   // "declarator"
-        S_21_value_ = 21,                        // "value"
-        S_YYACCEPT = 22,                         // $accept
-        S_semicolon = 23,                        // semicolon
-        S_assign = 24,                           // assign
-        S_object_term = 25,                      // object_term
-        S_lbracket = 26,                         // lbracket
-        S_rbracket = 27,                         // rbracket
-        S_dot_slash = 28,                        // dot_slash
+        S_OBJECT_TERM = 17,                      // "block terminator"
+        S_18_declarator_ = 18,                   // "declarator"
+        S_19_value_ = 19,                        // "value"
+        S_FILE = 20,                             // "file include"
+        S_YYACCEPT = 21,                         // $accept
+        S_semicolon = 22,                        // semicolon
+        S_assign = 23,                           // assign
+        S_object_term = 24,                      // object_term
+        S_lbracket = 25,                         // lbracket
+        S_rbracket = 26,                         // rbracket
+        S_dot_slash = 27,                        // dot_slash
+        S_include = 28,                          // include
         S_object_decl = 29,                      // object_decl
         S_object_member = 30,                    // object_member
         S_object_members = 31,                   // object_members
@@ -319,12 +318,14 @@ namespace wasp {
         S_quote = 40,                            // quote
         S_string = 41,                           // string
         S_primitive = 42,                        // primitive
-        S_array_member = 43,                     // array_member
-        S_array_members = 44,                    // array_members
-        S_array = 45,                            // array
-        S_keyedvalue = 46,                       // keyedvalue
-        S_comment = 47,                          // comment
-        S_start = 48                             // start
+        S_path = 43,                             // path
+        S_include_file = 44,                     // include_file
+        S_array_member = 45,                     // array_member
+        S_array_members = 46,                    // array_members
+        S_array = 47,                            // array
+        S_keyedvalue = 48,                       // keyedvalue
+        S_comment = 49,                          // comment
+        S_start = 50                             // start
       };
     };
 
@@ -832,8 +833,8 @@ namespace wasp {
     /// Constants.
     enum
     {
-      yylast_ = 61,     ///< Last index in yytable_.
-      yynnts_ = 27,  ///< Number of nonterminal symbols.
+      yylast_ = 66,     ///< Last index in yytable_.
+      yynnts_ = 30,  ///< Number of nonterminal symbols.
       yyfinal_ = 2 ///< Termination state number.
     };
 
@@ -848,7 +849,7 @@ namespace wasp {
 
 #line 36 "HIT.bison"
 } // wasp
-#line 852 "HITParser.hpp"
+#line 853 "HITParser.hpp"
 
 
 

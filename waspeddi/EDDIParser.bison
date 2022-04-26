@@ -191,7 +191,11 @@ include_file : include path
                                          //  |_ value (path/to/file)
                                         ,"incl"
                                         ,child_indices);
-            interpreter.load_document($$, wasp::trim(interpreter.data($2)," "));
+            bool loaded = interpreter.load_document($$, wasp::trim(interpreter.data($2)," "));
+            if (!loaded)
+            {
+                interpreter.set_failed(true);
+            }
         }
 
 

@@ -793,13 +793,17 @@ namespace wasp {
                                          //  |_ value (path/to/file)
                                         ,"incl"
                                         ,child_indices);
-            interpreter.load_document((yylhs.value.node_index), wasp::trim(interpreter.data((yystack_[0].value.node_index))," "));
+            bool loaded = interpreter.load_document((yylhs.value.node_index), wasp::trim(interpreter.data((yystack_[0].value.node_index))," "));
+            if (!loaded)
+            {
+                interpreter.set_failed(true);
+            }
         }
-#line 799 "EDDIParser.cpp"
+#line 803 "EDDIParser.cpp"
     break;
 
   case 20: // decl: "string"
-#line 199 "EDDIParser.bison"
+#line 203 "EDDIParser.bison"
     {
         auto token_index = ((yystack_[0].value.token_index));
         std::string quote_less_data = interpreter.token_data(token_index);
@@ -808,11 +812,11 @@ namespace wasp {
                                    ,"decl"
                                    ,token_index);
     }
-#line 812 "EDDIParser.cpp"
+#line 816 "EDDIParser.cpp"
     break;
 
   case 21: // decl_or_key_value: decl assign key_value
-#line 208 "EDDIParser.bison"
+#line 212 "EDDIParser.bison"
         {
             std::string quote_less_data = interpreter.data((yystack_[2].value.node_index));
             quote_less_data = wasp::strip_quotes(quote_less_data);
@@ -827,59 +831,59 @@ namespace wasp {
                                         ,quote_less_data.c_str()
                                         ,child_indices);
         }
-#line 831 "EDDIParser.cpp"
+#line 835 "EDDIParser.cpp"
     break;
 
   case 22: // decl_or_key_value: decl
-#line 221 "EDDIParser.bison"
+#line 225 "EDDIParser.bison"
             { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 837 "EDDIParser.cpp"
+#line 841 "EDDIParser.cpp"
     break;
 
   case 23: // part: value
-#line 222 "EDDIParser.bison"
+#line 226 "EDDIParser.bison"
        { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 843 "EDDIParser.cpp"
+#line 847 "EDDIParser.cpp"
     break;
 
   case 24: // part: fslash
-#line 222 "EDDIParser.bison"
+#line 226 "EDDIParser.bison"
                { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 849 "EDDIParser.cpp"
+#line 853 "EDDIParser.cpp"
     break;
 
   case 25: // part: comment
-#line 222 "EDDIParser.bison"
+#line 226 "EDDIParser.bison"
                         { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 855 "EDDIParser.cpp"
+#line 859 "EDDIParser.cpp"
     break;
 
   case 26: // part: fill_expr
-#line 222 "EDDIParser.bison"
+#line 226 "EDDIParser.bison"
                                   { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 861 "EDDIParser.cpp"
+#line 865 "EDDIParser.cpp"
     break;
 
   case 27: // part: decl_or_key_value
-#line 223 "EDDIParser.bison"
+#line 227 "EDDIParser.bison"
           { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 867 "EDDIParser.cpp"
+#line 871 "EDDIParser.cpp"
     break;
 
   case 28: // part: comma
-#line 223 "EDDIParser.bison"
+#line 227 "EDDIParser.bison"
                               { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 873 "EDDIParser.cpp"
+#line 877 "EDDIParser.cpp"
     break;
 
   case 29: // part: semicolon
-#line 223 "EDDIParser.bison"
+#line 227 "EDDIParser.bison"
                                       { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 879 "EDDIParser.cpp"
+#line 883 "EDDIParser.cpp"
     break;
 
   case 30: // command_part: part
-#line 225 "EDDIParser.bison"
+#line 229 "EDDIParser.bison"
                     {
         std::ostringstream err;
         if (!interpreter.process_staged_node((yylhs.value.stage_index), "command_part",
@@ -888,30 +892,30 @@ namespace wasp {
             error(yystack_[0].location, err.str());
         }
     }
-#line 892 "EDDIParser.cpp"
+#line 896 "EDDIParser.cpp"
     break;
 
   case 31: // command_part: include_file
-#line 234 "EDDIParser.bison"
+#line 238 "EDDIParser.bison"
     {
         // assume the included content will be a child of the existing
         // staged content.
         (yylhs.value.stage_index) = interpreter.push_staged_child((yystack_[0].value.node_index));
     }
-#line 902 "EDDIParser.cpp"
+#line 906 "EDDIParser.cpp"
     break;
 
   case 32: // comment: "comment"
-#line 241 "EDDIParser.bison"
+#line 245 "EDDIParser.bison"
         {
             auto token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment",token_index);
         }
-#line 911 "EDDIParser.cpp"
+#line 915 "EDDIParser.cpp"
     break;
 
   case 33: // block: lbracket decl rbracket
-#line 246 "EDDIParser.bison"
+#line 250 "EDDIParser.bison"
     {
         // Block is top level parse construct
         // It closes/commits existing stages
@@ -935,11 +939,11 @@ namespace wasp {
                                         ,child_indices);
         }
     }
-#line 939 "EDDIParser.cpp"
+#line 943 "EDDIParser.cpp"
     break;
 
   case 35: // start: start block
-#line 271 "EDDIParser.bison"
+#line 275 "EDDIParser.bison"
                     {
            if(interpreter.single_parse() )
            {
@@ -947,11 +951,11 @@ namespace wasp {
                YYACCEPT;
            }
        }
-#line 951 "EDDIParser.cpp"
+#line 955 "EDDIParser.cpp"
     break;
 
   case 36: // start: start command_part
-#line 278 "EDDIParser.bison"
+#line 282 "EDDIParser.bison"
                             {
             if(interpreter.single_parse() )
             {
@@ -959,11 +963,11 @@ namespace wasp {
                 YYACCEPT;
             }
         }
-#line 963 "EDDIParser.cpp"
+#line 967 "EDDIParser.cpp"
     break;
 
 
-#line 967 "EDDIParser.cpp"
+#line 971 "EDDIParser.cpp"
 
             default:
               break;
@@ -1421,8 +1425,8 @@ namespace wasp {
   {
        0,   113,   113,   118,   123,   128,   133,   139,   144,   149,
      155,   155,   155,   155,   157,   163,   164,   171,   177,   184,
-     198,   207,   221,   222,   222,   222,   222,   223,   223,   223,
-     225,   233,   240,   245,   270,   271,   278
+     202,   211,   225,   226,   226,   226,   226,   227,   227,   227,
+     229,   237,   244,   249,   274,   275,   282
   };
 
   void
@@ -1503,9 +1507,9 @@ namespace wasp {
 
 #line 33 "EDDIParser.bison"
 } // wasp
-#line 1507 "EDDIParser.cpp"
+#line 1511 "EDDIParser.cpp"
 
-#line 290 "EDDIParser.bison"
+#line 294 "EDDIParser.bison"
  /*** Additional Code ***/
 
 void wasp::EDDIParser::error(const EDDIParser::location_type& l,

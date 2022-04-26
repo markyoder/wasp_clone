@@ -50,19 +50,10 @@ int main(int argc, char** argv)
         msgType = HIVE::MessagePrintType::JSON;
     }
 
-    // open schema
-    std::ifstream schema(argv[1]);
-    if (schema.fail() || schema.bad())
-    {
-        std::cerr << "Failed to open/read " << argv[1] << std::endl;
-        schema.close();
-        return 1;
-    }
-
     // parse schema
     std::stringstream errors;
     SONInterp         schema_interp(errors);
-    bool              parsed_schema = schema_interp.parse(schema);
+    bool              parsed_schema = schema_interp.parseFile(argv[1]);
     if (!parsed_schema)
     {
         std::cerr << "Failed to process schema file '" << argv[1] << "'"
@@ -74,18 +65,9 @@ int main(int argc, char** argv)
     // save schema root
     SONNV schema_root = schema_interp.root();
 
-    // open input
-    std::ifstream input(argv[2]);
-    if (input.fail() || input.bad())
-    {
-        std::cerr << "Failed to open/read " << argv[2] << std::endl;
-        input.close();
-        return 1;
-    }
-
     // parse input
     DefaultHITInterpreter input_interp(errors);
-    bool      parsed_input = input_interp.parse(input);
+    bool      parsed_input = input_interp.parseFile(argv[2]);
     if (!parsed_input)
     {
         std::cerr << "Failed to process input file '" << argv[2] << "'"

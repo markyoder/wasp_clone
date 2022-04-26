@@ -6,7 +6,9 @@
 #include <ostream>
 #include <iostream>
 #include "waspcore/Interpreter.h"
+#include "waspcore/Iterator.h"
 #include "waspcore/decl.h"
+
 namespace wasp
 {
 /**
@@ -18,6 +20,7 @@ class WASP_PUBLIC EDDINodeView
 {
   public:
     using Collection = std::vector<EDDINodeView>;
+    using GenericView = NodeView;
     EDDINodeView() : m_node_index(-1), m_pool(nullptr) {}
     EDDINodeView(std::size_t node_index, const AbstractInterpreter& nodes);
     template<class NV>
@@ -25,6 +28,8 @@ class WASP_PUBLIC EDDINodeView
     EDDINodeView(const EDDINodeView& orig);
 
     ~EDDINodeView();
+    Iterator<EDDINodeView, FilePush> begin() const{return Iterator<EDDINodeView, FilePush>(*this);}
+    Iterator<EDDINodeView, FilePush> end() const{return Iterator<EDDINodeView, FilePush>();}
 
     EDDINodeView& operator=(const EDDINodeView& b);
     template<class NV>
@@ -256,7 +261,7 @@ class WASP_PUBLIC EDDINodeView
                                     const wasp::EDDINodeView& view)
     {
         str << "EDDINodeView(node_index=" << view.m_node_index
-            << ", &pool=" << view.m_pool << ")";
+            << ", &pool=" << view.m_pool << ", " << view.m_pool->stream_name() <<")";
         return str;
     }
 

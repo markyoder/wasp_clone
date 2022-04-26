@@ -80,12 +80,12 @@ bool load_streams(HITHIVETest&    t,
 bool load_ast(HITHIVETest& t)
 {
     t.input_fail_interpreter = std::make_shared<DefaultHITInterpreter>();
-    bool input_fail_good     = t.input_fail_interpreter->parse(*t.input_fail);
+    bool input_fail_good     = t.input_fail_interpreter->parseStream(*t.input_fail, t.input_fail_path);
 
     EXPECT_TRUE(input_fail_good);
 
     t.input_pass_interpreter = std::make_shared<DefaultHITInterpreter>();
-    bool input_pass_good     = t.input_pass_interpreter->parse(*t.input_pass);
+    bool input_pass_good     = t.input_pass_interpreter->parseStream(*t.input_pass, t.input_pass_path);
     EXPECT_TRUE(input_pass_good);
 
     t.schema_interpreter = std::make_shared<DefaultSONInterpreter>();
@@ -96,13 +96,15 @@ bool load_ast(HITHIVETest& t)
     return schema_good && input_fail_good && input_pass_good;
 }
 
-void do_test(const std::string& name)
+// Schema is defaulted to test name
+void do_test(const std::string& name, std::string sch="")
 {
     SCOPED_TRACE(name);
+    if (sch.empty()) sch = name;
     HIVE           hive;
     HITHIVETest t;
     ASSERT_TRUE(load_streams(t, name + ".fail.gp", name + ".pass.gp",
-                             name + ".fail.gld", name + ".sch"));
+                             name + ".fail.gld", sch + ".sch"));
     ASSERT_TRUE(load_ast(t));
     std::vector<std::string> errors;
     SONNodeView              schema_adapter = t.schema_interpreter->root();
@@ -201,4 +203,9 @@ TEST(HITHIVE, SumOver)
 TEST(HITHIVE, SumOverGroup)
 {
     do_test("SumOverGroup");
+}
+TEST(HITHIVE, validation_with_includes)
+{
+    SCOPED_TRACE("ChildAtLeastOneInclude");
+    do_test("ChildAtLeastOneInclude", "ChildAtLeastOne");
 }

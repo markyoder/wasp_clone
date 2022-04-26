@@ -269,12 +269,13 @@ namespace wasp {
     STRING = 288,                  // "string"
     QSTRING = 289,                 // "quoted string"
     COMMENT = 290,                 // "comment"
-    EXECUTION_UNIT_START = 291,    // "start of unit of execution"
-    EXECUTION_UNIT_END = 292,      // "end of unit of execution"
-    OBJECT = 293,                  // OBJECT
-    ARRAY = 294,                   // ARRAY
-    UMINUS = 295,                  // UMINUS
-    UNOT = 296                     // UNOT
+    FILE = 291,                    // "file import"
+    EXECUTION_UNIT_START = 292,    // "start of unit of execution"
+    EXECUTION_UNIT_END = 293,      // "end of unit of execution"
+    OBJECT = 294,                  // OBJECT
+    ARRAY = 295,                   // ARRAY
+    UMINUS = 296,                  // UMINUS
+    UNOT = 297                     // UNOT
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -291,7 +292,7 @@ namespace wasp {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 43, ///< Number of tokens.
+        YYNTOKENS = 44, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -329,64 +330,68 @@ namespace wasp {
         S_STRING = 33,                           // "string"
         S_QSTRING = 34,                          // "quoted string"
         S_COMMENT = 35,                          // "comment"
-        S_EXECUTION_UNIT_START = 36,             // "start of unit of execution"
-        S_EXECUTION_UNIT_END = 37,               // "end of unit of execution"
-        S_OBJECT = 38,                           // OBJECT
-        S_ARRAY = 39,                            // ARRAY
-        S_UMINUS = 40,                           // UMINUS
-        S_UNOT = 41,                             // UNOT
-        S_42_exp_ = 42,                          // "exp"
-        S_YYACCEPT = 43,                         // $accept
-        S_filler = 44,                           // filler
-        S_comma = 45,                            // comma
-        S_multiply = 46,                         // multiply
-        S_divide = 47,                           // divide
-        S_multiply_divide = 48,                  // multiply_divide
-        S_plus = 49,                             // plus
-        S_minus = 50,                            // minus
-        S_exponent = 51,                         // exponent
-        S_BOOLEAN = 52,                          // BOOLEAN
-        S_boolean_numeric_op = 53,               // boolean_numeric_op
-        S_eq = 54,                               // eq
-        S_neq = 55,                              // neq
-        S_gte = 56,                              // gte
-        S_gt = 57,                               // gt
-        S_lte = 58,                              // lte
-        S_lt = 59,                               // lt
-        S_boolean_logic_op = 60,                 // boolean_logic_op
-        S_and = 61,                              // and
-        S_or = 62,                               // or
-        S_unary_not = 63,                        // unary_not
-        S_lparen = 64,                           // lparen
-        S_rparen = 65,                           // rparen
-        S_lbrace = 66,                           // lbrace
-        S_rbrace = 67,                           // rbrace
-        S_lbracket = 68,                         // lbracket
-        S_rbracket = 69,                         // rbracket
-        S_ANY_STRING = 70,                       // ANY_STRING
-        S_PRIMITIVE = 71,                        // PRIMITIVE
-        S_value = 72,                            // value
-        S_component = 73,                        // component
-        S_exp = 74,                              // exp
-        S_execution_unit_end = 75,               // execution_unit_end
-        S_execution_unit_start = 76,             // execution_unit_start
-        S_identifier = 77,                       // identifier
-        S_decl = 78,                             // decl
-        S_ASSIGNMENT = 79,                       // ASSIGNMENT
-        S_assignment = 80,                       // assignment
-        S_key_declaration = 81,                  // key_declaration
-        S_declaration = 82,                      // declaration
-        S_tag = 83,                              // tag
-        S_array = 84,                            // array
-        S_object = 85,                           // object
-        S_keyedvalue = 86,                       // keyedvalue
-        S_members = 87,                          // members
-        S_array_members = 88,                    // array_members
-        S_comment = 89,                          // comment
-        S_execution_unit_name = 90,              // execution_unit_name
-        S_execution_unit = 91,                   // execution_unit
-        S_block = 92,                            // block
-        S_start = 93                             // start
+        S_FILE = 36,                             // "file import"
+        S_EXECUTION_UNIT_START = 37,             // "start of unit of execution"
+        S_EXECUTION_UNIT_END = 38,               // "end of unit of execution"
+        S_OBJECT = 39,                           // OBJECT
+        S_ARRAY = 40,                            // ARRAY
+        S_UMINUS = 41,                           // UMINUS
+        S_UNOT = 42,                             // UNOT
+        S_43_exp_ = 43,                          // "exp"
+        S_YYACCEPT = 44,                         // $accept
+        S_filler = 45,                           // filler
+        S_comma = 46,                            // comma
+        S_multiply = 47,                         // multiply
+        S_divide = 48,                           // divide
+        S_multiply_divide = 49,                  // multiply_divide
+        S_plus = 50,                             // plus
+        S_minus = 51,                            // minus
+        S_exponent = 52,                         // exponent
+        S_BOOLEAN = 53,                          // BOOLEAN
+        S_boolean_numeric_op = 54,               // boolean_numeric_op
+        S_eq = 55,                               // eq
+        S_neq = 56,                              // neq
+        S_gte = 57,                              // gte
+        S_gt = 58,                               // gt
+        S_lte = 59,                              // lte
+        S_lt = 60,                               // lt
+        S_boolean_logic_op = 61,                 // boolean_logic_op
+        S_and = 62,                              // and
+        S_or = 63,                               // or
+        S_unary_not = 64,                        // unary_not
+        S_lparen = 65,                           // lparen
+        S_rparen = 66,                           // rparen
+        S_lbrace = 67,                           // lbrace
+        S_rbrace = 68,                           // rbrace
+        S_lbracket = 69,                         // lbracket
+        S_rbracket = 70,                         // rbracket
+        S_ANY_STRING = 71,                       // ANY_STRING
+        S_PRIMITIVE = 72,                        // PRIMITIVE
+        S_value = 73,                            // value
+        S_component = 74,                        // component
+        S_exp = 75,                              // exp
+        S_execution_unit_end = 76,               // execution_unit_end
+        S_execution_unit_start = 77,             // execution_unit_start
+        S_import = 78,                           // import
+        S_path = 79,                             // path
+        S_import_file = 80,                      // import_file
+        S_identifier = 81,                       // identifier
+        S_decl = 82,                             // decl
+        S_ASSIGNMENT = 83,                       // ASSIGNMENT
+        S_assignment = 84,                       // assignment
+        S_key_declaration = 85,                  // key_declaration
+        S_declaration = 86,                      // declaration
+        S_tag = 87,                              // tag
+        S_array = 88,                            // array
+        S_object = 89,                           // object
+        S_keyedvalue = 90,                       // keyedvalue
+        S_members = 91,                          // members
+        S_array_members = 92,                    // array_members
+        S_comment = 93,                          // comment
+        S_execution_unit_name = 94,              // execution_unit_name
+        S_execution_unit = 95,                   // execution_unit
+        S_block = 96,                            // block
+        S_start = 97                             // start
       };
     };
 
@@ -894,8 +899,8 @@ namespace wasp {
     /// Constants.
     enum
     {
-      yylast_ = 312,     ///< Last index in yytable_.
-      yynnts_ = 51,  ///< Number of nonterminal symbols.
+      yylast_ = 315,     ///< Last index in yytable_.
+      yynnts_ = 54,  ///< Number of nonterminal symbols.
       yyfinal_ = 2 ///< Termination state number.
     };
 
@@ -910,7 +915,7 @@ namespace wasp {
 
 #line 32 "SONParser.bison"
 } // wasp
-#line 914 "SONParser.hpp"
+#line 919 "SONParser.hpp"
 
 
 

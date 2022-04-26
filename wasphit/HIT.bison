@@ -88,8 +88,6 @@
 %token <token_index>   STRING          "string"
 %token <token_index>   QSTRING          "quoted string"
 %token <token_index>   COMMENT           "comment"
-%token <token_index>   EXECUTION_UNIT_START  "start of unit of execution"
-%token <token_index>   EXECUTION_UNIT_END  "end of unit of execution"
 %token <token_index>   OBJECT_TERM  "block terminator"
 %type <token_index>   DECL "declarator"
 %type <token_index>   VALUE "value"
@@ -98,11 +96,12 @@
 %type <node_index>  object
 %type <node_index>  unquoted_string
 %type <node_index>  keyedvalue dot_slash
-%type <node_index>  comment value decl primitive
-%type <node_index> object_member array_member
+%type <node_index>  comment value decl primitive include include_file
+%type <node_index> object_member array_member path
 %type <node_indices> array_members array
 %type <node_indices> object_decl
 %type <object_children> object_members
+%token <token_index>    FILE              "file include"
  //%type <node_indices> last_object
 %destructor { delete $$; } object_decl
 %destructor { delete $$; } array_members array
@@ -232,6 +231,11 @@ dot_slash : DOT_SLASH
         $$ = interpreter.push_leaf(wasp::DOT_SLASH,"./"
                          ,token_index);
     }
+include : FILE
+        {
+            auto token_index = $1;
+            $$ = interpreter.push_leaf(wasp::FILE,"decl",token_index);
+        }    
 object_decl : lbracket decl rbracket {
         size_t lbracket_index = ($lbracket);
         size_t decl_index = ($decl);
@@ -254,7 +258,7 @@ object_decl : lbracket decl rbracket {
     }
 
 object_member : primitive | keyedvalue | comment
-                | object
+                | object | include_file
 
 object_members : object_member
     {
@@ -345,6 +349,36 @@ primitive : integer
            | real
            | string
 
+path : STRING
+        {
+            size_t token_index = ($1);
+            $$ = interpreter.push_leaf(wasp::VALUE,"path"
+                             ,token_index);
+        }
+        | QSTRING
+        {
+            size_t token_index = ($1);
+            $$ = interpreter.push_leaf(wasp::VALUE,"path"
+                             ,token_index);
+        }
+
+include_file : include path
+        {
+
+            std::vector<size_t> child_indices = {$1,$2};
+            $$ = interpreter.push_parent(wasp::FILE
+                                         // include
+                                         //  |_ decl (include)
+                                         //  |_ value (path/to/file)
+                                        ,"incl"
+                                        ,child_indices);
+            bool loaded = interpreter.load_document($$, wasp::trim(interpreter.data($2)," "));
+            if (!loaded)
+            {
+                interpreter.set_failed(true);
+            }
+        }
+
 array_member : semicolon | value | assign
 
 array_members : array_member
@@ -416,13 +450,13 @@ comment : COMMENT
 
 start   : /** empty **/
         | start comment{
-            interpreter.push_staged_child(($2));
+            interpreter.push_staged_child($2);
         }
         | start keyedvalue{
-            interpreter.push_staged_child(($2));
+            interpreter.push_staged_child($2);
         }
         | start object{
-            interpreter.push_staged_child(($2));
+            interpreter.push_staged_child($2);
         }
         | start object_decl object_members object
         {
@@ -443,6 +477,12 @@ start   : /** empty **/
             interpreter.push_staged_child(object_i);
             interpreter.push_staged_child(($object));
             delete $2;
+        }
+        | start include_file
+        {
+            // assume the included content will be a child of the existing
+            // staged content.
+            interpreter.push_staged_child($2);
         }
 
 

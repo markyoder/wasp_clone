@@ -42,19 +42,12 @@ int main(int argc, char* argv[])
         argcount = argc - 1;
     }
 
-    std::ifstream schema(argv[1]);
-    if (schema.fail() || schema.bad())
-    {
-        std::cout << "Failed to open/read " << argv[1] << std::endl;
-        schema.close();
-        return 1;
-    }
     std::stringstream errors;
     // TODO - adjust file offset size based on file size
     DefaultSONInterpreter schema_interp(errors);
     wasp_timer(parse_schema_time);
     wasp_timer_start(parse_schema_time);
-    bool parsed_schema = schema_interp.parse(schema);
+    bool parsed_schema = schema_interp.parseFile(argv[1]);
     wasp_timer_stop(parse_schema_time);
     wasp_timer_block(std::cout << "Schema Parse Timer duration: "
                                << parse_schema_time.duration()
@@ -70,22 +63,14 @@ int main(int argc, char* argv[])
     }
 
     for (int j = 2; j < argcount; ++j)
-    {
-        std::ifstream input(argv[j]);
-        if (input.fail() || input.bad())
-        {
-            std::cout << "Failed to open/read " << argv[j] << std::endl;
-            input.close();
-            return 2;
-        }
-        // TODO - adjust file offset size based on file size
+    {   
         SONInterpreter<
-            TreeNodePool<unsigned int, unsigned int,
-                         TokenPool<unsigned int, unsigned int, unsigned int>>>
-            input_interp(errors);
+        TreeNodePool<unsigned int, unsigned int,
+                    TokenPool<unsigned int, unsigned int, unsigned int>>>
+        input_interp(errors);
         wasp_timer(parse_input_time);
         wasp_timer_start(parse_input_time);
-        bool parsed_input = input_interp.parse(input);
+        bool parsed_input = input_interp.parseFile(argv[j]);
         wasp_timer_stop(parse_input_time);
         wasp_timer_block(std::cout
                          << "Input Parse Timer duration: "

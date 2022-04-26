@@ -15,8 +15,6 @@ TreeNodePool<NTS, NIS, TP>::TreeNodePool(const TreeNodePool<NTS, NIS, TP>& orig)
     , m_start_column(1)
     , m_node_parent_data(orig.m_node_parent_data)
     , m_node_child_indices(orig.m_node_child_indices)
-    , m_basic_parent_data_lookup(orig.m_basic_parent_data_lookup)
-    , m_leaf_token_lookup(orig.m_leaf_token_lookup)
 {
 }
 // default destructor
@@ -45,7 +43,7 @@ void TreeNodePool<NTS, NIS, TP>::push_parent(
     // capture index association between basic and parent data
     // basic data is type, and parent index
     // parent data is only present when the node has children
-    m_basic_parent_data_lookup[basic_data_index] = parent_data_index;
+    m_node_basic_data.back().m_node_parent_data_index = parent_data_index;
 
     // update the children's parent index
     // TODO check children for lack of parent
@@ -90,7 +88,7 @@ void TreeNodePool<NTS, NIS, TP>::push_leaf(
     m_node_basic_data.push_back(BasicNodeData(node_type, -1));
 
     // make the leaf node to token index association
-    m_leaf_token_lookup[basic_data_index] = token_data_index;
+    m_node_basic_data.back().m_token_index = token_data_index;
 }
 // Create a leaf node for a given token
 template<typename NTS, typename NIS, class TP>
@@ -109,14 +107,13 @@ void TreeNodePool<NTS, NIS, TP>::push_leaf(
     m_node_basic_data.push_back(BasicNodeData(node_type, -1));
 
     // make the leaf node to token index association
-    m_leaf_token_lookup[basic_data_index] = token_data_index;
+    m_node_basic_data.back().m_token_index = token_data_index;
 }
 // Acquire the given token's parent meta data (child indices, count) index
 template<typename NTS, typename NIS, class TP>
 std::size_t TreeNodePool<NTS, NIS, TP>::parent_data_index(NIS node_index) const
 {
-    auto itr = m_basic_parent_data_lookup.find(node_index);
-    if (itr == m_basic_parent_data_lookup.end())
+    if (!m_node_basic_data[node_index].has_parent_data())
     {
         return size();  // when root, return size of nodes
     }
@@ -124,7 +121,7 @@ std::size_t TreeNodePool<NTS, NIS, TP>::parent_data_index(NIS node_index) const
     // TODO - could check parent children for consistency
 
     // return the index of the
-    return itr->second;
+    return m_node_basic_data[node_index].m_node_parent_data_index;
 }
 
 template<typename NTS, typename NIS, class TP>
@@ -243,11 +240,11 @@ template<typename NTS, typename NIS, class TP>
 std::size_t TreeNodePool<NTS, NIS, TP>::line(NIS node_index) const
 {
     auto leaf_node_index = leaf_index(node_index);
-    auto leaf_itr        = m_leaf_token_lookup.find(leaf_node_index);
-    // obtain the token's column
-    if (leaf_itr != m_leaf_token_lookup.end())
+    auto node_basic_data = m_node_basic_data[leaf_node_index];
+    // obtain the token's line
+    if (node_basic_data.is_leaf())
     {
-        auto token_index = leaf_itr->second;
+        auto token_index = node_basic_data.m_token_index;
         return m_token_data.line(token_index) + m_start_line - 1;
     }
     // neither a leaf node or a parent node
@@ -259,11 +256,11 @@ template<typename NTS, typename NIS, class TP>
 std::size_t TreeNodePool<NTS, NIS, TP>::column(NIS node_index) const
 {
     auto leaf_node_index = leaf_index(node_index);
-    auto leaf_itr        = m_leaf_token_lookup.find(leaf_node_index);
+    auto node_basic_data = m_node_basic_data[leaf_node_index];
     // obtain the token's column
-    if (leaf_itr != m_leaf_token_lookup.end())
+    if (node_basic_data.is_leaf())
     {
-        auto token_index = leaf_itr->second;
+        auto token_index = node_basic_data.m_token_index;
         // check if token exists on first line
         // in which case first column is applicable
         if (start_column() != 1)
@@ -297,12 +294,11 @@ std::size_t TreeNodePool<NTS, NIS, TP>::last_line(NIS node_index) const
     }
 
     auto leaf_node_index = leaf_index(node_index);
-    auto leaf_itr        = m_leaf_token_lookup.find(leaf_node_index);
-
-    // obtain the token's column
-    if (leaf_itr != m_leaf_token_lookup.end())
+    auto node_basic_data = m_node_basic_data[leaf_node_index];
+    
+    if (node_basic_data.is_leaf())
     {
-        auto token_index = leaf_itr->second;
+        auto token_index = node_basic_data.m_token_index;
         return m_token_data.last_line(token_index);
     }
 
@@ -327,12 +323,11 @@ std::size_t TreeNodePool<NTS, NIS, TP>::last_column(NIS node_index) const
     }
 
     auto leaf_node_index = leaf_index(node_index);
-    auto leaf_itr        = m_leaf_token_lookup.find(leaf_node_index);
+    auto node_basic_data = m_node_basic_data[leaf_node_index];
 
-    // obtain the token's column
-    if (leaf_itr != m_leaf_token_lookup.end())
+    if (node_basic_data.is_leaf())
     {
-        auto token_index = leaf_itr->second;
+        auto token_index = node_basic_data.m_token_index;
         return m_token_data.last_column(token_index);
     }
 
@@ -345,17 +340,15 @@ std::size_t TreeNodePool<NTS, NIS, TP>::last_column(NIS node_index) const
 template<typename NTS, typename NIS, class TP>
 std::size_t TreeNodePool<NTS, NIS, TP>::leaf_index(NIS node_index) const
 {
-    auto leaf_itr = m_leaf_token_lookup.find(node_index);
-    // obtain the token's column
-    if (leaf_itr != m_leaf_token_lookup.end())
+    // Already have the leaf index?
+    if (m_node_basic_data[node_index].is_leaf())
     {
         return node_index;
     }
     // node must be a parent, need first child
-    auto parent_itr = m_basic_parent_data_lookup.find(node_index);
-    if (parent_itr != m_basic_parent_data_lookup.end())
+    if (m_node_basic_data[node_index].has_parent_data())
     {
-        auto parent_data_index = parent_itr->second;
+        auto parent_data_index = m_node_basic_data[node_index].m_node_parent_data_index;
         auto parent_data       = m_node_parent_data[parent_data_index];
         if (parent_data.m_child_count == 0)
             return -1;
@@ -373,11 +366,12 @@ template<typename NTS, typename NIS, class TP>
 typename TP::token_type_size
 TreeNodePool<NTS, NIS, TP>::node_token_type(NIS node_index) const
 {
-    auto leaf_itr = m_leaf_token_lookup.find(node_index);
-    // obtain the token's column
-    if (leaf_itr != m_leaf_token_lookup.end())
+    auto node_basic_data = m_node_basic_data[node_index];
+
+    if (node_basic_data.is_leaf())
     {
-        return m_token_data.type(leaf_itr->second);
+        auto token_index = node_basic_data.m_token_index;    
+        return m_token_data.type(token_index);
     }
     return wasp::UNKNOWN;
 }
@@ -385,11 +379,12 @@ template<typename NTS, typename NIS, class TP>
 size_t
 TreeNodePool<NTS, NIS, TP>::node_token_line(NIS node_index) const
 {
-    auto leaf_itr = m_leaf_token_lookup.find(node_index);
-    // obtain the token's column
-    if (leaf_itr != m_leaf_token_lookup.end())
+    auto node_basic_data = m_node_basic_data[node_index];
+
+    if (node_basic_data.is_leaf())
     {
-        return m_token_data.line(leaf_itr->second);
+        auto token_index = node_basic_data.m_token_index;
+        return m_token_data.line(token_index);
     }
     return 0;
 }
@@ -398,16 +393,17 @@ template<typename NTS, typename NIS, class TP>
 typename TP::file_offset_type_size
 TreeNodePool<NTS, NIS, TP>::node_token_offset(NIS node_index) const
 {
-    auto leaf_itr = m_leaf_token_lookup.find(node_index);
-    // obtain the token's column
-    if (leaf_itr != m_leaf_token_lookup.end())
+    auto node_basic_data = m_node_basic_data[node_index];
+
+    if (node_basic_data.is_leaf())
     {
-        return m_token_data.offset(leaf_itr->second);
+        auto token_index = node_basic_data.m_token_index;
+        return m_token_data.offset(token_index);
     }
-    auto parent_itr = m_basic_parent_data_lookup.find(node_index);
-    if (parent_itr != m_basic_parent_data_lookup.end())
+    
+    if (m_node_basic_data[node_index].has_parent_data())
     {
-        auto parent_data_index = parent_itr->second;
+        auto parent_data_index = m_node_basic_data[node_index].m_node_parent_data_index;
         auto parent_data       = m_node_parent_data[parent_data_index];
         wasp_insist(parent_data.m_child_count != 0,
                     "requesting unavailable token offset info!");
@@ -432,11 +428,12 @@ void TreeNodePool<NTS, NIS, TP>::data(NIS node_index, std::ostream& out) const
 {
     // two scenarios - 1 leaf node, 2 parent node
     // 1. obtain the leaf node's token data
-    auto leaf_itr = m_leaf_token_lookup.find(node_index);
-    // obtain the token's column
-    if (leaf_itr != m_leaf_token_lookup.end())
+    auto node_basic_data = m_node_basic_data[node_index];
+
+    if (node_basic_data.is_leaf())
     {
-        out << m_token_data.str(leaf_itr->second);
+        auto token_index = node_basic_data.m_token_index;
+        out << m_token_data.str(token_index);
     }
     // 2. accumulate the parent
     else

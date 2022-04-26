@@ -6,6 +6,7 @@
 #include <ostream>
 #include <iostream>
 #include "waspcore/Interpreter.h"
+#include "waspcore/Iterator.h"
 #include "waspcore/decl.h"
 namespace wasp
 {
@@ -18,6 +19,7 @@ class WASP_PUBLIC DDINodeView
 {
   public:
     using Collection = std::vector<DDINodeView>;
+    using GenericView = NodeView;
     DDINodeView() : m_node_index(-1), m_pool(nullptr) {}
     DDINodeView(std::size_t node_index, const AbstractInterpreter& nodes);
     template<class NV>
@@ -25,6 +27,9 @@ class WASP_PUBLIC DDINodeView
     DDINodeView(const DDINodeView& orig);
 
     ~DDINodeView();
+
+    Iterator<DDINodeView> begin() const{return Iterator<DDINodeView>(*this);}
+    Iterator<DDINodeView> end() const{return Iterator<DDINodeView>();}
 
     DDINodeView& operator=(const DDINodeView& b);
     template<class NV>
@@ -212,7 +217,7 @@ class WASP_PUBLIC DDINodeView
 
     /**
      * @brief node_pool acquire the pointer to the backend storage
-     * @return the TreeNodePool that backs this view
+     * @return the document interpreter that backs this view
      */
     const AbstractInterpreter* node_pool() const { return m_pool; }
 

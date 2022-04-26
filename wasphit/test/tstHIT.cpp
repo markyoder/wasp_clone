@@ -1808,3 +1808,143 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
     document.paths(actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
+
+/**
+ * @brief standalone file include not found error
+ */
+TEST(HITInterpreter, only_include_not_found)
+{   
+    std::stringstream input;
+    input << R"I(!include block_missing.i)I" << std::endl;
+    std::stringstream errors;
+    DefaultHITInterpreter interpreter(errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expected_errors;
+    expected_errors << "stream input line:1 column:1 : could not find 'block_missing.i'" << std::endl;
+    
+    ASSERT_EQ(expected_errors.str(), errors.str());
+}
+
+/**
+ * @brief standalone file include
+ */
+TEST(HITInterpreter, only_include)
+{
+    { // Scope for file buffer to be flushed before reading
+    std::ofstream block_file("block.i");
+    block_file << "[block] " <<std::endl
+               << "  key = 3"<<std::endl
+               << "[]"<<std::endl;
+    block_file.close();
+    }
+    
+    std::stringstream input;
+    input << R"I(!include block.i)I" << std::endl;
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::string expected_paths = R"INPUT(/
+/incl
+/incl/decl (!include)
+/incl/path (block.i)
+)INPUT";    
+
+    std::stringstream actual_paths;
+    interpreter.root().paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief file include within a block
+ */
+TEST(HITInterpreter, include_block)
+{
+    { // Scope for file buffer to be flushed before reading
+    std::ofstream block_file("nested_block.i");
+    block_file << "[nested_block] " <<std::endl
+               << "  key = 3"<<std::endl
+               << "[]"<<std::endl;
+    block_file.close();
+    }
+    
+    std::stringstream input;
+    input << R"I([block]!include nested_block.i[])I" << std::endl;
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::string expected_paths = R"INPUT(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+/block/incl
+/block/incl/decl (!include)
+/block/incl/path (nested_block.i)
+/block/term ([])
+)INPUT";    
+
+    std::stringstream actual_paths;
+    interpreter.root().paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+
+    // Obtain the nested content
+    HITNodeView document = interpreter.root();
+    HITNodeView block = document.child_at(0);
+    ASSERT_EQ(std::string("block"), block.name());
+    HITNodeView::Collection children = block.non_decorative_children();
+    ASSERT_EQ(1, children.size());
+    ASSERT_EQ(std::string("nested_block"), children[0].name());
+
+    // Ensure the path produces from a nested document's node includes
+    // the context of the parent document's nodes
+    auto key_node = children[0].first_child_by_name("key");
+    ASSERT_FALSE(key_node.is_null());
+    ASSERT_EQ("/block/nested_block/key", key_node.path());
+
+    // Ensure the 'first_child_by_name' properly traverses file boundaries
+    auto nested_block = block.first_child_by_name("nested_block");
+    ASSERT_EQ(children[0], nested_block);
+    ASSERT_EQ(children[0], block.child_by_name("nested_block")[0]);
+}
+
+
+/**
+ * @brief Test FilePush iterator when iterating
+ * Should iterate over variables a,b,c, where b 
+ * is actually obtained from an included file
+ */
+TEST(HITInterpreter, iterating_include)
+{
+    { // Scope for file buffer to be flushed before reading
+    std::ofstream block_file("b.i");
+    block_file << "b = 2" <<std::endl;
+    block_file.close();
+    }
+    
+    std::stringstream input;
+    input << R"I(a = 1
+!include b.i
+c = 3)I" << std::endl;
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+
+    // Obtain the nested content
+    HITNodeView document = interpreter.root();
+       
+    std::vector<std::string> expected_names = {"a", "b", "c"};
+    std::vector<std::string> expected_data = {"1", "2", "3"};
+    std::vector<std::string> expected_paths = {"stream input", "./b.i", "stream input"};
+    size_t index = 0;
+    for(auto itr = document.begin(); itr != document.end(); itr.next())
+    {
+        SCOPED_TRACE(index);
+        const HITNodeView& node = itr.get();
+        ASSERT_EQ(expected_names[index], node.name());
+        ASSERT_EQ(expected_data[index], node.to_string());
+        ASSERT_EQ(expected_paths[index], node.node_pool()->stream_name());
+        ++index;
+    }
+
+}

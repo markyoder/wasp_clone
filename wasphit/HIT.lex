@@ -39,37 +39,20 @@ typedef wasp::HITParser::token_type token_type;
 
  /* enables the use of start condition stacks */
 %option stack
-%s execution_unit
 %s object
 %s array
 %x lbracket
+%x file_include
 
 INTEGER [0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INTEGER}
 REAL {INTEGER}?\.{INTEGER}{EXPONENT}?|{INTEGER}\.({INTEGER}{EXPONENT}?)?|{INTEGER}\.?[eE]\-{INTEGER}
-
-
-
-
- /* This string does not allow special characters '-','/'
- *  and should only occur in the context of reference
- */
-LESSER_STRING [A-Za-z_][A-Za-z0-9_]*
 
 DOUBLE_QUOTED_STRING \"([^\"\n])*\"
 SINGLE_QUOTE '
 UNICODE [^\x00-\x7F]+
 COMMENT #([^\n]|{UNICODE})*
 
- /*
- * The 'execution unit' is a rebranded SCALE sequence construct
- * where the sequence started with the unit_start rule below
- * and terminated with unit_end rule below.
- * We reproduce it here to account for the input construct                                                                                                                        
- * while in transition...
- */
-EXECUTION_UNIT_START ^=
-EXECUTION_UNIT_END ^[Ee][Nn][Dd]
 LTE <=
 GTE >=
 LT <
@@ -94,6 +77,7 @@ TOP_OBJECT_TERM \[" "*\]
 SUB_OBJECT_TERM \[" "*\.?\.\/" "*\]
 OBJECT_TERM {TOP_OBJECT_TERM}|{SUB_OBJECT_TERM}
 DOT_SLASH \.\/
+INCLUDE_PATH [^ \t\n][^\n#\[]*
 
 
  /* The following paragraph suffices to track locations accurately. Each time
@@ -111,16 +95,7 @@ DOT_SLASH \.\/
 %}
  /*** BEGIN EXAMPLE - Change the HIT lexer rules below ***/
 
-{EXECUTION_UNIT_START} {
-    yy_push_state(execution_unit); // enter the 'unit' of execution
-    capture_token(yylval,wasp::EXECUTION_UNIT_START);
-    return token::EXECUTION_UNIT_START;
-}
-<execution_unit>{EXECUTION_UNIT_END} {
-    yy_pop_state(); // pop the execution state
-    capture_token(yylval,wasp::EXECUTION_UNIT_END);
-    return token::EXECUTION_UNIT_END;
-}
+
 {ASSIGN} {
     capture_token(yylval,wasp::ASSIGN);
     return token::ASSIGN;
@@ -134,7 +109,7 @@ DOT_SLASH \.\/
     capture_token(yylval,wasp::OBJECT_TERM);
     return token::OBJECT_TERM;
 }
-<INITIAL,execution_unit,object>{SINGLE_QUOTE} {
+<INITIAL,object>{SINGLE_QUOTE} {
     yy_push_state(array);
     capture_token(yylval,wasp::QUOTE);
     return token::QUOTE;
@@ -163,12 +138,12 @@ DOT_SLASH \.\/
     capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
 }
-<INITIAL,execution_unit,object,array>{INTEGER} {
+<INITIAL,object,array>{INTEGER} {
     capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
 }
 
-<INITIAL,execution_unit,object,array>{REAL} {
+<INITIAL,object,array>{REAL} {
     capture_token(yylval,wasp::REAL);
     return token::REAL;
 }
@@ -186,11 +161,23 @@ DOT_SLASH \.\/
     capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
 }
-<INITIAL,execution_unit,object>{STRING} {
+!include {
+    yy_push_state(file_include);
+    capture_token(yylval,wasp::FILE);
+    return token::FILE;
+}
+<file_include>{INCLUDE_PATH} {
+    // file includes grab everyting starting after '!include' to
+    // either a newline '\n' or a comment '#'
+    yy_pop_state();
     capture_token(yylval,wasp::STRING);
     return token::STRING;
 }
-<INITIAL,execution_unit,object>{DOUBLE_QUOTED_STRING} {
+<INITIAL,object>{STRING} {
+    capture_token(yylval,wasp::STRING);
+    return token::STRING;
+}
+<INITIAL,object>{DOUBLE_QUOTED_STRING} {
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
 }

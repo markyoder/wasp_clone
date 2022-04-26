@@ -84,8 +84,14 @@ template<class S = HITNodePool>
 class HITInterpreter : public Interpreter<S>
 {
   public:
+
+    typedef Interpreter<S>                 Super;
+
     HITInterpreter(std::ostream& error_stream = std::cerr);
     ~HITInterpreter();
+
+    HITInterpreter* create_nested_interpreter(Super* parent);
+    HITInterpreter* document_parent() const {return m_parent;}
 
     /**
      * @brief parse parser the given input stream
@@ -106,6 +112,9 @@ class HITInterpreter : public Interpreter<S>
         return parse(input, start_line, start_column);
     }
     bool parseFile(const std::string& filename, size_t startLine = 1u);
+
+private: 
+    HITInterpreter* m_parent;
 };
 #include "wasphit/HITInterpreter.i.h"
 typedef HITInterpreter<> DefaultHITInterpreter;

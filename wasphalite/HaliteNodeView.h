@@ -6,6 +6,7 @@
 #include <ostream>
 #include <iostream>
 #include "waspcore/Interpreter.h"
+#include "waspcore/Iterator.h"
 #include "waspcore/decl.h"
 namespace wasp
 {
@@ -18,6 +19,7 @@ class WASP_PUBLIC HaliteNodeView
 {
   public:
     using Collection = std::vector<HaliteNodeView>;
+    using GenericView = NodeView;
     HaliteNodeView() : m_node_index(-1), m_pool(nullptr) {}
     HaliteNodeView(std::size_t node_index, const AbstractInterpreter& nodes);
     template<class NV>
@@ -25,6 +27,9 @@ class WASP_PUBLIC HaliteNodeView
     HaliteNodeView(const HaliteNodeView& orig);
 
     ~HaliteNodeView();
+
+    Iterator<HaliteNodeView, FilePush> begin() const{return Iterator<HaliteNodeView, FilePush>(*this);}
+    Iterator<HaliteNodeView, FilePush> end() const{return Iterator<HaliteNodeView, FilePush>();}
 
     HaliteNodeView& operator=(const HaliteNodeView& b);
     template<class NV>
@@ -222,7 +227,7 @@ class WASP_PUBLIC HaliteNodeView
 
     /**
      * @brief node_pool acquire the pointer to the backend storage
-     * @return the TreeNodePool that backs this view
+     * @return the document interpreter that backs this view
      */
     const AbstractInterpreter* node_pool() const { return m_pool; }
 

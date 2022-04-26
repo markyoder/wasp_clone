@@ -120,9 +120,13 @@ class WASP_PUBLIC SONInterpreter : public Interpreter<S>
   public:
     typedef S                               Storage_type;
     typedef std::shared_ptr<SONInterpreter> SharedPtr;
+    typedef Interpreter<S>                  Super;
     SONInterpreter();
     SONInterpreter(std::ostream& err);
     virtual ~SONInterpreter();
+
+    SONInterpreter* create_nested_interpreter(Super* parent);
+    SONInterpreter* document_parent() const {return m_parent;}
 
     /** Invoke the lexer and parser for a stream.
      * @param in        input stream
@@ -198,6 +202,8 @@ class WASP_PUBLIC SONInterpreter : public Interpreter<S>
      * @brief mHasFile indicates whether this parser was instantiated via a file
      */
     bool mHasFile;
+
+    SONInterpreter* m_parent;
 };  // end of SONInterpreter class
 #include "waspson/SONInterpreter.i.h"
 
