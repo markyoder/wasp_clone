@@ -567,20 +567,11 @@ WASP_PUBLIC typename Node::Collection
 fe_child_by_name(const Node& n, const std::string& name, std::size_t limit)
 {
     typename Node::Collection results;
-    for (std::size_t i = 0, count = n.child_count(); i < count; ++i)
+    for (auto itr = n.begin(); itr != n.end(); itr.next())
     {
-        auto        child      = n.child_at(i);
+        auto        child      = itr.get();
         std::string child_name = child.name();
-        if( child.type() == wasp::FILE )
-        {
-            auto * interp = n.node_pool()->document(child.node_index());
-            if ( interp != nullptr )
-            {
-                auto children = Node(interp->root()).child_by_name(name,limit);
-                results.insert(results.end(), children.begin(), children.end());
-            }
-        }
-        else if (child_name == name)
+        if (child_name == name)
         {
             results.push_back(child);
         }
@@ -595,18 +586,15 @@ fe_child_by_name(const Node& n, const std::string& name, std::size_t limit)
 template<class Node> 
 WASP_PUBLIC Node fe_first_child_by_name(const Node& n, const std::string& name)
 {
-    if( n.type() == wasp::FILE )
+    for(auto itr = n.begin(); itr != n.end(); itr.next())
     {
-        auto * interp = n.node_pool()->document(n.node_index());
-        if ( interp != nullptr )
+        std::string child_name = itr.get().name();
+        if (name == child_name)
         {
-            Node view = Node(interp->root());
-            wasp_check(view.is_null() == false);
-            return view.first_child_by_name(name);
+            return itr.get();
         }
     }
-    typename Node::GenericView view(n.node_index(), *n.node_pool());
-    return view.first_child_by_name(name);
+    return Node(); // Null node;
 }
 
 // File enabled variant

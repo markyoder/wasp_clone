@@ -1902,6 +1902,10 @@ TEST(HITInterpreter, include_block)
     ASSERT_FALSE(key_node.is_null());
     ASSERT_EQ("/block/nested_block/key", key_node.path());
 
+    // Ensure the 'first_child_by_name' properly traverses file boundaries
+    auto nested_block = block.first_child_by_name("nested_block");
+    ASSERT_EQ(children[0], nested_block);
+    ASSERT_EQ(children[0], block.child_by_name("nested_block")[0]);
 }
 
 
