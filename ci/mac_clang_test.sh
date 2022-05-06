@@ -1,6 +1,6 @@
 mkdir build
 cd build
-git clone git@code.ornl.gov:casl/anaconda.git
+git clone https://code.ornl.gov/casl/anaconda.git
 bash Anaconda3-2020.02-Linux-x86_64.sh -b -p ${PWD}/anaconda3
 export PATH=${PWD}/anaconda3/bin:$PATH
 pip install builtins
