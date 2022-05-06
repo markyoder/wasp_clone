@@ -1,8 +1,10 @@
-export PATH=/Library/Frameworks/Python.framework/Versions/3.7/bin:$PATH
-ls -lrt /Library/Frameworks/Python.framework/Versions/3.7/bin 
-alias python=python3
 mkdir build
 cd build
+git clone git@code.ornl.gov:casl/anaconda.git
+bash Anaconda3-2020.02-Linux-x86_64.sh -b -p ${PWD}/anaconda3
+export PATH=${PWD}/anaconda3/bin:$PATH
+pip install builtins
+pip install six
 cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Debug-${CI_BUILD_REF_NAME}" \
        -DCMAKE_BUILD_TYPE=DEBUG \
        -Dwasp_ENABLE_TESTS=ON \
