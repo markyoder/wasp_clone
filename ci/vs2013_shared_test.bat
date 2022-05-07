@@ -1,12 +1,12 @@
 call .\ci\setup.bat
 cd build
-set "conda=%cd%"
-git clone https://code.ornl.gov/casl/anaconda.git
-dir %conda%\anaconda
-%conda%\anaconda\Anaconda3-2021.11-Windows-x86_64.exe /S /D=%conda%\anaconda3
-set "PATH=%conda%\anaconda3\Scripts;%conda%\anaconda3;%conda%\anaconda3\Library\bin;%PATH%"
-timeout 300 > null
-dir %conda%\anaconda3
+set "base=%cd%"
+set conda=%base%\conda
+git clone git@code.ornl.gov:casl/miniconda.git
+dir %conda%
+%base%\miniconda\Miniconda3-latest-Windows-x86_64.exe /S /D=%conda%
+set "PATH=%conda%\Scripts;%conda%;%conda%\Library\bin;%PATH%"
+%conda%\Scripts\pip.exe install -r %base%\miniconda\windows_requirements.txt --prefix=%conda%
 call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86_amd64
 
 
