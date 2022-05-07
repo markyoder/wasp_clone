@@ -1,9 +1,10 @@
 call .\ci\setup.bat
 cd build
-set "conda=%cd%"
-git clone https://code.ornl.gov/casl/anaconda.git
-%conda%\anaconda\Anaconda3-2021.11-Windows-x86_64.exe /S /D=%conda%
+set conda=%base%\conda
+git clone https://code.ornl.gov/casl/miniconda.git
+%base%\miniconda\Miniconda3-latest-Windows-x86_64.exe /S /D=%conda%
 set "PATH=%conda%\Scripts;%conda%;%conda%\Library\bin;%PATH%"
+where python
 call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86_amd64
 cmake -DBUILDNAME="Windows-CL-18-Release-%CI_BUILD_REF_NAME%" ^
       -DCMAKE_BUILD_TYPE:STRING=RELEASE ^
