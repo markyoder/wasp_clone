@@ -1,12 +1,13 @@
 call .\ci\setup.bat
 cd build
-set "base=%cd%"
-set conda=%base%\conda
-git clone https://code.ornl.gov/casl/miniconda.git
-dir %conda%
-%base%\miniconda\Miniconda3-latest-Windows-x86_64.exe /S /D=%conda%
-set "PATH=%conda%\Scripts;%conda%;%conda%\Library\bin;%PATH%"
-%conda%\Scripts\pip.exe install -r %base%\miniconda\windows_requirements.txt --prefix=%conda%
+rem set "base=%cd%"
+rem set conda=%base%\conda
+rem git clone https://code.ornl.gov/casl/miniconda.git
+rem dir %conda%
+rem %base%\miniconda\Miniconda3-latest-Windows-x86_64.exe /S /D=%conda%
+rem set "PATH=%conda%\Scripts;%conda%;%conda%\Library\bin;%PATH%"
+rem %conda%\Scripts\pip.exe install -r %base%\miniconda\windows_requirements.txt --prefix=%conda%
+where python3
 call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86_amd64
 
 
