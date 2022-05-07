@@ -1,8 +1,8 @@
 mkdir build
 cd build
-git clone https://code.ornl.gov/casl/anaconda.git
-bash anaconda/Anaconda3-2021.11-MacOSX-x86_64.sh -b -p ${PWD}/anaconda3
-export PATH=${PWD}/anaconda3/bin:$PATH
+git clone https://code.ornl.gov/casl/miniconda.git
+bash miniconda/Miniconda3-latest-MacOSX-x86_64.sh -b -p ${PWD}/conda
+export PATH=${PWD}/conda/bin:$PATH
 cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Debug-${CI_BUILD_REF_NAME}" \
        -DCMAKE_BUILD_TYPE=DEBUG \
        -Dwasp_ENABLE_TESTS=ON \
