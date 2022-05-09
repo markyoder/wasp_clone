@@ -8,9 +8,6 @@ variables:
       - googletest/
       - testframework/
     expire_in: 1 day
-.mingw_windows_before_script: &mingw_windows_before_script
-  before_script:
-    - .\ci\mingw_before_script.bat
 stages:
 - configure
 - build
@@ -74,13 +71,6 @@ linux_gcc_analysis:
   script:
     - ci/linux_gcc_analysis.sh
   allow_failure: true
-
-windows_mingw_testing:
-  tags:
-    - mingw-gcc-4.8.5
-  <<: *mingw_windows_before_script
-  script:
-   - .\ci\windows_mingw_test.bat
 
 windows_vs2013_testing:
   tags:
