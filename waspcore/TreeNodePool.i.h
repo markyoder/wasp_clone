@@ -8,11 +8,11 @@ TreeNodePool<NTS, NIS, TP>::TreeNodePool() : m_start_line(1), m_start_column(1)
 // copy constructor
 template<typename NTS, typename NIS, typename TP>
 TreeNodePool<NTS, NIS, TP>::TreeNodePool(const TreeNodePool<NTS, NIS, TP>& orig)
-    : m_token_data(orig.m_token_data)
+    : m_start_line(1)
+    , m_start_column(1)
+    , m_token_data(orig.m_token_data)
     , m_node_names(orig.m_node_names)
     , m_node_basic_data(orig.m_node_basic_data)
-    , m_start_line(1)
-    , m_start_column(1)
     , m_node_parent_data(orig.m_node_parent_data)
     , m_node_child_indices(orig.m_node_child_indices)
 {
@@ -82,7 +82,6 @@ void TreeNodePool<NTS, NIS, TP>::push_leaf(
 
     // Capture node's basic information
     m_node_names.push(node_name);
-    NIS basic_data_index = static_cast<NIS>(m_node_basic_data.size());
 
     // capture type - parent index is unknown
     m_node_basic_data.push_back(BasicNodeData(node_type, -1));
@@ -101,7 +100,6 @@ void TreeNodePool<NTS, NIS, TP>::push_leaf(
 
     // Capture node's basic information
     m_node_names.push(node_name);
-    NIS basic_data_index = static_cast<NIS>(m_node_basic_data.size());
 
     // capture type - parent index is unknown
     m_node_basic_data.push_back(BasicNodeData(node_type, -1));
