@@ -170,7 +170,11 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
     while( !names.empty() )
     {
         // skip empty names
-        if (names.back().empty()) continue;        
+        if (names.back().empty())
+        {
+            names.pop_back();
+            continue;
+        }
         result_index = interpreter.push_parent(wasp::OBJECT
                                     ,names.back().c_str()
                                     ,child_indices);        

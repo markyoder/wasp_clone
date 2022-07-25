@@ -1810,6 +1810,116 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
 }
 
 /**
+ * @brief Test HIT syntax - shorthand path naming for regular and type blocks
+ */
+TEST(HITInterpreter, shorthand_path_naming_blocks)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+[a/b/c]
+  param_outer = bar_outer
+  [x/y/z]
+    param_inner = bar_inner
+  []
+[]
+
+[a/b/c]
+  type        = foo_outer
+  param_outer = bar_outer
+  [x/y/z]
+    type        = foo_inner
+    param_inner = bar_inner
+  []
+[]
+
+[/a/b///c//]
+  param = bar
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(64, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(3, document.child_count());
+    ASSERT_EQ(3, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/a
+/a/b
+/a/b/c
+/a/b/c/[ ([)
+/a/b/c/decl (a/b/c)
+/a/b/c/] (])
+/a/b/c/param_outer
+/a/b/c/param_outer/decl (param_outer)
+/a/b/c/param_outer/= (=)
+/a/b/c/param_outer/value (bar_outer)
+/a/b/c/x
+/a/b/c/x/y
+/a/b/c/x/y/z
+/a/b/c/x/y/z/[ ([)
+/a/b/c/x/y/z/decl (x/y/z)
+/a/b/c/x/y/z/] (])
+/a/b/c/x/y/z/param_inner
+/a/b/c/x/y/z/param_inner/decl (param_inner)
+/a/b/c/x/y/z/param_inner/= (=)
+/a/b/c/x/y/z/param_inner/value (bar_inner)
+/a/b/c/x/y/z/term ([])
+/a/b/c/term ([])
+/a
+/a/b
+/a/b/foo_outer_type
+/a/b/foo_outer_type/[ ([)
+/a/b/foo_outer_type/decl (a/b/c)
+/a/b/foo_outer_type/] (])
+/a/b/foo_outer_type/type
+/a/b/foo_outer_type/type/decl (type)
+/a/b/foo_outer_type/type/= (=)
+/a/b/foo_outer_type/type/value (foo_outer)
+/a/b/foo_outer_type/param_outer
+/a/b/foo_outer_type/param_outer/decl (param_outer)
+/a/b/foo_outer_type/param_outer/= (=)
+/a/b/foo_outer_type/param_outer/value (bar_outer)
+/a/b/foo_outer_type/x
+/a/b/foo_outer_type/x/y
+/a/b/foo_outer_type/x/y/foo_inner_type
+/a/b/foo_outer_type/x/y/foo_inner_type/[ ([)
+/a/b/foo_outer_type/x/y/foo_inner_type/decl (x/y/z)
+/a/b/foo_outer_type/x/y/foo_inner_type/] (])
+/a/b/foo_outer_type/x/y/foo_inner_type/type
+/a/b/foo_outer_type/x/y/foo_inner_type/type/decl (type)
+/a/b/foo_outer_type/x/y/foo_inner_type/type/= (=)
+/a/b/foo_outer_type/x/y/foo_inner_type/type/value (foo_inner)
+/a/b/foo_outer_type/x/y/foo_inner_type/param_inner
+/a/b/foo_outer_type/x/y/foo_inner_type/param_inner/decl (param_inner)
+/a/b/foo_outer_type/x/y/foo_inner_type/param_inner/= (=)
+/a/b/foo_outer_type/x/y/foo_inner_type/param_inner/value (bar_inner)
+/a/b/foo_outer_type/x/y/foo_inner_type/term ([])
+/a/b/foo_outer_type/term ([])
+/a
+/a/b
+/a/b/c
+/a/b/c/[ ([)
+/a/b/c/decl (/a/b///c//)
+/a/b/c/] (])
+/a/b/c/param
+/a/b/c/param/decl (param)
+/a/b/c/param/= (=)
+/a/b/c/param/value (bar)
+/a/b/c/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
  * @brief standalone file include not found error
  */
 TEST(HITInterpreter, only_include_not_found)
