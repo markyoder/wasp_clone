@@ -1423,7 +1423,7 @@ array01 = 'd2F1:=D[F1,eta1,eta1] d2F2:=D[F2,eta1,eta1]'
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(51, interpreter.node_count());
+    ASSERT_EQ(84, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(2, document.child_count());
     ASSERT_EQ(2, interpreter.child_count(document.node_index()));
@@ -1435,8 +1435,14 @@ array01 = 'd2F1:=D[F1,eta1,eta1] d2F2:=D[F2,eta1,eta1]'
 /array01/decl (array01)
 /array01/= (=)
 /array01/' (')
-/array01/value (d2F1:=D[F1,eta1,eta1])
-/array01/value (d2F2:=D[F2,eta1,eta1])
+/array01/value
+/array01/value/decl (d2F1:)
+/array01/value/= (=)
+/array01/value/value (D[F1,eta1,eta1])
+/array01/value
+/array01/value/decl (d2F2:)
+/array01/value/= (=)
+/array01/value/value (D[F2,eta1,eta1])
 /array01/' (')
 /BlockContainer
 /BlockContainer/[ ([)
@@ -1455,7 +1461,10 @@ array01 = 'd2F1:=D[F1,eta1,eta1] d2F2:=D[F2,eta1,eta1]'
 /BlockContainer/array02/; (;)
 /BlockContainer/array02/value (123)
 /BlockContainer/array02/; (;)
-/BlockContainer/array02/value (abc:=t[e_x]t)
+/BlockContainer/array02/value
+/BlockContainer/array02/value/decl (abc:)
+/BlockContainer/array02/value/= (=)
+/BlockContainer/array02/value/value (t[e_x]t)
 /BlockContainer/array02/; (;)
 /BlockContainer/array02/; (;)
 /BlockContainer/array02/value (-02.85)
@@ -1465,20 +1474,44 @@ array01 = 'd2F1:=D[F1,eta1,eta1] d2F2:=D[F2,eta1,eta1]'
 /BlockContainer/array03/decl (array03)
 /BlockContainer/array03/= (=)
 /BlockContainer/array03/' (')
-/BlockContainer/array03/value (path/to/real=1.01)
+/BlockContainer/array03/value
+/BlockContainer/array03/value/decl (path/to/real)
+/BlockContainer/array03/value/= (=)
+/BlockContainer/array03/value/value (1.01)
 /BlockContainer/array03/; (;)
-/BlockContainer/array03/value (path/to/int=10)
+/BlockContainer/array03/value
+/BlockContainer/array03/value/decl (path/to/int)
+/BlockContainer/array03/value/= (=)
+/BlockContainer/array03/value/value (10)
 /BlockContainer/array03/; (;)
-/BlockContainer/array03/value (path/to/string=one)
+/BlockContainer/array03/value
+/BlockContainer/array03/value/decl (path/to/string)
+/BlockContainer/array03/value/= (=)
+/BlockContainer/array03/value/value (one)
 /BlockContainer/array03/; (;)
-/BlockContainer/array03/value (path/to/blank="")
-/BlockContainer/array03/value (path/to/real=2.02)
+/BlockContainer/array03/value
+/BlockContainer/array03/value/decl (path/to/blank)
+/BlockContainer/array03/value/= (=)
+/BlockContainer/array03/value/value ("")
+/BlockContainer/array03/value
+/BlockContainer/array03/value/decl (path/to/real)
+/BlockContainer/array03/value/= (=)
+/BlockContainer/array03/value/value (2.02)
 /BlockContainer/array03/; (;)
-/BlockContainer/array03/value (path/to/int=20)
+/BlockContainer/array03/value
+/BlockContainer/array03/value/decl (path/to/int)
+/BlockContainer/array03/value/= (=)
+/BlockContainer/array03/value/value (20)
 /BlockContainer/array03/; (;)
-/BlockContainer/array03/value (path/to/string=two)
+/BlockContainer/array03/value
+/BlockContainer/array03/value/decl (path/to/string)
+/BlockContainer/array03/value/= (=)
+/BlockContainer/array03/value/value (two)
 /BlockContainer/array03/; (;)
-/BlockContainer/array03/value (path/to/blank="")
+/BlockContainer/array03/value
+/BlockContainer/array03/value/decl (path/to/blank)
+/BlockContainer/array03/value/= (=)
+/BlockContainer/array03/value/value ("")
 /BlockContainer/array03/' (')
 /BlockContainer/term ([])
 )INPUT";
@@ -1705,7 +1738,7 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(90, interpreter.node_count());
+    ASSERT_EQ(102, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(1, document.child_count());
     ASSERT_EQ(1, interpreter.child_count(document.node_index()));
@@ -1736,7 +1769,10 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
 /SlashesInValues/DirAndFile_type/parameter
 /SlashesInValues/DirAndFile_type/parameter/decl (parameter)
 /SlashesInValues/DirAndFile_type/parameter/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value (path/to/a/param01=one)
+/SlashesInValues/DirAndFile_type/parameter/value
+/SlashesInValues/DirAndFile_type/parameter/value/decl (path/to/a/param01)
+/SlashesInValues/DirAndFile_type/parameter/value/= (=)
+/SlashesInValues/DirAndFile_type/parameter/value/value (one)
 /SlashesInValues/DirAndFile_type/term ([])
 /SlashesInValues/DirAndFile_type
 /SlashesInValues/DirAndFile_type/[ ([)
@@ -1757,7 +1793,10 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
 /SlashesInValues/DirAndFile_type/parameter
 /SlashesInValues/DirAndFile_type/parameter/decl (parameter)
 /SlashesInValues/DirAndFile_type/parameter/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value (path/to/a/param02/="two")
+/SlashesInValues/DirAndFile_type/parameter/value
+/SlashesInValues/DirAndFile_type/parameter/value/decl (path/to/a/param02/)
+/SlashesInValues/DirAndFile_type/parameter/value/= (=)
+/SlashesInValues/DirAndFile_type/parameter/value/value ("two")
 /SlashesInValues/DirAndFile_type/term ([])
 /SlashesInValues/DirAndFile_type
 /SlashesInValues/DirAndFile_type/[ ([)
@@ -1778,7 +1817,10 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
 /SlashesInValues/DirAndFile_type/parameter
 /SlashesInValues/DirAndFile_type/parameter/decl (parameter)
 /SlashesInValues/DirAndFile_type/parameter/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value (/path/to/a/param03=3.3)
+/SlashesInValues/DirAndFile_type/parameter/value
+/SlashesInValues/DirAndFile_type/parameter/value/decl (/path/to/a/param03)
+/SlashesInValues/DirAndFile_type/parameter/value/= (=)
+/SlashesInValues/DirAndFile_type/parameter/value/value (3.3)
 /SlashesInValues/DirAndFile_type/term ([])
 /SlashesInValues/DirAndFile_type
 /SlashesInValues/DirAndFile_type/[ ([)
@@ -1799,7 +1841,10 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
 /SlashesInValues/DirAndFile_type/parameter
 /SlashesInValues/DirAndFile_type/parameter/decl (parameter)
 /SlashesInValues/DirAndFile_type/parameter/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value (/path/to/a/param04/=444)
+/SlashesInValues/DirAndFile_type/parameter/value
+/SlashesInValues/DirAndFile_type/parameter/value/decl (/path/to/a/param04/)
+/SlashesInValues/DirAndFile_type/parameter/value/= (=)
+/SlashesInValues/DirAndFile_type/parameter/value/value (444)
 /SlashesInValues/DirAndFile_type/term ([])
 /SlashesInValues/term ([])
 )INPUT";
@@ -1912,6 +1957,529 @@ TEST(HITInterpreter, shorthand_path_naming_blocks)
 /a/b/c/param/= (=)
 /a/b/c/param/value (bar)
 /a/b/c/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - shorthand path naming keyed value parameters
+ */
+TEST(HITInterpreter, shorthand_path_naming_keyed_values)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+path/to/param/inner/01 = "one"
+
+[//path/to///object/]
+
+  ///path/to///param/inner/02// = 2.2
+
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(24, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+    ASSERT_EQ(2, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/path
+/path/to
+/path/to/param
+/path/to/param/inner
+/path/to/param/inner/01
+/path/to/param/inner/01/decl (path/to/param/inner/01)
+/path/to/param/inner/01/= (=)
+/path/to/param/inner/01/value ("one")
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/path
+/path/to/object/path/to
+/path/to/object/path/to/param
+/path/to/object/path/to/param/inner
+/path/to/object/path/to/param/inner/02
+/path/to/object/path/to/param/inner/02/decl (///path/to///param/inner/02//)
+/path/to/object/path/to/param/inner/02/= (=)
+/path/to/object/path/to/param/inner/02/value (2.2)
+/path/to/object/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - shorthand path naming keyed array parameters
+ */
+TEST(HITInterpreter, shorthand_path_naming_keyed_arrays)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+path/to/array/inner/01 = '"eleven" "twelve" "thirteen"'
+
+[//path/to///object/]
+
+  ///path/to///array/inner/02// = '2.2 3.3 4.4'
+
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(32, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+    ASSERT_EQ(2, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/path
+/path/to
+/path/to/array
+/path/to/array/inner
+/path/to/array/inner/01
+/path/to/array/inner/01/decl (path/to/array/inner/01)
+/path/to/array/inner/01/= (=)
+/path/to/array/inner/01/' (')
+/path/to/array/inner/01/value ("eleven")
+/path/to/array/inner/01/value ("twelve")
+/path/to/array/inner/01/value ("thirteen")
+/path/to/array/inner/01/' (')
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/path
+/path/to/object/path/to
+/path/to/object/path/to/array
+/path/to/object/path/to/array/inner
+/path/to/object/path/to/array/inner/02
+/path/to/object/path/to/array/inner/02/decl (///path/to///array/inner/02//)
+/path/to/object/path/to/array/inner/02/= (=)
+/path/to/object/path/to/array/inner/02/' (')
+/path/to/object/path/to/array/inner/02/value (2.2)
+/path/to/object/path/to/array/inner/02/value (3.3)
+/path/to/object/path/to/array/inner/02/value (4.4)
+/path/to/object/path/to/array/inner/02/' (')
+/path/to/object/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - keyed-keyed-value parameters
+ */
+TEST(HITInterpreter, keyed_keyed_values)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+param_outer_01 = path/to/param/inner/01 = "one"
+
+[//path/to///object/]
+
+  param_outer_02 = ///path/to///param/inner/02// = 2.2
+
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(22, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+    ASSERT_EQ(2, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/param_outer_01
+/param_outer_01/decl (param_outer_01)
+/param_outer_01/= (=)
+/param_outer_01/value
+/param_outer_01/value/decl (path/to/param/inner/01)
+/param_outer_01/value/= (=)
+/param_outer_01/value/value ("one")
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/param_outer_02
+/path/to/object/param_outer_02/decl (param_outer_02)
+/path/to/object/param_outer_02/= (=)
+/path/to/object/param_outer_02/value
+/path/to/object/param_outer_02/value/decl (///path/to///param/inner/02//)
+/path/to/object/param_outer_02/value/= (=)
+/path/to/object/param_outer_02/value/value (2.2)
+/path/to/object/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - keyed-keyed-array parameters
+ */
+TEST(HITInterpreter, keyed_keyed_arrays)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+array_outer_01 = path/to/array/inner/01 = '"eleven" "twelve" "thirteen"'
+
+[//path/to///object/]
+
+  array_outer_02 = ///path/to///array/inner/02// = '2.2 3.3 4.4'
+
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(30, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+    ASSERT_EQ(2, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/array_outer_01
+/array_outer_01/decl (array_outer_01)
+/array_outer_01/= (=)
+/array_outer_01/value
+/array_outer_01/value/decl (path/to/array/inner/01)
+/array_outer_01/value/= (=)
+/array_outer_01/value/' (')
+/array_outer_01/value/value ("eleven")
+/array_outer_01/value/value ("twelve")
+/array_outer_01/value/value ("thirteen")
+/array_outer_01/value/' (')
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/array_outer_02
+/path/to/object/array_outer_02/decl (array_outer_02)
+/path/to/object/array_outer_02/= (=)
+/path/to/object/array_outer_02/value
+/path/to/object/array_outer_02/value/decl (///path/to///array/inner/02//)
+/path/to/object/array_outer_02/value/= (=)
+/path/to/object/array_outer_02/value/' (')
+/path/to/object/array_outer_02/value/value (2.2)
+/path/to/object/array_outer_02/value/value (3.3)
+/path/to/object/array_outer_02/value/value (4.4)
+/path/to/object/array_outer_02/value/' (')
+/path/to/object/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - shorthand path naming keyed-keyed-value parameters
+ */
+TEST(HITInterpreter, shorthand_path_naming_keyed_keyed_values)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+path/to/param/outer/01 = path/to/param/inner/01 = "one"
+
+[//path/to///object/]
+
+  ///path/to///param/outer/02// = ///path/to///param/inner/02// = 2.2
+
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(30, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+    ASSERT_EQ(2, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/path
+/path/to
+/path/to/param
+/path/to/param/outer
+/path/to/param/outer/01
+/path/to/param/outer/01/decl (path/to/param/outer/01)
+/path/to/param/outer/01/= (=)
+/path/to/param/outer/01/value
+/path/to/param/outer/01/value/decl (path/to/param/inner/01)
+/path/to/param/outer/01/value/= (=)
+/path/to/param/outer/01/value/value ("one")
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/path
+/path/to/object/path/to
+/path/to/object/path/to/param
+/path/to/object/path/to/param/outer
+/path/to/object/path/to/param/outer/02
+/path/to/object/path/to/param/outer/02/decl (///path/to///param/outer/02//)
+/path/to/object/path/to/param/outer/02/= (=)
+/path/to/object/path/to/param/outer/02/value
+/path/to/object/path/to/param/outer/02/value/decl (///path/to///param/inner/02//)
+/path/to/object/path/to/param/outer/02/value/= (=)
+/path/to/object/path/to/param/outer/02/value/value (2.2)
+/path/to/object/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - shorthand path naming keyed-keyed-array parameters
+ */
+TEST(HITInterpreter, shorthand_path_naming_keyed_keyed_arrays)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+path/to/array/outer/01 = path/to/array/inner/01 = '"eleven" "twelve" "thirteen"'
+
+[//path/to///object/]
+
+  ///path/to///array/outer/02// = ///path/to///array/inner/02// = '2.2 3.3 4.4'
+
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(38, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+    ASSERT_EQ(2, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/path
+/path/to
+/path/to/array
+/path/to/array/outer
+/path/to/array/outer/01
+/path/to/array/outer/01/decl (path/to/array/outer/01)
+/path/to/array/outer/01/= (=)
+/path/to/array/outer/01/value
+/path/to/array/outer/01/value/decl (path/to/array/inner/01)
+/path/to/array/outer/01/value/= (=)
+/path/to/array/outer/01/value/' (')
+/path/to/array/outer/01/value/value ("eleven")
+/path/to/array/outer/01/value/value ("twelve")
+/path/to/array/outer/01/value/value ("thirteen")
+/path/to/array/outer/01/value/' (')
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/path
+/path/to/object/path/to
+/path/to/object/path/to/array
+/path/to/object/path/to/array/outer
+/path/to/object/path/to/array/outer/02
+/path/to/object/path/to/array/outer/02/decl (///path/to///array/outer/02//)
+/path/to/object/path/to/array/outer/02/= (=)
+/path/to/object/path/to/array/outer/02/value
+/path/to/object/path/to/array/outer/02/value/decl (///path/to///array/inner/02//)
+/path/to/object/path/to/array/outer/02/value/= (=)
+/path/to/object/path/to/array/outer/02/value/' (')
+/path/to/object/path/to/array/outer/02/value/value (2.2)
+/path/to/object/path/to/array/outer/02/value/value (3.3)
+/path/to/object/path/to/array/outer/02/value/value (4.4)
+/path/to/object/path/to/array/outer/02/value/' (')
+/path/to/object/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - array values that are keyed values
+ */
+TEST(HITInterpreter, arrays_containing_keyed_values)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+array_outer_01 = 'param_inner_01 = 100 param_inner_02 = 200 param_inner_03 = 300'
+
+[//path/to///object/]
+
+  path/to/array//outer/02/ = 'param/inner/01 = 100 param/inner/02 = 200 param/inner/03 = 300'
+
+[]
+
+///path//to/array/outer/03 = array_outer_01 = 'param_inner_01 = 100 param_inner_02 = 200 param_inner_03 = 300'
+
+[//path/to///object/]
+
+  path/to/array/outer//04 = path/to/array//outer/02/ = 'param/inner/01 = 100 param/inner/02 = 200 param/inner/03 = 300'
+
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(101, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(4, document.child_count());
+    ASSERT_EQ(4, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/array_outer_01
+/array_outer_01/decl (array_outer_01)
+/array_outer_01/= (=)
+/array_outer_01/' (')
+/array_outer_01/value
+/array_outer_01/value/decl (param_inner_01)
+/array_outer_01/value/= (=)
+/array_outer_01/value/value (100)
+/array_outer_01/value
+/array_outer_01/value/decl (param_inner_02)
+/array_outer_01/value/= (=)
+/array_outer_01/value/value (200)
+/array_outer_01/value
+/array_outer_01/value/decl (param_inner_03)
+/array_outer_01/value/= (=)
+/array_outer_01/value/value (300)
+/array_outer_01/' (')
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/path
+/path/to/object/path/to
+/path/to/object/path/to/array
+/path/to/object/path/to/array/outer
+/path/to/object/path/to/array/outer/02
+/path/to/object/path/to/array/outer/02/decl (path/to/array//outer/02/)
+/path/to/object/path/to/array/outer/02/= (=)
+/path/to/object/path/to/array/outer/02/' (')
+/path/to/object/path/to/array/outer/02/value
+/path/to/object/path/to/array/outer/02/value/decl (param/inner/01)
+/path/to/object/path/to/array/outer/02/value/= (=)
+/path/to/object/path/to/array/outer/02/value/value (100)
+/path/to/object/path/to/array/outer/02/value
+/path/to/object/path/to/array/outer/02/value/decl (param/inner/02)
+/path/to/object/path/to/array/outer/02/value/= (=)
+/path/to/object/path/to/array/outer/02/value/value (200)
+/path/to/object/path/to/array/outer/02/value
+/path/to/object/path/to/array/outer/02/value/decl (param/inner/03)
+/path/to/object/path/to/array/outer/02/value/= (=)
+/path/to/object/path/to/array/outer/02/value/value (300)
+/path/to/object/path/to/array/outer/02/' (')
+/path/to/object/term ([])
+/path
+/path/to
+/path/to/array
+/path/to/array/outer
+/path/to/array/outer/03
+/path/to/array/outer/03/decl (///path//to/array/outer/03)
+/path/to/array/outer/03/= (=)
+/path/to/array/outer/03/value
+/path/to/array/outer/03/value/decl (array_outer_01)
+/path/to/array/outer/03/value/= (=)
+/path/to/array/outer/03/value/' (')
+/path/to/array/outer/03/value/value
+/path/to/array/outer/03/value/value/decl (param_inner_01)
+/path/to/array/outer/03/value/value/= (=)
+/path/to/array/outer/03/value/value/value (100)
+/path/to/array/outer/03/value/value
+/path/to/array/outer/03/value/value/decl (param_inner_02)
+/path/to/array/outer/03/value/value/= (=)
+/path/to/array/outer/03/value/value/value (200)
+/path/to/array/outer/03/value/value
+/path/to/array/outer/03/value/value/decl (param_inner_03)
+/path/to/array/outer/03/value/value/= (=)
+/path/to/array/outer/03/value/value/value (300)
+/path/to/array/outer/03/value/' (')
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/path
+/path/to/object/path/to
+/path/to/object/path/to/array
+/path/to/object/path/to/array/outer
+/path/to/object/path/to/array/outer/04
+/path/to/object/path/to/array/outer/04/decl (path/to/array/outer//04)
+/path/to/object/path/to/array/outer/04/= (=)
+/path/to/object/path/to/array/outer/04/value
+/path/to/object/path/to/array/outer/04/value/decl (path/to/array//outer/02/)
+/path/to/object/path/to/array/outer/04/value/= (=)
+/path/to/object/path/to/array/outer/04/value/' (')
+/path/to/object/path/to/array/outer/04/value/value
+/path/to/object/path/to/array/outer/04/value/value/decl (param/inner/01)
+/path/to/object/path/to/array/outer/04/value/value/= (=)
+/path/to/object/path/to/array/outer/04/value/value/value (100)
+/path/to/object/path/to/array/outer/04/value/value
+/path/to/object/path/to/array/outer/04/value/value/decl (param/inner/02)
+/path/to/object/path/to/array/outer/04/value/value/= (=)
+/path/to/object/path/to/array/outer/04/value/value/value (200)
+/path/to/object/path/to/array/outer/04/value/value
+/path/to/object/path/to/array/outer/04/value/value/decl (param/inner/03)
+/path/to/object/path/to/array/outer/04/value/value/= (=)
+/path/to/object/path/to/array/outer/04/value/value/value (300)
+/path/to/object/path/to/array/outer/04/value/' (')
+/path/to/object/term ([])
 )INPUT";
 
     std::stringstream actual_paths;

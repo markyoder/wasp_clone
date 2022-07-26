@@ -68,9 +68,9 @@ LBRACKET \[
 OBJECT_NAME [^" ""."\n\[\]][^" "\n\[\]]*
 SUBSTITUTION_STRING \$\{([^\"\n\t\r])*\}
 CONVENTIONAL_STRING [^ \'\"\=\n\t\r\[\]\#\;]+
-AFTER_FSLASH_STRING [^ \'\n\t\r\[\]\#\;]+
-STRING {SUBSTITUTION_STRING}|{CONVENTIONAL_STRING}(\/{AFTER_FSLASH_STRING})?
-ARRAY_STRING (\$\{([^\"\n\t\r])*\})|([^ \'\n\t\r\#\;]+)
+ARRAY_MEMBER_STRING [^ \'\"\=\n\t\r\#\;]+
+STRING       {SUBSTITUTION_STRING}|{CONVENTIONAL_STRING}
+ARRAY_STRING {SUBSTITUTION_STRING}|{ARRAY_MEMBER_STRING}
 RBRACKET \]
 SEMICOLON ;
 TOP_OBJECT_TERM \[" "*\]
@@ -177,7 +177,7 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     capture_token(yylval,wasp::STRING);
     return token::STRING;
 }
-<INITIAL,object>{DOUBLE_QUOTED_STRING} {
+<INITIAL,object,array>{DOUBLE_QUOTED_STRING} {
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
 }

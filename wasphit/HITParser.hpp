@@ -320,12 +320,14 @@ namespace wasp {
         S_primitive = 42,                        // primitive
         S_path = 43,                             // path
         S_include_file = 44,                     // include_file
-        S_array_member = 45,                     // array_member
-        S_array_members = 46,                    // array_members
-        S_array = 47,                            // array
-        S_keyedvalue = 48,                       // keyedvalue
-        S_comment = 49,                          // comment
-        S_start = 50                             // start
+        S_flat_keyed_value = 45,                 // flat_keyed_value
+        S_flat_keyed_array = 46,                 // flat_keyed_array
+        S_array_member = 47,                     // array_member
+        S_array_members = 48,                    // array_members
+        S_array = 49,                            // array
+        S_keyedvalue = 50,                       // keyedvalue
+        S_comment = 51,                          // comment
+        S_start = 52                             // start
       };
     };
 
@@ -833,8 +835,8 @@ namespace wasp {
     /// Constants.
     enum
     {
-      yylast_ = 66,     ///< Last index in yytable_.
-      yynnts_ = 30,  ///< Number of nonterminal symbols.
+      yylast_ = 84,     ///< Last index in yytable_.
+      yynnts_ = 32,  ///< Number of nonterminal symbols.
       yyfinal_ = 2 ///< Termination state number.
     };
 
@@ -849,7 +851,7 @@ namespace wasp {
 
 #line 36 "HIT.bison"
 } // wasp
-#line 853 "HITParser.hpp"
+#line 855 "HITParser.hpp"
 
 
 

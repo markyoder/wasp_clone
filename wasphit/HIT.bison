@@ -96,6 +96,7 @@
 %type <node_index>  object
 %type <node_index>  unquoted_string
 %type <node_index>  keyedvalue dot_slash
+%type <node_index>  flat_keyed_value flat_keyed_array
 %type <node_index>  comment value decl primitive include include_file
 %type <node_index> object_member array_member path
 %type <node_indices> array_members array
@@ -184,6 +185,78 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
     }
     
     return result_index;
+}
+
+size_t push_keyed_value_or_array(wasp::AbstractInterpreter & interpreter,
+                                 std::vector<size_t>       & child_indices)
+{
+    // keyed values pass in exactly three children and arrays pass in more
+
+    wasp_check(child_indices.size() >= 3);
+
+    std::string name = interpreter.data(child_indices.front()).c_str();
+
+    // split 'x/y/z' names into vector to iterate and build tree hierarchy
+
+    std::vector<std::string> names = wasp::split("/", name);
+
+    // for something illegal like '///', use full name so tree gets a node
+
+    if (names.empty())
+    {
+        names.push_back(name);
+    }
+
+    // add keyed value or array then build hierarchy out of parent objects
+
+    for(size_t result_index = 0; !names.empty(); names.pop_back())
+    {
+        // skip over empty levels in tree caused by consecutive delimiters
+
+        if (names.back().empty())
+        {
+            continue;
+        }
+
+        // exactly three children is for a keyed value at the lowest level
+
+        if (child_indices.size() == 3)
+        {
+            result_index = interpreter.push_parent(wasp::KEYED_VALUE    ,
+                                                   names.back().c_str() ,
+                                                   child_indices        );
+        }
+
+        // more than three children indicates an array at the lowest level
+
+        else if (child_indices.size() > 3)
+        {
+            result_index = interpreter.push_parent(wasp::ARRAY          ,
+                                                   names.back().c_str() ,
+                                                   child_indices        );
+        }
+
+        // any other count (i.e., one) is for a higher level parent object
+
+        else
+        {
+            wasp_check(child_indices.size() == 1);
+
+            result_index = interpreter.push_parent(wasp::OBJECT         ,
+                                                   names.back().c_str() ,
+                                                   child_indices        );
+        }
+
+        // clear the vector of child indices and add only the result index
+
+        child_indices.clear();
+
+        child_indices.push_back(result_index);
+    }
+
+    // return result index from top level left in the child indices vector
+
+    return child_indices.back();
 }
 
 /* this "connects" the HIT parser in the interpreter to the flex HITLexer class
@@ -383,7 +456,34 @@ include_file : include path
             }
         }
 
-array_member : semicolon | value | assign
+flat_keyed_value : decl assign value
+     {
+         // build non-hierarchical value from hierarchy/to/parameter = 1.0
+
+         size_t dec_index = ($1);
+         size_t eql_index = ($2);
+         size_t val_index = ($3);
+
+         std::vector<size_t> child_indices = {dec_index, eql_index, val_index};
+
+         $$ = interpreter.push_parent(wasp::VALUE, "value", child_indices);
+     }
+
+flat_keyed_array : decl assign array
+     {
+         // build non-hierarchical value from hierarchy/to/array = '1 2 3'
+
+         size_t dec01_index = ($1);
+         size_t eql01_index = ($2);
+
+         std::vector<size_t> child_indices = {dec01_index, eql01_index};
+         for( size_t child_i : *$array ) child_indices.push_back(child_i);
+         delete $array;
+
+         $$ = interpreter.push_parent(wasp::VALUE, "value", child_indices);
+     }
+
+array_member : semicolon | value | flat_keyed_value
 
 array_members : array_member
     {
@@ -426,9 +526,7 @@ keyedvalue : decl assign value
 
         std::vector<size_t> child_indices = {key_index, assign_index,value_index};
 
-        $$ = interpreter.push_parent(wasp::KEYED_VALUE
-                                        ,interpreter.data(key_index).c_str()
-                                        ,child_indices);
+        $$ = push_keyed_value_or_array(interpreter, child_indices);
     }
     | decl assign array
     {
@@ -439,9 +537,33 @@ keyedvalue : decl assign value
         std::vector<size_t> child_indices = {key_index, assign_index};
         for( size_t child_i : *$array ) child_indices.push_back(child_i);
         delete $array;
-        $$ = interpreter.push_parent(wasp::ARRAY
-                                        ,interpreter.data(key_index).c_str()
-                                        ,child_indices);
+
+        $$ = push_keyed_value_or_array(interpreter, child_indices);
+    }
+    | decl assign flat_keyed_value
+    {
+
+        // handle scenario such as: cli_arg = hierarchy/to/parameter = 1.0
+
+        size_t dec_index = ($1);
+        size_t eql_index = ($2);
+        size_t val_index = ($3);
+
+        std::vector<size_t> child_indices = {dec_index, eql_index, val_index};
+
+        $$ = push_keyed_value_or_array(interpreter, child_indices);
+    }
+    | decl assign flat_keyed_array
+    {
+        // handle scenario such as: cli_arg = hierarchy/to/array = '1 2 3'
+
+        size_t dec_index = ($1);
+        size_t eql_index = ($2);
+        size_t val_index = ($3);
+
+        std::vector<size_t> child_indices = {dec_index, eql_index, val_index};
+
+        $$ = push_keyed_value_or_array(interpreter, child_indices);
     }
 
 
