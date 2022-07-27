@@ -16,6 +16,11 @@ WASP_FLEX_AND_BISON(
   BISON_OPTIONS --report=state --report=lookahead
 )
 
+#
+# Configure include file that defines the parser type promotion toggle
+#
+configure_file("HITConfig.h.in" "HITConfig.h")
+
 SET(SOURCE
 HITLexer.cpp
 HITParser.cpp
@@ -39,6 +44,11 @@ TRIBITS_ADD_LIBRARY(wasphit
   SOURCES ${SOURCE}
   NOINSTALLHEADERS ${HEADERS}
 )
+
+#
+# Add binary directory with HITConfig.h to includes for wasphit target
+#
+target_include_directories(wasphit PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 
 #
 # Add test directory

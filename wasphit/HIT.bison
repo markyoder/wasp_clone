@@ -111,6 +111,8 @@
 
 #include "HITInterpreter.h"
 #include "HITLexer.h"
+#include "HITConfig.h"
+
 // Obtain the HIT name for an object_term
 // I.e., 
 // [name]
@@ -123,6 +125,10 @@ bool hit_get_name(std::string& name,
                             , wasp::AbstractInterpreter & interpreter
                             , std::pair<size_t, std::vector<size_t>*>* object_members)
 {
+// if type promotion is disabled, then just return early before any checks
+#if DISABLE_HIT_TYPE_PROMOTION
+    return false;
+#endif
     bool has_type = object_members->first != object_members->second->size();
     auto name_i = object_decl_i;
     if( has_type )
