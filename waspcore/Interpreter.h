@@ -26,7 +26,7 @@ class WASP_PUBLIC NodeView
   public:
     using Collection = std::vector<NodeView>;
     NodeView() : m_node_index(-1), m_pool(nullptr) {}
-    NodeView(std::size_t node_index, const class AbstractInterpreter& data);
+    NodeView(std::size_t node_index, class AbstractInterpreter& data);
     NodeView(const NodeView& orig);
     ~NodeView();
 
@@ -50,6 +50,15 @@ class WASP_PUBLIC NodeView
      * @return the node's data
      */
     std::string data() const;
+
+    /**
+     * @brief Set the data of this node
+     * Note: This is only legal for LEAF nodes
+     * 
+     * @param value the new data to associate with this leaf node
+     */
+    void set_data(const char* value);
+
     /**
      * @brief parent acquire the parent view of the current node
      * @return
@@ -209,7 +218,7 @@ class WASP_PUBLIC NodeView
      * @brief node_pool acquire the pointer to the backend storage
      * @return the document interpreter that backs this view
      */
-    const class AbstractInterpreter* node_pool() const { return m_pool; }
+    class AbstractInterpreter* node_pool() const { return m_pool; }
 
     // !> Type operators
     bool to_bool(bool* ok = nullptr) const;
@@ -251,7 +260,7 @@ class WASP_PUBLIC NodeView
 
   private:
     std::size_t                      m_node_index;
-    const class AbstractInterpreter* m_pool;
+    class AbstractInterpreter* m_pool;
 };
 
 /**
@@ -334,6 +343,8 @@ class WASP_PUBLIC AbstractInterpreter
      * @return
      */
     virtual std::string data(size_t node_index) const = 0;
+    virtual void set_data(size_t noded_index, const char* data) = 0;
+
     /**
      * @brief token_data acquires the data for the token at the given index
      * @param token_index the index of the token for which the data is requested
@@ -724,6 +735,9 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @return
      */
     std::string data(size_t node_index) const;
+
+    void set_data(size_t node_index, const char* data);
+
     /**
      * @brief token_data acquires the data for the token at the given index
      * @param token_index the index of the token for which the data is requested

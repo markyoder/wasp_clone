@@ -27,9 +27,9 @@ NodeView Interpreter<NodeStorage>::root() const
     // have any nodes?
     if (m_nodes.size() == 0)
     {
-        return NodeView(m_nodes.size(), *this);
+        return NodeView(m_nodes.size(), *const_cast<Interpreter*>(this));
     }
-    return NodeView(m_root_index, *this);
+    return NodeView(m_root_index, *const_cast<Interpreter*>(this));
 }
 template<class NodeStorage>
 NodeView Interpreter<NodeStorage>::node_at(node_index_size index) const
@@ -37,9 +37,9 @@ NodeView Interpreter<NodeStorage>::node_at(node_index_size index) const
     // have any nodes?
     if (m_nodes.size() == 0)
     {
-        return NodeView(m_nodes.size(), *this);
+        return NodeView(m_nodes.size(), *const_cast<Interpreter*>(this));
     }
-    return NodeView(index, *this);
+    return NodeView(index, *const_cast<Interpreter*>(this));
 }
 template<class NodeStorage>
 size_t Interpreter<NodeStorage>::child_count(size_t node_index) const
@@ -157,6 +157,13 @@ std::string Interpreter<NodeStorage>::data(size_t index) const
     }
     return this->m_nodes.data(index);
 }
+template<class NodeStorage>
+void Interpreter<NodeStorage>::set_data(size_t index, const char* d)
+{
+    wasp_insist(is_leaf(index), "data assignment only allowed for leaf nodes!");
+    this->m_nodes.set_data(index, d);
+}
+
 template<class NodeStorage>
 const char* Interpreter<NodeStorage>::token_data(size_t index) const
 {

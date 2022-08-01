@@ -21,7 +21,7 @@ class WASP_PUBLIC HaliteNodeView
     using Collection = std::vector<HaliteNodeView>;
     using GenericView = NodeView;
     HaliteNodeView() : m_node_index(-1), m_pool(nullptr) {}
-    HaliteNodeView(std::size_t node_index, const AbstractInterpreter& nodes);
+    HaliteNodeView(std::size_t node_index, AbstractInterpreter& nodes);
     template<class NV>
     HaliteNodeView(const NV& orig);
     HaliteNodeView(const HaliteNodeView& orig);
@@ -229,7 +229,7 @@ class WASP_PUBLIC HaliteNodeView
      * @brief node_pool acquire the pointer to the backend storage
      * @return the document interpreter that backs this view
      */
-    const AbstractInterpreter* node_pool() const { return m_pool; }
+    AbstractInterpreter* node_pool() const { return m_pool; }
 
     // !> Type operators
     /**
@@ -276,7 +276,7 @@ class WASP_PUBLIC HaliteNodeView
 
   private:
     size_t                     m_node_index;
-    const AbstractInterpreter* m_pool;
+    AbstractInterpreter* m_pool;
 
     /**
      * @brief value_node_index when the value is requested (to_int, string,

@@ -66,6 +66,21 @@ void TreeNodePool<NTS, NIS, TP>::set_type(NIS node_index, NTS type)
 {
     m_node_basic_data[node_index].m_node_type = type;
 }
+template<typename NTS, typename NIS, class TP>
+void TreeNodePool<NTS, NIS, TP>::set_data(NIS node_index, const char* data)
+{
+    wasp_insist(is_leaf(node_index), "data assignment only allowed for leaf nodes!");
+    auto tindex      = m_node_basic_data[node_index].m_token_index;
+    auto file_offset = m_token_data.offset(tindex);
+    auto type        = m_token_data.type(tindex);
+
+    m_node_basic_data[node_index].m_token_index = m_token_data.size();
+
+    // TODO - add logic/accessors to allow overwriting 
+    // existing token data in the case where new value's size is equal to or less than
+    // the old value's size. I.e., re-use token memory
+    m_token_data.push(data, type, file_offset);
+}
 // Create a leaf node
 template<typename NTS, typename NIS, class TP>
 void TreeNodePool<NTS, NIS, TP>::push_leaf(

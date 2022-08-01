@@ -21,7 +21,7 @@ class WASP_PUBLIC JSONNodeView
     using Collection = std::vector<JSONNodeView>;
     using GenericView = NodeView;
     JSONNodeView() : m_node_index(-1), m_pool(nullptr) {}
-    JSONNodeView(std::size_t node_index, const AbstractInterpreter& nodes);
+    JSONNodeView(std::size_t node_index, AbstractInterpreter& nodes);
     template<class NV>
     JSONNodeView(const NV& orig);
     JSONNodeView(const JSONNodeView& orig);
@@ -229,7 +229,7 @@ class WASP_PUBLIC JSONNodeView
      * @brief node_pool acquire the pointer to the backend storage
      * @return the document interpreter that backs this view
      */
-    const AbstractInterpreter* node_pool() const { return m_pool; }
+    AbstractInterpreter* node_pool() const { return m_pool; }
 
     // !> Type operators
     /**
@@ -276,7 +276,7 @@ class WASP_PUBLIC JSONNodeView
 
   private:
     size_t                     m_node_index;
-    const AbstractInterpreter* m_pool;
+    AbstractInterpreter* m_pool;
 
     /**
      * @brief value_node_index when the value is requested (to_int, string,

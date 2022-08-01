@@ -4,7 +4,7 @@
 namespace wasp
 {
 HaliteNodeView::HaliteNodeView(std::size_t                node_index,
-                         const AbstractInterpreter& pool)
+                         AbstractInterpreter& pool)
     : m_node_index(node_index), m_pool(&pool)
 {
 }
