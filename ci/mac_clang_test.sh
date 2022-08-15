@@ -1,6 +1,6 @@
 mkdir build
 cd build
-git clone https://code.ornl.gov/casl/miniconda.git
+git clone https://code-int.ornl.gov/warroom/miniconda.git
 bash miniconda/Miniconda3-latest-MacOSX-x86_64.sh -b -p ${PWD}/conda
 export PATH=${PWD}/conda/bin:$PATH
 cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Debug-${CI_BUILD_REF_NAME}" \
