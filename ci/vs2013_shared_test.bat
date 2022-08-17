@@ -2,7 +2,7 @@ call .\ci\setup.bat
 cd build
 set "base=%cd%"
 set conda=%base%\conda
-git clone git@code.ornl.gov:warroom/miniconda.git
+git clone https://code.ornl.gov/warroom/miniconda.git
 %base%\miniconda\Miniconda3-latest-Windows-x86_64.exe /S /D=%conda%
 set "PATH=%conda%\Scripts;%conda%;%conda%\Library\bin;%PATH%"
 rem %conda%\Scripts\pip.exe install -r %base%\miniconda\windows_requirements.txt --prefix=%conda%
