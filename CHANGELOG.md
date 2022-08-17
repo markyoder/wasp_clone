@@ -21,7 +21,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - Inheritance of template delimiters by imported sub-templates
 
 ## [2.0.0] - 8-12-2021
->>>>>>> master
 ### Changed 
  - Gtest dependence from TriBITS to vanilla version
  - Extra repository logic from TriBITS to Git submodule 
