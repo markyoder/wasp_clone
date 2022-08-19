@@ -1,11 +1,13 @@
+from __future__ import print_function
 import re
 import xml.sax.handler
+from builtins import str
 
 try:
-    unicode = unicode
+    str = str
 except NameError:
-     unicode = str
-     basestring = (str, bytes)
+     str = str
+     str = (str, bytes)
 
 def xml2obj(src):
     """
@@ -25,13 +27,13 @@ def xml2obj(src):
             # treat single element as a list of 1
             return 1
         def __getitem__(self, key):
-            if isinstance(key, basestring):
+            if isinstance(key, str):
                 return self._attrs.get(key, None)
             else:
                 return [self][key]
         def __contains__(self, name):
-            return self._attrs.has_key(name)
-        def __nonzero__(self):
+            return name in self._attrs
+        def __bool__(self):
             return bool(self._attrs or self.data)
         def __getattr__(self, name):
             if name.startswith('__'):
@@ -54,7 +56,7 @@ def xml2obj(src):
             items = sorted(self._attrs.items())
             if self.data:
                 items.append(('data', self.data))
-            return u'{%s}' % ', '.join([u'%s:%s' % (k, repr(v)) for k, v in items])
+            return '{%s}' % ', '.join(['%s:%s' % (k, repr(v)) for k, v in items])
 
     class TreeBuilder(xml.sax.handler.ContentHandler):
         def __init__(self):
@@ -67,7 +69,7 @@ def xml2obj(src):
             self.current = DataNode()
             self.text_parts = []
             # xml attributes --> python attributes
-            for k, v in attrs.items():
+            for k, v in list(attrs.items()):
                 self.current._add_xml_attr(_name_mangle(k), v)
         def endElement(self, name):
             text = ''.join(self.text_parts).strip()
@@ -84,7 +86,7 @@ def xml2obj(src):
             self.text_parts.append(content)
 
     builder = TreeBuilder()
-    if isinstance(src, basestring):
+    if isinstance(src, str):
         xml.sax.parseString(src, builder)
     else:
         xml.sax.parse(src, builder)

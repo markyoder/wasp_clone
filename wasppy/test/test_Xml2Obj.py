@@ -1,6 +1,8 @@
+from __future__ import print_function, absolute_import, unicode_literals
 import subprocess, os, sys
 # MAKE SURE THE xml2obj MODULE IS IN THE PATH
 sys.path.insert(0, os.path.dirname(__file__)+"/..")
+sys.path.append("..")
 import xml2obj, wasp2py
 import unittest
 
@@ -15,6 +17,9 @@ else:
     son_input_filepath = os.path.dirname(__file__)+"/input.son"
 cmd = sonvalidxml+' '+schema_filepath+' '+son_input_filepath+" --xml"
 xmlresult = subprocess.check_output(cmd, shell=True)
+if isinstance( xmlresult, bytes ):
+    xmlresult = xmlresult.decode( 'utf-8' )
+
 
 ### obtain pieces of input by name for convenience
 document = xml2obj.xml2obj(xmlresult)

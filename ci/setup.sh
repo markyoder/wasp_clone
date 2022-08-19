@@ -3,5 +3,10 @@
  which cmake
  which python
  python --version
- mkdir build
+if [[ -d build  ]]; then
+   rm -rf build
+   mkdir build
+else
+   mkdir build
+fi
  env
