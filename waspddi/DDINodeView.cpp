@@ -105,6 +105,12 @@ std::string DDINodeView::data() const
     return str.str();
 }
 
+void DDINodeView::set_data(const char* data)
+{
+    NodeView view(node_index(), *node_pool());
+    view.set_data(data);
+}
+
 std::string DDINodeView::path() const
 {
     std::stringstream str;

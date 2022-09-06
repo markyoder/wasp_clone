@@ -120,6 +120,12 @@ std::string HaliteNodeView::data() const
     return str.str();
 }
 
+void HaliteNodeView::set_data(const char* data)
+{
+    NodeView view(node_index(), *node_pool());
+    view.set_data(data);
+}
+
 std::string HaliteNodeView::path() const
 {
     return wasp::node_path(*this);

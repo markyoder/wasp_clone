@@ -54,6 +54,13 @@ class WASP_PUBLIC DDINodeView
      * @return the node's data
      */
     std::string data() const;
+
+    /**
+     * @brief Set the data of this node - this is only legal for LEAF nodes
+     * @param value the new data to associate with this leaf node
+     */
+    void set_data(const char* value);
+
     /**
      * @brief parent acquire the parent view of the current node
      * @return

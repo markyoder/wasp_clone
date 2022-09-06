@@ -142,6 +142,12 @@ std::string EDDINodeView::data() const
     return str.str();
 }
 
+void EDDINodeView::set_data(const char* data)
+{
+    NodeView view(node_index(), *node_pool());
+    view.set_data(data);
+}
+
 std::string EDDINodeView::path() const
 {
     return wasp::node_path(*this);
