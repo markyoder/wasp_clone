@@ -590,26 +590,6 @@ start   : /** empty **/
         | start object{
             interpreter.push_staged_child($2);
         }
-        | start object_decl object_members object
-        {
-            std::vector<size_t> & children = *$object_decl;
-            // [0] = '[', [1] = 'name', [2] = ']'
-            size_t object_decl_i = children[1];
-            for( size_t child_i: *$object_members->second ) children.push_back(child_i);
-            std::string name = interpreter.data(object_decl_i).c_str();
-            hit_get_name(name, object_decl_i
-                            ,interpreter ,$object_members);
-
-            delete $object_members->second;
-            delete $object_members;
-
-            size_t object_i = interpreter.push_parent(wasp::OBJECT
-                                            ,name.c_str()
-                                            ,children);
-            interpreter.push_staged_child(object_i);
-            interpreter.push_staged_child(($object));
-            delete $2;
-        }
         | start include_file
         {
             // assume the included content will be a child of the existing

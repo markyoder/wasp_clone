@@ -2626,3 +2626,30 @@ c = 3)I" << std::endl;
     }
 
 }
+
+/**
+ * @brief Test HIT syntax error - missing object terminator
+ */
+TEST(HITInterpreter, missing_object_terminator)
+{
+    std::stringstream input;
+    input << R"INPUT([GlobalParams]
+[one]
+  [one_sub]
+    one_sub_param=100
+[]
+[two]
+  two_param=200
+[]
+)INPUT";
+
+    std::stringstream actual_errors;
+    DefaultHITInterpreter interpreter(actual_errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expect_errors;
+    expect_errors << "stream input:9.1: syntax error, unexpected end of file"
+                  << std::endl;
+
+    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+}
