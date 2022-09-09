@@ -2653,3 +2653,143 @@ TEST(HITInterpreter, missing_object_terminator)
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
 }
+
+/**
+ * @brief Test HIT syntax error - object name with invalid character '#'
+ */
+TEST(HITInterpreter, object_name_with_invalid_pound)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[object#name] []
+)INPUT";
+
+    std::stringstream actual_errors;
+    DefaultHITInterpreter interpreter(actual_errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expect_errors;
+    expect_errors << "stream input:2.8-12: syntax error, unexpected string, expecting ]"
+                  << std::endl;
+
+    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+}
+
+/**
+ * @brief Test HIT syntax error - object name with invalid character '='
+ */
+TEST(HITInterpreter, object_name_with_invalid_equals)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[object=name] []
+)INPUT";
+
+    std::stringstream actual_errors;
+    DefaultHITInterpreter interpreter(actual_errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expect_errors;
+    expect_errors << "stream input:2.8-12: syntax error, unexpected string, expecting ]"
+                  << std::endl;
+
+    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+}
+
+/**
+ * @brief Test HIT syntax error - object name with invalid character '&'
+ */
+TEST(HITInterpreter, object_name_with_invalid_ampersand)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[object&name] []
+)INPUT";
+
+    std::stringstream actual_errors;
+    DefaultHITInterpreter interpreter(actual_errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expect_errors;
+    expect_errors << "stream input:2.8-12: syntax error, unexpected string, expecting ]"
+                  << std::endl;
+
+    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+}
+
+/**
+ * @brief Test HIT syntax error - parameter name with invalid character '&'
+ */
+TEST(HITInterpreter, parameter_name_with_invalid_ampersand)
+{
+    std::stringstream input;
+    input << R"INPUT(
+param&name=10
+)INPUT";
+
+    std::stringstream actual_errors;
+    DefaultHITInterpreter interpreter(actual_errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expect_errors;
+    expect_errors << "stream input:2.6: syntax error, unexpected invalid token, expecting ="
+                  << std::endl;
+
+    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+}
+
+/**
+ * @brief Test HIT syntax error - invalid object terminator
+ */
+TEST(HITInterpreter, invalid_object_terminator)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[object_name][./]
+)INPUT";
+
+    std::stringstream actual_errors;
+    DefaultHITInterpreter interpreter(actual_errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expect_errors;
+    expect_errors << "stream input:2.17: syntax error, unexpected ], expecting integer or string"
+                  << std::endl;
+
+    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+}
+
+/**
+ * @brief Test HIT syntax - brace expression spans multiple lines
+ */
+TEST(HITInterpreter, brace_expression_spans_multiple_lines)
+{
+    std::stringstream input;
+    input << R"INPUT(
+param_name=${raw 4
+                 2
+            }
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(5, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(1, document.child_count());
+    ASSERT_EQ(1, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/param_name
+/param_name/decl (param_name)
+/param_name/= (=)
+/param_name/value (${raw 4
+                 2
+            })
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}

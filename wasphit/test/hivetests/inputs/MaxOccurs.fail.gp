@@ -62,9 +62,9 @@
     valuetwo=3
     valuetwo=4
     [./value_bad_one]
-    [./]
+    [../]
     [./value_bad_two]
-    [./]
+    [../]
     [./value_bad_three]
-    [./]
+    [../]
 []

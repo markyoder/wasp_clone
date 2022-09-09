@@ -65,16 +65,16 @@ NEQ \!=
 AND &&
 OR \|\|
 LBRACKET \[
-OBJECT_NAME [^" ""."\n\[\]][^" "\n\[\]]*
-SUBSTITUTION_STRING \$\{([^\"\n\t\r])*\}
-CONVENTIONAL_STRING [^ \'\"\=\n\t\r\[\]\#\;]+
-ARRAY_MEMBER_STRING [^ \'\"\=\n\t\r\#\;]+
+OBJECT_NAME [^" ""."\n\[\]][^" "\n\[\]\=\#\&]*
+SUBSTITUTION_STRING \$\{[^\"\=]*\}
+CONVENTIONAL_STRING [^ \'\"\=\n\t\r\[\]\#\&\;]+
+ARRAY_MEMBER_STRING [^ \'\"\=\n\t\r\#\&\;]+
 STRING       {SUBSTITUTION_STRING}|{CONVENTIONAL_STRING}
 ARRAY_STRING {SUBSTITUTION_STRING}|{ARRAY_MEMBER_STRING}
 RBRACKET \]
 SEMICOLON ;
 TOP_OBJECT_TERM \[" "*\]
-SUB_OBJECT_TERM \[" "*\.?\.\/" "*\]
+SUB_OBJECT_TERM \[" "*\.\.\/" "*\]
 OBJECT_TERM {TOP_OBJECT_TERM}|{SUB_OBJECT_TERM}
 DOT_SLASH \.\/
 INCLUDE_PATH [^ \t\n][^\n#\[]*

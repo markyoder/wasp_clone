@@ -13,6 +13,6 @@
 
     [./invalid_rule]
         inside=5
-    [./]
+    [../]
 
 []

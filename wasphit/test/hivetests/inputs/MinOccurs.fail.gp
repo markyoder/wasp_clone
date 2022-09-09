@@ -36,11 +36,11 @@
     bad_real=8.2
     bad_string='some_string'
     [./valuethree]
-    [./]
+    [../]
     [./value_bad_one]
-    [./]
+    [../]
     [./value_bad_two]
-    [./]
+    [../]
     [./value_bad_three]
-    [./]
+    [../]
 []
