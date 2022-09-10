@@ -86,18 +86,21 @@
 %token <token_index>   INTEGER         "integer"
 %token <token_index>   REAL          "real"
 %token <token_index>   STRING          "string"
+%token <token_index>   OBJCT_STRING    "object name"
+%token <token_index>   PARAM_STRING    "parameter name"
+%token <token_index>   VALUE_STRING    "value string"
+%token <token_index>   ARRAY_STRING    "array string"
 %token <token_index>   QSTRING          "quoted string"
 %token <token_index>   COMMENT           "comment"
 %token <token_index>   OBJECT_TERM  "block terminator"
-%type <token_index>   DECL "declarator"
+%type <token_index>   SECTION_NAME   "section name"
 %type <token_index>   VALUE "value"
 %type <node_index>  integer real string lbracket rbracket quote assign semicolon
-%type <node_index>  object_term
+%type <node_index>  object_term section_name field_name
 %type <node_index>  object
 %type <node_index>  unquoted_string
 %type <node_index>  keyedvalue dot_slash
-%type <node_index>  flat_keyed_value flat_keyed_array
-%type <node_index>  comment value decl primitive include include_file
+%type <node_index>  comment value primitive include include_file
 %type <node_index> object_member array_member path
 %type <node_indices> array_members array
 %type <node_indices> object_decl
@@ -319,18 +322,18 @@ include : FILE
             auto token_index = $1;
             $$ = interpreter.push_leaf(wasp::FILE,"decl",token_index);
         }    
-object_decl : lbracket decl rbracket {
+object_decl : lbracket section_name rbracket {
         size_t lbracket_index = ($lbracket);
-        size_t decl_index = ($decl);
+        size_t decl_index = ($section_name);
         size_t rbracket_index = ($rbracket);
         $$ = new std::vector<size_t>{lbracket_index
                                                    ,decl_index
                                                    ,rbracket_index};
-    }| lbracket  dot_slash decl rbracket
+    }| lbracket  dot_slash section_name rbracket
     {
         size_t lbracket_index = ($lbracket);
         size_t dot_slash_index = ($dot_slash);
-        size_t decl_index = ($decl);
+        size_t decl_index = ($section_name);
         size_t rbracket_index = ($rbracket);
 
 
@@ -406,15 +409,21 @@ unquoted_string : STRING
         $$ = interpreter.push_leaf(wasp::STRING,"string"
                          ,token_index);
     }
-VALUE : INTEGER | REAL | STRING | QSTRING
+VALUE : INTEGER | REAL | VALUE_STRING | ARRAY_STRING | QSTRING
 value : VALUE
     {
         size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::VALUE,"value"
                          ,token_index);
     }
-DECL : STRING | INTEGER
-decl : DECL
+SECTION_NAME : OBJCT_STRING | INTEGER
+section_name : SECTION_NAME
+    {
+        size_t decl_token_index = ($1);
+        $$ = interpreter.push_leaf(wasp::DECL,"decl"
+                         ,decl_token_index);
+    }
+field_name : PARAM_STRING
     {
         size_t decl_token_index = ($1);
         $$ = interpreter.push_leaf(wasp::DECL,"decl"
@@ -462,34 +471,7 @@ include_file : include path
             }
         }
 
-flat_keyed_value : decl assign value
-     {
-         // build non-hierarchical value from hierarchy/to/parameter = 1.0
-
-         size_t dec_index = ($1);
-         size_t eql_index = ($2);
-         size_t val_index = ($3);
-
-         std::vector<size_t> child_indices = {dec_index, eql_index, val_index};
-
-         $$ = interpreter.push_parent(wasp::VALUE, "value", child_indices);
-     }
-
-flat_keyed_array : decl assign array
-     {
-         // build non-hierarchical value from hierarchy/to/array = '1 2 3'
-
-         size_t dec01_index = ($1);
-         size_t eql01_index = ($2);
-
-         std::vector<size_t> child_indices = {dec01_index, eql01_index};
-         for( size_t child_i : *$array ) child_indices.push_back(child_i);
-         delete $array;
-
-         $$ = interpreter.push_parent(wasp::VALUE, "value", child_indices);
-     }
-
-array_member : semicolon | value | flat_keyed_value
+array_member : semicolon | value
 
 array_members : array_member
     {
@@ -524,7 +506,7 @@ array : quote array_members quote
     }
 
 
-keyedvalue : decl assign value
+keyedvalue : field_name assign value
     {
         size_t key_index = ($1);
         size_t assign_index = ($2);
@@ -534,7 +516,7 @@ keyedvalue : decl assign value
 
         $$ = push_keyed_value_or_array(interpreter, child_indices);
     }
-    | decl assign array
+    | field_name assign array
     {
 
         size_t key_index = ($1);
@@ -546,32 +528,6 @@ keyedvalue : decl assign value
 
         $$ = push_keyed_value_or_array(interpreter, child_indices);
     }
-    | decl assign flat_keyed_value
-    {
-
-        // handle scenario such as: cli_arg = hierarchy/to/parameter = 1.0
-
-        size_t dec_index = ($1);
-        size_t eql_index = ($2);
-        size_t val_index = ($3);
-
-        std::vector<size_t> child_indices = {dec_index, eql_index, val_index};
-
-        $$ = push_keyed_value_or_array(interpreter, child_indices);
-    }
-    | decl assign flat_keyed_array
-    {
-        // handle scenario such as: cli_arg = hierarchy/to/array = '1 2 3'
-
-        size_t dec_index = ($1);
-        size_t eql_index = ($2);
-        size_t val_index = ($3);
-
-        std::vector<size_t> child_indices = {dec_index, eql_index, val_index};
-
-        $$ = push_keyed_value_or_array(interpreter, child_indices);
-    }
-
 
 comment : COMMENT
     {

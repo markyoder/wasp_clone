@@ -40,6 +40,8 @@ typedef wasp::HITParser::token_type token_type;
  /* enables the use of start condition stacks */
 %option stack
 %s object
+%s param
+%s assign
 %s array
 %x lbracket
 %x file_include
@@ -65,12 +67,13 @@ NEQ \!=
 AND &&
 OR \|\|
 LBRACKET \[
-OBJECT_NAME [^" ""."\n\[\]][^" "\n\[\]\=\#\&]*
-SUBSTITUTION_STRING \$\{[^\"\=]*\}
-CONVENTIONAL_STRING [^ \'\"\=\n\t\r\[\]\#\&\;]+
-ARRAY_MEMBER_STRING [^ \'\"\=\n\t\r\#\&\;]+
-STRING       {SUBSTITUTION_STRING}|{CONVENTIONAL_STRING}
-ARRAY_STRING {SUBSTITUTION_STRING}|{ARRAY_MEMBER_STRING}
+BRACE_EXPRSN_STRING \$\{[^\"\=]*\}
+NORMAL_VALUE_STRING [^ \'\n\t\r\[\]\#\&\;][^ \n\t\r\[\]\#\&]*
+NORMAL_ARRAY_STRING [^ \'\n\t\r\#\;]+
+OBJCT_STRING [^" ""."\n\[\]][^" "\n\[\]\=\#\&]*
+PARAM_STRING [^ \'\"\=\n\t\r\[\]\#\&\;]+
+VALUE_STRING {BRACE_EXPRSN_STRING}|{NORMAL_VALUE_STRING}
+ARRAY_STRING {BRACE_EXPRSN_STRING}|{NORMAL_ARRAY_STRING}|{ASSIGN}
 RBRACKET \]
 SEMICOLON ;
 TOP_OBJECT_TERM \[" "*\]
@@ -95,72 +98,11 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
 %}
  /*** BEGIN EXAMPLE - Change the HIT lexer rules below ***/
 
-
-{ASSIGN} {
-    capture_token(yylval,wasp::ASSIGN);
-    return token::ASSIGN;
-}
-<array>{SEMICOLON} {
-    capture_token(yylval,wasp::SEMICOLON);
-    return token::SEMICOLON;
-}
-<object>{OBJECT_TERM} {
-    yy_pop_state();
-    capture_token(yylval,wasp::OBJECT_TERM);
-    return token::OBJECT_TERM;
-}
-<INITIAL,object>{SINGLE_QUOTE} {
-    yy_push_state(array);
-    capture_token(yylval,wasp::QUOTE);
-    return token::QUOTE;
-}
-<array>{SINGLE_QUOTE} {
-    yy_pop_state();
-    capture_token(yylval,wasp::QUOTE);
-    return token::QUOTE;
-}
-<INITIAL,object>{LBRACKET} {
-    yy_push_state(lbracket);
-    capture_token(yylval,wasp::LBRACKET);
-    return token::LBRACKET;
-}
-<lbracket>{DOT_SLASH} {
-    capture_token(yylval,wasp::DOT_SLASH);
-    return token::DOT_SLASH;
-}
-<lbracket>{OBJECT_NAME} {
-    capture_token(yylval,wasp::STRING);
-    return token::STRING;
-}
-<lbracket>{RBRACKET} {
-    yy_pop_state();
-    yy_push_state(object);
-    capture_token(yylval,wasp::RBRACKET);
-    return token::RBRACKET;
-}
-<INITIAL,object,array>{INTEGER} {
-    capture_token(yylval,wasp::INTEGER);
-    return token::INTEGER;
-}
-
-<INITIAL,object,array>{REAL} {
-    capture_token(yylval,wasp::REAL);
-    return token::REAL;
-}
- /* gobble up white-spaces */
-<*>[ \t\r]+ {
-    yylloc->step();
-}
-
- /* gobble up end-of-lines */
-\n {
-    yylloc->lines(yyleng); yylloc->step();
-    interpreter.push_line_offset(file_offset-yyleng);
-}
 {COMMENT} {
     capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
 }
+
 !include {
     yy_push_state(file_include);
     capture_token(yylval,wasp::FILE);
@@ -173,17 +115,111 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     capture_token(yylval,wasp::STRING);
     return token::STRING;
 }
-<INITIAL,object>{STRING} {
-    capture_token(yylval,wasp::STRING);
-    return token::STRING;
+
+<INITIAL,object>{LBRACKET} {
+    yy_push_state(lbracket);
+    capture_token(yylval,wasp::LBRACKET);
+    return token::LBRACKET;
 }
-<INITIAL,object,array>{DOUBLE_QUOTED_STRING} {
+<lbracket>{DOT_SLASH} {
+    capture_token(yylval,wasp::DOT_SLASH);
+    return token::DOT_SLASH;
+}
+<lbracket>{OBJCT_STRING} {
+    capture_token(yylval,wasp::STRING);
+    return token::OBJCT_STRING;
+}
+<lbracket>{RBRACKET} {
+    yy_pop_state();
+    yy_push_state(object);
+    capture_token(yylval,wasp::RBRACKET);
+    return token::RBRACKET;
+}
+<object>{OBJECT_TERM} {
+    yy_pop_state();
+    capture_token(yylval,wasp::OBJECT_TERM);
+    return token::OBJECT_TERM;
+}
+
+<INITIAL,object>{PARAM_STRING} {
+    yy_push_state(param);
+    capture_token(yylval,wasp::STRING);
+    return token::PARAM_STRING;
+}
+<param>{ASSIGN} {
+    yy_pop_state();
+    yy_push_state(assign);
+    capture_token(yylval,wasp::ASSIGN);
+    return token::ASSIGN;
+}
+
+<assign>{INTEGER} {
+    yy_pop_state();
+    capture_token(yylval,wasp::INTEGER);
+    return token::INTEGER;
+}
+<assign>{REAL} {
+    yy_pop_state();
+    capture_token(yylval,wasp::REAL);
+    return token::REAL;
+}
+<assign>{VALUE_STRING} {
+    yy_pop_state();
+    capture_token(yylval,wasp::STRING);
+    return token::VALUE_STRING;
+}
+<assign>{DOUBLE_QUOTED_STRING} {
+    yy_pop_state();
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
 }
+
+<assign>{SINGLE_QUOTE} {
+    yy_pop_state();
+    yy_push_state(array);
+    capture_token(yylval,wasp::QUOTE);
+    return token::QUOTE;
+}
+<array>{SINGLE_QUOTE} {
+    yy_pop_state();
+    capture_token(yylval,wasp::QUOTE);
+    return token::QUOTE;
+}
+<array>{INTEGER} {
+    capture_token(yylval,wasp::INTEGER);
+    return token::INTEGER;
+}
+<array>{REAL} {
+    capture_token(yylval,wasp::REAL);
+    return token::REAL;
+}
 <array>{ARRAY_STRING} {
     capture_token(yylval,wasp::STRING);
-    return token::STRING;
+    return token::ARRAY_STRING;
+}
+<array>{DOUBLE_QUOTED_STRING} {
+    capture_token(yylval,wasp::QUOTED_STRING);
+    return token::QSTRING;
+}
+<array>{SEMICOLON} {
+    capture_token(yylval,wasp::SEMICOLON);
+    return token::SEMICOLON;
+}
+<INITIAL,object>{SINGLE_QUOTE} {
+    yy_push_state(array);
+    capture_token(yylval,wasp::QUOTE);
+    return token::QUOTE;
+}
+
+ /* gobble up white-spaces */
+<*>[ \t\r]+ {
+    yylloc->step();
+}
+
+ /* gobble up end-of-lines */
+\n {
+    yylloc->lines(yyleng); yylloc->step();
+    interpreter.push_line_offset(file_offset-yyleng);
 }
 
  /* pass all other characters up to HIT*/

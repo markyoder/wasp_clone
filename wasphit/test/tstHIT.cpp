@@ -1106,46 +1106,46 @@ TEST(HITInterpreter, hit_syntax)
 
   [./sub-decl-sub-term-no-type]
     flag01  = 1.1
-    array01 = name11 name12 name13
+    array01 = 'name11 name12 name13'
   [../]
 
   [./sub-decl-top-term-no-type]
     flag02  = 2.2
-    array02 = name21 name22 name23
+    array02 = 'name21 name22 name23'
   []
 
   [top-decl-sub-term-no-type]
     flag03  = 3.3
-    array03 = name31 name32 name33
+    array03 = 'name31 name32 name33'
   [../]
 
   [top-decl-top-term-no-type]
     flag04  = 4.4
-    array04 = name41 name42 name43
+    array04 = 'name41 name42 name43'
   []
 
   [./sub-decl-sub-term-wt-type]
     type    = SubDeclSubTerm
     flag05  = 5.5
-    array05 = name51 name42 name53
+    array05 = 'name51 name42 name53'
   [../]
 
   [./sub-decl-top-term-wt-type]
     type    = SubDeclTopTerm
     flag06  = 6.6
-    array06 = name61 name62 name63
+    array06 = 'name61 name62 name63'
   []
 
   [top-decl-sub-term-wt-type]
     type    = TopDeclSubTerm
     flag07  = 7.7
-    array07 = name71 name72 name73
+    array07 = 'name71 name72 name73'
   [../]
 
   [top-decl-top-term-wt-type]
     type    = TopDeclTopTerm
     flag08  = 8.8
-    array08 = name81 name82 name83
+    array08 = 'name81 name82 name83'
   []
 
 []
@@ -1153,7 +1153,7 @@ TEST(HITInterpreter, hit_syntax)
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(146, interpreter.node_count());
+    ASSERT_EQ(162, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(1, document.child_count());
     ASSERT_EQ(1, interpreter.child_count(document.node_index()));
@@ -1177,9 +1177,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/sub-decl-sub-term-no-type/array01
 /TopLevelBlock/sub-decl-sub-term-no-type/array01/decl (array01)
 /TopLevelBlock/sub-decl-sub-term-no-type/array01/= (=)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/' (')
 /TopLevelBlock/sub-decl-sub-term-no-type/array01/value (name11)
-/TopLevelBlock/sub-decl-sub-term-no-type/string (name12)
-/TopLevelBlock/sub-decl-sub-term-no-type/string (name13)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/value (name12)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/value (name13)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/' (')
 /TopLevelBlock/sub-decl-sub-term-no-type/term ([../])
 /TopLevelBlock/sub-decl-top-term-no-type
 /TopLevelBlock/sub-decl-top-term-no-type/[ ([)
@@ -1193,9 +1195,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/sub-decl-top-term-no-type/array02
 /TopLevelBlock/sub-decl-top-term-no-type/array02/decl (array02)
 /TopLevelBlock/sub-decl-top-term-no-type/array02/= (=)
+/TopLevelBlock/sub-decl-top-term-no-type/array02/' (')
 /TopLevelBlock/sub-decl-top-term-no-type/array02/value (name21)
-/TopLevelBlock/sub-decl-top-term-no-type/string (name22)
-/TopLevelBlock/sub-decl-top-term-no-type/string (name23)
+/TopLevelBlock/sub-decl-top-term-no-type/array02/value (name22)
+/TopLevelBlock/sub-decl-top-term-no-type/array02/value (name23)
+/TopLevelBlock/sub-decl-top-term-no-type/array02/' (')
 /TopLevelBlock/sub-decl-top-term-no-type/term ([])
 /TopLevelBlock/top-decl-sub-term-no-type
 /TopLevelBlock/top-decl-sub-term-no-type/[ ([)
@@ -1208,9 +1212,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/top-decl-sub-term-no-type/array03
 /TopLevelBlock/top-decl-sub-term-no-type/array03/decl (array03)
 /TopLevelBlock/top-decl-sub-term-no-type/array03/= (=)
+/TopLevelBlock/top-decl-sub-term-no-type/array03/' (')
 /TopLevelBlock/top-decl-sub-term-no-type/array03/value (name31)
-/TopLevelBlock/top-decl-sub-term-no-type/string (name32)
-/TopLevelBlock/top-decl-sub-term-no-type/string (name33)
+/TopLevelBlock/top-decl-sub-term-no-type/array03/value (name32)
+/TopLevelBlock/top-decl-sub-term-no-type/array03/value (name33)
+/TopLevelBlock/top-decl-sub-term-no-type/array03/' (')
 /TopLevelBlock/top-decl-sub-term-no-type/term ([../])
 /TopLevelBlock/top-decl-top-term-no-type
 /TopLevelBlock/top-decl-top-term-no-type/[ ([)
@@ -1223,9 +1229,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/top-decl-top-term-no-type/array04
 /TopLevelBlock/top-decl-top-term-no-type/array04/decl (array04)
 /TopLevelBlock/top-decl-top-term-no-type/array04/= (=)
+/TopLevelBlock/top-decl-top-term-no-type/array04/' (')
 /TopLevelBlock/top-decl-top-term-no-type/array04/value (name41)
-/TopLevelBlock/top-decl-top-term-no-type/string (name42)
-/TopLevelBlock/top-decl-top-term-no-type/string (name43)
+/TopLevelBlock/top-decl-top-term-no-type/array04/value (name42)
+/TopLevelBlock/top-decl-top-term-no-type/array04/value (name43)
+/TopLevelBlock/top-decl-top-term-no-type/array04/' (')
 /TopLevelBlock/top-decl-top-term-no-type/term ([])
 /TopLevelBlock/SubDeclSubTerm_type
 /TopLevelBlock/SubDeclSubTerm_type/[ ([)
@@ -1243,9 +1251,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/SubDeclSubTerm_type/array05
 /TopLevelBlock/SubDeclSubTerm_type/array05/decl (array05)
 /TopLevelBlock/SubDeclSubTerm_type/array05/= (=)
+/TopLevelBlock/SubDeclSubTerm_type/array05/' (')
 /TopLevelBlock/SubDeclSubTerm_type/array05/value (name51)
-/TopLevelBlock/SubDeclSubTerm_type/string (name42)
-/TopLevelBlock/SubDeclSubTerm_type/string (name53)
+/TopLevelBlock/SubDeclSubTerm_type/array05/value (name42)
+/TopLevelBlock/SubDeclSubTerm_type/array05/value (name53)
+/TopLevelBlock/SubDeclSubTerm_type/array05/' (')
 /TopLevelBlock/SubDeclSubTerm_type/term ([../])
 /TopLevelBlock/SubDeclTopTerm_type
 /TopLevelBlock/SubDeclTopTerm_type/[ ([)
@@ -1263,9 +1273,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/SubDeclTopTerm_type/array06
 /TopLevelBlock/SubDeclTopTerm_type/array06/decl (array06)
 /TopLevelBlock/SubDeclTopTerm_type/array06/= (=)
+/TopLevelBlock/SubDeclTopTerm_type/array06/' (')
 /TopLevelBlock/SubDeclTopTerm_type/array06/value (name61)
-/TopLevelBlock/SubDeclTopTerm_type/string (name62)
-/TopLevelBlock/SubDeclTopTerm_type/string (name63)
+/TopLevelBlock/SubDeclTopTerm_type/array06/value (name62)
+/TopLevelBlock/SubDeclTopTerm_type/array06/value (name63)
+/TopLevelBlock/SubDeclTopTerm_type/array06/' (')
 /TopLevelBlock/SubDeclTopTerm_type/term ([])
 /TopLevelBlock/TopDeclSubTerm_type
 /TopLevelBlock/TopDeclSubTerm_type/[ ([)
@@ -1282,9 +1294,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/TopDeclSubTerm_type/array07
 /TopLevelBlock/TopDeclSubTerm_type/array07/decl (array07)
 /TopLevelBlock/TopDeclSubTerm_type/array07/= (=)
+/TopLevelBlock/TopDeclSubTerm_type/array07/' (')
 /TopLevelBlock/TopDeclSubTerm_type/array07/value (name71)
-/TopLevelBlock/TopDeclSubTerm_type/string (name72)
-/TopLevelBlock/TopDeclSubTerm_type/string (name73)
+/TopLevelBlock/TopDeclSubTerm_type/array07/value (name72)
+/TopLevelBlock/TopDeclSubTerm_type/array07/value (name73)
+/TopLevelBlock/TopDeclSubTerm_type/array07/' (')
 /TopLevelBlock/TopDeclSubTerm_type/term ([../])
 /TopLevelBlock/TopDeclTopTerm_type
 /TopLevelBlock/TopDeclTopTerm_type/[ ([)
@@ -1301,9 +1315,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/TopDeclTopTerm_type/array08
 /TopLevelBlock/TopDeclTopTerm_type/array08/decl (array08)
 /TopLevelBlock/TopDeclTopTerm_type/array08/= (=)
+/TopLevelBlock/TopDeclTopTerm_type/array08/' (')
 /TopLevelBlock/TopDeclTopTerm_type/array08/value (name81)
-/TopLevelBlock/TopDeclTopTerm_type/string (name82)
-/TopLevelBlock/TopDeclTopTerm_type/string (name83)
+/TopLevelBlock/TopDeclTopTerm_type/array08/value (name82)
+/TopLevelBlock/TopDeclTopTerm_type/array08/value (name83)
+/TopLevelBlock/TopDeclTopTerm_type/array08/' (')
 /TopLevelBlock/TopDeclTopTerm_type/term ([])
 /TopLevelBlock/term ([])
 )INPUT";
@@ -1423,7 +1439,7 @@ array01 = 'd2F1:=D[F1,eta1,eta1] d2F2:=D[F2,eta1,eta1]'
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(84, interpreter.node_count());
+    ASSERT_EQ(51, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(2, document.child_count());
     ASSERT_EQ(2, interpreter.child_count(document.node_index()));
@@ -1435,14 +1451,8 @@ array01 = 'd2F1:=D[F1,eta1,eta1] d2F2:=D[F2,eta1,eta1]'
 /array01/decl (array01)
 /array01/= (=)
 /array01/' (')
-/array01/value
-/array01/value/decl (d2F1:)
-/array01/value/= (=)
-/array01/value/value (D[F1,eta1,eta1])
-/array01/value
-/array01/value/decl (d2F2:)
-/array01/value/= (=)
-/array01/value/value (D[F2,eta1,eta1])
+/array01/value (d2F1:=D[F1,eta1,eta1])
+/array01/value (d2F2:=D[F2,eta1,eta1])
 /array01/' (')
 /BlockContainer
 /BlockContainer/[ ([)
@@ -1461,10 +1471,7 @@ array01 = 'd2F1:=D[F1,eta1,eta1] d2F2:=D[F2,eta1,eta1]'
 /BlockContainer/array02/; (;)
 /BlockContainer/array02/value (123)
 /BlockContainer/array02/; (;)
-/BlockContainer/array02/value
-/BlockContainer/array02/value/decl (abc:)
-/BlockContainer/array02/value/= (=)
-/BlockContainer/array02/value/value (t[e_x]t)
+/BlockContainer/array02/value (abc:=t[e_x]t)
 /BlockContainer/array02/; (;)
 /BlockContainer/array02/; (;)
 /BlockContainer/array02/value (-02.85)
@@ -1474,44 +1481,20 @@ array01 = 'd2F1:=D[F1,eta1,eta1] d2F2:=D[F2,eta1,eta1]'
 /BlockContainer/array03/decl (array03)
 /BlockContainer/array03/= (=)
 /BlockContainer/array03/' (')
-/BlockContainer/array03/value
-/BlockContainer/array03/value/decl (path/to/real)
-/BlockContainer/array03/value/= (=)
-/BlockContainer/array03/value/value (1.01)
+/BlockContainer/array03/value (path/to/real=1.01)
 /BlockContainer/array03/; (;)
-/BlockContainer/array03/value
-/BlockContainer/array03/value/decl (path/to/int)
-/BlockContainer/array03/value/= (=)
-/BlockContainer/array03/value/value (10)
+/BlockContainer/array03/value (path/to/int=10)
 /BlockContainer/array03/; (;)
-/BlockContainer/array03/value
-/BlockContainer/array03/value/decl (path/to/string)
-/BlockContainer/array03/value/= (=)
-/BlockContainer/array03/value/value (one)
+/BlockContainer/array03/value (path/to/string=one)
 /BlockContainer/array03/; (;)
-/BlockContainer/array03/value
-/BlockContainer/array03/value/decl (path/to/blank)
-/BlockContainer/array03/value/= (=)
-/BlockContainer/array03/value/value ("")
-/BlockContainer/array03/value
-/BlockContainer/array03/value/decl (path/to/real)
-/BlockContainer/array03/value/= (=)
-/BlockContainer/array03/value/value (2.02)
+/BlockContainer/array03/value (path/to/blank="")
+/BlockContainer/array03/value (path/to/real=2.02)
 /BlockContainer/array03/; (;)
-/BlockContainer/array03/value
-/BlockContainer/array03/value/decl (path/to/int)
-/BlockContainer/array03/value/= (=)
-/BlockContainer/array03/value/value (20)
+/BlockContainer/array03/value (path/to/int=20)
 /BlockContainer/array03/; (;)
-/BlockContainer/array03/value
-/BlockContainer/array03/value/decl (path/to/string)
-/BlockContainer/array03/value/= (=)
-/BlockContainer/array03/value/value (two)
+/BlockContainer/array03/value (path/to/string=two)
 /BlockContainer/array03/; (;)
-/BlockContainer/array03/value
-/BlockContainer/array03/value/decl (path/to/blank)
-/BlockContainer/array03/value/= (=)
-/BlockContainer/array03/value/value ("")
+/BlockContainer/array03/value (path/to/blank="")
 /BlockContainer/array03/' (')
 /BlockContainer/term ([])
 )INPUT";
@@ -1738,7 +1721,7 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(102, interpreter.node_count());
+    ASSERT_EQ(90, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(1, document.child_count());
     ASSERT_EQ(1, interpreter.child_count(document.node_index()));
@@ -1769,10 +1752,7 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
 /SlashesInValues/DirAndFile_type/parameter
 /SlashesInValues/DirAndFile_type/parameter/decl (parameter)
 /SlashesInValues/DirAndFile_type/parameter/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value
-/SlashesInValues/DirAndFile_type/parameter/value/decl (path/to/a/param01)
-/SlashesInValues/DirAndFile_type/parameter/value/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value/value (one)
+/SlashesInValues/DirAndFile_type/parameter/value (path/to/a/param01=one)
 /SlashesInValues/DirAndFile_type/term ([])
 /SlashesInValues/DirAndFile_type
 /SlashesInValues/DirAndFile_type/[ ([)
@@ -1793,10 +1773,7 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
 /SlashesInValues/DirAndFile_type/parameter
 /SlashesInValues/DirAndFile_type/parameter/decl (parameter)
 /SlashesInValues/DirAndFile_type/parameter/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value
-/SlashesInValues/DirAndFile_type/parameter/value/decl (path/to/a/param02/)
-/SlashesInValues/DirAndFile_type/parameter/value/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value/value ("two")
+/SlashesInValues/DirAndFile_type/parameter/value (path/to/a/param02/="two")
 /SlashesInValues/DirAndFile_type/term ([])
 /SlashesInValues/DirAndFile_type
 /SlashesInValues/DirAndFile_type/[ ([)
@@ -1817,10 +1794,7 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
 /SlashesInValues/DirAndFile_type/parameter
 /SlashesInValues/DirAndFile_type/parameter/decl (parameter)
 /SlashesInValues/DirAndFile_type/parameter/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value
-/SlashesInValues/DirAndFile_type/parameter/value/decl (/path/to/a/param03)
-/SlashesInValues/DirAndFile_type/parameter/value/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value/value (3.3)
+/SlashesInValues/DirAndFile_type/parameter/value (/path/to/a/param03=3.3)
 /SlashesInValues/DirAndFile_type/term ([])
 /SlashesInValues/DirAndFile_type
 /SlashesInValues/DirAndFile_type/[ ([)
@@ -1841,10 +1815,7 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
 /SlashesInValues/DirAndFile_type/parameter
 /SlashesInValues/DirAndFile_type/parameter/decl (parameter)
 /SlashesInValues/DirAndFile_type/parameter/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value
-/SlashesInValues/DirAndFile_type/parameter/value/decl (/path/to/a/param04/)
-/SlashesInValues/DirAndFile_type/parameter/value/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value/value (444)
+/SlashesInValues/DirAndFile_type/parameter/value (/path/to/a/param04/=444)
 /SlashesInValues/DirAndFile_type/term ([])
 /SlashesInValues/term ([])
 )INPUT";
@@ -2096,11 +2067,11 @@ TEST(HITInterpreter, keyed_keyed_values)
     std::stringstream input;
     input << R"INPUT(
 
-param_outer_01 = path/to/param/inner/01 = "one"
+param_outer_01 = path/to/param/inner/01="one"
 
 [//path/to///object/]
 
-  param_outer_02 = ///path/to///param/inner/02// = 2.2
+  param_outer_02=///path/to///param/inner/02//=2.2
 
 []
 
@@ -2108,7 +2079,7 @@ param_outer_01 = path/to/param/inner/01 = "one"
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(22, interpreter.node_count());
+    ASSERT_EQ(16, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(2, document.child_count());
     ASSERT_EQ(2, interpreter.child_count(document.node_index()));
@@ -2119,10 +2090,7 @@ param_outer_01 = path/to/param/inner/01 = "one"
 /param_outer_01
 /param_outer_01/decl (param_outer_01)
 /param_outer_01/= (=)
-/param_outer_01/value
-/param_outer_01/value/decl (path/to/param/inner/01)
-/param_outer_01/value/= (=)
-/param_outer_01/value/value ("one")
+/param_outer_01/value (path/to/param/inner/01="one")
 /path
 /path/to
 /path/to/object
@@ -2132,10 +2100,7 @@ param_outer_01 = path/to/param/inner/01 = "one"
 /path/to/object/param_outer_02
 /path/to/object/param_outer_02/decl (param_outer_02)
 /path/to/object/param_outer_02/= (=)
-/path/to/object/param_outer_02/value
-/path/to/object/param_outer_02/value/decl (///path/to///param/inner/02//)
-/path/to/object/param_outer_02/value/= (=)
-/path/to/object/param_outer_02/value/value (2.2)
+/path/to/object/param_outer_02/value (///path/to///param/inner/02//=2.2)
 /path/to/object/term ([])
 )INPUT";
 
@@ -2152,11 +2117,11 @@ TEST(HITInterpreter, keyed_keyed_arrays)
     std::stringstream input;
     input << R"INPUT(
 
-array_outer_01 = path/to/array/inner/01 = '"eleven" "twelve" "thirteen"'
+array_outer_01 = path/to/array/inner/01='"eleven";"twelve";"thirteen"'
 
 [//path/to///object/]
 
-  array_outer_02 = ///path/to///array/inner/02// = '2.2 3.3 4.4'
+  array_outer_02 = ///path/to///array/inner/02//='2.2;3.3;4.4'
 
 []
 
@@ -2164,7 +2129,7 @@ array_outer_01 = path/to/array/inner/01 = '"eleven" "twelve" "thirteen"'
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(30, interpreter.node_count());
+    ASSERT_EQ(16, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(2, document.child_count());
     ASSERT_EQ(2, interpreter.child_count(document.node_index()));
@@ -2175,14 +2140,7 @@ array_outer_01 = path/to/array/inner/01 = '"eleven" "twelve" "thirteen"'
 /array_outer_01
 /array_outer_01/decl (array_outer_01)
 /array_outer_01/= (=)
-/array_outer_01/value
-/array_outer_01/value/decl (path/to/array/inner/01)
-/array_outer_01/value/= (=)
-/array_outer_01/value/' (')
-/array_outer_01/value/value ("eleven")
-/array_outer_01/value/value ("twelve")
-/array_outer_01/value/value ("thirteen")
-/array_outer_01/value/' (')
+/array_outer_01/value (path/to/array/inner/01='"eleven";"twelve";"thirteen"')
 /path
 /path/to
 /path/to/object
@@ -2192,14 +2150,7 @@ array_outer_01 = path/to/array/inner/01 = '"eleven" "twelve" "thirteen"'
 /path/to/object/array_outer_02
 /path/to/object/array_outer_02/decl (array_outer_02)
 /path/to/object/array_outer_02/= (=)
-/path/to/object/array_outer_02/value
-/path/to/object/array_outer_02/value/decl (///path/to///array/inner/02//)
-/path/to/object/array_outer_02/value/= (=)
-/path/to/object/array_outer_02/value/' (')
-/path/to/object/array_outer_02/value/value (2.2)
-/path/to/object/array_outer_02/value/value (3.3)
-/path/to/object/array_outer_02/value/value (4.4)
-/path/to/object/array_outer_02/value/' (')
+/path/to/object/array_outer_02/value (///path/to///array/inner/02//='2.2;3.3;4.4')
 /path/to/object/term ([])
 )INPUT";
 
@@ -2216,11 +2167,11 @@ TEST(HITInterpreter, shorthand_path_naming_keyed_keyed_values)
     std::stringstream input;
     input << R"INPUT(
 
-path/to/param/outer/01 = path/to/param/inner/01 = "one"
+path/to/param/outer/01 = path/to/param/inner/01="one"
 
 [//path/to///object/]
 
-  ///path/to///param/outer/02// = ///path/to///param/inner/02// = 2.2
+  ///path/to///param/outer/02// = ///path/to///param/inner/02//=2.2
 
 []
 
@@ -2228,7 +2179,7 @@ path/to/param/outer/01 = path/to/param/inner/01 = "one"
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(30, interpreter.node_count());
+    ASSERT_EQ(24, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(2, document.child_count());
     ASSERT_EQ(2, interpreter.child_count(document.node_index()));
@@ -2243,10 +2194,7 @@ path/to/param/outer/01 = path/to/param/inner/01 = "one"
 /path/to/param/outer/01
 /path/to/param/outer/01/decl (path/to/param/outer/01)
 /path/to/param/outer/01/= (=)
-/path/to/param/outer/01/value
-/path/to/param/outer/01/value/decl (path/to/param/inner/01)
-/path/to/param/outer/01/value/= (=)
-/path/to/param/outer/01/value/value ("one")
+/path/to/param/outer/01/value (path/to/param/inner/01="one")
 /path
 /path/to
 /path/to/object
@@ -2260,10 +2208,7 @@ path/to/param/outer/01 = path/to/param/inner/01 = "one"
 /path/to/object/path/to/param/outer/02
 /path/to/object/path/to/param/outer/02/decl (///path/to///param/outer/02//)
 /path/to/object/path/to/param/outer/02/= (=)
-/path/to/object/path/to/param/outer/02/value
-/path/to/object/path/to/param/outer/02/value/decl (///path/to///param/inner/02//)
-/path/to/object/path/to/param/outer/02/value/= (=)
-/path/to/object/path/to/param/outer/02/value/value (2.2)
+/path/to/object/path/to/param/outer/02/value (///path/to///param/inner/02//=2.2)
 /path/to/object/term ([])
 )INPUT";
 
@@ -2280,11 +2225,11 @@ TEST(HITInterpreter, shorthand_path_naming_keyed_keyed_arrays)
     std::stringstream input;
     input << R"INPUT(
 
-path/to/array/outer/01 = path/to/array/inner/01 = '"eleven" "twelve" "thirteen"'
+path/to/array/outer/01 = path/to/array/inner/01='"eleven";"twelve";"thirteen"'
 
 [//path/to///object/]
 
-  ///path/to///array/outer/02// = ///path/to///array/inner/02// = '2.2 3.3 4.4'
+  ///path/to///array/outer/02// = ///path/to///array/inner/02//='2.2;3.3;4.4'
 
 []
 
@@ -2292,7 +2237,7 @@ path/to/array/outer/01 = path/to/array/inner/01 = '"eleven" "twelve" "thirteen"'
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(38, interpreter.node_count());
+    ASSERT_EQ(24, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(2, document.child_count());
     ASSERT_EQ(2, interpreter.child_count(document.node_index()));
@@ -2307,14 +2252,7 @@ path/to/array/outer/01 = path/to/array/inner/01 = '"eleven" "twelve" "thirteen"'
 /path/to/array/outer/01
 /path/to/array/outer/01/decl (path/to/array/outer/01)
 /path/to/array/outer/01/= (=)
-/path/to/array/outer/01/value
-/path/to/array/outer/01/value/decl (path/to/array/inner/01)
-/path/to/array/outer/01/value/= (=)
-/path/to/array/outer/01/value/' (')
-/path/to/array/outer/01/value/value ("eleven")
-/path/to/array/outer/01/value/value ("twelve")
-/path/to/array/outer/01/value/value ("thirteen")
-/path/to/array/outer/01/value/' (')
+/path/to/array/outer/01/value (path/to/array/inner/01='"eleven";"twelve";"thirteen"')
 /path
 /path/to
 /path/to/object
@@ -2328,14 +2266,7 @@ path/to/array/outer/01 = path/to/array/inner/01 = '"eleven" "twelve" "thirteen"'
 /path/to/object/path/to/array/outer/02
 /path/to/object/path/to/array/outer/02/decl (///path/to///array/outer/02//)
 /path/to/object/path/to/array/outer/02/= (=)
-/path/to/object/path/to/array/outer/02/value
-/path/to/object/path/to/array/outer/02/value/decl (///path/to///array/inner/02//)
-/path/to/object/path/to/array/outer/02/value/= (=)
-/path/to/object/path/to/array/outer/02/value/' (')
-/path/to/object/path/to/array/outer/02/value/value (2.2)
-/path/to/object/path/to/array/outer/02/value/value (3.3)
-/path/to/object/path/to/array/outer/02/value/value (4.4)
-/path/to/object/path/to/array/outer/02/value/' (')
+/path/to/object/path/to/array/outer/02/value (///path/to///array/inner/02//='2.2;3.3;4.4')
 /path/to/object/term ([])
 )INPUT";
 
@@ -2360,11 +2291,11 @@ array_outer_01 = 'param_inner_01 = 100 param_inner_02 = 200 param_inner_03 = 300
 
 []
 
-///path//to/array/outer/03 = array_outer_01 = 'param_inner_01 = 100 param_inner_02 = 200 param_inner_03 = 300'
+///path//to/array/outer/03 = array_outer_01='param_inner_01=100;param_inner_02=200;param_inner_03=300'
 
 [//path/to///object/]
 
-  path/to/array/outer//04 = path/to/array//outer/02/ = 'param/inner/01 = 100 param/inner/02 = 200 param/inner/03 = 300'
+  path/to/array/outer//04 = path/to/array//outer/02/='param/inner/01=100;param/inner/02=200;param/inner/03=300'
 
 []
 
@@ -2372,7 +2303,7 @@ array_outer_01 = 'param_inner_01 = 100 param_inner_02 = 200 param_inner_03 = 300
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(101, interpreter.node_count());
+    ASSERT_EQ(63, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(4, document.child_count());
     ASSERT_EQ(4, interpreter.child_count(document.node_index()));
@@ -2384,18 +2315,15 @@ array_outer_01 = 'param_inner_01 = 100 param_inner_02 = 200 param_inner_03 = 300
 /array_outer_01/decl (array_outer_01)
 /array_outer_01/= (=)
 /array_outer_01/' (')
-/array_outer_01/value
-/array_outer_01/value/decl (param_inner_01)
-/array_outer_01/value/= (=)
-/array_outer_01/value/value (100)
-/array_outer_01/value
-/array_outer_01/value/decl (param_inner_02)
-/array_outer_01/value/= (=)
-/array_outer_01/value/value (200)
-/array_outer_01/value
-/array_outer_01/value/decl (param_inner_03)
-/array_outer_01/value/= (=)
-/array_outer_01/value/value (300)
+/array_outer_01/value (param_inner_01)
+/array_outer_01/value (=)
+/array_outer_01/value (100)
+/array_outer_01/value (param_inner_02)
+/array_outer_01/value (=)
+/array_outer_01/value (200)
+/array_outer_01/value (param_inner_03)
+/array_outer_01/value (=)
+/array_outer_01/value (300)
 /array_outer_01/' (')
 /path
 /path/to
@@ -2411,18 +2339,15 @@ array_outer_01 = 'param_inner_01 = 100 param_inner_02 = 200 param_inner_03 = 300
 /path/to/object/path/to/array/outer/02/decl (path/to/array//outer/02/)
 /path/to/object/path/to/array/outer/02/= (=)
 /path/to/object/path/to/array/outer/02/' (')
-/path/to/object/path/to/array/outer/02/value
-/path/to/object/path/to/array/outer/02/value/decl (param/inner/01)
-/path/to/object/path/to/array/outer/02/value/= (=)
-/path/to/object/path/to/array/outer/02/value/value (100)
-/path/to/object/path/to/array/outer/02/value
-/path/to/object/path/to/array/outer/02/value/decl (param/inner/02)
-/path/to/object/path/to/array/outer/02/value/= (=)
-/path/to/object/path/to/array/outer/02/value/value (200)
-/path/to/object/path/to/array/outer/02/value
-/path/to/object/path/to/array/outer/02/value/decl (param/inner/03)
-/path/to/object/path/to/array/outer/02/value/= (=)
-/path/to/object/path/to/array/outer/02/value/value (300)
+/path/to/object/path/to/array/outer/02/value (param/inner/01)
+/path/to/object/path/to/array/outer/02/value (=)
+/path/to/object/path/to/array/outer/02/value (100)
+/path/to/object/path/to/array/outer/02/value (param/inner/02)
+/path/to/object/path/to/array/outer/02/value (=)
+/path/to/object/path/to/array/outer/02/value (200)
+/path/to/object/path/to/array/outer/02/value (param/inner/03)
+/path/to/object/path/to/array/outer/02/value (=)
+/path/to/object/path/to/array/outer/02/value (300)
 /path/to/object/path/to/array/outer/02/' (')
 /path/to/object/term ([])
 /path
@@ -2432,23 +2357,7 @@ array_outer_01 = 'param_inner_01 = 100 param_inner_02 = 200 param_inner_03 = 300
 /path/to/array/outer/03
 /path/to/array/outer/03/decl (///path//to/array/outer/03)
 /path/to/array/outer/03/= (=)
-/path/to/array/outer/03/value
-/path/to/array/outer/03/value/decl (array_outer_01)
-/path/to/array/outer/03/value/= (=)
-/path/to/array/outer/03/value/' (')
-/path/to/array/outer/03/value/value
-/path/to/array/outer/03/value/value/decl (param_inner_01)
-/path/to/array/outer/03/value/value/= (=)
-/path/to/array/outer/03/value/value/value (100)
-/path/to/array/outer/03/value/value
-/path/to/array/outer/03/value/value/decl (param_inner_02)
-/path/to/array/outer/03/value/value/= (=)
-/path/to/array/outer/03/value/value/value (200)
-/path/to/array/outer/03/value/value
-/path/to/array/outer/03/value/value/decl (param_inner_03)
-/path/to/array/outer/03/value/value/= (=)
-/path/to/array/outer/03/value/value/value (300)
-/path/to/array/outer/03/value/' (')
+/path/to/array/outer/03/value (array_outer_01='param_inner_01=100;param_inner_02=200;param_inner_03=300')
 /path
 /path/to
 /path/to/object
@@ -2462,23 +2371,7 @@ array_outer_01 = 'param_inner_01 = 100 param_inner_02 = 200 param_inner_03 = 300
 /path/to/object/path/to/array/outer/04
 /path/to/object/path/to/array/outer/04/decl (path/to/array/outer//04)
 /path/to/object/path/to/array/outer/04/= (=)
-/path/to/object/path/to/array/outer/04/value
-/path/to/object/path/to/array/outer/04/value/decl (path/to/array//outer/02/)
-/path/to/object/path/to/array/outer/04/value/= (=)
-/path/to/object/path/to/array/outer/04/value/' (')
-/path/to/object/path/to/array/outer/04/value/value
-/path/to/object/path/to/array/outer/04/value/value/decl (param/inner/01)
-/path/to/object/path/to/array/outer/04/value/value/= (=)
-/path/to/object/path/to/array/outer/04/value/value/value (100)
-/path/to/object/path/to/array/outer/04/value/value
-/path/to/object/path/to/array/outer/04/value/value/decl (param/inner/02)
-/path/to/object/path/to/array/outer/04/value/value/= (=)
-/path/to/object/path/to/array/outer/04/value/value/value (200)
-/path/to/object/path/to/array/outer/04/value/value
-/path/to/object/path/to/array/outer/04/value/value/decl (param/inner/03)
-/path/to/object/path/to/array/outer/04/value/value/= (=)
-/path/to/object/path/to/array/outer/04/value/value/value (300)
-/path/to/object/path/to/array/outer/04/value/' (')
+/path/to/object/path/to/array/outer/04/value (path/to/array//outer/02/='param/inner/01=100;param/inner/02=200;param/inner/03=300')
 /path/to/object/term ([])
 )INPUT";
 
@@ -2669,7 +2562,7 @@ TEST(HITInterpreter, object_name_with_invalid_pound)
     ASSERT_FALSE(interpreter.parse(input));
 
     std::stringstream expect_errors;
-    expect_errors << "stream input:2.8-12: syntax error, unexpected string, expecting ]"
+    expect_errors << "stream input:2.8-12: syntax error, unexpected object name, expecting ]"
                   << std::endl;
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
@@ -2690,7 +2583,7 @@ TEST(HITInterpreter, object_name_with_invalid_equals)
     ASSERT_FALSE(interpreter.parse(input));
 
     std::stringstream expect_errors;
-    expect_errors << "stream input:2.8-12: syntax error, unexpected string, expecting ]"
+    expect_errors << "stream input:2.8-12: syntax error, unexpected object name, expecting ]"
                   << std::endl;
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
@@ -2711,7 +2604,7 @@ TEST(HITInterpreter, object_name_with_invalid_ampersand)
     ASSERT_FALSE(interpreter.parse(input));
 
     std::stringstream expect_errors;
-    expect_errors << "stream input:2.8-12: syntax error, unexpected string, expecting ]"
+    expect_errors << "stream input:2.8-12: syntax error, unexpected object name, expecting ]"
                   << std::endl;
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
@@ -2753,7 +2646,7 @@ TEST(HITInterpreter, invalid_object_terminator)
     ASSERT_FALSE(interpreter.parse(input));
 
     std::stringstream expect_errors;
-    expect_errors << "stream input:2.17: syntax error, unexpected ], expecting integer or string"
+    expect_errors << "stream input:2.17: syntax error, unexpected ], expecting integer or object name"
                   << std::endl;
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
