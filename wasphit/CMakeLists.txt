@@ -48,7 +48,10 @@ TRIBITS_ADD_LIBRARY(wasphit
 #
 # Add binary directory with HITConfig.h to includes for wasphit target
 #
-target_include_directories(wasphit PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(wasphit PUBLIC 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>  
+    $<INSTALL_INTERFACE:include/wasphit>
+)
 
 #
 # Add test directory
