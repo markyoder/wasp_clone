@@ -319,22 +319,24 @@ namespace wasp {
         S_integer = 37,                          // integer
         S_real = 38,                             // real
         S_unquoted_string = 39,                  // unquoted_string
-        S_VALUE = 40,                            // VALUE
-        S_value = 41,                            // value
-        S_SECTION_NAME = 42,                     // SECTION_NAME
-        S_section_name = 43,                     // section_name
-        S_field_name = 44,                       // field_name
-        S_quote = 45,                            // quote
-        S_string = 46,                           // string
-        S_primitive = 47,                        // primitive
-        S_path = 48,                             // path
-        S_include_file = 49,                     // include_file
-        S_array_member = 50,                     // array_member
-        S_array_members = 51,                    // array_members
-        S_array = 52,                            // array
-        S_keyedvalue = 53,                       // keyedvalue
-        S_comment = 54,                          // comment
-        S_start = 55                             // start
+        S_double_quoted_string = 40,             // double_quoted_string
+        S_double_quoted_strings = 41,            // double_quoted_strings
+        S_VALUE = 42,                            // VALUE
+        S_value = 43,                            // value
+        S_SECTION_NAME = 44,                     // SECTION_NAME
+        S_section_name = 45,                     // section_name
+        S_field_name = 46,                       // field_name
+        S_quote = 47,                            // quote
+        S_string = 48,                           // string
+        S_primitive = 49,                        // primitive
+        S_path = 50,                             // path
+        S_include_file = 51,                     // include_file
+        S_array_member = 52,                     // array_member
+        S_array_members = 53,                    // array_members
+        S_array = 54,                            // array
+        S_keyedvalue = 55,                       // keyedvalue
+        S_comment = 56,                          // comment
+        S_start = 57                             // start
       };
     };
 
@@ -842,8 +844,8 @@ namespace wasp {
     /// Constants.
     enum
     {
-      yylast_ = 57,     ///< Last index in yytable_.
-      yynnts_ = 31,  ///< Number of nonterminal symbols.
+      yylast_ = 52,     ///< Last index in yytable_.
+      yynnts_ = 33,  ///< Number of nonterminal symbols.
       yyfinal_ = 2 ///< Termination state number.
     };
 
@@ -858,7 +860,7 @@ namespace wasp {
 
 #line 36 "HIT.bison"
 } // wasp
-#line 862 "HITParser.hpp"
+#line 864 "HITParser.hpp"
 
 
 

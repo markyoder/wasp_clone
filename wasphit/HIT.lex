@@ -50,7 +50,7 @@ INTEGER [0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INTEGER}
 REAL {INTEGER}?\.{INTEGER}{EXPONENT}?|{INTEGER}\.({INTEGER}{EXPONENT}?)?|{INTEGER}\.?[eE]\-{INTEGER}
 
-DOUBLE_QUOTED_STRING \"([^\"\n])*\"
+DOUBLE_QUOTED_STRING \"([^\\\"]|\\\"|\\[^\"])*\"
 SINGLE_QUOTE '
 UNICODE [^\x00-\x7F]+
 COMMENT #([^\n]|{UNICODE})*
@@ -68,8 +68,8 @@ AND &&
 OR \|\|
 LBRACKET \[
 BRACE_EXPRSN_STRING \$\{[^\"\=]*\}
-NORMAL_VALUE_STRING [^ \'\n\t\r\[\]\#\&\;][^ \n\t\r\[\]\#\&]*
-NORMAL_ARRAY_STRING [^ \'\n\t\r\#\;]+
+NORMAL_VALUE_STRING [^ \'\"\n\t\r\[\]\#\&\;][^ \n\t\r\[\]\#\&]*
+NORMAL_ARRAY_STRING ([^ \"\n\;\\']|\\'|\\[^'])([^ \n\;\\']|\\'|\\[^'])*
 OBJCT_STRING [^" ""."\n\[\]][^" "\n\[\]\=\#\&]*
 PARAM_STRING [^ \'\"\=\n\t\r\[\]\#\&\;]+
 VALUE_STRING {BRACE_EXPRSN_STRING}|{NORMAL_VALUE_STRING}
@@ -170,6 +170,10 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
 }
 <assign>{DOUBLE_QUOTED_STRING} {
     yy_pop_state();
+    capture_token(yylval,wasp::QUOTED_STRING);
+    return token::QSTRING;
+}
+<INITIAL,object>{DOUBLE_QUOTED_STRING} {
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
 }

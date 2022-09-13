@@ -2686,3 +2686,92 @@ param_name=${raw 4
     document.paths(actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
+
+/**
+ * @brief Test HIT syntax - quote chaining scenarios
+ */
+TEST(HITInterpreter, quote_chaining_scenarios)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[quotes]
+    [singles]
+        field = ' "    mix1a mix1b "   "mix1c"    mix1d 1.2
+
+                  "mix\"1e "  mix1f "    mix1g" 34  "mix\'1h "
+                ' 'mix\'2a'
+                '"mix\3a"' '    '
+    []
+    [doubles]
+        field = " '    mix1a mix1b '   'mix1c'    mix1d 1.2
+
+                  'mix\'1e '  mix1f '    mix1g' 34  'mix\"1h '
+                " "mix\"2a"
+                "'mix\3a'" "    "
+    []
+[]
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(45, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(1, document.child_count());
+    ASSERT_EQ(1, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/quotes
+/quotes/[ ([)
+/quotes/decl (quotes)
+/quotes/] (])
+/quotes/singles
+/quotes/singles/[ ([)
+/quotes/singles/decl (singles)
+/quotes/singles/] (])
+/quotes/singles/field
+/quotes/singles/field/decl (field)
+/quotes/singles/field/= (=)
+/quotes/singles/field/' (')
+/quotes/singles/field/value ("    mix1a mix1b ")
+/quotes/singles/field/value ("mix1c")
+/quotes/singles/field/value (mix1d)
+/quotes/singles/field/value (1.2)
+/quotes/singles/field/value ("mix\"1e ")
+/quotes/singles/field/value (mix1f)
+/quotes/singles/field/value ("    mix1g")
+/quotes/singles/field/value (34)
+/quotes/singles/field/value ("mix\'1h ")
+/quotes/singles/field/' (')
+/quotes/singles/field/' (')
+/quotes/singles/field/value (mix\'2a)
+/quotes/singles/field/' (')
+/quotes/singles/field/' (')
+/quotes/singles/field/value ("mix\3a")
+/quotes/singles/field/' (')
+/quotes/singles/field/' (')
+/quotes/singles/field/' (')
+/quotes/singles/term ([])
+/quotes/doubles
+/quotes/doubles/[ ([)
+/quotes/doubles/decl (doubles)
+/quotes/doubles/] (])
+/quotes/doubles/field
+/quotes/doubles/field/decl (field)
+/quotes/doubles/field/= (=)
+/quotes/doubles/field/value (" '    mix1a mix1b '   'mix1c'    mix1d 1.2
+
+                  'mix\'1e '  mix1f '    mix1g' 34  'mix\"1h '
+                ")
+/quotes/doubles/field/value ("mix\"2a")
+/quotes/doubles/field/value ("'mix\3a'")
+/quotes/doubles/field/value ("    ")
+/quotes/doubles/term ([])
+/quotes/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}

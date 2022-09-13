@@ -98,17 +98,17 @@
 %type <node_index>  integer real string lbracket rbracket quote assign semicolon
 %type <node_index>  object_term section_name field_name
 %type <node_index>  object
-%type <node_index>  unquoted_string
+%type <node_index>  unquoted_string double_quoted_string
 %type <node_index>  keyedvalue dot_slash
 %type <node_index>  comment value primitive include include_file
 %type <node_index> object_member array_member path
-%type <node_indices> array_members array
+%type <node_indices> array_members array double_quoted_strings
 %type <node_indices> object_decl
 %type <object_children> object_members
 %token <token_index>    FILE              "file include"
  //%type <node_indices> last_object
 %destructor { delete $$; } object_decl
-%destructor { delete $$; } array_members array
+%destructor { delete $$; } array_members array double_quoted_strings
 %destructor { delete $$->second; delete $$; } object_members
 %{
 
@@ -409,7 +409,24 @@ unquoted_string : STRING
         $$ = interpreter.push_leaf(wasp::STRING,"string"
                          ,token_index);
     }
-VALUE : INTEGER | REAL | VALUE_STRING | ARRAY_STRING | QSTRING
+double_quoted_string : QSTRING
+    {
+        size_t token_index = ($1);
+        $$ = interpreter.push_leaf(wasp::VALUE, "value", token_index);
+    }
+double_quoted_strings : double_quoted_string
+    {
+        size_t qstring_index = ($1);
+        $$ = new std::vector<size_t>();
+        $$->push_back(qstring_index);
+    }
+    | double_quoted_strings double_quoted_string
+    {
+        size_t qstring_index = ($2);
+        $1->push_back(qstring_index);
+        $$ = $1;
+    }
+VALUE : INTEGER | REAL | VALUE_STRING | ARRAY_STRING
 value : VALUE
     {
         size_t token_index = ($1);
@@ -471,7 +488,7 @@ include_file : include path
             }
         }
 
-array_member : semicolon | value
+array_member : semicolon | value | double_quoted_string
 
 array_members : array_member
     {
@@ -496,13 +513,11 @@ array : quote array_members quote
         $$->push_back(($1));
         $$->push_back(($2));
     }
-    | array quote array_members quote
+    | array array
     {
         $$ = $1;
-        $$->push_back(($2));
-        $$->insert($$->end(), $3->begin(), $3->end());
-        $$->push_back(($4));
-        delete $3;
+        $$->insert($$->end(), $2->begin(), $2->end());
+        delete $2;
     }
 
 
@@ -513,6 +528,17 @@ keyedvalue : field_name assign value
         size_t value_index = ($3);
 
         std::vector<size_t> child_indices = {key_index, assign_index,value_index};
+
+        $$ = push_keyed_value_or_array(interpreter, child_indices);
+    }
+    | field_name assign double_quoted_strings
+    {
+        size_t key_index = ($1);
+        size_t assign_index = ($2);
+
+        std::vector<size_t> child_indices = {key_index, assign_index};
+        for( size_t child_i : *$double_quoted_strings ) child_indices.push_back(child_i);
+        delete $double_quoted_strings;
 
         $$ = push_keyed_value_or_array(interpreter, child_indices);
     }
