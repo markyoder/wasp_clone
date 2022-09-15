@@ -1106,46 +1106,46 @@ TEST(HITInterpreter, hit_syntax)
 
   [./sub-decl-sub-term-no-type]
     flag01  = 1.1
-    array01 = name11 name12 name13
+    array01 = 'name11 name12 name13'
   [../]
 
   [./sub-decl-top-term-no-type]
     flag02  = 2.2
-    array02 = name21 name22 name23
+    array02 = 'name21 name22 name23'
   []
 
   [top-decl-sub-term-no-type]
     flag03  = 3.3
-    array03 = name31 name32 name33
+    array03 = 'name31 name32 name33'
   [../]
 
   [top-decl-top-term-no-type]
     flag04  = 4.4
-    array04 = name41 name42 name43
+    array04 = 'name41 name42 name43'
   []
 
   [./sub-decl-sub-term-wt-type]
     type    = SubDeclSubTerm
     flag05  = 5.5
-    array05 = name51 name42 name53
+    array05 = 'name51 name42 name53'
   [../]
 
   [./sub-decl-top-term-wt-type]
     type    = SubDeclTopTerm
     flag06  = 6.6
-    array06 = name61 name62 name63
+    array06 = 'name61 name62 name63'
   []
 
   [top-decl-sub-term-wt-type]
     type    = TopDeclSubTerm
     flag07  = 7.7
-    array07 = name71 name72 name73
+    array07 = 'name71 name72 name73'
   [../]
 
   [top-decl-top-term-wt-type]
     type    = TopDeclTopTerm
     flag08  = 8.8
-    array08 = name81 name82 name83
+    array08 = 'name81 name82 name83'
   []
 
 []
@@ -1153,7 +1153,7 @@ TEST(HITInterpreter, hit_syntax)
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(146, interpreter.node_count());
+    ASSERT_EQ(162, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(1, document.child_count());
     ASSERT_EQ(1, interpreter.child_count(document.node_index()));
@@ -1177,9 +1177,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/sub-decl-sub-term-no-type/array01
 /TopLevelBlock/sub-decl-sub-term-no-type/array01/decl (array01)
 /TopLevelBlock/sub-decl-sub-term-no-type/array01/= (=)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/' (')
 /TopLevelBlock/sub-decl-sub-term-no-type/array01/value (name11)
-/TopLevelBlock/sub-decl-sub-term-no-type/string (name12)
-/TopLevelBlock/sub-decl-sub-term-no-type/string (name13)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/value (name12)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/value (name13)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/' (')
 /TopLevelBlock/sub-decl-sub-term-no-type/term ([../])
 /TopLevelBlock/sub-decl-top-term-no-type
 /TopLevelBlock/sub-decl-top-term-no-type/[ ([)
@@ -1193,9 +1195,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/sub-decl-top-term-no-type/array02
 /TopLevelBlock/sub-decl-top-term-no-type/array02/decl (array02)
 /TopLevelBlock/sub-decl-top-term-no-type/array02/= (=)
+/TopLevelBlock/sub-decl-top-term-no-type/array02/' (')
 /TopLevelBlock/sub-decl-top-term-no-type/array02/value (name21)
-/TopLevelBlock/sub-decl-top-term-no-type/string (name22)
-/TopLevelBlock/sub-decl-top-term-no-type/string (name23)
+/TopLevelBlock/sub-decl-top-term-no-type/array02/value (name22)
+/TopLevelBlock/sub-decl-top-term-no-type/array02/value (name23)
+/TopLevelBlock/sub-decl-top-term-no-type/array02/' (')
 /TopLevelBlock/sub-decl-top-term-no-type/term ([])
 /TopLevelBlock/top-decl-sub-term-no-type
 /TopLevelBlock/top-decl-sub-term-no-type/[ ([)
@@ -1208,9 +1212,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/top-decl-sub-term-no-type/array03
 /TopLevelBlock/top-decl-sub-term-no-type/array03/decl (array03)
 /TopLevelBlock/top-decl-sub-term-no-type/array03/= (=)
+/TopLevelBlock/top-decl-sub-term-no-type/array03/' (')
 /TopLevelBlock/top-decl-sub-term-no-type/array03/value (name31)
-/TopLevelBlock/top-decl-sub-term-no-type/string (name32)
-/TopLevelBlock/top-decl-sub-term-no-type/string (name33)
+/TopLevelBlock/top-decl-sub-term-no-type/array03/value (name32)
+/TopLevelBlock/top-decl-sub-term-no-type/array03/value (name33)
+/TopLevelBlock/top-decl-sub-term-no-type/array03/' (')
 /TopLevelBlock/top-decl-sub-term-no-type/term ([../])
 /TopLevelBlock/top-decl-top-term-no-type
 /TopLevelBlock/top-decl-top-term-no-type/[ ([)
@@ -1223,9 +1229,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/top-decl-top-term-no-type/array04
 /TopLevelBlock/top-decl-top-term-no-type/array04/decl (array04)
 /TopLevelBlock/top-decl-top-term-no-type/array04/= (=)
+/TopLevelBlock/top-decl-top-term-no-type/array04/' (')
 /TopLevelBlock/top-decl-top-term-no-type/array04/value (name41)
-/TopLevelBlock/top-decl-top-term-no-type/string (name42)
-/TopLevelBlock/top-decl-top-term-no-type/string (name43)
+/TopLevelBlock/top-decl-top-term-no-type/array04/value (name42)
+/TopLevelBlock/top-decl-top-term-no-type/array04/value (name43)
+/TopLevelBlock/top-decl-top-term-no-type/array04/' (')
 /TopLevelBlock/top-decl-top-term-no-type/term ([])
 /TopLevelBlock/SubDeclSubTerm_type
 /TopLevelBlock/SubDeclSubTerm_type/[ ([)
@@ -1243,9 +1251,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/SubDeclSubTerm_type/array05
 /TopLevelBlock/SubDeclSubTerm_type/array05/decl (array05)
 /TopLevelBlock/SubDeclSubTerm_type/array05/= (=)
+/TopLevelBlock/SubDeclSubTerm_type/array05/' (')
 /TopLevelBlock/SubDeclSubTerm_type/array05/value (name51)
-/TopLevelBlock/SubDeclSubTerm_type/string (name42)
-/TopLevelBlock/SubDeclSubTerm_type/string (name53)
+/TopLevelBlock/SubDeclSubTerm_type/array05/value (name42)
+/TopLevelBlock/SubDeclSubTerm_type/array05/value (name53)
+/TopLevelBlock/SubDeclSubTerm_type/array05/' (')
 /TopLevelBlock/SubDeclSubTerm_type/term ([../])
 /TopLevelBlock/SubDeclTopTerm_type
 /TopLevelBlock/SubDeclTopTerm_type/[ ([)
@@ -1263,9 +1273,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/SubDeclTopTerm_type/array06
 /TopLevelBlock/SubDeclTopTerm_type/array06/decl (array06)
 /TopLevelBlock/SubDeclTopTerm_type/array06/= (=)
+/TopLevelBlock/SubDeclTopTerm_type/array06/' (')
 /TopLevelBlock/SubDeclTopTerm_type/array06/value (name61)
-/TopLevelBlock/SubDeclTopTerm_type/string (name62)
-/TopLevelBlock/SubDeclTopTerm_type/string (name63)
+/TopLevelBlock/SubDeclTopTerm_type/array06/value (name62)
+/TopLevelBlock/SubDeclTopTerm_type/array06/value (name63)
+/TopLevelBlock/SubDeclTopTerm_type/array06/' (')
 /TopLevelBlock/SubDeclTopTerm_type/term ([])
 /TopLevelBlock/TopDeclSubTerm_type
 /TopLevelBlock/TopDeclSubTerm_type/[ ([)
@@ -1282,9 +1294,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/TopDeclSubTerm_type/array07
 /TopLevelBlock/TopDeclSubTerm_type/array07/decl (array07)
 /TopLevelBlock/TopDeclSubTerm_type/array07/= (=)
+/TopLevelBlock/TopDeclSubTerm_type/array07/' (')
 /TopLevelBlock/TopDeclSubTerm_type/array07/value (name71)
-/TopLevelBlock/TopDeclSubTerm_type/string (name72)
-/TopLevelBlock/TopDeclSubTerm_type/string (name73)
+/TopLevelBlock/TopDeclSubTerm_type/array07/value (name72)
+/TopLevelBlock/TopDeclSubTerm_type/array07/value (name73)
+/TopLevelBlock/TopDeclSubTerm_type/array07/' (')
 /TopLevelBlock/TopDeclSubTerm_type/term ([../])
 /TopLevelBlock/TopDeclTopTerm_type
 /TopLevelBlock/TopDeclTopTerm_type/[ ([)
@@ -1301,9 +1315,11 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/TopDeclTopTerm_type/array08
 /TopLevelBlock/TopDeclTopTerm_type/array08/decl (array08)
 /TopLevelBlock/TopDeclTopTerm_type/array08/= (=)
+/TopLevelBlock/TopDeclTopTerm_type/array08/' (')
 /TopLevelBlock/TopDeclTopTerm_type/array08/value (name81)
-/TopLevelBlock/TopDeclTopTerm_type/string (name82)
-/TopLevelBlock/TopDeclTopTerm_type/string (name83)
+/TopLevelBlock/TopDeclTopTerm_type/array08/value (name82)
+/TopLevelBlock/TopDeclTopTerm_type/array08/value (name83)
+/TopLevelBlock/TopDeclTopTerm_type/array08/' (')
 /TopLevelBlock/TopDeclTopTerm_type/term ([])
 /TopLevelBlock/term ([])
 )INPUT";
@@ -1810,6 +1826,561 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
 }
 
 /**
+ * @brief Test HIT syntax - shorthand path naming for regular and type blocks
+ */
+TEST(HITInterpreter, shorthand_path_naming_blocks)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+[a/b/c]
+  param_outer = bar_outer
+  [x/y/z]
+    param_inner = bar_inner
+  []
+[]
+
+[a/b/c]
+  type        = foo_outer
+  param_outer = bar_outer
+  [x/y/z]
+    type        = foo_inner
+    param_inner = bar_inner
+  []
+[]
+
+[/a/b///c//]
+  param = bar
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(64, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(3, document.child_count());
+    ASSERT_EQ(3, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/a
+/a/b
+/a/b/c
+/a/b/c/[ ([)
+/a/b/c/decl (a/b/c)
+/a/b/c/] (])
+/a/b/c/param_outer
+/a/b/c/param_outer/decl (param_outer)
+/a/b/c/param_outer/= (=)
+/a/b/c/param_outer/value (bar_outer)
+/a/b/c/x
+/a/b/c/x/y
+/a/b/c/x/y/z
+/a/b/c/x/y/z/[ ([)
+/a/b/c/x/y/z/decl (x/y/z)
+/a/b/c/x/y/z/] (])
+/a/b/c/x/y/z/param_inner
+/a/b/c/x/y/z/param_inner/decl (param_inner)
+/a/b/c/x/y/z/param_inner/= (=)
+/a/b/c/x/y/z/param_inner/value (bar_inner)
+/a/b/c/x/y/z/term ([])
+/a/b/c/term ([])
+/a
+/a/b
+/a/b/foo_outer_type
+/a/b/foo_outer_type/[ ([)
+/a/b/foo_outer_type/decl (a/b/c)
+/a/b/foo_outer_type/] (])
+/a/b/foo_outer_type/type
+/a/b/foo_outer_type/type/decl (type)
+/a/b/foo_outer_type/type/= (=)
+/a/b/foo_outer_type/type/value (foo_outer)
+/a/b/foo_outer_type/param_outer
+/a/b/foo_outer_type/param_outer/decl (param_outer)
+/a/b/foo_outer_type/param_outer/= (=)
+/a/b/foo_outer_type/param_outer/value (bar_outer)
+/a/b/foo_outer_type/x
+/a/b/foo_outer_type/x/y
+/a/b/foo_outer_type/x/y/foo_inner_type
+/a/b/foo_outer_type/x/y/foo_inner_type/[ ([)
+/a/b/foo_outer_type/x/y/foo_inner_type/decl (x/y/z)
+/a/b/foo_outer_type/x/y/foo_inner_type/] (])
+/a/b/foo_outer_type/x/y/foo_inner_type/type
+/a/b/foo_outer_type/x/y/foo_inner_type/type/decl (type)
+/a/b/foo_outer_type/x/y/foo_inner_type/type/= (=)
+/a/b/foo_outer_type/x/y/foo_inner_type/type/value (foo_inner)
+/a/b/foo_outer_type/x/y/foo_inner_type/param_inner
+/a/b/foo_outer_type/x/y/foo_inner_type/param_inner/decl (param_inner)
+/a/b/foo_outer_type/x/y/foo_inner_type/param_inner/= (=)
+/a/b/foo_outer_type/x/y/foo_inner_type/param_inner/value (bar_inner)
+/a/b/foo_outer_type/x/y/foo_inner_type/term ([])
+/a/b/foo_outer_type/term ([])
+/a
+/a/b
+/a/b/c
+/a/b/c/[ ([)
+/a/b/c/decl (/a/b///c//)
+/a/b/c/] (])
+/a/b/c/param
+/a/b/c/param/decl (param)
+/a/b/c/param/= (=)
+/a/b/c/param/value (bar)
+/a/b/c/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - shorthand path naming keyed value parameters
+ */
+TEST(HITInterpreter, shorthand_path_naming_keyed_values)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+path/to/param/inner/01 = "one"
+
+[//path/to///object/]
+
+  ///path/to///param/inner/02// = 2.2
+
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(24, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+    ASSERT_EQ(2, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/path
+/path/to
+/path/to/param
+/path/to/param/inner
+/path/to/param/inner/01
+/path/to/param/inner/01/decl (path/to/param/inner/01)
+/path/to/param/inner/01/= (=)
+/path/to/param/inner/01/value ("one")
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/path
+/path/to/object/path/to
+/path/to/object/path/to/param
+/path/to/object/path/to/param/inner
+/path/to/object/path/to/param/inner/02
+/path/to/object/path/to/param/inner/02/decl (///path/to///param/inner/02//)
+/path/to/object/path/to/param/inner/02/= (=)
+/path/to/object/path/to/param/inner/02/value (2.2)
+/path/to/object/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - shorthand path naming keyed array parameters
+ */
+TEST(HITInterpreter, shorthand_path_naming_keyed_arrays)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+path/to/array/inner/01 = '"eleven" "twelve" "thirteen"'
+
+[//path/to///object/]
+
+  ///path/to///array/inner/02// = '2.2 3.3 4.4'
+
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(32, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+    ASSERT_EQ(2, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/path
+/path/to
+/path/to/array
+/path/to/array/inner
+/path/to/array/inner/01
+/path/to/array/inner/01/decl (path/to/array/inner/01)
+/path/to/array/inner/01/= (=)
+/path/to/array/inner/01/' (')
+/path/to/array/inner/01/value ("eleven")
+/path/to/array/inner/01/value ("twelve")
+/path/to/array/inner/01/value ("thirteen")
+/path/to/array/inner/01/' (')
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/path
+/path/to/object/path/to
+/path/to/object/path/to/array
+/path/to/object/path/to/array/inner
+/path/to/object/path/to/array/inner/02
+/path/to/object/path/to/array/inner/02/decl (///path/to///array/inner/02//)
+/path/to/object/path/to/array/inner/02/= (=)
+/path/to/object/path/to/array/inner/02/' (')
+/path/to/object/path/to/array/inner/02/value (2.2)
+/path/to/object/path/to/array/inner/02/value (3.3)
+/path/to/object/path/to/array/inner/02/value (4.4)
+/path/to/object/path/to/array/inner/02/' (')
+/path/to/object/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - keyed-keyed-value parameters
+ */
+TEST(HITInterpreter, keyed_keyed_values)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+param_outer_01 = path/to/param/inner/01="one"
+
+[//path/to///object/]
+
+  param_outer_02=///path/to///param/inner/02//=2.2
+
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(16, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+    ASSERT_EQ(2, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/param_outer_01
+/param_outer_01/decl (param_outer_01)
+/param_outer_01/= (=)
+/param_outer_01/value (path/to/param/inner/01="one")
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/param_outer_02
+/path/to/object/param_outer_02/decl (param_outer_02)
+/path/to/object/param_outer_02/= (=)
+/path/to/object/param_outer_02/value (///path/to///param/inner/02//=2.2)
+/path/to/object/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - keyed-keyed-array parameters
+ */
+TEST(HITInterpreter, keyed_keyed_arrays)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+array_outer_01 = path/to/array/inner/01='"eleven";"twelve";"thirteen"'
+
+[//path/to///object/]
+
+  array_outer_02 = ///path/to///array/inner/02//='2.2;3.3;4.4'
+
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(16, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+    ASSERT_EQ(2, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/array_outer_01
+/array_outer_01/decl (array_outer_01)
+/array_outer_01/= (=)
+/array_outer_01/value (path/to/array/inner/01='"eleven";"twelve";"thirteen"')
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/array_outer_02
+/path/to/object/array_outer_02/decl (array_outer_02)
+/path/to/object/array_outer_02/= (=)
+/path/to/object/array_outer_02/value (///path/to///array/inner/02//='2.2;3.3;4.4')
+/path/to/object/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - shorthand path naming keyed-keyed-value parameters
+ */
+TEST(HITInterpreter, shorthand_path_naming_keyed_keyed_values)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+path/to/param/outer/01 = path/to/param/inner/01="one"
+
+[//path/to///object/]
+
+  ///path/to///param/outer/02// = ///path/to///param/inner/02//=2.2
+
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(24, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+    ASSERT_EQ(2, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/path
+/path/to
+/path/to/param
+/path/to/param/outer
+/path/to/param/outer/01
+/path/to/param/outer/01/decl (path/to/param/outer/01)
+/path/to/param/outer/01/= (=)
+/path/to/param/outer/01/value (path/to/param/inner/01="one")
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/path
+/path/to/object/path/to
+/path/to/object/path/to/param
+/path/to/object/path/to/param/outer
+/path/to/object/path/to/param/outer/02
+/path/to/object/path/to/param/outer/02/decl (///path/to///param/outer/02//)
+/path/to/object/path/to/param/outer/02/= (=)
+/path/to/object/path/to/param/outer/02/value (///path/to///param/inner/02//=2.2)
+/path/to/object/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - shorthand path naming keyed-keyed-array parameters
+ */
+TEST(HITInterpreter, shorthand_path_naming_keyed_keyed_arrays)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+path/to/array/outer/01 = path/to/array/inner/01='"eleven";"twelve";"thirteen"'
+
+[//path/to///object/]
+
+  ///path/to///array/outer/02// = ///path/to///array/inner/02//='2.2;3.3;4.4'
+
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(24, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+    ASSERT_EQ(2, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/path
+/path/to
+/path/to/array
+/path/to/array/outer
+/path/to/array/outer/01
+/path/to/array/outer/01/decl (path/to/array/outer/01)
+/path/to/array/outer/01/= (=)
+/path/to/array/outer/01/value (path/to/array/inner/01='"eleven";"twelve";"thirteen"')
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/path
+/path/to/object/path/to
+/path/to/object/path/to/array
+/path/to/object/path/to/array/outer
+/path/to/object/path/to/array/outer/02
+/path/to/object/path/to/array/outer/02/decl (///path/to///array/outer/02//)
+/path/to/object/path/to/array/outer/02/= (=)
+/path/to/object/path/to/array/outer/02/value (///path/to///array/inner/02//='2.2;3.3;4.4')
+/path/to/object/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - array values that are keyed values
+ */
+TEST(HITInterpreter, arrays_containing_keyed_values)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+array_outer_01 = 'param_inner_01 = 100 param_inner_02 = 200 param_inner_03 = 300'
+
+[//path/to///object/]
+
+  path/to/array//outer/02/ = 'param/inner/01 = 100 param/inner/02 = 200 param/inner/03 = 300'
+
+[]
+
+///path//to/array/outer/03 = array_outer_01='param_inner_01=100;param_inner_02=200;param_inner_03=300'
+
+[//path/to///object/]
+
+  path/to/array/outer//04 = path/to/array//outer/02/='param/inner/01=100;param/inner/02=200;param/inner/03=300'
+
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(63, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(4, document.child_count());
+    ASSERT_EQ(4, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/array_outer_01
+/array_outer_01/decl (array_outer_01)
+/array_outer_01/= (=)
+/array_outer_01/' (')
+/array_outer_01/value (param_inner_01)
+/array_outer_01/value (=)
+/array_outer_01/value (100)
+/array_outer_01/value (param_inner_02)
+/array_outer_01/value (=)
+/array_outer_01/value (200)
+/array_outer_01/value (param_inner_03)
+/array_outer_01/value (=)
+/array_outer_01/value (300)
+/array_outer_01/' (')
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/path
+/path/to/object/path/to
+/path/to/object/path/to/array
+/path/to/object/path/to/array/outer
+/path/to/object/path/to/array/outer/02
+/path/to/object/path/to/array/outer/02/decl (path/to/array//outer/02/)
+/path/to/object/path/to/array/outer/02/= (=)
+/path/to/object/path/to/array/outer/02/' (')
+/path/to/object/path/to/array/outer/02/value (param/inner/01)
+/path/to/object/path/to/array/outer/02/value (=)
+/path/to/object/path/to/array/outer/02/value (100)
+/path/to/object/path/to/array/outer/02/value (param/inner/02)
+/path/to/object/path/to/array/outer/02/value (=)
+/path/to/object/path/to/array/outer/02/value (200)
+/path/to/object/path/to/array/outer/02/value (param/inner/03)
+/path/to/object/path/to/array/outer/02/value (=)
+/path/to/object/path/to/array/outer/02/value (300)
+/path/to/object/path/to/array/outer/02/' (')
+/path/to/object/term ([])
+/path
+/path/to
+/path/to/array
+/path/to/array/outer
+/path/to/array/outer/03
+/path/to/array/outer/03/decl (///path//to/array/outer/03)
+/path/to/array/outer/03/= (=)
+/path/to/array/outer/03/value (array_outer_01='param_inner_01=100;param_inner_02=200;param_inner_03=300')
+/path
+/path/to
+/path/to/object
+/path/to/object/[ ([)
+/path/to/object/decl (//path/to///object/)
+/path/to/object/] (])
+/path/to/object/path
+/path/to/object/path/to
+/path/to/object/path/to/array
+/path/to/object/path/to/array/outer
+/path/to/object/path/to/array/outer/04
+/path/to/object/path/to/array/outer/04/decl (path/to/array/outer//04)
+/path/to/object/path/to/array/outer/04/= (=)
+/path/to/object/path/to/array/outer/04/value (path/to/array//outer/02/='param/inner/01=100;param/inner/02=200;param/inner/03=300')
+/path/to/object/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
  * @brief standalone file include not found error
  */
 TEST(HITInterpreter, only_include_not_found)
@@ -1947,4 +2518,260 @@ c = 3)I" << std::endl;
         ++index;
     }
 
+}
+
+/**
+ * @brief Test HIT syntax error - missing object terminator
+ */
+TEST(HITInterpreter, missing_object_terminator)
+{
+    std::stringstream input;
+    input << R"INPUT([GlobalParams]
+[one]
+  [one_sub]
+    one_sub_param=100
+[]
+[two]
+  two_param=200
+[]
+)INPUT";
+
+    std::stringstream actual_errors;
+    DefaultHITInterpreter interpreter(actual_errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expect_errors;
+    expect_errors << "stream input:9.1: syntax error, unexpected end of file"
+                  << std::endl;
+
+    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+}
+
+/**
+ * @brief Test HIT syntax error - object name with invalid character '#'
+ */
+TEST(HITInterpreter, object_name_with_invalid_pound)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[object#name] []
+)INPUT";
+
+    std::stringstream actual_errors;
+    DefaultHITInterpreter interpreter(actual_errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expect_errors;
+    expect_errors << "stream input:2.8-12: syntax error, unexpected object name, expecting ]"
+                  << std::endl;
+
+    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+}
+
+/**
+ * @brief Test HIT syntax error - object name with invalid character '='
+ */
+TEST(HITInterpreter, object_name_with_invalid_equals)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[object=name] []
+)INPUT";
+
+    std::stringstream actual_errors;
+    DefaultHITInterpreter interpreter(actual_errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expect_errors;
+    expect_errors << "stream input:2.8-12: syntax error, unexpected object name, expecting ]"
+                  << std::endl;
+
+    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+}
+
+/**
+ * @brief Test HIT syntax error - object name with invalid character '&'
+ */
+TEST(HITInterpreter, object_name_with_invalid_ampersand)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[object&name] []
+)INPUT";
+
+    std::stringstream actual_errors;
+    DefaultHITInterpreter interpreter(actual_errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expect_errors;
+    expect_errors << "stream input:2.8-12: syntax error, unexpected object name, expecting ]"
+                  << std::endl;
+
+    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+}
+
+/**
+ * @brief Test HIT syntax error - parameter name with invalid character '&'
+ */
+TEST(HITInterpreter, parameter_name_with_invalid_ampersand)
+{
+    std::stringstream input;
+    input << R"INPUT(
+param&name=10
+)INPUT";
+
+    std::stringstream actual_errors;
+    DefaultHITInterpreter interpreter(actual_errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expect_errors;
+    expect_errors << "stream input:2.6: syntax error, unexpected invalid token, expecting ="
+                  << std::endl;
+
+    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+}
+
+/**
+ * @brief Test HIT syntax error - invalid object terminator
+ */
+TEST(HITInterpreter, invalid_object_terminator)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[object_name][./]
+)INPUT";
+
+    std::stringstream actual_errors;
+    DefaultHITInterpreter interpreter(actual_errors);
+    ASSERT_FALSE(interpreter.parse(input));
+
+    std::stringstream expect_errors;
+    expect_errors << "stream input:2.17: syntax error, unexpected ], expecting integer or object name"
+                  << std::endl;
+
+    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+}
+
+/**
+ * @brief Test HIT syntax - brace expression spans multiple lines
+ */
+TEST(HITInterpreter, brace_expression_spans_multiple_lines)
+{
+    std::stringstream input;
+    input << R"INPUT(
+param_name=${raw 4
+                 2
+            }
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(5, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(1, document.child_count());
+    ASSERT_EQ(1, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/param_name
+/param_name/decl (param_name)
+/param_name/= (=)
+/param_name/value (${raw 4
+                 2
+            })
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - quote chaining scenarios
+ */
+TEST(HITInterpreter, quote_chaining_scenarios)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[quotes]
+    [singles]
+        field = ' "    mix1a mix1b "   "mix1c"    mix1d 1.2
+
+                  "mix\"1e "  mix1f "    mix1g" 34  "mix\'1h "
+                ' 'mix\'2a'
+                '"mix\3a"' '    '
+    []
+    [doubles]
+        field = " '    mix1a mix1b '   'mix1c'    mix1d 1.2
+
+                  'mix\'1e '  mix1f '    mix1g' 34  'mix\"1h '
+                " "mix\"2a"
+                "'mix\3a'" "    "
+    []
+[]
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(45, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(1, document.child_count());
+    ASSERT_EQ(1, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/quotes
+/quotes/[ ([)
+/quotes/decl (quotes)
+/quotes/] (])
+/quotes/singles
+/quotes/singles/[ ([)
+/quotes/singles/decl (singles)
+/quotes/singles/] (])
+/quotes/singles/field
+/quotes/singles/field/decl (field)
+/quotes/singles/field/= (=)
+/quotes/singles/field/' (')
+/quotes/singles/field/value ("    mix1a mix1b ")
+/quotes/singles/field/value ("mix1c")
+/quotes/singles/field/value (mix1d)
+/quotes/singles/field/value (1.2)
+/quotes/singles/field/value ("mix\"1e ")
+/quotes/singles/field/value (mix1f)
+/quotes/singles/field/value ("    mix1g")
+/quotes/singles/field/value (34)
+/quotes/singles/field/value ("mix\'1h ")
+/quotes/singles/field/' (')
+/quotes/singles/field/' (')
+/quotes/singles/field/value (mix\'2a)
+/quotes/singles/field/' (')
+/quotes/singles/field/' (')
+/quotes/singles/field/value ("mix\3a")
+/quotes/singles/field/' (')
+/quotes/singles/field/' (')
+/quotes/singles/field/' (')
+/quotes/singles/term ([])
+/quotes/doubles
+/quotes/doubles/[ ([)
+/quotes/doubles/decl (doubles)
+/quotes/doubles/] (])
+/quotes/doubles/field
+/quotes/doubles/field/decl (field)
+/quotes/doubles/field/= (=)
+/quotes/doubles/field/value (" '    mix1a mix1b '   'mix1c'    mix1d 1.2
+
+                  'mix\'1e '  mix1f '    mix1g' 34  'mix\"1h '
+                ")
+/quotes/doubles/field/value ("mix\"2a")
+/quotes/doubles/field/value ("'mix\3a'")
+/quotes/doubles/field/value ("    ")
+/quotes/doubles/term ([])
+/quotes/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
 }

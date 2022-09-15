@@ -4,7 +4,7 @@
 namespace wasp
 {
 HITNodeView::HITNodeView(std::size_t                node_index,
-                               const AbstractInterpreter& data)
+                               AbstractInterpreter& data)
     : m_node_index(node_index), m_pool(&data)
 {
 }
@@ -110,6 +110,12 @@ std::string HITNodeView::data() const
     std::stringstream str;
     m_pool->data(m_node_index, str);
     return str.str();
+}
+
+void HITNodeView::set_data(const char* data)
+{
+    NodeView view(node_index(), *node_pool());
+    view.set_data(data);
 }
 
 std::string HITNodeView::path() const

@@ -23,6 +23,7 @@ struct DefaultPush
     template<class Node>
     bool operator() (const Node& n) const
     {
+        (void) n; // suppress unused variable warning
         return false;
     }
 

@@ -3,7 +3,7 @@
 
 namespace wasp
 {
-NodeView::NodeView(std::size_t node_index, const AbstractInterpreter& nodes)
+NodeView::NodeView(std::size_t node_index, AbstractInterpreter& nodes)
     : m_node_index(node_index), m_pool(&nodes)
 {
 }
@@ -66,6 +66,11 @@ std::string NodeView::data() const
     std::stringstream str;
     m_pool->data(m_node_index, str);
     return str.str();
+}
+void NodeView::set_data(const char* data)
+{
+    wasp_insist(is_leaf(), "Data assignment only allowed for leaf nodes!");
+    m_pool->set_data(m_node_index, data);
 }
 
 std::string NodeView::path() const

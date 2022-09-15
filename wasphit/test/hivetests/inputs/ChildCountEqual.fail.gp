@@ -22,7 +22,7 @@
     six=' physics geometry '
 
     [./badflags]
-    [./]
+    [../]
 
     [settings]
         [override]

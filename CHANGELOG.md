@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 9-15-2022
+### Changed
+ - Updated NodeView constructor arguments to no longer reference a const interpreter - breaks backward compatibility
+
+### Added
+ - Various HIT updates to support integration directly into the MOOSE Framework replacing the existing parser
+ - NodeView::set_data method to allow modification of leaf node data in HIT, DDI, EDDI, Halite, JSON, and SON
+ - DISABLE_HIT_TYPE_PROMOTION configuration option that lets MOOSE turn off WASP's object name override logic
+
+### Fixed
+ - Error in HIT parser logic that could cause an infinite loop when shorthand-names are exploded into a hierarchy
+
 ## [2.1.0] - 04-22-2022
 
 ### Added

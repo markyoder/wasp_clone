@@ -136,10 +136,13 @@ TEST(NodeView, child)
         }
         {  // first child
             const std::string child_name = "value";
-            const auto& child_view = data_view.first_child_by_name(child_name);
+            auto child_view = data_view.first_child_by_name(child_name);
             ASSERT_FALSE(child_view.is_null());
             std::string child_data = child_view.data();
             ASSERT_EQ("234", child_data);
+            child_view.set_data("5678");
+            child_data = child_view.data();
+            ASSERT_EQ("5678", child_data);
         }
     }
     NodeView root_view(interp.size() - 1, interp);
@@ -170,7 +173,7 @@ TEST(NodeView, child)
     <op loc="1.7">(</op>
     <id loc="1.8">foo</id>
     <cp loc="1.11">)</cp>
-    <value loc="1.12">234</value>
+    <value loc="1.12">5678</value>
     <value loc="1.16">1.2343</value>
     <term loc="1.23">end</term>
   </data>

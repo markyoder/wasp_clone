@@ -4,7 +4,7 @@
 namespace wasp
 {
 SONNodeView::SONNodeView(std::size_t                node_index,
-                         const AbstractInterpreter& pool)
+                         AbstractInterpreter& pool)
     : m_node_index(node_index), m_pool(&pool)
 {
 }
@@ -138,6 +138,12 @@ std::string SONNodeView::data() const
     std::stringstream str;
     m_pool->data(m_node_index, str);
     return str.str();
+}
+
+void SONNodeView::set_data(const char* data)
+{
+    NodeView view(node_index(), *node_pool());
+    view.set_data(data);
 }
 
 std::string SONNodeView::path() const

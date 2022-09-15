@@ -17,6 +17,6 @@
     three=' car b 0 ast wORD'
 
     [./badflags]
-    [./]
+    [../]
 
 []

@@ -86,30 +86,36 @@
 %token <token_index>   INTEGER         "integer"
 %token <token_index>   REAL          "real"
 %token <token_index>   STRING          "string"
+%token <token_index>   OBJCT_STRING    "object name"
+%token <token_index>   PARAM_STRING    "parameter name"
+%token <token_index>   VALUE_STRING    "value string"
+%token <token_index>   ARRAY_STRING    "array string"
 %token <token_index>   QSTRING          "quoted string"
 %token <token_index>   COMMENT           "comment"
 %token <token_index>   OBJECT_TERM  "block terminator"
-%type <token_index>   DECL "declarator"
+%type <token_index>   SECTION_NAME   "section name"
 %type <token_index>   VALUE "value"
 %type <node_index>  integer real string lbracket rbracket quote assign semicolon
-%type <node_index>  object_term
+%type <node_index>  object_term section_name field_name
 %type <node_index>  object
-%type <node_index>  unquoted_string
+%type <node_index>  unquoted_string double_quoted_string
 %type <node_index>  keyedvalue dot_slash
-%type <node_index>  comment value decl primitive include include_file
+%type <node_index>  comment value primitive include include_file
 %type <node_index> object_member array_member path
-%type <node_indices> array_members array
+%type <node_indices> array_members array double_quoted_strings
 %type <node_indices> object_decl
 %type <object_children> object_members
 %token <token_index>    FILE              "file include"
  //%type <node_indices> last_object
 %destructor { delete $$; } object_decl
-%destructor { delete $$; } array_members array
+%destructor { delete $$; } array_members array double_quoted_strings
 %destructor { delete $$->second; delete $$; } object_members
 %{
 
 #include "HITInterpreter.h"
 #include "HITLexer.h"
+#include "HITConfig.h"
+
 // Obtain the HIT name for an object_term
 // I.e., 
 // [name]
@@ -122,6 +128,10 @@ bool hit_get_name(std::string& name,
                             , wasp::AbstractInterpreter & interpreter
                             , std::pair<size_t, std::vector<size_t>*>* object_members)
 {
+// if type promotion is disabled, then just return early before any checks
+#if DISABLE_HIT_TYPE_PROMOTION
+    return false;
+#endif
     bool has_type = object_members->first != object_members->second->size();
     auto name_i = object_decl_i;
     if( has_type )
@@ -170,7 +180,11 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
     while( !names.empty() )
     {
         // skip empty names
-        if (names.back().empty()) continue;        
+        if (names.back().empty())
+        {
+            names.pop_back();
+            continue;
+        }
         result_index = interpreter.push_parent(wasp::OBJECT
                                     ,names.back().c_str()
                                     ,child_indices);        
@@ -180,6 +194,78 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
     }
     
     return result_index;
+}
+
+size_t push_keyed_value_or_array(wasp::AbstractInterpreter & interpreter,
+                                 std::vector<size_t>       & child_indices)
+{
+    // keyed values pass in exactly three children and arrays pass in more
+
+    wasp_check(child_indices.size() >= 3);
+
+    std::string name = interpreter.data(child_indices.front()).c_str();
+
+    // split 'x/y/z' names into vector to iterate and build tree hierarchy
+
+    std::vector<std::string> names = wasp::split("/", name);
+
+    // for something illegal like '///', use full name so tree gets a node
+
+    if (names.empty())
+    {
+        names.push_back(name);
+    }
+
+    // add keyed value or array then build hierarchy out of parent objects
+
+    for(size_t result_index = 0; !names.empty(); names.pop_back())
+    {
+        // skip over empty levels in tree caused by consecutive delimiters
+
+        if (names.back().empty())
+        {
+            continue;
+        }
+
+        // exactly three children is for a keyed value at the lowest level
+
+        if (child_indices.size() == 3)
+        {
+            result_index = interpreter.push_parent(wasp::KEYED_VALUE    ,
+                                                   names.back().c_str() ,
+                                                   child_indices        );
+        }
+
+        // more than three children indicates an array at the lowest level
+
+        else if (child_indices.size() > 3)
+        {
+            result_index = interpreter.push_parent(wasp::ARRAY          ,
+                                                   names.back().c_str() ,
+                                                   child_indices        );
+        }
+
+        // any other count (i.e., one) is for a higher level parent object
+
+        else
+        {
+            wasp_check(child_indices.size() == 1);
+
+            result_index = interpreter.push_parent(wasp::OBJECT         ,
+                                                   names.back().c_str() ,
+                                                   child_indices        );
+        }
+
+        // clear the vector of child indices and add only the result index
+
+        child_indices.clear();
+
+        child_indices.push_back(result_index);
+    }
+
+    // return result index from top level left in the child indices vector
+
+    return child_indices.back();
 }
 
 /* this "connects" the HIT parser in the interpreter to the flex HITLexer class
@@ -236,18 +322,18 @@ include : FILE
             auto token_index = $1;
             $$ = interpreter.push_leaf(wasp::FILE,"decl",token_index);
         }    
-object_decl : lbracket decl rbracket {
+object_decl : lbracket section_name rbracket {
         size_t lbracket_index = ($lbracket);
-        size_t decl_index = ($decl);
+        size_t decl_index = ($section_name);
         size_t rbracket_index = ($rbracket);
         $$ = new std::vector<size_t>{lbracket_index
                                                    ,decl_index
                                                    ,rbracket_index};
-    }| lbracket  dot_slash decl rbracket
+    }| lbracket  dot_slash section_name rbracket
     {
         size_t lbracket_index = ($lbracket);
         size_t dot_slash_index = ($dot_slash);
-        size_t decl_index = ($decl);
+        size_t decl_index = ($section_name);
         size_t rbracket_index = ($rbracket);
 
 
@@ -323,15 +409,38 @@ unquoted_string : STRING
         $$ = interpreter.push_leaf(wasp::STRING,"string"
                          ,token_index);
     }
-VALUE : INTEGER | REAL | STRING | QSTRING
+double_quoted_string : QSTRING
+    {
+        size_t token_index = ($1);
+        $$ = interpreter.push_leaf(wasp::VALUE, "value", token_index);
+    }
+double_quoted_strings : double_quoted_string
+    {
+        size_t qstring_index = ($1);
+        $$ = new std::vector<size_t>();
+        $$->push_back(qstring_index);
+    }
+    | double_quoted_strings double_quoted_string
+    {
+        size_t qstring_index = ($2);
+        $1->push_back(qstring_index);
+        $$ = $1;
+    }
+VALUE : INTEGER | REAL | VALUE_STRING | ARRAY_STRING
 value : VALUE
     {
         size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::VALUE,"value"
                          ,token_index);
     }
-DECL : STRING | INTEGER
-decl : DECL
+SECTION_NAME : OBJCT_STRING | INTEGER
+section_name : SECTION_NAME
+    {
+        size_t decl_token_index = ($1);
+        $$ = interpreter.push_leaf(wasp::DECL,"decl"
+                         ,decl_token_index);
+    }
+field_name : PARAM_STRING
     {
         size_t decl_token_index = ($1);
         $$ = interpreter.push_leaf(wasp::DECL,"decl"
@@ -379,7 +488,7 @@ include_file : include path
             }
         }
 
-array_member : semicolon | value | assign
+array_member : semicolon | value | double_quoted_string
 
 array_members : array_member
     {
@@ -404,17 +513,15 @@ array : quote array_members quote
         $$->push_back(($1));
         $$->push_back(($2));
     }
-    | array quote array_members quote
+    | array array
     {
         $$ = $1;
-        $$->push_back(($2));
-        $$->insert($$->end(), $3->begin(), $3->end());
-        $$->push_back(($4));
-        delete $3;
+        $$->insert($$->end(), $2->begin(), $2->end());
+        delete $2;
     }
 
 
-keyedvalue : decl assign value
+keyedvalue : field_name assign value
     {
         size_t key_index = ($1);
         size_t assign_index = ($2);
@@ -422,11 +529,20 @@ keyedvalue : decl assign value
 
         std::vector<size_t> child_indices = {key_index, assign_index,value_index};
 
-        $$ = interpreter.push_parent(wasp::KEYED_VALUE
-                                        ,interpreter.data(key_index).c_str()
-                                        ,child_indices);
+        $$ = push_keyed_value_or_array(interpreter, child_indices);
     }
-    | decl assign array
+    | field_name assign double_quoted_strings
+    {
+        size_t key_index = ($1);
+        size_t assign_index = ($2);
+
+        std::vector<size_t> child_indices = {key_index, assign_index};
+        for( size_t child_i : *$double_quoted_strings ) child_indices.push_back(child_i);
+        delete $double_quoted_strings;
+
+        $$ = push_keyed_value_or_array(interpreter, child_indices);
+    }
+    | field_name assign array
     {
 
         size_t key_index = ($1);
@@ -435,11 +551,9 @@ keyedvalue : decl assign value
         std::vector<size_t> child_indices = {key_index, assign_index};
         for( size_t child_i : *$array ) child_indices.push_back(child_i);
         delete $array;
-        $$ = interpreter.push_parent(wasp::ARRAY
-                                        ,interpreter.data(key_index).c_str()
-                                        ,child_indices);
-    }
 
+        $$ = push_keyed_value_or_array(interpreter, child_indices);
+    }
 
 comment : COMMENT
     {
@@ -457,26 +571,6 @@ start   : /** empty **/
         }
         | start object{
             interpreter.push_staged_child($2);
-        }
-        | start object_decl object_members object
-        {
-            std::vector<size_t> & children = *$object_decl;
-            // [0] = '[', [1] = 'name', [2] = ']'
-            size_t object_decl_i = children[1];
-            for( size_t child_i: *$object_members->second ) children.push_back(child_i);
-            std::string name = interpreter.data(object_decl_i).c_str();
-            hit_get_name(name, object_decl_i
-                            ,interpreter ,$object_members);
-
-            delete $object_members->second;
-            delete $object_members;
-
-            size_t object_i = interpreter.push_parent(wasp::OBJECT
-                                            ,name.c_str()
-                                            ,children);
-            interpreter.push_staged_child(object_i);
-            interpreter.push_staged_child(($object));
-            delete $2;
         }
         | start include_file
         {

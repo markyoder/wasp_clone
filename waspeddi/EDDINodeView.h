@@ -22,7 +22,7 @@ class WASP_PUBLIC EDDINodeView
     using Collection = std::vector<EDDINodeView>;
     using GenericView = NodeView;
     EDDINodeView() : m_node_index(-1), m_pool(nullptr) {}
-    EDDINodeView(std::size_t node_index, const AbstractInterpreter& nodes);
+    EDDINodeView(std::size_t node_index, AbstractInterpreter& nodes);
     template<class NV>
     EDDINodeView(const NV& orig);
     EDDINodeView(const EDDINodeView& orig);
@@ -54,6 +54,13 @@ class WASP_PUBLIC EDDINodeView
      * @return the node's data
      */
     std::string data() const;
+
+    /**
+     * @brief Set the data of this node - this is only legal for LEAF nodes
+     * @param value the new data to associate with this leaf node
+     */
+    void set_data(const char* value);
+
     /**
      * @brief parent acquire the parent view of the current node
      * @return
@@ -220,7 +227,7 @@ class WASP_PUBLIC EDDINodeView
      * @brief node_pool acquire the pointer to the backend storage
      * @return the TreeNodePool that backs this view
      */
-    const AbstractInterpreter* node_pool() const { return m_pool; }
+    AbstractInterpreter* node_pool() const { return m_pool; }
 
     // !> Type operators
     /**
@@ -267,7 +274,7 @@ class WASP_PUBLIC EDDINodeView
 
   private:
     size_t                     m_node_index;
-    const AbstractInterpreter* m_pool;
+    AbstractInterpreter* m_pool;
 
     /**
      * @brief value_node_index when the value is requested (to_int, string,

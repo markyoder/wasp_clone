@@ -642,7 +642,7 @@ WASP_PUBLIC typename TAdapter::Collection lineage(const TAdapter& node)
 template<class TAdapter, class Interp>
 WASP_PUBLIC TAdapter parent_document_node(const Interp* document)
 {
-    const auto* parent_document = document->document_parent();
+    auto* parent_document = document->document_parent();
 
     TAdapter view = TAdapter(parent_document->document_node(document),
                        *parent_document);

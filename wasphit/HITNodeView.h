@@ -22,7 +22,7 @@ class WASP_PUBLIC HITNodeView
     using Collection = std::vector<HITNodeView>;
     using GenericView = NodeView;
     HITNodeView() : m_node_index(-1), m_pool(nullptr) {}
-    HITNodeView(std::size_t node_index, const AbstractInterpreter& data);
+    HITNodeView(std::size_t node_index, AbstractInterpreter& data);
     template<class NV>
     HITNodeView(const NV& orig);
     HITNodeView(const HITNodeView& orig);
@@ -55,6 +55,13 @@ class WASP_PUBLIC HITNodeView
      * @return the node's data
      */
     std::string data() const;
+
+    /**
+     * @brief Set the data of this node - this is only legal for LEAF nodes
+     * @param value the new data to associate with this leaf node
+     */
+    void set_data(const char* value);
+
     /**
      * @brief parent acquire the parent view of the current node
      * @return
@@ -220,7 +227,7 @@ class WASP_PUBLIC HITNodeView
      * @brief node_pool acquire the pointer to the backend storage
      * @return the document interpreter that backs this view
      */
-    const AbstractInterpreter* node_pool() const { return m_pool; }
+    AbstractInterpreter* node_pool() const { return m_pool; }
 
     // !> Type operators
     /**
@@ -267,7 +274,7 @@ class WASP_PUBLIC HITNodeView
 
   private:
     size_t                     m_node_index;
-    const AbstractInterpreter* m_pool;
+    AbstractInterpreter* m_pool;
 
     /**
      * @brief value_node_index when the value is requested (to_int, string,

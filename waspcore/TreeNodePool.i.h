@@ -8,11 +8,11 @@ TreeNodePool<NTS, NIS, TP>::TreeNodePool() : m_start_line(1), m_start_column(1)
 // copy constructor
 template<typename NTS, typename NIS, typename TP>
 TreeNodePool<NTS, NIS, TP>::TreeNodePool(const TreeNodePool<NTS, NIS, TP>& orig)
-    : m_token_data(orig.m_token_data)
+    : m_start_line(1)
+    , m_start_column(1)
+    , m_token_data(orig.m_token_data)
     , m_node_names(orig.m_node_names)
     , m_node_basic_data(orig.m_node_basic_data)
-    , m_start_line(1)
-    , m_start_column(1)
     , m_node_parent_data(orig.m_node_parent_data)
     , m_node_child_indices(orig.m_node_child_indices)
 {
@@ -66,6 +66,21 @@ void TreeNodePool<NTS, NIS, TP>::set_type(NIS node_index, NTS type)
 {
     m_node_basic_data[node_index].m_node_type = type;
 }
+template<typename NTS, typename NIS, class TP>
+void TreeNodePool<NTS, NIS, TP>::set_data(NIS node_index, const char* data)
+{
+    wasp_insist(is_leaf(node_index), "data assignment only allowed for leaf nodes!");
+    auto tindex      = m_node_basic_data[node_index].m_token_index;
+    auto file_offset = m_token_data.offset(tindex);
+    auto type        = m_token_data.type(tindex);
+
+    m_node_basic_data[node_index].m_token_index = m_token_data.size();
+
+    // TODO - add logic/accessors to allow overwriting 
+    // existing token data in the case where new value's size is equal to or less than
+    // the old value's size. I.e., re-use token memory
+    m_token_data.push(data, type, file_offset);
+}
 // Create a leaf node
 template<typename NTS, typename NIS, class TP>
 void TreeNodePool<NTS, NIS, TP>::push_leaf(
@@ -82,7 +97,6 @@ void TreeNodePool<NTS, NIS, TP>::push_leaf(
 
     // Capture node's basic information
     m_node_names.push(node_name);
-    NIS basic_data_index = static_cast<NIS>(m_node_basic_data.size());
 
     // capture type - parent index is unknown
     m_node_basic_data.push_back(BasicNodeData(node_type, -1));
@@ -101,7 +115,6 @@ void TreeNodePool<NTS, NIS, TP>::push_leaf(
 
     // Capture node's basic information
     m_node_names.push(node_name);
-    NIS basic_data_index = static_cast<NIS>(m_node_basic_data.size());
 
     // capture type - parent index is unknown
     m_node_basic_data.push_back(BasicNodeData(node_type, -1));

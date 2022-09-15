@@ -26,7 +26,7 @@ class WASP_PUBLIC NodeView
   public:
     using Collection = std::vector<NodeView>;
     NodeView() : m_node_index(-1), m_pool(nullptr) {}
-    NodeView(std::size_t node_index, const class AbstractInterpreter& data);
+    NodeView(std::size_t node_index, class AbstractInterpreter& data);
     NodeView(const NodeView& orig);
     ~NodeView();
 
@@ -50,6 +50,15 @@ class WASP_PUBLIC NodeView
      * @return the node's data
      */
     std::string data() const;
+
+    /**
+     * @brief Set the data of this node
+     * Note: This is only legal for LEAF nodes
+     * 
+     * @param value the new data to associate with this leaf node
+     */
+    void set_data(const char* value);
+
     /**
      * @brief parent acquire the parent view of the current node
      * @return
@@ -209,7 +218,7 @@ class WASP_PUBLIC NodeView
      * @brief node_pool acquire the pointer to the backend storage
      * @return the document interpreter that backs this view
      */
-    const class AbstractInterpreter* node_pool() const { return m_pool; }
+    class AbstractInterpreter* node_pool() const { return m_pool; }
 
     // !> Type operators
     bool to_bool(bool* ok = nullptr) const;
@@ -251,7 +260,7 @@ class WASP_PUBLIC NodeView
 
   private:
     std::size_t                      m_node_index;
-    const class AbstractInterpreter* m_pool;
+    class AbstractInterpreter* m_pool;
 };
 
 /**
@@ -334,6 +343,8 @@ class WASP_PUBLIC AbstractInterpreter
      * @return
      */
     virtual std::string data(size_t node_index) const = 0;
+    virtual void set_data(size_t noded_index, const char* data) = 0;
+
     /**
      * @brief token_data acquires the data for the token at the given index
      * @param token_index the index of the token for which the data is requested
@@ -422,6 +433,7 @@ class WASP_PUBLIC AbstractInterpreter
     }
     virtual void set_current_definition(AbstractDefinition* current)
     {
+        (void) current; // suppress unused variable warning
         wasp_not_implemented("set_current_definition");
     }
 
@@ -496,7 +508,15 @@ class WASP_PUBLIC AbstractInterpreter
                                     const std::string& stage_name,
                                     size_t node_index,
                                     const location& loc,
-                                    std::ostream& err) {return true;}
+                                    std::ostream& err)
+    {
+        (void) new_staged_index; // suppress unused variable warning
+        (void) stage_name;       // suppress unused variable warning
+        (void) node_index;       // suppress unused variable warning
+        (void) loc;              // suppress unused variable warning
+        (void) err;              // suppress unused variable warning
+        return true;
+    }
 }; 
 
 template<class NodeStorage = TreeNodePool<>>
@@ -526,7 +546,10 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @return Interpreter* (unmanaged)
      */
     virtual Interpreter* create_nested_interpreter(Interpreter* parent)
-        {wasp_not_implemented("Generic Interpreter nested interpreter creation");}
+    {
+        (void) parent; // suppress unused variable warning
+        wasp_not_implemented("Generic Interpreter nested interpreter creation");
+    }
     /**
      * @brief add_document_path associates the given node with the subdocument path
      * @param node_index the index/id of the input node including/importing the subdocument
@@ -591,8 +614,12 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
                        size_t        m_start_line   = 1u,
                        size_t        m_start_column = 1u) = 0;
 
-    virtual bool parseFile(const std::string& filename, size_t line = 1) 
-        {wasp_not_implemented("Generic Interpreter parseFile");}
+    virtual bool parseFile(const std::string& filename, size_t line = 1)
+    {
+        (void) filename; // suppress unused variable warning
+        (void) line;     // suppress unused variable warning
+        wasp_not_implemented("Generic Interpreter parseFile");
+    }
 
     /**
      * @brief token_count acquires the number of tokens so far interpreted
@@ -708,6 +735,9 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @return
      */
     std::string data(size_t node_index) const;
+
+    void set_data(size_t node_index, const char* data);
+
     /**
      * @brief token_data acquires the data for the token at the given index
      * @param token_index the index of the token for which the data is requested
@@ -977,6 +1007,9 @@ class DummyInterp : public Interpreter<NodeStorage>
                size_t        m_start_line   = 1u,
                size_t        m_start_column = 1u)
     {
+        (void) input;          // suppress unused variable warning
+        (void) m_start_line;   // suppress unused variable warning
+        (void) m_start_column; // suppress unused variable warning
         return true;
     }
 };

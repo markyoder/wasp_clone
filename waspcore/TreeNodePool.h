@@ -70,6 +70,14 @@ class WASP_PUBLIC TreeNodePool
                    const char*                        node_name,
                    typename TP::token_index_type_size token_index);
 
+    /**
+     * @brief Set the data of the given leaf node
+     * 
+     * @param node_index index of the leaf node in this node pool
+     * @param data the data of the leaf node
+     */
+    void set_data(node_index_size  node_index, const char* data);
+
     bool is_leaf(size_t node_index) const
     {
         return m_node_basic_data[node_index].is_leaf();

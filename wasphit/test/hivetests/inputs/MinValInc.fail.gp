@@ -15,9 +15,9 @@
     valueeight=' -45.4 -41.9 -100.3 -45.3 -4E-8 -7e+3 '
     [./value_bad_one]
         inside=47
-    [./]
+    [../]
     [./value_bad_two]
         inside=48
-    [./]
+    [../]
     valueone=a_string
 []

@@ -16,9 +16,9 @@
     valuenine=2000.90
     [./value_bad_one]
         inside=47
-    [./]
+    [../]
     [./value_bad_two]
         inside=48
-    [./]
+    [../]
     valueone=a_string
 []
