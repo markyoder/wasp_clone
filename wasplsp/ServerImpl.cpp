@@ -128,6 +128,13 @@ bool ServerImpl::handleInitializeRequest(
                 const DataObject & initializeRequest  ,
                       DataObject & initializeResponse )
 {
+    if ( this->is_initialized )
+    {
+        this->errors << m_error_prefix << "Server already initialized" << std::endl;
+
+        return false;
+    }
+
     bool pass = true;
 
     // dissect initialize request object
@@ -139,14 +146,14 @@ bool ServerImpl::handleInitializeRequest(
                                       this->client_root_path    ,
                                       this->client_capabilities );
 
-    this->is_initialized = true;
-
     // build initialize response object
 
     pass &= buildInitializeResponse( initializeResponse        ,
                                      this->errors              ,
                                      this->client_request_id   ,
                                      this->server_capabilities );
+
+    if ( pass ) this->is_initialized = true;
 
     return pass;
 }

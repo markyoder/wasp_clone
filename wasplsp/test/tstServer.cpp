@@ -49,7 +49,12 @@ TEST(server, handle_initialize)
     json_expected << R"INPUT({
   "id" : 1
   ,"result" : {
-    "capabilities" : {}
+    "capabilities" : {
+    "textDocumentSync" : {
+    "change" : 1
+    ,"openClose" : true
+  }
+  }
   }
 })INPUT";
 

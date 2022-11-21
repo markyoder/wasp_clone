@@ -23,8 +23,7 @@ TEST(JSON, simple_object)
 {
     std::stringstream input;
     input << R"INPUT({
- "key_string":"value1",
- "key_int" : 1 ,
+ "key_string":"val\"ue1\\","key_int" : 1 ,
  "key_double" : 1.03,
  "key_bool_true" : true,
  "key_bool_false" : false,
@@ -46,7 +45,7 @@ TEST(JSON, simple_object)
 
     ASSERT_EQ(1, json["key_int"].to_int());
     ASSERT_EQ(1.03, json["key_double"].to_double());
-    ASSERT_EQ("value1", json["key_string"].to_string());
+    ASSERT_EQ("val\"ue1\\", json["key_string"].to_string());
     ASSERT_TRUE(json["key_bool_true"].to_bool());
     ASSERT_FALSE(json["key_bool_false"].to_bool());
     ASSERT_FALSE(json["key_null"].to_bool());

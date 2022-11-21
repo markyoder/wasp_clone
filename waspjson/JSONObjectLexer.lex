@@ -50,7 +50,7 @@ DOUBLE {INTEGER}?\.{INTEGER}{EXPONENT}?|{INTEGER}\.({INTEGER}{EXPONENT}?)?|{INTE
 TOKEN_TRUE true
 TOKEN_FALSE false
 TOKEN_NULL null
-DOUBLE_QUOTED_STRING \"(\\.|[^"\n])*\"
+DOUBLE_QUOTED_STRING \"([^\\"]|\\\"|\\[^"])*\"
 SINGLE_QUOTED_STRING \'(\\.|[^'\n])*\'
 
 

@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.0.2] - 11-21-2022
+
+### Fixed
+ - Interpreter root and node_at to return null view for no nodes
+ - WaspHit lexer for exclusive start condition newline capturing
+ - WaspJson lexer for escaped backslash before last double quote
+ - WaspServer capabilities to include full text document syncing
+
 ## [3.0.1] - 9-27-2022
 
 ### Fixed

@@ -58,7 +58,13 @@ TEST(integrate, test_initialize)
                                             response_capabilities ) );
 
     ASSERT_EQ ( client_request_id , response_request_id          );
-    ASSERT_EQ ( (size_t) 0        , response_capabilities.size() );
+    ASSERT_EQ ( (size_t) 1        , response_capabilities.size() );
+
+    ASSERT_TRUE(response_capabilities[m_text_doc_sync][m_open_close].is_bool());
+    ASSERT_TRUE(response_capabilities[m_text_doc_sync][m_open_close].to_bool());
+
+    ASSERT_TRUE(response_capabilities[m_text_doc_sync][m_change].is_int());
+    ASSERT_EQ(1,response_capabilities[m_text_doc_sync][m_change].to_int());
 }
 
 TEST(integrate, test_initialized)

@@ -856,7 +856,7 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
         // call method to recursively fill document symbols for each child node
 
-        this->traverseParseTreeAndFillSymbols( node , *child );
+        pass &= this->traverseParseTreeAndFillSymbols( node , *child );
     }
 
     return pass;
@@ -930,7 +930,7 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
 
         // call method to recursively fill document symbols for each child node
 
-        this->traverseParseTreeAndFillSymbols( node , child );
+        pass &= this->traverseParseTreeAndFillSymbols( node , child );
     }
 
     return pass;

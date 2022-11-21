@@ -27,7 +27,7 @@ NodeView Interpreter<NodeStorage>::root() const
     // have any nodes?
     if (m_nodes.size() == 0)
     {
-        return NodeView(m_nodes.size(), *const_cast<Interpreter*>(this));
+        return NodeView(); // null view
     }
     return NodeView(m_root_index, *const_cast<Interpreter*>(this));
 }
@@ -37,7 +37,7 @@ NodeView Interpreter<NodeStorage>::node_at(node_index_size index) const
     // have any nodes?
     if (m_nodes.size() == 0)
     {
-        return NodeView(m_nodes.size(), *const_cast<Interpreter*>(this));
+        return NodeView(); // null view
     }
     return NodeView(index, *const_cast<Interpreter*>(this));
 }
