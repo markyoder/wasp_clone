@@ -1,11 +1,10 @@
 export PATH=/projects/gcc-4.8.5/common_tools/anaconda3/bin:$PATH
 which python
 
-.ecode: &ecode |
-    function ecc () {
-        "$@"
-        if [[ $? -ne 0 ]]; then exit 1; fi
-    }
+function ecc () {
+    "$@"
+    if [[ $? -ne 0 ]]; then exit 1; fi
+}
 
 . ci/setup.sh
 cd build
