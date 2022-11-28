@@ -1,9 +1,16 @@
 export PATH=/projects/gcc-4.8.5/common_tools/anaconda3/bin:$PATH
+which python
+
+.ecode: &ecode |
+    function ecc () {
+        "$@"
+        if [[ $? -ne 0 ]]; then exit 1; fi
+    }
 
 . ci/setup.sh
 cd build
 module load valgrind
-cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Release-${CI_BUILD_REF_NAME}" \
+ecc cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Release-${CI_BUILD_REF_NAME}" \
       -DCMAKE_BUILD_TYPE=RELEASE \
       -Dwasp_ENABLE_TESTS=ON \
       -DBUILD_SHARED_LIBS:BOOL=ON \
@@ -12,7 +19,7 @@ cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Release-${CI_BUILD_REF_NAME}" \
       -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
       ..
 
-ctest --output-on-failure \
+ecc ctest --output-on-failure \
       -D ExperimentalStart \
       -D ExperimentalBuild -j 8\
       -D ExperimentalSubmit \
@@ -24,7 +31,7 @@ rm -rf CMake*
 module avail
 #module load gcc/4.8.5-static
 #      -DCMAKE_EXE_LINKER_FLAGS=-static-libstdc++ -static-libgcc \
-cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Bundle-${CI_BUILD_REF_NAME}" \
+ecc cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Bundle-${CI_BUILD_REF_NAME}" \
       -DCPACK_PACKAGE_NAME=WASP \
       -DBUILD_SHARED_LIBS:BOOL=ON \
        -DCMAKE_BUILD_TYPE=RELEASE \
@@ -41,7 +48,7 @@ cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Bundle-${CI_BUILD_REF_NAME}" \
       -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
       ..
 
-make -j 8 package
+ecc make -j 8 package
 ls -l ./
 # Copy bundle parts up to parent directory to avoid artifact
 # having build directory
