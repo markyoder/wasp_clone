@@ -1024,8 +1024,6 @@ bool buildShutdownRequest( DataObject   & object     ,
 {
     bool pass = true;
 
-    DataObject params;
-
     // set object's params, id, and method name
 
     object[m_params] =  Value();
@@ -1058,8 +1056,6 @@ bool buildExitNotification( DataObject   & object ,
                             std::ostream & errors )
 {
     bool pass = true;
-
-    DataObject params;
 
     // set object's params and method name
 

@@ -127,7 +127,20 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
 
     if ( !client->isDocumentOpen() )
     {
-        std::string doc_uri = m_uri_prefix + stream_name + this->uri_extension;
+        std::string doc_uri = m_uri_prefix + stream_name;
+
+        // only append uri_extension to doc_uri if it does not already end it
+
+        auto ends_with = [](const std::string & uri, const std::string & ext)
+        {
+            return uri.size() >= ext.size() &&
+                   uri.compare(uri.size() - ext.size(), ext.size(), ext) == 0;
+        };
+
+        if ( !ends_with( doc_uri, this->uri_extension ) )
+        {
+            doc_uri += this->uri_extension;
+        }
 
         std::replace( doc_uri.begin() , doc_uri.end() , '\\' , '/' );
 

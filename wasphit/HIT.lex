@@ -221,7 +221,7 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
 }
 
  /* gobble up end-of-lines */
-\n {
+<*>\n {
     yylloc->lines(yyleng); yylloc->step();
     interpreter.push_line_offset(file_offset-yyleng);
 }

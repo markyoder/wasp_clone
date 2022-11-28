@@ -35,6 +35,14 @@ class WASP_PUBLIC WaspServer : public ServerImpl
         // set server connection to a shared pointer to new templated connection
 
         connection = std::make_shared<CONNECTION>(this);
+
+        // set server capabilities to expect full text document when changed
+
+        this->server_capabilities[m_text_doc_sync] = DataObject();
+
+        this->server_capabilities[m_text_doc_sync][m_open_close] = true;
+
+        this->server_capabilities[m_text_doc_sync][m_change] = m_change_full;
     }
 
     /** get read / write connection - specific to this server implemention

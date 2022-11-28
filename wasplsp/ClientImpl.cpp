@@ -92,7 +92,7 @@ bool ClientImpl::doInitialize()
 
     if ( this->is_initialized )
     {
-        this->errors << m_error_prefix << "Connection already initialized" << std::endl;
+        this->errors << m_error_prefix << "Client already initialized" << std::endl;
 
         return false;
     }

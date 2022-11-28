@@ -18,7 +18,7 @@ class WASP_PUBLIC Connection
 
     Connection(){}
 
-    ~Connection(){}
+    virtual ~Connection() = default;
 
     typedef std::shared_ptr<Connection> SP;
 
