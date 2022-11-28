@@ -1,3 +1,5 @@
+export PATH=/projects/gcc-4.8.5/common_tools/anaconda3/bin:$PATH
+
 . ci/setup.sh
 cd build
 module load valgrind
