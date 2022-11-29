@@ -86,7 +86,7 @@ def xml2obj(src):
             self.text_parts.append(content)
 
     builder = TreeBuilder()
-    if isinstance(src, str):
+    if isinstance(src, (str,bytes)):
         xml.sax.parseString(src, builder)
     else:
         xml.sax.parse(src, builder)
