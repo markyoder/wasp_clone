@@ -1,6 +1,7 @@
 from __future__ import print_function
 import subprocess, os, json
 from subprocess import Popen, PIPE
+import xml.etree.ElementTree as ET
 
 def get_wasp_utility_path(utility_name):
     path = __file__
@@ -21,6 +22,24 @@ def get_wasp_utility_path(utility_name):
             path = os.path.dirname(__file__)+"/../bin/" + utility_name
     return path
 
+def run_to_dict(cmd):
+    """run command that generates json and return the resulting typed dict"""
+    proc = Popen(cmd, shell=True, stdout=PIPE)
+    json_result = proc.communicate()[0]
+    document_dictionary = json.loads(json_result)
+    return document_dictionary
+
+def get_xml(input_filepath, type="son"):
+    """Utility function for converting definition-less input 
+    (typically SON-formatted schema) into XML"""
+    utility_name = type+"xml" 
+    waspjson = get_wasp_utility_path(utility_name)
+    cmd = '"' + waspjson + '" "' + input_filepath + '" --nondec'
+    proc = Popen(cmd, shell=True, stdout=PIPE)
+    xml_result_string = proc.communicate()[0]
+    root = ET.fromstring(xml_result_string)
+    return root
+
 def get_json_dict(schema_filepath, input_filepath, ext=""):
     
     if   (ext == 'ddi') or (input_filepath[-4:] == '.ddi') : utility_name = 'ddivalidjson'
@@ -31,7 +50,4 @@ def get_json_dict(schema_filepath, input_filepath, ext=""):
     
     cmd = '"' + waspvalidjson + '" "' + schema_filepath + '" "' + input_filepath + '"'
     # print "CMD: ",cmd
-    proc = Popen(cmd, shell=True, stdout=PIPE)
-    json_result = proc.communicate()[0]
-    document_dictionary = json.loads(json_result)
-    return document_dictionary
+    return run_to_dict(cmd)
