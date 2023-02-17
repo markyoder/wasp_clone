@@ -68,12 +68,14 @@ AND &&
 OR \|\|
 LBRACKET \[
 BRACE_EXPRSN_STRING \$\{[^\"\=]*\}
-NORMAL_VALUE_STRING [^ \'\"\n\t\r\[\]\#\&\;][^ \n\t\r\[\]\#\&]*
+NORMAL_VALUE_STRING [^ \'\"\n\t\r\[\]\#][^ \n\t\r\[\]\#]*
 NORMAL_ARRAY_STRING ([^ \"\n\t\r\;\\']|\\'|\\[^'])([^ \n\t\r\;\\']|\\'|\\[^'])*
-OBJCT_STRING [^" ""."\n\[\]][^" "\n\[\]\=\#\&]*
-PARAM_STRING [^ \'\"\=\n\t\r\[\]\#\&\;]+
+PERIOD_OBJCT_STRING \.[^\/ \n\[\]\=\#\&][^ \n\[\]\=\#\&]+
+NORMAL_OBJCT_STRING   [^\. \n\[\]\=\#\&][^ \n\[\]\=\#\&]*
 VALUE_STRING {BRACE_EXPRSN_STRING}|{NORMAL_VALUE_STRING}
 ARRAY_STRING {BRACE_EXPRSN_STRING}|{NORMAL_ARRAY_STRING}|{ASSIGN}
+OBJCT_STRING {PERIOD_OBJCT_STRING}|{NORMAL_OBJCT_STRING}
+PARAM_STRING [^ \'\"\=\n\t\r\[\]\#\&\;]+
 RBRACKET \]
 SEMICOLON ;
 TOP_OBJECT_TERM \[" "*\]

@@ -2554,7 +2554,7 @@ TEST(HITInterpreter, object_name_with_invalid_pound)
 {
     std::stringstream input;
     input << R"INPUT(
-[object#name] []
+[#objectname] []
 )INPUT";
 
     std::stringstream actual_errors;
@@ -2562,7 +2562,7 @@ TEST(HITInterpreter, object_name_with_invalid_pound)
     ASSERT_FALSE(interpreter.parse(input));
 
     std::stringstream expect_errors;
-    expect_errors << "stream input:2.8-12: syntax error, unexpected object name, expecting ]"
+    expect_errors << "stream input:2.2: syntax error, unexpected invalid token, expecting subblock indicator ./ or integer or object name"
                   << std::endl;
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
@@ -2583,7 +2583,7 @@ TEST(HITInterpreter, object_name_with_invalid_equals)
     ASSERT_FALSE(interpreter.parse(input));
 
     std::stringstream expect_errors;
-    expect_errors << "stream input:2.8-12: syntax error, unexpected object name, expecting ]"
+    expect_errors << "stream input:2.8: syntax error, unexpected invalid token, expecting ]"
                   << std::endl;
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
@@ -2596,7 +2596,7 @@ TEST(HITInterpreter, object_name_with_invalid_ampersand)
 {
     std::stringstream input;
     input << R"INPUT(
-[object&name] []
+[objectname&] []
 )INPUT";
 
     std::stringstream actual_errors;
@@ -2604,7 +2604,7 @@ TEST(HITInterpreter, object_name_with_invalid_ampersand)
     ASSERT_FALSE(interpreter.parse(input));
 
     std::stringstream expect_errors;
-    expect_errors << "stream input:2.8-12: syntax error, unexpected object name, expecting ]"
+    expect_errors << "stream input:2.12: syntax error, unexpected invalid token, expecting ]"
                   << std::endl;
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
@@ -2769,6 +2769,240 @@ TEST(HITInterpreter, quote_chaining_scenarios)
 /quotes/doubles/field/value ("    ")
 /quotes/doubles/term ([])
 /quotes/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - ampersands and semicolons in values
+ */
+TEST(HITInterpreter, ampersands_and_semicolons_in_values)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+value_wt_quotes_ampersand_beg = '&if((x<1)(y>0.5),1E7,-1E7)'
+value_wt_quotes_ampersand_mid = 'if((x<1)&(y>0.5),1E7,-1E7)'
+value_wt_quotes_ampersand_end = 'if((x<1)(y>0.5),1E7,-1E7)&'
+
+value_no_quotes_ampersand_beg = &if((x<1)(y>0.5),1E7,-1E7)
+value_no_quotes_ampersand_mid = if((x<1)&(y>0.5),1E7,-1E7)
+value_no_quotes_ampersand_end = if((x<1)(y>0.5),1E7,-1E7)&
+
+value_no_quotes_semicolon_beg = ;if((x<1)(y>0.5),1E7,-1E7)
+value_no_quotes_semicolon_mid = if((x<1);(y>0.5),1E7,-1E7)
+value_no_quotes_semicolon_end = if((x<1)(y>0.5),1E7,-1E7);
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(43, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(9, document.child_count());
+    ASSERT_EQ(9, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/value_wt_quotes_ampersand_beg
+/value_wt_quotes_ampersand_beg/decl (value_wt_quotes_ampersand_beg)
+/value_wt_quotes_ampersand_beg/= (=)
+/value_wt_quotes_ampersand_beg/' (')
+/value_wt_quotes_ampersand_beg/value (&if((x<1)(y>0.5),1E7,-1E7))
+/value_wt_quotes_ampersand_beg/' (')
+/value_wt_quotes_ampersand_mid
+/value_wt_quotes_ampersand_mid/decl (value_wt_quotes_ampersand_mid)
+/value_wt_quotes_ampersand_mid/= (=)
+/value_wt_quotes_ampersand_mid/' (')
+/value_wt_quotes_ampersand_mid/value (if((x<1)&(y>0.5),1E7,-1E7))
+/value_wt_quotes_ampersand_mid/' (')
+/value_wt_quotes_ampersand_end
+/value_wt_quotes_ampersand_end/decl (value_wt_quotes_ampersand_end)
+/value_wt_quotes_ampersand_end/= (=)
+/value_wt_quotes_ampersand_end/' (')
+/value_wt_quotes_ampersand_end/value (if((x<1)(y>0.5),1E7,-1E7)&)
+/value_wt_quotes_ampersand_end/' (')
+/value_no_quotes_ampersand_beg
+/value_no_quotes_ampersand_beg/decl (value_no_quotes_ampersand_beg)
+/value_no_quotes_ampersand_beg/= (=)
+/value_no_quotes_ampersand_beg/value (&if((x<1)(y>0.5),1E7,-1E7))
+/value_no_quotes_ampersand_mid
+/value_no_quotes_ampersand_mid/decl (value_no_quotes_ampersand_mid)
+/value_no_quotes_ampersand_mid/= (=)
+/value_no_quotes_ampersand_mid/value (if((x<1)&(y>0.5),1E7,-1E7))
+/value_no_quotes_ampersand_end
+/value_no_quotes_ampersand_end/decl (value_no_quotes_ampersand_end)
+/value_no_quotes_ampersand_end/= (=)
+/value_no_quotes_ampersand_end/value (if((x<1)(y>0.5),1E7,-1E7)&)
+/value_no_quotes_semicolon_beg
+/value_no_quotes_semicolon_beg/decl (value_no_quotes_semicolon_beg)
+/value_no_quotes_semicolon_beg/= (=)
+/value_no_quotes_semicolon_beg/value (;if((x<1)(y>0.5),1E7,-1E7))
+/value_no_quotes_semicolon_mid
+/value_no_quotes_semicolon_mid/decl (value_no_quotes_semicolon_mid)
+/value_no_quotes_semicolon_mid/= (=)
+/value_no_quotes_semicolon_mid/value (if((x<1);(y>0.5),1E7,-1E7))
+/value_no_quotes_semicolon_end
+/value_no_quotes_semicolon_end/decl (value_no_quotes_semicolon_end)
+/value_no_quotes_semicolon_end/= (=)
+/value_no_quotes_semicolon_end/value (if((x<1)(y>0.5),1E7,-1E7);)
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - period starts block names and paths
+ */
+TEST(HITInterpreter, period_starts_block_names_and_paths)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+[Block_Names_Begin_With_Letter]
+
+  [child_1a_no_type]
+    var_1a = val_1a
+  []
+
+  [child_1b_wt_type]
+    type   = Type_1b
+    var_1b = val_1b
+  []
+
+[]
+
+[Block_Names_Begin_With_Period]
+
+  [.child_2a_no_type]
+    var_2a = val_2a
+  []
+
+  [.child_2b_wt_type]
+    type   = Type_2b
+    var_2b = val_2b
+  []
+
+[]
+
+[Block_Paths_Begin_With_Period]
+
+  [.child/3a/no/type]
+    var_3a = val_3a
+  []
+
+  [.child/3b/wt/type]
+    type   = Type_3b
+    var_3b = val_3b
+  []
+
+[]
+
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(88, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(3, document.child_count());
+    ASSERT_EQ(3, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/Block_Names_Begin_With_Letter
+/Block_Names_Begin_With_Letter/[ ([)
+/Block_Names_Begin_With_Letter/decl (Block_Names_Begin_With_Letter)
+/Block_Names_Begin_With_Letter/] (])
+/Block_Names_Begin_With_Letter/child_1a_no_type
+/Block_Names_Begin_With_Letter/child_1a_no_type/[ ([)
+/Block_Names_Begin_With_Letter/child_1a_no_type/decl (child_1a_no_type)
+/Block_Names_Begin_With_Letter/child_1a_no_type/] (])
+/Block_Names_Begin_With_Letter/child_1a_no_type/var_1a
+/Block_Names_Begin_With_Letter/child_1a_no_type/var_1a/decl (var_1a)
+/Block_Names_Begin_With_Letter/child_1a_no_type/var_1a/= (=)
+/Block_Names_Begin_With_Letter/child_1a_no_type/var_1a/value (val_1a)
+/Block_Names_Begin_With_Letter/child_1a_no_type/term ([])
+/Block_Names_Begin_With_Letter/Type_1b_type
+/Block_Names_Begin_With_Letter/Type_1b_type/[ ([)
+/Block_Names_Begin_With_Letter/Type_1b_type/decl (child_1b_wt_type)
+/Block_Names_Begin_With_Letter/Type_1b_type/] (])
+/Block_Names_Begin_With_Letter/Type_1b_type/type
+/Block_Names_Begin_With_Letter/Type_1b_type/type/decl (type)
+/Block_Names_Begin_With_Letter/Type_1b_type/type/= (=)
+/Block_Names_Begin_With_Letter/Type_1b_type/type/value (Type_1b)
+/Block_Names_Begin_With_Letter/Type_1b_type/var_1b
+/Block_Names_Begin_With_Letter/Type_1b_type/var_1b/decl (var_1b)
+/Block_Names_Begin_With_Letter/Type_1b_type/var_1b/= (=)
+/Block_Names_Begin_With_Letter/Type_1b_type/var_1b/value (val_1b)
+/Block_Names_Begin_With_Letter/Type_1b_type/term ([])
+/Block_Names_Begin_With_Letter/term ([])
+/Block_Names_Begin_With_Period
+/Block_Names_Begin_With_Period/[ ([)
+/Block_Names_Begin_With_Period/decl (Block_Names_Begin_With_Period)
+/Block_Names_Begin_With_Period/] (])
+/Block_Names_Begin_With_Period/.child_2a_no_type
+/Block_Names_Begin_With_Period/.child_2a_no_type/[ ([)
+/Block_Names_Begin_With_Period/.child_2a_no_type/decl (.child_2a_no_type)
+/Block_Names_Begin_With_Period/.child_2a_no_type/] (])
+/Block_Names_Begin_With_Period/.child_2a_no_type/var_2a
+/Block_Names_Begin_With_Period/.child_2a_no_type/var_2a/decl (var_2a)
+/Block_Names_Begin_With_Period/.child_2a_no_type/var_2a/= (=)
+/Block_Names_Begin_With_Period/.child_2a_no_type/var_2a/value (val_2a)
+/Block_Names_Begin_With_Period/.child_2a_no_type/term ([])
+/Block_Names_Begin_With_Period/Type_2b_type
+/Block_Names_Begin_With_Period/Type_2b_type/[ ([)
+/Block_Names_Begin_With_Period/Type_2b_type/decl (.child_2b_wt_type)
+/Block_Names_Begin_With_Period/Type_2b_type/] (])
+/Block_Names_Begin_With_Period/Type_2b_type/type
+/Block_Names_Begin_With_Period/Type_2b_type/type/decl (type)
+/Block_Names_Begin_With_Period/Type_2b_type/type/= (=)
+/Block_Names_Begin_With_Period/Type_2b_type/type/value (Type_2b)
+/Block_Names_Begin_With_Period/Type_2b_type/var_2b
+/Block_Names_Begin_With_Period/Type_2b_type/var_2b/decl (var_2b)
+/Block_Names_Begin_With_Period/Type_2b_type/var_2b/= (=)
+/Block_Names_Begin_With_Period/Type_2b_type/var_2b/value (val_2b)
+/Block_Names_Begin_With_Period/Type_2b_type/term ([])
+/Block_Names_Begin_With_Period/term ([])
+/Block_Paths_Begin_With_Period
+/Block_Paths_Begin_With_Period/[ ([)
+/Block_Paths_Begin_With_Period/decl (Block_Paths_Begin_With_Period)
+/Block_Paths_Begin_With_Period/] (])
+/Block_Paths_Begin_With_Period/.child
+/Block_Paths_Begin_With_Period/.child/3a
+/Block_Paths_Begin_With_Period/.child/3a/no
+/Block_Paths_Begin_With_Period/.child/3a/no/type
+/Block_Paths_Begin_With_Period/.child/3a/no/type/[ ([)
+/Block_Paths_Begin_With_Period/.child/3a/no/type/decl (.child/3a/no/type)
+/Block_Paths_Begin_With_Period/.child/3a/no/type/] (])
+/Block_Paths_Begin_With_Period/.child/3a/no/type/var_3a
+/Block_Paths_Begin_With_Period/.child/3a/no/type/var_3a/decl (var_3a)
+/Block_Paths_Begin_With_Period/.child/3a/no/type/var_3a/= (=)
+/Block_Paths_Begin_With_Period/.child/3a/no/type/var_3a/value (val_3a)
+/Block_Paths_Begin_With_Period/.child/3a/no/type/term ([])
+/Block_Paths_Begin_With_Period/.child
+/Block_Paths_Begin_With_Period/.child/3b
+/Block_Paths_Begin_With_Period/.child/3b/wt
+/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type
+/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/[ ([)
+/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/decl (.child/3b/wt/type)
+/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/] (])
+/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/type
+/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/type/decl (type)
+/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/type/= (=)
+/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/type/value (Type_3b)
+/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/var_3b
+/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/var_3b/decl (var_3b)
+/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/var_3b/= (=)
+/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/var_3b/value (val_3b)
+/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/term ([])
+/Block_Paths_Begin_With_Period/term ([])
 )INPUT";
 
     std::stringstream actual_paths;
