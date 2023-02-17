@@ -1,4 +1,4 @@
-// A Bison parser, made by GNU Bison 3.7.6.
+// A Bison parser, made by GNU Bison 3.8.2.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
@@ -331,9 +331,9 @@ namespace wasp {
   HITParser::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
   {}
 
-  /*---------------.
-  | symbol kinds.  |
-  `---------------*/
+  /*---------.
+  | symbol.  |
+  `---------*/
 
   // basic_symbol.
   template <typename Base>
@@ -353,11 +353,12 @@ namespace wasp {
   {}
 
   template <typename Base>
-  HITParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_RVREF (semantic_type) v, YY_RVREF (location_type) l)
+  HITParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_RVREF (value_type) v, YY_RVREF (location_type) l)
     : Base (t)
     , value (YY_MOVE (v))
     , location (YY_MOVE (l))
   {}
+
 
   template <typename Base>
   HITParser::symbol_kind_type
@@ -365,6 +366,7 @@ namespace wasp {
   {
     return this->kind ();
   }
+
 
   template <typename Base>
   bool
@@ -383,25 +385,27 @@ namespace wasp {
   }
 
   // by_kind.
-  HITParser::by_kind::by_kind ()
+  HITParser::by_kind::by_kind () YY_NOEXCEPT
     : kind_ (symbol_kind::S_YYEMPTY)
   {}
 
 #if 201103L <= YY_CPLUSPLUS
-  HITParser::by_kind::by_kind (by_kind&& that)
+  HITParser::by_kind::by_kind (by_kind&& that) YY_NOEXCEPT
     : kind_ (that.kind_)
   {
     that.clear ();
   }
 #endif
 
-  HITParser::by_kind::by_kind (const by_kind& that)
+  HITParser::by_kind::by_kind (const by_kind& that) YY_NOEXCEPT
     : kind_ (that.kind_)
   {}
 
-  HITParser::by_kind::by_kind (token_kind_type t)
+  HITParser::by_kind::by_kind (token_kind_type t) YY_NOEXCEPT
     : kind_ (yytranslate_ (t))
   {}
+
+
 
   void
   HITParser::by_kind::clear () YY_NOEXCEPT
@@ -422,11 +426,13 @@ namespace wasp {
     return kind_;
   }
 
+
   HITParser::symbol_kind_type
   HITParser::by_kind::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
+
 
 
   // by_state.
@@ -518,31 +524,31 @@ namespace wasp {
       case symbol_kind::S_object_decl: // object_decl
 #line 110 "HIT.bison"
                     { delete (yysym.value.node_indices); }
-#line 522 "HITParser.cpp"
+#line 528 "HITParser.cpp"
         break;
 
       case symbol_kind::S_object_members: // object_members
 #line 112 "HIT.bison"
                     { delete (yysym.value.object_children)->second; delete (yysym.value.object_children); }
-#line 528 "HITParser.cpp"
+#line 534 "HITParser.cpp"
         break;
 
       case symbol_kind::S_double_quoted_strings: // double_quoted_strings
 #line 111 "HIT.bison"
                     { delete (yysym.value.node_indices); }
-#line 534 "HITParser.cpp"
+#line 540 "HITParser.cpp"
         break;
 
       case symbol_kind::S_array_members: // array_members
 #line 111 "HIT.bison"
                     { delete (yysym.value.node_indices); }
-#line 540 "HITParser.cpp"
+#line 546 "HITParser.cpp"
         break;
 
       case symbol_kind::S_array: // array
 #line 111 "HIT.bison"
                     { delete (yysym.value.node_indices); }
-#line 546 "HITParser.cpp"
+#line 552 "HITParser.cpp"
         break;
 
       default:
@@ -591,7 +597,7 @@ namespace wasp {
   }
 
   void
-  HITParser::yypop_ (int n)
+  HITParser::yypop_ (int n) YY_NOEXCEPT
   {
     yystack_.pop (n);
   }
@@ -634,13 +640,13 @@ namespace wasp {
   }
 
   bool
-  HITParser::yy_pact_value_is_default_ (int yyvalue)
+  HITParser::yy_pact_value_is_default_ (int yyvalue) YY_NOEXCEPT
   {
     return yyvalue == yypact_ninf_;
   }
 
   bool
-  HITParser::yy_table_value_is_error_ (int yyvalue)
+  HITParser::yy_table_value_is_error_ (int yyvalue) YY_NOEXCEPT
   {
     return yyvalue == yytable_ninf_;
   }
@@ -688,7 +694,7 @@ namespace wasp {
     lexer = std::make_shared<HITLexerImpl>(interpreter,&input_stream);
 }
 
-#line 692 "HITParser.cpp"
+#line 698 "HITParser.cpp"
 
 
     /* Initialize the stack.  The initial state will be set in
@@ -828,7 +834,7 @@ namespace wasp {
     {
         size_t token_index = ((yystack_[0].value.token_index));(yylhs.value.node_index) = interpreter.push_leaf(wasp::SEMICOLON,";",token_index);
     }
-#line 832 "HITParser.cpp"
+#line 838 "HITParser.cpp"
     break;
 
   case 3: // assign: "="
@@ -838,7 +844,7 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::ASSIGN,"="
                          ,assign_token_index);
     }
-#line 842 "HITParser.cpp"
+#line 848 "HITParser.cpp"
     break;
 
   case 4: // object_term: "block terminator"
@@ -848,7 +854,7 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::OBJECT_TERM,"term"
                          ,token_index);
     }
-#line 852 "HITParser.cpp"
+#line 858 "HITParser.cpp"
     break;
 
   case 5: // lbracket: "["
@@ -858,7 +864,7 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::LBRACKET,"["
                          ,token_index);
     }
-#line 862 "HITParser.cpp"
+#line 868 "HITParser.cpp"
     break;
 
   case 6: // rbracket: "]"
@@ -869,7 +875,7 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::RBRACKET,"]"
                          ,token_index);
     }
-#line 873 "HITParser.cpp"
+#line 879 "HITParser.cpp"
     break;
 
   case 7: // dot_slash: "subblock indicator ./"
@@ -880,7 +886,7 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DOT_SLASH,"./"
                          ,token_index);
     }
-#line 884 "HITParser.cpp"
+#line 890 "HITParser.cpp"
     break;
 
   case 8: // include: "file include"
@@ -889,7 +895,7 @@ namespace wasp {
             auto token_index = (yystack_[0].value.token_index);
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::FILE,"decl",token_index);
         }
-#line 893 "HITParser.cpp"
+#line 899 "HITParser.cpp"
     break;
 
   case 9: // object_decl: lbracket section_name rbracket
@@ -902,7 +908,7 @@ namespace wasp {
                                                    ,decl_index
                                                    ,rbracket_index};
     }
-#line 906 "HITParser.cpp"
+#line 912 "HITParser.cpp"
     break;
 
   case 10: // object_decl: lbracket dot_slash section_name rbracket
@@ -919,37 +925,37 @@ namespace wasp {
                 ,decl_index
                 ,rbracket_index};
     }
-#line 923 "HITParser.cpp"
+#line 929 "HITParser.cpp"
     break;
 
   case 11: // object_member: primitive
 #line 346 "HIT.bison"
                 { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 929 "HITParser.cpp"
+#line 935 "HITParser.cpp"
     break;
 
   case 12: // object_member: keyedvalue
 #line 346 "HIT.bison"
                             { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 935 "HITParser.cpp"
+#line 941 "HITParser.cpp"
     break;
 
   case 13: // object_member: comment
 #line 346 "HIT.bison"
                                          { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 941 "HITParser.cpp"
+#line 947 "HITParser.cpp"
     break;
 
   case 14: // object_member: object
 #line 347 "HIT.bison"
                   { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 947 "HITParser.cpp"
+#line 953 "HITParser.cpp"
     break;
 
   case 15: // object_member: include_file
 #line 347 "HIT.bison"
                            { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 953 "HITParser.cpp"
+#line 959 "HITParser.cpp"
     break;
 
   case 16: // object_members: object_member
@@ -969,7 +975,7 @@ namespace wasp {
                     (indices->size(), indices);
         }
     }
-#line 973 "HITParser.cpp"
+#line 979 "HITParser.cpp"
     break;
 
   case 17: // object_members: object_members object_member
@@ -989,7 +995,7 @@ namespace wasp {
         (yystack_[1].value.object_children)->second->push_back(((yystack_[0].value.node_index)));
         (yylhs.value.object_children) = (yystack_[1].value.object_children);
     }
-#line 993 "HITParser.cpp"
+#line 999 "HITParser.cpp"
     break;
 
   case 18: // object: object_decl object_term
@@ -998,7 +1004,7 @@ namespace wasp {
         (yylhs.value.node_index) = push_object(interpreter, *(yystack_[1].value.node_indices), nullptr, (yystack_[0].value.node_index));
         delete (yystack_[1].value.node_indices);
         }
-#line 1002 "HITParser.cpp"
+#line 1008 "HITParser.cpp"
     break;
 
   case 19: // object: object_decl object_members object_term
@@ -1009,7 +1015,7 @@ namespace wasp {
         delete (yystack_[1].value.object_children)->second;
         delete (yystack_[1].value.object_children);
         }
-#line 1013 "HITParser.cpp"
+#line 1019 "HITParser.cpp"
     break;
 
   case 20: // integer: "integer"
@@ -1019,7 +1025,7 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::INTEGER,"int"
                          ,token_index);
     }
-#line 1023 "HITParser.cpp"
+#line 1029 "HITParser.cpp"
     break;
 
   case 21: // real: "real"
@@ -1029,7 +1035,7 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::REAL,"real"
                          ,token_index);
     }
-#line 1033 "HITParser.cpp"
+#line 1039 "HITParser.cpp"
     break;
 
   case 22: // unquoted_string: "string"
@@ -1039,7 +1045,7 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::STRING,"string"
                          ,token_index);
     }
-#line 1043 "HITParser.cpp"
+#line 1049 "HITParser.cpp"
     break;
 
   case 23: // double_quoted_string: "quoted string"
@@ -1048,7 +1054,7 @@ namespace wasp {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE, "value", token_index);
     }
-#line 1052 "HITParser.cpp"
+#line 1058 "HITParser.cpp"
     break;
 
   case 24: // double_quoted_strings: double_quoted_string
@@ -1058,7 +1064,7 @@ namespace wasp {
         (yylhs.value.node_indices) = new std::vector<size_t>();
         (yylhs.value.node_indices)->push_back(qstring_index);
     }
-#line 1062 "HITParser.cpp"
+#line 1068 "HITParser.cpp"
     break;
 
   case 25: // double_quoted_strings: double_quoted_strings double_quoted_string
@@ -1068,31 +1074,31 @@ namespace wasp {
         (yystack_[1].value.node_indices)->push_back(qstring_index);
         (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
     }
-#line 1072 "HITParser.cpp"
+#line 1078 "HITParser.cpp"
     break;
 
   case 26: // VALUE: "integer"
 #line 429 "HIT.bison"
         { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 1078 "HITParser.cpp"
+#line 1084 "HITParser.cpp"
     break;
 
   case 27: // VALUE: "real"
 #line 429 "HIT.bison"
                   { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 1084 "HITParser.cpp"
+#line 1090 "HITParser.cpp"
     break;
 
   case 28: // VALUE: "value string"
 #line 429 "HIT.bison"
                          { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 1090 "HITParser.cpp"
+#line 1096 "HITParser.cpp"
     break;
 
   case 29: // VALUE: "array string"
 #line 429 "HIT.bison"
                                         { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 1096 "HITParser.cpp"
+#line 1102 "HITParser.cpp"
     break;
 
   case 30: // value: VALUE
@@ -1102,19 +1108,19 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                          ,token_index);
     }
-#line 1106 "HITParser.cpp"
+#line 1112 "HITParser.cpp"
     break;
 
   case 31: // SECTION_NAME: "object name"
 #line 436 "HIT.bison"
                { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 1112 "HITParser.cpp"
+#line 1118 "HITParser.cpp"
     break;
 
   case 32: // SECTION_NAME: "integer"
 #line 436 "HIT.bison"
                               { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 1118 "HITParser.cpp"
+#line 1124 "HITParser.cpp"
     break;
 
   case 33: // section_name: SECTION_NAME
@@ -1124,7 +1130,7 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DECL,"decl"
                          ,decl_token_index);
     }
-#line 1128 "HITParser.cpp"
+#line 1134 "HITParser.cpp"
     break;
 
   case 34: // field_name: "parameter name"
@@ -1134,7 +1140,7 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DECL,"decl"
                          ,decl_token_index);
     }
-#line 1138 "HITParser.cpp"
+#line 1144 "HITParser.cpp"
     break;
 
   case 35: // quote: "'"
@@ -1144,31 +1150,31 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::QUOTE,"'"
                          ,token_index);
     }
-#line 1148 "HITParser.cpp"
+#line 1154 "HITParser.cpp"
     break;
 
   case 36: // string: unquoted_string
 #line 455 "HIT.bison"
          { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1154 "HITParser.cpp"
+#line 1160 "HITParser.cpp"
     break;
 
   case 37: // primitive: integer
 #line 457 "HIT.bison"
             { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1160 "HITParser.cpp"
+#line 1166 "HITParser.cpp"
     break;
 
   case 38: // primitive: real
 #line 458 "HIT.bison"
              { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1166 "HITParser.cpp"
+#line 1172 "HITParser.cpp"
     break;
 
   case 39: // primitive: string
 #line 459 "HIT.bison"
              { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1172 "HITParser.cpp"
+#line 1178 "HITParser.cpp"
     break;
 
   case 40: // path: "string"
@@ -1178,7 +1184,7 @@ namespace wasp {
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"path"
                              ,token_index);
         }
-#line 1182 "HITParser.cpp"
+#line 1188 "HITParser.cpp"
     break;
 
   case 41: // path: "quoted string"
@@ -1188,7 +1194,7 @@ namespace wasp {
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"path"
                              ,token_index);
         }
-#line 1192 "HITParser.cpp"
+#line 1198 "HITParser.cpp"
     break;
 
   case 42: // include_file: include path
@@ -1208,25 +1214,25 @@ namespace wasp {
                 interpreter.set_failed(true);
             }
         }
-#line 1212 "HITParser.cpp"
+#line 1218 "HITParser.cpp"
     break;
 
   case 43: // array_member: semicolon
 #line 491 "HIT.bison"
                { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1218 "HITParser.cpp"
+#line 1224 "HITParser.cpp"
     break;
 
   case 44: // array_member: value
 #line 491 "HIT.bison"
                            { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1224 "HITParser.cpp"
+#line 1230 "HITParser.cpp"
     break;
 
   case 45: // array_member: double_quoted_string
 #line 491 "HIT.bison"
                                    { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1230 "HITParser.cpp"
+#line 1236 "HITParser.cpp"
     break;
 
   case 46: // array_members: array_member
@@ -1236,7 +1242,7 @@ namespace wasp {
         (yylhs.value.node_indices) = new std::vector<size_t>();
         (yylhs.value.node_indices)->push_back(offset);
     }
-#line 1240 "HITParser.cpp"
+#line 1246 "HITParser.cpp"
     break;
 
   case 47: // array_members: array_members array_member
@@ -1245,7 +1251,7 @@ namespace wasp {
         (yystack_[1].value.node_indices)->push_back(((yystack_[0].value.node_index)));
         (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
     }
-#line 1249 "HITParser.cpp"
+#line 1255 "HITParser.cpp"
     break;
 
   case 48: // array: quote array_members quote
@@ -1255,7 +1261,7 @@ namespace wasp {
         (yystack_[1].value.node_indices)->push_back(((yystack_[0].value.node_index)));
         (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
     }
-#line 1259 "HITParser.cpp"
+#line 1265 "HITParser.cpp"
     break;
 
   case 49: // array: quote quote
@@ -1265,7 +1271,7 @@ namespace wasp {
         (yylhs.value.node_indices)->push_back(((yystack_[1].value.node_index)));
         (yylhs.value.node_indices)->push_back(((yystack_[0].value.node_index)));
     }
-#line 1269 "HITParser.cpp"
+#line 1275 "HITParser.cpp"
     break;
 
   case 50: // array: array array
@@ -1275,7 +1281,7 @@ namespace wasp {
         (yylhs.value.node_indices)->insert((yylhs.value.node_indices)->end(), (yystack_[0].value.node_indices)->begin(), (yystack_[0].value.node_indices)->end());
         delete (yystack_[0].value.node_indices);
     }
-#line 1279 "HITParser.cpp"
+#line 1285 "HITParser.cpp"
     break;
 
   case 51: // keyedvalue: field_name assign value
@@ -1289,7 +1295,7 @@ namespace wasp {
 
         (yylhs.value.node_index) = push_keyed_value_or_array(interpreter, child_indices);
     }
-#line 1293 "HITParser.cpp"
+#line 1299 "HITParser.cpp"
     break;
 
   case 52: // keyedvalue: field_name assign double_quoted_strings
@@ -1304,7 +1310,7 @@ namespace wasp {
 
         (yylhs.value.node_index) = push_keyed_value_or_array(interpreter, child_indices);
     }
-#line 1308 "HITParser.cpp"
+#line 1314 "HITParser.cpp"
     break;
 
   case 53: // keyedvalue: field_name assign array
@@ -1320,7 +1326,7 @@ namespace wasp {
 
         (yylhs.value.node_index) = push_keyed_value_or_array(interpreter, child_indices);
     }
-#line 1324 "HITParser.cpp"
+#line 1330 "HITParser.cpp"
     break;
 
   case 54: // comment: "comment"
@@ -1330,7 +1336,7 @@ namespace wasp {
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment"
                          ,token_index);
     }
-#line 1334 "HITParser.cpp"
+#line 1340 "HITParser.cpp"
     break;
 
   case 56: // start: start comment
@@ -1338,7 +1344,7 @@ namespace wasp {
                        {
             interpreter.push_staged_child((yystack_[0].value.node_index));
         }
-#line 1342 "HITParser.cpp"
+#line 1348 "HITParser.cpp"
     break;
 
   case 57: // start: start keyedvalue
@@ -1346,7 +1352,7 @@ namespace wasp {
                           {
             interpreter.push_staged_child((yystack_[0].value.node_index));
         }
-#line 1350 "HITParser.cpp"
+#line 1356 "HITParser.cpp"
     break;
 
   case 58: // start: start object
@@ -1354,7 +1360,7 @@ namespace wasp {
                       {
             interpreter.push_staged_child((yystack_[0].value.node_index));
         }
-#line 1358 "HITParser.cpp"
+#line 1364 "HITParser.cpp"
     break;
 
   case 59: // start: start include_file
@@ -1364,11 +1370,11 @@ namespace wasp {
             // staged content.
             interpreter.push_staged_child((yystack_[0].value.node_index));
         }
-#line 1368 "HITParser.cpp"
+#line 1374 "HITParser.cpp"
     break;
 
 
-#line 1372 "HITParser.cpp"
+#line 1378 "HITParser.cpp"
 
             default:
               break;
@@ -1606,16 +1612,16 @@ namespace wasp {
     // Actual number of expected tokens
     int yycount = 0;
 
-    int yyn = yypact_[+yyparser_.yystack_[0].state];
+    const int yyn = yypact_[+yyparser_.yystack_[0].state];
     if (!yy_pact_value_is_default_ (yyn))
       {
         /* Start YYX at -YYN if negative to avoid negative indexes in
            YYCHECK.  In other words, skip the first -YYN actions for
            this state because they are default actions.  */
-        int yyxbegin = yyn < 0 ? -yyn : 0;
+        const int yyxbegin = yyn < 0 ? -yyn : 0;
         // Stay within bounds of both yycheck and yytname.
-        int yychecklim = yylast_ - yyn + 1;
-        int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
+        const int yychecklim = yylast_ - yyn + 1;
+        const int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
         for (int yyx = yyxbegin; yyx < yyxend; ++yyx)
           if (yycheck_[yyx + yyn] == yyx && yyx != symbol_kind::S_YYerror
               && !yy_table_value_is_error_ (yytable_[yyx + yyn]))
@@ -1633,6 +1639,9 @@ namespace wasp {
       yyarg[0] = symbol_kind::S_YYEMPTY;
     return yycount;
   }
+
+
+
 
 
 
@@ -1886,7 +1895,7 @@ namespace wasp {
 #endif // YYDEBUG
 
   HITParser::symbol_kind_type
-  HITParser::yytranslate_ (int t)
+  HITParser::yytranslate_ (int t) YY_NOEXCEPT
   {
     // YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to
     // TOKEN-NUM as returned by yylex.
@@ -1929,14 +1938,14 @@ namespace wasp {
     if (t <= 0)
       return symbol_kind::S_YYEOF;
     else if (t <= code_max)
-      return YY_CAST (symbol_kind_type, translate_table[t]);
+      return static_cast <symbol_kind_type> (translate_table[t]);
     else
       return symbol_kind::S_YYUNDEF;
   }
 
 #line 36 "HIT.bison"
 } // wasp
-#line 1940 "HITParser.cpp"
+#line 1949 "HITParser.cpp"
 
 #line 585 "HIT.bison"
  /*** Additional Code ***/
