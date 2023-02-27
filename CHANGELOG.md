@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ### Fixed
+ - Logic for is_null in waspcore generic NodeView
  - HIT parameter values to allow containing ampersand
  - HIT block names to allow starting with a period
 
