@@ -74,7 +74,8 @@ class WASP_PUBLIC NodeView
      * @brief is_null determines if this view is backed by a storage pool
      * @return true, iff the view has no storage backing
      */
-    bool is_null() const { return m_pool == nullptr; }
+    bool is_null() const;
+
     /**
      * @brief is_decorative default NodeView interface implementation
      * @return always false
