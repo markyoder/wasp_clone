@@ -35,6 +35,11 @@ NodeView NodeView::parent() const
     return view;
 }
 
+bool NodeView::is_null() const
+{
+    return m_pool == nullptr || m_node_index == m_pool->size();
+}
+
 bool NodeView::has_parent() const
 {
     return m_pool->has_parent(m_node_index);
