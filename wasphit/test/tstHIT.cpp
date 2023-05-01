@@ -306,7 +306,7 @@ TEST(HITInterpreter, less_simple_object)
     ASSERT_EQ("fred = 1\n2\n3\n1\n2\n3\n1\n2\n3\n1\n2\n3", fred.data());
     // Notice that the additional byte offset introduced by the longer token data
     // absorbes the whitespace prefix on the following line 'key'
-    ASSERT_EQ(R"INPUT([ted]
+    std::string expected_value = R"INPUT([ted]
      boo = foo # halloween
      fred = 1
 2
@@ -320,7 +320,8 @@ TEST(HITInterpreter, less_simple_object)
 1
 2
 3 key = 3.421
- [])INPUT", interpreter.root().data());
+ [])INPUT";
+    ASSERT_EQ(expected_value.data(), interpreter.root().data());
 }
 
 TEST(HITInterpreter, object_array)
