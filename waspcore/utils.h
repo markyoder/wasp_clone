@@ -32,7 +32,7 @@ namespace wasp
  * @return the variable's value iff if the variable exists
  * Note: empty string can result if the variable exists with empty value
  *       or because the variable doesn't exist
- */ 
+ */
 inline WASP_PUBLIC std::string get_env(const std::string& var)
 {
     std::string result;
@@ -45,7 +45,7 @@ inline WASP_PUBLIC std::string get_env(const std::string& var)
 
 /**
  * @brief assign the given environment variable the given value
- */  
+ */
 inline WASP_PUBLIC void set_env( const std::string& var, const std::string& value )
 {
 #ifndef _WIN32
@@ -58,13 +58,13 @@ inline WASP_PUBLIC void set_env( const std::string& var, const std::string& valu
 
 /**
  * @brief make the directory
- */ 
+ */
 inline WASP_PUBLIC bool mkdir(const std::string& path)
 {
 #if defined( _WIN32 )
     return ::_mkdir( path.c_str() ) == 0;
 #else
-    return ::mkdir( path.c_str(), 0777 ) == 0;  
+    return ::mkdir( path.c_str(), 0777 ) == 0;
 #endif
 }  // mkdir
 
@@ -315,7 +315,9 @@ WASP_PUBLIC void print_from(std::ostream& stream,
         size_t line = node_pool.line(node_index);
         wasp_check(line != size_t(-1));
         size_t column = node_pool.column(node_index);
+
         wasp_check(column != size_t(-1));
+        wasp_check(column != 0);
         size_t ldiff;
         if (line >= last_line)
             ldiff = line - last_line;
@@ -390,7 +392,7 @@ non_decorative_children(const TAdapter& node)
 }
 
 // File enabled variant
-template<class Node> 
+template<class Node>
 WASP_PUBLIC typename Node::Collection
 fe_non_decorative_children(const Node& n)
 {
@@ -434,7 +436,7 @@ WASP_PUBLIC TAdapter first_non_decorative_child_by_name(const TAdapter& node,
 }
 
 // File enabled variant
-template<class Node> 
+template<class Node>
 WASP_PUBLIC Node
 fe_first_non_decorative_child_by_name(const Node& n, const std::string& name)
 {
@@ -477,7 +479,7 @@ WASP_PUBLIC size_t non_decorative_children_count(const TAdapter& node)
 }
 
 // File enabled variant
-template<class Node> 
+template<class Node>
 WASP_PUBLIC std::size_t
 fe_non_decorative_children_count(const Node& n)
 {
@@ -501,7 +503,7 @@ fe_non_decorative_children_count(const Node& n)
     return result;
 }
 // File enabled variant
-template<class Node> 
+template<class Node>
 WASP_PUBLIC std::size_t fe_child_count(const Node& n)
 {
     if( n.type() == wasp::FILE )
@@ -516,7 +518,7 @@ WASP_PUBLIC std::size_t fe_child_count(const Node& n)
 }
 
 // File enabled variant
-template<class Node> 
+template<class Node>
 WASP_PUBLIC std::size_t fe_child_count_by_name(const Node& n, const std::string& name, std::size_t limit)
 {
     size_t result = 0;
@@ -542,11 +544,11 @@ WASP_PUBLIC std::size_t fe_child_count_by_name(const Node& n, const std::string&
 }
 
 // File enabled variant
-template<class Node> 
+template<class Node>
 WASP_PUBLIC Node fe_child_at(const Node& n, const std::size_t index)
 {
     if( n.type() == wasp::FILE )
-    {   
+    {
         auto * interp = n.node_pool()->document(n.node_index());
         if ( interp != nullptr )
         {
@@ -556,13 +558,13 @@ WASP_PUBLIC Node fe_child_at(const Node& n, const std::size_t index)
             return view.child_at(index);
         }
     }
-    
+
     auto child_node_pool_index = n.node_pool()->child_at(n.node_index(), index);
     return Node(child_node_pool_index, *n.node_pool());
 }
 
 // File enabled variant
-template<class Node> 
+template<class Node>
 WASP_PUBLIC typename Node::Collection
 fe_child_by_name(const Node& n, const std::string& name, std::size_t limit)
 {
@@ -583,7 +585,7 @@ fe_child_by_name(const Node& n, const std::string& name, std::size_t limit)
 }
 
 // File enabled variant
-template<class Node> 
+template<class Node>
 WASP_PUBLIC Node fe_first_child_by_name(const Node& n, const std::string& name)
 {
     for(auto itr = n.begin(); itr != n.end(); itr.next())
@@ -598,7 +600,7 @@ WASP_PUBLIC Node fe_first_child_by_name(const Node& n, const std::string& name)
 }
 
 // File enabled variant
-template<class Node> 
+template<class Node>
 WASP_PUBLIC bool fe_has_parent(const Node& n)
 {
     bool _has_parent = n.node_pool()->has_parent(n.node_index());
@@ -653,7 +655,7 @@ WASP_PUBLIC TAdapter parent_document_node(const Interp* document)
 }
 
 // File enabled variant
-template<class Node, class Interp> 
+template<class Node, class Interp>
 WASP_PUBLIC Node fe_parent(const Node& n)
 {
     Node view;

@@ -146,14 +146,14 @@ TEST(NodeView, child)
         }
     }
     NodeView root_view(interp.size() - 1, interp);
-    
+
     {// Test child at and iterator (using DefaultPush, equivalent to child_at(index))
         auto itr = root_view.begin();
         // Root has children so iterator should be valid
         EXPECT_TRUE(itr);
         size_t child_index = 0;
         while(itr)
-        {   
+        {
             SCOPED_TRACE(child_index);
             // Same node
             ASSERT_EQ(root_view.child_at(child_index), itr.get());

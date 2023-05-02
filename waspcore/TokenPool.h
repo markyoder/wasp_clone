@@ -83,10 +83,12 @@ struct WASP_PUBLIC TokenPool
      * @param str the token's string data
      * @param type the token's type (enumeration)
      * @param token_file_offset the token's offset into the file/stream
+     * @param track_newline indicate if embedded newlines in the str should be captured in the line offset data
      */
     void push(const char*           str,
               token_type_size       type,
-              file_offset_type_size token_file_offset);
+              file_offset_type_size token_file_offset,
+              bool track_newline=true);
     /**
      * @brief push_line appends a line to the new line buffer
      * @param line_file_offset byte offset into the file/stream for the newline

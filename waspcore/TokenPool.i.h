@@ -120,7 +120,8 @@ FOTS TokenPool<TTS, TITS, FOTS>::offset(TITS token_index) const
 template<typename TTS, typename TITS, typename FOTS>
 void TokenPool<TTS, TITS, FOTS>::push(const char* str,
                                       TTS  type,
-                                      FOTS token_file_offset)
+                                      FOTS token_file_offset,
+                                      bool track_newline)
 {
     // capture the token's string in the string pool
     m_strings.push(str);
@@ -130,7 +131,7 @@ void TokenPool<TTS, TITS, FOTS>::push(const char* str,
     for (size_t i = 0; str[i] != 0; i++)
     {
         // this is a newline, push its offset
-        if (str[i] == '\n')
+        if (str[i] == '\n' && track_newline)
         {
             m_line_offsets.push_back(token_file_offset + i);
         }

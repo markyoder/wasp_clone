@@ -76,10 +76,11 @@ void TreeNodePool<NTS, NIS, TP>::set_data(NIS node_index, const char* data)
 
     m_node_basic_data[node_index].m_token_index = m_token_data.size();
 
-    // TODO - add logic/accessors to allow overwriting 
+    // TODO - add logic/accessors to allow overwriting
     // existing token data in the case where new value's size is equal to or less than
     // the old value's size. I.e., re-use token memory
-    m_token_data.push(data, type, file_offset);
+    bool track_newlines = false;
+    m_token_data.push(data, type, file_offset, track_newlines);
 }
 // Create a leaf node
 template<typename NTS, typename NIS, class TP>
@@ -308,7 +309,7 @@ std::size_t TreeNodePool<NTS, NIS, TP>::last_line(NIS node_index) const
 
     auto leaf_node_index = leaf_index(node_index);
     auto node_basic_data = m_node_basic_data[leaf_node_index];
-    
+
     if (node_basic_data.is_leaf())
     {
         auto token_index = node_basic_data.m_token_index;
@@ -383,7 +384,7 @@ TreeNodePool<NTS, NIS, TP>::node_token_type(NIS node_index) const
 
     if (node_basic_data.is_leaf())
     {
-        auto token_index = node_basic_data.m_token_index;    
+        auto token_index = node_basic_data.m_token_index;
         return m_token_data.type(token_index);
     }
     return wasp::UNKNOWN;
@@ -413,7 +414,7 @@ TreeNodePool<NTS, NIS, TP>::node_token_offset(NIS node_index) const
         auto token_index = node_basic_data.m_token_index;
         return m_token_data.offset(token_index);
     }
-    
+
     if (m_node_basic_data[node_index].has_parent_data())
     {
         auto parent_data_index = m_node_basic_data[node_index].m_node_parent_data_index;

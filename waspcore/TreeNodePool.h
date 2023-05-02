@@ -72,9 +72,12 @@ class WASP_PUBLIC TreeNodePool
 
     /**
      * @brief Set the data of the given leaf node
-     * 
+     *
      * @param node_index index of the leaf node in this node pool
      * @param data the data of the leaf node
+     * @note this will cause subsequent print/data to no longer preserve original spacing
+     *       the newlines of the given data are not tracked so as to limit print/data format
+     *       anamolies
      */
     void set_data(node_index_size  node_index, const char* data);
 

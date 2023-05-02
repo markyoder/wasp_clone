@@ -290,14 +290,38 @@ TEST(HITInterpreter, less_simple_object)
                                            "ted",
                                            "document"};
     ASSERT_EQ(node_types.size(), node_names.size());
+    NodeView fred;
     for (std::size_t i = 0; i < interpreter.node_count(); ++i)
     {
         {
             SCOPED_TRACE(i);
             ASSERT_EQ(node_types[i], interpreter.type(i));
             ASSERT_EQ(node_names[i], interpreter.name(i));
+            if (std::strcmp("fred", interpreter.name(i)) == 0) fred = interpreter.node_at(i);
         }
     }
+    NodeView fred_value = fred.first_child_by_name("value");
+    ASSERT_EQ("1", fred_value.data());
+    fred_value.set_data("1\n2\n3\n1\n2\n3\n1\n2\n3\n1\n2\n3");
+    ASSERT_EQ("fred = 1\n2\n3\n1\n2\n3\n1\n2\n3\n1\n2\n3", fred.data());
+    // Notice that the additional byte offset introduced by the longer token data
+    // absorbes the whitespace prefix on the following line 'key'
+    std::string expected_value = R"INPUT([ted]
+     boo = foo # halloween
+     fred = 1
+2
+3
+1
+2
+3
+1
+2
+3
+1
+2
+3 key = 3.421
+ [])INPUT";
+    ASSERT_EQ(expected_value.data(), interpreter.root().data());
 }
 
 TEST(HITInterpreter, object_array)
@@ -2384,7 +2408,7 @@ array_outer_01 = 'param_inner_01 = 100 param_inner_02 = 200 param_inner_03 = 300
  * @brief standalone file include not found error
  */
 TEST(HITInterpreter, only_include_not_found)
-{   
+{
     std::stringstream input;
     input << R"I(!include block_missing.i)I" << std::endl;
     std::stringstream errors;
@@ -2393,7 +2417,7 @@ TEST(HITInterpreter, only_include_not_found)
 
     std::stringstream expected_errors;
     expected_errors << "stream input line:1 column:1 : could not find 'block_missing.i'" << std::endl;
-    
+
     ASSERT_EQ(expected_errors.str(), errors.str());
 }
 
@@ -2409,7 +2433,7 @@ TEST(HITInterpreter, only_include)
                << "[]"<<std::endl;
     block_file.close();
     }
-    
+
     std::stringstream input;
     input << R"I(!include block.i)I" << std::endl;
 
@@ -2419,7 +2443,7 @@ TEST(HITInterpreter, only_include)
 /incl
 /incl/decl (!include)
 /incl/path (block.i)
-)INPUT";    
+)INPUT";
 
     std::stringstream actual_paths;
     interpreter.root().paths(actual_paths);
@@ -2438,7 +2462,7 @@ TEST(HITInterpreter, include_block)
                << "[]"<<std::endl;
     block_file.close();
     }
-    
+
     std::stringstream input;
     input << R"I([block]!include nested_block.i[])I" << std::endl;
 
@@ -2453,7 +2477,7 @@ TEST(HITInterpreter, include_block)
 /block/incl/decl (!include)
 /block/incl/path (nested_block.i)
 /block/term ([])
-)INPUT";    
+)INPUT";
 
     std::stringstream actual_paths;
     interpreter.root().paths(actual_paths);
@@ -2482,7 +2506,7 @@ TEST(HITInterpreter, include_block)
 
 /**
  * @brief Test FilePush iterator when iterating
- * Should iterate over variables a,b,c, where b 
+ * Should iterate over variables a,b,c, where b
  * is actually obtained from an included file
  */
 TEST(HITInterpreter, iterating_include)
@@ -2492,7 +2516,7 @@ TEST(HITInterpreter, iterating_include)
     block_file << "b = 2" <<std::endl;
     block_file.close();
     }
-    
+
     std::stringstream input;
     input << R"I(a = 1
 !include b.i
@@ -2503,7 +2527,7 @@ c = 3)I" << std::endl;
 
     // Obtain the nested content
     HITNodeView document = interpreter.root();
-       
+
     std::vector<std::string> expected_names = {"a", "b", "c"};
     std::vector<std::string> expected_data = {"1", "2", "3"};
     std::vector<std::string> expected_paths = {"stream input", "./b.i", "stream input"};
