@@ -470,6 +470,14 @@ class WASP_PUBLIC AbstractInterpreter
      * @return true iff the document was successfully interpreted
      */
     virtual bool load_document(size_t node_index, const std::string& path) = 0;
+
+    /**
+     * @brief path_already_included checks if file path was already included
+     * @param path file path to child document that is trying to be included
+     * @return true iff including file path will create a circular reference
+     */
+    virtual bool path_already_included(const std::string& path) const = 0;
+
     /**
      * @brief document obtains the associated document for the given node index
      * @param node_index the node index at which the Interpreter is being requested
@@ -568,6 +576,14 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @return true iff the document was successfully interpreted
      */
     virtual bool load_document(size_t node_index, const std::string& path);
+
+    /**
+     * @brief path_already_included checks if file path was already included
+     * @param path file path to child document that is trying to be included
+     * @return true iff including file path will create a circular reference
+     */
+    virtual bool path_already_included(const std::string& path) const;
+
     /**
      * @brief document obtains the associated document for the given node index
      * @param node_index the node index at which the Interpreter is being requested

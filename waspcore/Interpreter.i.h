@@ -335,6 +335,18 @@ bool Interpreter<NodeStorage>::load_document(size_t node_index,
 
     if (wasp::file_exists(document_path))
     {
+        // stop with an error if file include would create a circular reference
+        if (path_already_included(document_path))
+        {
+            error_stream() << stream_name()
+                           << " line:" << line(node_index)
+                           << " column:" << column(node_index)
+                           << " : file include would create circular reference"
+                           << " '" << clean_path << "'"
+                           << std::endl;
+            return false;
+        }
+
         auto * interp = create_nested_interpreter(this);
         wasp_check(interp);
         if ( !interp->parseFile(document_path) )
@@ -366,6 +378,14 @@ bool Interpreter<NodeStorage>::load_document(size_t node_index,
     }
 
     return passed;
+}
+
+template<class NodeStorage>
+bool Interpreter<NodeStorage>::path_already_included(const std::string& path) const
+{
+    if (stream_name() == path) return true;
+    if (!document_parent())    return false;
+    return document_parent()->path_already_included(path);
 }
 
 template<class NodeStorage>
