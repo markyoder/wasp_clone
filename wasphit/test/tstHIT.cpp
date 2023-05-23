@@ -2545,6 +2545,76 @@ c = 3)I" << std::endl;
 }
 
 /**
+ * @brief Test HIT syntax error - file include loop creates circular reference
+ */
+TEST(HITInterpreter, file_include_circular_loop)
+{
+    std::stringstream input01;
+    input01 << R"INPUT(
+[Block01]
+  !include input02.i
+[]
+)INPUT";
+
+    std::ofstream input02("input02.i");
+    input02 << R"INPUT(
+[Block02]
+  !include input03.i
+[]
+)INPUT";
+    input02.close();
+
+    std::ofstream input03("input03.i");
+    input03 << R"INPUT(
+[Block03]
+  !include input02.i
+[]
+)INPUT";
+    input03.close();
+
+    std::stringstream actual_errors;
+    DefaultHITInterpreter interpreter(actual_errors);
+    ASSERT_FALSE(interpreter.parse(input01));
+
+    std::stringstream expect_errors;
+    expect_errors << "./input03.i line:3 column:3 : file include would create circular reference 'input02.i'"
+                  << std::endl;
+
+    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+}
+
+/**
+ * @brief Test HIT syntax error - file include self creates circular reference
+ */
+TEST(HITInterpreter, file_include_circular_self)
+{
+    std::stringstream input01;
+    input01 << R"INPUT(
+[Block01]
+  !include input02.i
+[]
+)INPUT";
+
+    std::ofstream input02("input02.i");
+    input02 << R"INPUT(
+[Block02]
+  !include input02.i
+[]
+)INPUT";
+    input02.close();
+
+    std::stringstream actual_errors;
+    DefaultHITInterpreter interpreter(actual_errors);
+    ASSERT_FALSE(interpreter.parse(input01));
+
+    std::stringstream expect_errors;
+    expect_errors << "./input02.i line:3 column:3 : file include would create circular reference 'input02.i'"
+                  << std::endl;
+
+    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+}
+
+/**
  * @brief Test HIT syntax error - missing object terminator
  */
 TEST(HITInterpreter, missing_object_terminator)
