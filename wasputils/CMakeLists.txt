@@ -201,6 +201,12 @@ IF ( wasp_ENABLE_waspjson )
       NOEXESUFFIX
       INSTALLABLE
     )
+    TRIBITS_ADD_EXECUTABLE(jsonvalid
+      SOURCES jsonvalid.cpp
+      NOEXEPREFIX
+      NOEXESUFFIX
+      INSTALLABLE
+    )
     TRIBITS_ADD_EXECUTABLE(jsonxml
       SOURCES jsonxml.cpp
       NOEXEPREFIX

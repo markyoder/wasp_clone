@@ -170,8 +170,8 @@ The attribute `loc="line.column"` indicates the input components location in the
 The element's name indicates the name of the input component. The leaf element's data are the data of interest stored in the parse tree.
 
 ## File Validation Utilities
-The SON, DDI, and HIT interpreters have Hierarchical Input Validation Engine ([HIVE](/wasphive/README.md#hierarchical-input-validation-engine-hive)) adapters allowing them to be validated. 
-As such, there are sonvalid, ddivalid, and hitvalid utilities. 
+The SON, DDI, EDDI, JSON, and HIT interpreters have Hierarchical Input Validation Engine ([HIVE](/wasphive/README.md#hierarchical-input-validation-engine-hive)) adapters allowing them to be validated. 
+As such, there are sonvalid, ddivalid, eddivalid, jsonvalid, and hitvalid utilities. 
 
 Invocation of the validation utilities requires a schema, and an input:
 
