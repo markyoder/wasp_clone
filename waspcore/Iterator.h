@@ -125,6 +125,14 @@ class WASP_PUBLIC Iterator
     {
         return !(*this == b);
     }
+    Iterator& operator++()
+    {
+      return next();
+    }
+    Node operator*() const
+    {
+      return get();
+    }
 
     // Obtain what the iterator points at
     // I.e., the current child of the iterating node

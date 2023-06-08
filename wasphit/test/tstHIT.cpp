@@ -2532,10 +2532,9 @@ c = 3)I" << std::endl;
     std::vector<std::string> expected_data = {"1", "2", "3"};
     std::vector<std::string> expected_paths = {"stream input", "./b.i", "stream input"};
     size_t index = 0;
-    for(auto itr = document.begin(); itr != document.end(); itr.next())
+    for (const auto & node : document)
     {
         SCOPED_TRACE(index);
-        const HITNodeView& node = itr.get();
         ASSERT_EQ(expected_names[index], node.name());
         ASSERT_EQ(expected_data[index], node.to_string());
         ASSERT_EQ(expected_paths[index], node.node_pool()->stream_name());
