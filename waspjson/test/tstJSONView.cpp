@@ -19,7 +19,7 @@ using namespace wasp;
 TEST(JSON, keyed_value)
 {
     std::stringstream input;
-    input << R"INPUT({"string" : "val",
+    input << R"INPUT({"string" : "val · ",
                     "integer" : 10323,
                     "real" : 1.1232})INPUT";
     DefaultJSONInterpreter interpreter;
@@ -33,7 +33,7 @@ TEST(JSON, keyed_value)
 /string
 /string/decl ("string")
 /string/: (:)
-/string/value ("val")
+/string/value ("val · ")
 /, (,)
 /integer
 /integer/decl ("integer")
@@ -64,5 +64,5 @@ TEST(JSON, keyed_value)
     // string, integer, real
     ASSERT_EQ(3, children.size());
     ASSERT_EQ(3, document.non_decorative_children_count());
-    ASSERT_EQ("val", document.first_non_decorative_child_by_name("string").last_as_string());
+    ASSERT_EQ("val · ", document.first_non_decorative_child_by_name("string").last_as_string());
 }

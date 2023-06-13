@@ -29,7 +29,7 @@ TEST(JSON, simple_object)
  "key_bool_false" : false,
  "key_null" : null,
  "object_empty": { },
- "object_mixed": { "o":{}, "a bc \"esca ped\" de f":[], "k":1.0 },
+ "object_mixed": { "o":{}, "a bc \"esca · ped\" de f":[], "k":1.0 },
  "array_empty" : [],
  "array_mixed" : [{}, [], 1, 1.004, true, false, null ]
 })INPUT";
