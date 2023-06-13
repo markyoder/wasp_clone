@@ -1,4 +1,4 @@
-// A Bison parser, made by GNU Bison 3.7.6.
+// A Bison parser, made by GNU Bison 3.8.2.
 
 // Skeleton interface for Bison LALR(1) parsers in C++
 
@@ -124,12 +124,18 @@
 # define YY_USE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
-# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                            \
+#if defined __GNUC__ && ! defined __ICC && 406 <= __GNUC__ * 100 + __GNUC_MINOR__
+# if __GNUC__ * 100 + __GNUC_MINOR__ < 407
+#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
+    _Pragma ("GCC diagnostic push")                                     \
+    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")
+# else
+#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
     _Pragma ("GCC diagnostic push")                                     \
     _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")              \
     _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
+# endif
 # define YY_IGNORE_MAYBE_UNINITIALIZED_END      \
     _Pragma ("GCC diagnostic pop")
 #else
@@ -183,7 +189,7 @@
 
 #line 36 "JSONObjectParser.bison"
 namespace wasp {
-#line 187 "JSONObjectParser.hpp"
+#line 193 "JSONObjectParser.hpp"
 
 
 
@@ -192,9 +198,14 @@ namespace wasp {
   class WASP_PUBLIC JSONObjectParser
   {
   public:
-#ifndef YYSTYPE
+#ifdef YYSTYPE
+# ifdef __GNUC__
+#  pragma GCC message "bison: do not #define YYSTYPE in C++, use %define api.value.type"
+# endif
+    typedef YYSTYPE value_type;
+#else
     /// Symbol semantic values.
-    union semantic_type
+    union value_type
     {
 #line 64 "JSONObjectParser.bison"
 
@@ -206,12 +217,13 @@ namespace wasp {
     std::vector<Value*>* values;
     std::vector<std::pair<std::string,Value*>>* keyed_values;
 
-#line 210 "JSONObjectParser.hpp"
+#line 221 "JSONObjectParser.hpp"
 
     };
-#else
-    typedef YYSTYPE semantic_type;
 #endif
+    /// Backward compatibility (Bison 3.8).
+    typedef value_type semantic_type;
+
     /// Symbol locations.
     typedef location location_type;
 
@@ -255,7 +267,7 @@ namespace wasp {
     };
 
     /// Token kind, as returned by yylex.
-    typedef token::yytokentype token_kind_type;
+    typedef token::token_kind_type token_kind_type;
 
     /// Backward compatibility alias (Bison 3.6).
     typedef token_kind_type token_type;
@@ -314,7 +326,7 @@ namespace wasp {
       typedef Base super_type;
 
       /// Default constructor.
-      basic_symbol ()
+      basic_symbol () YY_NOEXCEPT
         : value ()
         , location ()
       {}
@@ -336,7 +348,7 @@ namespace wasp {
 
       /// Constructor for symbols with semantic value.
       basic_symbol (typename Base::kind_type t,
-                    YY_RVREF (semantic_type) v,
+                    YY_RVREF (value_type) v,
                     YY_RVREF (location_type) l);
 
       /// Destroy the symbol.
@@ -344,6 +356,8 @@ namespace wasp {
       {
         clear ();
       }
+
+
 
       /// Destroy contents, and record that is empty.
       void clear () YY_NOEXCEPT
@@ -367,7 +381,7 @@ namespace wasp {
       void move (basic_symbol& s);
 
       /// The semantic value.
-      semantic_type value;
+      value_type value;
 
       /// The location.
       location_type location;
@@ -382,22 +396,24 @@ namespace wasp {
     /// Type access provider for token (enum) based symbols.
     struct by_kind
     {
-      /// Default constructor.
-      by_kind ();
-
-#if 201103L <= YY_CPLUSPLUS
-      /// Move constructor.
-      by_kind (by_kind&& that);
-#endif
-
-      /// Copy constructor.
-      by_kind (const by_kind& that);
-
       /// The symbol kind as needed by the constructor.
       typedef token_kind_type kind_type;
 
+      /// Default constructor.
+      by_kind () YY_NOEXCEPT;
+
+#if 201103L <= YY_CPLUSPLUS
+      /// Move constructor.
+      by_kind (by_kind&& that) YY_NOEXCEPT;
+#endif
+
+      /// Copy constructor.
+      by_kind (const by_kind& that) YY_NOEXCEPT;
+
       /// Constructor from (external) token numbers.
-      by_kind (kind_type t);
+      by_kind (kind_type t) YY_NOEXCEPT;
+
+
 
       /// Record that this symbol is empty.
       void clear () YY_NOEXCEPT;
@@ -515,19 +531,19 @@ namespace wasp {
 
     /// Whether the given \c yypact_ value indicates a defaulted state.
     /// \param yyvalue   the value to check
-    static bool yy_pact_value_is_default_ (int yyvalue);
+    static bool yy_pact_value_is_default_ (int yyvalue) YY_NOEXCEPT;
 
     /// Whether the given \c yytable_ value indicates a syntax error.
     /// \param yyvalue   the value to check
-    static bool yy_table_value_is_error_ (int yyvalue);
+    static bool yy_table_value_is_error_ (int yyvalue) YY_NOEXCEPT;
 
     static const signed char yypact_ninf_;
     static const signed char yytable_ninf_;
 
     /// Convert a scanner token kind \a t to a symbol kind.
     /// In theory \a t should be a token_kind_type, but character literals
-    /// are valid, yet not members of the token_type enum.
-    static symbol_kind_type yytranslate_ (int t);
+    /// are valid, yet not members of the token_kind_type enum.
+    static symbol_kind_type yytranslate_ (int t) YY_NOEXCEPT;
 
     /// Convert the symbol name \a n to a form suitable for a diagnostic.
     static std::string yytnamerr_ (const char *yystr);
@@ -559,14 +575,14 @@ namespace wasp {
 
     static const signed char yycheck_[];
 
-    // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
-    // symbol of state STATE-NUM.
+    // YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
+    // state STATE-NUM.
     static const signed char yystos_[];
 
-    // YYR1[YYN] -- Symbol number of symbol that rule YYN derives.
+    // YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.
     static const signed char yyr1_[];
 
-    // YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.
+    // YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.
     static const signed char yyr2_[];
 
 
@@ -665,7 +681,7 @@ namespace wasp {
       typedef typename S::size_type size_type;
       typedef typename std::ptrdiff_t index_type;
 
-      stack (size_type n = 200)
+      stack (size_type n = 200) YY_NOEXCEPT
         : seq_ (n)
       {}
 
@@ -744,7 +760,7 @@ namespace wasp {
       class slice
       {
       public:
-        slice (const stack& stack, index_type range)
+        slice (const stack& stack, index_type range) YY_NOEXCEPT
           : stack_ (stack)
           , range_ (range)
         {}
@@ -794,7 +810,7 @@ namespace wasp {
     void yypush_ (const char* m, state_type s, YY_MOVE_REF (symbol_type) sym);
 
     /// Pop \a n symbols from the stack.
-    void yypop_ (int n = 1);
+    void yypop_ (int n = 1) YY_NOEXCEPT;
 
     /// Constants.
     enum
@@ -816,7 +832,7 @@ namespace wasp {
 
 #line 36 "JSONObjectParser.bison"
 } // wasp
-#line 820 "JSONObjectParser.hpp"
+#line 836 "JSONObjectParser.hpp"
 
 
 
