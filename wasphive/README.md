@@ -2922,7 +2922,9 @@ Alternately, the application can let the same template know it is dealing, inste
 
 ### InputVariants Assistance Details
 
-The ***Input Variants*** rule may be used by input assistance application logic to provide multiple choices of autocompletion templates for a single context. For example, if an element has `InputVariants = [ 'simple_version' 'middle_version' 'complex_version' ]` and `simple_version.tmpl`, `middle_version.tmpl,` and `complex_version.tmpl` exist in the template directory provided by application's grammar, then all three of those choices will be available at that context via autocomplete and use their associate templates.
+The ***Input Variants*** rule may be used by input assistance application logic to provide multiple choices of autocompletion templates for a single context. For example, if an object `x` has `InputVariants = [ 'simple_version' 'middle_version' 'complex_version' ]` and `x.simple_version.tmpl`, `x.middle_version.tmpl,` and `x.complex_version.tmpl` exist in the template directory provided by application's grammar, then all three of those choices will be available at that context via autocomplete and use their associate templates.
+
+> Note: The input template files must include the object name. I.e., objectname.variantname.tmpl
 
 ### InputDefault Assistance Details
 
