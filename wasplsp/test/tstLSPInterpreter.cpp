@@ -26,7 +26,7 @@ typedef WaspServer< DefaultSONInterpreter ,
 
 void walk_tree_for_info( wasp::NodeView node , std::stringstream & info )
 {
-    info << " name: "       << std::setw(9) << std::left << node.name()
+    info << " name: "       << std::setw(19) << std::left << node.name()
          << " start_line: " << std::setw(2) << std::left << node.line()
          << " start_col: "  << std::setw(2) << std::left << node.column()
          << " last_line: "  << std::setw(2) << std::left << node.last_line()
@@ -143,20 +143,20 @@ stream input:16.1: syntax error, unexpected }
 
     std::string expected_paths = R"INPUT(
 /
-/object
-/object/key
-/object/key/value (    )
-/object/key
-/object/key/value (    )
-/object/list
-/object/list/value ( )
-/object/list/value (  )
-/object/list/value (  )
-/object/list/value ( )
-/object/list/value (   )
-/object/list/value ( )
-/object/use
-/object/use/value (   )
+/object (ObjDetail)
+/object (ObjDetail)/key
+/object (ObjDetail)/key/value (    )
+/object (ObjDetail)/key
+/object (ObjDetail)/key/value (    )
+/object (ObjDetail)/list
+/object (ObjDetail)/list/value ( )
+/object (ObjDetail)/list/value (  )
+/object (ObjDetail)/list/value (  )
+/object (ObjDetail)/list/value ( )
+/object (ObjDetail)/list/value (   )
+/object (ObjDetail)/list/value ( )
+/object (ObjDetail)/use
+/object (ObjDetail)/use/value (   )
 )INPUT";
 
     ASSERT_EQ ( expected_paths, "\n" + actual_paths.str() );
@@ -168,21 +168,21 @@ stream input:16.1: syntax error, unexpected }
     walk_tree_for_info( document , actual_info );
 
 std::string expected_info = R"INPUT(
- name: document  start_line: 5  start_col: 11 last_line: 8  last_col: 13
- name: object    start_line: 5  start_col: 11 last_line: 8  last_col: 13
- name: key       start_line: 5  start_col: 11 last_line: 5  last_col: 14
- name: value     start_line: 5  start_col: 11 last_line: 5  last_col: 14
- name: key       start_line: 6  start_col: 11 last_line: 6  last_col: 14
- name: value     start_line: 6  start_col: 11 last_line: 6  last_col: 14
- name: list      start_line: 7  start_col: 13 last_line: 7  last_col: 27
- name: value     start_line: 7  start_col: 13 last_line: 7  last_col: 13
- name: value     start_line: 7  start_col: 15 last_line: 7  last_col: 16
- name: value     start_line: 7  start_col: 18 last_line: 7  last_col: 19
- name: value     start_line: 7  start_col: 21 last_line: 7  last_col: 21
- name: value     start_line: 7  start_col: 23 last_line: 7  last_col: 25
- name: value     start_line: 7  start_col: 27 last_line: 7  last_col: 27
- name: use       start_line: 8  start_col: 11 last_line: 8  last_col: 13
- name: value     start_line: 8  start_col: 11 last_line: 8  last_col: 13
+ name: document            start_line: 5  start_col: 11 last_line: 8  last_col: 13
+ name: object (ObjDetail)  start_line: 5  start_col: 11 last_line: 8  last_col: 13
+ name: key                 start_line: 5  start_col: 11 last_line: 5  last_col: 14
+ name: value               start_line: 5  start_col: 11 last_line: 5  last_col: 14
+ name: key                 start_line: 6  start_col: 11 last_line: 6  last_col: 14
+ name: value               start_line: 6  start_col: 11 last_line: 6  last_col: 14
+ name: list                start_line: 7  start_col: 13 last_line: 7  last_col: 27
+ name: value               start_line: 7  start_col: 13 last_line: 7  last_col: 13
+ name: value               start_line: 7  start_col: 15 last_line: 7  last_col: 16
+ name: value               start_line: 7  start_col: 18 last_line: 7  last_col: 19
+ name: value               start_line: 7  start_col: 21 last_line: 7  last_col: 21
+ name: value               start_line: 7  start_col: 23 last_line: 7  last_col: 25
+ name: value               start_line: 7  start_col: 27 last_line: 7  last_col: 27
+ name: use                 start_line: 8  start_col: 11 last_line: 8  last_col: 13
+ name: value               start_line: 8  start_col: 11 last_line: 8  last_col: 13
 )INPUT";
 
     ASSERT_EQ ( expected_info, "\n" + actual_info.str() );
@@ -263,29 +263,29 @@ stream input:13.11: Validation Error: key value "-4.6" is less than the allowed 
 
     std::string expected_paths = R"INPUT(
 /
-/object
-/object/key
-/object/key/value (    )
-/object/key
-/object/key/value (    )
-/object/list
-/object/list/value ( )
-/object/list/value (  )
-/object/list/value (  )
-/object/list/value ( )
-/object/list/value (   )
-/object/list/value ( )
-/object/use
-/object/use/value (   )
-/object
-/object/key
-/object/key/value (    )
-/object/list
-/object/list/value ( )
-/object/list/value ( )
-/object/list/value ( )
-/object/use
-/object/use/value ( )
+/object (ObjDetail)
+/object (ObjDetail)/key
+/object (ObjDetail)/key/value (    )
+/object (ObjDetail)/key
+/object (ObjDetail)/key/value (    )
+/object (ObjDetail)/list
+/object (ObjDetail)/list/value ( )
+/object (ObjDetail)/list/value (  )
+/object (ObjDetail)/list/value (  )
+/object (ObjDetail)/list/value ( )
+/object (ObjDetail)/list/value (   )
+/object (ObjDetail)/list/value ( )
+/object (ObjDetail)/use
+/object (ObjDetail)/use/value (   )
+/object (ObjDetail)
+/object (ObjDetail)/key
+/object (ObjDetail)/key/value (    )
+/object (ObjDetail)/list
+/object (ObjDetail)/list/value ( )
+/object (ObjDetail)/list/value ( )
+/object (ObjDetail)/list/value ( )
+/object (ObjDetail)/use
+/object (ObjDetail)/use/value ( )
 )INPUT";
 
     ASSERT_EQ ( expected_paths, "\n" + actual_paths.str() );
@@ -297,30 +297,30 @@ stream input:13.11: Validation Error: key value "-4.6" is less than the allowed 
     walk_tree_for_info( document , actual_info );
 
 std::string expected_info = R"INPUT(
- name: document  start_line: 5  start_col: 11 last_line: 15 last_col: 11
- name: object    start_line: 5  start_col: 11 last_line: 8  last_col: 13
- name: key       start_line: 5  start_col: 11 last_line: 5  last_col: 14
- name: value     start_line: 5  start_col: 11 last_line: 5  last_col: 14
- name: key       start_line: 6  start_col: 11 last_line: 6  last_col: 14
- name: value     start_line: 6  start_col: 11 last_line: 6  last_col: 14
- name: list      start_line: 7  start_col: 13 last_line: 7  last_col: 27
- name: value     start_line: 7  start_col: 13 last_line: 7  last_col: 13
- name: value     start_line: 7  start_col: 15 last_line: 7  last_col: 16
- name: value     start_line: 7  start_col: 18 last_line: 7  last_col: 19
- name: value     start_line: 7  start_col: 21 last_line: 7  last_col: 21
- name: value     start_line: 7  start_col: 23 last_line: 7  last_col: 25
- name: value     start_line: 7  start_col: 27 last_line: 7  last_col: 27
- name: use       start_line: 8  start_col: 11 last_line: 8  last_col: 13
- name: value     start_line: 8  start_col: 11 last_line: 8  last_col: 13
- name: object    start_line: 13 start_col: 11 last_line: 15 last_col: 11
- name: key       start_line: 13 start_col: 11 last_line: 13 last_col: 14
- name: value     start_line: 13 start_col: 11 last_line: 13 last_col: 14
- name: list      start_line: 14 start_col: 13 last_line: 14 last_col: 17
- name: value     start_line: 14 start_col: 13 last_line: 14 last_col: 13
- name: value     start_line: 14 start_col: 15 last_line: 14 last_col: 15
- name: value     start_line: 14 start_col: 17 last_line: 14 last_col: 17
- name: use       start_line: 15 start_col: 11 last_line: 15 last_col: 11
- name: value     start_line: 15 start_col: 11 last_line: 15 last_col: 11
+ name: document            start_line: 5  start_col: 11 last_line: 15 last_col: 11
+ name: object (ObjDetail)  start_line: 5  start_col: 11 last_line: 8  last_col: 13
+ name: key                 start_line: 5  start_col: 11 last_line: 5  last_col: 14
+ name: value               start_line: 5  start_col: 11 last_line: 5  last_col: 14
+ name: key                 start_line: 6  start_col: 11 last_line: 6  last_col: 14
+ name: value               start_line: 6  start_col: 11 last_line: 6  last_col: 14
+ name: list                start_line: 7  start_col: 13 last_line: 7  last_col: 27
+ name: value               start_line: 7  start_col: 13 last_line: 7  last_col: 13
+ name: value               start_line: 7  start_col: 15 last_line: 7  last_col: 16
+ name: value               start_line: 7  start_col: 18 last_line: 7  last_col: 19
+ name: value               start_line: 7  start_col: 21 last_line: 7  last_col: 21
+ name: value               start_line: 7  start_col: 23 last_line: 7  last_col: 25
+ name: value               start_line: 7  start_col: 27 last_line: 7  last_col: 27
+ name: use                 start_line: 8  start_col: 11 last_line: 8  last_col: 13
+ name: value               start_line: 8  start_col: 11 last_line: 8  last_col: 13
+ name: object (ObjDetail)  start_line: 13 start_col: 11 last_line: 15 last_col: 11
+ name: key                 start_line: 13 start_col: 11 last_line: 13 last_col: 14
+ name: value               start_line: 13 start_col: 11 last_line: 13 last_col: 14
+ name: list                start_line: 14 start_col: 13 last_line: 14 last_col: 17
+ name: value               start_line: 14 start_col: 13 last_line: 14 last_col: 13
+ name: value               start_line: 14 start_col: 15 last_line: 14 last_col: 15
+ name: value               start_line: 14 start_col: 17 last_line: 14 last_col: 17
+ name: use                 start_line: 15 start_col: 11 last_line: 15 last_col: 11
+ name: value               start_line: 15 start_col: 11 last_line: 15 last_col: 11
 )INPUT";
 
     ASSERT_EQ ( expected_info, "\n" + actual_info.str() );

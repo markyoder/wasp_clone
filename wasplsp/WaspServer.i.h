@@ -816,7 +816,7 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         // get the node name / detail / line / column / last_line / last_column
 
         std::string name        = node.name();
-        std::string detail      = node.is_leaf() ? node.data() : name;
+        std::string detail      = node.type() == wasp::OBJECT ? "ObjDetail" : "";
         int         line        = node.line();
         int         column      = node.column();
         int         last_line   = node.last_line();
@@ -892,7 +892,7 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         // get the node name / detail / line / column / last_line / last_column
 
         std::string name        = node.name();
-        std::string detail      = node.is_leaf() ? node.data() : name;
+        std::string detail      = node.type() == wasp::OBJECT ? "ObjDetail" : "";
         int         line        = node.line();
         int         column      = node.column();
         int         last_line   = node.last_line();
