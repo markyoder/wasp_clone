@@ -437,9 +437,14 @@ bool LSPInterpreter::addSymbolsToTree( SymbolIterator::SP & si )
         pass &= si->moveToParent();
     }
 
-    // push parent with the symbol name and its cached child node indices
+    // append symbol detail if non-empty to symbol name for name of parent
 
-    this->push_parent( wasp::UNKNOWN , symbol_name.c_str() , child_indices );
+    std::string parent_name = symbol_name +
+        (symbol_detail.empty() ? "" : " (" + symbol_detail + ")");
+
+    // push parent with the parent name and its cached child node indices
+
+    this->push_parent( wasp::UNKNOWN , parent_name.c_str() , child_indices );
 
     // increase the global_node_index since we inserted a node
 

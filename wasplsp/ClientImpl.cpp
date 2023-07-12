@@ -114,6 +114,10 @@ bool ClientImpl::doInitialize()
 
     client_capabilities[m_text_document][m_document_symbol][m_hierarchical_symbols] = true;
 
+    // set client response type to NONE before clearing out current response
+
+    this->response_type = NONE;
+
     this->response = std::make_shared<DataObject>();
 
     // build initialize request - the -1 process_id and empty root_uri mean null
@@ -226,9 +230,13 @@ bool ClientImpl::doDocumentOpen( const std::string & document_path        ,
 
     this->incrementDocumentVersion();
 
-    DataObject  client_object;
+    DataObject client_object;
+
+    // set client response type to NONE before clearing out current response
+
+    this->response_type = NONE;
+
     this->response = std::make_shared<DataObject>();
-    std::string response_document_path;
 
     // build didopen notification object
 
@@ -303,9 +311,13 @@ bool ClientImpl::doDocumentChange( int                 start_line        ,
 
     this->incrementDocumentVersion();
 
-    DataObject  client_object;
+    DataObject client_object;
+
+    // set client response type to NONE before clearing out current response
+
+    this->response_type = NONE;
+
     this->response = std::make_shared<DataObject>();
-    std::string response_document_path;
 
     // build didchange notification object
 
@@ -380,6 +392,10 @@ bool ClientImpl::doDocumentCompletion( int line      ,
 
     DataObject client_object;
 
+    // set client response type to NONE before clearing out current response
+
+    this->response_type = NONE;
+
     this->response = std::make_shared<DataObject>();
 
     // build completion request object
@@ -450,6 +466,10 @@ bool ClientImpl::doDocumentDefinition( int line      ,
     this->incrementRequestID();
 
     DataObject client_object;
+
+    // set client response type to NONE before clearing out current response
+
+    this->response_type = NONE;
 
     this->response = std::make_shared<DataObject>();
 
@@ -524,6 +544,10 @@ bool ClientImpl::doDocumentReferences( int  line                ,
     this->incrementRequestID();
 
     DataObject client_object;
+
+    // set client response type to NONE before clearing out current response
+
+    this->response_type = NONE;
 
     this->response = std::make_shared<DataObject>();
 
@@ -601,6 +625,10 @@ bool ClientImpl::doDocumentFormatting( int  start_line      ,
 
     DataObject client_object;
 
+    // set client response type to NONE before clearing out current response
+
+    this->response_type = NONE;
+
     this->response = std::make_shared<DataObject>();
 
     // build formatting request object
@@ -674,6 +702,10 @@ bool ClientImpl::doDocumentSymbols()
     this->incrementRequestID();
 
     DataObject client_object;
+
+    // set client response type to NONE before clearing out current response
+
+    this->response_type = NONE;
 
     this->response = std::make_shared<DataObject>();
 
@@ -799,6 +831,10 @@ bool ClientImpl::doShutdown()
     this->incrementRequestID();
 
     DataObject client_object;
+
+    // set client response type to NONE before clearing out current response
+
+    this->response_type = NONE;
 
     this->response = std::make_shared<DataObject>();
 
