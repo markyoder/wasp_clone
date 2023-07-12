@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.1.3] - 7-12-2023
+
+### Added
+- LSPInterpreter parse tree building functionality to append document symbol detail field to node name
+
+### Fixed
+- Crash of language server client by setting response type to NONE when clearing out previous response
+
 ## [3.1.2] - 6-08-2023
 
 ### Added
