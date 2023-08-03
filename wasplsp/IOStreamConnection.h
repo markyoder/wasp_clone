@@ -77,7 +77,7 @@ class WASP_PUBLIC IOStreamConnection : public Connection
 
         pass &= RPCStringToObject( rpc_stream.str() , object , errors );
 
-        return true;
+        return pass;
     }
 
     /** write data from provided object to standard output as packet string
@@ -103,7 +103,7 @@ class WASP_PUBLIC IOStreamConnection : public Connection
 
         std::cout.flush();
 
-        return true;
+        return pass;
     }
 
     /** check if the server is initialized and reading from the connection

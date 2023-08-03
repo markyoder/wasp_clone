@@ -63,7 +63,7 @@ class WASP_PUBLIC ThreadConnection : public Connection
 
         pass &= RPCStringToObject( rpc_string , object , errors );
 
-        return true;
+        return pass;
     }
 
     /** write data from provided object to connection packet string
@@ -97,7 +97,7 @@ class WASP_PUBLIC ThreadConnection : public Connection
 
         ready_to_write.wait( unique_lock );
 
-        return true;
+        return pass;
     }
 
     /** check if the server is initialized and reading from the connection
