@@ -265,7 +265,7 @@ bool LSPInterpreter::createParseTree()
 
     previous_symbol_end_line = 1;
 
-    previous_symbol_end_char = 0;
+    previous_symbol_end_char = 1;
 
     // get the root document symbol iterator
 
@@ -359,7 +359,7 @@ bool LSPInterpreter::addSymbolsToTree( SymbolIterator::SP & si )
 
         // if the same line as last token - adjust based on previous token
 
-        if ( additional_new_lines == 0 && ( symbol_end_line == symbol_start_line ) )
+        if ( additional_new_lines == 0 && ( previous_symbol_end_line == symbol_start_line ) )
         {
             global_byte_offset -= previous_symbol_end_char;
         }
