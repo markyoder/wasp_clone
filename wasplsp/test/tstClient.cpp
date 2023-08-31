@@ -364,19 +364,11 @@ TEST(client, document_formatting_and_responses)
 {
     // document formatting
 
-    int         start_line        =  2;
-    int         start_character   =  0;
-    int         end_line          =  4;
-    int         end_character     =  3;
     int         tab_size          =  4;
     bool        insert_spaces     =  true;
 
-    ASSERT_TRUE ( test_client.doDocumentFormatting( start_line      ,
-                                                    start_character ,
-                                                    end_line        ,
-                                                    end_character   ,
-                                                    tab_size        ,
-                                                    insert_spaces   ) );
+    ASSERT_TRUE ( test_client.doDocumentFormatting( tab_size      ,
+                                                    insert_spaces ) );
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 

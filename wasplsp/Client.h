@@ -136,27 +136,15 @@ class WASP_PUBLIC Client
     }
 
     /** build formatting request object / write to connection / read response
-     * @param start_line - starting line number of request ( zero-based )
-     * @param start_character - starting column number of request ( zero-based )
-     * @param end_line - ending line number of request ( zero-based )
-     * @param end_character - ending column number of request ( zero-based )
      * @param tab_size - value of the size of a tab in spaces for formatting
      * @param insert_spaces - flag indicating whether to use spaces for tabs
      * @return - true if build / write / response read handled successfully
      */
-    bool doDocumentFormatting( int  start_line      ,
-                               int  start_character ,
-                               int  end_line        ,
-                               int  end_character   ,
-                               int  tab_size        ,
-                               bool insert_spaces   )
+    bool doDocumentFormatting( int  tab_size      ,
+                               bool insert_spaces )
     {
-        return Impl.doDocumentFormatting( start_line      ,
-                                          start_character ,
-                                          end_line        ,
-                                          end_character   ,
-                                          tab_size        ,
-                                          insert_spaces   );
+        return Impl.doDocumentFormatting( tab_size      ,
+                                          insert_spaces );
     }
 
     /** build symbols request object / write to connection / read response

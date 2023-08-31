@@ -583,12 +583,8 @@ bool ClientImpl::doDocumentReferences( int  line                ,
     return pass;
 }
 
-bool ClientImpl::doDocumentFormatting( int  start_line      ,
-                                       int  start_character ,
-                                       int  end_line        ,
-                                       int  end_character   ,
-                                       int  tab_size        ,
-                                       bool insert_spaces   )
+bool ClientImpl::doDocumentFormatting( int  tab_size      ,
+                                       bool insert_spaces )
 {
     if ( this->already_in_call ) return false;
 
@@ -637,10 +633,6 @@ bool ClientImpl::doDocumentFormatting( int  start_line      ,
                                     this->errors        ,
                                     this->request_id    ,
                                     this->document_path ,
-                                    start_line          ,
-                                    start_character     ,
-                                    end_line            ,
-                                    end_character       ,
                                     tab_size            ,
                                     insert_spaces       );
 
