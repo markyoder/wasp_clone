@@ -62,7 +62,7 @@ bool ServerImpl::run()
             pass &= this->handleReferencesRequest( input_object  ,
                                                    output_object );
         }
-        else if ( method_name == m_method_rangeformat )
+        else if ( method_name == m_method_formatting )
         {
             pass &= this->handleFormattingRequest( input_object  ,
                                                    output_object );
@@ -485,10 +485,6 @@ bool ServerImpl::handleFormattingRequest(
     bool pass = true;
 
     std::string document_path;
-    int         start_line;
-    int         start_character;
-    int         end_line;
-    int         end_character;
     int         tab_size;
     bool        insert_spaces;
 
@@ -498,10 +494,6 @@ bool ServerImpl::handleFormattingRequest(
                                       this->errors            ,
                                       this->client_request_id ,
                                       document_path           ,
-                                      start_line              ,
-                                      start_character         ,
-                                      end_line                ,
-                                      end_character           ,
                                       tab_size                ,
                                       insert_spaces           );
 
@@ -516,10 +508,6 @@ bool ServerImpl::handleFormattingRequest(
     // call server specific method to gather the document formatting edits
 
     pass &= this->gatherDocumentFormattingTextEdits( formatting_textedits ,
-                                                     start_line           ,
-                                                     start_character      ,
-                                                     end_line             ,
-                                                     end_character        ,
                                                      tab_size             ,
                                                      insert_spaces        );
 

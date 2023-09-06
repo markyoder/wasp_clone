@@ -329,10 +329,6 @@ bool TestServer::gatherDocumentReferencesLocations(
 
 bool TestServer::gatherDocumentFormattingTextEdits(
                       DataArray & formattingTextEdits ,
-                      int         start_line          ,
-                      int         start_character     ,
-                      int         end_line            ,
-                      int         end_character       ,
                       int         tab_size            ,
                       bool        insert_spaces       )
 {
@@ -354,12 +350,7 @@ bool TestServer::gatherDocumentFormattingTextEdits(
 
     DataObject textedit_object;
 
-    if ( start_line      == 2    &&
-         start_character == 0    &&
-         end_line        == 4    &&
-         end_character   == 3    &&
-         tab_size        == 4    &&
-         insert_spaces   == true )
+    if (tab_size == 4 && insert_spaces == true)
     {
         pass &= buildTextEditObject( textedit_object                      ,
                                      this->errors                         ,

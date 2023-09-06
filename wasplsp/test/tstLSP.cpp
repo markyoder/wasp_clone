@@ -15,11 +15,7 @@ TEST(lsp, bad_ranges)
         DataObject        object;
         std::stringstream errors;
 
-        int               request_id      =  91;
         std::string       uri             = "test/document/uri/string";
-        int               tab_size        =  04;
-        bool              insert_spaces   =  true;
-
         int               start_line      =  17;
         int               start_character = -34;
         int               end_line        =  13;
@@ -33,16 +29,13 @@ TEST(lsp, bad_ranges)
                                             "Error:: Column number must be "
                                             "non-negative - received: -39\n";
 
-        ASSERT_FALSE(buildFormattingRequest( object           ,
-                                             errors           ,
-                                             request_id       ,
-                                             uri              ,
-                                             start_line       ,
-                                             start_character  ,
-                                             end_line         ,
-                                             end_character    ,
-                                             tab_size         ,
-                                             insert_spaces    ));
+        ASSERT_FALSE(buildLocationObject( object           ,
+                                          errors           ,
+                                          uri              ,
+                                          start_line       ,
+                                          start_character  ,
+                                          end_line         ,
+                                          end_character    ));
 
         ASSERT_EQ ( expected_errors , errors.str() );
     }
@@ -50,11 +43,7 @@ TEST(lsp, bad_ranges)
         DataObject        object;
         std::stringstream errors;
 
-        int               request_id      =  92;
         std::string       uri             = "test/document/uri/string";
-        int               tab_size        =  04;
-        bool              insert_spaces   =  true;
-
         int               start_line      =  17;
         int               start_character =  39;
         int               end_line        =  17;
@@ -64,16 +53,13 @@ TEST(lsp, bad_ranges)
                                             "must be less than range end "
                                             "( line:17 column:34 )\n";
 
-        ASSERT_FALSE(buildFormattingRequest( object           ,
-                                             errors           ,
-                                             request_id       ,
-                                             uri              ,
-                                             start_line       ,
-                                             start_character  ,
-                                             end_line         ,
-                                             end_character    ,
-                                             tab_size         ,
-                                             insert_spaces    ));
+        ASSERT_FALSE(buildLocationObject( object           ,
+                                          errors           ,
+                                          uri              ,
+                                          start_line       ,
+                                          start_character  ,
+                                          end_line         ,
+                                          end_character    ));
 
         ASSERT_EQ ( expected_errors , errors.str() );
     }
@@ -753,10 +739,6 @@ TEST(lsp, formatting_request)
 
     int               request_id      =  5;
     std::string       uri             = "test/document/uri/string";
-    int               start_line      =  54;
-    int               start_character =  65;
-    int               end_line        =  82;
-    int               end_character   =  12;
     int               tab_size        =  04;
     bool              insert_spaces   =  true;
 
@@ -764,10 +746,6 @@ TEST(lsp, formatting_request)
                                         errors          ,
                                         request_id      ,
                                         uri             ,
-                                        start_line      ,
-                                        start_character ,
-                                        end_line        ,
-                                        end_character   ,
                                         tab_size        ,
                                         insert_spaces   ));
 
@@ -776,38 +754,17 @@ TEST(lsp, formatting_request)
     ASSERT_TRUE( object[m_id].is_int()              );
     ASSERT_EQ  ( object[m_id].to_int() , request_id );
 
-    ASSERT_TRUE( object[m_method].is_string()                        );
-    ASSERT_EQ  ( object[m_method].to_string() , m_method_rangeformat );
+    ASSERT_TRUE( object[m_method].is_string()                       );
+    ASSERT_EQ  ( object[m_method].to_string() , m_method_formatting );
 
     ASSERT_TRUE( object[m_params].is_object()         );
-    ASSERT_EQ  ( object[m_params].size() , (size_t) 3 );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 2 );
 
     ASSERT_TRUE( object[m_params][m_text_document].is_object()         );
     ASSERT_EQ  ( object[m_params][m_text_document].size() , (size_t) 1 );
 
     ASSERT_TRUE( object[m_params][m_text_document][m_uri].is_string()       );
     ASSERT_EQ  ( object[m_params][m_text_document][m_uri].to_string() , uri );
-
-    ASSERT_TRUE( object[m_params][m_range].is_object()         );
-    ASSERT_EQ  ( object[m_params][m_range].size() , (size_t) 2 );
-
-    ASSERT_TRUE( object[m_params][m_range][m_start].is_object()         );
-    ASSERT_EQ  ( object[m_params][m_range][m_start].size() , (size_t) 2 );
-
-    ASSERT_TRUE( object[m_params][m_range][m_start][m_line].is_int()              );
-    ASSERT_EQ  ( object[m_params][m_range][m_start][m_line].to_int() , start_line );
-
-    ASSERT_TRUE( object[m_params][m_range][m_start][m_character].is_int()                   );
-    ASSERT_EQ  ( object[m_params][m_range][m_start][m_character].to_int() , start_character );
-
-    ASSERT_TRUE( object[m_params][m_range][m_end].is_object()         );
-    ASSERT_EQ  ( object[m_params][m_range][m_end].size() , (size_t) 2 );
-
-    ASSERT_TRUE( object[m_params][m_range][m_end][m_line].is_int()            );
-    ASSERT_EQ  ( object[m_params][m_range][m_end][m_line].to_int() , end_line );
-
-    ASSERT_TRUE( object[m_params][m_range][m_end][m_character].is_int()                 );
-    ASSERT_EQ  ( object[m_params][m_range][m_end][m_character].to_int() , end_character );
 
     ASSERT_TRUE( object[m_params][m_options].is_object()         );
     ASSERT_EQ  ( object[m_params][m_options].size() , (size_t) 2 );
@@ -824,25 +781,15 @@ TEST(lsp, formatting_request)
                                     errors ));
 
     std::stringstream rpc_expected;
-    rpc_expected << "Content-Length: 398\r\n\r\n" << R"INPUT({
+    rpc_expected << "Content-Length: 233\r\n\r\n" << R"INPUT({
   "id" : 5
   ,"jsonrpc" : "2.0"
-  ,"method" : "textDocument/rangeFormatting"
+  ,"method" : "textDocument/formatting"
   ,"params" : {
     "options" : {
     "insertSpaces" : true
     ,"tabSize" : 4
   }
-    ,"range" : {
-      "end" : {
-      "character" : 12
-      ,"line" : 82
-    }
-      ,"start" : {
-        "character" : 65
-        ,"line" : 54
-      }
-    }
     ,"textDocument" : {
       "uri" : "test/document/uri/string"
     }
@@ -856,15 +803,11 @@ TEST(lsp, formatting_request)
                                     tst_object ,
                                     errors     ));
 
-    ASSERT_TRUE( tst_object[m_method].is_string()                        );
-    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_rangeformat );
+    ASSERT_TRUE( tst_object[m_method].is_string()                       );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_formatting );
 
     int         tst_request_id ;
     std::string tst_uri;
-    int         tst_start_line;
-    int         tst_start_character;
-    int         tst_end_line;
-    int         tst_end_character;
     int         tst_tab_size;
     bool        tst_insert_spaces;
 
@@ -872,19 +815,11 @@ TEST(lsp, formatting_request)
                                           errors              ,
                                           tst_request_id      ,
                                           tst_uri             ,
-                                          tst_start_line      ,
-                                          tst_start_character ,
-                                          tst_end_line        ,
-                                          tst_end_character   ,
                                           tst_tab_size        ,
                                           tst_insert_spaces   ));
 
     ASSERT_EQ ( request_id      , tst_request_id      );
     ASSERT_EQ ( uri             , tst_uri             );
-    ASSERT_EQ ( start_line      , tst_start_line      );
-    ASSERT_EQ ( start_character , tst_start_character );
-    ASSERT_EQ ( end_line        , tst_end_line        );
-    ASSERT_EQ ( end_character   , tst_end_character   );
     ASSERT_EQ ( tab_size        , tst_tab_size        );
     ASSERT_EQ ( insert_spaces   , tst_insert_spaces   );
 }

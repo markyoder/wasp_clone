@@ -365,10 +365,6 @@ bool dissectReferencesRequest( const DataObject   & object              ,
  * @param errors - reference to stream to fill with any possible errors
  * @param request_id - request id as per the protocol
  * @param uri - document URI ( should be in proper URI format )
- * @param start_line - starting line number of request ( zero-based )
- * @param start_character - starting column number of request ( zero-based )
- * @param end_line - ending line number of request ( zero-based )
- * @param end_character - ending column number of request ( zero-based )
  * @param tab_size - value of the size of a tab in spaces for formatting
  * @param insert_spaces - flag indicating whether to use spaces for tabs
  * @return - true if the object was successfully built without error
@@ -378,10 +374,6 @@ bool buildFormattingRequest( DataObject        & object          ,
                              std::ostream      & errors          ,
                              int                 request_id      ,
                              const std::string & uri             ,
-                             int                 start_line      ,
-                             int                 start_character ,
-                             int                 end_line        ,
-                             int                 end_character   ,
                              int                 tab_size        ,
                              bool                insert_spaces   );
 
@@ -390,10 +382,6 @@ bool buildFormattingRequest( DataObject        & object          ,
  * @param errors - reference to stream to fill with any possible errors
  * @param request_id - request id as per the protocol
  * @param uri - document URI ( should be in proper URI format )
- * @param start_line - starting line number of request ( zero-based )
- * @param start_character - starting column number of request ( zero-based )
- * @param end_line - ending line number of request ( zero-based )
- * @param end_character - ending column number of request ( zero-based )
  * @param tab_size - value of the size of a tab in spaces for formatting
  * @param insert_spaces - flag indicating whether to use spaces for tabs
  * @return - true if the object was successfully dissected without error
@@ -403,10 +391,6 @@ bool dissectFormattingRequest( const DataObject   & object          ,
                                      std::ostream & errors          ,
                                      int          & request_id      ,
                                      std::string  & uri             ,
-                                     int          & start_line      ,
-                                     int          & start_character ,
-                                     int          & end_line        ,
-                                     int          & end_character   ,
                                      int          & tab_size        ,
                                      bool         & insert_spaces   );
 
@@ -1151,7 +1135,7 @@ static const char m_method_didchange[]      = "textDocument/didChange";
 static const char m_method_completion[]     = "textDocument/completion";
 static const char m_method_definition[]     = "textDocument/definition";
 static const char m_method_references[]     = "textDocument/references";
-static const char m_method_rangeformat[]    = "textDocument/rangeFormatting";
+static const char m_method_formatting[]     = "textDocument/formatting";
 static const char m_method_documentsymbol[] = "textDocument/documentSymbol";
 static const char m_method_pubdiagnostics[] = "textDocument/publishDiagnostics";
 static const char m_method_didclose[]       = "textDocument/didClose";

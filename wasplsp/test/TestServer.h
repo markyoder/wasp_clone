@@ -105,20 +105,12 @@ class WASP_PUBLIC TestServer : public ServerImpl
 
     /** gather formatting text edits - specific to this server implemention
      * @param formattingTextEdits - data array of text edit objects to fill
-     * @param start_line - starting line to be used for formatting logic
-     * @param start_character - starting column to be used for formatting logic
-     * @param end_line - ending line to be used for formatting logic
-     * @param end_character - ending column to be used for formatting logic
      * @param tab_size - value of the size of a tab in spaces for formatting
      * @param insert_spaces - flag indicating whether to use spaces for tabs
      * @return - true if the gathering of text edits completed successfully
      */
     bool gatherDocumentFormattingTextEdits(
                           DataArray & formattingTextEdits ,
-                          int         start_line          ,
-                          int         start_character     ,
-                          int         end_line            ,
-                          int         end_character       ,
                           int         tab_size            ,
                           bool        insert_spaces       );
 

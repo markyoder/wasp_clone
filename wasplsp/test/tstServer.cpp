@@ -527,10 +527,6 @@ TEST(server, handle_formatting)
 
     int               client_request_id =  5;
     std::string       document_path     = "test/document/uri/string";
-    int               start_line        =  2;
-    int               start_character   =  0;
-    int               end_line          =  4;
-    int               end_character     =  3;
     int               tab_size          =  4;
     bool              insert_spaces     =  true;
 
@@ -540,10 +536,6 @@ TEST(server, handle_formatting)
                                         errors            ,
                                         client_request_id ,
                                         document_path     ,
-                                        start_line        ,
-                                        start_character   ,
-                                        end_line          ,
-                                        end_character     ,
                                         tab_size          ,
                                         insert_spaces     ));
 

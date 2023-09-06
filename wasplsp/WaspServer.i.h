@@ -737,10 +737,6 @@ template < class INPUT      ,
 bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
     gatherDocumentFormattingTextEdits(
                       DataArray & formattingTextEdits ,
-                      int         start_line          ,
-                      int         start_character     ,
-                      int         end_line            ,
-                      int         end_character       ,
                       int         tab_size            ,
                       bool        insert_spaces       )
 {

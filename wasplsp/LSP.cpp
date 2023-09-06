@@ -821,10 +821,6 @@ bool buildFormattingRequest( DataObject        & object          ,
                              std::ostream      & errors          ,
                              int                 request_id      ,
                              const std::string & uri             ,
-                             int                 start_line      ,
-                             int                 start_character ,
-                             int                 end_line        ,
-                             int                 end_character   ,
                              int                 tab_size        ,
                              bool                insert_spaces   )
 {
@@ -838,24 +834,14 @@ bool buildFormattingRequest( DataObject        & object          ,
     text_document[m_uri] = uri;
 
     DataObject params;
-    params[m_range]         = DataObject();
     params[m_options]       = options;
     params[m_text_document] = text_document;
-
-    // build range object for the formatting params
-
-    pass &= buildRangeObject( *(params[m_range].to_object()) ,
-                                errors                       ,
-                                start_line                   ,
-                                start_character              ,
-                                end_line                     ,
-                                end_character                );
 
     // set object's params, id, and method name
 
     object[m_params] =  params;
     object[m_id]     =  request_id;
-    object[m_method] = m_method_rangeformat;
+    object[m_method] = m_method_formatting;
 
     return pass;
 }
@@ -864,10 +850,6 @@ bool dissectFormattingRequest( const DataObject   & object          ,
                                      std::ostream & errors          ,
                                      int          & request_id      ,
                                      std::string  & uri             ,
-                                     int          & start_line      ,
-                                     int          & start_character ,
-                                     int          & end_line        ,
-                                     int          & end_character   ,
                                      int          & tab_size        ,
                                      bool         & insert_spaces   )
 {
@@ -875,7 +857,7 @@ bool dissectFormattingRequest( const DataObject   & object          ,
 
     wasp_check( object.contains(m_method) && object[m_method].is_string() );
 
-    wasp_check( object[m_method].to_string() == m_method_rangeformat );
+    wasp_check( object[m_method].to_string() == m_method_formatting );
 
     wasp_check( object.contains(m_id) && object[m_id].is_int() );
 
@@ -892,19 +874,6 @@ bool dissectFormattingRequest( const DataObject   & object          ,
     wasp_check( text_document.contains(m_uri) && text_document[m_uri].is_string() );
 
     uri = text_document[m_uri].to_string();
-
-    // dissect the start and end line / char range from the params object
-
-    wasp_check( params.contains(m_range) && params[m_range].is_object() );
-
-    const DataObject& range = *(params[m_range].to_object());
-
-    pass &= dissectRangeObject( range           ,
-                                errors          ,
-                                start_line      ,
-                                start_character ,
-                                end_line        ,
-                                end_character   );
 
     wasp_check( params.contains(m_options) && params[m_options].is_object() );
 

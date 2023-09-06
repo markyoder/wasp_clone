@@ -106,20 +106,12 @@ class WASP_PUBLIC ClientImpl
                                bool include_declaration );
 
     /** build formatting request object / write to connection / read response
-     * @param start_line - starting line number of request ( zero-based )
-     * @param start_character - starting column number of request ( zero-based )
-     * @param end_line - ending line number of request ( zero-based )
-     * @param end_character - ending column number of request ( zero-based )
      * @param tab_size - value of the size of a tab in spaces for formatting
      * @param insert_spaces - flag indicating whether to use spaces for tabs
      * @return - true if build / write / response read handled successfully
      */
-    bool doDocumentFormatting( int  start_line      ,
-                               int  start_character ,
-                               int  end_line        ,
-                               int  end_character   ,
-                               int  tab_size        ,
-                               bool insert_spaces   );
+    bool doDocumentFormatting( int  tab_size      ,
+                               bool insert_spaces );
 
     /** build symbols request object / write to connection / read response
      * @return - true if build / write / response read handled successfully

@@ -417,10 +417,6 @@ TEST(integrate, test_formatting)
     DataObject  client_object;
     int         client_request_id =  6;
     std::string document_uri      = "test/document/uri/string";
-    int         start_line        =  2;
-    int         start_character   =  0;
-    int         end_line          =  4;
-    int         end_character     =  3;
     int         tab_size          =  4;
     bool        insert_spaces     =  true;
 
@@ -440,10 +436,6 @@ TEST(integrate, test_formatting)
                                          client_errors     ,
                                          client_request_id ,
                                          document_uri      ,
-                                         start_line        ,
-                                         start_character   ,
-                                         end_line          ,
-                                         end_character     ,
                                          tab_size          ,
                                          insert_spaces     ) );
 
