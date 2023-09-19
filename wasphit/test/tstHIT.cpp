@@ -3102,3 +3102,190 @@ TEST(HITInterpreter, period_starts_block_names_and_paths)
     document.paths(actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
+
+/**
+ * @brief Test HIT syntax - comment delimiters within quotes
+ */
+TEST(HITInterpreter, comment_delimiters_within_quotes)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[SingleQuotedCommentDelims]
+  # comment for single quote block
+  one = '#123'
+  two = '#456 #789'
+[]
+[DoubleQuotedCommentDelims]
+  # comment for double quote block
+  one = "#123"
+  two = "#456 #789"
+[]
+)INPUT";
+
+    // Check parse success, count of total nodes, count of children of root
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(34, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(2, document.child_count());
+
+    // SingleQuotedCommentDelims - block: ([)(decl)(])(comment)(one)(two)(term)
+    auto block_01 = document.child_at(0);
+    ASSERT_FALSE(block_01.is_null());
+    ASSERT_FALSE(block_01.is_decorative());
+    ASSERT_EQ(std::string("SingleQuotedCommentDelims"), block_01.name());
+    ASSERT_EQ(wasp::OBJECT, block_01.type());
+    ASSERT_EQ(7, block_01.child_count());
+    ASSERT_EQ(2, block_01.non_decorative_children_count());
+
+    // SingleQuotedCommentDelims/one/comment - # comment for single quote block
+    auto block_01_comment = block_01.first_child_by_name("comment");
+    ASSERT_FALSE(block_01_comment.is_null());
+    ASSERT_TRUE(block_01_comment.is_decorative());
+    ASSERT_EQ(wasp::COMMENT, block_01_comment.type());
+    ASSERT_EQ("# comment for single quote block", block_01_comment.data());
+
+    // SingleQuotedCommentDelims/one - key-array: (decl)(=)(')(value)(')
+    auto block_01_param_01 = block_01.child_at(4);
+    ASSERT_FALSE(block_01_param_01.is_null());
+    ASSERT_FALSE(block_01_param_01.is_decorative());
+    ASSERT_EQ(std::string("one"), block_01_param_01.name());
+    ASSERT_EQ(wasp::ARRAY, block_01_param_01.type());
+    ASSERT_EQ(5, block_01_param_01.child_count());
+    ASSERT_EQ(1, block_01_param_01.non_decorative_children_count());
+
+    // SingleQuotedCommentDelims/one/value - number of values is one
+    auto block_01_param_01_values = block_01_param_01.child_by_name("value");
+    ASSERT_EQ(1, block_01_param_01_values.size());
+
+    // SingleQuotedCommentDelims/one/value - value number 01 is #123
+    auto block_01_param_01_value_01 = block_01_param_01_values[0];
+    ASSERT_FALSE(block_01_param_01_value_01.is_null());
+    ASSERT_FALSE(block_01_param_01_value_01.is_decorative());
+    ASSERT_EQ(wasp::VALUE, block_01_param_01_value_01.type());
+    ASSERT_EQ(std::string("#123"), block_01_param_01_value_01.data());
+
+    // SingleQuotedCommentDelims/two - key-array: (decl)(=)(')(value)(value)(')
+    auto block_01_param_02 = block_01.child_at(5);
+    ASSERT_FALSE(block_01_param_02.is_null());
+    ASSERT_FALSE(block_01_param_02.is_decorative());
+    ASSERT_EQ(std::string("two"), block_01_param_02.name());
+    ASSERT_EQ(wasp::ARRAY, block_01_param_02.type());
+    ASSERT_EQ(6, block_01_param_02.child_count());
+    ASSERT_EQ(2, block_01_param_02.non_decorative_children_count());
+
+    // SingleQuotedCommentDelims/two/value - number of values is two
+    auto block_01_param_02_values = block_01_param_02.child_by_name("value");
+    ASSERT_EQ(2, block_01_param_02_values.size());
+
+    // SingleQuotedCommentDelims/two/value - value number 01 is #456
+    auto block_01_param_02_value_01 = block_01_param_02_values[0];
+    ASSERT_FALSE(block_01_param_02_value_01.is_null());
+    ASSERT_FALSE(block_01_param_02_value_01.is_decorative());
+    ASSERT_EQ(wasp::VALUE, block_01_param_02_value_01.type());
+    ASSERT_EQ(std::string("#456"), block_01_param_02_value_01.data());
+
+    // SingleQuotedCommentDelims/two/value - value number 02 is #789
+    auto block_01_param_02_value_02 = block_01_param_02_values[1];
+    ASSERT_FALSE(block_01_param_02_value_02.is_null());
+    ASSERT_FALSE(block_01_param_02_value_02.is_decorative());
+    ASSERT_EQ(wasp::VALUE, block_01_param_02_value_02.type());
+    ASSERT_EQ(std::string("#789"), block_01_param_02_value_02.data());
+
+    // DoubleQuotedCommentDelims - block: ([)(decl)(])(comment)(one)(two)(term)
+    auto block_02 = document.child_at(1);
+    ASSERT_FALSE(block_02.is_null());
+    ASSERT_FALSE(block_02.is_decorative());
+    ASSERT_EQ(std::string("DoubleQuotedCommentDelims"), block_02.name());
+    ASSERT_EQ(wasp::OBJECT, block_02.type());
+    ASSERT_EQ(7, block_02.child_count());
+    ASSERT_EQ(2, block_02.non_decorative_children_count());
+
+    // DoubleQuotedCommentDelims/one/comment - # comment for double quote block
+    auto block_02_comment = block_02.first_child_by_name("comment");
+    ASSERT_FALSE(block_02_comment.is_null());
+    ASSERT_TRUE(block_02_comment.is_decorative());
+    ASSERT_EQ(wasp::COMMENT, block_02_comment.type());
+    ASSERT_EQ("# comment for double quote block", block_02_comment.data());
+
+    // DoubleQuotedCommentDelims/one - key-value: (decl)(=)(value)
+    auto block_02_param_01 = block_02.child_at(4);
+    ASSERT_FALSE(block_02_param_01.is_null());
+    ASSERT_FALSE(block_02_param_01.is_decorative());
+    ASSERT_EQ(std::string("one"), block_02_param_01.name());
+    ASSERT_EQ(wasp::KEYED_VALUE, block_02_param_01.type());
+    ASSERT_EQ(3, block_02_param_01.child_count());
+    ASSERT_EQ(1, block_02_param_01.non_decorative_children_count());
+
+    // DoubleQuotedCommentDelims/one/value - number of values is one
+    auto block_02_param_01_values = block_02_param_01.child_by_name("value");
+    ASSERT_EQ(1, block_02_param_01_values.size());
+
+    // DoubleQuotedCommentDelims/one/value - value number 01 is "#123"
+    auto block_02_param_01_value_01 = block_02_param_01_values[0];
+    ASSERT_FALSE(block_02_param_01_value_01.is_null());
+    ASSERT_FALSE(block_02_param_01_value_01.is_decorative());
+    ASSERT_EQ(wasp::VALUE, block_02_param_01_value_01.type());
+    ASSERT_EQ(std::string("\"#123\""), block_02_param_01_value_01.data());
+
+    // DoubleQuotedCommentDelims/two - key-value: (decl)(=)(value)
+    auto block_02_param_02 = block_02.child_at(5);
+    ASSERT_FALSE(block_02_param_02.is_null());
+    ASSERT_FALSE(block_02_param_02.is_decorative());
+    ASSERT_EQ(std::string("two"), block_02_param_02.name());
+    ASSERT_EQ(wasp::KEYED_VALUE, block_02_param_02.type());
+    ASSERT_EQ(3, block_02_param_02.child_count());
+    ASSERT_EQ(1, block_02_param_02.non_decorative_children_count());
+
+    // DoubleQuotedCommentDelims/two/value - number of values is one
+    auto block_02_param_02_values = block_02_param_02.child_by_name("value");
+    ASSERT_EQ(1, block_02_param_02_values.size());
+
+    // DoubleQuotedCommentDelims/two/value - value number 01 is "#456 #789"
+    auto block_02_param_02_value_01 = block_02_param_02_values[0];
+    ASSERT_FALSE(block_02_param_02_value_01.is_null());
+    ASSERT_FALSE(block_02_param_02_value_01.is_decorative());
+    ASSERT_EQ(wasp::VALUE, block_02_param_02_value_01.type());
+    ASSERT_EQ(std::string("\"#456 #789\""), block_02_param_02_value_01.data());
+
+    // Check full set of document paths from the root of the parse tree
+    std::string expected_paths = R"INPUT(/
+/SingleQuotedCommentDelims
+/SingleQuotedCommentDelims/[ ([)
+/SingleQuotedCommentDelims/decl (SingleQuotedCommentDelims)
+/SingleQuotedCommentDelims/] (])
+/SingleQuotedCommentDelims/comment (# comment for single quote block)
+/SingleQuotedCommentDelims/one
+/SingleQuotedCommentDelims/one/decl (one)
+/SingleQuotedCommentDelims/one/= (=)
+/SingleQuotedCommentDelims/one/' (')
+/SingleQuotedCommentDelims/one/value (#123)
+/SingleQuotedCommentDelims/one/' (')
+/SingleQuotedCommentDelims/two
+/SingleQuotedCommentDelims/two/decl (two)
+/SingleQuotedCommentDelims/two/= (=)
+/SingleQuotedCommentDelims/two/' (')
+/SingleQuotedCommentDelims/two/value (#456)
+/SingleQuotedCommentDelims/two/value (#789)
+/SingleQuotedCommentDelims/two/' (')
+/SingleQuotedCommentDelims/term ([])
+/DoubleQuotedCommentDelims
+/DoubleQuotedCommentDelims/[ ([)
+/DoubleQuotedCommentDelims/decl (DoubleQuotedCommentDelims)
+/DoubleQuotedCommentDelims/] (])
+/DoubleQuotedCommentDelims/comment (# comment for double quote block)
+/DoubleQuotedCommentDelims/one
+/DoubleQuotedCommentDelims/one/decl (one)
+/DoubleQuotedCommentDelims/one/= (=)
+/DoubleQuotedCommentDelims/one/value ("#123")
+/DoubleQuotedCommentDelims/two
+/DoubleQuotedCommentDelims/two/decl (two)
+/DoubleQuotedCommentDelims/two/= (=)
+/DoubleQuotedCommentDelims/two/value ("#456 #789")
+/DoubleQuotedCommentDelims/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
