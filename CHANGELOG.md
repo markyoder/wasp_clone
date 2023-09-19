@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.0.1] - 9-19-2023
+
+### Added
+- LSP string constants to be used by derived language servers to set capabilities
+
+### Fixed
+- HIT lexer to allow the comment character in quotes without delimiting a comment
+
 ## [4.0.0] - 8-30-2023
 
 ### Changed
