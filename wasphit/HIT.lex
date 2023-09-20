@@ -100,7 +100,7 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
 %}
  /*** BEGIN EXAMPLE - Change the HIT lexer rules below ***/
 
-{COMMENT} {
+<INITIAL,object,param,assign>{COMMENT} {
     capture_token(yylval,wasp::COMMENT);
     return token::COMMENT;
 }

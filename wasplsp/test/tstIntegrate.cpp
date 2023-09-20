@@ -58,13 +58,31 @@ TEST(integrate, test_initialize)
                                             response_capabilities ) );
 
     ASSERT_EQ ( client_request_id , response_request_id          );
-    ASSERT_EQ ( (size_t) 1        , response_capabilities.size() );
+    ASSERT_EQ ( (size_t) 7        , response_capabilities.size() );
 
     ASSERT_TRUE(response_capabilities[m_text_doc_sync][m_open_close].is_bool());
     ASSERT_TRUE(response_capabilities[m_text_doc_sync][m_open_close].to_bool());
 
     ASSERT_TRUE(response_capabilities[m_text_doc_sync][m_change].is_int());
     ASSERT_EQ(1,response_capabilities[m_text_doc_sync][m_change].to_int());
+
+    ASSERT_TRUE(response_capabilities[m_completion_provider][m_resolve_provider].is_bool());
+    ASSERT_FALSE(response_capabilities[m_completion_provider][m_resolve_provider].to_bool());
+
+    ASSERT_TRUE(response_capabilities[m_doc_symbol_provider].is_bool());
+    ASSERT_TRUE(response_capabilities[m_doc_symbol_provider].to_bool());
+
+    ASSERT_TRUE(response_capabilities[m_doc_format_provider].is_bool());
+    ASSERT_TRUE(response_capabilities[m_doc_format_provider].to_bool());
+
+    ASSERT_TRUE(response_capabilities[m_definition_provider].is_bool());
+    ASSERT_TRUE(response_capabilities[m_definition_provider].to_bool());
+
+    ASSERT_TRUE(response_capabilities[m_references_provider].is_bool());
+    ASSERT_FALSE(response_capabilities[m_references_provider].to_bool());
+
+    ASSERT_TRUE(response_capabilities[m_hover_provider].is_bool());
+    ASSERT_FALSE(response_capabilities[m_hover_provider].to_bool());
 }
 
 TEST(integrate, test_initialized)

@@ -20,16 +20,21 @@ class WASP_PUBLIC TestServer : public ServerImpl
     TestServer()
     {
         // set server connection to a shared pointer to new thread connection
-
         connection = std::make_shared<ThreadConnection>(this);
 
         // set server capabilities to expect full text document when changed
-
         this->server_capabilities[m_text_doc_sync] = DataObject();
-
         this->server_capabilities[m_text_doc_sync][m_open_close] = true;
-
         this->server_capabilities[m_text_doc_sync][m_change] = m_change_full;
+
+        // notify completion, symbol, definition is provided / hover not provided
+        this->server_capabilities[m_completion_provider] = DataObject();
+        this->server_capabilities[m_completion_provider][m_resolve_provider] = false;
+        this->server_capabilities[m_doc_symbol_provider] = true;
+        this->server_capabilities[m_doc_format_provider] = true;
+        this->server_capabilities[m_definition_provider] = true;
+        this->server_capabilities[m_references_provider] = false;
+        this->server_capabilities[m_hover_provider] = false;
     }
 
     /** get read / write connection - specific to this server implemention

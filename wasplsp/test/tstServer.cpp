@@ -50,10 +50,18 @@ TEST(server, handle_initialize)
   "id" : 1
   ,"result" : {
     "capabilities" : {
-    "textDocumentSync" : {
-    "change" : 1
-    ,"openClose" : true
+    "completionProvider" : {
+    "resolveProvider" : false
   }
+    ,"definitionProvider" : true
+    ,"documentFormattingProvider" : true
+    ,"documentSymbolProvider" : true
+    ,"hoverProvider" : false
+    ,"referencesProvider" : false
+    ,"textDocumentSync" : {
+      "change" : 1
+      ,"openClose" : true
+    }
   }
   }
 })INPUT";
