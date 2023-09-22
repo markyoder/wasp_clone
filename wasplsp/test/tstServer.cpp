@@ -307,7 +307,7 @@ TEST(server, handle_completion)
       "deprecated" : false
       ,"detail" : "test type info 1"
       ,"documentation" : "test documentation 1"
-      ,"kind" : 1
+      ,"kind" : 23
       ,"label" : "test-label-1"
       ,"preselect" : true
       ,"textEdit" : {
@@ -328,7 +328,7 @@ TEST(server, handle_completion)
       "deprecated" : false
       ,"detail" : "test type info 2"
       ,"documentation" : "test documentation 2"
-      ,"kind" : 2
+      ,"kind" : 24
       ,"label" : "test-label-2"
       ,"preselect" : false
       ,"textEdit" : {
@@ -349,7 +349,7 @@ TEST(server, handle_completion)
       "deprecated" : false
       ,"detail" : "test type info 3"
       ,"documentation" : "test documentation 3"
-      ,"kind" : 3
+      ,"kind" : 25
       ,"label" : "test-label-3"
       ,"preselect" : false
       ,"textEdit" : {
@@ -680,7 +680,7 @@ TEST(server, handle_symbols)
     "children" : []
     ,"deprecated" : false
     ,"detail" : "test::symbol::detail::object::6"
-    ,"kind" : 15
+    ,"kind" : 24
     ,"name" : "test_symbol_name_object_6"
     ,"range" : {
       "end" : {
@@ -706,7 +706,7 @@ TEST(server, handle_symbols)
   ]
     ,"deprecated" : false
     ,"detail" : "test::symbol::detail::object::5"
-    ,"kind" : 15
+    ,"kind" : 23
     ,"name" : "test_symbol_name_object_5"
     ,"range" : {
       "end" : {
@@ -733,7 +733,7 @@ TEST(server, handle_symbols)
     "children" : []
     ,"deprecated" : false
     ,"detail" : "test::symbol::detail::object::7"
-    ,"kind" : 15
+    ,"kind" : 25
     ,"name" : "test_symbol_name_object_7"
     ,"range" : {
       "end" : {
@@ -760,7 +760,7 @@ TEST(server, handle_symbols)
     "children" : []
     ,"deprecated" : false
     ,"detail" : "test::symbol::detail::object::8"
-    ,"kind" : 15
+    ,"kind" : 26
     ,"name" : "test_symbol_name_object_8"
     ,"range" : {
       "end" : {
@@ -786,7 +786,7 @@ TEST(server, handle_symbols)
   ]
     ,"deprecated" : false
     ,"detail" : "test::symbol::detail::object::4"
-    ,"kind" : 15
+    ,"kind" : 22
     ,"name" : "test_symbol_name_object_4"
     ,"range" : {
       "end" : {
@@ -812,7 +812,7 @@ TEST(server, handle_symbols)
   ]
     ,"deprecated" : false
     ,"detail" : "test::symbol::detail::object::3"
-    ,"kind" : 22
+    ,"kind" : 21
     ,"name" : "test_symbol_name_object_3"
     ,"range" : {
       "end" : {
@@ -838,7 +838,7 @@ TEST(server, handle_symbols)
   ]
     ,"deprecated" : false
     ,"detail" : "test::symbol::detail::object::1"
-    ,"kind" : 15
+    ,"kind" : 19
     ,"name" : "test_symbol_name_object_1"
     ,"range" : {
       "end" : {

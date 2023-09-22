@@ -228,7 +228,7 @@ TEST(client, document_completion_and_responses)
             ASSERT_EQ ( 11                     , completion.end_line        );
             ASSERT_EQ ( 11                     , completion.end_character   );
             ASSERT_EQ ( "test-insert-text-1"   , completion.new_text        );
-            ASSERT_EQ ( 1                      , completion.kind            );
+            ASSERT_EQ ( m_comp_kind_event      , completion.kind            );
             ASSERT_EQ ( "test type info 1"     , completion.detail          );
             ASSERT_EQ ( "test documentation 1" , completion.documentation   );
             ASSERT_EQ ( false                  , completion.deprecated      );
@@ -242,7 +242,7 @@ TEST(client, document_completion_and_responses)
             ASSERT_EQ ( 22                     , completion.end_line        );
             ASSERT_EQ ( 22                     , completion.end_character   );
             ASSERT_EQ ( "test-insert-text-2"   , completion.new_text        );
-            ASSERT_EQ ( 2                      , completion.kind            );
+            ASSERT_EQ ( m_comp_kind_operator   , completion.kind            );
             ASSERT_EQ ( "test type info 2"     , completion.detail          );
             ASSERT_EQ ( "test documentation 2" , completion.documentation   );
             ASSERT_EQ ( false                  , completion.deprecated      );
@@ -256,7 +256,7 @@ TEST(client, document_completion_and_responses)
             ASSERT_EQ ( 33                     , completion.end_line        );
             ASSERT_EQ ( 33                     , completion.end_character   );
             ASSERT_EQ ( "test-insert-text-3"   , completion.new_text        );
-            ASSERT_EQ ( 3                      , completion.kind            );
+            ASSERT_EQ ( m_comp_kind_type_param , completion.kind            );
             ASSERT_EQ ( "test type info 3"     , completion.detail          );
             ASSERT_EQ ( "test documentation 3" , completion.documentation   );
             ASSERT_EQ ( false                  , completion.deprecated      );
@@ -429,7 +429,7 @@ TEST(client, document_symbols_and_responses)
 
     std::string expected_o1_name                      = "test_symbol_name_object_1";
     std::string expected_o1_detail                    = "test::symbol::detail::object::1";
-    int         expected_o1_kind                      = 15;
+    int         expected_o1_kind                      = m_symbol_kind_object;
     bool        expected_o1_deprecated                = false;
     int         expected_o1_start_line                = 10;
     int         expected_o1_start_character           = 11;
@@ -442,7 +442,7 @@ TEST(client, document_symbols_and_responses)
 
     std::string expected_o2_name                      = "test_symbol_name_object_2";
     std::string expected_o2_detail                    = "test::symbol::detail::object::2";
-    int         expected_o2_kind                      = 20;
+    int         expected_o2_kind                      = m_symbol_kind_key;
     bool        expected_o2_deprecated                = false;
     int         expected_o2_start_line                = 20;
     int         expected_o2_start_character           = 21;
@@ -455,7 +455,7 @@ TEST(client, document_symbols_and_responses)
 
     std::string expected_o3_name                      = "test_symbol_name_object_3";
     std::string expected_o3_detail                    = "test::symbol::detail::object::3";
-    int         expected_o3_kind                      = 22;
+    int         expected_o3_kind                      = m_symbol_kind_null;
     bool        expected_o3_deprecated                = false;
     int         expected_o3_start_line                = 30;
     int         expected_o3_start_character           = 31;
@@ -468,7 +468,7 @@ TEST(client, document_symbols_and_responses)
 
     std::string expected_o4_name                      = "test_symbol_name_object_4";
     std::string expected_o4_detail                    = "test::symbol::detail::object::4";
-    int         expected_o4_kind                      = 15;
+    int         expected_o4_kind                      = m_symbol_kind_enum_member;
     bool        expected_o4_deprecated                = false;
     int         expected_o4_start_line                = 40;
     int         expected_o4_start_character           = 41;
@@ -481,7 +481,7 @@ TEST(client, document_symbols_and_responses)
 
     std::string expected_o5_name                      = "test_symbol_name_object_5";
     std::string expected_o5_detail                    = "test::symbol::detail::object::5";
-    int         expected_o5_kind                      = 15;
+    int         expected_o5_kind                      = m_symbol_kind_struct;
     bool        expected_o5_deprecated                = false;
     int         expected_o5_start_line                = 50;
     int         expected_o5_start_character           = 51;
@@ -494,7 +494,7 @@ TEST(client, document_symbols_and_responses)
 
     std::string expected_o6_name                      = "test_symbol_name_object_6";
     std::string expected_o6_detail                    = "test::symbol::detail::object::6";
-    int         expected_o6_kind                      = 15;
+    int         expected_o6_kind                      = m_symbol_kind_event;
     bool        expected_o6_deprecated                = false;
     int         expected_o6_start_line                = 60;
     int         expected_o6_start_character           = 61;
@@ -507,7 +507,7 @@ TEST(client, document_symbols_and_responses)
 
     std::string expected_o7_name                      = "test_symbol_name_object_7";
     std::string expected_o7_detail                    = "test::symbol::detail::object::7";
-    int         expected_o7_kind                      = 15;
+    int         expected_o7_kind                      = m_symbol_kind_operator;
     bool        expected_o7_deprecated                = false;
     int         expected_o7_start_line                = 70;
     int         expected_o7_start_character           = 71;
@@ -520,7 +520,7 @@ TEST(client, document_symbols_and_responses)
 
     std::string expected_o8_name                      = "test_symbol_name_object_8";
     std::string expected_o8_detail                    = "test::symbol::detail::object::8";
-    int         expected_o8_kind                      = 15;
+    int         expected_o8_kind                      = m_symbol_kind_type_param;
     bool        expected_o8_deprecated                = false;
     int         expected_o8_start_line                = 80;
     int         expected_o8_start_character           = 81;

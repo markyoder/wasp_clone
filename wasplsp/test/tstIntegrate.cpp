@@ -307,7 +307,7 @@ TEST(integrate, test_completion)
     ASSERT_EQ ( 33                     , response_3_end_line        );
     ASSERT_EQ ( 33                     , response_3_end_character   );
     ASSERT_EQ ( "test-insert-text-3"   , response_3_new_text        );
-    ASSERT_EQ ( 3                      , response_3_kind            );
+    ASSERT_EQ ( m_comp_kind_type_param , response_3_kind            );
     ASSERT_EQ ( "test type info 3"     , response_3_detail          );
     ASSERT_EQ ( "test documentation 3" , response_3_documentation   );
     ASSERT_EQ ( false                  , response_3_deprecated      );
@@ -616,7 +616,7 @@ TEST(integrate, test_symbols)
 
     ASSERT_EQ ( "test_symbol_name_object_1"       , o1_name                      );
     ASSERT_EQ ( "test::symbol::detail::object::1" , o1_detail                    );
-    ASSERT_EQ ( 15                                , o1_kind                      );
+    ASSERT_EQ ( m_symbol_kind_object              , o1_kind                      );
     ASSERT_EQ ( false                             , o1_deprecated                );
     ASSERT_EQ ( 10                                , o1_start_line                );
     ASSERT_EQ ( 11                                , o1_start_character           );
@@ -629,7 +629,7 @@ TEST(integrate, test_symbols)
 
     ASSERT_EQ ( "test_symbol_name_object_2"       , o2_name                      );
     ASSERT_EQ ( "test::symbol::detail::object::2" , o2_detail                    );
-    ASSERT_EQ ( 20                                , o2_kind                      );
+    ASSERT_EQ ( m_symbol_kind_key                 , o2_kind                      );
     ASSERT_EQ ( false                             , o2_deprecated                );
     ASSERT_EQ ( 20                                , o2_start_line                );
     ASSERT_EQ ( 21                                , o2_start_character           );
@@ -642,7 +642,7 @@ TEST(integrate, test_symbols)
 
     ASSERT_EQ ( "test_symbol_name_object_3"       , o3_name                      );
     ASSERT_EQ ( "test::symbol::detail::object::3" , o3_detail                    );
-    ASSERT_EQ ( 22                                , o3_kind                      );
+    ASSERT_EQ ( m_symbol_kind_null                , o3_kind                      );
     ASSERT_EQ ( false                             , o3_deprecated                );
     ASSERT_EQ ( 30                                , o3_start_line                );
     ASSERT_EQ ( 31                                , o3_start_character           );
