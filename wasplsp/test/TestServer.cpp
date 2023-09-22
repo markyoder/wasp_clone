@@ -169,7 +169,7 @@ bool TestServer::gatherDocumentCompletionItems(
                                        11                     ,
                                        11                     ,
                                        "test-insert-text-1"   ,
-                                       1                      ,
+                                       m_comp_kind_event      ,
                                        "test type info 1"     ,
                                        "test documentation 1" ,
                                        false                  ,
@@ -185,7 +185,7 @@ bool TestServer::gatherDocumentCompletionItems(
                                        22                     ,
                                        22                     ,
                                        "test-insert-text-2"   ,
-                                       2                      ,
+                                       m_comp_kind_operator   ,
                                        "test type info 2"     ,
                                        "test documentation 2" ,
                                        false                  ,
@@ -201,7 +201,7 @@ bool TestServer::gatherDocumentCompletionItems(
                                        33                     ,
                                        33                     ,
                                        "test-insert-text-3"   ,
-                                       3                      ,
+                                       m_comp_kind_type_param ,
                                        "test type info 3"     ,
                                        "test documentation 3" ,
                                        false                  ,
@@ -409,7 +409,7 @@ bool TestServer::gatherDocumentSymbols(
     {
         std::string o1_name                      = "test_symbol_name_object_1";
         std::string o1_detail                    = "test::symbol::detail::object::1";
-        int         o1_kind                      = 15;
+        int         o1_kind                      = m_symbol_kind_object;
         bool        o1_deprecated                = false;
         int         o1_start_line                = 10;
         int         o1_start_character           = 11;
@@ -422,7 +422,7 @@ bool TestServer::gatherDocumentSymbols(
 
         std::string o2_name                      = "test_symbol_name_object_2";
         std::string o2_detail                    = "test::symbol::detail::object::2";
-        int         o2_kind                      = 20;
+        int         o2_kind                      = m_symbol_kind_key;
         bool        o2_deprecated                = false;
         int         o2_start_line                = 20;
         int         o2_start_character           = 21;
@@ -435,7 +435,7 @@ bool TestServer::gatherDocumentSymbols(
 
         std::string o3_name                      = "test_symbol_name_object_3";
         std::string o3_detail                    = "test::symbol::detail::object::3";
-        int         o3_kind                      = 22;
+        int         o3_kind                      = m_symbol_kind_null;
         bool        o3_deprecated                = false;
         int         o3_start_line                = 30;
         int         o3_start_character           = 31;
@@ -448,7 +448,7 @@ bool TestServer::gatherDocumentSymbols(
 
         std::string o4_name                      = "test_symbol_name_object_4";
         std::string o4_detail                    = "test::symbol::detail::object::4";
-        int         o4_kind                      = 15;
+        int         o4_kind                      = m_symbol_kind_enum_member;
         bool        o4_deprecated                = false;
         int         o4_start_line                = 40;
         int         o4_start_character           = 41;
@@ -461,7 +461,7 @@ bool TestServer::gatherDocumentSymbols(
 
         std::string o5_name                      = "test_symbol_name_object_5";
         std::string o5_detail                    = "test::symbol::detail::object::5";
-        int         o5_kind                      = 15;
+        int         o5_kind                      = m_symbol_kind_struct;
         bool        o5_deprecated                = false;
         int         o5_start_line                = 50;
         int         o5_start_character           = 51;
@@ -474,7 +474,7 @@ bool TestServer::gatherDocumentSymbols(
 
         std::string o6_name                      = "test_symbol_name_object_6";
         std::string o6_detail                    = "test::symbol::detail::object::6";
-        int         o6_kind                      = 15;
+        int         o6_kind                      = m_symbol_kind_event;
         bool        o6_deprecated                = false;
         int         o6_start_line                = 60;
         int         o6_start_character           = 61;
@@ -487,7 +487,7 @@ bool TestServer::gatherDocumentSymbols(
 
         std::string o7_name                      = "test_symbol_name_object_7";
         std::string o7_detail                    = "test::symbol::detail::object::7";
-        int         o7_kind                      = 15;
+        int         o7_kind                      = m_symbol_kind_operator;
         bool        o7_deprecated                = false;
         int         o7_start_line                = 70;
         int         o7_start_character           = 71;
@@ -500,7 +500,7 @@ bool TestServer::gatherDocumentSymbols(
 
         std::string o8_name                      = "test_symbol_name_object_8";
         std::string o8_detail                    = "test::symbol::detail::object::8";
-        int         o8_kind                      = 15;
+        int         o8_kind                      = m_symbol_kind_type_param;
         bool        o8_deprecated                = false;
         int         o8_start_line                = 80;
         int         o8_start_character           = 81;
