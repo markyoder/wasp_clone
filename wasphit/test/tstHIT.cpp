@@ -1456,14 +1456,14 @@ TEST(HITInterpreter, equals_brackets_quotes_in_arrays)
 array01 = 'd2F1:=D[F1,eta1,eta1] d2F2:=D[F2,eta1,eta1]'
 [BlockContainer]
   array02 = ' 08.4;; ; -5;;123;abc:=t[e_x]t;;-02.85;  '
-  array03 = 'path/to/real=1.01;path/to/int=10;path/to/string=one;path/to/blank=""
+  array03 = 'path/to/real=1.01;path/to/int=10;path/to/string=one;path/to/blank=" "
              path/to/real=2.02;path/to/int=20;path/to/string=two;path/to/blank=""'
 []
 )INPUT";
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(51, interpreter.node_count());
+    ASSERT_EQ(53, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(2, document.child_count());
     ASSERT_EQ(2, interpreter.child_count(document.node_index()));
@@ -1511,16 +1511,105 @@ array01 = 'd2F1:=D[F1,eta1,eta1] d2F2:=D[F2,eta1,eta1]'
 /BlockContainer/array03/; (;)
 /BlockContainer/array03/value (path/to/string=one)
 /BlockContainer/array03/; (;)
-/BlockContainer/array03/value (path/to/blank="")
+/BlockContainer/array03/value (path/to/blank=)
+/BlockContainer/array03/value (" ")
 /BlockContainer/array03/value (path/to/real=2.02)
 /BlockContainer/array03/; (;)
 /BlockContainer/array03/value (path/to/int=20)
 /BlockContainer/array03/; (;)
 /BlockContainer/array03/value (path/to/string=two)
 /BlockContainer/array03/; (;)
-/BlockContainer/array03/value (path/to/blank="")
+/BlockContainer/array03/value (path/to/blank=)
+/BlockContainer/array03/value ("")
 /BlockContainer/array03/' (')
 /BlockContainer/term ([])
+)INPUT";
+
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - double quotes in arrays
+ */
+TEST(HITInterpreter, double_quotes_in_arrays)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[DoubleQuotesInArrays]
+  array01 = 'one two="foo bar "'
+  array02 = 'one two="foo bar;"'
+  array03 = 'one two"foo bar "'
+  array04 = 'one two"foo bar;"'
+  array05 = 'one two "foo bar "'
+  array06 = 'one two "foo bar;"'
+[]
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(54, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(1, document.child_count());
+    ASSERT_EQ(1, interpreter.child_count(document.node_index()));
+    ASSERT_EQ(document.child_at(0).node_index(),
+              interpreter.child_index_at(document.node_index(), 0));
+
+    std::string expected_paths = R"INPUT(/
+/DoubleQuotesInArrays
+/DoubleQuotesInArrays/[ ([)
+/DoubleQuotesInArrays/decl (DoubleQuotesInArrays)
+/DoubleQuotesInArrays/] (])
+/DoubleQuotesInArrays/array01
+/DoubleQuotesInArrays/array01/decl (array01)
+/DoubleQuotesInArrays/array01/= (=)
+/DoubleQuotesInArrays/array01/' (')
+/DoubleQuotesInArrays/array01/value (one)
+/DoubleQuotesInArrays/array01/value (two=)
+/DoubleQuotesInArrays/array01/value ("foo bar ")
+/DoubleQuotesInArrays/array01/' (')
+/DoubleQuotesInArrays/array02
+/DoubleQuotesInArrays/array02/decl (array02)
+/DoubleQuotesInArrays/array02/= (=)
+/DoubleQuotesInArrays/array02/' (')
+/DoubleQuotesInArrays/array02/value (one)
+/DoubleQuotesInArrays/array02/value (two=)
+/DoubleQuotesInArrays/array02/value ("foo bar;")
+/DoubleQuotesInArrays/array02/' (')
+/DoubleQuotesInArrays/array03
+/DoubleQuotesInArrays/array03/decl (array03)
+/DoubleQuotesInArrays/array03/= (=)
+/DoubleQuotesInArrays/array03/' (')
+/DoubleQuotesInArrays/array03/value (one)
+/DoubleQuotesInArrays/array03/value (two)
+/DoubleQuotesInArrays/array03/value ("foo bar ")
+/DoubleQuotesInArrays/array03/' (')
+/DoubleQuotesInArrays/array04
+/DoubleQuotesInArrays/array04/decl (array04)
+/DoubleQuotesInArrays/array04/= (=)
+/DoubleQuotesInArrays/array04/' (')
+/DoubleQuotesInArrays/array04/value (one)
+/DoubleQuotesInArrays/array04/value (two)
+/DoubleQuotesInArrays/array04/value ("foo bar;")
+/DoubleQuotesInArrays/array04/' (')
+/DoubleQuotesInArrays/array05
+/DoubleQuotesInArrays/array05/decl (array05)
+/DoubleQuotesInArrays/array05/= (=)
+/DoubleQuotesInArrays/array05/' (')
+/DoubleQuotesInArrays/array05/value (one)
+/DoubleQuotesInArrays/array05/value (two)
+/DoubleQuotesInArrays/array05/value ("foo bar ")
+/DoubleQuotesInArrays/array05/' (')
+/DoubleQuotesInArrays/array06
+/DoubleQuotesInArrays/array06/decl (array06)
+/DoubleQuotesInArrays/array06/= (=)
+/DoubleQuotesInArrays/array06/' (')
+/DoubleQuotesInArrays/array06/value (one)
+/DoubleQuotesInArrays/array06/value (two)
+/DoubleQuotesInArrays/array06/value ("foo bar;")
+/DoubleQuotesInArrays/array06/' (')
+/DoubleQuotesInArrays/term ([])
 )INPUT";
 
     std::stringstream actual_paths;

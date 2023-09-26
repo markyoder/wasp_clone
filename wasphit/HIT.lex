@@ -69,7 +69,7 @@ OR \|\|
 LBRACKET \[
 BRACE_EXPRSN_STRING \$\{[^\"\=]*\}
 NORMAL_VALUE_STRING [^ \'\"\n\t\r\[\]\#][^ \n\t\r\[\]\#]*
-NORMAL_ARRAY_STRING ([^ \"\n\t\r\;\\']|\\'|\\[^'])([^ \n\t\r\;\\']|\\'|\\[^'])*
+NORMAL_ARRAY_STRING ([^ \"\n\t\r\;\\']|\\'|\\[^'])+
 PERIOD_OBJCT_STRING \.[^\/ \n\[\]\=\#\&][^ \n\[\]\=\#\&]+
 NORMAL_OBJCT_STRING   [^\. \n\[\]\=\#\&][^ \n\[\]\=\#\&]*
 VALUE_STRING {BRACE_EXPRSN_STRING}|{NORMAL_VALUE_STRING}
