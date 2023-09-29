@@ -6615,20 +6615,28 @@ YY_RULE_SETUP
 
     // append next token to this yytext
     yymore();
+
+    // undo YY_USER_ACTION column and file_offset increments because yymore
+    yylloc->columns(-yyleng);
+    file_offset-=yyleng;
 }
 	YY_BREAK
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 169 "HIT.lex"
+#line 173 "HIT.lex"
 {
     // append next token to this yytext
     yymore();
+
+    // undo YY_USER_ACTION column and file_offset increments because yymore
+    yylloc->columns(-yyleng);
+    file_offset-=yyleng;
 }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 174 "HIT.lex"
+#line 182 "HIT.lex"
 {
     yy_pop_state(); // leave brace state
     bool in_array_state = YY_START == array;
@@ -6657,11 +6665,15 @@ YY_RULE_SETUP
     // because we have not concluded our brace expression, 
     // append the next token to this yytext
     yymore();
+
+    // undo YY_USER_ACTION column and file_offset increments because yymore
+    yylloc->columns(-yyleng);
+    file_offset-=yyleng;
 }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 205 "HIT.lex"
+#line 217 "HIT.lex"
 {
     yy_pop_state();
     capture_token(yylval,wasp::INTEGER);
@@ -6670,7 +6682,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 210 "HIT.lex"
+#line 222 "HIT.lex"
 {
     yy_pop_state();
     capture_token(yylval,wasp::REAL);
@@ -6679,7 +6691,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 215 "HIT.lex"
+#line 227 "HIT.lex"
 {
     yy_pop_state();
     capture_token(yylval,wasp::STRING);
@@ -6689,7 +6701,7 @@ YY_RULE_SETUP
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 220 "HIT.lex"
+#line 232 "HIT.lex"
 {
     yy_pop_state();
     capture_token(yylval,wasp::QUOTED_STRING);
@@ -6699,7 +6711,7 @@ YY_RULE_SETUP
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-#line 225 "HIT.lex"
+#line 237 "HIT.lex"
 {
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
@@ -6707,7 +6719,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 230 "HIT.lex"
+#line 242 "HIT.lex"
 {
     yy_pop_state();
     yy_push_state(array);
@@ -6717,7 +6729,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 236 "HIT.lex"
+#line 248 "HIT.lex"
 {
     yy_pop_state();
     capture_token(yylval,wasp::QUOTE);
@@ -6726,7 +6738,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 241 "HIT.lex"
+#line 253 "HIT.lex"
 {
     capture_token(yylval,wasp::INTEGER);
     return token::INTEGER;
@@ -6734,7 +6746,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 245 "HIT.lex"
+#line 257 "HIT.lex"
 {
     capture_token(yylval,wasp::REAL);
     return token::REAL;
@@ -6743,7 +6755,7 @@ YY_RULE_SETUP
 case 23:
 /* rule 23 can match eol */
 YY_RULE_SETUP
-#line 249 "HIT.lex"
+#line 261 "HIT.lex"
 {
     capture_token(yylval,wasp::STRING);
     return token::ARRAY_STRING;
@@ -6752,7 +6764,7 @@ YY_RULE_SETUP
 case 24:
 /* rule 24 can match eol */
 YY_RULE_SETUP
-#line 253 "HIT.lex"
+#line 265 "HIT.lex"
 {
     capture_token(yylval,wasp::QUOTED_STRING);
     return token::QSTRING;
@@ -6760,7 +6772,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 257 "HIT.lex"
+#line 269 "HIT.lex"
 {
     capture_token(yylval,wasp::SEMICOLON);
     return token::SEMICOLON;
@@ -6768,7 +6780,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 261 "HIT.lex"
+#line 273 "HIT.lex"
 {
     yy_push_state(array);
     capture_token(yylval,wasp::QUOTE);
@@ -6778,7 +6790,7 @@ YY_RULE_SETUP
 /* gobble up white-spaces */
 case 27:
 YY_RULE_SETUP
-#line 268 "HIT.lex"
+#line 280 "HIT.lex"
 {
     yylloc->step();
 }
@@ -6787,7 +6799,7 @@ YY_RULE_SETUP
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 273 "HIT.lex"
+#line 285 "HIT.lex"
 {
     yylloc->lines(yyleng); yylloc->step();
     interpreter.push_line_offset(file_offset-yyleng);
@@ -6796,7 +6808,7 @@ YY_RULE_SETUP
 /* pass all other characters up to HIT*/
 case 29:
 YY_RULE_SETUP
-#line 279 "HIT.lex"
+#line 291 "HIT.lex"
 {
     return static_cast<token_type>(*yytext);
 }
@@ -6804,10 +6816,10 @@ YY_RULE_SETUP
 /*** END EXAMPLE - Change the HIT lexer rules above ***/
 case 30:
 YY_RULE_SETUP
-#line 285 "HIT.lex"
+#line 297 "HIT.lex"
 ECHO;
 	YY_BREAK
-#line 6810 "HITLexer.cpp"
+#line 6822 "HITLexer.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(object):
 case YY_STATE_EOF(param):
@@ -7772,7 +7784,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 285 "HIT.lex"
+#line 297 "HIT.lex"
 
 
 namespace wasp {

@@ -3592,6 +3592,68 @@ TEST(HITInterpreter, expression_syntax)
     std::stringstream actual_paths;
     interpreter.root().paths(actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
+
+    // Check count of total nodes in tree and count of children of root
+    ASSERT_EQ(154, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(7, document.child_count());
+
+    // SingleQuotedArrays - block: ([) (decl) (]) (key-array)x5 (term)
+    auto block_06 = document.child_at(5);
+    ASSERT_FALSE(block_06.is_null());
+    ASSERT_FALSE(block_06.is_decorative());
+    ASSERT_EQ(std::string("SingleQuotedArrays"), block_06.name());
+    ASSERT_EQ(wasp::OBJECT, block_06.type());
+    ASSERT_EQ(9, block_06.child_count());
+    ASSERT_EQ(5, block_06.non_decorative_children_count());
+    ASSERT_EQ(30, block_06.line());
+    ASSERT_EQ(1, block_06.column());
+    ASSERT_EQ(36, block_06.last_line());
+    ASSERT_EQ(2, block_06.last_column());
+    std::string expected_block_06_data = R"INPUT(
+[SingleQuotedArrays]
+  ndice_01 = '${/ ${fuel ${numslices} height} }'
+  ndice_02 = '${${fuel ${numslices} height}}'
+  ndice_03 = '${${${numslices} height}}'
+  ndice_04 = '${${${numslices}}}'
+  ndice_05 = '${raw ${postprocessor ${numslices} _01} _fv}'
+[]
+)INPUT";
+    ASSERT_EQ(expected_block_06_data, "\n" + block_06.data() + "\n");
+
+    // SingleQuotedArrays/ndice_03 - key-array: (decl) (=) (') (value) (')
+    auto block_06_param_03 = block_06.child_at(5);
+    ASSERT_FALSE(block_06_param_03.is_null());
+    ASSERT_FALSE(block_06_param_03.is_decorative());
+    ASSERT_EQ(std::string("ndice_03"), block_06_param_03.name());
+    ASSERT_EQ(wasp::ARRAY, block_06_param_03.type());
+    ASSERT_EQ(5, block_06_param_03.child_count());
+    ASSERT_EQ(1, block_06_param_03.non_decorative_children_count());
+    ASSERT_EQ(33, block_06_param_03.line());
+    ASSERT_EQ(3, block_06_param_03.column());
+    ASSERT_EQ(33, block_06_param_03.last_line());
+    ASSERT_EQ(40, block_06_param_03.last_column());
+    std::string expected_block_06_param_03_data = R"INPUT(
+ndice_03 = '${${${numslices} height}}'
+)INPUT";
+    ASSERT_EQ(expected_block_06_param_03_data, "\n" + block_06_param_03.data() + "\n");
+
+    // SingleQuotedArrays/ndice_03/value - value: ${${${numslices} height}}
+    auto block_06_param_03_value = block_06_param_03.first_child_by_name("value");
+    ASSERT_FALSE(block_06_param_03_value.is_null());
+    ASSERT_FALSE(block_06_param_03_value.is_decorative());
+    ASSERT_EQ(wasp::VALUE, block_06_param_03_value.type());
+    ASSERT_EQ(0, block_06_param_03_value.child_count());
+    ASSERT_EQ(0, block_06_param_03_value.non_decorative_children_count());
+    ASSERT_EQ(33, block_06_param_03_value.line());
+    ASSERT_EQ(15, block_06_param_03_value.column());
+    ASSERT_EQ(33, block_06_param_03_value.last_line());
+    ASSERT_EQ(39, block_06_param_03_value.last_column());
+    std::string expected_block_06_param_03_value_data = R"INPUT(
+${${${numslices} height}}
+)INPUT";
+    ASSERT_EQ(expected_block_06_param_03_value_data, "\n" + block_06_param_03_value.data() + "\n");
+    ASSERT_EQ("${${${numslices} height}}", block_06_param_03_value.to_string());
 }
 
 /**
@@ -3612,6 +3674,6 @@ TEST(HITInterpreter, expression_syntax_error)
     std::stringstream     error;
     DefaultHITInterpreter interpreter(error);
     ASSERT_FALSE(interpreter.parse(input));
-    std::string expected = "stream input:3.9-132: syntax error, unexpected end of file\n";
+    std::string expected = "stream input:3.9: syntax error, unexpected end of file\n";
     ASSERT_EQ(expected, error.str());
 }

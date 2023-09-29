@@ -164,10 +164,18 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
 
     // append next token to this yytext
     yymore();
+
+    // undo YY_USER_ACTION column and file_offset increments because yymore
+    yylloc->columns(-yyleng);
+    file_offset-=yyleng;
 }
 <brace_expression_state>{BRACE_EXPRESSION_INNER} {
     // append next token to this yytext
     yymore();
+
+    // undo YY_USER_ACTION column and file_offset increments because yymore
+    yylloc->columns(-yyleng);
+    file_offset-=yyleng;
 }
 
 <brace_expression_state>{BRACE_EXPRESSION_END} {
@@ -198,6 +206,10 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     // because we have not concluded our brace expression, 
     // append the next token to this yytext
     yymore();
+
+    // undo YY_USER_ACTION column and file_offset increments because yymore
+    yylloc->columns(-yyleng);
+    file_offset-=yyleng;
 }
 
 
