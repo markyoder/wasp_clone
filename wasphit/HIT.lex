@@ -45,6 +45,7 @@ typedef wasp::HITParser::token_type token_type;
 %s array
 %x lbracket
 %x file_include
+%x brace_expression_state
 
 INTEGER [0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INTEGER}
@@ -67,13 +68,16 @@ NEQ \!=
 AND &&
 OR \|\|
 LBRACKET \[
-BRACE_EXPRSN_STRING \$\{[^\"\=]*\}
-NORMAL_VALUE_STRING [^ \'\"\n\t\r\[\]\#][^ \n\t\r\[\]\#]*
-NORMAL_ARRAY_STRING ([^ \"\n\t\r\;\\']|\\'|\\[^'])+
+BRACE_EXPRESSION_START \$\{[^\}\$]*
+BRACE_EXPRESSION_INNER [^\$\}]+
+BRACE_EXPRESSION_END \}
+
+NORMAL_VALUE_STRING [^ \'\"\n\t\r\[\]\#\$][^ \n\t\r\[\]\#]*
+NORMAL_ARRAY_STRING ([^ \"\n\t\r\;\\'\$]|\\'|\\[^'])+
 PERIOD_OBJCT_STRING \.[^\/ \n\[\]\=\#\&][^ \n\[\]\=\#\&]+
 NORMAL_OBJCT_STRING   [^\. \n\[\]\=\#\&][^ \n\[\]\=\#\&]*
-VALUE_STRING {BRACE_EXPRSN_STRING}|{NORMAL_VALUE_STRING}
-ARRAY_STRING {BRACE_EXPRSN_STRING}|{NORMAL_ARRAY_STRING}|{ASSIGN}
+VALUE_STRING {NORMAL_VALUE_STRING}
+ARRAY_STRING {NORMAL_ARRAY_STRING}|{ASSIGN}
 OBJCT_STRING {PERIOD_OBJCT_STRING}|{NORMAL_OBJCT_STRING}
 PARAM_STRING [^ \'\"\=\n\t\r\[\]\#\&\;]+
 RBRACKET \]
@@ -154,6 +158,60 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     capture_token(yylval,wasp::ASSIGN);
     return token::ASSIGN;
 }
+
+<array,assign,brace_expression_state>{BRACE_EXPRESSION_START} {
+    yy_push_state(brace_expression_state);
+
+    // append next token to this yytext
+    yymore();
+
+    // undo YY_USER_ACTION column and file_offset increments because yymore
+    yylloc->columns(-yyleng);
+    file_offset-=yyleng;
+}
+<brace_expression_state>{BRACE_EXPRESSION_INNER} {
+    // append next token to this yytext
+    yymore();
+
+    // undo YY_USER_ACTION column and file_offset increments because yymore
+    yylloc->columns(-yyleng);
+    file_offset-=yyleng;
+}
+
+<brace_expression_state>{BRACE_EXPRESSION_END} {
+    yy_pop_state(); // leave brace state
+    bool in_array_state = YY_START == array;
+    bool in_assign_state = YY_START == assign;
+
+    // If in array or assign state we have concluded the brace Expression 
+    // and need to capture the token
+    if (in_array_state || in_assign_state) 
+    {
+        capture_token(yylval, wasp::STRING);
+    }
+
+    // If we are now our of brace expression, return the appropriate token type
+    if (in_array_state)
+    {
+        return token::ARRAY_STRING;
+    }
+    else if (in_assign_state)
+    {
+        // The assign state assumes a single value
+        // so we must leave the state immediately
+        yy_pop_state(); 
+        return token::VALUE_STRING;
+    }
+
+    // because we have not concluded our brace expression, 
+    // append the next token to this yytext
+    yymore();
+
+    // undo YY_USER_ACTION column and file_offset increments because yymore
+    yylloc->columns(-yyleng);
+    file_offset-=yyleng;
+}
+
 
 <assign>{INTEGER} {
     yy_pop_state();

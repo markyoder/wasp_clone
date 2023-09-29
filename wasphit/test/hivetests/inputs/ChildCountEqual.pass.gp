@@ -6,7 +6,7 @@
     one=' e f '
 
     three=' ban att pou '
-    three=$
+    three=dollar
     three=' per car '
 
     four=' red orange yellow '

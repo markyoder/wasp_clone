@@ -3378,3 +3378,302 @@ TEST(HITInterpreter, comment_delimiters_within_quotes)
     document.paths(actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
+
+
+/**
+ * @brief Test HIT Expression syntax processing 
+ */
+TEST(HITInterpreter, expression_syntax)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[Simple]
+  foo01=${fparse 42}
+  foo02='${fparse 42}'
+[]
+
+[Multiple]
+  foo01=${fparse 42} bar01=${fparse foo01}
+  foo02='${fparse 42}' bar02='${fparse foo02}'
+[]
+
+[Fparse]
+  pp_ini_bc = ${fparse if(depth<=2000, 1000*9.8*depth, 1000*9.8*depth+(depth-2000)*9.8*1000)}
+[]
+
+[Examples]
+  sliceheight = ${ ${fuelheight} ${numslices}}
+  file_base01 = ${raw ${postprocessor_type_02} _fv}
+  file_base02 = '${raw ${postprocessor_type_01} _fv}'
+[]
+
+[NoQuotedNestings]
+  slice_01 = ${/ ${fuel ${numslices} height} }
+  slice_02 = ${${fuel ${numslices} height}}
+  slice_03 = ${${${numslices} height}}
+  slice_04 = ${${${numslices}}}
+  slice_05 = ${raw ${postprocessor ${numslices} _01} _fv}
+[]
+
+[SingleQuotedArrays]
+  ndice_01 = '${/ ${fuel ${numslices} height} }'
+  ndice_02 = '${${fuel ${numslices} height}}'
+  ndice_03 = '${${${numslices} height}}'
+  ndice_04 = '${${${numslices}}}'
+  ndice_05 = '${raw ${postprocessor ${numslices} _01} _fv}'
+[]
+
+[DoubleQuotedStrings]
+  nchop_01 = "${/ ${fuel ${numslices} height} }"
+  nchop_02 = "${${fuel ${numslices} height}}"
+  nchop_03 = "${${${numslices} height}}"
+  nchop_04 = "${${${numslices}}}"
+  nchop_05 = "${raw ${postprocessor ${numslices} _01} _fv}"
+[]
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::string expected_paths = R"INPUT(/
+/Simple
+/Simple/[ ([)
+/Simple/decl (Simple)
+/Simple/] (])
+/Simple/foo01
+/Simple/foo01/decl (foo01)
+/Simple/foo01/= (=)
+/Simple/foo01/value (${fparse 42})
+/Simple/foo02
+/Simple/foo02/decl (foo02)
+/Simple/foo02/= (=)
+/Simple/foo02/' (')
+/Simple/foo02/value (${fparse 42})
+/Simple/foo02/' (')
+/Simple/term ([])
+/Multiple
+/Multiple/[ ([)
+/Multiple/decl (Multiple)
+/Multiple/] (])
+/Multiple/foo01
+/Multiple/foo01/decl (foo01)
+/Multiple/foo01/= (=)
+/Multiple/foo01/value (${fparse 42})
+/Multiple/bar01
+/Multiple/bar01/decl (bar01)
+/Multiple/bar01/= (=)
+/Multiple/bar01/value (${fparse foo01})
+/Multiple/foo02
+/Multiple/foo02/decl (foo02)
+/Multiple/foo02/= (=)
+/Multiple/foo02/' (')
+/Multiple/foo02/value (${fparse 42})
+/Multiple/foo02/' (')
+/Multiple/bar02
+/Multiple/bar02/decl (bar02)
+/Multiple/bar02/= (=)
+/Multiple/bar02/' (')
+/Multiple/bar02/value (${fparse foo02})
+/Multiple/bar02/' (')
+/Multiple/term ([])
+/Fparse
+/Fparse/[ ([)
+/Fparse/decl (Fparse)
+/Fparse/] (])
+/Fparse/pp_ini_bc
+/Fparse/pp_ini_bc/decl (pp_ini_bc)
+/Fparse/pp_ini_bc/= (=)
+/Fparse/pp_ini_bc/value (${fparse if(depth<=2000, 1000*9.8*depth, 1000*9.8*depth+(depth-2000)*9.8*1000)})
+/Fparse/term ([])
+/Examples
+/Examples/[ ([)
+/Examples/decl (Examples)
+/Examples/] (])
+/Examples/sliceheight
+/Examples/sliceheight/decl (sliceheight)
+/Examples/sliceheight/= (=)
+/Examples/sliceheight/value (${ ${fuelheight} ${numslices}})
+/Examples/file_base01
+/Examples/file_base01/decl (file_base01)
+/Examples/file_base01/= (=)
+/Examples/file_base01/value (${raw ${postprocessor_type_02} _fv})
+/Examples/file_base02
+/Examples/file_base02/decl (file_base02)
+/Examples/file_base02/= (=)
+/Examples/file_base02/' (')
+/Examples/file_base02/value (${raw ${postprocessor_type_01} _fv})
+/Examples/file_base02/' (')
+/Examples/term ([])
+/NoQuotedNestings
+/NoQuotedNestings/[ ([)
+/NoQuotedNestings/decl (NoQuotedNestings)
+/NoQuotedNestings/] (])
+/NoQuotedNestings/slice_01
+/NoQuotedNestings/slice_01/decl (slice_01)
+/NoQuotedNestings/slice_01/= (=)
+/NoQuotedNestings/slice_01/value (${/ ${fuel ${numslices} height} })
+/NoQuotedNestings/slice_02
+/NoQuotedNestings/slice_02/decl (slice_02)
+/NoQuotedNestings/slice_02/= (=)
+/NoQuotedNestings/slice_02/value (${${fuel ${numslices} height}})
+/NoQuotedNestings/slice_03
+/NoQuotedNestings/slice_03/decl (slice_03)
+/NoQuotedNestings/slice_03/= (=)
+/NoQuotedNestings/slice_03/value (${${${numslices} height}})
+/NoQuotedNestings/slice_04
+/NoQuotedNestings/slice_04/decl (slice_04)
+/NoQuotedNestings/slice_04/= (=)
+/NoQuotedNestings/slice_04/value (${${${numslices}}})
+/NoQuotedNestings/slice_05
+/NoQuotedNestings/slice_05/decl (slice_05)
+/NoQuotedNestings/slice_05/= (=)
+/NoQuotedNestings/slice_05/value (${raw ${postprocessor ${numslices} _01} _fv})
+/NoQuotedNestings/term ([])
+/SingleQuotedArrays
+/SingleQuotedArrays/[ ([)
+/SingleQuotedArrays/decl (SingleQuotedArrays)
+/SingleQuotedArrays/] (])
+/SingleQuotedArrays/ndice_01
+/SingleQuotedArrays/ndice_01/decl (ndice_01)
+/SingleQuotedArrays/ndice_01/= (=)
+/SingleQuotedArrays/ndice_01/' (')
+/SingleQuotedArrays/ndice_01/value (${/ ${fuel ${numslices} height} })
+/SingleQuotedArrays/ndice_01/' (')
+/SingleQuotedArrays/ndice_02
+/SingleQuotedArrays/ndice_02/decl (ndice_02)
+/SingleQuotedArrays/ndice_02/= (=)
+/SingleQuotedArrays/ndice_02/' (')
+/SingleQuotedArrays/ndice_02/value (${${fuel ${numslices} height}})
+/SingleQuotedArrays/ndice_02/' (')
+/SingleQuotedArrays/ndice_03
+/SingleQuotedArrays/ndice_03/decl (ndice_03)
+/SingleQuotedArrays/ndice_03/= (=)
+/SingleQuotedArrays/ndice_03/' (')
+/SingleQuotedArrays/ndice_03/value (${${${numslices} height}})
+/SingleQuotedArrays/ndice_03/' (')
+/SingleQuotedArrays/ndice_04
+/SingleQuotedArrays/ndice_04/decl (ndice_04)
+/SingleQuotedArrays/ndice_04/= (=)
+/SingleQuotedArrays/ndice_04/' (')
+/SingleQuotedArrays/ndice_04/value (${${${numslices}}})
+/SingleQuotedArrays/ndice_04/' (')
+/SingleQuotedArrays/ndice_05
+/SingleQuotedArrays/ndice_05/decl (ndice_05)
+/SingleQuotedArrays/ndice_05/= (=)
+/SingleQuotedArrays/ndice_05/' (')
+/SingleQuotedArrays/ndice_05/value (${raw ${postprocessor ${numslices} _01} _fv})
+/SingleQuotedArrays/ndice_05/' (')
+/SingleQuotedArrays/term ([])
+/DoubleQuotedStrings
+/DoubleQuotedStrings/[ ([)
+/DoubleQuotedStrings/decl (DoubleQuotedStrings)
+/DoubleQuotedStrings/] (])
+/DoubleQuotedStrings/nchop_01
+/DoubleQuotedStrings/nchop_01/decl (nchop_01)
+/DoubleQuotedStrings/nchop_01/= (=)
+/DoubleQuotedStrings/nchop_01/value ("${/ ${fuel ${numslices} height} }")
+/DoubleQuotedStrings/nchop_02
+/DoubleQuotedStrings/nchop_02/decl (nchop_02)
+/DoubleQuotedStrings/nchop_02/= (=)
+/DoubleQuotedStrings/nchop_02/value ("${${fuel ${numslices} height}}")
+/DoubleQuotedStrings/nchop_03
+/DoubleQuotedStrings/nchop_03/decl (nchop_03)
+/DoubleQuotedStrings/nchop_03/= (=)
+/DoubleQuotedStrings/nchop_03/value ("${${${numslices} height}}")
+/DoubleQuotedStrings/nchop_04
+/DoubleQuotedStrings/nchop_04/decl (nchop_04)
+/DoubleQuotedStrings/nchop_04/= (=)
+/DoubleQuotedStrings/nchop_04/value ("${${${numslices}}}")
+/DoubleQuotedStrings/nchop_05
+/DoubleQuotedStrings/nchop_05/decl (nchop_05)
+/DoubleQuotedStrings/nchop_05/= (=)
+/DoubleQuotedStrings/nchop_05/value ("${raw ${postprocessor ${numslices} _01} _fv}")
+/DoubleQuotedStrings/term ([])
+)INPUT";
+    std::stringstream actual_paths;
+    interpreter.root().paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+
+    // Check count of total nodes in tree and count of children of root
+    ASSERT_EQ(154, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(7, document.child_count());
+
+    // SingleQuotedArrays - block: ([) (decl) (]) (key-array)x5 (term)
+    auto block_06 = document.child_at(5);
+    ASSERT_FALSE(block_06.is_null());
+    ASSERT_FALSE(block_06.is_decorative());
+    ASSERT_EQ(std::string("SingleQuotedArrays"), block_06.name());
+    ASSERT_EQ(wasp::OBJECT, block_06.type());
+    ASSERT_EQ(9, block_06.child_count());
+    ASSERT_EQ(5, block_06.non_decorative_children_count());
+    ASSERT_EQ(30, block_06.line());
+    ASSERT_EQ(1, block_06.column());
+    ASSERT_EQ(36, block_06.last_line());
+    ASSERT_EQ(2, block_06.last_column());
+    std::string expected_block_06_data = R"INPUT(
+[SingleQuotedArrays]
+  ndice_01 = '${/ ${fuel ${numslices} height} }'
+  ndice_02 = '${${fuel ${numslices} height}}'
+  ndice_03 = '${${${numslices} height}}'
+  ndice_04 = '${${${numslices}}}'
+  ndice_05 = '${raw ${postprocessor ${numslices} _01} _fv}'
+[]
+)INPUT";
+    ASSERT_EQ(expected_block_06_data, "\n" + block_06.data() + "\n");
+
+    // SingleQuotedArrays/ndice_03 - key-array: (decl) (=) (') (value) (')
+    auto block_06_param_03 = block_06.child_at(5);
+    ASSERT_FALSE(block_06_param_03.is_null());
+    ASSERT_FALSE(block_06_param_03.is_decorative());
+    ASSERT_EQ(std::string("ndice_03"), block_06_param_03.name());
+    ASSERT_EQ(wasp::ARRAY, block_06_param_03.type());
+    ASSERT_EQ(5, block_06_param_03.child_count());
+    ASSERT_EQ(1, block_06_param_03.non_decorative_children_count());
+    ASSERT_EQ(33, block_06_param_03.line());
+    ASSERT_EQ(3, block_06_param_03.column());
+    ASSERT_EQ(33, block_06_param_03.last_line());
+    ASSERT_EQ(40, block_06_param_03.last_column());
+    std::string expected_block_06_param_03_data = R"INPUT(
+ndice_03 = '${${${numslices} height}}'
+)INPUT";
+    ASSERT_EQ(expected_block_06_param_03_data, "\n" + block_06_param_03.data() + "\n");
+
+    // SingleQuotedArrays/ndice_03/value - value: ${${${numslices} height}}
+    auto block_06_param_03_value = block_06_param_03.first_child_by_name("value");
+    ASSERT_FALSE(block_06_param_03_value.is_null());
+    ASSERT_FALSE(block_06_param_03_value.is_decorative());
+    ASSERT_EQ(wasp::VALUE, block_06_param_03_value.type());
+    ASSERT_EQ(0, block_06_param_03_value.child_count());
+    ASSERT_EQ(0, block_06_param_03_value.non_decorative_children_count());
+    ASSERT_EQ(33, block_06_param_03_value.line());
+    ASSERT_EQ(15, block_06_param_03_value.column());
+    ASSERT_EQ(33, block_06_param_03_value.last_line());
+    ASSERT_EQ(39, block_06_param_03_value.last_column());
+    std::string expected_block_06_param_03_value_data = R"INPUT(
+${${${numslices} height}}
+)INPUT";
+    ASSERT_EQ(expected_block_06_param_03_value_data, "\n" + block_06_param_03_value.data() + "\n");
+    ASSERT_EQ("${${${numslices} height}}", block_06_param_03_value.to_string());
+}
+
+/**
+ * @brief Test HIT Expression syntax error processing (unterminated expression)
+ * Looking for the matching closing curly brace should result in a 
+ * error reaching the end of file
+ */
+TEST(HITInterpreter, expression_syntax_error)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[Simple]
+  foo01=${fparse 42
+  foo02='${fparse 42}'
+[]
+)INPUT";
+
+    std::stringstream     error;
+    DefaultHITInterpreter interpreter(error);
+    ASSERT_FALSE(interpreter.parse(input));
+    std::string expected = "stream input:3.9: syntax error, unexpected end of file\n";
+    ASSERT_EQ(expected, error.str());
+}
