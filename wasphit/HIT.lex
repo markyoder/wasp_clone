@@ -46,6 +46,7 @@ typedef wasp::HITParser::token_type token_type;
 %x lbracket
 %x file_include
 %x brace_expression_state
+%x trailing_brace_expression_state
 
 INTEGER [0-9]+([eE]\+?[0-9]+)?
 EXPONENT [eE][\+\-]?{INTEGER}
@@ -73,6 +74,7 @@ LBRACKET \[
 BRACE_EXPRESSION_START \$\{
 BRACE_EXPRESSION_INNER ([^\$\}]|\$[^\{])+
 BRACE_EXPRESSION_END \}
+TRAILING_BRACE_EXPRESSION [^ \t\$\}\n'"]+
 
  /* VALUE and ARRAY strings allow '$' if followed by anything other than '{' */
  /* but anything illegal after '$' will get removed and return to the stream */
@@ -98,6 +100,34 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
  * yylex is invoked, the begin position is moved onto the end position. */
 %{
 #define YY_USER_ACTION  yylloc->columns(yyleng); file_offset+=yyleng;
+
+//  Reduce duplicate code to allow the undoing of YY_USER_ACTION column and file_offset increments 
+#define do_yymore() { \
+                    yymore(); \
+                    yylloc->columns(-yyleng); \
+                    file_offset-=yyleng; \
+                    }
+
+#define do_brace_end() { \
+    yy_pop_state(); \
+    bool in_array_state = YY_START == array; \
+    bool in_assign_state = YY_START == assign; \
+    \
+    if (in_array_state || in_assign_state)  \
+    { \
+        capture_token(yylval, wasp::STRING); \
+    } \
+    \
+    if (in_array_state) \
+    { \
+        return token::ARRAY_STRING; \
+    } \
+    else if (in_assign_state) \
+    { \
+        yy_pop_state();  \
+        return token::VALUE_STRING; \
+    } \
+    }
 %}
 
 %% /*** Regular Expressions Part ***/
@@ -168,53 +198,32 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     yy_push_state(brace_expression_state);
 
     // append next token to this yytext
-    yymore();
-
-    // undo YY_USER_ACTION column and file_offset increments because yymore
-    yylloc->columns(-yyleng);
-    file_offset-=yyleng;
+    do_yymore();
 }
 <brace_expression_state>{BRACE_EXPRESSION_INNER} {
     // append next token to this yytext
-    yymore();
-
-    // undo YY_USER_ACTION column and file_offset increments because yymore
-    yylloc->columns(-yyleng);
-    file_offset-=yyleng;
+    do_yymore();
 }
 
 <brace_expression_state>{BRACE_EXPRESSION_END} {
-    yy_pop_state(); // leave brace state
-    bool in_array_state = YY_START == array;
-    bool in_assign_state = YY_START == assign;
-
-    // If in array or assign state we have concluded the brace Expression 
-    // and need to capture the token
-    if (in_array_state || in_assign_state) 
-    {
-        capture_token(yylval, wasp::STRING);
-    }
-
-    // If we are now our of brace expression, return the appropriate token type
-    if (in_array_state)
-    {
-        return token::ARRAY_STRING;
-    }
-    else if (in_assign_state)
-    {
-        // The assign state assumes a single value
-        // so we must leave the state immediately
-        yy_pop_state(); 
-        return token::VALUE_STRING;
-    }
+    do_brace_end();
 
     // because we have not concluded our brace expression, 
     // append the next token to this yytext
-    yymore();
+    do_yymore();
+}
 
-    // undo YY_USER_ACTION column and file_offset increments because yymore
-    yylloc->columns(-yyleng);
-    file_offset-=yyleng;
+<brace_expression_state>{BRACE_EXPRESSION_END}/[^ \t\n'\}"] {
+    yy_pop_state(); // brace expression concluded, pop it
+    yy_push_state(trailing_brace_expression_state); 
+
+    // because of the trailing non-whitespace we have
+    // are not concluding
+    // append the next token to this yytext
+    do_yymore();
+}
+<trailing_brace_expression_state>{TRAILING_BRACE_EXPRESSION} {
+    do_brace_end();
 }
 
 
@@ -306,6 +315,15 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
 
     capture_token(yylval,wasp::STRING);
     return token::ARRAY_STRING;
+}
+<array>{ARRAY_STRING}/\$\{ {
+    // this ARRAY_STRING is a part of the following brace
+    // expression and should be captured accordingly
+    yymore();
+
+    // undo YY_USER_ACTION column and file_offset increments because yymore
+    yylloc->columns(-yyleng);
+    file_offset-=yyleng;
 }
 <array>{DOUBLE_QUOTED_STRING} {
     capture_token(yylval,wasp::QUOTED_STRING);

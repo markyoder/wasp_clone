@@ -3965,3 +3965,73 @@ TEST(HITInterpreter, dollar_in_param_and_array_values)
                          line_with_end_space.size(), line_sans_end_space);
     ASSERT_EQ(input_string, "\n" + document.data() + "\n");
 }
+
+/**
+ * @brief Test HIT syntax - exp
+ */
+TEST(HITInterpreter, expression_w_prefix_and_suffix)
+{
+    std::stringstream input; 
+    input << "key = 'x_${y=a b c}_z'";
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::string expected_paths;
+    expected_paths = R"INPUT(/
+/key
+/key/decl (key)
+/key/= (=)
+/key/' (')
+/key/value (x_${y=a b c}_z)
+/key/' (')
+)INPUT";
+    std::stringstream actual_paths;
+    interpreter.root().paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - exp
+ */
+TEST(HITInterpreter, expression_w_prefix)
+{
+    std::stringstream input; 
+    input << "key = 'x_${y=a b c}'";
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::string expected_paths;
+    expected_paths = R"INPUT(/
+/key
+/key/decl (key)
+/key/= (=)
+/key/' (')
+/key/value (x_${y=a b c})
+/key/' (')
+)INPUT";
+    std::stringstream actual_paths;
+    interpreter.root().paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test HIT syntax - exp
+ */
+TEST(HITInterpreter, expression_w__suffix)
+{
+    std::stringstream input; 
+    input << "key = '${y=a b c}_z'";
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::string expected_paths;
+    expected_paths = R"INPUT(/
+/key
+/key/decl (key)
+/key/= (=)
+/key/' (')
+/key/value (${y=a b c}_z)
+/key/' (')
+)INPUT";
+    std::stringstream actual_paths;
+    interpreter.root().paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
