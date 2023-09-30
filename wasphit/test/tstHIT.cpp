@@ -3677,3 +3677,291 @@ TEST(HITInterpreter, expression_syntax_error)
     std::string expected = "stream input:3.9: syntax error, unexpected end of file\n";
     ASSERT_EQ(expected, error.str());
 }
+
+/**
+ * @brief Test HIT syntax - dollar sign in parameter values and array values
+ */
+TEST(HITInterpreter, dollar_in_param_and_array_values)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[DollarSingleValueParams]
+  param01 = $misc-\w+
+  param02 = misc$-\w+
+  param03 = $mis-\w+$
+  param04 = misc-\w+$
+
+  param05 = {misc-\w+
+  param06 = misc{-\w+
+  param07 = m`i$.{c}*
+  param08 = {isc-\w+{
+
+  param09 = }misc-\w+
+  param10 = misc}-\w+
+  param11 = $}sc-\w+}
+  param12 = misc-\w+}
+
+  param13 = trailing-single-space$ 
+  param14 = trailing-comment-char$# comment here
+[]
+[DollarSingleValueArrays]
+  array01 = '$misc-\w+'
+  array02 = 'misc$-\w+'
+  array03 = '$ms-\w+$ '
+  array04 = 'misc-\w+$'
+
+  array05 = '{misc-\w+'
+  array06 = 'misc{-\w+'
+  array07 = 'm`i$.{c}*'
+  array08 = '{isc-\w+{'
+
+  array09 = '}misc-\w+'
+  array10 = 'misc}-\w+'
+  array11 = '$}sc-\w+}'
+  array12 = 'misc-\w+}'
+
+  array13 = 'trailing-single-space$ '
+  array14 = 'trailing-comment-char$# comment here'
+[]
+[DollarMultiValuesArrays]
+  array01 = '$misc-\w+ misc$-\w+ $mis-\w+$ misc-\w+$'
+  array02 = '{misc-\w+ misc{-\w+ misc-{+ $ {isc-\w+}'
+  array03 = '}misc-\w+ misc}-\w+ $}sc-\w+} misc-\w+}'
+  command = 'for bin in `ls ../../../dir/app_exe-*`
+             do
+             cat dir$
+             echo
+             $env
+             cd ..
+             ln -sf $bin .
+             done'
+[]
+)INPUT";
+
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::string expected_paths = R"INPUT(/
+/DollarSingleValueParams
+/DollarSingleValueParams/[ ([)
+/DollarSingleValueParams/decl (DollarSingleValueParams)
+/DollarSingleValueParams/] (])
+/DollarSingleValueParams/param01
+/DollarSingleValueParams/param01/decl (param01)
+/DollarSingleValueParams/param01/= (=)
+/DollarSingleValueParams/param01/value ($misc-\w+)
+/DollarSingleValueParams/param02
+/DollarSingleValueParams/param02/decl (param02)
+/DollarSingleValueParams/param02/= (=)
+/DollarSingleValueParams/param02/value (misc$-\w+)
+/DollarSingleValueParams/param03
+/DollarSingleValueParams/param03/decl (param03)
+/DollarSingleValueParams/param03/= (=)
+/DollarSingleValueParams/param03/value ($mis-\w+$)
+/DollarSingleValueParams/param04
+/DollarSingleValueParams/param04/decl (param04)
+/DollarSingleValueParams/param04/= (=)
+/DollarSingleValueParams/param04/value (misc-\w+$)
+/DollarSingleValueParams/param05
+/DollarSingleValueParams/param05/decl (param05)
+/DollarSingleValueParams/param05/= (=)
+/DollarSingleValueParams/param05/value ({misc-\w+)
+/DollarSingleValueParams/param06
+/DollarSingleValueParams/param06/decl (param06)
+/DollarSingleValueParams/param06/= (=)
+/DollarSingleValueParams/param06/value (misc{-\w+)
+/DollarSingleValueParams/param07
+/DollarSingleValueParams/param07/decl (param07)
+/DollarSingleValueParams/param07/= (=)
+/DollarSingleValueParams/param07/value (m`i$.{c}*)
+/DollarSingleValueParams/param08
+/DollarSingleValueParams/param08/decl (param08)
+/DollarSingleValueParams/param08/= (=)
+/DollarSingleValueParams/param08/value ({isc-\w+{)
+/DollarSingleValueParams/param09
+/DollarSingleValueParams/param09/decl (param09)
+/DollarSingleValueParams/param09/= (=)
+/DollarSingleValueParams/param09/value (}misc-\w+)
+/DollarSingleValueParams/param10
+/DollarSingleValueParams/param10/decl (param10)
+/DollarSingleValueParams/param10/= (=)
+/DollarSingleValueParams/param10/value (misc}-\w+)
+/DollarSingleValueParams/param11
+/DollarSingleValueParams/param11/decl (param11)
+/DollarSingleValueParams/param11/= (=)
+/DollarSingleValueParams/param11/value ($}sc-\w+})
+/DollarSingleValueParams/param12
+/DollarSingleValueParams/param12/decl (param12)
+/DollarSingleValueParams/param12/= (=)
+/DollarSingleValueParams/param12/value (misc-\w+})
+/DollarSingleValueParams/param13
+/DollarSingleValueParams/param13/decl (param13)
+/DollarSingleValueParams/param13/= (=)
+/DollarSingleValueParams/param13/value (trailing-single-space$)
+/DollarSingleValueParams/param14
+/DollarSingleValueParams/param14/decl (param14)
+/DollarSingleValueParams/param14/= (=)
+/DollarSingleValueParams/param14/value (trailing-comment-char$)
+/DollarSingleValueParams/comment (# comment here)
+/DollarSingleValueParams/term ([])
+/DollarSingleValueArrays
+/DollarSingleValueArrays/[ ([)
+/DollarSingleValueArrays/decl (DollarSingleValueArrays)
+/DollarSingleValueArrays/] (])
+/DollarSingleValueArrays/array01
+/DollarSingleValueArrays/array01/decl (array01)
+/DollarSingleValueArrays/array01/= (=)
+/DollarSingleValueArrays/array01/' (')
+/DollarSingleValueArrays/array01/value ($misc-\w+)
+/DollarSingleValueArrays/array01/' (')
+/DollarSingleValueArrays/array02
+/DollarSingleValueArrays/array02/decl (array02)
+/DollarSingleValueArrays/array02/= (=)
+/DollarSingleValueArrays/array02/' (')
+/DollarSingleValueArrays/array02/value (misc$-\w+)
+/DollarSingleValueArrays/array02/' (')
+/DollarSingleValueArrays/array03
+/DollarSingleValueArrays/array03/decl (array03)
+/DollarSingleValueArrays/array03/= (=)
+/DollarSingleValueArrays/array03/' (')
+/DollarSingleValueArrays/array03/value ($ms-\w+$)
+/DollarSingleValueArrays/array03/' (')
+/DollarSingleValueArrays/array04
+/DollarSingleValueArrays/array04/decl (array04)
+/DollarSingleValueArrays/array04/= (=)
+/DollarSingleValueArrays/array04/' (')
+/DollarSingleValueArrays/array04/value (misc-\w+$)
+/DollarSingleValueArrays/array04/' (')
+/DollarSingleValueArrays/array05
+/DollarSingleValueArrays/array05/decl (array05)
+/DollarSingleValueArrays/array05/= (=)
+/DollarSingleValueArrays/array05/' (')
+/DollarSingleValueArrays/array05/value ({misc-\w+)
+/DollarSingleValueArrays/array05/' (')
+/DollarSingleValueArrays/array06
+/DollarSingleValueArrays/array06/decl (array06)
+/DollarSingleValueArrays/array06/= (=)
+/DollarSingleValueArrays/array06/' (')
+/DollarSingleValueArrays/array06/value (misc{-\w+)
+/DollarSingleValueArrays/array06/' (')
+/DollarSingleValueArrays/array07
+/DollarSingleValueArrays/array07/decl (array07)
+/DollarSingleValueArrays/array07/= (=)
+/DollarSingleValueArrays/array07/' (')
+/DollarSingleValueArrays/array07/value (m`i$.{c}*)
+/DollarSingleValueArrays/array07/' (')
+/DollarSingleValueArrays/array08
+/DollarSingleValueArrays/array08/decl (array08)
+/DollarSingleValueArrays/array08/= (=)
+/DollarSingleValueArrays/array08/' (')
+/DollarSingleValueArrays/array08/value ({isc-\w+{)
+/DollarSingleValueArrays/array08/' (')
+/DollarSingleValueArrays/array09
+/DollarSingleValueArrays/array09/decl (array09)
+/DollarSingleValueArrays/array09/= (=)
+/DollarSingleValueArrays/array09/' (')
+/DollarSingleValueArrays/array09/value (}misc-\w+)
+/DollarSingleValueArrays/array09/' (')
+/DollarSingleValueArrays/array10
+/DollarSingleValueArrays/array10/decl (array10)
+/DollarSingleValueArrays/array10/= (=)
+/DollarSingleValueArrays/array10/' (')
+/DollarSingleValueArrays/array10/value (misc}-\w+)
+/DollarSingleValueArrays/array10/' (')
+/DollarSingleValueArrays/array11
+/DollarSingleValueArrays/array11/decl (array11)
+/DollarSingleValueArrays/array11/= (=)
+/DollarSingleValueArrays/array11/' (')
+/DollarSingleValueArrays/array11/value ($}sc-\w+})
+/DollarSingleValueArrays/array11/' (')
+/DollarSingleValueArrays/array12
+/DollarSingleValueArrays/array12/decl (array12)
+/DollarSingleValueArrays/array12/= (=)
+/DollarSingleValueArrays/array12/' (')
+/DollarSingleValueArrays/array12/value (misc-\w+})
+/DollarSingleValueArrays/array12/' (')
+/DollarSingleValueArrays/array13
+/DollarSingleValueArrays/array13/decl (array13)
+/DollarSingleValueArrays/array13/= (=)
+/DollarSingleValueArrays/array13/' (')
+/DollarSingleValueArrays/array13/value (trailing-single-space$)
+/DollarSingleValueArrays/array13/' (')
+/DollarSingleValueArrays/array14
+/DollarSingleValueArrays/array14/decl (array14)
+/DollarSingleValueArrays/array14/= (=)
+/DollarSingleValueArrays/array14/' (')
+/DollarSingleValueArrays/array14/value (trailing-comment-char$#)
+/DollarSingleValueArrays/array14/value (comment)
+/DollarSingleValueArrays/array14/value (here)
+/DollarSingleValueArrays/array14/' (')
+/DollarSingleValueArrays/term ([])
+/DollarMultiValuesArrays
+/DollarMultiValuesArrays/[ ([)
+/DollarMultiValuesArrays/decl (DollarMultiValuesArrays)
+/DollarMultiValuesArrays/] (])
+/DollarMultiValuesArrays/array01
+/DollarMultiValuesArrays/array01/decl (array01)
+/DollarMultiValuesArrays/array01/= (=)
+/DollarMultiValuesArrays/array01/' (')
+/DollarMultiValuesArrays/array01/value ($misc-\w+)
+/DollarMultiValuesArrays/array01/value (misc$-\w+)
+/DollarMultiValuesArrays/array01/value ($mis-\w+$ misc-\w+$)
+/DollarMultiValuesArrays/array01/' (')
+/DollarMultiValuesArrays/array02
+/DollarMultiValuesArrays/array02/decl (array02)
+/DollarMultiValuesArrays/array02/= (=)
+/DollarMultiValuesArrays/array02/' (')
+/DollarMultiValuesArrays/array02/value ({misc-\w+)
+/DollarMultiValuesArrays/array02/value (misc{-\w+)
+/DollarMultiValuesArrays/array02/value (misc-{+)
+/DollarMultiValuesArrays/array02/value ($ {isc-\w+})
+/DollarMultiValuesArrays/array02/' (')
+/DollarMultiValuesArrays/array03
+/DollarMultiValuesArrays/array03/decl (array03)
+/DollarMultiValuesArrays/array03/= (=)
+/DollarMultiValuesArrays/array03/' (')
+/DollarMultiValuesArrays/array03/value (}misc-\w+)
+/DollarMultiValuesArrays/array03/value (misc}-\w+)
+/DollarMultiValuesArrays/array03/value ($}sc-\w+})
+/DollarMultiValuesArrays/array03/value (misc-\w+})
+/DollarMultiValuesArrays/array03/' (')
+/DollarMultiValuesArrays/command
+/DollarMultiValuesArrays/command/decl (command)
+/DollarMultiValuesArrays/command/= (=)
+/DollarMultiValuesArrays/command/' (')
+/DollarMultiValuesArrays/command/value (for)
+/DollarMultiValuesArrays/command/value (bin)
+/DollarMultiValuesArrays/command/value (in)
+/DollarMultiValuesArrays/command/value (`ls)
+/DollarMultiValuesArrays/command/value (../../../dir/app_exe-*`)
+/DollarMultiValuesArrays/command/value (do)
+/DollarMultiValuesArrays/command/value (cat)
+/DollarMultiValuesArrays/command/value (dir$)
+/DollarMultiValuesArrays/command/value (echo)
+/DollarMultiValuesArrays/command/value ($env)
+/DollarMultiValuesArrays/command/value (cd)
+/DollarMultiValuesArrays/command/value (..)
+/DollarMultiValuesArrays/command/value (ln)
+/DollarMultiValuesArrays/command/value (-sf)
+/DollarMultiValuesArrays/command/value ($bin)
+/DollarMultiValuesArrays/command/value (.)
+/DollarMultiValuesArrays/command/value (done)
+/DollarMultiValuesArrays/command/' (')
+/DollarMultiValuesArrays/term ([])
+)INPUT";
+    std::stringstream actual_paths;
+    interpreter.root().paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+
+    // Check count of total nodes in tree and count of children of root
+    ASSERT_EQ(207, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(3, document.child_count());
+
+    // Remove end space from line to match expectation and check round trip
+    std::string input_string = input.str();
+    std::string line_with_end_space = "param13 = trailing-single-space$ \n";
+    std::string line_sans_end_space = "param13 = trailing-single-space$\n";
+    input_string.replace(input_string.find(line_with_end_space),
+                         line_with_end_space.size(), line_sans_end_space);
+    ASSERT_EQ(input_string, "\n" + document.data() + "\n");
+}

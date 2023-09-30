@@ -68,12 +68,17 @@ NEQ \!=
 AND &&
 OR \|\|
 LBRACKET \[
-BRACE_EXPRESSION_START \$\{[^\}\$]*
-BRACE_EXPRESSION_INNER [^\$\}]+
+
+ /* START matches '${', END matches '}', INNER matches other pieces in scope */
+BRACE_EXPRESSION_START \$\{
+BRACE_EXPRESSION_INNER ([^\$\}]|\$[^\{])+
 BRACE_EXPRESSION_END \}
 
-NORMAL_VALUE_STRING [^ \'\"\n\t\r\[\]\#\$][^ \n\t\r\[\]\#]*
-NORMAL_ARRAY_STRING ([^ \"\n\t\r\;\\'\$]|\\'|\\[^'])+
+ /* VALUE and ARRAY strings allow '$' if followed by anything other than '{' */
+ /* but anything illegal after '$' will get removed and return to the stream */
+NORMAL_VALUE_STRING ([^ \'\"\n\t\r\[\]\#\$]|\$[^\{])([^ \n\t\r\[\]\#\$]|\$[^\{])*
+NORMAL_ARRAY_STRING ([^ \"\n\t\r\;\\'\$]|\$[^\{]|\\'|\\[^'])+
+
 PERIOD_OBJCT_STRING \.[^\/ \n\[\]\=\#\&][^ \n\[\]\=\#\&]+
 NORMAL_OBJCT_STRING   [^\. \n\[\]\=\#\&][^ \n\[\]\=\#\&]*
 VALUE_STRING {NORMAL_VALUE_STRING}
@@ -224,6 +229,26 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     return token::REAL;
 }
 <assign>{VALUE_STRING} {
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // VALUE_STRING
+    //  if the next to last character is '$' because the "\$[^\{]" part of the
+    //  regular expression matched and the last character is one from this set
+    //  [ ' ' , '\n' , '\t' , '\r' , '[' , ']' , '#' , '$' ]
+    //  then put that character back because it is not allowed in this context
+    //  and rewind column and file_offset increases from yy_user_action by one
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    if (yyleng >= 2 && yytext[yyleng-2] == '$' &&
+         (yytext[yyleng-1] == ' '  || yytext[yyleng-1] == '\n' ||
+          yytext[yyleng-1] == '\t' || yytext[yyleng-1] == '\r' ||
+          yytext[yyleng-1] == '['  || yytext[yyleng-1] == ']'  ||
+          yytext[yyleng-1] == '#'  || yytext[yyleng-1] == '$'))
+    {
+      yyless(yyleng-1);
+      yylloc->columns(-1);
+      file_offset-=1;
+    }
+
     yy_pop_state();
     capture_token(yylval,wasp::STRING);
     return token::VALUE_STRING;
@@ -258,6 +283,27 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     return token::REAL;
 }
 <array>{ARRAY_STRING} {
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // ARRAY_STRING
+    //  if the next to last character is '$' because the "\$[^\{]" part of the
+    //  regular expression matched and the last character is one from this set
+    //  [ ' ' , '"' , '\n' , '\t' , '\r' , ';' , '\\' , '\'' , '$' ]
+    //  then put that character back because it is not allowed in this context
+    //  and rewind column and file_offset increases from yy_user_action by one
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    if (yyleng >= 2 && yytext[yyleng-2] == '$' &&
+         (yytext[yyleng-1] == ' '  || yytext[yyleng-1] == '"'  ||
+          yytext[yyleng-1] == '\n' || yytext[yyleng-1] == '\t' ||
+          yytext[yyleng-1] == '\r' || yytext[yyleng-1] == ';'  ||
+          yytext[yyleng-1] == '\\' || yytext[yyleng-1] == '\'' ||
+          yytext[yyleng-1] == '$'))
+    {
+      yyless(yyleng-1);
+      yylloc->columns(-1);
+      file_offset-=1;
+    }
+
     capture_token(yylval,wasp::STRING);
     return token::ARRAY_STRING;
 }
