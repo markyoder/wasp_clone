@@ -35,7 +35,7 @@ typedef wasp::HITParser::token_type token_type;
  /*%option debug*/
 
  /* no support for include files is planned */
-%option yywrap nounput
+%option yywrap nounput yymore
 
  /* enables the use of start condition stacks */
 %option stack
@@ -262,6 +262,11 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     capture_token(yylval,wasp::STRING);
     return token::VALUE_STRING;
 }
+<assign>{VALUE_STRING}/\$\{ {
+    // this VALUE_STRING is a part of the following brace
+    // expression and should be captured accordingly
+    do_yymore();
+}
 <assign>{DOUBLE_QUOTED_STRING} {
     yy_pop_state();
     capture_token(yylval,wasp::QUOTED_STRING);
@@ -319,11 +324,7 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
 <array>{ARRAY_STRING}/\$\{ {
     // this ARRAY_STRING is a part of the following brace
     // expression and should be captured accordingly
-    yymore();
-
-    // undo YY_USER_ACTION column and file_offset increments because yymore
-    yylloc->columns(-yyleng);
-    file_offset-=yyleng;
+    do_yymore();
 }
 <array>{DOUBLE_QUOTED_STRING} {
     capture_token(yylval,wasp::QUOTED_STRING);
