@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - HIT lexer to properly handle the double quote character specified within arrays
 - HIT lexer to properly handle brace expressions specifically to allow '=' inside
+- HIT lexer to properly handle '$' in normal values after brace expression update
 
 ## [4.0.2] - 9-22-2023
 

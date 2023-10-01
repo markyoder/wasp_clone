@@ -207,7 +207,7 @@ namespace wasp {
     /// Symbol semantic values.
     union value_type
     {
-#line 64 "HIT.bison"
+#line 65 "HIT.bison"
 
     std::size_t token_index;
     std::size_t node_index;
