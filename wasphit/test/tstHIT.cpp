@@ -4076,3 +4076,24 @@ TEST(HITInterpreter, expression_unquoted_w_prefix)
     interpreter.root().paths(actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
+
+/**
+ * @brief Test HIT syntax - exp
+ */
+TEST(HITInterpreter, expression_variant)
+{
+    std::stringstream input; 
+    input << "G2 = ${fparse ${units 505.97 J/(kg*K) -> eV/(g*K)}*ru0*(Temp_-Theta_e_mb)}";
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::string expected_paths;
+    expected_paths = R"INPUT(/
+/G2
+/G2/decl (G2)
+/G2/= (=)
+/G2/value (${fparse ${units 505.97 J/(kg*K) -> eV/(g*K)}*ru0*(Temp_-Theta_e_mb)})
+)INPUT";
+    std::stringstream actual_paths;
+    interpreter.root().paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
