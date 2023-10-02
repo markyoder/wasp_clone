@@ -214,8 +214,11 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
 }
 
 <brace_expression_state>{BRACE_EXPRESSION_END}/[^ \t\n'\}"] {
+
     yy_pop_state(); // brace expression concluded, pop it
-    yy_push_state(trailing_brace_expression_state); 
+    // If we are no longer in brace_expression, push trailing state to ensure trailing information is included in the brace token
+    if (YY_START != brace_expression_state)
+        yy_push_state(trailing_brace_expression_state); 
 
     // because of the trailing non-whitespace we have
     // are not concluding
