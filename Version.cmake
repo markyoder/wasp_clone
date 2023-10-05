@@ -6,11 +6,11 @@
 # for release mode and set the version.
 
 SET(${PROJECT_NAME}_NAME "wasp")
-SET(${PROJECT_NAME}_VERSION 4.0.2)
-SET(${PROJECT_NAME}_FULL_VERSION "Workbench Analysis Sequence Processor 4.0.2")
-SET(${PROJECT_NAME}_VERSION_STRING "4.0.2")
+SET(${PROJECT_NAME}_VERSION 4.0.3)
+SET(${PROJECT_NAME}_FULL_VERSION "Workbench Analysis Sequence Processor 4.0.3")
+SET(${PROJECT_NAME}_VERSION_STRING "4.0.3")
 SET(${PROJECT_NAME}_MAJOR_VERSION 04)
-SET(${PROJECT_NAME}_MAJOR_MINOR_VERSION 040002)
+SET(${PROJECT_NAME}_MAJOR_MINOR_VERSION 040003)
 SET(${PROJECT_NAME}_ENABLE_DEVELOPMENT_MODE_DEFAULT ON) # Change to 'OFF' for a release (beta or final)
 
 ##---------------------------------------------------------------------------##

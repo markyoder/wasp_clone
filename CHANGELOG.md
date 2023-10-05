@@ -4,9 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.0.3] - 10-05-2023
+
 ### Fixed
 - HIT lexer to properly handle the double quote character specified within arrays
-- HIT lexer to properly handle brace expressions specifically to allow '=' inside
+- HIT lexer to properly handle various scenarios of unsupported brace expressions
 - HIT lexer to properly handle '$' in normal values after brace expression update
 
 ## [4.0.2] - 9-22-2023
