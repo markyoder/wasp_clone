@@ -4097,3 +4097,46 @@ TEST(HITInterpreter, expression_variant)
     interpreter.root().paths(actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
+
+
+/**
+ * @brief Test HIT syntax - exp
+ */
+TEST(HITInterpreter, expression_sandwich_variant)
+{
+    std::stringstream input; 
+    input << R"INPUT(k1 = x_${a}_y_${b}_z
+k2 = ${a}_y_${b}
+k3 = ${a}_y_${b}${c}
+k4 = ${a}_y_${b}${c}_z
+value = (1.0/2.0)*(eps*eps*(-grad_grad_p_x+${gx}*grad_rho_x)+2.0*eps*grad_eps*(-grad_p_x+rho*${gx}sdfs))
+)INPUT";
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    std::string expected_paths;
+    expected_paths = R"INPUT(/
+/k1
+/k1/decl (k1)
+/k1/= (=)
+/k1/value (x_${a}_y_${b}_z)
+/k2
+/k2/decl (k2)
+/k2/= (=)
+/k2/value (${a}_y_${b})
+/k3
+/k3/decl (k3)
+/k3/= (=)
+/k3/value (${a}_y_${b}${c})
+/k4
+/k4/decl (k4)
+/k4/= (=)
+/k4/value (${a}_y_${b}${c}_z)
+/value
+/value/decl (value)
+/value/= (=)
+/value/value ((1.0/2.0)*(eps*eps*(-grad_grad_p_x+${gx}*grad_rho_x)+2.0*eps*grad_eps*(-grad_p_x+rho*${gx}sdfs)))
+)INPUT";
+    std::stringstream actual_paths;
+    interpreter.root().paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}

@@ -225,10 +225,20 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     // append the next token to this yytext
     do_yymore();
 }
+<brace_expression_state>{BRACE_EXPRESSION_END}/\$\{ {
+    yy_pop_state(); // brace expression concluded, pop it
+    // the brace_expression_state will be pushed 
+    do_yymore();
+}
 <trailing_brace_expression_state>{TRAILING_BRACE_EXPRESSION} {
     do_brace_end();
 }
 
+<trailing_brace_expression_state>{TRAILING_BRACE_EXPRESSION}/\$\{ {
+    yy_pop_state(); // leave trailing brace expression state
+    // the brace_expression_state will be pushed 
+    do_yymore(); 
+}
 
 <assign>{INTEGER} {
     yy_pop_state();
