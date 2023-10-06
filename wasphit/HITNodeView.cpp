@@ -67,6 +67,7 @@ bool HITNodeView::is_decorative() const
         case wasp::QUOTE:     // delimits arrays, e.g., ' 1 2 3 '
         case wasp::LBRACKET:  // [
         case wasp::RBRACKET:  // ]
+        case wasp::BLANK_LINE:
             return true;
     }
     return false;
@@ -158,6 +159,11 @@ HITNodeView  // return type
 std::size_t HITNodeView::type() const
 {
     return m_pool->type(m_node_index);
+}
+
+void HITNodeView::set_type(std::size_t node_type)
+{
+    m_pool->set_type(m_node_index, node_type);
 }
 
 const char* HITNodeView::name() const

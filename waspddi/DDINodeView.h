@@ -187,6 +187,13 @@ class WASP_PUBLIC DDINodeView
      * @return the node's type
      */
     std::size_t type() const;
+
+    /**
+     * @brief set the type for this node
+     * @param node_type the new type for this node
+     */
+    void set_type(std::size_t node_type);
+
     /**
      * @brief name acquire the name of the node
      * @return the node's name

@@ -93,6 +93,7 @@ bool SONNodeView::is_decorative() const
         case wasp::RBRACKET:  // ]
         case wasp::EXECUTION_UNIT_START:
         case wasp::EXECUTION_UNIT_END:
+        case wasp::BLANK_LINE:
             return true;
     }
     return false;
@@ -203,6 +204,11 @@ SONNodeView  // return type
 std::size_t SONNodeView::type() const
 {
     return m_pool->type(m_node_index);
+}
+
+void SONNodeView::set_type(std::size_t node_type)
+{
+    m_pool->set_type(m_node_index, node_type);
 }
 
 const char* SONNodeView::name() const

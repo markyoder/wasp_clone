@@ -4140,3 +4140,79 @@ value = (1.0/2.0)*(eps*eps*(-grad_grad_p_x+${gx}*grad_rho_x)+2.0*eps*grad_eps*(-
     interpreter.root().paths(actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
+
+/**
+ * @brief Test HITNodeView set_type - change type of parent node and leaf node
+ */
+TEST(HITInterpreter, set_type)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[BlockObject]
+  # blankline
+  a = 100.001
+[]
+)INPUT";
+
+    // Check parse success, total node count, child count of document root
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_EQ(11, interpreter.node_count());
+    HITNodeView document = interpreter.root();
+    ASSERT_EQ(1, document.child_count());
+
+    // BlockObject - parent node with original parsed type of wasp::OBJECT
+    // children - (LBRACKET,DECL,RBRACKET,COMMENT,KEYED_VALUE,OBJECT_TERM)
+    HITNodeView object_node = document.child_at(0);
+    ASSERT_EQ(std::string("BlockObject"), object_node.name());
+    ASSERT_FALSE(object_node.is_null());
+    ASSERT_EQ(wasp::OBJECT, object_node.type());
+    ASSERT_FALSE(object_node.is_decorative());
+    ASSERT_FALSE(object_node.is_leaf());
+
+    // Change non-decorative wasp::OBJECT into non-decorative wasp::PARENT
+    object_node.set_type(wasp::PARENT);
+    ASSERT_EQ(wasp::PARENT, object_node.type());
+    ASSERT_FALSE(object_node.is_decorative());
+    ASSERT_FALSE(object_node.is_leaf());
+
+    // Check object non-decorative children count pre child types changing
+    ASSERT_EQ(6, object_node.child_count());
+    ASSERT_EQ(1, object_node.non_decorative_children_count());
+
+    // BlockObject/comment - leaf node with original type of wasp::COMMENT
+    HITNodeView comment_node = object_node.child_at(3);
+    ASSERT_EQ(std::string("comment"), comment_node.name());
+    ASSERT_FALSE(comment_node.is_null());
+    ASSERT_EQ(wasp::COMMENT, comment_node.type());
+    ASSERT_TRUE(comment_node.is_decorative());
+    ASSERT_TRUE(comment_node.is_leaf());
+    ASSERT_EQ("# blankline", comment_node.last_as_string());
+
+    // Change from decorative wasp::COMMENT to decorative wasp::BLANK_LINE
+    comment_node.set_type(wasp::BLANK_LINE);
+    ASSERT_EQ(wasp::BLANK_LINE, comment_node.type());
+    ASSERT_TRUE(comment_node.is_decorative());
+    ASSERT_TRUE(comment_node.is_leaf());
+    ASSERT_EQ("# blankline", comment_node.last_as_string());
+
+    // BlockObject/a - parent node with original type of wasp::KEYED_VALUE
+    HITNodeView keyval_node = object_node.child_at(4);
+    ASSERT_EQ(std::string("a"), keyval_node.name());
+    ASSERT_FALSE(keyval_node.is_null());
+    ASSERT_EQ(wasp::KEYED_VALUE, keyval_node.type());
+    ASSERT_FALSE(keyval_node.is_decorative());
+    ASSERT_FALSE(keyval_node.is_leaf());
+    ASSERT_EQ("100.001", keyval_node.last_as_string());
+
+    // Change non-decorative wasp::KEYED_VALUE to decorative wasp::COMMENT
+    keyval_node.set_type(wasp::COMMENT);
+    ASSERT_EQ(wasp::COMMENT, keyval_node.type());
+    ASSERT_TRUE(keyval_node.is_decorative());
+    ASSERT_FALSE(keyval_node.is_leaf());
+    ASSERT_EQ("100.001", keyval_node.last_as_string());
+
+    // Check object non-decorative children count post child types changes
+    ASSERT_EQ(6, object_node.child_count());
+    ASSERT_EQ(0, object_node.non_decorative_children_count());
+}

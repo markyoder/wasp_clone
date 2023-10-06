@@ -154,6 +154,11 @@ std::size_t NodeView::type() const
     return m_pool->type(m_node_index);
 }
 
+void NodeView::set_type(std::size_t node_type)
+{
+    m_pool->set_type(m_node_index, node_type);
+}
+
 std::size_t NodeView::token_type() const
 {
     return m_pool->node_token_type(m_node_index);

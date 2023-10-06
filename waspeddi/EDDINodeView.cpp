@@ -87,6 +87,7 @@ bool EDDINodeView::is_type_decorative(std::size_t t)
         case wasp::WASP_COMMA:
         case wasp::DIVIDE:  // forward slash '/'
         case wasp::TERM:
+        case wasp::BLANK_LINE:
             return true;
     }    
     return false;
@@ -189,6 +190,11 @@ EDDINodeView  // return type
 std::size_t EDDINodeView::type() const
 {
     return m_pool->type(m_node_index);
+}
+
+void EDDINodeView::set_type(std::size_t node_type)
+{
+    m_pool->set_type(m_node_index, node_type);
 }
 
 const char* EDDINodeView::name() const
