@@ -108,6 +108,11 @@ TEST(NodeView, child)
         std::string name          = data_view.name();
         std::string expected_name = "data";
         ASSERT_EQ(expected_name, name);
+        // test set_type on parent node
+        EXPECT_FALSE(data_view.is_leaf());
+        EXPECT_EQ(array, data_view.type());
+        data_view.set_type(root);
+        EXPECT_EQ(root, data_view.type());
         {  // test empty scenario
             const std::string    expected_child_name = "ted";
             NodeView::Collection children =
@@ -143,6 +148,11 @@ TEST(NodeView, child)
             child_view.set_data("5678");
             child_data = child_view.data();
             ASSERT_EQ("5678", child_data);
+            // test set_type on leaf node
+            EXPECT_TRUE(child_view.is_leaf());
+            EXPECT_EQ(value, child_view.type());
+            child_view.set_type(word);
+            EXPECT_EQ(word, child_view.type());
         }
     }
     NodeView root_view(interp.size() - 1, interp);

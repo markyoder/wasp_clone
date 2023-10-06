@@ -176,6 +176,12 @@ class WASP_PUBLIC NodeView
     std::size_t type() const;
 
     /**
+     * @brief set the type for this node
+     * @param node_type the new type for this node
+     */
+    void set_type(std::size_t node_type);
+
+    /**
      * @brief token_type acquires the type of the underlying token
      * @return the token type, wasp::UNKNOWN if the node is null or not a leaf
      */

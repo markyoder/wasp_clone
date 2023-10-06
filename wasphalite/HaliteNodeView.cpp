@@ -76,6 +76,7 @@ bool HaliteNodeView::is_decorative() const
         case wasp::STRING:
         case wasp::DECL:
         case wasp::TERM:
+        case wasp::BLANK_LINE:
             return true;
     }
     return false;
@@ -199,6 +200,11 @@ HaliteNodeView  // return type
 std::size_t HaliteNodeView::type() const
 {
     return m_pool->type(m_node_index);
+}
+
+void HaliteNodeView::set_type(std::size_t node_type)
+{
+    m_pool->set_type(m_node_index, node_type);
 }
 
 const char* HaliteNodeView::name() const

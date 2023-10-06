@@ -76,6 +76,7 @@ bool JSONNodeView::is_decorative() const
         case wasp::RBRACE:    // }
         case wasp::LBRACKET:  // [
         case wasp::RBRACKET:  // ]
+        case wasp::BLANK_LINE:
             return true;
     }
     return false;
@@ -200,6 +201,11 @@ JSONNodeView  // return type
 std::size_t JSONNodeView::type() const
 {
     return m_pool->type(m_node_index);
+}
+
+void JSONNodeView::set_type(std::size_t node_type)
+{
+    m_pool->set_type(m_node_index, node_type);
 }
 
 const char* JSONNodeView::name() const

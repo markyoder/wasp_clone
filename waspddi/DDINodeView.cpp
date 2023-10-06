@@ -61,6 +61,7 @@ bool DDINodeView::is_decorative() const
         case wasp::ASSIGN:
         case wasp::COMMENT:
         case wasp::WASP_COMMA:  // ,
+        case wasp::BLANK_LINE:
             return true;
     }
     return false;
@@ -170,6 +171,11 @@ DDINodeView  // return type
 std::size_t DDINodeView::type() const
 {
     return m_pool->type(m_node_index);
+}
+
+void DDINodeView::set_type(std::size_t node_type)
+{
+    m_pool->set_type(m_node_index, node_type);
 }
 
 const char* DDINodeView::name() const
