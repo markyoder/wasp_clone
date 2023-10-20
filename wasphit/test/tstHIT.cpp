@@ -1,9 +1,15 @@
 #include "wasphit/HITInterpreter.h"
 #include "wasphit/HITNodeView.h"
+#include "waspcore/utils.h"
 #include "gtest/gtest.h"
 #include <iostream>
 #include <string>
 using namespace wasp;
+
+
+#include "wasphit/test/Paths.h"
+
+std::string test_dir = TEST_DIR_ROOT;
 
 TEST(HITInterpreter, bad)
 
@@ -4215,4 +4221,89 @@ TEST(HITInterpreter, set_type)
     // Check object non-decorative children count post child types changes
     ASSERT_EQ(6, object_node.child_count());
     ASSERT_EQ(0, object_node.non_decorative_children_count());
+}
+
+
+/**
+ * @brief Test HIT file include scenario involving the Iterator class
+ */
+TEST(HITInterpreter, include_scenario_abc)
+{
+
+    std::string root_file = test_dir+"/inputs/fileA.i";
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parseFile(root_file));
+    HITNodeView root = interpreter.root();
+    std::stringstream actual_list;
+    // list the tree using node iterators
+    // that incorporate the file include logic
+    wasp::tree_list(root, actual_list);
+    std::stringstream expected_list;
+    // Expected is that 
+    // fileA.i includes fileB.i on line 1, nested on line 5
+    // and trailing on line 8
+    // where fileB.i includes a simple C variable.
+    expected_list << R"INPUT(/
+/C
+/C/decl (C)
+/C/= (=)
+/C/value (5.0)
+/B
+/B/[ ([)
+/B/decl (B)
+/B/] (])
+/B/test_b
+/B/test_b/[ ([)
+/B/test_b/decl (test_b)
+/B/test_b/] (])
+/B/test_b/value
+/B/test_b/value/decl (value)
+/B/test_b/value/= (=)
+/B/test_b/value/value (${C})
+/B/test_b/term ([])
+/B/term ([])
+/A
+/A/[ ([)
+/A/decl (A)
+/A/] (])
+/A/comment (# nested)
+/A/C
+/A/C/decl (C)
+/A/C/= (=)
+/A/C/value (5.0)
+/A/B
+/A/B/[ ([)
+/A/B/decl (B)
+/A/B/] (])
+/A/B/test_b
+/A/B/test_b/[ ([)
+/A/B/test_b/decl (test_b)
+/A/B/test_b/] (])
+/A/B/test_b/value
+/A/B/test_b/value/decl (value)
+/A/B/test_b/value/= (=)
+/A/B/test_b/value/value (${C})
+/A/B/test_b/term ([])
+/A/B/term ([])
+/A/term ([])
+/C
+/C/decl (C)
+/C/= (=)
+/C/value (5.0)
+/B
+/B/[ ([)
+/B/decl (B)
+/B/] (])
+/B/test_b
+/B/test_b/[ ([)
+/B/test_b/decl (test_b)
+/B/test_b/] (])
+/B/test_b/value
+/B/test_b/value/decl (value)
+/B/test_b/value/= (=)
+/B/test_b/value/value (${C})
+/B/test_b/term ([])
+/B/term ([])
+)INPUT";
+    ASSERT_EQ(expected_list.str(), actual_list.str());
 }
