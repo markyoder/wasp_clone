@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+
+### Fixed
+- NodeView Iterator and FilePush logic causing incomplete traversal for scenarios where a nested include was the first field in the file
+
 ### Added
 - BLANK_LINE enum type and NodeView::set_type method to set type for any NodeView
 
