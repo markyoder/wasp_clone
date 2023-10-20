@@ -274,8 +274,9 @@ class WASP_PUBLIC HITNodeView
     friend std::ostream& operator<<(std::ostream&               str,
                                     const wasp::HITNodeView& view)
     {
-        str << "HITNodeView(node_index=" << view.m_node_index
-            << ", &pool=" << view.m_pool << ")";
+        str << "HITNodeView(name=" << view.name()
+            << ", type="<<view.type()
+            <<" doc=" <<view.node_pool()->stream_name()<<")";
         return str;
     }
 

@@ -105,13 +105,18 @@ class WASP_PUBLIC Iterator
         // iteration of siblings... this include could be arbitrarily deep        
         auto top = m_stack.back().first;
         auto child = top.child_at(m_stack.back().second);
+        find_start(child);
+    }
+    void find_start(Node& child)
+    {
         // While we need to push into the child node...
         while (m_push(child))
         {
             // if don't need to keep searching for the first node to iterate, break
             if (!m_push.node(m_stack, child)) break;
+
             // check the new stack top node in case it too needs to be pushed into
-            child = m_stack.back().first;
+            child = m_stack.back().first.child_at(m_stack.back().second);
         }
     }
     Iterator(const Iterator& orig):m_stack(orig.m_stack){}
@@ -199,10 +204,19 @@ Iterator<Node, Push>& Iterator<Node, Push>::next()
         }
         else if (m_push(node.child_at(index)))
         {
+            auto child = node.child_at(index);
             // New child node at `index` should be pushed
             // node() method should also indicate if the search
             // for the 'next' should continue
-            keep_searching = m_push.node(m_stack, node.child_at(index));               
+            if (m_push.node(m_stack, child))
+            {
+                // Given the current stack node has been identified as a file
+                // find the starting next node given its child, which 
+                // could also be a nested include
+                child = m_stack.back().first.child_at(m_stack.back().second);
+                find_start(child);
+            }
+            keep_searching = false;
         }
         else
         {

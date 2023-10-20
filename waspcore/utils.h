@@ -131,6 +131,24 @@ WASP_PUBLIC std::string json_unescape_string(const std::string& src);
  */
 WASP_PUBLIC std::string xml_escape_name(const std::string& src);
 
+
+/*
+* Iterate over an entire tree using the node iterator
+* This accounts for traversing through file includes so as to present the entire semantic tree
+*/
+template<typename T>
+WASP_PUBLIC void tree_list(T& node, std::ostream& out)
+{
+    if (node.child_count() == 0)
+        out << node.path() << " (" << node.data() << ")" << std::endl;
+    else
+        out << node.path() << std::endl;
+
+    for (const auto & child : node)
+        tree_list(child, out);
+}
+
+
 /**
  * @brief to_type acquire the data typed as the requested type
  * @param result the typed result
