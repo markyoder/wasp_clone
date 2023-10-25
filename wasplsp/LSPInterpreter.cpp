@@ -127,7 +127,11 @@ bool LSPInterpreter::parseLSP( const std::string & input       ,
 
     if ( !client->isDocumentOpen() )
     {
-        std::string doc_uri = m_uri_prefix + stream_name;
+        // prepend slash to stream name if it does not already start with one
+
+        std::string doc_uri = std::string(m_uri_prefix) +
+            (!stream_name.empty() && stream_name[0] != '/' ? "/" : "") +
+            stream_name;
 
         // only append uri_extension to doc_uri if it does not already end it
 
