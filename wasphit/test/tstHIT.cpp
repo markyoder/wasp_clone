@@ -2511,7 +2511,7 @@ TEST(HITInterpreter, only_include_not_found)
     ASSERT_FALSE(interpreter.parse(input));
 
     std::stringstream expected_errors;
-    expected_errors << "stream input line:1 column:1 : could not find 'block_missing.i'" << std::endl;
+    expected_errors << "stream input:1.1: could not find 'block_missing.i'" << std::endl;
 
     ASSERT_EQ(expected_errors.str(), errors.str());
 }
@@ -2671,7 +2671,7 @@ TEST(HITInterpreter, file_include_circular_loop)
     ASSERT_FALSE(interpreter.parse(input01));
 
     std::stringstream expect_errors;
-    expect_errors << "./input03.i line:3 column:3 : file include would create circular reference 'input02.i'"
+    expect_errors << "./input03.i:3.3: file include would create circular reference 'input02.i'"
                   << std::endl;
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
@@ -2702,7 +2702,7 @@ TEST(HITInterpreter, file_include_circular_self)
     ASSERT_FALSE(interpreter.parse(input01));
 
     std::stringstream expect_errors;
-    expect_errors << "./input02.i line:3 column:3 : file include would create circular reference 'input02.i'"
+    expect_errors << "./input02.i:3.3: file include would create circular reference 'input02.i'"
                   << std::endl;
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
