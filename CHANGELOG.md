@@ -6,10 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ### Fixed
+- LSP Client method to keep URI from definition response instead of discarding it
+- LSPInterpreter to create legal URI with slash starting stream name after scheme
+- Format of file include error messages to be compatible for Workbench navigation
+- FindNodeUnderLineColumn to not crash from traversing nodes in separate document
 - NodeView Iterator and FilePush logic causing incomplete traversal for scenarios where a nested include was the first field in the file
 
 ### Added
+- Convenience function is_nested_file that checks if any NodeView is file include
 - BLANK_LINE enum type and NodeView::set_type method to set type for any NodeView
+
+### Changed
+- LSP URI prefix to be legitimate file scheme instead of imaginary wasplsp scheme
 
 ## [4.0.3] - 10-05-2023
 
