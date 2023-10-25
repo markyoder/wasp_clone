@@ -2652,12 +2652,13 @@ param_03 = 30
 
    std::ofstream input_incl("input_incl.i");
    input_incl << R"INPUT(
+# if is_nested_file() is not checked in findChild the '=' below is returned
 param_02 = 20
 )INPUT";
    input_incl.close();
 
     DefaultHITInterpreter interpreter;
-    ASSERT_TRUE(interpreter.parse(input_base));
+    ASSERT_TRUE(interpreter.parseStream(input_base, "input_base"));
     HITNodeView document = interpreter.root();
     ASSERT_EQ(3, document.child_count());
 
@@ -2685,6 +2686,20 @@ param_02 = 20
     child_03.set_type(wasp::FILE);
     ASSERT_EQ(wasp::FILE, child_03.type());
     ASSERT_FALSE(wasp::is_nested_file(child_03));
+
+    // verify is_nested_file works as expected with findNodeUnderLineColumn
+    HITNodeView found_node = wasp::findNodeUnderLineColumn(document, 3, 10);
+    ASSERT_FALSE(found_node.is_null());
+    ASSERT_EQ(std::string("incl"), found_node.name());
+    ASSERT_TRUE(wasp::is_nested_file(found_node));
+    ASSERT_EQ("input_base", found_node.node_pool()->stream_name());
+    ASSERT_EQ(3, found_node.line());
+    ASSERT_EQ(1, found_node.column());
+    ASSERT_EQ(3, found_node.last_line());
+    ASSERT_EQ(21, found_node.last_column());
+    ASSERT_EQ("!include input_incl.i", found_node.to_string());
+    ASSERT_EQ("!include input_incl.i", found_node.data());
+    ASSERT_EQ(child_02, found_node);
 }
 
 /**
