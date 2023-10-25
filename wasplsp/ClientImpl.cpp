@@ -1074,8 +1074,6 @@ bool ClientImpl::getDefinitionAt( int                index      ,
 
     bool pass = true;
 
-    std::string response_document_path;
-
     // if reponse type is DEFINITION and the given index is not out of range
     // then get the location array and dissect the object at the given index
 
@@ -1084,18 +1082,11 @@ bool ClientImpl::getDefinitionAt( int                index      ,
 
     pass &= dissectLocationObject( locationObject             ,
                                    this->errors               ,
-                                   response_document_path     ,
+                                   definition.target_uri      ,
                                    definition.start_line      ,
                                    definition.start_character ,
                                    definition.end_line        ,
                                    definition.end_character   );
-
-    if ( response_document_path != this->document_path )
-    {
-        this->errors << m_error_prefix << "Definition path mismatch" << std::endl;
-
-        pass = false;
-    }
 
     return pass;
 }

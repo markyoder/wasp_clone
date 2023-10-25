@@ -1088,10 +1088,11 @@ struct clientCompletion
  */
 struct clientDefinition
 {
-    int start_line;
-    int start_character;
-    int end_line;
-    int end_character;
+    std::string target_uri;
+    int         start_line;
+    int         start_character;
+    int         end_line;
+    int         end_character;
 };
 
 /**
