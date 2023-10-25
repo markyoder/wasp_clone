@@ -789,6 +789,12 @@ template<class TAdapter> WASP_PUBLIC
 TAdapter findChild( TAdapter node , size_t start , size_t end ,
                     size_t searchLine , size_t searchColumn   )
 {
+    // do not look at include file children that are in a separate document
+    if(node.type() == wasp::FILE)
+    {
+        return node;
+    }
+
     wasp_check( start <= end );
 
     // node's child count
