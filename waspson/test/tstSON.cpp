@@ -1751,7 +1751,7 @@ TEST(SON, only_include_not_found)
     ASSERT_FALSE(interpreter.parse(input));
 
     std::stringstream expected_errors;
-    expected_errors << "stream input line:1 column:1 : could not find 'missing.son'" << std::endl;
+    expected_errors << "stream input:1.1: could not find 'missing.son'" << std::endl;
     
     ASSERT_EQ(expected_errors.str(), errors.str());
 }

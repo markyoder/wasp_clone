@@ -1088,10 +1088,11 @@ struct clientCompletion
  */
 struct clientDefinition
 {
-    int start_line;
-    int start_character;
-    int end_line;
-    int end_character;
+    std::string target_uri;
+    int         start_line;
+    int         start_character;
+    int         end_line;
+    int         end_character;
 };
 
 /**
@@ -1123,7 +1124,7 @@ struct clientFormatting
 static const char m_rpc_content_len_key[]   = "Content-Length:";
 static const char m_rpc_separator[]         = "\r\n\r\n";
 static const char m_rpc_jsonrpc_key[]       = "jsonrpc";
-static const char m_uri_prefix[]            = "wasplsp://";
+static const char m_uri_prefix[]            = "file://";
 static const char m_wasp_language_id[]      = "wasplsp";
 static const char m_rpc_jsonrpc_val[]       = "2.0";
 static const char m_error_prefix[]          = "Error:: ";

@@ -723,6 +723,15 @@ WASP_PUBLIC void node_paths(const TAdapter& node, std::ostream& out)
     }
 }
 
+/**
+ * @brief is_nested_file checks if the provided node is a file include type
+ */
+template<class TAdapter>
+WASP_PUBLIC bool is_nested_file(const TAdapter& node)
+{
+    return node.type() == wasp::FILE && node.node_pool()->document(node.node_index());
+}
+
 template<class TAdapter> WASP_PUBLIC
 TAdapter findNodeUnderLineColumn( TAdapter root , size_t line , size_t column )
 {
@@ -789,6 +798,12 @@ template<class TAdapter> WASP_PUBLIC
 TAdapter findChild( TAdapter node , size_t start , size_t end ,
                     size_t searchLine , size_t searchColumn   )
 {
+    // do not look at include file children that are in a separate document
+    if (wasp::is_nested_file(node))
+    {
+        return node;
+    }
+
     wasp_check( start <= end );
 
     // node's child count
