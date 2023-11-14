@@ -11,6 +11,45 @@ using namespace wasp;
 
 std::string test_dir = TEST_DIR_ROOT;
 
+TEST(HITInterpreter, int_real)
+
+{
+    std::stringstream input;
+    input << R"INPUT(
+    a=3
+    b=3.1
+    c=1e2
+    d=3.e1
+    e=3.2e3
+    f=-3
+    g=-3.E1
+    h=-3.2E2
+    i=1e23.3
+    )INPUT";
+    std::stringstream        error;
+    DefaultHITInterpreter interpreter(error);
+    ASSERT_TRUE(interpreter.parse(input));
+    std::stringstream tree_print;
+    HITNodeView  root_view = interpreter.root();
+    ASSERT_FALSE(root_view.is_null());
+    
+    std::vector<double> expected = {3, 3.1, 1e2, 3.e1, 3.2e3, -3, -3.e1, -3.2E2, 1e23};
+    std::vector<wasp::NODE> expected_type = {wasp::INTEGER, wasp::REAL, wasp::REAL, 
+                                            wasp::REAL, wasp::REAL, wasp::INTEGER, 
+                                            wasp::REAL, wasp::REAL, wasp::STRING};
+    ASSERT_EQ(expected.size(), root_view.child_count());
+    ASSERT_EQ(expected_type.size(), root_view.child_count());
+
+    for(size_t i = 0; i < expected.size(); ++i)
+    {
+        ASSERT_EQ(3, root_view.child_at(i).child_count());
+        auto value_node = root_view.child_at(i).child_at(2);
+        SCOPED_TRACE(value_node.data());
+        EXPECT_EQ(expected[i], value_node.to_double());
+        EXPECT_EQ(expected_type[i], value_node.token_type()); 
+    }
+}
+
 TEST(HITInterpreter, bad)
 
 {

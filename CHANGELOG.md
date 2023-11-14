@@ -11,10 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Format of file include error messages to be compatible for Workbench navigation
 - FindNodeUnderLineColumn to not crash from traversing nodes in separate document
 - NodeView Iterator and FilePush logic causing incomplete traversal for scenarios where a nested include was the first field in the file
+- HIT lexer integer and float to be C++ compatible for conversion
 
 ### Added
 - Convenience function is_nested_file that checks if any NodeView is file include
 - BLANK_LINE enum type and NodeView::set_type method to set type for any NodeView
+- HITNodeView::token_type method to return the type of the backing token or UNKNOWN for non-terminal or out-of-range requests
 
 ### Changed
 - LSP URI prefix to be legitimate file scheme instead of imaginary wasplsp scheme

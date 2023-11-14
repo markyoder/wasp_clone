@@ -190,6 +190,11 @@ class WASP_PUBLIC HITNodeView
     std::size_t type() const;
 
     /**
+     * @brief token_type acquires the type of the token, unknown if not a leaf node
+     * @return token type of this node when a leaf node, wasp::UNKNOWN otherwise
+    */
+    std::size_t token_type() const;
+    /**
      * @brief set the type for this node
      * @param node_type the new type for this node
      */

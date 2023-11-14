@@ -160,6 +160,10 @@ std::size_t HITNodeView::type() const
 {
     return m_pool->type(m_node_index);
 }
+std::size_t HITNodeView::token_type() const
+{
+    return m_pool->node_token_type(m_node_index);
+}
 
 void HITNodeView::set_type(std::size_t node_type)
 {

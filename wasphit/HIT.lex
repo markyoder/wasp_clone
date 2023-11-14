@@ -48,9 +48,9 @@ typedef wasp::HITParser::token_type token_type;
 %x brace_expression_state
 %x trailing_brace_expression_state
 
-INTEGER [0-9]+([eE]\+?[0-9]+)?
+INTEGER -?[0-9]+
 EXPONENT [eE][\+\-]?{INTEGER}
-REAL {INTEGER}?\.{INTEGER}{EXPONENT}?|{INTEGER}\.({INTEGER}{EXPONENT}?)?|{INTEGER}\.?[eE]\-{INTEGER}
+REAL {INTEGER}?\.{INTEGER}{EXPONENT}?|{INTEGER}\.({INTEGER}{EXPONENT}?)?|{INTEGER}\.?{EXPONENT}
 
 DOUBLE_QUOTED_STRING \"([^\\\"]|\\\"|\\[^\"])*\"
 SINGLE_QUOTE '
