@@ -207,7 +207,7 @@ namespace wasp {
     /// Symbol semantic values.
     union value_type
     {
-#line 65 "HIT.bison"
+#line 66 "HIT.bison"
 
     std::size_t token_index;
     std::size_t node_index;
@@ -860,7 +860,7 @@ namespace wasp {
     /// Constants.
     enum
     {
-      yylast_ = 52,     ///< Last index in yytable_.
+      yylast_ = 61,     ///< Last index in yytable_.
       yynnts_ = 33,  ///< Number of nonterminal symbols.
       yyfinal_ = 2 ///< Termination state number.
     };

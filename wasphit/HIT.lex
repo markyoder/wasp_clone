@@ -162,6 +162,18 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     capture_token(yylval,wasp::LBRACKET);
     return token::LBRACKET;
 }
+
+ /* The assign condition is a syntax error which for the purpose
+  of error recovery is captured here 
+  E.g., the error scenario is follows
+  key = [
+ */
+<assign>{LBRACKET} {
+    yy_pop_state(); // pop assign
+    rewind(); // put back so error recovery is possible
+    // The parser needs to know about this invalid token    
+    return token::LBRACKET;
+}
 <lbracket>{DOT_SLASH} {
     capture_token(yylval,wasp::DOT_SLASH);
     return token::DOT_SLASH;
@@ -296,6 +308,7 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     capture_token(yylval,wasp::QUOTE);
     return token::QUOTE;
 }
+
 <array>{SINGLE_QUOTE} {
     yy_pop_state();
     capture_token(yylval,wasp::QUOTE);

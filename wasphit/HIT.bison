@@ -48,6 +48,7 @@
     @$.begin.column = @$.end.column = interpreter.start_column();
     lexer = std::make_shared<HITLexerImpl>(interpreter,&input_stream);
     // lexer->set_debug(true); // Requires HIT.lex %option debug uncommented
+    // this->set_debug_level(1); // Requires HIT.bison %debug option uncommented
 };
 
 /* The interpreter is passed by reference to the parser and to the HITLexer. This
@@ -378,6 +379,10 @@ object_members : object_member
         $1->second->push_back(($object_member));
         $$ = $1;
     }
+    | object_members error
+    {
+        $$ = $1;
+    }
 
 
 object : object_decl object_term
@@ -554,6 +559,18 @@ keyedvalue : field_name assign value
         delete $array;
 
         $$ = push_keyed_value_or_array(interpreter, child_indices);
+    }
+    | field_name assign error
+    {
+        size_t key_index = ($1);
+        size_t assign_index = ($2);
+
+        std::vector<size_t> child_indices = {key_index, assign_index};
+
+        std::string key = interpreter.data(key_index);
+        $$ = push_keyed_value_or_array(interpreter, child_indices);
+        interpreter.error_stream() << @2 << ": syntax error, '" << key << "' has a missing or malformed value" << std::endl;
+        interpreter.set_failed(true);        
     }
 
 comment : COMMENT
