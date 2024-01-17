@@ -4427,7 +4427,17 @@ TEST(HITInterpreter, missing_value)
     ASSERT_EQ("stream input:1.7: syntax error, unexpected end of file\nstream input:1.6: syntax error, 'key1' has a missing or malformed value\n", errors.str());
     HITNodeView document = interpreter.root();
     ASSERT_FALSE(document.is_null());
-    
+
+    // Ensure all syntax is captured in the tree
+    std::string expected_paths;
+    expected_paths = R"INPUT(/
+/key1
+/key1/decl (key1)
+/key1/= (=)
+)INPUT";
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str()); 
 }
 
 /**
@@ -4445,7 +4455,7 @@ TEST(HITInterpreter, recovery_missing_value_in_block)
     std::stringstream errors;
     DefaultHITInterpreter interpreter(errors);
     ASSERT_FALSE(interpreter.parse(input));
-    ASSERT_EQ("stream input:4.1: syntax error, unexpected [\nstream input:3.9: syntax error, 'key1' has a missing or malformed value\n", errors.str());
+    ASSERT_EQ("stream input:4.1: syntax error, unexpected end of line\nstream input:3.9: syntax error, 'key1' has a missing or malformed value\n", errors.str());
     HITNodeView document = interpreter.root();
     ASSERT_FALSE(document.is_null());
 
@@ -4468,7 +4478,8 @@ TEST(HITInterpreter, recovery_missing_value_in_block)
 
 
 /**
- * @brief Test recovery from missing value following a correct key=value
+ * @brief Test recovery from missing value following a correct key=value 
+ * This scenario includes object terminator
  */
 TEST(HITInterpreter, recovery_missing_value_in_block2)
 {
@@ -4476,14 +4487,13 @@ TEST(HITInterpreter, recovery_missing_value_in_block2)
     input << R"INPUT(
 [block]
    key1 = 3.14159
-   key2 =   
-[])INPUT";
+   key2 = [])INPUT";
 
     // Check parse success, total node count, child count of document root
     std::stringstream errors;
     DefaultHITInterpreter interpreter(errors);
     ASSERT_FALSE(interpreter.parse(input));
-    ASSERT_EQ("stream input:5.1: syntax error, unexpected [\nstream input:4.9: syntax error, 'key2' has a missing or malformed value\n", errors.str());
+    ASSERT_EQ("stream input:4.11: syntax error, unexpected [\nstream input:4.9: syntax error, 'key2' has a missing or malformed value\n", errors.str());
     HITNodeView document = interpreter.root();
     ASSERT_FALSE(document.is_null());
 
@@ -4500,6 +4510,229 @@ TEST(HITInterpreter, recovery_missing_value_in_block2)
 /block/key2
 /block/key2/decl (key2)
 /block/key2/= (=)
+/block/term ([])
+)INPUT";
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test recovery from missing value followed by a correct key=value
+ */
+TEST(HITInterpreter, recovery_missing_value_in_block3)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[block]
+   key1 = 
+   key2 = 3.14159  
+[])INPUT";
+
+    // Check parse success, total node count, child count of document root
+    std::stringstream errors;
+    DefaultHITInterpreter interpreter(errors);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ("stream input:4.1: syntax error, unexpected end of line\nstream input:3.9: syntax error, 'key1' has a missing or malformed value\n", errors.str());
+    HITNodeView document = interpreter.root();
+    ASSERT_FALSE(document.is_null());
+
+        std::string expected_paths;
+    expected_paths = R"INPUT(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+/block/key1
+/block/key1/decl (key1)
+/block/key1/= (=)
+/block/key2
+/block/key2/decl (key2)
+/block/key2/= (=)
+/block/key2/value (3.14159)
+/block/term ([])
+)INPUT";
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+ /* @brief Test recovery from missing value followed by a correct key=value
+ */
+TEST(HITInterpreter, recovery_repeated_missing_value_in_block)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[block]
+   key1 = 
+   key2 = 
+[])INPUT";
+
+    // Check parse success, total node count, child count of document root
+    std::stringstream errors;
+    DefaultHITInterpreter interpreter(errors);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ("stream input:4.1: syntax error, unexpected end of line\nstream input:3.9: syntax error, 'key1' has a missing or malformed value\nstream input:4.9: syntax error, 'key2' has a missing or malformed value\n", errors.str());
+    HITNodeView document = interpreter.root();
+    ASSERT_FALSE(document.is_null());
+
+        std::string expected_paths;
+    expected_paths = R"INPUT(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+/block/key1
+/block/key1/decl (key1)
+/block/key1/= (=)
+/block/key2
+/block/key2/decl (key2)
+/block/key2/= (=)
+/block/term ([])
+)INPUT";
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+ /* @brief Test recovery from missing value followed by a correct key=value
+ */
+TEST(HITInterpreter, recovery_repeated_missing_value_in_block_with_following)
+{
+    std::stringstream input;
+    input << R"INPUT(
+[block]
+   key1 = 
+[]
+key2 = 
+)INPUT";
+
+    // Check parse success, total node count, child count of document root
+    std::stringstream errors;
+    DefaultHITInterpreter interpreter(errors);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ("stream input:4.1: syntax error, unexpected end of line\nstream input:3.9: syntax error, 'key1' has a missing or malformed value\nstream input:6.1: syntax error, unexpected end of line\nstream input:5.6: syntax error, 'key2' has a missing or malformed value\n", errors.str());
+    HITNodeView document = interpreter.root();
+    ASSERT_FALSE(document.is_null());
+
+        std::string expected_paths;
+    expected_paths = R"INPUT(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+/block/key1
+/block/key1/decl (key1)
+/block/key1/= (=)
+/block/term ([])
+/key2
+/key2/decl (key2)
+/key2/= (=)
+)INPUT";
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/* @brief Test recovery from missing value followed by a correct key=value
+ */
+TEST(HITInterpreter, recovery_repeated_missing_value_at_root)
+{
+    std::stringstream input;
+    input << R"INPUT(
+   key1 = 
+   key2 = 
+)INPUT";
+
+    // Check parse success, total node count, child count of document root
+    std::stringstream errors;
+    DefaultHITInterpreter interpreter(errors);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ("stream input:3.1: syntax error, unexpected end of line\nstream input:2.9: syntax error, 'key1' has a missing or malformed value\nstream input:3.9: syntax error, 'key2' has a missing or malformed value\n", errors.str());
+    HITNodeView document = interpreter.root();
+    ASSERT_FALSE(document.is_null());
+
+        std::string expected_paths;
+    expected_paths = R"INPUT(/
+/key1
+/key1/decl (key1)
+/key1/= (=)
+/key2
+/key2/decl (key2)
+/key2/= (=)
+)INPUT";
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/* @brief Test recovery from missing value followed by a correct key=value
+ */
+TEST(HITInterpreter, recovery_missing_value_at_root_w_comment)
+{
+    std::stringstream input;
+    input << R"INPUT(
+   key1 = # a comment instead of expected value
+   key2 = 3.1415
+)INPUT";
+
+    // Check parse success, total node count, child count of document root
+    std::stringstream errors;
+    DefaultHITInterpreter interpreter(errors);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ("stream input:2.11-47: syntax error, unexpected comment\nstream input:2.9: syntax error, 'key1' has a missing or malformed value\n", errors.str());
+    HITNodeView document = interpreter.root();
+    ASSERT_FALSE(document.is_null());
+
+        std::string expected_paths;
+    expected_paths = R"INPUT(/
+/key1
+/key1/decl (key1)
+/key1/= (=)
+/comment (# a comment instead of expected value)
+/key2
+/key2/decl (key2)
+/key2/= (=)
+/key2/value (3.1415)
+)INPUT";
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/* @brief Test recovery from missing value in a block followed by a correct key=value
+ */
+TEST(HITInterpreter, recovery_missing_value_in_block_w_comment)
+{
+    std::stringstream input;
+    input << R"INPUT([block]        
+   key1 = # a comment instead of expected value
+   key2 = 3.1415
+[]
+)INPUT";
+
+    // Check parse success, total node count, child count of document root
+    std::stringstream errors;
+    DefaultHITInterpreter interpreter(errors);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ("stream input:2.11-47: syntax error, unexpected comment\nstream input:2.9: syntax error, 'key1' has a missing or malformed value\n", errors.str());
+    HITNodeView document = interpreter.root();
+    ASSERT_FALSE(document.is_null());
+
+        std::string expected_paths;
+    expected_paths = R"INPUT(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+/block/key1
+/block/key1/decl (key1)
+/block/key1/= (=)
+/block/comment (# a comment instead of expected value)
+/block/key2
+/block/key2/decl (key2)
+/block/key2/= (=)
+/block/key2/value (3.1415)
 /block/term ([])
 )INPUT";
     std::stringstream actual_paths;

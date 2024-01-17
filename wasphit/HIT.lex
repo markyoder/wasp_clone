@@ -139,8 +139,16 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
 %}
  /*** BEGIN EXAMPLE - Change the HIT lexer rules below ***/
 
-<INITIAL,object,param,assign>{COMMENT} {
+<INITIAL,object,param>{COMMENT} {
     capture_token(yylval,wasp::COMMENT);
+    return token::COMMENT;
+}
+
+ /* syntax error - key = COMMENT. */
+<assign>{COMMENT} {
+    yy_pop_state(); // pop the assign state
+    capture_token(yylval,wasp::COMMENT);
+    // The parser needs to know about this invalid token
     return token::COMMENT;
 }
 
@@ -262,6 +270,13 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     capture_token(yylval,wasp::REAL);
     return token::REAL;
 }
+ /* syntax error - key = EOL. */
+<assign>\n {
+    yy_pop_state(); // leave assign state in attempt to error recover
+    yylloc->lines(yyleng); yylloc->step();
+    interpreter.push_line_offset(file_offset-yyleng);
+    return token::EOL;
+} 
 <assign>{VALUE_STRING} {
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

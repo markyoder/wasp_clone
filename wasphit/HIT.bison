@@ -587,6 +587,10 @@ start   : /** empty **/
         | start keyedvalue{
             interpreter.push_staged_child($2);
         }
+        | start keyedvalue error{
+            interpreter.push_staged_child($2);
+            interpreter.set_failed(true);
+        }
         | start object{
             interpreter.push_staged_child($2);
         }
