@@ -328,27 +328,22 @@ namespace wasp {
         S_object_member = 34,                    // object_member
         S_object_members = 35,                   // object_members
         S_object = 36,                           // object
-        S_integer = 37,                          // integer
-        S_real = 38,                             // real
-        S_unquoted_string = 39,                  // unquoted_string
-        S_double_quoted_string = 40,             // double_quoted_string
-        S_double_quoted_strings = 41,            // double_quoted_strings
-        S_VALUE = 42,                            // VALUE
-        S_value = 43,                            // value
-        S_SECTION_NAME = 44,                     // SECTION_NAME
-        S_section_name = 45,                     // section_name
-        S_field_name = 46,                       // field_name
-        S_quote = 47,                            // quote
-        S_string = 48,                           // string
-        S_primitive = 49,                        // primitive
-        S_path = 50,                             // path
-        S_include_file = 51,                     // include_file
-        S_array_member = 52,                     // array_member
-        S_array_members = 53,                    // array_members
-        S_array = 54,                            // array
-        S_keyedvalue = 55,                       // keyedvalue
-        S_comment = 56,                          // comment
-        S_start = 57                             // start
+        S_double_quoted_string = 37,             // double_quoted_string
+        S_double_quoted_strings = 38,            // double_quoted_strings
+        S_VALUE = 39,                            // VALUE
+        S_value = 40,                            // value
+        S_SECTION_NAME = 41,                     // SECTION_NAME
+        S_section_name = 42,                     // section_name
+        S_field_name = 43,                       // field_name
+        S_quote = 44,                            // quote
+        S_path = 45,                             // path
+        S_include_file = 46,                     // include_file
+        S_array_member = 47,                     // array_member
+        S_array_members = 48,                    // array_members
+        S_array = 49,                            // array
+        S_keyedvalue = 50,                       // keyedvalue
+        S_comment = 51,                          // comment
+        S_start = 52                             // start
       };
     };
 
@@ -860,8 +855,8 @@ namespace wasp {
     /// Constants.
     enum
     {
-      yylast_ = 70,     ///< Last index in yytable_.
-      yynnts_ = 33,  ///< Number of nonterminal symbols.
+      yylast_ = 61,     ///< Last index in yytable_.
+      yynnts_ = 28,  ///< Number of nonterminal symbols.
       yyfinal_ = 2 ///< Termination state number.
     };
 
@@ -876,7 +871,7 @@ namespace wasp {
 
 #line 36 "HIT.bison"
 } // wasp
-#line 880 "HITParser.hpp"
+#line 875 "HITParser.hpp"
 
 
 

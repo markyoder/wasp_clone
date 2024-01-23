@@ -97,12 +97,12 @@
 %token <token_index>   OBJECT_TERM  "block terminator"
 %type <token_index>   SECTION_NAME   "section name"
 %type <token_index>   VALUE "value"
-%type <node_index>  integer real string lbracket rbracket quote assign semicolon
+%type <node_index>  lbracket rbracket quote assign semicolon
 %type <node_index>  object_term section_name field_name
 %type <node_index>  object
-%type <node_index>  unquoted_string double_quoted_string
+%type <node_index>  double_quoted_string
 %type <node_index>  keyedvalue dot_slash
-%type <node_index>  comment value primitive include include_file
+%type <node_index>  comment value include include_file
 %type <node_index> object_member array_member path
 %type <node_indices> array_members array double_quoted_strings
 %type <node_indices> object_decl
@@ -345,7 +345,7 @@ object_decl : lbracket section_name rbracket {
                 ,rbracket_index};
     }
 
-object_member : primitive | keyedvalue | comment
+object_member :  keyedvalue | comment
                 | object | include_file
 
 object_members : object_member
@@ -381,6 +381,7 @@ object_members : object_member
     }
     | object_members error
     {
+        interpreter.set_failed(true);
         $$ = $1;
     }
 
@@ -397,24 +398,6 @@ object : object_decl object_term
         delete $2->second;
         delete $2;
         }
-integer : INTEGER
-    {
-        size_t token_index = ($1);
-        $$ = interpreter.push_leaf(wasp::INTEGER,"int"
-                         ,token_index);
-    }
-real : REAL
-    {
-        size_t token_index = ($1);
-        $$ = interpreter.push_leaf(wasp::REAL,"real"
-                         ,token_index);
-    }
-unquoted_string : STRING
-    {
-        size_t token_index = ($1);
-        $$ = interpreter.push_leaf(wasp::STRING,"string"
-                         ,token_index);
-    }
 double_quoted_string : QSTRING
     {
         size_t token_index = ($1);
@@ -458,11 +441,6 @@ quote : QUOTE
         $$ = interpreter.push_leaf(wasp::QUOTE,"'"
                          ,token_index);
     }
-string : unquoted_string
-
-primitive : integer
-           | real
-           | string
 
 path : STRING
         {

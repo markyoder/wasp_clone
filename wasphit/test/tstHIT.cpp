@@ -4739,3 +4739,44 @@ TEST(HITInterpreter, recovery_missing_value_in_block_w_comment)
     document.paths(actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
+
+/* @brief Test recovery from ambigious value in a block followed by a correct key=value
+ * the parser is expect to recover after the newline following the syntax error
+ */
+TEST(HITInterpreter, recovery_amb_value_in_block_w_comment)
+{
+    std::stringstream input;
+    input << R"INPUT([block]        
+   key1 = key2 = 3.14159
+   kwy3 = foo
+[]
+)INPUT";
+
+    // Check parse success, total node count, child count of document root
+    std::stringstream errors;
+    DefaultHITInterpreter interpreter(errors);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ("stream input:2.16: syntax error, unexpected invalid token\n", errors.str());
+    HITNodeView document = interpreter.root();
+    ASSERT_FALSE(document.is_null());
+
+        std::string expected_paths;
+    expected_paths = R"INPUT(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+/block/key1
+/block/key1/decl (key1)
+/block/key1/= (=)
+/block/key1/value (key2)
+/block/kwy3
+/block/kwy3/decl (kwy3)
+/block/kwy3/= (=)
+/block/kwy3/value (foo)
+/block/term ([])
+)INPUT";
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}

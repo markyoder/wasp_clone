@@ -930,37 +930,31 @@ namespace wasp {
 #line 931 "HITParser.cpp"
     break;
 
-  case 11: // object_member: primitive
+  case 11: // object_member: keyedvalue
 #line 348 "HIT.bison"
-                { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
+                 { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 937 "HITParser.cpp"
     break;
 
-  case 12: // object_member: keyedvalue
+  case 12: // object_member: comment
 #line 348 "HIT.bison"
-                            { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
+                              { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 943 "HITParser.cpp"
     break;
 
-  case 13: // object_member: comment
-#line 348 "HIT.bison"
-                                         { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
+  case 13: // object_member: object
+#line 349 "HIT.bison"
+                  { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 949 "HITParser.cpp"
     break;
 
-  case 14: // object_member: object
+  case 14: // object_member: include_file
 #line 349 "HIT.bison"
-                  { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
+                           { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
 #line 955 "HITParser.cpp"
     break;
 
-  case 15: // object_member: include_file
-#line 349 "HIT.bison"
-                           { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 961 "HITParser.cpp"
-    break;
-
-  case 16: // object_members: object_member
+  case 15: // object_members: object_member
 #line 352 "HIT.bison"
     {
         size_t node_index = ((yystack_[0].value.node_index));
@@ -977,10 +971,10 @@ namespace wasp {
                     (indices->size(), indices);
         }
     }
-#line 981 "HITParser.cpp"
+#line 975 "HITParser.cpp"
     break;
 
-  case 17: // object_members: object_members object_member
+  case 16: // object_members: object_members object_member
 #line 367 "HIT.bison"
     {
 
@@ -997,218 +991,165 @@ namespace wasp {
         (yystack_[1].value.object_children)->second->push_back(((yystack_[0].value.node_index)));
         (yylhs.value.object_children) = (yystack_[1].value.object_children);
     }
-#line 1001 "HITParser.cpp"
+#line 995 "HITParser.cpp"
     break;
 
-  case 18: // object_members: object_members error
+  case 17: // object_members: object_members error
 #line 383 "HIT.bison"
     {
+        interpreter.set_failed(true);
         (yylhs.value.object_children) = (yystack_[1].value.object_children);
     }
-#line 1009 "HITParser.cpp"
+#line 1004 "HITParser.cpp"
     break;
 
-  case 19: // object: object_decl object_term
-#line 389 "HIT.bison"
+  case 18: // object: object_decl object_term
+#line 390 "HIT.bison"
         { // empty object        
         (yylhs.value.node_index) = push_object(interpreter, *(yystack_[1].value.node_indices), nullptr, (yystack_[0].value.node_index));
         delete (yystack_[1].value.node_indices);
         }
-#line 1018 "HITParser.cpp"
+#line 1013 "HITParser.cpp"
     break;
 
-  case 20: // object: object_decl object_members object_term
-#line 394 "HIT.bison"
+  case 19: // object: object_decl object_members object_term
+#line 395 "HIT.bison"
         {
         (yylhs.value.node_index) = push_object(interpreter, *(yystack_[2].value.node_indices), (yystack_[1].value.object_children), (yystack_[0].value.node_index));        
         delete (yystack_[2].value.node_indices);
         delete (yystack_[1].value.object_children)->second;
         delete (yystack_[1].value.object_children);
         }
-#line 1029 "HITParser.cpp"
+#line 1024 "HITParser.cpp"
     break;
 
-  case 21: // integer: "integer"
-#line 401 "HIT.bison"
-    {
-        size_t token_index = ((yystack_[0].value.token_index));
-        (yylhs.value.node_index) = interpreter.push_leaf(wasp::INTEGER,"int"
-                         ,token_index);
-    }
-#line 1039 "HITParser.cpp"
-    break;
-
-  case 22: // real: "real"
-#line 407 "HIT.bison"
-    {
-        size_t token_index = ((yystack_[0].value.token_index));
-        (yylhs.value.node_index) = interpreter.push_leaf(wasp::REAL,"real"
-                         ,token_index);
-    }
-#line 1049 "HITParser.cpp"
-    break;
-
-  case 23: // unquoted_string: "string"
-#line 413 "HIT.bison"
-    {
-        size_t token_index = ((yystack_[0].value.token_index));
-        (yylhs.value.node_index) = interpreter.push_leaf(wasp::STRING,"string"
-                         ,token_index);
-    }
-#line 1059 "HITParser.cpp"
-    break;
-
-  case 24: // double_quoted_string: "quoted string"
-#line 419 "HIT.bison"
+  case 20: // double_quoted_string: "quoted string"
+#line 402 "HIT.bison"
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE, "value", token_index);
     }
-#line 1068 "HITParser.cpp"
+#line 1033 "HITParser.cpp"
     break;
 
-  case 25: // double_quoted_strings: double_quoted_string
-#line 424 "HIT.bison"
+  case 21: // double_quoted_strings: double_quoted_string
+#line 407 "HIT.bison"
     {
         size_t qstring_index = ((yystack_[0].value.node_index));
         (yylhs.value.node_indices) = new std::vector<size_t>();
         (yylhs.value.node_indices)->push_back(qstring_index);
     }
-#line 1078 "HITParser.cpp"
+#line 1043 "HITParser.cpp"
     break;
 
-  case 26: // double_quoted_strings: double_quoted_strings double_quoted_string
-#line 430 "HIT.bison"
+  case 22: // double_quoted_strings: double_quoted_strings double_quoted_string
+#line 413 "HIT.bison"
     {
         size_t qstring_index = ((yystack_[0].value.node_index));
         (yystack_[1].value.node_indices)->push_back(qstring_index);
         (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
     }
-#line 1088 "HITParser.cpp"
+#line 1053 "HITParser.cpp"
     break;
 
-  case 27: // VALUE: "integer"
-#line 435 "HIT.bison"
+  case 23: // VALUE: "integer"
+#line 418 "HIT.bison"
         { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 1094 "HITParser.cpp"
+#line 1059 "HITParser.cpp"
     break;
 
-  case 28: // VALUE: "real"
-#line 435 "HIT.bison"
+  case 24: // VALUE: "real"
+#line 418 "HIT.bison"
                   { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 1100 "HITParser.cpp"
+#line 1065 "HITParser.cpp"
     break;
 
-  case 29: // VALUE: "value string"
-#line 435 "HIT.bison"
+  case 25: // VALUE: "value string"
+#line 418 "HIT.bison"
                          { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 1106 "HITParser.cpp"
+#line 1071 "HITParser.cpp"
     break;
 
-  case 30: // VALUE: "array string"
-#line 435 "HIT.bison"
+  case 26: // VALUE: "array string"
+#line 418 "HIT.bison"
                                         { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 1112 "HITParser.cpp"
+#line 1077 "HITParser.cpp"
     break;
 
-  case 31: // value: VALUE
-#line 437 "HIT.bison"
+  case 27: // value: VALUE
+#line 420 "HIT.bison"
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"value"
                          ,token_index);
     }
-#line 1122 "HITParser.cpp"
+#line 1087 "HITParser.cpp"
     break;
 
-  case 32: // SECTION_NAME: "object name"
-#line 442 "HIT.bison"
+  case 28: // SECTION_NAME: "object name"
+#line 425 "HIT.bison"
                { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 1128 "HITParser.cpp"
+#line 1093 "HITParser.cpp"
     break;
 
-  case 33: // SECTION_NAME: "integer"
-#line 442 "HIT.bison"
+  case 29: // SECTION_NAME: "integer"
+#line 425 "HIT.bison"
                               { (yylhs.value.token_index) = (yystack_[0].value.token_index); }
-#line 1134 "HITParser.cpp"
+#line 1099 "HITParser.cpp"
     break;
 
-  case 34: // section_name: SECTION_NAME
-#line 444 "HIT.bison"
+  case 30: // section_name: SECTION_NAME
+#line 427 "HIT.bison"
     {
         size_t decl_token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DECL,"decl"
                          ,decl_token_index);
     }
-#line 1144 "HITParser.cpp"
+#line 1109 "HITParser.cpp"
     break;
 
-  case 35: // field_name: "parameter name"
-#line 450 "HIT.bison"
+  case 31: // field_name: "parameter name"
+#line 433 "HIT.bison"
     {
         size_t decl_token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::DECL,"decl"
                          ,decl_token_index);
     }
-#line 1154 "HITParser.cpp"
+#line 1119 "HITParser.cpp"
     break;
 
-  case 36: // quote: "'"
-#line 456 "HIT.bison"
+  case 32: // quote: "'"
+#line 439 "HIT.bison"
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::QUOTE,"'"
                          ,token_index);
     }
-#line 1164 "HITParser.cpp"
+#line 1129 "HITParser.cpp"
     break;
 
-  case 37: // string: unquoted_string
-#line 461 "HIT.bison"
-         { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1170 "HITParser.cpp"
-    break;
-
-  case 38: // primitive: integer
-#line 463 "HIT.bison"
-            { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1176 "HITParser.cpp"
-    break;
-
-  case 39: // primitive: real
-#line 464 "HIT.bison"
-             { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1182 "HITParser.cpp"
-    break;
-
-  case 40: // primitive: string
-#line 465 "HIT.bison"
-             { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1188 "HITParser.cpp"
-    break;
-
-  case 41: // path: "string"
-#line 468 "HIT.bison"
+  case 33: // path: "string"
+#line 446 "HIT.bison"
         {
             size_t token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"path"
                              ,token_index);
         }
-#line 1198 "HITParser.cpp"
+#line 1139 "HITParser.cpp"
     break;
 
-  case 42: // path: "quoted string"
-#line 474 "HIT.bison"
+  case 34: // path: "quoted string"
+#line 452 "HIT.bison"
         {
             size_t token_index = ((yystack_[0].value.token_index));
             (yylhs.value.node_index) = interpreter.push_leaf(wasp::VALUE,"path"
                              ,token_index);
         }
-#line 1208 "HITParser.cpp"
+#line 1149 "HITParser.cpp"
     break;
 
-  case 43: // include_file: include path
-#line 481 "HIT.bison"
+  case 35: // include_file: include path
+#line 459 "HIT.bison"
         {
 
             std::vector<size_t> child_indices = {(yystack_[1].value.node_index),(yystack_[0].value.node_index)};
@@ -1224,78 +1165,78 @@ namespace wasp {
                 interpreter.set_failed(true);
             }
         }
-#line 1228 "HITParser.cpp"
+#line 1169 "HITParser.cpp"
     break;
 
-  case 44: // array_member: semicolon
-#line 497 "HIT.bison"
+  case 36: // array_member: semicolon
+#line 475 "HIT.bison"
                { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1234 "HITParser.cpp"
+#line 1175 "HITParser.cpp"
     break;
 
-  case 45: // array_member: value
-#line 497 "HIT.bison"
+  case 37: // array_member: value
+#line 475 "HIT.bison"
                            { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1240 "HITParser.cpp"
+#line 1181 "HITParser.cpp"
     break;
 
-  case 46: // array_member: double_quoted_string
-#line 497 "HIT.bison"
+  case 38: // array_member: double_quoted_string
+#line 475 "HIT.bison"
                                    { (yylhs.value.node_index) = (yystack_[0].value.node_index); }
-#line 1246 "HITParser.cpp"
+#line 1187 "HITParser.cpp"
     break;
 
-  case 47: // array_members: array_member
-#line 500 "HIT.bison"
+  case 39: // array_members: array_member
+#line 478 "HIT.bison"
     {
         size_t offset = ((yystack_[0].value.node_index));
         (yylhs.value.node_indices) = new std::vector<size_t>();
         (yylhs.value.node_indices)->push_back(offset);
     }
-#line 1256 "HITParser.cpp"
+#line 1197 "HITParser.cpp"
     break;
 
-  case 48: // array_members: array_members array_member
-#line 505 "HIT.bison"
+  case 40: // array_members: array_members array_member
+#line 483 "HIT.bison"
     {
         (yystack_[1].value.node_indices)->push_back(((yystack_[0].value.node_index)));
         (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
     }
-#line 1265 "HITParser.cpp"
+#line 1206 "HITParser.cpp"
     break;
 
-  case 49: // array: quote array_members quote
-#line 511 "HIT.bison"
+  case 41: // array: quote array_members quote
+#line 489 "HIT.bison"
     {
         (yystack_[1].value.node_indices)->insert((yystack_[1].value.node_indices)->begin(),(yystack_[2].value.node_index));
         (yystack_[1].value.node_indices)->push_back(((yystack_[0].value.node_index)));
         (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
     }
-#line 1275 "HITParser.cpp"
+#line 1216 "HITParser.cpp"
     break;
 
-  case 50: // array: quote quote
-#line 517 "HIT.bison"
+  case 42: // array: quote quote
+#line 495 "HIT.bison"
     {
         (yylhs.value.node_indices) = new std::vector<size_t>();
         (yylhs.value.node_indices)->push_back(((yystack_[1].value.node_index)));
         (yylhs.value.node_indices)->push_back(((yystack_[0].value.node_index)));
     }
-#line 1285 "HITParser.cpp"
+#line 1226 "HITParser.cpp"
     break;
 
-  case 51: // array: array array
-#line 523 "HIT.bison"
+  case 43: // array: array array
+#line 501 "HIT.bison"
     {
         (yylhs.value.node_indices) = (yystack_[1].value.node_indices);
         (yylhs.value.node_indices)->insert((yylhs.value.node_indices)->end(), (yystack_[0].value.node_indices)->begin(), (yystack_[0].value.node_indices)->end());
         delete (yystack_[0].value.node_indices);
     }
-#line 1295 "HITParser.cpp"
+#line 1236 "HITParser.cpp"
     break;
 
-  case 52: // keyedvalue: field_name assign value
-#line 531 "HIT.bison"
+  case 44: // keyedvalue: field_name assign value
+#line 509 "HIT.bison"
     {
         size_t key_index = ((yystack_[2].value.node_index));
         size_t assign_index = ((yystack_[1].value.node_index));
@@ -1305,11 +1246,11 @@ namespace wasp {
 
         (yylhs.value.node_index) = push_keyed_value_or_array(interpreter, child_indices);
     }
-#line 1309 "HITParser.cpp"
+#line 1250 "HITParser.cpp"
     break;
 
-  case 53: // keyedvalue: field_name assign double_quoted_strings
-#line 541 "HIT.bison"
+  case 45: // keyedvalue: field_name assign double_quoted_strings
+#line 519 "HIT.bison"
     {
         size_t key_index = ((yystack_[2].value.node_index));
         size_t assign_index = ((yystack_[1].value.node_index));
@@ -1320,11 +1261,11 @@ namespace wasp {
 
         (yylhs.value.node_index) = push_keyed_value_or_array(interpreter, child_indices);
     }
-#line 1324 "HITParser.cpp"
+#line 1265 "HITParser.cpp"
     break;
 
-  case 54: // keyedvalue: field_name assign array
-#line 552 "HIT.bison"
+  case 46: // keyedvalue: field_name assign array
+#line 530 "HIT.bison"
     {
 
         size_t key_index = ((yystack_[2].value.node_index));
@@ -1336,11 +1277,11 @@ namespace wasp {
 
         (yylhs.value.node_index) = push_keyed_value_or_array(interpreter, child_indices);
     }
-#line 1340 "HITParser.cpp"
+#line 1281 "HITParser.cpp"
     break;
 
-  case 55: // keyedvalue: field_name assign error
-#line 564 "HIT.bison"
+  case 47: // keyedvalue: field_name assign error
+#line 542 "HIT.bison"
     {
         size_t key_index = ((yystack_[2].value.node_index));
         size_t assign_index = ((yystack_[1].value.node_index));
@@ -1352,64 +1293,64 @@ namespace wasp {
         interpreter.error_stream() << yystack_[1].location << ": syntax error, '" << key << "' has a missing or malformed value" << std::endl;
         interpreter.set_failed(true);        
     }
-#line 1356 "HITParser.cpp"
+#line 1297 "HITParser.cpp"
     break;
 
-  case 56: // comment: "comment"
-#line 577 "HIT.bison"
+  case 48: // comment: "comment"
+#line 555 "HIT.bison"
     {
         size_t token_index = ((yystack_[0].value.token_index));
         (yylhs.value.node_index) = interpreter.push_leaf(wasp::COMMENT,"comment"
                          ,token_index);
     }
-#line 1366 "HITParser.cpp"
+#line 1307 "HITParser.cpp"
     break;
 
-  case 58: // start: start comment
-#line 584 "HIT.bison"
+  case 50: // start: start comment
+#line 562 "HIT.bison"
                        {
             interpreter.push_staged_child((yystack_[0].value.node_index));
         }
-#line 1374 "HITParser.cpp"
+#line 1315 "HITParser.cpp"
     break;
 
-  case 59: // start: start keyedvalue
-#line 587 "HIT.bison"
+  case 51: // start: start keyedvalue
+#line 565 "HIT.bison"
                           {
             interpreter.push_staged_child((yystack_[0].value.node_index));
         }
-#line 1382 "HITParser.cpp"
+#line 1323 "HITParser.cpp"
     break;
 
-  case 60: // start: start keyedvalue error
-#line 590 "HIT.bison"
+  case 52: // start: start keyedvalue error
+#line 568 "HIT.bison"
                                 {
             interpreter.push_staged_child((yystack_[1].value.node_index));
             interpreter.set_failed(true);
         }
-#line 1391 "HITParser.cpp"
+#line 1332 "HITParser.cpp"
     break;
 
-  case 61: // start: start object
-#line 594 "HIT.bison"
+  case 53: // start: start object
+#line 572 "HIT.bison"
                       {
             interpreter.push_staged_child((yystack_[0].value.node_index));
         }
-#line 1399 "HITParser.cpp"
+#line 1340 "HITParser.cpp"
     break;
 
-  case 62: // start: start include_file
-#line 598 "HIT.bison"
+  case 54: // start: start include_file
+#line 576 "HIT.bison"
         {
             // assume the included content will be a child of the existing
             // staged content.
             interpreter.push_staged_child((yystack_[0].value.node_index));
         }
-#line 1409 "HITParser.cpp"
+#line 1350 "HITParser.cpp"
     break;
 
 
-#line 1413 "HITParser.cpp"
+#line 1354 "HITParser.cpp"
 
             default:
               break;
@@ -1761,115 +1702,106 @@ namespace wasp {
   }
 
 
-  const signed char HITParser::yypact_ninf_ = -50;
+  const signed char HITParser::yypact_ninf_ = -48;
 
-  const signed char HITParser::yytable_ninf_ = -60;
+  const signed char HITParser::yytable_ninf_ = -52;
 
   const signed char
   HITParser::yypact_[] =
   {
-     -50,     2,   -50,   -50,   -50,   -50,   -50,    17,    -2,    37,
-     -50,    15,   -50,     0,   -50,   -50,   -50,   -50,    18,   -50,
-       5,   -50,   -50,   -50,   -50,   -50,   -50,   -50,   -50,   -50,
-      24,   -50,   -50,   -50,   -50,   -50,   -50,   -50,   -50,   -50,
-     -50,    51,   -50,     5,   -50,   -50,   -50,   -50,   -50,   -50,
-     -50,   -50,   -50,   -50,   -50,   -50,   -50,    12,   -50,   -50,
-      -4,    23,   -50,   -50,   -50,   -50,   -50,   -50,   -50,   -50,
-      -4,    23,   -50,   -50
+     -48,     2,   -48,   -48,   -48,   -48,   -48,    -3,    37,     9,
+     -48,     6,   -48,     0,   -48,   -48,   -48,   -48,    23,   -48,
+       5,   -48,   -48,   -48,   -48,   -48,   -48,     7,   -48,   -48,
+     -48,   -48,   -48,    31,   -48,     5,   -48,   -48,   -48,   -48,
+     -48,   -48,   -48,   -48,   -48,   -48,   -48,   -48,   -48,    -2,
+     -48,   -48,    28,    10,   -48,   -48,   -48,   -48,   -48,   -48,
+     -48,   -48,    28,    10,   -48,   -48
   };
 
   const signed char
   HITParser::yydefact_[] =
   {
-      57,     0,     1,     5,    35,    56,     8,     0,     0,     0,
-      61,     0,    62,     0,    58,     7,    33,    32,     0,    34,
-       0,    41,    42,    43,    21,    22,    23,     4,    19,    16,
-       0,    14,    38,    39,    37,    40,    11,    15,    12,    13,
-       3,     0,    60,     0,     6,     9,    18,    20,    17,    55,
-      36,    27,    28,    29,    30,    24,    25,    53,    31,    52,
-       0,    54,    10,    26,     2,    44,    46,    45,    50,    47,
-       0,    51,    49,    48
+      49,     0,     1,     5,    31,    48,     8,     0,     0,     0,
+      53,     0,    54,     0,    50,     7,    29,    28,     0,    30,
+       0,    33,    34,    35,     4,    18,    15,     0,    13,    14,
+      11,    12,     3,     0,    52,     0,     6,     9,    17,    19,
+      16,    47,    32,    23,    24,    25,    26,    20,    21,    45,
+      27,    44,     0,    46,    10,    22,     2,    36,    38,    37,
+      42,    39,     0,    43,    41,    40
   };
 
   const signed char
   HITParser::yypgoto_[] =
   {
-     -50,   -50,   -50,     9,   -50,    -8,   -50,   -50,   -50,    13,
-     -50,    41,   -50,   -50,   -50,   -38,   -50,   -50,     6,   -50,
-      28,   -50,   -49,   -50,   -50,   -50,    53,   -15,   -50,    19,
-      55,    58,   -50
+     -48,   -48,   -48,    25,   -48,    -1,   -48,   -48,   -48,    26,
+     -48,    35,   -30,   -48,   -48,    21,   -48,    39,   -48,   -47,
+     -48,    54,    -4,   -48,    27,    58,    60,   -48
   };
 
   const signed char
   HITParser::yydefgoto_[] =
   {
-       0,    65,    41,    28,     7,    45,    18,     8,     9,    29,
-      30,    31,    32,    33,    34,    66,    57,    58,    67,    19,
-      20,    11,    60,    35,    36,    23,    37,    69,    70,    71,
-      38,    39,     1
+       0,    57,    33,    25,     7,    37,    18,     8,     9,    26,
+      27,    28,    58,    49,    50,    59,    19,    20,    11,    52,
+      23,    29,    61,    62,    63,    30,    31,     1
   };
 
   const signed char
   HITParser::yytable_[] =
   {
-     -59,    42,     2,    56,   -59,    64,     3,    50,    51,    52,
-      44,    68,    21,    53,    54,    55,   -59,    22,     4,    63,
-     -59,    72,     5,    40,   -59,    46,     6,    15,     3,    16,
-      16,    55,    17,    17,    50,    62,    24,    25,    26,    47,
-       4,     3,    10,    48,     5,    27,    43,    59,     6,    24,
-      25,    26,    49,     4,    12,    73,    13,     5,    27,    14,
-      61,     6,    50,    51,    52,     0,     0,     0,    53,    54,
-      55
+     -51,    34,     2,    48,   -51,    60,     3,    15,    38,    16,
+      36,     3,    17,     3,    32,    64,   -51,    47,     4,    55,
+     -51,    42,     5,     4,   -51,     4,     6,     5,    24,     5,
+      24,     6,    41,     6,    54,    16,    10,    56,    17,    42,
+      43,    44,    42,    43,    44,    45,    46,    47,    45,    46,
+      47,    21,    39,    40,    51,    12,    22,    35,    65,    13,
+      53,    14
   };
 
   const signed char
   HITParser::yycheck_[] =
   {
-       0,     1,     0,    41,     4,     9,     4,    11,    12,    13,
-       5,    60,    14,    17,    18,    19,    16,    19,    16,    57,
-      20,    70,    20,     8,    24,     1,    24,    10,     4,    12,
-      12,    19,    15,    15,    11,    43,    12,    13,    14,    30,
-      16,     4,     1,    30,    20,    21,    18,    41,    24,    12,
-      13,    14,     1,    16,     1,    70,     1,    20,    21,     1,
-      41,    24,    11,    12,    13,    -1,    -1,    -1,    17,    18,
-      19
+       0,     1,     0,    33,     4,    52,     4,    10,     1,    12,
+       5,     4,    15,     4,     8,    62,    16,    19,    16,    49,
+      20,    11,    20,    16,    24,    16,    24,    20,    21,    20,
+      21,    24,     1,    24,    35,    12,     1,     9,    15,    11,
+      12,    13,    11,    12,    13,    17,    18,    19,    17,    18,
+      19,    14,    27,    27,    33,     1,    19,    18,    62,     1,
+      33,     1
   };
 
   const signed char
   HITParser::yystos_[] =
   {
-       0,    57,     0,     4,    16,    20,    24,    29,    32,    33,
-      36,    46,    51,    55,    56,    10,    12,    15,    31,    44,
-      45,    14,    19,    50,    12,    13,    14,    21,    28,    34,
-      35,    36,    37,    38,    39,    48,    49,    51,    55,    56,
-       8,    27,     1,    45,     5,    30,     1,    28,    34,     1,
-      11,    12,    13,    17,    18,    19,    40,    41,    42,    43,
-      47,    54,    30,    40,     9,    26,    40,    43,    47,    52,
-      53,    54,    47,    52
+       0,    52,     0,     4,    16,    20,    24,    29,    32,    33,
+      36,    43,    46,    50,    51,    10,    12,    15,    31,    41,
+      42,    14,    19,    45,    21,    28,    34,    35,    36,    46,
+      50,    51,     8,    27,     1,    42,     5,    30,     1,    28,
+      34,     1,    11,    12,    13,    17,    18,    19,    37,    38,
+      39,    40,    44,    49,    30,    37,     9,    26,    37,    40,
+      44,    47,    48,    49,    44,    47
   };
 
   const signed char
   HITParser::yyr1_[] =
   {
        0,    25,    26,    27,    28,    29,    30,    31,    32,    33,
-      33,    34,    34,    34,    34,    34,    35,    35,    35,    36,
-      36,    37,    38,    39,    40,    41,    41,    42,    42,    42,
-      42,    43,    44,    44,    45,    46,    47,    48,    49,    49,
-      49,    50,    50,    51,    52,    52,    52,    53,    53,    54,
-      54,    54,    55,    55,    55,    55,    56,    57,    57,    57,
-      57,    57,    57
+      33,    34,    34,    34,    34,    35,    35,    35,    36,    36,
+      37,    38,    38,    39,    39,    39,    39,    40,    41,    41,
+      42,    43,    44,    45,    45,    46,    47,    47,    47,    48,
+      48,    49,    49,    49,    50,    50,    50,    50,    51,    52,
+      52,    52,    52,    52,    52
   };
 
   const signed char
   HITParser::yyr2_[] =
   {
        0,     2,     1,     1,     1,     1,     1,     1,     1,     3,
-       4,     1,     1,     1,     1,     1,     1,     2,     2,     2,
-       3,     1,     1,     1,     1,     1,     2,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     2,     1,     1,     1,     1,     2,     3,
-       2,     2,     3,     3,     3,     3,     1,     0,     2,     2,
-       3,     2,     2
+       4,     1,     1,     1,     1,     1,     2,     2,     2,     3,
+       1,     1,     2,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     2,     1,     1,     1,     1,
+       2,     3,     2,     2,     3,     3,     3,     3,     1,     0,
+       2,     2,     3,     2,     2
   };
 
 
@@ -1887,11 +1819,11 @@ namespace wasp {
   "\"comment\"", "\"block terminator\"", "\"section name\"", "\"value\"",
   "\"file include\"", "$accept", "semicolon", "assign", "object_term",
   "lbracket", "rbracket", "dot_slash", "include", "object_decl",
-  "object_member", "object_members", "object", "integer", "real",
-  "unquoted_string", "double_quoted_string", "double_quoted_strings",
-  "VALUE", "value", "SECTION_NAME", "section_name", "field_name", "quote",
-  "string", "primitive", "path", "include_file", "array_member",
-  "array_members", "array", "keyedvalue", "comment", "start", YY_NULLPTR
+  "object_member", "object_members", "object", "double_quoted_string",
+  "double_quoted_strings", "VALUE", "value", "SECTION_NAME",
+  "section_name", "field_name", "quote", "path", "include_file",
+  "array_member", "array_members", "array", "keyedvalue", "comment",
+  "start", YY_NULLPTR
   };
 #endif
 
@@ -1901,12 +1833,11 @@ namespace wasp {
   HITParser::yyrline_[] =
   {
        0,   285,   285,   289,   296,   302,   308,   315,   322,   327,
-     334,   348,   348,   348,   349,   349,   351,   366,   382,   388,
-     393,   400,   406,   412,   418,   423,   429,   435,   435,   435,
-     435,   436,   442,   442,   443,   449,   455,   461,   463,   464,
-     465,   467,   473,   480,   497,   497,   497,   499,   504,   510,
-     516,   522,   530,   540,   551,   563,   576,   583,   584,   587,
-     590,   594,   597
+     334,   348,   348,   349,   349,   351,   366,   382,   389,   394,
+     401,   406,   412,   418,   418,   418,   418,   419,   425,   425,
+     426,   432,   438,   445,   451,   458,   475,   475,   475,   477,
+     482,   488,   494,   500,   508,   518,   529,   541,   554,   561,
+     562,   565,   568,   572,   575
   };
 
   void
@@ -1987,9 +1918,9 @@ namespace wasp {
 
 #line 36 "HIT.bison"
 } // wasp
-#line 1991 "HITParser.cpp"
+#line 1922 "HITParser.cpp"
 
-#line 607 "HIT.bison"
+#line 585 "HIT.bison"
  /*** Additional Code ***/
 namespace wasp{
 void HITParser::error(const HITParser::location_type& l,
