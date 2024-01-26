@@ -4811,3 +4811,63 @@ TEST(HITInterpreter, recovery_amb_value_in_block_w_comment)
     document.paths(actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
+
+/* @brief Test recovery from missing terminator for a block
+ */
+TEST(HITInterpreter, recovery_unclosed_block_without_content)
+{
+    std::stringstream input;
+    input << R"INPUT([block]
+)INPUT";
+
+    // Check parse success, total node count, child count of document root
+    std::stringstream errors;
+    DefaultHITInterpreter interpreter(errors);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ("stream input:2.1: syntax error, unexpected end of file\n", errors.str());
+    HITNodeView document = interpreter.root();
+    ASSERT_FALSE(document.is_null());
+
+        std::string expected_paths;
+    expected_paths = R"INPUT(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+)INPUT";
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+/* @brief Test recovery from missing terminator for a block
+ */
+TEST(HITInterpreter, recovery_unclosed_block_with_content)
+{
+    std::stringstream input;
+    input << R"INPUT([block]        
+   x=y
+)INPUT";
+
+    // Check parse success, total node count, child count of document root
+    std::stringstream errors;
+    DefaultHITInterpreter interpreter(errors);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ("stream input:3.1: syntax error, unexpected end of file\n", errors.str());
+    HITNodeView document = interpreter.root();
+    ASSERT_FALSE(document.is_null());
+
+        std::string expected_paths;
+    expected_paths = R"INPUT(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+/block/x
+/block/x/decl (x)
+/block/x/= (=)
+/block/x/value (y)
+)INPUT";
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}

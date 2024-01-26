@@ -168,7 +168,8 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
                                   ,interpreter
                                   ,object_members);
     }
-    child_indices.push_back(object_term);
+    // object_term of 0 indicates missing terminator. E.g., EOF reached
+    if (object_term > 0) child_indices.push_back(object_term);
 
     
     size_t result_index = 0;
@@ -388,15 +389,32 @@ object_members : object_member
 
 object : object_decl object_term
         { // empty object        
-        $$ = push_object(interpreter, *$object_decl, nullptr, $object_term);
-        delete $1;
+            $$ = push_object(interpreter, *$object_decl, nullptr, $object_term);
+            delete $1;
+        }
+        | object_decl error
+        {
+            $$ = push_object(interpreter, *$object_decl, nullptr, 0);
+            delete $1;
+            interpreter.set_failed(true);
         }
         | object_decl object_members object_term
         {
-        $$ = push_object(interpreter, *$object_decl, $object_members, $object_term);        
-        delete $1;
-        delete $2->second;
-        delete $2;
+            $$ = push_object(interpreter, *$object_decl, $object_members, $object_term);
+            delete $1;
+            delete $2->second;
+            delete $2;
+        }
+        // This introduces 6 reduce/reduce conflicts because 
+        // error is also captured in object_members
+        // Testing indicates the resolution 
+        | object_decl object_members error
+        {
+            $$ = push_object(interpreter, *$object_decl, $object_members, 0);
+            delete $1;
+            delete $2->second;
+            delete $2;
+            interpreter.set_failed(true);
         }
 double_quoted_string : QSTRING
     {
