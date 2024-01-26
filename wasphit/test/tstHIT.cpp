@@ -4770,10 +4770,6 @@ TEST(HITInterpreter, recovery_amb_value_in_block_w_comment)
 /block/key1/decl (key1)
 /block/key1/= (=)
 /block/key1/value (key2)
-/block/kwy3
-/block/kwy3/decl (kwy3)
-/block/kwy3/= (=)
-/block/kwy3/value (foo)
 /block/term ([])
 )INPUT";
     std::stringstream actual_paths;
