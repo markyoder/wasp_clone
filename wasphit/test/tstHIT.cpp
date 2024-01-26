@@ -49,6 +49,41 @@ TEST(HITInterpreter, int_real)
         EXPECT_EQ(expected_type[i], value_node.token_type()); 
     }
 }
+TEST(HITInterpreter, int_real_as_keys)
+
+{
+    std::stringstream input;
+    input << R"INPUT(
+    3=a
+    3.1=b
+    1e2=c
+    3.e1=d
+    3.2e3=e
+    -3=f
+    -3.E1=g
+    -3.2E2=h
+    1e23.3=i
+    )INPUT";
+    std::stringstream        error;
+    DefaultHITInterpreter interpreter(error);
+    ASSERT_TRUE(interpreter.parse(input));
+    std::stringstream tree_print;
+    HITNodeView  root_view = interpreter.root();
+    ASSERT_FALSE(root_view.is_null());
+    
+    std::vector<double> expected = {3, 3.1, 1e2, 3.e1, 3.2e3, -3, -3.e1, -3.2E2, 1e23};
+    ASSERT_EQ(expected.size(), root_view.child_count());
+
+    for(size_t i = 0; i < expected.size(); ++i)
+    {
+        ASSERT_EQ(3, root_view.child_at(i).child_count());
+        auto key_node = root_view.child_at(i).child_at(0);
+        SCOPED_TRACE(key_node.data());
+        EXPECT_EQ(expected[i], key_node.to_double());
+        // HIT keys are always recognized as strings
+        EXPECT_EQ(wasp::STRING, key_node.token_type()); 
+    }
+}
 
 TEST(HITInterpreter, bad)
 
