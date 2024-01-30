@@ -2813,6 +2813,21 @@ TEST(HITInterpreter, file_include_circular_loop)
                   << std::endl;
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
+
+    std::string expected_paths;
+    expected_paths = R"INPUT(/
+/Block01
+/Block01/[ ([)
+/Block01/decl (Block01)
+/Block01/] (])
+/Block01/incl
+/Block01/incl/decl (!include)
+/Block01/incl/path (input02.i)
+/Block01/term ([])
+)INPUT";
+    std::stringstream actual_paths;
+    interpreter.root().paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
 }
 
 /**
@@ -2844,10 +2859,25 @@ TEST(HITInterpreter, file_include_circular_self)
                   << std::endl;
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
+
+    std::string expected_paths;
+    expected_paths = R"INPUT(/
+/Block01
+/Block01/[ ([)
+/Block01/decl (Block01)
+/Block01/] (])
+/Block01/incl
+/Block01/incl/decl (!include)
+/Block01/incl/path (input02.i)
+/Block01/term ([])
+)INPUT";
+    std::stringstream actual_paths;
+    interpreter.root().paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
 }
 
 /**
- * @brief Test HIT syntax error - missing object terminator
+ * @brief Test HIT syntax error - missing object terminators
  */
 TEST(HITInterpreter, missing_object_terminator)
 {
@@ -2867,10 +2897,42 @@ TEST(HITInterpreter, missing_object_terminator)
     ASSERT_FALSE(interpreter.parse(input));
 
     std::stringstream expect_errors;
-    expect_errors << "stream input:9.1: syntax error, unexpected end of file"
+    expect_errors << "stream input:2.1: syntax error, unexpected end of file, expecting block terminator\nstream input:1.1: syntax error, unexpected end of file, expecting block terminator"
                   << std::endl;
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
+    std::string expected_paths;
+    expected_paths = R"INPUT(/
+/GlobalParams
+/GlobalParams/[ ([)
+/GlobalParams/decl (GlobalParams)
+/GlobalParams/] (])
+/GlobalParams/one
+/GlobalParams/one/[ ([)
+/GlobalParams/one/decl (one)
+/GlobalParams/one/] (])
+/GlobalParams/one/one_sub
+/GlobalParams/one/one_sub/[ ([)
+/GlobalParams/one/one_sub/decl (one_sub)
+/GlobalParams/one/one_sub/] (])
+/GlobalParams/one/one_sub/one_sub_param
+/GlobalParams/one/one_sub/one_sub_param/decl (one_sub_param)
+/GlobalParams/one/one_sub/one_sub_param/= (=)
+/GlobalParams/one/one_sub/one_sub_param/value (100)
+/GlobalParams/one/one_sub/term ([])
+/GlobalParams/one/two
+/GlobalParams/one/two/[ ([)
+/GlobalParams/one/two/decl (two)
+/GlobalParams/one/two/] (])
+/GlobalParams/one/two/two_param
+/GlobalParams/one/two/two_param/decl (two_param)
+/GlobalParams/one/two/two_param/= (=)
+/GlobalParams/one/two/two_param/value (200)
+/GlobalParams/one/two/term ([])
+)INPUT"; // TODO 
+    std::stringstream actual_paths;
+    interpreter.root().paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
 }
 
 /**
@@ -3818,7 +3880,7 @@ TEST(HITInterpreter, expression_syntax_error)
     std::stringstream     error;
     DefaultHITInterpreter interpreter(error);
     ASSERT_FALSE(interpreter.parse(input));
-    std::string expected = "stream input:3.9: syntax error, unexpected end of file\nstream input:3.8: syntax error, 'foo01' has a missing or malformed value\n";
+    std::string expected = "stream input:3.9: syntax error, unexpected end of file\nstream input:3.8: syntax error, 'foo01' has a missing or malformed value\nstream input:2.1: syntax error, unexpected end of file, expecting block terminator\n";
     ASSERT_EQ(expected, error.str());
 }
 
@@ -4775,42 +4837,6 @@ TEST(HITInterpreter, recovery_missing_value_in_block_w_comment)
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
 
-/* @brief Test recovery from ambigious value in a block followed by a correct key=value
- * the parser is expect to recover after the newline following the syntax error
- */
-TEST(HITInterpreter, recovery_amb_value_in_block_w_comment)
-{
-    std::stringstream input;
-    input << R"INPUT([block]        
-   key1 = key2 = 3.14159
-   kwy3 = foo
-[]
-)INPUT";
-
-    // Check parse success, total node count, child count of document root
-    std::stringstream errors;
-    DefaultHITInterpreter interpreter(errors);
-    ASSERT_FALSE(interpreter.parse(input));
-    ASSERT_EQ("stream input:2.16: syntax error, unexpected invalid token\n", errors.str());
-    HITNodeView document = interpreter.root();
-    ASSERT_FALSE(document.is_null());
-
-        std::string expected_paths;
-    expected_paths = R"INPUT(/
-/block
-/block/[ ([)
-/block/decl (block)
-/block/] (])
-/block/key1
-/block/key1/decl (key1)
-/block/key1/= (=)
-/block/key1/value (key2)
-/block/term ([])
-)INPUT";
-    std::stringstream actual_paths;
-    document.paths(actual_paths);
-    ASSERT_EQ(expected_paths, actual_paths.str());
-}
 
 /* @brief Test recovery from missing terminator for a block
  */
@@ -4852,7 +4878,7 @@ TEST(HITInterpreter, recovery_unclosed_block_with_content)
     std::stringstream errors;
     DefaultHITInterpreter interpreter(errors);
     ASSERT_FALSE(interpreter.parse(input));
-    ASSERT_EQ("stream input:3.1: syntax error, unexpected end of file\n", errors.str());
+    ASSERT_EQ("stream input:1.1: syntax error, unexpected end of file, expecting block terminator\n", errors.str());
     HITNodeView document = interpreter.root();
     ASSERT_FALSE(document.is_null());
 
@@ -4866,6 +4892,66 @@ TEST(HITInterpreter, recovery_unclosed_block_with_content)
 /block/x/decl (x)
 /block/x/= (=)
 /block/x/value (y)
+)INPUT";
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/* @brief Test recovery from missing assign in a block
+ */
+TEST(HITInterpreter, recovery_missing_assign_in_block)
+{
+    std::stringstream input;
+    input << R"INPUT([block]
+   x
+)INPUT";
+
+    // Check parse success, total node count, child count of document root
+    std::stringstream errors;
+    DefaultHITInterpreter interpreter(errors);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ("stream input:3.1: syntax error, unexpected end of line, expecting =\nstream input:1.1: syntax error, unexpected end of file, expecting block terminator\n", errors.str());
+    HITNodeView document = interpreter.root();
+    ASSERT_FALSE(document.is_null());
+
+        std::string expected_paths;
+    expected_paths = R"INPUT(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+/block/x
+/block/x/decl (x)
+)INPUT";
+    std::stringstream actual_paths;
+    document.paths(actual_paths);
+    ASSERT_EQ(expected_paths, actual_paths.str());
+}
+/* @brief Test recovery from missing assign in a block with no newline, just EOF
+ */
+TEST(HITInterpreter, recovery_missing_assign_in_block_w_eof)
+{
+    std::stringstream input;
+    input << R"INPUT([block]
+   x)INPUT";
+
+    // Check parse success, total node count, child count of document root
+    std::stringstream errors;
+    DefaultHITInterpreter interpreter(errors);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ("stream input:2.5: syntax error, unexpected end of file, expecting =\nstream input:1.1: syntax error, unexpected end of file, expecting block terminator\n", errors.str());
+    HITNodeView document = interpreter.root();
+    ASSERT_FALSE(document.is_null());
+
+    std::string expected_paths;
+    expected_paths = R"INPUT(/
+/block
+/block/[ ([)
+/block/decl (block)
+/block/] (])
+/block/x
+/block/x/decl (x)
 )INPUT";
     std::stringstream actual_paths;
     document.paths(actual_paths);

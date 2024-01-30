@@ -271,8 +271,8 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     return token::REAL;
 }
  /* syntax error - key = EOL. */
-<assign>\n {
-    yy_pop_state(); // leave assign state in attempt to error recover
+<assign,param>\n {
+    yy_pop_state(); // leave state in attempt to error recover
     yylloc->lines(yyleng); yylloc->step();
     interpreter.push_line_offset(file_offset-yyleng);
     return token::EOL;

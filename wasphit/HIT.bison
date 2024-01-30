@@ -408,13 +408,15 @@ object : object_decl object_term
         // This introduces 6 reduce/reduce conflicts because 
         // error is also captured in object_members
         // Testing indicates the resolution 
-        | object_decl object_members error
+        | object_decl object_members END
         {
             $$ = push_object(interpreter, *$object_decl, $object_members, 0);
             delete $1;
             delete $2->second;
             delete $2;
             interpreter.set_failed(true);
+            interpreter.error_stream() << @1.begin << ": syntax error, unexpected end of file, expecting block terminator" << std::endl;          
+            lexer->rewind(); // put END/EOF back
         }
 double_quoted_string : QSTRING
     {
@@ -566,7 +568,17 @@ keyedvalue : field_name assign value
         std::string key = interpreter.data(key_index);
         $$ = push_keyed_value_or_array(interpreter, child_indices);
         interpreter.error_stream() << @2 << ": syntax error, '" << key << "' has a missing or malformed value" << std::endl;
-        interpreter.set_failed(true);        
+        interpreter.set_failed(true);
+    }
+    | field_name error
+    {
+        size_t key_index = ($1);
+
+        std::vector<size_t> child_indices = {key_index};
+
+        std::string key = interpreter.data(key_index);
+        $$ = push_keyed_value_or_array(interpreter, child_indices);
+        interpreter.set_failed(true);
     }
 
 comment : COMMENT
@@ -589,6 +601,10 @@ start   : /** empty **/
         }
         | start object{
             interpreter.push_staged_child($2);
+        }
+        | start object error{
+            interpreter.push_staged_child($2);
+            interpreter.set_failed(true);
         }
         | start include_file
         {
