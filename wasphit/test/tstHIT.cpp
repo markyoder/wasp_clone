@@ -5022,3 +5022,35 @@ stream input:1.1: syntax error, unexpected end of file, expecting block terminat
     wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
     ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
 }
+
+/**
+ * @brief Test findNodeUnderLineColumn when column is past end of document
+ */
+TEST(HITInterpreter, find_node_column_past_document_end)
+{
+    std::stringstream input;
+    input << R"INPUT(
+
+[block]
+  param =
+
+)INPUT";
+
+    // Check parse fails but document root is not null from error recovery
+    std::stringstream error;
+    DefaultHITInterpreter interpreter(error);
+    ASSERT_FALSE(interpreter.parse(input));
+    HITNodeView document_root = interpreter.root();
+    ASSERT_FALSE(document_root.is_null());
+
+    // Check line and column range that is spanned by entire document root
+    ASSERT_EQ(3, document_root.line());
+    ASSERT_EQ(1, document_root.column());
+    ASSERT_EQ(4, document_root.last_line());
+    ASSERT_EQ(9, document_root.last_column());
+
+    // Check findNodeUnderLineColumn with column past end of document root
+    HITNodeView found = wasp::findNodeUnderLineColumn(document_root, 4, 11);
+    ASSERT_FALSE(found.is_null());
+    ASSERT_EQ(document_root, found);
+}
