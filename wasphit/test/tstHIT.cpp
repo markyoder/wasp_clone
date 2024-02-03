@@ -76,8 +76,10 @@ TEST(HITInterpreter, int_real_as_keys)
 
     for(size_t i = 0; i < expected.size(); ++i)
     {
+        EXPECT_EQ(wasp::KEYED_VALUE, root_view.child_at(i).type());
         ASSERT_EQ(3, root_view.child_at(i).child_count());
         auto key_node = root_view.child_at(i).child_at(0);
+        EXPECT_EQ(wasp::DECL, key_node.type());
         SCOPED_TRACE(key_node.data());
         EXPECT_EQ(expected[i], key_node.to_double());
         // HIT keys are always recognized as strings
@@ -4527,13 +4529,16 @@ TEST(HITInterpreter, missing_value)
 
     // Ensure all syntax is captured in the tree
     std::string expected_paths;
-    expected_paths = R"INPUT(/
-/key1
-/key1/decl (key1)
-/key1/= (=)
-)INPUT";
+    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/key1'
+    expected_paths = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/key1             )"  + std::to_string(wasp::OBJECT)        + R"(
+/key1/decl         )" + std::to_string(wasp::DECL)          + R"( (key1)
+/key1/=            )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+)";
+    expected_paths.erase(expected_paths.begin());
     std::stringstream actual_paths;
-    document.paths(actual_paths);
+    wasp::node_paths_and_types(document, actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str()); 
 }
 
@@ -4558,18 +4563,21 @@ TEST(HITInterpreter, recovery_missing_value_in_block)
 
     // Ensure all syntax is captured in the tree
     std::string expected_paths;
-    expected_paths = R"INPUT(/
-/block
-/block/[ ([)
-/block/decl (block)
-/block/] (])
-/block/key1
-/block/key1/decl (key1)
-/block/key1/= (=)
-/block/term ([])
-)INPUT";
+    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/key1'
+    expected_paths = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/block            )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
+/block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+/block/key1       )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/key1/decl   )" + std::to_string(wasp::DECL)          + R"( (key1)
+/block/key1/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/block/term       )"  + std::to_string(wasp::OBJECT_TERM)   + R"( ([])
+)";
+    expected_paths.erase(expected_paths.begin());
     std::stringstream actual_paths;
-    document.paths(actual_paths);
+    wasp::node_paths_and_types(document, actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());    
 }
 
@@ -4595,22 +4603,25 @@ TEST(HITInterpreter, recovery_missing_value_in_block2)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    expected_paths = R"INPUT(/
-/block
-/block/[ ([)
-/block/decl (block)
-/block/] (])
-/block/key1
-/block/key1/decl (key1)
-/block/key1/= (=)
-/block/key1/value (3.14159)
-/block/key2
-/block/key2/decl (key2)
-/block/key2/= (=)
-/block/term ([])
-)INPUT";
+    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/key2'
+    expected_paths = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/block            )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
+/block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+/block/key1       )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
+/block/key1/decl   )" + std::to_string(wasp::DECL)          + R"( (key1)
+/block/key1/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/block/key1/value )"  + std::to_string(wasp::VALUE)         + R"( (3.14159)
+/block/key2       )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/key2/decl   )" + std::to_string(wasp::DECL)          + R"( (key2)
+/block/key2/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/block/term       )"  + std::to_string(wasp::OBJECT_TERM)   + R"( ([])
+)";
+    expected_paths.erase(expected_paths.begin());
     std::stringstream actual_paths;
-    document.paths(actual_paths);
+    wasp::node_paths_and_types(document, actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
 
@@ -4635,22 +4646,25 @@ TEST(HITInterpreter, recovery_missing_value_in_block3)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    expected_paths = R"INPUT(/
-/block
-/block/[ ([)
-/block/decl (block)
-/block/] (])
-/block/key1
-/block/key1/decl (key1)
-/block/key1/= (=)
-/block/key2
-/block/key2/decl (key2)
-/block/key2/= (=)
-/block/key2/value (3.14159)
-/block/term ([])
-)INPUT";
+    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/key1'
+    expected_paths = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/block            )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
+/block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+/block/key1       )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/key1/decl   )" + std::to_string(wasp::DECL)          + R"( (key1)
+/block/key1/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/block/key2       )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
+/block/key2/decl   )" + std::to_string(wasp::DECL)          + R"( (key2)
+/block/key2/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/block/key2/value )"  + std::to_string(wasp::VALUE)         + R"( (3.14159)
+/block/term       )"  + std::to_string(wasp::OBJECT_TERM)   + R"( ([])
+)";
+    expected_paths.erase(expected_paths.begin());
     std::stringstream actual_paths;
-    document.paths(actual_paths);
+    wasp::node_paths_and_types(document, actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
 
@@ -4674,21 +4688,25 @@ TEST(HITInterpreter, recovery_repeated_missing_value_in_block)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    expected_paths = R"INPUT(/
-/block
-/block/[ ([)
-/block/decl (block)
-/block/] (])
-/block/key1
-/block/key1/decl (key1)
-/block/key1/= (=)
-/block/key2
-/block/key2/decl (key2)
-/block/key2/= (=)
-/block/term ([])
-)INPUT";
+    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/key1'
+    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/key2'
+    expected_paths = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/block            )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
+/block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+/block/key1       )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/key1/decl   )" + std::to_string(wasp::DECL)          + R"( (key1)
+/block/key1/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/block/key2       )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/key2/decl   )" + std::to_string(wasp::DECL)          + R"( (key2)
+/block/key2/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/block/term       )"  + std::to_string(wasp::OBJECT_TERM)   + R"( ([])
+)";
+    expected_paths.erase(expected_paths.begin());
     std::stringstream actual_paths;
-    document.paths(actual_paths);
+    wasp::node_paths_and_types(document, actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
 
@@ -4713,21 +4731,25 @@ key2 =
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    expected_paths = R"INPUT(/
-/block
-/block/[ ([)
-/block/decl (block)
-/block/] (])
-/block/key1
-/block/key1/decl (key1)
-/block/key1/= (=)
-/block/term ([])
-/key2
-/key2/decl (key2)
-/key2/= (=)
-)INPUT";
+    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/key1'
+    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/key2'
+    expected_paths = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/block            )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
+/block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+/block/key1       )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/key1/decl   )" + std::to_string(wasp::DECL)          + R"( (key1)
+/block/key1/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/block/term       )"  + std::to_string(wasp::OBJECT_TERM)   + R"( ([])
+/key2             )"  + std::to_string(wasp::OBJECT)        + R"(
+/key2/decl         )" + std::to_string(wasp::DECL)          + R"( (key2)
+/key2/=            )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+)";
+    expected_paths.erase(expected_paths.begin());
     std::stringstream actual_paths;
-    document.paths(actual_paths);
+    wasp::node_paths_and_types(document, actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
 
@@ -4750,16 +4772,20 @@ TEST(HITInterpreter, recovery_repeated_missing_value_at_root)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    expected_paths = R"INPUT(/
-/key1
-/key1/decl (key1)
-/key1/= (=)
-/key2
-/key2/decl (key2)
-/key2/= (=)
-)INPUT";
+    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/key1'
+    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/key2'
+    expected_paths = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/key1             )"  + std::to_string(wasp::OBJECT)        + R"(
+/key1/decl         )" + std::to_string(wasp::DECL)          + R"( (key1)
+/key1/=            )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/key2             )"  + std::to_string(wasp::OBJECT)        + R"(
+/key2/decl         )" + std::to_string(wasp::DECL)          + R"( (key2)
+/key2/=            )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+)";
+    expected_paths.erase(expected_paths.begin());
     std::stringstream actual_paths;
-    document.paths(actual_paths);
+    wasp::node_paths_and_types(document, actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
 
@@ -4782,18 +4808,21 @@ TEST(HITInterpreter, recovery_missing_value_at_root_w_comment)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    expected_paths = R"INPUT(/
-/key1
-/key1/decl (key1)
-/key1/= (=)
-/comment (# a comment instead of expected value)
-/key2
-/key2/decl (key2)
-/key2/= (=)
-/key2/value (3.1415)
-)INPUT";
+    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/key1'
+    expected_paths = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/key1             )"  + std::to_string(wasp::OBJECT)        + R"(
+/key1/decl         )" + std::to_string(wasp::DECL)          + R"( (key1)
+/key1/=            )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/comment          )"  + std::to_string(wasp::COMMENT)       + R"( (# a comment instead of expected value)
+/key2             )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
+/key2/decl         )" + std::to_string(wasp::DECL)          + R"( (key2)
+/key2/=            )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/key2/value       )"  + std::to_string(wasp::VALUE)         + R"( (3.1415)
+)";
+    expected_paths.erase(expected_paths.begin());
     std::stringstream actual_paths;
-    document.paths(actual_paths);
+    wasp::node_paths_and_types(document, actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
 
@@ -4817,23 +4846,26 @@ TEST(HITInterpreter, recovery_missing_value_in_block_w_comment)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    expected_paths = R"INPUT(/
-/block
-/block/[ ([)
-/block/decl (block)
-/block/] (])
-/block/key1
-/block/key1/decl (key1)
-/block/key1/= (=)
-/block/comment (# a comment instead of expected value)
-/block/key2
-/block/key2/decl (key2)
-/block/key2/= (=)
-/block/key2/value (3.1415)
-/block/term ([])
-)INPUT";
+    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/key1'
+    expected_paths = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/block            )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
+/block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+/block/key1       )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/key1/decl   )" + std::to_string(wasp::DECL)          + R"( (key1)
+/block/key1/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/block/comment    )"  + std::to_string(wasp::COMMENT)       + R"( (# a comment instead of expected value)
+/block/key2       )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
+/block/key2/decl   )" + std::to_string(wasp::DECL)          + R"( (key2)
+/block/key2/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/block/key2/value )"  + std::to_string(wasp::VALUE)         + R"( (3.1415)
+/block/term       )"  + std::to_string(wasp::OBJECT_TERM)   + R"( ([])
+)";
+    expected_paths.erase(expected_paths.begin());
     std::stringstream actual_paths;
-    document.paths(actual_paths);
+    wasp::node_paths_and_types(document, actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
 
@@ -4855,14 +4887,16 @@ TEST(HITInterpreter, recovery_unclosed_block_without_content)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    expected_paths = R"INPUT(/
-/block
-/block/[ ([)
-/block/decl (block)
-/block/] (])
-)INPUT";
+    expected_paths = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/block            )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
+/block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+)";
+    expected_paths.erase(expected_paths.begin());
     std::stringstream actual_paths;
-    document.paths(actual_paths);
+    wasp::node_paths_and_types(document, actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
 /* @brief Test recovery from missing terminator for a block
@@ -4883,18 +4917,20 @@ TEST(HITInterpreter, recovery_unclosed_block_with_content)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    expected_paths = R"INPUT(/
-/block
-/block/[ ([)
-/block/decl (block)
-/block/] (])
-/block/x
-/block/x/decl (x)
-/block/x/= (=)
-/block/x/value (y)
-)INPUT";
+    expected_paths = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/block            )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
+/block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+/block/x          )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
+/block/x/decl      )" + std::to_string(wasp::DECL)          + R"( (x)
+/block/x/=         )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/block/x/value    )"  + std::to_string(wasp::VALUE)         + R"( (y)
+)";
+    expected_paths.erase(expected_paths.begin());
     std::stringstream actual_paths;
-    document.paths(actual_paths);
+    wasp::node_paths_and_types(document, actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
 
@@ -4916,16 +4952,19 @@ TEST(HITInterpreter, recovery_missing_assign_in_block)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    expected_paths = R"INPUT(/
-/block
-/block/[ ([)
-/block/decl (block)
-/block/] (])
-/block/x
-/block/x/decl (x)
-)INPUT";
+    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/x'
+    expected_paths = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/block            )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
+/block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+/block/x          )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/x/decl      )" + std::to_string(wasp::DECL)          + R"( (x)
+)";
+    expected_paths.erase(expected_paths.begin());
     std::stringstream actual_paths;
-    document.paths(actual_paths);
+    wasp::node_paths_and_types(document, actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
 }
 /* @brief Test recovery from missing assign in a block with no newline, just EOF
@@ -4945,15 +4984,56 @@ TEST(HITInterpreter, recovery_missing_assign_in_block_w_eof)
     ASSERT_FALSE(document.is_null());
 
     std::string expected_paths;
-    expected_paths = R"INPUT(/
-/block
-/block/[ ([)
-/block/decl (block)
-/block/] (])
-/block/x
-/block/x/decl (x)
-)INPUT";
+    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/x'
+    expected_paths = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/block            )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
+/block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+/block/x          )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/x/decl      )" + std::to_string(wasp::DECL)          + R"( (x)
+)";
+    expected_paths.erase(expected_paths.begin());
     std::stringstream actual_paths;
-    document.paths(actual_paths);
+    wasp::node_paths_and_types(document, actual_paths);
     ASSERT_EQ(expected_paths, actual_paths.str());
+}
+
+/**
+ * @brief Test recovery from missing value in a block without a terminator
+ */
+TEST(HITInterpreter, recovery_missing_value_in_unclosed_block)
+{
+    std::stringstream input;
+    input << R"INPUT([block]
+  param =
+)INPUT";
+
+    std::string expect_error = R"INPUT(
+stream input:3.1: syntax error, unexpected end of line
+stream input:2.9: syntax error, 'param' has a missing or malformed value
+stream input:1.1: syntax error, unexpected end of file, expecting block terminator
+)INPUT";
+
+    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/param'
+    std::string expect_paths_and_types = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/block            )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
+/block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+/block/param      )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/param/decl  )" + std::to_string(wasp::DECL)          + R"( (param)
+/block/param/=     )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+)";
+
+    // Check parse failure, error message, non-null root, paths, and types
+    std::stringstream actual_error, actual_paths_and_types;
+    DefaultHITInterpreter interpreter(actual_error);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ(expect_error, "\n" + actual_error.str());
+    ASSERT_FALSE(interpreter.root().is_null());
+    wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
+    ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
 }
