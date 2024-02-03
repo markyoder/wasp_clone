@@ -141,9 +141,9 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
 size_t push_keyed_value_or_array(wasp::AbstractInterpreter & interpreter,
                                  std::vector<size_t>       & child_indices)
 {
-    // keyed values pass in exactly three children and arrays pass in more
+    // keyed values pass in three or less children and arrays pass in more
 
-    wasp_check(child_indices.size() >= 3);
+    wasp_check(!child_indices.empty());
 
     std::string name = interpreter.data(child_indices.front()).c_str();
 
@@ -169,9 +169,9 @@ size_t push_keyed_value_or_array(wasp::AbstractInterpreter & interpreter,
             continue;
         }
 
-        // exactly three children is for a keyed value at the lowest level
+        // three or less children at the lowest level is for a keyed value
 
-        if (child_indices.size() == 3)
+        if (result_index == 0 && child_indices.size() <= 3)
         {
             result_index = interpreter.push_parent(wasp::KEYED_VALUE    ,
                                                    names.back().c_str() ,

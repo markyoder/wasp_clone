@@ -4529,10 +4529,9 @@ TEST(HITInterpreter, missing_value)
 
     // Ensure all syntax is captured in the tree
     std::string expected_paths;
-    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/key1'
     expected_paths = R"(
 /                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
-/key1             )"  + std::to_string(wasp::OBJECT)        + R"(
+/key1             )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
 /key1/decl         )" + std::to_string(wasp::DECL)          + R"( (key1)
 /key1/=            )" + std::to_string(wasp::ASSIGN)        + R"( (=)
 )";
@@ -4563,14 +4562,13 @@ TEST(HITInterpreter, recovery_missing_value_in_block)
 
     // Ensure all syntax is captured in the tree
     std::string expected_paths;
-    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/key1'
     expected_paths = R"(
 /                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
 /block            )"  + std::to_string(wasp::OBJECT)        + R"(
 /block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
 /block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
 /block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
-/block/key1       )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/key1       )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
 /block/key1/decl   )" + std::to_string(wasp::DECL)          + R"( (key1)
 /block/key1/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
 /block/term       )"  + std::to_string(wasp::OBJECT_TERM)   + R"( ([])
@@ -4603,7 +4601,6 @@ TEST(HITInterpreter, recovery_missing_value_in_block2)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/key2'
     expected_paths = R"(
 /                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
 /block            )"  + std::to_string(wasp::OBJECT)        + R"(
@@ -4614,7 +4611,7 @@ TEST(HITInterpreter, recovery_missing_value_in_block2)
 /block/key1/decl   )" + std::to_string(wasp::DECL)          + R"( (key1)
 /block/key1/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
 /block/key1/value )"  + std::to_string(wasp::VALUE)         + R"( (3.14159)
-/block/key2       )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/key2       )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
 /block/key2/decl   )" + std::to_string(wasp::DECL)          + R"( (key2)
 /block/key2/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
 /block/term       )"  + std::to_string(wasp::OBJECT_TERM)   + R"( ([])
@@ -4646,14 +4643,13 @@ TEST(HITInterpreter, recovery_missing_value_in_block3)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/key1'
     expected_paths = R"(
 /                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
 /block            )"  + std::to_string(wasp::OBJECT)        + R"(
 /block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
 /block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
 /block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
-/block/key1       )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/key1       )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
 /block/key1/decl   )" + std::to_string(wasp::DECL)          + R"( (key1)
 /block/key1/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
 /block/key2       )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
@@ -4688,18 +4684,16 @@ TEST(HITInterpreter, recovery_repeated_missing_value_in_block)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/key1'
-    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/key2'
     expected_paths = R"(
 /                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
 /block            )"  + std::to_string(wasp::OBJECT)        + R"(
 /block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
 /block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
 /block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
-/block/key1       )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/key1       )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
 /block/key1/decl   )" + std::to_string(wasp::DECL)          + R"( (key1)
 /block/key1/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
-/block/key2       )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/key2       )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
 /block/key2/decl   )" + std::to_string(wasp::DECL)          + R"( (key2)
 /block/key2/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
 /block/term       )"  + std::to_string(wasp::OBJECT_TERM)   + R"( ([])
@@ -4731,19 +4725,17 @@ key2 =
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/key1'
-    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/key2'
     expected_paths = R"(
 /                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
 /block            )"  + std::to_string(wasp::OBJECT)        + R"(
 /block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
 /block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
 /block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
-/block/key1       )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/key1       )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
 /block/key1/decl   )" + std::to_string(wasp::DECL)          + R"( (key1)
 /block/key1/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
 /block/term       )"  + std::to_string(wasp::OBJECT_TERM)   + R"( ([])
-/key2             )"  + std::to_string(wasp::OBJECT)        + R"(
+/key2             )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
 /key2/decl         )" + std::to_string(wasp::DECL)          + R"( (key2)
 /key2/=            )" + std::to_string(wasp::ASSIGN)        + R"( (=)
 )";
@@ -4772,14 +4764,12 @@ TEST(HITInterpreter, recovery_repeated_missing_value_at_root)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/key1'
-    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/key2'
     expected_paths = R"(
 /                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
-/key1             )"  + std::to_string(wasp::OBJECT)        + R"(
+/key1             )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
 /key1/decl         )" + std::to_string(wasp::DECL)          + R"( (key1)
 /key1/=            )" + std::to_string(wasp::ASSIGN)        + R"( (=)
-/key2             )"  + std::to_string(wasp::OBJECT)        + R"(
+/key2             )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
 /key2/decl         )" + std::to_string(wasp::DECL)          + R"( (key2)
 /key2/=            )" + std::to_string(wasp::ASSIGN)        + R"( (=)
 )";
@@ -4808,10 +4798,9 @@ TEST(HITInterpreter, recovery_missing_value_at_root_w_comment)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/key1'
     expected_paths = R"(
 /                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
-/key1             )"  + std::to_string(wasp::OBJECT)        + R"(
+/key1             )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
 /key1/decl         )" + std::to_string(wasp::DECL)          + R"( (key1)
 /key1/=            )" + std::to_string(wasp::ASSIGN)        + R"( (=)
 /comment          )"  + std::to_string(wasp::COMMENT)       + R"( (# a comment instead of expected value)
@@ -4846,14 +4835,13 @@ TEST(HITInterpreter, recovery_missing_value_in_block_w_comment)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/key1'
     expected_paths = R"(
 /                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
 /block            )"  + std::to_string(wasp::OBJECT)        + R"(
 /block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
 /block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
 /block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
-/block/key1       )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/key1       )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
 /block/key1/decl   )" + std::to_string(wasp::DECL)          + R"( (key1)
 /block/key1/=      )" + std::to_string(wasp::ASSIGN)        + R"( (=)
 /block/comment    )"  + std::to_string(wasp::COMMENT)       + R"( (# a comment instead of expected value)
@@ -4952,14 +4940,13 @@ TEST(HITInterpreter, recovery_missing_assign_in_block)
     ASSERT_FALSE(document.is_null());
 
         std::string expected_paths;
-    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/x'
     expected_paths = R"(
 /                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
 /block            )"  + std::to_string(wasp::OBJECT)        + R"(
 /block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
 /block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
 /block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
-/block/x          )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/x          )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
 /block/x/decl      )" + std::to_string(wasp::DECL)          + R"( (x)
 )";
     expected_paths.erase(expected_paths.begin());
@@ -4984,14 +4971,13 @@ TEST(HITInterpreter, recovery_missing_assign_in_block_w_eof)
     ASSERT_FALSE(document.is_null());
 
     std::string expected_paths;
-    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/x'
     expected_paths = R"(
 /                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
 /block            )"  + std::to_string(wasp::OBJECT)        + R"(
 /block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
 /block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
 /block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
-/block/x          )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/x          )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
 /block/x/decl      )" + std::to_string(wasp::DECL)          + R"( (x)
 )";
     expected_paths.erase(expected_paths.begin());
@@ -5016,14 +5002,13 @@ stream input:2.9: syntax error, 'param' has a missing or malformed value
 stream input:1.1: syntax error, unexpected end of file, expecting block terminator
 )INPUT";
 
-    // *** fix types then change wasp::OBJECT to wasp::KEYED_VALUE for '/block/param'
     std::string expect_paths_and_types = R"(
 /                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
 /block            )"  + std::to_string(wasp::OBJECT)        + R"(
 /block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
 /block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
 /block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
-/block/param      )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/param      )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
 /block/param/decl  )" + std::to_string(wasp::DECL)          + R"( (param)
 /block/param/=     )" + std::to_string(wasp::ASSIGN)        + R"( (=)
 )";
