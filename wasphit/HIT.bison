@@ -20,7 +20,7 @@
 %output "HITParser.cpp"
 /* add debug output code to generated parser. disable this for release
  * versions. */
- // %debug
+ /*%debug*/
 
 /* start symbol is named "start" */
 %start start
@@ -410,9 +410,9 @@ object : object_decl object_term
             if (!interpreter.failed()) interpreter.error_stream() << @2.begin << ": syntax error, unexpected end of file" << std::endl;
             interpreter.set_failed(true);
         }
-        | object_decl error
+        | object_decl error object_members object_term
         {
-            $$ = push_object(interpreter, *$object_decl, nullptr, 0);
+            $$ = push_object(interpreter, *$object_decl, $object_members, $object_term);
             delete $1;
             interpreter.set_failed(true);
         }

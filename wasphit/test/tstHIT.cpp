@@ -5188,3 +5188,38 @@ stream input:1.5: syntax error, unexpected end of file, expecting ]
     wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
     ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
 }
+/**
+ * @brief Test recovery from missing assign in a block without a terminator 
+ */
+TEST(HITInterpreter, recovery_partial_block_decl_w_data)
+{
+    std::stringstream input;
+    input << R"INPUT([blo
+    foo=bar
+[])INPUT";
+
+    std::string expect_error = R"INPUT(
+stream input:2.1: syntax error, unexpected end of line, expecting ]
+)INPUT";
+
+    std::string expect_paths_and_types = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/blo              )"  + std::to_string(wasp::OBJECT)        + R"(
+/blo/[            )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/blo/decl          )" + std::to_string(wasp::DECL)          + R"( (blo)
+/blo/foo          )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
+/blo/foo/decl      )" + std::to_string(wasp::DECL)          + R"( (foo)
+/blo/foo/=         )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/blo/foo/value    )"  + std::to_string(wasp::VALUE)         + R"( (bar)
+/blo/term         )"  + std::to_string(wasp::OBJECT_TERM)          + R"( ([])
+)";
+
+    // Check parse failure, error message, non-null root, paths, and types
+    std::stringstream actual_error, actual_paths_and_types;
+    DefaultHITInterpreter interpreter(actual_error);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ(expect_error, "\n" + actual_error.str());
+    ASSERT_FALSE(interpreter.root().is_null());
+    wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
+    ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
+}

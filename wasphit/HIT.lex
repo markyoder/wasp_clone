@@ -197,6 +197,15 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
 }
+ /* syntax error - [ block EOL. */
+<lbracket>\n {
+    yy_pop_state(); // leave state in attempt to error recover
+    // assume body of object does follow 
+    yy_push_state(object);
+    yylloc->lines(yyleng); yylloc->step();
+    interpreter.push_line_offset(file_offset-yyleng);
+    return token::EOL;
+} 
 <object>{OBJECT_TERM} {
     yy_pop_state();
     capture_token(yylval,wasp::OBJECT_TERM);
