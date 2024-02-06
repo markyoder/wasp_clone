@@ -855,7 +855,7 @@ namespace wasp {
     /// Constants.
     enum
     {
-      yylast_ = 70,     ///< Last index in yytable_.
+      yylast_ = 74,     ///< Last index in yytable_.
       yynnts_ = 28,  ///< Number of nonterminal symbols.
       yyfinal_ = 2 ///< Termination state number.
     };

@@ -155,6 +155,9 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
 {
     std::vector<size_t> &child_indices = object_decl;
     size_t object_decl_i = child_indices.rbegin()[1];
+    // Ensure object_decl is a wasp::DECL 
+    // It may not be because of missing ]
+    if (interpreter.type(object_decl_i) != wasp::DECL) object_decl_i = child_indices.rbegin()[0];
     std::string name = interpreter.data(object_decl_i).c_str();
 
     // handle 'x/y/z' names becoming tree hierarchy
@@ -332,7 +335,14 @@ object_decl : lbracket section_name rbracket {
         $$ = new std::vector<size_t>{lbracket_index
                                                    ,decl_index
                                                    ,rbracket_index};
-    }| lbracket  dot_slash section_name rbracket
+    }
+    | lbracket section_name error {
+        size_t lbracket_index = ($lbracket);
+        size_t decl_index = ($section_name);
+        $$ = new std::vector<size_t>{lbracket_index,decl_index};
+        interpreter.set_failed(true);
+    }
+    | lbracket  dot_slash section_name rbracket
     {
         size_t lbracket_index = ($lbracket);
         size_t dot_slash_index = ($dot_slash);
@@ -388,9 +398,17 @@ object_members : object_member
 
 
 object : object_decl object_term
-        { // empty object        
+        { // empty object
             $$ = push_object(interpreter, *$object_decl, nullptr, $object_term);
             delete $1;
+        }
+        | object_decl END
+        {
+            $$ = push_object(interpreter, *$object_decl, nullptr, 0);
+            delete $1;
+            
+            if (!interpreter.failed()) interpreter.error_stream() << @2.begin << ": syntax error, unexpected end of file" << std::endl;
+            interpreter.set_failed(true);
         }
         | object_decl error
         {
