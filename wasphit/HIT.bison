@@ -405,9 +405,6 @@ object : object_decl object_term
             delete $2->second;
             delete $2;
         }
-        // This introduces 6 reduce/reduce conflicts because 
-        // error is also captured in object_members
-        // Testing indicates the resolution 
         | object_decl object_members END
         {
             $$ = push_object(interpreter, *$object_decl, $object_members, 0);
@@ -415,8 +412,7 @@ object : object_decl object_term
             delete $2->second;
             delete $2;
             interpreter.set_failed(true);
-            interpreter.error_stream() << @1.begin << ": syntax error, unexpected end of file, expecting block terminator" << std::endl;          
-            lexer->rewind(); // put END/EOF back
+            interpreter.error_stream() << @1.begin << ": syntax error, unexpected end of file, expecting block terminator" << std::endl;
         }
 double_quoted_string : QSTRING
     {

@@ -16,8 +16,9 @@ typedef wasp::HITParser::token token;
 typedef wasp::HITParser::token_type token_type;
 
 /* By default yylex returns int, we use token_type. Unfortunately yyterminate
- * by default returns 0, which is not of token_type. */
-#define yyterminate() return token::END
+ * by default returns 0, which is not of token_type. 
+ * This logic ensures we continue to return END until the parser is done*/
+#define yyterminate() {if (file_offset >0) rewind(); return token::END;}
 
 %}
 
@@ -99,7 +100,7 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
  /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
 %{
-#define YY_USER_ACTION  yylloc->columns(yyleng); file_offset+=yyleng;
+#define YY_USER_ACTION  if(eof_reached) yyterminate(); yylloc->columns(yyleng); file_offset+=yyleng;
 
 //  Reduce duplicate code to allow the undoing of YY_USER_ACTION column and file_offset increments 
 #define do_yymore() { \
@@ -396,6 +397,10 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
 <*>. {
     return static_cast<token_type>(*yytext);
 }
+<*><<EOF>> {
+    eof_reached = true;
+    yyterminate();
+}
 
  /*** END EXAMPLE - Change the HIT lexer rules above ***/
 
@@ -410,6 +415,7 @@ HITLexerImpl::HITLexerImpl(
     : HITFlexLexer(in, out)
     , interpreter(interpreter)
     , file_offset(0)
+    , eof_reached(false)
 {
 }
 

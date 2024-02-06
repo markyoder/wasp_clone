@@ -2899,8 +2899,8 @@ TEST(HITInterpreter, missing_object_terminator)
     ASSERT_FALSE(interpreter.parse(input));
 
     std::stringstream expect_errors;
-    expect_errors << "stream input:2.1: syntax error, unexpected end of file, expecting block terminator\nstream input:1.1: syntax error, unexpected end of file, expecting block terminator"
-                  << std::endl;
+    expect_errors << "stream input:2.1: syntax error, unexpected end of file, expecting block terminator" << std::endl
+                  << "stream input:1.1: syntax error, unexpected end of file, expecting block terminator" << std::endl;
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
     std::string expected_paths;
@@ -5053,4 +5053,109 @@ TEST(HITInterpreter, find_node_column_past_document_end)
     HITNodeView found = wasp::findNodeUnderLineColumn(document_root, 4, 11);
     ASSERT_FALSE(found.is_null());
     ASSERT_EQ(document_root, found);
+}
+
+
+/**
+ * @brief Test recovery from missing terminator block with unexpected EOF 
+ */
+TEST(HITInterpreter, recovery_missing_value_in_unclosed_block_eof)
+{
+    std::stringstream input;
+    input << R"INPUT([block]
+  param = true)INPUT";
+
+    std::string expect_error = R"INPUT(
+stream input:1.1: syntax error, unexpected end of file, expecting block terminator
+)INPUT";
+
+    std::string expect_paths_and_types = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/block            )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
+/block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+/block/param      )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
+/block/param/decl  )" + std::to_string(wasp::DECL)          + R"( (param)
+/block/param/=     )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/block/param/value )" + std::to_string(wasp::VALUE)        + R"( (true)
+)";
+
+    // Check parse failure, error message, non-null root, paths, and types
+    std::stringstream actual_error, actual_paths_and_types;
+    DefaultHITInterpreter interpreter(actual_error);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ(expect_error, "\n" + actual_error.str());
+    ASSERT_FALSE(interpreter.root().is_null());
+    wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
+    ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
+}
+/**
+ * @brief Test recovery from missing value in a block without a terminator 
+ */
+TEST(HITInterpreter, recovery_missing_value_eof)
+{
+    std::stringstream input;
+    input << R"INPUT([block]
+  param =)INPUT";
+
+    std::string expect_error = R"INPUT(
+stream input:2.10: syntax error, unexpected end of file
+stream input:2.9: syntax error, 'param' has a missing or malformed value
+stream input:1.1: syntax error, unexpected end of file, expecting block terminator
+)INPUT";
+
+    std::string expect_paths_and_types = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/block            )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
+/block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+/block/param      )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
+/block/param/decl  )" + std::to_string(wasp::DECL)          + R"( (param)
+/block/param/=     )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+)";
+
+    // Check parse failure, error message, non-null root, paths, and types
+    std::stringstream actual_error, actual_paths_and_types;
+    DefaultHITInterpreter interpreter(actual_error);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ(expect_error, "\n" + actual_error.str());
+    ASSERT_FALSE(interpreter.root().is_null());
+    wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
+    ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
+}
+
+/**
+ * @brief Test recovery from missing assign in a block without a terminator 
+ */
+TEST(HITInterpreter, recovery_missing_assign_eof)
+{
+    std::stringstream input;
+    input << R"INPUT([block]
+  param)INPUT";
+
+    std::string expect_error = R"INPUT(
+stream input:2.8: syntax error, unexpected end of file, expecting =
+stream input:1.1: syntax error, unexpected end of file, expecting block terminator
+)INPUT";
+
+    std::string expect_paths_and_types = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/block            )"  + std::to_string(wasp::OBJECT)        + R"(
+/block/[          )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/block/decl        )" + std::to_string(wasp::DECL)          + R"( (block)
+/block/]          )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+/block/param      )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
+/block/param/decl  )" + std::to_string(wasp::DECL)          + R"( (param)
+)";
+
+    // Check parse failure, error message, non-null root, paths, and types
+    std::stringstream actual_error, actual_paths_and_types;
+    DefaultHITInterpreter interpreter(actual_error);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ(expect_error, "\n" + actual_error.str());
+    ASSERT_FALSE(interpreter.root().is_null());
+    wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
+    ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
 }

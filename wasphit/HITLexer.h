@@ -62,6 +62,7 @@ class HITLexerImpl : public HITFlexLexer
   private:
     class AbstractInterpreter& interpreter;
     std::size_t                file_offset;
+    bool                       eof_reached;
 };
 
 }  // namespace wasp
