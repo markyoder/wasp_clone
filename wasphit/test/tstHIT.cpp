@@ -2976,7 +2976,21 @@ TEST(HITInterpreter, object_name_with_invalid_equals)
     expect_errors << "stream input:2.8: syntax error, unexpected invalid token, expecting ]"
                   << std::endl;
 
+        std::string expect_paths_and_types = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/object           )"  + std::to_string(wasp::OBJECT)        + R"(
+/object/[         )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/object/decl       )" + std::to_string(wasp::DECL)          + R"( (object)
+/object/]         )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+/object/term      )"  + std::to_string(wasp::OBJECT_TERM)   + R"( ([])
+)";
+
+    // Check parse failure, error message, non-null root, paths, and types
+    std::stringstream actual_paths_and_types;
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
+    ASSERT_FALSE(interpreter.root().is_null());
+    wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
+    ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
 }
 
 /**
@@ -2997,7 +3011,21 @@ TEST(HITInterpreter, object_name_with_invalid_ampersand)
     expect_errors << "stream input:2.12: syntax error, unexpected invalid token, expecting ]"
                   << std::endl;
 
+    std::string expect_paths_and_types = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/objectname       )"  + std::to_string(wasp::OBJECT)        + R"(
+/objectname/[     )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/objectname/decl   )" + std::to_string(wasp::DECL)          + R"( (objectname)
+/objectname/]     )"  + std::to_string(wasp::RBRACKET)      + R"( (])
+/objectname/term  )"  + std::to_string(wasp::OBJECT_TERM)   + R"( ([])
+)";
+
+    // Check parse failure, error message, non-null root, paths, and types
+    std::stringstream actual_paths_and_types;
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
+    ASSERT_FALSE(interpreter.root().is_null());
+    wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
+    ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
 }
 
 /**
