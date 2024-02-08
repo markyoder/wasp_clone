@@ -3036,7 +3036,7 @@ TEST(HITInterpreter, invalid_object_terminator)
     ASSERT_FALSE(interpreter.parse(input));
 
     std::stringstream expect_errors;
-    expect_errors << "stream input:2.17: syntax error, unexpected ], expecting integer or object name"
+    expect_errors << "stream input:2.17: syntax error, unexpected invalid token, expecting integer or object name"
                   << std::endl;
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
@@ -5189,7 +5189,7 @@ stream input:1.5: syntax error, unexpected end of file, expecting ]
     ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
 }
 /**
- * @brief Test recovery from missing assign in a block without a terminator 
+ * @brief Test recovery from partial block decl without a terminator 
  */
 TEST(HITInterpreter, recovery_partial_block_decl_w_data)
 {
@@ -5212,6 +5212,42 @@ stream input:2.1: syntax error, unexpected end of line, expecting ]
 /blo/foo/=         )" + std::to_string(wasp::ASSIGN)        + R"( (=)
 /blo/foo/value    )"  + std::to_string(wasp::VALUE)         + R"( (bar)
 /blo/term         )"  + std::to_string(wasp::OBJECT_TERM)          + R"( ([])
+)";
+
+    // Check parse failure, error message, non-null root, paths, and types
+    std::stringstream actual_error, actual_paths_and_types;
+    DefaultHITInterpreter interpreter(actual_error);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ(expect_error, "\n" + actual_error.str());
+    ASSERT_FALSE(interpreter.root().is_null());
+    wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
+    ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
+}
+
+/**
+ * @brief Test recovery from missing assign in a block without a terminator 
+ */
+TEST(HITInterpreter, recovery_partial_block_decl_w_moredata_missing_terminator)
+{
+    std::stringstream input;
+    input << R"INPUT([blo
+  foo = bar
+)INPUT";
+
+    std::string expect_error = R"INPUT(
+stream input:2.1: syntax error, unexpected end of line, expecting ]
+stream input:1.1: syntax error, unexpected end of file, expecting block terminator
+)INPUT";
+
+    std::string expect_paths_and_types = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT) + R"(
+/blo              )"  + std::to_string(wasp::OBJECT)        + R"(
+/blo/[            )"  + std::to_string(wasp::LBRACKET)      + R"( ([)
+/blo/decl          )" + std::to_string(wasp::DECL)          + R"( (blo)
+/blo/foo          )"  + std::to_string(wasp::KEYED_VALUE)   + R"(
+/blo/foo/decl      )" + std::to_string(wasp::DECL)          + R"( (foo)
+/blo/foo/=         )" + std::to_string(wasp::ASSIGN)        + R"( (=)
+/blo/foo/value    )"  + std::to_string(wasp::VALUE)         + R"( (bar)
 )";
 
     // Check parse failure, error message, non-null root, paths, and types

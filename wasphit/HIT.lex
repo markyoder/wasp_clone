@@ -18,7 +18,7 @@ typedef wasp::HITParser::token_type token_type;
 /* By default yylex returns int, we use token_type. Unfortunately yyterminate
  * by default returns 0, which is not of token_type. 
  * This logic ensures we continue to return END until the parser is done*/
-#define yyterminate() {if (file_offset >0) rewind(); return token::END;}
+#define yyterminate() {if (file_offset >0){rewind();} return token::END;}
 
 %}
 
@@ -45,6 +45,7 @@ typedef wasp::HITParser::token_type token_type;
 %s assign
 %s array
 %x lbracket
+%x rbracket
 %x file_include
 %x brace_expression_state
 %x trailing_brace_expression_state
@@ -58,17 +59,9 @@ SINGLE_QUOTE '
 UNICODE [^\x00-\x7F]+
 COMMENT #([^\n]|{UNICODE})*
 
-LTE <=
-GTE >=
-LT <
-GT >
-BANG !
-EQ ==
-EXPONENT_OP \^
+ // Anything But Closing Brace allows consuming invalid/unknown tokens until newline or closing brace
+ABCB [^ \]\t\r\n]+
 ASSIGN =
-NEQ \!=
-AND &&
-OR \|\|
 LBRACKET \[
 
  /* START matches '${', END matches '}', INNER matches other pieces in scope */
@@ -188,17 +181,24 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     return token::DOT_SLASH;
 }
 <lbracket>{OBJCT_STRING} {
+    yy_pop_state();
+    yy_push_state(rbracket);
     capture_token(yylval,wasp::STRING);
     return token::OBJCT_STRING;
 }
-<lbracket>{RBRACKET} {
+ /* Anything But Closing Bracket is a unknown/error*/ 
+<rbracket>{ABCB} {
+    capture_token(yylval,wasp::UNKNOWN);
+    return token::UNKNOWN;
+}
+<rbracket>{RBRACKET} {
     yy_pop_state();
     yy_push_state(object);
     capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
 }
  /* syntax error - [ block EOL. */
-<lbracket>\n {
+<rbracket>\n {
     yy_pop_state(); // leave state in attempt to error recover
     // assume body of object does follow 
     yy_push_state(object);

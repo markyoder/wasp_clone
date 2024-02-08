@@ -77,6 +77,7 @@
 
 %token                  END          0  "end of file"
 %token                  EOL             "end of line"
+%token                 UNKNOWN          "invalid token"
 %token <token_index>   LBRACKET         "["
 %token <token_index>   RBRACKET         "]"
 %token                 '{'
@@ -311,7 +312,6 @@ lbracket : LBRACKET
     }
 rbracket : RBRACKET
     {
-
         size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::RBRACKET,"]"
                          ,token_index);
@@ -336,11 +336,34 @@ object_decl : lbracket section_name rbracket {
                                                    ,decl_index
                                                    ,rbracket_index};
     }
-    | lbracket section_name error {
+    | lbracket section_name EOL {
         size_t lbracket_index = ($lbracket);
         size_t decl_index = ($section_name);
         $$ = new std::vector<size_t>{lbracket_index,decl_index};
         interpreter.set_failed(true);
+        interpreter.error_stream() << @3.begin << ": syntax error, unexpected end of line, expecting ]" << std::endl;
+    }
+    | lbracket section_name END {
+        size_t lbracket_index = ($lbracket);
+        size_t decl_index = ($section_name);
+        $$ = new std::vector<size_t>{lbracket_index,decl_index};
+        interpreter.set_failed(true);
+        interpreter.error_stream() << @3.begin << ": syntax error, unexpected end of file, expecting ]" << std::endl;
+    }
+    | lbracket section_name UNKNOWN {
+        size_t lbracket_index = ($lbracket);
+        size_t decl_index = ($section_name);
+        $$ = new std::vector<size_t>{lbracket_index,decl_index};
+        interpreter.set_failed(true);
+        interpreter.error_stream() << @3.begin << ": syntax error, unexpected invalid token, expecting ]" << std::endl;
+    }
+    | lbracket section_name UNKNOWN rbracket {
+        size_t lbracket_index = ($lbracket);
+        size_t decl_index = ($section_name);
+        size_t rbracket_index = ($rbracket);
+        $$ = new std::vector<size_t>{lbracket_index, decl_index, rbracket_index};
+        interpreter.set_failed(true);
+        interpreter.error_stream() << @3.begin << ": syntax error, unexpected invalid token, expecting ]" << std::endl;
     }
     | lbracket  dot_slash section_name rbracket
     {

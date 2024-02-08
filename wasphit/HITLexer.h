@@ -49,6 +49,7 @@ class HITLexerImpl : public HITFlexLexer
     virtual HITParser::token_type lex(HITParser::semantic_type* yylval,
                                          HITParser::location_type* yylloc);
 
+    bool eof() const {return eof_reached;}
     /** Enable debug output (via arg_yyout) if compiled into the scanner. */
     void set_debug(bool b);
     /**

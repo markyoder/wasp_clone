@@ -256,23 +256,24 @@ namespace wasp {
     YYerror = 256,                 // error
     YYUNDEF = 257,                 // "invalid token"
     EOL = 258,                     // "end of line"
-    LBRACKET = 259,                // "["
-    RBRACKET = 260,                // "]"
-    ASSIGN = 261,                  // "="
-    SEMICOLON = 262,               // ";"
-    DOT_SLASH = 263,               // "subblock indicator ./"
-    QUOTE = 264,                   // "'"
-    INTEGER = 265,                 // "integer"
-    REAL = 266,                    // "real"
-    STRING = 267,                  // "string"
-    OBJCT_STRING = 268,            // "object name"
-    PARAM_STRING = 269,            // "parameter name"
-    VALUE_STRING = 270,            // "value string"
-    ARRAY_STRING = 271,            // "array string"
-    QSTRING = 272,                 // "quoted string"
-    COMMENT = 273,                 // "comment"
-    OBJECT_TERM = 274,             // "block terminator"
-    FILE = 277                     // "file include"
+    UNKNOWN = 259,                 // "invalid token"
+    LBRACKET = 260,                // "["
+    RBRACKET = 261,                // "]"
+    ASSIGN = 262,                  // "="
+    SEMICOLON = 263,               // ";"
+    DOT_SLASH = 264,               // "subblock indicator ./"
+    QUOTE = 265,                   // "'"
+    INTEGER = 266,                 // "integer"
+    REAL = 267,                    // "real"
+    STRING = 268,                  // "string"
+    OBJCT_STRING = 269,            // "object name"
+    PARAM_STRING = 270,            // "parameter name"
+    VALUE_STRING = 271,            // "value string"
+    ARRAY_STRING = 272,            // "array string"
+    QSTRING = 273,                 // "quoted string"
+    COMMENT = 274,                 // "comment"
+    OBJECT_TERM = 275,             // "block terminator"
+    FILE = 278                     // "file include"
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -289,61 +290,62 @@ namespace wasp {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 25, ///< Number of tokens.
+        YYNTOKENS = 26, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
         S_YYUNDEF = 2,                           // "invalid token"
         S_EOL = 3,                               // "end of line"
-        S_LBRACKET = 4,                          // "["
-        S_RBRACKET = 5,                          // "]"
-        S_6_ = 6,                                // '{'
-        S_7_ = 7,                                // '}'
-        S_ASSIGN = 8,                            // "="
-        S_SEMICOLON = 9,                         // ";"
-        S_DOT_SLASH = 10,                        // "subblock indicator ./"
-        S_QUOTE = 11,                            // "'"
-        S_INTEGER = 12,                          // "integer"
-        S_REAL = 13,                             // "real"
-        S_STRING = 14,                           // "string"
-        S_OBJCT_STRING = 15,                     // "object name"
-        S_PARAM_STRING = 16,                     // "parameter name"
-        S_VALUE_STRING = 17,                     // "value string"
-        S_ARRAY_STRING = 18,                     // "array string"
-        S_QSTRING = 19,                          // "quoted string"
-        S_COMMENT = 20,                          // "comment"
-        S_OBJECT_TERM = 21,                      // "block terminator"
-        S_22_section_name_ = 22,                 // "section name"
-        S_23_value_ = 23,                        // "value"
-        S_FILE = 24,                             // "file include"
-        S_YYACCEPT = 25,                         // $accept
-        S_semicolon = 26,                        // semicolon
-        S_assign = 27,                           // assign
-        S_object_term = 28,                      // object_term
-        S_lbracket = 29,                         // lbracket
-        S_rbracket = 30,                         // rbracket
-        S_dot_slash = 31,                        // dot_slash
-        S_include = 32,                          // include
-        S_object_decl = 33,                      // object_decl
-        S_object_member = 34,                    // object_member
-        S_object_members = 35,                   // object_members
-        S_object = 36,                           // object
-        S_double_quoted_string = 37,             // double_quoted_string
-        S_double_quoted_strings = 38,            // double_quoted_strings
-        S_VALUE = 39,                            // VALUE
-        S_value = 40,                            // value
-        S_SECTION_NAME = 41,                     // SECTION_NAME
-        S_section_name = 42,                     // section_name
-        S_field_name = 43,                       // field_name
-        S_quote = 44,                            // quote
-        S_path = 45,                             // path
-        S_include_file = 46,                     // include_file
-        S_array_member = 47,                     // array_member
-        S_array_members = 48,                    // array_members
-        S_array = 49,                            // array
-        S_keyedvalue = 50,                       // keyedvalue
-        S_comment = 51,                          // comment
-        S_start = 52                             // start
+        S_UNKNOWN = 4,                           // "invalid token"
+        S_LBRACKET = 5,                          // "["
+        S_RBRACKET = 6,                          // "]"
+        S_7_ = 7,                                // '{'
+        S_8_ = 8,                                // '}'
+        S_ASSIGN = 9,                            // "="
+        S_SEMICOLON = 10,                        // ";"
+        S_DOT_SLASH = 11,                        // "subblock indicator ./"
+        S_QUOTE = 12,                            // "'"
+        S_INTEGER = 13,                          // "integer"
+        S_REAL = 14,                             // "real"
+        S_STRING = 15,                           // "string"
+        S_OBJCT_STRING = 16,                     // "object name"
+        S_PARAM_STRING = 17,                     // "parameter name"
+        S_VALUE_STRING = 18,                     // "value string"
+        S_ARRAY_STRING = 19,                     // "array string"
+        S_QSTRING = 20,                          // "quoted string"
+        S_COMMENT = 21,                          // "comment"
+        S_OBJECT_TERM = 22,                      // "block terminator"
+        S_23_section_name_ = 23,                 // "section name"
+        S_24_value_ = 24,                        // "value"
+        S_FILE = 25,                             // "file include"
+        S_YYACCEPT = 26,                         // $accept
+        S_semicolon = 27,                        // semicolon
+        S_assign = 28,                           // assign
+        S_object_term = 29,                      // object_term
+        S_lbracket = 30,                         // lbracket
+        S_rbracket = 31,                         // rbracket
+        S_dot_slash = 32,                        // dot_slash
+        S_include = 33,                          // include
+        S_object_decl = 34,                      // object_decl
+        S_object_member = 35,                    // object_member
+        S_object_members = 36,                   // object_members
+        S_object = 37,                           // object
+        S_double_quoted_string = 38,             // double_quoted_string
+        S_double_quoted_strings = 39,            // double_quoted_strings
+        S_VALUE = 40,                            // VALUE
+        S_value = 41,                            // value
+        S_SECTION_NAME = 42,                     // SECTION_NAME
+        S_section_name = 43,                     // section_name
+        S_field_name = 44,                       // field_name
+        S_quote = 45,                            // quote
+        S_path = 46,                             // path
+        S_include_file = 47,                     // include_file
+        S_array_member = 48,                     // array_member
+        S_array_members = 49,                    // array_members
+        S_array = 50,                            // array
+        S_keyedvalue = 51,                       // keyedvalue
+        S_comment = 52,                          // comment
+        S_start = 53                             // start
       };
     };
 
@@ -855,7 +857,7 @@ namespace wasp {
     /// Constants.
     enum
     {
-      yylast_ = 86,     ///< Last index in yytable_.
+      yylast_ = 89,     ///< Last index in yytable_.
       yynnts_ = 28,  ///< Number of nonterminal symbols.
       yyfinal_ = 2 ///< Termination state number.
     };
@@ -871,7 +873,7 @@ namespace wasp {
 
 #line 36 "HIT.bison"
 } // wasp
-#line 875 "HITParser.hpp"
+#line 877 "HITParser.hpp"
 
 
 
