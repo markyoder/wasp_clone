@@ -2952,8 +2952,7 @@ TEST(HITInterpreter, object_name_with_invalid_pound)
     ASSERT_FALSE(interpreter.parse(input));
 
     std::stringstream expect_errors;
-    // The expecting 'end of line' is unfortunate, but this is a odd scenario that is captured here as an error condition
-    expect_errors << "stream input:2.2: syntax error, unexpected invalid token, expecting end of line or subblock indicator ./ or integer or object name"
+    expect_errors << "stream input:2.2: syntax error, unexpected invalid token"
                   << std::endl;
 
     ASSERT_EQ(expect_errors.str(), actual_errors.str());
@@ -5413,6 +5412,47 @@ stream input:2.1: syntax error, unexpected end of line, expecting object name
 //foo/=            7 (=)
 //foo/value       11 (bar)
 //term            14 ([])
+)";
+
+    // Check parse failure, error message, non-null root, paths, and types
+    std::stringstream actual_error, actual_paths_and_types;
+    DefaultHITInterpreter interpreter(actual_error);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ(expect_error, "\n" + actual_error.str());
+    ASSERT_FALSE(interpreter.root().is_null());
+    wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
+    ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
+}
+
+/**
+ * @brief Test recovery from missing block immediately followed by EOF
+ */
+TEST(HITInterpreter, recovery_missing_block_name_EOF)
+{
+    std::stringstream input;
+    input << R"INPUT([
+  foo = bar
+[]
+[)INPUT";
+
+    std::string expect_error = R"INPUT(
+stream input:2.1: syntax error, unexpected end of line, expecting object name
+stream input:4.2: syntax error, unexpected end of file, expecting object name
+)INPUT";
+
+    std::string expect_paths_and_types = R"(
+/                  1
+/                 15
+//[               42 ([)
+//                 2 ()
+//foo             13
+//foo/decl         2 (foo)
+//foo/=            7 (=)
+//foo/value       11 (bar)
+//term            14 ([])
+/                 15
+//[               42 ([)
+//                 2 ()
 )";
 
     // Check parse failure, error message, non-null root, paths, and types
