@@ -5246,6 +5246,76 @@ stream input:2.1: syntax error, unexpected end of line, expecting ]
     ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
 }
 /**
+ * @brief Test recovery from missing assign in a block without a terminator 
+ */
+TEST(HITInterpreter, recovery_partial_block_decl_w_more_data)
+{
+    std::stringstream input;
+    input << R"INPUT([block1]
+  foo1 = bar1
+  foo2 = bar2
+[]
+
+[block2]
+  foo3 = bar3
+  [block3]
+    foo4 = bar4
+    [blo
+
+)INPUT";
+
+    std::string expect_error = R"INPUT(
+stream input:11.1: syntax error, unexpected end of line, expecting ]
+stream input:8.3: syntax error, unexpected end of file, expecting block terminator
+stream input:6.1: syntax error, unexpected end of file, expecting block terminator
+)INPUT";
+
+    std::string expect_paths_and_types = R"(
+/                  1
+/block1           15
+/block1/[         42 ([)
+/block1/decl       2 (block1)
+/block1/]         43 (])
+/block1/foo1      13
+/block1/foo1/decl  2 (foo1)
+/block1/foo1/=     7 (=)
+/block1/foo1/value 11 (bar1)
+/block1/foo2      13
+/block1/foo2/decl  2 (foo2)
+/block1/foo2/=     7 (=)
+/block1/foo2/value 11 (bar2)
+/block1/term      14 ([])
+/block2           15
+/block2/[         42 ([)
+/block2/decl       2 (block2)
+/block2/]         43 (])
+/block2/foo3      13
+/block2/foo3/decl  2 (foo3)
+/block2/foo3/=     7 (=)
+/block2/foo3/value 11 (bar3)
+/block2/block3    15
+/block2/block3/[  42 ([)
+/block2/block3/decl  2 (block3)
+/block2/block3/]  43 (])
+/block2/block3/foo4 13
+/block2/block3/foo4/decl  2 (foo4)
+/block2/block3/foo4/=  7 (=)
+/block2/block3/foo4/value 11 (bar4)
+/block2/block3/blo 15
+/block2/block3/blo/[ 42 ([)
+/block2/block3/blo/decl  2 (blo)
+)";
+
+    // Check parse failure, error message, non-null root, paths, and types
+    std::stringstream actual_error, actual_paths_and_types;
+    DefaultHITInterpreter interpreter(actual_error);
+    ASSERT_FALSE(interpreter.parse(input));
+    ASSERT_EQ(expect_error, "\n" + actual_error.str());
+    ASSERT_FALSE(interpreter.root().is_null());
+    wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
+    ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
+}
+/**
  * @brief Test recovery from partial block decl without a terminator 
  */
 TEST(HITInterpreter, recovery_partial_block_decl_w_data)
