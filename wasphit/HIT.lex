@@ -198,7 +198,7 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     return token::RBRACKET;
 }
  /* syntax error - [ block EOL. */
-<rbracket>\n {
+<lbracket,rbracket>\n {
     yy_pop_state(); // leave state in attempt to error recover
     // assume body of object does follow 
     yy_push_state(object);

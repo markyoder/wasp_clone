@@ -156,9 +156,11 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
 {
     std::vector<size_t> &child_indices = object_decl;
     size_t object_decl_i = child_indices.rbegin()[1];
+
     // Ensure object_decl is a wasp::DECL 
     // It may not be because of missing ]
     if (interpreter.type(object_decl_i) != wasp::DECL) object_decl_i = child_indices.rbegin()[0];
+    
     std::string name = interpreter.data(object_decl_i).c_str();
 
     // handle 'x/y/z' names becoming tree hierarchy
@@ -186,8 +188,8 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
     // to new parent
     while( !names.empty() )
     {
-        // skip empty names
-        if (names.back().empty())
+        // skip empty names unless name was empty (an allowed error condition)
+        if (names.back().empty() && !name.empty())
         {
             names.pop_back();
             continue;
@@ -342,6 +344,20 @@ object_decl : lbracket section_name rbracket {
         $$ = new std::vector<size_t>{lbracket_index,decl_index};
         interpreter.set_failed(true);
         interpreter.error_stream() << @3.begin << ": syntax error, unexpected end of line, expecting ]" << std::endl;
+    }
+    | lbracket EOL {
+        size_t lbracket_index = ($lbracket);
+        
+        // Manufacture empty token name 
+        // make byte offset after the opening bracket
+        size_t byte_offset = interpreter.node_token_offset($lbracket)+1;
+        size_t decl_token_index =  interpreter.token_count();
+        interpreter.push_token("", wasp::UNKNOWN, byte_offset);
+        size_t decl_index = interpreter.push_leaf(wasp::DECL, "", decl_token_index);
+
+        $$ = new std::vector<size_t>{lbracket_index,decl_index};
+        interpreter.set_failed(true);
+        interpreter.error_stream() << @2.begin << ": syntax error, unexpected end of line, expecting object name" << std::endl;
     }
     | lbracket section_name END {
         size_t lbracket_index = ($lbracket);
