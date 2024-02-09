@@ -5393,13 +5393,14 @@ stream input:1.1: syntax error, unexpected end of file, expecting block terminat
 TEST(HITInterpreter, recovery_missing_block_name)
 {
     std::stringstream input;
-    input << R"INPUT([
-  foo = bar
-[]
+    input << R"INPUT(
+  [
+    foo = bar
+  []
 )INPUT";
 
     std::string expect_error = R"INPUT(
-stream input:2.1: syntax error, unexpected end of line, expecting object name
+stream input:3.1: syntax error, unexpected end of line, expecting object name
 )INPUT";
 
     std::string expect_paths_and_types = R"(
@@ -5422,6 +5423,16 @@ stream input:2.1: syntax error, unexpected end of line, expecting object name
     ASSERT_FALSE(interpreter.root().is_null());
     wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
     ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
+
+    // Check line and column range for missing block declarator empty node
+    HITNodeView empty_node = interpreter.root().child_at(0).child_at(1);
+    ASSERT_FALSE(empty_node.is_null());
+    EXPECT_TRUE(empty_node.data().empty());
+    EXPECT_EQ(std::string(""), empty_node.name());
+    EXPECT_EQ(3, empty_node.line());
+    EXPECT_EQ(0, empty_node.column());
+    EXPECT_EQ(2, empty_node.last_line());
+    EXPECT_EQ(3, empty_node.last_column());
 }
 
 /**
@@ -5463,4 +5474,24 @@ stream input:4.2: syntax error, unexpected end of file, expecting object name
     ASSERT_FALSE(interpreter.root().is_null());
     wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
     ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
+
+    // Check line and column range for first missing declarator empty node
+    HITNodeView empty_node_01 = interpreter.root().child_at(0).child_at(1);
+    ASSERT_FALSE(empty_node_01.is_null());
+    EXPECT_TRUE(empty_node_01.data().empty());
+    EXPECT_EQ(std::string(""), empty_node_01.name());
+    EXPECT_EQ(2, empty_node_01.line());
+    EXPECT_EQ(0, empty_node_01.column());
+    EXPECT_EQ(1, empty_node_01.last_line());
+    EXPECT_EQ(1, empty_node_01.last_column());
+
+    // Check line and column range for other missing declarator empty node
+    HITNodeView empty_node_02 = interpreter.root().child_at(1).child_at(1);
+    ASSERT_FALSE(empty_node_02.is_null());
+    EXPECT_TRUE(empty_node_02.data().empty());
+    EXPECT_EQ(std::string(""), empty_node_02.name());
+    EXPECT_EQ(4, empty_node_02.line());
+    EXPECT_EQ(2, empty_node_02.column());
+    EXPECT_EQ(4, empty_node_02.last_line());
+    EXPECT_EQ(1, empty_node_02.last_column());
 }
