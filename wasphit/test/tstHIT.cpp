@@ -5407,7 +5407,7 @@ stream input:3.1: syntax error, unexpected end of line, expecting object name
 /                  1
 /                 15
 //[               42 ([)
-//                 2 ()
+//decl             2 ()
 //foo             13
 //foo/decl         2 (foo)
 //foo/=            7 (=)
@@ -5428,9 +5428,9 @@ stream input:3.1: syntax error, unexpected end of line, expecting object name
     HITNodeView empty_node = interpreter.root().child_at(0).child_at(1);
     ASSERT_FALSE(empty_node.is_null());
     EXPECT_TRUE(empty_node.data().empty());
-    EXPECT_EQ(std::string(""), empty_node.name());
-    EXPECT_EQ(3, empty_node.line());
-    EXPECT_EQ(0, empty_node.column());
+    EXPECT_EQ(std::string("decl"), empty_node.name());
+    EXPECT_EQ(2, empty_node.line());
+    EXPECT_EQ(3, empty_node.column());
     EXPECT_EQ(2, empty_node.last_line());
     EXPECT_EQ(3, empty_node.last_column());
 }
@@ -5455,7 +5455,7 @@ stream input:4.2: syntax error, unexpected end of file, expecting object name
 /                  1
 /                 15
 //[               42 ([)
-//                 2 ()
+//decl             2 ()
 //foo             13
 //foo/decl         2 (foo)
 //foo/=            7 (=)
@@ -5463,7 +5463,7 @@ stream input:4.2: syntax error, unexpected end of file, expecting object name
 //term            14 ([])
 /                 15
 //[               42 ([)
-//                 2 ()
+//decl             2 ()
 )";
 
     // Check parse failure, error message, non-null root, paths, and types
@@ -5479,9 +5479,9 @@ stream input:4.2: syntax error, unexpected end of file, expecting object name
     HITNodeView empty_node_01 = interpreter.root().child_at(0).child_at(1);
     ASSERT_FALSE(empty_node_01.is_null());
     EXPECT_TRUE(empty_node_01.data().empty());
-    EXPECT_EQ(std::string(""), empty_node_01.name());
-    EXPECT_EQ(2, empty_node_01.line());
-    EXPECT_EQ(0, empty_node_01.column());
+    EXPECT_EQ(std::string("decl"), empty_node_01.name());
+    EXPECT_EQ(1, empty_node_01.line());
+    EXPECT_EQ(1, empty_node_01.column());
     EXPECT_EQ(1, empty_node_01.last_line());
     EXPECT_EQ(1, empty_node_01.last_column());
 
@@ -5489,9 +5489,9 @@ stream input:4.2: syntax error, unexpected end of file, expecting object name
     HITNodeView empty_node_02 = interpreter.root().child_at(1).child_at(1);
     ASSERT_FALSE(empty_node_02.is_null());
     EXPECT_TRUE(empty_node_02.data().empty());
-    EXPECT_EQ(std::string(""), empty_node_02.name());
+    EXPECT_EQ(std::string("decl"), empty_node_02.name());
     EXPECT_EQ(4, empty_node_02.line());
-    EXPECT_EQ(2, empty_node_02.column());
+    EXPECT_EQ(1, empty_node_02.column());
     EXPECT_EQ(4, empty_node_02.last_line());
     EXPECT_EQ(1, empty_node_02.last_column());
 }

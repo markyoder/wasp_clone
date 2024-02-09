@@ -349,11 +349,11 @@ object_decl : lbracket section_name rbracket {
         size_t lbracket_index = ($lbracket);
         
         // Manufacture empty token name 
-        // make byte offset after the opening bracket
-        size_t byte_offset = interpreter.node_token_offset($lbracket)+1;
+        // data is zero bytes so byte offset will be the same as the opening bracket
+        size_t byte_offset = interpreter.node_token_offset($lbracket);
         size_t decl_token_index =  interpreter.token_count();
         interpreter.push_token("", wasp::UNKNOWN, byte_offset);
-        size_t decl_index = interpreter.push_leaf(wasp::DECL, "", decl_token_index);
+        size_t decl_index = interpreter.push_leaf(wasp::DECL, "decl", decl_token_index);
 
         $$ = new std::vector<size_t>{lbracket_index,decl_index};
         interpreter.set_failed(true);
@@ -363,11 +363,11 @@ object_decl : lbracket section_name rbracket {
         size_t lbracket_index = ($lbracket);
         
         // Manufacture empty token name 
-        // make byte offset after the opening bracket
-        size_t byte_offset = interpreter.node_token_offset($lbracket)+1;
+        // data is zero bytes so byte offset will be the same as the opening bracket
+        size_t byte_offset = interpreter.node_token_offset($lbracket);
         size_t decl_token_index =  interpreter.token_count();
         interpreter.push_token("", wasp::UNKNOWN, byte_offset);
-        size_t decl_index = interpreter.push_leaf(wasp::DECL, "", decl_token_index);
+        size_t decl_index = interpreter.push_leaf(wasp::DECL, "decl", decl_token_index);
 
         $$ = new std::vector<size_t>{lbracket_index,decl_index};
         interpreter.set_failed(true);
