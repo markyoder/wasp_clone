@@ -68,9 +68,9 @@ std::size_t TokenPool<TTS, TITS, FOTS>::last_line(TITS index) const
     auto token_file_offset = m_tokens[index].m_token_file_offset;
 
     // in the empty token special case end position will be equal to start
-    auto token_end_position =
-        std::strlen(m_strings.data(index)) == 0 ? token_file_offset :
-        token_file_offset + std::strlen(m_strings.data(index)) - 1;
+    auto strlen = std::strlen(m_strings.data(index));
+    auto token_end_position = strlen == 0 ? token_file_offset
+                                          : token_file_offset + strlen - 1;
 
     // first newline after the end of the token
     auto ub = std::upper_bound(m_line_offsets.begin(), m_line_offsets.end(),
@@ -89,9 +89,9 @@ std::size_t TokenPool<TTS, TITS, FOTS>::last_column(TITS index) const
     auto token_file_offset = m_tokens[index].m_token_file_offset;
 
     // in the empty token special case end position will be equal to start
-    auto token_end_position =
-        std::strlen(m_strings.data(index)) == 0 ? token_file_offset :
-        token_file_offset + std::strlen(m_strings.data(index)) - 1;
+    auto strlen = std::strlen(m_strings.data(index));
+    auto token_end_position = strlen == 0 ? token_file_offset
+                                          : token_file_offset + strlen - 1;
 
     // first newline after the end of the token
     auto ub = std::upper_bound(m_line_offsets.begin(), m_line_offsets.end(),
