@@ -20,7 +20,7 @@
 %output "HITParser.cpp"
 /* add debug output code to generated parser. disable this for release
  * versions. */
- // %debug
+ /*%debug*/
 
 /* start symbol is named "start" */
 %start start
@@ -48,6 +48,7 @@
     @$.begin.column = @$.end.column = interpreter.start_column();
     lexer = std::make_shared<HITLexerImpl>(interpreter,&input_stream);
     // lexer->set_debug(true); // Requires HIT.lex %option debug uncommented
+    // this->set_debug_level(1); // Requires HIT.bison %debug option uncommented
 };
 
 /* The interpreter is passed by reference to the parser and to the HITLexer. This
@@ -76,6 +77,7 @@
 
 %token                  END          0  "end of file"
 %token                  EOL             "end of line"
+%token                 UNKNOWN          "invalid token"
 %token <token_index>   LBRACKET         "["
 %token <token_index>   RBRACKET         "]"
 %token                 '{'
@@ -96,12 +98,12 @@
 %token <token_index>   OBJECT_TERM  "block terminator"
 %type <token_index>   SECTION_NAME   "section name"
 %type <token_index>   VALUE "value"
-%type <node_index>  integer real string lbracket rbracket quote assign semicolon
+%type <node_index>  lbracket rbracket quote assign semicolon
 %type <node_index>  object_term section_name field_name
 %type <node_index>  object
-%type <node_index>  unquoted_string double_quoted_string
+%type <node_index>  double_quoted_string
 %type <node_index>  keyedvalue dot_slash
-%type <node_index>  comment value primitive include include_file
+%type <node_index>  comment value include include_file
 %type <node_index> object_member array_member path
 %type <node_indices> array_members array double_quoted_strings
 %type <node_indices> object_decl
@@ -154,6 +156,11 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
 {
     std::vector<size_t> &child_indices = object_decl;
     size_t object_decl_i = child_indices.rbegin()[1];
+
+    // Ensure object_decl is a wasp::DECL 
+    // It may not be because of missing ]
+    if (interpreter.type(object_decl_i) != wasp::DECL) object_decl_i = child_indices.rbegin()[0];
+
     std::string name = interpreter.data(object_decl_i).c_str();
 
     // handle 'x/y/z' names becoming tree hierarchy
@@ -167,7 +174,8 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
                                   ,interpreter
                                   ,object_members);
     }
-    child_indices.push_back(object_term);
+    // object_term of 0 indicates missing terminator. E.g., EOF reached
+    if (object_term > 0) child_indices.push_back(object_term);
 
     
     size_t result_index = 0;
@@ -180,8 +188,8 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
     // to new parent
     while( !names.empty() )
     {
-        // skip empty names
-        if (names.back().empty())
+        // skip empty names unless name was empty (an allowed error condition)
+        if (names.back().empty() && !name.empty())
         {
             names.pop_back();
             continue;
@@ -200,9 +208,9 @@ size_t push_object(wasp::AbstractInterpreter & interpreter,
 size_t push_keyed_value_or_array(wasp::AbstractInterpreter & interpreter,
                                  std::vector<size_t>       & child_indices)
 {
-    // keyed values pass in exactly three children and arrays pass in more
+    // keyed values pass in three or less children and arrays pass in more
 
-    wasp_check(child_indices.size() >= 3);
+    wasp_check(!child_indices.empty());
 
     std::string name = interpreter.data(child_indices.front()).c_str();
 
@@ -228,9 +236,9 @@ size_t push_keyed_value_or_array(wasp::AbstractInterpreter & interpreter,
             continue;
         }
 
-        // exactly three children is for a keyed value at the lowest level
+        // three or less children at the lowest level is for a keyed value
 
-        if (child_indices.size() == 3)
+        if (result_index == 0 && child_indices.size() <= 3)
         {
             result_index = interpreter.push_parent(wasp::KEYED_VALUE    ,
                                                    names.back().c_str() ,
@@ -306,7 +314,6 @@ lbracket : LBRACKET
     }
 rbracket : RBRACKET
     {
-
         size_t token_index = ($1);
         $$ = interpreter.push_leaf(wasp::RBRACKET,"]"
                          ,token_index);
@@ -330,7 +337,65 @@ object_decl : lbracket section_name rbracket {
         $$ = new std::vector<size_t>{lbracket_index
                                                    ,decl_index
                                                    ,rbracket_index};
-    }| lbracket  dot_slash section_name rbracket
+    }
+    | lbracket section_name EOL {
+        size_t lbracket_index = ($lbracket);
+        size_t decl_index = ($section_name);
+        $$ = new std::vector<size_t>{lbracket_index,decl_index};
+        interpreter.set_failed(true);
+        interpreter.error_stream() << @3.begin << ": syntax error, unexpected end of line, expecting ]" << std::endl;
+    }
+    | lbracket EOL {
+        size_t lbracket_index = ($lbracket);
+        
+        // Manufacture empty token name 
+        // data is zero bytes so byte offset will be the same as the opening bracket
+        size_t byte_offset = interpreter.node_token_offset($lbracket);
+        size_t decl_token_index =  interpreter.token_count();
+        interpreter.push_token("", wasp::UNKNOWN, byte_offset);
+        size_t decl_index = interpreter.push_leaf(wasp::DECL, "decl", decl_token_index);
+
+        $$ = new std::vector<size_t>{lbracket_index,decl_index};
+        interpreter.set_failed(true);
+        interpreter.error_stream() << @2.begin << ": syntax error, unexpected end of line, expecting object name" << std::endl;
+    }
+    | lbracket END {
+        size_t lbracket_index = ($lbracket);
+        
+        // Manufacture empty token name 
+        // data is zero bytes so byte offset will be the same as the opening bracket
+        size_t byte_offset = interpreter.node_token_offset($lbracket);
+        size_t decl_token_index =  interpreter.token_count();
+        interpreter.push_token("", wasp::UNKNOWN, byte_offset);
+        size_t decl_index = interpreter.push_leaf(wasp::DECL, "decl", decl_token_index);
+
+        $$ = new std::vector<size_t>{lbracket_index,decl_index};
+        interpreter.set_failed(true);
+        interpreter.error_stream() << @2.begin << ": syntax error, unexpected end of file, expecting object name" << std::endl;
+    }
+    | lbracket section_name END {
+        size_t lbracket_index = ($lbracket);
+        size_t decl_index = ($section_name);
+        $$ = new std::vector<size_t>{lbracket_index,decl_index};
+        interpreter.set_failed(true);
+        interpreter.error_stream() << @3.begin << ": syntax error, unexpected end of file, expecting ]" << std::endl;
+    }
+    | lbracket section_name UNKNOWN {
+        size_t lbracket_index = ($lbracket);
+        size_t decl_index = ($section_name);
+        $$ = new std::vector<size_t>{lbracket_index,decl_index};
+        interpreter.set_failed(true);
+        interpreter.error_stream() << @3.begin << ": syntax error, unexpected invalid token, expecting ]" << std::endl;
+    }
+    | lbracket section_name UNKNOWN rbracket {
+        size_t lbracket_index = ($lbracket);
+        size_t decl_index = ($section_name);
+        size_t rbracket_index = ($rbracket);
+        $$ = new std::vector<size_t>{lbracket_index, decl_index, rbracket_index};
+        interpreter.set_failed(true);
+        interpreter.error_stream() << @3.begin << ": syntax error, unexpected invalid token, expecting ]" << std::endl;
+    }
+    | lbracket  dot_slash section_name rbracket
     {
         size_t lbracket_index = ($lbracket);
         size_t dot_slash_index = ($dot_slash);
@@ -344,7 +409,7 @@ object_decl : lbracket section_name rbracket {
                 ,rbracket_index};
     }
 
-object_member : primitive | keyedvalue | comment
+object_member :  keyedvalue | comment
                 | object | include_file
 
 object_members : object_member
@@ -378,38 +443,48 @@ object_members : object_member
         $1->second->push_back(($object_member));
         $$ = $1;
     }
+    | object_members error
+    {
+        interpreter.set_failed(true);
+        $$ = $1;
+    }
 
 
 object : object_decl object_term
-        { // empty object        
-        $$ = push_object(interpreter, *$object_decl, nullptr, $object_term);
-        delete $1;
+        { // empty object
+            $$ = push_object(interpreter, *$object_decl, nullptr, $object_term);
+            delete $1;
+        }
+        | object_decl END
+        {
+            $$ = push_object(interpreter, *$object_decl, nullptr, 0);
+            delete $1;
+            
+            if (!interpreter.failed()) interpreter.error_stream() << @2.begin << ": syntax error, unexpected end of file" << std::endl;
+            interpreter.set_failed(true);
+        }
+        | object_decl error object_members object_term
+        {
+            $$ = push_object(interpreter, *$object_decl, $object_members, $object_term);
+            delete $1;
+            interpreter.set_failed(true);
         }
         | object_decl object_members object_term
         {
-        $$ = push_object(interpreter, *$object_decl, $object_members, $object_term);        
-        delete $1;
-        delete $2->second;
-        delete $2;
+            $$ = push_object(interpreter, *$object_decl, $object_members, $object_term);
+            delete $1;
+            delete $2->second;
+            delete $2;
         }
-integer : INTEGER
-    {
-        size_t token_index = ($1);
-        $$ = interpreter.push_leaf(wasp::INTEGER,"int"
-                         ,token_index);
-    }
-real : REAL
-    {
-        size_t token_index = ($1);
-        $$ = interpreter.push_leaf(wasp::REAL,"real"
-                         ,token_index);
-    }
-unquoted_string : STRING
-    {
-        size_t token_index = ($1);
-        $$ = interpreter.push_leaf(wasp::STRING,"string"
-                         ,token_index);
-    }
+        | object_decl object_members END
+        {
+            $$ = push_object(interpreter, *$object_decl, $object_members, 0);
+            delete $1;
+            delete $2->second;
+            delete $2;
+            interpreter.set_failed(true);
+            interpreter.error_stream() << @1.begin << ": syntax error, unexpected end of file, expecting block terminator" << std::endl;
+        }
 double_quoted_string : QSTRING
     {
         size_t token_index = ($1);
@@ -453,11 +528,6 @@ quote : QUOTE
         $$ = interpreter.push_leaf(wasp::QUOTE,"'"
                          ,token_index);
     }
-string : unquoted_string
-
-primitive : integer
-           | real
-           | string
 
 path : STRING
         {
@@ -555,6 +625,28 @@ keyedvalue : field_name assign value
 
         $$ = push_keyed_value_or_array(interpreter, child_indices);
     }
+    | field_name assign error
+    {
+        size_t key_index = ($1);
+        size_t assign_index = ($2);
+
+        std::vector<size_t> child_indices = {key_index, assign_index};
+
+        std::string key = interpreter.data(key_index);
+        $$ = push_keyed_value_or_array(interpreter, child_indices);
+        interpreter.error_stream() << @2 << ": syntax error, '" << key << "' has a missing or malformed value" << std::endl;
+        interpreter.set_failed(true);
+    }
+    | field_name error
+    {
+        size_t key_index = ($1);
+
+        std::vector<size_t> child_indices = {key_index};
+
+        std::string key = interpreter.data(key_index);
+        $$ = push_keyed_value_or_array(interpreter, child_indices);
+        interpreter.set_failed(true);
+    }
 
 comment : COMMENT
     {
@@ -570,8 +662,16 @@ start   : /** empty **/
         | start keyedvalue{
             interpreter.push_staged_child($2);
         }
+        | start keyedvalue error{
+            interpreter.push_staged_child($2);
+            interpreter.set_failed(true);
+        }
         | start object{
             interpreter.push_staged_child($2);
+        }
+        | start object error{
+            interpreter.push_staged_child($2);
+            interpreter.set_failed(true);
         }
         | start include_file
         {

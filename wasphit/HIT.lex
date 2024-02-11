@@ -16,8 +16,9 @@ typedef wasp::HITParser::token token;
 typedef wasp::HITParser::token_type token_type;
 
 /* By default yylex returns int, we use token_type. Unfortunately yyterminate
- * by default returns 0, which is not of token_type. */
-#define yyterminate() return token::END
+ * by default returns 0, which is not of token_type. 
+ * This logic ensures we continue to return END until the parser is done*/
+#define yyterminate() {if (file_offset >0){rewind();} return token::END;}
 
 %}
 
@@ -44,6 +45,7 @@ typedef wasp::HITParser::token_type token_type;
 %s assign
 %s array
 %x lbracket
+%x rbracket
 %x file_include
 %x brace_expression_state
 %x trailing_brace_expression_state
@@ -57,17 +59,9 @@ SINGLE_QUOTE '
 UNICODE [^\x00-\x7F]+
 COMMENT #([^\n]|{UNICODE})*
 
-LTE <=
-GTE >=
-LT <
-GT >
-BANG !
-EQ ==
-EXPONENT_OP \^
+ // Anything But Closing Brace allows consuming invalid/unknown tokens until newline or closing brace
+ABCB [^ \]\t\r\n]+
 ASSIGN =
-NEQ \!=
-AND &&
-OR \|\|
 LBRACKET \[
 
  /* START matches '${', END matches '}', INNER matches other pieces in scope */
@@ -99,7 +93,7 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
  /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
 %{
-#define YY_USER_ACTION  yylloc->columns(yyleng); file_offset+=yyleng;
+#define YY_USER_ACTION  if(eof_reached) yyterminate(); yylloc->columns(yyleng); file_offset+=yyleng;
 
 //  Reduce duplicate code to allow the undoing of YY_USER_ACTION column and file_offset increments 
 #define do_yymore() { \
@@ -139,8 +133,16 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
 %}
  /*** BEGIN EXAMPLE - Change the HIT lexer rules below ***/
 
-<INITIAL,object,param,assign>{COMMENT} {
+<INITIAL,object,param>{COMMENT} {
     capture_token(yylval,wasp::COMMENT);
+    return token::COMMENT;
+}
+
+ /* syntax error - key = COMMENT. */
+<assign>{COMMENT} {
+    yy_pop_state(); // pop the assign state
+    capture_token(yylval,wasp::COMMENT);
+    // The parser needs to know about this invalid token
     return token::COMMENT;
 }
 
@@ -162,20 +164,48 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     capture_token(yylval,wasp::LBRACKET);
     return token::LBRACKET;
 }
+
+ /* The assign condition is a syntax error which for the purpose
+  of error recovery is captured here 
+  E.g., the error scenario is follows
+  key = [
+ */
+<assign>{LBRACKET} {
+    yy_pop_state(); // pop assign
+    rewind(); // put back so error recovery is possible
+    // The parser needs to know about this invalid token    
+    return token::LBRACKET;
+}
 <lbracket>{DOT_SLASH} {
     capture_token(yylval,wasp::DOT_SLASH);
     return token::DOT_SLASH;
 }
 <lbracket>{OBJCT_STRING} {
+    yy_pop_state();
+    yy_push_state(rbracket);
     capture_token(yylval,wasp::STRING);
     return token::OBJCT_STRING;
 }
-<lbracket>{RBRACKET} {
+ /* Anything But Closing Bracket is a unknown/error*/ 
+<rbracket>{ABCB} {
+    capture_token(yylval,wasp::UNKNOWN);
+    return token::UNKNOWN;
+}
+<rbracket>{RBRACKET} {
     yy_pop_state();
     yy_push_state(object);
     capture_token(yylval,wasp::RBRACKET);
     return token::RBRACKET;
 }
+ /* syntax error - [ block EOL. */
+<lbracket,rbracket>\n {
+    yy_pop_state(); // leave state in attempt to error recover
+    // assume body of object does follow 
+    yy_push_state(object);
+    yylloc->lines(yyleng); yylloc->step();
+    interpreter.push_line_offset(file_offset-yyleng);
+    return token::EOL;
+} 
 <object>{OBJECT_TERM} {
     yy_pop_state();
     capture_token(yylval,wasp::OBJECT_TERM);
@@ -250,6 +280,13 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     capture_token(yylval,wasp::REAL);
     return token::REAL;
 }
+ /* syntax error - key = EOL. */
+<assign,param>\n {
+    yy_pop_state(); // leave state in attempt to error recover
+    yylloc->lines(yyleng); yylloc->step();
+    interpreter.push_line_offset(file_offset-yyleng);
+    return token::EOL;
+} 
 <assign>{VALUE_STRING} {
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -296,6 +333,7 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     capture_token(yylval,wasp::QUOTE);
     return token::QUOTE;
 }
+
 <array>{SINGLE_QUOTE} {
     yy_pop_state();
     capture_token(yylval,wasp::QUOTE);
@@ -368,6 +406,10 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
 <*>. {
     return static_cast<token_type>(*yytext);
 }
+<*><<EOF>> {
+    eof_reached = true;
+    yyterminate();
+}
 
  /*** END EXAMPLE - Change the HIT lexer rules above ***/
 
@@ -382,6 +424,7 @@ HITLexerImpl::HITLexerImpl(
     : HITFlexLexer(in, out)
     , interpreter(interpreter)
     , file_offset(0)
+    , eof_reached(false)
 {
 }
 

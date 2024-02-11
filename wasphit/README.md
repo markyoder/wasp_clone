@@ -14,6 +14,7 @@ key_value := name '=' value
 name := string
 value := (number|string|array)
 array := "'" (number|string) "'"
+comment := "#" .* \n
 ```
 where the block `name` must adhere to the pattern `([A-Za-z0-9_\.])+`. A `value` can be an integer, real, string, or array (as indicated by single quotes).
 A file can have zero or more blocks and arbritrarily include files. 

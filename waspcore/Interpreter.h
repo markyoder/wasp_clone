@@ -4,11 +4,11 @@
 #include <vector>
 #include <map>
 #include <string>
-#include <cstddef>  // size_t
+#include <cstddef>
 #include <iostream>
 #include "waspcore/decl.h"
 #include "waspcore/TreeNodePool.h"
-#include "waspcore/wasp_node.h"  // for UNKNOWN, DOCUMENT_ROOT NODE types
+#include "waspcore/wasp_node.h"
 #include "waspcore/wasp_bug.h"
 #include "waspcore/Definition.h"
 #include "waspcore/location.hh"
@@ -17,7 +17,7 @@
 namespace wasp
 {
 /**
- * @brief The NodeView class provies light weight interface to TreeNodes
+ * @brief The NodeView class provides light-weight interface to TreeNodes
  * Allows traversing child nodes and parent as well as acquire node information
  * *
  */
@@ -455,6 +455,7 @@ class WASP_PUBLIC AbstractInterpreter
     virtual size_t child_at(size_t node_index, size_t index) const      = 0;
     virtual size_t node_token_type(size_t node_index) const = 0;
     virtual size_t node_token_line(size_t node_index) const = 0;
+    virtual size_t node_token_offset(size_t node_index) const = 0;
     virtual size_t line(size_t node_index) const            = 0;
     virtual size_t last_line(size_t node_index) const       = 0;
     virtual size_t column(size_t node_index) const          = 0;
@@ -808,6 +809,10 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      */
     size_t child_index_at(size_t node_index, size_t child_index) const;
     size_t node_count() const { return m_nodes.size(); }
+    /**
+     * @brief acquire the offset of the token that is backing this node
+    */
+    size_t node_token_offset(size_t node_index) const {return m_nodes.node_token_offset(node_index);}
     size_t leaf_node_count() const { return m_nodes.leaf_node_count(); }
     bool has_parent(size_t node_index) const
     {

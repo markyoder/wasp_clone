@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.1.0] - 2-06-2024
+
+### Added
+- HIT error recovery for missing assign, value, terminator such that parse tree construction resumes if possible, but parse failures are still captured
+- HIT error recovery for partial block such that parse tree construction resumes if possible, but parse failures are still captured
+- Convenience function is_nested_file that checks if any NodeView is file include
+- BLANK_LINE enum type and NodeView::set_type method to set type for any NodeView
+- HITNodeView::token_type method to return the type of the backing token or UNKNOWN for non-terminal or out-of-range requests
 
 ### Fixed
 - LSP Client method to keep URI from definition response instead of discarding it
@@ -13,13 +21,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - NodeView Iterator and FilePush logic causing incomplete traversal for scenarios where a nested include was the first field in the file
 - HIT lexer integer and float to be C++ compatible for conversion
 
-### Added
-- Convenience function is_nested_file that checks if any NodeView is file include
-- BLANK_LINE enum type and NodeView::set_type method to set type for any NodeView
-- HITNodeView::token_type method to return the type of the backing token or UNKNOWN for non-terminal or out-of-range requests
-
 ### Changed
 - LSP URI prefix to be legitimate file scheme instead of imaginary wasplsp scheme
+- HIT keyed-values now requires the value to start on the same line as the key or a syntax error will be produced
 
 ## [4.0.3] - 10-05-2023
 

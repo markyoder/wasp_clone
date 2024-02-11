@@ -49,6 +49,7 @@ class HITLexerImpl : public HITFlexLexer
     virtual HITParser::token_type lex(HITParser::semantic_type* yylval,
                                          HITParser::location_type* yylloc);
 
+    bool eof() const {return eof_reached;}
     /** Enable debug output (via arg_yyout) if compiled into the scanner. */
     void set_debug(bool b);
     /**
@@ -62,6 +63,7 @@ class HITLexerImpl : public HITFlexLexer
   private:
     class AbstractInterpreter& interpreter;
     std::size_t                file_offset;
+    bool                       eof_reached;
 };
 
 }  // namespace wasp
