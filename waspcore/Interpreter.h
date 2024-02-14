@@ -813,7 +813,6 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @brief acquire the offset of the token that is backing this node
     */
     size_t node_token_offset(size_t node_index) const {return m_nodes.node_token_offset(node_index);}
-    size_t leaf_node_count() const { return m_nodes.leaf_node_count(); }
     bool has_parent(size_t node_index) const
     {
         return m_nodes.has_parent(node_index);
