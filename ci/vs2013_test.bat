@@ -7,7 +7,7 @@ git clone https://code.ornl.gov/warroom/miniconda.git
 set "PATH=%conda%\Scripts;%conda%;%conda%\Library\bin;%PATH%"
 where python
 call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86_amd64
-cmake -DBUILDNAME="Windows-CL-18-Release-%CI_BUILD_REF_NAME%" ^
+cmake -DBUILDNAME="Windows-CL-18-Release-%CI_COMMIT_REF_NAME%" ^
       -DCMAKE_BUILD_TYPE:STRING=RELEASE ^
       -Dwasp_ENABLE_TESTS:BOOL=ON ^
       -Dwasp_ENABLE_ALL_PACKAGES:BOOL=ON ^

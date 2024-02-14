@@ -4,7 +4,7 @@ export PATH=/projects/gcc-5.4.0/common_tools/anaconda3/bin/:$PATH
 
 . ci/setup.sh
 cd build
-cmake -DBUILDNAME="$(uname -s)-GCC-5.4-Release-${CI_BUILD_REF_NAME}" \
+cmake -DBUILDNAME="$(uname -s)-GCC-5.4-Release-${CI_COMMIT_REF_NAME}" \
       -DCMAKE_BUILD_TYPE=RELEASE \
       -Dwasp_ENABLE_TESTS=ON \
       -DCMAKE_C_COMPILER=/projects/gcc-5.4.0/toolset/gcc-5.4.0/bin/gcc \

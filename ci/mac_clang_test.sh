@@ -3,7 +3,7 @@ cd build
 git clone https://code.ornl.gov/warroom/miniconda.git
 bash miniconda/Miniconda3-latest-MacOSX-x86_64.sh -b -p ${PWD}/conda
 export PATH=${PWD}/conda/bin:$PATH
-cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Debug-${CI_BUILD_REF_NAME}" \
+cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Debug-${CI_COMMIT_REF_NAME}" \
        -DCMAKE_BUILD_TYPE=DEBUG \
        -Dwasp_ENABLE_TESTS=ON \
        -Dwasp_ENABLE_ALL_PACKAGES=ON \
@@ -17,7 +17,7 @@ ctest --output-on-failure \
 
 # clean up prior config for the next bundle config
 rm -rf CMake*
-cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Bundle-${CI_BUILD_REF_NAME}" \
+cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Bundle-${CI_COMMIT_REF_NAME}" \
       -DCPACK_PACKAGE_NAME=WASP \
        -DCMAKE_BUILD_TYPE=RELEASE \
        -Dwasp_ENABLE_ALL_PACKAGES=ON \

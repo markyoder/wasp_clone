@@ -9,7 +9,7 @@ function ecc () {
 . ci/setup.sh
 cd build
 module load valgrind
-ecc cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Release-${CI_BUILD_REF_NAME}" \
+ecc cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Release-${CI_COMMIT_REF_NAME}" \
       -DCMAKE_BUILD_TYPE=RELEASE \
       -Dwasp_ENABLE_TESTS=ON \
       -DBUILD_SHARED_LIBS:BOOL=ON \
@@ -30,7 +30,7 @@ rm -rf CMake*
 module avail
 #module load gcc/4.8.5-static
 #      -DCMAKE_EXE_LINKER_FLAGS=-static-libstdc++ -static-libgcc \
-ecc cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Bundle-${CI_BUILD_REF_NAME}" \
+ecc cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Bundle-${CI_COMMIT_REF_NAME}" \
       -DCPACK_PACKAGE_NAME=WASP \
       -DBUILD_SHARED_LIBS:BOOL=ON \
        -DCMAKE_BUILD_TYPE=RELEASE \
