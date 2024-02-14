@@ -287,6 +287,14 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     interpreter.push_line_offset(file_offset-yyleng);
     return token::EOL;
 } 
+ /* Allow scenarios where quoted data after newline*/
+<assign>\n/[ \t]*[\'\"] {
+    yylloc->lines(yyleng); yylloc->step();
+    interpreter.push_line_offset(file_offset-yyleng);
+    yyless(1); // put back quote
+    
+    yylloc->step();
+}
 <assign>{VALUE_STRING} {
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

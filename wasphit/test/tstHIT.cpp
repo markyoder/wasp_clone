@@ -5495,3 +5495,64 @@ stream input:4.2: syntax error, unexpected end of file, expecting object name
     EXPECT_EQ(4, empty_node_02.last_line());
     EXPECT_EQ(1, empty_node_02.last_column());
 }
+
+/**
+ * @brief Test scenarios where a single quote occurs 
+ */
+TEST(HITInterpreter, test_quote_after_newline)
+{
+    std::stringstream input;
+    input << R"INPUT(
+  foo = 
+  'bar')INPUT";
+
+    std::string expect_paths_and_types = R"(
+/                  1
+/foo              50
+/foo/decl          2 (foo)
+/foo/=             7 (=)
+/foo/'             8 (')
+/foo/value        11 (bar)
+/foo/'             8 (')
+)";
+
+    
+    std::stringstream actual_paths_and_types;
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_FALSE(interpreter.root().is_null());
+    wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
+    ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
+
+    ASSERT_EQ("foo =\n  'bar'", interpreter.root().data());
+}
+
+
+/**
+ * @brief Test scenarios where a double quote occurs 
+ */
+TEST(HITInterpreter, test_dquote_after_newline)
+{
+    std::stringstream input;
+    input << R"INPUT(
+  foo = 
+       "bar")INPUT";
+
+    std::string expect_paths_and_types = R"(
+/                  1
+/foo              13
+/foo/decl          2 (foo)
+/foo/=             7 (=)
+/foo/value        11 ("bar")
+)";
+
+    
+    std::stringstream actual_paths_and_types;
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input));
+    ASSERT_FALSE(interpreter.root().is_null());
+    wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
+    ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
+
+    ASSERT_EQ("foo =\n       \"bar\"", interpreter.root().data());
+}
