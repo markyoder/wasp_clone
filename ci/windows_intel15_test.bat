@@ -6,7 +6,7 @@ call "C:\Program Files (x86)\Intel\Composer XE 2015\bin\ipsxe-comp-vars.bat" int
 
 cmake -DCMAKE_C_COMPILER=icl ^
       -DCMAKE_CXX_COMPILER=icl ^
-	  -DBUILDNAME="Windows-Intel-15.0-Release-%CI_BUILD_REF_NAME%" ^
+	  -DBUILDNAME="Windows-Intel-15.0-Release-%CI_COMMIT_REF_NAME%" ^
 	  -DCMAKE_BUILD_TYPE:STRING=RELEASE ^
 	  -Dwasp_ENABLE_TESTS:BOOL=ON ^
 	  -Dwasp_ENABLE_ALL_PACKAGES:BOOL=ON ^
@@ -23,7 +23,7 @@ mkdir build && cd build
 cmake -DCPACK_GENERATOR=STGZ ^
 	  -DCPACK_PACKAGE_NAME=WASP ^
 	  -DCMAKE_C_COMPILER=icl -D CMAKE_CXX_COMPILER=icl ^
-	  -DBUILDNAME="Windows-Intel-15.0-Bundle-%CI_BUILD_REF_NAME%" ^
+	  -DBUILDNAME="Windows-Intel-15.0-Bundle-%CI_COMMIT_REF_NAME%" ^
 	  -DCMAKE_BUILD_TYPE:STRING=RELEASE ^
 	  -Dwasp_ENABLE_TESTS:BOOL=OFF ^
 	  -Dwasp_ENABLE_ALL_PACKAGES:BOOL=ON ^
