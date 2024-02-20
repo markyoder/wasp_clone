@@ -14,12 +14,6 @@ bool TestServer::parseDocumentForDiagnostics(
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     DataObject diagnostic;
@@ -114,12 +108,6 @@ bool TestServer::updateDocumentTextChanges(
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     if ( start_line      == 0 &&
@@ -148,12 +136,6 @@ bool TestServer::gatherDocumentCompletionItems(
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     DataObject completion_item;
@@ -173,7 +155,8 @@ bool TestServer::gatherDocumentCompletionItems(
                                        "test type info 1"     ,
                                        "test documentation 1" ,
                                        false                  ,
-                                       true                   );
+                                       true                   ,
+                                       m_text_format_plaintext );
 
         completionItems.push_back(completion_item);
 
@@ -189,7 +172,8 @@ bool TestServer::gatherDocumentCompletionItems(
                                        "test type info 2"     ,
                                        "test documentation 2" ,
                                        false                  ,
-                                       false                  );
+                                       false                  ,
+                                       m_text_format_snippet  );
 
         completionItems.push_back(completion_item);
 
@@ -225,12 +209,6 @@ bool TestServer::gatherDocumentDefinitionLocations(
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
-        return false;
-    }
-
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -289,12 +267,6 @@ bool TestServer::gatherDocumentReferencesLocations(
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     DataObject location_object;
@@ -337,12 +309,6 @@ bool TestServer::gatherDocumentFormattingTextEdits(
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
-        return false;
-    }
-
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -394,12 +360,6 @@ bool TestServer::gatherDocumentSymbols(
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
-        return false;
-    }
-
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 

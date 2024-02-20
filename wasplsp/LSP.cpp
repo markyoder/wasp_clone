@@ -1223,7 +1223,8 @@ bool buildCompletionObject( DataObject        & object          ,
                             const std::string & detail          ,
                             const std::string & documentation   ,
                             bool                deprecated      ,
-                            bool                preselect       )
+                            bool                preselect       ,
+                            int                 insert_text_format )
 {
     bool pass = true;
 
@@ -1247,8 +1248,46 @@ bool buildCompletionObject( DataObject        & object          ,
     object[m_documentation] = documentation;
     object[m_deprecated]    = deprecated;
     object[m_preselect]     = preselect;
+    object[m_insert_text_format] = insert_text_format;
 
     return pass;
+}
+
+bool dissectCompletionObject( const DataObject   & object          ,
+                                    std::ostream & errors          ,
+                                    std::string  & label           ,
+                                    int          & start_line      ,
+                                    int          & start_character ,
+                                    int          & end_line        ,
+                                    int          & end_character   ,
+                                    std::string  & new_text        ,
+                                    int          & kind            ,
+                                    std::string  & detail          ,
+                                    std::string  & documentation   ,
+                                    bool         & deprecated      ,
+                                    bool         & preselect       ,
+                                    int          & insert_text_format )
+{
+    // directly fill insert_text_format parameter if provided in the object
+    if (object.contains(m_insert_text_format) && object[m_insert_text_format].is_int())
+    {
+        insert_text_format = object[m_insert_text_format].to_int();
+    }
+
+    // call version without insert_text_format to fill remaining parameters
+    return dissectCompletionObject( object          ,
+                                    errors          ,
+                                    label           ,
+                                    start_line      ,
+                                    start_character ,
+                                    end_line        ,
+                                    end_character   ,
+                                    new_text        ,
+                                    kind            ,
+                                    detail          ,
+                                    documentation   ,
+                                    deprecated      ,
+                                    preselect       );
 }
 
 bool dissectCompletionObject( const DataObject   & object          ,

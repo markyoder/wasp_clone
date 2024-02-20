@@ -68,12 +68,6 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     // make a new parser capturing errors to a stream and set the server parser
@@ -259,12 +253,6 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     // TODO - in the future add logic to replace text using line and column
@@ -307,12 +295,6 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
-        return false;
-    }
-
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 
@@ -603,12 +585,6 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     INPUTNV selectedNode = wasp::findNodeUnderLineColumn( this->parser->root() ,
@@ -715,12 +691,6 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     // TODO
@@ -752,12 +722,6 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     // TODO
@@ -784,12 +748,6 @@ bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
-        return false;
-    }
-
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
         return false;
     }
 

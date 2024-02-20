@@ -33,7 +33,14 @@ TEST(integrate, test_initialize)
     int         client_request_id =  1;
     int         client_process_id =  12345;
     std::string client_root_uri   = "test/root/uri/string";
-    DataObject  client_capabilities;
+    DataObject  client_caps, textdoc_caps, complete_caps, compitem_caps;
+
+    // check server understands client snippet capability from setting at
+    // capabilities/textDocument/completion/completionItem/snippetSupport
+    compitem_caps[m_snip] = true;
+    complete_caps[m_compitem] = compitem_caps;
+    textdoc_caps[m_comp] = complete_caps;
+    client_caps[m_text_document] = textdoc_caps;
 
     DataObject  response_object;
     int         response_request_id;
@@ -46,11 +53,15 @@ TEST(integrate, test_initialize)
                                          client_request_id   ,
                                          client_process_id   ,
                                          client_root_uri     ,
-                                         client_capabilities ) );
+                                         client_caps         ) );
+
+    ASSERT_FALSE(test_server.clientSupportsSnippets());
 
     ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
 
     ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
+
+    ASSERT_TRUE(test_server.clientSupportsSnippets());
 
     ASSERT_TRUE( dissectInitializeResponse( response_object       ,
                                             client_errors         ,
@@ -263,6 +274,7 @@ TEST(integrate, test_completion)
     std::string response_3_documentation;
     bool        response_3_deprecated;
     bool        response_3_preselect;
+    int         response_3_insert_text_format;
 
     std::stringstream  client_errors;
 
@@ -299,7 +311,8 @@ TEST(integrate, test_completion)
                                             response_3_detail                    ,
                                             response_3_documentation             ,
                                             response_3_deprecated                ,
-                                            response_3_preselect                 ) );
+                                            response_3_preselect                 ,
+                                            response_3_insert_text_format        ) );
 
     ASSERT_EQ ( "test-label-3"         , response_3_label           );
     ASSERT_EQ ( 33                     , response_3_start_line      );
@@ -312,6 +325,7 @@ TEST(integrate, test_completion)
     ASSERT_EQ ( "test documentation 3" , response_3_documentation   );
     ASSERT_EQ ( false                  , response_3_deprecated      );
     ASSERT_EQ ( false                  , response_3_preselect       );
+    ASSERT_EQ ( m_text_format_plaintext , response_3_insert_text_format );
 }
 
 TEST(integrate, test_definition)

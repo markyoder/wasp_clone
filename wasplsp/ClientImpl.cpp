@@ -1049,7 +1049,8 @@ bool ClientImpl::getCompletionAt( int               index       ,
                                      completion.detail          ,
                                      completion.documentation   ,
                                      completion.deprecated      ,
-                                     completion.preselect       );
+                                     completion.preselect       ,
+                                     completion.insert_text_format );
 
     return pass;
 }

@@ -197,6 +197,14 @@ class WASP_PUBLIC Server
         return Impl.getErrors();
     }
 
+    /** check if client for this server communicated snippet syntax support
+     * @return - true if client for this server supports snippet completion
+     */
+    bool clientSupportsSnippets()
+    {
+        return Impl.clientSupportsSnippets();
+    }
+
     /** get a pointer to server implementation class used for above methods
      * @return - pointer to server implementation class used for above methods
      */
