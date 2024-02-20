@@ -8,6 +8,18 @@ import unittest, waspdrive
 class TestDrive(unittest.TestCase):
     document = None
 
+    def setUp(self):
+      # Check if qsub is available and if it isn't create a stub
+      import shutil
+      qsub = shutil.which("qsub")
+
+      if qsub is None:
+        with open("test/qsub",'w') as qsubfile:
+          # Make qsub just execute the given arguments
+          qsubfile.write('''#!/bin/bash
+bash "$@"
+''')
+        os.chmod("test/qsub", "0o777")
     def test_driver_scheduled(self):
         try:
           app_driver_input = os.path.dirname(__file__)+"/scheduled_test.drive"
