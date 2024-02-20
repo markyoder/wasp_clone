@@ -79,7 +79,8 @@ MACRO(TRIBITS_REPOSITORY_SETUP_EXTRA_OPTIONS)
     MD_FILES README.md waspcore/README.md waspexpr/README.md 
              wasphive/README.md waspsiren/README.md
               waspson/README.md waspddi/README.md waspeddi/README.md
-               wasphalite/README.md wasputils/README.md
+               wasphalite/README.md wasplsp/README.md wasputils/README.md
+               wasppy/README.md
   )
 
   ########################################

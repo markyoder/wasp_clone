@@ -61,6 +61,12 @@ INSTALL(FILES
   DESTINATION
   include/waspddi)
 
+# Expose directories for the python wrappers to use
+target_include_directories( waspddi
+  PRIVATE
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+  )
+
 #
 # Add test directory for this package
 #

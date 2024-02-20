@@ -1,10 +1,6 @@
 #ifndef SIREN_SIRENINTERPRETER_I_H
 #define SIREN_SIRENINTERPRETER_I_H
-template<class S>
-SIRENInterpreter<S>::SIRENInterpreter()
-    : Interpreter<S>(), traceLexing(false), traceParsing(false)
-{
-}
+
 template<class S>
 SIRENInterpreter<S>::SIRENInterpreter(std::ostream& err)
     : Interpreter<S>(err), traceLexing(false), traceParsing(false)
@@ -328,7 +324,7 @@ void SIRENInterpreter<S>::search_index_predicated_child(
                 if (within_range && stride_remainder == 0)
                 {
                     stage.push_back(child_node);
-                    stride_remainder = stride;  // reset stride
+                    stride_remainder = (int)stride;  // reset stride
                 }
             }
             // early terminate when our range has been exhausted

@@ -81,14 +81,13 @@ typedef TreeNodePool<
     HITNodePool;
 
 template<class S = HITNodePool>
-class HITInterpreter : public Interpreter<S>
+class WASP_PUBLIC HITInterpreter : public Interpreter<S>
 {
   public:
 
     typedef Interpreter<S>                 Super;
-
     HITInterpreter(std::ostream& error_stream = std::cerr);
-    ~HITInterpreter();
+    virtual ~HITInterpreter();
 
     HITInterpreter* create_nested_interpreter(Super* parent);
     HITInterpreter* document_parent() const {return m_parent;}
@@ -101,8 +100,8 @@ class HITInterpreter : public Interpreter<S>
      * @return true, iff no input processing errors were encountered
      */
     bool parse(std::istream& input,
-               std::size_t   start_line   = 1u,
-               std::size_t   start_column = 1u);
+               size_t   start_line   = 1u,
+               size_t   start_column = 1u);
     bool parseStream(std::istream& input,
                const std::string& name,
                std::size_t   start_line   = 1u,
@@ -113,6 +112,16 @@ class HITInterpreter : public Interpreter<S>
     }
     bool parseFile(const std::string& filename, size_t startLine = 1u);
 
+    /**
+     * @brief setStreamName sets the name of this stream and indicates whether
+     * the stream/name is a file[path]
+     * @param name the name of the stream or file[path]
+     * @param isFile [default=false] indicates whether the name is a file path
+     */
+    void setStreamName(const std::string& name)
+    {
+        Interpreter<S>::stream_name() = name;
+    }
 private: 
     HITInterpreter* m_parent;
 };

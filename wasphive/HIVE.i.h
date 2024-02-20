@@ -340,7 +340,7 @@ bool HIVE::validateMinOccurs(SchemaAdapter&            schema_node,
                     pass = false;
                 }
                 else if (childNodeCount <
-                         stoi(selectionLookup.adapted(0).to_string()))
+                         stoul(selectionLookup.adapted(0).to_string()))
                 {
 
                     errors.push_back(FileScope(aNode) + Error::Occurrence(
@@ -354,7 +354,7 @@ bool HIVE::validateMinOccurs(SchemaAdapter&            schema_node,
             }
         }
 
-        else if (childNodeCount < stoi(ruleValue))
+        else if (childNodeCount < stoul(ruleValue))
         {
             auto aNode = selection.adapted(i);
             errors.push_back(FileScope(aNode) + Error::Occurrence(
@@ -450,7 +450,7 @@ bool HIVE::validateMaxOccurs(SchemaAdapter&            schema_node,
                     pass = false;
                 }
                 else if (childNodeCount >
-                         stoi(selectionLookup.adapted(0).to_string()))
+                         stoul(selectionLookup.adapted(0).to_string()))
                 {
                     errors.push_back(FileScope(selection.adapted(i)) + Error::Occurrence(
                         selection.adapted(i).line(),
@@ -463,7 +463,7 @@ bool HIVE::validateMaxOccurs(SchemaAdapter&            schema_node,
             }
         }
 
-        else if (childNodeCount > stoi(ruleValue))
+        else if (childNodeCount > stoul(ruleValue))
         {
             errors.push_back(FileScope(selection.adapted(i)) + Error::Occurrence(
                 selection.adapted(i).line(), selection.adapted(i).column(),
@@ -698,7 +698,7 @@ bool HIVE::validateValEnums(SchemaAdapter&            schema_node,
             schema_node.child_by_name("REF");
         std::vector<std::string> refNames;
 
-        for (int i = 0; i < refNodes.size(); i++)
+        for (size_t i = 0; i < refNodes.size(); i++)
         {
             refNames.push_back(refNodes[i].to_string());
         }
@@ -716,7 +716,7 @@ bool HIVE::validateValEnums(SchemaAdapter&            schema_node,
                 enumRef.insert(make_pair(refTag, std::set<std::string>()));
                 enumRefIter = enumRef.find(refTag);
 
-                for (int i = 0; i < refNames.size(); i++)
+                for (size_t i = 0; i < refNames.size(); i++)
                 {
                     std::string refName = refNames[i];
 
@@ -1547,7 +1547,7 @@ bool HIVE::validateExistsIn(SchemaAdapter&            schema_node,
     const typename SchemaAdapter::Collection& refNodes =
         schema_node.child_by_name("EXTRAREF");
     std::vector<std::string> refNames;
-    for (int i = 0; i < refNodes.size(); i++)
+    for (size_t i = 0; i < refNodes.size(); i++)
     {
         refNames.push_back(refNodes[i].to_string());
     }
@@ -1564,7 +1564,7 @@ bool HIVE::validateExistsIn(SchemaAdapter&            schema_node,
             enumRef.insert(make_pair(refTag, std::set<std::string>()));
             enumRefIter = enumRef.find(refTag);
 
-            for (int i = 0; i < refNames.size(); i++)
+            for (size_t i = 0; i < refNames.size(); i++)
             {
                 std::string refName = refNames[i];
 
@@ -1913,7 +1913,7 @@ bool HIVE::validateNotExistsIn(SchemaAdapter&            schema_node,
         schema_node.non_decorative_children();
 
     // loop through all of the lookup paths for this rule
-    for (int j = 0; j < lookupPaths.size(); j++)
+    for (size_t j = 0; j < lookupPaths.size(); j++)
     {
         std::string lookupPath = lookupPaths[j].to_string();
 
@@ -2767,7 +2767,7 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter&            schema_node,
         schema_node.non_decorative_children();
     std::vector<int> selectedChildrenCount(selection.size(), 0);
 
-    for (int j = 0; j < children.size(); j++)
+    for (size_t j = 0; j < children.size(); j++)
     {
         std::string lookupPath;
 
@@ -2824,7 +2824,7 @@ bool HIVE::validateChildAtMostOne(SchemaAdapter&            schema_node,
             const typename SchemaAdapter::Collection& choices = children;
             std::string                               childNames;
 
-            for (int js = 0; js < choices.size(); js++)
+            for (size_t js = 0; js < choices.size(); js++)
             {
                 childNames += choices[js].data();
 
@@ -2861,7 +2861,7 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter&            schema_node,
     const typename SchemaAdapter::Collection& children =
         schema_node.non_decorative_children();
 
-    for (int j = 0; j < children.size(); j++)
+    for (size_t j = 0; j < children.size(); j++)
     {
         std::string lookupPath;
 
@@ -2918,7 +2918,7 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter&            schema_node,
             const typename SchemaAdapter::Collection& choices = children;
             std::string                               childNames;
 
-            for (int js = 0; js < choices.size(); js++)
+            for (size_t js = 0; js < choices.size(); js++)
             {
                 childNames += choices[js].data();
 
@@ -2937,7 +2937,7 @@ bool HIVE::validateChildExactlyOne(SchemaAdapter&            schema_node,
             const typename SchemaAdapter::Collection& choices = children;
             std::string                               childNames;
 
-            for (int js = 0; js < choices.size(); js++)
+            for (size_t js = 0; js < choices.size(); js++)
             {
                 childNames += choices[js].data();
 
@@ -2974,7 +2974,7 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter&            schema_node,
     const typename SchemaAdapter::Collection& children =
         schema_node.non_decorative_children();
 
-    for (int j = 0; j < children.size(); j++)
+    for (size_t j = 0; j < children.size(); j++)
     {
         std::string lookupPath;
 
@@ -3036,7 +3036,7 @@ bool HIVE::validateChildAtLeastOne(SchemaAdapter&            schema_node,
             const typename SchemaAdapter::Collection& choices = children;
             std::string                               childNames;
 
-            for (int js = 0; js < choices.size(); js++)
+            for (size_t js = 0; js < choices.size(); js++)
             {
                 childNames += choices[js].data();
 
@@ -3093,7 +3093,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter&            schema_node,
         bool gotTally   = false;
         bool foundError = false;
 
-        for (int j = 0; j < children.size(); j++)
+        for (size_t j = 0; j < children.size(); j++)
         {
             DefaultSIRENInterpreter childSelector(look_up_error);
             std::string lookupPath = children[j].child_count() == 0 ?
@@ -3139,7 +3139,7 @@ bool HIVE::validateChildCountEqual(SchemaAdapter&            schema_node,
                     schema_node.non_decorative_children();
                 std::string childNames;
 
-                for (int js = 0; js < choices.size(); js++)
+                for (size_t js = 0; js < choices.size(); js++)
                 {
                     childNames += choices[js].data();
 
@@ -3223,7 +3223,7 @@ bool HIVE::validateChildUniqueness(SchemaAdapter&            schema_node,
         std::set<std::string> collided;
 
         // for this node, loop over all of the lookup paths for this rule
-        for (int j = 0; j < lookupPaths.size(); j++)
+        for (size_t j = 0; j < lookupPaths.size(); j++)
         {
             std::string lookupPath = lookupPaths[j].to_string();
 

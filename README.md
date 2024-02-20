@@ -19,6 +19,7 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
     * [HALITE](/wasphalite/README.md#halite-engine)
     * [LSP](/wasplsp/README.md#language-server-protocol)
     * [Utils](/wasputils/README.md#command-line-utilities)
+    * [Python](/wasppy/README.md#wasp-python-interfaces-wasppy)
 2. [Getting Started](#getting-started) - code compilation requirements and instructions
     * [Requirements](#requirements)
     * [Code Configuration and Compilation](#code-configuration-and-compilation)
@@ -77,7 +78,7 @@ The fast lexical analyzer generator (flex - https://www.gnu.org/software/flex/) 
     * [Selecting Unknown Nodes](/waspsiren/README.md#selecting-unknown-nodes)
 7. [SON](/waspson/README.md#standard-object-notation-son) - Standard Object Notation (SON) for general input data entry
 8. [DDI](/waspddi/README.md#definition-driven-interpreter) - Definition Driven Interpreter (DDI) for reduced input data entry  
-9. [EDDI](/waspeddi/README.md#eddi-input-interpreter) - Extra Definition Driven Interpreter (EDDI) for reduced input data entry  
+9. [EDDI](/waspeddi/README.md#extra-definition-driven-interpreter) - Extra Definition Driven Interpreter (EDDI) for reduced input data entry  
 10. [HALITE](/wasphalite/README.md#halite-engine) - HierarchicAL Input Template Engine (HALITE) 
     * [Template Evaluation Summary](/wasphalite/README.md#template-evaluation-summary)
     * [Attributes and Expressions](/wasphalite/README.md#attributes-and-expressions)
@@ -169,6 +170,7 @@ WASP is composed of the following primary components:
     * Select: allows using SIREN expression to select pieces of input.
     * Valid: validates a given text file with a given document definition/schema.
     * XML: translates a given text file into XML with data and location information.
+14 [__Python__](/wasppy/README.md) - Python extention providing access to WASP interpreters
 
 # Getting Started    
 For individuals wanting to compile the code from source, below are the tested requirements and configurations.
@@ -178,12 +180,11 @@ For individuals wanting to compile the code from source, below are the tested re
 * C/CXX compiler (See repository .gitlab-ci.yml for build configurations)  
     * GCC-4.8 tested on Linux or Mac OS
     * LLVM-7.0.2 tested on Mac OS
-    * Visual Studio 2012 for Windows
-    * Intel 15 for Windows
+    * Visual Studio 2022 for Windows
     * MinGW 4.8.5 for Windows
 * Git 1.7+
 * CMake-2.8.12.2, 3.5, 3.8
-* Python-2.7
+* Python-3.8
 
 ## Code Configuration and Compilation
 * Save the ssh-key in [code-int.ornl.gov](https://code-int.ornl.gov/profile/keys).
@@ -260,4 +261,6 @@ cp waspConfig_install.cmake install/lib/cmake/wasp/waspConfig.cmake
 ```
 
 After configuration is complete, conduct the compilation via the make system available (make, NMake, Ninja, MSBuild, etc.)
+
+
 

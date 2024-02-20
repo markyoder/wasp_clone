@@ -22,8 +22,8 @@ class WASP_PUBLIC HaliteNodeView
     using GenericView = NodeView;
     HaliteNodeView() : m_node_index(-1), m_pool(nullptr) {}
     HaliteNodeView(std::size_t node_index, AbstractInterpreter& nodes);
-    template<class NV>
-    HaliteNodeView(const NV& orig);
+    HaliteNodeView(const NodeView& orig)
+        : m_node_index(orig.node_index()), m_pool(orig.node_pool()){} ;
     HaliteNodeView(const HaliteNodeView& orig);
 
     ~HaliteNodeView();

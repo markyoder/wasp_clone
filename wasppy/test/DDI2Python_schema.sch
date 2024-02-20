@@ -55,6 +55,11 @@ extract_from{
            ValType=String
            InputTmpl="pattern"
            Description="grab all lines containing a search pattern"
+           value{
+               MinOccurs=1
+               MaxOccurs=1
+               ValType=String
+           }
         }
         between{
            MinOccurs=0

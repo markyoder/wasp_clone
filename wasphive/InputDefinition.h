@@ -1280,7 +1280,7 @@ class ExistsInRule{
             {
                 try
                 {
-                    std::stoi(givenModString);
+                    auto v = std::stoi(givenModString);
                     givenModString.erase(0, zeroIndex);
                 }
                 catch(...){}
@@ -1314,7 +1314,7 @@ class ExistsInRule{
                     {
                         try
                         {
-                            std::stoi(selectModString);
+                            auto v = std::stoi(selectModString);
                             selectModString.erase(0, zeroIndex);
                         }
                         catch(...){}

@@ -50,13 +50,13 @@ Value::Value(const std::string& v)
     m_type          = TYPE_STRING;
     m_allocated     = true;
 }
-Value::Value(const DataArray& v)
+Value::Value(const wasp::DataArray& v)
 {
     m_data.m_array = new DataArray(v);
     m_type         = TYPE_ARRAY;
     m_allocated    = true;
 }
-Value::Value(const DataObject& v)
+Value::Value(const wasp::DataObject& v)
 {
     m_data.m_object = new DataObject(v);
     m_type          = TYPE_OBJECT;
@@ -180,7 +180,7 @@ Value& Value::operator=(const std::string& v)
     m_allocated     = true;
     return *this;
 }
-Value& Value::operator=(const DataArray& v)
+Value& Value::operator=(const wasp::DataArray& v)
 {
     nullify();
     m_data.m_array = new DataArray(v);
@@ -188,7 +188,7 @@ Value& Value::operator=(const DataArray& v)
     m_allocated    = true;
     return *this;
 }
-Value& Value::operator=(const DataObject& v)
+Value& Value::operator=(const wasp::DataObject& v)
 {
     nullify();
     m_data.m_object = new DataObject(v);
@@ -390,13 +390,13 @@ std::string Value::to_string() const
     wasp_not_implemented("unknown type conversion to string");
 }
 
-DataArray* Value::to_array() const
+wasp::DataArray* Value::to_array() const
 {
     wasp_insist(convertable(TYPE_ARRAY),
                 "Value object must be convertable to an array");
     return m_data.m_array;
 }
-DataObject* Value::to_object() const
+wasp::DataObject* Value::to_object() const
 {
     wasp_insist(convertable(TYPE_OBJECT),
                 "Value object must be convertable to an object");
