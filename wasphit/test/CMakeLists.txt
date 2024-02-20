@@ -6,3 +6,9 @@ configure_file("Paths.h.in" "${CMAKE_CURRENT_BINARY_DIR}/Paths.h" @ONLY)
 
 ADD_GOOGLE_TEST(tstHIT.cpp NP 1)
 ADD_GOOGLE_TEST(tstHIVE.cpp NP 1)
+
+# Add DISABLE_HIT_TYPE_PROMOTION to tstHIT which toggles the expected results
+if(NOT DEFINED DISABLE_HIT_TYPE_PROMOTION)
+  set(DISABLE_HIT_TYPE_PROMOTION 1)
+endif()
+target_compile_definitions(wasphit_tstHIT PRIVATE DISABLE_HIT_TYPE_PROMOTION=$<BOOL:${DISABLE_HIT_TYPE_PROMOTION}>)

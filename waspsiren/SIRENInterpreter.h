@@ -78,8 +78,8 @@ class WASP_PUBLIC SIRENInterpreter : public Interpreter<S>
   public:
     typedef std::shared_ptr<SIRENInterpreter> SharedPtr;
     typedef S                                 Storage_type;
-    SIRENInterpreter();
-    SIRENInterpreter(std::ostream& err);
+
+    SIRENInterpreter(std::ostream& err = std::cerr);
     virtual ~SIRENInterpreter();
 
     /** Invoke the lexer and parser for a stream.

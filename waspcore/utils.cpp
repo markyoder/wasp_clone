@@ -137,7 +137,7 @@ std::string json_unescape_string(const std::string& src)
     std::string dst;
     dst.reserve(src.size());
     bool escape_state = false;
-    for ( int i = 0 ; i < src.length() ; i++ )
+    for ( std::size_t i = 0 ; i < src.length() ; i++ )
     {
         char ch = src[i];
         if (!escape_state && ch == '\\')

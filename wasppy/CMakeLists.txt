@@ -28,4 +28,77 @@ install(DIRECTORY .
         DESTINATION "wasppy"
         PATTERN "./*.py"
 )
+
+################################################################################
+################################################################################
+
+# Have to have these in order to generate the wrappers
+IF(NOT DEFINED ${wasp_NAME}_ENABLE_SWIG)
+  set(${wasp_NAME}_ENABLE_SWIG ON)
+ENDIF()
+IF(${wasp_NAME}_ENABLE_SWIG)
+find_package(SWIG REQUIRED)
+
+#This will replaces cmake variables but not generator expressions if the time comes
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/wasp.i.in ${CMAKE_CURRENT_BINARY_DIR}/wasp.i.in)
+file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/wasp.i INPUT ${CMAKE_CURRENT_BINARY_DIR}/wasp.i.in)
+
+# Run swig manually vice using setuptools for better control of options
+add_custom_target(wasppy ALL
+  COMMAND
+  #TODO The include format will get cumbersome....
+    "${SWIG_EXECUTABLE}" -c++ -python
+    -I${wasp_SOURCE_DIR}/waspcore 
+    -I${wasp_SOURCE_DIR}/waspson 
+    -I${wasp_SOURCE_DIR}/waspddi 
+    -I${wasp_SOURCE_DIR}/waspeddi 
+    -I${wasp_SOURCE_DIR}/wasphit 
+    -I${wasp_SOURCE_DIR}/waspsiren 
+    -I${wasp_SOURCE_DIR}/wasphive 
+    wasp.i
+  BYPRODUCTS
+    wasp_wrap.cxx
+    wasp.py
+)
+
+#Create setup.py using a version controlled skeleton with generator expressions
+#and cmake variables
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/MANIFEST.in DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/README.md DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in WASPPY_SETUP)
+string(CONFIGURE "${WASPPY_SETUP}" WASPPY_SETUP_CONFIG)
+if(CMAKE_CONFIGURATION_TYPES)
+  file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/setup$<$<NOT:$<CONFIG:Release>>:$<CONFIG>>.py CONTENT "${WASPPY_SETUP_CONFIG}")
+else()
+  file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/setup.py CONTENT "${WASPPY_SETUP_CONFIG}")
+endif()
+
+#Execute the setup file to generate a wheel
+add_custom_target(wasp_wheel ALL "${PYTHON_EXECUTABLE}" -m build > python_build.log 2>&1)
+add_dependencies(wasp_wheel wasppy waspcore waspson waspddi waspeddi wasphit waspsiren wasphive)
+
+#Configure a basic unit test of the python bindings. In this case the wheels is 
+#installed as editable to test in a "natural" way and removed at the end.
+  TRIBITS_ADD_ADVANCED_TEST( test_swig_bindings
+  OVERALL_WORKING_DIRECTORY
+    ${CMAKE_CURRENT_BUILD_DIR}
+  OVERALL_NUM_MPI_PROCS
+    1
+  TEST_0
+    CMND ${PYTHON_EXECUTABLE}
+    ARGS -m pip install -e ${CMAKE_CURRENT_BINARY_DIR}
+  TEST_1
+    CMND ${PYTHON_EXECUTABLE}
+    ARGS -m unittest test/test_swig_bindings.py -v
+  TEST_2
+    CMND ${PYTHON_EXECUTABLE}
+    ARGS -m pip uninstall --yes wasp
+  TIMEOUT 3000
+  CATEGORIES BASIC
+)
+ENDIF()
+
+#TODO At this point the wheel has been generated. Need the install logic
+
 TRIBITS_SUBPACKAGE_POSTPROCESS()

@@ -61,9 +61,9 @@ class WASP_PUBLIC Value
     // string
     Value(const std::string& v);
     // data array
-    Value(const DataArray& d);
+    Value(const wasp::DataArray& d);
     // data object
-    Value(const DataObject& d);
+    Value(const wasp::DataObject& d);
     ~Value();
 
     // assignment operators
@@ -74,8 +74,8 @@ class WASP_PUBLIC Value
     Value& operator=(double v);
     Value& operator=(const char* v);
     Value& operator=(const std::string& v);
-    Value& operator=(const DataArray& v);
-    Value& operator=(const DataObject& v);
+    Value& operator=(const wasp::DataArray& v);
+    Value& operator=(const wasp::DataObject& v);
 
     Value::Type type() const;
     /**
@@ -102,13 +102,13 @@ class WASP_PUBLIC Value
     bool        to_bool() const;
     const char* to_cstring() const;
     std::string to_string() const;
-    DataArray*  to_array() const;
-    DataObject* to_object() const;
+    wasp::DataArray*  to_array() const;
+    wasp::DataObject* to_object() const;
 
-    const DataArray&  as_array() const;
-    DataArray&        as_array();
-    const DataObject& as_object() const;
-    DataObject&       as_object();
+    const wasp::DataArray&  as_array() const;
+    wasp::DataArray&        as_array();
+    const wasp::DataObject& as_object() const;
+    wasp::DataObject&       as_object();
 
     Value& operator[](const std::string& name);
     const Value& operator[](const std::string& name) const;
@@ -146,7 +146,9 @@ class WASP_PUBLIC Value
      */
     void copy_from(const Value& orig);
 };
+} // end namspace wasp
 
+namespace wasp{
 class WASP_PUBLIC DataArray
 {
   public:

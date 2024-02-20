@@ -117,7 +117,6 @@
 
 #include "HITInterpreter.h"
 #include "HITLexer.h"
-#include "HITConfig.h"
 
 // Obtain the HIT name for an object_term
 // I.e., 

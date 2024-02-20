@@ -22,8 +22,8 @@ class WASP_PUBLIC SONNodeView
     using GenericView = NodeView;
     SONNodeView() : m_node_index(-1), m_pool(nullptr) {}
     SONNodeView(std::size_t node_index, AbstractInterpreter& nodes);
-    template<class NV>
-    SONNodeView(const NV& orig);
+    SONNodeView(const NodeView& orig)
+    : m_node_index(orig.node_index()), m_pool(orig.node_pool()){} ;
     SONNodeView(const SONNodeView& orig);
 
     ~SONNodeView();

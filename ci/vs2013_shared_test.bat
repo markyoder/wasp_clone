@@ -1,22 +1,27 @@
-call .\ci\setup.bat
-cd build
-set "base=%cd%"
-set conda=%base%\conda
-git clone https://code.ornl.gov/warroom/miniconda.git
-%base%\miniconda\Miniconda3-latest-Windows-x86_64.exe /S /D=%conda%
-set "PATH=%conda%\Scripts;%conda%;%conda%\Library\bin;%PATH%"
-rem %conda%\Scripts\pip.exe install -r %base%\miniconda\windows_requirements.txt --prefix=%conda%
-where python
-call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86_amd64
+SET SRC_DIR=%cd%
+SET BLD_DIR=%SRC_DIR%\build
+dir %BLD_DIR%
+if %errorlevel% == 0 rd /s /q %BLD_DIR%
+mkdir "%BLD_DIR%"
+cd %BLD_DIR%
 
+REM Put the Miniconda3 installation somewhere
+SET "MINI_ROOT=%BLD_DIR%\miniconda3"
+curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe -o Miniconda3-latest-Windows-x86_64.exe
+Miniconda3-latest-Windows-x86_64.exe /S /D=%MINI_ROOT%
+CALL %cd%\miniconda3\Scripts\activate.bat
+CALL conda env create -f ..\ci\env.yml
+CALL conda activate wasp_ci
 
 cmake -DBUILD_SHARED_LIBS=ON ^
-      -DBUILDNAME="Windows-CL-18-Shared-Release-%CI_COMMIT_REF_NAME%" ^
+      -DBUILDNAME="VS2013-Shared-Release-%CI_COMMIT_REF_NAME%" ^
       -DCMAKE_BUILD_TYPE:STRING=RELEASE ^
+      -Dwasp_ENABLE_SWIG=ON ^
       -Dwasp_ENABLE_TESTS:BOOL=ON ^
       -Dwasp_ENABLE_ALL_PACKAGES:BOOL=ON ^
       -G "Visual Studio 12 2013 Win64" ..
-ctest --output-on-failure ^
+
+ctest -VV --output-on-failure ^
       -D ExperimentalStart ^
       -D ExperimentalBuild ^
       -D ExperimentalTest ^

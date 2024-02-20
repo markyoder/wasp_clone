@@ -37,6 +37,13 @@ TRIBITS_ADD_LIBRARY(waspcore
   NOINSTALLHEADERS ${HEADERS}
 )
 
+# Expose directories for the python wrappers to use
+target_include_directories( waspcore
+  PRIVATE
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+  )
+#set_property(TARGET waspcore PROPERTY PUBLIC_HEADER ${HEADERS})
+
 #
 # Add test directory
 TRIBITS_ADD_TEST_DIRECTORIES(test)

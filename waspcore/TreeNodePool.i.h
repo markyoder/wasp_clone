@@ -53,7 +53,7 @@ void TreeNodePool<NTS, NIS, TP>::push_parent(
     {
         // assign parent
         wasp_check(c < child_indices.size());
-        std::size_t child_index                            = child_indices[c];
+        node_index_size child_index                            = child_indices[c];
         m_node_basic_data[child_index].m_parent_node_index = basic_data_index;
         // assign lookup index mapping parent to list
         // of arbitrary indices into basic node data

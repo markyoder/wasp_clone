@@ -16,6 +16,8 @@
 
 namespace wasp
 {
+class AbstractInterpreter;
+
 /**
  * @brief The NodeView class provides light-weight interface to TreeNodes
  * Allows traversing child nodes and parent as well as acquire node information
@@ -26,14 +28,14 @@ class WASP_PUBLIC NodeView
   public:
     using Collection = std::vector<NodeView>;
     NodeView() : m_node_index(-1), m_pool(nullptr) {}
-    NodeView(std::size_t node_index, class AbstractInterpreter& data);
+    NodeView(std::size_t node_index, AbstractInterpreter& data);
     NodeView(const NodeView& orig);
     ~NodeView();
 
     // Child iterator to the beginning of the node's children
-    Iterator<NodeView> begin() const{return Iterator<NodeView>(*this);}
+    wasp::Iterator<NodeView> begin() const{return wasp::Iterator<NodeView>(*this);}
     // Child iterator to the end of the node's children
-    Iterator<NodeView> end() const{ return Iterator<NodeView>();}
+    wasp::Iterator<NodeView> end() const{ return wasp::Iterator<NodeView>();}
 
     NodeView& operator=(const NodeView& b);
 
@@ -430,15 +432,15 @@ class WASP_PUBLIC AbstractInterpreter
     virtual std::string&       stream_name()        = 0;
     virtual std::ostream&      error_stream()       = 0;
 
-    virtual const AbstractDefinition* definition() const
+    virtual const wasp::AbstractDefinition* definition() const
     {
         wasp_not_implemented("definition");
     }
-    virtual AbstractDefinition* definition()
+    virtual wasp::AbstractDefinition* definition()
     {
         wasp_not_implemented("definition");
     }
-    virtual void set_current_definition(AbstractDefinition* current)
+    virtual void set_current_definition(wasp::AbstractDefinition* current)
     {
         (void) current; // suppress unused variable warning
         wasp_not_implemented("set_current_definition");
@@ -523,7 +525,7 @@ class WASP_PUBLIC AbstractInterpreter
     virtual bool process_staged_node(size_t& new_staged_index,
                                     const std::string& stage_name,
                                     size_t node_index,
-                                    const location& loc,
+                                    const wasp::location& loc,
                                     std::ostream& err)
     {
         (void) new_staged_index; // suppress unused variable warning
@@ -623,7 +625,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
      * @brief node_at acquire the node at the given index in the pool
      * @param node_pool_index the index at which to acquire the node
      * @return the TreeNodeView from which data (name, type, data, children) can
-     * be conventienty acquired
+     * be conveniently acquired
      */
     NodeView node_at(node_index_size node_pool_index) const;
 

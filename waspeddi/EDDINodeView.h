@@ -23,8 +23,8 @@ class WASP_PUBLIC EDDINodeView
     using GenericView = NodeView;
     EDDINodeView() : m_node_index(-1), m_pool(nullptr) {}
     EDDINodeView(std::size_t node_index, AbstractInterpreter& nodes);
-    template<class NV>
-    EDDINodeView(const NV& orig);
+    EDDINodeView(const NodeView& orig)
+        : m_node_index(orig.node_index()), m_pool(orig.node_pool()){} ;
     EDDINodeView(const EDDINodeView& orig);
 
     ~EDDINodeView();

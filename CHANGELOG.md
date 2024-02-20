@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - LSP client and server support to optionally send and receive insertTextFormat completion item parameter
 - LSP server check for client snippet support capability to pick between plain text or snippet completion
+- Python extension binding for SON, HIT, DDI, EDDI Interpreters, HIVE, and wrapping/insulating Interpreter class. See [wasppy](./wasppy/README.md) for details.
 
 ### Fixed
 - LSP server to handle multiple documents rather than previous limitation of one input per server process

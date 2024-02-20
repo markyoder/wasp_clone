@@ -1114,7 +1114,75 @@ TEST(HITInterpreter, type_promotion)
     HITNodeView document = interpreter.root();
     ASSERT_EQ(3, document.child_count());  // problem and mesh
     ASSERT_EQ(3, interpreter.child_count(document.node_index()));
-    std::string       expected_paths = R"INPUT(/
+
+    std::string expected_paths;
+#if DISABLE_HIT_TYPE_PROMOTION
+    expected_paths = R"INPUT(/
+/Problem
+/Problem/[ ([)
+/Problem/decl (Problem)
+/Problem/] (])
+/Problem/comment (# Specify coordinate system type)
+/Problem/type
+/Problem/type/decl (type)
+/Problem/type/= (=)
+/Problem/type/value (ted)
+/Problem/s1
+/Problem/s1/[ ([)
+/Problem/s1/./ (./)
+/Problem/s1/decl (s1)
+/Problem/s1/] (])
+/Problem/s1/type
+/Problem/s1/type/decl (type)
+/Problem/s1/type/= (=)
+/Problem/s1/type/value (fred)
+/Problem/s1/term ([../])
+/Problem/s2
+/Problem/s2/[ ([)
+/Problem/s2/./ (./)
+/Problem/s2/decl (s2)
+/Problem/s2/] (])
+/Problem/s2/type
+/Problem/s2/type/decl (type)
+/Problem/s2/type/= (=)
+/Problem/s2/type/value (x)
+/Problem/s2/y
+/Problem/s2/y/decl (y)
+/Problem/s2/y/= (=)
+/Problem/s2/y/value (1)
+/Problem/s2/term ([../])
+/Problem/term ([])
+/p1
+/p1/[ ([)
+/p1/decl (p1)
+/p1/] (])
+/p1/type
+/p1/type/decl (type)
+/p1/type/= (=)
+/p1/type/value (t1)
+/p1/term ([])
+/p2
+/p2/[ ([)
+/p2/decl (p2)
+/p2/] (])
+/p2/type
+/p2/type/decl (type)
+/p2/type/= (=)
+/p2/type/value (t2)
+/p2/s3
+/p2/s3/[ ([)
+/p2/s3/./ (./)
+/p2/s3/decl (s3)
+/p2/s3/] (])
+/p2/s3/type
+/p2/s3/type/decl (type)
+/p2/s3/type/= (=)
+/p2/s3/type/value (us3)
+/p2/s3/term ([../])
+/p2/term ([])
+)INPUT";
+#else
+    expected_paths = R"INPUT(/
 /ted_type
 /ted_type/[ ([)
 /ted_type/decl (Problem)
@@ -1178,16 +1246,24 @@ TEST(HITInterpreter, type_promotion)
 /t2_type/us3_type/term ([../])
 /t2_type/term ([])
 )INPUT";
+#endif
+
     std::stringstream paths;
     document.paths(paths);
     ASSERT_EQ(expected_paths, paths.str());
-    auto ted_view = document.first_child_by_name("ted_type");
-    ASSERT_FALSE(ted_view.is_null());
-    ASSERT_FALSE(ted_view.is_decorative());
-    ASSERT_EQ(wasp::OBJECT, ted_view.type());
-    ASSERT_EQ(8, ted_view.child_count());
-    // ted/type and ted/fred
-    ASSERT_EQ(3, ted_view.non_decorative_children_count());
+
+    std::string first_block_name;
+#if DISABLE_HIT_TYPE_PROMOTION
+    first_block_name = "Problem";
+#else
+    first_block_name = "ted_type";
+#endif
+    auto first_block = document.first_child_by_name(first_block_name);
+    ASSERT_FALSE(first_block.is_null());
+    ASSERT_FALSE(first_block.is_decorative());
+    ASSERT_EQ(wasp::OBJECT, first_block.type());
+    ASSERT_EQ(8, first_block.child_count());
+    ASSERT_EQ(3, first_block.non_decorative_children_count());
 }
 
 /**
@@ -1266,7 +1342,173 @@ TEST(HITInterpreter, hit_syntax)
     ASSERT_EQ(document.child_at(0).node_index(),
               interpreter.child_index_at(document.node_index(), 0));
 
-    std::string expected_paths = R"INPUT(/
+    std::string expected_paths;
+#if DISABLE_HIT_TYPE_PROMOTION
+    expected_paths = R"INPUT(/
+/TopLevelBlock
+/TopLevelBlock/[ ([)
+/TopLevelBlock/decl (TopLevelBlock)
+/TopLevelBlock/] (])
+/TopLevelBlock/sub-decl-sub-term-no-type
+/TopLevelBlock/sub-decl-sub-term-no-type/[ ([)
+/TopLevelBlock/sub-decl-sub-term-no-type/./ (./)
+/TopLevelBlock/sub-decl-sub-term-no-type/decl (sub-decl-sub-term-no-type)
+/TopLevelBlock/sub-decl-sub-term-no-type/] (])
+/TopLevelBlock/sub-decl-sub-term-no-type/flag01
+/TopLevelBlock/sub-decl-sub-term-no-type/flag01/decl (flag01)
+/TopLevelBlock/sub-decl-sub-term-no-type/flag01/= (=)
+/TopLevelBlock/sub-decl-sub-term-no-type/flag01/value (1.1)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/decl (array01)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/= (=)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/' (')
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/value (name11)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/value (name12)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/value (name13)
+/TopLevelBlock/sub-decl-sub-term-no-type/array01/' (')
+/TopLevelBlock/sub-decl-sub-term-no-type/term ([../])
+/TopLevelBlock/sub-decl-top-term-no-type
+/TopLevelBlock/sub-decl-top-term-no-type/[ ([)
+/TopLevelBlock/sub-decl-top-term-no-type/./ (./)
+/TopLevelBlock/sub-decl-top-term-no-type/decl (sub-decl-top-term-no-type)
+/TopLevelBlock/sub-decl-top-term-no-type/] (])
+/TopLevelBlock/sub-decl-top-term-no-type/flag02
+/TopLevelBlock/sub-decl-top-term-no-type/flag02/decl (flag02)
+/TopLevelBlock/sub-decl-top-term-no-type/flag02/= (=)
+/TopLevelBlock/sub-decl-top-term-no-type/flag02/value (2.2)
+/TopLevelBlock/sub-decl-top-term-no-type/array02
+/TopLevelBlock/sub-decl-top-term-no-type/array02/decl (array02)
+/TopLevelBlock/sub-decl-top-term-no-type/array02/= (=)
+/TopLevelBlock/sub-decl-top-term-no-type/array02/' (')
+/TopLevelBlock/sub-decl-top-term-no-type/array02/value (name21)
+/TopLevelBlock/sub-decl-top-term-no-type/array02/value (name22)
+/TopLevelBlock/sub-decl-top-term-no-type/array02/value (name23)
+/TopLevelBlock/sub-decl-top-term-no-type/array02/' (')
+/TopLevelBlock/sub-decl-top-term-no-type/term ([])
+/TopLevelBlock/top-decl-sub-term-no-type
+/TopLevelBlock/top-decl-sub-term-no-type/[ ([)
+/TopLevelBlock/top-decl-sub-term-no-type/decl (top-decl-sub-term-no-type)
+/TopLevelBlock/top-decl-sub-term-no-type/] (])
+/TopLevelBlock/top-decl-sub-term-no-type/flag03
+/TopLevelBlock/top-decl-sub-term-no-type/flag03/decl (flag03)
+/TopLevelBlock/top-decl-sub-term-no-type/flag03/= (=)
+/TopLevelBlock/top-decl-sub-term-no-type/flag03/value (3.3)
+/TopLevelBlock/top-decl-sub-term-no-type/array03
+/TopLevelBlock/top-decl-sub-term-no-type/array03/decl (array03)
+/TopLevelBlock/top-decl-sub-term-no-type/array03/= (=)
+/TopLevelBlock/top-decl-sub-term-no-type/array03/' (')
+/TopLevelBlock/top-decl-sub-term-no-type/array03/value (name31)
+/TopLevelBlock/top-decl-sub-term-no-type/array03/value (name32)
+/TopLevelBlock/top-decl-sub-term-no-type/array03/value (name33)
+/TopLevelBlock/top-decl-sub-term-no-type/array03/' (')
+/TopLevelBlock/top-decl-sub-term-no-type/term ([../])
+/TopLevelBlock/top-decl-top-term-no-type
+/TopLevelBlock/top-decl-top-term-no-type/[ ([)
+/TopLevelBlock/top-decl-top-term-no-type/decl (top-decl-top-term-no-type)
+/TopLevelBlock/top-decl-top-term-no-type/] (])
+/TopLevelBlock/top-decl-top-term-no-type/flag04
+/TopLevelBlock/top-decl-top-term-no-type/flag04/decl (flag04)
+/TopLevelBlock/top-decl-top-term-no-type/flag04/= (=)
+/TopLevelBlock/top-decl-top-term-no-type/flag04/value (4.4)
+/TopLevelBlock/top-decl-top-term-no-type/array04
+/TopLevelBlock/top-decl-top-term-no-type/array04/decl (array04)
+/TopLevelBlock/top-decl-top-term-no-type/array04/= (=)
+/TopLevelBlock/top-decl-top-term-no-type/array04/' (')
+/TopLevelBlock/top-decl-top-term-no-type/array04/value (name41)
+/TopLevelBlock/top-decl-top-term-no-type/array04/value (name42)
+/TopLevelBlock/top-decl-top-term-no-type/array04/value (name43)
+/TopLevelBlock/top-decl-top-term-no-type/array04/' (')
+/TopLevelBlock/top-decl-top-term-no-type/term ([])
+/TopLevelBlock/sub-decl-sub-term-wt-type
+/TopLevelBlock/sub-decl-sub-term-wt-type/[ ([)
+/TopLevelBlock/sub-decl-sub-term-wt-type/./ (./)
+/TopLevelBlock/sub-decl-sub-term-wt-type/decl (sub-decl-sub-term-wt-type)
+/TopLevelBlock/sub-decl-sub-term-wt-type/] (])
+/TopLevelBlock/sub-decl-sub-term-wt-type/type
+/TopLevelBlock/sub-decl-sub-term-wt-type/type/decl (type)
+/TopLevelBlock/sub-decl-sub-term-wt-type/type/= (=)
+/TopLevelBlock/sub-decl-sub-term-wt-type/type/value (SubDeclSubTerm)
+/TopLevelBlock/sub-decl-sub-term-wt-type/flag05
+/TopLevelBlock/sub-decl-sub-term-wt-type/flag05/decl (flag05)
+/TopLevelBlock/sub-decl-sub-term-wt-type/flag05/= (=)
+/TopLevelBlock/sub-decl-sub-term-wt-type/flag05/value (5.5)
+/TopLevelBlock/sub-decl-sub-term-wt-type/array05
+/TopLevelBlock/sub-decl-sub-term-wt-type/array05/decl (array05)
+/TopLevelBlock/sub-decl-sub-term-wt-type/array05/= (=)
+/TopLevelBlock/sub-decl-sub-term-wt-type/array05/' (')
+/TopLevelBlock/sub-decl-sub-term-wt-type/array05/value (name51)
+/TopLevelBlock/sub-decl-sub-term-wt-type/array05/value (name42)
+/TopLevelBlock/sub-decl-sub-term-wt-type/array05/value (name53)
+/TopLevelBlock/sub-decl-sub-term-wt-type/array05/' (')
+/TopLevelBlock/sub-decl-sub-term-wt-type/term ([../])
+/TopLevelBlock/sub-decl-top-term-wt-type
+/TopLevelBlock/sub-decl-top-term-wt-type/[ ([)
+/TopLevelBlock/sub-decl-top-term-wt-type/./ (./)
+/TopLevelBlock/sub-decl-top-term-wt-type/decl (sub-decl-top-term-wt-type)
+/TopLevelBlock/sub-decl-top-term-wt-type/] (])
+/TopLevelBlock/sub-decl-top-term-wt-type/type
+/TopLevelBlock/sub-decl-top-term-wt-type/type/decl (type)
+/TopLevelBlock/sub-decl-top-term-wt-type/type/= (=)
+/TopLevelBlock/sub-decl-top-term-wt-type/type/value (SubDeclTopTerm)
+/TopLevelBlock/sub-decl-top-term-wt-type/flag06
+/TopLevelBlock/sub-decl-top-term-wt-type/flag06/decl (flag06)
+/TopLevelBlock/sub-decl-top-term-wt-type/flag06/= (=)
+/TopLevelBlock/sub-decl-top-term-wt-type/flag06/value (6.6)
+/TopLevelBlock/sub-decl-top-term-wt-type/array06
+/TopLevelBlock/sub-decl-top-term-wt-type/array06/decl (array06)
+/TopLevelBlock/sub-decl-top-term-wt-type/array06/= (=)
+/TopLevelBlock/sub-decl-top-term-wt-type/array06/' (')
+/TopLevelBlock/sub-decl-top-term-wt-type/array06/value (name61)
+/TopLevelBlock/sub-decl-top-term-wt-type/array06/value (name62)
+/TopLevelBlock/sub-decl-top-term-wt-type/array06/value (name63)
+/TopLevelBlock/sub-decl-top-term-wt-type/array06/' (')
+/TopLevelBlock/sub-decl-top-term-wt-type/term ([])
+/TopLevelBlock/top-decl-sub-term-wt-type
+/TopLevelBlock/top-decl-sub-term-wt-type/[ ([)
+/TopLevelBlock/top-decl-sub-term-wt-type/decl (top-decl-sub-term-wt-type)
+/TopLevelBlock/top-decl-sub-term-wt-type/] (])
+/TopLevelBlock/top-decl-sub-term-wt-type/type
+/TopLevelBlock/top-decl-sub-term-wt-type/type/decl (type)
+/TopLevelBlock/top-decl-sub-term-wt-type/type/= (=)
+/TopLevelBlock/top-decl-sub-term-wt-type/type/value (TopDeclSubTerm)
+/TopLevelBlock/top-decl-sub-term-wt-type/flag07
+/TopLevelBlock/top-decl-sub-term-wt-type/flag07/decl (flag07)
+/TopLevelBlock/top-decl-sub-term-wt-type/flag07/= (=)
+/TopLevelBlock/top-decl-sub-term-wt-type/flag07/value (7.7)
+/TopLevelBlock/top-decl-sub-term-wt-type/array07
+/TopLevelBlock/top-decl-sub-term-wt-type/array07/decl (array07)
+/TopLevelBlock/top-decl-sub-term-wt-type/array07/= (=)
+/TopLevelBlock/top-decl-sub-term-wt-type/array07/' (')
+/TopLevelBlock/top-decl-sub-term-wt-type/array07/value (name71)
+/TopLevelBlock/top-decl-sub-term-wt-type/array07/value (name72)
+/TopLevelBlock/top-decl-sub-term-wt-type/array07/value (name73)
+/TopLevelBlock/top-decl-sub-term-wt-type/array07/' (')
+/TopLevelBlock/top-decl-sub-term-wt-type/term ([../])
+/TopLevelBlock/top-decl-top-term-wt-type
+/TopLevelBlock/top-decl-top-term-wt-type/[ ([)
+/TopLevelBlock/top-decl-top-term-wt-type/decl (top-decl-top-term-wt-type)
+/TopLevelBlock/top-decl-top-term-wt-type/] (])
+/TopLevelBlock/top-decl-top-term-wt-type/type
+/TopLevelBlock/top-decl-top-term-wt-type/type/decl (type)
+/TopLevelBlock/top-decl-top-term-wt-type/type/= (=)
+/TopLevelBlock/top-decl-top-term-wt-type/type/value (TopDeclTopTerm)
+/TopLevelBlock/top-decl-top-term-wt-type/flag08
+/TopLevelBlock/top-decl-top-term-wt-type/flag08/decl (flag08)
+/TopLevelBlock/top-decl-top-term-wt-type/flag08/= (=)
+/TopLevelBlock/top-decl-top-term-wt-type/flag08/value (8.8)
+/TopLevelBlock/top-decl-top-term-wt-type/array08
+/TopLevelBlock/top-decl-top-term-wt-type/array08/decl (array08)
+/TopLevelBlock/top-decl-top-term-wt-type/array08/= (=)
+/TopLevelBlock/top-decl-top-term-wt-type/array08/' (')
+/TopLevelBlock/top-decl-top-term-wt-type/array08/value (name81)
+/TopLevelBlock/top-decl-top-term-wt-type/array08/value (name82)
+/TopLevelBlock/top-decl-top-term-wt-type/array08/value (name83)
+/TopLevelBlock/top-decl-top-term-wt-type/array08/' (')
+/TopLevelBlock/top-decl-top-term-wt-type/term ([])
+/TopLevelBlock/term ([])
+)INPUT";
+#else
+    expected_paths = R"INPUT(/
 /TopLevelBlock
 /TopLevelBlock/[ ([)
 /TopLevelBlock/decl (TopLevelBlock)
@@ -1429,6 +1671,7 @@ TEST(HITInterpreter, hit_syntax)
 /TopLevelBlock/TopDeclTopTerm_type/term ([])
 /TopLevelBlock/term ([])
 )INPUT";
+#endif
 
     std::stringstream paths;
     document.paths(paths);
@@ -1443,26 +1686,18 @@ TEST(HITInterpreter, period_in_block_declarators)
     std::stringstream input;
     input << R"INPUT(
 [TopBlock]
-  [child.01.period.wt.type]
-    type = Type01
+  [child.01.period.no.type]
     var01 = val01
-  []
-  [./child.02.period.wt.type]
-    type = Type02
+  [../]
+  [./child.02.period.no.type]
     var02 = val02
-  [../]
-  [child.03.period.no.type]
-    var03 = val03
-  [../]
-  [./child.04.period.no.type]
-    var04 = val04
   []
 []
 )INPUT";
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(52, interpreter.node_count());
+    ASSERT_EQ(25, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(1, document.child_count());
     ASSERT_EQ(1, interpreter.child_count(document.node_index()));
@@ -1474,52 +1709,25 @@ TEST(HITInterpreter, period_in_block_declarators)
 /TopBlock/[ ([)
 /TopBlock/decl (TopBlock)
 /TopBlock/] (])
-/TopBlock/Type01_type
-/TopBlock/Type01_type/[ ([)
-/TopBlock/Type01_type/decl (child.01.period.wt.type)
-/TopBlock/Type01_type/] (])
-/TopBlock/Type01_type/type
-/TopBlock/Type01_type/type/decl (type)
-/TopBlock/Type01_type/type/= (=)
-/TopBlock/Type01_type/type/value (Type01)
-/TopBlock/Type01_type/var01
-/TopBlock/Type01_type/var01/decl (var01)
-/TopBlock/Type01_type/var01/= (=)
-/TopBlock/Type01_type/var01/value (val01)
-/TopBlock/Type01_type/term ([])
-/TopBlock/Type02_type
-/TopBlock/Type02_type/[ ([)
-/TopBlock/Type02_type/./ (./)
-/TopBlock/Type02_type/decl (child.02.period.wt.type)
-/TopBlock/Type02_type/] (])
-/TopBlock/Type02_type/type
-/TopBlock/Type02_type/type/decl (type)
-/TopBlock/Type02_type/type/= (=)
-/TopBlock/Type02_type/type/value (Type02)
-/TopBlock/Type02_type/var02
-/TopBlock/Type02_type/var02/decl (var02)
-/TopBlock/Type02_type/var02/= (=)
-/TopBlock/Type02_type/var02/value (val02)
-/TopBlock/Type02_type/term ([../])
-/TopBlock/child.03.period.no.type
-/TopBlock/child.03.period.no.type/[ ([)
-/TopBlock/child.03.period.no.type/decl (child.03.period.no.type)
-/TopBlock/child.03.period.no.type/] (])
-/TopBlock/child.03.period.no.type/var03
-/TopBlock/child.03.period.no.type/var03/decl (var03)
-/TopBlock/child.03.period.no.type/var03/= (=)
-/TopBlock/child.03.period.no.type/var03/value (val03)
-/TopBlock/child.03.period.no.type/term ([../])
-/TopBlock/child.04.period.no.type
-/TopBlock/child.04.period.no.type/[ ([)
-/TopBlock/child.04.period.no.type/./ (./)
-/TopBlock/child.04.period.no.type/decl (child.04.period.no.type)
-/TopBlock/child.04.period.no.type/] (])
-/TopBlock/child.04.period.no.type/var04
-/TopBlock/child.04.period.no.type/var04/decl (var04)
-/TopBlock/child.04.period.no.type/var04/= (=)
-/TopBlock/child.04.period.no.type/var04/value (val04)
-/TopBlock/child.04.period.no.type/term ([])
+/TopBlock/child.01.period.no.type
+/TopBlock/child.01.period.no.type/[ ([)
+/TopBlock/child.01.period.no.type/decl (child.01.period.no.type)
+/TopBlock/child.01.period.no.type/] (])
+/TopBlock/child.01.period.no.type/var01
+/TopBlock/child.01.period.no.type/var01/decl (var01)
+/TopBlock/child.01.period.no.type/var01/= (=)
+/TopBlock/child.01.period.no.type/var01/value (val01)
+/TopBlock/child.01.period.no.type/term ([../])
+/TopBlock/child.02.period.no.type
+/TopBlock/child.02.period.no.type/[ ([)
+/TopBlock/child.02.period.no.type/./ (./)
+/TopBlock/child.02.period.no.type/decl (child.02.period.no.type)
+/TopBlock/child.02.period.no.type/] (])
+/TopBlock/child.02.period.no.type/var02
+/TopBlock/child.02.period.no.type/var02/decl (var02)
+/TopBlock/child.02.period.no.type/var02/= (=)
+/TopBlock/child.02.period.no.type/var02/value (val02)
+/TopBlock/child.02.period.no.type/term ([])
 /TopBlock/term ([])
 )INPUT";
 
@@ -1888,25 +2096,21 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
     input << R"INPUT(
 [SlashesInValues]
   [input01]
-    type = DirAndFile
     directory = some/directory/path01
     inputfile = file01.i
     parameter = path/to/a/param01=one
   []
   [input02]
-    type = DirAndFile
     directory = some/directory/path02/
     inputfile = file02.i
     parameter = path/to/a/param02/="two"
   []
   [input03]
-    type = DirAndFile
     directory = /some/directory/path03
     inputfile = file03.i
     parameter = /path/to/a/param03=3.3
   []
   [input04]
-    type = DirAndFile
     directory = /some/directory/path04/
     inputfile = file04.i
     parameter = /path/to/a/param04/=444
@@ -1916,7 +2120,7 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(90, interpreter.node_count());
+    ASSERT_EQ(74, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(1, document.child_count());
     ASSERT_EQ(1, interpreter.child_count(document.node_index()));
@@ -1928,90 +2132,74 @@ TEST(HITInterpreter, equals_and_quotes_after_slash)
 /SlashesInValues/[ ([)
 /SlashesInValues/decl (SlashesInValues)
 /SlashesInValues/] (])
-/SlashesInValues/DirAndFile_type
-/SlashesInValues/DirAndFile_type/[ ([)
-/SlashesInValues/DirAndFile_type/decl (input01)
-/SlashesInValues/DirAndFile_type/] (])
-/SlashesInValues/DirAndFile_type/type
-/SlashesInValues/DirAndFile_type/type/decl (type)
-/SlashesInValues/DirAndFile_type/type/= (=)
-/SlashesInValues/DirAndFile_type/type/value (DirAndFile)
-/SlashesInValues/DirAndFile_type/directory
-/SlashesInValues/DirAndFile_type/directory/decl (directory)
-/SlashesInValues/DirAndFile_type/directory/= (=)
-/SlashesInValues/DirAndFile_type/directory/value (some/directory/path01)
-/SlashesInValues/DirAndFile_type/inputfile
-/SlashesInValues/DirAndFile_type/inputfile/decl (inputfile)
-/SlashesInValues/DirAndFile_type/inputfile/= (=)
-/SlashesInValues/DirAndFile_type/inputfile/value (file01.i)
-/SlashesInValues/DirAndFile_type/parameter
-/SlashesInValues/DirAndFile_type/parameter/decl (parameter)
-/SlashesInValues/DirAndFile_type/parameter/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value (path/to/a/param01=one)
-/SlashesInValues/DirAndFile_type/term ([])
-/SlashesInValues/DirAndFile_type
-/SlashesInValues/DirAndFile_type/[ ([)
-/SlashesInValues/DirAndFile_type/decl (input02)
-/SlashesInValues/DirAndFile_type/] (])
-/SlashesInValues/DirAndFile_type/type
-/SlashesInValues/DirAndFile_type/type/decl (type)
-/SlashesInValues/DirAndFile_type/type/= (=)
-/SlashesInValues/DirAndFile_type/type/value (DirAndFile)
-/SlashesInValues/DirAndFile_type/directory
-/SlashesInValues/DirAndFile_type/directory/decl (directory)
-/SlashesInValues/DirAndFile_type/directory/= (=)
-/SlashesInValues/DirAndFile_type/directory/value (some/directory/path02/)
-/SlashesInValues/DirAndFile_type/inputfile
-/SlashesInValues/DirAndFile_type/inputfile/decl (inputfile)
-/SlashesInValues/DirAndFile_type/inputfile/= (=)
-/SlashesInValues/DirAndFile_type/inputfile/value (file02.i)
-/SlashesInValues/DirAndFile_type/parameter
-/SlashesInValues/DirAndFile_type/parameter/decl (parameter)
-/SlashesInValues/DirAndFile_type/parameter/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value (path/to/a/param02/="two")
-/SlashesInValues/DirAndFile_type/term ([])
-/SlashesInValues/DirAndFile_type
-/SlashesInValues/DirAndFile_type/[ ([)
-/SlashesInValues/DirAndFile_type/decl (input03)
-/SlashesInValues/DirAndFile_type/] (])
-/SlashesInValues/DirAndFile_type/type
-/SlashesInValues/DirAndFile_type/type/decl (type)
-/SlashesInValues/DirAndFile_type/type/= (=)
-/SlashesInValues/DirAndFile_type/type/value (DirAndFile)
-/SlashesInValues/DirAndFile_type/directory
-/SlashesInValues/DirAndFile_type/directory/decl (directory)
-/SlashesInValues/DirAndFile_type/directory/= (=)
-/SlashesInValues/DirAndFile_type/directory/value (/some/directory/path03)
-/SlashesInValues/DirAndFile_type/inputfile
-/SlashesInValues/DirAndFile_type/inputfile/decl (inputfile)
-/SlashesInValues/DirAndFile_type/inputfile/= (=)
-/SlashesInValues/DirAndFile_type/inputfile/value (file03.i)
-/SlashesInValues/DirAndFile_type/parameter
-/SlashesInValues/DirAndFile_type/parameter/decl (parameter)
-/SlashesInValues/DirAndFile_type/parameter/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value (/path/to/a/param03=3.3)
-/SlashesInValues/DirAndFile_type/term ([])
-/SlashesInValues/DirAndFile_type
-/SlashesInValues/DirAndFile_type/[ ([)
-/SlashesInValues/DirAndFile_type/decl (input04)
-/SlashesInValues/DirAndFile_type/] (])
-/SlashesInValues/DirAndFile_type/type
-/SlashesInValues/DirAndFile_type/type/decl (type)
-/SlashesInValues/DirAndFile_type/type/= (=)
-/SlashesInValues/DirAndFile_type/type/value (DirAndFile)
-/SlashesInValues/DirAndFile_type/directory
-/SlashesInValues/DirAndFile_type/directory/decl (directory)
-/SlashesInValues/DirAndFile_type/directory/= (=)
-/SlashesInValues/DirAndFile_type/directory/value (/some/directory/path04/)
-/SlashesInValues/DirAndFile_type/inputfile
-/SlashesInValues/DirAndFile_type/inputfile/decl (inputfile)
-/SlashesInValues/DirAndFile_type/inputfile/= (=)
-/SlashesInValues/DirAndFile_type/inputfile/value (file04.i)
-/SlashesInValues/DirAndFile_type/parameter
-/SlashesInValues/DirAndFile_type/parameter/decl (parameter)
-/SlashesInValues/DirAndFile_type/parameter/= (=)
-/SlashesInValues/DirAndFile_type/parameter/value (/path/to/a/param04/=444)
-/SlashesInValues/DirAndFile_type/term ([])
+/SlashesInValues/input01
+/SlashesInValues/input01/[ ([)
+/SlashesInValues/input01/decl (input01)
+/SlashesInValues/input01/] (])
+/SlashesInValues/input01/directory
+/SlashesInValues/input01/directory/decl (directory)
+/SlashesInValues/input01/directory/= (=)
+/SlashesInValues/input01/directory/value (some/directory/path01)
+/SlashesInValues/input01/inputfile
+/SlashesInValues/input01/inputfile/decl (inputfile)
+/SlashesInValues/input01/inputfile/= (=)
+/SlashesInValues/input01/inputfile/value (file01.i)
+/SlashesInValues/input01/parameter
+/SlashesInValues/input01/parameter/decl (parameter)
+/SlashesInValues/input01/parameter/= (=)
+/SlashesInValues/input01/parameter/value (path/to/a/param01=one)
+/SlashesInValues/input01/term ([])
+/SlashesInValues/input02
+/SlashesInValues/input02/[ ([)
+/SlashesInValues/input02/decl (input02)
+/SlashesInValues/input02/] (])
+/SlashesInValues/input02/directory
+/SlashesInValues/input02/directory/decl (directory)
+/SlashesInValues/input02/directory/= (=)
+/SlashesInValues/input02/directory/value (some/directory/path02/)
+/SlashesInValues/input02/inputfile
+/SlashesInValues/input02/inputfile/decl (inputfile)
+/SlashesInValues/input02/inputfile/= (=)
+/SlashesInValues/input02/inputfile/value (file02.i)
+/SlashesInValues/input02/parameter
+/SlashesInValues/input02/parameter/decl (parameter)
+/SlashesInValues/input02/parameter/= (=)
+/SlashesInValues/input02/parameter/value (path/to/a/param02/="two")
+/SlashesInValues/input02/term ([])
+/SlashesInValues/input03
+/SlashesInValues/input03/[ ([)
+/SlashesInValues/input03/decl (input03)
+/SlashesInValues/input03/] (])
+/SlashesInValues/input03/directory
+/SlashesInValues/input03/directory/decl (directory)
+/SlashesInValues/input03/directory/= (=)
+/SlashesInValues/input03/directory/value (/some/directory/path03)
+/SlashesInValues/input03/inputfile
+/SlashesInValues/input03/inputfile/decl (inputfile)
+/SlashesInValues/input03/inputfile/= (=)
+/SlashesInValues/input03/inputfile/value (file03.i)
+/SlashesInValues/input03/parameter
+/SlashesInValues/input03/parameter/decl (parameter)
+/SlashesInValues/input03/parameter/= (=)
+/SlashesInValues/input03/parameter/value (/path/to/a/param03=3.3)
+/SlashesInValues/input03/term ([])
+/SlashesInValues/input04
+/SlashesInValues/input04/[ ([)
+/SlashesInValues/input04/decl (input04)
+/SlashesInValues/input04/] (])
+/SlashesInValues/input04/directory
+/SlashesInValues/input04/directory/decl (directory)
+/SlashesInValues/input04/directory/= (=)
+/SlashesInValues/input04/directory/value (/some/directory/path04/)
+/SlashesInValues/input04/inputfile
+/SlashesInValues/input04/inputfile/decl (inputfile)
+/SlashesInValues/input04/inputfile/= (=)
+/SlashesInValues/input04/inputfile/value (file04.i)
+/SlashesInValues/input04/parameter
+/SlashesInValues/input04/parameter/decl (parameter)
+/SlashesInValues/input04/parameter/= (=)
+/SlashesInValues/input04/parameter/value (/path/to/a/param04/=444)
+/SlashesInValues/input04/term ([])
 /SlashesInValues/term ([])
 )INPUT";
 
@@ -2059,7 +2247,75 @@ TEST(HITInterpreter, shorthand_path_naming_blocks)
     ASSERT_EQ(document.child_at(0).node_index(),
               interpreter.child_index_at(document.node_index(), 0));
 
-    std::string expected_paths = R"INPUT(/
+    std::string expected_paths;
+#if DISABLE_HIT_TYPE_PROMOTION
+    expected_paths = R"INPUT(/
+/a
+/a/b
+/a/b/c
+/a/b/c/[ ([)
+/a/b/c/decl (a/b/c)
+/a/b/c/] (])
+/a/b/c/param_outer
+/a/b/c/param_outer/decl (param_outer)
+/a/b/c/param_outer/= (=)
+/a/b/c/param_outer/value (bar_outer)
+/a/b/c/x
+/a/b/c/x/y
+/a/b/c/x/y/z
+/a/b/c/x/y/z/[ ([)
+/a/b/c/x/y/z/decl (x/y/z)
+/a/b/c/x/y/z/] (])
+/a/b/c/x/y/z/param_inner
+/a/b/c/x/y/z/param_inner/decl (param_inner)
+/a/b/c/x/y/z/param_inner/= (=)
+/a/b/c/x/y/z/param_inner/value (bar_inner)
+/a/b/c/x/y/z/term ([])
+/a/b/c/term ([])
+/a
+/a/b
+/a/b/c
+/a/b/c/[ ([)
+/a/b/c/decl (a/b/c)
+/a/b/c/] (])
+/a/b/c/type
+/a/b/c/type/decl (type)
+/a/b/c/type/= (=)
+/a/b/c/type/value (foo_outer)
+/a/b/c/param_outer
+/a/b/c/param_outer/decl (param_outer)
+/a/b/c/param_outer/= (=)
+/a/b/c/param_outer/value (bar_outer)
+/a/b/c/x
+/a/b/c/x/y
+/a/b/c/x/y/z
+/a/b/c/x/y/z/[ ([)
+/a/b/c/x/y/z/decl (x/y/z)
+/a/b/c/x/y/z/] (])
+/a/b/c/x/y/z/type
+/a/b/c/x/y/z/type/decl (type)
+/a/b/c/x/y/z/type/= (=)
+/a/b/c/x/y/z/type/value (foo_inner)
+/a/b/c/x/y/z/param_inner
+/a/b/c/x/y/z/param_inner/decl (param_inner)
+/a/b/c/x/y/z/param_inner/= (=)
+/a/b/c/x/y/z/param_inner/value (bar_inner)
+/a/b/c/x/y/z/term ([])
+/a/b/c/term ([])
+/a
+/a/b
+/a/b/c
+/a/b/c/[ ([)
+/a/b/c/decl (/a/b///c//)
+/a/b/c/] (])
+/a/b/c/param
+/a/b/c/param/decl (param)
+/a/b/c/param/= (=)
+/a/b/c/param/value (bar)
+/a/b/c/term ([])
+)INPUT";
+#else
+    expected_paths = R"INPUT(/
 /a
 /a/b
 /a/b/c
@@ -2124,6 +2380,7 @@ TEST(HITInterpreter, shorthand_path_naming_blocks)
 /a/b/c/param/value (bar)
 /a/b/c/term ([])
 )INPUT";
+#endif
 
     std::stringstream actual_paths;
     document.paths(actual_paths);
@@ -3289,22 +3546,12 @@ TEST(HITInterpreter, period_starts_block_names_and_paths)
     var_1a = val_1a
   []
 
-  [child_1b_wt_type]
-    type   = Type_1b
-    var_1b = val_1b
-  []
-
 []
 
 [Block_Names_Begin_With_Period]
 
   [.child_2a_no_type]
     var_2a = val_2a
-  []
-
-  [.child_2b_wt_type]
-    type   = Type_2b
-    var_2b = val_2b
   []
 
 []
@@ -3315,18 +3562,13 @@ TEST(HITInterpreter, period_starts_block_names_and_paths)
     var_3a = val_3a
   []
 
-  [.child/3b/wt/type]
-    type   = Type_3b
-    var_3b = val_3b
-  []
-
 []
 
 )INPUT";
 
     DefaultHITInterpreter interpreter;
     ASSERT_TRUE(interpreter.parse(input));
-    ASSERT_EQ(88, interpreter.node_count());
+    ASSERT_EQ(46, interpreter.node_count());
     HITNodeView document = interpreter.root();
     ASSERT_EQ(3, document.child_count());
     ASSERT_EQ(3, interpreter.child_count(document.node_index()));
@@ -3347,19 +3589,6 @@ TEST(HITInterpreter, period_starts_block_names_and_paths)
 /Block_Names_Begin_With_Letter/child_1a_no_type/var_1a/= (=)
 /Block_Names_Begin_With_Letter/child_1a_no_type/var_1a/value (val_1a)
 /Block_Names_Begin_With_Letter/child_1a_no_type/term ([])
-/Block_Names_Begin_With_Letter/Type_1b_type
-/Block_Names_Begin_With_Letter/Type_1b_type/[ ([)
-/Block_Names_Begin_With_Letter/Type_1b_type/decl (child_1b_wt_type)
-/Block_Names_Begin_With_Letter/Type_1b_type/] (])
-/Block_Names_Begin_With_Letter/Type_1b_type/type
-/Block_Names_Begin_With_Letter/Type_1b_type/type/decl (type)
-/Block_Names_Begin_With_Letter/Type_1b_type/type/= (=)
-/Block_Names_Begin_With_Letter/Type_1b_type/type/value (Type_1b)
-/Block_Names_Begin_With_Letter/Type_1b_type/var_1b
-/Block_Names_Begin_With_Letter/Type_1b_type/var_1b/decl (var_1b)
-/Block_Names_Begin_With_Letter/Type_1b_type/var_1b/= (=)
-/Block_Names_Begin_With_Letter/Type_1b_type/var_1b/value (val_1b)
-/Block_Names_Begin_With_Letter/Type_1b_type/term ([])
 /Block_Names_Begin_With_Letter/term ([])
 /Block_Names_Begin_With_Period
 /Block_Names_Begin_With_Period/[ ([)
@@ -3374,19 +3603,6 @@ TEST(HITInterpreter, period_starts_block_names_and_paths)
 /Block_Names_Begin_With_Period/.child_2a_no_type/var_2a/= (=)
 /Block_Names_Begin_With_Period/.child_2a_no_type/var_2a/value (val_2a)
 /Block_Names_Begin_With_Period/.child_2a_no_type/term ([])
-/Block_Names_Begin_With_Period/Type_2b_type
-/Block_Names_Begin_With_Period/Type_2b_type/[ ([)
-/Block_Names_Begin_With_Period/Type_2b_type/decl (.child_2b_wt_type)
-/Block_Names_Begin_With_Period/Type_2b_type/] (])
-/Block_Names_Begin_With_Period/Type_2b_type/type
-/Block_Names_Begin_With_Period/Type_2b_type/type/decl (type)
-/Block_Names_Begin_With_Period/Type_2b_type/type/= (=)
-/Block_Names_Begin_With_Period/Type_2b_type/type/value (Type_2b)
-/Block_Names_Begin_With_Period/Type_2b_type/var_2b
-/Block_Names_Begin_With_Period/Type_2b_type/var_2b/decl (var_2b)
-/Block_Names_Begin_With_Period/Type_2b_type/var_2b/= (=)
-/Block_Names_Begin_With_Period/Type_2b_type/var_2b/value (val_2b)
-/Block_Names_Begin_With_Period/Type_2b_type/term ([])
 /Block_Names_Begin_With_Period/term ([])
 /Block_Paths_Begin_With_Period
 /Block_Paths_Begin_With_Period/[ ([)
@@ -3404,22 +3620,6 @@ TEST(HITInterpreter, period_starts_block_names_and_paths)
 /Block_Paths_Begin_With_Period/.child/3a/no/type/var_3a/= (=)
 /Block_Paths_Begin_With_Period/.child/3a/no/type/var_3a/value (val_3a)
 /Block_Paths_Begin_With_Period/.child/3a/no/type/term ([])
-/Block_Paths_Begin_With_Period/.child
-/Block_Paths_Begin_With_Period/.child/3b
-/Block_Paths_Begin_With_Period/.child/3b/wt
-/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type
-/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/[ ([)
-/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/decl (.child/3b/wt/type)
-/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/] (])
-/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/type
-/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/type/decl (type)
-/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/type/= (=)
-/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/type/value (Type_3b)
-/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/var_3b
-/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/var_3b/decl (var_3b)
-/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/var_3b/= (=)
-/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/var_3b/value (val_3b)
-/Block_Paths_Begin_With_Period/.child/3b/wt/Type_3b_type/term ([])
 /Block_Paths_Begin_With_Period/term ([])
 )INPUT";
 

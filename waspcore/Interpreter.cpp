@@ -3,7 +3,7 @@
 
 namespace wasp
 {
-NodeView::NodeView(std::size_t node_index, AbstractInterpreter& nodes)
+NodeView::NodeView(std::size_t node_index, wasp::AbstractInterpreter& nodes)
     : m_node_index(node_index), m_pool(&nodes)
 {
 }
