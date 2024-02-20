@@ -1587,6 +1587,7 @@ TEST(lsp, completion_object)
     std::string       documentation   = "test documentation";
     bool              deprecated      = false;
     bool              preselect       = true;
+    int               insert_text_format = m_text_format_plaintext;
 
     ASSERT_TRUE(buildCompletionObject( object          ,
                                        errors          ,
@@ -1602,7 +1603,7 @@ TEST(lsp, completion_object)
                                        deprecated      ,
                                        preselect       ));
 
-    ASSERT_EQ  ( (size_t) 7 , object.size() );
+    ASSERT_EQ  ( (size_t) 8 , object.size() );
 
     ASSERT_TRUE( object[m_label].is_string()         );
     ASSERT_EQ  ( object[m_label].to_string() , label );
@@ -1649,6 +1650,9 @@ TEST(lsp, completion_object)
     ASSERT_TRUE( object[m_preselect].is_bool()             );
     ASSERT_EQ  ( object[m_preselect].to_bool() , preselect );
 
+    ASSERT_TRUE( object[m_insert_text_format].is_int()                      );
+    ASSERT_EQ  ( object[m_insert_text_format].to_int() , insert_text_format );
+
     std::stringstream  json;
     object.format_json(json);
 
@@ -1657,6 +1661,7 @@ TEST(lsp, completion_object)
   "deprecated" : false
   ,"detail" : "test type info"
   ,"documentation" : "test documentation"
+  ,"insertTextFormat" : 1
   ,"kind" : 3
   ,"label" : "test-label"
   ,"preselect" : true
@@ -1688,6 +1693,7 @@ TEST(lsp, completion_object)
     std::string tst_documentation;
     bool        tst_deprecated;
     bool        tst_preselect;
+    int         tst_insert_text_format;
 
     ASSERT_TRUE(dissectCompletionObject( object              ,
                                          errors              ,
@@ -1701,7 +1707,8 @@ TEST(lsp, completion_object)
                                          tst_detail          ,
                                          tst_documentation   ,
                                          tst_deprecated      ,
-                                         tst_preselect       ));
+                                         tst_preselect       ,
+                                         tst_insert_text_format ));
 
     ASSERT_EQ ( label           , tst_label           );
     ASSERT_EQ ( start_line      , tst_start_line      );
@@ -1714,6 +1721,7 @@ TEST(lsp, completion_object)
     ASSERT_EQ ( documentation   , tst_documentation   );
     ASSERT_EQ ( deprecated      , tst_deprecated      );
     ASSERT_EQ ( preselect       , tst_preselect       );
+    ASSERT_EQ ( insert_text_format , tst_insert_text_format );
 }
 
 TEST(lsp, completion_response)
@@ -1740,7 +1748,8 @@ TEST(lsp, completion_response)
                                        "test type info 1"     ,
                                        "test documentation 1" ,
                                        false                  ,
-                                       true                   ));
+                                       true                   ,
+                                       m_text_format_snippet ));
 
     completion_items.push_back(completion_item);
 
@@ -1756,7 +1765,8 @@ TEST(lsp, completion_response)
                                        "test type info 2"     ,
                                        "test documentation 2" ,
                                        false                  ,
-                                       false                  ));
+                                       false                  ,
+                                       m_text_format_plaintext ));
 
     completion_items.push_back(completion_item);
 
@@ -1772,7 +1782,8 @@ TEST(lsp, completion_response)
                                        "test type info 3"     ,
                                        "test documentation 3" ,
                                        false                  ,
-                                       false                  ));
+                                       false                  ,
+                                       m_text_format_snippet ));
 
     completion_items.push_back(completion_item);
 
@@ -1788,7 +1799,8 @@ TEST(lsp, completion_response)
                                        "test type info 4"     ,
                                        "test documentation 4" ,
                                        false                  ,
-                                       false                  ));
+                                       false                  ,
+                                       m_text_format_plaintext ));
 
     completion_items.push_back(completion_item);
 
@@ -1804,7 +1816,8 @@ TEST(lsp, completion_response)
                                        "test type info 5"     ,
                                        "test documentation 5" ,
                                        false                  ,
-                                       false                  ));
+                                       false                  ,
+                                       m_text_format_snippet ));
 
     completion_items.push_back(completion_item);
 
@@ -1829,19 +1842,19 @@ TEST(lsp, completion_response)
     ASSERT_EQ  ( object[m_result][m_items].size() , (size_t) 5 );
 
     ASSERT_TRUE( object[m_result][m_items][0].is_object()         );
-    ASSERT_EQ  ( object[m_result][m_items][0].size() , (size_t) 7 );
+    ASSERT_EQ  ( object[m_result][m_items][0].size() , (size_t) 8 );
 
     ASSERT_TRUE( object[m_result][m_items][1].is_object()         );
-    ASSERT_EQ  ( object[m_result][m_items][1].size() , (size_t) 7 );
+    ASSERT_EQ  ( object[m_result][m_items][1].size() , (size_t) 8 );
 
     ASSERT_TRUE( object[m_result][m_items][2].is_object()         );
-    ASSERT_EQ  ( object[m_result][m_items][2].size() , (size_t) 7 );
+    ASSERT_EQ  ( object[m_result][m_items][2].size() , (size_t) 8 );
 
     ASSERT_TRUE( object[m_result][m_items][3].is_object()         );
-    ASSERT_EQ  ( object[m_result][m_items][3].size() , (size_t) 7 );
+    ASSERT_EQ  ( object[m_result][m_items][3].size() , (size_t) 8 );
 
     ASSERT_TRUE( object[m_result][m_items][4].is_object()         );
-    ASSERT_EQ  ( object[m_result][m_items][4].size() , (size_t) 7 );
+    ASSERT_EQ  ( object[m_result][m_items][4].size() , (size_t) 8 );
 
     ASSERT_TRUE( object[m_result][m_items][4][m_label].is_string()                  );
     ASSERT_EQ  ( object[m_result][m_items][4][m_label].to_string() , "test-label-5" );
@@ -1888,6 +1901,9 @@ TEST(lsp, completion_response)
     ASSERT_TRUE( object[m_result][m_items][4][m_preselect].is_bool()         );
     ASSERT_EQ  ( object[m_result][m_items][4][m_preselect].to_bool() , false );
 
+    ASSERT_TRUE( object[m_result][m_items][4][m_insert_text_format].is_int()                         );
+    ASSERT_EQ  ( object[m_result][m_items][4][m_insert_text_format].to_int() , m_text_format_snippet );
+
     std::string rpcstr;
     ASSERT_TRUE( objectToRPCString( object ,
                                     rpcstr ,
@@ -1904,6 +1920,7 @@ TEST(lsp, completion_response)
       "deprecated" : false
       ,"detail" : "test type info 1"
       ,"documentation" : "test documentation 1"
+      ,"insertTextFormat" : 2
       ,"kind" : 1
       ,"label" : "test-label-1"
       ,"preselect" : true
@@ -1925,6 +1942,7 @@ TEST(lsp, completion_response)
       "deprecated" : false
       ,"detail" : "test type info 2"
       ,"documentation" : "test documentation 2"
+      ,"insertTextFormat" : 1
       ,"kind" : 2
       ,"label" : "test-label-2"
       ,"preselect" : false
@@ -1946,6 +1964,7 @@ TEST(lsp, completion_response)
       "deprecated" : false
       ,"detail" : "test type info 3"
       ,"documentation" : "test documentation 3"
+      ,"insertTextFormat" : 2
       ,"kind" : 3
       ,"label" : "test-label-3"
       ,"preselect" : false
@@ -1967,6 +1986,7 @@ TEST(lsp, completion_response)
       "deprecated" : false
       ,"detail" : "test type info 4"
       ,"documentation" : "test documentation 4"
+      ,"insertTextFormat" : 1
       ,"kind" : 4
       ,"label" : "test-label-4"
       ,"preselect" : false
@@ -1988,6 +2008,7 @@ TEST(lsp, completion_response)
       "deprecated" : false
       ,"detail" : "test type info 5"
       ,"documentation" : "test documentation 5"
+      ,"insertTextFormat" : 2
       ,"kind" : 5
       ,"label" : "test-label-5"
       ,"preselect" : false
@@ -2043,6 +2064,7 @@ TEST(lsp, completion_response)
     std::string tst_documentation;
     bool        tst_deprecated;
     bool        tst_preselect;
+    int         tst_insert_text_format;
 
     ASSERT_TRUE(dissectCompletionObject( *(tst_completion_items[0].to_object()) ,
                                            errors                               ,
@@ -2056,7 +2078,8 @@ TEST(lsp, completion_response)
                                            tst_detail                           ,
                                            tst_documentation                    ,
                                            tst_deprecated                       ,
-                                           tst_preselect                        ));
+                                           tst_preselect                        ,
+                                           tst_insert_text_format               ));
 
     ASSERT_TRUE(dissectCompletionObject( *(tst_completion_items[1].to_object()) ,
                                            errors                               ,
@@ -2084,7 +2107,8 @@ TEST(lsp, completion_response)
                                            tst_detail                           ,
                                            tst_documentation                    ,
                                            tst_deprecated                       ,
-                                           tst_preselect                        ));
+                                           tst_preselect                        ,
+                                           tst_insert_text_format               ));
 
     ASSERT_TRUE(dissectCompletionObject( *(tst_completion_items[3].to_object()) ,
                                            errors                               ,
@@ -2112,7 +2136,8 @@ TEST(lsp, completion_response)
                                            tst_detail                           ,
                                            tst_documentation                    ,
                                            tst_deprecated                       ,
-                                           tst_preselect                        ));
+                                           tst_preselect                        ,
+                                           tst_insert_text_format               ));
 
     ASSERT_EQ ( "test-label-5"         , tst_label           );
     ASSERT_EQ ( 55                     , tst_start_line      );
@@ -2125,6 +2150,7 @@ TEST(lsp, completion_response)
     ASSERT_EQ ( "test documentation 5" , tst_documentation   );
     ASSERT_EQ ( false                  , tst_deprecated      );
     ASSERT_EQ ( false                  , tst_preselect       );
+    ASSERT_EQ ( m_text_format_snippet  , tst_insert_text_format );
 }
 
 TEST(lsp, location_object)

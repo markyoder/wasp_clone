@@ -3,6 +3,7 @@
 
 #include <string>
 #include <sstream>
+#include <map>
 #include "wasplsp/LSP.h"
 #include "wasplsp/Connection.h"
 #include "waspcore/Object.h"
@@ -15,7 +16,7 @@ class WASP_PUBLIC ServerImpl
 {
   public:
 
-    ServerImpl() : is_initialized(false) , is_document_open(false) {}
+    ServerImpl() : is_initialized(false) , client_snippet_support(false) {}
 
     ~ServerImpl(){}
 
@@ -142,6 +143,14 @@ class WASP_PUBLIC ServerImpl
         return errors.str();
     }
 
+    /** check if client for this server communicated snippet syntax support
+     * @return - true if client for this server supports snippet completion
+     */
+    bool clientSupportsSnippets()
+    {
+        return this->client_snippet_support;
+    }
+
     /** get this server's connection - to be implemented on derived servers
      * @return - shared pointer to the server's read / write connection
      */
@@ -254,11 +263,6 @@ class WASP_PUBLIC ServerImpl
     bool is_initialized;
 
     /**
-     * @brief is_document_open - is there a document open on the server
-     */
-    bool is_document_open;
-
-    /**
      * @brief client_capabilities - capabilities that client sent in initialize
      */
     DataObject client_capabilities;
@@ -284,7 +288,7 @@ class WASP_PUBLIC ServerImpl
     int client_request_id;
 
     /**
-     * @brief document_path - document URI of the open document
+     * @brief document_path - document URI for the current document operation
      */
     std::string document_path;
 
@@ -299,9 +303,14 @@ class WASP_PUBLIC ServerImpl
     std::string document_text;
 
     /**
-     * @brief document_version - document version incremented for each change
+     * @brief document_versions - open document paths to current versions map
      */
-    int document_version;
+    std::map<std::string, int> document_versions;
+
+    /**
+     * @brief client_snippet_support - client supports snippets as completion
+     */
+    bool client_snippet_support;
 };
 
 } // namespace lsp

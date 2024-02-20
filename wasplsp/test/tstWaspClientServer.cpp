@@ -422,6 +422,7 @@ TEST(client, document_completion_existsin)
             ASSERT_EQ ( "-2"       , completion.documentation   );
             ASSERT_EQ ( false      , completion.deprecated      );
             ASSERT_EQ ( false      , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext , completion.insert_text_format );
         }
         if ( index == 1 )
         {
@@ -436,6 +437,7 @@ TEST(client, document_completion_existsin)
             ASSERT_EQ ( "-9"       , completion.documentation   );
             ASSERT_EQ ( false      , completion.deprecated      );
             ASSERT_EQ ( false      , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext , completion.insert_text_format );
         }
         if ( index == 2 )
         {
@@ -450,6 +452,7 @@ TEST(client, document_completion_existsin)
             ASSERT_EQ ( "009"      , completion.documentation   );
             ASSERT_EQ ( false      , completion.deprecated      );
             ASSERT_EQ ( false      , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext , completion.insert_text_format );
         }
         if ( index == 3 )
         {
@@ -464,6 +467,7 @@ TEST(client, document_completion_existsin)
             ASSERT_EQ ( "5"        , completion.documentation   );
             ASSERT_EQ ( false      , completion.deprecated      );
             ASSERT_EQ ( false      , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext , completion.insert_text_format );
         }
         if ( index == 4 )
         {
@@ -478,6 +482,7 @@ TEST(client, document_completion_existsin)
             ASSERT_EQ ( "9"        , completion.documentation   );
             ASSERT_EQ ( false      , completion.deprecated      );
             ASSERT_EQ ( false      , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext , completion.insert_text_format );
         }
     }
 }
@@ -519,6 +524,7 @@ TEST(client, document_completion_valenums)
             ASSERT_EQ ( "apple"    , completion.documentation   );
             ASSERT_EQ ( false      , completion.deprecated      );
             ASSERT_EQ ( false      , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext , completion.insert_text_format );
         }
         if ( index == 1 )
         {
@@ -533,6 +539,7 @@ TEST(client, document_completion_valenums)
             ASSERT_EQ ( "orange"   , completion.documentation   );
             ASSERT_EQ ( false      , completion.deprecated      );
             ASSERT_EQ ( false      , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext , completion.insert_text_format );
         }
         if ( index == 2 )
         {
@@ -547,6 +554,7 @@ TEST(client, document_completion_valenums)
             ASSERT_EQ ( "kiwi"     , completion.documentation   );
             ASSERT_EQ ( false      , completion.deprecated      );
             ASSERT_EQ ( false      , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext , completion.insert_text_format );
         }
         if ( index == 3 )
         {
@@ -561,6 +569,7 @@ TEST(client, document_completion_valenums)
             ASSERT_EQ ( "potato"   , completion.documentation   );
             ASSERT_EQ ( false      , completion.deprecated      );
             ASSERT_EQ ( false      , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext , completion.insert_text_format );
         }
         if ( index == 4 )
         {
@@ -575,6 +584,7 @@ TEST(client, document_completion_valenums)
             ASSERT_EQ ( "tomato"   , completion.documentation   );
             ASSERT_EQ ( false      , completion.deprecated      );
             ASSERT_EQ ( false      , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext , completion.insert_text_format );
         }
     }
 }
@@ -616,6 +626,7 @@ TEST(client, document_completion_templates)
             ASSERT_EQ ( "Key_string description here for test"  , completion.documentation   );
             ASSERT_EQ ( false                                   , completion.deprecated      );
             ASSERT_EQ ( false                                   , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext                 , completion.insert_text_format );
         }
         if ( index == 1 )
         {
@@ -630,6 +641,7 @@ TEST(client, document_completion_templates)
             ASSERT_EQ ( "Key_list description here for test"  , completion.documentation   );
             ASSERT_EQ ( false                                 , completion.deprecated      );
             ASSERT_EQ ( false                                 , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext               , completion.insert_text_format );
         }
         if ( index == 2 )
         {
@@ -644,6 +656,7 @@ TEST(client, document_completion_templates)
             ASSERT_EQ ( "Object description here For test" , completion.documentation   );
             ASSERT_EQ ( false                              , completion.deprecated      );
             ASSERT_EQ ( false                              , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext            , completion.insert_text_format );
         }
         if ( index == 3 )
         {
@@ -658,6 +671,7 @@ TEST(client, document_completion_templates)
             ASSERT_EQ ( "Object description here For test" , completion.documentation   );
             ASSERT_EQ ( false                              , completion.deprecated      );
             ASSERT_EQ ( false                              , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext            , completion.insert_text_format );
         }
         if ( index == 4 )
         {
@@ -672,6 +686,7 @@ TEST(client, document_completion_templates)
             ASSERT_EQ ( "Object description here For test" , completion.documentation   );
             ASSERT_EQ ( false                              , completion.deprecated      );
             ASSERT_EQ ( false                              , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext            , completion.insert_text_format );
         }
     }
 }

@@ -598,6 +598,8 @@ bool dissectInitializeResponse( const DataObject   & object              ,
  * @param documentation - documentation string for this item
  * @param deprecated - flag indicating if this item is deprecated
  * @param preselect - flag indicating if this item should be pre-selected
+ * @param insert_text_format - plain text or snippet format for new_text
+                               defaults to plain text when not specified
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
@@ -613,9 +615,45 @@ bool buildCompletionObject( DataObject        & object          ,
                             const std::string & detail          ,
                             const std::string & documentation   ,
                             bool                deprecated      ,
-                            bool                preselect       );
+                            bool                preselect       ,
+                            int                 insert_text_format = 1); // m_text_format_plaintext
 
 /** dissect completion item object into the provided parameter references
+ ** this version accepts insert_text_format to fill if in the data object
+ * @param object - const reference to data object that will be dissected
+ * @param errors - reference to stream to fill with any possible errors
+ * @param label - label to be used for this item in autocomplete list
+ * @param start_line - starting line number for this item ( zero-based )
+ * @param start_character - starting column number for this item ( zero-based )
+ * @param end_line - ending line number for this item ( zero-based )
+ * @param end_character - ending column number for this item ( zero-based )
+ * @param new_text - text to be inserted for this item upon autocomplete
+ * @param kind - kind value for this item
+ * @param detail - detail string for this item
+ * @param documentation - documentation string for this item
+ * @param deprecated - flag indicating if this item is deprecated
+ * @param preselect - flag indicating if this item should be pre-selected
+ * @param insert_text_format - plain text or snippet format for new_text
+ * @return - true if the object was successfully dissected without error
+ */
+WASP_PUBLIC
+bool dissectCompletionObject( const DataObject   & object          ,
+                                    std::ostream & errors          ,
+                                    std::string  & label           ,
+                                    int          & start_line      ,
+                                    int          & start_character ,
+                                    int          & end_line        ,
+                                    int          & end_character   ,
+                                    std::string  & new_text        ,
+                                    int          & kind            ,
+                                    std::string  & detail          ,
+                                    std::string  & documentation   ,
+                                    bool         & deprecated      ,
+                                    bool         & preselect       ,
+                                    int          & insert_text_format );
+
+/** dissect completion item object into the provided parameter references
+ ** this version without insert_text_format ignores that object parameter
  * @param object - const reference to data object that will be dissected
  * @param errors - reference to stream to fill with any possible errors
  * @param label - label to be used for this item in autocomplete list
@@ -1081,6 +1119,7 @@ struct clientCompletion
     std::string documentation;
     bool        deprecated;
     bool        preselect;
+    int         insert_text_format;
 };
 
 /**
@@ -1150,6 +1189,9 @@ static const char m_process_id[]            = "processId";
 static const char m_root_uri[]              = "rootUri";
 static const char m_capabilities[]          = "capabilities";
 static const char m_text_document[]         = "textDocument";
+static const char m_comp[]                  = "completion";
+static const char m_compitem[]              = "completionItem";
+static const char m_snip[]                  = "snippetSupport";
 static const char m_uri[]                   = "uri";
 static const char m_language_id[]           = "languageId";
 static const char m_version[]               = "version";
@@ -1181,6 +1223,7 @@ static const char m_detail[]                = "detail";
 static const char m_documentation[]         = "documentation";
 static const char m_deprecated[]            = "deprecated";
 static const char m_preselect[]             = "preselect";
+static const char m_insert_text_format[]    = "insertTextFormat";
 static const char m_items[]                 = "items";
 static const char m_is_incomplete[]         = "isIncomplete";
 static const char m_name[]                  = "name";
@@ -1200,6 +1243,8 @@ static const char m_references_provider[]   = "referencesProvider";
 static const char m_hover_provider[]        = "hoverProvider";
 static const int  m_change_full             =  1;
 static const int  m_change_incr             =  2;
+static const int  m_text_format_plaintext   =  1;
+static const int  m_text_format_snippet     =  2;
 static const int  m_comp_kind_text          =  1;
 static const int  m_comp_kind_method        =  2;
 static const int  m_comp_kind_function      =  3;

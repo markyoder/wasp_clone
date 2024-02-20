@@ -37,8 +37,12 @@ TEST(server, handle_initialize)
 
     // handle the built initialize request with the test_server
 
+    ASSERT_FALSE(test_server.clientSupportsSnippets());
+
     ASSERT_TRUE(test_server.handleInitializeRequest( initializeRequest  ,
                                                      initializeResponse ));
+
+    ASSERT_FALSE(test_server.clientSupportsSnippets());
 
     // check the formatted json from the test_server's response object
 
@@ -307,6 +311,7 @@ TEST(server, handle_completion)
       "deprecated" : false
       ,"detail" : "test type info 1"
       ,"documentation" : "test documentation 1"
+      ,"insertTextFormat" : 1
       ,"kind" : 23
       ,"label" : "test-label-1"
       ,"preselect" : true
@@ -328,6 +333,7 @@ TEST(server, handle_completion)
       "deprecated" : false
       ,"detail" : "test type info 2"
       ,"documentation" : "test documentation 2"
+      ,"insertTextFormat" : 2
       ,"kind" : 24
       ,"label" : "test-label-2"
       ,"preselect" : false
@@ -349,6 +355,7 @@ TEST(server, handle_completion)
       "deprecated" : false
       ,"detail" : "test type info 3"
       ,"documentation" : "test documentation 3"
+      ,"insertTextFormat" : 1
       ,"kind" : 25
       ,"label" : "test-label-3"
       ,"preselect" : false

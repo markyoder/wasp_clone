@@ -233,6 +233,7 @@ TEST(client, document_completion_and_responses)
             ASSERT_EQ ( "test documentation 1" , completion.documentation   );
             ASSERT_EQ ( false                  , completion.deprecated      );
             ASSERT_EQ ( true                   , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext , completion.insert_text_format );
         }
         else if ( index == 1 )
         {
@@ -247,6 +248,7 @@ TEST(client, document_completion_and_responses)
             ASSERT_EQ ( "test documentation 2" , completion.documentation   );
             ASSERT_EQ ( false                  , completion.deprecated      );
             ASSERT_EQ ( false                  , completion.preselect       );
+            ASSERT_EQ ( m_text_format_snippet  , completion.insert_text_format );
         }
         else if ( index == 2 )
         {
@@ -261,6 +263,7 @@ TEST(client, document_completion_and_responses)
             ASSERT_EQ ( "test documentation 3" , completion.documentation   );
             ASSERT_EQ ( false                  , completion.deprecated      );
             ASSERT_EQ ( false                  , completion.preselect       );
+            ASSERT_EQ ( m_text_format_plaintext , completion.insert_text_format );
         }
     }
 }

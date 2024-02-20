@@ -131,7 +131,6 @@ bool ServerImpl::handleInitializeRequest(
     if ( this->is_initialized )
     {
         this->errors << m_error_prefix << "Server already initialized" << std::endl;
-
         return false;
     }
 
@@ -145,6 +144,26 @@ bool ServerImpl::handleInitializeRequest(
                                       this->client_process_id   ,
                                       this->client_root_path    ,
                                       this->client_capabilities );
+
+    // check if client announces snippet completion support in request at
+    // capabilities/textDocument/completion/completionItem/snippetSupport
+    if (client_capabilities.contains(m_text_document) &&
+        client_capabilities[m_text_document].is_object())
+    {
+        const auto & textdoc_caps = *(client_capabilities[m_text_document].to_object());
+        if (textdoc_caps.contains(m_comp) && textdoc_caps[m_comp].is_object())
+        {
+            const auto & comp_caps = *(textdoc_caps[m_comp].to_object());
+            if (comp_caps.contains(m_compitem) && comp_caps[m_compitem].is_object())
+            {
+                const auto & compitem_caps = *(comp_caps[m_compitem].to_object());
+                if (compitem_caps.contains(m_snip) && compitem_caps[m_snip].is_bool())
+                {
+                    this->client_snippet_support = compitem_caps[m_snip].to_bool();
+                }
+            }
+        }
+    }
 
     // build initialize response object
 
@@ -189,16 +208,29 @@ bool ServerImpl::handleDidOpenNotification(
 
     bool pass = true;
 
+    std::string document_path;
+    int         document_version;
+
     // dissect didopen notification object
 
     pass &= dissectDidOpenNotification( didOpenNotification        ,
                                         this->errors               ,
-                                        this->document_path        ,
+                                        document_path              ,
                                         this->document_language_id ,
-                                        this->document_version     ,
+                                        document_version           ,
                                         this->document_text        );
 
-    this->is_document_open = true;
+    if (this->document_versions.count(document_path))
+    {
+        this->errors << m_error_prefix << "Server already opened '" << document_path << "'" << std::endl;
+        return false;
+    }
+
+    // set document version in map for current input path to provided value
+    this->document_versions[document_path] = document_version;
+
+    // set current document path on server to input path for this operation
+    this->document_path = document_path;
 
     DataArray document_diagnostics;
 
@@ -226,12 +258,6 @@ bool ServerImpl::handleDidChangeNotification(
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     std::string document_path;
@@ -256,19 +282,23 @@ bool ServerImpl::handleDidChangeNotification(
                                           range_length           ,
                                           replacement_text       );
 
-    if ( document_path != this->document_path )
+    if (!this->document_versions.count(document_path))
     {
-        this->errors << m_error_prefix << "Server has different document open" << std::endl;
+        this->errors << m_error_prefix << "Server has not opened '" << document_path << "'" << std::endl;
         return false;
     }
 
-    if (document_version <= this->document_version )
+    if (document_version <= this->document_versions.find(document_path)->second)
     {
-        this->errors << m_error_prefix << "Server sent bad document version" << std::endl;
+        this->errors << m_error_prefix << "Server got bad id for '" << document_path << "'" << std::endl;
         return false;
     }
 
-    this->document_version = document_version;
+    // set document version in map for current input path to provided value
+    this->document_versions[document_path] = document_version;
+
+    // set current document path on server to input path for this operation
+    this->document_path = document_path;
 
     // call server specific method to update in-memory document with changes
 
@@ -305,12 +335,6 @@ bool ServerImpl::handleCompletionRequest(
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     std::string document_path;
@@ -326,11 +350,14 @@ bool ServerImpl::handleCompletionRequest(
                                       line                    ,
                                       character               );
 
-    if ( document_path != this->document_path )
+    if (!this->document_versions.count(document_path))
     {
-        this->errors << m_error_prefix << "Server has different document open" << std::endl;
+        this->errors << m_error_prefix << "Server has not opened '" << document_path << "'" << std::endl;
         return false;
     }
+
+    // set current document path on server to input path for this operation
+    this->document_path = document_path;
 
     DataArray completion_items;
     bool      is_incomplete;
@@ -363,12 +390,6 @@ bool ServerImpl::handleDefinitionRequest(
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     std::string document_path;
@@ -384,11 +405,14 @@ bool ServerImpl::handleDefinitionRequest(
                                       line                    ,
                                       character               );
 
-    if ( document_path != this->document_path )
+    if (!this->document_versions.count(document_path))
     {
-        this->errors << m_error_prefix << "Server has different document open" << std::endl;
+        this->errors << m_error_prefix << "Server has not opened '" << document_path << "'" << std::endl;
         return false;
     }
+
+    // set current document path on server to input path for this operation
+    this->document_path = document_path;
 
     DataArray definition_locations;
 
@@ -418,12 +442,6 @@ bool ServerImpl::handleReferencesRequest(
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     std::string document_path;
@@ -441,11 +459,14 @@ bool ServerImpl::handleReferencesRequest(
                                       character               ,
                                       include_declaration     );
 
-    if ( document_path != this->document_path )
+    if (!this->document_versions.count(document_path))
     {
-        this->errors << m_error_prefix << "Server has different document open" << std::endl;
+        this->errors << m_error_prefix << "Server has not opened '" << document_path << "'" << std::endl;
         return false;
     }
+
+    // set current document path on server to input path for this operation
+    this->document_path = document_path;
 
     DataArray references_locations;
 
@@ -476,12 +497,6 @@ bool ServerImpl::handleFormattingRequest(
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     std::string document_path;
@@ -497,11 +512,14 @@ bool ServerImpl::handleFormattingRequest(
                                       tab_size                ,
                                       insert_spaces           );
 
-    if ( document_path != this->document_path )
+    if (!this->document_versions.count(document_path))
     {
-        this->errors << m_error_prefix << "Server has different document open" << std::endl;
+        this->errors << m_error_prefix << "Server has not opened '" << document_path << "'" << std::endl;
         return false;
     }
+
+    // set current document path on server to input path for this operation
+    this->document_path = document_path;
 
     DataArray formatting_textedits;
 
@@ -531,12 +549,6 @@ bool ServerImpl::handleSymbolsRequest(
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     std::string document_path;
@@ -548,11 +560,14 @@ bool ServerImpl::handleSymbolsRequest(
                                    this->client_request_id ,
                                    document_path           );
 
-    if ( document_path != this->document_path )
+    if (!this->document_versions.count(document_path))
     {
-        this->errors << m_error_prefix << "Server has different document open" << std::endl;
+        this->errors << m_error_prefix << "Server has not opened '" << document_path << "'" << std::endl;
         return false;
     }
+
+    // set current document path on server to input path for this operation
+    this->document_path = document_path;
 
     DataArray document_symbols;
 
@@ -579,12 +594,6 @@ bool ServerImpl::handleDidCloseNotification(
         return false;
     }
 
-    if (!this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server has no open document" << std::endl;
-        return false;
-    }
-
     bool pass = true;
 
     std::string document_path;
@@ -595,13 +604,14 @@ bool ServerImpl::handleDidCloseNotification(
                                          this->errors         ,
                                          document_path        );
 
-    if ( document_path != this->document_path )
+    if (!this->document_versions.count(document_path))
     {
-        this->errors << m_error_prefix << "Server has different document open" << std::endl;
+        this->errors << m_error_prefix << "Server has not opened '" << document_path << "'" << std::endl;
         return false;
     }
 
-    this->is_document_open = false;
+    // remove input path from map of open documents as it is no longer open
+    this->document_versions.erase(document_path);
 
     return pass;
 }
@@ -613,12 +623,6 @@ bool ServerImpl::handleShutdownRequest(
     if (!this->is_initialized)
     {
         this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
-        return false;
-    }
-
-    if (this->is_document_open)
-    {
-        this->errors << m_error_prefix << "Server document needs to be closed" << std::endl;
         return false;
     }
 
