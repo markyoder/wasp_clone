@@ -10,7 +10,7 @@ conda activate wasp_ci
 
 cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Debug-${CI_COMMIT_REF_NAME}" \
       -DCMAKE_BUILD_TYPE=DEBUG \
-      -Dwasp_ENABLE_SWIG=ON \
+      -DWASP_ENABLE_SWIG=ON \
       -Dwasp_ENABLE_TESTS=ON \
       -Dwasp_ENABLE_ALL_PACKAGES=ON \
       ..
@@ -28,11 +28,10 @@ cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Bundle-${CI_COMMIT_REF_NAME}" \
       -DCPACK_PACKAGE_NAME=WASP \
       -DCMAKE_BUILD_TYPE=RELEASE \
       -Dwasp_ENABLE_ALL_PACKAGES=ON \
-      -Dwasp_ENABLE_SWIG=ON \
+      -DWASP_ENABLE_SWIG=ON \
       -Dwasp_ENABLE_TESTS:BOOL=OFF \
       -Dwasp_ENABLE_ALL_PACKAGES:BOOL=ON \
       -Dwasp_ENABLE_testframework:BOOL=OFF \
-      -Dwasp_ENABLE_googletest:BOOL=OFF \
       -Dwasp_ENABLE_wasppy:BOOL=ON \
       -Dwasp_ENABLE_INSTALL_CMAKE_CONFIG_FILES:BOOL=ON \
       -Dwasp_GENERATE_EXPORT_FILE_DEPENDENCIES:BOOL=ON \
