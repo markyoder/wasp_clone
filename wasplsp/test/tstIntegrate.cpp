@@ -15,6 +15,7 @@ namespace lsp  {
 std::thread        server_thread;
 Server<TestServer> test_server;
 Connection::SP     test_connection;
+int                test_request_id;
 
 TEST(integrate, server_thread_launch)
 {
@@ -27,10 +28,13 @@ TEST(integrate, server_thread_launch)
 
 TEST(integrate, test_initialize)
 {
+    // start test request id at one and increment by one after each request
+    test_request_id = 1;
+
     // initialize - build object / stream to server / get response back / test
 
     DataObject  client_object;
-    int         client_request_id =  1;
+    int         client_request_id =  test_request_id;
     int         client_process_id =  12345;
     std::string client_root_uri   = "test/root/uri/string";
     DataObject  client_caps, textdoc_caps, complete_caps, compitem_caps;
@@ -58,6 +62,8 @@ TEST(integrate, test_initialize)
     ASSERT_FALSE(test_server.clientSupportsSnippets());
 
     ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
+
+    test_request_id++;
 
     ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
@@ -93,7 +99,7 @@ TEST(integrate, test_initialize)
     ASSERT_FALSE(response_capabilities[m_references_provider].to_bool());
 
     ASSERT_TRUE(response_capabilities[m_hover_provider].is_bool());
-    ASSERT_FALSE(response_capabilities[m_hover_provider].to_bool());
+    ASSERT_TRUE(response_capabilities[m_hover_provider].to_bool());
 }
 
 TEST(integrate, test_initialized)
@@ -253,7 +259,7 @@ TEST(integrate, test_completion)
     // completion - build object / stream to server / get response back / test
 
     DataObject  client_object;
-    int         client_request_id =  3;
+    int         client_request_id =  test_request_id;
     std::string document_uri      = "test/document/uri/string";
     int         line              =  4;
     int         character         =  2;
@@ -286,6 +292,8 @@ TEST(integrate, test_completion)
                                          character         ) );
 
     ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
+
+    test_request_id++;
 
     ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
@@ -333,7 +341,7 @@ TEST(integrate, test_definition)
     // definition - build object / stream to server / get response back / test
 
     DataObject  client_object;
-    int         client_request_id =  4;
+    int         client_request_id =  test_request_id;
     std::string document_uri      = "test/document/uri/string";
     int         line              =  2;
     int         character         =  5;
@@ -358,6 +366,8 @@ TEST(integrate, test_definition)
                                          character         ) );
 
     ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
+
+    test_request_id++;
 
     ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
@@ -384,12 +394,49 @@ TEST(integrate, test_definition)
     ASSERT_EQ ( 33                        ,  response_3_end_character   );
 }
 
+TEST(integrate, test_hover)
+{
+    // hover - build object / stream to server / get response back / test
+
+    DataObject        client_object;
+    std::stringstream client_errors;
+    int               client_request_id = test_request_id;
+    std::string       document_uri      = "test/document/uri/string";
+    int               line              = 7;
+    int               character         = 8;
+
+    DataObject  response_object;
+    int         response_request_id;
+    std::string response_hover_text;
+
+    ASSERT_TRUE(buildHoverRequest( client_object     ,
+                                   client_errors     ,
+                                   client_request_id ,
+                                   document_uri      ,
+                                   line              ,
+                                   character         ));
+
+    ASSERT_TRUE(test_connection->write(client_object, client_errors));
+
+    test_request_id++;
+
+    ASSERT_TRUE(test_connection->read(response_object, client_errors));
+
+    ASSERT_TRUE(dissectHoverResponse( response_object       ,
+                                      client_errors         ,
+                                      response_request_id   ,
+                                      response_hover_text ));
+
+    ASSERT_EQ(client_request_id, response_request_id);
+    ASSERT_EQ("this is the hover text from the test server", response_hover_text);
+}
+
 TEST(integrate, test_references)
 {
     // references - build object / stream to server / get response back / test
 
     DataObject  client_object;
-    int         client_request_id   =  5;
+    int         client_request_id   =  test_request_id;
     std::string document_uri        = "test/document/uri/string";
     int         line                =  1;
     int         character           =  3;
@@ -416,6 +463,8 @@ TEST(integrate, test_references)
                                          include_declaration ) );
 
     ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
+
+    test_request_id++;
 
     ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
@@ -447,7 +496,7 @@ TEST(integrate, test_formatting)
     // formatting - build object / stream to server / get response back / test
 
     DataObject  client_object;
-    int         client_request_id =  6;
+    int         client_request_id =  test_request_id;
     std::string document_uri      = "test/document/uri/string";
     int         tab_size          =  4;
     bool        insert_spaces     =  true;
@@ -472,6 +521,8 @@ TEST(integrate, test_formatting)
                                          insert_spaces     ) );
 
     ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
+
+    test_request_id++;
 
     ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
@@ -503,7 +554,7 @@ TEST(integrate, test_symbols)
     // symbols - build object / stream to server / get response back / test
 
     DataObject  client_object;
-    int         client_request_id =  7;
+    int         client_request_id =  test_request_id;
     std::string document_uri      = "test/document/uri/string";
 
     DataObject  response_object;
@@ -557,6 +608,8 @@ TEST(integrate, test_symbols)
                                       document_uri      ) );
 
     ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
+
+    test_request_id++;
 
     ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 
@@ -689,7 +742,7 @@ TEST(integrate, test_shutdown)
     // shutdown - build object / stream to server / get response back / test
 
     DataObject  client_object;
-    int         client_request_id = 8;
+    int         client_request_id = test_request_id;
 
     DataObject  response_object;
     int         response_request_id;
@@ -701,6 +754,8 @@ TEST(integrate, test_shutdown)
                                        client_request_id ) );
 
     ASSERT_TRUE( test_connection->write( client_object , client_errors ) );
+
+    test_request_id++;
 
     ASSERT_TRUE( test_connection->read( response_object , client_errors ) );
 

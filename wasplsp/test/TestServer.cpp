@@ -253,6 +253,27 @@ bool TestServer::gatherDocumentDefinitionLocations(
     return pass;
 }
 
+bool TestServer::getHoverDisplayText(
+                      std::string & displayText ,
+                      int           line          ,
+                      int           character     )
+{
+    // create hover display text for unit testing
+
+    if (!this->is_initialized)
+    {
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    if (line == 7 && character == 8)
+    {
+        displayText = "this is the hover text from the test server";
+    }
+
+    return true;
+}
+
 bool TestServer::gatherDocumentReferencesLocations(
                       DataArray & referencesLocations ,
                       int         line                ,

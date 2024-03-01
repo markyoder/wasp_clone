@@ -622,6 +622,104 @@ TEST(lsp, definition_request)
     ASSERT_EQ ( character  , tst_character  );
 }
 
+TEST(lsp, hover_request)
+{
+    // test hover request object building and dissection round trip
+
+    DataObject        object;
+    std::stringstream errors;
+
+    int               request_id =  21;
+    std::string       uri        = "test/document/uri/string";
+    int               line       =  31;
+    int               character  =  41;
+
+    ASSERT_TRUE( buildHoverRequest( object     ,
+                                    errors     ,
+                                    request_id ,
+                                    uri        ,
+                                    line       ,
+                                    character  ));
+
+    ASSERT_EQ  ( (size_t) 3 , object.size() );
+
+    ASSERT_TRUE( object[m_id].is_int()              );
+    ASSERT_EQ  ( object[m_id].to_int() , request_id );
+
+    ASSERT_TRUE( object[m_method].is_string()                  );
+    ASSERT_EQ  ( object[m_method].to_string() , m_method_hover );
+
+    ASSERT_TRUE( object[m_params].is_object()         );
+    ASSERT_EQ  ( object[m_params].size() , (size_t) 2 );
+
+    ASSERT_TRUE( object[m_params][m_text_document].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_text_document].size() , (size_t) 1 );
+
+    ASSERT_TRUE( object[m_params][m_text_document][m_uri].is_string()       );
+    ASSERT_EQ  ( object[m_params][m_text_document][m_uri].to_string() , uri );
+
+    ASSERT_TRUE( object[m_params][m_position].is_object()         );
+    ASSERT_EQ  ( object[m_params][m_position].size() , (size_t) 2 );
+
+    ASSERT_TRUE( object[m_params][m_position][m_line].is_int()       );
+    ASSERT_EQ  ( object[m_params][m_position][m_line].to_int() , line );
+
+    ASSERT_TRUE( object[m_params][m_position][m_character].is_int()             );
+    ASSERT_EQ  ( object[m_params][m_position][m_character].to_int() , character );
+
+    std::string rpcstr;
+    ASSERT_TRUE( objectToRPCString( object ,
+                                    rpcstr ,
+                                    errors ));
+
+    std::stringstream rpc_expected;
+    rpc_expected << "Content-Length: 154\r\n\r\n"
+                 << R"({"id":21,"jsonrpc":"2.0","method":"textDocument/hover",)"
+                 << R"("params":{"position":{"character":41,"line":31},)"
+                 << R"("textDocument":{"uri":"test/document/uri/string"}}})";
+    // {
+    //   "id" : 21,
+    //   "jsonrpc" : "2.0",
+    //   "method" : "textDocument/hover",
+    //   "params" : {
+    //     "position" : {
+    //       "character" : 41,
+    //       "line" : 31
+    //     },
+    //     "textDocument" : {
+    //       "uri" : "test/document/uri/string"
+    //     }
+    //   }
+    // }
+
+    ASSERT_EQ( rpc_expected.str() , rpcstr );
+
+    DataObject tst_object;
+    ASSERT_TRUE( RPCStringToObject( rpcstr     ,
+                                    tst_object ,
+                                    errors     ));
+
+    ASSERT_TRUE( tst_object[m_method].is_string()                  );
+    ASSERT_EQ  ( tst_object[m_method].to_string() , m_method_hover );
+
+    int         tst_request_id ;
+    std::string tst_uri;
+    int         tst_line;
+    int         tst_character;
+
+    ASSERT_TRUE( dissectHoverRequest( object         ,
+                                      errors         ,
+                                      tst_request_id ,
+                                      tst_uri        ,
+                                      tst_line       ,
+                                      tst_character  ));
+
+    ASSERT_EQ( request_id , tst_request_id );
+    ASSERT_EQ( uri        , tst_uri        );
+    ASSERT_EQ( line       , tst_line       );
+    ASSERT_EQ( character  , tst_character  );
+}
+
 TEST(lsp, references_request)
 {
     // test references request object building and dissection round trip
@@ -2503,6 +2601,70 @@ TEST(lsp, locations_response)
     ASSERT_EQ ( 55                   ,  tst_start_character );
     ASSERT_EQ ( 55                   ,  tst_end_line        );
     ASSERT_EQ ( 55                   ,  tst_end_character   );
+}
+
+TEST(lsp, hover_response)
+{
+    // test hover response object building and dissection round trip
+
+    DataObject        object;
+    std::stringstream errors;
+
+    int         request_id   = 22;
+    std::string display_text = "this is the hover text of the lsp unit test";
+
+    ASSERT_TRUE( buildHoverResponse( object       ,
+                                     errors       ,
+                                     request_id   ,
+                                     display_text ));
+
+    ASSERT_EQ  ( (size_t) 2 , object.size() );
+
+    ASSERT_TRUE( object[m_id].is_int()              );
+    ASSERT_EQ  ( object[m_id].to_int() , request_id );
+
+    ASSERT_TRUE( object[m_result].is_object()         );
+    ASSERT_EQ  ( object[m_result].size() , (size_t) 1 );
+
+    ASSERT_TRUE( object[m_result][m_contents].is_string()                );
+    ASSERT_EQ  ( object[m_result][m_contents].to_string() , display_text );
+
+    std::string rpcstr;
+    ASSERT_TRUE( objectToRPCString( object ,
+                                    rpcstr ,
+                                    errors ));
+
+    std::stringstream rpc_expected;
+    rpc_expected << "Content-Length: 93\r\n\r\n"
+                 << R"({"id":22,"jsonrpc":"2.0","result":{"contents":)"
+                 << R"("this is the hover text of the lsp unit test"}})";
+    // {
+    //   "id" : 22,
+    //   "jsonrpc" : "2.0",
+    //   "result" : {
+    //     "contents" : "this is the hover text of the lsp unit test"
+    //   }
+    // }
+
+    ASSERT_EQ( rpc_expected.str() , rpcstr );
+
+    DataObject tst_object;
+    ASSERT_TRUE( RPCStringToObject( rpcstr     ,
+                                    tst_object ,
+                                    errors     ));
+
+    ASSERT_FALSE( tst_object[m_method].is_string() );
+
+    int         tst_request_id;
+    std::string tst_display_text;
+
+    ASSERT_TRUE( dissectHoverResponse( object           ,
+                                       errors           ,
+                                       tst_request_id   ,
+                                       tst_display_text ));
+
+    ASSERT_EQ( request_id   , tst_request_id  );
+    ASSERT_EQ( display_text , tst_display_text );
 }
 
 TEST(lsp, textedit_object)

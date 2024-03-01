@@ -55,7 +55,12 @@ bool ServerImpl::run()
         else if ( method_name == m_method_definition )
         {
             pass &= this->handleDefinitionRequest( input_object  ,
-                                                   output_object );;
+                                                   output_object );
+        }
+        else if ( method_name == m_method_hover )
+        {
+            pass &= this->handleHoverRequest( input_object  ,
+                                              output_object );
         }
         else if ( method_name == m_method_references )
         {
@@ -428,6 +433,52 @@ bool ServerImpl::handleDefinitionRequest(
                                     this->errors            ,
                                     this->client_request_id ,
                                     definition_locations    );
+
+    return pass;
+}
+
+bool ServerImpl::handleHoverRequest(
+                const DataObject & hoverRequest  ,
+                      DataObject & hoverResponse )
+{
+    if (!this->is_initialized)
+    {
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    bool pass = true;
+
+    std::string document_path;
+    int         line;
+    int         character;
+
+    // dissect hover request object
+    pass &= dissectHoverRequest( hoverRequest            ,
+                                 this->errors            ,
+                                 this->client_request_id ,
+                                 document_path           ,
+                                 line                    ,
+                                 character               );
+
+    if (!this->document_versions.count(document_path))
+    {
+        this->errors << m_error_prefix << "Server has not opened '" << document_path << "'" << std::endl;
+        return false;
+    }
+
+    // set current document path on server to input path for this operation
+    this->document_path = document_path;
+
+    // call server specific method to get hover display at request location
+    std::string display_text;
+    pass &= this->getHoverDisplayText(display_text, line, character);
+
+    // build hover response object with hover text that should be displayed
+    pass &= buildHoverResponse( hoverResponse           ,
+                                this->errors            ,
+                                this->client_request_id ,
+                                display_text            );
 
     return pass;
 }

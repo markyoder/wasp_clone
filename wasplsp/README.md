@@ -1,8 +1,8 @@
 # Language Server Protocol
 
-The Language Server Protocol (LSP) package in WASP provides support for most features of the Language Server Protocol version 3.14.
+The Language Server Protocol (LSP) package in WASP provides support for most document features of the Language Server Protocol version 3.17.
 
-For the details of the official protocol specifications including requests, responses, parameters, error handling, etc., please see [https://microsoft.github.io/language-server-protocol/specification].
+For the details of the official protocol specifications including requests, responses, parameters, error handling, etc., please see [https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/].
 
 For code examples using the WASP LSP features such as the WASP Language Server, Client, LSPInterpreter, LSP Connection Base, Document Symbol Navigator, etc. see the LSP tests in the code repository.
 
@@ -19,6 +19,7 @@ The WASP Language Server class allows all WASP input processing packages to be u
 | handleDidChangeNotification   | Parse changed document / validate against the schema / send diagnostics back to client |
 | handleCompletionRequest       | Use the schema's ExistsIn, ValEnums, InputVariants, etc to provide client AutoCompletion |
 | handleDefinitionRequest       | Use the schema's ExistsIn rules to provide GoToDefinition support to the client |
+| handleHoverRequest            | Use the schema's Description fields to provide documentation to the client on hover |
 | handleReferencesRequest       | References are not yet supported by the WASP Language Server |
 | handleFormattingRequest       | Formatting is not yet supported by the WASP Language Server |
 | handleSymbolsRequest          | Convert any WASP parse tree to standard LSP hierarchical document symbols |
@@ -51,6 +52,8 @@ These methods have been tested specifically against the [Xtext](https://github.c
 | doDocumentDefinition | Build definition request / write to connection / read response |
 | getDefinitionSize    | Get the number of items in the definition response |
 | getDefinitionAt      | Get the definition response at a given index |
+| doDocumentHover      | Build hover request / write to connection / read response |
+| getHoverText         | Get the text contents stored in the hover response |
 | doDocumentReferences | Build references request / write to connection / read response |
 | getReferencesSize    | Get the number of items in the references response |
 | getReferencesAt      | Get the references response at a given index |

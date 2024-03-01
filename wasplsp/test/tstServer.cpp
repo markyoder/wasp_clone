@@ -11,15 +11,19 @@ namespace lsp  {
 // handle for test server used for all of the tests
 
 Server<TestServer> test_server;
+int                test_request_id;
 
 TEST(server, handle_initialize)
 {
+    // start test request id at one and increment by one after each request
+    test_request_id = 1;
+
     DataObject        initializeRequest;
     std::stringstream errors;
 
     // initialize test parameters
 
-    int               client_request_id =  1;
+    int               client_request_id =  test_request_id;
     int               client_process_id =  12345;
     std::string       client_root_path  = "test/root/uri/string";
     DataObject        client_capabilities;
@@ -41,6 +45,7 @@ TEST(server, handle_initialize)
 
     ASSERT_TRUE(test_server.handleInitializeRequest( initializeRequest  ,
                                                      initializeResponse ));
+    test_request_id++;
 
     ASSERT_FALSE(test_server.clientSupportsSnippets());
 
@@ -60,7 +65,7 @@ TEST(server, handle_initialize)
     ,"definitionProvider" : true
     ,"documentFormattingProvider" : true
     ,"documentSymbolProvider" : true
-    ,"hoverProvider" : false
+    ,"hoverProvider" : true
     ,"referencesProvider" : false
     ,"textDocumentSync" : {
       "change" : 1
@@ -275,7 +280,7 @@ TEST(server, handle_completion)
 
     // completion test parameters
 
-    int               client_request_id =  2;
+    int               client_request_id =  test_request_id;
     std::string       document_path     = "test/document/uri/string";
     int               line              =  4;
     int               character         =  2;
@@ -295,6 +300,7 @@ TEST(server, handle_completion)
 
     ASSERT_TRUE(test_server.handleCompletionRequest( completionRequest  ,
                                                      completionResponse ));
+    test_request_id++;
 
     // check the formatted json from the test_server's response object
 
@@ -387,7 +393,7 @@ TEST(server, handle_definition)
 
     // definition test parameters
 
-    int               client_request_id =  3;
+    int               client_request_id =  test_request_id;
     std::string       document_path     = "test/document/uri/string";
     int               line              =  2;
     int               character         =  5;
@@ -407,6 +413,7 @@ TEST(server, handle_definition)
 
     ASSERT_TRUE(test_server.handleDefinitionRequest( definitionRequest  ,
                                                      definitionResponse ));
+    test_request_id++;
 
     // check the formatted json from the test_server's response object
 
@@ -462,6 +469,42 @@ TEST(server, handle_definition)
     ASSERT_EQ ( json_expected.str() , json.str() );
 }
 
+TEST(server, handle_hover)
+{
+    // document hover test parameters using line and column for test server
+    DataObject        hoverRequest;
+    std::stringstream errors;
+    int               client_request_id = test_request_id;
+    std::string       document_path     = "test/document/uri/string";
+    int               line              = 7;
+    int               character         = 8;
+
+    // build document hover request object using parameters for test server
+    ASSERT_TRUE(buildHoverRequest( hoverRequest  ,
+                                   errors             ,
+                                   client_request_id  ,
+                                   document_path      ,
+                                   line               ,
+                                   character          ));
+
+    // handle document hover request object that was built with test server
+    DataObject hoverResponse;
+    ASSERT_TRUE(test_server.handleHoverRequest(hoverRequest, hoverResponse));
+    test_request_id++;
+
+    // check formatted json from test server document hover response object
+    std::stringstream json;
+    hoverResponse.format_json(json);
+    std::stringstream json_expected;
+    json_expected << R"INPUT({
+  "id" : 4
+  ,"result" : {
+    "contents" : "this is the hover text from the test server"
+  }
+})INPUT";
+    ASSERT_EQ ( json_expected.str() , json.str() );
+}
+
 TEST(server, handle_references)
 {
     DataObject        referencesRequest;
@@ -469,7 +512,7 @@ TEST(server, handle_references)
 
     // references test parameters
 
-    int               client_request_id   =  4;
+    int               client_request_id   =  test_request_id;
     std::string       document_path       = "test/document/uri/string";
     int               line                =  1;
     int               character           =  3;
@@ -491,6 +534,7 @@ TEST(server, handle_references)
 
     ASSERT_TRUE(test_server.handleReferencesRequest( referencesRequest  ,
                                                      referencesResponse ));
+    test_request_id++;
 
     // check the formatted json from the test_server's response object
 
@@ -499,7 +543,7 @@ TEST(server, handle_references)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "id" : 4
+  "id" : 5
   ,"result" : [
     {
     "range" : {
@@ -540,7 +584,7 @@ TEST(server, handle_formatting)
 
     // formatting test parameters
 
-    int               client_request_id =  5;
+    int               client_request_id =  test_request_id;
     std::string       document_path     = "test/document/uri/string";
     int               tab_size          =  4;
     bool              insert_spaces     =  true;
@@ -560,6 +604,7 @@ TEST(server, handle_formatting)
 
     ASSERT_TRUE(test_server.handleFormattingRequest( formattingRequest  ,
                                                      formattingResponse ));
+    test_request_id++;
 
     // check the formatted json from the test_server's response object
 
@@ -568,7 +613,7 @@ TEST(server, handle_formatting)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "id" : 5
+  "id" : 6
   ,"result" : [
     {
     "newText" : "test\n  new\n  text\n  format\n  1"
@@ -622,7 +667,7 @@ TEST(server, handle_symbols)
 
     // symbols test parameters
 
-    int               client_request_id =  6;
+    int               client_request_id =  test_request_id;
     std::string       document_path     = "test/document/uri/string";
 
     // build symbols request with the test parameters
@@ -638,6 +683,7 @@ TEST(server, handle_symbols)
 
     ASSERT_TRUE(test_server.handleSymbolsRequest( symbolsRequest  ,
                                                   symbolsResponse ));
+    test_request_id++;
 
     // check the formatted json from the test_server's response object
 
@@ -646,7 +692,7 @@ TEST(server, handle_symbols)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "id" : 6
+  "id" : 7
   ,"result" : [
     {
     "children" : [
@@ -901,7 +947,7 @@ TEST(server, handle_shutdown)
 
     // shutdown test parameter
 
-    int client_request_id =  7;
+    int client_request_id =  test_request_id;
 
     // build shutdown request with the test parameters
 
@@ -915,6 +961,7 @@ TEST(server, handle_shutdown)
 
     ASSERT_TRUE(test_server.handleShutdownRequest( shutdownRequest  ,
                                                    shutdownResponse ));
+    test_request_id++;
 
     // check the formatted json from the test_server's response object
 
@@ -923,7 +970,7 @@ TEST(server, handle_shutdown)
 
     std::stringstream json_expected;
     json_expected << R"INPUT({
-  "id" : 7
+  "id" : 8
   ,"result" : {}
 })INPUT";
 
