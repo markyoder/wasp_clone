@@ -673,6 +673,42 @@ template < class INPUT      ,
            class VALIDATOR  ,
            class CONNECTION >
 bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
+    getHoverDisplayText(std::string & displayText, int line, int character)
+{
+    if (!this->is_setup)
+    {
+        this->errors << m_error_prefix << "Server needs to be setup" << std::endl;
+        return false;
+    }
+
+    if (!this->is_initialized)
+    {
+        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
+        return false;
+    }
+
+    INPUTNV selectedNode = wasp::findNodeUnderLineColumn( this->parser->root() ,
+                                                          line + 1             ,
+                                                          character + 1        );
+
+    // get the input definition node for path of this input node
+
+    wasp_check(this->inputdefinition);
+
+    auto def = this->inputdefinition->pathLookup(selectedNode.path());
+
+    displayText = def->getObjectDescription();
+
+    return true;
+}
+
+template < class INPUT      ,
+           class INPUTNV    ,
+           class SCHEMA     ,
+           class SCHEMANV   ,
+           class VALIDATOR  ,
+           class CONNECTION >
+bool WaspServer<INPUT,INPUTNV,SCHEMA,SCHEMANV,VALIDATOR,CONNECTION>::
     gatherDocumentReferencesLocations(
                       DataArray & referencesLocations ,
                       int         line                ,

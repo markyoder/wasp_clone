@@ -506,6 +506,60 @@ bool ClientImpl::doDocumentDefinition( int line      ,
     return pass;
 }
 
+bool ClientImpl::doDocumentHover(int line, int character)
+{
+    // turn on client in call state so that another call will not interfere
+    if (this->already_in_call) return false;
+    InsideClientCall scoped_guard(this->already_in_call);
+
+    // check client is connected and initialized with document already open
+    if (!this->is_connected)
+    {
+        this->errors << m_error_prefix << "Client not connected" << std::endl;
+        return false;
+    }
+    if (!this->is_initialized)
+    {
+        this->errors << m_error_prefix << "Connection not initialized" << std::endl;
+        return false;
+    }
+    if (!this->is_document_open)
+    {
+        this->errors << m_error_prefix << "Document not open" << std::endl;
+        return false;
+    }
+
+    // increment request id that should increase for each request to server
+    this->incrementRequestID();
+    DataObject client_object;
+
+    // set client response type to NONE and clear currently stored response
+    this->response_type = NONE;
+    this->response = std::make_shared<DataObject>();
+
+    // build hover request object using provided document path and location
+    bool pass = true;
+    pass &= buildHoverRequest( client_object       ,
+                               this->errors        ,
+                               this->request_id    ,
+                               this->document_path ,
+                               line                ,
+                               character           );
+
+    // write hover request object to connection then wait and read response
+    pass &= connection->write(client_object, this->errors);
+    pass &= connection->read(*this->response, this->errors);
+
+    // check response read from connection to see if server sent error back
+    pass &= checkErrorResponse(*this->response, this->errors);
+    wasp_check(verifyHoverResponse(*this->response));
+
+    // set response type to HOVER if all passed then turn off in call state
+    if (pass) this->response_type = HOVER;
+    this->already_in_call = false;
+    return pass;
+}
+
 bool ClientImpl::doDocumentReferences( int  line                ,
                                        int  character           ,
                                        bool include_declaration )
@@ -1089,6 +1143,33 @@ bool ClientImpl::getDefinitionAt( int                index      ,
                                    definition.end_line        ,
                                    definition.end_character   );
 
+    return pass;
+}
+
+bool ClientImpl::getHoverText(std::string & hover_text)
+
+{
+    // return false if another call has reset response to be different type
+    if (this->response_type != HOVER) return false;
+
+    // dissect stored hover response into id to check and hover text to set
+    int         response_request_id;
+    std::string response_hover_text;
+    bool        pass = true;
+    pass &= dissectHoverResponse( *this->response     ,
+                                  this->errors        ,
+                                  response_request_id ,
+                                  response_hover_text );
+
+    // check that id in response matches previous request id used by client
+    if (response_request_id != this->request_id)
+    {
+        this->errors << m_error_prefix << "Hover response id mismatch" << std::endl;
+        pass = false;
+    }
+
+    // set hover text to contents from stored response object if all passed
+    if (pass) hover_text = response_hover_text;
     return pass;
 }
 

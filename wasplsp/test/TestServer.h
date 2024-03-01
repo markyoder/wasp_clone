@@ -27,14 +27,14 @@ class WASP_PUBLIC TestServer : public ServerImpl
         this->server_capabilities[m_text_doc_sync][m_open_close] = true;
         this->server_capabilities[m_text_doc_sync][m_change] = m_change_full;
 
-        // notify completion, symbol, definition is provided / hover not provided
+        // completion, symbol, definition, hover provided / references are not
         this->server_capabilities[m_completion_provider] = DataObject();
         this->server_capabilities[m_completion_provider][m_resolve_provider] = false;
         this->server_capabilities[m_doc_symbol_provider] = true;
         this->server_capabilities[m_doc_format_provider] = true;
         this->server_capabilities[m_definition_provider] = true;
         this->server_capabilities[m_references_provider] = false;
-        this->server_capabilities[m_hover_provider] = false;
+        this->server_capabilities[m_hover_provider] = true;
     }
 
     /** get read / write connection - specific to this server implemention
@@ -94,6 +94,17 @@ class WASP_PUBLIC TestServer : public ServerImpl
                           DataArray & definitionLocations ,
                           int         line                ,
                           int         character           );
+
+    /** get hover display text - logic specific to test server implemention
+     * @param displayText - string reference to add text displayed on hover
+     * @param line - zero-based line to use for finding node and hover text
+     * @param character - zero-based column for finding node and hover text
+     * @return - true if display text was added or unmodified without error
+     */
+    bool getHoverDisplayText(
+                          std::string & displayText ,
+                          int           line        ,
+                          int           character   );
 
     /** gather references locations - specific to this server implemention
      * @param referencesLocations - data array of locations objects to fill

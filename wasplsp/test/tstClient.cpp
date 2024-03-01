@@ -17,6 +17,7 @@ namespace lsp  {
 Client<ClientImpl> test_client;
 Server<TestServer> test_server;
 std::thread        server_thread;
+int                test_request_id;
 
 TEST(client, launch_server_thread_and_connnect_client)
 {
@@ -33,11 +34,16 @@ TEST(client, launch_server_thread_and_connnect_client)
 
 TEST(client, initialize)
 {
+    // start test request id at one and increment by one after each request
+    test_request_id = 1;
+
     // initialize
 
     ASSERT_FALSE( test_client.getConnection()->isServerRunning() );
 
     ASSERT_TRUE ( test_client.doInitialize() );
+
+    test_request_id++;
 
     ASSERT_TRUE ( test_client.getConnection()->isServerRunning() );
 
@@ -45,7 +51,7 @@ TEST(client, initialize)
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( 1 , test_client.getPreviousRequestID() );
+    ASSERT_EQ   ( test_request_id - 1 , test_client.getPreviousRequestID() );
 }
 
 TEST(client, initialized)
@@ -58,7 +64,7 @@ TEST(client, initialized)
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( 1 , test_client.getPreviousRequestID() );
+    ASSERT_EQ   ( test_request_id - 1 , test_client.getPreviousRequestID() );
 }
 
 TEST(client, document_open_and_diagnostics)
@@ -83,7 +89,7 @@ TEST(client, document_open_and_diagnostics)
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( 1 , test_client.getPreviousRequestID() );
+    ASSERT_EQ   ( test_request_id - 1 , test_client.getPreviousRequestID() );
 
     // diagnostic responses
 
@@ -157,7 +163,7 @@ TEST(client, document_change_and_diagnostics)
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( 1 , test_client.getPreviousRequestID() );
+    ASSERT_EQ   ( test_request_id - 1 , test_client.getPreviousRequestID() );
 
     // diagnostic responses
 
@@ -203,12 +209,13 @@ TEST(client, document_completion_and_responses)
 
     ASSERT_TRUE ( test_client.doDocumentCompletion( line      ,
                                                     character ) );
+    test_request_id++;
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( 2 , test_client.getPreviousRequestID() );
+    ASSERT_EQ   ( test_request_id - 1 , test_client.getPreviousRequestID() );
 
     // completion responses
 
@@ -277,12 +284,13 @@ TEST(client, document_definition_and_responses)
 
     ASSERT_TRUE ( test_client.doDocumentDefinition( line      ,
                                                     character ) );
+    test_request_id++;
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( 3 , test_client.getPreviousRequestID() );
+    ASSERT_EQ   ( test_request_id - 1 , test_client.getPreviousRequestID() );
 
     // definition responses
 
@@ -318,6 +326,26 @@ TEST(client, document_definition_and_responses)
     }
 }
 
+TEST(client, document_hover_and_response)
+{
+    // document hover test parameters using line and column for test server
+    int line      = 7;
+    int character = 8;
+
+    // use client to do document hover with line and column for test server
+    ASSERT_TRUE(test_client.doDocumentHover(line, character));
+    test_request_id++;
+    ASSERT_TRUE(test_client.getConnection()->getServerErrors().empty());
+    ASSERT_TRUE(test_client.getErrors().empty());
+    ASSERT_EQ(test_request_id - 1, test_client.getPreviousRequestID());
+
+    // check contents of test server response to client document hover call
+    std::string response_hover_text;
+    ASSERT_TRUE(test_client.getHoverText(response_hover_text));
+    ASSERT_TRUE(test_client.getErrors().empty());
+    ASSERT_EQ("this is the hover text from the test server", response_hover_text);
+}
+
 TEST(client, document_references_and_responses)
 {
     // document references
@@ -329,12 +357,13 @@ TEST(client, document_references_and_responses)
     ASSERT_TRUE ( test_client.doDocumentReferences( line                ,
                                                     character           ,
                                                     include_declaration ) );
+    test_request_id++;
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( 4 , test_client.getPreviousRequestID() );
+    ASSERT_EQ   ( test_request_id - 1 , test_client.getPreviousRequestID() );
 
     // references responses
 
@@ -372,12 +401,13 @@ TEST(client, document_formatting_and_responses)
 
     ASSERT_TRUE ( test_client.doDocumentFormatting( tab_size      ,
                                                     insert_spaces ) );
+    test_request_id++;
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( 5 , test_client.getPreviousRequestID() );
+    ASSERT_EQ   ( test_request_id - 1 , test_client.getPreviousRequestID() );
 
     // formatting responses
 
@@ -422,11 +452,13 @@ TEST(client, document_symbols_and_responses)
 
     ASSERT_TRUE ( test_client.doDocumentSymbols() );
 
+    test_request_id++;
+
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
-    ASSERT_EQ   ( 6 , test_client.getPreviousRequestID() );
+    ASSERT_EQ   ( test_request_id - 1 , test_client.getPreviousRequestID() );
 
     // symbols responses
 
@@ -753,7 +785,7 @@ TEST(client, document_close)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( 6 , test_client.getPreviousRequestID() );
+    ASSERT_EQ   ( test_request_id - 1 , test_client.getPreviousRequestID() );
 }
 
 TEST(client, shutdown)
@@ -764,13 +796,15 @@ TEST(client, shutdown)
 
     ASSERT_TRUE ( test_client.doShutdown() );
 
+    test_request_id++;
+
     ASSERT_FALSE( test_client.getConnection()->isServerRunning() );
 
     ASSERT_TRUE ( test_client.getErrors().empty() );
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( 7 , test_client.getPreviousRequestID() );
+    ASSERT_EQ   ( test_request_id - 1 , test_client.getPreviousRequestID() );
 }
 
 TEST(client, exit)
@@ -783,7 +817,7 @@ TEST(client, exit)
 
     ASSERT_TRUE ( test_client.getConnection()->getServerErrors().empty() );
 
-    ASSERT_EQ   ( 7 , test_client.getPreviousRequestID() );
+    ASSERT_EQ   ( test_request_id - 1 , test_client.getPreviousRequestID() );
 }
 
 TEST(client, server_thread_join)
