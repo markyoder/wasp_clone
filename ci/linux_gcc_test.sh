@@ -21,7 +21,7 @@ conda install -c conda-forge valgrind
 ecc cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Release-${CI_COMMIT_REF_NAME}" \
       -DCMAKE_BUILD_TYPE=RELEASE \
       -Dwasp_ENABLE_TESTS=ON \
-      -Dwasp_ENABLE_SWIG=ON \
+      -DWASP_ENABLE_SWIG=ON \
       -DBUILD_SHARED_LIBS:BOOL=ON \
       -Dwasp_ENABLE_ALL_PACKAGES=ON \
       -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \

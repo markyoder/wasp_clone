@@ -33,10 +33,10 @@ install(DIRECTORY .
 ################################################################################
 
 # Have to have these in order to generate the wrappers
-IF(NOT DEFINED ${wasp_NAME}_ENABLE_SWIG)
-  set(${wasp_NAME}_ENABLE_SWIG ON)
+IF(NOT DEFINED WASP_ENABLE_SWIG)
+  set(WASP_ENABLE_SWIG OFF)
 ENDIF()
-IF(${wasp_NAME}_ENABLE_SWIG)
+IF(WASP_ENABLE_SWIG)
 find_package(SWIG REQUIRED)
 
 #This will replaces cmake variables but not generator expressions if the time comes
