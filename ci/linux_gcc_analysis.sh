@@ -11,8 +11,6 @@ cmake -MEMCHECK_COMMAND="$(which valgrind)" \
       -Dwasp_ENABLE_ALL_PACKAGES=ON \
       ..
 
-
-
 ctest --output-on-failure \
       -D Experimental -j 8 \
       -D ExperimentalMemCheck \

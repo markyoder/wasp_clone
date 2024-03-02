@@ -1,4 +1,7 @@
 /* File: wasp.i */
+%begin %{
+#define Py_LIMITED_API 0x03080000
+%}
 %rename("BaseInterpreter") Interpreter;
 
 %module wasp

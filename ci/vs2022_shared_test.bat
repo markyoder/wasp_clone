@@ -13,6 +13,7 @@ Miniconda3-latest-Windows-x86_64.exe /S /D=%MINI_ROOT%
 CALL %cd%\miniconda3\Scripts\activate.bat
 CALL conda env create -f ..\ci\env.yml
 CALL conda activate wasp_ci
+CALL pip install delvewheel
 
 cmake -DBUILD_SHARED_LIBS=ON ^
       -DBUILDNAME="VS2022-Shared-Release-%CI_BUILD_REF_NAME%" ^
@@ -22,6 +23,8 @@ cmake -DBUILD_SHARED_LIBS=ON ^
       -Dwasp_ENABLE_ALL_PACKAGES:BOOL=ON ^
       -DCMAKE_CXX_FLAGS="/wd4005 /wd4244 /wd4251 /wd4267 /EHsc" ^
       -G "Visual Studio 17 2022" %SRC_DIR%
+
+FOR /F "usebackq delims=" %g IN (`WHERE "build\src\python\dist\:*-abi3-win_amd64.whl"`) DO delvewheel repair -w ${CI_PROJECT_DIR}/build/wasppy/dist %g
 
 ctest -VV --output-on-failure ^
       -D ExperimentalStart ^

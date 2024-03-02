@@ -66,6 +66,7 @@ add_custom_target(wasppy ALL
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/MANIFEST.in DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/README.md DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/setup.cfg DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in WASPPY_SETUP)
 string(CONFIGURE "${WASPPY_SETUP}" WASPPY_SETUP_CONFIG)
 if(CMAKE_CONFIGURATION_TYPES)
@@ -93,7 +94,7 @@ add_dependencies(wasp_wheel wasppy waspcore waspson waspddi waspeddi wasphit was
     ARGS -m unittest test/test_swig_bindings.py -v
   TEST_2
     CMND ${PYTHON_EXECUTABLE}
-    ARGS -m pip uninstall --yes wasp
+    ARGS -m pip uninstall --yes ornl-wasp
   TIMEOUT 3000
   CATEGORIES BASIC
 )
