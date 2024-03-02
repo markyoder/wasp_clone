@@ -40,7 +40,7 @@ cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Bundle-${CI_COMMIT_REF_NAME}" \
       -Dwasp_ENABLE_CPACK_PACKAGING:BOOL=ON \
       ..
 
-delocate-wheel -w ${CI_PROJECT_DIR}/build/wasppy/dist ${CI_PROJECT_DIR}/build/wasppy/dist/SalinePy*.whl
+delocate-wheel -w ${CI_PROJECT_DIR}/build/wasppy/dist ${CI_PROJECT_DIR}/build/wasppy/dist/ornl_wasp*.whl
 
 make -j 8 package
 ls -l ./

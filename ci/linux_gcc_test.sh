@@ -58,7 +58,7 @@ ecc cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Bundle-${CI_COMMIT_REF_NAME}" \
       -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
       ..
 
-auditwheel repair -w ${CI_PROJECT_DIR}/build/wasppy/dist --plat manylinux_2_34_x86_64 ${CI_PROJECT_DIR}/build/wasppy/dist/wasp*.whl
+auditwheel repair -w ${CI_PROJECT_DIR}/build/wasppy/dist --plat manylinux_2_34_x86_64 ${CI_PROJECT_DIR}/build/wasppy/dist/ornl_wasp*.whl
 
 ecc make -j 8 package
 
