@@ -24,7 +24,7 @@ cmake -DBUILD_SHARED_LIBS=ON ^
       -DCMAKE_CXX_FLAGS="/wd4005 /wd4244 /wd4251 /wd4267 /EHsc" ^
       -G "Visual Studio 17 2022" %SRC_DIR%
 
-FOR /F "usebackq delims=" %g IN (`WHERE "build\src\python\dist\:*-abi3-win_amd64.whl"`) DO delvewheel repair -w ${CI_PROJECT_DIR}/build/wasppy/dist %g
+FOR /F "usebackq delims=" %%g IN (`WHERE "build\src\python\dist\:*-abi3-win_amd64.whl"`) DO delvewheel repair -w ${CI_PROJECT_DIR}/build/wasppy/dist %%g
 
 ctest -VV --output-on-failure ^
       -D ExperimentalStart ^
