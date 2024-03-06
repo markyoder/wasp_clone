@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - LSP client and server support for both sending and receiving document hover text requests and responses
 
+### Changed
+- EDDI comment logic where subsequent comments committed staged components
+- TreeNodePool node_token_line now recursively finds first leaf if node is not already a leaf, instead of returning illegal line number (0)
+
+### Fixed
+- EDDI README example referencing incorrect '#' comment character. EDDI comment character is '!'
+
 ## [4.2.0] - 2-19-2024
 
 ### Added
