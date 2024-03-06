@@ -207,23 +207,16 @@ bool EDDInterpreter<S>::process_document_command(size_t& new_staged_index,
     bool failed_processing = false;
     auto token_type = this->node_token_type(node_index);
     auto node_type = this->type(node_index);
-    auto staged_type = this->staged_type(this->staged_count()-1);
 
     bool is_key_value = node_type == wasp::KEYED_VALUE;
     // If this is a potential start of a new command        
     wasp_check(this->definition());
     auto staged_index = this->staged_count()-1;
-    const auto& child_indices = this->staged_child_indices(staged_index);
 
     // Obtain count of children that are not decorative
     size_t staged_child_count = this->staged_non_decorative_child_count(staged_index);
     size_t staged_section_count = this->staged_section_count(staged_index);
 
-    auto prev_part_line = loc.end.line;  // initialize to current line
-    if (!child_indices.empty())
-    {
-        prev_part_line = this->node_token_line(child_indices.back());
-    }
     bool is_named = this->definition()->has("_name");
 
     // Account for the part's name (if it is named) in the staged child count
@@ -279,20 +272,6 @@ bool EDDInterpreter<S>::process_document_command(size_t& new_staged_index,
         return this->push_staged_child(node_index);
     };
     if ( wasp::COMMENT == token_type
-            && loc.end.line !=  prev_part_line
-            && staged_type  != wasp::OBJECT
-            && this->staged_count() > 1
-            // If prior statement was a comment, we don't want to commit the stage, so move to subsequent comment capture logic
-            && (!child_indices.empty() && Interpreter<S>::node_token_type(child_indices.back()) != wasp::COMMENT))
-    {
-        // Check for scenario where comment is trailing on a different line
-        // this comment belongs to parent scope
-        // terminate the current staged data
-        this->commit_staged(staged_index);
-        // Stage
-        new_staged_index = this->push_staged_child(node_index);
-    }
-    else if ( wasp::COMMENT == token_type
             || wasp::WASP_COMMA == token_type
             || wasp::DIVIDE == token_type
             || wasp::TERM == token_type)
