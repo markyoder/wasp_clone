@@ -281,7 +281,9 @@ bool EDDInterpreter<S>::process_document_command(size_t& new_staged_index,
     if ( wasp::COMMENT == token_type
             && loc.end.line !=  prev_part_line
             && staged_type  != wasp::OBJECT
-            && this->staged_count() > 1)
+            && this->staged_count() > 1
+            // If prior statement was a comment, we don't want to commit the stage, so move to subsequent comment capture logic
+            && (!child_indices.empty() && Interpreter<S>::node_token_type(child_indices.back()) != wasp::COMMENT))
     {
         // Check for scenario where comment is trailing on a different line
         // this comment belongs to parent scope
