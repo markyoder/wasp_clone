@@ -23,6 +23,8 @@ cmake -DBUILD_SHARED_LIBS=ON ^
       -DCMAKE_CXX_FLAGS="/wd4005 /wd4244 /wd4251 /wd4267 /EHsc" ^
       -G "Visual Studio 17 2022" %SRC_DIR%
 
+set CMAKE_BUILD_PARALLEL_LEVEL=28
+
 ctest -VV --output-on-failure ^
       -D ExperimentalStart ^
       -D ExperimentalBuild ^

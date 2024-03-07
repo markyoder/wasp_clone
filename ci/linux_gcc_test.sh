@@ -28,11 +28,13 @@ ecc cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Release-${CI_COMMIT_REF_NAME}" \
       -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
       ..
 
+export CMAKE_BUILD_PARALLEL_LEVEL=8
+
 ecc ctest --output-on-failure \
       -D ExperimentalStart \
-      -D ExperimentalBuild -j 8\
+      -D ExperimentalBuild \
       -D ExperimentalSubmit \
-      -D ExperimentalTest -j 8 \
+      -D ExperimentalTest \
       -D ExperimentalSubmit
 
 # clean up prior config for the next bundle config

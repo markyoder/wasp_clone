@@ -9,8 +9,7 @@ conda env create -f ../ci/env.yml
 conda activate wasp_ci
 conda install -c conda-forge valgrind
 
-cmake -MEMCHECK_COMMAND="$(which valgrind)" \
-      -DBUILDNAME="$(uname -s)-Analysis-Debug-${CI_COMMIT_REF_NAME}" \
+cmake -DBUILDNAME="$(uname -s)-Analysis-Debug-${CI_COMMIT_REF_NAME}" \
       -DCMAKE_BUILD_TYPE=DEBUG \
       -DWASP_ENABLE_SWIG=ON \
       -Dwasp_ENABLE_COVERAGE_TESTING=ON \
@@ -19,7 +18,7 @@ cmake -MEMCHECK_COMMAND="$(which valgrind)" \
       -Dwasp_ENABLE_ALL_PACKAGES=ON \
       ..
 
-
+export CMAKE_BUILD_PARALLEL_LEVEL=8
 
 ctest --output-on-failure \
       -D Experimental -j 8 \

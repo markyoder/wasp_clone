@@ -15,11 +15,13 @@ cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Debug-${CI_COMMIT_REF_NAME}" \
       -Dwasp_ENABLE_ALL_PACKAGES=ON \
       ..
 
+export CMAKE_BUILD_PARALLEL_LEVEL=8
+
 ctest --output-on-failure \
       -D ExperimentalStart \
-      -D ExperimentalBuild -j 8 \
+      -D ExperimentalBuild \
       -D ExperimentalSubmit \
-      -D ExperimentalTest -j 8 \
+      -D ExperimentalTest \
       -D ExperimentalSubmit
 
 # clean up prior config for the next bundle config
