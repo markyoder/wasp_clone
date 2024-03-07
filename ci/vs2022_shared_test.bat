@@ -15,7 +15,7 @@ CALL conda env create -f ..\ci\env.yml
 CALL conda activate wasp_ci
 
 cmake -DBUILD_SHARED_LIBS=ON ^
-      -DBUILDNAME="VS2022-Shared-Release-%CI_BUILD_REF_NAME%" ^
+      -DBUILDNAME="VS2022-Shared-Release-%CI_COMMIT_REF_NAME%" ^
       -DCMAKE_BUILD_TYPE:STRING=RELEASE ^
       -DWASP_ENABLE_SWIG=ON ^
       -Dwasp_ENABLE_TESTS:BOOL=ON ^
