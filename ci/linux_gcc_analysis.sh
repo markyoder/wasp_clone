@@ -11,7 +11,6 @@ conda install -c conda-forge valgrind
 
 cmake -DBUILDNAME="$(uname -s)-Analysis-Debug-${CI_COMMIT_REF_NAME}" \
       -DCMAKE_BUILD_TYPE=DEBUG \
-      -DWASP_ENABLE_SWIG=ON \
       -Dwasp_ENABLE_COVERAGE_TESTING=ON \
       -DCOVERAGE_EXTRA_FLAGS="-s ${CI_PROJECT_DIR}/googletest -d" \
       -Dwasp_ENABLE_TESTS=ON \
