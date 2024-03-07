@@ -2,8 +2,8 @@
 cd build
 
 # Setup a conda install
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ${PWD}/miniconda3/miniconda.sh
-bash ${PWD}/miniconda3/miniconda.sh -b -u -p ${PWD}/miniconda3
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ${PWD}/miniconda.sh
+bash ${PWD}/miniconda.sh -b -u -p ${PWD}/miniconda3
 eval "$(${PWD}/miniconda3/bin/conda shell.bash hook 2> /dev/null)"
 conda env create -f ../ci/env.yml
 conda activate wasp_ci
