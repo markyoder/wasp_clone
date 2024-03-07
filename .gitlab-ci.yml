@@ -55,10 +55,9 @@ doc_gen:
     paths:
       - build/wasppy/dist/*.whl
 
-linux_gcc485_testing:
+linux_gcc_testing:
   tags:
     - linux
-    - gcc-4.8.5
     - pbs
   script:
     - ci/linux_gcc_test.sh
@@ -72,7 +71,6 @@ linux_gcc_analysis:
   stage: analysis
   tags:
     - linux
-    - valgrind-3.11
   script:
     - ci/linux_gcc_analysis.sh
   allow_failure: true
