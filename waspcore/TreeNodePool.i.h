@@ -405,7 +405,7 @@ typename TP::file_offset_type_size
 TreeNodePool<NTS, NIS, TP>::node_token_offset(NIS node_index) const
 {
     auto leaf_node_index = leaf_index(node_index);
-    auto node_basic_data = m_node_basic_data[node_index];
+    auto node_basic_data = m_node_basic_data[leaf_node_index];
     wasp_check(node_basic_data.is_leaf());
     
     auto token_index = node_basic_data.m_token_index;
