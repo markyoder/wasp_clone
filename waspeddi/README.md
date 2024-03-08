@@ -22,9 +22,9 @@ A file can have zero or more blocks.
 
 An example is as follows:
 ```
-# Comments look like this
+! Comments look like this
 [block_name1]
-   # keys have optional '=' 
+   ! keys have optional '=' 
    name = 1
    name = 3.14159
    name = "string value"
@@ -36,7 +36,7 @@ An example is as follows:
        command_key1 "value"
            command_key2 = 2.71
 [block3]
-  # command with sections
+  ! command with sections
   name 1 2 3 / a b c / 4.0 5.0
 ```
 

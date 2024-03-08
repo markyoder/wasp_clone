@@ -372,8 +372,7 @@ std::size_t TreeNodePool<NTS, NIS, TP>::leaf_index(NIS node_index) const
         return leaf_index(first_child_basic_data_index);
     }
     // neither a leaf node or a parent node
-    // TODO - catch error condition
-    return -1;
+    wasp_not_implemented("node leaf index where node is not a leaf or a parent node!");
 }
 // Obtain a leaf node's token type
 template<typename NTS, typename NIS, class TP>
@@ -393,40 +392,24 @@ template<typename NTS, typename NIS, class TP>
 size_t
 TreeNodePool<NTS, NIS, TP>::node_token_line(NIS node_index) const
 {
-    auto node_basic_data = m_node_basic_data[node_index];
-
-    if (node_basic_data.is_leaf())
-    {
-        auto token_index = node_basic_data.m_token_index;
-        return m_token_data.line(token_index);
-    }
-    return 0;
+    auto leaf_node_index = leaf_index(node_index);
+    auto node_basic_data = m_node_basic_data[leaf_node_index];
+    wasp_check(node_basic_data.is_leaf());
+    
+    auto token_index = node_basic_data.m_token_index;
+    return m_token_data.line(token_index);
 }
 // Obtain a leaf node's token type
 template<typename NTS, typename NIS, class TP>
 typename TP::file_offset_type_size
 TreeNodePool<NTS, NIS, TP>::node_token_offset(NIS node_index) const
 {
+    auto leaf_node_index = leaf_index(node_index);
     auto node_basic_data = m_node_basic_data[node_index];
-
-    if (node_basic_data.is_leaf())
-    {
-        auto token_index = node_basic_data.m_token_index;
-        return m_token_data.offset(token_index);
-    }
-
-    if (m_node_basic_data[node_index].has_parent_data())
-    {
-        auto parent_data_index = m_node_basic_data[node_index].m_node_parent_data_index;
-        auto parent_data       = m_node_parent_data[parent_data_index];
-        wasp_insist(parent_data.m_child_count != 0,
-                    "requesting unavailable token offset info!");
-        auto first_child_lookup_index = parent_data.m_first_child_index;
-        auto first_child_basic_data_index =
-            m_node_child_indices[first_child_lookup_index];
-        return node_token_offset(first_child_basic_data_index);
-    }
-    wasp_not_implemented("node token offset data scenario");
+    wasp_check(node_basic_data.is_leaf());
+    
+    auto token_index = node_basic_data.m_token_index;
+    return m_token_data.offset(token_index);    
 }
 // Obtain the node's data (string contents)
 template<typename NTS, typename NIS, class TP>

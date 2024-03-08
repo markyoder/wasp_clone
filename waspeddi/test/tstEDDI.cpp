@@ -199,14 +199,14 @@ TEST(EDDInterpreter, comment_placement)
  block1 "a" ! comment for blockion 1
     block1.1
         block1.1.1 ! comment for block 1.1.1
-        !comment for block1.1
+        !comment for block1.1.1
         block1.1.2 !comment for 1.1.2
     block1.2  ! comment of 1.2
         block1.2.1
-! block 1.2
+! block 1.2.1
         block1.2.2
         block1.2.3 "value"
-    !comment ends up in block 1.2
+    !comment ends up in block 1.2.3
     block1.3
  block2
 )I" << std::endl;
@@ -236,7 +236,7 @@ TEST(EDDInterpreter, comment_placement)
 /block1/block1.1/block1.1.1
 /block1/block1.1/block1.1.1/decl (block1.1.1)
 /block1/block1.1/block1.1.1/comment (! comment for block 1.1.1)
-/block1/block1.1/comment (!comment for block1.1)
+/block1/block1.1/block1.1.1/comment (!comment for block1.1.1)
 /block1/block1.1/block1.1.2
 /block1/block1.1/block1.1.2/decl (block1.1.2)
 /block1/block1.1/block1.1.2/comment (!comment for 1.1.2)
@@ -245,13 +245,13 @@ TEST(EDDInterpreter, comment_placement)
 /block1/block1.2/comment (! comment of 1.2)
 /block1/block1.2/block1.2.1
 /block1/block1.2/block1.2.1/decl (block1.2.1)
-/block1/block1.2/comment (! block 1.2)
+/block1/block1.2/block1.2.1/comment (! block 1.2.1)
 /block1/block1.2/block1.2.2
 /block1/block1.2/block1.2.2/decl (block1.2.2)
 /block1/block1.2/block1.2.3
 /block1/block1.2/block1.2.3/decl (block1.2.3)
 /block1/block1.2/block1.2.3/value ("value")
-/block1/block1.2/comment (!comment ends up in block 1.2)
+/block1/block1.2/block1.2.3/comment (!comment ends up in block 1.2.3)
 /block1/block1.3
 /block1/block1.3/decl (block1.3)
 /block2
@@ -1219,6 +1219,54 @@ TEST(EDDInterpreter, aliased_keyed_value)
 /data/key/decl (foo1)
 /data/key/= (=)
 /data/key/value (boo1)
+)I";
+
+    ASSERT_EQ(expected.str(), paths.str());
+}
+
+// Test that comments do not prevent proper definition hierarchy
+TEST(EDDInterpreter, comment_definition_effect)
+{
+    std::stringstream input;
+    input << R"I(data 
+    ! comment
+    foo=boo ! comment 1
+    ! comment 2
+    ! comment 3
+    foo1 1 2 ! comment 4
+           ! comment 5
+           3 4
+    ! comment 6)I" << std::endl;
+    DefaultEDDInterpreter eddi;
+    auto* d = eddi.definition()->create("data");
+    auto* k = d->create("key");
+    d->create_aliased("foo", k);
+    d->create_aliased("foo1", k);
+    ASSERT_TRUE(eddi.parse(input));
+
+    std::stringstream paths;
+    eddi.root().paths(paths);
+    std::stringstream expected;
+    expected << R"I(/
+/data
+/data/decl (data)
+/data/comment (! comment)
+/data/key
+/data/key/decl (foo)
+/data/key/= (=)
+/data/key/value (boo)
+/data/comment (! comment 1)
+/data/comment (! comment 2)
+/data/comment (! comment 3)
+/data/key
+/data/key/decl (foo1)
+/data/key/value (1)
+/data/key/value (2)
+/data/key/comment (! comment 4)
+/data/key/comment (! comment 5)
+/data/key/value (3)
+/data/key/value (4)
+/data/key/comment (! comment 6)
 )I";
 
     ASSERT_EQ(expected.str(), paths.str());

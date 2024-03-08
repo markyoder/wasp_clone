@@ -3,21 +3,16 @@
 #def rst_render():
 from __future__ import print_function
 import random
-import six
 seed = 0
 with open("fake_app_input", "r") as input:
     seed = int(input.readline())
-if six.PY3:
- random.seed(seed,version=1)
-else:
- random.seed(seed)
+    random.seed(seed,version=1)
+    
 def rnd_string(iCol):
     strLine=""
-    for x in range(iCol):
-        if six.PY3:
-         strLine=strLine + str((int(random.random()*101)+1)*(int(random.random()*(x+2))+1)*0.25) + " "
-        else: 
-         strLine=strLine + str(random.randint(1,101)*random.randint(1,x+2)*0.25) + " "
+    for x in range(iCol):        
+        strLine=strLine + str((int(random.random()*101)+1)*(int(random.random()*(x+2))+1)*0.25) + " "
+
     return strLine + "\n"
 
 tmpFile = open("fake_driver_app.csv","w")
