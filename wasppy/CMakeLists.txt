@@ -55,6 +55,7 @@ add_custom_target(wasppy ALL
     -I${wasp_SOURCE_DIR}/wasphit 
     -I${wasp_SOURCE_DIR}/waspsiren 
     -I${wasp_SOURCE_DIR}/wasphive 
+    -I${wasp_SOURCE_DIR}/wasplsp
     wasp.i
   BYPRODUCTS
     wasp_wrap.cxx
@@ -105,7 +106,7 @@ endif()
 #Execute the setup file to generate a wheel
 add_custom_target(wasp_wheel ALL "${PYTHON_EXECUTABLE}" -m build > python_build.log 2>&1
                   DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/Database.py ${CMAKE_CURRENT_BINARY_DIR}/test/test_swig_bindings.py)
-add_dependencies(wasp_wheel wasppy waspcore waspson waspddi waspeddi wasphit waspsiren wasphive)
+add_dependencies(wasp_wheel wasppy waspcore waspson waspddi waspeddi wasphit waspsiren wasphive wasplsp)
 
 #Configure a basic unit test of the python bindings. In this case the wheels is 
 #installed as editable to test in a "natural" way and removed at the end.

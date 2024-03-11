@@ -48,6 +48,12 @@ TRIBITS_ADD_LIBRARY(
   SOURCES ${SOURCES}
   NOINSTALLHEADERS ${HEADERS})
 
+# Expose directories for the python wrappers to use
+target_include_directories( wasplsp
+  PRIVATE
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+  )
+
 INSTALL(FILES
   ${HEADERS}
   DESTINATION

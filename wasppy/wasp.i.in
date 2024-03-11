@@ -38,6 +38,8 @@
 #include "HITNodeView.h"
 #include "SIRENInterpreter.h"
 #include "HIVE.h"
+#include "JSONObjectParser.hpp"
+#include "ServerImpl.h"
 %}
 
 // Instantiate templates used by wasp
@@ -63,6 +65,8 @@
 %include "EDDInterpreter.h"
 %include "HITInterpreter.h"
 %include "SIRENInterpreter.h"
+%include "JSONObjectParser.hpp"
+%include "ServerImpl.h"
 
 // Various node views 
 %include "SONNodeView.h"
