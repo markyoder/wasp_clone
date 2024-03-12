@@ -189,6 +189,7 @@
 
 #line 36 "JSONObjectParser.bison"
 namespace wasp {
+    class JSONObjectLexerImpl;
 #line 193 "JSONObjectParser.hpp"
 
 
@@ -441,7 +442,7 @@ namespace wasp {
     {};
 
     /// Build a parser object.
-    JSONObjectParser (std::shared_ptr<wasp::DataObject>& root_yyarg, std::istream &input_stream_yyarg, std::ostream &error_stream_yyarg, std::shared_ptr<class JSONObjectLexerImpl> lexer_yyarg);
+    JSONObjectParser (std::shared_ptr<wasp::DataObject>& root_yyarg, std::istream &input_stream_yyarg, std::ostream &error_stream_yyarg, std::shared_ptr<wasp::JSONObjectLexerImpl> lexer_yyarg);
     virtual ~JSONObjectParser ();
 
 #if 201103L <= YY_CPLUSPLUS
@@ -825,7 +826,7 @@ namespace wasp {
     std::shared_ptr<wasp::DataObject>& root;
     std::istream &input_stream;
     std::ostream &error_stream;
-    std::shared_ptr<class JSONObjectLexerImpl> lexer;
+    std::shared_ptr<wasp::JSONObjectLexerImpl> lexer;
 
   };
 

@@ -31,15 +31,15 @@ class WASP_PUBLIC ServerImpl
      * @return - true if request was successfully handle and response built
      */
     bool handleInitializeRequest(
-                    const DataObject & initializeRequest  ,
-                          DataObject & initializeResponse );
+                    const wasp::DataObject & initializeRequest  ,
+                          wasp::DataObject & initializeResponse );
 
     /** handle initialized notification - no response expected
      * @param initializedNotification - const reference to notification
      * @return - true if notification was successfully handled
      */
     bool handleInitializedNotification(
-                    const DataObject & initializedNotification );
+                    const wasp::DataObject & initializedNotification );
 
     /** handle didopen notification creating diagnostics in provided reference
      * @param didOpenNotification - const reference to notification
@@ -47,8 +47,8 @@ class WASP_PUBLIC ServerImpl
      * @return - true if packet was successfully handled and diagnostics filled
      */
     bool handleDidOpenNotification(
-                    const DataObject & didOpenNotification            ,
-                          DataObject & publishDiagnosticsNotification );
+                    const wasp::DataObject & didOpenNotification            ,
+                          wasp::DataObject & publishDiagnosticsNotification );
 
     /** handle didchange notification creating diagnostics in provided reference
      * @param didOpenNotification - const reference to notification
@@ -56,8 +56,8 @@ class WASP_PUBLIC ServerImpl
      * @return - true if packet was successfully handled and diagnostics filled
      */
     bool handleDidChangeNotification(
-                    const DataObject & didChangeNotification          ,
-                          DataObject & publishDiagnosticsNotification );
+                    const wasp::DataObject & didChangeNotification          ,
+                          wasp::DataObject & publishDiagnosticsNotification );
 
     /** handle completion request creating response in provided reference
      * @param completionRequest - const reference to request to be handled
@@ -65,8 +65,8 @@ class WASP_PUBLIC ServerImpl
      * @return - true if request was successfully handle and response built
      */
     bool handleCompletionRequest(
-                    const DataObject & completionRequest  ,
-                          DataObject & completionResponse );
+                    const wasp::DataObject & completionRequest  ,
+                          wasp::DataObject & completionResponse );
 
     /** handle definition request creating response in provided reference
      * @param definitionRequest - const reference to request to be handled
@@ -74,8 +74,8 @@ class WASP_PUBLIC ServerImpl
      * @return - true if request was successfully handle and response built
      */
     bool handleDefinitionRequest(
-                    const DataObject & definitionRequest  ,
-                          DataObject & definitionResponse );
+                    const wasp::DataObject & definitionRequest  ,
+                          wasp::DataObject & definitionResponse );
 
     /** handle hover request building response in provided object reference
      * @param hoverRequest - const reference to object for hover parameters
@@ -83,8 +83,8 @@ class WASP_PUBLIC ServerImpl
      * @return - true if request was handled successfully building response
      */
     bool handleHoverRequest(
-                    const DataObject & hoverRequest  ,
-                          DataObject & hoverResponse );
+                    const wasp::DataObject & hoverRequest  ,
+                          wasp::DataObject & hoverResponse );
 
     /** handle references request creating response in provided reference
      * @param referencesRequest - const reference to request to be handled
@@ -92,8 +92,8 @@ class WASP_PUBLIC ServerImpl
      * @return - true if request was successfully handle and response built
      */
     bool handleReferencesRequest(
-                    const DataObject & referencesRequest  ,
-                          DataObject & referencesResponse );
+                    const wasp::DataObject & referencesRequest  ,
+                          wasp::DataObject & referencesResponse );
 
     /** handle formatting request creating response in provided reference
      * @param formattingRequest - const reference to request to be handled
@@ -101,8 +101,8 @@ class WASP_PUBLIC ServerImpl
      * @return - true if request was successfully handle and response built
      */
     bool handleFormattingRequest(
-                    const DataObject & formattingRequest  ,
-                          DataObject & formattingResponse );
+                    const wasp::DataObject & formattingRequest  ,
+                          wasp::DataObject & formattingResponse );
 
     /** handle symbols request creating response in provided reference
      * @param symbolsRequest - const reference to request to be handled
@@ -110,15 +110,15 @@ class WASP_PUBLIC ServerImpl
      * @return - true if request was successfully handle and response built
      */
     bool handleSymbolsRequest(
-                    const DataObject & symbolsRequest  ,
-                          DataObject & symbolsResponse );
+                    const wasp::DataObject & symbolsRequest  ,
+                          wasp::DataObject & symbolsResponse );
 
     /** handle didclose notification - no response expected
      * @param didCloseNotification - const reference to notification
      * @return - true if notification was successfully handled
      */
     bool handleDidCloseNotification(
-                    const DataObject & didCloseNotification );
+                    const wasp::DataObject & didCloseNotification );
 
     /** handle shutdown request creating response in provided reference
      * @param shutdownRequest - const reference to request to be handled
@@ -126,15 +126,15 @@ class WASP_PUBLIC ServerImpl
      * @return - true if request was successfully handle and response built
      */
     bool handleShutdownRequest(
-                    const DataObject & shutdownRequest  ,
-                          DataObject & shutdownResponse );
+                    const wasp::DataObject & shutdownRequest  ,
+                          wasp::DataObject & shutdownResponse );
 
     /** handle exit notification - no response expected
      * @param exitNotification - const reference to notification
      * @return - true if notification was successfully handled
      */
     bool handleExitNotification(
-                    const DataObject & exitNotification );
+                    const wasp::DataObject & exitNotification );
 
     /** check if the server is initialized and reading from the connection
      * @return - true if server is initialized and reading from the connection
@@ -163,7 +163,7 @@ class WASP_PUBLIC ServerImpl
     /** get this server's connection - to be implemented on derived servers
      * @return - shared pointer to the server's read / write connection
      */
-    virtual std::shared_ptr<Connection> getConnection() = 0;
+    virtual std::shared_ptr<wasp::lsp::Connection> getConnection() = 0;
 
   private:
 
@@ -265,13 +265,13 @@ class WASP_PUBLIC ServerImpl
      * @param object - reference to object to be read into
      * @return - true if the read from the connection completed successfully
      */
-    virtual bool connectionRead( DataObject & object ) = 0;
+    virtual bool connectionRead( wasp::DataObject & object ) = 0;
 
     /** write object json to connection - to be implemented on derived servers
      * @param object - reference to object with contents to write to connection
      * @return - true if the write to the connection completed successfully
      */
-    virtual bool connectionWrite( DataObject & object ) = 0;
+    virtual bool connectionWrite( wasp::DataObject & object ) = 0;
 
   protected:
 
@@ -288,12 +288,12 @@ class WASP_PUBLIC ServerImpl
     /**
      * @brief client_capabilities - capabilities that client sent in initialize
      */
-    DataObject client_capabilities;
+    wasp::DataObject client_capabilities;
 
     /**
      * @brief server_capabilities - capabilities this server claims to support
      */
-    DataObject server_capabilities;
+    wasp::DataObject server_capabilities;
 
     /**
      * @brief client_root_path - root workspace URI of client ( if applicable )
