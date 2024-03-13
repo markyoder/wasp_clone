@@ -53,7 +53,11 @@
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
 
-#line 57 "JSONObjectParser.hpp"
+namespace wasp{
+    class JSONObjectLexerImpl;
+}
+
+#line 61 "JSONObjectParser.hpp"
 
 
 # include <cstdlib> // std::abort
@@ -187,10 +191,9 @@
 # define YYDEBUG 0
 #endif
 
-#line 36 "JSONObjectParser.bison"
+#line 40 "JSONObjectParser.bison"
 namespace wasp {
-    class JSONObjectLexerImpl;
-#line 193 "JSONObjectParser.hpp"
+#line 197 "JSONObjectParser.hpp"
 
 
 
@@ -208,7 +211,7 @@ namespace wasp {
     /// Symbol semantic values.
     union value_type
     {
-#line 64 "JSONObjectParser.bison"
+#line 68 "JSONObjectParser.bison"
 
     bool boolean;
     int integer;
@@ -218,7 +221,7 @@ namespace wasp {
     std::vector<Value*>* values;
     std::vector<std::pair<std::string,Value*>>* keyed_values;
 
-#line 221 "JSONObjectParser.hpp"
+#line 225 "JSONObjectParser.hpp"
 
     };
 #endif
@@ -442,7 +445,7 @@ namespace wasp {
     {};
 
     /// Build a parser object.
-    JSONObjectParser (std::shared_ptr<wasp::DataObject>& root_yyarg, std::istream &input_stream_yyarg, std::ostream &error_stream_yyarg, std::shared_ptr<wasp::JSONObjectLexerImpl> lexer_yyarg);
+    JSONObjectParser (std::shared_ptr<wasp::DataObject>& root_yyarg, std::istream &input_stream_yyarg, std::ostream &error_stream_yyarg, std::shared_ptr<JSONObjectLexerImpl> lexer_yyarg);
     virtual ~JSONObjectParser ();
 
 #if 201103L <= YY_CPLUSPLUS
@@ -826,14 +829,14 @@ namespace wasp {
     std::shared_ptr<wasp::DataObject>& root;
     std::istream &input_stream;
     std::ostream &error_stream;
-    std::shared_ptr<wasp::JSONObjectLexerImpl> lexer;
+    std::shared_ptr<JSONObjectLexerImpl> lexer;
 
   };
 
 
-#line 36 "JSONObjectParser.bison"
+#line 40 "JSONObjectParser.bison"
 } // wasp
-#line 836 "JSONObjectParser.hpp"
+#line 840 "JSONObjectParser.hpp"
 
 
 

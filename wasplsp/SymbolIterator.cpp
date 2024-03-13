@@ -1,4 +1,5 @@
 #include "SymbolIterator.h"
+#include "waspcore/wasp_bug.h"
 
 namespace wasp {
 namespace lsp  {

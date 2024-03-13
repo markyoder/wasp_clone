@@ -38,7 +38,6 @@
 #include "HITNodeView.h"
 #include "SIRENInterpreter.h"
 #include "HIVE.h"
-#include "JSONObjectParser.hpp"
 #include "ServerImpl.h"
 %}
 
@@ -65,7 +64,6 @@
 %include "EDDInterpreter.h"
 %include "HITInterpreter.h"
 %include "SIRENInterpreter.h"
-%include "JSONObjectParser.hpp"
 %include "ServerImpl.h"
 
 // Various node views 

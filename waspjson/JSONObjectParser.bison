@@ -13,6 +13,10 @@
 #include "waspcore/utils.h"
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
+
+namespace wasp{
+    class JSONObjectLexerImpl;
+}
 }
 
 /* Require bison 3 or later */
@@ -45,7 +49,7 @@
     // initialize the initial location object
     @$.begin.line = @$.end.line = 1;
     @$.begin.column = @$.end.column = 1;
-    lexer = std::make_shared<JSONObjectLexerImpl>(&input_stream);
+    lexer = std::make_shared<wasp::JSONObjectLexerImpl>(&input_stream);
 };
 
 /* The interpreter is passed by reference to the parser and to the JSONObjectLexer. This
@@ -54,7 +58,7 @@
 %parse-param {std::shared_ptr<wasp::DataObject>& root}
              {std::istream &input_stream}
              {std::ostream &error_stream}
-             {std::shared_ptr<class JSONObjectLexerImpl> lexer}
+             {std::shared_ptr<JSONObjectLexerImpl> lexer}
 
 /* verbose error messages */
 %define parse.error verbose

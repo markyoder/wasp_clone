@@ -11,6 +11,9 @@
 #include <memory>
 #include "waspcore/utils.h"
 #include "waspcore/decl.h"
+namespace wasp{
+    class JSONLexerImpl;
+}
 }
 
 /* Require bison 3 or later */

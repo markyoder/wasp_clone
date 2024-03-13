@@ -5,11 +5,10 @@
 #include <sstream>
 #include <memory>
 #include "waspcore/decl.h"
+#include "waspcore/Object.h"
+
 
 namespace wasp {
-
-class DataObject;
-
 namespace lsp  {
 
 class WASP_PUBLIC Connection
@@ -27,14 +26,14 @@ class WASP_PUBLIC Connection
      * @param errors - reference to error stream to pass to RPCStringToObject
      * @return - true if the read and conversion to object were successful
      */
-    virtual bool read ( DataObject & object , std::stringstream & errors ) = 0;
+    virtual bool read ( ::wasp::DataObject & object , std::stringstream & errors ) = 0;
 
     /** write data from provided object to specific connection as packet string
      * @param object - object holding data to write to specific connection
      * @param errors - reference to error stream to pass to objectToRPCString
      * @return - true if the conversion to the packet and write were successful
      */
-    virtual bool write( DataObject & object , std::stringstream & errors ) = 0;
+    virtual bool write( ::wasp::DataObject & object , std::stringstream & errors ) = 0;
 
     /** check if the server is initialized and reading from the connection
      * @return - true if server is initialized and reading from the connection

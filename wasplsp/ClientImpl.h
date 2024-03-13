@@ -8,6 +8,7 @@
 #include "wasplsp/SymbolIterator.h"
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
+#include "waspcore/wasp_bug.h"
 
 namespace wasp {
 namespace lsp  {

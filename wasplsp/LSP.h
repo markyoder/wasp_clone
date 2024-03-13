@@ -5,7 +5,6 @@
 #include <iostream>
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
-#include "waspjson/JSONObjectParser.hpp"
 
 namespace wasp {
 namespace lsp  {

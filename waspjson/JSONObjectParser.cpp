@@ -50,7 +50,7 @@
 #include "JSONObjectParser.hpp"
 
 // Second part of user prologue.
-#line 99 "JSONObjectParser.bison"
+#line 103 "JSONObjectParser.bison"
 
 
 #include "JSONObjectLexer.h"
@@ -154,12 +154,12 @@
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-#line 36 "JSONObjectParser.bison"
+#line 40 "JSONObjectParser.bison"
 namespace wasp {
 #line 160 "JSONObjectParser.cpp"
 
   /// Build a parser object.
-  JSONObjectParser::JSONObjectParser (std::shared_ptr<wasp::DataObject>& root_yyarg, std::istream &input_stream_yyarg, std::ostream &error_stream_yyarg, std::shared_ptr<class JSONObjectLexerImpl> lexer_yyarg)
+  JSONObjectParser::JSONObjectParser (std::shared_ptr<wasp::DataObject>& root_yyarg, std::istream &input_stream_yyarg, std::ostream &error_stream_yyarg, std::shared_ptr<JSONObjectLexerImpl> lexer_yyarg)
 #if YYDEBUG
     : yydebug_ (false),
       yycdebug_ (&std::cerr),
@@ -369,31 +369,31 @@ namespace wasp {
     switch (yysym.kind ())
     {
       case symbol_kind::S_primitive: // primitive
-#line 88 "JSONObjectParser.bison"
+#line 92 "JSONObjectParser.bison"
                     { delete (yysym.value.value); }
 #line 375 "JSONObjectParser.cpp"
         break;
 
       case symbol_kind::S_decl: // decl
-#line 88 "JSONObjectParser.bison"
+#line 92 "JSONObjectParser.bison"
                     { delete (yysym.value.string); }
 #line 381 "JSONObjectParser.cpp"
         break;
 
       case symbol_kind::S_array: // array
-#line 88 "JSONObjectParser.bison"
+#line 92 "JSONObjectParser.bison"
                     { delete (yysym.value.value); }
 #line 387 "JSONObjectParser.cpp"
         break;
 
       case symbol_kind::S_object: // object
-#line 88 "JSONObjectParser.bison"
+#line 92 "JSONObjectParser.bison"
                     { delete (yysym.value.value); }
 #line 393 "JSONObjectParser.cpp"
         break;
 
       case symbol_kind::S_array_members: // array_members
-#line 89 "JSONObjectParser.bison"
+#line 93 "JSONObjectParser.bison"
                     {
     for(size_t i = 0; i < (yysym.value.values)->size(); ++i)
         delete (*(yysym.value.values))[i];
@@ -403,7 +403,7 @@ namespace wasp {
         break;
 
       case symbol_kind::S_keyed_member: // keyed_member
-#line 94 "JSONObjectParser.bison"
+#line 98 "JSONObjectParser.bison"
                     {
     for(size_t i = 0; i < (yysym.value.keyed_values)->size(); ++i)
         delete (*(yysym.value.keyed_values))[i].second;
@@ -413,7 +413,7 @@ namespace wasp {
         break;
 
       case symbol_kind::S_object_members: // object_members
-#line 94 "JSONObjectParser.bison"
+#line 98 "JSONObjectParser.bison"
                     {
     for(size_t i = 0; i < (yysym.value.keyed_values)->size(); ++i)
         delete (*(yysym.value.keyed_values))[i].second;
@@ -556,12 +556,12 @@ namespace wasp {
 
 
     // User initialization code.
-#line 44 "JSONObjectParser.bison"
+#line 48 "JSONObjectParser.bison"
 {
     // initialize the initial location object
     yyla.location.begin.line = yyla.location.end.line = 1;
     yyla.location.begin.column = yyla.location.end.column = 1;
-    lexer = std::make_shared<JSONObjectLexerImpl>(&input_stream);
+    lexer = std::make_shared<wasp::JSONObjectLexerImpl>(&input_stream);
 }
 
 #line 568 "JSONObjectParser.cpp"
@@ -700,7 +700,7 @@ namespace wasp {
           switch (yyn)
             {
   case 2: // primitive: "null"
-#line 116 "JSONObjectParser.bison"
+#line 120 "JSONObjectParser.bison"
         {
             (yylhs.value.value) = new Value();
             wasp_ensure((yylhs.value.value)->is_null());
@@ -709,7 +709,7 @@ namespace wasp {
     break;
 
   case 3: // primitive: "true"
-#line 120 "JSONObjectParser.bison"
+#line 124 "JSONObjectParser.bison"
         {
             (yylhs.value.value) = new Value((yystack_[0].value.boolean));
         }
@@ -717,7 +717,7 @@ namespace wasp {
     break;
 
   case 4: // primitive: "false"
-#line 123 "JSONObjectParser.bison"
+#line 127 "JSONObjectParser.bison"
         {
             (yylhs.value.value) = new Value((yystack_[0].value.boolean));
         }
@@ -725,7 +725,7 @@ namespace wasp {
     break;
 
   case 5: // primitive: "integer"
-#line 126 "JSONObjectParser.bison"
+#line 130 "JSONObjectParser.bison"
         {
             (yylhs.value.value) = new Value((yystack_[0].value.integer));
         }
@@ -733,7 +733,7 @@ namespace wasp {
     break;
 
   case 6: // primitive: "double"
-#line 129 "JSONObjectParser.bison"
+#line 133 "JSONObjectParser.bison"
         {
             (yylhs.value.value) = new Value((yystack_[0].value.real));
         }
@@ -741,7 +741,7 @@ namespace wasp {
     break;
 
   case 7: // primitive: "quoted string"
-#line 132 "JSONObjectParser.bison"
+#line 136 "JSONObjectParser.bison"
         {
             (yylhs.value.value) = new Value(wasp::json_unescape_string(wasp::strip_quotes(*(yystack_[0].value.string))));
             delete (yystack_[0].value.string);
@@ -750,13 +750,13 @@ namespace wasp {
     break;
 
   case 8: // decl: "quoted string"
-#line 136 "JSONObjectParser.bison"
+#line 140 "JSONObjectParser.bison"
        { (yylhs.value.string) = (yystack_[0].value.string); }
 #line 756 "JSONObjectParser.cpp"
     break;
 
   case 9: // array: '[' ']'
-#line 141 "JSONObjectParser.bison"
+#line 145 "JSONObjectParser.bison"
     {
         (yylhs.value.value) = new Value(DataArray());
     }
@@ -764,7 +764,7 @@ namespace wasp {
     break;
 
   case 10: // array: '[' "end of file"
-#line 145 "JSONObjectParser.bison"
+#line 149 "JSONObjectParser.bison"
     {
         error(yystack_[0].location, "array has unmatched left bracket!");
         YYERROR;
@@ -774,7 +774,7 @@ namespace wasp {
     break;
 
   case 11: // array: '[' array_members "end of file"
-#line 151 "JSONObjectParser.bison"
+#line 155 "JSONObjectParser.bison"
     {
         error(yystack_[2].location, " is an unmatched left bracket!");
         for(size_t i = 0; i < (yystack_[1].value.values)->size(); ++i) delete (yystack_[1].value.values)->at(i);
@@ -786,7 +786,7 @@ namespace wasp {
     break;
 
   case 12: // array: '[' array_members ']'
-#line 159 "JSONObjectParser.bison"
+#line 163 "JSONObjectParser.bison"
     {
         (yylhs.value.value) = new Value();
         DataArray *array = new DataArray();
@@ -804,7 +804,7 @@ namespace wasp {
     break;
 
   case 13: // object: '{' '}'
-#line 173 "JSONObjectParser.bison"
+#line 177 "JSONObjectParser.bison"
     {
         (yylhs.value.value) = new Value(DataObject());
     }
@@ -812,7 +812,7 @@ namespace wasp {
     break;
 
   case 14: // object: '{' "end of file"
-#line 177 "JSONObjectParser.bison"
+#line 181 "JSONObjectParser.bison"
     {
         error(yystack_[0].location, "is an unmatched left brace!");
         YYERROR;
@@ -822,7 +822,7 @@ namespace wasp {
     break;
 
   case 15: // object: '{' object_members "end of file"
-#line 183 "JSONObjectParser.bison"
+#line 187 "JSONObjectParser.bison"
     {
         error(yystack_[2].location, "is an unmatched left brace!");
         for(size_t i = 0; i < (yystack_[1].value.keyed_values)->size(); ++i) delete (yystack_[1].value.keyed_values)->at(i).second;
@@ -834,7 +834,7 @@ namespace wasp {
     break;
 
   case 16: // object: '{' object_members '}'
-#line 191 "JSONObjectParser.bison"
+#line 195 "JSONObjectParser.bison"
     {
         (yylhs.value.value) = new Value();
         DataObject *object = new DataObject();
@@ -852,7 +852,7 @@ namespace wasp {
     break;
 
   case 17: // array_members: object
-#line 206 "JSONObjectParser.bison"
+#line 210 "JSONObjectParser.bison"
         {
             (yylhs.value.values) = new std::vector<Value*>();
             (yylhs.value.values)->push_back((yystack_[0].value.value));
@@ -861,7 +861,7 @@ namespace wasp {
     break;
 
   case 18: // array_members: array_members ',' object
-#line 211 "JSONObjectParser.bison"
+#line 215 "JSONObjectParser.bison"
         {
             (yylhs.value.values) = (yystack_[2].value.values);
             (yylhs.value.values)->push_back((yystack_[0].value.value));
@@ -870,7 +870,7 @@ namespace wasp {
     break;
 
   case 19: // array_members: array
-#line 216 "JSONObjectParser.bison"
+#line 220 "JSONObjectParser.bison"
         {
             (yylhs.value.values) = new std::vector<Value*>();
             (yylhs.value.values)->push_back((yystack_[0].value.value));
@@ -879,7 +879,7 @@ namespace wasp {
     break;
 
   case 20: // array_members: array_members ',' array
-#line 221 "JSONObjectParser.bison"
+#line 225 "JSONObjectParser.bison"
         {
            (yylhs.value.values) = (yystack_[2].value.values);
            (yylhs.value.values)->push_back((yystack_[0].value.value));
@@ -888,7 +888,7 @@ namespace wasp {
     break;
 
   case 21: // array_members: primitive
-#line 226 "JSONObjectParser.bison"
+#line 230 "JSONObjectParser.bison"
         {
             (yylhs.value.values) = new std::vector<Value*>();
             (yylhs.value.values)->push_back((yystack_[0].value.value));
@@ -897,7 +897,7 @@ namespace wasp {
     break;
 
   case 22: // array_members: array_members ',' primitive
-#line 231 "JSONObjectParser.bison"
+#line 235 "JSONObjectParser.bison"
         {
             (yylhs.value.values) = (yystack_[2].value.values);
             (yylhs.value.values)->push_back((yystack_[0].value.value));
@@ -906,7 +906,7 @@ namespace wasp {
     break;
 
   case 23: // keyed_member: decl ':' primitive
-#line 236 "JSONObjectParser.bison"
+#line 240 "JSONObjectParser.bison"
         {
             (yylhs.value.keyed_values) = new std::vector<std::pair<std::string,Value*>>();
             (yylhs.value.keyed_values)->push_back(std::make_pair(wasp::strip_quotes(*(yystack_[2].value.string)),(yystack_[0].value.value)));
@@ -916,7 +916,7 @@ namespace wasp {
     break;
 
   case 24: // keyed_member: decl ':' array
-#line 241 "JSONObjectParser.bison"
+#line 245 "JSONObjectParser.bison"
         {
             (yylhs.value.keyed_values) = new std::vector<std::pair<std::string,Value*>>();
             (yylhs.value.keyed_values)->push_back(std::make_pair(wasp::strip_quotes(*(yystack_[2].value.string)),(yystack_[0].value.value)));
@@ -926,7 +926,7 @@ namespace wasp {
     break;
 
   case 25: // keyed_member: decl ':' object
-#line 246 "JSONObjectParser.bison"
+#line 250 "JSONObjectParser.bison"
         {
             (yylhs.value.keyed_values) = new std::vector<std::pair<std::string,Value*>>();
             (yylhs.value.keyed_values)->push_back(std::make_pair(wasp::strip_quotes(*(yystack_[2].value.string)),(yystack_[0].value.value)));
@@ -936,13 +936,13 @@ namespace wasp {
     break;
 
   case 26: // object_members: keyed_member
-#line 251 "JSONObjectParser.bison"
+#line 255 "JSONObjectParser.bison"
                  { (yylhs.value.keyed_values) = (yystack_[0].value.keyed_values); }
 #line 942 "JSONObjectParser.cpp"
     break;
 
   case 27: // object_members: object_members ',' keyed_member
-#line 253 "JSONObjectParser.bison"
+#line 257 "JSONObjectParser.bison"
         {
             (yylhs.value.keyed_values) = (yystack_[2].value.keyed_values);
             (yylhs.value.keyed_values)->push_back((yystack_[0].value.keyed_values)->front());
@@ -952,7 +952,7 @@ namespace wasp {
     break;
 
   case 29: // start: object
-#line 259 "JSONObjectParser.bison"
+#line 263 "JSONObjectParser.bison"
                 {
             wasp_check( (yystack_[0].value.value)->is_object() );
             root.reset((yystack_[0].value.value)->to_object());
@@ -1414,9 +1414,9 @@ namespace wasp {
   const short
   JSONObjectParser::yyrline_[] =
   {
-       0,   115,   115,   119,   122,   125,   128,   131,   136,   140,
-     144,   150,   158,   172,   176,   182,   190,   205,   210,   215,
-     220,   225,   230,   235,   240,   245,   251,   252,   258,   259
+       0,   119,   119,   123,   126,   129,   132,   135,   140,   144,
+     148,   154,   162,   176,   180,   186,   194,   209,   214,   219,
+     224,   229,   234,   239,   244,   249,   255,   256,   262,   263
   };
 
   void
@@ -1494,11 +1494,11 @@ namespace wasp {
       return symbol_kind::S_YYUNDEF;
   }
 
-#line 36 "JSONObjectParser.bison"
+#line 40 "JSONObjectParser.bison"
 } // wasp
 #line 1500 "JSONObjectParser.cpp"
 
-#line 268 "JSONObjectParser.bison"
+#line 272 "JSONObjectParser.bison"
  /*** Additional Code ***/
 
 void wasp::JSONObjectParser::error(const JSONObjectParser::location_type& l,
