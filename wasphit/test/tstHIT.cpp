@@ -2847,6 +2847,7 @@ TEST(HITInterpreter, only_include_not_found)
     expected_errors << "stream input:1.1: could not find 'block_missing.i'" << std::endl;
 
     ASSERT_EQ(expected_errors.str(), errors.str());
+    ASSERT_DIAGNOSTICS(interpreter, expected_errors);
 }
 
 /**
@@ -3067,12 +3068,12 @@ TEST(HITInterpreter, file_include_circular_loop)
     DefaultHITInterpreter interpreter(actual_errors);
     ASSERT_FALSE(interpreter.parse(input01));
 
-    std::stringstream expect_errors;
-    expect_errors << "./input03.i:3.3: file include would create circular reference 'input02.i'"
+    std::stringstream expected_errors;
+    expected_errors << "./input03.i:3.3: file include would create circular reference 'input02.i'"
                   << std::endl;
 
-    ASSERT_EQ(expect_errors.str(), actual_errors.str());
-
+    ASSERT_EQ(expected_errors.str(), actual_errors.str());
+    ASSERT_DIAGNOSTICS(interpreter, expected_errors);
     std::string expected_paths;
     expected_paths = R"INPUT(/
 /Block01
@@ -3113,11 +3114,11 @@ TEST(HITInterpreter, file_include_circular_self)
     DefaultHITInterpreter interpreter(actual_errors);
     ASSERT_FALSE(interpreter.parse(input01));
 
-    std::stringstream expect_errors;
-    expect_errors << "./input02.i:3.3: file include would create circular reference 'input02.i'"
+    std::stringstream expected_errors;
+    expected_errors << "./input02.i:3.3: file include would create circular reference 'input02.i'"
                   << std::endl;
-
-    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+    ASSERT_EQ(expected_errors.str(), actual_errors.str());
+    ASSERT_DIAGNOSTICS(interpreter, expected_errors);
 
     std::string expected_paths;
     expected_paths = R"INPUT(/
@@ -3155,11 +3156,12 @@ TEST(HITInterpreter, missing_object_terminator)
     DefaultHITInterpreter interpreter(actual_errors);
     ASSERT_FALSE(interpreter.parse(input));
 
-    std::stringstream expect_errors;
-    expect_errors << "stream input:2.1: syntax error, unexpected end of file, expecting block terminator" << std::endl
+    std::stringstream expected_errors;
+    expected_errors << "stream input:2.1: syntax error, unexpected end of file, expecting block terminator" << std::endl
                   << "stream input:1.1: syntax error, unexpected end of file, expecting block terminator" << std::endl;
 
-    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+    ASSERT_EQ(expected_errors.str(), actual_errors.str());
+    ASSERT_DIAGNOSTICS(interpreter, expected_errors);
     std::string expected_paths;
     expected_paths = R"INPUT(/
 /GlobalParams
@@ -3208,11 +3210,12 @@ TEST(HITInterpreter, object_name_with_invalid_pound)
     DefaultHITInterpreter interpreter(actual_errors);
     ASSERT_FALSE(interpreter.parse(input));
 
-    std::stringstream expect_errors;
-    expect_errors << "stream input:2.2: syntax error, unexpected invalid token"
+    std::stringstream expected_errors;
+    expected_errors << "stream input:2.2: syntax error, unexpected invalid token"
                   << std::endl;
 
-    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+    ASSERT_EQ(expected_errors.str(), actual_errors.str());
+    ASSERT_DIAGNOSTICS(interpreter, expected_errors);
 }
 
 /**
@@ -3229,8 +3232,8 @@ TEST(HITInterpreter, object_name_with_invalid_equals)
     DefaultHITInterpreter interpreter(actual_errors);
     ASSERT_FALSE(interpreter.parse(input));
 
-    std::stringstream expect_errors;
-    expect_errors << "stream input:2.8: syntax error, unexpected invalid token, expecting ]"
+    std::stringstream expected_errors;
+    expected_errors << "stream input:2.8: syntax error, unexpected invalid token, expecting ]"
                   << std::endl;
 
         std::string expect_paths_and_types = R"(
@@ -3244,7 +3247,8 @@ TEST(HITInterpreter, object_name_with_invalid_equals)
 
     // Check parse failure, error message, non-null root, paths, and types
     std::stringstream actual_paths_and_types;
-    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+    ASSERT_EQ(expected_errors.str(), actual_errors.str());
+    ASSERT_DIAGNOSTICS(interpreter, expected_errors);
     ASSERT_FALSE(interpreter.root().is_null());
     wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
     ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
@@ -3264,8 +3268,8 @@ TEST(HITInterpreter, object_name_with_invalid_ampersand)
     DefaultHITInterpreter interpreter(actual_errors);
     ASSERT_FALSE(interpreter.parse(input));
 
-    std::stringstream expect_errors;
-    expect_errors << "stream input:2.12: syntax error, unexpected invalid token, expecting ]"
+    std::stringstream expected_errors;
+    expected_errors << "stream input:2.12: syntax error, unexpected invalid token, expecting ]"
                   << std::endl;
 
     std::string expect_paths_and_types = R"(
@@ -3279,7 +3283,8 @@ TEST(HITInterpreter, object_name_with_invalid_ampersand)
 
     // Check parse failure, error message, non-null root, paths, and types
     std::stringstream actual_paths_and_types;
-    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+    ASSERT_EQ(expected_errors.str(), actual_errors.str());
+    ASSERT_DIAGNOSTICS(interpreter, expected_errors);
     ASSERT_FALSE(interpreter.root().is_null());
     wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types);
     ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
@@ -3299,11 +3304,12 @@ param&name=10
     DefaultHITInterpreter interpreter(actual_errors);
     ASSERT_FALSE(interpreter.parse(input));
 
-    std::stringstream expect_errors;
-    expect_errors << "stream input:2.6: syntax error, unexpected invalid token, expecting ="
+    std::stringstream expected_errors;
+    expected_errors << "stream input:2.6: syntax error, unexpected invalid token, expecting ="
                   << std::endl;
 
-    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+    ASSERT_EQ(expected_errors.str(), actual_errors.str());
+    ASSERT_DIAGNOSTICS(interpreter, expected_errors);
 }
 
 /**
@@ -3320,11 +3326,12 @@ TEST(HITInterpreter, invalid_object_terminator)
     DefaultHITInterpreter interpreter(actual_errors);
     ASSERT_FALSE(interpreter.parse(input));
 
-    std::stringstream expect_errors;
-    expect_errors << "stream input:2.17: syntax error, unexpected invalid token, expecting integer or object name"
+    std::stringstream expected_errors;
+    expected_errors << "stream input:2.17: syntax error, unexpected invalid token, expecting integer or object name"
                   << std::endl;
 
-    ASSERT_EQ(expect_errors.str(), actual_errors.str());
+    ASSERT_EQ(expected_errors.str(), actual_errors.str());
+    ASSERT_DIAGNOSTICS(interpreter, expected_errors);
 }
 
 /**

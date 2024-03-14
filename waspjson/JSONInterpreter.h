@@ -14,6 +14,7 @@
 
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/TokenPool.h"
+#include "waspcore/location.hh"
 #include "waspcore/Object.h"
 #include "waspjson/JSONParser.hpp"
 #include "waspcore/Interpreter.h"

@@ -6,6 +6,7 @@
 #include <string>
 #include <cstddef>
 #include <iostream>
+#include <sstream>
 #include "waspcore/decl.h"
 #include "waspcore/TreeNodePool.h"
 #include "waspcore/wasp_node.h"
@@ -17,6 +18,27 @@
 namespace wasp
 {
 class AbstractInterpreter;
+
+class WASP_PUBLIC Diagnostic
+{
+    int sl, el, sc, ec;
+    std::string f;
+    std::stringstream msg;
+    class AbstractInterpreter& interpreter;
+public:
+    Diagnostic(class AbstractInterpreter&);
+    Diagnostic& operator<< (location loc);
+    Diagnostic& operator<< (position start);
+    template<typename X>
+    Diagnostic& operator<< (const X& x);
+    Diagnostic& operator <<(std::ostream&(*os) (std::ostream&));
+    std::string str() const;
+    std::string filename() const;
+    int start_line() const;
+    int start_column() const;
+    int end_line() const;
+    int end_column() const;
+};
 
 /**
  * @brief The NodeView class provides light-weight interface to TreeNodes
@@ -286,6 +308,17 @@ class WASP_PUBLIC AbstractInterpreter
      * @return TreeNodeView view into the document parse tree
      */
     virtual NodeView root() const = 0;
+
+    /**
+     * Obtain a new error diagnostic to populate
+     * If this document is nested, the diagnostic is attached to the root-most interpreter
+    */
+    Diagnostic& error_diagnostic();
+    /**
+     * Obtain diagnostics
+    */
+    const std::vector<Diagnostic>& error_diagnostics()const{return m_error_diagnostics;}
+    std::vector<Diagnostic>& error_diagnostics(){return m_error_diagnostics;}
     /**
      * @brief token_count acquires the number of tokens so far interpreted
      * @return the number of tokens
@@ -535,6 +568,8 @@ class WASP_PUBLIC AbstractInterpreter
         (void) err;              // suppress unused variable warning
         return true;
     }
+  private:
+    std::vector<Diagnostic> m_error_diagnostics;
 }; 
 
 template<class NodeStorage = TreeNodePool<>>

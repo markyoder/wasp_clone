@@ -1515,5 +1515,5 @@ namespace wasp {
 void wasp::EDDIParser::error(const EDDIParser::location_type& l,
                            const std::string& m)
 {
-    interpreter.error_stream()<<l<<": "<<m<<std::endl;
+    interpreter.error_diagnostic()<<l<<": "<<m<<std::endl;
 }

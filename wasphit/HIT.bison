@@ -342,7 +342,7 @@ object_decl : lbracket section_name rbracket {
         size_t decl_index = ($section_name);
         $$ = new std::vector<size_t>{lbracket_index,decl_index};
         interpreter.set_failed(true);
-        interpreter.error_stream() << @3.begin << ": syntax error, unexpected end of line, expecting ]" << std::endl;
+        interpreter.error_diagnostic() << @3.begin << ": syntax error, unexpected end of line, expecting ]" << std::endl;
     }
     | lbracket EOL {
         size_t lbracket_index = ($lbracket);
@@ -356,7 +356,7 @@ object_decl : lbracket section_name rbracket {
 
         $$ = new std::vector<size_t>{lbracket_index,decl_index};
         interpreter.set_failed(true);
-        interpreter.error_stream() << @2.begin << ": syntax error, unexpected end of line, expecting object name" << std::endl;
+        interpreter.error_diagnostic() << @2.begin << ": syntax error, unexpected end of line, expecting object name" << std::endl;
     }
     | lbracket END {
         size_t lbracket_index = ($lbracket);
@@ -370,21 +370,21 @@ object_decl : lbracket section_name rbracket {
 
         $$ = new std::vector<size_t>{lbracket_index,decl_index};
         interpreter.set_failed(true);
-        interpreter.error_stream() << @2.begin << ": syntax error, unexpected end of file, expecting object name" << std::endl;
+        interpreter.error_diagnostic() << @2.begin << ": syntax error, unexpected end of file, expecting object name" << std::endl;
     }
     | lbracket section_name END {
         size_t lbracket_index = ($lbracket);
         size_t decl_index = ($section_name);
         $$ = new std::vector<size_t>{lbracket_index,decl_index};
         interpreter.set_failed(true);
-        interpreter.error_stream() << @3.begin << ": syntax error, unexpected end of file, expecting ]" << std::endl;
+        interpreter.error_diagnostic() << @3.begin << ": syntax error, unexpected end of file, expecting ]" << std::endl;
     }
     | lbracket section_name UNKNOWN {
         size_t lbracket_index = ($lbracket);
         size_t decl_index = ($section_name);
         $$ = new std::vector<size_t>{lbracket_index,decl_index};
         interpreter.set_failed(true);
-        interpreter.error_stream() << @3.begin << ": syntax error, unexpected invalid token, expecting ]" << std::endl;
+        interpreter.error_diagnostic() << @3.begin << ": syntax error, unexpected invalid token, expecting ]" << std::endl;
     }
     | lbracket section_name UNKNOWN rbracket {
         size_t lbracket_index = ($lbracket);
@@ -392,7 +392,7 @@ object_decl : lbracket section_name rbracket {
         size_t rbracket_index = ($rbracket);
         $$ = new std::vector<size_t>{lbracket_index, decl_index, rbracket_index};
         interpreter.set_failed(true);
-        interpreter.error_stream() << @3.begin << ": syntax error, unexpected invalid token, expecting ]" << std::endl;
+        interpreter.error_diagnostic() << @3.begin << ": syntax error, unexpected invalid token, expecting ]" << std::endl;
     }
     | lbracket  dot_slash section_name rbracket
     {
@@ -459,7 +459,7 @@ object : object_decl object_term
             $$ = push_object(interpreter, *$object_decl, nullptr, 0);
             delete $1;
             
-            if (!interpreter.failed()) interpreter.error_stream() << @2.begin << ": syntax error, unexpected end of file" << std::endl;
+            if (!interpreter.failed()) interpreter.error_diagnostic() << @2.begin << ": syntax error, unexpected end of file" << std::endl;
             interpreter.set_failed(true);
         }
         | object_decl error object_members object_term
@@ -482,7 +482,7 @@ object : object_decl object_term
             delete $2->second;
             delete $2;
             interpreter.set_failed(true);
-            interpreter.error_stream() << @1.begin << ": syntax error, unexpected end of file, expecting block terminator" << std::endl;
+            interpreter.error_diagnostic() << @1.begin << ": syntax error, unexpected end of file, expecting block terminator" << std::endl;
         }
 double_quoted_string : QSTRING
     {
@@ -633,7 +633,7 @@ keyedvalue : field_name assign value
 
         std::string key = interpreter.data(key_index);
         $$ = push_keyed_value_or_array(interpreter, child_indices);
-        interpreter.error_stream() << @2 << ": syntax error, '" << key << "' has a missing or malformed value" << std::endl;
+        interpreter.error_diagnostic() << @2 << ": syntax error, '" << key << "' has a missing or malformed value" << std::endl;
         interpreter.set_failed(true);
     }
     | field_name error
@@ -687,6 +687,6 @@ namespace wasp{
 void HITParser::error(const HITParser::location_type& l,
                            const std::string& m)
 {
-    interpreter.error_stream()<<l<<": "<<m<<std::endl;
+    interpreter.error_diagnostic()<<l<<": "<<m<<std::endl;
 }
 } // end of namespace

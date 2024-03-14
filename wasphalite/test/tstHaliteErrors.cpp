@@ -71,27 +71,21 @@ TEST(Halite, attribute_range_errors)
         "<x:x = 1, ,>",    "<x:x = 1, ;>",  "\n\n<x:x = 1, 2,>",
         "<x:x = 1, 2, ,>", "<x:x = 1, 3,;>"};
     std::vector<std::string> expected_error = {
-        "1; no range start was specified for 'x'.",
-        "1; no range start was specified for 'x'.",
-        "1; unable to extract delimited range start for 'x'."  // delimited by
+        "1.1; no range start was specified for 'x'.",
+        "1.1; no range start was specified for 'x'.",
+        "1.1; unable to extract delimited range start for 'x'.",  // delimited by
                                                                // ',' or ';'
-        ,
-        "1; unable to extract delimited range start for 'x'."  // delimited by
+        "1.1; unable to extract delimited range start for 'x'.",  // delimited by
                                                                // ',' or ';'
-        ,
-        "1; no range end was specified for 'x'.",
-        "1; no range end was specified for 'x'."  // no ',' or ';'
-        ,
-        "1; unable to extract delimited range end for 'x'."  // nothing between
+        "1.1; no range end was specified for 'x'.",
+        "1.1; no range end was specified for 'x'.",  // no ',' or ';'
+        "1.1; unable to extract delimited range end for 'x'.",  // nothing between
                                                              // ',' or ';'
-        ,
-        "1; unable to extract delimited range end for 'x'."  // nothing between
+        "1.1; unable to extract delimited range end for 'x'.",  // nothing between
                                                              // ',' or ';'
-        ,
-        "3; no range stride was specified for 'x'.",
-        "1; unable to extract range stride for 'x'."  // no ',' or ';'
-        ,
-        "1; unable to extract delimited range stride for 'x'."  // delimited by
+        "3.1; no range stride was specified for 'x'.",
+        "1.1; unable to extract range stride for 'x'.",  // no ',' or ';'
+        "1.1; unable to extract delimited range stride for 'x'."  // delimited by
                                                                 // ';'
     };
     ASSERT_EQ(expected_error.size(), ranges.size());
@@ -111,7 +105,7 @@ TEST(Halite, attribute_range_errors)
         std::stringstream out;
         DataAccessor      data;
         ASSERT_FALSE(interpreter.evaluate(out, data));
-        ASSERT_EQ("***Error : unable to acquire attribute options on line " +
+        ASSERT_EQ("***Error : unable to acquire attribute options at stream input:" +
                       e + "\n",
                   errors.str());
     }

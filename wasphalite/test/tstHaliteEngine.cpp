@@ -1493,11 +1493,12 @@ TEST(Halite, iterative_configurable_delimiter_emission)
             << R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=<nl>,-5>)INPUT";
         std::stringstream        errors;
         DefaultHaliteInterpreter interpreter(errors);
+        interpreter.setStreamName("x.tmpl", true);
         ASSERT_TRUE(interpreter.parse(input));
         std::stringstream out;
         ASSERT_FALSE(interpreter.evaluate(out, data));
         std::stringstream expected;
-        expected << "***Error : the emit stride on line 1 must be a "
+        expected << "***Error : the emit stride at x.tmpl:1.1 must be a "
                     "non-negative integer. Found '-5' processed as '-5'."
                  << std::endl;
         ASSERT_EQ(expected.str(), errors.str());
@@ -1508,12 +1509,13 @@ TEST(Halite, iterative_configurable_delimiter_emission)
             << R"INPUT(<times[j]:j=0,<size(times)-1>;fmt=%g;sep= ;emit=5,ted>)INPUT";
         std::stringstream        errors;
         DefaultHaliteInterpreter interpreter(errors);
+        interpreter.setStreamName("X", true);
         ASSERT_TRUE(interpreter.parse(input));
         std::stringstream out;
         ASSERT_FALSE(interpreter.evaluate(out, data));
         std::stringstream expected;
-        expected << "***Error : the emit stride failed to be processed on line "
-                    "1. Looking for a non-negative integer, found 'ted'."
+        expected << "***Error : the emit stride failed to be processed at X:1.1."
+                    " Looking for a non-negative integer, found 'ted'."
                  << std::endl;
         ASSERT_EQ(expected.str(), errors.str());
     }

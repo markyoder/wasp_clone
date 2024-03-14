@@ -304,5 +304,5 @@ start   : /** empty **/
 void wasp::DDIParser::error(const DDIParser::location_type& l,
                            const std::string& m)
 {
-    interpreter.error_stream()<<l<<": "<<m<<std::endl;
+    interpreter.error_diagnostic()<<l<<": "<<m<<std::endl;
 }

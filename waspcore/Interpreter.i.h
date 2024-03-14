@@ -1,3 +1,12 @@
+template<typename X>
+Diagnostic&
+Diagnostic::operator<< (const X& x)
+{
+    msg << x;
+    interpreter.error_stream() << x;
+    return *this;
+}
+
 template<class NodeStorage>
 Interpreter<NodeStorage>::Interpreter(std::ostream& err)
     : AbstractInterpreter()
@@ -338,9 +347,7 @@ bool Interpreter<NodeStorage>::load_document(size_t node_index,
         // stop with an error if file include would create a circular reference
         if (path_already_included(document_path))
         {
-            error_stream() << stream_name()
-                           << ":" << line(node_index)
-                           << "." << column(node_index)
+            error_diagnostic() << position(&stream_name(), line(node_index), column(node_index))
                            << ": file include would create circular reference"
                            << " '" << clean_path << "'"
                            << std::endl;
@@ -366,9 +373,7 @@ bool Interpreter<NodeStorage>::load_document(size_t node_index,
     }
     else
     {
-        error_stream() << stream_name()
-                       << ":" << line(node_index)
-                       << "." << column(node_index)
+        error_diagnostic() << position(&stream_name(), line(node_index), column(node_index))
                        << ": could not find"
                        << " '" << clean_path << "'"
                        << std::endl;

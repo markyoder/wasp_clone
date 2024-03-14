@@ -3,6 +3,81 @@
 
 namespace wasp
 {
+Diagnostic::Diagnostic(AbstractInterpreter& interp): sl(1), el(1), sc(1), ec(1), interpreter(interp)
+{
+}
+Diagnostic& Diagnostic::operator<< (location loc)
+{
+    // Make a copy - the interpreter originating the location will go away
+    f = *loc.begin.filename;
+    sl = loc.begin.line;
+    sc = loc.begin.column;
+    el = loc.end.line;
+    ec = loc.end.column;
+    interpreter.error_stream() << loc;
+    return *this;
+}
+Diagnostic& Diagnostic::operator<< (position start)
+{
+    // Make a copy - the interpreter originating the location will go away
+    f = *start.filename;
+    sl = start.line;
+    sc = start.column;
+    el = sl;
+    ec = sc;
+    interpreter.error_stream() << start;
+    return *this;
+}
+
+Diagnostic& Diagnostic::operator <<(std::ostream&(*os) (std::ostream&))
+{
+    msg << os;
+    interpreter.error_stream() << os;
+    return *this;
+}
+std::string Diagnostic::str() const 
+{
+    std::stringstream s;
+    auto end_col = 0 < ec ? ec - 1 : 0;
+    if (sl < el)
+      s << '-' << el << '.' << end_col;
+    else if (sc < end_col)
+      s << '-' << end_col;
+    s << msg.str();
+    return s.str();
+}
+
+std::string Diagnostic::filename() const
+{
+    return f;
+}
+int Diagnostic::start_line() const
+{
+    return sl;
+}
+int Diagnostic::start_column() const
+{
+    return sc;
+}
+int Diagnostic::end_line() const
+{
+    return el;
+}
+int Diagnostic::end_column() const
+{
+    return ec;
+}
+
+
+Diagnostic& AbstractInterpreter::error_diagnostic()
+{
+    // The following logic ensures that diagnostics are attached to the interpreter
+    // with which the caller will be interacting
+    if (document_parent()) return document_parent()->error_diagnostic();
+    m_error_diagnostics.push_back(Diagnostic(*this));
+    return m_error_diagnostics.back();
+}
+
 NodeView::NodeView(std::size_t node_index, wasp::AbstractInterpreter& nodes)
     : m_node_index(node_index), m_pool(&nodes)
 {
