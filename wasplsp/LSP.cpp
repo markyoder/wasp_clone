@@ -1936,6 +1936,11 @@ bool checkErrorResponse( const DataObject   & object ,
     return pass;
 }
 
+bool objectHasRequestId(const DataObject & object)
+{
+    return object.contains(m_id) && object[m_id].is_int();
+}
+
 bool verifyInitializeResponse( const DataObject & object )
 {
     bool pass = true;
