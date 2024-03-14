@@ -789,13 +789,17 @@ TEST(integrate, server_thread_join)
 
 TEST(client, server_response_error)
 {
+    // send request to server with bad method name and check error response
+
     DataObject bad_request_object;
 
     bad_request_object[m_method] = "bad_method_name";
 
+    bad_request_object[m_id] = test_request_id;
+
     std::stringstream expected_error;
 
-    expected_error << "Error:: Message to server has bad method name: \"bad_method_name\""
+    expected_error << "Error:: Server request has unsupported method: \"bad_method_name\""
                    << std::endl;
 
     DataObject response_object;
@@ -821,6 +825,14 @@ TEST(client, server_response_error)
     ASSERT_FALSE( test_connection->getServerErrors().empty() );
 
     ASSERT_EQ   ( test_connection->getServerErrors() , expected_error.str() );
+
+    // send exit to stop server since that unknown request does not kill it
+
+    DataObject client_object;
+
+    ASSERT_TRUE(buildExitNotification(client_object, errors));
+
+    ASSERT_TRUE(test_connection->write(client_object, errors));
 
     thread.join();
 }

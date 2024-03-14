@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - EDDI README example referencing incorrect '#' comment character. EDDI comment character is '!'
+- LSP server to not terminate execution when it receives unrecognized method name from client
 
 ## [4.2.0] - 2-19-2024
 

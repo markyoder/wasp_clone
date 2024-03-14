@@ -90,17 +90,18 @@ bool ServerImpl::run()
         {
             pass &= this->handleExitNotification( input_object );
         }
-        else if ( method_name.empty() )
+
+        // if request method is unknown then send back error and keep going
+
+        else if ( objectHasRequestId(input_object) )
         {
-            pass = false;
-            this->errors << m_error_prefix << "Message to server has no method name"
-                               << std::endl;
-        }
-        else
-        {
-            pass = false;
-            this->errors << m_error_prefix << "Message to server has bad method name: "
-                               "\"" << method_name << "\"" << std::endl;
+            this->errors << m_error_prefix
+                         << "Server request has unsupported method: "
+                         << "\"" << method_name << "\"" << std::endl;
+
+            buildErrorResponse( output_object            ,
+                                m_method_not_found_error ,
+                                this->errors.str()       );
         }
 
         // if anything failed in the process, then build an error response
