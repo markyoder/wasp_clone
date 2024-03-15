@@ -1333,7 +1333,7 @@ class WASP_PUBLIC Result
     std::string error_msg(const T& tree_view, const std::string& msg_str)
     {
         std::stringstream msg;
-        msg << "***Error : " << tree_view.name();
+        msg << tree_view.name();
         // if the view is a leaf, incorporate the leaf's data in the message.
         // This should improve context
         if (tree_view.child_count() == 0)

@@ -821,7 +821,9 @@ bool HaliteInterpreter<S>::process_result(const Result&              result,
     if (result.is_error() && !options.optional())
     {
         wasp_tagged_line(result.string());
-        Interpreter<S>::error_diagnostic() << position(&Interpreter<S>::stream_name(), line) << result.string();
+        Interpreter<S>::error_diagnostic() <<"***Error : at "
+                << position(&Interpreter<S>::stream_name(), line) 
+                <<" - " << result.string();
         return false;
     }
     if (result.is_error() == false)
@@ -834,7 +836,7 @@ bool HaliteInterpreter<S>::process_result(const Result&              result,
             {
                 Interpreter<S>::error_diagnostic()
                     << std::endl
-                    << "***Error : " << position(&Interpreter<S>::stream_name(), line)
+                    << "***Error : at " << position(&Interpreter<S>::stream_name(), line)
                     << " failed to format result - " << result.as_string()
                     << " - as '" << options.format() << "'." << std::endl;
                 return false;
@@ -846,7 +848,7 @@ bool HaliteInterpreter<S>::process_result(const Result&              result,
             {
                 Interpreter<S>::error_diagnostic()
                     << std::endl
-                    << "***Error : " << position(&Interpreter<S>::stream_name(), line)
+                    << "***Error : at " << position(&Interpreter<S>::stream_name(), line)
                     << " failed to format result - " << result.as_string()
                     << "." << std::endl;
                 return false;
@@ -1165,7 +1167,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&   data,
     if (parsed == false)
     {
         Interpreter<S>::error_diagnostic()
-            << "***Error : " << position(&Interpreter<S>::stream_name(), import_line)
+            << "***Error : at " << position(&Interpreter<S>::stream_name(), import_line)
             << " - unable to process '"
             << nested_interp.stream_name() << "'." << std::endl;
         return false;
@@ -1245,7 +1247,7 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&   data,
         if (!import)
         {
             Interpreter<S>::error_diagnostic()
-                << "***Error : " << position(&Interpreter<S>::stream_name(), import_line) 
+                << "***Error : at " << position(&Interpreter<S>::stream_name(), import_line) 
                 << " - unable to process '"
                 << nested_interp.stream_name() << "'." << std::endl;
         }
