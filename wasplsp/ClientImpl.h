@@ -96,6 +96,13 @@ class WASP_PUBLIC ClientImpl
     bool doDocumentDefinition( int line      ,
                                int character );
 
+    /** build hover request / write to connection / read and store response
+     * @param line - zero-based input document line number for this request
+     * @param character - zero-based input document column for this request
+     * @return - true if build / write / response read handled successfully
+     */
+    bool doDocumentHover(int line, int character);
+
     /** build references request object / write to connection / read response
      * @param line - line number of references request ( zero-based )
      * @param character - column number of references request ( zero-based )
@@ -201,6 +208,12 @@ class WASP_PUBLIC ClientImpl
      */
     bool getDefinitionAt( int                index      ,
                           clientDefinition & definition );
+
+    /** get hover text string stored for response if HOVER is response type
+     * @param hover_text - string reference to fill with text from response
+     * @return - true if response type is HOVER / id matches / text was set
+     */
+    bool getHoverText(std::string & hover_text);
 
     /** get parameters at index into references if response type is REFERENCES
      * @param index - index of references object in response array to obtain
@@ -362,6 +375,7 @@ class WASP_PUBLIC ClientImpl
         DIAGNOSTIC ,
         COMPLETION ,
         DEFINITION ,
+        HOVER      ,
         REFERENCES ,
         FORMATTING ,
         SYMBOLS    ,

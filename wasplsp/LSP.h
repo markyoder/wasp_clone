@@ -322,6 +322,40 @@ bool dissectDefinitionRequest( const DataObject   & object     ,
                                      int          & line       ,
                                      int          & character  );
 
+/** build hover request object using provided parameters for input location
+ * @param object - reference to data object that will be built with request
+ * @param errors - reference to stream to fill with possible error messages
+ * @param request_id - id from client request to match response from server
+ * @param uri - well formatted URI path of input document from this request
+ * @param line - zero-based line number in input document from this request
+ * @param character - zero-based column in input document from this request
+ * @return - true if successful and built request object without any errors
+ */
+WASP_PUBLIC
+bool buildHoverRequest( DataObject        & object     ,
+                        std::ostream      & errors     ,
+                        int                 request_id ,
+                        const std::string & uri        ,
+                        int                 line       ,
+                        int                 character );
+
+/** dissect hover request object into provided document location parameters
+ * @param object - const reference to request object that will be dissected
+ * @param errors - reference to stream to fill with possible error messages
+ * @param request_id - id from client request to match response from server
+ * @param uri - well formatted URI path of input document from this request
+ * @param line - zero-based line number in input document from this request
+ * @param character - zero-based column in input document from this request
+ * @return - true if successful and dissected request object without errors
+ */
+WASP_PUBLIC
+bool dissectHoverRequest( const DataObject & object ,
+                          std::ostream & errors     ,
+                          int          & request_id ,
+                          std::string  & uri        ,
+                          int          & line       ,
+                          int          & character  );
+
 /** build references request object from the provided parameters
  * @param object - reference to data object that will be built
  * @param errors - reference to stream to fill with any possible errors
@@ -778,6 +812,32 @@ bool dissectLocationsResponse( const DataObject   & object           ,
                                      int          & request_id       ,
                                      DataArray    & location_objects );
 
+/** build hover response object from provided text that should be displayed
+ * @param object - reference to data object that will be built for response
+ * @param errors - reference to stream to fill with possible error messages
+ * @param request_id - id from client request to match response from server
+ * @param display_text - text to display for hover at location from request
+ * @return - true if response object reference was built without any errors
+ */
+WASP_PUBLIC
+bool buildHoverResponse( DataObject        & object       ,
+                         std::ostream      & errors       ,
+                         int                 request_id   ,
+                         const std::string & display_text );
+
+/** dissect hover response object into provided string reference to display
+ * @param object - const reference to object for response getting dissected
+ * @param errors - reference to stream to fill with possible error messages
+ * @param request_id - id from client request to match response from server
+ * @param display_text - text to display for hover at location from request
+ * @return - true if response object reference was dissected without errors
+ */
+WASP_PUBLIC
+bool dissectHoverResponse( const DataObject        & object       ,
+                                 std::ostream      & errors       ,
+                                 int               & request_id   ,
+                                 std::string       & display_text );
+
 /** build text edit object from the provided parameters
  * @param object - reference to data object that will be built
  * @param errors - reference to stream to fill with any possible errors
@@ -981,14 +1041,21 @@ bool buildErrorResponse( DataObject        & object ,
                          int                 code   ,
                          const std::string & errors );
 
-/** dissect error response object into the provided parameter references
- * @param object - const reference to data object that will be dissected
- * @param errors - reference to stream to fill with the response's errors
- * @return - true if the object was successfully dissected without error
+/** check if response contains success result or contains error for failure
+ * @param object - const reference to response object that will get checked
+ * @param errors - reference to stream for adding message if error response
+ * @return - true if response contains result or false if it contains error
  */
 WASP_PUBLIC
 bool checkErrorResponse( const DataObject   & object ,
                                std::ostream & errors );
+
+/** check if object contains integer request id indicating not notification
+ * @param object - const reference to object that will get for id existence
+ * @return - true if object does contain request id or false if it does not
+ */
+WASP_PUBLIC
+bool objectHasRequestId(const DataObject & object);
 
 /** verify if the provided data object is an initialize response
  * @param object - const reference to data object that will be verified
@@ -1017,6 +1084,13 @@ bool verifyCompletionResponse( const DataObject & object );
  */
 WASP_PUBLIC
 bool verifyDefinitionResponse( const DataObject & object );
+
+/** verify if provided data object is proper response object type for hover
+ * @param object - const reference to response object that will be verified
+ * @return - true if provided data object is proper type of response object
+ */
+WASP_PUBLIC
+bool verifyHoverResponse( const DataObject & object );
 
 /** verify if the provided data object is a references response
  * @param object - const reference to data object that will be verified
@@ -1174,6 +1248,7 @@ static const char m_method_didopen[]        = "textDocument/didOpen";
 static const char m_method_didchange[]      = "textDocument/didChange";
 static const char m_method_completion[]     = "textDocument/completion";
 static const char m_method_definition[]     = "textDocument/definition";
+static const char m_method_hover[]          = "textDocument/hover";
 static const char m_method_references[]     = "textDocument/references";
 static const char m_method_formatting[]     = "textDocument/formatting";
 static const char m_method_documentsymbol[] = "textDocument/documentSymbol";
@@ -1230,6 +1305,7 @@ static const char m_name[]                  = "name";
 static const char m_selection_range[]       = "selectionRange";
 static const char m_children[]              = "children";
 static const char m_document_symbol[]       = "documentSymbol";
+static const char m_contents[]              = "contents";
 static const char m_hierarchical_symbols[]  = "hierarchicalDocumentSymbolSupport";
 static const char m_text_doc_sync[]         = "textDocumentSync";
 static const char m_open_close[]            = "openClose";

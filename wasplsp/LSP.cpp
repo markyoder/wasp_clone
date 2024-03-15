@@ -727,6 +727,75 @@ bool dissectDefinitionRequest( const DataObject   & object     ,
     return pass;
 }
 
+bool buildHoverRequest( DataObject        & object     ,
+                        std::ostream      & errors     ,
+                        int                 request_id ,
+                        const std::string & uri        ,
+                        int                 line       ,
+                        int                 character )
+{
+    bool pass = true;
+
+    // build position object from input document zero-based line and column
+    DataObject position;
+    pass &= buildPositionObject( position  ,
+                                 errors    ,
+                                 line      ,
+                                 character );
+
+    // build text document object from URI formatted path of input document
+    DataObject text_document;
+    text_document[m_uri] = uri;
+
+    // build params object from previous position and text document objects
+    DataObject params;
+    params[m_position]      = position;
+    params[m_text_document] = text_document;
+
+    // build request object from params object, integer id, and method name
+    object[m_params] =  params;
+    object[m_id]     =  request_id;
+    object[m_method] = m_method_hover;
+
+    return pass;
+}
+
+bool dissectHoverRequest( const DataObject   & object     ,
+                                std::ostream & errors     ,
+                                int          & request_id ,
+                                std::string  & uri        ,
+                                int          & line       ,
+                                int          & character  )
+{
+    bool pass = true;
+
+    // dissect request object into method name, id value, and params object
+    wasp_check(object.contains(m_method) && object[m_method].is_string());
+    wasp_check(object[m_method].to_string() == m_method_hover);
+    wasp_check(object.contains(m_id) && object[m_id].is_int());
+    request_id = object[m_id].to_int();
+    wasp_check(object.contains(m_params) && object[m_params].is_object());
+    const DataObject& params = *(object[m_params].to_object());
+
+    // dissect params object into objects holding position and text document
+    wasp_check(params.contains(m_position) && params[m_position].is_object());
+    const DataObject& position = *(params[m_position].to_object());
+    wasp_check(params.contains(m_text_document) && params[m_text_document].is_object());
+    const DataObject& text_document = *(params[m_text_document].to_object());
+
+    // dissect text document object into URI formatted string path of input
+    wasp_check(text_document.contains(m_uri) && text_document[m_uri].is_string());
+    uri = text_document[m_uri].to_string();
+
+    // dissect position object into zero-based line and column for document
+    pass &= dissectPositionObject( position  ,
+                                   errors    ,
+                                   line      ,
+                                   character );
+
+    return pass;
+}
+
 bool buildReferencesRequest( DataObject        & object              ,
                              std::ostream      & errors              ,
                              int                 request_id          ,
@@ -1496,6 +1565,44 @@ bool dissectLocationsResponse( const DataObject   & object           ,
     return pass;
 }
 
+bool buildHoverResponse( DataObject        & object       ,
+                         std::ostream      & errors       ,
+                         int                 request_id   ,
+                         const std::string & display_text )
+{
+    bool pass = true;
+
+    // build result object from contents with text that should be displayed
+    DataObject result;
+    result[m_contents] = display_text;
+
+    // build response object from result object holding text and integer id
+    object[m_result] = result;
+    object[m_id]     = request_id;
+
+    return pass;
+}
+
+bool dissectHoverResponse( const DataObject   & object       ,
+                                 std::ostream & errors       ,
+                                 int          & request_id   ,
+                                 std::string  & display_text )
+{
+    bool pass = true;
+
+    // dissect response object into id value and result object holding text
+    wasp_check(object.contains(m_id) && object[m_id].is_int());
+    request_id = object[m_id].to_int();
+    wasp_check(object.contains(m_result) && object[m_result].is_object());
+    const DataObject& result = *(object[m_result].to_object());
+
+    // dissect result object into contents that should be diplayed on hover
+    wasp_check(result.contains(m_contents) && result[m_contents].is_string());
+    display_text = result[m_contents].to_string();
+
+    return pass;
+}
+
 bool buildTextEditObject( DataObject        & object          ,
                           std::ostream      & errors          ,
                           int                 start_line      ,
@@ -1829,6 +1936,11 @@ bool checkErrorResponse( const DataObject   & object ,
     return pass;
 }
 
+bool objectHasRequestId(const DataObject & object)
+{
+    return object.contains(m_id) && object[m_id].is_int();
+}
+
 bool verifyInitializeResponse( const DataObject & object )
 {
     bool pass = true;
@@ -1837,7 +1949,7 @@ bool verifyInitializeResponse( const DataObject & object )
 
     pass &= object.contains(m_result) && object[m_result].is_object();
 
-    pass &= object[m_result].to_object()->contains(m_capabilities) &&
+    pass &= pass && object[m_result].to_object()->contains(m_capabilities) &&
             object[m_result][m_capabilities].is_object();
 
     return pass;
@@ -1853,10 +1965,10 @@ bool verifyDiagnosticResponse( const DataObject & object )
 
     pass &= object.contains(m_params) && object[m_params].is_object();
 
-    pass &= object[m_params].to_object()->contains(m_uri) &&
+    pass &= pass && object[m_params].to_object()->contains(m_uri) &&
             object[m_params][m_uri].is_string();
 
-    pass &= object[m_params].to_object()->contains(m_diagnostics) &&
+    pass &= pass && object[m_params].to_object()->contains(m_diagnostics) &&
             object[m_params][m_diagnostics].is_array();
 
     return pass;
@@ -1870,10 +1982,10 @@ bool verifyCompletionResponse( const DataObject & object )
 
     pass &= object.contains(m_result) && object[m_result].is_object();
 
-    pass &= object[m_result].to_object()->contains(m_is_incomplete) &&
+    pass &= pass && object[m_result].to_object()->contains(m_is_incomplete) &&
             object[m_result][m_is_incomplete].is_bool();
 
-    pass &= object[m_result].to_object()->contains(m_items) &&
+    pass &= pass && object[m_result].to_object()->contains(m_items) &&
             object[m_result][m_items].is_array();
 
     return pass;
@@ -1886,6 +1998,21 @@ bool verifyDefinitionResponse( const DataObject & object )
     pass &= object.contains(m_id) && object[m_id].is_int();
 
     pass &= object.contains(m_result) && object[m_result].is_array();
+
+    return pass;
+}
+
+bool verifyHoverResponse( const DataObject & object )
+{
+    bool pass = true;
+
+    // verify response object contains id of integer type and result object
+    pass &= object.contains(m_id) && object[m_id].is_int();
+    pass &= object.contains(m_result) && object[m_result].is_object();
+
+    // verify response object contains string type value with contents name
+    pass &= pass && object[m_result].to_object()->contains(m_contents) &&
+            object[m_result][m_contents].is_string();
 
     return pass;
 }

@@ -739,6 +739,24 @@ TEST(client, document_definition)
     }
 }
 
+TEST(client, document_hover)
+{
+    // document hover test parameters using input location of key in object
+    int line      = 4;
+    int character = 8;
+
+    // use client to do document hover with input location of key in object
+    ASSERT_TRUE(client.doDocumentHover(line, character));
+    ASSERT_TRUE(client.getConnection()->getServerErrors().empty());
+    ASSERT_TRUE(client.getErrors().empty());
+
+    // check contents of wasp server response to client document hover call
+    std::string response_hover_text;
+    ASSERT_TRUE(client.getHoverText(response_hover_text));
+    ASSERT_TRUE(client.getErrors().empty());
+    ASSERT_EQ("this is the key description from the schema", response_hover_text);
+}
+
 TEST(client, document_close)
 {
     // document close

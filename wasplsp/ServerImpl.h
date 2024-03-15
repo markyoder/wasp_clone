@@ -77,6 +77,15 @@ class WASP_PUBLIC ServerImpl
                     const DataObject & definitionRequest  ,
                           DataObject & definitionResponse );
 
+    /** handle hover request building response in provided object reference
+     * @param hoverRequest - const reference to object for hover parameters
+     * @param hoverResponse - object reference where response will be built
+     * @return - true if request was handled successfully building response
+     */
+    bool handleHoverRequest(
+                    const DataObject & hoverRequest  ,
+                          DataObject & hoverResponse );
+
     /** handle references request creating response in provided reference
      * @param referencesRequest - const reference to request to be handled
      * @param referencesResponse - reference to object that will hold response
@@ -205,6 +214,20 @@ class WASP_PUBLIC ServerImpl
                           DataArray & definitionLocations ,
                           int         line                ,
                           int         character           ) = 0;
+
+    /** get hover display text - details are implemented on derived servers
+     ** rather than being pure virtual like similar server specific methods
+     ** this base implementation leaves display text empty and returns true
+     ** so derived servers do not require method for backward compatibility
+     * @param displayText - string reference to add text displayed on hover
+     * @param line - zero-based line to use for finding node and hover text
+     * @param character - zero-based column for finding node and hover text
+     * @return - true if display text was added or unmodified without error
+     */
+    virtual bool getHoverDisplayText(
+                          std::string & /* displayText */ ,
+                          int           /* line        */ ,
+                          int           /* character   */ )  { return true; }
 
     /** gather references locations - to be implemented on derived servers
      * @param referencesLocations - data array of locations objects to fill

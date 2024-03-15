@@ -41,6 +41,7 @@ object
     {
         MinOccurs=0
         MaxOccurs=1
+        Description="this is the key description from the schema"
 
         value
         {

@@ -101,6 +101,19 @@ class WASP_PUBLIC Server
                                              definitionResponse );
     }
 
+    /** handle hover request building response in provided object reference
+     * @param hoverRequest - const reference to object for hover parameters
+     * @param hoverResponse - object reference where response will be built
+     * @return - true if request was handled successfully building response
+     */
+    bool handleHoverRequest(
+                    const DataObject & hoverRequest  ,
+                          DataObject & hoverResponse )
+    {
+        return Impl.handleHoverRequest( hoverRequest  ,
+                                        hoverResponse );
+    }
+
     /** handle references request creating response in provided reference
      * @param referencesRequest - const reference to request to be handled
      * @param referencesResponse - reference to object that will hold response

@@ -1326,7 +1326,7 @@ class WASP_PUBLIC Result
         bool   m_bool;
         int    m_int;
         double m_real;
-    } m_value;
+    } m_value{0};
     std::string m_string;
 
     template<class T>

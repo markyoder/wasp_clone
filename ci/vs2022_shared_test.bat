@@ -16,15 +16,19 @@ CALL conda activate wasp_ci
 CALL pip install delvewheel
 
 cmake -DBUILD_SHARED_LIBS=ON ^
-      -DBUILDNAME="VS2022-Shared-Release-%CI_BUILD_REF_NAME%" ^
+      -DBUILDNAME="VS2022-Shared-Release-%CI_COMMIT_REF_NAME%" ^
       -DCMAKE_BUILD_TYPE:STRING=RELEASE ^
-      -Dwasp_ENABLE_SWIG=ON ^
+      -DWASP_ENABLE_SWIG=ON ^
       -Dwasp_ENABLE_TESTS:BOOL=ON ^
       -Dwasp_ENABLE_ALL_PACKAGES:BOOL=ON ^
       -DCMAKE_CXX_FLAGS="/wd4005 /wd4244 /wd4251 /wd4267 /EHsc" ^
       -G "Visual Studio 17 2022" %SRC_DIR%
 
+
 FOR /F "usebackq delims=" %%g IN (`WHERE "build\src\python\dist\:*-abi3-win_amd64.whl"`) DO delvewheel repair -w ${CI_PROJECT_DIR}/build/wasppy/dist %%g
+
+set CMAKE_BUILD_PARALLEL_LEVEL=28
+
 
 ctest -VV --output-on-failure ^
       -D ExperimentalStart ^
