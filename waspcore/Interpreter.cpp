@@ -3,18 +3,33 @@
 
 namespace wasp
 {
-Diagnostic::Diagnostic(AbstractInterpreter& interp): sl(1), el(1), sc(1), ec(1), interpreter(interp)
+Diagnostic::Diagnostic(AbstractInterpreter* interp)
+    : sl(1), el(1), sc(1), ec(1), 
+    msg (new std::stringstream()),
+    interpreter(interp)
 {
+    wasp_require(interpreter);
 }
+
+Diagnostic::Diagnostic(const Diagnostic& orig)
+    : sl(orig.sl), el(orig.el), sc(orig.sc), ec(orig.ec), 
+    msg (new std::stringstream()),
+    interpreter(orig.interpreter)
+{
+    wasp_require(interpreter);
+    *msg << orig.msg->str();
+}
+
 Diagnostic& Diagnostic::operator<< (location loc)
 {
+    wasp_check(interpreter);
     // Make a copy - the interpreter originating the location will go away
     f = *loc.begin.filename;
     sl = loc.begin.line;
     sc = loc.begin.column;
     el = loc.end.line;
     ec = loc.end.column;
-    interpreter.error_stream() << loc;
+    interpreter->error_stream() << loc;
     return *this;
 }
 Diagnostic& Diagnostic::operator<< (position start)
@@ -25,14 +40,14 @@ Diagnostic& Diagnostic::operator<< (position start)
     sc = start.column;
     el = sl;
     ec = sc;
-    interpreter.error_stream() << start;
+    interpreter->error_stream() << start;
     return *this;
 }
 
 Diagnostic& Diagnostic::operator <<(std::ostream&(*os) (std::ostream&))
 {
-    msg << os;
-    interpreter.error_stream() << os;
+    *msg << os;
+    interpreter->error_stream() << os;
     return *this;
 }
 std::string Diagnostic::str() const 
@@ -43,7 +58,7 @@ std::string Diagnostic::str() const
       s << '-' << el << '.' << end_col;
     else if (sc < end_col)
       s << '-' << end_col;
-    s << msg.str();
+    s << msg->str();
     return s.str();
 }
 
@@ -74,7 +89,7 @@ Diagnostic& AbstractInterpreter::error_diagnostic()
     // The following logic ensures that diagnostics are attached to the interpreter
     // with which the caller will be interacting
     if (document_parent()) return document_parent()->error_diagnostic();
-    m_error_diagnostics.push_back(Diagnostic(*this));
+    m_error_diagnostics.push_back(Diagnostic(&*this));
     return m_error_diagnostics.back();
 }
 

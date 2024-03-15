@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <vector>
 #include <map>
+#include <memory>
 #include <string>
 #include <cstddef>
 #include <iostream>
@@ -23,10 +24,11 @@ class WASP_PUBLIC Diagnostic
 {
     int sl, el, sc, ec;
     std::string f;
-    std::stringstream msg;
-    class AbstractInterpreter& interpreter;
+    std::unique_ptr<std::stringstream> msg;
+    class AbstractInterpreter* interpreter;
 public:
-    Diagnostic(class AbstractInterpreter&);
+    Diagnostic(class AbstractInterpreter*);
+    Diagnostic(const Diagnostic& orig);
     Diagnostic& operator<< (location loc);
     Diagnostic& operator<< (position start);
     template<typename X>

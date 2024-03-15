@@ -2,8 +2,8 @@ template<typename X>
 Diagnostic&
 Diagnostic::operator<< (const X& x)
 {
-    msg << x;
-    interpreter.error_stream() << x;
+    *msg << x;
+    interpreter->error_stream() << x;
     return *this;
 }
 
