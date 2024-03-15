@@ -52,9 +52,9 @@ bool DDInterpreter<S>::parseFile(const std::string& filename, size_t line)
     std::ifstream in(filename.c_str());
     if (!in.good())
     {
-        Interpreter<S>::error_stream()
-            << "file '" << filename
-            << "' is either inaccessible or doesn't exist! Unable to read."
+        Interpreter<S>::error_diagnostic()
+            << position(&filename)
+            << " is either inaccessible or doesn't exist! Unable to read."
             << std::endl;
         return false;
     }

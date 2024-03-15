@@ -64,10 +64,8 @@ bool HaliteInterpreter<S>::parseFile(const std::string& filename, size_t line)
     std::ifstream in(filename.c_str());
     if (!in.good())
     {
-        Interpreter<S>::error_stream()
-            << "file '" << filename
-            << "' is either inaccessible or doesn't exist!"
-               " Unable to read."
+        Interpreter<S>::error_diagnostic() << position(&filename)
+            << " is either inaccessible or doesn't exist! Unable to read."
             << std::endl;
         return false;
     }
@@ -100,8 +98,9 @@ bool HaliteInterpreter<S>::parse_content(std::istream& in)
     }
     if (!in.eof() && in.fail())
     {
-        Interpreter<S>::error_stream() << Interpreter<S>::stream_name()
-                                       << " - error while reading" << std::endl;
+        Interpreter<S>::error_diagnostic() 
+                        << position(&Interpreter<S>::stream_name(),Interpreter<S>::line_count())
+                        << " - error while reading" << std::endl;
         return false;
     }
 
@@ -235,8 +234,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
         bool is_true = staged_type == wasp::WASP_TRUE;
         if (!is_true && staged_type != wasp::PREDICATED_CHILD)
         {
-            Interpreter<S>::error_stream()
-                << "***Error : line " << Interpreter<S>::line_count() + 1
+            Interpreter<S>::error_diagnostic()
+                << "***Error : at " << position(&Interpreter<S>::stream_name(),Interpreter<S>::line_count() + 1)
                 << " is an unmatched conditional elseif."
                 << " The matching #if, #ifdef, #ifndef, or #elseif"
                 << " is missing." << std::endl;
@@ -271,8 +270,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
         bool is_true = staged_type == wasp::WASP_TRUE;
         if (!is_true && staged_type != wasp::PREDICATED_CHILD)
         {
-            Interpreter<S>::error_stream()
-                << "***Error : line " << Interpreter<S>::line_count() + 1
+            Interpreter<S>::error_diagnostic()
+                << "***Error : at " << position(&Interpreter<S>::stream_name(),Interpreter<S>::line_count() + 1)
                 << " is an unmatched conditional else."
                 << " The matching #if, #ifdef, #ifndef, or #elseif"
                 << " is missing." << std::endl;
@@ -308,8 +307,8 @@ bool HaliteInterpreter<S>::parse_line(const std::string& line)
             && staged_type != wasp::CONDITIONAL &&
             !is_action)  // else has no TRUE,
         {
-            Interpreter<S>::error_stream()
-                << "***Error : line " << Interpreter<S>::line_count() + 1
+            Interpreter<S>::error_diagnostic()
+                << "***Error : at " << position(&Interpreter<S>::stream_name(), Interpreter<S>::line_count() + 1)
                 << " is an unmatched conditional terminator - '" << line << "'."
                 << " The matching #if, #ifdef, #ifndef, #elseif,"
                 << " or #else is missing." << std::endl;
@@ -691,9 +690,8 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor&   data,
     // if attribute is empty - then error and return false
     if (attr_str.str().find_first_not_of(" \t") == std::string::npos)
     {
-        Interpreter<S>::error_stream()
-            << "***Error : empty attribute substitution on line " << line
-            << " and column " << column << "." << std::endl;
+        Interpreter<S>::error_diagnostic()
+            << "***Error : empty attribute substitution at " << position(&Interpreter<S>::stream_name(), line, column) << "." << std::endl;
         return false;
     }
 
@@ -745,9 +743,9 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor&   data,
             }
             else if (!options.optional())
             {
-                Interpreter<S>::error_stream()
-                    << "***Error : unable to substitute expression on line "
-                    << line << " using '" << options.use()
+                Interpreter<S>::error_diagnostic()
+                    << "***Error : unable to substitute expression at "
+                    << position(&Interpreter<S>::stream_name(), line) << " using '" << options.use()
                     << "' - the data object or array could not be found."
                     << std::endl;
                 return false;
@@ -769,9 +767,9 @@ bool HaliteInterpreter<S>::print_attribute(DataAccessor&   data,
             DataObject*        use_obj  = data.object(obj_name);
             if (use_obj == nullptr && !options.optional())
             {
-                Interpreter<S>::error_stream()
-                    << "***Error : unable to substitute expression on line "
-                    << line << " using '" << options.use()
+                Interpreter<S>::error_diagnostic()
+                    << "***Error : unable to substitute expression at "
+                    << position(&Interpreter<S>::stream_name(), line) << " using '" << options.use()
                     << "' - the data object could not be found." << std::endl;
                 return false;
             }
@@ -823,7 +821,9 @@ bool HaliteInterpreter<S>::process_result(const Result&              result,
     if (result.is_error() && !options.optional())
     {
         wasp_tagged_line(result.string());
-        Interpreter<S>::error_stream() << result.string();
+        Interpreter<S>::error_diagnostic() <<"***Error : at "
+                << position(&Interpreter<S>::stream_name(), line) 
+                <<" - " << result.string();
         return false;
     }
     if (result.is_error() == false)
@@ -834,9 +834,9 @@ bool HaliteInterpreter<S>::process_result(const Result&              result,
             if (!result.format(out, options.format(),
                                Interpreter<S>::error_stream()))
             {
-                Interpreter<S>::error_stream()
+                Interpreter<S>::error_diagnostic()
                     << std::endl
-                    << "***Error : on line " << line
+                    << "***Error : at " << position(&Interpreter<S>::stream_name(), line)
                     << " failed to format result - " << result.as_string()
                     << " - as '" << options.format() << "'." << std::endl;
                 return false;
@@ -846,9 +846,9 @@ bool HaliteInterpreter<S>::process_result(const Result&              result,
         {
             if (!result.format(out))
             {
-                Interpreter<S>::error_stream()
+                Interpreter<S>::error_diagnostic()
                     << std::endl
-                    << "***Error : on line " << line
+                    << "***Error : at " << position(&Interpreter<S>::stream_name(), line)
                     << " failed to format result - " << result.as_string()
                     << "." << std::endl;
                 return false;
@@ -1015,9 +1015,10 @@ bool HaliteInterpreter<S>::conditional(DataAccessor&   data,
             }
             else
             {
-                Interpreter<S>::error_stream()
-                    << "Error : conditional action (#if,#elseif, etc.) "
-                       "must have a single argument. E.g., 'name' or "
+                Interpreter<S>::error_diagnostic()
+                    << "Error : " << position(&Interpreter<S>::stream_name(), line) 
+                    << "conditional action (#if,#elseif, etc.) "
+                    <<  "must have a single argument. E.g., 'name' or "
                     << m_attribute_start_delim << "name"
                     << m_attribute_end_delim << "." << std::endl;
                 return false;
@@ -1149,9 +1150,9 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&   data,
     {
         if (!relative_to_current.good())
         {
-            Interpreter<S>::error_stream()
-                << "***Error : in '" << Interpreter<S>::stream_name()
-                << "' on line " << import_line << " - unable to open '" << path
+            Interpreter<S>::error_diagnostic()
+                << "***Error : " << position(&Interpreter<S>::stream_name(), import_line)
+                << " - unable to open '" << path
                 << "' for import." << std::endl;
             return false;
         }
@@ -1165,9 +1166,9 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&   data,
     }
     if (parsed == false)
     {
-        Interpreter<S>::error_stream()
-            << "***Error : on line " << import_line << " of '"
-            << Interpreter<S>::stream_name() << "' - unable to process '"
+        Interpreter<S>::error_diagnostic()
+            << "***Error : at " << position(&Interpreter<S>::stream_name(), import_line)
+            << " - unable to process '"
             << nested_interp.stream_name() << "'." << std::endl;
         return false;
     }
@@ -1195,10 +1196,9 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&   data,
                     import = nested_interp.evaluate(out, ref);
                     if (!import)
                     {
-                        Interpreter<S>::error_stream()
-                            << "***Error : on line " << import_line << " of '"
-                            << Interpreter<S>::stream_name()
-                            << "' - unable to import '"
+                        Interpreter<S>::error_diagnostic()
+                            << "***Error : " << position(&Interpreter<S>::stream_name(), import_line)
+                            << " - unable to import '"
                             << nested_interp.stream_name() << "'." << std::endl;
                         return false;
                     }
@@ -1224,9 +1224,9 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&   data,
         {
             // doesn't look like a json payload... wasn't a known parameter...
             // error
-            Interpreter<S>::error_stream()
-                << "***Error : unable to import '" << path << "' on line "
-                << import_view.line() << ", the component being used '"
+            Interpreter<S>::error_diagnostic()
+                << "***Error : unable to import '" << path << "' at "
+                << position(&Interpreter<S>::stream_name(), import_view.line(), import_view.column()) << ", the component being used '"
                 << using_what << "' is not a known variable." << std::endl;
             return false;
         }
@@ -1246,9 +1246,9 @@ bool HaliteInterpreter<S>::import_file(DataAccessor&   data,
         import = nested_interp.evaluate(out, data);
         if (!import)
         {
-            Interpreter<S>::error_stream()
-                << "***Error : on line " << import_line << " of '"
-                << Interpreter<S>::stream_name() << "' - unable to process '"
+            Interpreter<S>::error_diagnostic()
+                << "***Error : at " << position(&Interpreter<S>::stream_name(), import_line) 
+                << " - unable to process '"
                 << nested_interp.stream_name() << "'." << std::endl;
         }
     }
@@ -1317,8 +1317,8 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor&   data,
         std::string error_msg;
         if (!extract_ranges(using_what, imports, error_msg))
         {
-            Interpreter<S>::error_stream()
-                << "***Error : on line " << repeat_line
+            Interpreter<S>::error_diagnostic()
+                << "***Error : at " << position(&Interpreter<S>::stream_name(), repeat_line)
                 << " - unable to extract file repeat range info; " << error_msg
                 << "." << std::endl;
             return false;
@@ -1339,8 +1339,9 @@ bool HaliteInterpreter<S>::repeat_file(DataAccessor&   data,
     {
         if (!relative_to_current.good())
         {
-            Interpreter<S>::error_stream()
-                << "***Error : unable to open '" << path << "'." << std::endl;
+            Interpreter<S>::error_diagnostic()
+                << "***Error : unable to open '" << path << "' at "
+                << position(&Interpreter<S>::stream_name(), repeat_line) << std::endl;
             return false;
         }
         nested_interp.setStreamName(relative_to_current_path, true);
@@ -1734,19 +1735,17 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions& options,
             s_stride >> options.emit_stride();
             if (s_stride.fail())
             {
-                Interpreter<S>::error_stream()
-                    << "***Error : the emit stride failed to be processed on "
-                       "line "
-                    << line << ". Looking for a non-negative integer, found '"
+                Interpreter<S>::error_diagnostic()
+                    << "***Error : the emit stride failed to be processed at "
+                    << position(&Interpreter<S>::stream_name(), line) << ". Looking for a non-negative integer, found '"
                     << s_stride.str() << "'." << std::endl;
                 return false;
             }
             else if (options.emit_stride() < 0)
             {
-                Interpreter<S>::error_stream()
-                    << "***Error : the emit stride on line " << line
-                    << " must be a non-negative integer."
-                       " Found '"
+                Interpreter<S>::error_diagnostic()
+                    << "***Error : the emit stride at " << position(&Interpreter<S>::stream_name(), line)
+                    << " must be a non-negative integer. Found '"
                     << s_stride.str() << "' processed as '"
                     << options.emit_stride() << "'." << std::endl;
                 return false;
@@ -1765,9 +1764,9 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions& options,
     {
         if (last_i > itr->first && last_i <= itr->second)
         {
-            Interpreter<S>::error_stream()
-                << "***Error : a delimiter appears to be missing on line "
-                << line << "." << std::endl;
+            Interpreter<S>::error_diagnostic()
+                << "***Error : a delimiter appears to be missing at " 
+                << position(&Interpreter<S>::stream_name(), line) << "." << std::endl;
             return false;
         }
         if (last_i < itr->first)
@@ -1795,9 +1794,9 @@ bool HaliteInterpreter<S>::attribute_options(SubstitutionOptions& options,
             extract_ranges(iterative_options, options.ranges(), error);
         if (!extracted)
         {
-            Interpreter<S>::error_stream()
-                << "***Error : unable to acquire attribute options on line "
-                << line << "; " << error << "." << std::endl;
+            Interpreter<S>::error_diagnostic()
+                << "***Error : unable to acquire attribute options at "
+                << position(&Interpreter<S>::stream_name(), line) << "; " << error << "." << std::endl;
             return false;
         }
     }

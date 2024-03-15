@@ -1017,7 +1017,7 @@ TEST(Halite, endif_error)
     document.paths(paths);
     ASSERT_EQ(expected_paths, paths.str());
     ASSERT_EQ("conditional template", document.data());
-    ASSERT_EQ("***Error : line 2 is an unmatched conditional terminator - "
+    ASSERT_EQ("***Error : at stream input:2.1 is an unmatched conditional terminator - "
               "'#endif'. The matching #if, #ifdef, #ifndef, #elseif, or #else "
               "is missing.\n",
               error.str());
@@ -1038,7 +1038,7 @@ TEST(Halite, elseif_error)
     document.paths(paths);
     ASSERT_EQ(expected_paths, paths.str());
     ASSERT_EQ("conditional template", document.data());
-    ASSERT_EQ("***Error : line 2 is an unmatched conditional elseif. The "
+    ASSERT_EQ("***Error : at stream input:2.1 is an unmatched conditional elseif. The "
               "matching #if, #ifdef, #ifndef, or #elseif is missing.\n",
               error.str());
 }
@@ -1058,7 +1058,7 @@ TEST(Halite, else_error)
     document.paths(paths);
     ASSERT_EQ(expected_paths, paths.str());
     ASSERT_EQ("conditional template", document.data());
-    ASSERT_EQ("***Error : line 3 is an unmatched conditional else. The "
+    ASSERT_EQ("***Error : at stream input:3.1 is an unmatched conditional else. The "
               "matching #if, #ifdef, #ifndef, or #elseif is missing.\n",
               error.str());
 }

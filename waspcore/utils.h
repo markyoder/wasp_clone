@@ -856,5 +856,13 @@ TAdapter findChild( TAdapter node , size_t start , size_t end ,
     }
 }
 
+// Test utility function for checking interpreter diagnostic 
+#define ASSERT_DIAGNOSTICS(interpreter, expected_errors)              \
+    {                                                                 \
+        std::stringstream actual_errors;                             \
+        actual_errors << interpreter.error_diagnostics();             \
+        ASSERT_EQ(expected_errors.str(), actual_errors.str());        \
+    }
+
 }
 #endif

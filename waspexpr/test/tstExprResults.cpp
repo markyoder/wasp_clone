@@ -76,7 +76,7 @@ TEST(ExprInterpreter, defined_variables)
 
         auto result = interpreter.evaluate(context);
         ASSERT_TRUE(result.is_error());
-        ASSERT_EQ("***Error : defined at line 1 and column 1 - reserved "
+        ASSERT_EQ("defined at line 1 and column 1 - reserved "
                   "function 'defined' requires an argument!\n",
                   result.string());
     }
@@ -126,7 +126,7 @@ TEST(ExprInterpreter, right_operator_undefined_variables)
 
         auto result = interpreter.evaluate(context);
         ASSERT_TRUE(result.is_error());
-        ASSERT_EQ("***Error : value (y) at line 1 and column 8 - is not a "
+        ASSERT_EQ("value (y) at line 1 and column 8 - is not a "
                   "known variable.\n",
                   result.string());
     }
@@ -147,7 +147,7 @@ TEST(ExprInterpreter, left_operator_undefined_variables)
 
         auto result = interpreter.evaluate(context);
         ASSERT_TRUE(result.is_error());
-        ASSERT_EQ("***Error : value (y) at line 1 and column 2 - is not a "
+        ASSERT_EQ("value (y) at line 1 and column 2 - is not a "
                   "known variable.\n",
                   result.string());
     }
@@ -278,7 +278,7 @@ TEST(ExprInterpreter, vector_real_variables)
         ASSERT_FALSE(result.is_real());
         ASSERT_FALSE(result.is_string());
         ASSERT_FALSE(result.is_bool());
-        ASSERT_EQ("***Error : value (unknown) at line 1 and column 9 - is not "
+        ASSERT_EQ("value (unknown) at line 1 and column 9 - is not "
                   "a known variable.\n",
                   result.string());
     }
@@ -297,7 +297,7 @@ TEST(ExprInterpreter, vector_real_variables)
         ASSERT_FALSE(result.is_real());
         ASSERT_FALSE(result.is_string());
         ASSERT_FALSE(result.is_bool());
-        ASSERT_EQ("***Error : value (unknown) at line 1 and column 6 - is not "
+        ASSERT_EQ("value (unknown) at line 1 and column 6 - is not "
                   "a known variable.\n",
                   result.string());
     }
