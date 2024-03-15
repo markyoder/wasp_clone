@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <vector>
 #include <map>
-#include <memory>
 #include <string>
 #include <cstddef>
 #include <iostream>
@@ -24,16 +23,19 @@ class WASP_PUBLIC Diagnostic
 {
     int sl, el, sc, ec;
     std::string f;
-    std::unique_ptr<std::stringstream> msg;
+    std::stringstream* msg;
     class AbstractInterpreter* interpreter;
 public:
+    Diagnostic (); // for Python bindings
     Diagnostic(class AbstractInterpreter*);
     Diagnostic(const Diagnostic& orig);
+    ~Diagnostic();
     Diagnostic& operator<< (location loc);
     Diagnostic& operator<< (position start);
     template<typename X>
     Diagnostic& operator<< (const X& x);
     Diagnostic& operator <<(std::ostream&(*os) (std::ostream&));
+    std::string message() const;
     std::string str() const;
     std::string filename() const;
     int start_line() const;
@@ -42,6 +44,7 @@ public:
     int end_column() const;
 };
 
+std::ostream& operator<<(std::ostream& stream, const std::vector<Diagnostic>& d);
 /**
  * @brief The NodeView class provides light-weight interface to TreeNodes
  * Allows traversing child nodes and parent as well as acquire node information

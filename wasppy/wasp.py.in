@@ -10,7 +10,7 @@ from wasp import (
         HITNodeView,
         DDINodeView,
         EDDINodeView,
-        HIVE, Definition,
+        HIVE, Definition, Diagnostic,
         string, ostringstream, istringstream
         )
 import math
@@ -238,6 +238,41 @@ class WaspNode():
             return WaspNode(self._nodeview.parent(), None)
         return None
 
+class InterpreterDiagnostic(object):
+
+    def __init__(self, diagnostic = None):
+        '''Create InterpreterDiagnostic, optionally from a C++ diagnostic'''
+        self._source_name = None if diagnostic is None else str(diagnostic.filename())
+        self._start_line = 1 if diagnostic is None else diagnostic.start_line()
+        self._end_line = 1 if diagnostic is None else diagnostic.end_line()
+        self._start_column = 1 if diagnostic is None else diagnostic.start_column()
+        self._end_column = 1 if diagnostic is None else diagnostic.start_column()
+        self._message = "" if diagnostic is None else str(diagnostic.message())
+        self._str = None if diagnostic is None else str(diagnostic.str()).rstrip()
+
+    def source(self):
+        return self._source_name
+    def start_line(self):
+        return self._start_line 
+    def end_line(self):
+        return self._end_line
+    def start_column(self):
+        return self._start_column 
+    def end_line(self):
+        return self._end_column
+    
+    def __str__(self):    
+        if self._str is None:
+            s = "{}:{}.{}".format(self._source_name, self._start_line, self._start_column)
+            end_col = 0 if 0 < self._end_column else self._end_column - 1
+            if self._start_line < self._end_line:
+                s += "-{}.{}".format(self._end_line, end_col)
+            elif self._start_column < end_col:
+                s += "-{}".format(self._end_column)
+            return s;
+        else: return self._str
+        
+
 class Interpreter(object):
     '''Class providing use of WASP interpreters (SON, EDDI, HIT, etc.)'''
 
@@ -259,6 +294,10 @@ class Interpreter(object):
 
     # This class variable just makes it to name syntax that requires schemas
     _schema_defined = [Syntax.DDI, Syntax.EDDI]
+    
+    def __bool__(self):
+        '''This interpreter is only valid if successfully parsed '''
+        return self.parsed
 
     def __init__(self, syntax : Syntax, **kwargs):
         '''
@@ -274,6 +313,7 @@ class Interpreter(object):
         self._interpreter = self._registered_interpreters[self._syntax](self._err_stream)
         self._inputdata: stringstream
         self._schema_interpreter: None|DefaultSONInterpreter = None
+        self._parse_diagnostics: None|list(InterpreterDiagnostic) = None
 
         if "schema" in kwargs:
             self._set_schema(kwargs["schema"])
@@ -281,7 +321,7 @@ class Interpreter(object):
             raise RuntimeError(f"Definition Driven Inputs requires a SON-formatted schema!")
 
         # Assume interpreter failed to parse
-        parsed = False
+        self.parsed = False
         input_path = ""
         if "path" in kwargs:
             input_path = kwargs["path"]
@@ -296,12 +336,15 @@ class Interpreter(object):
                 ss = stringstream(self._inputdata)
             else:
                 raise RuntimeError(f"Data must be a string or stringstream!")
-            parsed = self._interpreter.parse(ss)
+            self.parsed = self._interpreter.parse(ss)
         else:
-            parsed = self._interpreter.parseFile(input_path)
+            self.parsed = self._interpreter.parseFile(input_path)
 
-        if not parsed:
-            raise RuntimeError(f"Failed to parse input data...\n {self._err_stream.str()}")
+        if not self.parsed:
+            diagnostics = self._interpreter.error_diagnostics()
+            self._parse_diagnostics = []
+            for d in diagnostics:
+                self._parse_diagnostics.append(InterpreterDiagnostic(d))
 
     def _set_schema(self,schema:str):
         parsed = False
@@ -329,6 +372,9 @@ class Interpreter(object):
         if not created:
             raise RuntimeError(f"Encountered errors creating input definition...\n {self._err_stream.str()}")
     
+    def parse_diagnostics(self):
+        return self._parse_diagnostics
+
     def root(self) -> "WaspNode":
         '''Returns the document root node.'''
         schema_node = None

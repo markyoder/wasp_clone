@@ -2847,7 +2847,9 @@ TEST(HITInterpreter, only_include_not_found)
     expected_errors << "stream input:1.1: could not find 'block_missing.i'" << std::endl;
 
     ASSERT_EQ(expected_errors.str(), errors.str());
+    ASSERT_EQ(expected_errors.str(), interpreter.error_diagnostics().front().str());
     ASSERT_DIAGNOSTICS(interpreter, expected_errors);
+    // Double check the contents
 }
 
 /**

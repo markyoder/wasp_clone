@@ -3,8 +3,15 @@
 
 namespace wasp
 {
+// Required by python bindings
+Diagnostic::Diagnostic()
+    : sl(1), el(1), sc(1), ec(1),
+    msg (new std::stringstream()),
+    interpreter(nullptr)
+{
+}
 Diagnostic::Diagnostic(AbstractInterpreter* interp)
-    : sl(1), el(1), sc(1), ec(1), 
+    : sl(1), el(1), sc(1), ec(1),
     msg (new std::stringstream()),
     interpreter(interp)
 {
@@ -12,12 +19,16 @@ Diagnostic::Diagnostic(AbstractInterpreter* interp)
 }
 
 Diagnostic::Diagnostic(const Diagnostic& orig)
-    : sl(orig.sl), el(orig.el), sc(orig.sc), ec(orig.ec), 
+    : sl(orig.sl), el(orig.el), sc(orig.sc), ec(orig.ec), f(orig.f),
     msg (new std::stringstream()),
     interpreter(orig.interpreter)
 {
     wasp_require(interpreter);
     *msg << orig.msg->str();
+}
+Diagnostic::~Diagnostic()
+{
+    delete msg;
 }
 
 Diagnostic& Diagnostic::operator<< (location loc)
@@ -34,6 +45,7 @@ Diagnostic& Diagnostic::operator<< (location loc)
 }
 Diagnostic& Diagnostic::operator<< (position start)
 {
+    wasp_check(interpreter);
     // Make a copy - the interpreter originating the location will go away
     f = *start.filename;
     sl = start.line;
@@ -46,13 +58,22 @@ Diagnostic& Diagnostic::operator<< (position start)
 
 Diagnostic& Diagnostic::operator <<(std::ostream&(*os) (std::ostream&))
 {
+    wasp_check(msg);
     *msg << os;
     interpreter->error_stream() << os;
     return *this;
 }
+std::string Diagnostic::message() const
+{
+    wasp_check(msg);
+    return msg->str();
+}
 std::string Diagnostic::str() const 
 {
     std::stringstream s;
+    // Always have start line and column
+    s << f << ":" << sl << "." << sc;
+    // Determine if there is additional range to convey
     auto end_col = 0 < ec ? ec - 1 : 0;
     if (sl < el)
       s << '-' << el << '.' << end_col;
@@ -81,6 +102,15 @@ int Diagnostic::end_line() const
 int Diagnostic::end_column() const
 {
     return ec;
+}
+
+std::ostream& operator<<(std::ostream& stream, const std::vector<Diagnostic>& diagnostics)
+{
+    for (const auto& d : diagnostics)
+    {
+        stream << d.str();
+    }
+    return stream;
 }
 
 

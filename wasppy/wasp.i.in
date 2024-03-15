@@ -41,6 +41,7 @@
 %template(StringDataObject) std::pair<std::string,wasp::DataObject>;
 %template(StringDataArray) std::pair<std::string,wasp::DataArray>;
 %template(StringValue) std::pair<std::string,wasp::Value>;
+%template(VectorDiagnostic) std::vector<wasp::Diagnostic>;
 
 //---------------------------------------------------------------------------//
 // IMPORTS

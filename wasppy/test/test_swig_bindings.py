@@ -160,14 +160,11 @@ class TestSwigInterface(unittest.TestCase):
     def test_error(self):
         # This test is just checking that it fails to find a file,
         # a far more robust set could be considered
-        try:
-            doc = Interpreter(Syntax.SON,path="Not_Real.son")
-        except Exception as e:
-            self.assertTrue(isinstance(e,RuntimeError))
-            self.assertEqual(e.args[0],"Failed to parse input data...\n Not_Real.son:1.1 is either inaccessible or doesn't exist! Unable to read.\n")
 
-        else:
-            self.assertTrue(False)
+        doc = Interpreter(Syntax.SON,path="Not_Real.son")
+        self.assertFalse(doc) # documents are not valid
+        parse_diagnostics = doc.parse_diagnostics()
+        self.assertEqual(["Not_Real.son:1.1 is either inaccessible or doesn't exist! Unable to read."], [str(x) for x in parse_diagnostics])
 
 
     def test_example(self):
@@ -493,5 +490,19 @@ queries{
         expected = ["line:1 column:6 - Validation Error: data value \"1.7\" is greater than the allowed maximum inclusive value of 1.0"]
         self.assertEqual(expected, errors)
 
+    def test_parse_diagnostics(self):
+        input = 'data =' # missing value
+
+        # Test HIT parse error
+        interpreter = Interpreter(Syntax.HIT, data=input, path="myfile.inp")
+        self.assertFalse(interpreter)
+        errors = interpreter.parse_diagnostics()
+        expected = [
+            "myfile.inp:1.7: syntax error, unexpected end of file",
+            "myfile.inp:1.6: syntax error, 'data' has a missing or malformed value",
+        ]
+
+        error_strings = [str(x).rstrip() for x in errors]
+        self.assertEqual(expected, error_strings)
 if __name__ == '__main__':
      unittest.main()
