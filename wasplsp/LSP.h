@@ -1041,14 +1041,21 @@ bool buildErrorResponse( DataObject        & object ,
                          int                 code   ,
                          const std::string & errors );
 
-/** dissect error response object into the provided parameter references
- * @param object - const reference to data object that will be dissected
- * @param errors - reference to stream to fill with the response's errors
- * @return - true if the object was successfully dissected without error
+/** check if response contains success result or contains error for failure
+ * @param object - const reference to response object that will get checked
+ * @param errors - reference to stream for adding message if error response
+ * @return - true if response contains result or false if it contains error
  */
 WASP_PUBLIC
 bool checkErrorResponse( const DataObject   & object ,
                                std::ostream & errors );
+
+/** check if object contains integer request id indicating not notification
+ * @param object - const reference to object that will get for id existence
+ * @return - true if object does contain request id or false if it does not
+ */
+WASP_PUBLIC
+bool objectHasRequestId(const DataObject & object);
 
 /** verify if the provided data object is an initialize response
  * @param object - const reference to data object that will be verified

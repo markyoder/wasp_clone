@@ -81,7 +81,7 @@ class WASP_PUBLIC Definition : public AbstractDefinition
         for (size_t i = 0; i < view.child_count(); ++i)
         {
             const auto& child_view       = view.child_at(i);
-            Definition* child_definition = create(child_view.name());
+            Definition* child_definition = (Definition*) create(child_view.name());
             child_definition->create_from(child_view);
         }
         return this;
