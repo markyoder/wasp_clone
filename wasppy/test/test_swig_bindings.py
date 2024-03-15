@@ -164,7 +164,7 @@ class TestSwigInterface(unittest.TestCase):
             doc = Interpreter(Syntax.SON,path="Not_Real.son")
         except Exception as e:
             self.assertTrue(isinstance(e,RuntimeError))
-            self.assertEqual(e.args[0],"Failed to parse input data...\n file 'Not_Real.son' is either inaccessible or doesn't exist! Unable to read.\n")
+            self.assertEqual(e.args[0],"Failed to parse input data...\n Not_Real.son:1.1 is either inaccessible or doesn't exist! Unable to read.\n")
 
         else:
             self.assertTrue(False)
