@@ -25,8 +25,6 @@ cmake -DBUILD_SHARED_LIBS=ON ^
       -G "Visual Studio 17 2022" %SRC_DIR%
 
 
-FOR /F "usebackq delims=" %%g IN (`WHERE "build\src\python\dist\:*-abi3-win_amd64.whl"`) DO delvewheel repair -w ${CI_PROJECT_DIR}/build/wasppy/dist %%g
-
 set CMAKE_BUILD_PARALLEL_LEVEL=28
 
 
@@ -35,3 +33,5 @@ ctest -VV --output-on-failure ^
       -D ExperimentalBuild ^
       -D ExperimentalTest ^
       -D ExperimentalSubmit
+
+FOR /F "usebackq delims=" %%g IN (`WHERE "build\src\python\dist\:*-abi3-win_amd64.whl"`) DO delvewheel repair -w ${CI_PROJECT_DIR}/build/wasppy/dist %%g
