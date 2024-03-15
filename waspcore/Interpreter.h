@@ -44,7 +44,7 @@ public:
     int end_column() const;
 };
 
-std::ostream& operator<<(std::ostream& stream, const std::vector<Diagnostic>& d);
+std::ostream& WASP_PUBLIC operator<<(std::ostream& stream, const std::vector<Diagnostic>& d);
 /**
  * @brief The NodeView class provides light-weight interface to TreeNodes
  * Allows traversing child nodes and parent as well as acquire node information
