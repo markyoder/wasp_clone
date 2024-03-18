@@ -34,4 +34,4 @@ ctest -VV --output-on-failure ^
       -D ExperimentalTest ^
       -D ExperimentalSubmit
 
-FOR /F "usebackq delims=" %%g IN (`WHERE "build\src\python\dist\:*-abi3-win_amd64.whl"`) DO delvewheel repair -w ${CI_PROJECT_DIR}/build/wasppy/dist %%g
+FOR /F "usebackq delims=" %%g IN (`WHERE /R build\wasppy\dist\ *.whl`) DO delvewheel repair -w ${CI_PROJECT_DIR}/build/wasppy/dist %%g
