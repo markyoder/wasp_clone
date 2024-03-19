@@ -7,6 +7,7 @@ bash miniconda/Miniconda3-latest-MacOSX-x86_64.sh -b -p ${PWD}/miniconda3
 eval "$(${PWD}/miniconda3/bin/conda shell.bash hook 2> /dev/null)"
 conda env create -f ../ci/env.yml
 conda activate wasp_ci
+pip install delocate
 
 cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Debug-${CI_COMMIT_REF_NAME}" \
       -DCMAKE_BUILD_TYPE=DEBUG \
@@ -39,6 +40,8 @@ cmake -DBUILDNAME="$(uname -s)-AppleClang-8-Bundle-${CI_COMMIT_REF_NAME}" \
       -Dwasp_GENERATE_EXPORT_FILE_DEPENDENCIES:BOOL=ON \
       -Dwasp_ENABLE_CPACK_PACKAGING:BOOL=ON \
       ..
+
+delocate-wheel -w ${CI_PROJECT_DIR}/build/wasppy/dist ${CI_PROJECT_DIR}/build/wasppy/dist/ornl_wasp*.whl
 
 make -j 8 package
 ls -l ./

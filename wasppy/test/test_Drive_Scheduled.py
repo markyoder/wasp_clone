@@ -7,8 +7,14 @@ import unittest, waspdrive
 # class for unit testing
 class TestDrive(unittest.TestCase):
     document = None
-
+      
     def test_driver_scheduled(self):
+        import shutil
+        qsub = shutil.which("qsub")
+
+        if qsub is None:
+          print ("NO QSUB AVAILABLE... skipping test_driver_scheduled!")
+          return
         try:
           app_driver_input = os.path.dirname(__file__)+"/scheduled_test.drive"
           # Re-use the 'using' input

@@ -17,6 +17,8 @@ eval "$(${PWD}/miniconda3/bin/conda shell.bash hook 2> /dev/null)"
 conda env create -f ../ci/env.yml
 conda activate wasp_ci
 conda install -c conda-forge valgrind
+pip install auditwheel
+pip install patchelf
 
 ecc cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Release-${CI_COMMIT_REF_NAME}" \
       -DCMAKE_BUILD_TYPE=RELEASE \
@@ -57,6 +59,8 @@ ecc cmake -DBUILDNAME="$(uname -s)-GCC-4.8.5-Bundle-${CI_COMMIT_REF_NAME}" \
       -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
       -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
       ..
+
+auditwheel repair -w ${CI_PROJECT_DIR}/build/wasppy/dist --plat manylinux_2_34_x86_64 ${CI_PROJECT_DIR}/build/wasppy/dist/ornl_wasp*.whl
 
 ecc make -j 8 package
 

@@ -13,6 +13,7 @@ Miniconda3-latest-Windows-x86_64.exe /S /D=%MINI_ROOT%
 CALL %cd%\miniconda3\Scripts\activate.bat
 CALL conda env create -f ..\ci\env.yml
 CALL conda activate wasp_ci
+CALL pip install delvewheel
 
 cmake -DBUILD_SHARED_LIBS=ON ^
       -DBUILDNAME="VS2022-Shared-Release-%CI_COMMIT_REF_NAME%" ^
@@ -23,10 +24,15 @@ cmake -DBUILD_SHARED_LIBS=ON ^
       -DCMAKE_CXX_FLAGS="/wd4005 /wd4244 /wd4251 /wd4267 /EHsc" ^
       -G "Visual Studio 17 2022" %SRC_DIR%
 
+
 set CMAKE_BUILD_PARALLEL_LEVEL=28
+
 
 ctest -VV --output-on-failure ^
       -D ExperimentalStart ^
       -D ExperimentalBuild ^
       -D ExperimentalTest ^
       -D ExperimentalSubmit
+
+REM This command will "repair" the wheel and overwrite the existing wheel.
+FOR /F "usebackq delims=" %%g IN (`WHERE /R %BLD_DIR%\wasppy\dist\ *.whl`) DO delvewheel repair -w %BLD_DIR%\wasppy\dist %%g

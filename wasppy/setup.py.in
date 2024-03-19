@@ -53,7 +53,7 @@ wasp_module = Extension('_wasp',
                            extra_link_args    = get_extra_link_args(),
                            )
 
-setup (name = 'wasp',
+setup (name = 'ornl-wasp',
        version = "${${PROJECT_NAME}_VERSION}",
        description = """${${PROJECT_NAME}_FULL_VERSION}""",
        author ="Shane Henderson, Robert A. Lefebvre",
