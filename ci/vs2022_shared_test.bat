@@ -34,4 +34,5 @@ ctest -VV --output-on-failure ^
       -D ExperimentalTest ^
       -D ExperimentalSubmit
 
-FOR /F "usebackq delims=" %%g IN (`WHERE /R build\wasppy\dist\ *.whl`) DO delvewheel repair -w ${CI_PROJECT_DIR}/build/wasppy/dist %%g
+REM This command will "repair" the wheel and overwrite the existing wheel.
+FOR /F "usebackq delims=" %%g IN (`WHERE /R %BLD_DIR%\wasppy\dist\ *.whl`) DO delvewheel repair -w %BLD_DIR%\wasppy\dist %%g
