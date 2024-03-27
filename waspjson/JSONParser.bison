@@ -11,9 +11,6 @@
 #include <memory>
 #include "waspcore/utils.h"
 #include "waspcore/decl.h"
-namespace wasp{
-    class JSONLexerImpl;
-}
 }
 
 /* Require bison 3 or later */
@@ -377,5 +374,5 @@ start   : /** empty **/
 void wasp::JSONParser::error(const JSONParser::location_type& l,
                            const std::string& m)
 {
-    interpreter.error_stream()<<l<<": "<<m<<std::endl;
+    interpreter.error_diagnostic()<<l<<": "<<m<<std::endl;
 }
