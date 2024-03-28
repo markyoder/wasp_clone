@@ -18,7 +18,7 @@ class WASP_PUBLIC ServerImpl
 
     ServerImpl() : is_initialized(false) , client_snippet_support(false) {}
 
-    ~ServerImpl(){}
+    virtual ~ServerImpl() = default;
 
     /** read from the server connection and handle packets until exit or error
      * @return - true if returning on exit call / false if returning on error
