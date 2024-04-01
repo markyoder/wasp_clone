@@ -4,7 +4,9 @@
 %}
 %rename("BaseInterpreter") Interpreter;
 
-%module wasp
+%module(directors="1") wasp
+%feature("director") ServerImpl;
+
 %include decl.h
 
 %include std_pair.i

@@ -3,6 +3,44 @@ from wasp import *
 from Database import InputObject, storeFloat, storeStr, ExistsConstraint
 import math
 
+class TestPyServer(ServerImpl):
+    '''Concrete example server implementation meant for testing purposes'''
+    def __init__(self):
+        '''Set up capabilities of concrete example server implementation'''
+        super().__init__()
+    def getConnection(self):
+        '''Get connection object used by server for client communication'''
+    def connectionRead(self, object):
+        '''Read JSON-RPC from connection and put data in provided object'''
+        return True
+    def connectionWrite(self, object):
+        '''Convert object to JSON-RPC packet and write out to connection'''
+        return True
+    def parseDocumentForDiagnostics(self, diagnostics_list):
+        '''Process current document and add diagnostics to provided list'''
+        return True
+    def updateDocumentTextChanges(self, replace_text, beg_line, beg_char, end_line, end_char, range_len):
+        '''Replace current document on server with provided text changes'''
+        return True
+    def gatherDocumentCompletionItems(self, completion_items, is_incomplete, req_line, req_char):
+        '''Collect completion items for line and column in provided list'''
+        return True
+    def gatherDocumentDefinitionLocations(self, definition_items, req_line, req_char):
+        '''Collect locations of definitions for request in provided list'''
+        return True
+    def getHoverDisplayText(self, display_text, req_line, req_char):
+        '''Fill provided string with text to display at request position'''
+        return True
+    def gatherDocumentReferencesLocations(self, references_locations, req_line, req_char, include_decl):
+        '''Collect locations of references to request with provided list'''
+        return True
+    def gatherDocumentFormattingTextEdits(self, formatting_textedits, tab_size, insert_spaces):
+        '''Collect formatting edits to apply in order with provided list'''
+        return True
+    def gatherDocumentSymbols(self, document_symbols):
+        '''Build hierarchical symbol tree of document in provided object'''
+        return True
+
 class LinearModel:
     Definition = None
     @staticmethod
@@ -787,5 +825,10 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
 '''
         self.maxDiff = None
         self.assertEqual(expectedDiagnostics,"".join(str(x)+"\n" for x in interpreter.deserializeDiagnostics()))
+
+    def test_language_server(self):
+        test_py_server = TestPyServer()
+        # test_py_server.run() # needs to be run on a thread and communicated with
+
 if __name__ == '__main__':
      unittest.main()
