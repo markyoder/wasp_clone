@@ -80,7 +80,7 @@ class WASP_PUBLIC WaspServer : public ServerImpl
         AutoComplete(){}
     };
 
-  private:
+  protected:
 
     /** parse document for diagnostics - specific to this server implemention
      * @param diagnosticsList - data array of diagnostics data objects to fill

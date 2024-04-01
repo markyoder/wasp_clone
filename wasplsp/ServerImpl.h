@@ -165,14 +165,14 @@ class WASP_PUBLIC ServerImpl
      */
     virtual std::shared_ptr<wasp::lsp::Connection> getConnection() = 0;
 
-  private:
+  protected:
 
     /** parse document for diagnostics - to be implemented on derived servers
      * @param diagnosticsList - data array of diagnostics data objects to fill
      * @return - true if completed successfully - does not indicate parse fail
      */
     virtual bool parseDocumentForDiagnostics(
-                          DataArray  & diagnosticsList ) = 0;
+                          wasp::DataArray  & diagnosticsList ) = 0;
 
     /** update document text changes - to be implemented on derived servers
      * @param replacement_text - text to be replaced over the provided range
@@ -199,7 +199,7 @@ class WASP_PUBLIC ServerImpl
      * @return - true if the gathering of items completed successfully
      */
     virtual bool gatherDocumentCompletionItems(
-                          DataArray & completionItems  ,
+                          wasp::DataArray & completionItems  ,
                           bool      & is_incomplete    ,
                           int         line             ,
                           int         character        ) = 0;
@@ -211,7 +211,7 @@ class WASP_PUBLIC ServerImpl
      * @return - true if the gathering of locations completed successfully
      */
     virtual bool gatherDocumentDefinitionLocations(
-                          DataArray & definitionLocations ,
+                          wasp::DataArray & definitionLocations ,
                           int         line                ,
                           int         character           ) = 0;
 
@@ -237,7 +237,7 @@ class WASP_PUBLIC ServerImpl
      * @return - true if the gathering of locations completed successfully
      */
     virtual bool gatherDocumentReferencesLocations(
-                          DataArray & referencesLocations ,
+                          wasp::DataArray & referencesLocations ,
                           int         line                ,
                           int         character           ,
                           bool        include_declaration ) = 0;
@@ -249,7 +249,7 @@ class WASP_PUBLIC ServerImpl
      * @return - true if the gathering of text edits completed successfully
      */
     virtual bool gatherDocumentFormattingTextEdits(
-                          DataArray & formattingTextEdits ,
+                          wasp::DataArray & formattingTextEdits ,
                           int         tab_size            ,
                           bool        insert_spaces       ) = 0;
 
@@ -258,7 +258,7 @@ class WASP_PUBLIC ServerImpl
      * @return - true if the gathering of symbols completed successfully
      */
     virtual bool gatherDocumentSymbols(
-                          DataArray & documentSymbols ) = 0;
+                          wasp::DataArray & documentSymbols ) = 0;
 
 
     /** read from connection into object - to be implemented on derived servers
@@ -272,8 +272,6 @@ class WASP_PUBLIC ServerImpl
      * @return - true if the write to the connection completed successfully
      */
     virtual bool connectionWrite( wasp::DataObject & object ) = 0;
-
-  protected:
 
     /**
      * @brief errors - all errors stored by the server for any reason
