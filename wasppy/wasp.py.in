@@ -89,6 +89,11 @@ class WaspNode():
             return str(self._nodeview.node_pool().stream_name())
         return ""
 
+    def isDecorative(self):
+        if self._nodeview:
+            return self._nodeview.is_decorative()
+        return False
+
     def __repr__(self) -> "str":
         '''Returns the name of the node.'''
         return self.name()

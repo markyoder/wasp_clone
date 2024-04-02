@@ -472,6 +472,7 @@ queries{
         # Get the child by using the string-based query bracket operator
         data = interpreter.root()['data']
         self.assertEqual("myfile.inp", data.source())
+        self.assertFalse(data.isDecorative())
 
         # Test DDI
         input = "data 1.3"

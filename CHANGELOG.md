@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - LSP client and server support for both sending and receiving document hover text requests and responses
 - Python WaspNode.source method to provide access to stream or file path originating the node
+- Python WaspNode.isDecorative method to allow identification of decorative nodes (e.g., `{`,`,`,`decl`, etc.)
 
 ### Changed
 - EDDI comment logic where subsequent comments committed staged components
