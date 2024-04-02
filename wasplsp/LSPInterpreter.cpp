@@ -1,4 +1,5 @@
 #include "wasplsp/LSPInterpreter.h"
+#include <algorithm>
 
 namespace wasp {
 namespace lsp  {
