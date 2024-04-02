@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - LSP client and server support for both sending and receiving document hover text requests and responses
+- Python WaspNode.source method to provide access to stream or file path originating the node
 
 ### Changed
 - EDDI comment logic where subsequent comments committed staged components
@@ -15,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - EDDI README example referencing incorrect '#' comment character. EDDI comment character is '!'
 - LSP server to not terminate execution when it receives unrecognized method name from client
 - NVIDIA CUDA compiler error by adding explicit pointer cast to Definition create_from method
+- HITInterpreter setStreamName signiture
 
 ## [4.2.0] - 2-19-2024
 

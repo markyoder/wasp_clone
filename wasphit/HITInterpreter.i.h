@@ -3,6 +3,7 @@
 template<class S>
 HITInterpreter<S>::HITInterpreter(std::ostream& err) : Interpreter<S>(err)
     , m_parent(nullptr)
+    , mHasFile(false)
 {
 }
 template<class S>

@@ -468,6 +468,10 @@ queries{
         errors = interpreter.errors()
         expected = ["line:1 column:6 - Validation Error: data value \"1.1\" is greater than the allowed maximum inclusive value of 1.0"]
         self.assertEqual(expected, errors)
+        # The 'data' is ambiguous between the child 'data' and the node method 'data()'
+        # Get the child by using the string-based query bracket operator
+        data = interpreter.root()['data']
+        self.assertEqual("myfile.inp", data.source())
 
         # Test DDI
         input = "data 1.3"
