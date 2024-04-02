@@ -33,6 +33,7 @@ incl_dirs.extend("$<TARGET_PROPERTY:wasphit,INCLUDE_DIRECTORIES>".split(";"))
 incl_dirs.extend("$<TARGET_PROPERTY:waspsiren,INCLUDE_DIRECTORIES>".split(";"))
 incl_dirs.extend("$<TARGET_PROPERTY:wasphive,INCLUDE_DIRECTORIES>".split(";"))
 incl_dirs.extend("$<TARGET_PROPERTY:wasplsp,INCLUDE_DIRECTORIES>".split(";"))
+incl_dirs.extend("$<TARGET_PROPERTY:wasppy,INCLUDE_DIRECTORIES>".split(";"))
 
 #Just links all the included wasp objects into a single library with the wrapper
 #It may be better to eventually include the libraries as proper shared objects,

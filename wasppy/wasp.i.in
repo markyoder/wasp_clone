@@ -4,6 +4,7 @@
 %}
 %rename("BaseInterpreter") Interpreter;
 
+// Enable director so ServerImpl can be implemented in derived Python class
 %module(directors="1") wasp
 %feature("director") ServerImpl;
 

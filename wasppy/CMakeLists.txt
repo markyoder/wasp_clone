@@ -19,6 +19,9 @@ IF(PYTHON_EXECUTABLE)
   ENDIF()
 ENDIF()
 
+# Add binary directory to includes so wasp_wrap.cxx can include wasp_wrap.h
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 #
 # Add test directory
 TRIBITS_ADD_TEST_DIRECTORIES(test)
