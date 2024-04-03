@@ -8,6 +8,10 @@
 %module(directors="1") wasp
 %feature("director") ServerImpl;
 
+// Use typemaps to output primitive type arguments set by reference passing
+%include typemaps.i
+%apply int & OUTPUT { int & request_id };
+
 %include decl.h
 
 %include std_pair.i
@@ -41,6 +45,7 @@
 #include "HITNodeView.h"
 #include "SIRENInterpreter.h"
 #include "HIVE.h"
+#include "LSP.h"
 #include "ServerImpl.h"
 %}
 
@@ -55,6 +60,7 @@
 //---------------------------------------------------------------------------//
 // Things that are needed only to support the main types.
 %include "location.hh"
+%include "Object.h"
 %include "Iterator.h"
 %include "Definition.h"
 %include "TokenPool.h"
@@ -67,6 +73,7 @@
 %include "EDDInterpreter.h"
 %include "HITInterpreter.h"
 %include "SIRENInterpreter.h"
+%include "LSP.h"
 %include "ServerImpl.h"
 
 // Various node views 

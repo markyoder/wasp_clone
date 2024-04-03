@@ -8,6 +8,18 @@ class TestPyServer(ServerImpl):
     def __init__(self):
         '''Set up capabilities of concrete example server implementation'''
         super().__init__()
+        # Setting capabilities is disabled until this gets addressed
+        # AttributeError object has no attribute server_capabilities
+        # self.server_capabilities[m_text_doc_sync]                           = DataObject()
+        # self.server_capabilities[m_text_doc_sync][m_open_close]             = True
+        # self.server_capabilities[m_text_doc_sync][m_change]                 = m_change_full
+        # self.server_capabilities[m_completion_provider]                     = DataObject()
+        # self.server_capabilities[m_completion_provider][m_resolve_provider] = False
+        # self.server_capabilities[m_doc_symbol_provider]                     = True
+        # self.server_capabilities[m_doc_format_provider]                     = True
+        # self.server_capabilities[m_definition_provider]                     = True
+        # self.server_capabilities[m_references_provider]                     = False
+        # self.server_capabilities[m_hover_provider]                          = True
     def getConnection(self):
         '''Get connection object used by server for client communication'''
     def connectionRead(self, object):
@@ -18,9 +30,11 @@ class TestPyServer(ServerImpl):
         return True
     def parseDocumentForDiagnostics(self, diagnostics_list):
         '''Process current document and add diagnostics to provided list'''
+        print("Blah01")
         return True
     def updateDocumentTextChanges(self, replace_text, beg_line, beg_char, end_line, end_char, range_len):
         '''Replace current document on server with provided text changes'''
+        print("Blah02")
         return True
     def gatherDocumentCompletionItems(self, completion_items, is_incomplete, req_line, req_char):
         '''Collect completion items for line and column in provided list'''
@@ -829,6 +843,93 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
     def test_language_server(self):
         test_py_server = TestPyServer()
         # test_py_server.run() # needs to be run on a thread and communicated with
+
+        with self.subTest(msg='test_py_server.initialize'):
+            # Build test initialize request and use server to handle
+            initialize_request  = DataObject()
+            initialize_errors   = stringstream()
+            client_request_id   = 1
+            client_process_id   = -1
+            client_root_path    = ""
+            client_capabilities = DataObject()
+            self.assertTrue(buildInitializeRequest(initialize_request,
+                                                   initialize_errors,
+                                                   client_request_id,
+                                                   client_process_id,
+                                                   client_root_path,
+                                                   client_capabilities))
+            self.assertFalse(initialize_errors.str())
+            initialize_response = DataObject()
+            self.assertTrue(test_py_server.handleInitializeRequest(initialize_request, initialize_response))
+            self.assertFalse(test_py_server.getErrors())
+            # Check body of json rpc from server initialize response
+            json_actual = stringstream()
+            json_expect = '''
+{
+  "id" : 1
+  ,"result" : {
+    "capabilities" : {}
+  }
+}
+            '''
+            self.assertTrue(initialize_response.format_json(json_actual))
+            self.assertEqual(json_expect.strip(), json_actual.str())
+            # Check values dissected from server initialize response
+            response_errors = stringstream()
+            server_capabilities = DataObject()
+            success, server_response_id = dissectInitializeResponse(initialize_response, response_errors, server_capabilities)
+            self.assertTrue(success)
+            self.assertFalse(response_errors.str())
+            self.assertEqual(client_request_id, server_response_id)
+            self.assertEqual(0, server_capabilities.size())
+            # Build initialized notification and handle using server
+            initialized_notification = DataObject()
+            initialized_errors       = stringstream()
+            self.assertTrue(buildInitializedNotification(initialized_notification, initialized_errors))
+            self.assertFalse(initialized_errors.str())
+            self.assertTrue(test_py_server.handleInitializedNotification(initialized_notification))
+            self.assertFalse(test_py_server.getErrors())
+
+        with self.subTest(msg='test_py_server.didopen'):
+            # Build test didopen notification and handle with server
+            didopen_notification = DataObject()
+            didopen_errors       = stringstream()
+            document_path        = "test/document/uri/string"
+            document_language_id = "test_language_id_string"
+            document_version     =  1
+            document_text        = "test\ntext\n1\nstring\n"
+            self.assertTrue(buildDidOpenNotification(didopen_notification,
+                                                     didopen_errors,
+                                                     document_path,
+                                                     document_language_id,
+                                                     document_version,
+                                                     document_text))
+            self.assertFalse(didopen_errors.str())
+            diagnostics_notification = DataObject()
+            self.assertTrue(test_py_server.handleDidOpenNotification(didopen_notification, diagnostics_notification))
+            self.assertFalse(test_py_server.getErrors())
+            # Check json rpc body of server diagnostics notification
+            json_actual = stringstream()
+            json_expect = '''
+{
+  "method" : "textDocument/publishDiagnostics"
+  ,"params" : {
+    "diagnostics" : []
+    ,"uri" : "test/document/uri/string"
+  }
+}
+            '''
+            self.assertTrue(diagnostics_notification.format_json(json_actual))
+            self.assertEqual(json_expect.strip(), json_actual.str())
+            # Check server diagnostics notification values dissected
+            diagnostics_errors = stringstream()
+            response_uri = string()
+            diagnostics_array = DataArray()
+            success = dissectPublishDiagnosticsNotification(diagnostics_notification, diagnostics_errors, response_uri, diagnostics_array)
+            self.assertTrue(success)
+            self.assertFalse(diagnostics_errors.str())
+            self.assertEqual(document_path, response_uri)
+            self.assertEqual(0, diagnostics_array.size())
 
 if __name__ == '__main__':
      unittest.main()
