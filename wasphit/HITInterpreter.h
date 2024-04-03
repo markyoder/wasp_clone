@@ -118,12 +118,17 @@ class WASP_PUBLIC HITInterpreter : public Interpreter<S>
      * @param name the name of the stream or file[path]
      * @param isFile [default=false] indicates whether the name is a file path
      */
-    void setStreamName(const std::string& name)
+    void setStreamName(const std::string& name, bool isFile = false)
     {
         Interpreter<S>::stream_name() = name;
+        mHasFile = isFile;
     }
+
+    bool hasFile() const {return mHasFile;}
+
 private: 
     HITInterpreter* m_parent;
+    bool mHasFile;
 };
 #include "wasphit/HITInterpreter.i.h"
 typedef HITInterpreter<> DefaultHITInterpreter;

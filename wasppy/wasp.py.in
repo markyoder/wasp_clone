@@ -83,6 +83,17 @@ class WaspNode():
         self._schemanode:"NodeView|None" = schemanodeview
         self._nodeview:NodeView = nodeview
 
+    def source(self):
+        '''Obtain the source of this node. This is either a stream name or a file path.'''
+        if self._nodeview:
+            return str(self._nodeview.node_pool().stream_name())
+        return ""
+
+    def isDecorative(self):
+        if self._nodeview:
+            return self._nodeview.is_decorative()
+        return False
+
     def __repr__(self) -> "str":
         '''Returns the name of the node.'''
         return self.name()
@@ -329,7 +340,7 @@ class Interpreter(object):
         # Check if in-memory input 'data' was provided
         if "data" in kwargs:
             # Assign input path for diagnostics
-            if not input_path == "" : self._interpreter.setStreamName(input_path)
+            if not input_path == "" : self._interpreter.setStreamName(input_path, True)
             self._inputdata = kwargs["data"]
             ss = self._inputdata
             if isinstance(self._inputdata, str):
