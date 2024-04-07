@@ -4,9 +4,14 @@
 %}
 %rename("BaseInterpreter") Interpreter;
 
+// Enable allprotected for ServerImpl protected use in derived Python class
+%module(directors="1", allprotected="1") wasp
+
 // Enable director so ServerImpl can be implemented in derived Python class
-%module(directors="1") wasp
-%feature("director") ServerImpl;
+%feature("director") wasp::lsp::ServerImpl;
+
+// Ignore protected errors stringstream in ServerImpl due to issues in wrap
+%ignore wasp::lsp::ServerImpl::errors;
 
 // Use typemaps to output primitive type arguments set by reference passing
 %include typemaps.i
@@ -73,6 +78,8 @@
 %include "EDDInterpreter.h"
 %include "HITInterpreter.h"
 %include "SIRENInterpreter.h"
+
+// Components for LSP
 %include "LSP.h"
 %include "ServerImpl.h"
 

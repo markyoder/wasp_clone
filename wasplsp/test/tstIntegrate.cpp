@@ -75,7 +75,7 @@ TEST(integrate, test_initialize)
                                             response_capabilities ) );
 
     ASSERT_EQ ( client_request_id , response_request_id          );
-    ASSERT_EQ ( (size_t) 7        , response_capabilities.size() );
+    ASSERT_EQ ( (size_t) 6        , response_capabilities.size() );
 
     ASSERT_TRUE(response_capabilities[m_text_doc_sync][m_open_close].is_bool());
     ASSERT_TRUE(response_capabilities[m_text_doc_sync][m_open_close].to_bool());
@@ -95,8 +95,7 @@ TEST(integrate, test_initialize)
     ASSERT_TRUE(response_capabilities[m_definition_provider].is_bool());
     ASSERT_TRUE(response_capabilities[m_definition_provider].to_bool());
 
-    ASSERT_TRUE(response_capabilities[m_references_provider].is_bool());
-    ASSERT_FALSE(response_capabilities[m_references_provider].to_bool());
+    ASSERT_FALSE(response_capabilities[m_references_provider].is_bool());
 
     ASSERT_TRUE(response_capabilities[m_hover_provider].is_bool());
     ASSERT_TRUE(response_capabilities[m_hover_provider].to_bool());

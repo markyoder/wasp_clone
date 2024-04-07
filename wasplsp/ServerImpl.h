@@ -273,6 +273,51 @@ class WASP_PUBLIC ServerImpl
      */
     virtual bool connectionWrite( wasp::DataObject & object ) = 0;
 
+    /** enable full document sync capability for server */
+    void enableFullSync()
+    {
+        server_capabilities[m_text_doc_sync] = DataObject();
+        this->server_capabilities[m_text_doc_sync][m_open_close] = true;
+        this->server_capabilities[m_text_doc_sync][m_change] = m_change_full;
+    }
+
+    /** enable completion capability for server */
+    void enableCompletion()
+    {
+        this->server_capabilities[m_completion_provider] = DataObject();
+        this->server_capabilities[m_completion_provider][m_resolve_provider] = false;
+    }
+
+    /** enable definition capability for server */
+    void enableDefinition()
+    {
+        this->server_capabilities[m_definition_provider] = true;
+    }
+
+    /** enable references capability for server */
+    void enableReferences()
+    {
+        this->server_capabilities[m_references_provider] = true;
+    }
+
+    /** enable formatting capability for server */
+    void enableFormatting()
+    {
+        this->server_capabilities[m_doc_format_provider] = true;
+    }
+
+    /** enable hover capability for server */
+    void enableHover()
+    {
+        this->server_capabilities[m_hover_provider] = true;
+    }
+
+    /** enable document symbols capability for server */
+    void enableSymbols()
+    {
+        this->server_capabilities[m_doc_symbol_provider] = true;
+    }
+
     /**
      * @brief errors - all errors stored by the server for any reason
      */

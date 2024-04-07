@@ -10,7 +10,6 @@ from wasp import (
         HITNodeView,
         DDINodeView,
         EDDINodeView,
-        ServerImpl,
         HIVE, Definition, Diagnostic,
         string, ostringstream, istringstream
         )

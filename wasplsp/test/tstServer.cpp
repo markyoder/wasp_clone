@@ -66,7 +66,6 @@ TEST(server, handle_initialize)
     ,"documentFormattingProvider" : true
     ,"documentSymbolProvider" : true
     ,"hoverProvider" : true
-    ,"referencesProvider" : false
     ,"textDocumentSync" : {
       "change" : 1
       ,"openClose" : true

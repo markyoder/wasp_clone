@@ -8,18 +8,13 @@ class TestPyServer(ServerImpl):
     def __init__(self):
         '''Set up capabilities of concrete example server implementation'''
         super().__init__()
-        # Setting capabilities is disabled until this gets addressed
-        # AttributeError object has no attribute server_capabilities
-        # self.server_capabilities[m_text_doc_sync]                           = DataObject()
-        # self.server_capabilities[m_text_doc_sync][m_open_close]             = True
-        # self.server_capabilities[m_text_doc_sync][m_change]                 = m_change_full
-        # self.server_capabilities[m_completion_provider]                     = DataObject()
-        # self.server_capabilities[m_completion_provider][m_resolve_provider] = False
-        # self.server_capabilities[m_doc_symbol_provider]                     = True
-        # self.server_capabilities[m_doc_format_provider]                     = True
-        # self.server_capabilities[m_definition_provider]                     = True
-        # self.server_capabilities[m_references_provider]                     = False
-        # self.server_capabilities[m_hover_provider]                          = True
+        self.enableFullSync()
+        self.enableSymbols()
+        self.enableCompletion()
+        self.enableDefinition()
+        self.enableFormatting()
+        self.enableReferences()
+        self.enableHover()
     def getConnection(self):
         '''Get connection object used by server for client communication'''
     def connectionRead(self, object):
@@ -868,7 +863,20 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
 {
   "id" : 1
   ,"result" : {
-    "capabilities" : {}
+    "capabilities" : {
+    "completionProvider" : {
+    "resolveProvider" : false
+  }
+    ,"definitionProvider" : true
+    ,"documentFormattingProvider" : true
+    ,"documentSymbolProvider" : true
+    ,"hoverProvider" : true
+    ,"referencesProvider" : true
+    ,"textDocumentSync" : {
+      "change" : 1
+      ,"openClose" : true
+    }
+  }
   }
 }
             '''
@@ -881,7 +889,7 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
             self.assertTrue(success)
             self.assertFalse(response_errors.str())
             self.assertEqual(client_request_id, server_response_id)
-            self.assertEqual(0, server_capabilities.size())
+            self.assertEqual(7, server_capabilities.size())
             # Build initialized notification and handle using server
             initialized_notification = DataObject()
             initialized_errors       = stringstream()
