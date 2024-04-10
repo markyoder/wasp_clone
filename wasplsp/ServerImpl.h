@@ -3,6 +3,7 @@
 
 #include <string>
 #include <sstream>
+#include <ostream>
 #include <map>
 #include "wasplsp/LSP.h"
 #include "wasplsp/Connection.h"
@@ -316,6 +317,12 @@ class WASP_PUBLIC ServerImpl
     void enableSymbols()
     {
         this->server_capabilities[m_doc_symbol_provider] = true;
+    }
+
+    /** provide reference to stringstream of all server errors */
+    std::ostream & errorStream()
+    {
+      return errors;
     }
 
     /**

@@ -25,11 +25,18 @@ class TestPyServer(ServerImpl):
         return True
     def parseDocumentForDiagnostics(self, diagnostics_list):
         '''Process current document and add diagnostics to provided list'''
-        print("Blah01")
-        return True
+        success = True
+        diagnostic = DataObject()
+        if self.document_text == "test\ntext\n01\nstring\n":
+            success &= buildDiagnosticObject(diagnostic, self.errorStream(), 11, 12, 13, 14, 1, "code.101", "source_101", "message 101")
+            diagnostics_list.push_back(diagnostic)
+            success &= buildDiagnosticObject(diagnostic, self.errorStream(), 21, 22, 23, 24, 2, "code.202", "source_202", "message 202")
+            diagnostics_list.push_back(diagnostic)
+            success &= buildDiagnosticObject(diagnostic, self.errorStream(), 31, 32, 33, 34, 3, "code.303", "source_303", "message 303")
+            diagnostics_list.push_back(diagnostic)
+        return success
     def updateDocumentTextChanges(self, replace_text, beg_line, beg_char, end_line, end_char, range_len):
         '''Replace current document on server with provided text changes'''
-        print("Blah02")
         return True
     def gatherDocumentCompletionItems(self, completion_items, is_incomplete, req_line, req_char):
         '''Collect completion items for line and column in provided list'''
@@ -903,9 +910,9 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
             didopen_notification = DataObject()
             didopen_errors       = stringstream()
             document_path        = "test/document/uri/string"
-            document_language_id = "test_language_id_string"
+            document_language_id = "test_language_identifier"
+            document_text        = "test\ntext\n01\nstring\n"
             document_version     =  1
-            document_text        = "test\ntext\n1\nstring\n"
             self.assertTrue(buildDidOpenNotification(didopen_notification,
                                                      didopen_errors,
                                                      document_path,
@@ -922,7 +929,56 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
 {
   "method" : "textDocument/publishDiagnostics"
   ,"params" : {
-    "diagnostics" : []
+    "diagnostics" : [
+    {
+    "code" : "code.101"
+    ,"message" : "message 101"
+    ,"range" : {
+      "end" : {
+      "character" : 14
+      ,"line" : 13
+    }
+      ,"start" : {
+        "character" : 12
+        ,"line" : 11
+      }
+    }
+    ,"severity" : 1
+    ,"source" : "source_101"
+  }
+    ,{
+    "code" : "code.202"
+    ,"message" : "message 202"
+    ,"range" : {
+      "end" : {
+      "character" : 24
+      ,"line" : 23
+    }
+      ,"start" : {
+        "character" : 22
+        ,"line" : 21
+      }
+    }
+    ,"severity" : 2
+    ,"source" : "source_202"
+  }
+    ,{
+    "code" : "code.303"
+    ,"message" : "message 303"
+    ,"range" : {
+      "end" : {
+      "character" : 34
+      ,"line" : 33
+    }
+      ,"start" : {
+        "character" : 32
+        ,"line" : 31
+      }
+    }
+    ,"severity" : 3
+    ,"source" : "source_303"
+  }
+  ]
     ,"uri" : "test/document/uri/string"
   }
 }
@@ -937,7 +993,7 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
             self.assertTrue(success)
             self.assertFalse(diagnostics_errors.str())
             self.assertEqual(document_path, response_uri)
-            self.assertEqual(0, diagnostics_array.size())
+            self.assertEqual(3, diagnostics_array.size())
 
 if __name__ == '__main__':
      unittest.main()

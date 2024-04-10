@@ -189,6 +189,8 @@ class WASP_PUBLIC DataArray
     Value& at(size_t i) { return m_data.at(i); }
     const Value& at(size_t i) const { return m_data.at(i); }
     void push_back(const Value& n) { m_data.push_back(n); }
+    void push_back(const wasp::DataObject& n) { m_data.push_back(n); }
+    void push_back(const wasp::DataArray& n) { m_data.push_back(n); }
     void resize(size_t nsize) { m_data.resize(nsize); }
 
     bool
