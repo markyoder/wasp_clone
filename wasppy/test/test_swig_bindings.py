@@ -34,9 +34,15 @@ class TestPyServer(ServerImpl):
             diagnostics_list.push_back(diagnostic)
             success &= buildDiagnosticObject(diagnostic, self.errorStream(), 31, 32, 33, 34, 3, "code.303", "source_303", "message 303")
             diagnostics_list.push_back(diagnostic)
+        elif self.document_text == "test\ntext\n02\nstring\n":
+            success &= buildDiagnosticObject(diagnostic, self.errorStream(), 41, 42, 43, 44, 1, "code.404", "source_404", "message 404")
+            diagnostics_list.push_back(diagnostic)
+            success &= buildDiagnosticObject(diagnostic, self.errorStream(), 51, 52, 53, 54, 2, "code.505", "source_505", "message 505")
+            diagnostics_list.push_back(diagnostic)
         return success
     def updateDocumentTextChanges(self, replace_text, beg_line, beg_char, end_line, end_char, range_len):
         '''Replace current document on server with provided text changes'''
+        self.document_text = replace_text
         return True
     def gatherDocumentCompletionItems(self, completion_items, is_incomplete, req_line, req_char):
         '''Collect completion items for line and column in provided list'''
@@ -843,6 +849,7 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
         self.assertEqual(expectedDiagnostics,"".join(str(x)+"\n" for x in interpreter.deserializeDiagnostics()))
 
     def test_language_server(self):
+        self.maxDiff = None
         test_py_server = TestPyServer()
         # test_py_server.run() # needs to be run on a thread and communicated with
 
@@ -994,6 +1001,79 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
             self.assertFalse(diagnostics_errors.str())
             self.assertEqual(document_path, response_uri)
             self.assertEqual(3, diagnostics_array.size())
+
+        with self.subTest(msg='test_py_server.didchange'):
+            # Build test didchange notification and handle in server
+            didchange_notification = DataObject()
+            didchange_errors       = stringstream()
+            document_path          = "test/document/uri/string"
+            document_text_change   = "test\ntext\n02\nstring\n"
+            document_version       =  2
+            self.assertTrue(buildDidChangeNotification(didchange_notification,
+                                                       didchange_errors,
+                                                       document_path,
+                                                       document_version,
+                                                       -1, -1, -1, -1, -1,
+                                                       document_text_change))
+            self.assertFalse(didchange_errors.str())
+            diagnostics_notification = DataObject()
+            self.assertTrue(test_py_server.handleDidChangeNotification(didchange_notification, diagnostics_notification))
+            self.assertFalse(test_py_server.getErrors())
+            # Check json rpc body of server diagnostics notification
+            json_actual = stringstream()
+            json_expect = '''
+{
+  "method" : "textDocument/publishDiagnostics"
+  ,"params" : {
+    "diagnostics" : [
+    {
+    "code" : "code.404"
+    ,"message" : "message 404"
+    ,"range" : {
+      "end" : {
+      "character" : 44
+      ,"line" : 43
+    }
+      ,"start" : {
+        "character" : 42
+        ,"line" : 41
+      }
+    }
+    ,"severity" : 1
+    ,"source" : "source_404"
+  }
+    ,{
+    "code" : "code.505"
+    ,"message" : "message 505"
+    ,"range" : {
+      "end" : {
+      "character" : 54
+      ,"line" : 53
+    }
+      ,"start" : {
+        "character" : 52
+        ,"line" : 51
+      }
+    }
+    ,"severity" : 2
+    ,"source" : "source_505"
+  }
+  ]
+    ,"uri" : "test/document/uri/string"
+  }
+}
+            '''
+            self.assertTrue(diagnostics_notification.format_json(json_actual))
+            self.assertEqual(json_expect.strip(), json_actual.str())
+            # Check server diagnostics notification values dissected
+            diagnostics_errors = stringstream()
+            response_uri = string()
+            diagnostics_array = DataArray()
+            success = dissectPublishDiagnosticsNotification(diagnostics_notification, diagnostics_errors, response_uri, diagnostics_array)
+            self.assertTrue(success)
+            self.assertFalse(diagnostics_errors.str())
+            self.assertEqual(document_path, response_uri)
+            self.assertEqual(2, diagnostics_array.size())
 
 if __name__ == '__main__':
      unittest.main()
