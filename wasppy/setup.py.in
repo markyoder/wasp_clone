@@ -8,10 +8,12 @@ from setuptools import setup, Extension
 import glob, os, platform
 
 def get_extra_link_args():
-    if platform.system() == 'Windows':
-        return []
-    else:
-        return ["-Wl,-rpath,$ORIGIN/lib/."]
+    link_args = []
+    if platform.system() != "Windows":
+        link_args.append("-Wl,-rpath,$ORIGIN/lib/.")
+    if platform.system() == "Darwin":
+        link_args.append("-Wl,-headerpad_max_install_names")
+    return link_args
 
 #Source files for the wrapper only
 wasp_sources = glob.glob("wasp_wrap.cxx")
