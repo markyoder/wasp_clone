@@ -15,7 +15,7 @@
 
 // Use typemaps to output primitive type arguments set by reference passing
 %include typemaps.i
-%apply int & OUTPUT { int & request_id };
+%apply int & OUTPUT { int & };
 
 // Add handler to capture and provide details from Python thrown exceptions
 %exception {

@@ -23,6 +23,10 @@ class TestPyServer(ServerImpl):
     def connectionWrite(self, object):
         '''Convert object to JSON-RPC packet and write out to connection'''
         return True
+    def updateDocumentTextChanges(self, replace_text, beg_line, beg_char, end_line, end_char, range_len):
+        '''Replace current document on server with provided text changes'''
+        self.document_text = replace_text
+        return True
     def parseDocumentForDiagnostics(self, diagnostics_list):
         '''Process current document and add diagnostics to provided list'''
         success = True
@@ -40,9 +44,8 @@ class TestPyServer(ServerImpl):
             success &= buildDiagnosticObject(diagnostic, self.errorStream(), 51, 52, 53, 54, 2, "code.505", "source_505", "message 505")
             diagnostics_list.push_back(diagnostic)
         return success
-    def updateDocumentTextChanges(self, replace_text, beg_line, beg_char, end_line, end_char, range_len):
-        '''Replace current document on server with provided text changes'''
-        self.document_text = replace_text
+    def gatherDocumentSymbols(self, document_symbols):
+        '''Build hierarchical symbol tree of document in provided object'''
         return True
     def gatherDocumentCompletionItems(self, completion_items, is_incomplete, req_line, req_char):
         '''Collect completion items for line and column in provided list'''
@@ -50,17 +53,14 @@ class TestPyServer(ServerImpl):
     def gatherDocumentDefinitionLocations(self, definition_items, req_line, req_char):
         '''Collect locations of definitions for request in provided list'''
         return True
-    def getHoverDisplayText(self, display_text, req_line, req_char):
-        '''Fill provided string with text to display at request position'''
-        return True
     def gatherDocumentReferencesLocations(self, references_locations, req_line, req_char, include_decl):
         '''Collect locations of references to request with provided list'''
         return True
     def gatherDocumentFormattingTextEdits(self, formatting_textedits, tab_size, insert_spaces):
         '''Collect formatting edits to apply in order with provided list'''
         return True
-    def gatherDocumentSymbols(self, document_symbols):
-        '''Build hierarchical symbol tree of document in provided object'''
+    def getHoverDisplayText(self, display_text, req_line, req_char):
+        '''Fill provided string with text to display at request position'''
         return True
 
 class LinearModel:
@@ -850,26 +850,27 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
 
     def test_language_server(self):
         self.maxDiff = None
+        error_stream = stringstream()
         test_py_server = TestPyServer()
         # test_py_server.run() # needs to be run on a thread and communicated with
 
         with self.subTest(msg='test_py_server.initialize'):
             # Build test initialize request and use server to handle
             initialize_request  = DataObject()
-            initialize_errors   = stringstream()
             client_request_id   = 1
             client_process_id   = -1
             client_root_path    = ""
             client_capabilities = DataObject()
             self.assertTrue(buildInitializeRequest(initialize_request,
-                                                   initialize_errors,
+                                                   error_stream,
                                                    client_request_id,
                                                    client_process_id,
                                                    client_root_path,
                                                    client_capabilities))
-            self.assertFalse(initialize_errors.str())
+            self.assertFalse(error_stream.str())
             initialize_response = DataObject()
-            self.assertTrue(test_py_server.handleInitializeRequest(initialize_request, initialize_response))
+            self.assertTrue(test_py_server.handleInitializeRequest(initialize_request,
+                                                                   initialize_response))
             self.assertFalse(test_py_server.getErrors())
             # Check body of json rpc from server initialize response
             json_actual = stringstream()
@@ -897,38 +898,38 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
             self.assertTrue(initialize_response.format_json(json_actual))
             self.assertEqual(json_expect.strip(), json_actual.str())
             # Check values dissected from server initialize response
-            response_errors = stringstream()
             server_capabilities = DataObject()
-            success, server_response_id = dissectInitializeResponse(initialize_response, response_errors, server_capabilities)
+            success, server_response_id = dissectInitializeResponse(initialize_response,
+                                                                    error_stream,
+                                                                    server_capabilities)
             self.assertTrue(success)
-            self.assertFalse(response_errors.str())
+            self.assertFalse(error_stream.str())
             self.assertEqual(client_request_id, server_response_id)
             self.assertEqual(7, server_capabilities.size())
             # Build initialized notification and handle using server
             initialized_notification = DataObject()
-            initialized_errors       = stringstream()
-            self.assertTrue(buildInitializedNotification(initialized_notification, initialized_errors))
-            self.assertFalse(initialized_errors.str())
+            self.assertTrue(buildInitializedNotification(initialized_notification, error_stream))
+            self.assertFalse(error_stream.str())
             self.assertTrue(test_py_server.handleInitializedNotification(initialized_notification))
             self.assertFalse(test_py_server.getErrors())
 
         with self.subTest(msg='test_py_server.didopen'):
             # Build test didopen notification and handle with server
             didopen_notification = DataObject()
-            didopen_errors       = stringstream()
             document_path        = "test/document/uri/string"
             document_language_id = "test_language_identifier"
             document_text        = "test\ntext\n01\nstring\n"
             document_version     =  1
             self.assertTrue(buildDidOpenNotification(didopen_notification,
-                                                     didopen_errors,
+                                                     error_stream,
                                                      document_path,
                                                      document_language_id,
                                                      document_version,
                                                      document_text))
-            self.assertFalse(didopen_errors.str())
-            diagnostics_notification = DataObject()
-            self.assertTrue(test_py_server.handleDidOpenNotification(didopen_notification, diagnostics_notification))
+            self.assertFalse(error_stream.str())
+            diag_notification = DataObject()
+            self.assertTrue(test_py_server.handleDidOpenNotification(didopen_notification,
+                                                                     diag_notification))
             self.assertFalse(test_py_server.getErrors())
             # Check json rpc body of server diagnostics notification
             json_actual = stringstream()
@@ -990,34 +991,67 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
   }
 }
             '''
-            self.assertTrue(diagnostics_notification.format_json(json_actual))
+            self.assertTrue(diag_notification.format_json(json_actual))
             self.assertEqual(json_expect.strip(), json_actual.str())
             # Check server diagnostics notification values dissected
-            diagnostics_errors = stringstream()
-            response_uri = string()
-            diagnostics_array = DataArray()
-            success = dissectPublishDiagnosticsNotification(diagnostics_notification, diagnostics_errors, response_uri, diagnostics_array)
-            self.assertTrue(success)
-            self.assertFalse(diagnostics_errors.str())
+            response_uri, diag_array = string(), DataArray()
+            self.assertTrue(dissectPublishDiagnosticsNotification(diag_notification,
+                                                                  error_stream,
+                                                                  response_uri,
+                                                                  diag_array))
+            self.assertFalse(error_stream.str())
             self.assertEqual(document_path, response_uri)
-            self.assertEqual(3, diagnostics_array.size())
+            self.assertEqual(3, diag_array.size())
+            code, source, message = string(), string(), string()
+            for i in range(diag_array.size()):
+                diag_object = diag_array.at(i).to_object()
+                success, beg_line, beg_char, end_line, end_char, severity = \
+                    dissectDiagnosticObject(diag_object, error_stream, code, source, message)
+                self.assertTrue(success)
+                if i == 0:
+                    self.assertEqual( 11            , beg_line )
+                    self.assertEqual( 12            , beg_char )
+                    self.assertEqual( 13            , end_line )
+                    self.assertEqual( 14            , end_char )
+                    self.assertEqual( 1             , severity )
+                    self.assertEqual( "code.101"    , code     )
+                    self.assertEqual( "source_101"  , source   )
+                    self.assertEqual( "message 101" , message  )
+                elif i == 1:
+                    self.assertEqual( 21            , beg_line )
+                    self.assertEqual( 22            , beg_char )
+                    self.assertEqual( 23            , end_line )
+                    self.assertEqual( 24            , end_char )
+                    self.assertEqual( 2             , severity )
+                    self.assertEqual( "code.202"    , code     )
+                    self.assertEqual( "source_202"  , source   )
+                    self.assertEqual( "message 202" , message  )
+                elif i == 2:
+                    self.assertEqual( 31            , beg_line )
+                    self.assertEqual( 32            , beg_char )
+                    self.assertEqual( 33            , end_line )
+                    self.assertEqual( 34            , end_char )
+                    self.assertEqual( 3             , severity )
+                    self.assertEqual( "code.303"    , code     )
+                    self.assertEqual( "source_303"  , source   )
+                    self.assertEqual( "message 303" , message  )
 
         with self.subTest(msg='test_py_server.didchange'):
             # Build test didchange notification and handle in server
             didchange_notification = DataObject()
-            didchange_errors       = stringstream()
             document_path          = "test/document/uri/string"
             document_text_change   = "test\ntext\n02\nstring\n"
             document_version       =  2
             self.assertTrue(buildDidChangeNotification(didchange_notification,
-                                                       didchange_errors,
+                                                       error_stream,
                                                        document_path,
                                                        document_version,
                                                        -1, -1, -1, -1, -1,
                                                        document_text_change))
-            self.assertFalse(didchange_errors.str())
-            diagnostics_notification = DataObject()
-            self.assertTrue(test_py_server.handleDidChangeNotification(didchange_notification, diagnostics_notification))
+            self.assertFalse(error_stream.str())
+            diag_notification = DataObject()
+            self.assertTrue(test_py_server.handleDidChangeNotification(didchange_notification,
+                                                                       diag_notification))
             self.assertFalse(test_py_server.getErrors())
             # Check json rpc body of server diagnostics notification
             json_actual = stringstream()
@@ -1063,17 +1097,41 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
   }
 }
             '''
-            self.assertTrue(diagnostics_notification.format_json(json_actual))
+            self.assertTrue(diag_notification.format_json(json_actual))
             self.assertEqual(json_expect.strip(), json_actual.str())
             # Check server diagnostics notification values dissected
-            diagnostics_errors = stringstream()
-            response_uri = string()
-            diagnostics_array = DataArray()
-            success = dissectPublishDiagnosticsNotification(diagnostics_notification, diagnostics_errors, response_uri, diagnostics_array)
-            self.assertTrue(success)
-            self.assertFalse(diagnostics_errors.str())
+            response_uri, diag_array = string(), DataArray()
+            self.assertTrue(dissectPublishDiagnosticsNotification(diag_notification,
+                                                                  error_stream,
+                                                                  response_uri,
+                                                                  diag_array))
+            self.assertFalse(error_stream.str())
             self.assertEqual(document_path, response_uri)
-            self.assertEqual(2, diagnostics_array.size())
+            self.assertEqual(2, diag_array.size())
+            code, source, message = string(), string(), string()
+            for i in range(diag_array.size()):
+                diag_object = diag_array.at(i).to_object()
+                success, beg_line, beg_char, end_line, end_char, severity = \
+                    dissectDiagnosticObject(diag_object, error_stream, code, source, message)
+                self.assertTrue(success)
+                if i == 0:
+                    self.assertEqual( 41            , beg_line )
+                    self.assertEqual( 42            , beg_char )
+                    self.assertEqual( 43            , end_line )
+                    self.assertEqual( 44            , end_char )
+                    self.assertEqual( 1             , severity )
+                    self.assertEqual( "code.404"    , code     )
+                    self.assertEqual( "source_404"  , source   )
+                    self.assertEqual( "message 404" , message  )
+                elif i == 1:
+                    self.assertEqual( 51            , beg_line )
+                    self.assertEqual( 52            , beg_char )
+                    self.assertEqual( 53            , end_line )
+                    self.assertEqual( 54            , end_char )
+                    self.assertEqual( 2             , severity )
+                    self.assertEqual( "code.505"    , code     )
+                    self.assertEqual( "source_505"  , source   )
+                    self.assertEqual( "message 505" , message  )
 
 if __name__ == '__main__':
      unittest.main()
