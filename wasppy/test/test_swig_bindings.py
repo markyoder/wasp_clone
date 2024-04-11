@@ -163,7 +163,7 @@ class TestSwigInterface(unittest.TestCase):
 
         doc = Interpreter(Syntax.SON,path="Not_Real.son")
         self.assertFalse(doc) # documents are not valid
-        parse_diagnostics = doc.parse_diagnostics()
+        parse_diagnostics = doc.parseDiagnostics()
         self.assertEqual(["Not_Real.son:1.1 is either inaccessible or doesn't exist! Unable to read."], [str(x) for x in parse_diagnostics])
 
 
@@ -501,7 +501,7 @@ queries{
         # Test HIT parse error
         interpreter = Interpreter(Syntax.HIT, data=input, path="myfile.inp")
         self.assertFalse(interpreter)
-        errors = interpreter.parse_diagnostics()
+        errors = interpreter.parseDiagnostics()
         expected = [
             "myfile.inp:1.7: syntax error, unexpected end of file",
             "myfile.inp:1.6: syntax error, 'data' has a missing or malformed value",
@@ -509,5 +509,100 @@ queries{
 
         error_strings = [str(x).rstrip() for x in errors]
         self.assertEqual(expected, error_strings)
+
+    def test_diagnostics(self):
+        input = "key=1.8"
+        interpreter = Interpreter(Syntax.SON, data=input, path="myfile.inp")
+        self.assertTrue(interpreter)
+        node = interpreter.root().key[0]['value'][0]
+        interpreter.createErrorDiagnostic(node, "is an unexpected parameter!")
+        interpreter.createWarningDiagnostic(node, "is an unexpected parameter!")
+        interpreter.createInformationDiagnostic(node, "is skipped as an unexpected parameter!")
+        interpreter.createHintDiagnostic(node, "should be named less ambiguously!")
+        dd = interpreter.deserializeDiagnostics()
+        self.assertEqual(4, len(dd))
+
+        expected = ["myfile.inp:1.5: value is an unexpected parameter!", 
+                    "myfile.inp:1.5: value is an unexpected parameter!", 
+                    "myfile.inp:1.5: value is skipped as an unexpected parameter!", 
+                    "myfile.inp:1.5: value should be named less ambiguously!"]
+        for i, e in enumerate(expected):
+            self.assertEqual(e, str(dd[i]))
+
+    def test_database_inputobject(self):
+        # Create database of input objects equivalent to static schema, but with store actions
+        from Database import InputObject, storeFloat, storeStr
+        db = InputObject()
+        db.createRequiredSingle("queries", Desc="Parameters for queries salt properties") \
+            .createRequiredSingle("temperatures", Desc="Temperatures (C) at which to query density") \
+                .createRequired("value", MinValExc=0, Action=storeFloat)
+        salts = db.createRequiredSingle("salts", Desc="The collection of salts in the system")
+        salt = salts.createRequired("salt", Desc="Single Salt instance")
+        salt.createRequiredSingle("id", Enums=["LiF", "NaF", "CaF2", "NH4F", "NaCl"], Desc="Salt type", Action=storeStr)
+        salt.createRequiredSingle("BoilTemp", Desc="Salting boiling temperature") \
+                .createRequiredSingle("value", MinValExc=0, Action=storeFloat)
+        salt.createRequiredSingle("MeltTemp", Desc="Salt melting temperature").createRequiredSingle("value", Action=storeFloat)
+        salt.createSingle("MolecularWeight", Desc="Salt's molecular weight").createRequiredSingle("value", MinValExc=0, Action=storeFloat)
+        dens = salt.createRequiredSingle("Density", Desc="Salt density")
+        dens.createRequiredSingle("A", Desc="Density A Coefficient").createRequiredSingle("value", Action=storeFloat)
+        dens.createRequiredSingle("B", Desc="Density B Coefficient").createRequiredSingle("value", Action=storeFloat)
+        dens.createRequiredSingle("MinTemp", Desc="Minimum temperature").createRequiredSingle("value", MinValExc=0, Action=storeFloat)
+        # TODO add max temperature MinValExc dependency support
+        dens.createRequiredSingle("MaxTemp", Desc="Maximum temperature").createRequiredSingle("value", Action=storeFloat)
+        dens.createSingle("Type", Desc="interpolation type").createRequiredSingle("value", Action=storeStr)
+
+        ss = '''
+        salts {
+          salt(LiF) {
+              MeltTemp : 1121.2
+              MolecularWeight : 25.9394
+              BoilTemp : 0
+              Density
+              {
+                  Type : linear
+                  A : 2.37
+                  B : 5.0e-4
+                  MinTemp : 1123.6
+                  MaxTemp : 1367.5
+              }
+          }
+          salt(NaF) {
+              MolecularWeight : 41.9882
+              MeltTemp : 1268
+              BoilTemp : 1978
+              Density
+              {
+                  Type : linear
+                  A : 2.76
+                  B : 6.36e-4
+                  MinTemp : 1273
+                  MaxTemp : 1373
+              }
+          }
+        }
+        queries {
+          temperatures = [1100,1200,1300,1400]
+        }'''
+
+        interpreter = Interpreter(Syntax.SON, path="input.son", data=ss)
+
+        self.assertTrue(interpreter)
+        
+        # 
+        result = db.deserialize(interpreter.root(), interpreter)
+        self.assertTrue(interpreter.deserializeDiagnostics())
+        expectedDiagnostics = '''input.son:6.26: value 0.0 is less than or equal to the allowed minimum exclusive value of 0!
+'''
+        self.assertEqual(expectedDiagnostics,"".join(str(x)+"\n" for x in interpreter.deserializeDiagnostics()))
+        self.assertEqual([1100,1200,1300,1400], result["queries"]["temperatures"].valuelist())
+        import json
+        print (json.dumps(result.todict()))
+        self.assertTrue(result["salts"])
+        self.assertTrue(type(result["salts"]["salt"]) == list)
+        self.assertEqual(2, len(result["salts"]["salt"]))
+        self.assertTrue(result["salts"]["salt"][1])
+        self.assertTrue(result["salts"]["salt"][1]["MolecularWeight"])
+        self.assertEqual(41.9882, result["salts"]["salt"][1]["MolecularWeight"].value())
+
 if __name__ == '__main__':
      unittest.main()
