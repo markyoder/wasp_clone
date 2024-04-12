@@ -1099,11 +1099,11 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
             self.assertFalse(error_stream.str())
             self.assertEqual(document_path, response_path)
             self.assertEqual(3, diag_array.size())
-            code, source, message = string(), string(), string()
             for i in range(diag_array.size()):
                 diag_object = diag_array.at(i).to_object()
+                code, src, msg = string(), string(), string()
                 success, beg_line, beg_char, end_line, end_char, severity = \
-                    dissectDiagnosticObject(diag_object, error_stream, code, source, message)
+                    dissectDiagnosticObject(diag_object, error_stream, code, src, msg)
                 self.assertTrue(success)
                 if i == 0:
                     self.assertEqual( 11            , beg_line )
@@ -1112,8 +1112,8 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
                     self.assertEqual( 14            , end_char )
                     self.assertEqual( 1             , severity )
                     self.assertEqual( "code.101"    , code     )
-                    self.assertEqual( "source_101"  , source   )
-                    self.assertEqual( "message 101" , message  )
+                    self.assertEqual( "source_101"  , src      )
+                    self.assertEqual( "message 101" , msg      )
                 elif i == 1:
                     self.assertEqual( 21            , beg_line )
                     self.assertEqual( 22            , beg_char )
@@ -1121,8 +1121,8 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
                     self.assertEqual( 24            , end_char )
                     self.assertEqual( 2             , severity )
                     self.assertEqual( "code.202"    , code     )
-                    self.assertEqual( "source_202"  , source   )
-                    self.assertEqual( "message 202" , message  )
+                    self.assertEqual( "source_202"  , src      )
+                    self.assertEqual( "message 202" , msg      )
                 elif i == 2:
                     self.assertEqual( 31            , beg_line )
                     self.assertEqual( 32            , beg_char )
@@ -1130,8 +1130,8 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
                     self.assertEqual( 34            , end_char )
                     self.assertEqual( 3             , severity )
                     self.assertEqual( "code.303"    , code     )
-                    self.assertEqual( "source_303"  , source   )
-                    self.assertEqual( "message 303" , message  )
+                    self.assertEqual( "source_303"  , src      )
+                    self.assertEqual( "message 303" , msg      )
 
         with self.subTest(msg='test_py_server.didchange'):
             # Build test didchange notification and handle in server
@@ -1205,11 +1205,11 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
             self.assertFalse(error_stream.str())
             self.assertEqual(document_path, response_path)
             self.assertEqual(2, diag_array.size())
-            code, source, message = string(), string(), string()
             for i in range(diag_array.size()):
                 diag_object = diag_array.at(i).to_object()
+                code, src, msg = string(), string(), string()
                 success, beg_line, beg_char, end_line, end_char, severity = \
-                    dissectDiagnosticObject(diag_object, error_stream, code, source, message)
+                    dissectDiagnosticObject(diag_object, error_stream, code, src, msg)
                 self.assertTrue(success)
                 if i == 0:
                     self.assertEqual( 41            , beg_line )
@@ -1218,8 +1218,8 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
                     self.assertEqual( 44            , end_char )
                     self.assertEqual( 1             , severity )
                     self.assertEqual( "code.404"    , code     )
-                    self.assertEqual( "source_404"  , source   )
-                    self.assertEqual( "message 404" , message  )
+                    self.assertEqual( "source_404"  , src      )
+                    self.assertEqual( "message 404" , msg      )
                 elif i == 1:
                     self.assertEqual( 51            , beg_line )
                     self.assertEqual( 52            , beg_char )
@@ -1227,8 +1227,8 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
                     self.assertEqual( 54            , end_char )
                     self.assertEqual( 2             , severity )
                     self.assertEqual( "code.505"    , code     )
-                    self.assertEqual( "source_505"  , source   )
-                    self.assertEqual( "message 505" , message  )
+                    self.assertEqual( "source_505"  , src      )
+                    self.assertEqual( "message 505" , msg      )
 
         with self.subTest(msg='test_py_server.symbols'):
             # Build test documentsymbols request to handle in server
@@ -1346,6 +1346,69 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
             self.assertFalse(error_stream.str())
             self.assertEqual(client_request_id, server_response_id)
             self.assertEqual(1, symbols_array.size())
+            symbol_doc_root = symbols_array.at(0).to_object()
+            self.assertEqual(2, getDocumentSymbolChildren(symbol_doc_root).size())
+            symbol_child_01 = getDocumentSymbolChildren(symbol_doc_root).at(0).to_object()
+            symbol_child_02 = getDocumentSymbolChildren(symbol_doc_root).at(1).to_object()
+            self.assertEqual(0, getDocumentSymbolChildren(symbol_child_01).size())
+            self.assertEqual(0, getDocumentSymbolChildren(symbol_child_02).size())
+
+            name, detail = string(), string()
+            success,      kind,         deprecated,                  \
+            beg_line,     beg_char,     end_line,     end_char,      \
+            beg_line_sel, beg_char_sel, end_line_sel, end_char_sel = \
+                dissectDocumentSymbolObject(symbol_doc_root, error_stream, name, detail)
+            self.assertTrue(success)
+            self.assertEqual( "doc_root_name"      , name         )
+            self.assertEqual( "doc.root.detail"    , detail       )
+            self.assertEqual( m_symbol_kind_object , kind         )
+            self.assertEqual( False                , deprecated   )
+            self.assertEqual( 11                   , beg_line     )
+            self.assertEqual( 12                   , beg_char     )
+            self.assertEqual( 61                   , end_line     )
+            self.assertEqual( 62                   , end_char     )
+            self.assertEqual( 11                   , beg_line_sel )
+            self.assertEqual( 12                   , beg_char_sel )
+            self.assertEqual( 61                   , end_line_sel )
+            self.assertEqual( 62                   , end_char_sel )
+
+            name, detail = string(), string()
+            success,      kind,         deprecated,                  \
+            beg_line,     beg_char,     end_line,     end_char,      \
+            beg_line_sel, beg_char_sel, end_line_sel, end_char_sel = \
+                dissectDocumentSymbolObject(symbol_child_01, error_stream, name, detail)
+            self.assertTrue(success)
+            self.assertEqual( "child_01_name"      , name         )
+            self.assertEqual( "child.01.detail"    , detail       )
+            self.assertEqual( m_symbol_kind_struct , kind         )
+            self.assertEqual( False                , deprecated   )
+            self.assertEqual( 11                   , beg_line     )
+            self.assertEqual( 12                   , beg_char     )
+            self.assertEqual( 31                   , end_line     )
+            self.assertEqual( 32                   , end_char     )
+            self.assertEqual( 11                   , beg_line_sel )
+            self.assertEqual( 12                   , beg_char_sel )
+            self.assertEqual( 31                   , end_line_sel )
+            self.assertEqual( 32                   , end_char_sel )
+
+            name, detail = string(), string()
+            success,      kind,         deprecated,                  \
+            beg_line,     beg_char,     end_line,     end_char,      \
+            beg_line_sel, beg_char_sel, end_line_sel, end_char_sel = \
+                dissectDocumentSymbolObject(symbol_child_02, error_stream, name, detail)
+            self.assertTrue(success)
+            self.assertEqual( "child_02_name"      , name         )
+            self.assertEqual( "child.02.detail"    , detail       )
+            self.assertEqual( m_symbol_kind_method , kind         )
+            self.assertEqual( False                , deprecated   )
+            self.assertEqual( 41                   , beg_line     )
+            self.assertEqual( 42                   , beg_char     )
+            self.assertEqual( 61                   , end_line     )
+            self.assertEqual( 62                   , end_char     )
+            self.assertEqual( 41                   , beg_line_sel )
+            self.assertEqual( 42                   , beg_char_sel )
+            self.assertEqual( 61                   , end_line_sel )
+            self.assertEqual( 62                   , end_char_sel )
 
 if __name__ == '__main__':
      unittest.main()
