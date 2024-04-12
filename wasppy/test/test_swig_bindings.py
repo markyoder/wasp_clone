@@ -31,22 +31,119 @@ class TestPyServer(ServerImpl):
         '''Process current document and add diagnostics to provided list'''
         success = True
         diagnostic = DataObject()
-        if self.document_text == "test\ntext\n01\nstring\n":
-            success &= buildDiagnosticObject(diagnostic, self.errorStream(), 11, 12, 13, 14, 1, "code.101", "source_101", "message 101")
+        if self.document_text == "test doc text 01":
+
+            beg_line, beg_char, end_line, end_char, severity = 11, 12, 13, 14, 1
+            code, src, msg = "code.101", "source_101", "message 101"
+            success &= buildDiagnosticObject(diagnostic, self.errorStream(),
+                beg_line, beg_char, end_line, end_char, severity, code, src, msg)
             diagnostics_list.push_back(diagnostic)
-            success &= buildDiagnosticObject(diagnostic, self.errorStream(), 21, 22, 23, 24, 2, "code.202", "source_202", "message 202")
+
+            beg_line, beg_char, end_line, end_char, severity = 21, 22, 23, 24, 2
+            code, src, msg = "code.202", "source_202", "message 202"
+            success &= buildDiagnosticObject(diagnostic, self.errorStream(),
+                beg_line, beg_char, end_line, end_char, severity, code, src, msg)
             diagnostics_list.push_back(diagnostic)
-            success &= buildDiagnosticObject(diagnostic, self.errorStream(), 31, 32, 33, 34, 3, "code.303", "source_303", "message 303")
+
+            beg_line, beg_char, end_line, end_char, severity = 31, 32, 33, 34, 3
+            code, src, msg = "code.303", "source_303", "message 303"
+            success &= buildDiagnosticObject(diagnostic, self.errorStream(),
+                beg_line, beg_char, end_line, end_char, severity, code, src, msg)
             diagnostics_list.push_back(diagnostic)
-        elif self.document_text == "test\ntext\n02\nstring\n":
-            success &= buildDiagnosticObject(diagnostic, self.errorStream(), 41, 42, 43, 44, 1, "code.404", "source_404", "message 404")
+
+        elif self.document_text == "test doc text 02":
+
+            beg_line, beg_char, end_line, end_char, severity = 41, 42, 43, 44, 1
+            code, src, msg = "code.404", "source_404", "message 404"
+            success &= buildDiagnosticObject(diagnostic, self.errorStream(),
+                beg_line, beg_char, end_line, end_char, severity, code, src, msg)
             diagnostics_list.push_back(diagnostic)
-            success &= buildDiagnosticObject(diagnostic, self.errorStream(), 51, 52, 53, 54, 2, "code.505", "source_505", "message 505")
+
+            beg_line, beg_char, end_line, end_char, severity = 51, 52, 53, 54, 2
+            code, src, msg = "code.505", "source_505", "message 505"
+            success &= buildDiagnosticObject(diagnostic, self.errorStream(),
+                beg_line, beg_char, end_line, end_char, severity, code, src, msg)
             diagnostics_list.push_back(diagnostic)
+
         return success
     def gatherDocumentSymbols(self, document_symbols):
         '''Build hierarchical symbol tree of document in provided object'''
-        return True
+        success = True
+        document_symbols.push_back(DataObject())
+        if self.document_text == "test doc text 02":
+
+            symbol_doc_root = document_symbols.back().to_object()
+            symbol_name                              = "doc_root_name"
+            symbol_detail                            = "doc.root.detail"
+            symbol_kind                              = m_symbol_kind_object
+            symbol_deprecated                        = False
+            symbol_beg_line,     symbol_beg_char     = 11, 12
+            symbol_end_line,     symbol_end_char     = 61, 62
+            symbol_beg_line_sel, symbol_beg_char_sel = 11, 12
+            symbol_end_line_sel, symbol_end_char_sel = 61, 62
+            success &= buildDocumentSymbolObject(symbol_doc_root,
+                                                 self.errorStream(),
+                                                 symbol_name,
+                                                 symbol_detail,
+                                                 symbol_kind,
+                                                 symbol_deprecated,
+                                                 symbol_beg_line,
+                                                 symbol_beg_char,
+                                                 symbol_end_line,
+                                                 symbol_end_char,
+                                                 symbol_beg_line_sel,
+                                                 symbol_beg_char_sel,
+                                                 symbol_end_line_sel,
+                                                 symbol_end_char_sel)
+
+            symbol_child_01 = addDocumentSymbolChild(symbol_doc_root)
+            symbol_name                              = "child_01_name"
+            symbol_detail                            = "child.01.detail"
+            symbol_kind                              = m_symbol_kind_struct
+            symbol_deprecated                        = False
+            symbol_beg_line,     symbol_beg_char     = 11, 12
+            symbol_end_line,     symbol_end_char     = 31, 32
+            symbol_beg_line_sel, symbol_beg_char_sel = 11, 12
+            symbol_end_line_sel, symbol_end_char_sel = 31, 32
+            success &= buildDocumentSymbolObject(symbol_child_01,
+                                                 self.errorStream(),
+                                                 symbol_name,
+                                                 symbol_detail,
+                                                 symbol_kind,
+                                                 symbol_deprecated,
+                                                 symbol_beg_line,
+                                                 symbol_beg_char,
+                                                 symbol_end_line,
+                                                 symbol_end_char,
+                                                 symbol_beg_line_sel,
+                                                 symbol_beg_char_sel,
+                                                 symbol_end_line_sel,
+                                                 symbol_end_char_sel)
+
+            symbol_child_02 = addDocumentSymbolChild(symbol_doc_root)
+            symbol_name                              = "child_02_name"
+            symbol_detail                            = "child.02.detail"
+            symbol_kind                              = m_symbol_kind_method
+            symbol_deprecated                        = False
+            symbol_beg_line,     symbol_beg_char     = 41, 42
+            symbol_end_line,     symbol_end_char     = 61, 62
+            symbol_beg_line_sel, symbol_beg_char_sel = 41, 42
+            symbol_end_line_sel, symbol_end_char_sel = 61, 62
+            success &= buildDocumentSymbolObject(symbol_child_02,
+                                                 self.errorStream(),
+                                                 symbol_name,
+                                                 symbol_detail,
+                                                 symbol_kind,
+                                                 symbol_deprecated,
+                                                 symbol_beg_line,
+                                                 symbol_beg_char,
+                                                 symbol_end_line,
+                                                 symbol_end_char,
+                                                 symbol_beg_line_sel,
+                                                 symbol_beg_char_sel,
+                                                 symbol_end_line_sel,
+                                                 symbol_end_char_sel)
+        return success
     def gatherDocumentCompletionItems(self, completion_items, is_incomplete, req_line, req_char):
         '''Collect completion items for line and column in provided list'''
         return True
@@ -916,9 +1013,9 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
         with self.subTest(msg='test_py_server.didopen'):
             # Build test didopen notification and handle with server
             didopen_notification = DataObject()
-            document_path        = "test/document/uri/string"
-            document_language_id = "test_language_identifier"
-            document_text        = "test\ntext\n01\nstring\n"
+            document_path        = "test/path/to/doc"
+            document_language_id = "test_language_id"
+            document_text        = "test doc text 01"
             document_version     =  1
             self.assertTrue(buildDidOpenNotification(didopen_notification,
                                                      error_stream,
@@ -987,20 +1084,20 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
     ,"source" : "source_303"
   }
   ]
-    ,"uri" : "test/document/uri/string"
+    ,"uri" : "test/path/to/doc"
   }
 }
             '''
             self.assertTrue(diag_notification.format_json(json_actual))
             self.assertEqual(json_expect.strip(), json_actual.str())
             # Check server diagnostics notification values dissected
-            response_uri, diag_array = string(), DataArray()
+            response_path, diag_array = string(), DataArray()
             self.assertTrue(dissectPublishDiagnosticsNotification(diag_notification,
                                                                   error_stream,
-                                                                  response_uri,
+                                                                  response_path,
                                                                   diag_array))
             self.assertFalse(error_stream.str())
-            self.assertEqual(document_path, response_uri)
+            self.assertEqual(document_path, response_path)
             self.assertEqual(3, diag_array.size())
             code, source, message = string(), string(), string()
             for i in range(diag_array.size()):
@@ -1039,8 +1136,8 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
         with self.subTest(msg='test_py_server.didchange'):
             # Build test didchange notification and handle in server
             didchange_notification = DataObject()
-            document_path          = "test/document/uri/string"
-            document_text_change   = "test\ntext\n02\nstring\n"
+            document_path          = "test/path/to/doc"
+            document_text_change   = "test doc text 02"
             document_version       =  2
             self.assertTrue(buildDidChangeNotification(didchange_notification,
                                                        error_stream,
@@ -1093,20 +1190,20 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
     ,"source" : "source_505"
   }
   ]
-    ,"uri" : "test/document/uri/string"
+    ,"uri" : "test/path/to/doc"
   }
 }
             '''
             self.assertTrue(diag_notification.format_json(json_actual))
             self.assertEqual(json_expect.strip(), json_actual.str())
             # Check server diagnostics notification values dissected
-            response_uri, diag_array = string(), DataArray()
+            response_path, diag_array = string(), DataArray()
             self.assertTrue(dissectPublishDiagnosticsNotification(diag_notification,
                                                                   error_stream,
-                                                                  response_uri,
+                                                                  response_path,
                                                                   diag_array))
             self.assertFalse(error_stream.str())
-            self.assertEqual(document_path, response_uri)
+            self.assertEqual(document_path, response_path)
             self.assertEqual(2, diag_array.size())
             code, source, message = string(), string(), string()
             for i in range(diag_array.size()):
@@ -1132,6 +1229,123 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
                     self.assertEqual( "code.505"    , code     )
                     self.assertEqual( "source_505"  , source   )
                     self.assertEqual( "message 505" , message  )
+
+        with self.subTest(msg='test_py_server.symbols'):
+            # Build test documentsymbols request to handle in server
+            symbols_request   = DataObject()
+            document_path     = "test/path/to/doc"
+            client_request_id = 2
+            self.assertTrue(buildSymbolsRequest(symbols_request,
+                                                error_stream,
+                                                client_request_id,
+                                                document_path))
+            self.assertFalse(error_stream.str())
+            symbols_response = DataObject()
+            self.assertTrue(test_py_server.handleSymbolsRequest(symbols_request,
+                                                                symbols_response))
+            self.assertFalse(test_py_server.getErrors())
+            # Check json rpc body of server documentsymbols response
+            json_actual = stringstream()
+            json_expect = '''
+{
+  "id" : 2
+  ,"result" : [
+    {
+    "children" : [
+    {
+    "children" : []
+    ,"deprecated" : false
+    ,"detail" : "child.01.detail"
+    ,"kind" : 23
+    ,"name" : "child_01_name"
+    ,"range" : {
+      "end" : {
+      "character" : 32
+      ,"line" : 31
+    }
+      ,"start" : {
+        "character" : 12
+        ,"line" : 11
+      }
+    }
+    ,"selectionRange" : {
+      "end" : {
+      "character" : 32
+      ,"line" : 31
+    }
+      ,"start" : {
+        "character" : 12
+        ,"line" : 11
+      }
+    }
+  }
+    ,{
+    "children" : []
+    ,"deprecated" : false
+    ,"detail" : "child.02.detail"
+    ,"kind" : 6
+    ,"name" : "child_02_name"
+    ,"range" : {
+      "end" : {
+      "character" : 62
+      ,"line" : 61
+    }
+      ,"start" : {
+        "character" : 42
+        ,"line" : 41
+      }
+    }
+    ,"selectionRange" : {
+      "end" : {
+      "character" : 62
+      ,"line" : 61
+    }
+      ,"start" : {
+        "character" : 42
+        ,"line" : 41
+      }
+    }
+  }
+  ]
+    ,"deprecated" : false
+    ,"detail" : "doc.root.detail"
+    ,"kind" : 19
+    ,"name" : "doc_root_name"
+    ,"range" : {
+      "end" : {
+      "character" : 62
+      ,"line" : 61
+    }
+      ,"start" : {
+        "character" : 12
+        ,"line" : 11
+      }
+    }
+    ,"selectionRange" : {
+      "end" : {
+      "character" : 62
+      ,"line" : 61
+    }
+      ,"start" : {
+        "character" : 12
+        ,"line" : 11
+      }
+    }
+  }
+  ]
+}
+            '''
+            self.assertTrue(symbols_response.format_json(json_actual))
+            self.assertEqual(json_expect.strip(), json_actual.str())
+            # Check values dissected from server initialize response
+            symbols_array = DataArray()
+            success, server_response_id = dissectSymbolsResponse(symbols_response,
+                                                                 error_stream,
+                                                                 symbols_array)
+            self.assertTrue(success)
+            self.assertFalse(error_stream.str())
+            self.assertEqual(client_request_id, server_response_id)
+            self.assertEqual(1, symbols_array.size())
 
 if __name__ == '__main__':
      unittest.main()
