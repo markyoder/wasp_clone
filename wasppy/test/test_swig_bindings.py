@@ -5,6 +5,7 @@ import math
 
 class TestPyServer(ServerImpl):
     '''Concrete example server implementation meant for testing purposes'''
+
     def __init__(self):
         '''Set up capabilities of concrete example server implementation'''
         super().__init__()
@@ -15,22 +16,28 @@ class TestPyServer(ServerImpl):
         self.enableFormatting()
         self.enableReferences()
         self.enableHover()
+
     def getConnection(self):
         '''Get connection object used by server for client communication'''
+
     def connectionRead(self, object):
         '''Read JSON-RPC from connection and put data in provided object'''
         return True
+
     def connectionWrite(self, object):
         '''Convert object to JSON-RPC packet and write out to connection'''
         return True
+
     def updateDocumentTextChanges(self, replace_text, beg_line, beg_char, end_line, end_char, range_len):
         '''Replace current document on server with provided text changes'''
         self.document_text = replace_text
         return True
+
     def parseDocumentForDiagnostics(self, diagnostics_list):
         '''Process current document and add diagnostics to provided list'''
         success = True
         diagnostic = DataObject()
+
         if self.document_text == "test doc text 01":
 
             beg_line, beg_char, end_line, end_char, severity = 11, 12, 13, 14, 1
@@ -66,96 +73,94 @@ class TestPyServer(ServerImpl):
             diagnostics_list.push_back(diagnostic)
 
         return success
+
     def gatherDocumentSymbols(self, document_symbols):
         '''Build hierarchical symbol tree of document in provided object'''
         success = True
         document_symbols.push_back(DataObject())
+
         if self.document_text == "test doc text 02":
 
             symbol_doc_root = document_symbols.back().to_object()
-            symbol_name                              = "doc_root_name"
-            symbol_detail                            = "doc.root.detail"
-            symbol_kind                              = m_symbol_kind_object
-            symbol_deprecated                        = False
-            symbol_beg_line,     symbol_beg_char     = 11, 12
-            symbol_end_line,     symbol_end_char     = 61, 62
-            symbol_beg_line_sel, symbol_beg_char_sel = 11, 12
-            symbol_end_line_sel, symbol_end_char_sel = 61, 62
-            success &= buildDocumentSymbolObject(symbol_doc_root,
-                                                 self.errorStream(),
-                                                 symbol_name,
-                                                 symbol_detail,
-                                                 symbol_kind,
-                                                 symbol_deprecated,
-                                                 symbol_beg_line,
-                                                 symbol_beg_char,
-                                                 symbol_end_line,
-                                                 symbol_end_char,
-                                                 symbol_beg_line_sel,
-                                                 symbol_beg_char_sel,
-                                                 symbol_end_line_sel,
-                                                 symbol_end_char_sel)
+            beg_line,     beg_char,     end_line,     end_char     = 11, 12, 61, 62
+            beg_line_sel, beg_char_sel, end_line_sel, end_char_sel = 11, 12, 61, 62
+            name, detail = "doc_root_name", "doc.root.detail"
+            kind, deprecated = m_symbol_kind_object, False
+            success &= buildDocumentSymbolObject(symbol_doc_root, self.errorStream(),
+                name, detail, kind, deprecated, beg_line, beg_char, end_line, end_char,
+                beg_line_sel, beg_char_sel, end_line_sel, end_char_sel)
 
             symbol_child_01 = addDocumentSymbolChild(symbol_doc_root)
-            symbol_name                              = "child_01_name"
-            symbol_detail                            = "child.01.detail"
-            symbol_kind                              = m_symbol_kind_struct
-            symbol_deprecated                        = False
-            symbol_beg_line,     symbol_beg_char     = 11, 12
-            symbol_end_line,     symbol_end_char     = 31, 32
-            symbol_beg_line_sel, symbol_beg_char_sel = 11, 12
-            symbol_end_line_sel, symbol_end_char_sel = 31, 32
-            success &= buildDocumentSymbolObject(symbol_child_01,
-                                                 self.errorStream(),
-                                                 symbol_name,
-                                                 symbol_detail,
-                                                 symbol_kind,
-                                                 symbol_deprecated,
-                                                 symbol_beg_line,
-                                                 symbol_beg_char,
-                                                 symbol_end_line,
-                                                 symbol_end_char,
-                                                 symbol_beg_line_sel,
-                                                 symbol_beg_char_sel,
-                                                 symbol_end_line_sel,
-                                                 symbol_end_char_sel)
+            beg_line,    beg_char,      end_line,     end_char     = 11, 12, 31, 32
+            beg_line_sel, beg_char_sel, end_line_sel, end_char_sel = 11, 12, 31, 32
+            name, detail = "child_01_name", "child.01.detail"
+            kind, deprecated = m_symbol_kind_struct, False
+            success &= buildDocumentSymbolObject(symbol_child_01, self.errorStream(),
+                name, detail, kind, deprecated, beg_line, beg_char, end_line, end_char,
+                beg_line_sel, beg_char_sel, end_line_sel, end_char_sel)
 
             symbol_child_02 = addDocumentSymbolChild(symbol_doc_root)
-            symbol_name                              = "child_02_name"
-            symbol_detail                            = "child.02.detail"
-            symbol_kind                              = m_symbol_kind_method
-            symbol_deprecated                        = False
-            symbol_beg_line,     symbol_beg_char     = 41, 42
-            symbol_end_line,     symbol_end_char     = 61, 62
-            symbol_beg_line_sel, symbol_beg_char_sel = 41, 42
-            symbol_end_line_sel, symbol_end_char_sel = 61, 62
-            success &= buildDocumentSymbolObject(symbol_child_02,
-                                                 self.errorStream(),
-                                                 symbol_name,
-                                                 symbol_detail,
-                                                 symbol_kind,
-                                                 symbol_deprecated,
-                                                 symbol_beg_line,
-                                                 symbol_beg_char,
-                                                 symbol_end_line,
-                                                 symbol_end_char,
-                                                 symbol_beg_line_sel,
-                                                 symbol_beg_char_sel,
-                                                 symbol_end_line_sel,
-                                                 symbol_end_char_sel)
+            beg_line,     beg_char,     end_line,     end_char     = 41, 42, 61, 62
+            beg_line_sel, beg_char_sel, end_line_sel, end_char_sel = 41, 42, 61, 62
+            name, detail = "child_02_name", "child.02.detail"
+            kind, deprecated = m_symbol_kind_method, False
+            success &= buildDocumentSymbolObject(symbol_child_02, self.errorStream(),
+                name, detail, kind, deprecated, beg_line, beg_char, end_line, end_char,
+                beg_line_sel, beg_char_sel, end_line_sel, end_char_sel)
+
         return success
-    def gatherDocumentCompletionItems(self, completion_items, is_incomplete, req_line, req_char):
+
+    def gatherDocumentCompletionItems(self, completion_items, req_line, req_char):
         '''Collect completion items for line and column in provided list'''
-        return True
+        success = True
+        completion = DataObject()
+
+        if req_line == 23 and req_char == 45:
+
+            beg_line, beg_char, end_line, end_char = 23, 45, 23, 61
+            label, doc = "test label 01", "test documentation 01"
+            new_text, detail = "test new text 01", "test detail 01"
+            kind, format = m_comp_kind_class, m_text_format_plaintext
+            deprecated, preselect = False, False
+            success &= buildCompletionObject(completion, self.errorStream(),
+                label, beg_line, beg_char, end_line, end_char, new_text,
+                kind, detail, doc, deprecated, preselect, format)
+            completion_items.push_back(completion)
+
+            beg_line, beg_char, end_line, end_char = 23, 45, 23, 61
+            label, doc = "test label 02", "test documentation 02"
+            new_text, detail = "test new text 02", "test detail 02"
+            kind, format = m_comp_kind_value, m_text_format_snippet
+            deprecated, preselect = False, False
+            success &= buildCompletionObject(completion, self.errorStream(),
+                label, beg_line, beg_char, end_line, end_char, new_text,
+                kind, detail, doc, deprecated, preselect, format)
+            completion_items.push_back(completion)
+
+            beg_line, beg_char, end_line, end_char = 23, 45, 23, 61
+            label, doc = "test label 03", "test documentation 03"
+            new_text, detail = "test new text 03", "test detail 03"
+            kind, format = m_comp_kind_event, m_text_format_plaintext
+            deprecated, preselect = False, False
+            success &= buildCompletionObject(completion, self.errorStream(),
+                label, beg_line, beg_char, end_line, end_char, new_text,
+                kind, detail, doc, deprecated, preselect, format)
+            completion_items.push_back(completion)
+
+        return success
+
     def gatherDocumentDefinitionLocations(self, definition_items, req_line, req_char):
         '''Collect locations of definitions for request in provided list'''
         return True
+
     def gatherDocumentReferencesLocations(self, references_locations, req_line, req_char, include_decl):
         '''Collect locations of references to request with provided list'''
         return True
+
     def gatherDocumentFormattingTextEdits(self, formatting_textedits, tab_size, insert_spaces):
         '''Collect formatting edits to apply in order with provided list'''
         return True
+
     def getHoverDisplayText(self, display_text, req_line, req_char):
         '''Fill provided string with text to display at request position'''
         return True
@@ -1337,7 +1342,7 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
             '''
             self.assertTrue(symbols_response.format_json(json_actual))
             self.assertEqual(json_expect.strip(), json_actual.str())
-            # Check values dissected from server initialize response
+            # Check server documentsymbols response values dissected
             symbols_array = DataArray()
             success, server_response_id = dissectSymbolsResponse(symbols_response,
                                                                  error_stream,
@@ -1409,6 +1414,160 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
             self.assertEqual( 42                   , beg_char_sel )
             self.assertEqual( 61                   , end_line_sel )
             self.assertEqual( 62                   , end_char_sel )
+
+        with self.subTest(msg='test_py_server.completion'):
+            # Build test completion request and use server to handle
+            completion_request         = DataObject()
+            document_path              = "test/path/to/doc"
+            client_request_id          = 3
+            request_line, request_char = 23, 45
+            self.assertTrue(buildCompletionRequest(completion_request,
+                                                   error_stream,
+                                                   client_request_id,
+                                                   document_path,
+                                                   request_line,
+                                                   request_char))
+            self.assertFalse(error_stream.str())
+            completion_response = DataObject()
+            self.assertTrue(test_py_server.handleCompletionRequest(completion_request,
+                                                                   completion_response))
+            self.assertFalse(test_py_server.getErrors())
+            # Check body of json rpc from server completion response
+            json_actual = stringstream()
+            json_expect = '''
+{
+  "id" : 3
+  ,"result" : {
+    "isIncomplete" : false
+    ,"items" : [
+      {
+      "deprecated" : false
+      ,"detail" : "test detail 01"
+      ,"documentation" : "test documentation 01"
+      ,"insertTextFormat" : 1
+      ,"kind" : 7
+      ,"label" : "test label 01"
+      ,"preselect" : false
+      ,"textEdit" : {
+        "newText" : "test new text 01"
+        ,"range" : {
+          "end" : {
+          "character" : 61
+          ,"line" : 23
+        }
+          ,"start" : {
+            "character" : 45
+            ,"line" : 23
+          }
+        }
+      }
+    }
+      ,{
+      "deprecated" : false
+      ,"detail" : "test detail 02"
+      ,"documentation" : "test documentation 02"
+      ,"insertTextFormat" : 2
+      ,"kind" : 12
+      ,"label" : "test label 02"
+      ,"preselect" : false
+      ,"textEdit" : {
+        "newText" : "test new text 02"
+        ,"range" : {
+          "end" : {
+          "character" : 61
+          ,"line" : 23
+        }
+          ,"start" : {
+            "character" : 45
+            ,"line" : 23
+          }
+        }
+      }
+    }
+      ,{
+      "deprecated" : false
+      ,"detail" : "test detail 03"
+      ,"documentation" : "test documentation 03"
+      ,"insertTextFormat" : 1
+      ,"kind" : 23
+      ,"label" : "test label 03"
+      ,"preselect" : false
+      ,"textEdit" : {
+        "newText" : "test new text 03"
+        ,"range" : {
+          "end" : {
+          "character" : 61
+          ,"line" : 23
+        }
+          ,"start" : {
+            "character" : 45
+            ,"line" : 23
+          }
+        }
+      }
+    }
+    ]
+  }
+}
+            '''
+            self.assertTrue(completion_response.format_json(json_actual))
+            self.assertEqual(json_expect.strip(), json_actual.str())
+            # Check values dissected from server completion response
+            completion_items = DataArray()
+            success, server_response_id, is_inc = dissectCompletionResponse(completion_response,
+                                                                            error_stream,
+                                                                            completion_items)
+            self.assertTrue(success)
+            self.assertFalse(error_stream.str())
+            self.assertEqual(client_request_id, server_response_id)
+            self.assertFalse(is_inc)
+            self.assertEqual(3, completion_items.size())
+            for i in range(completion_items.size()):
+                item = completion_items.at(i).to_object()
+                label, text, detail, doc = string(), string(), string(), string()
+                success, beg_line, beg_char, end_line, end_char, \
+                kind, deprecated, preselect, format = \
+                    dissectCompletionObject(item, error_stream, label, text, detail, doc)
+                self.assertTrue(success)
+                if i == 0:
+                    self.assertEqual( "test label 01"         , label      )
+                    self.assertEqual( "test new text 01"      , text       )
+                    self.assertEqual( "test detail 01"        , detail     )
+                    self.assertEqual( "test documentation 01" , doc        )
+                    self.assertEqual( 23                      , beg_line   )
+                    self.assertEqual( 45                      , beg_char   )
+                    self.assertEqual( 23                      , end_line   )
+                    self.assertEqual( 61                      , end_char   )
+                    self.assertEqual( m_comp_kind_class       , kind       )
+                    self.assertEqual( False                   , deprecated )
+                    self.assertEqual( False                   , preselect  )
+                    self.assertEqual( m_text_format_plaintext , format     )
+                elif i == 1:
+                    self.assertEqual( "test label 02"         , label      )
+                    self.assertEqual( "test new text 02"      , text       )
+                    self.assertEqual( "test detail 02"        , detail     )
+                    self.assertEqual( "test documentation 02" , doc        )
+                    self.assertEqual( 23                      , beg_line   )
+                    self.assertEqual( 45                      , beg_char   )
+                    self.assertEqual( 23                      , end_line   )
+                    self.assertEqual( 61                      , end_char   )
+                    self.assertEqual( m_comp_kind_value       , kind       )
+                    self.assertEqual( False                   , deprecated )
+                    self.assertEqual( False                   , preselect  )
+                    self.assertEqual( m_text_format_snippet   , format     )
+                elif i == 2:
+                    self.assertEqual( "test label 03"         , label      )
+                    self.assertEqual( "test new text 03"      , text       )
+                    self.assertEqual( "test detail 03"        , detail     )
+                    self.assertEqual( "test documentation 03" , doc        )
+                    self.assertEqual( 23                      , beg_line   )
+                    self.assertEqual( 45                      , beg_char   )
+                    self.assertEqual( 23                      , end_line   )
+                    self.assertEqual( 61                      , end_char   )
+                    self.assertEqual( m_comp_kind_event       , kind       )
+                    self.assertEqual( False                   , deprecated )
+                    self.assertEqual( False                   , preselect  )
+                    self.assertEqual( m_text_format_plaintext , format     )
 
 if __name__ == '__main__':
      unittest.main()
