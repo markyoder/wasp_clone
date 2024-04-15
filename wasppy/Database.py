@@ -1,16 +1,32 @@
 from wasp import *
 from io import StringIO
 
-class DeserializeResult:
-    '''Stores both input node (providence) and action results (user data)
+class DeserializedResult:
+    '''Stores both input node (providence), action results (user data), and value default
     '''
     def __init__(self, node:WaspNode, interpreter:Interpreter, action=None):
         self.action = action
         self.node = node
         self.interpreter = interpreter
-        self.userData:'dict{str:list(DeserializeResult)}' = {}
+        self.userData:'dict{str:list(DeserializedResult)}' = {}
 
-    def addResult(self, result:'DeserializeResult', inputObject):
+    @staticmethod
+    def fromDefault(node:WaspNode, interpreter:Interpreter, default, key="value"):
+        ''' 
+            Create a result from a default. This creates the equivalent
+            {"value":{":=":default}}
+            Later accessible as [key].value()
+        '''
+        # TODO - add support for list data as defaults
+        # I.e., loop over each item in default creating a DR as done for scalar
+        assert type(default) is not list
+        dr = DeserializedResult(node, interpreter)
+        cdr = DeserializedResult(node, interpreter)
+        dr.userData[key] = cdr
+        cdr.store(default)
+        return dr
+
+    def addResult(self, result:'DeserializedResult', inputObject):
         '''Append the deserialize result to existing userData dictionary
            mapping node name to user data
            
@@ -53,7 +69,7 @@ class DeserializeResult:
                 d[key] = []
                 for v in value:
                     d[key].append(v.todict())                
-            elif type(value) is DeserializeResult:
+            elif type(value) is DeserializedResult:
                 d[key] = value.todict()
             else:
                 d[key] = value
@@ -62,16 +78,14 @@ class DeserializeResult:
     def value(self, vkey="value"):
         '''Obtain the associated 'value' nodes stored result '''
         dr = self.userData[vkey]
-        # print ("value is ",str(dr),typr(dr), ":=")
-        assert dr is not None and type(dr) is DeserializeResult and ":=" in dr.userData, "value request requirements not met!"
+        assert dr is not None and type(dr) is DeserializedResult and ":=" in dr.userData, "value request requirements not met!"
         return dr.storedResult()
 
-
     def valuelist(self, vkey="value"):
-        '''Convert the value of this DeserializeResult to a list.
+        '''Convert the value of this DeserializedResult to a list.
         I.e., each deserialized stored result is converted to a list
         This is called for array user data. Because each 'value' is 
-        a input node with provedence, the ability to obtain a convenient 
+        an input node with provedence, the ability to obtain a convenient 
         list of the data is preferred. 
         '''
         l = []
@@ -103,13 +117,13 @@ class DeserializeResult:
         if key in self.userData:
             d = self.userData[key]
             # check if this items is only a storedResult (":=") and return it
-            if type(d) is DeserializeResult and d.storedResult() is not None:
+            if type(d) is DeserializedResult and d.storedResult() is not None:
                 return d.storedResult()
             return d
         # return null/invalid result
         # allows arbitrarily nested requests
         # without failing
-        return DeserializeResult(None, None)
+        return DeserializedResult(None, None)
 
 
 class InputObject:
@@ -122,42 +136,73 @@ class InputObject:
             Enums:list(str) - enumerated values allowed 
         '''
 
-        self._children = None  # dict(childKey:childObject)
-        self._minOccurs = None # dict(childKey:minOccurs)
-        self._maxOccurs = None # dict(childKey:maxOccurs)
         self._action = kwargs.pop("Action", None)
+        self._children = None  # dict(childKey:childObject)
+        self._defaults = None  # dict(childKey, default) 
         self._description  = kwargs.pop("Desc", None)
         self._enums = kwargs.pop("Enums", None)
-        self._minValInc = kwargs.pop("MinValInc", None)
-        self._maxValInc = kwargs.pop("MaxValInc", None)
-        self._minValExc = kwargs.pop("MinValExc", None)
+        self._maxOccurs = None # dict(childKey:maxOccurs)
         self._maxValExc = kwargs.pop("MaxValExc", None)
+        self._maxValInc = kwargs.pop("MaxValInc", None)
+        self._minOccurs = None # dict(childKey:minOccurs)
+        self._minValExc = kwargs.pop("MinValExc", None)
+        self._minValInc = kwargs.pop("MinValInc", None)
 
         assert len(kwargs) == 0, "Unexpected additional parameters to InputObject: " + str(kwargs)
 
     def action(self):
         '''Obtain the action associated with the given child input key'''        
         return self._action
-
-    def create(self, inputKey, **kwargs):
-        '''Add an object as a child
-
-            Action - function pointer to be executed
-            MinOccurs - minimum occurrence of the child
-            MaxOccurs - maximum occurrence of the child
-            Enums - enumerated values allowed for the child
-            Desc - description of the child
-        '''
+    
+    def _pre_add(self, inputKey, **kwargs):
         if self._children is None:
             self._children = {}
+            self._defaults = {}
             self._maxOccurs = {}
             self._minOccurs = {}
             
         assert inputKey not in self._children
+
+    def add(self, inputKey, inputObject, **kwargs):
+        '''Add an exissting object as a child
+            
+        '''
+        self._pre_add(inputKey, **kwargs)
         if "MaxOccurs" in kwargs: self._maxOccurs[inputKey] = kwargs.pop("MaxOccurs")
         if "MinOccurs" in kwargs: self._minOccurs[inputKey] = kwargs.pop("MinOccurs")
-        self._children[inputKey] = InputObject(**kwargs)
+        if "Default" in kwargs: self._defaults[inputKey] = kwargs.pop("Default")
+        self._children[inputKey] = inputObject
         return self._children[inputKey]
+
+    def addSingle(self, inputKey, inputObject, **kwargs):
+        kwargs["MaxOccurs"] = 1
+        return self.add(inputKey, inputObject, **kwargs)
+
+    def addRequired(self, inputKey, inputObject, **kwargs):
+        kwargs["MinOccurs"] = 1
+        return self.add(inputKey, inputObject, **kwargs)
+
+    def addRequiredSingle(self, inputKey, inputObject, **kwargs):
+        kwargs["MaxOccurs"] = 1
+        kwargs["MinOccurs"] = 1
+        return self.add(inputKey, inputObject, **kwargs)
+
+    def create(self, inputKey, **kwargs):
+        '''Create an object as a child
+
+            Action - function pointer to be executed
+            Enums - enumerated values allowed for the child
+            Default - the default value if the child is not specified
+            Desc - description of the child
+            MaxOccurs - maximum occurrence of the child
+            MinOccurs - minimum occurrence of the child
+        '''
+        self._pre_add(inputKey, **kwargs)
+        if "MaxOccurs" in kwargs: self._maxOccurs[inputKey] = kwargs.pop("MaxOccurs")
+        if "MinOccurs" in kwargs: self._minOccurs[inputKey] = kwargs.pop("MinOccurs")
+        if "Default" in kwargs: self._defaults[inputKey] = kwargs.pop("Default")
+        inputObject = InputObject(**kwargs)
+        return self.add(inputKey, inputObject)
 
     def createSingle(self, inputKey, **kwargs):
         kwargs["MaxOccurs"] = 1
@@ -172,11 +217,11 @@ class InputObject:
         kwargs["MinOccurs"] = 1
         return self.create(inputKey, **kwargs)
     
-    def _conductAvailableChildChecks(self, childKey, dr:DeserializeResult):
+    def _conductAvailableChildChecks(self, childKey, dr:DeserializedResult):
         occurrences = 0
         data = dr[childKey]
         data_type = type(data)
-        if data_type is list or data_type is DeserializeResult:
+        if data_type is list or data_type is DeserializedResult:
             occurrences = len(data)
         else: # the data 
             occurrences = 1
@@ -186,9 +231,9 @@ class InputObject:
             dr.interpreter.createErrorDiagnostic(dr.node, 
                 "has "+str(occurrences)+" occurrences of "+childKey+" when "+str(mio)+" are required!")
         
-        # max occurs check was completed in DeserializeResult.addResult
+        # max occurs check was completed in DeserializedResult.addResult
     
-    def _conductChecks(self, dr:DeserializeResult):
+    def _conductChecks(self, dr:DeserializedResult):
         storedResult = dr.storedResult()
 
         if storedResult is None:
@@ -203,7 +248,7 @@ class InputObject:
                             "value of "+str(result)+" is not one of the allows values "+str(enums)+"!")
             elif str(storedResult) not in enums:
                 dr.interpreter.createErrorDiagnostic(dr.node, 
-                    "value of "+str(storedResult)+" is not one of the allows values "+str(enums)+"!")
+                    str(storedResult)+" is not one of the allows values "+str(enums)+"!")
 
         if self._minValInc is not None and float(storedResult) < self._minValInc:
             dr.interpreter.createErrorDiagnostic(dr.node, 
@@ -221,7 +266,7 @@ class InputObject:
             dr.interpreter.createErrorDiagnostic(dr.node, 
                 str(storedResult)+" is greater than or equal to the allowed maximum exclusive value of "+str(self._maxValExc)+"!")
 
-    def _conductAvailableChecks(self, dr:DeserializeResult):
+    def _conductAvailableChecks(self, dr:DeserializedResult):
         # Either this is leaf or parent
         # Leaf available checks are value range, type, enumeration
         try:
@@ -243,15 +288,25 @@ class InputObject:
 
     def deserialize(self, node, interpreter):
         '''Deserialize the current node according to this inputObject '''
-        thisResult = DeserializeResult(node, interpreter)
+        thisResult = DeserializedResult(node, interpreter)
         for c in node:
             if self._children is not None and c.name() in self._children:
-                childResult = self._children[c.name()].deserialize(c, interpreter)                
+                childResult = self._children[c.name()].deserialize(c, interpreter)
                 thisResult.addResult(childResult, self)
+            # 'id', etc. is considered decorative in some langauges but may have constraints
+            # so first check if a constraint exists then skip if it is decorative
             elif c.isDecorative(): continue
             else:
                 interpreter.createErrorDiagnostic(c, "unknown key!")
 
+        # Check unspecified defaulted parameters
+        if self._defaults is not None:
+            for key, value in self._defaults.items():
+                # If not in the user data it was not specified
+                # Force the default value into the user data
+                if key not in thisResult.userData:
+                    # print ("Assigning default for ",key," of ", str(value) )
+                    thisResult.userData[key] = DeserializedResult.fromDefault(node, interpreter, value)
         try:
             if self.action():
                 self.action()(thisResult)
@@ -261,6 +316,11 @@ class InputObject:
         # Conduct set-level diagnostic checks
         self._conductAvailableChecks(thisResult)
         return thisResult
+
+    def default(self, childKey):
+        if childKey in self._defaults:
+            return self._defaults[childKey]
+        return None
 
     def enumerations(self):
         return self._enums
@@ -317,6 +377,20 @@ class InputObject:
             child.serialize(io, level+2)
             io.write(" "*level)
             io.write("}\n")
+
+    def __bool__(self):
+        '''Is this object valid based on if it had children (parent) or if it has an action (leaf)'''
+        return self._children is not None or self._action is not None
+
+    def __getitem__(self, key):
+        '''Obtain the named child input object.
+        
+        Allows interaction with child input object constrains.
+        '''
+        if self._children is not None and key in self._children:
+            return self._children[key]
+        # return null/invalid object
+        return InputObject()
 
 # Free functions for common callback
 def storeInt(result):
