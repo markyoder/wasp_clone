@@ -149,9 +149,32 @@ class TestPyServer(ServerImpl):
 
         return success
 
-    def gatherDocumentDefinitionLocations(self, definition_items, req_line, req_char):
+    def gatherDocumentDefinitionLocations(self, definition_locations, req_line, req_char):
         '''Collect locations of definitions for request in provided list'''
-        return True
+        success = True
+        definition = DataObject()
+
+        if req_line == 34 and req_char == 56:
+
+            beg_line, beg_char, end_line, end_char = 15, 21, 15, 31
+            doc_path = "path/to/def/doc/01"
+            success &= buildLocationObject(definition, self.errorStream(),
+                doc_path, beg_line, beg_char, end_line, end_char)
+            definition_locations.push_back(definition)
+
+            beg_line, beg_char, end_line, end_char = 25, 22, 25, 32
+            doc_path = "path/to/def/doc/02"
+            success &= buildLocationObject(definition, self.errorStream(),
+                doc_path, beg_line, beg_char, end_line, end_char)
+            definition_locations.push_back(definition)
+
+            beg_line, beg_char, end_line, end_char = 35, 23, 35, 33
+            doc_path = "path/to/def/doc/03"
+            success &= buildLocationObject(definition, self.errorStream(),
+                doc_path, beg_line, beg_char, end_line, end_char)
+            definition_locations.push_back(definition)
+
+        return success
 
     def gatherDocumentReferencesLocations(self, references_locations, req_line, req_char, include_decl):
         '''Collect locations of references to request with provided list'''
@@ -1568,6 +1591,107 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
                     self.assertEqual( False                   , deprecated )
                     self.assertEqual( False                   , preselect  )
                     self.assertEqual( m_text_format_plaintext , format     )
+
+        with self.subTest(msg='test_py_server.definition'):
+            # Build test definition request and use server to handle
+            definition_request         = DataObject()
+            document_path              = "test/path/to/doc"
+            client_request_id          = 4
+            request_line, request_char = 34, 56
+            self.assertTrue(buildDefinitionRequest(definition_request,
+                                                   error_stream,
+                                                   client_request_id,
+                                                   document_path,
+                                                   request_line,
+                                                   request_char))
+            self.assertFalse(error_stream.str())
+            definition_response = DataObject()
+            self.assertTrue(test_py_server.handleDefinitionRequest(definition_request,
+                                                                   definition_response))
+            self.assertFalse(test_py_server.getErrors())
+            # Check body of json rpc from server definition response
+            json_actual = stringstream()
+            json_expect = '''
+{
+  "id" : 4
+  ,"result" : [
+    {
+    "range" : {
+    "end" : {
+    "character" : 31
+    ,"line" : 15
+  }
+    ,"start" : {
+      "character" : 21
+      ,"line" : 15
+    }
+  }
+    ,"uri" : "path/to/def/doc/01"
+  }
+    ,{
+    "range" : {
+    "end" : {
+    "character" : 32
+    ,"line" : 25
+  }
+    ,"start" : {
+      "character" : 22
+      ,"line" : 25
+    }
+  }
+    ,"uri" : "path/to/def/doc/02"
+  }
+    ,{
+    "range" : {
+    "end" : {
+    "character" : 33
+    ,"line" : 35
+  }
+    ,"start" : {
+      "character" : 23
+      ,"line" : 35
+    }
+  }
+    ,"uri" : "path/to/def/doc/03"
+  }
+  ]
+}
+            '''
+            self.assertTrue(definition_response.format_json(json_actual))
+            self.assertEqual(json_expect.strip(), json_actual.str())
+            # Check values dissected from server definition response
+            definition_locations = DataArray()
+            success, server_response_id = dissectLocationsResponse(definition_response,
+                                                                   error_stream,
+                                                                   definition_locations)
+            self.assertTrue(success)
+            self.assertFalse(error_stream.str())
+            self.assertEqual(client_request_id, server_response_id)
+            self.assertEqual(3, definition_locations.size())
+            for i in range(definition_locations.size()):
+                location_object = definition_locations.at(i).to_object()
+                doc_path = string()
+                success, beg_line, beg_char, end_line, end_char = \
+                    dissectLocationObject(location_object, error_stream, doc_path)
+                self.assertTrue(success)
+                if i == 0:
+                    self.assertEqual( "path/to/def/doc/01" , doc_path )
+                    self.assertEqual( 15                   , beg_line )
+                    self.assertEqual( 21                   , beg_char )
+                    self.assertEqual( 15                   , end_line )
+                    self.assertEqual( 31                   , end_char )
+                elif i == 1:
+                    self.assertEqual( "path/to/def/doc/02" , doc_path )
+                    self.assertEqual( 25                   , beg_line )
+                    self.assertEqual( 22                   , beg_char )
+                    self.assertEqual( 25                   , end_line )
+                    self.assertEqual( 32                   , end_char )
+                elif i == 2:
+                    self.assertEqual( "path/to/def/doc/03" , doc_path )
+                    self.assertEqual( 35                   , beg_line )
+                    self.assertEqual( 23                   , beg_char )
+                    self.assertEqual( 35                   , end_line )
+                    self.assertEqual( 33                   , end_char )
 
 if __name__ == '__main__':
      unittest.main()
