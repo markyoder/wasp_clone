@@ -178,7 +178,30 @@ class TestPyServer(ServerImpl):
 
     def gatherDocumentReferencesLocations(self, references_locations, req_line, req_char, include_decl):
         '''Collect locations of references to request with provided list'''
-        return True
+        success = True
+        reference = DataObject()
+
+        if req_line == 45 and req_char == 67 and include_decl:
+
+            beg_line, beg_char, end_line, end_char = 45, 24, 45, 34
+            doc_path = "path/to/ref/doc/04"
+            success &= buildLocationObject(reference, self.errorStream(),
+                doc_path, beg_line, beg_char, end_line, end_char)
+            references_locations.push_back(reference)
+
+            beg_line, beg_char, end_line, end_char = 55, 25, 55, 35
+            doc_path = "path/to/ref/doc/05"
+            success &= buildLocationObject(reference, self.errorStream(),
+                doc_path, beg_line, beg_char, end_line, end_char)
+            references_locations.push_back(reference)
+
+            beg_line, beg_char, end_line, end_char = 65, 26, 65, 36
+            doc_path = "path/to/ref/doc/06"
+            success &= buildLocationObject(reference, self.errorStream(),
+                doc_path, beg_line, beg_char, end_line, end_char)
+            references_locations.push_back(reference)
+
+        return success
 
     def gatherDocumentFormattingTextEdits(self, formatting_textedits, tab_size, insert_spaces):
         '''Collect formatting edits to apply in order with provided list'''
@@ -1692,6 +1715,109 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
                     self.assertEqual( 23                   , beg_char )
                     self.assertEqual( 35                   , end_line )
                     self.assertEqual( 33                   , end_char )
+
+        with self.subTest(msg='test_py_server.references'):
+            # Build test references request and use server to handle
+            references_request         = DataObject()
+            document_path              = "test/path/to/doc"
+            client_request_id          = 5
+            request_line, request_char = 45, 67
+            include_decl               = True
+            self.assertTrue(buildReferencesRequest(references_request,
+                                                   error_stream,
+                                                   client_request_id,
+                                                   document_path,
+                                                   request_line,
+                                                   request_char,
+                                                   include_decl))
+            self.assertFalse(error_stream.str())
+            references_response = DataObject()
+            self.assertTrue(test_py_server.handleReferencesRequest(references_request,
+                                                                   references_response))
+            self.assertFalse(test_py_server.getErrors())
+            # Check body of json rpc from server references response
+            json_actual = stringstream()
+            json_expect = '''
+{
+  "id" : 5
+  ,"result" : [
+    {
+    "range" : {
+    "end" : {
+    "character" : 34
+    ,"line" : 45
+  }
+    ,"start" : {
+      "character" : 24
+      ,"line" : 45
+    }
+  }
+    ,"uri" : "path/to/ref/doc/04"
+  }
+    ,{
+    "range" : {
+    "end" : {
+    "character" : 35
+    ,"line" : 55
+  }
+    ,"start" : {
+      "character" : 25
+      ,"line" : 55
+    }
+  }
+    ,"uri" : "path/to/ref/doc/05"
+  }
+    ,{
+    "range" : {
+    "end" : {
+    "character" : 36
+    ,"line" : 65
+  }
+    ,"start" : {
+      "character" : 26
+      ,"line" : 65
+    }
+  }
+    ,"uri" : "path/to/ref/doc/06"
+  }
+  ]
+}
+            '''
+            self.assertTrue(references_response.format_json(json_actual))
+            self.assertEqual(json_expect.strip(), json_actual.str())
+            # Check values dissected from server references response
+            references_locations = DataArray()
+            success, server_response_id = dissectLocationsResponse(references_response,
+                                                                   error_stream,
+                                                                   references_locations)
+            self.assertTrue(success)
+            self.assertFalse(error_stream.str())
+            self.assertEqual(client_request_id, server_response_id)
+            self.assertEqual(3, references_locations.size())
+            for i in range(references_locations.size()):
+                location_object = references_locations.at(i).to_object()
+                doc_path = string()
+                success, beg_line, beg_char, end_line, end_char = \
+                    dissectLocationObject(location_object, error_stream, doc_path)
+                self.assertTrue(success)
+                if i == 0:
+                    self.assertEqual( "path/to/ref/doc/04" , doc_path )
+                    self.assertEqual( 45                   , beg_line )
+                    self.assertEqual( 24                   , beg_char )
+                    self.assertEqual( 45                   , end_line )
+                    self.assertEqual( 34                   , end_char )
+                elif i == 1:
+                    self.assertEqual( "path/to/ref/doc/05" , doc_path )
+                    self.assertEqual( 55                   , beg_line )
+                    self.assertEqual( 25                   , beg_char )
+                    self.assertEqual( 55                   , end_line )
+                    self.assertEqual( 35                   , end_char )
+                elif i == 2:
+                    self.assertEqual( "path/to/ref/doc/06" , doc_path )
+                    self.assertEqual( 65                   , beg_line )
+                    self.assertEqual( 26                   , beg_char )
+                    self.assertEqual( 65                   , end_line )
+                    self.assertEqual( 36                   , end_char )
 
 if __name__ == '__main__':
      unittest.main()
