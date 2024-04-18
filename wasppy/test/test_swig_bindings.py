@@ -2,6 +2,7 @@ import unittest
 from wasp import *
 from Database import InputObject, storeFloat, storeStr, ExistsConstraint
 import math
+import re
 
 class TestPyServer(ServerImpl):
     '''Concrete example server implementation meant for testing purposes'''
@@ -205,7 +206,18 @@ class TestPyServer(ServerImpl):
 
     def gatherDocumentFormattingTextEdits(self, formatting_textedits, tab_size, insert_spaces):
         '''Collect formatting edits to apply in order with provided list'''
-        return True
+        success = True
+        textedit = DataObject()
+        # Example format replaces whitespaces with indented newlines
+        if insert_spaces:
+            doc_lines = self.document_text.splitlines()
+            beg_line, beg_char = 0, 0
+            end_line, end_char = len(doc_lines)-1, len(doc_lines[-1])
+            doc_format = re.sub(r"\s+", r"\n"+" "*tab_size, self.document_text)
+            success &= buildTextEditObject(textedit, self.errorStream(),
+                beg_line, beg_char, end_line, end_char, doc_format)
+            formatting_textedits.push_back(textedit)
+        return success
 
     def getHoverDisplayText(self, display_text, req_line, req_char):
         '''Fill provided string with text to display at request position'''
@@ -1818,6 +1830,68 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
                     self.assertEqual( 26                   , beg_char )
                     self.assertEqual( 65                   , end_line )
                     self.assertEqual( 36                   , end_char )
+
+        with self.subTest(msg='test_py_server.formatting'):
+            # Build test formatting request and use server to handle
+            formatting_request = DataObject()
+            document_path      = "test/path/to/doc"
+            client_request_id  = 6
+            tab_size           = 5
+            insert_spaces      = True
+            self.assertTrue(buildFormattingRequest(formatting_request,
+                                                   error_stream,
+                                                   client_request_id,
+                                                   document_path,
+                                                   tab_size,
+                                                   insert_spaces))
+            self.assertFalse(error_stream.str())
+            formatting_response = DataObject()
+            self.assertTrue(test_py_server.handleFormattingRequest(formatting_request,
+                                                                   formatting_response))
+            self.assertFalse(test_py_server.getErrors())
+            # Check body of json rpc from server formatting response
+            json_actual = stringstream()
+            json_expect = r'''
+{
+  "id" : 6
+  ,"result" : [
+    {
+    "newText" : "test\n     doc\n     text\n     02"
+    ,"range" : {
+      "end" : {
+      "character" : 16
+      ,"line" : 0
+    }
+      ,"start" : {
+        "character" : 0
+        ,"line" : 0
+      }
+    }
+  }
+  ]
+}
+            '''
+            self.assertTrue(formatting_response.format_json(json_actual))
+            self.assertEqual(json_expect.strip(), json_actual.str())
+            # Check values dissected from server formatting response
+            textedits_array = DataArray()
+            success, server_response_id = dissectFormattingResponse(formatting_response,
+                                                                    error_stream,
+                                                                    textedits_array)
+            self.assertTrue(success)
+            self.assertFalse(error_stream.str())
+            self.assertEqual(client_request_id, server_response_id)
+            self.assertEqual(1, textedits_array.size())
+            textedit = textedits_array.at(0).to_object()
+            new_text = string()
+            success, beg_line, beg_char, end_line, end_char = \
+                dissectTextEditObject(textedit, error_stream, new_text)
+            self.assertTrue(success)
+            self.assertEqual( 0                                    , beg_line )
+            self.assertEqual( 0                                    , beg_char )
+            self.assertEqual( 0                                    , end_line )
+            self.assertEqual( 16                                   , end_char )
+            self.assertEqual( "test\n     doc\n     text\n     02" , new_text )
 
 if __name__ == '__main__':
      unittest.main()
