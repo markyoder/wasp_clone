@@ -10,6 +10,7 @@ class TestPyServer(ServerImpl):
     def __init__(self):
         '''Set up capabilities of concrete example server implementation'''
         super().__init__()
+        self.is_python_server = True
         self.enableFullSync()
         self.enableSymbols()
         self.enableCompletion()
@@ -219,9 +220,12 @@ class TestPyServer(ServerImpl):
             formatting_textedits.push_back(textedit)
         return success
 
-    def getHoverDisplayText(self, display_text, req_line, req_char):
-        '''Fill provided string with text to display at request position'''
-        return True
+    def getHoverDisplayText(self, req_line, req_char):
+        '''Return text that should be shown on hover at request position'''
+        display_text = string()
+        if req_line == 56 and req_char == 78:
+            display_text = "hover text of example test server"
+        return display_text
 
 class LinearModel:
     Definition = None
@@ -1892,6 +1896,45 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
             self.assertEqual( 0                                    , end_line )
             self.assertEqual( 16                                   , end_char )
             self.assertEqual( "test\n     doc\n     text\n     02" , new_text )
+
+        with self.subTest(msg='test_py_server.hover'):
+            # Build test hover text request and use server to handle
+            hover_request              = DataObject()
+            document_path              = "test/path/to/doc"
+            client_request_id          = 7
+            request_line, request_char = 56, 78
+            self.assertTrue(buildHoverRequest(hover_request,
+                                              error_stream,
+                                              client_request_id,
+                                              document_path,
+                                              request_line,
+                                              request_char))
+            self.assertFalse(error_stream.str())
+            hover_response = DataObject()
+            self.assertTrue(test_py_server.handleHoverRequest(hover_request,
+                                                              hover_response))
+            self.assertFalse(test_py_server.getErrors())
+            # Check body of json rpc from server hover text response
+            json_actual = stringstream()
+            json_expect = '''
+{
+  "id" : 7
+  ,"result" : {
+    "contents" : "hover text of example test server"
+  }
+}
+            '''
+            self.assertTrue(hover_response.format_json(json_actual))
+            self.assertEqual(json_expect.strip(), json_actual.str())
+            # Check text string dissected from server hover response
+            display_text = string()
+            success, server_response_id = dissectHoverResponse(hover_response,
+                                                               error_stream,
+                                                               display_text)
+            self.assertTrue(success)
+            self.assertFalse(error_stream.str())
+            self.assertEqual(client_request_id, server_response_id)
+            self.assertEqual("hover text of example test server", display_text)
 
 if __name__ == '__main__':
      unittest.main()

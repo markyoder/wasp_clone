@@ -17,7 +17,10 @@ class WASP_PUBLIC ServerImpl
 {
   public:
 
-    ServerImpl() : is_initialized(false) , client_snippet_support(false) {}
+    ServerImpl()
+      : is_initialized         (false) ,
+        client_snippet_support (false) ,
+        is_python_server       (false) {}
 
     virtual ~ServerImpl() = default;
 
@@ -230,6 +233,16 @@ class WASP_PUBLIC ServerImpl
                           int           /* line        */ ,
                           int           /* character   */ )  { return true; }
 
+    /** get hover display text - to be implemented on derived python server
+     ** if not overridden this base implementation will return empty string
+     * @param line - zero-based line to use for finding node and hover text
+     * @param character - zero-based column for finding node and hover text
+     * @return - text that should be displayed on hover at request position
+     */
+    virtual std::string getHoverDisplayText(
+                          int           /* line        */ ,
+                          int           /* character   */ )  { return ""; }
+
     /** gather references locations - to be implemented on derived servers
      * @param referencesLocations - data array of locations objects to fill
      * @param line - line to be used for locations gathering logic
@@ -384,6 +397,11 @@ class WASP_PUBLIC ServerImpl
      * @brief client_snippet_support - client supports snippets as completion
      */
     bool client_snippet_support;
+
+    /**
+     * @brief is_python_server - flag indicating server implemented in python
+     */
+    bool is_python_server;
 };
 
 } // namespace lsp
