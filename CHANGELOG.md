@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Python WaspNode.isDecorative method to allow identification of decorative nodes (e.g., `{`,`,`,`decl`, etc.)
 
 ### Changed
+- LSP IOStreamConnection to handle turning off and on standard output when needed
 - EDDI comment logic where subsequent comments committed staged components
 - TreeNodePool node_token_line now recursively finds first leaf if node is not already a leaf, instead of returning illegal line number (0)
 
