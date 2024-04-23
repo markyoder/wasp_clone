@@ -12,7 +12,7 @@ class DeserializedResult:
 
     @staticmethod
     def fromDefault(node:WaspNode, interpreter:Interpreter, default, key="value"):
-        ''' 
+        '''
             Create a result from a default. This creates the equivalent
             {"value":{":=":default}}
             Later accessible as [key].value()
@@ -29,7 +29,7 @@ class DeserializedResult:
     def addResult(self, result:'DeserializedResult', inputObject):
         '''Append the deserialize result to existing userData dictionary
            mapping node name to user data
-           
+
            If the result is expected to have a MaxOccurs of more than 1
            a list is created, if needed, and the result appended
            '''
@@ -39,7 +39,7 @@ class DeserializedResult:
         aScalar = maxOccurs is not None and maxOccurs == 1
         if name not in self.userData and not aScalar:
             self.userData[name] = []
-        
+
         if aScalar:
             self.userData[name] = result
         else:
@@ -60,7 +60,7 @@ class DeserializedResult:
         return self.userData[key] if key in self.userData else None
 
     def todict(self):
-        '''Produce a dictionary representation of this deserialized result 
+        '''Produce a dictionary representation of this deserialized result
            Stored results will have a key of ':='
         '''
         d = {}
@@ -68,12 +68,12 @@ class DeserializedResult:
             if type(value) is list:
                 d[key] = []
                 for v in value:
-                    d[key].append(v.todict())                
+                    d[key].append(v.todict())
             elif type(value) is DeserializedResult:
                 d[key] = value.todict()
             else:
                 d[key] = value
-        return d 
+        return d
 
     def value(self, vkey="value"):
         '''Obtain the associated 'value' nodes stored result '''
@@ -84,9 +84,9 @@ class DeserializedResult:
     def valuelist(self, vkey="value"):
         '''Convert the value of this DeserializedResult to a list.
         I.e., each deserialized stored result is converted to a list
-        This is called for array user data. Because each 'value' is 
-        an input node with provedence, the ability to obtain a convenient 
-        list of the data is preferred. 
+        This is called for array user data. Because each 'value' is
+        an input node with provedence, the ability to obtain a convenient
+        list of the data is preferred.
         '''
         l = []
         assert vkey in self.userData, "valuelist request requirements not met!"
@@ -100,9 +100,9 @@ class DeserializedResult:
         return self.node is not None and self.interpreter is not None
 
     def __len__(self):
-        '''Obtain the length of this deserialized result. 
-        This will be the length of the stored result 
-        or if not a stored result (i.e., deserialized parent node) the number of 
+        '''Obtain the length of this deserialized result.
+        This will be the length of the stored result
+        or if not a stored result (i.e., deserialized parent node) the number of
         child nodes '''
         if sr := self.storedResult():
             if type(sr) is list:
@@ -112,7 +112,7 @@ class DeserializedResult:
         return len(self.userData)
 
     def __getitem__(self, key):
-        '''Obtain the named deserialized result or if 
+        '''Obtain the named deserialized result or if
         this is only a stored result, the result'''
         if key in self.userData:
             d = self.userData[key]
@@ -133,12 +133,16 @@ class InputObject:
         '''
             Action - function pointer to be executed
             Desc: str - the description of this input object
-            Enums:list(str) - enumerated values allowed 
+            Enums:list(str) - enumerated values allowed
+            MaxValExc:float - the maximum exclusive value for this input object
+            MaxValInc:float - the maximum inclusive value for this input object
+            MinValExc:float - the minimum exclusive value for this input object
+            MinValInc:float - the minimum inclusive value for this input object
         '''
 
         self._action = kwargs.pop("Action", None)
         self._children = None  # dict(childKey:childObject)
-        self._defaults = None  # dict(childKey, default) 
+        self._defaults = None  # dict(childKey, default)
         self._description  = kwargs.pop("Desc", None)
         self._enums = kwargs.pop("Enums", None)
         self._maxOccurs = None # dict(childKey:maxOccurs)
@@ -147,25 +151,26 @@ class InputObject:
         self._minOccurs = None # dict(childKey:minOccurs)
         self._minValExc = kwargs.pop("MinValExc", None)
         self._minValInc = kwargs.pop("MinValInc", None)
+        self._unique    = None
 
         assert len(kwargs) == 0, "Unexpected additional parameters to InputObject: " + str(kwargs)
 
     def action(self):
-        '''Obtain the action associated with the given child input key'''        
+        '''Obtain the action associated with the given child input key'''
         return self._action
-    
+
     def _pre_add(self, inputKey, **kwargs):
         if self._children is None:
             self._children = {}
             self._defaults = {}
             self._maxOccurs = {}
             self._minOccurs = {}
-            
+
         assert inputKey not in self._children
 
     def add(self, inputKey, inputObject, **kwargs):
         '''Add an exissting object as a child
-            
+
         '''
         self._pre_add(inputKey, **kwargs)
         if "MaxOccurs" in kwargs: self._maxOccurs[inputKey] = kwargs.pop("MaxOccurs")
@@ -186,6 +191,61 @@ class InputObject:
         kwargs["MaxOccurs"] = 1
         kwargs["MinOccurs"] = 1
         return self.add(inputKey, inputObject, **kwargs)
+
+    def select(self, context:str):
+        '''Obtain the input objects associated with the given context lookup
+           context:str - the path to a child context. E.g., 'x/y/z' where z must be a terminal object
+           return:list|None - the list of input object selection
+        '''
+        lineage = context.split("/")
+        current = [self]
+        next = []
+
+        for name in lineage:
+            while len(current) > 0:
+                # wild card ignores
+                if current[-1]._children is not None:
+                    if name == "*":
+                        # Append all
+                        for inputobject in current[-1]._children.values():
+                            next.append(inputobject)
+                    else:
+                        # Append only those that name match
+                        child = current[-1][name]
+                        if child:
+                            next.append(child)
+                current.pop()
+            # Reverse order to preserve user-input order
+            next.reverse()
+            # Update current nodes being searched to be those identified
+            current = next
+            next = []
+
+        return current if len(current) > 0 else None
+
+    def addUniqueConstraint(self, name:str, context:'list(str)'):
+        '''Add a named constraint to this input object that requires all referenced context to
+        have the same data.
+        name:str - the name of the constraint
+        context:list(str) - the paths associated with the data which must be unique
+                            E.g., 'x/y/z' means the x child, y granchild, and z greatgrandchild definitions must exist
+
+        Note: This must be called after all context have been created
+
+        Raises: exception if referenced context does not exist
+        '''
+        # Check each context selects input definition
+        for c in context:
+            selected = self.select(c)
+            assert selected is not None, "Unable to verify unique constraint for "+c+"! Constraints must refer to existing InputObject definitions"
+            for inputObject in selected:
+                # Unique constraints must reference terminal objects for comparison of data
+                is_terminal = inputObject._children is None
+                assert is_terminal, "Uniqueness constraints can only be applied to terminal data nodes!"
+
+        if self._unique is None:
+            self._unique = {}
+        self._unique[name] = context
 
     def create(self, inputKey, **kwargs):
         '''Create an object as a child
@@ -216,23 +276,28 @@ class InputObject:
         kwargs["MaxOccurs"] = 1
         kwargs["MinOccurs"] = 1
         return self.create(inputKey, **kwargs)
-    
+
     def _conductAvailableChildChecks(self, childKey, dr:DeserializedResult):
         occurrences = 0
         data = dr[childKey]
         data_type = type(data)
         if data_type is list or data_type is DeserializedResult:
             occurrences = len(data)
-        else: # the data 
+        else: # the data
             occurrences = 1
         # min occurs
         mio = self.minOccurs(childKey)
         if  mio and occurrences < mio:
-            dr.interpreter.createErrorDiagnostic(dr.node, 
+            dr.interpreter.createErrorDiagnostic(dr.node,
                 "has "+str(occurrences)+" occurrences of "+childKey+" when "+str(mio)+" are required!")
-        
+
         # max occurs check was completed in DeserializedResult.addResult
-    
+
+        # conduct uniqueness constraints checks
+        # if self._unique:
+            # for name, context in self._unique:
+
+
     def _conductChecks(self, dr:DeserializedResult):
         storedResult = dr.storedResult()
 
@@ -244,26 +309,26 @@ class InputObject:
             if type(storedResult) is list:
                 for result in storedResult:
                     if str(result) not in enums:
-                        dr.interpreter.createErrorDiagnostic(dr.node, 
+                        dr.interpreter.createErrorDiagnostic(dr.node,
                             "value of "+str(result)+" is not one of the allows values "+str(enums)+"!")
             elif str(storedResult) not in enums:
-                dr.interpreter.createErrorDiagnostic(dr.node, 
+                dr.interpreter.createErrorDiagnostic(dr.node,
                     str(storedResult)+" is not one of the allows values "+str(enums)+"!")
 
         if self._minValInc is not None and float(storedResult) < self._minValInc:
-            dr.interpreter.createErrorDiagnostic(dr.node, 
+            dr.interpreter.createErrorDiagnostic(dr.node,
                 str(storedResult)+" is less than the allowed minimum inclusive value of "+str(self._minValInc)+"!")
 
         if self._maxValInc is not None and float(storedResult) > self._maxValInc:
-            dr.interpreter.createErrorDiagnostic(dr.node, 
+            dr.interpreter.createErrorDiagnostic(dr.node,
                 str(storedResult)+" is greater than the allowed maximum inclusive value of "+str(self._maxValInc)+"!")
 
         if self._minValExc is not None and float(storedResult) <= self._minValExc:
-            dr.interpreter.createErrorDiagnostic(dr.node, 
+            dr.interpreter.createErrorDiagnostic(dr.node,
                 str(storedResult)+" is less than or equal to the allowed minimum exclusive value of "+str(self._minValExc)+"!")
 
         if self._maxValExc is not None and float(storedResult) >= self._maxValExc:
-            dr.interpreter.createErrorDiagnostic(dr.node, 
+            dr.interpreter.createErrorDiagnostic(dr.node,
                 str(storedResult)+" is greater than or equal to the allowed maximum exclusive value of "+str(self._maxValExc)+"!")
 
     def _conductAvailableChecks(self, dr:DeserializedResult):
@@ -356,24 +421,24 @@ class InputObject:
         return None
 
     def serialize(self, io, level=0):
-        
+
         indent = " "*(level)
         if self.description():
             io.write(indent+"Description='"+self.description()+"'\n")
         if self.enumerations():
             io.write(indent+"ValueEnums["+(" ".join(self._enums))+"]\n")
-        
+
 
         if self._children is None:
             return
         for key, child in self._children.items():
-            
+
             if self.minOccurs(key):
                 io.write(indent+"MinOccurs("+key+")="+str(self.minOccurs(key))+"\n")
             if self.maxOccurs(key):
                 io.write(indent+"MaxOccurs("+key+")="+str(self.maxOccurs(key))+"\n")
             io.write (" "*level)
-            io.write(key+":{\n")            
+            io.write(key+":{\n")
             child.serialize(io, level+2)
             io.write(" "*level)
             io.write("}\n")
@@ -384,7 +449,7 @@ class InputObject:
 
     def __getitem__(self, key):
         '''Obtain the named child input object.
-        
+
         Allows interaction with child input object constrains.
         '''
         if self._children is not None and key in self._children:

@@ -144,7 +144,7 @@ class TheInput:
         db.createRequiredSingle("queries", Desc="Parameters for queries salt properties") \
             .createRequiredSingle("temperatures", Desc="Temperatures (C) at which to query density") \
                 .createRequired("value", MinValExc=0, Action=storeFloat)
-
+        db.addUniqueConstraint("salt id", ["salts/salt/id"])
         TheInput.Definition = db
         return TheInput.Definition
 
@@ -686,6 +686,9 @@ queries{
         self.assertTrue(interpreter)
 
         definition = TheInput.definition()
+        self.assertEqual(definition['salts']['salt']['MolecularWeight']['value'], definition.select("salts/salt/MolecularWeight/value")[0])
+        self.assertEqual(definition['salts']['salt']['MolecularWeight']['value'], definition.select("*/*/MolecularWeight/value")[0])
+        self.assertEqual(definition['salts']['salt']['MolecularWeight']['value'], definition.select("*/*/MolecularWeight/*")[0])
         self.assertTrue(definition)
 
         db = definition.deserialize(interpreter.root(), interpreter)
