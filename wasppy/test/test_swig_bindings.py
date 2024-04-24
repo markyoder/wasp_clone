@@ -22,17 +22,17 @@ class LinearModel:
 
     @staticmethod
     def createFrom(do:'DeserializedObject'):
-        
+
         result = LinearModel()
         result._a = do["A"].value()
         result._b = do["B"].value()
         result._c = do["C"].value()
         result._minT = do["MinTemp"].value()
         result._maxT = do["MaxTemp"].value()
-        
+
         theType = do["Type"].value()
 
-        # Require Type to be a supported enumeration 
+        # Require Type to be a supported enumeration
         # This demonstrates post deserialization diagnostic generation
         enumerations = result.definition()["Type"]["value"].enumerations()
         if theType not in enumerations:
@@ -75,7 +75,7 @@ class Salt:
     def definition():
         '''
             return inputObject - the definition of this object
-         
+
         '''
         if Salt.Definition is not None: return Salt.Definition
         salt = InputObject(Desc="Single Salt instance")
@@ -95,14 +95,14 @@ class Salt:
             deserializedObject - Salt object data deserialized from user input
             Create a Salt object from the given data and return it to the caller
         '''
-        
+
         result = Salt()
         result._name = do["id"] # not an id=value, just salt(id)
         result._molew = do["MolecularWeight"].value() # is a key=value MolecularWeight=value
         result._meltT = do["MeltTemp"].value()
         result._boilT = do["BoilTemp"].value()
         result._density = LinearModel.createFrom(do["Density"])
-        
+
         return result
 
     def __init__(self,params=None):
@@ -149,11 +149,11 @@ class TheInput:
         return TheInput.Definition
 
     def createFrom(do:'DeserializedObject'):
-        
+
         result = TheInput()
         result.salts = [Salt.createFrom(salt) for salt in do["salts"]["salt"]]
         result.queryTemps = do["queries"]["temperatures"].valuelist()
-        
+
         return result
 
     def __init__(self):
@@ -254,7 +254,7 @@ class TestSwigInterface(unittest.TestCase):
                 j += 1
             i += 1
 
-        #We are going to get "response_name_4" from the line "column 3 4 delimiter '-' as 'response_name_4' 
+        #We are going to get "response_name_4" from the line "column 3 4 delimiter '-' as 'response_name_4'
         for it in root:
             if it.name() == "extract_from" and str(it) == "filename_1.out":
                 for jt in it:
@@ -456,7 +456,7 @@ class TestSwigInterface(unittest.TestCase):
                 value{
                     MinOccurs = 1
                     MaxOccurs = 1
-                    ValType   = Real 
+                    ValType   = Real
                     MinValExc = "../../MinTemp/value"
                 } % end value
             } % end MaxTemp
@@ -480,7 +480,7 @@ class TestSwigInterface(unittest.TestCase):
                     InputDefault = "linear"
                     MinOccurs = 1
                     MaxOccurs = 1
-                    ValType   = String 
+                    ValType   = String
                     ValEnums  = [ "linear" ]
                 } % end value
             } % end Type
@@ -518,7 +518,7 @@ queries{
     MaxOccurs = 1
 
     temperatures{
-        Description = "Temperatures (C) at which to query density" 
+        Description = "Temperatures (C) at which to query density"
         MinOccurs = 1
         MaxOccurs = 1
         value{
@@ -567,7 +567,7 @@ queries{
         self.assertEqual(salt[0].density(1200.0),1.77)
         self.assertEqual(salt[1].density(1200.0),1.9968)
 
-        # Test __getattr__ (. operator) through VectorWaspNode 
+        # Test __getattr__ (. operator) through VectorWaspNode
         # Each value belongs to different 'BoilTemp' requiring a VectorWaspNode
         boiltemps = doc.root().salts.salt.BoilTemp.value
         self.assertEqual(2, len(boiltemps))
@@ -577,7 +577,7 @@ queries{
         self.assertEqual("NaF", str(boiltemps[1].parent().parent().id))
 
     def test_validation_errors(self):
-        schema = '''data{MaxOccurs=1 value{MaxOccurs=1 MaxValInc=1.0 ValType=Real}}''' 
+        schema = '''data{MaxOccurs=1 value{MaxOccurs=1 MaxValInc=1.0 ValType=Real}}'''
         input = '''data 1.1'''
 
         # Test EDDI
@@ -640,9 +640,9 @@ queries{
         dd = interpreter.deserializeDiagnostics()
         self.assertEqual(4, len(dd))
 
-        expected = ["myfile.inp:1.5: value is an unexpected parameter!", 
-                    "myfile.inp:1.5: value is an unexpected parameter!", 
-                    "myfile.inp:1.5: value is skipped as an unexpected parameter!", 
+        expected = ["myfile.inp:1.5: value is an unexpected parameter!",
+                    "myfile.inp:1.5: value is an unexpected parameter!",
+                    "myfile.inp:1.5: value is skipped as an unexpected parameter!",
                     "myfile.inp:1.5: value should be named less ambiguously!"]
         for i, e in enumerate(expected):
             self.assertEqual(e, str(dd[i]))
@@ -676,6 +676,19 @@ queries{
                   MaxTemp : 1373
               }
           }
+          salt(NaF){
+              MolecularWeight : 41.9882
+              MeltTemp : 1268
+              BoilTemp : 1978
+              Density
+              {
+                  Type : linear
+                  A : 2.76
+                  B : 6.36e-4
+                  MinTemp : 1273
+                  MaxTemp : 1373
+              }
+          }
         }
         queries {
           temperatures = [1100,-1200,1300,1400]
@@ -695,13 +708,22 @@ queries{
         self.assertTrue(interpreter.deserializeDiagnostics())
         expectedDiagnostics = '''input.son:6.26: value 0.0 is less than or equal to the allowed minimum exclusive value of 0!
 input.son:9.26: value foo is not one of the allows values ['linear']!
-input.son:31.32: value -1200.0 is less than or equal to the allowed minimum exclusive value of 0!
+input.son:44.32: value -1200.0 is less than or equal to the allowed minimum exclusive value of 0!
+input.son:16.16: id NaF must be unique but is duplicate to id on line 29 column 16
 '''
+        self.maxDiff = None
         self.assertEqual(expectedDiagnostics,"".join(str(x)+"\n" for x in interpreter.deserializeDiagnostics()))
-        
+
+        # Test deserialized result selection
+        saltids = db.select("salts/salt/id")
+        self.assertEqual(3, len(saltids))
+        self.assertEqual("LiF", saltids[0].storedResult())
+        self.assertEqual("NaF", saltids[1].storedResult())
+        self.assertEqual("NaF", saltids[2].storedResult())
+
         self.assertTrue(db["salts"])
         self.assertTrue(type(db["salts"]["salt"]) == list)
-        self.assertEqual(2, len(db["salts"]["salt"]))
+        self.assertEqual(3, len(db["salts"]["salt"]))
         self.assertTrue(db["salts"]["salt"][1])
         self.assertTrue(db["salts"]["salt"][1]["MolecularWeight"])
         self.assertEqual(41.9882, db["salts"]["salt"][1]["MolecularWeight"].value())
@@ -720,16 +742,19 @@ input.son:31.32: value -1200.0 is less than or equal to the allowed minimum excl
         theInput = TheInput.createFrom(db)
         expectedDiagnostics = '''input.son:6.26: value 0.0 is less than or equal to the allowed minimum exclusive value of 0!
 input.son:9.26: value foo is not one of the allows values ['linear']!
-input.son:31.32: value -1200.0 is less than or equal to the allowed minimum exclusive value of 0!
+input.son:44.32: value -1200.0 is less than or equal to the allowed minimum exclusive value of 0!
+input.son:16.16: id NaF must be unique but is duplicate to id on line 29 column 16
 input.son:9.19: Type has value of foo which is not listed in ['linear']
 '''
         self.assertEqual(expectedDiagnostics,"".join(str(x)+"\n" for x in interpreter.deserializeDiagnostics()))
         self.assertEqual([1100.0,-1200.0,1300.0,1400.0],theInput.queryTemps)
-        self.assertEqual(2, len(theInput.salts))
+        self.assertEqual(3, len(theInput.salts))
 
         # Test theInput for deserialized result
         expectedSummary = '''salt id:LiF mw:25.9394 melt:1121.2 boil:0.0
     density - a:2.37 b:0.0005 c:1.0 min:1123.6 max:1367.5
+salt id:NaF mw:41.9882 melt:1268.0 boil:1978.0
+    density - a:2.76 b:0.000636 c:1.0 min:1273.0 max:1373.0
 salt id:NaF mw:41.9882 melt:1268.0 boil:1978.0
     density - a:2.76 b:0.000636 c:1.0 min:1273.0 max:1373.0
 

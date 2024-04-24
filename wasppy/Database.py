@@ -46,6 +46,38 @@ class DeserializedResult:
             self.userData[name].append(result)
         return result
 
+    def select(self, context:str):
+        '''Obtain the deserialized result associated with the given context lookup
+           context:str - the path to a child context. E.g., 'x/y/z' where z must be a terminal result
+           return:list|None - the list of deserialized selection
+        '''
+        lineage = context.split("/")
+        current = [self]
+        next = []
+
+        for name in lineage:
+            while len(current) > 0:
+                # wild card ignores
+                if name == "*":
+                    # Append all
+                    for result in current[-1].userData.values():
+                        if type(result) is list: next.extend(reversed(result))
+                        else: next.append(result)
+                elif name in current[-1].userData:
+                    # Append only those that name match (non-null result)
+                    result = current[-1].userData[name]
+                    if result and type(result) is list:
+                        next.extend(reversed(result))
+                    elif result: next.append(result)
+                current.pop()
+            # Reverse order to preserve user-input order
+            next.reverse()
+            # Update current result being searched to be those identified
+            current = next
+            next = []
+
+        return current if len(current) > 0 else None
+
     def store(self, value, key=None):
         if key is None: # default to ':=' scalar store
             key = ":="
@@ -217,7 +249,7 @@ class InputObject:
                 current.pop()
             # Reverse order to preserve user-input order
             next.reverse()
-            # Update current nodes being searched to be those identified
+            # Update current objects being searched to be those identified
             current = next
             next = []
 
@@ -293,11 +325,6 @@ class InputObject:
 
         # max occurs check was completed in DeserializedResult.addResult
 
-        # conduct uniqueness constraints checks
-        # if self._unique:
-            # for name, context in self._unique:
-
-
     def _conductChecks(self, dr:DeserializedResult):
         storedResult = dr.storedResult()
 
@@ -333,11 +360,30 @@ class InputObject:
 
     def _conductAvailableChecks(self, dr:DeserializedResult):
         # Either this is leaf or parent
-        # Leaf available checks are value range, type, enumeration
+        # Leaf available checks are value range, type, enumeration, etc.
         try:
             if self._children:
                 for key in self._children:
                     self._conductAvailableChildChecks(key, dr)
+
+                # conduct child set checks...
+
+                # conduct uniqueness constraints checks
+                if self._unique:
+                    for name, context in self._unique.items():
+                        # accumulate all context
+                        all_context = []
+                        for c in context:
+                            selection = dr.select(c)
+                            if selection: all_context.extend(selection)
+                        count = len(all_context)
+                        for i, dri in enumerate(all_context):
+                            for j in range(i+1, count):
+                                drj = all_context[j]
+                                driv = dri.storedResult()
+                                drjv = drj.storedResult()
+                                if driv == drjv:
+                                    dr.interpreter.createErrorDiagnostic(dri.node, str(driv)+" must be unique but is duplicate to "+drj.node.info())
             else:
                 self._conductChecks(dr)
 
@@ -370,7 +416,6 @@ class InputObject:
                 # If not in the user data it was not specified
                 # Force the default value into the user data
                 if key not in thisResult.userData:
-                    # print ("Assigning default for ",key," of ", str(value) )
                     thisResult.userData[key] = DeserializedResult.fromDefault(node, interpreter, value)
         try:
             if self.action():
