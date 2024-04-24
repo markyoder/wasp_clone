@@ -10,6 +10,10 @@ class DeserializedResult:
         self.interpreter = interpreter
         self.userData:'dict{str:list(DeserializedResult)}' = {}
 
+    def isTerminal(self):
+        '''Determine if this deserialized result is terminal. I.e., it has no children data'''
+        return len(self.node) == 0
+
     @staticmethod
     def fromDefault(node:WaspNode, interpreter:Interpreter, default, key="value"):
         '''
@@ -184,8 +188,16 @@ class InputObject:
         self._minValExc = kwargs.pop("MinValExc", None)
         self._minValInc = kwargs.pop("MinValInc", None)
         self._unique    = None
+        self._exists    = None
 
         assert len(kwargs) == 0, "Unexpected additional parameters to InputObject: " + str(kwargs)
+
+    def isTerminal(self):
+        '''Determine if this InputObject does not have children
+           Return true, iff there are no children data
+        '''
+        # This is terminal if children is None
+        return self._children is None
 
     def action(self):
         '''Obtain the action associated with the given child input key'''
@@ -255,6 +267,30 @@ class InputObject:
 
         return current if len(current) > 0 else None
 
+    def addExistsConstraint(self, ec:'ExistsConstraint'):
+        '''Add an ExistsConstraint to this object
+
+            Raises: exception if referenced source or target do not exist or are not terminal
+        '''
+        # Check that source and target exist and are terminal
+        for s in ec._source:
+            selected = self.select(s)
+            assert selected is not None, "Unable to verify exist constraint for "+s+"! Constraints must refer to existing component!"
+            for component in selected:
+                # Unique constraints must reference terminal objects for comparison of data
+                assert component.isTerminal(), "Exists constraints can only be applied to terminal data components!"
+
+        for t in ec._target:
+            selected = self.select(t)
+            assert selected is not None, "Unable to verify exists constraint for "+t+"! Constraints must refer to existing component!"
+            for component in selected:
+                # Unique constraints must reference terminal objects for comparison of data
+                assert component.isTerminal(), "Exists constraints can only be applied to terminal data components!"
+
+        if self._exists == None:
+            self._exists = []
+        self._exists.append(ec)
+
     def addUniqueConstraint(self, name:str, context:'list(str)'):
         '''Add a named constraint to this input object that requires all referenced context to
         have the same data.
@@ -272,8 +308,7 @@ class InputObject:
             assert selected is not None, "Unable to verify unique constraint for "+c+"! Constraints must refer to existing InputObject definitions"
             for inputObject in selected:
                 # Unique constraints must reference terminal objects for comparison of data
-                is_terminal = inputObject._children is None
-                assert is_terminal, "Uniqueness constraints can only be applied to terminal data nodes!"
+                assert inputObject.isTerminal(), "Uniqueness constraints can only be applied to terminal data nodes!"
 
         if self._unique is None:
             self._unique = {}
@@ -382,8 +417,22 @@ class InputObject:
                                 drj = all_context[j]
                                 driv = dri.storedResult()
                                 drjv = drj.storedResult()
-                                if driv == drjv:
+                                if str(driv) == str(drjv):
                                     dr.interpreter.createErrorDiagnostic(dri.node, str(driv)+" must be unique but is duplicate to "+drj.node.info())
+                # conduct exists constraint checks
+                if self._exists:
+                    for constraint in self._exists:
+                        source = constraint.sources(dr)
+                        target = constraint.targets(dr)
+                        for s in source:
+                            sv = str(s.storedResult())
+                            targets = []
+                            for t in target:
+                                # TODO - account for discrete target values (not deserialized result)
+                                tv = str(t.storedResult())
+                                targets.append(tv)
+                            if sv not in targets:
+                                dr.interpreter.createErrorDiagnostic(s.node, str(s.node)+" is not one of the required existing targets! Required existing targets are "+", ".join(targets)+"!")
             else:
                 self._conductChecks(dr)
 
@@ -501,6 +550,40 @@ class InputObject:
             return self._children[key]
         # return null/invalid object
         return InputObject()
+
+class ExistsConstraint:
+    '''Exists Constraint class provides ability to list data sources that must exist
+     in a given target context '''
+    def __init__(self, source, **kwargs):
+        self._source = source # list(str) source data that must exist in given targets or range
+        self._target = None # list(str) - target data that must exist if being referenced
+        # TODO add Discrete
+        self._target = kwargs.pop("target", None)
+        assert type(source) is list, "ExistsConstraints source must be a list of source contexts!"
+        assert len(source) > 0, "ExistsConstraints source must not be an empty list of source contexts!"
+        assert type(self._target) is list, "ExistsConstraints target attribute must be a list of target contexts!"
+        assert len(self._target) > 0, "ExistsConstraints target attribute must not be an empty list of target contexts!"
+        assert len(kwargs) == 0, "ExistsConstraints has unknownn keyword arguments! "+str(kwargs)
+
+    def sources(self, queryRoot):
+        '''Obtain the set of sources given the queryRoot
+            queryRoot:InputObject|DeserializedResult - the point from which to conduct source selection
+            returns all existing InputObject or DeserializedResult
+        '''
+        all_source = []
+        for s in self._source:
+            all_source.extend(queryRoot.select(s))
+        return all_source
+
+    def targets(self, queryRoot):
+        '''Obtain the set of targets given the queryRoot
+            queryRoot:InputObject|DeserializedResult - the point from which to conduct target selection
+            returns all existing InputObject or DeserializedResult
+        '''
+        all_targets = []
+        for t in self._target:
+            all_targets.extend(queryRoot.select(t))
+        return all_targets
 
 # Free functions for common callback
 def storeInt(result):

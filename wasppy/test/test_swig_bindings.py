@@ -1,6 +1,6 @@
 import unittest
 from wasp import *
-from Database import InputObject, storeFloat, storeStr
+from Database import InputObject, storeFloat, storeStr, ExistsConstraint
 import math
 
 class LinearModel:
@@ -648,6 +648,9 @@ queries{
             self.assertEqual(e, str(dd[i]))
 
     def test_database_inputobject(self):
+        '''This test exercises the input object definition creation, deserialization, selection, and diagnostics
+        as used by the toy salts classes above
+        '''
         ss = '''
         salts {
           salt(LiF) {
@@ -763,5 +766,24 @@ salt id:NaF mw:41.9882 melt:1268.0 boil:1978.0
 queried at: 1100.0,-1200.0,1300.0,1400.0'''
         self.assertEqual(expectedSummary, str(theInput))
 
+    def test_database_inputobject_exists(self):
+        definition = InputObject()
+        definition.createRequiredSingle("ids", Desc="List of viable identifers").createRequired("value", Action=storeStr)
+        definition.createRequiredSingle("ref", Desc="The id reference").createRequiredSingle("value", Action=storeStr)
+        definition.addExistsConstraint(ExistsConstraint(["ref/value"], target=["ids/value"]))
+
+        inputcontents = '''ids=[foo bar ted]
+        ref=bart
+        '''
+        interpreter = Interpreter(Syntax.SON, path="input.son", data=inputcontents)
+
+        self.assertTrue(interpreter)
+
+        db = definition.deserialize(interpreter.root(), interpreter)
+        self.assertTrue(interpreter.deserializeDiagnostics())
+        expectedDiagnostics = '''input.son:2.13: value bart is not one of the required existing targets! Required existing targets are foo, bar, ted!
+'''
+        self.maxDiff = None
+        self.assertEqual(expectedDiagnostics,"".join(str(x)+"\n" for x in interpreter.deserializeDiagnostics()))
 if __name__ == '__main__':
      unittest.main()
