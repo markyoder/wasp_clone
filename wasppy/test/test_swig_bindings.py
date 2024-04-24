@@ -141,10 +141,10 @@ class TheInput:
         db = InputObject()
         salts = db.createRequiredSingle("salts", Desc="The collection of salts in the system")
         salts.addRequired("salt", Salt.definition())
+        salts.addUniqueConstraint("salt id", ["salt/id"])
         db.createRequiredSingle("queries", Desc="Parameters for queries salt properties") \
             .createRequiredSingle("temperatures", Desc="Temperatures (C) at which to query density") \
                 .createRequired("value", MinValExc=0, Action=storeFloat)
-        db.addUniqueConstraint("salt id", ["salts/salt/id"])
         TheInput.Definition = db
         return TheInput.Definition
 
@@ -699,6 +699,7 @@ queries{
         self.assertTrue(interpreter)
 
         definition = TheInput.definition()
+        # Test input object (definition) selection logic
         self.assertEqual(definition['salts']['salt']['MolecularWeight']['value'], definition.select("salts/salt/MolecularWeight/value")[0])
         self.assertEqual(definition['salts']['salt']['MolecularWeight']['value'], definition.select("*/*/MolecularWeight/value")[0])
         self.assertEqual(definition['salts']['salt']['MolecularWeight']['value'], definition.select("*/*/MolecularWeight/*")[0])
@@ -708,8 +709,8 @@ queries{
         self.assertTrue(interpreter.deserializeDiagnostics())
         expectedDiagnostics = '''input.son:6.26: value 0.0 is less than or equal to the allowed minimum exclusive value of 0!
 input.son:9.26: value foo is not one of the allows values ['linear']!
-input.son:44.32: value -1200.0 is less than or equal to the allowed minimum exclusive value of 0!
 input.son:16.16: id NaF must be unique but is duplicate to id on line 29 column 16
+input.son:44.32: value -1200.0 is less than or equal to the allowed minimum exclusive value of 0!
 '''
         self.maxDiff = None
         self.assertEqual(expectedDiagnostics,"".join(str(x)+"\n" for x in interpreter.deserializeDiagnostics()))
@@ -740,10 +741,11 @@ input.son:16.16: id NaF must be unique but is duplicate to id on line 29 column 
 
         # create program data structure
         theInput = TheInput.createFrom(db)
+        # This test illustrates the additional diagnostics from result to object creation
         expectedDiagnostics = '''input.son:6.26: value 0.0 is less than or equal to the allowed minimum exclusive value of 0!
 input.son:9.26: value foo is not one of the allows values ['linear']!
-input.son:44.32: value -1200.0 is less than or equal to the allowed minimum exclusive value of 0!
 input.son:16.16: id NaF must be unique but is duplicate to id on line 29 column 16
+input.son:44.32: value -1200.0 is less than or equal to the allowed minimum exclusive value of 0!
 input.son:9.19: Type has value of foo which is not listed in ['linear']
 '''
         self.assertEqual(expectedDiagnostics,"".join(str(x)+"\n" for x in interpreter.deserializeDiagnostics()))
