@@ -36,6 +36,8 @@
 %shared_ptr(wasp::AbstractDefinition)
 %shared_ptr(wasp::Definition)
 %shared_ptr(wasp::AliasedDefinition)
+%shared_ptr(wasp::lsp::Connection)
+%shared_ptr(wasp::lsp::ThreadConnection)
 %{
 #define SWIG_FILE_INIT
 #include "utils.h"
@@ -59,6 +61,8 @@
 #include "HIVE.h"
 #include "LSP.h"
 #include "ServerImpl.h"
+#include "Connection.h"
+#include "ThreadConnection.h"
 %}
 
 // Instantiate templates used by wasp
@@ -89,6 +93,8 @@
 // Components for LSP
 %include "LSP.h"
 %include "ServerImpl.h"
+%include "Connection.h"
+%include "ThreadConnection.h"
 
 // Various node views 
 %include "SONNodeView.h"

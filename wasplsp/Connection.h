@@ -19,21 +19,21 @@ class WASP_PUBLIC Connection
 
     virtual ~Connection() = default;
 
-    typedef std::shared_ptr<Connection> SP;
+    typedef std::shared_ptr<wasp::lsp::Connection> SP;
 
     /** read packet string from specific connection and store in provided object
      * @param object - reference to object to fill with data from read packet
      * @param errors - reference to error stream to pass to RPCStringToObject
      * @return - true if the read and conversion to object were successful
      */
-    virtual bool read ( ::wasp::DataObject & object , std::stringstream & errors ) = 0;
+    virtual bool read ( wasp::DataObject & object , std::stringstream & errors ) = 0;
 
     /** write data from provided object to specific connection as packet string
      * @param object - object holding data to write to specific connection
      * @param errors - reference to error stream to pass to objectToRPCString
      * @return - true if the conversion to the packet and write were successful
      */
-    virtual bool write( ::wasp::DataObject & object , std::stringstream & errors ) = 0;
+    virtual bool write( wasp::DataObject & object , std::stringstream & errors ) = 0;
 
     /** check if the server is initialized and reading from the connection
      * @return - true if server is initialized and reading from the connection

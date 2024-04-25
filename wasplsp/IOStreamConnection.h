@@ -38,14 +38,14 @@ class WASP_PUBLIC IOStreamConnection : public Connection
         std::cout.rdbuf(cached_output_buffer);
     }
 
-    typedef std::shared_ptr<Connection> SP;
+    typedef std::shared_ptr<wasp::lsp::Connection> SP;
 
     /** read packet string from standard input and store in provided object
      * @param object - reference to object to fill with data from read packet
      * @param errors - reference to error stream to pass to RPCStringToObject
      * @return - true if the read and conversion to object were successful
      */
-    bool read( DataObject & object , std::stringstream & errors )
+    bool read( wasp::DataObject & object , std::stringstream & errors )
     {
         bool pass = true;
 
@@ -99,7 +99,7 @@ class WASP_PUBLIC IOStreamConnection : public Connection
      * @param errors - reference to error stream to pass to objectToRPCString
      * @return - true if the conversion to the packet and write were successful
      */
-    bool write( DataObject & object , std::stringstream & errors )
+    bool write( wasp::DataObject & object , std::stringstream & errors )
     {
         bool pass = true;
         std::string rpc_string;
