@@ -16,7 +16,7 @@ class WASP_PUBLIC SymbolIterator
 {
   public:
 
-    SymbolIterator( DataObject::SP response )
+    SymbolIterator( wasp::DataObject::SP response )
     {
         // add reponse as the root of the symbol lineage
 
@@ -33,7 +33,7 @@ class WASP_PUBLIC SymbolIterator
 
     ~SymbolIterator(){}
 
-    typedef std::shared_ptr<SymbolIterator> SP;
+    typedef std::shared_ptr<wasp::lsp::SymbolIterator> SP;
 
     /** get the size of children symbol array at the currently set lineage level
      * @return - size of children at current level - zero if children array null
@@ -94,12 +94,12 @@ class WASP_PUBLIC SymbolIterator
     /**
      * @brief m_response - response root shared_ptr to prevent dangling pointer
      */
-    DataObject::SP m_response;
+    wasp::DataObject::SP m_response;
 
     /**
      * @brief symbols_lineage - vector from root symbol to current set symbol
      */
-    std::vector<DataObject *> symbols_lineage;
+    std::vector<wasp::DataObject *> symbols_lineage;
 
     /**
      * @brief errors - all errors stored by symbol iterator for any reason

@@ -129,6 +129,9 @@ add_dependencies(wasp_wheel wasppy waspcore waspson waspddi waspeddi wasphit was
     ARGS -m unittest test/test_lsp_server_methods.py -v
   TEST_3
     CMND ${PYTHON_EXECUTABLE}
+    ARGS -m unittest test/test_lsp_server_running.py -v
+  TEST_4
+    CMND ${PYTHON_EXECUTABLE}
     ARGS -m pip uninstall --yes ornl-wasp
   TIMEOUT 3000
   CATEGORIES BASIC

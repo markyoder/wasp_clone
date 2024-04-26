@@ -45,7 +45,7 @@ class WASP_PUBLIC IOStreamConnection : public Connection
      * @param errors - reference to error stream to pass to RPCStringToObject
      * @return - true if the read and conversion to object were successful
      */
-    bool read( wasp::DataObject & object , std::stringstream & errors )
+    bool read( wasp::DataObject & object , std::ostream & errors )
     {
         bool pass = true;
 
@@ -99,7 +99,7 @@ class WASP_PUBLIC IOStreamConnection : public Connection
      * @param errors - reference to error stream to pass to objectToRPCString
      * @return - true if the conversion to the packet and write were successful
      */
-    bool write( wasp::DataObject & object , std::stringstream & errors )
+    bool write( wasp::DataObject & object , std::ostream & errors )
     {
         bool pass = true;
         std::string rpc_string;

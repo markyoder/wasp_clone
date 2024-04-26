@@ -4,8 +4,8 @@
 %}
 %rename("BaseInterpreter") Interpreter;
 
-// Enable allprotected for ServerImpl protected use in derived Python class
-%module(directors="1", allprotected="1") wasp
+// Enable Python deriving, protected data wrapping, and unit test threading
+%module(directors="1", allprotected="1", threads="1") wasp
 
 // Enable director so ServerImpl can be implemented in derived Python class
 %feature("director") wasp::lsp::ServerImpl;
@@ -61,6 +61,7 @@
 #include "HIVE.h"
 #include "LSP.h"
 #include "ServerImpl.h"
+#include "ClientImpl.h"
 #include "Connection.h"
 #include "ThreadConnection.h"
 %}
@@ -93,6 +94,7 @@
 // Components for LSP
 %include "LSP.h"
 %include "ServerImpl.h"
+%include "ClientImpl.h"
 %include "Connection.h"
 %include "ThreadConnection.h"
 
