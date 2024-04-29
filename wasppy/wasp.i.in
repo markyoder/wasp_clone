@@ -36,6 +36,7 @@
 %shared_ptr(wasp::AbstractDefinition)
 %shared_ptr(wasp::Definition)
 %shared_ptr(wasp::AliasedDefinition)
+%shared_ptr(wasp::lsp::SymbolIterator)
 %shared_ptr(wasp::lsp::Connection)
 %shared_ptr(wasp::lsp::ThreadConnection)
 %{
@@ -62,6 +63,7 @@
 #include "LSP.h"
 #include "ServerImpl.h"
 #include "ClientImpl.h"
+#include "SymbolIterator.h"
 #include "Connection.h"
 #include "ThreadConnection.h"
 %}
@@ -95,6 +97,7 @@
 %include "LSP.h"
 %include "ServerImpl.h"
 %include "ClientImpl.h"
+%include "SymbolIterator.h"
 %include "Connection.h"
 %include "ThreadConnection.h"
 
