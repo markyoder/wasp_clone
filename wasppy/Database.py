@@ -470,7 +470,7 @@ class InputObject:
             if self.action():
                 self.action()(thisResult)
         except Exception as exception:
-            dr.interpreter.createErrorDiagnostic(dr.node, str(exception))
+            thisResult.interpreter.createErrorDiagnostic(node, str(exception))
 
         # Conduct set-level diagnostic checks
         self._conductAvailableChecks(thisResult)
