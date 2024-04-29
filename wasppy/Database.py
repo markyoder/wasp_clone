@@ -476,43 +476,35 @@ class InputObject:
         self._conductAvailableChecks(thisResult)
         return thisResult
 
-    def default(self, childKey):
-        if childKey in self._defaults:
-            return self._defaults[childKey]
+    def _getattr(self, name:str, childKey):
+        attr = getattr(self,"_"+name)
+        if childKey in attr:
+            return attr[childKey]
         return None
+
+    def default(self, childKey):
+        return self._getattr('defaults', childKey)
 
     def enumerations(self):
         return self._enums
 
     def maxOccurs(self, childKey):
-        if childKey in self._maxOccurs:
-            return self._maxOccurs[childKey]
-        return None
+        return self._getattr('maxOccurs', childKey)
 
     def minOccurs(self, childKey):
-        if childKey in self._minOccurs:
-            return self._minOccurs[childKey]
-        return None
+        return self._getattr('minOccurs', childKey)
 
     def minValInc(self, childKey):
-        if childKey in self._minValInc:
-            return self._minValInc[childKey]
-        return None
+        return self._getattr('minValInc', childKey)
 
     def minValExc(self, childKey):
-        if childKey in self._minValExc:
-            return self._minValExc[childKey]
-        return None
+        return self._getattr('minValExc', childKey)
 
     def maxValInc(self, childKey):
-        if childKey in self._maxValInc:
-            return self._maxValInc[childKey]
-        return None
+        return self._getattr('maxValInc', childKey)
 
     def maxValExc(self, childKey):
-        if childKey in self._maxValExc:
-            return self._maxValExc[childKey]
-        return None
+        return self._getattr('maxValExc', childKey)
 
     def serialize(self, io, level=0):
 
