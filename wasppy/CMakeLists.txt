@@ -113,7 +113,7 @@ add_dependencies(wasp_wheel wasppy waspcore waspson waspddi waspeddi wasphit was
 
 #Configure a basic unit test of the python bindings. In this case the wheels is 
 #installed as editable to test in a "natural" way and removed at the end.
-  TRIBITS_ADD_ADVANCED_TEST( test_swig_bindings
+  TRIBITS_ADD_ADVANCED_TEST( test_swig_all
   OVERALL_WORKING_DIRECTORY
     ${CMAKE_CURRENT_BUILD_DIR}
   OVERALL_NUM_MPI_PROCS
@@ -125,6 +125,9 @@ add_dependencies(wasp_wheel wasppy waspcore waspson waspddi waspeddi wasphit was
     CMND ${PYTHON_EXECUTABLE}
     ARGS -m unittest test/test_swig_bindings.py -v
   TEST_2
+    CMND ${PYTHON_EXECUTABLE}
+    ARGS -m unittest test/test_lsp_server_methods.py -v
+  TEST_3
     CMND ${PYTHON_EXECUTABLE}
     ARGS -m pip uninstall --yes ornl-wasp
   TIMEOUT 3000
