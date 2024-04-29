@@ -1033,8 +1033,11 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
                                                    client_capabilities))
             self.assertFalse(error_stream.str())
             initialize_response = DataObject()
+            self.assertFalse(test_py_server.isRunning())
             self.assertTrue(test_py_server.handleInitializeRequest(initialize_request,
                                                                    initialize_response))
+            self.assertTrue(test_py_server.isRunning())
+            self.assertFalse(test_py_server.clientSupportsSnippets())
             self.assertFalse(test_py_server.getErrors())
             # Check body of json rpc from server initialize response
             json_actual = stringstream()
@@ -1083,7 +1086,7 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
             document_path        = "test/path/to/doc"
             document_language_id = "test_language_id"
             document_text        = "test doc text 01"
-            document_version     =  1
+            document_version     = 1
             self.assertTrue(buildDidOpenNotification(didopen_notification,
                                                      error_stream,
                                                      document_path,
@@ -1205,7 +1208,7 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
             didchange_notification = DataObject()
             document_path          = "test/path/to/doc"
             document_text_change   = "test doc text 02"
-            document_version       =  2
+            document_version       = 2
             self.assertTrue(buildDidChangeNotification(didchange_notification,
                                                        error_stream,
                                                        document_path,
@@ -1935,6 +1938,56 @@ queried at: 1100.0,-1200.0,1300.0,1400.0'''
             self.assertFalse(error_stream.str())
             self.assertEqual(client_request_id, server_response_id)
             self.assertEqual("hover text of example test server", display_text)
+
+        with self.subTest(msg='test_py_server.didclose'):
+            # Build test didclose notification to handle with server
+            didclose_notification = DataObject()
+            document_path         = "test/path/to/doc"
+            self.assertTrue(buildDidCloseNotification(didclose_notification,
+                                                      error_stream,
+                                                      document_path))
+            self.assertFalse(error_stream.str())
+            self.assertTrue(test_py_server.handleDidCloseNotification(didclose_notification))
+            self.assertFalse(test_py_server.getErrors())
+
+        with self.subTest(msg='test_py_server.shutdown'):
+            # Build test shutdown request and handle by using server
+            shutdown_request  = DataObject()
+            client_request_id = 8
+            self.assertTrue(buildShutdownRequest(shutdown_request,
+                                                 error_stream,
+                                                 client_request_id))
+            self.assertFalse(error_stream.str())
+            shutdown_response = DataObject()
+            self.assertTrue(test_py_server.isRunning())
+            self.assertTrue(test_py_server.handleShutdownRequest(shutdown_request,
+                                                                 shutdown_response))
+            self.assertFalse(test_py_server.isRunning())
+            self.assertFalse(test_py_server.getErrors())
+            # Check json rpc body with shutdown response from server
+            json_actual = stringstream()
+            json_expect = '''
+{
+  "id" : 8
+  ,"result" : {}
+}
+            '''
+            self.assertTrue(shutdown_response.format_json(json_actual))
+            self.assertEqual(json_expect.strip(), json_actual.str())
+            # Check id value dissected from server shutdown response
+            success, server_response_id = dissectShutdownResponse(shutdown_response,
+                                                                  error_stream)
+            self.assertTrue(success)
+            self.assertFalse(error_stream.str())
+            self.assertEqual(client_request_id, server_response_id)
+
+        with self.subTest(msg='test_py_server.exit'):
+            # Build test exit notification for handling using server
+            exit_notification = DataObject()
+            self.assertTrue(buildExitNotification(exit_notification, error_stream))
+            self.assertFalse(error_stream.str())
+            self.assertTrue(test_py_server.handleExitNotification(exit_notification))
+            self.assertFalse(test_py_server.getErrors())
 
 if __name__ == '__main__':
      unittest.main()
