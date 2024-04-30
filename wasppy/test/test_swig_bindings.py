@@ -713,6 +713,7 @@ queries{
         expectedDiagnostics = '''input.son:6.26: value 0.0 is less than or equal to the allowed minimum exclusive value of 0!
 input.son:9.26: value foo is not one of the allows values ['linear']!
 input.son:16.16: id NaF must be unique but is duplicate to id on line 29 column 16
+input.son:29.16: id NaF must be unique but is duplicate to id on line 16 column 16
 input.son:44.32: value -1200.0 is less than or equal to the allowed minimum exclusive value of 0!
 '''
         self.maxDiff = None
@@ -748,6 +749,7 @@ input.son:44.32: value -1200.0 is less than or equal to the allowed minimum excl
         expectedDiagnostics = '''input.son:6.26: value 0.0 is less than or equal to the allowed minimum exclusive value of 0!
 input.son:9.26: value foo is not one of the allows values ['linear']!
 input.son:16.16: id NaF must be unique but is duplicate to id on line 29 column 16
+input.son:29.16: id NaF must be unique but is duplicate to id on line 16 column 16
 input.son:44.32: value -1200.0 is less than or equal to the allowed minimum exclusive value of 0!
 input.son:9.19: Type has value of foo which is not listed in ['linear']
 '''

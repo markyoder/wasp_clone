@@ -408,6 +408,7 @@ class InputObject:
                 # for which all data must be unique
                 if self._unique:
                     for context in self._unique:
+                        errors = set() # set for tracking error emissions
                         # accumulate all context
                         all_context = []
                         for c in context:
@@ -420,7 +421,12 @@ class InputObject:
                                 driv = dri.storedResult()
                                 drjv = drj.storedResult()
                                 if str(driv) == str(drjv):
-                                    dr.interpreter.createErrorDiagnostic(dri.node, str(driv)+" must be unique but is duplicate to "+drj.node.info())
+                                    if dri not in errors:
+                                        dr.interpreter.createErrorDiagnostic(dri.node, str(driv)+" must be unique but is duplicate to "+drj.node.info())
+                                        errors.add(dri)
+                                    if drj not in errors:
+                                        dr.interpreter.createErrorDiagnostic(drj.node, str(drjv)+" must be unique but is duplicate to "+dri.node.info())
+                                        errors.add(drj)
 
                 # conduct exists constraint checks
                 if self._exists:
