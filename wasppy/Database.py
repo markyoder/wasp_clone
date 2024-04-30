@@ -187,7 +187,7 @@ class InputObject:
         self._minOccurs = None # dict(childKey:minOccurs)
         self._minValExc = kwargs.pop("MinValExc", None)
         self._minValInc = kwargs.pop("MinValInc", None)
-        self._unique    = None
+        self._unique    = None # list(list(str)): list of path context to data which must be unique
         self._exists    = None
 
         assert len(kwargs) == 0, "Unexpected additional parameters to InputObject: " + str(kwargs)
@@ -291,10 +291,10 @@ class InputObject:
             self._exists = []
         self._exists.append(ec)
 
-    def addUniqueConstraint(self, name:str, context:'list(str)'):
-        '''Add a named constraint to this input object that requires all referenced context to
+    def addUniqueConstraint(self, context:'list(str)'):
+        '''Add a uniqueness constraint to this input object that requires all referenced context to
         have different data.
-        name:str - the name of the constraint
+
         context:list(str) - the paths associated with the data which must be unique
                             E.g., 'x/y/z' means the x child, y granchild, and z greatgrandchild definitions must exist
 
@@ -305,14 +305,14 @@ class InputObject:
         # Check each context selects input definition
         for c in context:
             selected = self.select(c)
-            assert selected is not None, "Unable to verify "+name+" uniqueness constraint for "+c+"! Constraints must refer to existing InputObject definitions"
+            assert selected is not None, "Unable to verify uniqueness constraint for "+c+"! Constraints must refer to existing InputObject definitions"
             for inputObject in selected:
                 # Unique constraints must reference terminal objects for comparison of data
-                assert inputObject.isTerminal(), name+ " uniqueness constraints for "+c+" can only be applied to terminal data nodes!"
+                assert inputObject.isTerminal(), "Uniqueness constraints for "+c+" can only be applied to terminal data nodes!"
 
         if self._unique is None:
-            self._unique = {}
-        self._unique[name] = context
+            self._unique = []
+        self._unique.append(context)
 
     def create(self, inputKey, **kwargs):
         '''Create an object as a child
@@ -404,8 +404,10 @@ class InputObject:
                 # conduct child set checks...
 
                 # conduct uniqueness constraints checks
+                # Each entry in _unique is a list of context paths
+                # for which all data must be unique
                 if self._unique:
-                    for name, context in self._unique.items():
+                    for context in self._unique:
                         # accumulate all context
                         all_context = []
                         for c in context:
@@ -419,6 +421,7 @@ class InputObject:
                                 drjv = drj.storedResult()
                                 if str(driv) == str(drjv):
                                     dr.interpreter.createErrorDiagnostic(dri.node, str(driv)+" must be unique but is duplicate to "+drj.node.info())
+
                 # conduct exists constraint checks
                 if self._exists:
                     for constraint in self._exists:

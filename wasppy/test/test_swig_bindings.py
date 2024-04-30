@@ -141,7 +141,7 @@ class TheInput:
         db = InputObject()
         salts = db.createRequiredSingle("salts", Desc="The collection of salts in the system")
         salts.addRequired("salt", Salt.definition())
-        salts.addUniqueConstraint("salt id", ["salt/id"])
+        salts.addUniqueConstraint(["salt/id"])
         db.createRequiredSingle("queries", Desc="Parameters for queries salt properties") \
             .createRequiredSingle("temperatures", Desc="Temperatures (C) at which to query density") \
                 .createRequired("value", MinValExc=0, Action=storeFloat)
