@@ -293,7 +293,7 @@ class InputObject:
 
     def addUniqueConstraint(self, name:str, context:'list(str)'):
         '''Add a named constraint to this input object that requires all referenced context to
-        have the same data.
+        have different data.
         name:str - the name of the constraint
         context:list(str) - the paths associated with the data which must be unique
                             E.g., 'x/y/z' means the x child, y granchild, and z greatgrandchild definitions must exist
@@ -305,10 +305,10 @@ class InputObject:
         # Check each context selects input definition
         for c in context:
             selected = self.select(c)
-            assert selected is not None, "Unable to verify unique constraint for "+c+"! Constraints must refer to existing InputObject definitions"
+            assert selected is not None, "Unable to verify "+name+" uniqueness constraint for "+c+"! Constraints must refer to existing InputObject definitions"
             for inputObject in selected:
                 # Unique constraints must reference terminal objects for comparison of data
-                assert inputObject.isTerminal(), "Uniqueness constraints can only be applied to terminal data nodes!"
+                assert inputObject.isTerminal(), name+ " uniqueness constraints for "+c+" can only be applied to terminal data nodes!"
 
         if self._unique is None:
             self._unique = {}
