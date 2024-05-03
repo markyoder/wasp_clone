@@ -16,13 +16,27 @@ class DataObject;
 
 namespace lsp  {
 
+/**
+ * @brief The IOStreamConnection reads and writes standard input and output
+ * It turns standard output off in construction and back on when destructed
+ * It also toggles standard output on and off only to write each rpc string
+ */
 class WASP_PUBLIC IOStreamConnection : public Connection
 {
   public:
 
-    IOStreamConnection(ServerImpl * server){ this->server = server; }
+    IOStreamConnection(ServerImpl * server)
+      : server(server), cached_output_buffer(std::cout.rdbuf(nullptr)) {}
 
-    ~IOStreamConnection(){}
+    IOStreamConnection(const IOStreamConnection &) = delete;
+
+    IOStreamConnection & operator= (const IOStreamConnection &) = delete;
+
+    ~IOStreamConnection()
+    {
+        // reset standard output stream buffer in order to turn it on again
+        std::cout.rdbuf(cached_output_buffer);
+    }
 
     typedef std::shared_ptr<Connection> SP;
 
@@ -88,20 +102,19 @@ class WASP_PUBLIC IOStreamConnection : public Connection
     bool write( DataObject & object , std::stringstream & errors )
     {
         bool pass = true;
-
-        // convert the provided object into the local rpc string
-
         std::string rpc_string;
 
+        // convert data from provided object into composed local rpc string
         pass &= objectToRPCString( object , rpc_string , errors );
 
-        // write the local rpc string to standard output
+        // reset standard output stream buffer so to write local rpc string
+        std::cout.rdbuf(cached_output_buffer);
 
-        std::cout << rpc_string;
+        // write local rpc string to standard output and force buffer flush
+        std::cout << rpc_string << std::flush;
 
-        // flush the standard output buffer
-
-        std::cout.flush();
+        // disable standard output again since local rpc string was written
+        cached_output_buffer = std::cout.rdbuf(nullptr);
 
         return pass;
     }
@@ -128,6 +141,11 @@ class WASP_PUBLIC IOStreamConnection : public Connection
      * @brief server - server used for this connection's reading and writing
      */
     ServerImpl * server;
+
+    /**
+     * @brief cached_output_buffer - standard output buffer saved for reset
+     */
+    std::streambuf * cached_output_buffer;
 };
 
 } // namespace lsp
