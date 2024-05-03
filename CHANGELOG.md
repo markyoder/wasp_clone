@@ -4,10 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.3.0] - 5-03-2024
+
 ### Added
 - LSP client and server support for both sending and receiving document hover text requests and responses
 - Python WaspNode.source method to provide access to stream or file path originating the node
 - Python WaspNode.isDecorative method to allow identification of decorative nodes (e.g., `{`,`,`,`decl`, etc.)
+- Initial Python InputObject Database definition layer. See [wasppy/README.md](wasppy/README.md) for more information. This allows Python application to define, deserialize, and provide input diagnostics for application input.
 
 ### Changed
 - LSP IOStreamConnection to handle turning off and on standard output when needed

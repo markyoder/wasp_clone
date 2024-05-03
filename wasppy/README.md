@@ -2,17 +2,17 @@
 
 WaspPy provides a python interface for utilizing WASP's parsing and validation functionality. The primary design consideration is to enable access to data represented in SON, DDI, EDDI, HIT, and HALITE formats.
 
-WaspPy places an emphasis on client convenience and provides overloading of the ".", dot operator. This is intended to allow a client to interact with their input with calls of the following form, `doc.subnode1.subnode2`, where doc is the object containing the parsed input and `subnode*` are branches of the parse tree defined in the schema.
+WaspPy places an emphasis on client convenience and provides overloading of the ".", dot operator. This is intended to allow a client to interact with their input with calls of the following form, `doc.subnode1.subnode2`, where doc is the object containing the parsed input and `subnode*` are branches of the parse tree defined in either a static input schema file or inline via an InputObject definition database.
 
 
 ## Example
 
-WASP supports structured and definition-driven syntaxes. Structured syntaxes (SON, HIT), do not require an input schema to be brought into memory. Definition-driven syntaxes (DDI, EDDI) require an input schema to construct the hierarchy of the desired parse tree. The following example illustrates how to bring input data into a program data structure using structured and definition-driven syntax.
+WASP supports structured and definition-driven syntaxes. Structured syntaxes (SON, HIT), do not require an input schema to be brought into memory. Definition-driven syntaxes (DDI, EDDI) require an input schema to construct the hierarchy of the desired parse tree. The following example illustrates how to bring input data into a program using structured and definition-driven syntax.
 
 ### Problem Description
 The following fictional application is a general chemistry code describing salts and property interpolation. Specifically, the input is composed of a collection of salts and series of temperatures at which to query salt density.
 
-The input schema that describes the input hierarchy and parameter constraint is [below](input_schema). A legal input follows and depicts 2 salts, `LiF` and `NaF`, and temperatures queries at `1100, 1200, 1300, 1400`: 
+The input schema that describes the input hierarchy and parameter constraint is [below](input_schema). A legal input follows and depicts 2 salts, `LiF` and `NaF`, and temperatures queries at `1100, 1200, 1300, 1400`:
 
 ```javascript
 salts {
@@ -114,7 +114,7 @@ if __name__ == '__main__':
     if errors:
         print ("\n".join(errors))
         sys.exit(1)
-    
+
     document = interpreter.root()
 
     # Obtain required queries parameter
@@ -139,7 +139,7 @@ if __name__ == '__main__':
     for s in salts:
         for t in temperatures:
             print ("Salt", s._name, "density at",t, "is", s.density(t))
-     
+
 ```
 
 When executing the above program and providing the given input you can expect the following output:
@@ -267,7 +267,7 @@ salts{
                 value{
                     MinOccurs = 1
                     MaxOccurs = 1
-                    ValType   = Real 
+                    ValType   = Real
                     MinValExc = "../../MinTemp/value"
                 } % end value
             } % end MaxTemp
@@ -316,7 +316,7 @@ queries{
     MaxOccurs = 1
 
     temperatures{
-        Description = "Temperatures (C) at which to query density" 
+        Description = "Temperatures (C) at which to query density"
         MinOccurs = 1
         MaxOccurs = 1
         value{
@@ -329,6 +329,198 @@ queries{
 } % end queries
 ```
 
+#### Equivalent Program Using InputObject Definition
+The Database.py module's InputObject allows Python programs to provide a definition of their input data with enhanced program-specific diagnostic abilities. Here is the same program updated with an embedded InputObject definition:
+
+```python
+from wasp import *
+from Database import InputObject, storeFloat, storeStr
+import math
+
+class LinearModel:
+    Definition = None
+    @staticmethod
+    def definition():
+        if LinearModel.Definition is not None: return LinearModel.Definition
+        dens = InputObject(Desc="Salt density")
+        dens.createRequiredSingle("A", Desc="Density A Coefficient").createRequiredSingle("value", Action=storeFloat)
+        dens.createRequiredSingle("B", Desc="Density B Coefficient").createRequiredSingle("value", Action=storeFloat)
+        dens.createSingle("C", Default=1.0, Desc="Density C Coefficient").createRequiredSingle("value", Action=storeFloat)
+        dens.createRequiredSingle("MinTemp", Desc="Minimum temperature").createRequiredSingle("value", MinValExc=0, Action=storeFloat)
+        dens.createRequiredSingle("MaxTemp", Desc="Maximum temperature").createRequiredSingle("value", Action=storeFloat)
+        dens.createSingle("Type", Default="linear", Desc="interpolation type").createRequiredSingle("value", Enums=["linear"], Action=storeStr)
+
+        LinearModel.Definition = dens
+        return LinearModel.Definition
+
+    @staticmethod
+    def createFrom(do:'DeserializedObject'):
+
+        result = LinearModel()
+        result._a = do["A"].value()
+        result._b = do["B"].value()
+        result._c = do["C"].value()
+        result._minT = do["MinTemp"].value()
+        result._maxT = do["MaxTemp"].value()
+
+        # Conduct temperature check
+        if result._maxT < result._minT:
+            do.interpreter.createErrorDiagnostic(do["MaxTemp"].node,
+            "value of "+str(result._maxT)+" is less than or equal to the allowed minimum exclusive value of "
+            +str(result._minT)+ " located at "+do["MinTemp"].node.info()+"!")
+
+        theType = do["Type"].value()
+
+        # Require Type to be a supported enumeration
+        # This demonstrates post deserialization diagnostic generation
+        enumerations = result.definition()["Type"]["value"].enumerations()
+        if theType not in enumerations:
+            do.interpreter.createWarningDiagnostic(do["Type"].node, "has value of "+str(do["Type"].node)+" which is not listed in "+str(enumerations))
+
+        return result
+
+    ''' _b*x + _c*y = _a '''
+    def __init__(self):
+        self._a = 0.0
+        self._b = 1.0
+        self._c = 1.0
+        self._minT = math.inf
+        self._maxT = -math.inf
+
+    def get_y(self,x: float) -> "float":
+        if self._c == 0.0:
+            return math.inf
+
+        return (self._a - (self._b * x)) / self._c
+
+class Salt:
+    Definition = None
+    @staticmethod
+    def definition():
+        '''
+            return inputObject - the definition of this object
+
+        '''
+        if Salt.Definition is not None: return Salt.Definition
+        salt = InputObject(Desc="Single Salt instance")
+        salt.createRequiredSingle("id", Enums=["LiF", "NaF", "CaF2", "NH4F", "NaCl"], Desc="Salt type", Action=storeStr)
+        salt.createRequiredSingle("BoilTemp", Desc="Salting boiling temperature") \
+                .createRequiredSingle("value", MinValExc=0, Action=storeFloat)
+        salt.createRequiredSingle("MeltTemp", Desc="Salt melting temperature").createRequiredSingle("value", Action=storeFloat)
+        salt.createSingle("MolecularWeight", Desc="Salt's molecular weight").createRequiredSingle("value", MinValExc=0, Action=storeFloat)
+        salt.addRequiredSingle("Density", LinearModel.definition())
+
+        Salt.Definition = salt
+        return Salt.Definition
+
+    @staticmethod
+    def createFrom(do:'DeserializedObject'):
+        '''
+            deserializedObject - Salt object data deserialized from user input
+            Create a Salt object from the given data and return it to the caller
+        '''
+
+        result = Salt()
+        result.id = do["id"] # not an id=value, just salt(id)
+        result.moleweight = do["MolecularWeight"].value() # is a key=value MolecularWeight=value
+        result.meltTemp = do["MeltTemp"].value()
+        result.boilTemp = do["BoilTemp"].value()
+        result._density = LinearModel.createFrom(do["Density"])
+
+        return result
+
+    def __init__(self):
+        self.id = ""
+        self.moleweight = 0.0
+        self.meltTemp = 0.0
+        self.boilTemp = 0.0
+        self._density: LinearModel
+
+    def density(self,T: float) -> "float":
+        return self._density.get_y(T)
+
+class TheInput:
+    Definition = None
+    @staticmethod
+    def definition():
+        if TheInput.Definition is not None: return TheInput.Definition
+        db = InputObject()
+        salts = db.createRequiredSingle("salts", Desc="The collection of salts in the system")
+        salts.addRequired("salt", Salt.definition())
+        salts.addUniqueConstraint(["salt/id"])
+        db.createRequiredSingle("queries", Desc="Parameters for queries salt properties") \
+            .createRequiredSingle("temperatures", Desc="Temperatures (C) at which to query density") \
+                .createRequired("value", MinValExc=0, Action=storeFloat)
+        TheInput.Definition = db
+        return TheInput.Definition
+
+    def createFrom(do:'DeserializedObject'):
+
+        result = TheInput()
+        result.salts = [Salt.createFrom(salt) for salt in do["salts"]["salt"]]
+        result.queryTemps = do["queries"]["temperatures"].valuelist()
+
+        return result
+
+    def __init__(self):
+        self.salts = None
+        self.queryTemps = None
+
+if __name__ == '__main__':
+    import sys
+    input_file = sys.argv[1]
+    interpreter = Interpreter(Syntax.SON, path=input_file)
+
+    errors = interpreter.errors()
+    if errors:
+        print ("\n".join(errors))
+        sys.exit(1)
+
+    document = interpreter.root()
+
+    # Obtain the input's definition database
+    definition = TheInput.definition()
+
+    # instance the user database with the interpreter user data
+    db = definition.deserialize(interpreter.root(), interpreter)
+
+    # Emit deserialize diagnostics and quit
+    if interpreter.deserializeDiagnostics():
+        print("".join(str(x)+"\n" for x in interpreter.deserializeDiagnostics()))
+        sys.exit(1)
+
+    # instance the program input structure from the definition instanced user database
+    theInput = TheInput.createFrom(db)
+
+    # Emit creation diagnostics and quit
+    if interpreter.deserializeDiagnostics():
+        print("".join(str(x)+"\n" for x in interpreter.deserializeDiagnostics()))
+        sys.exit(1)
+
+    # Obtain each salt's melt temperature value
+    for salt in theInput.salts:
+        # Print salt's id and melt temperature
+        print ("MeltTemp of", str(salt.id), "is", float(salt.meltTemp))
+
+    # Evaluate salt density for each temperature
+    for s in theInput.salts:
+        for t in theInput.queryTemps:
+            print ("Salt", s.id, "density at",t, "is", s.density(t))
+```
+
+When executed with the SON-formatted Salt input the expected output is produced:
+
+```shell
+MeltTemp of LiF is 1121.2
+...
+Salt NaF density at 1400.0 is 1.8695999999999997
+```
+
+Similarly, if a validation error is introduced an informative diagnostic is emitted with applicable providence of the issue:
+
+```shell
+problem.son:12.19: MaxTemp value of 1367.5 is less than or equal to the allowed minimum exclusive value of 1523.6 located at MinTemp on line 11 column 19!
+ ```
 
 
 

@@ -101,10 +101,18 @@ class WaspNode():
     def line(self) -> "int":
         '''Returns the line on which this node exists in the input'''
         return self._nodeview.line()
+    
+    def last_line(self) -> "int":
+        '''Returns the last line on which this node exists in the input'''
+        return self._nodeview.last_line()
 
     def column(self) -> "int":
         '''Returns the column on which this node exists in the input'''
         return self._nodeview.column()
+
+    def last_column(self) -> "int":
+        '''Returns the last column on which this node exists in the input'''
+        return self._nodeview.last_column()
     
     def info(self) -> "str":
         '''Returns the information for this node.'''
@@ -249,17 +257,40 @@ class WaspNode():
             return WaspNode(self._nodeview.parent(), None)
         return None
 
+class DiagnosticSeverity:
+    Error=1
+    Warning=2
+    Information=3
+    Hint=4
+
 class InterpreterDiagnostic(object):
 
-    def __init__(self, diagnostic = None):
+    @staticmethod
+    def createFromDiagnostic(diagnostic:'Diagnostic'):
         '''Create InterpreterDiagnostic, optionally from a C++ diagnostic'''
-        self._source_name = None if diagnostic is None else str(diagnostic.filename())
-        self._start_line = 1 if diagnostic is None else diagnostic.start_line()
-        self._end_line = 1 if diagnostic is None else diagnostic.end_line()
-        self._start_column = 1 if diagnostic is None else diagnostic.start_column()
-        self._end_column = 1 if diagnostic is None else diagnostic.start_column()
-        self._message = "" if diagnostic is None else str(diagnostic.message())
-        self._str = None if diagnostic is None else str(diagnostic.str()).rstrip()
+        id = InterpreterDiagnostic()
+        id._source_name = None if diagnostic is None else str(diagnostic.filename())
+        id._start_line = 1 if diagnostic is None else diagnostic.start_line()
+        id._end_line = 1 if diagnostic is None else diagnostic.end_line()
+        id._start_column = 1 if diagnostic is None else diagnostic.start_column()
+        id._end_column = 1 if diagnostic is None else diagnostic.start_column()
+        id._message = "" if diagnostic is None else str(diagnostic.message())
+        id._str = None if diagnostic is None else str(diagnostic.str()).rstrip()
+        id.severity = 1 # Error:1, Warning:2, Information:4, Hint:4
+        return id
+
+    @staticmethod
+    def createFromNode(severity:int, node:WaspNode, msg:str):
+        id = InterpreterDiagnostic()
+        id._source_name = node.source()
+        id._start_line = node.line()
+        id._end_line = node.last_line()
+        id._start_column = node.column()
+        id._end_column = node.last_column()
+        id._message = node.name() + " " + msg
+        id._str = None 
+        id.severity = severity # Error:1, Warning:2, Information:4, Hint:4
+        return id
 
     def source(self):
         return self._source_name
@@ -280,7 +311,8 @@ class InterpreterDiagnostic(object):
                 s += "-{}.{}".format(self._end_line, end_col)
             elif self._start_column < end_col:
                 s += "-{}".format(self._end_column)
-            return s;
+            s+= ": " + self._message;
+            return s
         else: return self._str
         
 
@@ -325,6 +357,7 @@ class Interpreter(object):
         self._inputdata: stringstream
         self._schema_interpreter: None|DefaultSONInterpreter = None
         self._parse_diagnostics: None|list(InterpreterDiagnostic) = None
+        self._deserialize_diagnostics: None|list(InterpreterDiagnostic) = None
 
         if "schema" in kwargs:
             self._set_schema(kwargs["schema"])
@@ -355,7 +388,7 @@ class Interpreter(object):
             diagnostics = self._interpreter.error_diagnostics()
             self._parse_diagnostics = []
             for d in diagnostics:
-                self._parse_diagnostics.append(InterpreterDiagnostic(d))
+                self._parse_diagnostics.append(InterpreterDiagnostic.createFromDiagnostic(d))
 
     def _set_schema(self,schema:str):
         parsed = False
@@ -383,8 +416,11 @@ class Interpreter(object):
         if not created:
             raise RuntimeError(f"Encountered errors creating input definition...\n {self._err_stream.str()}")
     
-    def parse_diagnostics(self):
+    def parseDiagnostics(self):
         return self._parse_diagnostics
+
+    def deserializeDiagnostics(self):
+        return self._deserialize_diagnostics
 
     def root(self) -> "WaspNode":
         '''Returns the document root node.'''
@@ -415,7 +451,11 @@ class Interpreter(object):
         
 
         '''
-        assert self._schema_interpreter, "Unable to check for errors because the 'schema' is not available!"
+
+        # If no schema was provided, no errors are available, return None
+        if self._schema_interpreter is None:
+            return None
+
         assert self._interpreter, "Unable to check for errors because the document is not available!"
         valid = HIVE()
         error_msgs = VectorString()
@@ -441,3 +481,20 @@ class Interpreter(object):
             error_list.append(str(s))
         return error_list
 
+    def createDiagnostic(self, node, msg, severity):
+        assert type(node) is WaspNode
+        if self._deserialize_diagnostics is None:
+            self._deserialize_diagnostics = []
+        self._deserialize_diagnostics.append(InterpreterDiagnostic.createFromNode(severity, node, msg))
+
+    def createErrorDiagnostic(self, node, msg):
+        self.createDiagnostic(node, msg, DiagnosticSeverity.Error)
+
+    def createWarningDiagnostic(self, node, msg):
+        self.createDiagnostic(node, msg, DiagnosticSeverity.Warning)
+
+    def createInformationDiagnostic(self, node, msg):
+        self.createDiagnostic(node, msg, DiagnosticSeverity.Information)
+
+    def createHintDiagnostic(self, node, msg):
+        self.createDiagnostic(node, msg, DiagnosticSeverity.Hint)

@@ -63,10 +63,37 @@ add_custom_target(wasppy ALL
 
 #Create setup.py using a version controlled skeleton with generator expressions
 #and cmake variables
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/MANIFEST.in DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/README.md DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/setup.cfg DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/MANIFEST.in
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/MANIFEST.in ${CMAKE_CURRENT_BINARY_DIR}/MANIFEST.in
+    MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/MANIFEST.in)
+
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/README.md
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/README.md ${CMAKE_CURRENT_BINARY_DIR}/README.md
+    MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/README.md)
+
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/../LICENSE
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE ${CMAKE_CURRENT_BINARY_DIR}/LICENSE
+    MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/README.md)
+
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/setup.cfg
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/setup.cfg ${CMAKE_CURRENT_BINARY_DIR}/setup.cfg
+    MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/setup.cfg)
+
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Database.py
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Database.py ${CMAKE_CURRENT_BINARY_DIR}/Database.py
+  MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/Database.py)
+
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test/test_swig_bindings.py
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/test/test_swig_bindings.py ${CMAKE_CURRENT_BINARY_DIR}/test/test_swig_bindings.py
+  MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/test/test_swig_bindings.py)
+
+
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in WASPPY_SETUP)
 string(CONFIGURE "${WASPPY_SETUP}" WASPPY_SETUP_CONFIG)
 if(CMAKE_CONFIGURATION_TYPES)
@@ -76,7 +103,8 @@ else()
 endif()
 
 #Execute the setup file to generate a wheel
-add_custom_target(wasp_wheel ALL "${PYTHON_EXECUTABLE}" -m build > python_build.log 2>&1)
+add_custom_target(wasp_wheel ALL "${PYTHON_EXECUTABLE}" -m build > python_build.log 2>&1
+                  DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/Database.py ${CMAKE_CURRENT_BINARY_DIR}/test/test_swig_bindings.py)
 add_dependencies(wasp_wheel wasppy waspcore waspson waspddi waspeddi wasphit waspsiren wasphive)
 
 #Configure a basic unit test of the python bindings. In this case the wheels is 
