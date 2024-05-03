@@ -5,7 +5,6 @@ from .example_server import ExampleServer
 class TestLspServerMethods(unittest.TestCase):
 
     def test_server_methods(self):
-        self.maxDiff = None
         error_stream = stringstream()
         example_server = ExampleServer()
 
