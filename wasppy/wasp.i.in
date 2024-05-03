@@ -13,6 +13,9 @@
 // Ignore protected errors stringstream in ServerImpl due to issues in wrap
 %ignore wasp::lsp::ServerImpl::errors;
 
+// Enable director so Connection can be implemented in derived Python class
+%feature("director") wasp::lsp::Connection;
+
 // Use typemaps to output primitive type arguments set by reference passing
 %include typemaps.i
 %apply int  & OUTPUT { int  & };
@@ -39,6 +42,7 @@
 %shared_ptr(wasp::lsp::SymbolIterator)
 %shared_ptr(wasp::lsp::Connection)
 %shared_ptr(wasp::lsp::ThreadConnection)
+%shared_ptr(wasp::lsp::IOStreamConnection)
 %{
 #define SWIG_FILE_INIT
 #include "utils.h"
@@ -66,6 +70,7 @@
 #include "SymbolIterator.h"
 #include "Connection.h"
 #include "ThreadConnection.h"
+#include "IOStreamConnection.h"
 %}
 
 // Instantiate templates used by wasp
@@ -100,6 +105,7 @@
 %include "SymbolIterator.h"
 %include "Connection.h"
 %include "ThreadConnection.h"
+%include "IOStreamConnection.h"
 
 // Various node views 
 %include "SONNodeView.h"

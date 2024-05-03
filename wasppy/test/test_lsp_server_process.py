@@ -1,28 +1,29 @@
-import unittest, threading
+import unittest, os
 from wasp import *
-from .example_server import ExampleServer
+from .py_process_connection import PyProcessConnection
 
-class TestLspServerRunning(unittest.TestCase):
+class TestLspServerProcess(unittest.TestCase):
 
-    def test_server_running(self):
+    def test_server_process(self):
 
-        with self.subTest(msg='server_running.launch_thread_and_run_server'):
-            # Launch thread to execute server run method and connect client
-            example_server = ExampleServer()
-            example_server.setConnection(ThreadConnection(example_server))
-            testing_client = ClientImpl()
-            running_thread = threading.Thread(target=example_server.run, daemon=True)
-            running_thread.start()
+        with self.subTest(msg='server_process.start_run_and_connect_client'):
+            # Start subprocess running server executable and connect client
+            example_server_path = os.path.join(os.path.dirname(__file__), "example_server.py")
+            testing_client      = ClientImpl()
+            connection          = PyProcessConnection()
+            self.assertFalse(connection.isServerRunning())
+            self.assertTrue(connection.startServer(example_server_path))
+            self.assertTrue(connection.isServerRunning())
             self.assertFalse(testing_client.isConnected())
-            self.assertTrue(testing_client.connect(example_server.getConnection()))
+            self.assertTrue(testing_client.connect(connection))
             self.assertTrue(testing_client.isConnected())
+            self.assertFalse(connection.getServerErrors())
+            self.assertFalse(testing_client.getErrors())
 
-        with self.subTest(msg='server_running.initialize_and_open_document'):
+        with self.subTest(msg='server_process.initialize_and_open_document'):
             # Initialize server and handle initialized using startUpCleanly
-            self.assertFalse(testing_client.getConnection().isServerRunning())
             self.assertTrue(testing_client.startUpCleanly())
-            self.assertTrue(testing_client.getConnection().isServerRunning())
-            self.assertFalse(testing_client.getConnection().getServerErrors())
+            self.assertFalse(connection.getServerErrors())
             self.assertFalse(testing_client.getErrors())
             self.assertEqual(1, testing_client.getPreviousRequestID())
             # Open document which contains initial text by notifying server
@@ -33,7 +34,7 @@ class TestLspServerRunning(unittest.TestCase):
             self.assertTrue(testing_client.doDocumentOpen(doc_path, doc_lang, doc_text))
             self.assertTrue(testing_client.isDocumentOpen())
             self.assertEqual(1, testing_client.getCurrentDocumentVersion())
-            self.assertFalse(testing_client.getConnection().getServerErrors())
+            self.assertFalse(connection.getServerErrors())
             self.assertFalse(testing_client.getErrors())
             self.assertEqual(1, testing_client.getPreviousRequestID())
             # Check diagnostic list provided by server for initial document
@@ -69,13 +70,13 @@ class TestLspServerRunning(unittest.TestCase):
                     self.assertEqual( "source_303"  , diag.source          )
                     self.assertEqual( "message 303" , diag.message         )
 
-        with self.subTest(msg='server_running.update_text_and_send_changes'):
+        with self.subTest(msg='server_process.update_text_and_send_changes'):
             # Change text within open document and notify server of updates
             doc_edit = "test doc text 02"
             self.assertEqual(1, testing_client.getCurrentDocumentVersion())
             self.assertTrue(testing_client.doDocumentChange(-1, -1, -1, -1, -1, doc_edit))
             self.assertEqual(2, testing_client.getCurrentDocumentVersion())
-            self.assertFalse(testing_client.getConnection().getServerErrors())
+            self.assertFalse(connection.getServerErrors())
             self.assertFalse(testing_client.getErrors())
             self.assertEqual(1, testing_client.getPreviousRequestID())
             # Check diagnostic list provided by server for updated document
@@ -102,11 +103,11 @@ class TestLspServerRunning(unittest.TestCase):
                     self.assertEqual( "source_505"  , diag.source          )
                     self.assertEqual( "message 505" , diag.message         )
 
-        with self.subTest(msg='server_running.request_completion_and_check'):
+        with self.subTest(msg='server_process.request_completion_and_check'):
             # Request document completion for parameters specific to server
             req_line, req_char = 23, 45
             self.assertTrue(testing_client.doDocumentCompletion(req_line, req_char))
-            self.assertFalse(testing_client.getConnection().getServerErrors())
+            self.assertFalse(connection.getServerErrors())
             self.assertFalse(testing_client.getErrors())
             self.assertEqual(2, testing_client.getPreviousRequestID())
             # Check completion list provided in server response for request
@@ -154,11 +155,11 @@ class TestLspServerRunning(unittest.TestCase):
                     self.assertEqual( False                   , comp.preselect          )
                     self.assertEqual( m_text_format_plaintext , comp.insert_text_format )
 
-        with self.subTest(msg='server_running.request_definition_and_check'):
+        with self.subTest(msg='server_process.request_definition_and_check'):
             # Request document definition for parameters specific to server
             req_line, req_char = 34, 56
             self.assertTrue(testing_client.doDocumentDefinition(req_line, req_char))
-            self.assertFalse(testing_client.getConnection().getServerErrors())
+            self.assertFalse(connection.getServerErrors())
             self.assertFalse(testing_client.getErrors())
             self.assertEqual(3, testing_client.getPreviousRequestID())
             # Check definition list provided in server response for request
@@ -185,12 +186,12 @@ class TestLspServerRunning(unittest.TestCase):
                     self.assertEqual( 35                   , dloc.end_line        )
                     self.assertEqual( 33                   , dloc.end_character   )
 
-        with self.subTest(msg='server_running.request_references_and_check'):
+        with self.subTest(msg='server_process.request_references_and_check'):
             # Request document references for parameters specific to server
             req_line, req_char = 45, 67
             inc_decl           = True
             self.assertTrue(testing_client.doDocumentReferences(req_line, req_char, inc_decl))
-            self.assertFalse(testing_client.getConnection().getServerErrors())
+            self.assertFalse(connection.getServerErrors())
             self.assertFalse(testing_client.getErrors())
             self.assertEqual(4, testing_client.getPreviousRequestID())
             # Check references list provided in server response for request
@@ -217,12 +218,12 @@ class TestLspServerRunning(unittest.TestCase):
                     self.assertEqual( 65                   , rloc.end_line        )
                     self.assertEqual( 36                   , rloc.end_character   )
 
-        with self.subTest(msg='server_running.request_formatting_and_check'):
+        with self.subTest(msg='server_process.request_formatting_and_check'):
             # Request document formatting for parameters specific to server
             tab_size      = 3
             insert_spaces = True
             self.assertTrue(testing_client.doDocumentFormatting(tab_size, insert_spaces))
-            self.assertFalse(testing_client.getConnection().getServerErrors())
+            self.assertFalse(connection.getServerErrors())
             self.assertFalse(testing_client.getErrors())
             self.assertEqual(5, testing_client.getPreviousRequestID())
             # Check formatting edit provided in server response for request
@@ -235,11 +236,11 @@ class TestLspServerRunning(unittest.TestCase):
             self.assertEqual( 16                             , edit.end_character   )
             self.assertEqual( "test\n   doc\n   text\n   02" , edit.new_text        )
 
-        with self.subTest(msg='server_running.request_hover_text_and_check'):
+        with self.subTest(msg='server_process.request_hover_text_and_check'):
             # Request document hover text for parameters specific to server
             req_line, req_char = 56, 78
             self.assertTrue(testing_client.doDocumentHover(req_line, req_char))
-            self.assertFalse(testing_client.getConnection().getServerErrors())
+            self.assertFalse(connection.getServerErrors())
             self.assertFalse(testing_client.getErrors())
             self.assertEqual(6, testing_client.getPreviousRequestID())
             # Check hover display text given in server response for request
@@ -248,10 +249,10 @@ class TestLspServerRunning(unittest.TestCase):
             self.assertFalse(testing_client.getErrors())
             self.assertEqual("hover text of example test server", display_text)
 
-        with self.subTest(msg='server_running.get_symbols_and_use_iterator'):
+        with self.subTest(msg='server_process.get_symbols_and_use_iterator'):
             # Request hierarchical tree of symbols for document from server
             self.assertTrue(testing_client.doDocumentSymbols())
-            self.assertFalse(testing_client.getConnection().getServerErrors())
+            self.assertFalse(connection.getServerErrors())
             self.assertFalse(testing_client.getErrors())
             self.assertEqual(7, testing_client.getPreviousRequestID())
             # Use SymbolIterator to check hierarchical tree built by server
@@ -316,19 +317,19 @@ class TestLspServerRunning(unittest.TestCase):
                              "/doc_root_name/child_02_name (41:42)" ]
             self.assertEqual(paths_expect, paths_actual)
 
-        with self.subTest(msg='server_running.close_document_and_finish_up'):
+        with self.subTest(msg='server_process.close_document_and_finish_up'):
             # Close document and quit with wrapUpCleanly so server can exit
-            self.assertTrue(testing_client.getConnection().isServerRunning())
+            self.assertTrue(connection.isServerRunning())
             self.assertTrue(testing_client.isDocumentOpen())
             self.assertTrue(testing_client.isConnected())
             self.assertTrue(testing_client.wrapUpCleanly())
+            self.assertTrue(connection.waitForFinished())
             self.assertFalse(testing_client.isConnected())
             self.assertFalse(testing_client.isDocumentOpen())
-            self.assertFalse(testing_client.getConnection().isServerRunning())
-            self.assertFalse(testing_client.getConnection().getServerErrors())
+            self.assertFalse(connection.isServerRunning())
+            self.assertFalse(connection.getServerErrors())
             self.assertFalse(testing_client.getErrors())
             self.assertEqual(8, testing_client.getPreviousRequestID())
-            running_thread.join()
 
 if __name__ == '__main__':
     unittest.main()

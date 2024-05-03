@@ -8,7 +8,7 @@ class ExampleServer(ServerImpl):
         '''Set up capabilities of concrete example server implementation'''
         super().__init__()
         self.is_python_server = True
-        self.connection = ThreadConnection(self)
+        self.connection = None
         self.enableFullSync()
         self.enableSymbols()
         self.enableCompletion()
@@ -17,16 +17,29 @@ class ExampleServer(ServerImpl):
         self.enableReferences()
         self.enableHover()
 
+    def setConnection(self, connection):
+        '''Set connection object used by server for client communication'''
+        self.connection = connection
+
     def getConnection(self):
         '''Get connection object used by server for client communication'''
+        if not self.connection:
+            self.errorStream() << m_error_prefix << "Server needs connection set\n"
+            return None
         return self.connection
 
     def connectionRead(self, object):
         '''Read JSON-RPC from connection and put data in provided object'''
+        if not self.connection:
+            self.errorStream() << m_error_prefix << "Server needs connection set\n"
+            return False
         return self.connection.read(object, self.errorStream())
 
     def connectionWrite(self, object):
         '''Convert object to JSON-RPC packet and write out to connection'''
+        if not self.connection:
+            self.errorStream() << m_error_prefix << "Server needs connection set\n"
+            return False
         return self.connection.write(object, self.errorStream())
 
     def updateDocumentTextChanges(self, replace_text, beg_line, beg_char, end_line, end_char, range_len):
@@ -225,3 +238,8 @@ class ExampleServer(ServerImpl):
         if req_line == 56 and req_char == 78:
             display_text = "hover text of example test server"
         return display_text
+
+if __name__ == '__main__':
+    example_server = ExampleServer()
+    example_server.setConnection(IOStreamConnection(example_server))
+    example_server.run()
