@@ -58,6 +58,7 @@ bool HITNodeView::is_decorative() const
         case wasp::DECL:
         case wasp::TERM:
         case wasp::ASSIGN:
+        case wasp::OVERRIDE_ASSIGN:
         case wasp::COMMENT:
         case wasp::IDENTIFIER:
         case wasp::OBJECT_TERM:

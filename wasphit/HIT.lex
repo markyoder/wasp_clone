@@ -62,6 +62,7 @@ COMMENT #([^\n]|{UNICODE})*
  // Anything But Closing Brace allows consuming invalid/unknown tokens until newline or closing brace
 ABCB [^ \]\t\r\n]+
 ASSIGN =
+OVERRIDE_ASSIGN :(override)?=
 LBRACKET \[
 
  /* START matches '${', END matches '}', INNER matches other pieces in scope */
@@ -223,7 +224,12 @@ INCLUDE_PATH [^ \t\n][^\n#\[]*
     capture_token(yylval,wasp::ASSIGN);
     return token::ASSIGN;
 }
-
+<param>{OVERRIDE_ASSIGN} {
+    yy_pop_state();
+    yy_push_state(assign);
+    capture_token(yylval,wasp::OVERRIDE_ASSIGN);
+    return token::OVERRIDE_ASSIGN;
+}
 <array,assign,brace_expression_state>{BRACE_EXPRESSION_START} {
     yy_push_state(brace_expression_state);
 
