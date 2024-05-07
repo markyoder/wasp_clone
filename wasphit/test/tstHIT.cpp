@@ -3307,7 +3307,7 @@ param&name=10
     ASSERT_FALSE(interpreter.parse(input));
 
     std::stringstream expected_errors;
-    expected_errors << "stream input:2.6: syntax error, unexpected invalid token, expecting ="
+    expected_errors << "stream input:2.6: syntax error, unexpected invalid token, expecting = or :="
                   << std::endl;
 
     ASSERT_EQ(expected_errors.str(), actual_errors.str());
@@ -5172,7 +5172,7 @@ TEST(HITInterpreter, recovery_missing_assign_in_block)
     std::stringstream errors;
     DefaultHITInterpreter interpreter(errors);
     ASSERT_FALSE(interpreter.parse(input));
-    ASSERT_EQ("stream input:3.1: syntax error, unexpected end of line, expecting =\nstream input:1.1: syntax error, unexpected end of file, expecting block terminator\n", errors.str());
+    ASSERT_EQ("stream input:3.1: syntax error, unexpected end of line, expecting = or :=\nstream input:1.1: syntax error, unexpected end of file, expecting block terminator\n", errors.str());
     HITNodeView document = interpreter.root();
     ASSERT_FALSE(document.is_null());
 
@@ -5203,7 +5203,7 @@ TEST(HITInterpreter, recovery_missing_assign_in_block_w_eof)
     std::stringstream errors;
     DefaultHITInterpreter interpreter(errors);
     ASSERT_FALSE(interpreter.parse(input));
-    ASSERT_EQ("stream input:2.5: syntax error, unexpected end of file, expecting =\nstream input:1.1: syntax error, unexpected end of file, expecting block terminator\n", errors.str());
+    ASSERT_EQ("stream input:2.5: syntax error, unexpected end of file, expecting = or :=\nstream input:1.1: syntax error, unexpected end of file, expecting block terminator\n", errors.str());
     HITNodeView document = interpreter.root();
     ASSERT_FALSE(document.is_null());
 
@@ -5373,7 +5373,7 @@ TEST(HITInterpreter, recovery_missing_assign_eof)
   param)INPUT";
 
     std::string expect_error = R"INPUT(
-stream input:2.8: syntax error, unexpected end of file, expecting =
+stream input:2.8: syntax error, unexpected end of file, expecting = or :=
 stream input:1.1: syntax error, unexpected end of file, expecting block terminator
 )INPUT";
 
@@ -5764,4 +5764,76 @@ TEST(HITInterpreter, test_dquote_after_newline)
     ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
 
     ASSERT_EQ("foo =\n       \"bar\"", interpreter.root().data());
+}
+
+/**
+ * @brief Test short and verbose override assign for key values and arrays
+ */
+TEST(HITInterpreter, override_assigns)
+{
+    std::stringstream input_stream;
+    input_stream << R"INPUT(
+[obj]
+  param1 = 10
+  param2 := 20
+  param3 :override= 30
+  array1 = '11 12 13'
+  array2 := '21 22 23'
+  array3 :override= '31 32 33'
+[]
+)INPUT";
+
+    std::string expect_paths_and_types = R"(
+/                  )" + std::to_string(wasp::DOCUMENT_ROOT)   + R"(
+/obj              )"  + std::to_string(wasp::OBJECT)          + R"(
+/obj/[            )"  + std::to_string(wasp::LBRACKET)        + R"( ([)
+/obj/decl          )" + std::to_string(wasp::DECL)            + R"( (obj)
+/obj/]            )"  + std::to_string(wasp::RBRACKET)        + R"( (])
+/obj/param1       )"  + std::to_string(wasp::KEYED_VALUE)     + R"( OVERRIDE=OFF
+/obj/param1/decl   )" + std::to_string(wasp::DECL)            + R"( (param1)
+/obj/param1/=      )" + std::to_string(wasp::ASSIGN)          + R"( (=)
+/obj/param1/value )"  + std::to_string(wasp::VALUE)           + R"( (10)
+/obj/param2       )"  + std::to_string(wasp::KEYED_VALUE)     + R"( OVERRIDE=ON
+/obj/param2/decl   )" + std::to_string(wasp::DECL)            + R"( (param2)
+/obj/param2/:=    )"  + std::to_string(wasp::OVERRIDE_ASSIGN) + R"( (:=)
+/obj/param2/value )"  + std::to_string(wasp::VALUE)           + R"( (20)
+/obj/param3       )"  + std::to_string(wasp::KEYED_VALUE)     + R"( OVERRIDE=ON
+/obj/param3/decl   )" + std::to_string(wasp::DECL)            + R"( (param3)
+/obj/param3/:=    )"  + std::to_string(wasp::OVERRIDE_ASSIGN) + R"( (:override=)
+/obj/param3/value )"  + std::to_string(wasp::VALUE)           + R"( (30)
+/obj/array1       )"  + std::to_string(wasp::ARRAY)           + R"( OVERRIDE=OFF
+/obj/array1/decl   )" + std::to_string(wasp::DECL)            + R"( (array1)
+/obj/array1/=      )" + std::to_string(wasp::ASSIGN)          + R"( (=)
+/obj/array1/'      )" + std::to_string(wasp::QUOTE)           + R"( (')
+/obj/array1/value )"  + std::to_string(wasp::VALUE)           + R"( (11)
+/obj/array1/value )"  + std::to_string(wasp::VALUE)           + R"( (12)
+/obj/array1/value )"  + std::to_string(wasp::VALUE)           + R"( (13)
+/obj/array1/'      )" + std::to_string(wasp::QUOTE)           + R"( (')
+/obj/array2       )"  + std::to_string(wasp::ARRAY)           + R"( OVERRIDE=ON
+/obj/array2/decl   )" + std::to_string(wasp::DECL)            + R"( (array2)
+/obj/array2/:=    )"  + std::to_string(wasp::OVERRIDE_ASSIGN) + R"( (:=)
+/obj/array2/'      )" + std::to_string(wasp::QUOTE)           + R"( (')
+/obj/array2/value )"  + std::to_string(wasp::VALUE)           + R"( (21)
+/obj/array2/value )"  + std::to_string(wasp::VALUE)           + R"( (22)
+/obj/array2/value )"  + std::to_string(wasp::VALUE)           + R"( (23)
+/obj/array2/'      )" + std::to_string(wasp::QUOTE)           + R"( (')
+/obj/array3       )"  + std::to_string(wasp::ARRAY)           + R"( OVERRIDE=ON
+/obj/array3/decl   )" + std::to_string(wasp::DECL)            + R"( (array3)
+/obj/array3/:=    )"  + std::to_string(wasp::OVERRIDE_ASSIGN) + R"( (:override=)
+/obj/array3/'      )" + std::to_string(wasp::QUOTE)           + R"( (')
+/obj/array3/value )"  + std::to_string(wasp::VALUE)           + R"( (31)
+/obj/array3/value )"  + std::to_string(wasp::VALUE)           + R"( (32)
+/obj/array3/value )"  + std::to_string(wasp::VALUE)           + R"( (33)
+/obj/array3/'      )" + std::to_string(wasp::QUOTE)           + R"( (')
+/obj/term         )"  + std::to_string(wasp::OBJECT_TERM)     + R"( ([])
+)";
+
+    // Check successful parse, paths, types, override info, and round trip
+    std::stringstream actual_paths_and_types;
+    DefaultHITInterpreter interpreter;
+    ASSERT_TRUE(interpreter.parse(input_stream));
+    ASSERT_FALSE(interpreter.root().is_null());
+    wasp::node_paths_and_types(interpreter.root(), actual_paths_and_types, true);
+    ASSERT_EQ(expect_paths_and_types, "\n" + actual_paths_and_types.str());
+    ASSERT_EQ(input_stream.str(), "\n" + interpreter.root().data() + "\n");
 }

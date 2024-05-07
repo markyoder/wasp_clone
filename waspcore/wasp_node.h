@@ -70,6 +70,7 @@ enum NODE : unsigned char
     WASP_NULL,  // disambiguated from C-NULL
     CONDITIONAL,
     FILE,
+    OVERRIDE_ASSIGN,
     REPEAT
 };
 }

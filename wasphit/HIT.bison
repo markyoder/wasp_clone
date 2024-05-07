@@ -83,6 +83,7 @@
 %token                 '{'
 %token                 '}'
 %token <token_index>   ASSIGN           "="
+%token <token_index>   OVERRIDE_ASSIGN  ":="
 %token <token_index>   SEMICOLON        ";"
 %token <token_index>   DOT_SLASH        "subblock indicator ./"
 %token <token_index>   QUOTE            "'"
@@ -296,6 +297,12 @@ assign : ASSIGN
     {
         size_t assign_token_index = ($1);
         $$ = interpreter.push_leaf(wasp::ASSIGN,"="
+                         ,assign_token_index);
+    }
+    | OVERRIDE_ASSIGN
+    {
+        size_t assign_token_index = ($1);
+        $$ = interpreter.push_leaf(wasp::OVERRIDE_ASSIGN,":="
                          ,assign_token_index);
     }
 

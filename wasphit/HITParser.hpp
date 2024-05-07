@@ -260,20 +260,21 @@ namespace wasp {
     LBRACKET = 260,                // "["
     RBRACKET = 261,                // "]"
     ASSIGN = 262,                  // "="
-    SEMICOLON = 263,               // ";"
-    DOT_SLASH = 264,               // "subblock indicator ./"
-    QUOTE = 265,                   // "'"
-    INTEGER = 266,                 // "integer"
-    REAL = 267,                    // "real"
-    STRING = 268,                  // "string"
-    OBJCT_STRING = 269,            // "object name"
-    PARAM_STRING = 270,            // "parameter name"
-    VALUE_STRING = 271,            // "value string"
-    ARRAY_STRING = 272,            // "array string"
-    QSTRING = 273,                 // "quoted string"
-    COMMENT = 274,                 // "comment"
-    OBJECT_TERM = 275,             // "block terminator"
-    FILE = 278                     // "file include"
+    OVERRIDE_ASSIGN = 263,         // ":="
+    SEMICOLON = 264,               // ";"
+    DOT_SLASH = 265,               // "subblock indicator ./"
+    QUOTE = 266,                   // "'"
+    INTEGER = 267,                 // "integer"
+    REAL = 268,                    // "real"
+    STRING = 269,                  // "string"
+    OBJCT_STRING = 270,            // "object name"
+    PARAM_STRING = 271,            // "parameter name"
+    VALUE_STRING = 272,            // "value string"
+    ARRAY_STRING = 273,            // "array string"
+    QSTRING = 274,                 // "quoted string"
+    COMMENT = 275,                 // "comment"
+    OBJECT_TERM = 276,             // "block terminator"
+    FILE = 279                     // "file include"
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -290,7 +291,7 @@ namespace wasp {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 26, ///< Number of tokens.
+        YYNTOKENS = 27, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -302,50 +303,51 @@ namespace wasp {
         S_7_ = 7,                                // '{'
         S_8_ = 8,                                // '}'
         S_ASSIGN = 9,                            // "="
-        S_SEMICOLON = 10,                        // ";"
-        S_DOT_SLASH = 11,                        // "subblock indicator ./"
-        S_QUOTE = 12,                            // "'"
-        S_INTEGER = 13,                          // "integer"
-        S_REAL = 14,                             // "real"
-        S_STRING = 15,                           // "string"
-        S_OBJCT_STRING = 16,                     // "object name"
-        S_PARAM_STRING = 17,                     // "parameter name"
-        S_VALUE_STRING = 18,                     // "value string"
-        S_ARRAY_STRING = 19,                     // "array string"
-        S_QSTRING = 20,                          // "quoted string"
-        S_COMMENT = 21,                          // "comment"
-        S_OBJECT_TERM = 22,                      // "block terminator"
-        S_23_section_name_ = 23,                 // "section name"
-        S_24_value_ = 24,                        // "value"
-        S_FILE = 25,                             // "file include"
-        S_YYACCEPT = 26,                         // $accept
-        S_semicolon = 27,                        // semicolon
-        S_assign = 28,                           // assign
-        S_object_term = 29,                      // object_term
-        S_lbracket = 30,                         // lbracket
-        S_rbracket = 31,                         // rbracket
-        S_dot_slash = 32,                        // dot_slash
-        S_include = 33,                          // include
-        S_object_decl = 34,                      // object_decl
-        S_object_member = 35,                    // object_member
-        S_object_members = 36,                   // object_members
-        S_object = 37,                           // object
-        S_double_quoted_string = 38,             // double_quoted_string
-        S_double_quoted_strings = 39,            // double_quoted_strings
-        S_VALUE = 40,                            // VALUE
-        S_value = 41,                            // value
-        S_SECTION_NAME = 42,                     // SECTION_NAME
-        S_section_name = 43,                     // section_name
-        S_field_name = 44,                       // field_name
-        S_quote = 45,                            // quote
-        S_path = 46,                             // path
-        S_include_file = 47,                     // include_file
-        S_array_member = 48,                     // array_member
-        S_array_members = 49,                    // array_members
-        S_array = 50,                            // array
-        S_keyedvalue = 51,                       // keyedvalue
-        S_comment = 52,                          // comment
-        S_start = 53                             // start
+        S_OVERRIDE_ASSIGN = 10,                  // ":="
+        S_SEMICOLON = 11,                        // ";"
+        S_DOT_SLASH = 12,                        // "subblock indicator ./"
+        S_QUOTE = 13,                            // "'"
+        S_INTEGER = 14,                          // "integer"
+        S_REAL = 15,                             // "real"
+        S_STRING = 16,                           // "string"
+        S_OBJCT_STRING = 17,                     // "object name"
+        S_PARAM_STRING = 18,                     // "parameter name"
+        S_VALUE_STRING = 19,                     // "value string"
+        S_ARRAY_STRING = 20,                     // "array string"
+        S_QSTRING = 21,                          // "quoted string"
+        S_COMMENT = 22,                          // "comment"
+        S_OBJECT_TERM = 23,                      // "block terminator"
+        S_24_section_name_ = 24,                 // "section name"
+        S_25_value_ = 25,                        // "value"
+        S_FILE = 26,                             // "file include"
+        S_YYACCEPT = 27,                         // $accept
+        S_semicolon = 28,                        // semicolon
+        S_assign = 29,                           // assign
+        S_object_term = 30,                      // object_term
+        S_lbracket = 31,                         // lbracket
+        S_rbracket = 32,                         // rbracket
+        S_dot_slash = 33,                        // dot_slash
+        S_include = 34,                          // include
+        S_object_decl = 35,                      // object_decl
+        S_object_member = 36,                    // object_member
+        S_object_members = 37,                   // object_members
+        S_object = 38,                           // object
+        S_double_quoted_string = 39,             // double_quoted_string
+        S_double_quoted_strings = 40,            // double_quoted_strings
+        S_VALUE = 41,                            // VALUE
+        S_value = 42,                            // value
+        S_SECTION_NAME = 43,                     // SECTION_NAME
+        S_section_name = 44,                     // section_name
+        S_field_name = 45,                       // field_name
+        S_quote = 46,                            // quote
+        S_path = 47,                             // path
+        S_include_file = 48,                     // include_file
+        S_array_member = 49,                     // array_member
+        S_array_members = 50,                    // array_members
+        S_array = 51,                            // array
+        S_keyedvalue = 52,                       // keyedvalue
+        S_comment = 53,                          // comment
+        S_start = 54                             // start
       };
     };
 
@@ -857,7 +859,7 @@ namespace wasp {
     /// Constants.
     enum
     {
-      yylast_ = 93,     ///< Last index in yytable_.
+      yylast_ = 97,     ///< Last index in yytable_.
       yynnts_ = 28,  ///< Number of nonterminal symbols.
       yyfinal_ = 2 ///< Termination state number.
     };
@@ -873,7 +875,7 @@ namespace wasp {
 
 #line 36 "HIT.bison"
 } // wasp
-#line 877 "HITParser.hpp"
+#line 879 "HITParser.hpp"
 
 
 

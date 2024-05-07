@@ -724,19 +724,35 @@ WASP_PUBLIC void node_paths(const TAdapter& node, std::ostream& out)
 }
 
 /**
+ * @brief is_override - check if the provided node has override assign set
+ */
+template<class TAdapter>
+WASP_PUBLIC bool is_override(const TAdapter& n)
+{
+    return ((n.type() == wasp::KEYED_VALUE || n.type() == wasp::ARRAY) &&
+        n.child_count() > 1 && n.child_at(1).type() == wasp::OVERRIDE_ASSIGN);
+}
+
+/**
  * @brief node_paths_and_types - capture the paths and types of tree nodes
  * @param node - the root node from where traversal of the tree will begin
  * @param out - the stream where the path and type output will be captured
+ * @param override_info - output parameter override info defaults to false
  */
 template<class TAdapter>
-WASP_PUBLIC void node_paths_and_types(const TAdapter& node, std::ostream& out)
+WASP_PUBLIC void node_paths_and_types(const TAdapter& node,
+                                      std::ostream& out,
+                                      bool override_info = false)
 {
     size_t child_count = node.child_count();
     out << std::setw(17) << std::left << node.path() << " "
         << std::setw(2) << std::right << node.type()
+        << (override_info &&
+           (node.type() == wasp::KEYED_VALUE || node.type() == wasp::ARRAY) ?
+           (wasp::is_override(node) ? " OVERRIDE=ON" : " OVERRIDE=OFF") : "")
         << (child_count == 0 ? " (" + node.data() + ")\n" : "\n");
     for (size_t i = 0; i < child_count; i++)
-        node_paths_and_types(node.child_at(i), out);
+        node_paths_and_types(node.child_at(i), out, override_info);
 }
 
 /**
