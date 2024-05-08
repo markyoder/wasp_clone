@@ -2,7 +2,7 @@ from wasp import *
 import os, sys, subprocess
 
 class PyProcessConnection(Connection):
-    '''Concrete connection that runs server subprocess to read and write'''
+    '''Connection which writes to server stdin and reads from its stdout'''
 
     def __init__(self):
         super().__init__()

@@ -367,7 +367,7 @@ bool ServerImpl::handleCompletionRequest(
 
     DataArray completion_items;
 
-    // default is_incomplete to false in case not set by implemented server
+    // indicate list is complete by default in case server does not specify
     bool is_incomplete = false;
 
     // call server specific method to gather the document completions items

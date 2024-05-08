@@ -13,6 +13,9 @@
 // Ignore protected errors stringstream in ServerImpl due to issues in wrap
 %ignore wasp::lsp::ServerImpl::errors;
 
+// Append to constructor making is_python_server true in all Python servers
+%pythonappend wasp::lsp::ServerImpl::ServerImpl()%{self.is_python_server=True%}
+
 // Enable director so Connection can be implemented in derived Python class
 %feature("director") wasp::lsp::Connection;
 

@@ -7,7 +7,6 @@ class ExampleServer(ServerImpl):
     def __init__(self):
         '''Set up capabilities of concrete example server implementation'''
         super().__init__()
-        self.is_python_server = True
         self.connection = None
         self.enableFullSync()
         self.enableSymbols()
