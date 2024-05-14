@@ -13,8 +13,15 @@
 // Ignore protected errors stringstream in ServerImpl due to issues in wrap
 %ignore wasp::lsp::ServerImpl::errors;
 
-// Append to constructor making is_python_server true in all Python servers
-%pythonappend wasp::lsp::ServerImpl::ServerImpl()%{self.is_python_server=True%}
+// Return text from Python to C++ in reference it received with directorout
+%typemap(directorout) bool getHoverDisplayText
+{
+  char* buffer = 0;
+  int alloc = SWIG_OLDOBJ;
+  SWIG_AsCharPtr($input, &buffer, &alloc);
+  arg0 = buffer;
+  $result = true;
+}
 
 // Enable director so Connection can be implemented in derived Python class
 %feature("director") wasp::lsp::Connection;

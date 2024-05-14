@@ -231,9 +231,8 @@ class ExampleServer(ServerImpl):
             formatting_textedits.push_back(textedit)
         return success
 
-    def getHoverDisplayText(self, req_line, req_char):
+    def getHoverDisplayText(self, display_text, req_line, req_char):
         '''Return text that should be shown on hover at request position'''
-        display_text = string()
         if req_line == 56 and req_char == 78:
             display_text = "hover text of example test server"
         return display_text

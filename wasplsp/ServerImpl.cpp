@@ -475,10 +475,7 @@ bool ServerImpl::handleHoverRequest(
 
     // call server specific method to get hover display at request location
     std::string display_text;
-    if (this->is_python_server)
-        display_text = this->getHoverDisplayText(line, character);
-    else
-        pass &= this->getHoverDisplayText(display_text, line, character);
+    pass &= this->getHoverDisplayText(display_text, line, character);
 
     // build hover response object with hover text that should be displayed
     pass &= buildHoverResponse( hoverResponse           ,
