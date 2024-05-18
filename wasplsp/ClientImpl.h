@@ -8,6 +8,7 @@
 #include "wasplsp/SymbolIterator.h"
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
+#include "waspcore/wasp_bug.h"
 
 namespace wasp {
 namespace lsp  {
@@ -27,12 +28,12 @@ class WASP_PUBLIC ClientImpl
 
     ~ClientImpl(){}
 
-    typedef std::shared_ptr<ClientImpl> SP;
+    typedef std::shared_ptr<wasp::lsp::ClientImpl> SP;
 
     /** set the client's connection shared_ptr to the provided connection
      * @return - true if not already connection and successfully set
      */
-    bool connect( Connection::SP connection );
+    bool connect( wasp::lsp::Connection::SP connection );
 
     /** convenience method used to handle the initialize / initialized handshake
      * @return - true if initialize / initialized handshake handled successfully
@@ -177,8 +178,8 @@ class WASP_PUBLIC ClientImpl
      * @param message - reference to diagnostic message string
      * @return - true if response type right / index valid / parameters are set
      */
-    bool getDiagnosticAt( int                index      ,
-                          clientDiagnostic & diagnostic );
+    bool getDiagnosticAt( int                           index      ,
+                          wasp::lsp::clientDiagnostic & diagnostic );
 
     /** get parameters at index into references if response type is COMPLETION
      * @param index - index of completion object in response array to obtain
@@ -195,8 +196,8 @@ class WASP_PUBLIC ClientImpl
      * @param preselect - flag indicating if completion should be pre-selected
      * @return - true if response type right / index valid / parameters are set
      */
-    bool getCompletionAt( int               index       ,
-                          clientCompletion & completion );
+    bool getCompletionAt( int                           index      ,
+                          wasp::lsp::clientCompletion & completion );
 
     /** get parameters at index into references if response type is DEFINITION
      * @param index - index of definition object in response array to obtain
@@ -206,8 +207,8 @@ class WASP_PUBLIC ClientImpl
      * @param end_character - ending column for definition ( zero-based )
      * @return - true if response type right / index valid / parameters are set
      */
-    bool getDefinitionAt( int                index      ,
-                          clientDefinition & definition );
+    bool getDefinitionAt( int                           index      ,
+                          wasp::lsp::clientDefinition & definition );
 
     /** get hover text string stored for response if HOVER is response type
      * @param hover_text - string reference to fill with text from response
@@ -223,8 +224,8 @@ class WASP_PUBLIC ClientImpl
      * @param end_character - ending column for reference ( zero-based )
      * @return - true if response type right / index valid / parameters are set
      */
-    bool getReferencesAt( int                index     ,
-                          clientReference & references );
+    bool getReferencesAt( int                          index      ,
+                          wasp::lsp::clientReference & references );
 
     /** get parameters at index into references if response type is FORMATTING
      * @param index - index of text edit object in response array to obtain
@@ -235,8 +236,8 @@ class WASP_PUBLIC ClientImpl
      * @param new_text - new text that belongs over the given range
      * @return - true if response type right / index valid / parameters are set
      */
-    bool getFormattingAt( int                index      ,
-                          clientFormatting & formatting );
+    bool getFormattingAt( int                           index      ,
+                          wasp::lsp::clientFormatting & formatting );
 
     /** check if the client is properly connected for reading / writing
      * @return - true if the client is properly connected for reading / writing
@@ -249,7 +250,7 @@ class WASP_PUBLIC ClientImpl
     /** get a shared pointer to this client's read / write connection
      * @return - shared pointer to the client's read / write connection
      */
-    Connection::SP getConnection()
+    wasp::lsp::Connection::SP getConnection()
     {
         return this->connection;
     }
@@ -297,11 +298,11 @@ class WASP_PUBLIC ClientImpl
     /** get a shared pointer to a symbol iterator for the client symbol response
      * @return - shared pointer to a symbol iterator
      */
-    SymbolIterator::SP getSymbolIterator()
+    wasp::lsp::SymbolIterator::SP getSymbolIterator()
     {
         wasp_check( verifySymbolsResponse( *(this->response) ) );
 
-        return std::make_shared<SymbolIterator>( this->response );
+        return std::make_shared<wasp::lsp::SymbolIterator>( this->response );
     }
 
   private:
@@ -325,7 +326,7 @@ class WASP_PUBLIC ClientImpl
       /**
        * @brief shared pointer to this client's read / write connection
        */
-      Connection::SP connection;
+      wasp::lsp::Connection::SP connection;
 
       /**
        * @brief errors - all errors stored by the client for any reason
@@ -386,7 +387,7 @@ class WASP_PUBLIC ClientImpl
       /**
        * @brief shared pointer to the currently stored response
        */
-      DataObject::SP response;
+      wasp::DataObject::SP response;
 
       /**
        * @brief increment the current request id for each server request

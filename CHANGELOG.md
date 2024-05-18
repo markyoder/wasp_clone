@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Ability to precede '=' in HIT syntax with optional ':' or ':override' specifier
 - Convenience function is_override to check HIT key values for override specifier
+- Python extension binding for wasplsp with server and connection implementations
 
 ## [4.3.0] - 5-03-2024
 

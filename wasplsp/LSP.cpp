@@ -1,5 +1,6 @@
 #include "wasplsp/LSP.h"
 #include "waspcore/wasp_bug.h"
+#include "waspjson/JSONObjectParser.hpp"
 #include <string>
 #include <iostream>
 #include <sstream>

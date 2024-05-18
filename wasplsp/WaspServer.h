@@ -35,19 +35,13 @@ class WASP_PUBLIC WaspServer : public ServerImpl
         // set server connection to a shared pointer to new templated connection
         connection = std::make_shared<CONNECTION>(this);
 
-        // set server capabilities to expect full text document when changed
-        this->server_capabilities[m_text_doc_sync] = DataObject();
-        this->server_capabilities[m_text_doc_sync][m_open_close] = true;
-        this->server_capabilities[m_text_doc_sync][m_change] = m_change_full;
-
-        // completion, symbol, definition, hover provided / references are not
-        this->server_capabilities[m_completion_provider] = DataObject();
-        this->server_capabilities[m_completion_provider][m_resolve_provider] = false;
-        this->server_capabilities[m_doc_symbol_provider] = true;
-        this->server_capabilities[m_doc_format_provider] = true;
-        this->server_capabilities[m_definition_provider] = true;
-        this->server_capabilities[m_references_provider] = false;
-        this->server_capabilities[m_hover_provider] = true;
+        // use methods to enable server capabilities of this implementation
+        this->enableFullSync();
+        this->enableCompletion();
+        this->enableDefinition();
+        this->enableFormatting();
+        this->enableHover();
+        this->enableSymbols();
     }
 
     /** get read / write connection - specific to this server implemention
@@ -80,7 +74,7 @@ class WASP_PUBLIC WaspServer : public ServerImpl
         AutoComplete(){}
     };
 
-  private:
+  protected:
 
     /** parse document for diagnostics - specific to this server implemention
      * @param diagnosticsList - data array of diagnostics data objects to fill

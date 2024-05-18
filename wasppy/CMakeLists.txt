@@ -19,6 +19,9 @@ IF(PYTHON_EXECUTABLE)
   ENDIF()
 ENDIF()
 
+# Add binary directory to includes so wasp_wrap.cxx can include wasp_wrap.h
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 #
 # Add test directory
 TRIBITS_ADD_TEST_DIRECTORIES(test)
@@ -55,6 +58,7 @@ add_custom_target(wasppy ALL
     -I${wasp_SOURCE_DIR}/wasphit 
     -I${wasp_SOURCE_DIR}/waspsiren 
     -I${wasp_SOURCE_DIR}/wasphive 
+    -I${wasp_SOURCE_DIR}/wasplsp
     wasp.i
   BYPRODUCTS
     wasp_wrap.cxx
@@ -105,11 +109,11 @@ endif()
 #Execute the setup file to generate a wheel
 add_custom_target(wasp_wheel ALL "${PYTHON_EXECUTABLE}" -m build > python_build.log 2>&1
                   DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/Database.py ${CMAKE_CURRENT_BINARY_DIR}/test/test_swig_bindings.py)
-add_dependencies(wasp_wheel wasppy waspcore waspson waspddi waspeddi wasphit waspsiren wasphive)
+add_dependencies(wasp_wheel wasppy waspcore waspson waspddi waspeddi wasphit waspsiren wasphive wasplsp)
 
 #Configure a basic unit test of the python bindings. In this case the wheels is 
 #installed as editable to test in a "natural" way and removed at the end.
-  TRIBITS_ADD_ADVANCED_TEST( test_swig_bindings
+  TRIBITS_ADD_ADVANCED_TEST( test_swig_all
   OVERALL_WORKING_DIRECTORY
     ${CMAKE_CURRENT_BUILD_DIR}
   OVERALL_NUM_MPI_PROCS
@@ -121,6 +125,12 @@ add_dependencies(wasp_wheel wasppy waspcore waspson waspddi waspeddi wasphit was
     CMND ${PYTHON_EXECUTABLE}
     ARGS -m unittest test/test_swig_bindings.py -v
   TEST_2
+    CMND ${PYTHON_EXECUTABLE}
+    ARGS -m unittest test/test_lsp_server_methods.py -v
+  TEST_3
+    CMND ${PYTHON_EXECUTABLE}
+    ARGS -m unittest test/test_lsp_server_running.py -v
+  TEST_4
     CMND ${PYTHON_EXECUTABLE}
     ARGS -m pip uninstall --yes ornl-wasp
   TIMEOUT 3000

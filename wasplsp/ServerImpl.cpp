@@ -366,7 +366,9 @@ bool ServerImpl::handleCompletionRequest(
     this->document_path = document_path;
 
     DataArray completion_items;
-    bool      is_incomplete;
+
+    // indicate list is complete by default in case server does not specify
+    bool is_incomplete = false;
 
     // call server specific method to gather the document completions items
 

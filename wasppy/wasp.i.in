@@ -4,7 +4,42 @@
 %}
 %rename("BaseInterpreter") Interpreter;
 
-%module wasp
+// Enable Python deriving, protected data wrapping, and unit test threading
+%module(directors="1", allprotected="1", threads="1") wasp
+
+// Enable director so ServerImpl can be implemented in derived Python class
+%feature("director") wasp::lsp::ServerImpl;
+
+// Ignore protected errors stringstream in ServerImpl due to issues in wrap
+%ignore wasp::lsp::ServerImpl::errors;
+
+// Return text from Python to C++ in reference it received with directorout
+%typemap(directorout) bool getHoverDisplayText
+{
+  char* buffer = 0;
+  int alloc = SWIG_OLDOBJ;
+  SWIG_AsCharPtr($input, &buffer, &alloc);
+  arg0 = buffer;
+  $result = true;
+}
+
+// Rename ServerImpl to more appropriate BaseServer for use by Python class
+%rename(BaseServer) ServerImpl;
+
+// Enable director so Connection can be implemented in derived Python class
+%feature("director") wasp::lsp::Connection;
+
+// Use typemaps to output primitive type arguments set by reference passing
+%include typemaps.i
+%apply int  & OUTPUT { int  & };
+%apply bool & OUTPUT { bool & };
+
+// Add handler to capture and provide details from Python thrown exceptions
+%exception {
+    try { $action }
+    catch (Swig::DirectorException &e) { SWIG_fail; }
+}
+
 %include decl.h
 
 %include std_pair.i
@@ -17,6 +52,10 @@
 %shared_ptr(wasp::AbstractDefinition)
 %shared_ptr(wasp::Definition)
 %shared_ptr(wasp::AliasedDefinition)
+%shared_ptr(wasp::lsp::SymbolIterator)
+%shared_ptr(wasp::lsp::Connection)
+%shared_ptr(wasp::lsp::ThreadConnection)
+%shared_ptr(wasp::lsp::IOStreamConnection)
 %{
 #define SWIG_FILE_INIT
 #include "utils.h"
@@ -38,6 +77,13 @@
 #include "HITNodeView.h"
 #include "SIRENInterpreter.h"
 #include "HIVE.h"
+#include "LSP.h"
+#include "ServerImpl.h"
+#include "ClientImpl.h"
+#include "SymbolIterator.h"
+#include "Connection.h"
+#include "ThreadConnection.h"
+#include "IOStreamConnection.h"
 %}
 
 // Instantiate templates used by wasp
@@ -51,6 +97,7 @@
 //---------------------------------------------------------------------------//
 // Things that are needed only to support the main types.
 %include "location.hh"
+%include "Object.h"
 %include "Iterator.h"
 %include "Definition.h"
 %include "TokenPool.h"
@@ -63,6 +110,15 @@
 %include "EDDInterpreter.h"
 %include "HITInterpreter.h"
 %include "SIRENInterpreter.h"
+
+// Components for LSP
+%include "LSP.h"
+%include "ServerImpl.h"
+%include "ClientImpl.h"
+%include "SymbolIterator.h"
+%include "Connection.h"
+%include "ThreadConnection.h"
+%include "IOStreamConnection.h"
 
 // Various node views 
 %include "SONNodeView.h"

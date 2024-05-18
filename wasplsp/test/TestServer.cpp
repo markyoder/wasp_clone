@@ -92,36 +92,6 @@ bool TestServer::parseDocumentForDiagnostics(
     return pass;
 }
 
-bool TestServer::updateDocumentTextChanges(
-                const std::string & replacement_text ,
-                      int           start_line       ,
-                      int           start_character  ,
-                      int           end_line         ,
-                      int           end_character    ,
-                      int           range_length     )
-{
-    // replace the document's text for unit testing
-
-    if (!this->is_initialized)
-    {
-        this->errors << m_error_prefix << "Server needs to be initialized" << std::endl;
-        return false;
-    }
-
-    bool pass = true;
-
-    if ( start_line      == 0 &&
-         start_character == 0 &&
-         end_line        == 3 &&
-         end_character   == 7 &&
-         range_length    == 0 )
-    {
-        this->document_text = replacement_text;
-    }
-
-    return pass;
-}
-
 bool TestServer::gatherDocumentCompletionItems(
                       DataArray & completionItems  ,
                       bool      & is_incomplete    ,

@@ -25,14 +25,14 @@ class WASP_PUBLIC ThreadConnection : public Connection
 
     ~ThreadConnection(){}
 
-    typedef std::shared_ptr<Connection> SP;
+    typedef std::shared_ptr<wasp::lsp::Connection> SP;
 
     /** read connection packet string and store in provided object
      * @param object - reference to object to fill with data from packet string
      * @param errors - reference to error stream to pass to RPCStringToObject
      * @return - true if conversion from packet string to object was successful
      */
-    bool read( DataObject & object , std::stringstream & errors )
+    bool read( wasp::DataObject & object , std::ostream & errors )
     {
         bool pass = true;
 
@@ -71,7 +71,7 @@ class WASP_PUBLIC ThreadConnection : public Connection
      * @param errors - reference to error stream to pass to objectToRPCString
      * @return - true if conversion from object to packet string was successful
      */
-    bool write( DataObject & object , std::stringstream & errors )
+    bool write( wasp::DataObject & object , std::ostream & errors )
     {
         bool pass = true;
 

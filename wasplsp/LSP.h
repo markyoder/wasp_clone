@@ -5,7 +5,6 @@
 #include <iostream>
 #include "waspcore/Object.h"
 #include "waspcore/decl.h"
-#include "waspjson/JSONObjectParser.hpp"
 
 namespace wasp {
 namespace lsp  {
@@ -17,7 +16,7 @@ namespace lsp  {
  * @return - true if the object was successfully converted to JSON-RPC string
  */
 WASP_PUBLIC
-bool objectToRPCString( DataObject   & object ,
+bool objectToRPCString( wasp::DataObject & object ,
                         std::string  & rpcstr ,
                         std::ostream & errors );
 
@@ -29,7 +28,7 @@ bool objectToRPCString( DataObject   & object ,
  */
 WASP_PUBLIC
 bool RPCStringToObject( const std::string  & rpcstr ,
-                              DataObject   & object ,
+                              wasp::DataObject & object ,
                               std::ostream & errors );
 
 /** check that the position's line and character numbers are not negative
@@ -66,7 +65,7 @@ bool checkRange( std::ostream & errors          ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildPositionObject( DataObject   & object    ,
+bool buildPositionObject( wasp::DataObject & object ,
                           std::ostream & errors    ,
                           int            line      ,
                           int            character );
@@ -79,7 +78,7 @@ bool buildPositionObject( DataObject   & object    ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectPositionObject( const DataObject   & object    ,
+bool dissectPositionObject( const wasp::DataObject & object ,
                                   std::ostream & errors    ,
                                   int          & line      ,
                                   int          & character );
@@ -94,7 +93,7 @@ bool dissectPositionObject( const DataObject   & object    ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildRangeObject( DataObject   & object          ,
+bool buildRangeObject( wasp::DataObject & object      ,
                        std::ostream & errors          ,
                        int            start_line      ,
                        int            start_character ,
@@ -111,7 +110,7 @@ bool buildRangeObject( DataObject   & object          ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectRangeObject( const DataObject      & object          ,
+bool dissectRangeObject( const wasp::DataObject & object         ,
                                std::ostream    & errors          ,
                                int             & start_line      ,
                                int             & start_character ,
@@ -128,12 +127,12 @@ bool dissectRangeObject( const DataObject      & object          ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildInitializeRequest( DataObject        & object              ,
+bool buildInitializeRequest( wasp::DataObject  & object              ,
                              std::ostream      & errors              ,
                              int                 request_id          ,
                              int                 process_id          ,
                              const std::string & root_uri            ,
-                             const DataObject  & client_capabilities );
+                             const wasp::DataObject & client_capabilities );
 
 /** dissect initialize request object into the provided parameter references
  * @param object - const reference to data object that will be dissected
@@ -145,12 +144,12 @@ bool buildInitializeRequest( DataObject        & object              ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectInitializeRequest( const DataObject        & object              ,
+bool dissectInitializeRequest( const wasp::DataObject  & object              ,
                                      std::ostream      & errors              ,
                                      int               & request_id          ,
                                      int               & process_id          ,
                                      std::string       & root_uri            ,
-                                     DataObject        & client_capabilities );
+                                     wasp::DataObject  & client_capabilities );
 
 /** build initialized notification object ( should be empty )
  * @param object - reference to data object that will be built
@@ -158,7 +157,7 @@ bool dissectInitializeRequest( const DataObject        & object              ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildInitializedNotification( DataObject   & object ,
+bool buildInitializedNotification( wasp::DataObject & object ,
                                    std::ostream & errors );
 
 /** dissect initialized notification object ( should be empty )
@@ -167,7 +166,7 @@ bool buildInitializedNotification( DataObject   & object ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectInitializedNotification( const DataObject   & object ,
+bool dissectInitializedNotification( const wasp::DataObject & object ,
                                            std::ostream & errors );
 
 /** build didopen notification object from the provided parameters
@@ -180,7 +179,7 @@ bool dissectInitializedNotification( const DataObject   & object ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildDidOpenNotification( DataObject        & object      ,
+bool buildDidOpenNotification( wasp::DataObject  & object      ,
                                std::ostream      & errors      ,
                                const std::string & uri         ,
                                const std::string & language_id ,
@@ -197,7 +196,7 @@ bool buildDidOpenNotification( DataObject        & object      ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectDidOpenNotification( const DataObject   & object      ,
+bool dissectDidOpenNotification( const wasp::DataObject & object  ,
                                        std::ostream & errors      ,
                                        std::string  & uri         ,
                                        std::string  & language_id ,
@@ -218,7 +217,7 @@ bool dissectDidOpenNotification( const DataObject   & object      ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildDidChangeNotification( DataObject        & object          ,
+bool buildDidChangeNotification( wasp::DataObject  & object          ,
                                  std::ostream      & errors          ,
                                  const std::string & uri             ,
                                  int                 version         ,
@@ -243,7 +242,7 @@ bool buildDidChangeNotification( DataObject        & object          ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectDidChangeNotification( const DataObject   & object          ,
+bool dissectDidChangeNotification( const wasp::DataObject & object      ,
                                          std::ostream & errors          ,
                                          std::string  & uri             ,
                                          int          & version         ,
@@ -264,7 +263,7 @@ bool dissectDidChangeNotification( const DataObject   & object          ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildCompletionRequest( DataObject        & object     ,
+bool buildCompletionRequest( wasp::DataObject  & object     ,
                              std::ostream      & errors     ,
                              int                 request_id ,
                              const std::string & uri        ,
@@ -281,7 +280,7 @@ bool buildCompletionRequest( DataObject        & object     ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectCompletionRequest( const DataObject   & object     ,
+bool dissectCompletionRequest( const wasp::DataObject & object ,
                                      std::ostream & errors     ,
                                      int          & request_id ,
                                      std::string  & uri        ,
@@ -298,7 +297,7 @@ bool dissectCompletionRequest( const DataObject   & object     ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildDefinitionRequest( DataObject        & object     ,
+bool buildDefinitionRequest( wasp::DataObject  & object     ,
                              std::ostream      & errors     ,
                              int                 request_id ,
                              const std::string & uri        ,
@@ -315,7 +314,7 @@ bool buildDefinitionRequest( DataObject        & object     ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectDefinitionRequest( const DataObject   & object     ,
+bool dissectDefinitionRequest( const wasp::DataObject & object ,
                                      std::ostream & errors     ,
                                      int          & request_id ,
                                      std::string  & uri        ,
@@ -332,7 +331,7 @@ bool dissectDefinitionRequest( const DataObject   & object     ,
  * @return - true if successful and built request object without any errors
  */
 WASP_PUBLIC
-bool buildHoverRequest( DataObject        & object     ,
+bool buildHoverRequest( wasp::DataObject  & object     ,
                         std::ostream      & errors     ,
                         int                 request_id ,
                         const std::string & uri        ,
@@ -349,7 +348,7 @@ bool buildHoverRequest( DataObject        & object     ,
  * @return - true if successful and dissected request object without errors
  */
 WASP_PUBLIC
-bool dissectHoverRequest( const DataObject & object ,
+bool dissectHoverRequest( const wasp::DataObject & object ,
                           std::ostream & errors     ,
                           int          & request_id ,
                           std::string  & uri        ,
@@ -367,7 +366,7 @@ bool dissectHoverRequest( const DataObject & object ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildReferencesRequest( DataObject        & object              ,
+bool buildReferencesRequest( wasp::DataObject  & object              ,
                              std::ostream      & errors              ,
                              int                 request_id          ,
                              const std::string & uri                 ,
@@ -386,7 +385,7 @@ bool buildReferencesRequest( DataObject        & object              ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectReferencesRequest( const DataObject   & object              ,
+bool dissectReferencesRequest( const wasp::DataObject & object          ,
                                      std::ostream & errors              ,
                                      int          & request_id          ,
                                      std::string  & uri                 ,
@@ -404,7 +403,7 @@ bool dissectReferencesRequest( const DataObject   & object              ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildFormattingRequest( DataObject        & object          ,
+bool buildFormattingRequest( wasp::DataObject  & object          ,
                              std::ostream      & errors          ,
                              int                 request_id      ,
                              const std::string & uri             ,
@@ -421,7 +420,7 @@ bool buildFormattingRequest( DataObject        & object          ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectFormattingRequest( const DataObject   & object          ,
+bool dissectFormattingRequest( const wasp::DataObject & object      ,
                                      std::ostream & errors          ,
                                      int          & request_id      ,
                                      std::string  & uri             ,
@@ -436,7 +435,7 @@ bool dissectFormattingRequest( const DataObject   & object          ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildSymbolsRequest( DataObject        & object     ,
+bool buildSymbolsRequest( wasp::DataObject  & object     ,
                           std::ostream      & errors     ,
                           int                 request_id ,
                           const std::string & uri        );
@@ -449,7 +448,7 @@ bool buildSymbolsRequest( DataObject        & object     ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectSymbolsRequest( const DataObject   & object     ,
+bool dissectSymbolsRequest( const wasp::DataObject & object ,
                                   std::ostream & errors     ,
                                   int          & request_id ,
                                   std::string  & uri        );
@@ -461,7 +460,7 @@ bool dissectSymbolsRequest( const DataObject   & object     ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildDidCloseNotification( DataObject        & object ,
+bool buildDidCloseNotification( wasp::DataObject  & object ,
                                 std::ostream      & errors ,
                                 const std::string & uri    );
 
@@ -472,7 +471,7 @@ bool buildDidCloseNotification( DataObject        & object ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectDidCloseNotification( const DataObject   & object ,
+bool dissectDidCloseNotification( const wasp::DataObject & object ,
                                         std::ostream & errors ,
                                         std::string  & uri    );
 
@@ -483,7 +482,7 @@ bool dissectDidCloseNotification( const DataObject   & object ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildShutdownRequest( DataObject   & object     ,
+bool buildShutdownRequest( wasp::DataObject & object ,
                            std::ostream & errors     ,
                            int            request_id );
 
@@ -494,7 +493,7 @@ bool buildShutdownRequest( DataObject   & object     ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectShutdownRequest( const DataObject   & object     ,
+bool dissectShutdownRequest( const wasp::DataObject & object ,
                                    std::ostream & errors     ,
                                    int          & request_id );
 
@@ -504,7 +503,7 @@ bool dissectShutdownRequest( const DataObject   & object     ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildExitNotification( DataObject   & object ,
+bool buildExitNotification( wasp::DataObject & object ,
                             std::ostream & errors );
 
 /** dissect exit notification object ( should be empty )
@@ -513,7 +512,7 @@ bool buildExitNotification( DataObject   & object ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectExitNotification( const DataObject   & object ,
+bool dissectExitNotification( const wasp::DataObject & object ,
                                     std::ostream & errors );
 
 /** build diagnostic object from the provided parameters
@@ -530,7 +529,7 @@ bool dissectExitNotification( const DataObject   & object ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildDiagnosticObject( DataObject        & object          ,
+bool buildDiagnosticObject( wasp::DataObject  & object          ,
                             std::ostream      & errors          ,
                             int                 start_line      ,
                             int                 start_character ,
@@ -555,7 +554,7 @@ bool buildDiagnosticObject( DataObject        & object          ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectDiagnosticObject( const DataObject   & object          ,
+bool dissectDiagnosticObject( const wasp::DataObject & object      ,
                                     std::ostream & errors          ,
                                     int          & start_line      ,
                                     int          & start_character ,
@@ -574,10 +573,10 @@ bool dissectDiagnosticObject( const DataObject   & object          ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildPublishDiagnosticsNotification( DataObject        & object      ,
+bool buildPublishDiagnosticsNotification( wasp::DataObject  & object      ,
                                           std::ostream      & errors      ,
                                           const std::string & uri         ,
-                                          const DataArray   & diagnostics );
+                                          const wasp::DataArray & diagnostics );
 
 /** dissect publish diagnostics notification into the parameter references
  * @param object - const reference to data object that will be dissected
@@ -587,10 +586,10 @@ bool buildPublishDiagnosticsNotification( DataObject        & object      ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectPublishDiagnosticsNotification( const DataObject   & object      ,
+bool dissectPublishDiagnosticsNotification( const wasp::DataObject & object  ,
                                                   std::ostream & errors      ,
                                                   std::string  & uri         ,
-                                                  DataArray    & diagnostics );
+                                                  wasp::DataArray & diagnostics );
 
 /** build initialize response object from the provided parameters
  * @param object - reference to data object that will be built
@@ -600,10 +599,10 @@ bool dissectPublishDiagnosticsNotification( const DataObject   & object      ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildInitializeResponse( DataObject        & object              ,
+bool buildInitializeResponse( wasp::DataObject  & object              ,
                               std::ostream      & errors              ,
                               int                 request_id          ,
-                              const DataObject  & server_capabilities );
+                              const wasp::DataObject & server_capabilities );
 
 /** dissect initialize response object into the provided parameter references
  * @param object - const reference to data object that will be dissected
@@ -613,10 +612,10 @@ bool buildInitializeResponse( DataObject        & object              ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectInitializeResponse( const DataObject   & object              ,
+bool dissectInitializeResponse( const wasp::DataObject & object          ,
                                       std::ostream & errors              ,
                                       int          & request_id          ,
-                                      DataObject   & server_capabilities );
+                                      wasp::DataObject & server_capabilities );
 
 /** build completion item object from the provided parameters
  * @param object - reference to data object that will be built
@@ -637,7 +636,7 @@ bool dissectInitializeResponse( const DataObject   & object              ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildCompletionObject( DataObject        & object          ,
+bool buildCompletionObject( wasp::DataObject  & object          ,
                             std::ostream      & errors          ,
                             const std::string & label           ,
                             int                 start_line      ,
@@ -671,7 +670,7 @@ bool buildCompletionObject( DataObject        & object          ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectCompletionObject( const DataObject   & object          ,
+bool dissectCompletionObject( const wasp::DataObject & object      ,
                                     std::ostream & errors          ,
                                     std::string  & label           ,
                                     int          & start_line      ,
@@ -704,7 +703,7 @@ bool dissectCompletionObject( const DataObject   & object          ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectCompletionObject( const DataObject   & object          ,
+bool dissectCompletionObject( const wasp::DataObject & object      ,
                                     std::ostream & errors          ,
                                     std::string  & label           ,
                                     int          & start_line      ,
@@ -727,11 +726,11 @@ bool dissectCompletionObject( const DataObject   & object          ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildCompletionResponse( DataObject        & object           ,
+bool buildCompletionResponse( wasp::DataObject  & object           ,
                               std::ostream      & errors           ,
                               int                 request_id       ,
                               bool                is_incomplete    ,
-                              const DataArray   & completion_items );
+                              const wasp::DataArray & completion_items );
 
 /** dissect completion response object into the provided parameter references
  * @param object - const reference to data object that will be dissected
@@ -742,11 +741,11 @@ bool buildCompletionResponse( DataObject        & object           ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectCompletionResponse( const DataObject   & object           ,
+bool dissectCompletionResponse( const wasp::DataObject & object       ,
                                       std::ostream & errors           ,
                                       int          & request_id       ,
                                       bool         & is_incomplete    ,
-                                      DataArray    & completion_items );
+                                      wasp::DataArray & completion_items );
 
 /** build location object from the provided parameters
  * @param object - reference to data object that will be built
@@ -759,7 +758,7 @@ bool dissectCompletionResponse( const DataObject   & object           ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildLocationObject( DataObject        & object          ,
+bool buildLocationObject( wasp::DataObject  & object          ,
                           std::ostream      & errors          ,
                           const std::string & uri             ,
                           int                 start_line      ,
@@ -778,7 +777,7 @@ bool buildLocationObject( DataObject        & object          ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectLocationObject( const DataObject   & object          ,
+bool dissectLocationObject( const wasp::DataObject & object      ,
                                   std::ostream & errors          ,
                                   std::string  & uri             ,
                                   int          & start_line      ,
@@ -794,10 +793,10 @@ bool dissectLocationObject( const DataObject   & object          ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildLocationsResponse( DataObject        & object           ,
+bool buildLocationsResponse( wasp::DataObject  & object           ,
                              std::ostream      & errors           ,
                              int                 request_id       ,
-                             const DataArray   & location_objects );
+                             const wasp::DataArray & location_objects );
 
 /** dissect locations response object into the provided parameter references
  * @param object - const reference to data object that will be dissected
@@ -807,10 +806,10 @@ bool buildLocationsResponse( DataObject        & object           ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectLocationsResponse( const DataObject   & object           ,
+bool dissectLocationsResponse( const wasp::DataObject & object       ,
                                      std::ostream & errors           ,
                                      int          & request_id       ,
-                                     DataArray    & location_objects );
+                                     wasp::DataArray & location_objects );
 
 /** build hover response object from provided text that should be displayed
  * @param object - reference to data object that will be built for response
@@ -820,7 +819,7 @@ bool dissectLocationsResponse( const DataObject   & object           ,
  * @return - true if response object reference was built without any errors
  */
 WASP_PUBLIC
-bool buildHoverResponse( DataObject        & object       ,
+bool buildHoverResponse( wasp::DataObject  & object       ,
                          std::ostream      & errors       ,
                          int                 request_id   ,
                          const std::string & display_text );
@@ -833,7 +832,7 @@ bool buildHoverResponse( DataObject        & object       ,
  * @return - true if response object reference was dissected without errors
  */
 WASP_PUBLIC
-bool dissectHoverResponse( const DataObject        & object       ,
+bool dissectHoverResponse( const wasp::DataObject  & object       ,
                                  std::ostream      & errors       ,
                                  int               & request_id   ,
                                  std::string       & display_text );
@@ -849,7 +848,7 @@ bool dissectHoverResponse( const DataObject        & object       ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildTextEditObject( DataObject        & object          ,
+bool buildTextEditObject( wasp::DataObject  & object          ,
                           std::ostream      & errors          ,
                           int                 start_line      ,
                           int                 start_character ,
@@ -868,7 +867,7 @@ bool buildTextEditObject( DataObject        & object          ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectTextEditObject( const DataObject   & object          ,
+bool dissectTextEditObject( const wasp::DataObject & object      ,
                                   std::ostream & errors          ,
                                   int          & start_line      ,
                                   int          & start_character ,
@@ -884,10 +883,10 @@ bool dissectTextEditObject( const DataObject   & object          ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildFormattingResponse( DataObject        & object           ,
+bool buildFormattingResponse( wasp::DataObject  & object           ,
                               std::ostream      & errors           ,
                               int                 request_id       ,
-                              const DataArray   & textedit_objects );
+                              const wasp::DataArray & textedit_objects );
 
 /** dissect formatting response object into the provided parameter references
  * @param object - const reference to data object that will be dissected
@@ -897,10 +896,10 @@ bool buildFormattingResponse( DataObject        & object           ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectFormattingResponse( const DataObject   & object           ,
+bool dissectFormattingResponse( const wasp::DataObject & object       ,
                                       std::ostream & errors           ,
                                       int          & request_id       ,
-                                      DataArray    & textedit_objects );
+                                      wasp::DataArray & textedit_objects );
 
 /** build document symbol object from the provided parameters
  * @param object - reference to data object that will be built
@@ -920,7 +919,7 @@ bool dissectFormattingResponse( const DataObject   & object           ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildDocumentSymbolObject( DataObject        & object                    ,
+bool buildDocumentSymbolObject( wasp::DataObject  & object                    ,
                                 std::ostream      & errors                    ,
                                 const std::string & name                      ,
                                 const std::string & detail                    ,
@@ -953,7 +952,7 @@ bool buildDocumentSymbolObject( DataObject        & object                    ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectDocumentSymbolObject( const DataObject   & object                    ,
+bool dissectDocumentSymbolObject( const wasp::DataObject & object                ,
                                         std::ostream & errors                    ,
                                         std::string  & name                      ,
                                         std::string  & detail                    ,
@@ -973,14 +972,14 @@ bool dissectDocumentSymbolObject( const DataObject   & object                   
  * @return - reference to newly added empty document symbol child
  */
 WASP_PUBLIC
-DataObject & addDocumentSymbolChild( DataObject & parent );
+wasp::DataObject & addDocumentSymbolChild( wasp::DataObject & parent );
 
 /** return reference to document symbol children list of the provided parent
  * @param parent - the object for which the children reference will be returned
  * @return - reference to data array of document symbol data object children
  */
 WASP_PUBLIC
-DataArray * getDocumentSymbolChildren( const DataObject & parent );
+wasp::DataArray * getDocumentSymbolChildren( const wasp::DataObject & parent );
 
 /** build symbols response object from the provided parameters
  * @param object - reference to data object that will be built
@@ -990,10 +989,10 @@ DataArray * getDocumentSymbolChildren( const DataObject & parent );
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildSymbolsResponse( DataObject      & object                  ,
+bool buildSymbolsResponse( wasp::DataObject & object                 ,
                            std::ostream    & errors                  ,
                            int               request_id              ,
-                           const DataArray & document_symbol_objects );
+                           const wasp::DataArray & document_symbol_objects );
 
 /** dissect symbols response object into the provided parameter references
  * @param object - const reference to data object that will be dissected
@@ -1003,10 +1002,10 @@ bool buildSymbolsResponse( DataObject      & object                  ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectSymbolsResponse( const DataObject   & object                  ,
+bool dissectSymbolsResponse( const wasp::DataObject & object              ,
                                    std::ostream & errors                  ,
                                    int          & request_id              ,
-                                   DataArray    & document_symbol_objects );
+                                   wasp::DataArray & document_symbol_objects );
 
 /** build shutdown response object from the provided parameters
  * @param object - reference to data object that will be built
@@ -1015,7 +1014,7 @@ bool dissectSymbolsResponse( const DataObject   & object                  ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildShutdownResponse( DataObject        & object     ,
+bool buildShutdownResponse( wasp::DataObject  & object     ,
                             std::ostream      & errors     ,
                             int                 request_id );
 
@@ -1026,7 +1025,7 @@ bool buildShutdownResponse( DataObject        & object     ,
  * @return - true if the object was successfully dissected without error
  */
 WASP_PUBLIC
-bool dissectShutdownResponse( const DataObject   & object     ,
+bool dissectShutdownResponse( const wasp::DataObject & object ,
                                     std::ostream & errors     ,
                                     int          & request_id );
 
@@ -1037,7 +1036,7 @@ bool dissectShutdownResponse( const DataObject   & object     ,
  * @return - true if the object was successfully built without error
  */
 WASP_PUBLIC
-bool buildErrorResponse( DataObject        & object ,
+bool buildErrorResponse( wasp::DataObject  & object ,
                          int                 code   ,
                          const std::string & errors );
 
@@ -1047,7 +1046,7 @@ bool buildErrorResponse( DataObject        & object ,
  * @return - true if response contains result or false if it contains error
  */
 WASP_PUBLIC
-bool checkErrorResponse( const DataObject   & object ,
+bool checkErrorResponse( const wasp::DataObject & object ,
                                std::ostream & errors );
 
 /** check if object contains integer request id indicating not notification
@@ -1055,112 +1054,112 @@ bool checkErrorResponse( const DataObject   & object ,
  * @return - true if object does contain request id or false if it does not
  */
 WASP_PUBLIC
-bool objectHasRequestId(const DataObject & object);
+bool objectHasRequestId(const wasp::DataObject & object);
 
 /** verify if the provided data object is an initialize response
  * @param object - const reference to data object that will be verified
  * @return - true if provided data object is the proper type of response
  */
 WASP_PUBLIC
-bool verifyInitializeResponse( const DataObject & object );
+bool verifyInitializeResponse( const wasp::DataObject & object );
 
 /** verify if the provided data object is a diagnostic response
  * @param object - const reference to data object that will be verified
  * @return - true if provided data object is the proper type of response
  */
 WASP_PUBLIC
-bool verifyDiagnosticResponse( const DataObject & object );
+bool verifyDiagnosticResponse( const wasp::DataObject & object );
 
 /** verify if the provided data object is a completion response
  * @param object - const reference to data object that will be verified
  * @return - true if provided data object is the proper type of response
  */
 WASP_PUBLIC
-bool verifyCompletionResponse( const DataObject & object );
+bool verifyCompletionResponse( const wasp::DataObject & object );
 
 /** verify if the provided data object is a definition response
  * @param object - const reference to data object that will be verified
  * @return - true if provided data object is the proper type of response
  */
 WASP_PUBLIC
-bool verifyDefinitionResponse( const DataObject & object );
+bool verifyDefinitionResponse( const wasp::DataObject & object );
 
 /** verify if provided data object is proper response object type for hover
  * @param object - const reference to response object that will be verified
  * @return - true if provided data object is proper type of response object
  */
 WASP_PUBLIC
-bool verifyHoverResponse( const DataObject & object );
+bool verifyHoverResponse( const wasp::DataObject & object );
 
 /** verify if the provided data object is a references response
  * @param object - const reference to data object that will be verified
  * @return - true if provided data object is the proper type of response
  */
 WASP_PUBLIC
-bool verifyReferencesResponse( const DataObject & object );
+bool verifyReferencesResponse( const wasp::DataObject & object );
 
 /** verify if the provided data object is a formatting response
  * @param object - const reference to data object that will be verified
  * @return - true if provided data object is the proper type of response
  */
 WASP_PUBLIC
-bool verifyFormattingResponse( const DataObject & object );
+bool verifyFormattingResponse( const wasp::DataObject & object );
 
 /** verify if the provided data object is a symbols response
  * @param object - const reference to data object that will be verified
  * @return - true if provided data object is the proper type of response
  */
 WASP_PUBLIC
-bool verifySymbolsResponse( const DataObject & object );
+bool verifySymbolsResponse( const wasp::DataObject & object );
 
 /** verify if the provided data object is a shutdown response
  * @param object - const reference to data object that will be verified
  * @return - true if provided data object is the proper type of response
  */
 WASP_PUBLIC
-bool verifyShutdownResponse( const DataObject & object );
+bool verifyShutdownResponse( const wasp::DataObject & object );
 
 /** return pointer to the data array of diagnostic response data objects
  * @param object - the parent for which the data array pointer will be returned
  * @return - pointer to the data array of response data objects
  */
 WASP_PUBLIC
-DataArray * getDiagnosticResponseArray( const DataObject & object );
+wasp::DataArray * getDiagnosticResponseArray( const wasp::DataObject & object );
 
 /** return pointer to the data array of completion response data objects
  * @param object - the parent for which the data array pointer will be returned
  * @return - pointer to the data array of response data objects
  */
 WASP_PUBLIC
-DataArray * getCompletionResponseArray( const DataObject & object );
+wasp::DataArray * getCompletionResponseArray( const wasp::DataObject & object );
 
 /** return pointer to the data array of definition response data objects
  * @param object - the parent for which the data array pointer will be returned
  * @return - pointer to the data array of response data objects
  */
 WASP_PUBLIC
-DataArray * getDefinitionResponseArray( const DataObject & object );
+wasp::DataArray * getDefinitionResponseArray( const wasp::DataObject & object );
 
 /** return pointer to the data array of references response data objects
  * @param object - the parent for which the data array pointer will be returned
  * @return - pointer to the data array of response data objects
  */
 WASP_PUBLIC
-DataArray * getReferencesResponseArray( const DataObject & object );
+wasp::DataArray * getReferencesResponseArray( const wasp::DataObject & object );
 
 /** return pointer to the data array of formatting response data objects
  * @param object - the parent for which the data array pointer will be returned
  * @return - pointer to the data array of response data objects
  */
 WASP_PUBLIC
-DataArray * getFormattingResponseArray( const DataObject & object );
+wasp::DataArray * getFormattingResponseArray( const wasp::DataObject & object );
 
 /** return pointer to the data array of symbol children data objects
  * @param object - the parent for which the data array pointer will be returned
  * @return - pointer to the data array of symbol children data objects
  */
 WASP_PUBLIC
-DataArray * getSymbolChildrenArray( const DataObject & object );
+wasp::DataArray * getSymbolChildrenArray( const wasp::DataObject & object );
 
 /**
  * @brief convenience parameter struct used for client getDiagnosticAt call
@@ -1213,10 +1212,11 @@ struct clientDefinition
  */
 struct clientReference
 {
-    int start_line;
-    int start_character;
-    int end_line;
-    int end_character;
+    std::string target_uri;
+    int         start_line;
+    int         start_character;
+    int         end_line;
+    int         end_character;
 };
 
 /**

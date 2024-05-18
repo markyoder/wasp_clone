@@ -1,5 +1,6 @@
 #include <functional>
 #include "waspcore/utils.h"
+#include <algorithm>
 
 namespace wasp {
 namespace lsp  {

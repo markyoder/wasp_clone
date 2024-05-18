@@ -1192,8 +1192,6 @@ bool ClientImpl::getReferencesAt( int                index     ,
 
     bool pass = true;
 
-    std::string response_document_path;
-
     // if reponse type is REFERENCES and the given index is not out of range
     // then get the location array and dissect the object at the given index
 
@@ -1202,18 +1200,11 @@ bool ClientImpl::getReferencesAt( int                index     ,
 
     pass &= dissectLocationObject( locationObject             ,
                                    this->errors               ,
-                                   response_document_path     ,
+                                   references.target_uri      ,
                                    references.start_line      ,
                                    references.start_character ,
                                    references.end_line        ,
                                    references.end_character   );
-
-    if ( response_document_path != this->document_path )
-    {
-        this->errors << m_error_prefix << "Refererences path mismatch" << std::endl;
-
-        pass = false;
-    }
 
     return pass;
 }

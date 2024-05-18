@@ -22,19 +22,13 @@ class WASP_PUBLIC TestServer : public ServerImpl
         // set server connection to a shared pointer to new thread connection
         connection = std::make_shared<ThreadConnection>(this);
 
-        // set server capabilities to expect full text document when changed
-        this->server_capabilities[m_text_doc_sync] = DataObject();
-        this->server_capabilities[m_text_doc_sync][m_open_close] = true;
-        this->server_capabilities[m_text_doc_sync][m_change] = m_change_full;
-
-        // completion, symbol, definition, hover provided / references are not
-        this->server_capabilities[m_completion_provider] = DataObject();
-        this->server_capabilities[m_completion_provider][m_resolve_provider] = false;
-        this->server_capabilities[m_doc_symbol_provider] = true;
-        this->server_capabilities[m_doc_format_provider] = true;
-        this->server_capabilities[m_definition_provider] = true;
-        this->server_capabilities[m_references_provider] = false;
-        this->server_capabilities[m_hover_provider] = true;
+        // use methods to enable server capabilities of this implementation
+        this->enableFullSync();
+        this->enableCompletion();
+        this->enableDefinition();
+        this->enableFormatting();
+        this->enableHover();
+        this->enableSymbols();
     }
 
     /** get read / write connection - specific to this server implemention
@@ -45,7 +39,7 @@ class WASP_PUBLIC TestServer : public ServerImpl
         return connection;
     }
 
-  private:
+  protected:
 
     /** parse document for diagnostics - specific to this server implemention
      * @param diagnosticsList - data array of diagnostics data objects to fill
@@ -53,23 +47,6 @@ class WASP_PUBLIC TestServer : public ServerImpl
      */
     bool parseDocumentForDiagnostics(
                           DataArray  & diagnosticsList );
-
-    /** update document text changes - specific to this server implemention
-     * @param replacement_text - text to be replaced over the provided range
-     * @param start_line - starting replace line number ( zero-based )
-     * @param start_character - starting replace column number ( zero-based )
-     * @param end_line - ending replace line number ( zero-based )
-     * @param end_character - ending replace column number ( zero-based )
-     * @param range_length - length of replace range - server specific
-     * @return - true if the document text was updated successfully
-     */
-    bool updateDocumentTextChanges(
-                    const std::string & replacement_text ,
-                          int           start_line       ,
-                          int           start_character  ,
-                          int           end_line         ,
-                          int           end_character    ,
-                          int           range_length     );
 
     /** gather document completion items - specific to this server implemention
      * @param completionItems - data array of completion item objects to fill
