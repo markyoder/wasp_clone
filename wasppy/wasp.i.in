@@ -23,6 +23,9 @@
   $result = true;
 }
 
+// Rename ServerImpl to more appropriate BaseServer for use by Python class
+%rename(BaseServer) ServerImpl;
+
 // Enable director so Connection can be implemented in derived Python class
 %feature("director") wasp::lsp::Connection;
 

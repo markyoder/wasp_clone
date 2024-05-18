@@ -1,7 +1,7 @@
 from wasp import *
 import re
 
-class ExampleServer(ServerImpl):
+class ExampleServer(BaseServer):
     '''Concrete example server implementation meant for testing purposes'''
 
     def __init__(self):
