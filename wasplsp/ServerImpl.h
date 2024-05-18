@@ -175,7 +175,8 @@ class WASP_PUBLIC ServerImpl
     virtual bool parseDocumentForDiagnostics(
                           wasp::DataArray  & diagnosticsList ) = 0;
 
-    /** update document text changes - to be implemented on derived servers
+    /** update document text changes - may be overridden on derived servers
+     ** base implementation replaces entire document text if not overridden
      * @param replacement_text - text to be replaced over the provided range
      * @param start_line - starting replace line number ( zero-based )
      * @param start_character - starting replace column number ( zero-based )
@@ -185,12 +186,17 @@ class WASP_PUBLIC ServerImpl
      * @return - true if the document text was updated successfully
      */
     virtual bool updateDocumentTextChanges(
-                    const std::string & replacement_text ,
-                          int           start_line       ,
-                          int           start_character  ,
-                          int           end_line         ,
-                          int           end_character    ,
-                          int           range_length     ) = 0;
+                    const std::string & replacement_text   ,
+                          int        /* start_line      */ ,
+                          int        /* start_character */ ,
+                          int        /* end_line        */ ,
+                          int        /* end_character   */ ,
+                          int        /* range_length    */ )
+    {
+        // default implementation ignores range and replaces whole document
+        this->document_text = replacement_text;
+        return true;
+    }
 
     /** gather document completion items - to be implemented on derived servers
      * @param completionItems - data array of completion item objects to fill
@@ -260,7 +266,6 @@ class WASP_PUBLIC ServerImpl
      */
     virtual bool gatherDocumentSymbols(
                           wasp::DataArray & documentSymbols ) = 0;
-
 
     /** read from connection into object - to be implemented on derived servers
      * @param object - reference to object to be read into

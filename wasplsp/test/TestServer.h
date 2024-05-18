@@ -48,23 +48,6 @@ class WASP_PUBLIC TestServer : public ServerImpl
     bool parseDocumentForDiagnostics(
                           DataArray  & diagnosticsList );
 
-    /** update document text changes - specific to this server implemention
-     * @param replacement_text - text to be replaced over the provided range
-     * @param start_line - starting replace line number ( zero-based )
-     * @param start_character - starting replace column number ( zero-based )
-     * @param end_line - ending replace line number ( zero-based )
-     * @param end_character - ending replace column number ( zero-based )
-     * @param range_length - length of replace range - server specific
-     * @return - true if the document text was updated successfully
-     */
-    bool updateDocumentTextChanges(
-                    const std::string & replacement_text ,
-                          int           start_line       ,
-                          int           start_character  ,
-                          int           end_line         ,
-                          int           end_character    ,
-                          int           range_length     );
-
     /** gather document completion items - specific to this server implemention
      * @param completionItems - data array of completion item objects to fill
      * @param is_incomplete - flag indicating if the completions are complete

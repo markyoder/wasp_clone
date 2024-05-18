@@ -41,11 +41,6 @@ class ExampleServer(ServerImpl):
             return False
         return self.connection.write(object, self.errorStream())
 
-    def updateDocumentTextChanges(self, replace_text, beg_line, beg_char, end_line, end_char, range_len):
-        '''Replace current document on server with provided text changes'''
-        self.document_text = replace_text
-        return True
-
     def parseDocumentForDiagnostics(self, diagnostics_list):
         '''Process current document and add diagnostics to provided list'''
         success = True
