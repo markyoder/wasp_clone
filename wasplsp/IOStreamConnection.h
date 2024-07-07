@@ -9,6 +9,7 @@
 #include "wasplsp/Connection.h"
 #include "wasplsp/ServerImpl.h"
 #include "waspcore/decl.h"
+#include "waspcore/wasp_bug.h"
 
 namespace wasp {
 

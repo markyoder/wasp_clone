@@ -10,6 +10,7 @@
 #include "waspcore/wasp_node.h"
 #include "waspcore/utils.h"
 #include "waspcore/decl.h"
+#include "waspcore/wasp_bug.h"
 
 namespace wasp
 {

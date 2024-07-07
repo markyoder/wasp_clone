@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Convenience function is_override to check HIT key values for override specifier
 - Python extension binding for wasplsp with server and connection implementations
 
+### Fixed
+- WASP build error when used as TPL caused by missing waspcore/wasp_bug.h include
+
 ## [4.3.0] - 5-03-2024
 
 ### Added

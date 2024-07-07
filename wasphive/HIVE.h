@@ -25,9 +25,8 @@
 #include <vector>
 #include "waspsiren/SIRENInterpreter.h"
 #include "waspsiren/SIRENResultSet.h"
-
 #include "waspcore/decl.h"
-
+#include "waspcore/wasp_bug.h"
 
 namespace wasp
 {

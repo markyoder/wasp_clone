@@ -1,5 +1,6 @@
 #include "waspeddi/EDDINodeView.h"
 #include "waspcore/utils.h"
+#include "waspcore/wasp_bug.h"
 
 namespace wasp
 {

@@ -1,6 +1,8 @@
 #ifndef WASP_SONINTERPRETER_I_H
 #define WASP_SONINTERPRETER_I_H
 
+#include "waspcore/wasp_bug.h"
+
 template<class S>
 SONInterpreter<S>::SONInterpreter()
     : Interpreter<S>()

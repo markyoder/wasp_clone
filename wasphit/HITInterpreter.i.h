@@ -1,5 +1,8 @@
 #ifndef WASP_HITINTERPRETER_I_H
 #define WASP_HITINTERPRETER_I_H
+
+#include "waspcore/wasp_bug.h"
+
 template<class S>
 HITInterpreter<S>::HITInterpreter(std::ostream& err) : Interpreter<S>(err)
     , m_parent(nullptr)

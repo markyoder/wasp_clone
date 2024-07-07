@@ -1,6 +1,8 @@
 #ifndef WASP_JSONINTERPRETER_I_H
 #define WASP_JSONINTERPRETER_I_H
 
+#include "waspcore/wasp_bug.h"
+
 template<class S>
 JSONInterpreter<S>::JSONInterpreter()
     : Interpreter<S>()
