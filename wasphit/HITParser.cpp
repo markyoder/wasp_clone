@@ -55,7 +55,7 @@
 
 #include "HITInterpreter.h"
 #include "HITLexer.h"
-
+#include "waspcore/wasp_bug.h"
 // Obtain the HIT name for an object_term
 // I.e., 
 // [name]

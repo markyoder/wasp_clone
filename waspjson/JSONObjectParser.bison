@@ -103,7 +103,7 @@ namespace wasp{
 %{
 
 #include "JSONObjectLexer.h"
-
+#include "waspcore/wasp_bug.h"
 /* this "connects" the bison parser in the interpreter to the flex JSONObjectLexer class
  * object. it defines the yylex() function call to pull the next token from the
  * current lexer object of the interpreter context. */

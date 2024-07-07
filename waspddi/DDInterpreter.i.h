@@ -1,6 +1,8 @@
 #ifndef WASP_DDINTERPRETER_I_H
 #define WASP_DDINTERPRETER_I_H
 
+#include "waspcore/wasp_bug.h"
+
 template<class S>
 DDInterpreter<S>::DDInterpreter()
     : Interpreter<S>()

@@ -22,6 +22,7 @@
 
 #include "waspcore/decl.h"
 #include "waspcore/location.hh"
+#include "waspcore/wasp_bug.h"
 
 /** The wasp namespace is used to encapsulate the three parser classes
  * wasp::EDDIParser, wasp::EDDILexerImpl and wasp::EDDIInterpreter */

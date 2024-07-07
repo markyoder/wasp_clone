@@ -1,4 +1,5 @@
 #include "wasphalite/DataAccessor.h"
+#include "waspcore/wasp_bug.h"
 
 namespace wasp
 {
