@@ -5,6 +5,11 @@
 namespace wasp {
 namespace lsp  {
 
+void ClientImpl::enableSnippetSupport()
+{
+    this->support_snippets = true;
+}
+
 bool ClientImpl::connect( Connection::SP connection )
 {
     bool pass = true;
@@ -106,6 +111,7 @@ bool ClientImpl::doInitialize()
     DataObject client_object;
     DataObject client_capabilities;
 
+
     // set the client capabilities hierarchical document symbols to true
 
     client_capabilities[m_text_document] = DataObject();
@@ -113,6 +119,14 @@ bool ClientImpl::doInitialize()
     client_capabilities[m_text_document][m_document_symbol] = DataObject();
 
     client_capabilities[m_text_document][m_document_symbol][m_hierarchical_symbols] = true;
+
+    if (this->support_snippets)
+    {
+        // populate CompletionClientCapabilities/textDocument/completionItem/snippetSupport
+        client_capabilities[m_text_document][m_comp] = DataObject();
+        client_capabilities[m_text_document][m_comp][m_compitem] = DataObject();
+        client_capabilities[m_text_document][m_comp][m_compitem][m_snip] = this->support_snippets;
+    }
 
     // set client response type to NONE before clearing out current response
 

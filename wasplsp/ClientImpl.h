@@ -24,11 +24,18 @@ class WASP_PUBLIC ClientImpl
         already_in_call(false)   ,
         request_id(0)            ,
         document_version(0)      ,
+        support_snippets(false)  ,
         response_type(NONE){}
 
     ~ClientImpl(){}
 
     typedef std::shared_ptr<wasp::lsp::ClientImpl> SP;
+
+    /** Enable client snippet capability.
+     * I.e., toggles true completionClientCapabilities/textDocument/completionItem/snippetSupport
+     * for initial client capability communication to the server
+     */
+    void enableSnippetSupport();
 
     /** set the client's connection shared_ptr to the provided connection
      * @return - true if not already connection and successfully set
@@ -367,6 +374,11 @@ class WASP_PUBLIC ClientImpl
        * @brief document_path - document URI of the open document on the client
        */
       std::string document_path;
+
+      /**
+       * @brief support_snippets - indicates if autocompletion snippets are a supported client capability
+       */
+      bool support_snippets;
 
       /**
        * @brief enum list indicating the currently stored response type
