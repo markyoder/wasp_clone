@@ -37,6 +37,8 @@ ServerImpl.cpp
 ClientImpl.cpp
 SymbolIterator.cpp
 LSPInterpreter.cpp
+SnippetLexer.cpp
+SnippetParser.cpp
 )
 
 ##---------------------------------------------------------------------------##
