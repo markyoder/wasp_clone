@@ -28,7 +28,7 @@ bool SnippetInterpreter<S>::parse(std::istream& in,
 {
     return parseStream(
         in,
-        "stream",
+        "snippet",
         startLine, startColumn);
 }
 template<class S>

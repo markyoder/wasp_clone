@@ -38,6 +38,7 @@ ClientImpl.cpp
 SymbolIterator.cpp
 LSPInterpreter.cpp
 SnippetLexer.cpp
+SnippetManager.cpp
 SnippetParser.cpp
 )
 
