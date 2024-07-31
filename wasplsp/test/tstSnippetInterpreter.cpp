@@ -8,7 +8,7 @@
 #include <memory>
 
 namespace wasp {
-
+namespace lsp{
 TEST(snippet, text)
 {
     // Note the escaped '$' ',' '\'
@@ -38,6 +38,70 @@ TEST(snippet, simple_tabstop)
     auto ts = interp.root().child_at(0);
     ASSERT_EQ(SnippetType::TABSTOP, ts.type());
     ASSERT_EQ(1, ts.child_at(1).to_int());
+}
+TEST(snippet, multiple_simple_tabstop)
+{
+    std::stringstream data("$1$2");
+    DefaultSnippetInterpreter interp;
+    ASSERT_TRUE(interp.parse(data));
+    // document
+    // |_ tabstop
+    //    |_ decl
+    //    |_ integer
+    // |_ tabstop
+    //    |_ decl
+    //    |_ integer
+    ASSERT_EQ(7, interp.node_count());
+    auto ts = interp.root().child_at(0);
+    ASSERT_EQ(SnippetType::TABSTOP, ts.type());
+    ASSERT_EQ(1, ts.child_at(1).to_int());
+    ts = interp.root().child_at(1);
+    ASSERT_EQ(SnippetType::TABSTOP, ts.type());
+    ASSERT_EQ(2, ts.child_at(1).to_int());
+}
+TEST(snippet, multi_tabstop)
+{
+    std::stringstream data("${1:ph}$2");
+    DefaultSnippetInterpreter interp;
+    ASSERT_TRUE(interp.parse(data));
+    // document
+    // |_ placeholder
+    //    |_ decl
+    //    |_ integer
+    //    |_ text
+    // |_ tabstop
+    //    |_ decl
+    //    |_ integer
+    ASSERT_EQ(8, interp.node_count());
+    auto ts = interp.root().child_at(0);
+    ASSERT_EQ(SnippetType::PLACEHOLDER, ts.type());
+    ASSERT_EQ(1, ts.child_at(1).to_int());
+    ASSERT_EQ("ph", ts.child_at(2).to_string());
+    ts = interp.root().child_at(1);
+    ASSERT_EQ(SnippetType::TABSTOP, ts.type());
+    ASSERT_EQ(2, ts.child_at(1).to_int());
+}
+TEST(snippet, multi_tabstop_w_text)
+{
+    std::stringstream data("something${1}here$2");
+    DefaultSnippetInterpreter interp;
+    ASSERT_TRUE(interp.parse(data));
+    // document
+    // |_ text
+    // |_ tabstop
+    //    |_ decl
+    //    |_ integer
+    // |_ text
+    // |_ tabstop
+    //    |_ decl
+    //    |_ integer
+    ASSERT_EQ(9, interp.node_count());
+    auto ts = interp.root().child_at(1);
+    ASSERT_EQ(SnippetType::TABSTOP, ts.type());
+    ASSERT_EQ(1, ts.child_at(1).to_int());
+    ts = interp.root().child_at(3);
+    ASSERT_EQ(SnippetType::TABSTOP, ts.type());
+    ASSERT_EQ(2, ts.child_at(1).to_int());
 }
 
 TEST(snippet, simple_curlied_tabstop)
@@ -204,9 +268,11 @@ TEST(snippet, multipeline_embedded_escaped_placeholder)
     ASSERT_EQ("\nterminator text \n", interp.root().child_at(2).to_string());
     ASSERT_EQ(3, interp.root().child_at(2).line());
     // This is a special case where the first character is a newline
+    // TokenPool::column logic computes column a token_offset - prior_newline_offset = 0
     // TODO - determine if this should be expected.
     // Most lanugages do not track newlines so the column logic may need to be
     // updated to account for this scenario
     ASSERT_EQ(0, interp.root().child_at(2).column());
 }
+} // namespace lsp
 } // namespace wasp

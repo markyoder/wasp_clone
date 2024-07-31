@@ -1606,7 +1606,7 @@ YY_RULE_SETUP
     // return individual character important to parser interpretation
     yy_pop_state(); // pop placeholder_colon_state
     yy_pop_state(); // pop placeholder_state, back to tabstop_state
-    yy_push_state(placeholder_any_state);
+    yy_pop_state(); // pop tabstop_state to exit
     return static_cast<token_type>(*yytext);
 }
 	YY_BREAK
