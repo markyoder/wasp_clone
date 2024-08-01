@@ -149,6 +149,7 @@ TEST(SnippetManager, multiline_tabstop_ordering)
     ASSERT_TRUE(snippet.next_tabstop());
     ASSERT_EQ(2, snippet.line_offset());
     ASSERT_EQ(9, snippet.column_offset());
+    ASSERT_EQ("else", snippet.tabstop_text());
 
     // final ($0) tabstop is at line 2 column 6
     ASSERT_TRUE(snippet.next_tabstop());
@@ -191,6 +192,7 @@ TEST(SnippetManager, multicolumn_tabstop_ordering)
     ASSERT_TRUE(snippet.next_tabstop());
     ASSERT_EQ(0, snippet.line_offset());
     ASSERT_EQ(6, snippet.column_offset());
+    ASSERT_EQ("", snippet.tabstop_text());
 
     // next tabstop should be invalid
     ASSERT_FALSE(snippet.next_tabstop());

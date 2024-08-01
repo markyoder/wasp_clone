@@ -62,6 +62,11 @@ class WASP_PUBLIC SnippetManager
     int line_offset() const;
     int column_offset() const;
 
+    /**
+     * Obtain the text for the current tabstop, if any
+     */
+    std::string tabstop_text() const;
+
   private:
 
     struct Snippet{

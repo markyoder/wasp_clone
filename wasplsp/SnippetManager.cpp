@@ -84,6 +84,13 @@ std::string SnippetManager::text() const
   return s.str();
 }
 
+std::string SnippetManager::tabstop_text() const
+{
+  if (!valid_tabstop()) return "";
+
+  auto snippet_index = m_tabstops[m_current_tabstop];
+  return m_snippets[snippet_index].text;
+}
 
 int SnippetManager::line_offset() const
 {
