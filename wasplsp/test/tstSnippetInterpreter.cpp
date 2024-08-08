@@ -156,6 +156,21 @@ TEST(snippet, simple_placeholder_withescape)
     ASSERT_EQ("true}\\$", unescape_snippet(pht.to_string()));
 }
 
+TEST(snippet, empty_tabstop)
+{
+    std::stringstream data("${1:}");
+    DefaultSnippetInterpreter interp;
+    ASSERT_TRUE(interp.parse(data));
+    // document
+    // |_ tabstop
+    //    |_ decl
+    //    |_ integer
+    ASSERT_EQ(4, interp.node_count());
+    auto ts = interp.root().child_at(0);
+    ASSERT_EQ(SnippetType::TABSTOP, ts.type());
+    ASSERT_EQ(1, ts.child_at(1).to_int());
+}
+
 TEST(snippet, line_embedded_nakedtabstop)
 {
     std::stringstream data("fooo$33 boo");

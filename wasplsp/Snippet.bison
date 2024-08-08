@@ -140,6 +140,13 @@ snippet : snippet_decl integer
                                     ,"pho" // placeholder - tabstop and default text
                                     ,child_indices);
     }
+    | snippet_decl '{' integer ':' '}'
+    { // placeholder with no text... i.e., tabstop
+        std::vector<size_t> child_indices = {$1, $3};
+        $$ = interpreter.push_parent(wasp::SnippetType::TABSTOP
+                                    ,"tst" // tabstop
+                                    ,child_indices);
+    }
 
 start   : /** empty **/
         | start text{

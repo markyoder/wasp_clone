@@ -704,24 +704,35 @@ namespace wasp {
 #line 705 "SnippetParser.cpp"
     break;
 
-  case 9: // start: start text
-#line 145 "Snippet.bison"
+  case 8: // snippet: snippet_decl '{' integer ':' '}'
+#line 144 "Snippet.bison"
+    { // placeholder with no text... i.e., tabstop
+        std::vector<size_t> child_indices = {(yystack_[4].value.node_index), (yystack_[2].value.node_index)};
+        (yylhs.value.node_index) = interpreter.push_parent(wasp::SnippetType::TABSTOP
+                                    ,"tst" // tabstop
+                                    ,child_indices);
+    }
+#line 716 "SnippetParser.cpp"
+    break;
+
+  case 10: // start: start text
+#line 152 "Snippet.bison"
                     {
             interpreter.push_staged_child((yystack_[0].value.node_index));
         }
-#line 713 "SnippetParser.cpp"
+#line 724 "SnippetParser.cpp"
     break;
 
-  case 10: // start: start snippet
-#line 148 "Snippet.bison"
+  case 11: // start: start snippet
+#line 155 "Snippet.bison"
                        {
             interpreter.push_staged_child((yystack_[0].value.node_index));
         }
-#line 721 "SnippetParser.cpp"
+#line 732 "SnippetParser.cpp"
     break;
 
 
-#line 725 "SnippetParser.cpp"
+#line 736 "SnippetParser.cpp"
 
             default:
               break;
@@ -1073,28 +1084,28 @@ namespace wasp {
   }
 
 
-  const signed char SnippetParser::yypact_ninf_ = -8;
+  const signed char SnippetParser::yypact_ninf_ = -7;
 
   const signed char SnippetParser::yytable_ninf_ = -1;
 
   const signed char
   SnippetParser::yypact_[] =
   {
-      -8,     0,    -8,    -8,    -8,    -8,     1,    -8,    -7,    -8,
-      -8,    -5,    -8,    -6,    -4,    -8
+      -7,     0,    -7,    -7,    -7,    -7,     1,    -7,     3,    -7,
+      -7,    -5,    -7,    -6,    -7,    -4,    -7
   };
 
   const signed char
   SnippetParser::yydefact_[] =
   {
-       8,     0,     1,     4,     2,     9,     0,    10,     0,     3,
-       5,     0,     6,     0,     0,     7
+       9,     0,     1,     4,     2,    10,     0,    11,     0,     3,
+       5,     0,     6,     0,     8,     0,     7
   };
 
   const signed char
   SnippetParser::yypgoto_[] =
   {
-      -8,    -2,     4,    -8,    -8,    -8
+      -7,    -1,     5,    -7,    -7,    -7
   };
 
   const signed char
@@ -1106,36 +1117,36 @@ namespace wasp {
   const signed char
   SnippetParser::yytable_[] =
   {
-       2,     9,    12,    15,     4,     3,    13,     8,     0,     9,
-       4,    14,    11
+       2,    14,    12,    16,     4,     3,    13,     8,     0,     9,
+       4,     9,    15,    11
   };
 
   const signed char
   SnippetParser::yycheck_[] =
   {
-       0,     8,     7,     7,    10,     5,    11,     6,    -1,     8,
-      10,    13,     8
+       0,     7,     7,     7,    10,     5,    11,     6,    -1,     8,
+      10,     8,    13,     8
   };
 
   const signed char
   SnippetParser::yystos_[] =
   {
        0,    17,     0,     5,    10,    13,    15,    16,     6,     8,
-      14,    14,     7,    11,    13,     7
+      14,    14,     7,    11,     7,    13,     7
   };
 
   const signed char
   SnippetParser::yyr1_[] =
   {
-       0,    12,    13,    14,    15,    16,    16,    16,    17,    17,
-      17
+       0,    12,    13,    14,    15,    16,    16,    16,    16,    17,
+      17,    17
   };
 
   const signed char
   SnippetParser::yyr2_[] =
   {
-       0,     2,     1,     1,     1,     2,     4,     6,     0,     2,
-       2
+       0,     2,     1,     1,     1,     2,     4,     6,     5,     0,
+       2,     2
   };
 
 
@@ -1157,8 +1168,8 @@ namespace wasp {
   const unsigned char
   SnippetParser::yyrline_[] =
   {
-       0,   107,   107,   112,   117,   122,   129,   136,   144,   145,
-     148
+       0,   107,   107,   112,   117,   122,   129,   136,   143,   151,
+     152,   155
   };
 
   void
@@ -1238,9 +1249,9 @@ namespace wasp {
 
 #line 36 "Snippet.bison"
 } // wasp
-#line 1242 "SnippetParser.cpp"
+#line 1253 "SnippetParser.cpp"
 
-#line 155 "Snippet.bison"
+#line 162 "Snippet.bison"
  /*** Additional Code ***/
 namespace wasp{
 void SnippetParser::error(const SnippetParser::location_type& l,

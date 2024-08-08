@@ -124,6 +124,12 @@ TEXT ([^$\}]|{ESCAPES})+
     capture_token(yylval, wasp::STRING);
     return token::TEXT;
 }
+<placeholder_any_state>{RBRACE} { // found closing brace instead of text (${int:})
+    // return individual character important to parser interpretation
+    yy_pop_state(); // pop placeholder_any_state
+    yy_pop_state(); // pop tabstop_state to exit
+    return static_cast<token_type>(*yytext);
+}
 
 <*><<EOF>> {
     yyterminate();
