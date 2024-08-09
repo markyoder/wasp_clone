@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Ability to precede '=' in HIT syntax with optional ':' or ':override' specifier
 - Convenience function is_override to check HIT key values for override specifier
 - Python extension binding for wasplsp with server and connection implementations
-- Ability to enable LSP snippert capability in wasplsp/ClientImpl via `enableSnippetSupport()`
+- Ability to enable LSP snippet capability in wasplsp/ClientImpl via `enableSnippetSupport()`
+- wasplsp::SnippetManager and supporting classes for single tabstop and placeholder interactions
 
 ### Fixed
 - WASP build error when used as TPL caused by missing waspcore/wasp_bug.h include

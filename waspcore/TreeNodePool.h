@@ -213,7 +213,7 @@ class WASP_PUBLIC TreeNodePool
      * @param node_index the node for which the token line is requested.
      * @return the token line of the leaf node at the given index.
      * If the node index is out of range, 0 is returned.
-     * If the node at the given index is not a leaf node the first leaf 
+     * If the node at the given index is not a leaf node the first leaf
      * is recursively identified and the leaf's line number is returned
      */
     size_t node_token_line(node_index_size node_index) const;

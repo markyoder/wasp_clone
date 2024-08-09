@@ -83,7 +83,7 @@ class WASP_PUBLIC NodeView
     /**
      * @brief Set the data of this node
      * Note: This is only legal for LEAF nodes
-     * 
+     *
      * @param value the new data to associate with this leaf node
      */
     void set_data(const char* value);
@@ -459,7 +459,7 @@ class WASP_PUBLIC AbstractInterpreter
 
     virtual size_t staged_non_decorative_child_count(size_t staged_index) const = 0;
     virtual size_t staged_section_count(size_t staged_index) const = 0;
-    
+
     virtual size_t staged_count() const = 0;
 
     virtual bool failed() const                     = 0;
@@ -541,7 +541,7 @@ class WASP_PUBLIC AbstractInterpreter
 
     /**
      * @brief Obtain the parent document's interpreter
-     * 
+     *
      * @return AbstractInterpreter* iff the document is a nested document, nullptr otherwise
      */
     virtual AbstractInterpreter* document_parent() const = 0;
@@ -559,7 +559,7 @@ class WASP_PUBLIC AbstractInterpreter
      * @param loc the location for position tracking info in the parse-tree
      * @param err an error stream for capturing error messages
      * @return true, iff the staged_node is successfully processed
-     */                   
+     */
     virtual bool process_staged_node(size_t& new_staged_index,
                                     const std::string& stage_name,
                                     size_t node_index,
@@ -575,7 +575,7 @@ class WASP_PUBLIC AbstractInterpreter
     }
   private:
     std::vector<Diagnostic> m_error_diagnostics;
-}; 
+};
 
 template<class NodeStorage = TreeNodePool<>>
 class WASP_PUBLIC Interpreter : public AbstractInterpreter
@@ -600,7 +600,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
 
     /**
      * @brief Create a nested interpreter object as needed for included files
-     * 
+     *
      * @return Interpreter* (unmanaged)
      */
     virtual Interpreter* create_nested_interpreter(Interpreter* parent)
@@ -936,7 +936,7 @@ class WASP_PUBLIC Interpreter : public AbstractInterpreter
     }
     bool is_decorative(size_t node_type) const
     {
-        return std::find(m_decorative_node_types.begin(), 
+        return std::find(m_decorative_node_types.begin(),
                         m_decorative_node_types.end(),
                         node_type)
                 != m_decorative_node_types.end();
