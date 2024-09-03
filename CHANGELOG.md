@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - WASP build error when used as TPL caused by missing waspcore/wasp_bug.h include
+- Missing waspcore/version.h from installation
 
 ## [4.3.0] - 5-03-2024
 
