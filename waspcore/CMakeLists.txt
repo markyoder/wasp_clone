@@ -28,6 +28,7 @@ utils.h
 decl.h
 wasp_bug.h
 wasp_node.h
+${CMAKE_CURRENT_BINARY_DIR}/version.h
 )
 
 #
