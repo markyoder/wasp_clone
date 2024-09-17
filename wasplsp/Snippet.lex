@@ -53,6 +53,8 @@ RBRACE \}
 ESCAPES \\[$\}]
  // TEXT is anything but the '$' '\' , which must be escaped
 TEXT ([^$\}]|{ESCAPES})+
+ // TEXT that trails a match
+TRAILING_TEXT \}({TEXT})*
 
  /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
@@ -130,7 +132,10 @@ TEXT ([^$\}]|{ESCAPES})+
     yy_pop_state(); // pop tabstop_state to exit
     return static_cast<token_type>(*yytext);
 }
-
+{TRAILING_TEXT} {
+    capture_token(yylval, wasp::STRING);
+    return token::TEXT;
+}
 <*><<EOF>> {
     yyterminate();
 }
