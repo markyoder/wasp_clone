@@ -51,10 +51,10 @@ DOLLAR \$
 LBRACE \{
 RBRACE \}
 ESCAPES \\[$\}]
- // TEXT is anything but the '$' '\' , which must be escaped
-TEXT ([^$\}]|{ESCAPES})+
+ // TEXT is anything but the '$' unless escaped
+TEXT ([^$]|\\$)+
  // TEXT that trails a match
-TRAILING_TEXT \}({TEXT})*
+ENCLOSED_TEXT ([^$\}]|{ESCAPES})+
 
  /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
@@ -121,7 +121,7 @@ TRAILING_TEXT \}({TEXT})*
     yy_pop_state(); // pop tabstop_state to exit
     return static_cast<token_type>(*yytext);
 }
-<placeholder_any_state>{TEXT} {
+<placeholder_any_state>{ENCLOSED_TEXT} {
     yy_pop_state(); // pop placeholder_any_state, back to tabstop_state
     capture_token(yylval, wasp::STRING);
     return token::TEXT;
@@ -132,10 +132,7 @@ TRAILING_TEXT \}({TEXT})*
     yy_pop_state(); // pop tabstop_state to exit
     return static_cast<token_type>(*yytext);
 }
-{TRAILING_TEXT} {
-    capture_token(yylval, wasp::STRING);
-    return token::TEXT;
-}
+
 <*><<EOF>> {
     yyterminate();
 }
