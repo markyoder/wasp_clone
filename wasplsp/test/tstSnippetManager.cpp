@@ -199,5 +199,27 @@ TEST(SnippetManager, multicolumn_tabstop_ordering)
     ASSERT_FALSE(snippet.valid_tabstop());
 }
 
+TEST(SnippetManager, son_snippet_addl_trailing)
+{
+    std::stringstream data;
+    data << "object{key = ${1:something}} something trailing after { after }  " << std::endl
+         << " with other {stuff} following newline";
+    SnippetManager snippet;
+    ASSERT_TRUE(snippet.load(data, std::cerr));
+
+    ASSERT_EQ(1, snippet.tabstop_count());
+    ASSERT_TRUE(snippet.valid_tabstop());
+    ASSERT_EQ("object{key = something} something trailing after { after }  \n with other {stuff} following newline", snippet.text());
+
+    // first ($1) tabstop is at line 1
+    ASSERT_EQ(0, snippet.current_tabstop());
+    ASSERT_EQ(0, snippet.line_offset());
+    ASSERT_EQ(13, snippet.column_offset());
+
+    // next tabstop should be invalid
+    ASSERT_FALSE(snippet.next_tabstop());
+    ASSERT_FALSE(snippet.valid_tabstop());
+}
+
 } // namespace lsp
 } // namespace wasp

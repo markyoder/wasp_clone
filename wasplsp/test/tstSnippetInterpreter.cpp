@@ -289,5 +289,55 @@ TEST(snippet, multipeline_embedded_escaped_placeholder)
     // updated to account for this scenario
     ASSERT_EQ(0, interp.root().child_at(2).column());
 }
+
+TEST(snippet, son_snippet)
+{
+    std::stringstream data;
+    data << "object{key = ${1:something}}";
+    DefaultSnippetInterpreter interp;
+    ASSERT_TRUE(interp.parse(data));
+    // document
+    // |_ text (object{key = )
+    // |_ placeholder
+    //    |_ decl ($)
+    //    |_ integer
+    //    |_ text (something)
+    // |_ text (})
+    ASSERT_EQ(7, interp.node_count());
+    ASSERT_EQ("object{key = ", interp.root().child_at(0).to_string());
+    ASSERT_EQ("object{key = ", unescape_snippet(interp.root().child_at(0).to_string()));
+    auto ph = interp.root().child_at(1);
+    ASSERT_EQ(SnippetType::PLACEHOLDER, ph.type());
+    ASSERT_EQ(1, ph.child_at(1).to_int());
+    ASSERT_EQ(1, ph.line());
+    ASSERT_EQ("}", interp.root().child_at(2).to_string());
+    ASSERT_EQ("}", unescape_snippet(interp.root().child_at(2).to_string()));
+}
+
+TEST(snippet, son_snippet_addl_trailing)
+{
+    std::stringstream data;
+    data << "object{key = ${1:something}} something trailing after { after }  " << std::endl
+         << " with other {stuff} following newline";
+    DefaultSnippetInterpreter interp;
+    ASSERT_TRUE(interp.parse(data));
+    // document
+    // |_ text (object{key = )
+    // |_ placeholder
+    //    |_ decl ($)
+    //    |_ integer
+    //    |_ text (something)
+    // |_ text (} something trailing ...)
+
+    ASSERT_EQ(7, interp.node_count());
+    ASSERT_EQ("object{key = ", interp.root().child_at(0).to_string());
+    ASSERT_EQ("object{key = ", unescape_snippet(interp.root().child_at(0).to_string()));
+    auto ph = interp.root().child_at(1);
+    ASSERT_EQ(SnippetType::PLACEHOLDER, ph.type());
+    ASSERT_EQ(1, ph.child_at(1).to_int());
+    ASSERT_EQ(1, ph.line());
+    ASSERT_EQ("} something trailing after { after }  \n with other {stuff} following newline", interp.root().child_at(2).to_string());
+    ASSERT_EQ("} something trailing after { after }  \n with other {stuff} following newline", unescape_snippet(interp.root().child_at(2).to_string()));
+}
 } // namespace lsp
 } // namespace wasp

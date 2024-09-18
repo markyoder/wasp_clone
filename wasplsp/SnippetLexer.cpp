@@ -369,7 +369,7 @@ static const flex_int32_t yy_nxt[][256] =
        12,   12,   14,   12,   12,   12,   12,   12,   12,   12,
        12,   12,   12,   12,   12,   12,   12,   12,   12,   12,
        12,   12,   12,   12,   12,   12,   12,   12,   12,   12,
-       12,   12,   12,   12,   12,   15,   12,   12,   12,   12,
+       12,   12,   12,   12,   12,   12,   12,   12,   12,   12,
        12,   12,   12,   12,   12,   12,   12,   12,   12,   12,
 
        12,   12,   12,   12,   12,   12,   12,   12,   12,   12,
@@ -401,7 +401,7 @@ static const flex_int32_t yy_nxt[][256] =
        12,   12,   14,   12,   12,   12,   12,   12,   12,   12,
        12,   12,   12,   12,   12,   12,   12,   12,   12,   12,
        12,   12,   12,   12,   12,   12,   12,   12,   12,   12,
-       12,   12,   12,   12,   12,   15,   12,   12,   12,   12,
+       12,   12,   12,   12,   12,   12,   12,   12,   12,   12,
        12,   12,   12,   12,   12,   12,   12,   12,   12,   12,
        12,   12,   12,   12,   12,   12,   12,   12,   12,   12,
        12,   12,   12,   12,   12,   12,   12,   12,   12,   12,
@@ -717,7 +717,7 @@ static const flex_int32_t yy_nxt[][256] =
        25,   25,   26,   25,   25,   25,   25,   25,   25,   25,
        25,   25,   25,   25,   25,   25,   25,   25,   25,   25,
        25,   25,   25,   25,   25,   25,   25,   25,   25,   25,
-       25,   25,   25,   25,   25,  -12,   25,   25,   25,   25,
+       25,   25,   25,   25,   25,   25,   25,   25,   25,   25,
        25,   25,   25,   25,   25,   25,   25,   25,   25,   25,
        25,   25,   25,   25,   25,   25,   25,   25,   25,   25,
        25,   25,   25,   25,   25,   25,   25,   25,   25,   25,
@@ -1128,7 +1128,7 @@ static const flex_int32_t yy_nxt[][256] =
 
        25,   25,   25,   25,   25,   25,   25,   25,   25,   25,
        25,   25,   25,   25,   25,   25,   25,   25,   25,   25,
-       25,   25,   25,   25,   25,  -25,   25,   25,   25,   25,
+       25,   25,   25,   25,   25,   25,   25,   25,   25,   25,
        25,   25,   25,   25,   25,   25,   25,   25,   25,   25,
        25,   25,   25,   25,   25,   25,   25,   25,   25,   25,
        25,   25,   25,   25,   25,   25,   25,   25,   25,   25,
@@ -1376,13 +1376,14 @@ typedef wasp::SnippetParser::token_type token_type;
 
 
 
- // TEXT is anything but the '$' '\' , which must be escaped
+ // TEXT is anything but the '$' unless escaped
+ // TEXT that trails a match
  /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
 #define YY_USER_ACTION  yylloc->columns(yyleng); file_offset+=yyleng;
 
-#line 1384 "SnippetLexer.cpp"
 #line 1385 "SnippetLexer.cpp"
+#line 1386 "SnippetLexer.cpp"
 
 #define INITIAL 0
 #define tabstop_state 1
@@ -1518,10 +1519,10 @@ YY_DECL
 		}
 
 	{
-#line 64 "Snippet.lex"
+#line 66 "Snippet.lex"
 
 
-#line 67 "Snippet.lex"
+#line 69 "Snippet.lex"
  /* code to place at the beginning of yylex() */
 
     // reset location
@@ -1529,7 +1530,7 @@ YY_DECL
 
  /*** BEGIN EXAMPLE - Change the Snippet lexer rules below ***/
 
-#line 1532 "SnippetLexer.cpp"
+#line 1533 "SnippetLexer.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1567,7 +1568,7 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 74 "Snippet.lex"
+#line 76 "Snippet.lex"
 {
     capture_token(yylval, wasp::INTEGER);
     yy_pop_state(); // INTEGER immediately followed '$'
@@ -1576,7 +1577,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 80 "Snippet.lex"
+#line 82 "Snippet.lex"
 { // accessed via '${'
     capture_token(yylval, wasp::INTEGER);
     yy_push_state(placeholder_colon_state); // expect colon
@@ -1585,7 +1586,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 86 "Snippet.lex"
+#line 88 "Snippet.lex"
 {
     // To be a tabstop or placeholder declarator the '$'
     // should be followed by an opening curly or an integer
@@ -1597,7 +1598,7 @@ YY_RULE_SETUP
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 94 "Snippet.lex"
+#line 96 "Snippet.lex"
 {
     capture_token(yylval, wasp::STRING);
     return token::TEXT;
@@ -1605,7 +1606,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 99 "Snippet.lex"
+#line 101 "Snippet.lex"
 {
     yy_push_state(placeholder_state);
     return static_cast<token_type>(*yytext);
@@ -1613,7 +1614,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 104 "Snippet.lex"
+#line 106 "Snippet.lex"
 {
     yy_pop_state(); // go back to start state
     return static_cast<token_type>(*yytext);
@@ -1621,7 +1622,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 109 "Snippet.lex"
+#line 111 "Snippet.lex"
 {
     // return individual character important to parser interpretation
     yy_pop_state(); // pop placeholder_colon_state
@@ -1632,7 +1633,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 116 "Snippet.lex"
+#line 118 "Snippet.lex"
 { // found closing brace instead of colon (${int})
     // return individual character important to parser interpretation
     yy_pop_state(); // pop placeholder_colon_state
@@ -1644,7 +1645,7 @@ YY_RULE_SETUP
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 123 "Snippet.lex"
+#line 125 "Snippet.lex"
 {
     yy_pop_state(); // pop placeholder_any_state, back to tabstop_state
     capture_token(yylval, wasp::STRING);
@@ -1653,7 +1654,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 128 "Snippet.lex"
+#line 130 "Snippet.lex"
 { // found closing brace instead of text (${int:})
     // return individual character important to parser interpretation
     yy_pop_state(); // pop placeholder_any_state
@@ -1666,7 +1667,7 @@ case YY_STATE_EOF(tabstop_state):
 case YY_STATE_EOF(placeholder_state):
 case YY_STATE_EOF(placeholder_colon_state):
 case YY_STATE_EOF(placeholder_any_state):
-#line 135 "Snippet.lex"
+#line 137 "Snippet.lex"
 {
     yyterminate();
 }
@@ -1674,10 +1675,10 @@ case YY_STATE_EOF(placeholder_any_state):
 /*** END EXAMPLE - Change the Snippet lexer rules above ***/
 case 11:
 YY_RULE_SETUP
-#line 141 "Snippet.lex"
+#line 143 "Snippet.lex"
 ECHO;
 	YY_BREAK
-#line 1680 "SnippetLexer.cpp"
+#line 1681 "SnippetLexer.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2618,7 +2619,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 141 "Snippet.lex"
+#line 143 "Snippet.lex"
 
 
 namespace wasp {
