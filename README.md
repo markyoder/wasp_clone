@@ -1,3 +1,10 @@
+## NOTE and Disclaimer:
+This repo is a brute force clone of the original,
+[https://code.ornl.gov/neams-workbench/wasp](https://code.ornl.gov/neams-workbench/wasp)
+
+In order to facilitate cloning with recursion (which did not seem to be working with the `https` protocol) in a Spack package.
+
+
 # Package Overview 
 The Workbench Analysis Sequence Processor (WASP) was developed to streamline lexing, parsing, access, validation, and analysis of ascii text files.
 
